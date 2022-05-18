@@ -22,6 +22,7 @@ const PADDING_BOTTOM = 24; // for the UI controls and the minimap protrusion
 const PADDING_LEFT = 16; // for the location indicator or edge zoom
 const PADDING_RIGHT = 16; // for aesthetic purposes or edge zoom
 const FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH = 0.5;
+const MINIMUM_FOCUS_INDICATOR_LENGTH = 4;
 
 /** @internal */
 export const drawFrame = (
@@ -142,6 +143,20 @@ export const drawFrame = (
     FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
   );
 
+  // focus chart horizontal focus indicator
+  drawRect(
+    ctx,
+    Math.max(MINIMUM_FOCUS_INDICATOR_LENGTH, focusLayerCssWidth * (currentFocus[1] - currentFocus[0])),
+    0,
+    PADDING_LEFT + focusLayerCssWidth * currentFocus[0],
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2,
+    dpr,
+    fullFocus,
+    '',
+    'black',
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
+  );
+
   // focus chart vertical placeholder
   drawRect(
     ctx,
@@ -153,6 +168,20 @@ export const drawFrame = (
     fullFocus,
     '',
     'lightgrey',
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
+  );
+
+  // focus chart vertical focus indicator
+  drawRect(
+    ctx,
+    0,
+    Math.max(MINIMUM_FOCUS_INDICATOR_LENGTH, focusLayerCssHeight * (currentFocus[3] - currentFocus[2])),
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2,
+    focusLayerCssHeight * (1 - currentFocus[2]) + PADDING_TOP,
+    dpr,
+    fullFocus,
+    '',
+    'black',
     FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
   );
 
