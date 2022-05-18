@@ -507,7 +507,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
-  focusOnHit = (timestamp: number) => {
+  private focusOnHit = (timestamp: number) => {
     if (Number.isNaN(this.focusedMatchIndex)) {
       // resetting to focus on everything
       this.focusOnAllMatches();
