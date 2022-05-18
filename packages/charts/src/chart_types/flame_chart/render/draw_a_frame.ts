@@ -96,6 +96,15 @@ export const drawFrame = (
   // base (focus) layer
   drawFocusLayer(false);
 
+  // minimap geoms
+  drawContextLayer(false);
+
+  // base (focus) pick layer
+  drawFocusLayer(true);
+
+  // minimap pick layer
+  drawContextLayer(true);
+
   drawCanvas2d(
     ctx,
     1,
@@ -109,15 +118,6 @@ export const drawFrame = (
     currentFocus,
     currentColor,
   );
-
-  // minimap geoms
-  drawContextLayer(false);
-
-  // base (focus) pick layer
-  drawFocusLayer(true);
-
-  // minimap pick layer
-  drawContextLayer(true);
 
   // focus chart border
   drawRect(
