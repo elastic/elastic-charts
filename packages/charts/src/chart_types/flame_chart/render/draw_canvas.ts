@@ -49,7 +49,7 @@ export const drawCanvas = (
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.scale(dpr, dpr);
-  ctx.font = `${fontSize}px "Atkinson Hyperlegible"`;
+  ctx.font = `${fontSize}px sans-serif`;
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
   let lastTextColor = '';
 
