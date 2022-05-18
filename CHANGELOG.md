@@ -1,3 +1,16 @@
+# [46.2.0](https://github.com/elastic/elastic-charts/compare/v46.1.0...v46.2.0) (2022-05-18)
+
+
+### Bug Fixes
+
+* runtime error with `process.env` in src ([#1672](https://github.com/elastic/elastic-charts/issues/1672)) ([47a6b0b](https://github.com/elastic/elastic-charts/commit/47a6b0b9ab88cc33229ca8c132e10deb6729cd57))
+* **deps:** update dependency @elastic/eui to v56 ([#1667](https://github.com/elastic/elastic-charts/issues/1667)) ([285ec8b](https://github.com/elastic/elastic-charts/commit/285ec8bdd05dee758f03b503cb1df311b140c778))
+
+
+### Features
+
+* flame graph with WebGL ([#1664](https://github.com/elastic/elastic-charts/issues/1664)) ([96368ea](https://github.com/elastic/elastic-charts/commit/96368ea45e093cf0e1b0b6db7356568e98be25c9))
+
 # [46.1.0](https://github.com/elastic/elastic-charts/compare/v46.0.1...v46.1.0) (2022-05-05)
 
 
