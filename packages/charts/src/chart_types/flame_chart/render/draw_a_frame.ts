@@ -29,7 +29,9 @@ const FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH = 0.5;
 const MINIMUM_FOCUS_INDICATOR_LENGTH = 4;
 const TERMINAL_TICK_LINE_WIDTH = 1;
 const TERMINAL_TICK_LINE_LENGTH = 4;
-const EPSILON = 1e-4;
+
+/** @internal */
+export const EPSILON = 1e-4;
 
 /** @internal */
 export const drawFrame = (
