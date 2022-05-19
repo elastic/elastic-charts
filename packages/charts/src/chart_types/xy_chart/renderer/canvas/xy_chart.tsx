@@ -42,6 +42,7 @@ import {
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getGridLinesSelector } from '../../state/selectors/get_grid_lines';
+import { getHighlightedAnnotationIdsSelector } from '../../state/selectors/get_highlighted_annotation_ids_selector';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
@@ -49,6 +50,7 @@ import { Geometries, Transform } from '../../state/utils/types';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { AxisSpec, AnnotationSpec } from '../../utils/specs';
+import { AnimationState } from './animations/animation';
 import { renderXYChartCanvas2d } from './renderers';
 import { hasMostlyRTL } from './utils/has_mostly_rtl';
 
@@ -66,6 +68,7 @@ export interface ReactiveChartStateProps {
   renderingArea: Dimensions;
   chartTransform: Transform;
   highlightedLegendItem?: LegendItem;
+  hoveredAnnotationIds: string[];
   axesSpecs: AxisSpec[];
   perPanelAxisGeoms: Array<PerPanelAxisGeoms>;
   perPanelGridLines: Array<LinesGrid>;
@@ -84,14 +87,13 @@ interface ReactiveChartOwnProps {
   forwardCanvasRef: RefObject<HTMLCanvasElement>;
 }
 
-const CLIPPING_MARGINS = 0.5;
-
 type XYChartProps = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
 
 class XYChartComponent extends React.Component<XYChartProps> {
   static displayName = 'XYChart';
 
   private ctx: CanvasRenderingContext2D | null;
+  private animationState: AnimationState;
 
   // see example https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio#Example
   private readonly devicePixelRatio: number; // fixme this be no constant: multi-monitor window drag may necessitate modifying the `<canvas>` dimensions
@@ -100,6 +102,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
     super(props);
     this.ctx = null;
     this.devicePixelRatio = window.devicePixelRatio;
+    this.animationState = { rafId: NaN, pool: new Map() };
   }
 
   componentDidMount() {
@@ -128,14 +131,14 @@ class XYChartComponent extends React.Component<XYChartProps> {
     }
   }
 
+  componentWillUnmount() {
+    window.cancelAnimationFrame(this.animationState.rafId);
+    this.animationState.pool.clear();
+  }
+
   private drawCanvas() {
     if (this.ctx) {
-      const { renderingArea, rotation } = this.props;
-      const vertical = Math.abs(rotation) === 90;
-      const width = (vertical ? renderingArea.height : renderingArea.width) + CLIPPING_MARGINS * 2;
-      const height = (vertical ? renderingArea.width : renderingArea.height) + CLIPPING_MARGINS * 2;
-      const clippings = { x: -CLIPPING_MARGINS, y: -CLIPPING_MARGINS, width, height };
-      renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, clippings, this.props);
+      renderXYChartCanvas2d(this.ctx, this.devicePixelRatio, this.props, this.animationState);
     }
   }
 
@@ -230,6 +233,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   perPanelAxisGeoms: [],
   perPanelGridLines: [],
   axesStyles: new Map(),
+  hoveredAnnotationIds: [],
   annotationDimensions: new Map(),
   annotationSpecs: [],
   panelGeoms: [],
@@ -255,6 +259,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     theme: getChartThemeSelector(state),
     chartContainerDimensions: getChartContainerDimensionsSelector(state),
     highlightedLegendItem: getHighlightedSeriesSelector(state),
+    hoveredAnnotationIds: getHighlightedAnnotationIdsSelector(state),
     rotation: getChartRotationSelector(state),
     renderingArea: computeChartDimensionsSelector(state).chartDimensions,
     chartTransform: computeChartTransformSelector(state),

@@ -18,15 +18,15 @@ import { LegendItemLabel } from '../../../state/selectors/get_legend_items_label
 import { DebugState } from '../../../state/types';
 import { getSpecsFromStore } from '../../../state/utils';
 import { Dimensions } from '../../../utils/dimensions';
-import { Viz } from '../renderer/canvas/viz';
-import { NewVizSpec } from '../specs';
+import { Metric } from '../renderer/dom';
+import { MetricSpec } from '../specs';
 
 const EMPTY_MAP = new Map();
 const EMPTY_LEGEND_LIST: LegendItem[] = [];
 const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /** @internal */
-export class NewVizState implements InternalChartState {
+export class MetricState implements InternalChartState {
   chartType = ChartType.Goal;
 
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
@@ -35,7 +35,7 @@ export class NewVizState implements InternalChartState {
   }
 
   isInitialized(globalState: GlobalChartState) {
-    return getSpecsFromStore<NewVizSpec>(globalState.specs, ChartType.NewViz, SpecType.Series).length > 0
+    return getSpecsFromStore<MetricSpec>(globalState.specs, ChartType.Metric, SpecType.Series).length > 0
       ? InitStatus.Initialized
       : InitStatus.ChartNotInitialized;
   }
@@ -67,7 +67,7 @@ export class NewVizState implements InternalChartState {
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
     return (
       <>
-        <Viz forwardStageRef={forwardStageRef} />
+        <Metric forwardStageRef={forwardStageRef} />
       </>
     );
   }

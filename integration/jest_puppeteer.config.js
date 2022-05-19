@@ -30,7 +30,10 @@ const customConfig = {
   ...(debug
     ? {
         launch: {
-          args: ['--no-sandbox'], // required to connect puppeteer to chromium devtools ws
+          args: [
+            '--no-sandbox', // required to connect puppeteer to chromium devtools ws
+            '—use-gl=egl',
+          ],
           dumpio: false,
           headless: false,
           slowMo: 500,

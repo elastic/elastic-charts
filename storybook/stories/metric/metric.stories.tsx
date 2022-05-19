@@ -6,16 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
-
-import { Chart, NewViz } from '@elastic/charts';
-
-export const Example = () => {
-  return (
-    <Chart>
-      <NewViz id="1" data={0.5} />
-      <NewViz id="2" data={1} />
-      <NewViz id="3" data={0.2} />
-    </Chart>
-  );
+export default {
+  title: 'Metric (@alpha)',
 };
+
+export { Example as basic } from './1_basic.story';

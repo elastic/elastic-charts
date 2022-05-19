@@ -395,4 +395,13 @@ export const DARK_THEME: Theme = {
       },
     },
   },
+  metric: {
+    text: {
+      lightColor: '#E0E5EE',
+      darkColor: '#343741',
+    },
+    barBg: '#343741',
+    background: '#1D1E23',
+    nonFiniteText: 'N/A',
+  },
 };

@@ -40,10 +40,10 @@ export function computeRectAnnotationDimensions(
   getAxisStyle: (id?: AxisId) => AxisStyle,
   isHistogram: boolean = false,
 ): AnnotationRectProps[] | null {
-  const { dataValues, groupId, outside } = annotationSpec;
+  const { dataValues, groupId, outside, id: annotationSpecId } = annotationSpec;
   const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
   const yScale = yScales.get(groupId);
-  const rectsProps: Omit<AnnotationRectProps, 'panel'>[] = [];
+  const rectsProps: Omit<AnnotationRectProps, 'id' | 'panel'>[] = [];
   const panelSize = getPanelSize(smallMultiplesScales);
 
   dataValues.forEach((datum: RectAnnotationDatum) => {
@@ -95,6 +95,7 @@ export function computeRectAnnotationDimensions(
               }),
         };
         rectsProps.push({
+          specId: annotationSpecId,
           rect: rectDimensions,
           datum,
         });
@@ -137,20 +138,22 @@ export function computeRectAnnotationDimensions(
     };
 
     rectsProps.push({
+      specId: annotationSpecId,
       rect: rectDimensions,
       datum,
     });
   });
 
-  return rectsProps.reduce<AnnotationRectProps[]>((acc, props) => {
+  return rectsProps.reduce<AnnotationRectProps[]>((acc, props, i) => {
     const duplicated: AnnotationRectProps[] = [];
     smallMultiplesScales.vertical.domain.forEach((vDomainValue) => {
       smallMultiplesScales.horizontal.domain.forEach((hDomainValue) => {
+        const id = getAnnotationRectPropsId(annotationSpecId, props.datum, i, vDomainValue, hDomainValue);
         const top = smallMultiplesScales.vertical.scale(vDomainValue);
         const left = smallMultiplesScales.horizontal.scale(hDomainValue);
         if (Number.isNaN(top + left)) return;
         const panel = { ...panelSize, top, left };
-        duplicated.push({ ...props, panel });
+        duplicated.push({ ...props, panel, id });
       });
     });
     return [...acc, ...duplicated];
@@ -241,4 +244,17 @@ function getOutsideDimension(style: AxisStyle): number {
   const { visible, size, strokeWidth } = style.tickLine;
 
   return visible && size > 0 && strokeWidth > 0 ? size : 0;
+}
+
+/**
+ * @internal
+ */
+export function getAnnotationRectPropsId(
+  specId: string,
+  datum: RectAnnotationDatum,
+  index: number,
+  verticalValue: number | string,
+  horizontalValue: number | string,
+) {
+  return [specId, verticalValue, horizontalValue, ...Object.values(datum.coordinates), datum.details, index].join('__');
 }

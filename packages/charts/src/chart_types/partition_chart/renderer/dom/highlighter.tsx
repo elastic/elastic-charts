@@ -282,8 +282,7 @@ export const DEFAULT_PROPS: HighlighterProps = {
 /** @internal */
 export function highlightSetMapper(geometries: QuadViewModel[], foci: IndexedContinuousDomainFocus[]) {
   return (vm: ShapeViewModel): HighlightSet => {
-    const { index } = vm;
-    const { innerIndex } = vm;
+    const { index, innerIndex } = vm;
     return {
       ...vm,
       geometries: geometries.filter(({ index: i, innerIndex: ii }) => index === i && innerIndex === ii),

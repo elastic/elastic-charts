@@ -52,7 +52,7 @@ export class Logger {
    */
   static error(message?: any, ...optionalParams: any[]) {
     if (Logger.isDevelopment() && !Logger.isTest()) {
-      console.warn(`${Logger.namespace} ${message}`, ...optionalParams);
+      console.error(`${Logger.namespace} ${message}`, ...optionalParams);
     }
   }
 

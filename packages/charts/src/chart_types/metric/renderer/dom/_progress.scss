@@ -1,0 +1,47 @@
+.echSingleMetricProgress {
+  position: absolute;
+  overflow: hidden;
+
+  &--vertical {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    &.echSingleMetricProgress--small {
+      right: auto;
+      width: 10px;
+    }
+  }
+
+  &--horizontal {
+    left: 0;
+    right: 0;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    &.echSingleMetricProgress--small {
+      top: auto;
+      height: 10px;
+    }
+  }
+}
+
+.echSingleMetricProgressBar {
+  &--vertical {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  &--horizontal {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+  }
+}

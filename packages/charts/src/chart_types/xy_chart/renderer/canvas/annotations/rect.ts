@@ -12,26 +12,40 @@ import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { RectAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationRectProps } from '../../../annotations/rect/types';
+import { AnnotationHoverParams } from '../../common/utils';
+import { AnimationContext } from '../animations';
 import { renderRect } from '../primitives/rect';
 import { withPanelTransform } from '../utils/panel_transform';
 
 /** @internal */
 export function renderRectAnnotations(
   ctx: CanvasRenderingContext2D,
+  aCtx: AnimationContext,
   annotations: AnnotationRectProps[],
   rectStyle: RectAnnotationStyle,
+  getHoverParams: (id: string) => AnnotationHoverParams,
   rotation: Rotation,
   renderingArea: Dimensions,
 ) {
-  const fill: Fill = {
-    color: overrideOpacity(colorToRgba(rectStyle.fill), (opacity) => opacity * rectStyle.opacity),
-  };
-  const stroke: Stroke = {
-    color: overrideOpacity(colorToRgba(rectStyle.stroke), (opacity) => opacity * rectStyle.opacity),
-    width: rectStyle.strokeWidth,
+  const getAnimatedValue = aCtx.getValue(rectStyle.animations);
+  const getFillAndStroke = (id: string): [Fill, Stroke] => {
+    const { style } = getHoverParams(id);
+
+    const opacityKey = `anno-rect-opacity--${id}`;
+    const hoverOpacity = getAnimatedValue(opacityKey, style.opacity);
+
+    const fill: Fill = {
+      color: overrideOpacity(colorToRgba(rectStyle.fill), (opacity) => opacity * rectStyle.opacity * hoverOpacity),
+    };
+    const stroke: Stroke = {
+      color: overrideOpacity(colorToRgba(rectStyle.stroke), (opacity) => opacity * rectStyle.opacity * hoverOpacity),
+      width: rectStyle.strokeWidth,
+    };
+
+    return [fill, stroke];
   };
 
-  annotations.forEach(({ rect, panel }) =>
-    withPanelTransform(ctx, panel, rotation, renderingArea, () => renderRect(ctx, rect, fill, stroke)),
+  annotations.forEach(({ rect, panel, id }) =>
+    withPanelTransform(ctx, panel, rotation, renderingArea, () => renderRect(ctx, rect, ...getFillAndStroke(id))),
   );
 }

@@ -11,17 +11,12 @@ import { SpecType } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSpecsFromStore } from '../../../../state/utils';
-import { NewVizSpec } from '../../specs';
+import { MetricSpec } from '../../specs';
 
 /** @internal */
 export const getSpecs = createCustomCachedSelector(
   [(global: GlobalChartState) => global.specs],
-  (specs): NewVizSpec[] => {
-    return getSpecsFromStore<NewVizSpec>(specs, ChartType.NewViz, SpecType.Series);
+  (specs): MetricSpec[] => {
+    return getSpecsFromStore<MetricSpec>(specs, ChartType.Metric, SpecType.Series);
   },
 );
-
-/** @internal */
-export const data = createCustomCachedSelector([getSpecs], (spec): number[] => {
-  return spec.map((d) => d.data);
-});

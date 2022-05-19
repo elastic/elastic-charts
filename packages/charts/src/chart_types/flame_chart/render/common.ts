@@ -6,8 +6,11 @@
  * Side Public License, v 1.
  */
 
-export default {
-  title: 'New Chart Type',
-};
+/** @internal */
+export const BOX_GAP = 0.5;
 
-export { Example as basic } from './1_basic.story';
+const CANVAS_SIZE_INCREMENT = 256; // to avoid thrashing the layout and canvases on every one pixel width/height change
+
+/** @internal */
+export const roundUpSize = (cssPixelSize: number) =>
+  CANVAS_SIZE_INCREMENT * Math.ceil(cssPixelSize / CANVAS_SIZE_INCREMENT);

@@ -469,9 +469,10 @@ module.exports = {
       },
     },
     {
-      files: ['./integration/**/*.test.ts?(x)'],
+      files: ['integration/**/*.test.ts?(x)'],
       rules: {
         'jest/expect-expect': 0,
+        'unicorn/consistent-function-scoping': 0,
       },
     },
   ],
