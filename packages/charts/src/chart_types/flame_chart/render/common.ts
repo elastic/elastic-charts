@@ -7,7 +7,10 @@
  */
 
 /** @internal */
-export const BOX_GAP = 0.5;
+export const BOX_GAP_HORIZONTAL = 0.5;
+
+/** @internal */
+export const BOX_GAP_VERTICAL = 4;
 
 const CANVAS_SIZE_INCREMENT = 256; // to avoid thrashing the layout and canvases on every one pixel width/height change
 

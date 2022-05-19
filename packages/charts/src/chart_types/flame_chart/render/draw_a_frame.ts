@@ -9,14 +9,29 @@
 import { Render, Texture } from '../../../common/kingly';
 import { ColumnarViewModel } from '../flame_api';
 import { roundUpSize } from './common';
-import { drawRect, drawCanvas } from './draw_canvas';
+import { drawCanvas2d, drawRect } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
 
 const CHART_BOX_LINE_WIDTH = 0.5;
 const MINIMAP_SIZE_RATIO_X = 3;
-const MINIMAP_SIZE_RATIO_Y = 5;
+const MINIMAP_SIZE_RATIO_Y = 3;
 const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
 const MINIMAP_BOX_LINE_WIDTH = 1;
+/** @internal */
+export const PADDING_TOP = 16; // for the UI controls and the minimap protrusion
+/** @internal */
+export const PADDING_BOTTOM = 24; // for the UI controls and the minimap protrusion
+/** @internal */
+export const PADDING_LEFT = 16; // for the location indicator or edge zoom
+/** @internal */
+export const PADDING_RIGHT = 16; // for aesthetic purposes or edge zoom
+const FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH = 0.5;
+const MINIMUM_FOCUS_INDICATOR_LENGTH = 4;
+const TERMINAL_TICK_LINE_WIDTH = 1;
+const TERMINAL_TICK_LINE_LENGTH = 4;
+
+/** @internal */
+export const EPSILON = 1e-4;
 
 /** @internal */
 export const drawFrame = (
@@ -30,7 +45,8 @@ export const drawFrame = (
   pickTextureRenderer: Render,
   roundedRectRenderer: Render,
   hoverIndex: number,
-  rowHeight: number,
+  unitRowHeight: number,
+  currentColor: Float32Array,
 ) => (currentFocus: [number, number, number, number]) => {
   const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
   const minimapHeight = cssHeight / MINIMAP_SIZE_RATIO_Y;
@@ -38,18 +54,26 @@ export const drawFrame = (
   const minimapLeft = cssWidth - minimapWidth;
   const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
 
+  const drawnCssWidth = cssWidth;
+  const drawnCanvasWidth = drawnCssWidth * dpr;
+  const focusLayerCssWidth = drawnCssWidth - PADDING_LEFT - PADDING_RIGHT;
+  const focusLayerCanvasWidth = focusLayerCssWidth * dpr;
+  const focusLayerCanvasOffsetX = PADDING_LEFT * dpr;
+
+  const focusLayerCssHeight = cssHeight - PADDING_TOP - PADDING_BOTTOM;
+
   const drawFocusLayer = (pickLayer: boolean) =>
     drawWebgl(
       gl,
       1,
-      cssWidth * dpr,
-      cssHeight * dpr,
-      0,
-      pickLayer ? 0 : canvasHeightExcess,
+      focusLayerCanvasWidth,
+      focusLayerCssHeight * dpr,
+      focusLayerCanvasOffsetX,
+      (pickLayer ? 0 : canvasHeightExcess) + dpr * PADDING_BOTTOM,
       pickTexture,
       pickLayer ? pickTextureRenderer : roundedRectRenderer,
       hoverIndex,
-      rowHeight,
+      unitRowHeight,
       currentFocus,
       columnarGeomData.label.length,
       true,
@@ -60,14 +84,14 @@ export const drawFrame = (
     drawWebgl(
       gl,
       1,
-      (cssWidth * dpr) / MINIMAP_SIZE_RATIO_X,
+      drawnCanvasWidth / MINIMAP_SIZE_RATIO_X,
       (cssHeight * dpr) / MINIMAP_SIZE_RATIO_Y,
-      cssWidth * dpr * (1 - 1 / MINIMAP_SIZE_RATIO_X),
+      drawnCanvasWidth * (1 - 1 / MINIMAP_SIZE_RATIO_X),
       pickLayer ? 0 : canvasHeightExcess,
       pickTexture,
       pickLayer ? pickTextureRenderer : roundedRectRenderer,
       hoverIndex,
-      rowHeight,
+      unitRowHeight,
       fullFocus,
       columnarGeomData.label.length,
       false,
@@ -76,8 +100,6 @@ export const drawFrame = (
 
   // base (focus) layer
   drawFocusLayer(false);
-
-  drawCanvas(ctx, 1, cssWidth, cssHeight, dpr, columnarGeomData, rowHeight, currentFocus);
 
   // minimap geoms
   drawContextLayer(false);
@@ -88,8 +110,149 @@ export const drawFrame = (
   // minimap pick layer
   drawContextLayer(true);
 
-  // chart border
-  drawRect(ctx, cssWidth, cssHeight, 0, cssHeight, dpr, fullFocus, '', 'black', CHART_BOX_LINE_WIDTH);
+  drawCanvas2d(
+    ctx,
+    1,
+    focusLayerCssWidth,
+    focusLayerCssHeight,
+    PADDING_LEFT,
+    PADDING_TOP,
+    dpr,
+    columnarGeomData,
+    unitRowHeight,
+    currentFocus,
+    currentColor,
+  );
+
+  // focus chart border
+  drawRect(
+    ctx,
+    focusLayerCssWidth,
+    focusLayerCssHeight,
+    PADDING_LEFT,
+    focusLayerCssHeight + PADDING_TOP,
+    dpr,
+    fullFocus,
+    '',
+    'black',
+    CHART_BOX_LINE_WIDTH,
+  );
+
+  // focus chart horizontal placeholder
+  drawRect(
+    ctx,
+    focusLayerCssWidth,
+    0,
+    PADDING_LEFT,
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2,
+    dpr,
+    fullFocus,
+    '',
+    'lightgrey',
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
+  );
+
+  // focus chart horizontal focus indicator
+  drawRect(
+    ctx,
+    Math.max(0, focusLayerCssWidth * (currentFocus[1] - currentFocus[0])),
+    0,
+    PADDING_LEFT + focusLayerCssWidth * currentFocus[0],
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2,
+    dpr,
+    fullFocus,
+    '',
+    'black',
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
+  );
+
+  // focus chart horizontal focus terminal - start
+  const atWallLeft = Math.abs(currentFocus[0]) < EPSILON ? 4 : 1;
+  drawRect(
+    ctx,
+    TERMINAL_TICK_LINE_WIDTH * atWallLeft,
+    TERMINAL_TICK_LINE_LENGTH * atWallLeft,
+    PADDING_LEFT + focusLayerCssWidth * currentFocus[0] - (TERMINAL_TICK_LINE_WIDTH * atWallLeft) / 2,
+    TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallLeft) / 2,
+    dpr,
+    fullFocus,
+    'black',
+    '',
+    0,
+  );
+
+  // focus chart horizontal focus terminal - end
+  const atWallRight = Math.abs(currentFocus[1] - 1) < EPSILON ? 4 : 1;
+  drawRect(
+    ctx,
+    TERMINAL_TICK_LINE_WIDTH * atWallRight,
+    TERMINAL_TICK_LINE_LENGTH * atWallRight,
+    PADDING_LEFT + focusLayerCssWidth * currentFocus[1] - (TERMINAL_TICK_LINE_WIDTH * atWallRight) / 2,
+    TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallRight) / 2,
+    dpr,
+    fullFocus,
+    'black',
+    '',
+    0,
+  );
+
+  // focus chart vertical placeholder
+  drawRect(
+    ctx,
+    0,
+    focusLayerCssHeight,
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2,
+    focusLayerCssHeight + PADDING_TOP,
+    dpr,
+    fullFocus,
+    '',
+    'lightgrey',
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
+  );
+
+  // focus chart vertical focus indicator
+  drawRect(
+    ctx,
+    0,
+    Math.max(MINIMUM_FOCUS_INDICATOR_LENGTH, focusLayerCssHeight * (currentFocus[3] - currentFocus[2])),
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2,
+    focusLayerCssHeight * (1 - currentFocus[2]) + PADDING_TOP,
+    dpr,
+    fullFocus,
+    '',
+    'black',
+    FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
+  );
+
+  // focus chart horizontal focus terminal - start
+  const atWallTop = Math.abs(currentFocus[2]) < EPSILON ? 4 : 1;
+  drawRect(
+    ctx,
+    TERMINAL_TICK_LINE_LENGTH + 1, // 1 is added to make it the same side as horizontal; todo check why
+    TERMINAL_TICK_LINE_WIDTH * atWallTop,
+    0,
+    focusLayerCssHeight * (1 - currentFocus[2]) + PADDING_TOP,
+    dpr,
+    fullFocus,
+    'black',
+    '',
+    0,
+  );
+
+  // focus chart horizontal focus terminal - end
+  const atWallBottom = Math.abs(currentFocus[3] - 1) < EPSILON ? 4 : 1;
+  drawRect(
+    ctx,
+    TERMINAL_TICK_LINE_LENGTH + 1, // 1 is added to make it the same side as horizontal; todo check why
+    TERMINAL_TICK_LINE_WIDTH * atWallBottom,
+    0,
+    focusLayerCssHeight * (1 - currentFocus[3]) + PADDING_TOP,
+    dpr,
+    fullFocus,
+    'black',
+    '',
+    0,
+  );
 
   // minimap box - erase Canvas2d text from the main chart that falls within the minimap area
   drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, cssHeight, dpr, fullFocus, 'rgba(255,255,255,1)', '', 0);

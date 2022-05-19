@@ -171,6 +171,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 0,
     '@typescript-eslint/indent': 0,
     '@typescript-eslint/no-inferrable-types': 0,
+    '@typescript-eslint/prefer-regexp-exec': 0,
     '@typescript-eslint/ban-ts-comment': [
       2,
       {
