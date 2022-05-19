@@ -13,8 +13,8 @@ import { BOX_GAP_HORIZONTAL, BOX_GAP_VERTICAL, roundUpSize } from './common';
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
 const formatter: LabelAccessor<string> = (label: string) => label; // todo loop in API value
 
-const TEXT_PAD_LEFT = 3;
-const TEXT_PAD_RIGHT = 3;
+const TEXT_PAD_LEFT = 4;
+const TEXT_PAD_RIGHT = 4;
 const MIN_TEXT_LENGTH = 0.5; // in font height, so 1 means roughly 2 characters (latin characters are tall on average)
 const ROW_OFFSET_Y = 0.45; // approx. middle line (text is middle anchored so tall bars with small fonts can still have vertically centered text)
 const MAX_FONT_HEIGHT_RATIO = 1; // relative to the row height
