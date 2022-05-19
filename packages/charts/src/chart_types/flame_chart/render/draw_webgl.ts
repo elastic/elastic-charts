@@ -8,7 +8,7 @@
 
 import { Render, Texture } from '../../../common/kingly';
 import { GEOM_INDEX_OFFSET } from '../shaders';
-import { BOX_GAP } from './common';
+import { BOX_GAP_HORIZONTAL, BOX_GAP_VERTICAL } from './common';
 
 // text rendering and other config
 const MAX_PADDING_RATIO = 0.25;
@@ -40,7 +40,7 @@ export const drawWebgl = (
       pickLayer,
       t: Math.max(0.001, logicalTime), // for some reason, an exact zero will lead to `mix` as if it were 1 (glitch)
       resolution: [canvasWidth, canvasHeight],
-      gapPx: pickLayer ? [0, 0] : [BOX_GAP, BOX_GAP], // in CSS pixels (but let's not leave a gap for shape picking)
+      gapPx: pickLayer || !focusLayer ? [0, 0] : [BOX_GAP_HORIZONTAL, BOX_GAP_VERTICAL], // in CSS pixels (but let's not leave a gap for shape picking)
       minFillRatio: MIN_FILL_RATIO,
       cornerRadiusPx: pickLayer ? 0 : canvasHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
       hoverIndex: Number.isFinite(hoverIndex) ? hoverIndex + GEOM_INDEX_OFFSET : DUMMY_INDEX,

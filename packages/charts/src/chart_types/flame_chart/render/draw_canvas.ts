@@ -8,7 +8,7 @@
 
 import { LabelAccessor } from '../../../utils/common';
 import { ColumnarViewModel } from '../flame_api';
-import { BOX_GAP, roundUpSize } from './common';
+import { BOX_GAP_HORIZONTAL, BOX_GAP_VERTICAL, roundUpSize } from './common';
 
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
 const formatter: LabelAccessor<string> = (label: string) => label; // todo loop in API value
@@ -39,7 +39,7 @@ export const drawCanvas2d = (
   const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
   const rowHeightPx = zoomedRowHeight * cssHeight;
   const fontSize = Math.min(
-    2.6 * Math.log2((zoomedRowHeight * cssHeight - BOX_GAP) * MAX_FONT_HEIGHT_RATIO),
+    2.6 * Math.log2((zoomedRowHeight * cssHeight - BOX_GAP_VERTICAL) * MAX_FONT_HEIGHT_RATIO),
     MAX_FONT_SIZE,
   );
   const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
@@ -75,7 +75,7 @@ export const drawCanvas2d = (
       const leftOutside = Math.max(0, -baseX);
       const x = baseX + leftOutside; // don't start the text in the negative range, b/c it's not readable there
       const y = cssHeight * (1 - scale(yNorm, focusLoY, focusHiY));
-      const baseWidth = scaledSize * cssWidth - BOX_GAP - TEXT_PAD_RIGHT;
+      const baseWidth = scaledSize * cssWidth - BOX_GAP_HORIZONTAL - TEXT_PAD_RIGHT;
       const width = baseWidth - leftOutside; // if a box is partially cut on the left, the remaining box becomes smaller
       ctx.beginPath();
       const renderedWidth = Math.min(width, cssWidth - x); // to not let text protrude on the right when zooming
