@@ -52,7 +52,7 @@ export const drawCanvas2d = (
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.scale(dpr, dpr);
-  ctx.font = `${fontSize}px sans-serif`;
+  ctx.font = `${fontSize}px monospace`;
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
   ctx.translate(cssOffsetX, cssOffsetY);
   ctx.beginPath();
