@@ -9,7 +9,7 @@
 import { Render, Texture } from '../../../common/kingly';
 import { ColumnarViewModel } from '../flame_api';
 import { roundUpSize } from './common';
-import { drawRect, drawCanvas2d } from './draw_canvas';
+import { drawCanvas2d, drawRect } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
 
 const CHART_BOX_LINE_WIDTH = 0.5;
@@ -27,6 +27,9 @@ export const PADDING_LEFT = 16; // for the location indicator or edge zoom
 export const PADDING_RIGHT = 16; // for aesthetic purposes or edge zoom
 const FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH = 0.5;
 const MINIMUM_FOCUS_INDICATOR_LENGTH = 4;
+const TERMINAL_TICK_LINE_WIDTH = 1;
+const TERMINAL_TICK_LINE_LENGTH = 4;
+const EPSILON = 1e-4;
 
 /** @internal */
 export const drawFrame = (
@@ -150,7 +153,7 @@ export const drawFrame = (
   // focus chart horizontal focus indicator
   drawRect(
     ctx,
-    Math.max(MINIMUM_FOCUS_INDICATOR_LENGTH, focusLayerCssWidth * (currentFocus[1] - currentFocus[0])),
+    Math.max(0, focusLayerCssWidth * (currentFocus[1] - currentFocus[0])),
     0,
     PADDING_LEFT + focusLayerCssWidth * currentFocus[0],
     FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2,
@@ -159,6 +162,36 @@ export const drawFrame = (
     '',
     'black',
     FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
+  );
+
+  // focus chart horizontal focus terminal - start
+  const atWallLeft = Math.abs(currentFocus[0]) < EPSILON ? 4 : 1;
+  drawRect(
+    ctx,
+    TERMINAL_TICK_LINE_WIDTH * atWallLeft,
+    TERMINAL_TICK_LINE_LENGTH * atWallLeft,
+    PADDING_LEFT + focusLayerCssWidth * currentFocus[0] - (TERMINAL_TICK_LINE_WIDTH * atWallLeft) / 2,
+    TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallLeft) / 2,
+    dpr,
+    fullFocus,
+    'black',
+    '',
+    0,
+  );
+
+  // focus chart horizontal focus terminal - end
+  const atWallRight = Math.abs(currentFocus[1] - 1) < EPSILON ? 4 : 1;
+  drawRect(
+    ctx,
+    TERMINAL_TICK_LINE_WIDTH * atWallRight,
+    TERMINAL_TICK_LINE_LENGTH * atWallRight,
+    PADDING_LEFT + focusLayerCssWidth * currentFocus[1] - (TERMINAL_TICK_LINE_WIDTH * atWallRight) / 2,
+    TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallRight) / 2,
+    dpr,
+    fullFocus,
+    'black',
+    '',
+    0,
   );
 
   // focus chart vertical placeholder
@@ -187,6 +220,36 @@ export const drawFrame = (
     '',
     'black',
     FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
+  );
+
+  // focus chart horizontal focus terminal - start
+  const atWallTop = Math.abs(currentFocus[2]) < EPSILON ? 4 : 1;
+  drawRect(
+    ctx,
+    TERMINAL_TICK_LINE_LENGTH + 1, // 1 is added to make it the same side as horizontal; todo check why
+    TERMINAL_TICK_LINE_WIDTH * atWallTop,
+    0,
+    focusLayerCssHeight * (1 - currentFocus[2]) + PADDING_TOP,
+    dpr,
+    fullFocus,
+    'black',
+    '',
+    0,
+  );
+
+  // focus chart horizontal focus terminal - end
+  const atWallBottom = Math.abs(currentFocus[3] - 1) < EPSILON ? 4 : 1;
+  drawRect(
+    ctx,
+    TERMINAL_TICK_LINE_LENGTH + 1, // 1 is added to make it the same side as horizontal; todo check why
+    TERMINAL_TICK_LINE_WIDTH * atWallBottom,
+    0,
+    focusLayerCssHeight * (1 - currentFocus[3]) + PADDING_TOP,
+    dpr,
+    fullFocus,
+    'black',
+    '',
+    0,
   );
 
   // minimap box - erase Canvas2d text from the main chart that falls within the minimap area
