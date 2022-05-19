@@ -8,8 +8,6 @@
 
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 
-import { WebGLRenderingContextBase } from '../scripts/webgl_context_mock';
-
 const customConfig = { threshold: 0 };
 export const toMatchImageSnapshot = configureToMatchImageSnapshot({
   customDiffConfig: customConfig,
@@ -20,6 +18,3 @@ export const toMatchImageSnapshot = configureToMatchImageSnapshot({
 expect.extend({ toMatchImageSnapshot });
 
 jest.setTimeout(process.env.DEBUG ? 10 * 10 * 1000 : 10 * 1000); // set timeout in milliseconds;
-
-// @ts-ignore - override webgl constants
-window.WebGL2RenderingContext = WebGLRenderingContextBase;

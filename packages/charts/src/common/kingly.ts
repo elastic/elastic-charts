@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-const GL_DEBUG = true;
+import { GL } from './webgl_constants';
 
-const GL = window.WebGL2RenderingContext; // just a shorthand, otherwise it's so long, and static number access has benefits
+const GL_DEBUG = true;
 
 /****************
  * Minimize calls
