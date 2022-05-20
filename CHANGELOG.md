@@ -1,3 +1,10 @@
+# [46.3.0](https://github.com/elastic/elastic-charts/compare/v46.2.0...v46.3.0) (2022-05-19)
+
+
+### Features
+
+* **flame:** search and other utilities ([#1676](https://github.com/elastic/elastic-charts/issues/1676)) ([b8eaa1f](https://github.com/elastic/elastic-charts/commit/b8eaa1f6266e150cf7153c30c5d7a1c6e21bbac4))
+
 # [46.2.0](https://github.com/elastic/elastic-charts/compare/v46.1.0...v46.2.0) (2022-05-18)
 
 

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { createRef, CSSProperties, MouseEvent, RefObject, WheelEventHandler } from 'react';
+import React, { createRef, CSSProperties, KeyboardEvent, MouseEvent, RefObject, WheelEventHandler } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -32,20 +32,24 @@ import { clamp } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { roundUpSize } from './render/common';
-import { drawFrame } from './render/draw_a_frame';
-import { ensureWebgl } from './render/ensure_webgl';
+import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
+import { ensureWebgl, uploadToWebgl } from './render/ensure_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
 const RECURRENCE_ALPHA_PER_MS_X = 0.01;
-const RECURRENCE_ALPHA_PER_MS_Y = 0.01;
+const RECURRENCE_ALPHA_PER_MS_Y = 0.0062;
 const SINGLE_CLICK_EMPTY_FOCUS = true;
 const IS_META_REQUIRED_FOR_ZOOM = false;
 const ZOOM_SPEED = 0.0015;
 const DEEPEST_ZOOM_RATIO = 1e-7; // FP calcs seem precise enough down to a 10 000 000 times zoom: 1e-7
 const ZOOM_FROM_EDGE_BAND = 16; // so the user needs not be precisely at the edge to zoom in one direction
+const ZOOM_FROM_EDGE_BAND_LEFT = ZOOM_FROM_EDGE_BAND + PADDING_LEFT;
+const ZOOM_FROM_EDGE_BAND_RIGHT = ZOOM_FROM_EDGE_BAND + PADDING_RIGHT;
+const ZOOM_FROM_EDGE_BAND_TOP = ZOOM_FROM_EDGE_BAND + PADDING_TOP;
+const ZOOM_FROM_EDGE_BAND_BOTTOM = ZOOM_FROM_EDGE_BAND + PADDING_BOTTOM;
 const LEFT_MOUSE_BUTTON = 1;
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
@@ -72,26 +76,29 @@ interface FocusRect {
   y1: number;
 }
 
-const focusRect = (
-  columnarViewModel: FlameSpec['columnarData'],
-  chartHeight: number,
-  drilldownDatumIndex: number,
-  drilldownTimestamp: number,
-): FocusRect => {
-  const { x0, x1, y0, y1 } = columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0);
+const focusForArea = (chartHeight: number, { x0, x1, y0, y1 }: { x0: number; x1: number; y0: number; y1: number }) => {
   const sideOvershoot = SIDE_OVERSHOOT_RATIO * (x1 - x0);
   const unitHeight = (chartHeight / initialPixelRowPitch()) * (y1 - y0);
   const intendedY0 = y1 - unitHeight;
   const bottomOvershoot = Math.max(0, -intendedY0);
   const top = Math.min(1, y1 + bottomOvershoot);
   return {
-    timestamp: drilldownTimestamp,
     x0: Math.max(0, x0 - sideOvershoot),
     x1: Math.min(1, x1 + sideOvershoot),
     y0: Math.max(0, intendedY0),
     y1: Math.min(1, top),
   };
 };
+
+const focusRect = (
+  columnarViewModel: FlameSpec['columnarData'],
+  chartHeight: number,
+  drilldownDatumIndex: number,
+  drilldownTimestamp: number,
+): FocusRect => ({
+  timestamp: drilldownTimestamp,
+  ...focusForArea(chartHeight, columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0)),
+});
 
 const getColor = (c: Float32Array, i: number) => {
   const r = Math.round(255 * c[4 * i]);
@@ -105,6 +112,16 @@ const colorToDatumIndex = (pixel: Uint8Array) => {
   // this is the inverse of what's done via BIT_SHIFTERS in shader code (bijective color/index mapping)
   const isEmptyArea = pixel[0] + pixel[1] + pixel[2] + pixel[3] < GEOM_INDEX_OFFSET; // ie. zero
   return isEmptyArea ? NaN : pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET;
+};
+
+const getRegExp = (searchString: string): RegExp => {
+  let regex: RegExp;
+  try {
+    regex = new RegExp(searchString);
+  } catch {
+    return new RegExp('iIUiUYIuiGjhG678987gjhgfytr678576'); // todo find a quick failing regex
+  }
+  return regex;
 };
 
 interface StateProps {
@@ -163,6 +180,15 @@ class FlameComponent extends React.Component<FlameProps> {
   private startOfDragY: number = NaN;
   private startOfDragY0: number = NaN;
 
+  // text search
+  private readonly searchInputRef: RefObject<HTMLInputElement>;
+  private currentSearchString = '';
+  private currentSearchHitCount = 0;
+  private currentColor: Float32Array;
+  private caseSensitive = false;
+  private useRegex = false;
+  private focusedMatchIndex = NaN;
+
   constructor(props: Readonly<FlameProps>) {
     super(props);
     this.ctx = null;
@@ -170,6 +196,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pickTexture = NullTexture;
     this.glResources = NULL_GL_RESOURCES;
     this.glCanvasRef = createRef();
+    this.searchInputRef = createRef();
     this.animationRafId = NaN;
     this.prevT = NaN;
     this.currentFocus = focusRect(this.props.columnarViewModel, props.chartDimensions.height, 0, -Infinity);
@@ -182,6 +209,9 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pinchZoomSetInterval = NaN;
     this.pinchZoomScale = browserRootWindow().visualViewport.scale;
     this.setupViewportScaleChangeListener();
+
+    // search
+    this.currentColor = this.props.columnarViewModel.color;
   }
 
   private setupDevicePixelRatioChangeListener = () => {
@@ -315,8 +345,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1, timestamp: e.timeStamp };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
-      this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
-      this.setState({});
+      this.smartDraw();
     }
   };
 
@@ -377,10 +406,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseLeave = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    if (Number.isFinite(this.hoverIndex)) {
-      this.hoverIndex = NaN; // no highlight when outside
-      this.setState({}); // no tooltip when outside
-    }
+    this.smartDraw();
   };
 
   private preventScroll = (e: WheelEvent) => e.metaKey === IS_META_REQUIRED_FOR_ZOOM && e.preventDefault();
@@ -397,15 +423,17 @@ class FlameComponent extends React.Component<FlameProps> {
     const unitY = (this.props.chartDimensions.height - this.pointerY) / this.props.chartDimensions.height;
     const zoomOut = delta <= 0;
     const midX =
-      x0 === 0 && (zoomOut || this.pointerX < ZOOM_FROM_EDGE_BAND)
+      Math.abs(x0) < EPSILON && (zoomOut || this.pointerX < ZOOM_FROM_EDGE_BAND_LEFT)
         ? 0
-        : x1 === 1 && (zoomOut || this.pointerX > this.props.chartDimensions.width - ZOOM_FROM_EDGE_BAND)
+        : Math.abs(x1 - 1) < EPSILON &&
+          (zoomOut || this.pointerX > this.props.chartDimensions.width - ZOOM_FROM_EDGE_BAND_RIGHT)
         ? 1
         : clamp(x0 + unitX * Math.abs(x1 - x0), 0, 1);
     const midY =
-      y0 === 0 && (zoomOut || this.pointerY > this.props.chartDimensions.height - ZOOM_FROM_EDGE_BAND)
+      Math.abs(y0) < EPSILON &&
+      (zoomOut || this.pointerY > this.props.chartDimensions.height - ZOOM_FROM_EDGE_BAND_BOTTOM)
         ? 0
-        : y1 === 1 && (zoomOut || this.pointerY < ZOOM_FROM_EDGE_BAND)
+        : Math.abs(y1 - 1) < EPSILON && (zoomOut || this.pointerY < ZOOM_FROM_EDGE_BAND_TOP)
         ? 1
         : clamp(y0 + unitY * Math.abs(y1 - y0), 0, 1);
     const targetX0 = clamp(x0 - delta * (x0 - midX), 0, 1);
@@ -431,9 +459,100 @@ class FlameComponent extends React.Component<FlameProps> {
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
     }
+    this.smartDraw();
+  };
 
-    this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
+  private focusOnAllMatches = () => {
+    this.currentSearchHitCount = 0;
+    const searchString = this.currentSearchString;
+    const customizedSearchString = this.caseSensitive ? searchString : searchString.toLowerCase();
+    const regex = this.useRegex && getRegExp(searchString);
+    const columns = this.props.columnarViewModel;
+    this.currentColor = new Float32Array(columns.color);
+    const labels = columns.label;
+    const size = columns.size1;
+    const position = columns.position1;
+    const rowHeight = unitRowPitch(position);
+    const datumCount = labels.length;
+    let x0 = Infinity;
+    let x1 = -Infinity;
+    let y0 = Infinity;
+    let y1 = -Infinity;
+    // todo unify with matcher loop and setup in focusOnHit
+    for (let i = 0; i < datumCount; i++) {
+      const label = this.caseSensitive ? labels[i] : labels[i].toLowerCase();
+      if (regex ? label.match(regex) : label.includes(customizedSearchString)) {
+        this.currentSearchHitCount++;
+        x0 = Math.min(x0, position[2 * i]);
+        x1 = Math.max(x1, position[2 * i] + size[i]);
+        y0 = Math.min(y0, position[2 * i + 1]);
+        y1 = Math.max(y1, position[2 * i + 1] + rowHeight);
+      } else {
+        this.currentColor[4 * i + 3] *= 0.25; // multiply alpha
+      }
+    }
+
+    if (Number.isFinite(x0)) {
+      Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
+    }
+  };
+
+  private searchForText = (force: boolean) => {
+    const input = this.searchInputRef.current;
+    const searchString = input?.value;
+    if (!input || typeof searchString !== 'string' || (searchString === this.currentSearchString && !force)) return;
+    this.currentSearchString = searchString;
+
+    // update focus rectangle if needed
+    this.focusOnAllMatches();
+
+    // update colors
+    const colorSetter = this.glResources.attributes.get('color');
+    if (this.glContext && colorSetter) {
+      uploadToWebgl(this.glContext, new Map([['color', colorSetter]]), { color: this.currentColor });
+    }
+
+    // render
+    this.focusedMatchIndex = NaN;
     this.setState({});
+  };
+
+  private handleKeyPress = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    this.searchForText(false);
+  };
+
+  private focusOnHit = (timestamp: number) => {
+    if (Number.isNaN(this.focusedMatchIndex)) {
+      // resetting to focus on everything
+      this.focusOnAllMatches();
+    } else {
+      let datumIndex = NaN;
+      let hitEnumerator = -1;
+      const searchString = this.currentSearchString;
+      const customizedSearchString = this.caseSensitive ? searchString : searchString.toLowerCase();
+      const regex = this.useRegex && getRegExp(searchString);
+      const labels = this.props.columnarViewModel.label;
+      // todo unify with matcher loop and setup in focusOnAllMatches
+      for (let i = 0; i < labels.length; i++) {
+        const label = this.caseSensitive ? labels[i] : labels[i].toLowerCase();
+        if (regex ? label.match(regex) : label.includes(customizedSearchString)) {
+          datumIndex = i;
+          hitEnumerator++;
+          if (hitEnumerator === this.focusedMatchIndex) break;
+        }
+      }
+      if (hitEnumerator >= 0) {
+        this.targetFocus = focusRect(
+          this.props.columnarViewModel,
+          this.props.chartDimensions.height,
+          datumIndex,
+          timestamp,
+        );
+        this.prevT = NaN;
+        this.hoverIndex = NaN; // no highlight
+      }
+    }
   };
 
   render = () => {
@@ -459,6 +578,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const canvasWidth = width * dpr;
     const canvasHeight = height * dpr;
     const columns = this.props.columnarViewModel;
+    const hitCount = this.currentSearchHitCount;
     return (
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
@@ -473,12 +593,13 @@ class FlameComponent extends React.Component<FlameProps> {
           />
           <canvas /* Canvas2d layer */
             ref={forwardStageRef}
+            tabIndex={0}
             className="echCanvasRenderer"
             width={canvasWidth}
             height={canvasHeight}
             onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
-            /*onMouseUp={this.handleMouseUp}*/
+            /*onKeyPress={this.handleKeyPress}*/
             onMouseLeave={this.handleMouseLeave}
             onWheel={this.handleWheel}
             style={style}
@@ -486,6 +607,144 @@ class FlameComponent extends React.Component<FlameProps> {
             role="presentation"
           />
         </figure>
+        <div
+          style={{
+            position: 'absolute',
+            transform: `translateY(${this.props.chartDimensions.height - PADDING_BOTTOM + 4}px)`,
+          }}
+        >
+          <input
+            ref={this.searchInputRef}
+            title="Search string or regex pattern"
+            type="text"
+            tabIndex={0}
+            placeholder="Enter search string"
+            onKeyPress={this.handleKeyPress}
+            onKeyUp={this.handleKeyPress}
+            style={{
+              border: '0px solid lightgray',
+              padding: 3,
+              outline: 'none',
+              background: 'rgba(255,0,255,0)',
+            }}
+          />
+          <label
+            title="Case sensitivity (highlighted: case sensitive)"
+            style={{
+              color: this.caseSensitive && !this.useRegex ? 'black' : 'darkgrey',
+              backgroundColor: 'rgb(228, 228, 228)',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+              marginInline: 4,
+              borderRadius: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
+            }}
+          >
+            Cc
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={() => {
+                if (!this.currentSearchString) return;
+                this.caseSensitive = !this.caseSensitive;
+                this.searchForText(true);
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <label
+            title="Regex matching (highlighted: use regex)"
+            style={{
+              color: this.useRegex ? 'black' : 'darkgrey',
+              backgroundColor: 'rgb(228, 228, 228)',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+              marginInline: 4,
+              borderRadius: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
+            }}
+          >
+            . *
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={() => {
+                if (!this.currentSearchString) return;
+                this.useRegex = !this.useRegex;
+                this.searchForText(true);
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <label
+            title="Previous hit"
+            style={{
+              color: hitCount ? 'black' : 'darkgrey',
+              fontWeight: 'bolder',
+              paddingLeft: 16,
+              paddingRight: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
+            }}
+          >
+            ◀
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={(e) => {
+                if (!this.currentSearchString) return;
+                this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+                  ? hitCount - 1
+                  : this.focusedMatchIndex === 0
+                  ? NaN
+                  : this.focusedMatchIndex - 1;
+                this.focusOnHit(e.timeStamp);
+                this.setState({});
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <label
+            title="Next hit"
+            style={{
+              color: hitCount ? 'black' : 'darkgrey',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
+            }}
+          >
+            ▶
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={(e) => {
+                if (!this.currentSearchString) return;
+                this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+                  ? 0
+                  : this.focusedMatchIndex === hitCount - 1
+                  ? NaN
+                  : this.focusedMatchIndex + 1;
+                this.focusOnHit(e.timeStamp);
+                this.setState({});
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+
+          <p
+            style={{
+              float: 'right',
+              padding: 3,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
+            }}
+          >
+            {`Match${Number.isNaN(this.focusedMatchIndex) ? 'es:' : `: ${this.focusedMatchIndex + 1} /`} ${hitCount}`}
+          </p>
+        </div>
         <BasicTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
@@ -514,6 +773,16 @@ class FlameComponent extends React.Component<FlameProps> {
     );
   };
 
+  private smartDraw() {
+    // avoids an unnecessary setState for high frequency interactions once the tooltip is off
+    if (Number.isFinite(this.hoverIndex)) {
+      this.hoverIndex = NaN; // it's disturbing to have a tooltip while zooming/panning
+      this.setState({});
+    } else {
+      this.drawCanvas();
+    }
+  }
+
   private drawCanvas = () => {
     if (!this.ctx || !this.glContext || !this.pickTexture) return;
 
@@ -529,6 +798,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.glResources.roundedRectRenderer,
       this.hoverIndex,
       unitRowPitch(this.props.columnarViewModel.position1),
+      this.currentColor,
     );
 
     const anim = (t: DOMHighResTimeStamp) => {
@@ -545,7 +815,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
       const relativeExpansionX = Math.max(1, (currentExtentX + dx1 - dx0) / currentExtentX);
       const relativeExpansionY = Math.max(1, (currentExtentX + dy1 - dy0) / currentExtentY);
-      const jointRelativeExpansion = relativeExpansionX * relativeExpansionY;
+      const jointRelativeExpansion = (relativeExpansionX + relativeExpansionY) / 2;
 
       const convergenceRateX = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_X) / jointRelativeExpansion;
       const convergenceRateY = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_Y) / jointRelativeExpansion;
@@ -558,7 +828,11 @@ class FlameComponent extends React.Component<FlameProps> {
       renderFrame([this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1]);
 
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
-      if (maxDiff > 1e-12) this.animationRafId = window.requestAnimationFrame(anim);
+      if (maxDiff > 1e-12) {
+        this.animationRafId = window.requestAnimationFrame(anim);
+      } else {
+        this.prevT = NaN;
+      }
     };
     window.cancelAnimationFrame(this.animationRafId);
     this.animationRafId = window.requestAnimationFrame(anim);
@@ -600,7 +874,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.ensurePickTexture();
 
     if (this.glContext && this.glResources === NULL_GL_RESOURCES) {
-      this.glResources = ensureWebgl(this.glContext, this.props.columnarViewModel);
+      this.glResources = ensureWebgl(this.glContext, Object.keys(this.props.columnarViewModel));
+      uploadToWebgl(this.glContext, this.glResources.attributes, this.props.columnarViewModel);
     }
   };
 }
