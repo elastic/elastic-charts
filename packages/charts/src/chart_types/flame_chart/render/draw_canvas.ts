@@ -52,7 +52,7 @@ export const drawCanvas2d = (
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.scale(dpr, dpr);
-  ctx.font = `${fontSize}px monospace`;
+  ctx.font = `${fontSize}px sans-serif`;
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
   ctx.translate(cssOffsetX, cssOffsetY);
   ctx.beginPath();
@@ -105,8 +105,8 @@ export const drawRect = (
   ctx: CanvasRenderingContext2D,
   cssWidth: number,
   cssHeight: number,
-  xOffset: number,
-  yOffset: number,
+  left: number,
+  bottom: number,
   dpr: number,
   [focusLoX, focusHiX, focusLoY, focusHiY]: [number, number, number, number],
   fillColor: string,
@@ -118,8 +118,8 @@ export const drawRect = (
   ctx.scale(dpr, dpr);
   ctx.beginPath();
   const boxHeight = cssHeight * Math.abs(focusHiY - focusLoY);
-  const x = xOffset + cssWidth * focusLoX + borderLineWidth / 2;
-  const y = yOffset - boxHeight - focusLoY * cssHeight + borderLineWidth / 2;
+  const x = left + cssWidth * focusLoX + borderLineWidth / 2;
+  const y = bottom - boxHeight - focusLoY * cssHeight + borderLineWidth / 2;
   const width = Math.max(borderLineWidth, cssWidth * (focusHiX - focusLoX) - borderLineWidth);
   const height = Math.max(borderLineWidth, boxHeight - borderLineWidth);
   if (fillColor === 'transparent') {

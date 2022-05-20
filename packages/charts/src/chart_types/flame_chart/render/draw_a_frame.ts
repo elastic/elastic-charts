@@ -49,18 +49,27 @@ export const drawFrame = (
   currentColor: Float32Array,
 ) => (currentFocus: [number, number, number, number]) => {
   const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
+
   const minimapHeight = cssHeight / MINIMAP_SIZE_RATIO_Y;
   const minimapWidth = cssWidth / MINIMAP_SIZE_RATIO_X;
-  const minimapLeft = cssWidth - minimapWidth;
-  const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
 
-  const drawnCssWidth = cssWidth;
-  const drawnCanvasWidth = drawnCssWidth * dpr;
-  const focusLayerCssWidth = drawnCssWidth - PADDING_LEFT - PADDING_RIGHT;
+  const minimapLeft = cssWidth - minimapWidth;
+
+  const drawnCanvasWidth = cssWidth * dpr;
+  const drawCanvasHeight = cssHeight * dpr;
+
+  const minimapCanvasWidth = drawnCanvasWidth / MINIMAP_SIZE_RATIO_X;
+  const minimapCanvasHeight = drawCanvasHeight / MINIMAP_SIZE_RATIO_Y;
+  const minimapCanvasX = drawnCanvasWidth * (1 - 1 / MINIMAP_SIZE_RATIO_X);
+  const minimapCanvasY = canvasHeightExcess;
+
+  const focusLayerCssWidth = cssWidth - PADDING_LEFT - PADDING_RIGHT;
   const focusLayerCanvasWidth = focusLayerCssWidth * dpr;
   const focusLayerCanvasOffsetX = PADDING_LEFT * dpr;
 
   const focusLayerCssHeight = cssHeight - PADDING_TOP - PADDING_BOTTOM;
+
+  const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
 
   const drawFocusLayer = (pickLayer: boolean) =>
     drawWebgl(
@@ -84,10 +93,10 @@ export const drawFrame = (
     drawWebgl(
       gl,
       1,
-      drawnCanvasWidth / MINIMAP_SIZE_RATIO_X,
-      (cssHeight * dpr) / MINIMAP_SIZE_RATIO_Y,
-      drawnCanvasWidth * (1 - 1 / MINIMAP_SIZE_RATIO_X),
-      pickLayer ? 0 : canvasHeightExcess,
+      minimapCanvasWidth,
+      minimapCanvasHeight,
+      minimapCanvasX,
+      pickLayer ? 0 : minimapCanvasY,
       pickTexture,
       pickLayer ? pickTextureRenderer : roundedRectRenderer,
       hoverIndex,
@@ -110,6 +119,7 @@ export const drawFrame = (
   // minimap pick layer
   drawContextLayer(true);
 
+  // focus layer text
   drawCanvas2d(
     ctx,
     1,
