@@ -5513,6 +5513,10 @@ SOFTWARE.
   box-shadow: 0 0 0.8px rgba(0, 0, 0, 0.06), 0 0 2px rgba(0, 0, 0, 0.04), 0 0 5px rgba(0, 0, 0, 0.04), 0 0 17px rgba(0, 0, 0, 0.03);
 }
 
+.euiComboBoxOptionsList .euiFilterSelectItem__content {
+  margin-block: 0 !important;
+}
+
 .euiComboBoxOptionsList__empty {
   overflow-wrap: break-word !important;
   word-wrap: break-word !important;
@@ -5591,7 +5595,7 @@ SOFTWARE.
 }
 
 .euiComboBoxOption__contentWrapper .euiComboBoxOption__enterBadge {
-  align-self: flex-start;
+  align-self: center;
   margin-left: 4px;
 }
 
@@ -27726,6 +27730,9 @@ html.light-theme .euiComboBoxOptionsList.euiPopover__panel-isAttached.euiComboBo
   /* 1 */
   box-shadow: 0 0 0.8px rgba(0, 0, 0, 0.06), 0 0 2px rgba(0, 0, 0, 0.04), 0 0 5px rgba(0, 0, 0, 0.04), 0 0 17px rgba(0, 0, 0, 0.03);
 }
+html.light-theme .euiComboBoxOptionsList .euiFilterSelectItem__content {
+  margin-block: 0 !important;
+}
 html.light-theme .euiComboBoxOptionsList__empty {
   overflow-wrap: break-word !important;
   word-wrap: break-word !important;
@@ -27791,7 +27798,7 @@ html.light-theme .euiComboBoxOption__contentWrapper .euiComboBoxOption__emptySta
   margin-bottom: 0;
 }
 html.light-theme .euiComboBoxOption__contentWrapper .euiComboBoxOption__enterBadge {
-  align-self: flex-start;
+  align-self: center;
   margin-left: 4px;
 }
 html.light-theme .euiComboBoxOption__content {
@@ -47245,6 +47252,9 @@ html.dark-theme .euiComboBoxOptionsList.euiPopover__panel-isAttached.euiComboBox
   /* 1 */
   box-shadow: 0 0 0.8px rgba(0, 0, 0, 0.15), 0 0 2px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.1), 0 0 17px rgba(0, 0, 0, 0.075);
 }
+html.dark-theme .euiComboBoxOptionsList .euiFilterSelectItem__content {
+  margin-block: 0 !important;
+}
 html.dark-theme .euiComboBoxOptionsList__empty {
   overflow-wrap: break-word !important;
   word-wrap: break-word !important;
@@ -47310,7 +47320,7 @@ html.dark-theme .euiComboBoxOption__contentWrapper .euiComboBoxOption__emptyStat
   margin-bottom: 0;
 }
 html.dark-theme .euiComboBoxOption__contentWrapper .euiComboBoxOption__enterBadge {
-  align-self: flex-start;
+  align-self: center;
   margin-left: 4px;
 }
 html.dark-theme .euiComboBoxOption__content {
