@@ -51,6 +51,8 @@ const ZOOM_FROM_EDGE_BAND_RIGHT = ZOOM_FROM_EDGE_BAND + PADDING_RIGHT;
 const ZOOM_FROM_EDGE_BAND_TOP = ZOOM_FROM_EDGE_BAND + PADDING_TOP;
 const ZOOM_FROM_EDGE_BAND_BOTTOM = ZOOM_FROM_EDGE_BAND + PADDING_BOTTOM;
 const LEFT_MOUSE_BUTTON = 1;
+const MINIMAP_SIZE_RATIO_X = 3;
+const MINIMAP_SIZE_RATIO_Y = 3;
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -786,11 +788,22 @@ class FlameComponent extends React.Component<FlameProps> {
   private drawCanvas = () => {
     if (!this.ctx || !this.glContext || !this.pickTexture) return;
 
+    const chartWidthCssPx = this.props.chartDimensions.width;
+    const chartHeightCssPx = this.props.chartDimensions.height;
+    const minimapWidth = chartWidthCssPx / MINIMAP_SIZE_RATIO_X;
+    const minimapHeight = chartHeightCssPx / MINIMAP_SIZE_RATIO_Y;
+    const minimapLeft = chartWidthCssPx - minimapWidth;
+    const minimapTop = chartHeightCssPx - minimapHeight;
+
     const renderFrame = drawFrame(
       this.ctx,
       this.glContext,
-      this.props.chartDimensions.width,
-      this.props.chartDimensions.height,
+      chartWidthCssPx,
+      chartHeightCssPx,
+      minimapWidth,
+      minimapHeight,
+      minimapLeft,
+      minimapTop,
       window.devicePixelRatio * this.pinchZoomScale,
       this.props.columnarViewModel,
       this.pickTexture,

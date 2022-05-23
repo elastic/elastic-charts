@@ -13,8 +13,6 @@ import { drawCanvas2d, drawRect } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
 
 const CHART_BOX_LINE_WIDTH = 0.5;
-const MINIMAP_SIZE_RATIO_X = 3;
-const MINIMAP_SIZE_RATIO_Y = 3;
 const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
 const MINIMAP_BOX_LINE_WIDTH = 1;
 /** @internal */
@@ -39,6 +37,10 @@ export const drawFrame = (
   gl: WebGL2RenderingContext,
   cssWidth: number,
   cssHeight: number,
+  minimapWidth: number,
+  minimapHeight: number,
+  minimapLeft: number,
+  minimapTop: number,
   dpr: number,
   columnarGeomData: ColumnarViewModel,
   pickTexture: Texture,
@@ -48,21 +50,13 @@ export const drawFrame = (
   unitRowHeight: number,
   currentColor: Float32Array,
 ) => (currentFocus: [number, number, number, number]) => {
-  const minimapWidth = cssWidth / MINIMAP_SIZE_RATIO_X;
-  const minimapHeight = cssHeight / MINIMAP_SIZE_RATIO_Y;
-  const minimapLeft = cssWidth - minimapWidth;
-  const minimapTop = cssHeight - minimapHeight;
-
   const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
 
   const minimapBottom = minimapTop + minimapHeight;
 
-  const drawnCanvasWidth = cssWidth * dpr;
-  const drawCanvasHeight = cssHeight * dpr;
-
-  const minimapCanvasWidth = drawnCanvasWidth / MINIMAP_SIZE_RATIO_X;
-  const minimapCanvasHeight = drawCanvasHeight / MINIMAP_SIZE_RATIO_Y;
-  const minimapCanvasX = drawnCanvasWidth * (1 - 1 / MINIMAP_SIZE_RATIO_X);
+  const minimapCanvasWidth = minimapWidth * dpr;
+  const minimapCanvasHeight = minimapHeight * dpr;
+  const minimapCanvasX = minimapLeft * dpr;
   const minimapCanvasY = canvasHeightExcess;
 
   const focusLayerCssWidth = cssWidth - PADDING_LEFT - PADDING_RIGHT;
