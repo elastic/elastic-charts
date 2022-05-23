@@ -267,14 +267,23 @@ class FlameComponent extends React.Component<FlameProps> {
     // this.props.onChartRendered() // creates and infinite update loop
   };
 
+  private pointerInMinimap = (x: number, y: number) =>
+    this.getMinimapLeft() <= x &&
+    x <= this.getMinimapLeft() + this.getMinimapWidth() &&
+    this.getMinimapTop() <= y &&
+    y <= this.getMinimapTop() + this.getMinimapHeight();
+
   private datumAtXY: PickFunction = (x, y) =>
     this.glContext ? colorToDatumIndex(readPixel(this.glContext, x, y)) : NaN;
 
   private updatePointerLocation(e: { clientX: number; clientY: number }) {
     if (!this.props.forwardStageRef.current || !this.ctx) return;
     const box = this.props.forwardStageRef.current.getBoundingClientRect();
-    this.pointerX = e.clientX - box.left;
-    this.pointerY = e.clientY - box.top;
+    const x = e.clientX - box.left;
+    const y = e.clientY - box.top;
+    const onFocusArea = !this.pointerInMinimap(x, y); // todo exclude UI input fields too
+    this.pointerX = onFocusArea ? x : NaN;
+    this.pointerY = onFocusArea ? y : NaN;
   }
 
   private getHoveredDatumIndex = (e: { timeStamp: number }) => {
@@ -290,7 +299,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private isDragging = ({ buttons }: { buttons: number }) => buttons & LEFT_MOUSE_BUTTON;
 
   private handleMouseHoverMove = (e: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent>) => {
-    if (!this.isDragging(e)) {
+    if (!this.isDragging(e) && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
       e.stopPropagation();
       this.updatePointerLocation(e);
       const hovered = this.getHoveredDatumIndex(e);
@@ -365,6 +374,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
+    if (Number.isNaN(this.pointerX + this.pointerY)) return; // don't reset from minimap
     this.resetDrag();
     window.addEventListener('mousemove', this.handleMouseDragMove, { passive: true });
     window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
