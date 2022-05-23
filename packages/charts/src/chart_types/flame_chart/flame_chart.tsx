@@ -204,8 +204,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentFocus = focusRect(this.props.columnarViewModel, props.chartDimensions.height, 0, -Infinity);
     this.targetFocus = { ...this.currentFocus };
     this.hoverIndex = NaN;
-    this.pointerX = -10000;
-    this.pointerY = -10000;
+    this.pointerX = NaN;
+    this.pointerY = NaN;
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
