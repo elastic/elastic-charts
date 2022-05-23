@@ -279,11 +279,8 @@ class FlameComponent extends React.Component<FlameProps> {
   private updatePointerLocation(e: { clientX: number; clientY: number }) {
     if (!this.props.forwardStageRef.current || !this.ctx) return;
     const box = this.props.forwardStageRef.current.getBoundingClientRect();
-    const x = e.clientX - box.left;
-    const y = e.clientY - box.top;
-    const onFocusArea = !this.pointerInMinimap(x, y); // todo exclude UI input fields too
-    this.pointerX = onFocusArea ? x : NaN;
-    this.pointerY = onFocusArea ? y : NaN;
+    this.pointerX = e.clientX - box.left;
+    this.pointerY = e.clientY - box.top;
   }
 
   private getHoveredDatumIndex = (e: { timeStamp: number }) => {
@@ -299,9 +296,10 @@ class FlameComponent extends React.Component<FlameProps> {
   private isDragging = ({ buttons }: { buttons: number }) => buttons & LEFT_MOUSE_BUTTON;
 
   private handleMouseHoverMove = (e: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent>) => {
-    if (!this.isDragging(e) && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
+    if (!this.isDragging(e)) {
       e.stopPropagation();
       this.updatePointerLocation(e);
+      if (!this.pointerInMinimap(this.pointerX, this.pointerY)) return;
       const hovered = this.getHoveredDatumIndex(e);
       const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
       if (hovered) {
@@ -329,6 +327,8 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     this.updatePointerLocation(e);
     if (this.isDragging(e)) {
+      const dragInMinimap = this.pointerInMinimap(this.startOfDragX, this.startOfDragY);
+      const focusMoveDirection = dragInMinimap ? 1 : -1; // focus box moves in direction of drag: positive; opposite: negative
       const { x0, x1, y0, y1 } = this.currentFocus;
       const focusWidth = x1 - x0; // this stays constant during panning
       const focusHeight = y1 - y0; // this stays constant during panning
@@ -337,8 +337,12 @@ class FlameComponent extends React.Component<FlameProps> {
       const dragDistanceX = this.getDragDistanceX();
       const dragDistanceY = this.getDragDistanceY();
       const { width: chartWidth, height: chartHeight } = this.props.chartDimensions;
-      const deltaIntentX = (-dragDistanceX / chartWidth) * focusWidth;
-      const deltaIntentY = (-dragDistanceY / chartHeight) * focusHeight;
+      const focusChartWidth = chartWidth - PADDING_LEFT - PADDING_RIGHT;
+      const focusChartHeight = chartHeight - PADDING_TOP - PADDING_BOTTOM;
+      const dragSpeedX = (dragInMinimap ? MINIMAP_SIZE_RATIO_X / focusWidth : 1) / focusChartWidth;
+      const dragSpeedY = (dragInMinimap ? MINIMAP_SIZE_RATIO_Y / focusHeight : 1) / focusChartHeight;
+      const deltaIntentX = focusMoveDirection * dragDistanceX * dragSpeedX * focusWidth;
+      const deltaIntentY = focusMoveDirection * dragDistanceY * dragSpeedY * focusHeight;
       const deltaCorrectionX =
         deltaIntentX > 0
           ? Math.min(0, 1 - (this.startOfDragFocusLeft + focusWidth + deltaIntentX))
@@ -399,7 +403,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const isDoubleClick = e.detail > 1;
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
-      if (mustFocus) {
+      if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
         this.targetFocus = focusRect(
           this.props.columnarViewModel,
           this.props.chartDimensions.height,
