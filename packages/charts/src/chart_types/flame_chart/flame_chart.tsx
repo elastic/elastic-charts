@@ -178,9 +178,9 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // panning
   private startOfDragX: number = NaN;
-  private startOfDragX0: number = NaN;
   private startOfDragY: number = NaN;
-  private startOfDragY0: number = NaN;
+  private startOfDragFocusLeft: number = NaN;
+  private startOfDragFocusTop: number = NaN; // todo top or bottom...does it even matter?
 
   // text search
   private readonly searchInputRef: RefObject<HTMLInputElement>;
@@ -332,8 +332,8 @@ class FlameComponent extends React.Component<FlameProps> {
       const { x0, x1, y0, y1 } = this.currentFocus;
       const focusWidth = x1 - x0; // this stays constant during panning
       const focusHeight = y1 - y0; // this stays constant during panning
-      if (Number.isNaN(this.startOfDragX0)) this.startOfDragX0 = x0;
-      if (Number.isNaN(this.startOfDragY0)) this.startOfDragY0 = y0;
+      if (Number.isNaN(this.startOfDragFocusLeft)) this.startOfDragFocusLeft = x0;
+      if (Number.isNaN(this.startOfDragFocusTop)) this.startOfDragFocusTop = y0;
       const dragDistanceX = this.getDragDistanceX();
       const dragDistanceY = this.getDragDistanceY();
       const { width: chartWidth, height: chartHeight } = this.props.chartDimensions;
@@ -341,18 +341,18 @@ class FlameComponent extends React.Component<FlameProps> {
       const deltaIntentY = (-dragDistanceY / chartHeight) * focusHeight;
       const deltaCorrectionX =
         deltaIntentX > 0
-          ? Math.min(0, 1 - (this.startOfDragX0 + focusWidth + deltaIntentX))
-          : -Math.min(0, this.startOfDragX0 + deltaIntentX);
+          ? Math.min(0, 1 - (this.startOfDragFocusLeft + focusWidth + deltaIntentX))
+          : -Math.min(0, this.startOfDragFocusLeft + deltaIntentX);
       const deltaCorrectionY =
         deltaIntentY > 0
-          ? Math.min(0, 1 - (this.startOfDragY0 + focusHeight + deltaIntentY))
-          : -Math.min(0, this.startOfDragY0 + deltaIntentY);
+          ? Math.min(0, 1 - (this.startOfDragFocusTop + focusHeight + deltaIntentY))
+          : -Math.min(0, this.startOfDragFocusTop + deltaIntentY);
       const deltaX = deltaIntentX + deltaCorrectionX; // todo allow a bit of overdrag: use 0.95-0.98 times deltaCorrectionX and snap back on mouseup
       const deltaY = deltaIntentY + deltaCorrectionY; // todo allow a bit of overdrag: use 0.95-0.98 times deltaCorrectionX and snap back on mouseup
-      const newX0 = clamp(this.startOfDragX0 + deltaX, 0, 1); // to avoid negligible FP domain breaches
-      const newX1 = clamp(this.startOfDragX0 + focusWidth + deltaX, 0, 1); // to avoid negligible FP domain breaches
-      const newY0 = clamp(this.startOfDragY0 + deltaY, 0, 1); // to avoid negligible FP domain breaches
-      const newY1 = clamp(this.startOfDragY0 + focusHeight + deltaY, 0, 1); // to avoid negligible FP domain breaches
+      const newX0 = clamp(this.startOfDragFocusLeft + deltaX, 0, 1); // to avoid negligible FP domain breaches
+      const newX1 = clamp(this.startOfDragFocusLeft + focusWidth + deltaX, 0, 1); // to avoid negligible FP domain breaches
+      const newY0 = clamp(this.startOfDragFocusTop + deltaY, 0, 1); // to avoid negligible FP domain breaches
+      const newY1 = clamp(this.startOfDragFocusTop + focusHeight + deltaY, 0, 1); // to avoid negligible FP domain breaches
       const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1, timestamp: e.timeStamp };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
@@ -362,9 +362,9 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private clearDrag = () => {
     this.startOfDragX = NaN;
-    this.startOfDragX0 = NaN;
     this.startOfDragY = NaN;
-    this.startOfDragY0 = NaN;
+    this.startOfDragFocusLeft = NaN;
+    this.startOfDragFocusTop = NaN;
   };
 
   private resetDrag = () => {
