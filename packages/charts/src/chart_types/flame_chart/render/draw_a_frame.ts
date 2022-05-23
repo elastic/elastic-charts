@@ -48,12 +48,14 @@ export const drawFrame = (
   unitRowHeight: number,
   currentColor: Float32Array,
 ) => (currentFocus: [number, number, number, number]) => {
+  const minimapWidth = cssWidth / MINIMAP_SIZE_RATIO_X;
+  const minimapHeight = cssHeight / MINIMAP_SIZE_RATIO_Y;
+  const minimapLeft = cssWidth - minimapWidth;
+  const minimapTop = cssHeight - minimapHeight;
+
   const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
 
-  const minimapHeight = cssHeight / MINIMAP_SIZE_RATIO_Y;
-  const minimapWidth = cssWidth / MINIMAP_SIZE_RATIO_X;
-
-  const minimapLeft = cssWidth - minimapWidth;
+  const minimapBottom = minimapTop + minimapHeight;
 
   const drawnCanvasWidth = cssWidth * dpr;
   const drawCanvasHeight = cssHeight * dpr;
@@ -265,10 +267,10 @@ export const drawFrame = (
   );
 
   // minimap box - erase Canvas2d text from the main chart that falls within the minimap area
-  drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, cssHeight, dpr, fullFocus, 'rgba(255,255,255,1)', '', 0);
+  drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, minimapBottom, dpr, fullFocus, 'rgba(255,255,255,1)', '', 0);
 
   // minimap box - make the Canvas2d transparent, so that the webgl layer underneath (minimap geoms) show up
-  drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, cssHeight, dpr, fullFocus, 'transparent', '', 0);
+  drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, minimapBottom, dpr, fullFocus, 'transparent', '', 0);
 
   // minimap focus border
   drawRect(
@@ -276,7 +278,7 @@ export const drawFrame = (
     minimapWidth,
     minimapHeight,
     minimapLeft,
-    cssHeight,
+    minimapBottom,
     dpr,
     currentFocus,
     '',
@@ -290,7 +292,7 @@ export const drawFrame = (
     minimapWidth,
     minimapHeight,
     minimapLeft,
-    cssHeight,
+    minimapBottom,
     dpr,
     fullFocus,
     '',
