@@ -297,7 +297,7 @@ class FlameComponent extends React.Component<FlameProps> {
     if (!this.isDragging(e)) {
       e.stopPropagation();
       this.updatePointerLocation(e);
-      if (!this.pointerInMinimap(this.pointerX, this.pointerY)) return;
+      if (this.pointerInMinimap(this.pointerX, this.pointerY)) return;
       const hovered = this.getHoveredDatumIndex(e);
       const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
       if (hovered) {
