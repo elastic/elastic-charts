@@ -788,22 +788,15 @@ class FlameComponent extends React.Component<FlameProps> {
   private drawCanvas = () => {
     if (!this.ctx || !this.glContext || !this.pickTexture) return;
 
-    const chartWidthCssPx = this.props.chartDimensions.width;
-    const chartHeightCssPx = this.props.chartDimensions.height;
-    const minimapWidth = chartWidthCssPx / MINIMAP_SIZE_RATIO_X;
-    const minimapHeight = chartHeightCssPx / MINIMAP_SIZE_RATIO_Y;
-    const minimapLeft = chartWidthCssPx - minimapWidth;
-    const minimapTop = chartHeightCssPx - minimapHeight;
-
     const renderFrame = drawFrame(
       this.ctx,
       this.glContext,
-      chartWidthCssPx,
-      chartHeightCssPx,
-      minimapWidth,
-      minimapHeight,
-      minimapLeft,
-      minimapTop,
+      this.props.chartDimensions.width,
+      this.props.chartDimensions.height,
+      this.getMinimapWidth(),
+      this.getMinimapHeight(),
+      this.getMinimapLeft(),
+      this.getMinimapTop(),
       window.devicePixelRatio * this.pinchZoomScale,
       this.props.columnarViewModel,
       this.pickTexture,
@@ -852,6 +845,11 @@ class FlameComponent extends React.Component<FlameProps> {
 
     this.props.onRenderChange(true); // emit API callback
   };
+
+  private getMinimapWidth = () => this.props.chartDimensions.width / MINIMAP_SIZE_RATIO_X;
+  private getMinimapHeight = () => this.props.chartDimensions.height / MINIMAP_SIZE_RATIO_Y;
+  private getMinimapLeft = () => this.props.chartDimensions.width - this.getMinimapWidth();
+  private getMinimapTop = () => this.props.chartDimensions.height - this.getMinimapHeight();
 
   private ensurePickTexture = () => {
     const { width, height } = this.props.chartDimensions;
