@@ -268,10 +268,8 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private pointerInMinimap = (x: number, y: number) =>
-    this.getMinimapLeft() <= x &&
-    x <= this.getMinimapLeft() + this.getMinimapWidth() &&
-    this.getMinimapTop() <= y &&
-    y <= this.getMinimapTop() + this.getMinimapHeight();
+    x === clamp(x, this.getMinimapLeft(), this.getMinimapLeft() + this.getMinimapWidth()) &&
+    y === clamp(y, this.getMinimapTop(), this.getMinimapTop() + this.getMinimapHeight());
 
   private datumAtXY: PickFunction = (x, y) =>
     this.glContext ? colorToDatumIndex(readPixel(this.glContext, x, y)) : NaN;
