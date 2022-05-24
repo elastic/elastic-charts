@@ -95,12 +95,7 @@ const flagSet = (gl: WebGL2RenderingContext, key: number, value: boolean) => {
  * Programs
  ***************/
 
-/** @internal */
-export const GL_FRAGMENT_SHADER = 0x8b30;
-/** @internal */
-export const GL_VERTEX_SHADER = 0x8b31;
-
-type ShaderType = typeof GL_FRAGMENT_SHADER | typeof GL_VERTEX_SHADER;
+type ShaderType = typeof GL.FRAGMENT_SHADER | typeof GL.VERTEX_SHADER;
 
 /** @internal */
 export const createCompiledShader = (
@@ -113,7 +108,7 @@ export const createCompiledShader = (
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   if (GL_DEBUG && !gl.getShaderParameter(shader, GL.COMPILE_STATUS)) {
-    const shaderTypeName = shaderType === GL_VERTEX_SHADER ? 'vertex' : 'fragment';
+    const shaderTypeName = shaderType === GL.VERTEX_SHADER ? 'vertex' : 'fragment';
     throw new Error(`Whoa, compilation error in a ${shaderTypeName} shader: ${gl.getShaderInfoLog(shader)}`);
   }
   return shader;
@@ -305,14 +300,7 @@ const textureTypeLookup = {
   [GL.RGBA32F]: GL.FLOAT,
 };
 
-/** @internal */
-export const GL_READ_FRAMEBUFFER = 0x8ca8;
-/** @internal */
-export const GL_DRAW_FRAMEBUFFER = 0x8ca9;
-/** @internal */
-export const GL_FRAMEBUFFER = 0x8d40;
-
-type FrameBufferTarget = typeof GL_READ_FRAMEBUFFER | typeof GL_DRAW_FRAMEBUFFER | typeof GL_FRAMEBUFFER;
+type FrameBufferTarget = typeof GL.READ_FRAMEBUFFER | typeof GL.DRAW_FRAMEBUFFER | typeof GL.FRAMEBUFFER;
 
 /** @internal */
 export const bindFramebuffer = (
@@ -321,10 +309,10 @@ export const bindFramebuffer = (
   targetFrameBuffer: WebGLFramebuffer | null,
 ) => {
   const updateReadTarget =
-    (target === GL_READ_FRAMEBUFFER || target === GL_FRAMEBUFFER) &&
+    (target === GL.READ_FRAMEBUFFER || target === GL.FRAMEBUFFER) &&
     targetFrameBuffer !== currentReadFrameBuffers.get(gl);
   const updateWriteTarget =
-    (target === GL_DRAW_FRAMEBUFFER || target === GL_FRAMEBUFFER) &&
+    (target === GL.DRAW_FRAMEBUFFER || target === GL.FRAMEBUFFER) &&
     targetFrameBuffer !== currentDrawFrameBuffers.get(gl);
 
   if (updateReadTarget) currentReadFrameBuffers.set(gl, targetFrameBuffer);
@@ -333,10 +321,10 @@ export const bindFramebuffer = (
   if (updateReadTarget || updateWriteTarget) {
     const targetToUpdate =
       updateReadTarget && updateWriteTarget
-        ? GL_FRAMEBUFFER
+        ? GL.FRAMEBUFFER
         : updateReadTarget
-        ? GL_READ_FRAMEBUFFER
-        : GL_DRAW_FRAMEBUFFER;
+        ? GL.READ_FRAMEBUFFER
+        : GL.DRAW_FRAMEBUFFER;
     gl.bindFramebuffer(targetToUpdate, targetFrameBuffer);
   }
 };
@@ -409,9 +397,9 @@ export const createTexture = (
   const getTarget = () => {
     if (!frameBuffer) {
       frameBuffer = gl.createFramebuffer();
-      bindFramebuffer(gl, GL_DRAW_FRAMEBUFFER, frameBuffer);
-      gl.framebufferTexture2D(GL_FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
-      if (GL_DEBUG && gl.checkFramebufferStatus(GL_DRAW_FRAMEBUFFER) !== GL.FRAMEBUFFER_COMPLETE) {
+      bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, frameBuffer);
+      gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
+      if (GL_DEBUG && gl.checkFramebufferStatus(GL.DRAW_FRAMEBUFFER) !== GL.FRAMEBUFFER_COMPLETE) {
         throw new Error(`Target framebuffer is not complete`);
       }
     }
@@ -420,15 +408,15 @@ export const createTexture = (
 
   return {
     clear: () => {
-      bindFramebuffer(gl, GL_DRAW_FRAMEBUFFER, getTarget());
+      bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, getTarget());
       clearRect(gl, { color: [0, 0, 0, 0] }); // alternatives: texImage2D/texSubImage2D/render
     },
     setUniform: (location: WebGLUniformLocation) => gl.uniform1i(location, textureIndex),
     target: getTarget,
     delete: (): true => {
       if (frameBuffer) {
-        if (currentReadFrameBuffers.get(gl) === frameBuffer) bindFramebuffer(gl, GL_READ_FRAMEBUFFER, null);
-        if (currentDrawFrameBuffers.get(gl) === frameBuffer) bindFramebuffer(gl, GL_DRAW_FRAMEBUFFER, null);
+        if (currentReadFrameBuffers.get(gl) === frameBuffer) bindFramebuffer(gl, GL.READ_FRAMEBUFFER, null);
+        if (currentDrawFrameBuffers.get(gl) === frameBuffer) bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, null);
         gl.deleteFramebuffer(frameBuffer);
       }
       gl.deleteTexture(texture);
@@ -581,7 +569,7 @@ export const getRenderer = (
     if (viewport) setViewport(gl, viewport.x, viewport.y, viewport.width, viewport.height);
     if (uniformValues) uniforms.forEach((setValue, name) => uniformValues[name] && setValue(uniformValues[name]));
 
-    bindFramebuffer(gl, GL_DRAW_FRAMEBUFFER, target);
+    bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, target);
 
     if (clear) clearRect(gl, clear);
 

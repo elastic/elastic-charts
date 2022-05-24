@@ -12,14 +12,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import {
-  bindFramebuffer,
-  createTexture,
-  GL_READ_FRAMEBUFFER,
-  NullTexture,
-  readPixel,
-  Texture,
-} from '../../common/kingly';
+import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
+import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { onChartRendered } from '../../state/actions/chart';
@@ -880,10 +874,10 @@ class FlameComponent extends React.Component<FlameProps> {
           textureIndex: 0,
           width: textureWidth,
           height: textureHeight,
-          internalFormat: this.glContext.RGBA8,
+          internalFormat: GL.RGBA8,
           data: null,
         }) ?? NullTexture;
-      bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, this.pickTexture.target());
+      bindFramebuffer(this.glContext, GL.READ_FRAMEBUFFER, this.pickTexture.target());
     }
   };
 
