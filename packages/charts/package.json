@@ -56,8 +56,8 @@
   "peerDependencies": {
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.32",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react": "^16.12 || ^17.0",
+    "react-dom": "^16.12 || ^17.0"
   },
   "browserslist": [
     "last 2 versions",
