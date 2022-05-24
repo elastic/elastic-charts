@@ -1,3 +1,15 @@
+# [46.4.0](https://github.com/elastic/elastic-charts/compare/v46.3.0...v46.4.0) (2022-05-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v58 ([#1677](https://github.com/elastic/elastic-charts/issues/1677)) ([69ad62b](https://github.com/elastic/elastic-charts/commit/69ad62bf57d880f45a5250b8ccfb75da54c8f205))
+
+
+### Features
+
+* **flame:** minimap pan ([#1678](https://github.com/elastic/elastic-charts/issues/1678)) ([fc81ada](https://github.com/elastic/elastic-charts/commit/fc81ada306c042b751a523588bf0eead43881327))
+
 # [46.3.0](https://github.com/elastic/elastic-charts/compare/v46.2.0...v46.3.0) (2022-05-19)
 
 
