@@ -13,8 +13,6 @@ import { drawCanvas2d, drawRect } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
 
 const CHART_BOX_LINE_WIDTH = 0.5;
-const MINIMAP_SIZE_RATIO_X = 3;
-const MINIMAP_SIZE_RATIO_Y = 3;
 const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
 const MINIMAP_BOX_LINE_WIDTH = 1;
 /** @internal */
@@ -39,6 +37,10 @@ export const drawFrame = (
   gl: WebGL2RenderingContext,
   cssWidth: number,
   cssHeight: number,
+  minimapWidth: number,
+  minimapHeight: number,
+  minimapLeft: number,
+  minimapTop: number,
   dpr: number,
   columnarGeomData: ColumnarViewModel,
   pickTexture: Texture,
@@ -49,18 +51,21 @@ export const drawFrame = (
   currentColor: Float32Array,
 ) => (currentFocus: [number, number, number, number]) => {
   const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
-  const minimapHeight = cssHeight / MINIMAP_SIZE_RATIO_Y;
-  const minimapWidth = cssWidth / MINIMAP_SIZE_RATIO_X;
-  const minimapLeft = cssWidth - minimapWidth;
-  const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
 
-  const drawnCssWidth = cssWidth;
-  const drawnCanvasWidth = drawnCssWidth * dpr;
-  const focusLayerCssWidth = drawnCssWidth - PADDING_LEFT - PADDING_RIGHT;
+  const minimapBottom = minimapTop + minimapHeight;
+
+  const minimapCanvasWidth = minimapWidth * dpr;
+  const minimapCanvasHeight = minimapHeight * dpr;
+  const minimapCanvasX = minimapLeft * dpr;
+  const minimapCanvasY = canvasHeightExcess;
+
+  const focusLayerCssWidth = cssWidth - PADDING_LEFT - PADDING_RIGHT;
   const focusLayerCanvasWidth = focusLayerCssWidth * dpr;
   const focusLayerCanvasOffsetX = PADDING_LEFT * dpr;
 
   const focusLayerCssHeight = cssHeight - PADDING_TOP - PADDING_BOTTOM;
+
+  const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
 
   const drawFocusLayer = (pickLayer: boolean) =>
     drawWebgl(
@@ -84,10 +89,10 @@ export const drawFrame = (
     drawWebgl(
       gl,
       1,
-      drawnCanvasWidth / MINIMAP_SIZE_RATIO_X,
-      (cssHeight * dpr) / MINIMAP_SIZE_RATIO_Y,
-      drawnCanvasWidth * (1 - 1 / MINIMAP_SIZE_RATIO_X),
-      pickLayer ? 0 : canvasHeightExcess,
+      minimapCanvasWidth,
+      minimapCanvasHeight,
+      minimapCanvasX,
+      pickLayer ? 0 : minimapCanvasY,
       pickTexture,
       pickLayer ? pickTextureRenderer : roundedRectRenderer,
       hoverIndex,
@@ -110,6 +115,7 @@ export const drawFrame = (
   // minimap pick layer
   drawContextLayer(true);
 
+  // focus layer text
   drawCanvas2d(
     ctx,
     1,
@@ -255,10 +261,10 @@ export const drawFrame = (
   );
 
   // minimap box - erase Canvas2d text from the main chart that falls within the minimap area
-  drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, cssHeight, dpr, fullFocus, 'rgba(255,255,255,1)', '', 0);
+  drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, minimapBottom, dpr, fullFocus, 'rgba(255,255,255,1)', '', 0);
 
   // minimap box - make the Canvas2d transparent, so that the webgl layer underneath (minimap geoms) show up
-  drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, cssHeight, dpr, fullFocus, 'transparent', '', 0);
+  drawRect(ctx, minimapWidth, minimapHeight, minimapLeft, minimapBottom, dpr, fullFocus, 'transparent', '', 0);
 
   // minimap focus border
   drawRect(
@@ -266,7 +272,7 @@ export const drawFrame = (
     minimapWidth,
     minimapHeight,
     minimapLeft,
-    cssHeight,
+    minimapBottom,
     dpr,
     currentFocus,
     '',
@@ -280,7 +286,7 @@ export const drawFrame = (
     minimapWidth,
     minimapHeight,
     minimapLeft,
-    cssHeight,
+    minimapBottom,
     dpr,
     fullFocus,
     '',

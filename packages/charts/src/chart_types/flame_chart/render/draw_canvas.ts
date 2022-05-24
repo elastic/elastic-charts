@@ -15,7 +15,7 @@ const formatter: LabelAccessor<string> = (label: string) => label; // todo loop 
 
 const TEXT_PAD_LEFT = 4;
 const TEXT_PAD_RIGHT = 4;
-const MIN_TEXT_LENGTH = 0.5; // in font height, so 1 means roughly 2 characters (latin characters are tall on average)
+const MIN_TEXT_LENGTH = 0; // in font height, so 1 means roughly 2 characters (latin characters are tall on average)
 const ROW_OFFSET_Y = 0.45; // approx. middle line (text is middle anchored so tall bars with small fonts can still have vertically centered text)
 const MAX_FONT_HEIGHT_RATIO = 1; // relative to the row height
 const MAX_FONT_SIZE = 12;
@@ -52,7 +52,7 @@ export const drawCanvas2d = (
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.scale(dpr, dpr);
-  ctx.font = `${fontSize}px monospace`;
+  ctx.font = `${fontSize}px sans-serif`;
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
   ctx.translate(cssOffsetX, cssOffsetY);
   ctx.beginPath();
@@ -105,8 +105,8 @@ export const drawRect = (
   ctx: CanvasRenderingContext2D,
   cssWidth: number,
   cssHeight: number,
-  xOffset: number,
-  yOffset: number,
+  left: number,
+  bottom: number,
   dpr: number,
   [focusLoX, focusHiX, focusLoY, focusHiY]: [number, number, number, number],
   fillColor: string,
@@ -118,8 +118,8 @@ export const drawRect = (
   ctx.scale(dpr, dpr);
   ctx.beginPath();
   const boxHeight = cssHeight * Math.abs(focusHiY - focusLoY);
-  const x = xOffset + cssWidth * focusLoX + borderLineWidth / 2;
-  const y = yOffset - boxHeight - focusLoY * cssHeight + borderLineWidth / 2;
+  const x = left + cssWidth * focusLoX + borderLineWidth / 2;
+  const y = bottom - boxHeight - focusLoY * cssHeight + borderLineWidth / 2;
   const width = Math.max(borderLineWidth, cssWidth * (focusHiX - focusLoX) - borderLineWidth);
   const height = Math.max(borderLineWidth, boxHeight - borderLineWidth);
   if (fillColor === 'transparent') {
