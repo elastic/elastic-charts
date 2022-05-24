@@ -362,10 +362,13 @@ export const NullTexture: Texture = {
 /** @internal */
 export const createTexture = (
   gl: WebGL2RenderingContext,
-  { textureIndex, internalFormat, width, height, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
+  { textureIndex, internalFormat, width: w, height: h, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
 ): Texture => {
   if (GL_DEBUG && !(0 <= textureIndex && textureIndex <= gl.getParameter(GL.MAX_COMBINED_TEXTURE_IMAGE_UNITS)))
     throw new Error('WebGL2 is guaranteed to support at least 32 textures but not necessarily more than that');
+
+  const width: GLuint = Math.ceil(w);
+  const height: GLuint = Math.ceil(h);
 
   const srcFormat = textureSrcFormatLookup[internalFormat];
   const type = textureTypeLookup[internalFormat];
@@ -399,8 +402,11 @@ export const createTexture = (
       frameBuffer = gl.createFramebuffer();
       bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, frameBuffer);
       gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
-      if (GL_DEBUG && gl.checkFramebufferStatus(GL.DRAW_FRAMEBUFFER) !== GL.FRAMEBUFFER_COMPLETE) {
-        throw new Error(`Target framebuffer is not complete`);
+      if (GL_DEBUG) {
+        const framebufferStatus = gl.checkFramebufferStatus(GL.DRAW_FRAMEBUFFER);
+        if (framebufferStatus !== GL.FRAMEBUFFER_COMPLETE) {
+          throw new Error(`Target framebuffer is not complete`);
+        }
       }
     }
     return frameBuffer;
@@ -521,7 +527,7 @@ export const getRenderer = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
   vao: WebGLVertexArrayObject | null,
-  { depthTest = false, blend = true },
+  { depthTest = false, blend = true, frontFace = GL.CCW },
 ): Render => {
   const uniforms = getUniforms(gl, program);
   return ({ uniformValues, viewport, target, clear, scissor, draw }: UseInfo): void => {
@@ -541,7 +547,7 @@ export const getRenderer = (
       gl.depthRange(0, 1);
 
       // set polygon vertex order convention
-      // gl.frontFace(GL.CW) // webgl defaults to a counterclockwise vertex order, consider switching to it
+      gl.frontFace(frontFace);
 
       // don't render both sides of a triangle (it's dependent on the cw/ccw convention set above)
       flagSet(gl, GL.CULL_FACE, true);
@@ -615,3 +621,29 @@ export const frag = (strings: TemplateStringsArray, ...args: unknown[]) => `#ver
 precision highp int;
 precision highp float;
 ${templateConcat(strings, ...args)}`;
+
+/***********************
+ *
+ * Handle context loss
+ *
+ **********************/
+
+/*
+const flushErrors = (gl: WebGL2RenderingContext, text: string) => {
+  let hasError;
+  let hasShownError = false;
+  do {
+    const error = gl.getError();
+    hasError = error !== gl.NO_ERROR;
+    if (hasError) {
+      if (!hasShownError) {
+        // eslint-disable-next-line no-console
+        console.warn(`GL error(s) shown before ${text}`);
+        hasShownError = true;
+      }
+      // eslint-disable-next-line no-console
+      console.warn(`GL error: ${error}`);
+    }
+  } while (hasError); // clear the error code
+};
+*/
