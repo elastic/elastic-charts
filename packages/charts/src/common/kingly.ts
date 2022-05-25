@@ -647,3 +647,19 @@ const flushErrors = (gl: WebGL2RenderingContext, text: string) => {
   } while (hasError); // clear the error code
 };
 */
+
+/** @internal */
+export const testContextLoss = (gl: WebGL2RenderingContext) => {
+  // simulates a context loss at `lossTimeMs` and context recovery at `regainTimeMs` after that
+  const lossTimeMs = 5000;
+  const regainTimeMs = 0;
+  const ext = gl.getExtension('WEBGL_lose_context');
+  if (ext) {
+    window.setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.log('Context loss test triggered, the webgl rendering will freeze or disappear');
+      ext.loseContext();
+      window.setTimeout(() => ext.restoreContext(), regainTimeMs);
+    }, lossTimeMs);
+  }
+};

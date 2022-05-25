@@ -12,7 +12,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
+import { bindFramebuffer, createTexture, NullTexture, readPixel, testContextLoss, Texture } from '../../common/kingly';
 import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
@@ -892,6 +892,7 @@ class FlameComponent extends React.Component<FlameProps> {
     if (this.glContext && this.glResources === NULL_GL_RESOURCES) {
       this.glResources = ensureWebgl(this.glContext, Object.keys(this.props.columnarViewModel));
       uploadToWebgl(this.glContext, this.glResources.attributes, this.props.columnarViewModel);
+      testContextLoss(this.glContext);
     }
   };
 }
