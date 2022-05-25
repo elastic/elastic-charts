@@ -889,10 +889,38 @@ class FlameComponent extends React.Component<FlameProps> {
 
     this.ensurePickTexture();
 
-    if (this.glContext && this.glResources === NULL_GL_RESOURCES) {
-      this.glResources = ensureWebgl(this.glContext, Object.keys(this.props.columnarViewModel));
-      uploadToWebgl(this.glContext, this.glResources.attributes, this.props.columnarViewModel);
-      testContextLoss(this.glContext);
+    const initializeGL = (gl: WebGL2RenderingContext) => {
+      this.glResources = ensureWebgl(gl, Object.keys(this.props.columnarViewModel));
+      uploadToWebgl(gl, this.glResources.attributes, this.props.columnarViewModel);
+    };
+
+    const restoreGL = (gl: WebGL2RenderingContext) => {
+      initializeGL(gl);
+      this.drawCanvas();
+    };
+
+    if (glCanvas && this.glContext && this.glResources === NULL_GL_RESOURCES) {
+      glCanvas.addEventListener('webglcontextlost', (event) => event.preventDefault(), false); // we could log it for telemetry etc todo add the option for a callback
+      glCanvas.addEventListener(
+        'webglcontextrestored',
+        () => {
+          // browser trivia: the duplicate calling of ensureContextAndInitialRender and changing/resetting the width are needed for Chrome and Safari to properly restore the context upon loss
+          // we could log context loss/regain for telemetry etc todo add the option for a callback
+          if (!glCanvas || !this.glContext) return;
+          restoreGL(this.glContext);
+          const widthCss = glCanvas.style.width;
+          const widthNum = parseFloat(widthCss);
+          glCanvas.style.width = `${widthNum + 0.1}px`;
+          window.setTimeout(() => {
+            glCanvas.style.width = widthCss;
+            if (this.glContext) restoreGL(this.glContext);
+          }, 0);
+        },
+        false,
+      );
+
+      initializeGL(this.glContext);
+      // testContextLoss(this.glContext);
     }
   };
 }
