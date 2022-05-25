@@ -12,7 +12,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import { bindFramebuffer, createTexture, NullTexture, readPixel, testContextLoss, Texture } from '../../common/kingly';
+import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
 import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
@@ -254,10 +254,15 @@ class FlameComponent extends React.Component<FlameProps> {
     this.props.containerRef().current?.removeEventListener('wheel', this.preventScroll);
   }
 
+  private ensureTextureAndDraw = () => {
+    this.ensurePickTexture();
+    this.drawCanvas();
+  };
+
   componentDidUpdate = () => {
     if (!this.ctx) this.tryCanvasContext();
-    this.ensurePickTexture();
-    this.drawCanvas(); // eg. due to chartDimensions (parentDimensions) change
+    this.ensureTextureAndDraw();
+    // eg. due to chartDimensions (parentDimensions) change
     // this.props.onChartRendered() // creates and infinite update loop
   };
 
@@ -896,7 +901,8 @@ class FlameComponent extends React.Component<FlameProps> {
 
     const restoreGL = (gl: WebGL2RenderingContext) => {
       initializeGL(gl);
-      this.drawCanvas();
+      this.pickTexture = NullTexture;
+      this.ensureTextureAndDraw();
     };
 
     if (glCanvas && this.glContext && this.glResources === NULL_GL_RESOURCES) {
