@@ -509,6 +509,13 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
+  private uploadSearchColors = () => {
+    const colorSetter = this.glResources.attributes.get('color');
+    if (this.glContext && colorSetter && this.currentColor.length === this.props.columnarViewModel.color.length) {
+      uploadToWebgl(this.glContext, new Map([['color', colorSetter]]), { color: this.currentColor });
+    }
+  };
+
   private searchForText = (force: boolean) => {
     const input = this.searchInputRef.current;
     const searchString = input?.value;
@@ -519,10 +526,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.focusOnAllMatches();
 
     // update colors
-    const colorSetter = this.glResources.attributes.get('color');
-    if (this.glContext && colorSetter) {
-      uploadToWebgl(this.glContext, new Map([['color', colorSetter]]), { color: this.currentColor });
-    }
+    this.uploadSearchColors();
 
     // render
     this.focusedMatchIndex = NaN;
@@ -893,6 +897,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private restoreGL = (gl: WebGL2RenderingContext) => {
     this.initializeGL(gl);
     this.pickTexture = NullTexture;
+    this.uploadSearchColors();
     this.ensureTextureAndDraw();
   };
 
