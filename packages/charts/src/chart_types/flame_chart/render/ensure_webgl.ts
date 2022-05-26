@@ -13,6 +13,7 @@ import {
   createLinkedProgram,
   getAttributes,
   getRenderer,
+  resetState,
 } from '../../../common/kingly';
 import { GL } from '../../../common/webgl_constants';
 import { ColumnarViewModel } from '../flame_api';
@@ -21,6 +22,8 @@ import { GLResources, NULL_GL_RESOURCES } from '../types';
 
 /** @internal */
 export function ensureWebgl(gl: WebGL2RenderingContext, instanceAttributes: string[]): GLResources {
+  resetState(gl);
+
   /**
    * Vertex array attributes
    */
