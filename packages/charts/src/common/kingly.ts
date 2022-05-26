@@ -107,7 +107,7 @@ export const createCompiledShader = (
   if (!shader) throw new Error(`Whoa, shader could not be created`); // just appeasing the TS linter
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
-  if (GL_DEBUG && !gl.getShaderParameter(shader, GL.COMPILE_STATUS)) {
+  if (GL_DEBUG && !gl.getShaderParameter(shader, GL.COMPILE_STATUS) && !gl.isContextLost()) {
     const shaderTypeName = shaderType === GL.VERTEX_SHADER ? 'vertex' : 'fragment';
     throw new Error(`Whoa, compilation error in a ${shaderTypeName} shader: ${gl.getShaderInfoLog(shader)}`);
   }
@@ -122,7 +122,7 @@ export const createLinkedProgram = (
   attributeLocations: Map<string, number> = new Map(),
 ): WebGLProgram => {
   const program = gl.createProgram();
-  if (!program) throw new Error(`Whoa, shader program could not be created`); // just appeasing the TS linter
+  if (!program) throw new Error(`Whoa, shader program could not be created`); // just appeasing the TS linter https://www.khronos.org/webgl/wiki/HandlingContextLost
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   if (GL_DEBUG && gl.getProgramParameter(program, GL.ATTACHED_SHADERS) !== 2)
@@ -133,10 +133,10 @@ export const createLinkedProgram = (
   gl.linkProgram(program); // todo consider bulk gl.compileShader iteration, followed by bulk gl.linkProgram iteration https://www.khronos.org/registry/webgl/extensions/KHR_parallel_shader_compile/
 
   if (GL_DEBUG) {
-    if (!gl.getProgramParameter(program, GL.LINK_STATUS))
+    if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
       throw new Error(`Whoa, shader program failed to link: ${gl.getProgramInfoLog(program)}`);
     gl.validateProgram(program);
-    if (!gl.getProgramParameter(program, GL.LINK_STATUS))
+    if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
       throw new Error(`Whoa, could not validate the shader program: ${gl.getProgramInfoLog(program)}`);
   }
 
@@ -634,7 +634,7 @@ const flushErrors = (gl: WebGL2RenderingContext, text: string) => {
   let hasShownError = false;
   do {
     const error = gl.getError();
-    hasError = error !== gl.NO_ERROR;
+    hasError = error !== gl.NO_ERROR && error !== gl.CONTEXT_LOST_WEBGL;
     if (hasError) {
       if (!hasShownError) {
         // eslint-disable-next-line no-console
@@ -655,7 +655,7 @@ export const testContextLoss = (gl: WebGL2RenderingContext) => {
   const regainTimeMs = 0;
   const ext = gl.getExtension('WEBGL_lose_context');
   if (ext) {
-    window.setTimeout(() => {
+    window.setInterval(() => {
       // eslint-disable-next-line no-console
       console.log('Context loss test triggered, the webgl rendering will freeze or disappear');
       ext.loseContext();
