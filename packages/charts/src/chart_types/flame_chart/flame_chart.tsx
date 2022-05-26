@@ -906,7 +906,14 @@ class FlameComponent extends React.Component<FlameProps> {
     this.ensurePickTexture();
 
     if (glCanvas && this.glContext && this.glResources === NULL_GL_RESOURCES) {
-      glCanvas.addEventListener('webglcontextlost', (event) => event.preventDefault(), false); // we could log it for telemetry etc todo add the option for a callback
+      glCanvas.addEventListener(
+        'webglcontextlost',
+        (event) => {
+          window.cancelAnimationFrame(this.animationRafId);
+          event.preventDefault();
+        },
+        false,
+      ); // we could log it for telemetry etc todo add the option for a callback
       glCanvas.addEventListener(
         'webglcontextrestored',
         () => {
