@@ -69,7 +69,7 @@ export const rectVert = /* language=GLSL */ vert`
     gl_Position = vec4(2.0 * zoomPannedXY - 1.0, 0, 1);
     fragmentColor = pickLayer
       ? vec4((uvec4(gl_InstanceID + GEOM_INDEX_OFFSET) >> BIT_SHIFTERS) % uvec4(256)) / 255.0
-      : vec4(color.rgb / (gl_InstanceID == hoverIndex - GEOM_INDEX_OFFSET ? HOVER_OPACITY : 1.0),  color.a);
+      : vec4(color.rgb, (gl_InstanceID == hoverIndex - GEOM_INDEX_OFFSET ? HOVER_OPACITY : 1.0) * color.a);
 
     // calculate rounded corner metrics for interpolation
     vec2 pixelSize = size * zoomedResolution;
