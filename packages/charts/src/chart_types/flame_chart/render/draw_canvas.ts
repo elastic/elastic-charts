@@ -7,6 +7,7 @@
  */
 
 import { DEFAULT_FONT_FAMILY } from '../../../common/default_theme_attributes';
+import { cssFontShorthand } from '../../../common/text_utils';
 import { LabelAccessor } from '../../../utils/common';
 import { ColumnarViewModel } from '../flame_api';
 import { BOX_GAP_HORIZONTAL, BOX_GAP_VERTICAL, roundUpSize } from './common';
@@ -53,7 +54,10 @@ export const drawCanvas2d = (
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.scale(dpr, dpr);
-  ctx.font = `${fontSize}px ${DEFAULT_FONT_FAMILY}`;
+  ctx.font = cssFontShorthand(
+    { fontFamily: DEFAULT_FONT_FAMILY, fontStyle: 'normal', fontVariant: 'normal', fontWeight: 'normal' },
+    fontSize,
+  );
   ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
   ctx.translate(cssOffsetX, cssOffsetY);
   ctx.beginPath();
