@@ -10,6 +10,7 @@ import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
+import { isFiniteNumber } from '../../../utils/common';
 import { PointGeometry } from '../../../utils/geometry';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
@@ -383,7 +384,7 @@ describe('Rendering points - line', () => {
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
       // the zero value is moved vertically to infinity
-      expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(Infinity);
+      expect(isFiniteNumber((zeroValueIndexdGeometry[0] as PointGeometry).y)).toBe(false);
       expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(LIGHT_THEME.lineSeriesStyle.point.radius);
     });
   });

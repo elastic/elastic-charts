@@ -13,6 +13,7 @@ import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { Spec } from '../../../specs';
 import { GlobalChartState } from '../../../state/chart_state';
+import { isFiniteNumber } from '../../../utils/common';
 import { PointGeometry, AreaGeometry } from '../../../utils/geometry';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
@@ -407,7 +408,7 @@ describe('Rendering points - areas', () => {
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
       // moved to the bottom of the chart
-      expect(zeroValueIndexdGeometry[0].y).toBe(Infinity);
+      expect(isFiniteNumber(zeroValueIndexdGeometry[0].y)).toBe(false);
       // default area theme point radius
       expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(LIGHT_THEME.areaSeriesStyle.point.radius);
     });

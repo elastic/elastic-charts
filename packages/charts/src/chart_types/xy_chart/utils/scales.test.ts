@@ -38,8 +38,8 @@ describe('Series scales', () => {
     const expectedBandwidth = 120 / 4;
     expect(scale.bandwidth).toBe(expectedBandwidth);
     expect(scale.scale(0)).toBe(expectedBandwidth * 3);
-    expect(scale.scale(1)).toBe(expectedBandwidth * 2);
-    expect(scale.scale(2)).toBe(expectedBandwidth);
+    expect(scale.scale(1)).toBeCloseTo(expectedBandwidth * 2);
+    expect(scale.scale(2)).toBeCloseTo(expectedBandwidth);
     expect(scale.scale(3)).toBe(0);
   });
 
