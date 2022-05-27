@@ -12,14 +12,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import {
-  bindFramebuffer,
-  createTexture,
-  GL_READ_FRAMEBUFFER,
-  NullTexture,
-  readPixel,
-  Texture,
-} from '../../common/kingly';
+import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
+import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { onChartRendered } from '../../state/actions/chart';
@@ -260,10 +254,15 @@ class FlameComponent extends React.Component<FlameProps> {
     this.props.containerRef().current?.removeEventListener('wheel', this.preventScroll);
   }
 
+  private ensureTextureAndDraw = () => {
+    this.ensurePickTexture();
+    this.drawCanvas();
+  };
+
   componentDidUpdate = () => {
     if (!this.ctx) this.tryCanvasContext();
-    this.ensurePickTexture();
-    this.drawCanvas(); // eg. due to chartDimensions (parentDimensions) change
+    this.ensureTextureAndDraw();
+    // eg. due to chartDimensions (parentDimensions) change
     // this.props.onChartRendered() // creates and infinite update loop
   };
 
@@ -297,9 +296,8 @@ class FlameComponent extends React.Component<FlameProps> {
     if (!this.isDragging(e)) {
       e.stopPropagation();
       this.updatePointerLocation(e);
-      if (this.pointerInMinimap(this.pointerX, this.pointerY)) return;
       const hovered = this.getHoveredDatumIndex(e);
-      const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
+      const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN;
       if (hovered) {
         this.hoverIndex = hovered.datumIndex;
         if (!Object.is(this.hoverIndex, prevHoverIndex)) {
@@ -511,6 +509,13 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
+  private uploadSearchColors = () => {
+    const colorSetter = this.glResources.attributes.get('color');
+    if (this.glContext && colorSetter && this.currentColor.length === this.props.columnarViewModel.color.length) {
+      uploadToWebgl(this.glContext, new Map([['color', colorSetter]]), { color: this.currentColor });
+    }
+  };
+
   private searchForText = (force: boolean) => {
     const input = this.searchInputRef.current;
     const searchString = input?.value;
@@ -521,10 +526,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.focusOnAllMatches();
 
     // update colors
-    const colorSetter = this.glResources.attributes.get('color');
-    if (this.glContext && colorSetter) {
-      uploadToWebgl(this.glContext, new Map([['color', colorSetter]]), { color: this.currentColor });
-    }
+    this.uploadSearchColors();
 
     // render
     this.focusedMatchIndex = NaN;
@@ -880,11 +882,23 @@ class FlameComponent extends React.Component<FlameProps> {
           textureIndex: 0,
           width: textureWidth,
           height: textureHeight,
-          internalFormat: this.glContext.RGBA8,
+          internalFormat: GL.RGBA8,
           data: null,
         }) ?? NullTexture;
-      bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, this.pickTexture.target());
+      bindFramebuffer(this.glContext, GL.READ_FRAMEBUFFER, this.pickTexture.target());
     }
+  };
+
+  private initializeGL = (gl: WebGL2RenderingContext) => {
+    this.glResources = ensureWebgl(gl, Object.keys(this.props.columnarViewModel));
+    uploadToWebgl(gl, this.glResources.attributes, this.props.columnarViewModel);
+  };
+
+  private restoreGL = (gl: WebGL2RenderingContext) => {
+    this.initializeGL(gl);
+    this.pickTexture = NullTexture;
+    this.uploadSearchColors();
+    this.ensureTextureAndDraw();
   };
 
   private tryCanvasContext = () => {
@@ -896,9 +910,35 @@ class FlameComponent extends React.Component<FlameProps> {
 
     this.ensurePickTexture();
 
-    if (this.glContext && this.glResources === NULL_GL_RESOURCES) {
-      this.glResources = ensureWebgl(this.glContext, Object.keys(this.props.columnarViewModel));
-      uploadToWebgl(this.glContext, this.glResources.attributes, this.props.columnarViewModel);
+    if (glCanvas && this.glContext && this.glResources === NULL_GL_RESOURCES) {
+      glCanvas.addEventListener(
+        'webglcontextlost',
+        (event) => {
+          window.cancelAnimationFrame(this.animationRafId);
+          event.preventDefault();
+        },
+        false,
+      ); // we could log it for telemetry etc todo add the option for a callback
+      glCanvas.addEventListener(
+        'webglcontextrestored',
+        () => {
+          // browser trivia: the duplicate calling of ensureContextAndInitialRender and changing/resetting the width are needed for Chrome and Safari to properly restore the context upon loss
+          // we could log context loss/regain for telemetry etc todo add the option for a callback
+          if (!glCanvas || !this.glContext) return;
+          this.restoreGL(this.glContext);
+          const widthCss = glCanvas.style.width;
+          const widthNum = parseFloat(widthCss);
+          glCanvas.style.width = `${widthNum + 0.1}px`;
+          window.setTimeout(() => {
+            glCanvas.style.width = widthCss;
+            if (this.glContext) this.restoreGL(this.glContext);
+          }, 0);
+        },
+        false,
+      );
+
+      this.initializeGL(this.glContext);
+      // testContextLoss(this.glContext);
     }
   };
 }

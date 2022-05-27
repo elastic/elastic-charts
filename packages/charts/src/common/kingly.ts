@@ -95,12 +95,7 @@ const flagSet = (gl: WebGL2RenderingContext, key: number, value: boolean) => {
  * Programs
  ***************/
 
-/** @internal */
-export const GL_FRAGMENT_SHADER = 0x8b30;
-/** @internal */
-export const GL_VERTEX_SHADER = 0x8b31;
-
-type ShaderType = typeof GL_FRAGMENT_SHADER | typeof GL_VERTEX_SHADER;
+type ShaderType = typeof GL.FRAGMENT_SHADER | typeof GL.VERTEX_SHADER;
 
 /** @internal */
 export const createCompiledShader = (
@@ -112,8 +107,8 @@ export const createCompiledShader = (
   if (!shader) throw new Error(`Whoa, shader could not be created`); // just appeasing the TS linter
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
-  if (GL_DEBUG && !gl.getShaderParameter(shader, GL.COMPILE_STATUS)) {
-    const shaderTypeName = shaderType === GL_VERTEX_SHADER ? 'vertex' : 'fragment';
+  if (GL_DEBUG && !gl.getShaderParameter(shader, GL.COMPILE_STATUS) && !gl.isContextLost()) {
+    const shaderTypeName = shaderType === GL.VERTEX_SHADER ? 'vertex' : 'fragment';
     throw new Error(`Whoa, compilation error in a ${shaderTypeName} shader: ${gl.getShaderInfoLog(shader)}`);
   }
   return shader;
@@ -127,7 +122,7 @@ export const createLinkedProgram = (
   attributeLocations: Map<string, number> = new Map(),
 ): WebGLProgram => {
   const program = gl.createProgram();
-  if (!program) throw new Error(`Whoa, shader program could not be created`); // just appeasing the TS linter
+  if (!program) throw new Error(`Whoa, shader program could not be created`); // just appeasing the TS linter https://www.khronos.org/webgl/wiki/HandlingContextLost
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   if (GL_DEBUG && gl.getProgramParameter(program, GL.ATTACHED_SHADERS) !== 2)
@@ -138,10 +133,10 @@ export const createLinkedProgram = (
   gl.linkProgram(program); // todo consider bulk gl.compileShader iteration, followed by bulk gl.linkProgram iteration https://www.khronos.org/registry/webgl/extensions/KHR_parallel_shader_compile/
 
   if (GL_DEBUG) {
-    if (!gl.getProgramParameter(program, GL.LINK_STATUS))
+    if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
       throw new Error(`Whoa, shader program failed to link: ${gl.getProgramInfoLog(program)}`);
     gl.validateProgram(program);
-    if (!gl.getProgramParameter(program, GL.LINK_STATUS))
+    if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
       throw new Error(`Whoa, could not validate the shader program: ${gl.getProgramInfoLog(program)}`);
   }
 
@@ -305,14 +300,7 @@ const textureTypeLookup = {
   [GL.RGBA32F]: GL.FLOAT,
 };
 
-/** @internal */
-export const GL_READ_FRAMEBUFFER = 0x8ca8;
-/** @internal */
-export const GL_DRAW_FRAMEBUFFER = 0x8ca9;
-/** @internal */
-export const GL_FRAMEBUFFER = 0x8d40;
-
-type FrameBufferTarget = typeof GL_READ_FRAMEBUFFER | typeof GL_DRAW_FRAMEBUFFER | typeof GL_FRAMEBUFFER;
+type FrameBufferTarget = typeof GL.READ_FRAMEBUFFER | typeof GL.DRAW_FRAMEBUFFER | typeof GL.FRAMEBUFFER;
 
 /** @internal */
 export const bindFramebuffer = (
@@ -321,10 +309,10 @@ export const bindFramebuffer = (
   targetFrameBuffer: WebGLFramebuffer | null,
 ) => {
   const updateReadTarget =
-    (target === GL_READ_FRAMEBUFFER || target === GL_FRAMEBUFFER) &&
+    (target === GL.READ_FRAMEBUFFER || target === GL.FRAMEBUFFER) &&
     targetFrameBuffer !== currentReadFrameBuffers.get(gl);
   const updateWriteTarget =
-    (target === GL_DRAW_FRAMEBUFFER || target === GL_FRAMEBUFFER) &&
+    (target === GL.DRAW_FRAMEBUFFER || target === GL.FRAMEBUFFER) &&
     targetFrameBuffer !== currentDrawFrameBuffers.get(gl);
 
   if (updateReadTarget) currentReadFrameBuffers.set(gl, targetFrameBuffer);
@@ -333,10 +321,10 @@ export const bindFramebuffer = (
   if (updateReadTarget || updateWriteTarget) {
     const targetToUpdate =
       updateReadTarget && updateWriteTarget
-        ? GL_FRAMEBUFFER
+        ? GL.FRAMEBUFFER
         : updateReadTarget
-        ? GL_READ_FRAMEBUFFER
-        : GL_DRAW_FRAMEBUFFER;
+        ? GL.READ_FRAMEBUFFER
+        : GL.DRAW_FRAMEBUFFER;
     gl.bindFramebuffer(targetToUpdate, targetFrameBuffer);
   }
 };
@@ -374,10 +362,13 @@ export const NullTexture: Texture = {
 /** @internal */
 export const createTexture = (
   gl: WebGL2RenderingContext,
-  { textureIndex, internalFormat, width, height, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
+  { textureIndex, internalFormat, width: w, height: h, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
 ): Texture => {
   if (GL_DEBUG && !(0 <= textureIndex && textureIndex <= gl.getParameter(GL.MAX_COMBINED_TEXTURE_IMAGE_UNITS)))
     throw new Error('WebGL2 is guaranteed to support at least 32 textures but not necessarily more than that');
+
+  const width: GLuint = Math.ceil(w);
+  const height: GLuint = Math.ceil(h);
 
   const srcFormat = textureSrcFormatLookup[internalFormat];
   const type = textureTypeLookup[internalFormat];
@@ -409,10 +400,13 @@ export const createTexture = (
   const getTarget = () => {
     if (!frameBuffer) {
       frameBuffer = gl.createFramebuffer();
-      bindFramebuffer(gl, GL_DRAW_FRAMEBUFFER, frameBuffer);
-      gl.framebufferTexture2D(GL_FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
-      if (GL_DEBUG && gl.checkFramebufferStatus(GL_DRAW_FRAMEBUFFER) !== GL.FRAMEBUFFER_COMPLETE) {
-        throw new Error(`Target framebuffer is not complete`);
+      bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, frameBuffer);
+      gl.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
+      if (GL_DEBUG) {
+        const framebufferStatus = gl.checkFramebufferStatus(GL.DRAW_FRAMEBUFFER);
+        if (framebufferStatus !== GL.FRAMEBUFFER_COMPLETE) {
+          throw new Error(`Target framebuffer is not complete`);
+        }
       }
     }
     return frameBuffer;
@@ -420,15 +414,15 @@ export const createTexture = (
 
   return {
     clear: () => {
-      bindFramebuffer(gl, GL_DRAW_FRAMEBUFFER, getTarget());
+      bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, getTarget());
       clearRect(gl, { color: [0, 0, 0, 0] }); // alternatives: texImage2D/texSubImage2D/render
     },
     setUniform: (location: WebGLUniformLocation) => gl.uniform1i(location, textureIndex),
     target: getTarget,
     delete: (): true => {
       if (frameBuffer) {
-        if (currentReadFrameBuffers.get(gl) === frameBuffer) bindFramebuffer(gl, GL_READ_FRAMEBUFFER, null);
-        if (currentDrawFrameBuffers.get(gl) === frameBuffer) bindFramebuffer(gl, GL_DRAW_FRAMEBUFFER, null);
+        if (currentReadFrameBuffers.get(gl) === frameBuffer) bindFramebuffer(gl, GL.READ_FRAMEBUFFER, null);
+        if (currentDrawFrameBuffers.get(gl) === frameBuffer) bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, null);
         gl.deleteFramebuffer(frameBuffer);
       }
       gl.deleteTexture(texture);
@@ -533,7 +527,7 @@ export const getRenderer = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
   vao: WebGLVertexArrayObject | null,
-  { depthTest = false, blend = true },
+  { depthTest = false, blend = true, frontFace = GL.CCW },
 ): Render => {
   const uniforms = getUniforms(gl, program);
   return ({ uniformValues, viewport, target, clear, scissor, draw }: UseInfo): void => {
@@ -553,7 +547,7 @@ export const getRenderer = (
       gl.depthRange(0, 1);
 
       // set polygon vertex order convention
-      // gl.frontFace(GL.CW) // webgl defaults to a counterclockwise vertex order, consider switching to it
+      gl.frontFace(frontFace);
 
       // don't render both sides of a triangle (it's dependent on the cw/ccw convention set above)
       flagSet(gl, GL.CULL_FACE, true);
@@ -581,7 +575,7 @@ export const getRenderer = (
     if (viewport) setViewport(gl, viewport.x, viewport.y, viewport.width, viewport.height);
     if (uniformValues) uniforms.forEach((setValue, name) => uniformValues[name] && setValue(uniformValues[name]));
 
-    bindFramebuffer(gl, GL_DRAW_FRAMEBUFFER, target);
+    bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, target);
 
     if (clear) clearRect(gl, clear);
 
@@ -627,3 +621,45 @@ export const frag = (strings: TemplateStringsArray, ...args: unknown[]) => `#ver
 precision highp int;
 precision highp float;
 ${templateConcat(strings, ...args)}`;
+
+/***********************
+ *
+ * Handle context loss
+ *
+ **********************/
+
+/*
+const flushErrors = (gl: WebGL2RenderingContext, text: string) => {
+  let hasError;
+  let hasShownError = false;
+  do {
+    const error = gl.getError();
+    hasError = error !== gl.NO_ERROR && error !== gl.CONTEXT_LOST_WEBGL;
+    if (hasError) {
+      if (!hasShownError) {
+        // eslint-disable-next-line no-console
+        console.warn(`GL error(s) shown before ${text}`);
+        hasShownError = true;
+      }
+      // eslint-disable-next-line no-console
+      console.warn(`GL error: ${error}`);
+    }
+  } while (hasError); // clear the error code
+};
+*/
+
+/** @internal */
+export const testContextLoss = (gl: WebGL2RenderingContext) => {
+  // simulates a context loss at `lossTimeMs` and context recovery at `regainTimeMs` after that
+  const lossTimeMs = 5000;
+  const regainTimeMs = 0;
+  const ext = gl.getExtension('WEBGL_lose_context');
+  if (ext) {
+    window.setInterval(() => {
+      // eslint-disable-next-line no-console
+      console.log('Context loss test triggered, the webgl rendering will freeze or disappear');
+      ext.loseContext();
+      window.setTimeout(() => ext.restoreContext(), regainTimeMs);
+    }, lossTimeMs);
+  }
+};
