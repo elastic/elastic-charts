@@ -6,18 +6,24 @@
  * Side Public License, v 1.
  */
 
+import { ScaleType } from '../../../scales/constants';
 import { DataSeries } from './series';
 import { BasicSeriesSpec, isLineSeriesSpec, isAreaSeriesSpec } from './specs';
 
 /**
  * @internal
  */
-export function fillSeries(dataSeries: DataSeries[], xValues: Set<string | number>): DataSeries[] {
+export function fillSeries(
+  dataSeries: DataSeries[],
+  xValues: Set<string | number>,
+  groupScaleType: ScaleType,
+): DataSeries[] {
   const sortedXValues = [...xValues.values()];
   return dataSeries.map((series) => {
     const { spec, data, isStacked } = series;
-    const xFillRequired = isXFillRequired(spec, isStacked);
-    if (data.length === xValues.size || !xFillRequired) {
+
+    const noFillRequired = isXFillNotRequired(spec, groupScaleType, isStacked);
+    if (data.length === xValues.size || noFillRequired) {
       return {
         ...series,
         data,
@@ -56,6 +62,11 @@ export function fillSeries(dataSeries: DataSeries[], xValues: Set<string | numbe
   });
 }
 
-function isXFillRequired(spec: BasicSeriesSpec, isStacked: boolean): boolean {
-  return (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && (isStacked || !!spec.fit);
+function isXFillNotRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean) {
+  const onlyNoFitAreaLine = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
+  const onlyContinuous =
+    groupScaleType === ScaleType.Linear ||
+    groupScaleType === ScaleType.LinearBinary ||
+    groupScaleType === ScaleType.Time;
+  return onlyNoFitAreaLine && onlyContinuous && !isStacked;
 }
