@@ -39,6 +39,7 @@ export function renderXYChartCanvas2d(
         chartTransform,
         rotation,
         geometries,
+        geometriesIndex,
         theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle, background },
         highlightedLegendItem,
         annotationDimensions,
@@ -144,6 +145,16 @@ export function renderXYChartCanvas2d(
               { color: Colors.Transparent.rgba },
               { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
             );
+            const voronoi = geometriesIndex.triangulation([0, 0, width, height]);
+            if (voronoi) {
+              ctx.beginPath();
+              ctx.translate(left, top);
+              ctx.setLineDash([5, 5]);
+              voronoi.render(ctx);
+              ctx.lineWidth = 1;
+              ctx.strokeStyle = 'blue';
+              ctx.stroke();
+            }
           }),
       ]);
     });
