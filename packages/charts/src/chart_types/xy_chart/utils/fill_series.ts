@@ -6,29 +6,25 @@
  * Side Public License, v 1.
  */
 
-import { ScaleType } from '../../../scales/constants';
 import { DataSeries } from './series';
-import { BasicSeriesSpec, isLineSeriesSpec, isAreaSeriesSpec } from './specs';
+import { isAreaSeriesSpec } from './specs';
 
 /**
  * @internal
  */
-export function fillSeries(
-  dataSeries: DataSeries[],
-  xValues: Set<string | number>,
-  groupScaleType: ScaleType,
-): DataSeries[] {
+export function fillSeries(dataSeries: DataSeries[], xValues: Set<string | number>): DataSeries[] {
   const sortedXValues = [...xValues.values()];
   return dataSeries.map((series) => {
     const { spec, data, isStacked } = series;
 
-    const noFillRequired = isXFillNotRequired(spec, groupScaleType, isStacked);
-    if (data.length === xValues.size || noFillRequired) {
+    if (!isStacked || !isAreaSeriesSpec(spec)) {
       return {
         ...series,
         data,
       };
     }
+    // fill x value only to stacked area charts. All other charts doesn't need that data processing
+    // it used to correctly stack areas where a datapoint is not present on one of the stacked area dataset.
     const filledData: typeof data = [];
     const missingValues = new Set(xValues);
     for (let i = 0; i < data.length; i++) {
@@ -60,13 +56,4 @@ export function fillSeries(
       data: filledData,
     };
   });
-}
-
-function isXFillNotRequired(spec: BasicSeriesSpec, groupScaleType: ScaleType, isStacked: boolean) {
-  const onlyNoFitAreaLine = (isAreaSeriesSpec(spec) || isLineSeriesSpec(spec)) && !spec.fit;
-  const onlyContinuous =
-    groupScaleType === ScaleType.Linear ||
-    groupScaleType === ScaleType.LinearBinary ||
-    groupScaleType === ScaleType.Time;
-  return onlyNoFitAreaLine && onlyContinuous && !isStacked;
 }
