@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { getDistance } from '../../../utils/common';
+import { getDistance, isFiniteNumber } from '../../../utils/common';
 import { Delaunay, Bounds } from '../../../utils/d3-delaunay';
 import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
@@ -42,7 +42,9 @@ export class IndexedGeometrySpatialMap {
   set(points: PointGeometry[]) {
     this.maxRadius = Math.max(this.maxRadius, ...points.map(({ radius }) => radius));
     const { pointGeometries } = this;
-    points.forEach((p) => pointGeometries.push(p));
+    points.forEach((p) => {
+      if (isFiniteNumber(p.y)) pointGeometries.push(p);
+    });
     this.points.push(
       ...points.map<IndexedGeometrySpatialMapPoint>(({ x, y }) => {
         // TODO: handle coincident points better
