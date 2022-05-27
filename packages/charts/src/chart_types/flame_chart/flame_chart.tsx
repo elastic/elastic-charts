@@ -911,35 +911,33 @@ class FlameComponent extends React.Component<FlameProps> {
     this.ensurePickTexture();
 
     if (glCanvas && this.glContext && this.glResources === NULL_GL_RESOURCES) {
-      glCanvas.addEventListener(
-        'webglcontextlost',
-        (event) => {
-          window.cancelAnimationFrame(this.animationRafId);
-          event.preventDefault();
-        },
-        false,
-      ); // we could log it for telemetry etc todo add the option for a callback
-      glCanvas.addEventListener(
-        'webglcontextrestored',
-        () => {
-          // browser trivia: the duplicate calling of ensureContextAndInitialRender and changing/resetting the width are needed for Chrome and Safari to properly restore the context upon loss
-          // we could log context loss/regain for telemetry etc todo add the option for a callback
-          if (!glCanvas || !this.glContext) return;
-          this.restoreGL(this.glContext);
-          const widthCss = glCanvas.style.width;
-          const widthNum = parseFloat(widthCss);
-          glCanvas.style.width = `${widthNum + 0.1}px`;
-          window.setTimeout(() => {
-            glCanvas.style.width = widthCss;
-            if (this.glContext) this.restoreGL(this.glContext);
-          }, 0);
-        },
-        false,
-      );
+      glCanvas.addEventListener('webglcontextlost', this.contextLossHandler, false);
+      glCanvas.addEventListener('webglcontextrestored', this.contextRestoreHandler, false);
 
       this.initializeGL(this.glContext);
       // testContextLoss(this.glContext);
     }
+  };
+
+  private contextLossHandler = (event: { preventDefault: () => void }) => {
+    // we could log it for telemetry etc todo add the option for a callback
+    window.cancelAnimationFrame(this.animationRafId);
+    event.preventDefault(); // this is needed for the context restoration callback to happen
+  };
+
+  private contextRestoreHandler = () => {
+    // browser trivia: the duplicate calling of ensureContextAndInitialRender and changing/resetting the width are needed for Chrome and Safari to properly restore the context upon loss
+    // we could log context loss/regain for telemetry etc todo add the option for a callback
+    const glCanvas = this.glCanvasRef.current;
+    if (!glCanvas || !this.glContext) return;
+    this.restoreGL(this.glContext);
+    const widthCss = glCanvas.style.width;
+    const widthNum = parseFloat(widthCss);
+    glCanvas.style.width = `${widthNum + 0.1}px`;
+    window.setTimeout(() => {
+      glCanvas.style.width = widthCss;
+      if (this.glContext) this.restoreGL(this.glContext);
+    }, 0);
   };
 }
 
