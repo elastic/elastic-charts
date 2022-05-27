@@ -318,36 +318,6 @@ describe('Series', () => {
     const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
     expect(formattedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
-
-  test('should automatically fill NA data points when stacking areas', () => {
-    const store = MockStore.default();
-    MockStore.addSpecs(
-      [
-        MockGlobalSpec.yAxis({
-          id: 'y',
-          domain: { fit: true },
-        }),
-        MockSeriesSpec.area({
-          id: 'spec1',
-          yAccessors: ['y1'],
-          splitSeriesAccessors: ['g'],
-          stackAccessors: ['x'],
-          xScaleType: ScaleType.Linear,
-          data: [
-            { x: 1, y1: 1, g: 'a' },
-            { x: 2, y1: 2, g: 'a' },
-            { x: 4, y1: 4, g: 'a' },
-            { x: 1, y1: 21, g: 'b' },
-            { x: 3, y1: 23, g: 'b' },
-          ],
-        }),
-      ],
-      store,
-    );
-
-    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
-    expect(formattedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-  });
   test('Can stack multiple dataseries with scale to extent', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
@@ -388,7 +358,7 @@ describe('Series', () => {
     const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
     expect(formattedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
-  // stacking bars or areas with y0 is not allowed anymore
+  // skipped because stacking bars and areas with y0 is not allowed anymore
   test.skip('Can stack simple dataseries with y0', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
@@ -412,6 +382,35 @@ describe('Series', () => {
             { x: 2, y1: 3, y0: 1, g: 'b' },
             { x: 3, y1: 23, y0: 4, g: 'b' },
             { x: 4, y1: 4, y0: 1, g: 'b' },
+          ],
+        }),
+      ],
+      store,
+    );
+
+    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+    expect(formattedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+  test('should automatically fill NA data points when stacking areas', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.yAxis({
+          id: 'y',
+          domain: { fit: true },
+        }),
+        MockSeriesSpec.area({
+          id: 'spec1',
+          yAccessors: ['y1'],
+          splitSeriesAccessors: ['g'],
+          stackAccessors: ['x'],
+          xScaleType: ScaleType.Linear,
+          data: [
+            { x: 1, y1: 1, g: 'a' },
+            { x: 2, y1: 2, g: 'a' },
+            { x: 4, y1: 4, g: 'a' },
+            { x: 1, y1: 21, g: 'b' },
+            { x: 3, y1: 23, g: 'b' },
           ],
         }),
       ],
