@@ -9,6 +9,7 @@
 import { PointerEvent } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { ChartDimensions } from '../../utils/dimensions';
@@ -39,14 +40,14 @@ export const getElementAtCursorPositionSelector = createCustomCachedSelector(
 
 function getElementAtCursorPosition(
   orientedProjectedPointerPosition: PointerPosition,
-  scales: ComputedScales,
+  { xScale }: ComputedScales,
   geometriesIndexKeys: (string | number)[],
   geometriesIndex: IndexedGeometryMap,
   externalPointerEvent: PointerEvent | null,
   { chartDimensions }: ChartDimensions,
 ): IndexedGeometry[] {
-  if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
-    const x = scales.xScale.pureScale(externalPointerEvent.x);
+  if (isValidPointerOverEvent(xScale, externalPointerEvent)) {
+    const x = xScale.pureScale(externalPointerEvent.x);
 
     if (Number.isNaN(x) || x > chartDimensions.width + chartDimensions.left || x < 0) {
       return [];
@@ -54,14 +55,15 @@ function getElementAtCursorPosition(
     // TODO: Handle external event with spatial points
     return geometriesIndex.find(externalPointerEvent.x, { x: -1, y: -1 });
   }
-  const xValue = scales.xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys);
-  if (!Number.isFinite(xValue.value)) {
+  const { value } = xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys);
+
+  if (isNil(value)) {
     return [];
   }
   // get the elements at cursor position
   return geometriesIndex
     .find(
-      xValue.value,
+      value,
       orientedProjectedPointerPosition,
       orientedProjectedPointerPosition.horizontalPanelValue,
       orientedProjectedPointerPosition.verticalPanelValue,
