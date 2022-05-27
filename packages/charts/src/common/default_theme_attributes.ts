@@ -7,13 +7,5 @@
  */
 
 /** @internal */
-export const BOX_GAP_HORIZONTAL = 0.5;
-
-/** @internal */
-export const BOX_GAP_VERTICAL = 2;
-
-const CANVAS_SIZE_INCREMENT = 256; // to avoid thrashing the layout and canvases on every one pixel width/height change
-
-/** @internal */
-export const roundUpSize = (cssPixelSize: number) =>
-  CANVAS_SIZE_INCREMENT * Math.ceil(cssPixelSize / CANVAS_SIZE_INCREMENT);
+export const DEFAULT_FONT_FAMILY =
+  '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';

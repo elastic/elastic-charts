@@ -13,15 +13,17 @@ import {
   createLinkedProgram,
   getAttributes,
   getRenderer,
-  GL_FRAGMENT_SHADER,
-  GL_VERTEX_SHADER,
+  resetState,
 } from '../../../common/kingly';
+import { GL } from '../../../common/webgl_constants';
 import { ColumnarViewModel } from '../flame_api';
 import { colorFrag, rectVert, roundedRectFrag } from '../shaders';
 import { GLResources, NULL_GL_RESOURCES } from '../types';
 
 /** @internal */
 export function ensureWebgl(gl: WebGL2RenderingContext, instanceAttributes: string[]): GLResources {
+  resetState(gl);
+
   /**
    * Vertex array attributes
    */
@@ -45,15 +47,15 @@ export function ensureWebgl(gl: WebGL2RenderingContext, instanceAttributes: stri
 
   const geomProgram = createLinkedProgram(
     gl,
-    createCompiledShader(gl, GL_VERTEX_SHADER, rectVert),
-    createCompiledShader(gl, GL_FRAGMENT_SHADER, roundedRectFrag),
+    createCompiledShader(gl, GL.VERTEX_SHADER, rectVert),
+    createCompiledShader(gl, GL.FRAGMENT_SHADER, roundedRectFrag),
     attributeLocations,
   );
 
   const pickProgram = createLinkedProgram(
     gl,
-    createCompiledShader(gl, GL_VERTEX_SHADER, rectVert),
-    createCompiledShader(gl, GL_FRAGMENT_SHADER, colorFrag),
+    createCompiledShader(gl, GL.VERTEX_SHADER, rectVert),
+    createCompiledShader(gl, GL.FRAGMENT_SHADER, colorFrag),
     attributeLocations,
   );
 

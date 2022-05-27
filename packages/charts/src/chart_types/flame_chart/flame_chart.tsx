@@ -12,14 +12,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import {
-  bindFramebuffer,
-  createTexture,
-  GL_READ_FRAMEBUFFER,
-  NullTexture,
-  readPixel,
-  Texture,
-} from '../../common/kingly';
+import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
+import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { onChartRendered } from '../../state/actions/chart';
@@ -51,6 +45,8 @@ const ZOOM_FROM_EDGE_BAND_RIGHT = ZOOM_FROM_EDGE_BAND + PADDING_RIGHT;
 const ZOOM_FROM_EDGE_BAND_TOP = ZOOM_FROM_EDGE_BAND + PADDING_TOP;
 const ZOOM_FROM_EDGE_BAND_BOTTOM = ZOOM_FROM_EDGE_BAND + PADDING_BOTTOM;
 const LEFT_MOUSE_BUTTON = 1;
+const MINIMAP_SIZE_RATIO_X = 3;
+const MINIMAP_SIZE_RATIO_Y = 3;
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -176,9 +172,9 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // panning
   private startOfDragX: number = NaN;
-  private startOfDragX0: number = NaN;
   private startOfDragY: number = NaN;
-  private startOfDragY0: number = NaN;
+  private startOfDragFocusLeft: number = NaN;
+  private startOfDragFocusTop: number = NaN; // todo top or bottom...does it even matter?
 
   // text search
   private readonly searchInputRef: RefObject<HTMLInputElement>;
@@ -202,8 +198,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentFocus = focusRect(this.props.columnarViewModel, props.chartDimensions.height, 0, -Infinity);
     this.targetFocus = { ...this.currentFocus };
     this.hoverIndex = NaN;
-    this.pointerX = -10000;
-    this.pointerY = -10000;
+    this.pointerX = NaN;
+    this.pointerY = NaN;
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
@@ -258,12 +254,21 @@ class FlameComponent extends React.Component<FlameProps> {
     this.props.containerRef().current?.removeEventListener('wheel', this.preventScroll);
   }
 
+  private ensureTextureAndDraw = () => {
+    this.ensurePickTexture();
+    this.drawCanvas();
+  };
+
   componentDidUpdate = () => {
     if (!this.ctx) this.tryCanvasContext();
-    this.ensurePickTexture();
-    this.drawCanvas(); // eg. due to chartDimensions (parentDimensions) change
+    this.ensureTextureAndDraw();
+    // eg. due to chartDimensions (parentDimensions) change
     // this.props.onChartRendered() // creates and infinite update loop
   };
+
+  private pointerInMinimap = (x: number, y: number) =>
+    x === clamp(x, this.getMinimapLeft(), this.getMinimapLeft() + this.getMinimapWidth()) &&
+    y === clamp(y, this.getMinimapTop(), this.getMinimapTop() + this.getMinimapHeight());
 
   private datumAtXY: PickFunction = (x, y) =>
     this.glContext ? colorToDatumIndex(readPixel(this.glContext, x, y)) : NaN;
@@ -292,7 +297,7 @@ class FlameComponent extends React.Component<FlameProps> {
       e.stopPropagation();
       this.updatePointerLocation(e);
       const hovered = this.getHoveredDatumIndex(e);
-      const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN; // todo instead of translating NaN/-1 back and forth, just convert to -1 for shader rendering
+      const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN;
       if (hovered) {
         this.hoverIndex = hovered.datumIndex;
         if (!Object.is(this.hoverIndex, prevHoverIndex)) {
@@ -318,30 +323,36 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     this.updatePointerLocation(e);
     if (this.isDragging(e)) {
+      const dragInMinimap = this.pointerInMinimap(this.startOfDragX, this.startOfDragY);
+      const focusMoveDirection = dragInMinimap ? 1 : -1; // focus box moves in direction of drag: positive; opposite: negative
       const { x0, x1, y0, y1 } = this.currentFocus;
       const focusWidth = x1 - x0; // this stays constant during panning
       const focusHeight = y1 - y0; // this stays constant during panning
-      if (Number.isNaN(this.startOfDragX0)) this.startOfDragX0 = x0;
-      if (Number.isNaN(this.startOfDragY0)) this.startOfDragY0 = y0;
+      if (Number.isNaN(this.startOfDragFocusLeft)) this.startOfDragFocusLeft = x0;
+      if (Number.isNaN(this.startOfDragFocusTop)) this.startOfDragFocusTop = y0;
       const dragDistanceX = this.getDragDistanceX();
       const dragDistanceY = this.getDragDistanceY();
       const { width: chartWidth, height: chartHeight } = this.props.chartDimensions;
-      const deltaIntentX = (-dragDistanceX / chartWidth) * focusWidth;
-      const deltaIntentY = (-dragDistanceY / chartHeight) * focusHeight;
+      const focusChartWidth = chartWidth - PADDING_LEFT - PADDING_RIGHT;
+      const focusChartHeight = chartHeight - PADDING_TOP - PADDING_BOTTOM;
+      const dragSpeedX = (dragInMinimap ? MINIMAP_SIZE_RATIO_X / focusWidth : 1) / focusChartWidth;
+      const dragSpeedY = (dragInMinimap ? MINIMAP_SIZE_RATIO_Y / focusHeight : 1) / focusChartHeight;
+      const deltaIntentX = focusMoveDirection * dragDistanceX * dragSpeedX * focusWidth;
+      const deltaIntentY = focusMoveDirection * dragDistanceY * dragSpeedY * focusHeight;
       const deltaCorrectionX =
         deltaIntentX > 0
-          ? Math.min(0, 1 - (this.startOfDragX0 + focusWidth + deltaIntentX))
-          : -Math.min(0, this.startOfDragX0 + deltaIntentX);
+          ? Math.min(0, 1 - (this.startOfDragFocusLeft + focusWidth + deltaIntentX))
+          : -Math.min(0, this.startOfDragFocusLeft + deltaIntentX);
       const deltaCorrectionY =
         deltaIntentY > 0
-          ? Math.min(0, 1 - (this.startOfDragY0 + focusHeight + deltaIntentY))
-          : -Math.min(0, this.startOfDragY0 + deltaIntentY);
+          ? Math.min(0, 1 - (this.startOfDragFocusTop + focusHeight + deltaIntentY))
+          : -Math.min(0, this.startOfDragFocusTop + deltaIntentY);
       const deltaX = deltaIntentX + deltaCorrectionX; // todo allow a bit of overdrag: use 0.95-0.98 times deltaCorrectionX and snap back on mouseup
       const deltaY = deltaIntentY + deltaCorrectionY; // todo allow a bit of overdrag: use 0.95-0.98 times deltaCorrectionX and snap back on mouseup
-      const newX0 = clamp(this.startOfDragX0 + deltaX, 0, 1); // to avoid negligible FP domain breaches
-      const newX1 = clamp(this.startOfDragX0 + focusWidth + deltaX, 0, 1); // to avoid negligible FP domain breaches
-      const newY0 = clamp(this.startOfDragY0 + deltaY, 0, 1); // to avoid negligible FP domain breaches
-      const newY1 = clamp(this.startOfDragY0 + focusHeight + deltaY, 0, 1); // to avoid negligible FP domain breaches
+      const newX0 = clamp(this.startOfDragFocusLeft + deltaX, 0, 1); // to avoid negligible FP domain breaches
+      const newX1 = clamp(this.startOfDragFocusLeft + focusWidth + deltaX, 0, 1); // to avoid negligible FP domain breaches
+      const newY0 = clamp(this.startOfDragFocusTop + deltaY, 0, 1); // to avoid negligible FP domain breaches
+      const newY1 = clamp(this.startOfDragFocusTop + focusHeight + deltaY, 0, 1); // to avoid negligible FP domain breaches
       const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1, timestamp: e.timeStamp };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
@@ -351,9 +362,9 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private clearDrag = () => {
     this.startOfDragX = NaN;
-    this.startOfDragX0 = NaN;
     this.startOfDragY = NaN;
-    this.startOfDragY0 = NaN;
+    this.startOfDragFocusLeft = NaN;
+    this.startOfDragFocusTop = NaN;
   };
 
   private resetDrag = () => {
@@ -363,6 +374,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
+    if (Number.isNaN(this.pointerX + this.pointerY)) return; // don't reset from minimap
     this.resetDrag();
     window.addEventListener('mousemove', this.handleMouseDragMove, { passive: true });
     window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
@@ -387,7 +399,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const isDoubleClick = e.detail > 1;
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
-      if (mustFocus) {
+      if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
         this.targetFocus = focusRect(
           this.props.columnarViewModel,
           this.props.chartDimensions.height,
@@ -497,6 +509,13 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
+  private uploadSearchColors = () => {
+    const colorSetter = this.glResources.attributes.get('color');
+    if (this.glContext && colorSetter && this.currentColor.length === this.props.columnarViewModel.color.length) {
+      uploadToWebgl(this.glContext, new Map([['color', colorSetter]]), { color: this.currentColor });
+    }
+  };
+
   private searchForText = (force: boolean) => {
     const input = this.searchInputRef.current;
     const searchString = input?.value;
@@ -507,10 +526,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.focusOnAllMatches();
 
     // update colors
-    const colorSetter = this.glResources.attributes.get('color');
-    if (this.glContext && colorSetter) {
-      uploadToWebgl(this.glContext, new Map([['color', colorSetter]]), { color: this.currentColor });
-    }
+    this.uploadSearchColors();
 
     // render
     this.focusedMatchIndex = NaN;
@@ -791,6 +807,10 @@ class FlameComponent extends React.Component<FlameProps> {
       this.glContext,
       this.props.chartDimensions.width,
       this.props.chartDimensions.height,
+      this.getMinimapWidth(),
+      this.getMinimapHeight(),
+      this.getMinimapLeft(),
+      this.getMinimapTop(),
       window.devicePixelRatio * this.pinchZoomScale,
       this.props.columnarViewModel,
       this.pickTexture,
@@ -840,6 +860,11 @@ class FlameComponent extends React.Component<FlameProps> {
     this.props.onRenderChange(true); // emit API callback
   };
 
+  private getMinimapWidth = () => this.props.chartDimensions.width / MINIMAP_SIZE_RATIO_X;
+  private getMinimapHeight = () => this.props.chartDimensions.height / MINIMAP_SIZE_RATIO_Y;
+  private getMinimapLeft = () => this.props.chartDimensions.width - this.getMinimapWidth();
+  private getMinimapTop = () => this.props.chartDimensions.height - this.getMinimapHeight();
+
   private ensurePickTexture = () => {
     const { width, height } = this.props.chartDimensions;
     const pr = window.devicePixelRatio * this.pinchZoomScale;
@@ -857,11 +882,23 @@ class FlameComponent extends React.Component<FlameProps> {
           textureIndex: 0,
           width: textureWidth,
           height: textureHeight,
-          internalFormat: this.glContext.RGBA8,
+          internalFormat: GL.RGBA8,
           data: null,
         }) ?? NullTexture;
-      bindFramebuffer(this.glContext, GL_READ_FRAMEBUFFER, this.pickTexture.target());
+      bindFramebuffer(this.glContext, GL.READ_FRAMEBUFFER, this.pickTexture.target());
     }
+  };
+
+  private initializeGL = (gl: WebGL2RenderingContext) => {
+    this.glResources = ensureWebgl(gl, Object.keys(this.props.columnarViewModel));
+    uploadToWebgl(gl, this.glResources.attributes, this.props.columnarViewModel);
+  };
+
+  private restoreGL = (gl: WebGL2RenderingContext) => {
+    this.initializeGL(gl);
+    this.pickTexture = NullTexture;
+    this.uploadSearchColors();
+    this.ensureTextureAndDraw();
   };
 
   private tryCanvasContext = () => {
@@ -873,9 +910,35 @@ class FlameComponent extends React.Component<FlameProps> {
 
     this.ensurePickTexture();
 
-    if (this.glContext && this.glResources === NULL_GL_RESOURCES) {
-      this.glResources = ensureWebgl(this.glContext, Object.keys(this.props.columnarViewModel));
-      uploadToWebgl(this.glContext, this.glResources.attributes, this.props.columnarViewModel);
+    if (glCanvas && this.glContext && this.glResources === NULL_GL_RESOURCES) {
+      glCanvas.addEventListener(
+        'webglcontextlost',
+        (event) => {
+          window.cancelAnimationFrame(this.animationRafId);
+          event.preventDefault();
+        },
+        false,
+      ); // we could log it for telemetry etc todo add the option for a callback
+      glCanvas.addEventListener(
+        'webglcontextrestored',
+        () => {
+          // browser trivia: the duplicate calling of ensureContextAndInitialRender and changing/resetting the width are needed for Chrome and Safari to properly restore the context upon loss
+          // we could log context loss/regain for telemetry etc todo add the option for a callback
+          if (!glCanvas || !this.glContext) return;
+          this.restoreGL(this.glContext);
+          const widthCss = glCanvas.style.width;
+          const widthNum = parseFloat(widthCss);
+          glCanvas.style.width = `${widthNum + 0.1}px`;
+          window.setTimeout(() => {
+            glCanvas.style.width = widthCss;
+            if (this.glContext) this.restoreGL(this.glContext);
+          }, 0);
+        },
+        false,
+      );
+
+      this.initializeGL(this.glContext);
+      // testContextLoss(this.glContext);
     }
   };
 }
