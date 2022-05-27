@@ -18,23 +18,20 @@ const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 /** @internal */
 export const getChartContainerDimensionsSelector = createCustomCachedSelector(
   [getLegendConfigSelector, getLegendSizeSelector, getParentDimension],
-  ({ showLegend, legendPosition: { floating, direction } }, legendSize, parentDimensions): Dimensions => {
-    if (!showLegend || floating) {
-      return parentDimensions;
-    }
-    if (direction === LayoutDirection.Vertical) {
-      return {
-        left: 0,
-        top: 0,
-        width: parentDimensions.width - legendSize.width - legendSize.margin * 2,
-        height: parentDimensions.height,
-      };
-    }
-    return {
-      left: 0,
-      top: 0,
-      width: parentDimensions.width,
-      height: parentDimensions.height - legendSize.height - legendSize.margin * 2,
-    };
-  },
+  ({ showLegend, legendPosition: { floating, direction } }, legendSize, parentDimensions): Dimensions =>
+    floating || !showLegend
+      ? parentDimensions
+      : direction === LayoutDirection.Vertical
+      ? {
+          left: 0,
+          top: 0,
+          width: parentDimensions.width - legendSize.width - legendSize.margin * 2,
+          height: parentDimensions.height,
+        }
+      : {
+          left: 0,
+          top: 0,
+          width: parentDimensions.width,
+          height: parentDimensions.height - legendSize.height - legendSize.margin * 2,
+        },
 );

@@ -26,8 +26,8 @@ export function pickShapesLayerValues(shapes: QuadViewModel[]): LayerValue[][] {
   const maxDepth = shapes.reduce((acc, curr) => Math.max(acc, curr.depth), 0);
   return shapes
     .filter(({ depth }) => depth === maxDepth) // eg. lowest layer in a treemap, where layers overlap in screen space; doesn't apply to sunburst/flame
-    .map<Array<LayerValue>>((viewModel) => {
-      const values: Array<LayerValue> = [
+    .map<LayerValue[]>((viewModel) => {
+      const values: LayerValue[] = [
         {
           smAccessorValue: viewModel.smAccessorValue,
           groupByRollup: viewModel.dataName,
