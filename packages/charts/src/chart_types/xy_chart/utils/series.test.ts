@@ -289,7 +289,7 @@ describe('Series', () => {
     const stackedValues = formatStackedDataSeriesValues(dataSeries, xValues, 'bar');
     expect(stackedValues.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
-  test('Can stack simple dataseries with scale to extent', () => {
+  test('should not fill NA data points when stacking bars', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [
@@ -298,6 +298,36 @@ describe('Series', () => {
           domain: { fit: true },
         }),
         MockSeriesSpec.bar({
+          id: 'spec1',
+          yAccessors: ['y1'],
+          splitSeriesAccessors: ['g'],
+          stackAccessors: ['x'],
+          xScaleType: ScaleType.Linear,
+          data: [
+            { x: 1, y1: 1, g: 'a' },
+            { x: 2, y1: 2, g: 'a' },
+            { x: 4, y1: 4, g: 'a' },
+            { x: 1, y1: 21, g: 'b' },
+            { x: 3, y1: 23, g: 'b' },
+          ],
+        }),
+      ],
+      store,
+    );
+
+    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
+    expect(formattedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+
+  test('should automatically fill NA data points when stacking areas', () => {
+    const store = MockStore.default();
+    MockStore.addSpecs(
+      [
+        MockGlobalSpec.yAxis({
+          id: 'y',
+          domain: { fit: true },
+        }),
+        MockSeriesSpec.area({
           id: 'spec1',
           yAccessors: ['y1'],
           splitSeriesAccessors: ['g'],
@@ -358,39 +388,8 @@ describe('Series', () => {
     const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
     expect(formattedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
   });
-  test('Can stack simple dataseries with y0', () => {
-    const store = MockStore.default();
-    MockStore.addSpecs(
-      [
-        MockGlobalSpec.yAxis({
-          id: 'y',
-          domain: { fit: true },
-        }),
-        MockSeriesSpec.bar({
-          id: 'spec1',
-          yAccessors: ['y1'],
-          y0Accessors: ['y0'],
-          splitSeriesAccessors: ['g'],
-          stackAccessors: ['x'],
-          xScaleType: ScaleType.Linear,
-          data: [
-            { x: 1, y1: 3, y0: 1, g: 'a' },
-            { x: 2, y1: 3, y0: 2, g: 'a' },
-            { x: 4, y1: 4, y0: 3, g: 'a' },
-            { x: 1, y1: 2, y0: 1, g: 'b' },
-            { x: 2, y1: 3, y0: 1, g: 'b' },
-            { x: 3, y1: 23, y0: 4, g: 'b' },
-            { x: 4, y1: 4, y0: 1, g: 'b' },
-          ],
-        }),
-      ],
-      store,
-    );
-
-    const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
-    expect(formattedDataSeries.map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-  });
-  test('Can stack simple dataseries with scale to extent with y0', () => {
+  // stacking bars or areas with y0 is not allowed anymore
+  test.skip('Can stack simple dataseries with y0', () => {
     const store = MockStore.default();
     MockStore.addSpecs(
       [

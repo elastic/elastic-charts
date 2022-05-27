@@ -22797,156 +22797,6 @@ Array [
 ]
 `;
 
-exports[`Series Can stack simple dataseries with y0 1`] = `
-Array [
-  Object {
-    "data": Array [
-      Object {
-        "datum": Object {
-          "g": "a",
-          "x": 1,
-          "y0": 1,
-          "y1": 3,
-        },
-        "filled": undefined,
-        "initialY0": 1,
-        "initialY1": 3,
-        "mark": null,
-        "x": 1,
-        "y0": 0,
-        "y1": 3,
-      },
-      Object {
-        "datum": Object {
-          "g": "a",
-          "x": 2,
-          "y0": 2,
-          "y1": 3,
-        },
-        "filled": undefined,
-        "initialY0": 2,
-        "initialY1": 3,
-        "mark": null,
-        "x": 2,
-        "y0": 0,
-        "y1": 3,
-      },
-      Object {
-        "datum": undefined,
-        "filled": Object {
-          "x": 3,
-        },
-        "initialY0": null,
-        "initialY1": null,
-        "mark": null,
-        "x": 3,
-        "y0": 0,
-        "y1": 0,
-      },
-      Object {
-        "datum": Object {
-          "g": "a",
-          "x": 4,
-          "y0": 3,
-          "y1": 4,
-        },
-        "filled": undefined,
-        "initialY0": 3,
-        "initialY1": 4,
-        "mark": null,
-        "x": 4,
-        "y0": 0,
-        "y1": 4,
-      },
-    ],
-    "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
-    "seriesKeys": Array [
-      "a",
-      "y1",
-    ],
-    "specId": "spec1",
-    "splitAccessors": Map {
-      "g" => "a",
-    },
-    "yAccessor": "y1",
-  },
-  Object {
-    "data": Array [
-      Object {
-        "datum": Object {
-          "g": "b",
-          "x": 1,
-          "y0": 1,
-          "y1": 2,
-        },
-        "filled": undefined,
-        "initialY0": 1,
-        "initialY1": 2,
-        "mark": null,
-        "x": 1,
-        "y0": 3,
-        "y1": 5,
-      },
-      Object {
-        "datum": Object {
-          "g": "b",
-          "x": 2,
-          "y0": 1,
-          "y1": 3,
-        },
-        "filled": undefined,
-        "initialY0": 1,
-        "initialY1": 3,
-        "mark": null,
-        "x": 2,
-        "y0": 3,
-        "y1": 6,
-      },
-      Object {
-        "datum": Object {
-          "g": "b",
-          "x": 3,
-          "y0": 4,
-          "y1": 23,
-        },
-        "filled": undefined,
-        "initialY0": 4,
-        "initialY1": 23,
-        "mark": null,
-        "x": 3,
-        "y0": 0,
-        "y1": 23,
-      },
-      Object {
-        "datum": Object {
-          "g": "b",
-          "x": 4,
-          "y0": 1,
-          "y1": 4,
-        },
-        "filled": undefined,
-        "initialY0": 1,
-        "initialY1": 4,
-        "mark": null,
-        "x": 4,
-        "y0": 4,
-        "y1": 8,
-      },
-    ],
-    "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
-    "seriesKeys": Array [
-      "b",
-      "y1",
-    ],
-    "specId": "spec1",
-    "splitAccessors": Map {
-      "g" => "b",
-    },
-    "yAccessor": "y1",
-  },
-]
-`;
-
 exports[`Series Can stack unsorted dataseries 1`] = `
 Array [
   Object {
@@ -28321,6 +28171,145 @@ Array [
 ]
 `;
 
+exports[`Series should automatically fill NA data points when stacking areas 1`] = `
+Array [
+  Object {
+    "data": Array [
+      Object {
+        "datum": Object {
+          "g": "a",
+          "x": 1,
+          "y1": 1,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "x": 1,
+        "y0": 0,
+        "y1": 1,
+      },
+      Object {
+        "datum": Object {
+          "g": "a",
+          "x": 2,
+          "y1": 2,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 2,
+        "mark": null,
+        "x": 2,
+        "y0": 0,
+        "y1": 2,
+      },
+      Object {
+        "datum": undefined,
+        "filled": Object {
+          "x": 3,
+        },
+        "initialY0": null,
+        "initialY1": null,
+        "mark": null,
+        "x": 3,
+        "y0": 0,
+        "y1": 0,
+      },
+      Object {
+        "datum": Object {
+          "g": "a",
+          "x": 4,
+          "y1": 4,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 4,
+        "mark": null,
+        "x": 4,
+        "y0": 0,
+        "y1": 4,
+      },
+    ],
+    "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
+    "seriesKeys": Array [
+      "a",
+      "y1",
+    ],
+    "specId": "spec1",
+    "splitAccessors": Map {
+      "g" => "a",
+    },
+    "yAccessor": "y1",
+  },
+  Object {
+    "data": Array [
+      Object {
+        "datum": Object {
+          "g": "b",
+          "x": 1,
+          "y1": 21,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 21,
+        "mark": null,
+        "x": 1,
+        "y0": 1,
+        "y1": 22,
+      },
+      Object {
+        "datum": undefined,
+        "filled": Object {
+          "x": 2,
+        },
+        "initialY0": null,
+        "initialY1": null,
+        "mark": null,
+        "x": 2,
+        "y0": 2,
+        "y1": 2,
+      },
+      Object {
+        "datum": Object {
+          "g": "b",
+          "x": 3,
+          "y1": 23,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 23,
+        "mark": null,
+        "x": 3,
+        "y0": 0,
+        "y1": 23,
+      },
+      Object {
+        "datum": undefined,
+        "filled": Object {
+          "x": 4,
+        },
+        "initialY0": null,
+        "initialY1": null,
+        "mark": null,
+        "x": 4,
+        "y0": 4,
+        "y1": 4,
+      },
+    ],
+    "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
+    "seriesKeys": Array [
+      "b",
+      "y1",
+    ],
+    "specId": "spec1",
+    "splitAccessors": Map {
+      "g" => "b",
+    },
+    "yAccessor": "y1",
+  },
+]
+`;
+
 exports[`Series should compute data series for stacked specs 1`] = `
 Array [
   Object {
@@ -28523,6 +28512,109 @@ Array [
     "specId": "spec1",
     "splitAccessors": Map {},
     "yAccessor": "y",
+  },
+]
+`;
+
+exports[`Series should not fill NA data points when stacking bars 1`] = `
+Array [
+  Object {
+    "data": Array [
+      Object {
+        "datum": Object {
+          "g": "a",
+          "x": 1,
+          "y1": 1,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "x": 1,
+        "y0": 0,
+        "y1": 1,
+      },
+      Object {
+        "datum": Object {
+          "g": "a",
+          "x": 2,
+          "y1": 2,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 2,
+        "mark": null,
+        "x": 2,
+        "y0": 0,
+        "y1": 2,
+      },
+      Object {
+        "datum": Object {
+          "g": "a",
+          "x": 4,
+          "y1": 4,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 4,
+        "mark": null,
+        "x": 4,
+        "y0": 0,
+        "y1": 4,
+      },
+    ],
+    "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
+    "seriesKeys": Array [
+      "a",
+      "y1",
+    ],
+    "specId": "spec1",
+    "splitAccessors": Map {
+      "g" => "a",
+    },
+    "yAccessor": "y1",
+  },
+  Object {
+    "data": Array [
+      Object {
+        "datum": Object {
+          "g": "b",
+          "x": 1,
+          "y1": 21,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 21,
+        "mark": null,
+        "x": 1,
+        "y0": 1,
+        "y1": 22,
+      },
+      Object {
+        "datum": Object {
+          "g": "b",
+          "x": 3,
+          "y1": 23,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 23,
+        "mark": null,
+        "x": 3,
+        "y0": 0,
+        "y1": 23,
+      },
+    ],
+    "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
+    "seriesKeys": Array [
+      "b",
+      "y1",
+    ],
+    "specId": "spec1",
+    "splitAccessors": Map {
+      "g" => "b",
+    },
+    "yAccessor": "y1",
   },
 ]
 `;
