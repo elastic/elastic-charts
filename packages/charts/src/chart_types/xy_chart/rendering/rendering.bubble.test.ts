@@ -360,14 +360,6 @@ describe('Rendering points - bubble', () => {
       expect(points.length).toBe(7);
       // all the points including null geometries
       expect(geometriesIndex.size).toEqual(9);
-
-      const zeroValueIndexdGeometry = geometriesIndex.find(null, {
-        x: 56.25,
-        y: 100,
-      });
-      expect(zeroValueIndexdGeometry).toBeDefined();
-      expect(zeroValueIndexdGeometry.length).toBe(3);
-      expect(zeroValueIndexdGeometry.find(({ value: { x } }) => x === 5)).toBeDefined();
     });
   });
   describe('Remove points datum is not in domain', () => {
