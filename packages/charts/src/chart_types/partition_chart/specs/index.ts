@@ -9,6 +9,7 @@
 import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
+import { AnimationConfig } from '../../../common/animation';
 import { Distance, Pixels, Radius } from '../../../common/geometry';
 import { BaseDatum, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
@@ -24,7 +25,7 @@ import {
 } from '../../../utils/common';
 import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
 import { percentFormatter } from '../layout/config';
-import { AnimationConfig, PartitionLayout } from '../layout/types/config_types';
+import { PartitionLayout } from '../layout/types/config_types';
 import { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';
 import { NodeSorter, AGGREGATE_KEY } from '../layout/utils/group_by_rollup';
 

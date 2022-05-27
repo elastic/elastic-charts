@@ -1,3 +1,42 @@
+# [46.5.0](https://github.com/elastic/elastic-charts/compare/v46.4.0...v46.5.0) (2022-05-26)
+
+
+### Features
+
+* **flame:** context loss handling ([#1682](https://github.com/elastic/elastic-charts/issues/1682)) ([0e32209](https://github.com/elastic/elastic-charts/commit/0e3220955661348c6cf02d4e379ddec340f0ccfc))
+
+# [46.4.0](https://github.com/elastic/elastic-charts/compare/v46.3.0...v46.4.0) (2022-05-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v58 ([#1677](https://github.com/elastic/elastic-charts/issues/1677)) ([69ad62b](https://github.com/elastic/elastic-charts/commit/69ad62bf57d880f45a5250b8ccfb75da54c8f205))
+
+
+### Features
+
+* **flame:** minimap pan ([#1678](https://github.com/elastic/elastic-charts/issues/1678)) ([fc81ada](https://github.com/elastic/elastic-charts/commit/fc81ada306c042b751a523588bf0eead43881327))
+
+# [46.3.0](https://github.com/elastic/elastic-charts/compare/v46.2.0...v46.3.0) (2022-05-19)
+
+
+### Features
+
+* **flame:** search and other utilities ([#1676](https://github.com/elastic/elastic-charts/issues/1676)) ([b8eaa1f](https://github.com/elastic/elastic-charts/commit/b8eaa1f6266e150cf7153c30c5d7a1c6e21bbac4))
+
+# [46.2.0](https://github.com/elastic/elastic-charts/compare/v46.1.0...v46.2.0) (2022-05-18)
+
+
+### Bug Fixes
+
+* runtime error with `process.env` in src ([#1672](https://github.com/elastic/elastic-charts/issues/1672)) ([47a6b0b](https://github.com/elastic/elastic-charts/commit/47a6b0b9ab88cc33229ca8c132e10deb6729cd57))
+* **deps:** update dependency @elastic/eui to v56 ([#1667](https://github.com/elastic/elastic-charts/issues/1667)) ([285ec8b](https://github.com/elastic/elastic-charts/commit/285ec8bdd05dee758f03b503cb1df311b140c778))
+
+
+### Features
+
+* flame graph with WebGL ([#1664](https://github.com/elastic/elastic-charts/issues/1664)) ([96368ea](https://github.com/elastic/elastic-charts/commit/96368ea45e093cf0e1b0b6db7356568e98be25c9))
+
 # [46.1.0](https://github.com/elastic/elastic-charts/compare/v46.0.1...v46.1.0) (2022-05-05)
 
 

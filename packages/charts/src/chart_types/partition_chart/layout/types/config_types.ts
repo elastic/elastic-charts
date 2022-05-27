@@ -8,7 +8,7 @@
 
 import { $Values } from 'utility-types';
 
-import { Ratio, TimeMs } from '../../../../common/geometry';
+import { Ratio } from '../../../../common/geometry';
 
 /** @public */
 export const PartitionLayout = Object.freeze({
@@ -31,13 +31,4 @@ export interface AnimKeyframe {
   time: number;
   easingFunction: EasingFunction;
   // keyframeConfig: Partial<StaticConfig>;
-}
-
-/** @public */
-export interface AnimationConfig {
-  /** @alpha */
-  animation: {
-    duration: TimeMs;
-    keyframes?: Array<AnimKeyframe>;
-  };
 }

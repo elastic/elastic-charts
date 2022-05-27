@@ -11,7 +11,6 @@ import { drilldownActive } from '../../chart_types/partition_chart/state/selecto
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
 import { LegendItem } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
-import { LayerValue } from '../../specs';
 import { getDelta } from '../../utils/point';
 import { DOMElementActions, ON_DOM_ELEMENT_ENTER, ON_DOM_ELEMENT_LEAVE } from '../actions/dom_element';
 import { KeyActions, ON_KEY_UP } from '../actions/key';
@@ -26,11 +25,6 @@ import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../ac
 import { GlobalChartState, InteractionsState } from '../chart_state';
 import { getInitialPointerState } from '../utils';
 
-/**
- * The minimum amount of time to consider for for dragging purposes
- * @internal
- */
-export const DRAG_DETECTION_TIMEOUT = 100;
 /**
  * The minimum number of pixel between two pointer positions to consider for dragging purposes
  */
@@ -177,27 +171,25 @@ function toggleDeselectedDataSeries(
 
   const alreadyDeselected = actionSeriesKeys.every((key) => deselectedDataSeriesKeys.has(key));
 
+  // todo consider branch simplifications
   if (negate) {
-    if (!alreadyDeselected && deselectedDataSeries.length === legendItemsKeys.length - 1) {
-      return legendItemIds;
-    }
-
-    return legendItems
-      .map(({ seriesIdentifiers }) => seriesIdentifiers)
-      .flat()
-      .filter(({ key }) => !actionSeriesKeys.includes(key));
+    return alreadyDeselected || deselectedDataSeries.length !== legendItemsKeys.length - 1
+      ? legendItems
+          .map(({ seriesIdentifiers }) => seriesIdentifiers)
+          .flat()
+          .filter(({ key }) => !actionSeriesKeys.includes(key))
+      : legendItemIds;
+  } else {
+    return alreadyDeselected
+      ? deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key))
+      : [...deselectedDataSeries, ...legendItemIds];
   }
-
-  if (alreadyDeselected) {
-    return deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key));
-  }
-  return [...deselectedDataSeries, ...legendItemIds];
 }
 
 function getDrilldownData(globalState: GlobalChartState) {
   if (globalState.chartType !== ChartType.Partition || !drilldownActive(globalState)) {
     return [];
   }
-  const layerValues: LayerValue[] = getPickedShapesLayerValues(globalState)[0];
+  const layerValues = getPickedShapesLayerValues(globalState)[0];
   return layerValues ? layerValues[layerValues.length - 1].path.map((n) => n.value) : [];
 }

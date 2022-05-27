@@ -6,11 +6,6 @@
  * Side Public License, v 1.
  */
 
-export default {
-  title: 'Flame (@alpha)',
-};
-
-export { Example as icicleChart } from './01_unix_icicle.story';
-export { Example as flameChart } from './02_unix_flame.story';
-export { Example as cpuProfileFlameChart } from './03_cpu_profile_flame.story';
-export { Example as cpuProfileGLFlameChart } from './04_cpu_profile_gl_flame.story';
+/** @internal */
+export const DEFAULT_FONT_FAMILY =
+  '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
