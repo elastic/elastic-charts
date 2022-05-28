@@ -27,7 +27,8 @@ import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { roundUpSize } from './render/common';
 import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
-import { ensureWebgl, uploadToWebgl } from './render/ensure_webgl';
+import { ensureWebgl } from './render/ensure_webgl';
+import { uploadToWebgl } from './render/upload_to_webgl';
 import { GEOM_INDEX_OFFSET } from './shaders';
 import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
 

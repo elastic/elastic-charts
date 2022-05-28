@@ -7,7 +7,6 @@
  */
 
 import {
-  Attributes,
   bindVertexArray,
   createCompiledShader,
   createLinkedProgram,
@@ -16,7 +15,6 @@ import {
   resetState,
 } from '../../../common/kingly';
 import { GL } from '../../../common/webgl_constants';
-import { ColumnarViewModel } from '../flame_api';
 import { colorFrag, rectVert, roundedRectFrag } from '../shaders';
 import { GLResources, NULL_GL_RESOURCES } from '../types';
 
@@ -70,16 +68,4 @@ export function ensureWebgl(gl: WebGL2RenderingContext, instanceAttributes: stri
   const attributes = getAttributes(gl, geomProgram, attributeLocations);
 
   return { roundedRectRenderer, pickTextureRenderer, attributes };
-}
-
-/** @internal */
-export function uploadToWebgl(
-  gl: WebGL2RenderingContext,
-  attributes: Attributes,
-  columnarViewModel: Partial<ColumnarViewModel>,
-) {
-  attributes.forEach((setValue, key) => {
-    const value = columnarViewModel[key as keyof ColumnarViewModel];
-    if (value instanceof Float32Array) setValue(value);
-  });
 }
