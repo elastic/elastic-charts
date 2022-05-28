@@ -433,6 +433,14 @@ export const createTexture = (
   };
 };
 
+const pickPixel = new Uint8Array(4);
+
+/** @internal */
+export const readPixel = (gl: WebGL2RenderingContext, canvasX: GLint, canvasY: GLint) => {
+  gl.readPixels(canvasX, canvasY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pickPixel); // todo use bound FB/texture values to determine the 5th and 6th args
+  return pickPixel;
+};
+
 /****************
  * Attributes
  ***************/
@@ -590,37 +598,6 @@ export const getRenderer = (
     }
   };
 };
-
-/****************
- * Misc
- ***************/
-
-const pickPixel = new Uint8Array(4);
-
-/** @internal */
-export const readPixel = (gl: WebGL2RenderingContext, canvasX: GLint, canvasY: GLint) => {
-  gl.readPixels(canvasX, canvasY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pickPixel); // todo use bound FB/texture values to determine the 5th and 6th args
-  return pickPixel;
-};
-
-const templateConcat = (strings: TemplateStringsArray, ...args: unknown[]) =>
-  strings
-    .map((s, i) => `${s}${args[i] ?? ''}`)
-    .join('')
-    .trim();
-
-/** @internal */
-export const vert = (strings: TemplateStringsArray, ...args: unknown[]) => `#version 300 es
-#pragma STDGL invariant(all)
-precision highp int;
-precision highp float;
-${templateConcat(strings, ...args)}`;
-
-/** @internal */
-export const frag = (strings: TemplateStringsArray, ...args: unknown[]) => `#version 300 es
-precision highp int;
-precision highp float;
-${templateConcat(strings, ...args)}`;
 
 /***********************
  *

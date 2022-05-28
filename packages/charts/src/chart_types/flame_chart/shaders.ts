@@ -6,13 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { frag, vert } from '../../common/kingly';
-
 /** @internal */
 export const GEOM_INDEX_OFFSET = 1; // zero color means, empty area (no rectangle) so the rectangles are base 1 indexed for pick coloring
 
 /** @internal */
-export const rectVert = /* language=GLSL */ vert`
+export const rectVert = /* language=GLSL */ `#version 300 es
+  #pragma STDGL invariant(all)
+  precision highp int;
+  precision highp float;
+
   in vec2 position0, position1;
   in float size0, size1;
   in vec4 color;
@@ -83,7 +85,10 @@ export const rectVert = /* language=GLSL */ vert`
   }`;
 
 /** @internal */
-export const roundedRectFrag = /* language=GLSL */ frag`
+export const roundedRectFrag = /* language=GLSL */ `#version 300 es
+  precision highp int;
+  precision highp float;
+
   in vec4 fragmentColor;
   in vec2 corners[4];
   in float radiusPx;
@@ -100,7 +105,10 @@ export const roundedRectFrag = /* language=GLSL */ frag`
   }`;
 
 /** @internal */
-export const colorFrag = /* language=GLSL */ frag`
+export const colorFrag = /* language=GLSL */ `#version 300 es
+  precision highp int;
+  precision highp float;
+
   in vec4 fragmentColor;
   out vec4 fragColor;
   void main() { fragColor = fragmentColor; }`;
