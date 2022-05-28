@@ -26,6 +26,17 @@ const attribDefs = /* language=GLSL */ `
   layout(location=${attributeLocations.color}) in vec4 color;
 `;
 
+const vertTop = /* language=GLSL */ `#version 300 es
+  #pragma STDGL invariant(all)
+  precision highp int;
+  precision highp float;
+`;
+
+const fragTop = /* language=GLSL */ `#version 300 es
+  precision highp int;
+  precision highp float;
+`;
+
 const structGeom = /* language=GLSL */ `
   struct Geom {
     int x;
@@ -71,11 +82,7 @@ const getGeom = /* language=GLSL */ `
   }`;
 
 /** @internal */
-export const simpleRectVert = /* language=GLSL */ `#version 300 es
-  #pragma STDGL invariant(all)
-  precision highp int;
-  precision highp float;
-
+export const simpleRectVert = /* language=GLSL */ `${vertTop}
   ${attribDefs}
 
   uniform bool pickLayer;
@@ -86,8 +93,6 @@ export const simpleRectVert = /* language=GLSL */ `#version 300 es
   uniform int hoverIndex;
 
   out vec4 fragmentColor;
-  out vec2 corners[4];
-  out float radiusPx;
 
   const vec4 UNIT4 = vec4(1.0);
   const uvec4 BIT_SHIFTERS = uvec4(24, 16, 8, 0); // helps pack a 32bit unsigned integer into the RGBA bytes
@@ -110,23 +115,19 @@ export const simpleRectVert = /* language=GLSL */ `#version 300 es
   }`;
 
 /** @internal */
-export const roundedRectVert = /* language=GLSL */ `#version 300 es
-  #pragma STDGL invariant(all)
-  precision highp int;
-  precision highp float;
-
+export const roundedRectVert = /* language=GLSL */ `${vertTop}
   ${attribDefs}
 
   uniform bool pickLayer;
   uniform float t; // 0: start position; 1: end position
   uniform vec2 resolution;
-  uniform vec2 gapPx;
-  // at least this ratio of the rectangle's full width/height must be filled, else the pixel gap eats small rectangles:
-  uniform vec2 minFillRatio;
-  uniform float cornerRadiusPx;
   uniform float rowHeight0, rowHeight1;
   uniform mat2 focus; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
   uniform int hoverIndex;
+
+  uniform vec2 gapPx;
+  uniform vec2 minFillRatio; // at least this ratio of the rectangle's full width/height must be filled
+  uniform float cornerRadiusPx;
 
   out vec4 fragmentColor;
   out vec2 corners[4];
@@ -171,10 +172,7 @@ export const roundedRectVert = /* language=GLSL */ `#version 300 es
   }`;
 
 /** @internal */
-export const roundedRectFrag = /* language=GLSL */ `#version 300 es
-  precision highp int;
-  precision highp float;
-
+export const roundedRectFrag = /* language=GLSL */ `${fragTop}
   in vec4 fragmentColor;
   in vec2 corners[4];
   in float radiusPx;
@@ -191,10 +189,7 @@ export const roundedRectFrag = /* language=GLSL */ `#version 300 es
   }`;
 
 /** @internal */
-export const colorFrag = /* language=GLSL */ `#version 300 es
-  precision highp int;
-  precision highp float;
-
+export const colorFrag = /* language=GLSL */ `${fragTop}
   in vec4 fragmentColor;
   out vec4 fragColor;
   void main() { fragColor = fragmentColor; }`;
