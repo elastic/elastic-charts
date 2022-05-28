@@ -48,9 +48,8 @@ const structGeom = /* language=GLSL */ `
   struct Geom {
     vec2 unitSquareCoord;
     vec2 size;
-    vec2 fullSizeXY;
-    vec2 baseXY;
-    vec2 pan;
+    vec4 glPosition;
+    vec4 fragmentColor;
   };
 `;
 
@@ -62,7 +61,7 @@ const getViewable = /* language=GLSL */ `
   }`;
 
 const getGeom = /* language=GLSL */ `
-  Geom getGeom() {
+  Geom getGeom(vec2 viewable, vec2 gapRatio, vec2 maxGapRatio) {
     // calculate the basic geometry invariant of gaps, rounding or zoom levels
     int x = gl_VertexID & 1;        // x yields 0, 1, 0, 1 for gl_VertexID 0, 1, 2, 3
     int y = (gl_VertexID >> 1) & 1; // y yields 0, 0, 1, 1 for gl_VertexID 0, 1, 2, 3
@@ -75,12 +74,26 @@ const getGeom = /* language=GLSL */ `
     vec2 baseXY = fullSizeXY + position;
     vec2 pan = vec2(focus[0][0], focus[1][0]);
 
+    // gl_VertexID iterates as an integer index 0, 1, 2, ..., (offset + 0, offset + 1, ..., offset + count - 1)
+    // these four coordinates form a rectangle, set up as two counterclockwise triangles with gl.TRIANGLE_STRIP
+    // clip coordinate x/y goes from -1 to 1 of the viewport, so we center with this 0.5 subtraction
+    vec2 gr = min(gapRatio, maxGapRatio * fullSizeXY);
+    vec2 xy = baseXY - sign(unitSquareCoord) * gr;
+    vec2 zoomPannedXY = (xy - pan) / viewable;
+
+    // output the position and color values (approx. return values of our vertex shader)
+    // project [0, 1] normalized values to [-1, 1] homogeneous clip space values
+    vec4 glPosition = vec4(2.0 * zoomPannedXY - 1.0, 0, 1);
+
+    vec4 fragmentColor = pickLayer
+      ? vec4((uvec4(gl_InstanceID + GEOM_INDEX_OFFSET) >> BIT_SHIFTERS) % uvec4(256)) / 255.0
+      : vec4(color.rgb, (gl_InstanceID == hoverIndex - GEOM_INDEX_OFFSET ? HOVER_OPACITY : 1.0) * color.a);
+
     return Geom(
       unitSquareCoord,
       size,
-      fullSizeXY,
-      baseXY,
-      pan
+      glPosition,
+      fragmentColor
     );
   }`;
 
@@ -103,16 +116,9 @@ export const simpleRectVert = /* language=GLSL */ `${vertTop}
   ${getGeom}
 
   void main() {
-    vec2 viewable = getViewable();
-    Geom g = getGeom();
-
-    vec2 zoomPannedXY = (g.baseXY - g.pan) / viewable;
-    // output the position and color values (approx. return values of our vertex shader)
-    // project [0, 1] normalized values to [-1, 1] homogeneous clip space values
-    gl_Position = vec4(2.0 * zoomPannedXY - 1.0, 0, 1);
-    fragmentColor = pickLayer
-      ? vec4((uvec4(gl_InstanceID + GEOM_INDEX_OFFSET) >> BIT_SHIFTERS) % uvec4(256)) / 255.0
-      : vec4(color.rgb, (gl_InstanceID == hoverIndex - GEOM_INDEX_OFFSET ? HOVER_OPACITY : 1.0) * color.a);
+    Geom g = getGeom(getViewable(), vec2(0), vec2(0));
+    gl_Position = g.glPosition;
+    fragmentColor = g.fragmentColor;
   }`;
 
 /** @internal */
@@ -141,23 +147,16 @@ export const roundedRectVert = /* language=GLSL */ `${vertTop}
 
   void main() {
     vec2 viewable = getViewable();
-    Geom g = getGeom();
 
     // calculate the gap-aware geometry
     vec2 zoomedResolution = resolution / viewable;
     vec2 gapRatio = gapPx / zoomedResolution;
-    // gl_VertexID iterates as an integer index 0, 1, 2, ..., (offset + 0, offset + 1, ..., offset + count - 1)
-    // these four coordinates form a rectangle, set up as two counterclockwise triangles with gl.TRIANGLE_STRIP
-    // clip coordinate x/y goes from -1 to 1 of the viewport, so we center with this 0.5 subtraction
-    vec2 xy = g.baseXY - min(gapRatio, (1.0 - minFillRatio) * g.fullSizeXY) * sign(g.unitSquareCoord);
-    vec2 zoomPannedXY = (xy - g.pan) / viewable;
 
-    // output the position and color values (approx. return values of our vertex shader)
-    // project [0, 1] normalized values to [-1, 1] homogeneous clip space values
-    gl_Position = vec4(2.0 * zoomPannedXY - 1.0, 0, 1);
-    fragmentColor = pickLayer
-      ? vec4((uvec4(gl_InstanceID + GEOM_INDEX_OFFSET) >> BIT_SHIFTERS) % uvec4(256)) / 255.0
-      : vec4(color.rgb, (gl_InstanceID == hoverIndex - GEOM_INDEX_OFFSET ? HOVER_OPACITY : 1.0) * color.a);
+    vec2 maxGapRatio = 1.0 - minFillRatio;
+    Geom g = getGeom(viewable, gapRatio, maxGapRatio);
+
+    gl_Position = g.glPosition;
+    fragmentColor = g.fragmentColor;
 
     // calculate rounded corner metrics for interpolation
     vec2 pixelSize = g.size * zoomedResolution;
