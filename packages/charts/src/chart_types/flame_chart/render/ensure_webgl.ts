@@ -15,7 +15,7 @@ import {
   resetState,
 } from '../../../common/kingly';
 import { GL } from '../../../common/webgl_constants';
-import { attributeLocations, colorFrag, rectVert, roundedRectFrag } from '../shaders';
+import { attributeLocations, colorFrag, roundedRectVert, roundedRectFrag, simpleRectVert } from '../shaders';
 import { GLResources, NULL_GL_RESOURCES } from '../types';
 
 /** @internal */
@@ -43,14 +43,14 @@ export function ensureWebgl(
 
   const geomProgram = createLinkedProgram(
     gl,
-    createCompiledShader(gl, GL.VERTEX_SHADER, rectVert),
+    createCompiledShader(gl, GL.VERTEX_SHADER, roundedRectVert),
     createCompiledShader(gl, GL.FRAGMENT_SHADER, roundedRectFrag),
     attributeLocations,
   );
 
   const pickProgram = createLinkedProgram(
     gl,
-    createCompiledShader(gl, GL.VERTEX_SHADER, rectVert),
+    createCompiledShader(gl, GL.VERTEX_SHADER, simpleRectVert),
     createCompiledShader(gl, GL.FRAGMENT_SHADER, colorFrag),
     attributeLocations,
   );
