@@ -37,6 +37,13 @@ const fragTop = /* language=GLSL */ `#version 300 es
   precision highp float;
 `;
 
+const constants = /* language=GLSL */ `
+  const vec4 UNIT4 = vec4(1.0);
+  const uvec4 BIT_SHIFTERS = uvec4(24, 16, 8, 0); // helps pack a 32bit unsigned integer into the RGBA bytes
+  const float HOVER_OPACITY = 0.382; // arbitrary; set to the smaller part of the golden ratio
+  const int GEOM_INDEX_OFFSET = ${GEOM_INDEX_OFFSET};
+`;
+
 const structGeom = /* language=GLSL */ `
   struct Geom {
     vec2 unitSquareCoord;
@@ -90,11 +97,7 @@ export const simpleRectVert = /* language=GLSL */ `${vertTop}
 
   out vec4 fragmentColor;
 
-  const vec4 UNIT4 = vec4(1.0);
-  const uvec4 BIT_SHIFTERS = uvec4(24, 16, 8, 0); // helps pack a 32bit unsigned integer into the RGBA bytes
-  const float HOVER_OPACITY = 0.382; // arbitrary; set to the smaller part of the golden ratio
-  const int GEOM_INDEX_OFFSET = ${GEOM_INDEX_OFFSET};
-
+  ${constants}
   ${structGeom}
   ${getGeom}
 
@@ -129,11 +132,7 @@ export const roundedRectVert = /* language=GLSL */ `${vertTop}
   out vec2 corners[4];
   out float radiusPx;
 
-  const vec4 UNIT4 = vec4(1.0);
-  const uvec4 BIT_SHIFTERS = uvec4(24, 16, 8, 0); // helps pack a 32bit unsigned integer into the RGBA bytes
-  const float HOVER_OPACITY = 0.382; // arbitrary; set to the smaller part of the golden ratio
-  const int GEOM_INDEX_OFFSET = ${GEOM_INDEX_OFFSET};
-
+  ${constants}
   ${structGeom}
   ${getGeom}
 
