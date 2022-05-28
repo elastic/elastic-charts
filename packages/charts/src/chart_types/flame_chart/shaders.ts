@@ -7,6 +7,15 @@
  */
 
 /** @internal */
+export const attributeLocations = {
+  position0: 0,
+  position1: 1,
+  size0: 2,
+  size1: 3,
+  color: 4,
+};
+
+/** @internal */
 export const GEOM_INDEX_OFFSET = 1; // zero color means, empty area (no rectangle) so the rectangles are base 1 indexed for pick coloring
 
 /** @internal */
@@ -15,9 +24,11 @@ export const rectVert = /* language=GLSL */ `#version 300 es
   precision highp int;
   precision highp float;
 
-  in vec2 position0, position1;
-  in float size0, size1;
-  in vec4 color;
+  layout(location=${attributeLocations.position0}) in vec2 position0;
+  layout(location=${attributeLocations.position1}) in vec2 position1;
+  layout(location=${attributeLocations.size0}) in float size0;
+  layout(location=${attributeLocations.size1}) in float size1;
+  layout(location=${attributeLocations.color}) in vec4 color;
 
   uniform bool pickLayer;
   uniform float t; // 0: start position; 1: end position

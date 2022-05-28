@@ -29,7 +29,7 @@ import { roundUpSize } from './render/common';
 import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
 import { uploadToWebgl } from './render/upload_to_webgl';
-import { GEOM_INDEX_OFFSET } from './shaders';
+import { attributeLocations, GEOM_INDEX_OFFSET } from './shaders';
 import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
@@ -120,6 +120,9 @@ const getRegExp = (searchString: string): RegExp => {
   }
   return regex;
 };
+
+const isAttributeKey = (keyCandidate: string): keyCandidate is keyof typeof attributeLocations =>
+  keyCandidate in attributeLocations;
 
 interface StateProps {
   columnarViewModel: FlameSpec['columnarData'];
@@ -891,7 +894,7 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private initializeGL = (gl: WebGL2RenderingContext) => {
-    this.glResources = ensureWebgl(gl, Object.keys(this.props.columnarViewModel));
+    this.glResources = ensureWebgl(gl, Object.keys(this.props.columnarViewModel).filter(isAttributeKey));
     uploadToWebgl(gl, this.glResources.attributes, this.props.columnarViewModel);
   };
 

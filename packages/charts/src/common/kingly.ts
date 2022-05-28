@@ -119,7 +119,7 @@ export const createLinkedProgram = (
   gl: WebGL2RenderingContext,
   vertexShader: WebGLShader,
   fragmentShader: WebGLShader,
-  attributeLocations: Map<string, number> = new Map(),
+  attributeLocations: Record<string, number>,
 ): WebGLProgram => {
   const program = gl.createProgram();
   if (!program) throw new Error(`Whoa, shader program could not be created`); // just appeasing the TS linter https://www.khronos.org/webgl/wiki/HandlingContextLost
@@ -128,7 +128,7 @@ export const createLinkedProgram = (
   if (GL_DEBUG && gl.getProgramParameter(program, GL.ATTACHED_SHADERS) !== 2)
     throw new Error('Did not manage to attach the two shaders');
 
-  attributeLocations.forEach((i, name) => gl.bindAttribLocation(program, i, name));
+  Object.entries(attributeLocations).forEach(([name, i]) => gl.bindAttribLocation(program, i, name));
 
   gl.linkProgram(program); // todo consider bulk gl.compileShader iteration, followed by bulk gl.linkProgram iteration https://www.khronos.org/registry/webgl/extensions/KHR_parallel_shader_compile/
 
@@ -463,7 +463,7 @@ export type Attributes = Map<string, (data: ArrayBufferView) => void>;
 export const getAttributes = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
-  attributeLocations: Map<string, GLuint>,
+  attributeLocations: Record<string, GLuint>,
 ): Attributes =>
   new Map(
     [...new Array(gl.getProgramParameter(program, GL.ACTIVE_ATTRIBUTES) /* attributesCount */)].map((_, index) => {
@@ -476,8 +476,7 @@ export const getAttributes = (
       const { name, type } = activeAttribInfo;
       if (name.startsWith('gl_')) return [name, () => {}]; // only populate expressly supplied attributes, NOT gl_VertexID or gl_InstanceID
 
-      const location = attributeLocations.get(name);
-      if (typeof location !== 'number') throw new Error(`Whoa, attribute location was not found in the cache`); // just appeasing the TS linter
+      const location = attributeLocations[name];
       const buffer = gl.createBuffer();
       gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
       gl.enableVertexAttribArray(location);

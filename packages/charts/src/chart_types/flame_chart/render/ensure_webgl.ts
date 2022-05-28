@@ -15,11 +15,14 @@ import {
   resetState,
 } from '../../../common/kingly';
 import { GL } from '../../../common/webgl_constants';
-import { colorFrag, rectVert, roundedRectFrag } from '../shaders';
+import { attributeLocations, colorFrag, rectVert, roundedRectFrag } from '../shaders';
 import { GLResources, NULL_GL_RESOURCES } from '../types';
 
 /** @internal */
-export function ensureWebgl(gl: WebGL2RenderingContext, instanceAttributes: string[]): GLResources {
+export function ensureWebgl(
+  gl: WebGL2RenderingContext,
+  instanceAttributes: Array<keyof typeof attributeLocations>,
+): GLResources {
   resetState(gl);
 
   /**
@@ -31,13 +34,8 @@ export function ensureWebgl(gl: WebGL2RenderingContext, instanceAttributes: stri
 
   bindVertexArray(gl, vao);
 
-  const attributeLocations = new Map(instanceAttributes.map((name, i: GLuint) => [name, i]));
-
   // by how many instances should each attribute advance?
-  instanceAttributes.forEach((name) => {
-    const attributeLocation = attributeLocations.get(name);
-    if (typeof attributeLocation === 'number') gl.vertexAttribDivisor(attributeLocation, 1);
-  });
+  instanceAttributes.forEach((name) => gl.vertexAttribDivisor(attributeLocations[name], 1));
 
   /**
    * Programs
