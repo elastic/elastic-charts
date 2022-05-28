@@ -39,8 +39,6 @@ const fragTop = /* language=GLSL */ `#version 300 es
 
 const structGeom = /* language=GLSL */ `
   struct Geom {
-    int x;
-    int y;
     vec2 unitSquareCoord;
     vec2 size;
     vec2 fullSizeXY;
@@ -70,8 +68,6 @@ const getGeom = /* language=GLSL */ `
     vec2 pan = vec2(focusX[0], focusY[0]);
 
     return Geom(
-      x,
-      y,
       unitSquareCoord,
       size,
       fullSizeXY,
@@ -165,10 +161,10 @@ export const roundedRectVert = /* language=GLSL */ `${vertTop}
     radiusPx = min(cornerRadiusPx, 0.5 * min(pixelSize.x, pixelSize.y));
 
     // output the corner helper values  (approx. return values of our vertex shader)
-    corners[0] = vec2(g.x, g.y) * g.size * zoomedResolution - radiusPx;
-    corners[1] = vec2(1 - g.x, g.y) * g.size * zoomedResolution - radiusPx;
-    corners[2] = vec2(g.x, 1 - g.y) * g.size * zoomedResolution - radiusPx;
-    corners[3] = vec2(1 - g.x, 1 - g.y) * g.size * zoomedResolution - radiusPx;
+    corners[0] = g.unitSquareCoord * g.size * zoomedResolution - radiusPx;
+    corners[1] = (g.unitSquareCoord * vec2(-1, 1) + vec2(1, 0)) * g.size * zoomedResolution - radiusPx;
+    corners[2] = (g.unitSquareCoord * vec2(1, -1) + vec2(0, 1)) * g.size * zoomedResolution - radiusPx;
+    corners[3] = (1.0 - g.unitSquareCoord) * g.size * zoomedResolution - radiusPx;
   }`;
 
 /** @internal */
@@ -183,7 +179,7 @@ export const roundedRectFrag = /* language=GLSL */ `${fragTop}
     // rounded corners: discard pixels that lie beyond each corner "circle" in the quadrant beyond its respective corner
     for(int i = 0; i < 4; i++) {
       vec2 corner = corners[i];
-      if(corner.x < 0.0 && corner.y < 0.0 && length(corner) > radiusPx) discard;
+      if(corner.x < 0.0 && corner.y < 0.0 && length(corner) > radiusPx) discard; // consider derivatives
     }
     fragColor = fragmentColor;
   }`;
