@@ -49,11 +49,17 @@ const structGeom = /* language=GLSL */ `
     vec2 unitSquareCoord;
     vec2 size;
     vec2 fullSizeXY;
-    vec2 viewable;
     vec2 baseXY;
     vec2 pan;
   };
 `;
+
+const getViewable = /* language=GLSL */ `
+  vec2 getViewable() {
+    float viewableX = focus[0][1] - focus[0][0];
+    float viewableY = focus[1][1] - focus[1][0];
+    return vec2(viewableX, viewableY);
+  }`;
 
 const getGeom = /* language=GLSL */ `
   Geom getGeom() {
@@ -66,19 +72,13 @@ const getGeom = /* language=GLSL */ `
     vec2 fullSizeXY = size * unitSquareCoord;
 
     // determine what we're zooming/panning into
-    vec2 focusX = focus[0];
-    vec2 focusY = focus[1];
-    float viewableX = focusX[1] - focusX[0];
-    float viewableY = focusY[1] - focusY[0];
-    vec2 viewable = vec2(viewableX, viewableY);
     vec2 baseXY = fullSizeXY + position;
-    vec2 pan = vec2(focusX[0], focusY[0]);
+    vec2 pan = vec2(focus[0][0], focus[1][0]);
 
     return Geom(
       unitSquareCoord,
       size,
       fullSizeXY,
-      viewable,
       baseXY,
       pan
     );
@@ -99,12 +99,14 @@ export const simpleRectVert = /* language=GLSL */ `${vertTop}
 
   ${constants}
   ${structGeom}
+  ${getViewable}
   ${getGeom}
 
   void main() {
+    vec2 viewable = getViewable();
     Geom g = getGeom();
 
-    vec2 zoomPannedXY = (g.baseXY - g.pan) / g.viewable;
+    vec2 zoomPannedXY = (g.baseXY - g.pan) / viewable;
     // output the position and color values (approx. return values of our vertex shader)
     // project [0, 1] normalized values to [-1, 1] homogeneous clip space values
     gl_Position = vec4(2.0 * zoomPannedXY - 1.0, 0, 1);
@@ -134,19 +136,21 @@ export const roundedRectVert = /* language=GLSL */ `${vertTop}
 
   ${constants}
   ${structGeom}
+  ${getViewable}
   ${getGeom}
 
   void main() {
+    vec2 viewable = getViewable();
     Geom g = getGeom();
 
     // calculate the gap-aware geometry
-    vec2 zoomedResolution = resolution / g.viewable;
+    vec2 zoomedResolution = resolution / viewable;
     vec2 gapRatio = gapPx / zoomedResolution;
     // gl_VertexID iterates as an integer index 0, 1, 2, ..., (offset + 0, offset + 1, ..., offset + count - 1)
     // these four coordinates form a rectangle, set up as two counterclockwise triangles with gl.TRIANGLE_STRIP
     // clip coordinate x/y goes from -1 to 1 of the viewport, so we center with this 0.5 subtraction
     vec2 xy = g.baseXY - min(gapRatio, (1.0 - minFillRatio) * g.fullSizeXY) * sign(g.unitSquareCoord);
-    vec2 zoomPannedXY = (xy - g.pan) / g.viewable;
+    vec2 zoomPannedXY = (xy - g.pan) / viewable;
 
     // output the position and color values (approx. return values of our vertex shader)
     // project [0, 1] normalized values to [-1, 1] homogeneous clip space values
