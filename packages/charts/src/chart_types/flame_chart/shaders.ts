@@ -18,14 +18,6 @@ export const attributeLocations = {
 /** @internal */
 export const GEOM_INDEX_OFFSET = 1; // zero color means, empty area (no rectangle) so the rectangles are base 1 indexed for pick coloring
 
-const attribDefs = /* language=GLSL */ `
-  layout(location=${attributeLocations.position0}) in vec2 position0;
-  layout(location=${attributeLocations.position1}) in vec2 position1;
-  layout(location=${attributeLocations.size0}) in float size0;
-  layout(location=${attributeLocations.size1}) in float size1;
-  layout(location=${attributeLocations.color}) in vec4 color;
-`;
-
 const vertTop = /* language=GLSL */ `#version 300 es
   #pragma STDGL invariant(all)
   precision highp int;
@@ -35,6 +27,14 @@ const vertTop = /* language=GLSL */ `#version 300 es
 const fragTop = /* language=GLSL */ `#version 300 es
   precision highp int;
   precision highp float;
+`;
+
+const attribDefs = /* language=GLSL */ `
+  layout(location=${attributeLocations.position0}) in vec2 position0;
+  layout(location=${attributeLocations.position1}) in vec2 position1;
+  layout(location=${attributeLocations.size0}) in float size0;
+  layout(location=${attributeLocations.size1}) in float size1;
+  layout(location=${attributeLocations.color}) in vec4 color;
 `;
 
 const constants = /* language=GLSL */ `
@@ -58,7 +58,8 @@ const getViewable = /* language=GLSL */ `
     float viewableX = focus[0][1] - focus[0][0];
     float viewableY = focus[1][1] - focus[1][0];
     return vec2(viewableX, viewableY);
-  }`;
+  }
+`;
 
 const getGeom = /* language=GLSL */ `
   Geom getGeom(vec2 viewable, vec2 gapRatio, vec2 maxGapRatio) {
@@ -95,18 +96,19 @@ const getGeom = /* language=GLSL */ `
       glPosition,
       fragmentColor
     );
-  }`;
+  }
+`;
 
 /** @internal */
 export const simpleRectVert = /* language=GLSL */ `${vertTop}
   ${attribDefs}
 
-  uniform bool pickLayer;
-  uniform float t; // 0: start position; 1: end position
+  uniform mat2 focus; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
   uniform vec2 resolution;
   uniform float rowHeight0, rowHeight1;
-  uniform mat2 focus; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
+  uniform float t; // 0: start position; 1: end position
   uniform int hoverIndex;
+  uniform bool pickLayer;
 
   out vec4 fragmentColor;
 
@@ -119,7 +121,8 @@ export const simpleRectVert = /* language=GLSL */ `${vertTop}
     Geom g = getGeom(getViewable(), vec2(0), vec2(0));
     gl_Position = g.glPosition;
     fragmentColor = g.fragmentColor;
-  }`;
+  }
+`;
 
 /** @internal */
 export const roundedRectVert = /* language=GLSL */ `${vertTop}
@@ -167,7 +170,8 @@ export const roundedRectVert = /* language=GLSL */ `${vertTop}
     corners[1] = (g.unitSquareCoord * vec2(-1, 1) + vec2(1, 0)) * g.size * zoomedResolution - radiusPx;
     corners[2] = (g.unitSquareCoord * vec2(1, -1) + vec2(0, 1)) * g.size * zoomedResolution - radiusPx;
     corners[3] = (1.0 - g.unitSquareCoord) * g.size * zoomedResolution - radiusPx;
-  }`;
+  }
+`;
 
 /** @internal */
 export const roundedRectFrag = /* language=GLSL */ `${fragTop}
@@ -184,10 +188,12 @@ export const roundedRectFrag = /* language=GLSL */ `${fragTop}
          + min(0.0, sign(corners[3].x) + sign(corners[3].y) + sign(radiusPx - length(corners[3])) + 2.0)
        ) < 0.0) discard;
     fragColor = fragmentColor;
-  }`;
+  }
+`;
 
 /** @internal */
 export const colorFrag = /* language=GLSL */ `${fragTop}
   in vec4 fragmentColor;
   out vec4 fragColor;
-  void main() { fragColor = fragmentColor; }`;
+  void main() { fragColor = fragmentColor; }
+`;
