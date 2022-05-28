@@ -178,11 +178,11 @@ export const roundedRectFrag = /* language=GLSL */ `${fragTop}
   out vec4 fragColor;
 
   void main() {
-    // rounded corners: discard pixels that lie beyond each corner "circle" in the quadrant beyond its respective corner
-    for(int i = 0; i < 4; i++) {
-      vec2 corner = corners[i];
-      if(corner.x < 0.0 && corner.y < 0.0 && length(corner) > radiusPx) discard; // consider derivatives
-    }
+    if((   min(0.0, sign(corners[0].x) + sign(corners[0].y) + sign(radiusPx - length(corners[0])) + 2.0)
+         + min(0.0, sign(corners[1].x) + sign(corners[1].y) + sign(radiusPx - length(corners[1])) + 2.0)
+         + min(0.0, sign(corners[2].x) + sign(corners[2].y) + sign(radiusPx - length(corners[2])) + 2.0)
+         + min(0.0, sign(corners[3].x) + sign(corners[3].y) + sign(radiusPx - length(corners[3])) + 2.0)
+       ) < 0.0) discard;
     fragColor = fragmentColor;
   }`;
 
