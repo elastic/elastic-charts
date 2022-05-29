@@ -58,7 +58,7 @@ export const drawCanvas2d = (
     { fontFamily: DEFAULT_FONT_FAMILY, fontStyle: 'normal', fontVariant: 'normal', fontWeight: 'normal' },
     fontSize,
   );
-  ctx.clearRect(0, 0, roundUpSize(cssWidth), roundUpSize(cssHeight));
+  ctx.clearRect(0, 0, roundUpSize(cssWidth + cssOffsetX), roundUpSize(cssHeight + cssOffsetY));
   ctx.translate(cssOffsetX, cssOffsetY);
   ctx.beginPath();
   ctx.rect(0, 0, roundUpSize(cssWidth), cssHeight);
