@@ -589,14 +589,12 @@ export const getRenderer = (
       // non-ubo uniforms
       uniforms.forEach((setValue, name) => uniformValues[name] && !uboInfo.has(name) && setValue(uniformValues[name]));
       // ubo uniforms
-      gl.bindBuffer(gl.UNIFORM_BUFFER, uboBuffer);
-      debugger;
+      gl.bindBuffer(GL.UNIFORM_BUFFER, uboBuffer);
       uboInfo.forEach(({ offset }, name) => {
         const value = new Float32Array([uniformValues[name]].flat());
-        console.log({ offset, value, name });
-        gl.bufferSubData(gl.UNIFORM_BUFFER, offset, value, 0);
+        gl.bufferSubData(GL.UNIFORM_BUFFER, offset, value, 0);
       });
-      // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+      // gl.bindBuffer(GL.UNIFORM_BUFFER, null);
     }
 
     bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, target);

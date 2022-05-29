@@ -105,5 +105,5 @@ export function ensureWebgl(
 
   const attributes = getAttributes(gl, geomProgram, attributeLocations);
 
-  return { roundedRectRenderer, pickTextureRenderer, uniforms, uboBuffer, attributes };
+  return { roundedRectRenderer, pickTextureRenderer, attributes };
 }
