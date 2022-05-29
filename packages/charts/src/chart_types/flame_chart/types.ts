@@ -7,19 +7,23 @@
  */
 
 import { Pixels } from '../../common/geometry';
-import { Attributes, UseInfo } from '../../common/kingly';
+import { Attributes, Uniforms, UseInfo } from '../../common/kingly';
 
 /** @internal */
 export interface GLResources {
   roundedRectRenderer: (u: UseInfo) => void;
   pickTextureRenderer: (u: UseInfo) => void;
+  uniforms: Uniforms;
+  uboBuffer: WebGLBuffer | null;
   attributes: Attributes;
 }
 
 /** @internal */
-export const NULL_GL_RESOURCES = {
+export const NULL_GL_RESOURCES: GLResources = {
   roundedRectRenderer: () => {},
   pickTextureRenderer: () => {},
+  uboBuffer: null,
+  uniforms: new Map(),
   attributes: new Map(),
 };
 

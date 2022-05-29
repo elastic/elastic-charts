@@ -37,6 +37,21 @@ const attribDefs = /* language=GLSL */ `
   layout(location=${attributeLocations.color}) in vec4 color;
 `;
 
+const uniformDefs = /* language=GLSL */ `
+  uniform Settings {
+    mat4 focus; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
+    vec2 resolution;
+    vec2 gapPx;
+    vec2 minFillRatio; // at least this ratio of the rectangle's full width/height must be filled
+    float rowHeight0;
+    float rowHeight1;
+    float t; // 0: start position; 1: end position
+    float cornerRadiusPx;
+    int hoverIndex;
+    bool pickLayer;
+  };
+`;
+
 const constants = /* language=GLSL */ `
   const vec4 UNIT4 = vec4(1.0);
   const uvec4 BIT_SHIFTERS = uvec4(24, 16, 8, 0); // helps pack a 32bit unsigned integer into the RGBA bytes
@@ -102,13 +117,7 @@ const getGeom = /* language=GLSL */ `
 /** @internal */
 export const simpleRectVert = /* language=GLSL */ `${vertTop}
   ${attribDefs}
-
-  uniform mat2 focus; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
-  uniform vec2 resolution;
-  uniform float rowHeight0, rowHeight1;
-  uniform float t; // 0: start position; 1: end position
-  uniform int hoverIndex;
-  uniform bool pickLayer;
+  ${uniformDefs}
 
   out vec4 fragmentColor;
 
@@ -127,17 +136,7 @@ export const simpleRectVert = /* language=GLSL */ `${vertTop}
 /** @internal */
 export const roundedRectVert = /* language=GLSL */ `${vertTop}
   ${attribDefs}
-
-  uniform bool pickLayer;
-  uniform float t; // 0: start position; 1: end position
-  uniform vec2 resolution;
-  uniform float rowHeight0, rowHeight1;
-  uniform mat2 focus; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
-  uniform int hoverIndex;
-
-  uniform vec2 gapPx;
-  uniform vec2 minFillRatio; // at least this ratio of the rectangle's full width/height must be filled
-  uniform float cornerRadiusPx;
+  ${uniformDefs}
 
   out vec4 fragmentColor;
   out vec2 corners[4];

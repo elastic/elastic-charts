@@ -225,7 +225,7 @@ const uniformSetterLookup = {
 
 type UniformsMap = Map<string, (...args: any[]) => void>;
 
-const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): UniformsMap => {
+const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo: Uniforms): UniformsMap => {
   if (programUniforms.has(program)) return programUniforms.get(program);
   const uniforms = new Map(
     [...new Array(gl.getProgramParameter(program, GL.ACTIVE_UNIFORMS /* uniform count */))].map((_, index) => {
@@ -233,9 +233,9 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): Uniform
       if (!activeUniform) throw new Error(`Whoa, active uniform not found`); // just appeasing the TS linter
       const { name, type } = activeUniform;
       const location = gl.getUniformLocation(program, name);
-      if (location === null)
+      if (location === null && !uboInfo.has(name))
         throw new Error(`Whoa, uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
-      const setValue = uniformSetterLookup[type](gl, location);
+      const setValue = location ? uniformSetterLookup[type](gl, location) : () => {};
       if (GL_DEBUG && !setValue) throw new Error(`No setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
       return [name, setValue];
     }),
@@ -457,6 +457,9 @@ const attribElementTypeLookup = {
 const integerTypes = new Set([GL.BYTE, GL.SHORT, GL.INT, GL.UNSIGNED_BYTE, GL.UNSIGNED_SHORT, GL.UNSIGNED_INT]);
 
 /** @internal */
+export type Uniforms = Map<string, { index: number; offset: number }>;
+
+/** @internal */
 export type Attributes = Map<string, (data: ArrayBufferView) => void>;
 
 /** @internal */
@@ -533,10 +536,12 @@ export type Render = (u: UseInfo) => void;
 export const getRenderer = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
+  uboInfo: Uniforms,
+  uboBuffer: WebGLBuffer,
   vao: WebGLVertexArrayObject | null,
   { depthTest = false, blend = true, frontFace = GL.CCW },
 ): Render => {
-  const uniforms = getUniforms(gl, program);
+  const uniforms = getUniforms(gl, program, uboInfo);
   return ({ uniformValues, viewport, target, clear, scissor, draw }: UseInfo): void => {
     if (!setGlobalConstants.has(gl)) {
       setGlobalConstants.add(gl);
@@ -580,7 +585,19 @@ export const getRenderer = (
     if (vao) bindVertexArray(gl, vao);
 
     if (viewport) setViewport(gl, viewport.x, viewport.y, viewport.width, viewport.height);
-    if (uniformValues) uniforms.forEach((setValue, name) => uniformValues[name] && setValue(uniformValues[name]));
+    if (uniformValues) {
+      // non-ubo uniforms
+      uniforms.forEach((setValue, name) => uniformValues[name] && !uboInfo.has(name) && setValue(uniformValues[name]));
+      // ubo uniforms
+      gl.bindBuffer(gl.UNIFORM_BUFFER, uboBuffer);
+      debugger;
+      uboInfo.forEach(({ offset }, name) => {
+        const value = new Float32Array([uniformValues[name]].flat());
+        console.log({ offset, value, name });
+        gl.bufferSubData(gl.UNIFORM_BUFFER, offset, value, 0);
+      });
+      // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+    }
 
     bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, target);
 

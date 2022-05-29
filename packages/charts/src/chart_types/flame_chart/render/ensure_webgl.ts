@@ -56,14 +56,54 @@ export function ensureWebgl(
   );
 
   /**
+   * Uniform blocks
+   */
+
+  // common part
+  const program = geomProgram;
+  const blockIndex = gl.getUniformBlockIndex(program, 'Settings');
+  const blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, GL.UNIFORM_BLOCK_DATA_SIZE);
+  const uboBuffer = gl.createBuffer();
+  if (uboBuffer === null) throw new Error('Whoa, could not create uboBuffer');
+  gl.bindBuffer(gl.UNIFORM_BUFFER, uboBuffer);
+  gl.bufferData(gl.UNIFORM_BUFFER, blockSize, gl.DYNAMIC_DRAW);
+  // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+  gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uboBuffer);
+  const uboVariableNames = [
+    'focus',
+    'resolution',
+    'gapPx',
+    'minFillRatio',
+    'rowHeight0',
+    'rowHeight1',
+    't',
+    'cornerRadiusPx',
+    'hoverIndex',
+    'pickLayer',
+  ];
+  const uboVariableIndices = gl.getUniformIndices(program, uboVariableNames);
+  if (uboVariableIndices === null) throw new Error('Whoa, could not get uboVariableIndices');
+  const uboVariableOffsets = gl.getActiveUniforms(program, uboVariableIndices, gl.UNIFORM_OFFSET);
+  const uniforms = new Map(
+    uboVariableNames.map((name, i) => [name, { index: uboVariableIndices[i], offset: uboVariableOffsets[i] }]),
+  );
+
+  // per program part
+  gl.uniformBlockBinding(geomProgram, gl.getUniformBlockIndex(geomProgram, 'Settings'), 0);
+  gl.uniformBlockBinding(pickProgram, gl.getUniformBlockIndex(pickProgram, 'Settings'), 0);
+
+  /**
    * Resource allocation: Render setup
    */
 
   // couple the program with the attribute input and global GL flags
-  const roundedRectRenderer = getRenderer(gl, geomProgram, vao, { depthTest: false, blend: true });
-  const pickTextureRenderer = getRenderer(gl, pickProgram, vao, { depthTest: false, blend: false }); // must not blend the texture, else the pick color thus datumIndex will be wrong
+  const roundedRectRenderer = getRenderer(gl, geomProgram, uniforms, uboBuffer, vao, { depthTest: false, blend: true });
+  const pickTextureRenderer = getRenderer(gl, pickProgram, uniforms, uboBuffer, vao, {
+    depthTest: false,
+    blend: false,
+  });
 
   const attributes = getAttributes(gl, geomProgram, attributeLocations);
 
-  return { roundedRectRenderer, pickTextureRenderer, attributes };
+  return { roundedRectRenderer, pickTextureRenderer, uniforms, uboBuffer, attributes };
 }
