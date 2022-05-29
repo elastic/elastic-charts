@@ -153,9 +153,9 @@ export const createLinkedProgram = (
   return program;
 };
 
-/****************
- * Uniforms
- ***************/
+/*********************
+ * Singular uniforms
+ ********************/
 
 interface Sampler {
   setUniform: (location: WebGLUniformLocation) => void;
@@ -243,6 +243,40 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo:
   programUniforms.set(program, uniforms);
   return uniforms;
 };
+
+/*******************
+ * Block uniforms
+ ******************/
+
+/** @internal */
+export function blockUniforms(
+  gl: WebGL2RenderingContext,
+  uniformBlockName: string,
+  uboVariableNames: string[],
+  [program, ...otherPrograms]: WebGLProgram[],
+) {
+  const blockIndex = gl.getUniformBlockIndex(program, uniformBlockName);
+  const blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, GL.UNIFORM_BLOCK_DATA_SIZE);
+  const uboBuffer = gl.createBuffer();
+  if (uboBuffer === null) throw new Error('Whoa, could not create uboBuffer');
+  gl.bindBuffer(gl.UNIFORM_BUFFER, uboBuffer);
+  gl.bufferData(gl.UNIFORM_BUFFER, blockSize, gl.DYNAMIC_DRAW);
+  // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+  gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uboBuffer);
+  const uboVariableIndices = gl.getUniformIndices(program, uboVariableNames);
+  if (uboVariableIndices === null) throw new Error('Whoa, could not get uboVariableIndices');
+  const uboVariableOffsets = gl.getActiveUniforms(program, uboVariableIndices, gl.UNIFORM_OFFSET);
+  const uniforms = new Map(
+    uboVariableNames.map((name, i) => [name, { index: uboVariableIndices[i], offset: uboVariableOffsets[i] }]),
+  );
+
+  // per program part
+  [program, ...otherPrograms].forEach((p) =>
+    gl.uniformBlockBinding(p, gl.getUniformBlockIndex(p, uniformBlockName), 0),
+  );
+
+  return { uboBuffer, uniforms };
+}
 
 /************
  * Clearing
