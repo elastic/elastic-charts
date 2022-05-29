@@ -56,7 +56,7 @@ export function ensureWebgl(
     attributeLocations,
   );
 
-  const { uboBuffer, uniforms } = blockUniforms(
+  const blockUniformsData = blockUniforms(
     gl,
     'Settings',
     [
@@ -79,11 +79,8 @@ export function ensureWebgl(
    */
 
   // couple the program with the attribute input and global GL flags
-  const roundedRectRenderer = getRenderer(gl, geomProgram, uniforms, uboBuffer, vao, { depthTest: false, blend: true });
-  const pickTextureRenderer = getRenderer(gl, pickProgram, uniforms, uboBuffer, vao, {
-    depthTest: false,
-    blend: false,
-  });
+  const roundedRectRenderer = getRenderer(gl, geomProgram, blockUniformsData, vao, { depthTest: false, blend: true });
+  const pickTextureRenderer = getRenderer(gl, pickProgram, blockUniformsData, vao, { depthTest: false, blend: false });
 
   const attributes = getAttributes(gl, geomProgram, attributeLocations);
 

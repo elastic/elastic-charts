@@ -248,13 +248,15 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo:
  * Block uniforms
  ******************/
 
+type UboData = { uniforms: Uniforms; uboBuffer: WebGLBuffer };
+
 /** @internal */
 export function blockUniforms(
   gl: WebGL2RenderingContext,
   uniformBlockName: string,
   uboVariableNames: string[],
   [program, ...otherPrograms]: WebGLProgram[],
-) {
+): UboData {
   const blockIndex = gl.getUniformBlockIndex(program, uniformBlockName);
   const blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, GL.UNIFORM_BLOCK_DATA_SIZE);
   const uboBuffer = gl.createBuffer();
@@ -570,12 +572,11 @@ export type Render = (u: UseInfo) => void;
 export const getRenderer = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
-  uboInfo: Uniforms,
-  uboBuffer: WebGLBuffer,
+  { uniforms, uboBuffer }: UboData,
   vao: WebGLVertexArrayObject | null,
   { depthTest = false, blend = true, frontFace = GL.CCW },
 ): Render => {
-  const uniforms = getUniforms(gl, program, uboInfo);
+  const allUniforms = getUniforms(gl, program, uniforms);
   return ({ uniformValues, viewport, target, clear, scissor, draw }: UseInfo): void => {
     if (!setGlobalConstants.has(gl)) {
       setGlobalConstants.add(gl);
@@ -620,11 +621,13 @@ export const getRenderer = (
 
     if (viewport) setViewport(gl, viewport.x, viewport.y, viewport.width, viewport.height);
     if (uniformValues) {
-      // non-ubo uniforms
-      uniforms.forEach((setValue, name) => uniformValues[name] && !uboInfo.has(name) && setValue(uniformValues[name]));
-      // ubo uniforms
+      // non-ubo allUniforms
+      allUniforms.forEach(
+        (setValue, name) => uniformValues[name] && !uniforms.has(name) && setValue(uniformValues[name]),
+      );
+      // ubo allUniforms
       gl.bindBuffer(GL.UNIFORM_BUFFER, uboBuffer);
-      uboInfo.forEach(({ offset }, name) => {
+      uniforms.forEach(({ offset }, name) => {
         const value = new Float32Array([uniformValues[name]].flat());
         gl.bufferSubData(GL.UNIFORM_BUFFER, offset, value, 0);
       });
