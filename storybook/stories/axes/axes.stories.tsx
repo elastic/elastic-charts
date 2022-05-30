@@ -25,3 +25,4 @@ export { Example as fitDomain } from './11_fit_domain_extent.story';
 export { Example as duplicateTicks } from './12_duplicate_ticks.story';
 export { Example as labelFormatting } from './13_label_formatting.story';
 export { Example as duplicateTicks2 } from './14_duplicate_ticks_2.story';
+export { Example as testSingleValueDomain } from './15_single_value_domain.story';
