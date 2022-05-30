@@ -27,8 +27,9 @@ import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { roundUpSize } from './render/common';
 import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
-import { ensureWebgl, uploadToWebgl } from './render/ensure_webgl';
-import { GEOM_INDEX_OFFSET } from './shaders';
+import { ensureWebgl } from './render/ensure_webgl';
+import { uploadToWebgl } from './render/upload_to_webgl';
+import { attributeLocations, GEOM_INDEX_OFFSET } from './shaders';
 import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
@@ -119,6 +120,9 @@ const getRegExp = (searchString: string): RegExp => {
   }
   return regex;
 };
+
+const isAttributeKey = (keyCandidate: string): keyCandidate is keyof typeof attributeLocations =>
+  keyCandidate in attributeLocations;
 
 interface StateProps {
   columnarViewModel: FlameSpec['columnarData'];
@@ -890,7 +894,7 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private initializeGL = (gl: WebGL2RenderingContext) => {
-    this.glResources = ensureWebgl(gl, Object.keys(this.props.columnarViewModel));
+    this.glResources = ensureWebgl(gl, Object.keys(this.props.columnarViewModel).filter(isAttributeKey));
     uploadToWebgl(gl, this.glResources.attributes, this.props.columnarViewModel);
   };
 
@@ -911,35 +915,33 @@ class FlameComponent extends React.Component<FlameProps> {
     this.ensurePickTexture();
 
     if (glCanvas && this.glContext && this.glResources === NULL_GL_RESOURCES) {
-      glCanvas.addEventListener(
-        'webglcontextlost',
-        (event) => {
-          window.cancelAnimationFrame(this.animationRafId);
-          event.preventDefault();
-        },
-        false,
-      ); // we could log it for telemetry etc todo add the option for a callback
-      glCanvas.addEventListener(
-        'webglcontextrestored',
-        () => {
-          // browser trivia: the duplicate calling of ensureContextAndInitialRender and changing/resetting the width are needed for Chrome and Safari to properly restore the context upon loss
-          // we could log context loss/regain for telemetry etc todo add the option for a callback
-          if (!glCanvas || !this.glContext) return;
-          this.restoreGL(this.glContext);
-          const widthCss = glCanvas.style.width;
-          const widthNum = parseFloat(widthCss);
-          glCanvas.style.width = `${widthNum + 0.1}px`;
-          window.setTimeout(() => {
-            glCanvas.style.width = widthCss;
-            if (this.glContext) this.restoreGL(this.glContext);
-          }, 0);
-        },
-        false,
-      );
+      glCanvas.addEventListener('webglcontextlost', this.contextLossHandler, false);
+      glCanvas.addEventListener('webglcontextrestored', this.contextRestoreHandler, false);
 
       this.initializeGL(this.glContext);
       // testContextLoss(this.glContext);
     }
+  };
+
+  private contextLossHandler = (event: { preventDefault: () => void }) => {
+    // we could log it for telemetry etc todo add the option for a callback
+    window.cancelAnimationFrame(this.animationRafId);
+    event.preventDefault(); // this is needed for the context restoration callback to happen
+  };
+
+  private contextRestoreHandler = () => {
+    // browser trivia: the duplicate calling of ensureContextAndInitialRender and changing/resetting the width are needed for Chrome and Safari to properly restore the context upon loss
+    // we could log context loss/regain for telemetry etc todo add the option for a callback
+    const glCanvas = this.glCanvasRef.current;
+    if (!glCanvas || !this.glContext) return;
+    this.restoreGL(this.glContext);
+    const widthCss = glCanvas.style.width;
+    const widthNum = parseFloat(widthCss);
+    glCanvas.style.width = `${widthNum + 0.1}px`;
+    window.setTimeout(() => {
+      glCanvas.style.width = widthCss;
+      if (this.glContext) this.restoreGL(this.glContext);
+    }, 0);
   };
 }
 

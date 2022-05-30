@@ -112,7 +112,7 @@ export const drawFrame = (
   // base (focus) pick layer
   drawFocusLayer(true);
 
-  // minimap pick layer
+  // minimap pick layer -- just for clearing, to avoid hover tooltip
   drawContextLayer(true);
 
   // focus layer text
