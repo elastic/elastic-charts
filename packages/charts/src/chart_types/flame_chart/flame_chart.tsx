@@ -48,6 +48,7 @@ const ZOOM_FROM_EDGE_BAND_BOTTOM = ZOOM_FROM_EDGE_BAND + PADDING_BOTTOM;
 const LEFT_MOUSE_BUTTON = 1;
 const MINIMAP_SIZE_RATIO_X = 3;
 const MINIMAP_SIZE_RATIO_Y = 3;
+const SHOWN_ANCESTOR_COUNT = 2; // how many rows above the focused in node should be shown
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -74,11 +75,17 @@ interface FocusRect {
 }
 
 const focusForArea = (chartHeight: number, { x0, x1, y0, y1 }: { x0: number; x1: number; y0: number; y1: number }) => {
+  // horizontal
   const sideOvershoot = SIDE_OVERSHOOT_RATIO * (x1 - x0);
-  const unitHeight = (chartHeight / initialPixelRowPitch()) * (y1 - y0);
-  const intendedY0 = y1 - unitHeight;
+
+  // vertical
+  const unitRowHeight = y1 - y0;
+  const chartHeightInUnit = (chartHeight / initialPixelRowPitch()) * unitRowHeight;
+  const y = Math.min(1, y1 + unitRowHeight * SHOWN_ANCESTOR_COUNT);
+  const intendedY0 = y - chartHeightInUnit;
   const bottomOvershoot = Math.max(0, -intendedY0);
-  const top = Math.min(1, y1 + bottomOvershoot);
+  const top = Math.min(1, y + bottomOvershoot);
+
   return {
     x0: Math.max(0, x0 - sideOvershoot),
     x1: Math.min(1, x1 + sideOvershoot),
