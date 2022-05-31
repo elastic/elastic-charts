@@ -1,3 +1,10 @@
+# [46.6.0](https://github.com/elastic/elastic-charts/compare/v46.5.0...v46.6.0) (2022-05-31)
+
+
+### Features
+
+* **flame:** show two ancestors ([#1692](https://github.com/elastic/elastic-charts/issues/1692)) ([3ced28b](https://github.com/elastic/elastic-charts/commit/3ced28bac664cf156929416e84ce24ab20ae50a3))
+
 # [46.5.0](https://github.com/elastic/elastic-charts/compare/v46.4.0...v46.5.0) (2022-05-26)
 
 
