@@ -29,7 +29,7 @@ export const drawWebgl = (
   renderer: Render,
   hoverIndex: number,
   rowHeight: number,
-  currentFocus: [number, number, number, number],
+  f: [number, number, number, number],
   instanceCount: number,
   focusLayer: boolean,
   pickLayer: boolean,
@@ -46,7 +46,7 @@ export const drawWebgl = (
       hoverIndex: Number.isFinite(hoverIndex) ? hoverIndex + GEOM_INDEX_OFFSET : DUMMY_INDEX,
       rowHeight0: rowHeight,
       rowHeight1: rowHeight,
-      focus: currentFocus,
+      focus: [f[0], f[1], 0, 0, f[2], f[3], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     },
     viewport: { x: xOffset, y: yOffset, width: canvasWidth, height: canvasHeight }, // may conditionalize on textureWidthChanged || textureHeightChanged
     clear: {
