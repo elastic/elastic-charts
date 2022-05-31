@@ -151,26 +151,26 @@ class FlameComponent extends React.Component<FlameProps> {
   static displayName = 'Flame';
 
   // DOM API Canvas2d and WebGL resources
-  private ctx: CanvasRenderingContext2D | null;
-  private glContext: WebGL2RenderingContext | null;
-  private pickTexture: Texture;
-  private glResources: GLResources;
-  private readonly glCanvasRef: RefObject<HTMLCanvasElement>;
+  private ctx: CanvasRenderingContext2D | null = null;
+  private glContext: WebGL2RenderingContext | null = null;
+  private pickTexture: Texture = NullTexture;
+  private glResources: GLResources = NULL_GL_RESOURCES;
+  private readonly glCanvasRef: RefObject<HTMLCanvasElement> = createRef();
 
   // native browser pinch zoom handling
-  private pinchZoomSetInterval: number;
+  private pinchZoomSetInterval: number = NaN;
   private pinchZoomScale: number;
 
   // mouse coordinates for the tooltip
-  private pointerX: number;
-  private pointerY: number;
+  private pointerX: number = NaN;
+  private pointerY: number = NaN;
 
   // currently hovered over datum
-  private hoverIndex: number;
+  private hoverIndex: number = NaN;
 
   // drilldown animation
-  private animationRafId: number;
-  private prevT: number;
+  private animationRafId: number = NaN;
+  private prevT: number = NaN;
   private currentFocus: FocusRect;
   private targetFocus: FocusRect;
 
@@ -181,7 +181,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private startOfDragFocusTop: number = NaN; // todo top or bottom...does it even matter?
 
   // text search
-  private readonly searchInputRef: RefObject<HTMLInputElement>;
+  private readonly searchInputRef: RefObject<HTMLInputElement> = createRef();
   private currentSearchString = '';
   private currentSearchHitCount = 0;
   private currentColor: Float32Array;
@@ -191,19 +191,8 @@ class FlameComponent extends React.Component<FlameProps> {
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
-    this.ctx = null;
-    this.glContext = null;
-    this.pickTexture = NullTexture;
-    this.glResources = NULL_GL_RESOURCES;
-    this.glCanvasRef = createRef();
-    this.searchInputRef = createRef();
-    this.animationRafId = NaN;
-    this.prevT = NaN;
     this.currentFocus = focusRect(this.props.columnarViewModel, props.chartDimensions.height, 0, -Infinity);
     this.targetFocus = { ...this.currentFocus };
-    this.hoverIndex = NaN;
-    this.pointerX = NaN;
-    this.pointerY = NaN;
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
