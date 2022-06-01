@@ -73,7 +73,7 @@ function getCursorBand(
   if (isValidPointerOverEvent(xScale, externalPointerEvent)) {
     fromExternalEvent = true;
     const x = xScale.pureScale(externalPointerEvent.x);
-    if (Number.isNaN(x) || x > chartDimensions.width || x < 0) {
+    if (!isFiniteNumber(x) || x > chartDimensions.width || x < 0) {
       return;
     }
     pointerPosition = {
@@ -88,7 +88,7 @@ function getCursorBand(
     };
   } else {
     xValue = xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys);
-    if (!xValue) {
+    if (!isFiniteNumber(xValue.value)) {
       return;
     }
   }
