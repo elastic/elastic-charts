@@ -1,3 +1,10 @@
+# [46.7.0](https://github.com/elastic/elastic-charts/compare/v46.6.0...v46.7.0) (2022-06-01)
+
+
+### Features
+
+* pulsate node on click and search hit ([#1694](https://github.com/elastic/elastic-charts/issues/1694)) ([5068742](https://github.com/elastic/elastic-charts/commit/5068742032d376d70a405fe2c727efa2a87770f2))
+
 # [46.6.0](https://github.com/elastic/elastic-charts/compare/v46.5.0...v46.6.0) (2022-05-31)
 
 
