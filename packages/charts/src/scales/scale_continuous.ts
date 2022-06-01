@@ -79,7 +79,7 @@ export class ScaleContinuous implements Scale<number> {
   readonly timeZone: string;
   readonly barsPadding: number;
   readonly isSingleValueHistogram: boolean;
-  private readonly project: (d: number) => number | undefined;
+  private readonly project: (d: number) => number;
   private readonly inverseProject: (d: number) => number | Date;
 
   constructor(
@@ -174,20 +174,18 @@ export class ScaleContinuous implements Scale<number> {
         : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount);
 
     this.domain = nicePaddedDomain;
-    this.project = (d: number) => d3Scale(d);
+    this.project = (d: number) => d3Scale(d) ?? NaN;
     this.inverseProject = (d: number) => d3Scale.invert(d);
   }
 
   scale(value?: PrimitiveValue) {
     return typeof value === 'number'
-      ? (this.project(value) ?? NaN) + (this.bandwidthPadding / 2) * this.totalBarsInCluster
+      ? this.project(value) + (this.bandwidthPadding / 2) * this.totalBarsInCluster
       : NaN;
   }
 
   pureScale(value?: PrimitiveValue) {
-    return typeof value === 'number'
-      ? this.project(this.bandwidth === 0 ? value : value + this.minInterval / 2) ?? NaN
-      : NaN;
+    return typeof value === 'number' ? this.project(this.bandwidth === 0 ? value : value + this.minInterval / 2) : NaN;
   }
 
   ticks() {
