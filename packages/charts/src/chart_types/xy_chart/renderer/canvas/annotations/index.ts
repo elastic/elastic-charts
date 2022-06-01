@@ -43,7 +43,7 @@ export function renderAnnotations(
 
     if (spec && isBackground === renderOnBackground) {
       if (isLineAnnotation(spec)) {
-        const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
+        const lineStyle = mergeWithDefaultAnnotationLine(spec.style, [{ animations: spec.animations?.options }]);
         renderLineAnnotations(
           ctx,
           aCtx,
@@ -52,9 +52,10 @@ export function renderAnnotations(
           getHoverParams,
           rotation,
           renderingArea,
+          spec.animations?.triggers,
         );
       } else if (isRectAnnotation(spec)) {
-        const rectStyle = mergeWithDefaultAnnotationRect(spec.style);
+        const rectStyle = mergeWithDefaultAnnotationRect(spec.style, [{ animations: spec.animations?.options }]);
         renderRectAnnotations(
           ctx,
           aCtx,
@@ -63,6 +64,7 @@ export function renderAnnotations(
           getHoverParams,
           rotation,
           renderingArea,
+          spec.animations?.triggers,
         );
       }
     }

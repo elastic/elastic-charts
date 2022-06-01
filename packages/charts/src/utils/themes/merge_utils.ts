@@ -49,13 +49,19 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
 };
 
 /** @public */
-export function mergeWithDefaultAnnotationLine(config?: RecursivePartial<LineAnnotationStyle>): LineAnnotationStyle {
-  return mergePartial(DEFAULT_ANNOTATION_LINE_STYLE, config);
+export function mergeWithDefaultAnnotationLine(
+  config?: RecursivePartial<LineAnnotationStyle>,
+  additionalConfigs?: RecursivePartial<LineAnnotationStyle>[],
+): LineAnnotationStyle {
+  return mergePartial(DEFAULT_ANNOTATION_LINE_STYLE, config, undefined, additionalConfigs);
 }
 
 /** @public */
-export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle {
-  return mergePartial(DEFAULT_ANNOTATION_RECT_STYLE, config);
+export function mergeWithDefaultAnnotationRect(
+  config?: RecursivePartial<RectAnnotationStyle>,
+  additionalConfigs?: RecursivePartial<RectAnnotationStyle>[],
+): RectAnnotationStyle {
+  return mergePartial(DEFAULT_ANNOTATION_RECT_STYLE, config, undefined, additionalConfigs);
 }
 
 /**

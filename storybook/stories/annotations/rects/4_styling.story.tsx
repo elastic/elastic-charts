@@ -12,6 +12,7 @@ import React, { memo, useEffect, useMemo, useState } from 'react';
 
 import {
   AnnotationAnimation,
+  AnnotationAnimationTrigger,
   AnnotationDomainType,
   Axis,
   Chart,
@@ -33,7 +34,7 @@ import { getChartRotationKnob, getKnobsFromEnum, getXYSeriesKnob } from '../../u
 const rng = getRandomNumberGenerator();
 const randomArray = new Array(100).fill(0).map(() => rng(0, 10, 2));
 
-const ExampleChart = memo(({ animations }: { animations: Partial<AnnotationAnimation> }) => {
+const ExampleChart = memo(({ animationOptions }: { animationOptions: Partial<AnnotationAnimation> }) => {
   const debug = boolean('debug', false);
   const [SeriesType] = getXYSeriesKnob(undefined, 'line');
   const xScaleType = select(
@@ -113,6 +114,8 @@ const ExampleChart = memo(({ animations }: { animations: Partial<AnnotationAnima
   randomArray.slice(0, annotationCount - minAnnoCount).forEach((dataValue) => {
     lineData.push({ dataValue, details: `Autogen value: ${dataValue}` });
   });
+  const FadeOnFocusingOthers = boolean('FadeOnFocusingOthers', true, 'Animations');
+  const triggers: AnnotationAnimationTrigger[] = FadeOnFocusingOthers ? ['FadeOnFocusingOthers'] : [];
 
   return (
     <Chart>
@@ -120,7 +123,8 @@ const ExampleChart = memo(({ animations }: { animations: Partial<AnnotationAnima
       <RectAnnotation
         dataValues={dataValues}
         id="rect"
-        style={{ ...rectStyle, animations }}
+        style={{ ...rectStyle }}
+        animations={{ triggers, options: animationOptions }}
         customTooltip={hasCustomTooltip ? customTooltip : undefined}
         zIndex={zIndex}
         hideTooltips={hideTooltips}
@@ -129,7 +133,7 @@ const ExampleChart = memo(({ animations }: { animations: Partial<AnnotationAnima
         <LineAnnotation
           id="annotation_1"
           domainType={AnnotationDomainType.XDomain}
-          style={{ animations }}
+          animations={{ triggers, options: animationOptions }}
           dataValues={lineData}
           marker={<Icon type="alert" />}
         />
@@ -165,7 +169,7 @@ let prevAnimationStr = '';
 export const Example = () => {
   const [mountCount, setMountCount] = useState(1);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const animations: Partial<AnnotationAnimation> = {
+  const animationOptions: Partial<AnnotationAnimation> = {
     enabled: boolean('enabled', true, 'Animations'),
     delay: number('delay (ms)', 50, { min: 0, max: 10000, step: 50 }, 'Animations'),
     duration: number('duration (ms)', 250, { min: 0, max: 10000, step: 50 }, 'Animations'),
@@ -176,7 +180,7 @@ export const Example = () => {
   };
 
   // The following is a HACK to remount the chart when the animation options change, see description in markdown
-  const animationsStr = useMemo(() => JSON.stringify(animations), [animations]);
+  const animationsStr = useMemo(() => JSON.stringify(animationOptions), [animationOptions]);
 
   useEffect(() => {
     prevAnimationStr = animationsStr;
@@ -188,7 +192,7 @@ export const Example = () => {
   }, [animationsStr]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (mountCount % 2 === 0) {
-    return <ExampleChart animations={animations} />;
+    return <ExampleChart animationOptions={animationOptions} />;
   }
 
   action('mounted new chart')();
@@ -197,7 +201,7 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  markdown: `Animations styles set via \`RectAnnotationStyle.animations\` or \`LineAnnotationStyle.animations\` are only read on intial
+  markdown: `Annotations animations are configured via \`RectAnnotation.animations\` or \`LineAnnotation.animations\` which are only read once on intial
 render.
 
 > :warning: Animations options, excluding \`enabled\`, are set _only_ when the chart is _**mounted**_ and _**not**_ on every rerender. \

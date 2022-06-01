@@ -713,6 +713,8 @@ export interface LineAnnotationStyle {
   line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
   /**
    * Animation options
+   *
+   * @deprecated use `animation.options` prop on annotation specs
    */
   animations: AnnotationAnimation;
   /**
@@ -727,6 +729,8 @@ export interface LineAnnotationStyle {
 export interface RectAnnotationStyle extends StrokeStyle, FillStyle, Opacity, Partial<StrokeDashArray> {
   /**
    * Animation options
+   *
+   * @deprecated use `animation.options` prop on annotation specs
    */
   animations: AnnotationAnimation;
 }

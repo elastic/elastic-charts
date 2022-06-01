@@ -10,6 +10,7 @@ import { ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
+import { AnimationOptions } from '../../..';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal/types';
 import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
@@ -837,6 +838,19 @@ export interface LineAnnotationDatum<D = any> {
 }
 
 /** @public */
+export const AnnotationAnimationTrigger = Object.freeze({
+  FadeOnFocusingOthers: 'FadeOnFocusingOthers' as const,
+});
+/** @public */
+export type AnnotationAnimationTrigger = $Values<typeof AnnotationAnimationTrigger>;
+
+/** @public */
+export interface AnnotationAnimations {
+  triggers?: AnnotationAnimationTrigger[];
+  options?: AnimationOptions;
+}
+
+/** @public */
 export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<
   typeof AnnotationType.Line,
   LineAnnotationDatum<D>,
@@ -993,6 +1007,10 @@ export interface BaseAnnotationSpec<
    * Default specified per specific annotation spec.
    */
   zIndex?: number;
+  /**
+   * Animated config for annotations
+   */
+  animations?: AnnotationAnimations;
 }
 
 /** @public */
