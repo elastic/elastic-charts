@@ -49,6 +49,9 @@ const LEFT_MOUSE_BUTTON = 1;
 const MINIMAP_SIZE_RATIO_X = 3;
 const MINIMAP_SIZE_RATIO_Y = 3;
 const SHOWN_ANCESTOR_COUNT = 2; // how many rows above the focused in node should be shown
+const WOBBLE_TIME_SEARCH_HIT = 1000;
+const WOBBLE_TIME_CLICK_FOCUS = 500; // shorter wobble for clicks, as users know where they clicked
+const WOBBLE_FREQUENCY = 1 / 50; // e.g. 1/30 means a cycle of every 30ms
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -195,6 +198,10 @@ class FlameComponent extends React.Component<FlameProps> {
   private caseSensitive = false;
   private useRegex = false;
   private focusedMatchIndex = NaN;
+
+  // wobble
+  private wobbleTimeLeft = 0;
+  private wobbleIndex = NaN;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -406,6 +413,8 @@ class FlameComponent extends React.Component<FlameProps> {
           hovered.datumIndex,
           hovered.timestamp,
         );
+        this.wobbleTimeLeft = WOBBLE_TIME_CLICK_FOCUS;
+        this.wobbleIndex = hovered.datumIndex;
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
         this.setState({});
@@ -567,6 +576,8 @@ class FlameComponent extends React.Component<FlameProps> {
         );
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
+        this.wobbleTimeLeft = WOBBLE_TIME_SEARCH_HIT;
+        this.wobbleIndex = datumIndex;
       }
     }
   };
@@ -710,7 +721,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={(e) => {
-                if (!this.currentSearchString) return;
+                if (!this.currentSearchString || hitCount === 0) return;
                 this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
                   ? hitCount - 1
                   : this.focusedMatchIndex === 0
@@ -737,7 +748,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="checkbox"
               tabIndex={0}
               onClick={(e) => {
-                if (!this.currentSearchString) return;
+                if (!this.currentSearchString || hitCount === 0) return;
                 this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
                   ? 0
                   : this.focusedMatchIndex === hitCount - 1
@@ -845,10 +856,17 @@ class FlameComponent extends React.Component<FlameProps> {
       this.currentFocus.y0 += convergenceRateY * dy0;
       this.currentFocus.y1 += convergenceRateY * dy1;
 
-      renderFrame([this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1]);
+      this.wobbleTimeLeft -= msDeltaT;
+      const shouldWobble = this.wobbleTimeLeft > 0;
+
+      renderFrame(
+        [this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1],
+        this.wobbleIndex,
+        shouldWobble ? 0.01 + 0.99 * (0.5 * Math.sin(t * WOBBLE_FREQUENCY) + 0.5) : 0, // positive if it must wobble
+      );
 
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
-      if (maxDiff > 1e-12) {
+      if (maxDiff > 1e-12 || shouldWobble) {
         this.animationRafId = window.requestAnimationFrame(anim);
       } else {
         this.prevT = NaN;
