@@ -69,6 +69,8 @@ export function ensureWebgl(
       't',
       'cornerRadiusPx',
       'hoverIndex',
+      'wobbleIndex',
+      'wobble',
       'pickLayer',
     ],
     [geomProgram, pickProgram],
