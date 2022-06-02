@@ -50,7 +50,7 @@ const MINIMAP_SIZE_RATIO_X = 3;
 const MINIMAP_SIZE_RATIO_Y = 3;
 const SHOWN_ANCESTOR_COUNT = 2; // how many rows above the focused in node should be shown
 const WOBBLE_TIME_SEARCH_HIT = 1000;
-const WOBBLE_TIME_CLICK_FOCUS = 500; // shorter wobble for clicks, as users know where they clicked
+const WOBBLE_TIME_CLICK_FOCUS = 1000;
 const WOBBLE_FREQUENCY = 1 / 50; // e.g. 1/30 means a cycle of every 30ms
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
