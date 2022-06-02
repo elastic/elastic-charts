@@ -871,6 +871,10 @@ class FlameComponent extends React.Component<FlameProps> {
         this.animationRafId = window.requestAnimationFrame(anim);
       } else {
         this.prevT = NaN;
+        this.currentFocus.x0 = this.targetFocus.x0;
+        this.currentFocus.x1 = this.targetFocus.x1;
+        this.currentFocus.y0 = this.targetFocus.y0;
+        this.currentFocus.y1 = this.targetFocus.y1;
       }
     };
     window.cancelAnimationFrame(this.animationRafId);
