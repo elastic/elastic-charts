@@ -49,9 +49,9 @@ const LEFT_MOUSE_BUTTON = 1;
 const MINIMAP_SIZE_RATIO_X = 3;
 const MINIMAP_SIZE_RATIO_Y = 3;
 const SHOWN_ANCESTOR_COUNT = 2; // how many rows above the focused in node should be shown
-const WOBBLE_TIME_SEARCH_HIT = 1000;
-const WOBBLE_TIME_CLICK_FOCUS = 1000;
-const WOBBLE_FREQUENCY = 1 / 50; // e.g. 1/30 means a cycle of every 30ms
+const WOBBLE_DURATION = 1000;
+const WOBBLE_REPEAT_COUNT = 2;
+const WOBBLE_FREQUENCY = 2 * Math.PI * (WOBBLE_REPEAT_COUNT / WOBBLE_DURATION); // e.g. 1/30 means a cycle of every 30ms
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -413,7 +413,7 @@ class FlameComponent extends React.Component<FlameProps> {
           hovered.datumIndex,
           hovered.timestamp,
         );
-        this.wobbleTimeLeft = WOBBLE_TIME_CLICK_FOCUS;
+        this.wobbleTimeLeft = WOBBLE_DURATION;
         this.wobbleIndex = hovered.datumIndex;
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
@@ -576,7 +576,7 @@ class FlameComponent extends React.Component<FlameProps> {
         );
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
-        this.wobbleTimeLeft = WOBBLE_TIME_SEARCH_HIT;
+        this.wobbleTimeLeft = WOBBLE_DURATION;
         this.wobbleIndex = datumIndex;
       }
     }
@@ -858,11 +858,12 @@ class FlameComponent extends React.Component<FlameProps> {
 
       this.wobbleTimeLeft -= msDeltaT;
       const shouldWobble = this.wobbleTimeLeft > 0;
+      const timeFromWobbleStart = clamp(WOBBLE_DURATION - this.wobbleTimeLeft, 0, WOBBLE_DURATION);
 
       renderFrame(
         [this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1],
         this.wobbleIndex,
-        shouldWobble ? 0.01 + 0.99 * (0.5 * Math.sin(t * WOBBLE_FREQUENCY) + 0.5) : 0, // positive if it must wobble
+        shouldWobble ? 0.01 + 0.99 * (0.5 - 0.5 * Math.cos(timeFromWobbleStart * WOBBLE_FREQUENCY)) : 0, // positive if it must wobble
       );
 
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
