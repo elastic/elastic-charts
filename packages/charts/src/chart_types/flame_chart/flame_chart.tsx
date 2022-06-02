@@ -205,7 +205,25 @@ class FlameComponent extends React.Component<FlameProps> {
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
-    this.currentFocus = focusRect(this.props.columnarViewModel, props.chartDimensions.height, 0, -Infinity);
+    const columns = this.props.columnarViewModel;
+
+    // vector length checks
+    const datumCount = columns.position1.length / 2;
+    if (datumCount % 2) throw new Error('flame error: position0 vector must have even values (x/y pairs)');
+    if (datumCount * 2 !== columns.position0.length)
+      throw new Error('flame error: Mismatch between position0 (xy) and position1 (xy) length');
+    if (datumCount !== columns.size0.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and size0 length');
+    if (datumCount !== columns.size1.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and size1 length');
+    if (datumCount * 4 !== columns.color.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and color (rgba) length');
+    if (datumCount !== columns.value.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and value length');
+    if (datumCount !== columns.label.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and label length');
+
+    this.currentFocus = focusRect(columns, props.chartDimensions.height, 0, -Infinity);
     this.targetFocus = { ...this.currentFocus };
 
     // browser pinch zoom handling
@@ -214,7 +232,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setupViewportScaleChangeListener();
 
     // search
-    this.currentColor = this.props.columnarViewModel.color;
+    this.currentColor = columns.color;
   }
 
   private setupDevicePixelRatioChangeListener = () => {
