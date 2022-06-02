@@ -775,7 +775,7 @@ class FlameComponent extends React.Component<FlameProps> {
         <BasicTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
-          visible={this.props.tooltipRequired && this.hoverIndex >= 0}
+          visible={this.props.tooltipRequired && this.hoverIndex >= 0 && !(this.wobbleTimeLeft > 0)}
           info={{
             header: null,
             values:
