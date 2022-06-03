@@ -560,7 +560,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
-  private handleKeyPress = (e: KeyboardEvent) => {
+  private handleSearchFieldKeyPress = (e: KeyboardEvent) => {
     e.stopPropagation();
     this.searchForText(false);
   };
@@ -598,6 +598,30 @@ class FlameComponent extends React.Component<FlameProps> {
         this.wobbleIndex = datumIndex;
       }
     }
+  };
+
+  private previousHit = ({ timeStamp }: { timeStamp: number }) => {
+    const hitCount = this.currentSearchHitCount;
+    if (!this.currentSearchString || hitCount === 0) return;
+    this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+      ? hitCount - 1
+      : this.focusedMatchIndex === 0
+      ? NaN
+      : this.focusedMatchIndex - 1;
+    this.focusOnHit(timeStamp);
+    this.setState({});
+  };
+
+  private nextHit = ({ timeStamp }: { timeStamp: number }) => {
+    const hitCount = this.currentSearchHitCount;
+    if (!this.currentSearchString || hitCount === 0) return;
+    this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+      ? 0
+      : this.focusedMatchIndex === hitCount - 1
+      ? NaN
+      : this.focusedMatchIndex + 1;
+    this.focusOnHit(timeStamp);
+    this.setState({});
   };
 
   render = () => {
@@ -644,7 +668,6 @@ class FlameComponent extends React.Component<FlameProps> {
             height={canvasHeight}
             onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
-            /*onKeyPress={this.handleKeyPress}*/
             onMouseLeave={this.handleMouseLeave}
             onWheel={this.handleWheel}
             style={style}
@@ -664,8 +687,8 @@ class FlameComponent extends React.Component<FlameProps> {
             type="text"
             tabIndex={0}
             placeholder="Enter search string"
-            onKeyPress={this.handleKeyPress}
-            onKeyUp={this.handleKeyPress}
+            onKeyPress={this.handleSearchFieldKeyPress}
+            onKeyUp={this.handleSearchFieldKeyPress}
             style={{
               border: '0px solid lightgray',
               padding: 3,
@@ -735,21 +758,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ◀
-            <input
-              type="checkbox"
-              tabIndex={0}
-              onClick={(e) => {
-                if (!this.currentSearchString || hitCount === 0) return;
-                this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
-                  ? hitCount - 1
-                  : this.focusedMatchIndex === 0
-                  ? NaN
-                  : this.focusedMatchIndex - 1;
-                this.focusOnHit(e.timeStamp);
-                this.setState({});
-              }}
-              style={{ display: 'none' }}
-            />
+            <input type="checkbox" tabIndex={0} onClick={this.previousHit} style={{ display: 'none' }} />
           </label>
           <label
             title="Next hit"
@@ -762,21 +771,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ▶
-            <input
-              type="checkbox"
-              tabIndex={0}
-              onClick={(e) => {
-                if (!this.currentSearchString || hitCount === 0) return;
-                this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
-                  ? 0
-                  : this.focusedMatchIndex === hitCount - 1
-                  ? NaN
-                  : this.focusedMatchIndex + 1;
-                this.focusOnHit(e.timeStamp);
-                this.setState({});
-              }}
-              style={{ display: 'none' }}
-            />
+            <input type="checkbox" tabIndex={0} onClick={this.nextHit} style={{ display: 'none' }} />
           </label>
 
           <p
