@@ -560,9 +560,32 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
+  private handleEnterKey = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    if (e.key === 'Enter') {
+      if (e.shiftKey) {
+        this.previousHit(e);
+      } else {
+        this.nextHit(e);
+      }
+      return true;
+    }
+    return false;
+  };
+
+  private handleEscapeKey = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    if (e.key === 'Escape' && this.searchInputRef.current) {
+      this.searchInputRef.current.value = '';
+    }
+    this.searchForText(false);
+  };
+
   private handleSearchFieldKeyPress = (e: KeyboardEvent) => {
     e.stopPropagation();
-    this.searchForText(false);
+    if (!this.handleEnterKey(e)) {
+      this.searchForText(false);
+    }
   };
 
   private focusOnHit = (timestamp: number) => {
@@ -688,7 +711,7 @@ class FlameComponent extends React.Component<FlameProps> {
             tabIndex={0}
             placeholder="Enter search string"
             onKeyPress={this.handleSearchFieldKeyPress}
-            onKeyUp={this.handleSearchFieldKeyPress}
+            onKeyUp={this.handleEscapeKey}
             style={{
               border: '0px solid lightgray',
               padding: 3,
