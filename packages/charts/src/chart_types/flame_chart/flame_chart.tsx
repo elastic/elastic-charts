@@ -692,6 +692,8 @@ class FlameComponent extends React.Component<FlameProps> {
             onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
             onMouseLeave={this.handleMouseLeave}
+            onKeyPress={this.handleEnterKey}
+            onKeyUp={this.handleEscapeKey}
             onWheel={this.handleWheel}
             style={style}
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
