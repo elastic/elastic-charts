@@ -8,8 +8,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "storybook",
-      "e2e-server"
+      "storybook"
     ],
     "nohoist": [
       "**/@elastic/eui"
