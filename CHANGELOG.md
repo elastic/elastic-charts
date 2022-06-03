@@ -1,3 +1,12 @@
+## [46.7.1](https://github.com/elastic/elastic-charts/compare/v46.7.0...v46.7.1) (2022-06-03)
+
+
+### Bug Fixes
+
+* **bubble:** tooltip visibility on hover ([#1674](https://github.com/elastic/elastic-charts/issues/1674)) ([d3cabbe](https://github.com/elastic/elastic-charts/commit/d3cabbe59f3ce7678a5e635d713272a13baf7076))
+* **deps:** update dependency @elastic/eui to ^58.1.1 ([#1689](https://github.com/elastic/elastic-charts/issues/1689)) ([c8d6eed](https://github.com/elastic/elastic-charts/commit/c8d6eeda40d288065e4caea25b6f2311e0a387d0))
+* **flame:** safari and zoom regressions fixed and misc improvs ([#1695](https://github.com/elastic/elastic-charts/issues/1695)) ([9a48783](https://github.com/elastic/elastic-charts/commit/9a4878387151e663558ee922a1f40d6c9d1c4766))
+
 # [46.7.0](https://github.com/elastic/elastic-charts/compare/v46.6.0...v46.7.0) (2022-06-01)
 
 
