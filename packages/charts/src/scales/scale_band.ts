@@ -97,7 +97,7 @@ export class ScaleBand {
     return this.domain.length < 2;
   }
 
-  isValueInDomain(value: unknown) {
-    return this.domain.includes(value as string | number);
+  isValueInDomain(value: string | number) {
+    return this.domain.includes(value);
   }
 }
