@@ -7,9 +7,8 @@
  */
 
 import { CSSProperties } from 'react';
-import { $Values, Optional } from 'utility-types';
+import { $Values } from 'utility-types';
 
-import { AnimationOptions } from '../../chart_types/xy_chart/renderer/canvas/animations/animation';
 import { Color } from '../../common/colors';
 import { Pixels, Radian, Ratio } from '../../common/geometry';
 import { Font, FontStyle } from '../../common/text_utils';
