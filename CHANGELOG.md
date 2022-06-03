@@ -1,3 +1,10 @@
+# [46.8.0](https://github.com/elastic/elastic-charts/compare/v46.7.1...v46.8.0) (2022-06-03)
+
+
+### Features
+
+* **flame:** keyboard shortcuts for the text field ([#1697](https://github.com/elastic/elastic-charts/issues/1697)) ([ee29fae](https://github.com/elastic/elastic-charts/commit/ee29fae0448772834def86f55df8fe80d4235a82))
+
 ## [46.7.1](https://github.com/elastic/elastic-charts/compare/v46.7.0...v46.7.1) (2022-06-03)
 
 
