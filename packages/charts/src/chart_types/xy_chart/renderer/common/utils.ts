@@ -10,7 +10,7 @@ import { mergePartial } from '../../../../utils/common';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { TimeFunction } from '../../../../utils/time_functions';
 import { AnimationOptions } from '../canvas/animations/animation';
-import { AnimationTriggerConfig, AnnotationAnimationTrigger } from './../../utils/specs';
+import { AnimationConfig, AnnotationAnimationTrigger } from './../../utils/specs';
 
 const DEFAULT_ANNOTATION_ANIMATION_OPTIONS: AnimationOptions = {
   enabled: true,
@@ -38,7 +38,7 @@ export type GetAnnotationParamsFn = (id: string) => AnnotationHoverParams;
 export const getAnnotationHoverParamsFn = (
   hoveredElementIds: string[],
   styles: SharedGeometryStateStyle,
-  animations: AnimationTriggerConfig<AnnotationAnimationTrigger>[] = [],
+  animations: AnimationConfig<AnnotationAnimationTrigger>[] = [],
 ): GetAnnotationParamsFn => (id) => {
   const fadeOutConfig = animations.find(({ trigger }) => trigger === AnnotationAnimationTrigger.FadeOnFocusingOthers);
   const isHighlighted = hoveredElementIds.includes(id);
