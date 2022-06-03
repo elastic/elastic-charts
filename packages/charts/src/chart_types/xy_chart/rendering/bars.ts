@@ -7,7 +7,7 @@
  */
 
 import { Color } from '../../../common/colors';
-import { Scale } from '../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, mergePartial } from '../../../utils/common';
@@ -32,8 +32,8 @@ export function renderBars(
   measureText: TextMeasure,
   orderIndex: number,
   dataSeries: DataSeries,
-  xScale: Scale<number | string>,
-  yScale: Scale<number>,
+  xScale: ScaleContinuous | ScaleBand,
+  yScale: ScaleContinuous,
   panel: Dimensions,
   chartRotation: number,
   minBarHeight: number,
@@ -49,8 +49,8 @@ export function renderBars(
   const isInvertedY = yScale.isInverted;
   return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
     const xScaled = xScale.scale(datum.x);
-    if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
-      return barTuple; // don't create a bar if not within the xScale domain
+    if (Number.isNaN(xScaled)) {
+      return barTuple; // a NaN value means the datum is not within the scale range
     }
     const { barGeometries, indexedGeometryMap } = barTuple;
     const { y0, y1, initialY1, filled } = datum;

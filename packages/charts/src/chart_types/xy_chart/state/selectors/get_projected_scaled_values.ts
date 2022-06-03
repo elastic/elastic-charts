@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { isContinuousScale } from '../../../../scales/types';
 import { ProjectedValues } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
@@ -24,13 +25,15 @@ export const getProjectedScaledValues = createCustomCachedSelector(
       return;
     }
 
-    const xValue = xScale.invertWithStep(x, geometriesIndexKeys);
+    const xValue = isContinuousScale(xScale)
+      ? xScale.invertWithStep(x, geometriesIndexKeys as number[]).value // TODO fix this cast
+      : xScale.invert(x);
     if (!xValue) {
       return;
     }
 
     return {
-      x: xValue.value,
+      x: xValue,
       y: [...yScales.entries()].map(([groupId, yScale]) => ({ value: yScale.invert(y), groupId })),
       smVerticalValue: verticalPanelValue,
       smHorizontalValue: horizontalPanelValue,

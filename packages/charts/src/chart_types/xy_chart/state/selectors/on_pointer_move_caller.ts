@@ -9,12 +9,14 @@
 import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
+import { isContinuousScale } from '../../../../scales/types';
 import { PointerEvent, PointerOverEvent, PointerUpdateTrigger } from '../../../../specs';
 import { PointerEventType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { isNil } from '../../../../utils/common';
 import { ComputedScales } from '../utils/types';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
@@ -46,8 +48,8 @@ function getPointerEvent(
   if (x === -1 || y === -1) {
     return { chartId, type: PointerEventType.Out };
   }
-  const xValue = xScale.invertWithStep(x, geometriesIndexKeys);
-  if (!xValue) {
+  const xValue = isContinuousScale(xScale) ? xScale.invertWithStep(x, geometriesIndexKeys).value : xScale.invert(x);
+  if (isNil(xValue)) {
     return { chartId, type: PointerEventType.Out };
   }
   return {
@@ -55,7 +57,7 @@ function getPointerEvent(
     type: PointerEventType.Over,
     unit: xScale.unit,
     scale: xScale.type,
-    x: xValue.value,
+    x: xValue,
     y: [...yScales.entries()].map(([groupId, yScale]) => {
       return { value: yScale.invert(y), groupId };
     }),

@@ -7,6 +7,7 @@
  */
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
+import { isContinuousScale } from '../../../../scales/types';
 import {
   PointerEvent,
   isPointerOutEvent,
@@ -23,7 +24,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../../../state/selectors/get_tooltip_header_formatter';
-import { Rotation } from '../../../../utils/common';
+import { isNil, Rotation } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
@@ -100,6 +101,9 @@ function getTooltipAndHighlightFromValue(
   let tooltipType = getTooltipType(settings);
   if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
     tooltipType = getTooltipType(settings, true);
+    if (isNil(externalPointerEvent.x)) {
+      return EMPTY_VALUES;
+    }
     const scaledX = scales.xScale.pureScale(externalPointerEvent.x);
 
     if (Number.isNaN(scaledX)) {

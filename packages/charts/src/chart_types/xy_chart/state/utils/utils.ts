@@ -9,10 +9,10 @@
 import { Color } from '../../../../common/colors';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
-import { Scale } from '../../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { SettingsSpec, TickFormatter } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isFiniteNumber, isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
+import { isFiniteNumber, isNil, isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import {
@@ -266,7 +266,7 @@ export function isHistogramModeEnabled(seriesSpecs: BasicSeriesSpec[]): boolean 
 
 /** @internal */
 export function computeXScaleOffset(
-  xScale: Scale<number | string>,
+  xScale: ScaleBand | ScaleContinuous,
   enableHistogramMode: boolean,
   histogramModeAlignment: HistogramModeAlignment = HistogramModeAlignments.Start,
 ): number {
@@ -293,9 +293,9 @@ export function computeXScaleOffset(
 function renderGeometries(
   dataSeries: DataSeries[],
   xDomain: XDomain,
-  yScales: Map<GroupId, Scale<number>>,
-  smVScale: Scale<number | string>,
-  smHScale: Scale<number | string>,
+  yScales: Map<GroupId, ScaleContinuous>,
+  smVScale: ScaleBand,
+  smHScale: ScaleBand,
   barIndexOrderPerPanel: Record<string, string[]>,
   seriesSpecs: BasicSeriesSpec[],
   seriesColorsMap: Map<SeriesKey, Color>,
@@ -353,8 +353,8 @@ function renderGeometries(
 
     const { stackMode } = ds;
 
-    const leftPos = smHScale.scale(ds.smHorizontalAccessorValue) || 0;
-    const topPos = smVScale.scale(ds.smVerticalAccessorValue) || 0;
+    const leftPos = (!isNil(ds.smHorizontalAccessorValue) && smHScale.scale(ds.smHorizontalAccessorValue)) || 0;
+    const topPos = (!isNil(ds.smVerticalAccessorValue) && smVScale.scale(ds.smVerticalAccessorValue)) || 0;
     const panel: Dimensions = {
       width: smHScale.bandwidth,
       height: smVScale.bandwidth,

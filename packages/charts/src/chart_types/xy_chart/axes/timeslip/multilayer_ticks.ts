@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Scale, ScaleContinuous } from '../../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { XDomain } from '../../domains/types';
 import { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
 import { GetMeasuredTicks } from '../../state/selectors/visible_ticks';
@@ -40,7 +40,7 @@ export function multilayerAxisEntry(
   extendByOneBin: boolean,
   range: [number, number],
   timeAxisLayerCount: any,
-  scale: Scale<string | number> | ScaleContinuous, // fixme it's only the latter for now
+  scale: ScaleBand | ScaleContinuous, // fixme it's only the latter for now
   getMeasuredTicks: GetMeasuredTicks,
 ) {
   const rasterSelector = rasters({ minimumTickPixelDistance: 24, locale: 'en-US' }, xDomain.timeZone);

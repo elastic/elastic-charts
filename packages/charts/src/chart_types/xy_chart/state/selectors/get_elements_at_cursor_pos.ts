@@ -6,9 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { isContinuousScale } from '../../../../scales/types';
 import { PointerEvent } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { ChartDimensions } from '../../utils/dimensions';
@@ -46,6 +48,10 @@ function getElementAtCursorPosition(
   { chartDimensions }: ChartDimensions,
 ): IndexedGeometry[] {
   if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
+    if (isNil(externalPointerEvent.x)) {
+      return [];
+    }
+
     const x = scales.xScale.pureScale(externalPointerEvent.x);
 
     if (Number.isNaN(x) || x > chartDimensions.width + chartDimensions.left || x < 0) {
@@ -54,14 +60,16 @@ function getElementAtCursorPosition(
     // TODO: Handle external event with spatial points
     return geometriesIndex.find(externalPointerEvent.x, { x: -1, y: -1 });
   }
-  const xValue = scales.xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys);
-  if (!xValue) {
+  const xValue = isContinuousScale(scales.xScale)
+    ? scales.xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys as number[]).value // TODO FIX this
+    : scales.xScale.invert(orientedProjectedPointerPosition.x);
+  if (isNil(xValue) || Number.isNaN(xValue)) {
     return [];
   }
   // get the elements at cursor position
   return geometriesIndex
     .find(
-      xValue?.value,
+      xValue,
       orientedProjectedPointerPosition,
       orientedProjectedPointerPosition.horizontalPanelValue,
       orientedProjectedPointerPosition.verticalPanelValue,
