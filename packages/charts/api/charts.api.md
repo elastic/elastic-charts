@@ -57,6 +57,14 @@ export interface AngleFromTo {
 export type AnimatedValue = number;
 
 // @public (undocumented)
+export interface AnimationConfig<T extends string> {
+    // (undocumented)
+    options?: AnimationOptions;
+    // (undocumented)
+    trigger: T;
+}
+
+// @public (undocumented)
 export interface AnimationOptions {
     delay?: TimeMs | AnimationSpeed;
     duration?: TimeMs | AnimationSpeed;
@@ -78,14 +86,6 @@ export const AnimationSpeed: Readonly<{
 // @public (undocumented)
 export type AnimationSpeed = $Keys<typeof AnimationSpeed>;
 
-// @public (undocumented)
-export interface AnimationTriggerConfig<T extends string> {
-    // (undocumented)
-    options?: AnimationOptions;
-    // (undocumented)
-    trigger: T;
-}
-
 // @alpha (undocumented)
 export interface AnimKeyframe {
     // Warning: (ae-forgotten-export) The symbol "EasingFunction" needs to be exported by the entry point index.d.ts
@@ -97,15 +97,15 @@ export interface AnimKeyframe {
 }
 
 // @public (undocumented)
+export type AnnotationAnimationConfig = AnimationConfig<AnnotationAnimationTrigger>;
+
+// @public (undocumented)
 export const AnnotationAnimationTrigger: Readonly<{
     FadeOnFocusingOthers: "FadeOnFocusingOthers";
 }>;
 
 // @public (undocumented)
 export type AnnotationAnimationTrigger = $Values<typeof AnnotationAnimationTrigger>;
-
-// @public (undocumented)
-export type AnnotationAnimationTriggerConfig = AnimationTriggerConfig<AnnotationAnimationTrigger>;
 
 // @public (undocumented)
 export type AnnotationClickListener = (annotations: {
@@ -356,7 +356,7 @@ export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 
 // @public (undocumented)
 export interface BaseAnnotationSpec<T extends typeof AnnotationType.Rectangle | typeof AnnotationType.Line, AD extends RectAnnotationDatum | LineAnnotationDatum<D>, S extends RectAnnotationStyle | LineAnnotationStyle, D = never> extends Spec, AnnotationPortalSettings {
-    animations?: AnnotationAnimationTriggerConfig[];
+    animations?: AnnotationAnimationConfig[];
     annotationType: T;
     // (undocumented)
     chartType: typeof ChartType.XYAxis;
