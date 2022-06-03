@@ -42,7 +42,7 @@ const columnarData = {
   color: new Float32Array(
     columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[pseudoRandom(0, 11)].map((c) => c / 255), 1]),
   ),
-  position0: position,
+  position0: position, // new Float32Array([...position].slice(1)), // try with the wrong array length
   position1: position,
   size0: size,
   size1: size,
