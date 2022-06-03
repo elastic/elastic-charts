@@ -398,13 +398,10 @@ export const NullTexture: Texture = {
 /** @internal */
 export const createTexture = (
   gl: WebGL2RenderingContext,
-  { textureIndex, internalFormat, width: w, height: h, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
+  { textureIndex, internalFormat, width, height, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
 ): Texture => {
   if (GL_DEBUG && !(0 <= textureIndex && textureIndex <= gl.getParameter(GL.MAX_COMBINED_TEXTURE_IMAGE_UNITS)))
     throw new Error('WebGL2 is guaranteed to support at least 32 textures but not necessarily more than that');
-
-  const width: GLuint = Math.ceil(w);
-  const height: GLuint = Math.ceil(h);
 
   const srcFormat = textureSrcFormatLookup[internalFormat];
   const type = textureTypeLookup[internalFormat];

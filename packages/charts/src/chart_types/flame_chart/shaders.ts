@@ -109,7 +109,7 @@ const getGeom = /* language=GLSL */ `
           color.rgb,
           color.a
             * (gl_InstanceID == int(hoverIndex) - GEOM_INDEX_OFFSET ? HOVER_OPACITY : 1.0)
-            * (gl_InstanceID == int(wobbleIndex) - GEOM_INDEX_OFFSET && wobble > 0.0 ? wobble : 1.0)
+            * (gl_InstanceID == int(wobbleIndex) - GEOM_INDEX_OFFSET && wobble > 0.0 ? 1.0 - wobble : 1.0)
         );
 
     return Geom(

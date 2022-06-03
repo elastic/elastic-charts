@@ -49,9 +49,9 @@ const LEFT_MOUSE_BUTTON = 1;
 const MINIMAP_SIZE_RATIO_X = 3;
 const MINIMAP_SIZE_RATIO_Y = 3;
 const SHOWN_ANCESTOR_COUNT = 2; // how many rows above the focused in node should be shown
-const WOBBLE_TIME_SEARCH_HIT = 1000;
-const WOBBLE_TIME_CLICK_FOCUS = 500; // shorter wobble for clicks, as users know where they clicked
-const WOBBLE_FREQUENCY = 1 / 50; // e.g. 1/30 means a cycle of every 30ms
+const WOBBLE_DURATION = 1000;
+const WOBBLE_REPEAT_COUNT = 2;
+const WOBBLE_FREQUENCY = 2 * Math.PI * (WOBBLE_REPEAT_COUNT / WOBBLE_DURATION); // e.g. 1/30 means a cycle of every 30ms
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -205,7 +205,25 @@ class FlameComponent extends React.Component<FlameProps> {
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
-    this.currentFocus = focusRect(this.props.columnarViewModel, props.chartDimensions.height, 0, -Infinity);
+    const columns = this.props.columnarViewModel;
+
+    // vector length checks
+    const datumCount = columns.position1.length / 2;
+    if (datumCount % 2) throw new Error('flame error: position0 vector must have even values (x/y pairs)');
+    if (datumCount * 2 !== columns.position0.length)
+      throw new Error('flame error: Mismatch between position0 (xy) and position1 (xy) length');
+    if (datumCount !== columns.size0.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and size0 length');
+    if (datumCount !== columns.size1.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and size1 length');
+    if (datumCount * 4 !== columns.color.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and color (rgba) length');
+    if (datumCount !== columns.value.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and value length');
+    if (datumCount !== columns.label.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and label length');
+
+    this.currentFocus = focusRect(columns, props.chartDimensions.height, 0, -Infinity);
     this.targetFocus = { ...this.currentFocus };
 
     // browser pinch zoom handling
@@ -214,7 +232,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setupViewportScaleChangeListener();
 
     // search
-    this.currentColor = this.props.columnarViewModel.color;
+    this.currentColor = columns.color;
   }
 
   private setupDevicePixelRatioChangeListener = () => {
@@ -413,7 +431,7 @@ class FlameComponent extends React.Component<FlameProps> {
           hovered.datumIndex,
           hovered.timestamp,
         );
-        this.wobbleTimeLeft = WOBBLE_TIME_CLICK_FOCUS;
+        this.wobbleTimeLeft = WOBBLE_DURATION;
         this.wobbleIndex = hovered.datumIndex;
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
@@ -576,7 +594,7 @@ class FlameComponent extends React.Component<FlameProps> {
         );
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
-        this.wobbleTimeLeft = WOBBLE_TIME_SEARCH_HIT;
+        this.wobbleTimeLeft = WOBBLE_DURATION;
         this.wobbleIndex = datumIndex;
       }
     }
@@ -775,7 +793,7 @@ class FlameComponent extends React.Component<FlameProps> {
         <BasicTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
-          visible={this.props.tooltipRequired && this.hoverIndex >= 0}
+          visible={this.props.tooltipRequired && this.hoverIndex >= 0 && !(this.wobbleTimeLeft > 0)}
           info={{
             header: null,
             values:
@@ -858,11 +876,12 @@ class FlameComponent extends React.Component<FlameProps> {
 
       this.wobbleTimeLeft -= msDeltaT;
       const shouldWobble = this.wobbleTimeLeft > 0;
+      const timeFromWobbleStart = clamp(WOBBLE_DURATION - this.wobbleTimeLeft, 0, WOBBLE_DURATION);
 
       renderFrame(
         [this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1],
         this.wobbleIndex,
-        shouldWobble ? 0.01 + 0.99 * (0.5 * Math.sin(t * WOBBLE_FREQUENCY) + 0.5) : 0, // positive if it must wobble
+        shouldWobble ? 0.01 + 0.99 * (0.5 - 0.5 * Math.cos(timeFromWobbleStart * WOBBLE_FREQUENCY)) : 0, // positive if it must wobble
       );
 
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
@@ -870,6 +889,10 @@ class FlameComponent extends React.Component<FlameProps> {
         this.animationRafId = window.requestAnimationFrame(anim);
       } else {
         this.prevT = NaN;
+        this.currentFocus.x0 = this.targetFocus.x0;
+        this.currentFocus.x1 = this.targetFocus.x1;
+        this.currentFocus.y0 = this.targetFocus.y0;
+        this.currentFocus.y1 = this.targetFocus.y1;
       }
     };
     window.cancelAnimationFrame(this.animationRafId);
