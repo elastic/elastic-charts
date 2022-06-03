@@ -12,7 +12,6 @@ import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { LineAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
-import { AnnotationAnimationTrigger } from '../../../utils/specs';
 import { GetAnnotationParamsFn } from '../../common/utils';
 import { AnimationContext } from '../animations';
 import { renderMultiLine } from '../primitives/line';
@@ -27,15 +26,11 @@ export function renderLineAnnotations(
   getHoverParams: GetAnnotationParamsFn,
   rotation: Rotation,
   renderingArea: Dimensions,
-  triggers: AnnotationAnimationTrigger[] = [],
 ) {
-  const getAnimatedValue = aCtx.getValue(lineStyle.animations);
   const getStroke = (id: string): Stroke => {
-    const { style } = getHoverParams(id, triggers);
-
+    const { style, options } = getHoverParams(id);
     const opacityKey = `anno-rect-opacity--${id}`;
-    const hoverOpacity = getAnimatedValue(opacityKey, style.opacity);
-
+    const hoverOpacity = aCtx.getValue(options)(opacityKey, style.opacity);
     const strokeColor = overrideOpacity(
       colorToRgba(lineStyle.line.stroke),
       (opacity) => opacity * lineStyle.line.opacity * hoverOpacity,

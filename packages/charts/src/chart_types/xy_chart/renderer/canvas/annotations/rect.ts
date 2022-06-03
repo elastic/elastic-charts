@@ -12,7 +12,6 @@ import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { RectAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationRectProps } from '../../../annotations/rect/types';
-import { AnnotationAnimationTrigger } from '../../../utils/specs';
 import { GetAnnotationParamsFn } from '../../common/utils';
 import { AnimationContext } from '../animations';
 import { renderRect } from '../primitives/rect';
@@ -27,14 +26,12 @@ export function renderRectAnnotations(
   getHoverParams: GetAnnotationParamsFn,
   rotation: Rotation,
   renderingArea: Dimensions,
-  triggers: AnnotationAnimationTrigger[] = [],
 ) {
-  const getAnimatedValue = aCtx.getValue(rectStyle.animations);
   const getFillAndStroke = (id: string): [Fill, Stroke] => {
-    const { style } = getHoverParams(id, triggers);
+    const { style, options } = getHoverParams(id);
 
     const opacityKey = `anno-rect-opacity--${id}`;
-    const hoverOpacity = getAnimatedValue(opacityKey, style.opacity);
+    const hoverOpacity = aCtx.getValue(options)(opacityKey, style.opacity);
 
     const fill: Fill = {
       color: overrideOpacity(colorToRgba(rectStyle.fill), (opacity) => opacity * rectStyle.opacity * hoverOpacity),

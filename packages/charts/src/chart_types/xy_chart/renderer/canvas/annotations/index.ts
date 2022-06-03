@@ -36,14 +36,14 @@ export function renderAnnotations(
   hoveredAnnotationIds: string[],
   renderOnBackground: boolean = true,
 ) {
-  const getHoverParams = getAnnotationHoverParamsFn(hoveredAnnotationIds, sharedStyle);
   annotationDimensions.forEach((annotation, id) => {
     const spec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
     const isBackground = (spec?.zIndex ?? 0) <= 0;
 
     if (spec && isBackground === renderOnBackground) {
+      const getHoverParams = getAnnotationHoverParamsFn(hoveredAnnotationIds, sharedStyle, spec.animations);
       if (isLineAnnotation(spec)) {
-        const lineStyle = mergeWithDefaultAnnotationLine(spec.style, [{ animations: spec.animations?.options }]);
+        const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
         renderLineAnnotations(
           ctx,
           aCtx,
@@ -52,10 +52,9 @@ export function renderAnnotations(
           getHoverParams,
           rotation,
           renderingArea,
-          spec.animations?.triggers,
         );
       } else if (isRectAnnotation(spec)) {
-        const rectStyle = mergeWithDefaultAnnotationRect(spec.style, [{ animations: spec.animations?.options }]);
+        const rectStyle = mergeWithDefaultAnnotationRect(spec.style);
         renderRectAnnotations(
           ctx,
           aCtx,
@@ -64,7 +63,6 @@ export function renderAnnotations(
           getHoverParams,
           rotation,
           renderingArea,
-          spec.animations?.triggers,
         );
       }
     }

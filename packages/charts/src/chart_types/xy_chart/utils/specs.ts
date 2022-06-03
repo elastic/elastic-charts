@@ -845,10 +845,13 @@ export const AnnotationAnimationTrigger = Object.freeze({
 export type AnnotationAnimationTrigger = $Values<typeof AnnotationAnimationTrigger>;
 
 /** @public */
-export interface AnnotationAnimations {
-  triggers?: AnnotationAnimationTrigger[];
+export interface AnimationConfig<T extends string> {
+  trigger: T;
   options?: AnimationOptions;
 }
+
+/** @public */
+export type AnnotationAnimationConfig = AnimationConfig<AnnotationAnimationTrigger>;
 
 /** @public */
 export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<
@@ -1008,9 +1011,9 @@ export interface BaseAnnotationSpec<
    */
   zIndex?: number;
   /**
-   * Animated config for annotations
+   * Animation configurations for annotations
    */
-  animations?: AnnotationAnimations;
+  animations?: AnnotationAnimationConfig[];
 }
 
 /** @public */

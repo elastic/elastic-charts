@@ -11,8 +11,7 @@ import { array, boolean, color, number, select } from '@storybook/addon-knobs';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 
 import {
-  AnnotationAnimation,
-  AnnotationAnimationTrigger,
+  AnnotationAnimationConfig,
   AnnotationDomainType,
   Axis,
   Chart,
@@ -34,7 +33,7 @@ import { getChartRotationKnob, getKnobsFromEnum, getXYSeriesKnob } from '../../u
 const rng = getRandomNumberGenerator();
 const randomArray = new Array(100).fill(0).map(() => rng(0, 10, 2));
 
-const ExampleChart = memo(({ animationOptions }: { animationOptions: Partial<AnnotationAnimation> }) => {
+const ExampleChart = memo(({ animationOptions }: { animationOptions: AnnotationAnimationConfig['options'] }) => {
   const debug = boolean('debug', false);
   const [SeriesType] = getXYSeriesKnob(undefined, 'line');
   const xScaleType = select(
@@ -114,8 +113,12 @@ const ExampleChart = memo(({ animationOptions }: { animationOptions: Partial<Ann
   randomArray.slice(0, annotationCount - minAnnoCount).forEach((dataValue) => {
     lineData.push({ dataValue, details: `Autogen value: ${dataValue}` });
   });
-  const FadeOnFocusingOthers = boolean('FadeOnFocusingOthers', true, 'Animations');
-  const triggers: AnnotationAnimationTrigger[] = FadeOnFocusingOthers ? ['FadeOnFocusingOthers'] : [];
+  const fadeOnFocusingOthers = boolean('FadeOnFocusingOthers', true, 'Animations');
+  const animations: AnnotationAnimationConfig[] = [];
+
+  if (fadeOnFocusingOthers) {
+    animations.push({ trigger: 'FadeOnFocusingOthers', options: animationOptions });
+  }
 
   return (
     <Chart>
@@ -124,7 +127,7 @@ const ExampleChart = memo(({ animationOptions }: { animationOptions: Partial<Ann
         dataValues={dataValues}
         id="rect"
         style={{ ...rectStyle }}
-        animations={{ triggers, options: animationOptions }}
+        animations={animations}
         customTooltip={hasCustomTooltip ? customTooltip : undefined}
         zIndex={zIndex}
         hideTooltips={hideTooltips}
@@ -133,7 +136,7 @@ const ExampleChart = memo(({ animationOptions }: { animationOptions: Partial<Ann
         <LineAnnotation
           id="annotation_1"
           domainType={AnnotationDomainType.XDomain}
-          animations={{ triggers, options: animationOptions }}
+          animations={animations}
           dataValues={lineData}
           marker={<Icon type="alert" />}
         />
@@ -169,7 +172,7 @@ let prevAnimationStr = '';
 export const Example = () => {
   const [mountCount, setMountCount] = useState(1);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const animationOptions: Partial<AnnotationAnimation> = {
+  const animationOptions: Partial<AnnotationAnimationConfig['options']> = {
     enabled: boolean('enabled', true, 'Animations'),
     delay: number('delay (ms)', 50, { min: 0, max: 10000, step: 50 }, 'Animations'),
     duration: number('duration (ms)', 250, { min: 0, max: 10000, step: 50 }, 'Animations'),
