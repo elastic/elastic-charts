@@ -17,15 +17,7 @@ import {
   mergeWithDefaultAnnotationRect,
   mergeWithDefaultTheme,
 } from './merge_utils';
-import {
-  AreaSeriesStyle,
-  LineAnnotationStyle,
-  LineSeriesStyle,
-  PartialTheme,
-  RectAnnotationStyle,
-  TextStyle,
-  Theme,
-} from './theme';
+import { AreaSeriesStyle, LineAnnotationStyle, LineSeriesStyle, PartialTheme, TextStyle, Theme } from './theme';
 
 describe('Theme', () => {
   let CLONED_LIGHT_THEME: Theme;
@@ -74,14 +66,6 @@ describe('Theme', () => {
         padding: 0,
       };
 
-      const customAnimationsConfig = {
-        delay: 100,
-        duration: 100,
-        enabled: false,
-        snapValues: [],
-        timeFunction: TimeFunction.ease,
-      };
-
       const defaultAnimationsConfig = {
         enabled: true,
         duration: 250,
@@ -105,14 +89,6 @@ describe('Theme', () => {
       } as LineAnnotationStyle;
       const mergedCustomDetailsConfig = mergeWithDefaultAnnotationLine({ details: customDetailsConfig });
       expect(mergedCustomDetailsConfig).toEqual(expectedMergedCustomDetailsConfig);
-
-      const expectedMergedCustomAnimationsConfig = {
-        line: defaultLineConfig,
-        details: defaultDetailsConfig,
-        animations: customAnimationsConfig,
-      } as LineAnnotationStyle;
-      const mergedCustomAnimationsConfig = mergeWithDefaultAnnotationLine({ animations: customAnimationsConfig });
-      expect(mergedCustomAnimationsConfig).toEqual(expectedMergedCustomAnimationsConfig);
     });
   });
 
@@ -141,22 +117,7 @@ describe('Theme', () => {
         animations: defaultAnimationsConfig,
       };
 
-      const customAnimationsConfig = {
-        delay: 100,
-        duration: 100,
-        enabled: false,
-        snapValues: [],
-        timeFunction: TimeFunction.ease,
-      };
-
       expect(mergeWithDefaultAnnotationRect(customConfig)).toEqual(expectedMergedConfig);
-
-      const expectedMergedCustomAnimationsConfig = {
-        ...DEFAULT_ANNOTATION_RECT_STYLE,
-        animations: customAnimationsConfig,
-      } as RectAnnotationStyle;
-      const mergedCustomAnimationsConfig = mergeWithDefaultAnnotationRect({ animations: customAnimationsConfig });
-      expect(mergedCustomAnimationsConfig).toEqual(expectedMergedCustomAnimationsConfig);
     });
   });
 

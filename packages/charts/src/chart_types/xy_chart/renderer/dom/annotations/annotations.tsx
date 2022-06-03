@@ -37,7 +37,7 @@ import { getHighlightedAnnotationIdsSelector } from '../../../state/selectors/ge
 import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { getSpecsById } from '../../../state/utils/spec';
-import { isLineAnnotation, AnnotationSpec, AnnotationAnimationConfig } from '../../../utils/specs';
+import { isLineAnnotation, AnnotationSpec, AnnotationAnimationTriggerConfig } from '../../../utils/specs';
 import { getAnnotationHoverParamsFn } from '../../common/utils';
 import { AnnotationTooltip } from './annotation_tooltip';
 import { LineMarker } from './line_marker';
@@ -77,7 +77,7 @@ function renderAnnotationLineMarkers(
   hoveredIds: string[],
   sharedStyle: SharedGeometryStateStyle,
   clickable: boolean,
-  animations?: AnnotationAnimationConfig[],
+  animations?: AnnotationAnimationTriggerConfig[],
 ) {
   const getHoverParams = getAnnotationHoverParamsFn(hoveredIds, sharedStyle, animations);
   return annotationLines.reduce<JSX.Element[]>((acc, props: AnnotationLineProps) => {
