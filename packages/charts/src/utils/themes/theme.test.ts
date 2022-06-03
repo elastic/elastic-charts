@@ -66,18 +66,9 @@ describe('Theme', () => {
         padding: 0,
       };
 
-      const defaultAnimationsConfig = {
-        enabled: true,
-        duration: 250,
-        delay: 50,
-        snapValues: [],
-        timeFunction: TimeFunction.easeInOut,
-      };
-
       const expectedMergedCustomLineConfig = {
         line: customLineConfig,
         details: defaultDetailsConfig,
-        animations: defaultAnimationsConfig,
       } as LineAnnotationStyle;
       const mergedCustomLineConfig = mergeWithDefaultAnnotationLine({ line: customLineConfig });
       expect(mergedCustomLineConfig).toEqual(expectedMergedCustomLineConfig);
@@ -85,7 +76,6 @@ describe('Theme', () => {
       const expectedMergedCustomDetailsConfig = {
         line: defaultLineConfig,
         details: customDetailsConfig,
-        animations: defaultAnimationsConfig,
       } as LineAnnotationStyle;
       const mergedCustomDetailsConfig = mergeWithDefaultAnnotationLine({ details: customDetailsConfig });
       expect(mergedCustomDetailsConfig).toEqual(expectedMergedCustomDetailsConfig);
@@ -95,14 +85,6 @@ describe('Theme', () => {
   describe('mergeWithDefaultAnnotationRect', () => {
     it('should merge custom and default rect annotation style', () => {
       expect(mergeWithDefaultAnnotationRect()).toEqual(DEFAULT_ANNOTATION_RECT_STYLE);
-
-      const defaultAnimationsConfig = {
-        enabled: true,
-        duration: 250,
-        delay: 50,
-        snapValues: [],
-        timeFunction: TimeFunction.easeInOut,
-      };
 
       const customConfig = {
         stroke: 'customStroke',
@@ -114,7 +96,6 @@ describe('Theme', () => {
         fill: 'customFill',
         opacity: 0.25,
         strokeWidth: 0,
-        animations: defaultAnimationsConfig,
       };
 
       expect(mergeWithDefaultAnnotationRect(customConfig)).toEqual(expectedMergedConfig);
