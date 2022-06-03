@@ -49,6 +49,9 @@ const LEFT_MOUSE_BUTTON = 1;
 const MINIMAP_SIZE_RATIO_X = 3;
 const MINIMAP_SIZE_RATIO_Y = 3;
 const SHOWN_ANCESTOR_COUNT = 2; // how many rows above the focused in node should be shown
+const WOBBLE_DURATION = 1000;
+const WOBBLE_REPEAT_COUNT = 2;
+const WOBBLE_FREQUENCY = 2 * Math.PI * (WOBBLE_REPEAT_COUNT / WOBBLE_DURATION); // e.g. 1/30 means a cycle of every 30ms
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -196,9 +199,31 @@ class FlameComponent extends React.Component<FlameProps> {
   private useRegex = false;
   private focusedMatchIndex = NaN;
 
+  // wobble
+  private wobbleTimeLeft = 0;
+  private wobbleIndex = NaN;
+
   constructor(props: Readonly<FlameProps>) {
     super(props);
-    this.currentFocus = focusRect(this.props.columnarViewModel, props.chartDimensions.height, 0, -Infinity);
+    const columns = this.props.columnarViewModel;
+
+    // vector length checks
+    const datumCount = columns.position1.length / 2;
+    if (datumCount % 2) throw new Error('flame error: position0 vector must have even values (x/y pairs)');
+    if (datumCount * 2 !== columns.position0.length)
+      throw new Error('flame error: Mismatch between position0 (xy) and position1 (xy) length');
+    if (datumCount !== columns.size0.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and size0 length');
+    if (datumCount !== columns.size1.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and size1 length');
+    if (datumCount * 4 !== columns.color.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and color (rgba) length');
+    if (datumCount !== columns.value.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and value length');
+    if (datumCount !== columns.label.length)
+      throw new Error('flame error: Mismatch between position1 (xy) and label length');
+
+    this.currentFocus = focusRect(columns, props.chartDimensions.height, 0, -Infinity);
     this.targetFocus = { ...this.currentFocus };
 
     // browser pinch zoom handling
@@ -207,7 +232,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setupViewportScaleChangeListener();
 
     // search
-    this.currentColor = this.props.columnarViewModel.color;
+    this.currentColor = columns.color;
   }
 
   private setupDevicePixelRatioChangeListener = () => {
@@ -406,6 +431,8 @@ class FlameComponent extends React.Component<FlameProps> {
           hovered.datumIndex,
           hovered.timestamp,
         );
+        this.wobbleTimeLeft = WOBBLE_DURATION;
+        this.wobbleIndex = hovered.datumIndex;
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
         this.setState({});
@@ -533,9 +560,32 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
-  private handleKeyPress = (e: KeyboardEvent) => {
+  private handleEnterKey = (e: KeyboardEvent) => {
     e.stopPropagation();
+    if (e.key === 'Enter') {
+      if (e.shiftKey) {
+        this.previousHit(e);
+      } else {
+        this.nextHit(e);
+      }
+      return true;
+    }
+    return false;
+  };
+
+  private handleEscapeKey = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    if (e.key === 'Escape' && this.searchInputRef.current) {
+      this.searchInputRef.current.value = '';
+    }
     this.searchForText(false);
+  };
+
+  private handleSearchFieldKeyPress = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    if (!this.handleEnterKey(e)) {
+      this.searchForText(false);
+    }
   };
 
   private focusOnHit = (timestamp: number) => {
@@ -567,8 +617,34 @@ class FlameComponent extends React.Component<FlameProps> {
         );
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
+        this.wobbleTimeLeft = WOBBLE_DURATION;
+        this.wobbleIndex = datumIndex;
       }
     }
+  };
+
+  private previousHit = ({ timeStamp }: { timeStamp: number }) => {
+    const hitCount = this.currentSearchHitCount;
+    if (!this.currentSearchString || hitCount === 0) return;
+    this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+      ? hitCount - 1
+      : this.focusedMatchIndex === 0
+      ? NaN
+      : this.focusedMatchIndex - 1;
+    this.focusOnHit(timeStamp);
+    this.setState({});
+  };
+
+  private nextHit = ({ timeStamp }: { timeStamp: number }) => {
+    const hitCount = this.currentSearchHitCount;
+    if (!this.currentSearchString || hitCount === 0) return;
+    this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+      ? 0
+      : this.focusedMatchIndex === hitCount - 1
+      ? NaN
+      : this.focusedMatchIndex + 1;
+    this.focusOnHit(timeStamp);
+    this.setState({});
   };
 
   render = () => {
@@ -615,8 +691,9 @@ class FlameComponent extends React.Component<FlameProps> {
             height={canvasHeight}
             onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
-            /*onKeyPress={this.handleKeyPress}*/
             onMouseLeave={this.handleMouseLeave}
+            onKeyPress={this.handleEnterKey}
+            onKeyUp={this.handleEscapeKey}
             onWheel={this.handleWheel}
             style={style}
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
@@ -635,8 +712,8 @@ class FlameComponent extends React.Component<FlameProps> {
             type="text"
             tabIndex={0}
             placeholder="Enter search string"
-            onKeyPress={this.handleKeyPress}
-            onKeyUp={this.handleKeyPress}
+            onKeyPress={this.handleSearchFieldKeyPress}
+            onKeyUp={this.handleEscapeKey}
             style={{
               border: '0px solid lightgray',
               padding: 3,
@@ -706,21 +783,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ◀
-            <input
-              type="checkbox"
-              tabIndex={0}
-              onClick={(e) => {
-                if (!this.currentSearchString) return;
-                this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
-                  ? hitCount - 1
-                  : this.focusedMatchIndex === 0
-                  ? NaN
-                  : this.focusedMatchIndex - 1;
-                this.focusOnHit(e.timeStamp);
-                this.setState({});
-              }}
-              style={{ display: 'none' }}
-            />
+            <input type="checkbox" tabIndex={0} onClick={this.previousHit} style={{ display: 'none' }} />
           </label>
           <label
             title="Next hit"
@@ -733,21 +796,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ▶
-            <input
-              type="checkbox"
-              tabIndex={0}
-              onClick={(e) => {
-                if (!this.currentSearchString) return;
-                this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
-                  ? 0
-                  : this.focusedMatchIndex === hitCount - 1
-                  ? NaN
-                  : this.focusedMatchIndex + 1;
-                this.focusOnHit(e.timeStamp);
-                this.setState({});
-              }}
-              style={{ display: 'none' }}
-            />
+            <input type="checkbox" tabIndex={0} onClick={this.nextHit} style={{ display: 'none' }} />
           </label>
 
           <p
@@ -764,7 +813,7 @@ class FlameComponent extends React.Component<FlameProps> {
         <BasicTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
-          visible={this.props.tooltipRequired && this.hoverIndex >= 0}
+          visible={this.props.tooltipRequired && this.hoverIndex >= 0 && !(this.wobbleTimeLeft > 0)}
           info={{
             header: null,
             values:
@@ -845,13 +894,25 @@ class FlameComponent extends React.Component<FlameProps> {
       this.currentFocus.y0 += convergenceRateY * dy0;
       this.currentFocus.y1 += convergenceRateY * dy1;
 
-      renderFrame([this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1]);
+      this.wobbleTimeLeft -= msDeltaT;
+      const shouldWobble = this.wobbleTimeLeft > 0;
+      const timeFromWobbleStart = clamp(WOBBLE_DURATION - this.wobbleTimeLeft, 0, WOBBLE_DURATION);
+
+      renderFrame(
+        [this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1],
+        this.wobbleIndex,
+        shouldWobble ? 0.01 + 0.99 * (0.5 - 0.5 * Math.cos(timeFromWobbleStart * WOBBLE_FREQUENCY)) : 0, // positive if it must wobble
+      );
 
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
-      if (maxDiff > 1e-12) {
+      if (maxDiff > 1e-12 || shouldWobble) {
         this.animationRafId = window.requestAnimationFrame(anim);
       } else {
         this.prevT = NaN;
+        this.currentFocus.x0 = this.targetFocus.x0;
+        this.currentFocus.x1 = this.targetFocus.x1;
+        this.currentFocus.y0 = this.targetFocus.y0;
+        this.currentFocus.y1 = this.targetFocus.y1;
       }
     };
     window.cancelAnimationFrame(this.animationRafId);

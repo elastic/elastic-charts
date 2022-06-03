@@ -7,7 +7,7 @@
  */
 
 import { Colors } from '../../../../common/colors';
-import { clearCanvas, isCanvasRenderer, renderLayers, withContext } from '../../../../renderers/canvas';
+import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { AnimationContext, getAnimationPoolFn } from './animations';
 import { AnimationState } from './animations/animation';
 import { renderAnnotations } from './annotations';
@@ -145,13 +145,12 @@ export function renderXYChartCanvas2d(
               { color: Colors.Transparent.rgba },
               { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
             );
-
-            const renderer = geometriesIndex.triangulation([0, 0, width, height])?.render;
-            if (isCanvasRenderer(renderer)) {
+            const voronoi = geometriesIndex.triangulation([0, 0, width, height]);
+            if (voronoi) {
               ctx.beginPath();
               ctx.translate(left, top);
               ctx.setLineDash([5, 5]);
-              renderer(ctx);
+              voronoi.render(ctx);
               ctx.lineWidth = 1;
               ctx.strokeStyle = 'blue';
               ctx.stroke();

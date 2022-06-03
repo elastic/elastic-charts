@@ -33,6 +33,8 @@ export const drawWebgl = (
   instanceCount: number,
   focusLayer: boolean,
   pickLayer: boolean,
+  wobbleIndex: number,
+  wobble: number,
 ) =>
   renderer({
     target: pickLayer ? pickTexture.target() : null,
@@ -44,6 +46,8 @@ export const drawWebgl = (
       minFillRatio: MIN_FILL_RATIO,
       cornerRadiusPx: pickLayer ? 0 : canvasHeight * rowHeight * CORNER_RADIUS_RATIO, // note that for perf reasons the fragment shaders are split anyway
       hoverIndex: Number.isFinite(hoverIndex) ? hoverIndex + GEOM_INDEX_OFFSET : DUMMY_INDEX,
+      wobbleIndex: Number.isFinite(wobbleIndex) ? wobbleIndex + GEOM_INDEX_OFFSET : DUMMY_INDEX,
+      wobble,
       rowHeight0: rowHeight,
       rowHeight1: rowHeight,
       focus: [f[0], f[1], 0, 0, f[2], f[3], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

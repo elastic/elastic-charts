@@ -25,7 +25,14 @@ export const getColorPicker = (anchorPosition: PopoverAnchorPosition = 'leftCent
   onClose,
   onChange,
 }) => (
-  <EuiWrappingPopover isOpen button={anchor} closePopover={onClose} anchorPosition={anchorPosition} ownFocus>
+  <EuiWrappingPopover
+    isOpen
+    button={anchor}
+    closePopover={onClose}
+    panelStyle={{ padding: 16 }}
+    anchorPosition={anchorPosition}
+    ownFocus
+  >
     <EuiColorPicker display="inline" color={color} onChange={onChange} />
     <EuiSpacer size="m" />
     <EuiFlexItem grow={false}>
