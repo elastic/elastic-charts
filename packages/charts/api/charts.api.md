@@ -1048,7 +1048,7 @@ export function getNodeName(node: ArrayNode): string;
 // Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha
-export const Goal: (props: SFProps<GoalSpec, keyof typeof buildProps_2['overrides'], keyof typeof buildProps_2['defaults'], keyof typeof buildProps_2['optionals'], keyof typeof buildProps_2['requires']>) => null;
+export const Goal: (props: SFProps<GoalSpec, keyof typeof buildProps['overrides'], keyof typeof buildProps['defaults'], keyof typeof buildProps['optionals'], keyof typeof buildProps['requires']>) => null;
 
 // @alpha (undocumented)
 export interface GoalDomainRange {
@@ -1650,10 +1650,8 @@ export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnn
 // @public @deprecated
 export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
 
-// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
-//
-// @alpha
-export const Metric: (props: SFProps<MetricSpec, keyof typeof buildProps['overrides'], keyof typeof buildProps['defaults'], keyof typeof buildProps['optionals'], keyof typeof buildProps['requires']>) => null;
+// @alpha (undocumented)
+export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data" | "progressBarOrientation", never, "id" | "progressBarMode">>;
 
 // @alpha (undocumented)
 export type MetricBase = {
@@ -1687,7 +1685,7 @@ export interface MetricStyle {
     // (undocumented)
     background: Color;
     // (undocumented)
-    barBg: Color;
+    barBackground: Color;
     // (undocumented)
     nonFiniteText: string;
     // (undocumented)
