@@ -135,7 +135,7 @@ class Component extends React.Component<Props> {
                         barBackground={style.barBackground}
                         datum={{
                           value: 100,
-                          domain: [100, 100],
+                          domain: { min: 100, max: 100 },
                           color: d.color,
                         }}
                       />

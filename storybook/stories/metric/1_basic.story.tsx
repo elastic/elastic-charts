@@ -74,7 +74,7 @@ export const Example = () => {
     },
     {
       value: 3.57,
-      domain: [0, 3.57],
+      domain: { min: 0, max: 3.57 },
       color: '#FFBDAF',
       title: 'Inbound Traffic',
       subtitle: 'Network eth0',
@@ -88,7 +88,7 @@ export const Example = () => {
     {
       value: 453.57,
       color: '#E7664C',
-      domain: [0, 453.57],
+      domain: { min: 0, max: 453.57 },
       title: 'Outbound Traffic',
       subtitle: 'Network eth0',
       valueFormatter: (d) => `${d}MBps`,
@@ -101,7 +101,7 @@ export const Example = () => {
     {
       value: 12.57,
       color: '#5e5e5e',
-      domain: [0, 100],
+      domain: { min: 0, max: 100 },
       title: 'Disk I/O',
       subtitle: 'Read',
       valueFormatter: (d) => `${d} Mb/s`,

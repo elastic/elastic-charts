@@ -1697,7 +1697,10 @@ export interface MetricStyle {
 
 // @alpha (undocumented)
 export type MetricWProgress = MetricBase & {
-    domain: [min: number, max: number];
+    domain: {
+        min: number;
+        max: number;
+    };
 };
 
 // @alpha (undocumented)

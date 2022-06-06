@@ -22,7 +22,7 @@ export const ProgressBar: React.FunctionComponent<{
 }> = ({ datum: { domain, value, color }, mode, orientation, barBackground }) => {
   const isVertical = orientation === LayoutDirection.Vertical;
   const isSmall = mode === ProgressBarMode.Small;
-  const percent = clamp((domain ? value / (domain[1] - domain[0]) : 1) * 100, 0, 100);
+  const percent = clamp((domain ? value / (domain.max - domain.min) : 1) * 100, 0, 100);
 
   const bgClassName = classNames('echSingleMetricProgress', {
     'echSingleMetricProgress--vertical': isVertical,
