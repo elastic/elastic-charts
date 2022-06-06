@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { isContinuousScale } from '../../../../scales/types';
 import { PointerEvent } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -60,9 +59,8 @@ function getElementAtCursorPosition(
     // TODO: Handle external event with spatial points
     return geometriesIndex.find(externalPointerEvent.x, { x: -1, y: -1 });
   }
-  const xValue = isContinuousScale(scales.xScale)
-    ? scales.xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys as number[]).value // TODO FIX this
-    : scales.xScale.invert(orientedProjectedPointerPosition.x);
+  const xValue = scales.xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys as number[])
+    .value;
   if (isNil(xValue) || Number.isNaN(xValue)) {
     return [];
   }

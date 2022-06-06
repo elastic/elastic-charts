@@ -9,7 +9,6 @@
 import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
-import { isContinuousScale } from '../../../../scales/types';
 import { PointerEvent, PointerOverEvent, PointerUpdateTrigger } from '../../../../specs';
 import { PointerEventType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -48,8 +47,8 @@ function getPointerEvent(
   if (x === -1 || y === -1) {
     return { chartId, type: PointerEventType.Out };
   }
-  const xValue = isContinuousScale(xScale) ? xScale.invertWithStep(x, geometriesIndexKeys).value : xScale.invert(x);
-  if (isNil(xValue)) {
+  const xValue = xScale.invertWithStep(x, geometriesIndexKeys).value;
+  if (isNil(xValue) || Number.isNaN(xValue)) {
     return { chartId, type: PointerEventType.Out };
   }
   return {

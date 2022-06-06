@@ -7,7 +7,6 @@
  */
 
 import { Rect } from '../../../../geoms/types';
-import { isContinuousScale } from '../../../../scales/types';
 import { SettingsSpec, PointerEvent } from '../../../../specs/settings';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -88,10 +87,8 @@ function getCursorBand(
     };
     xValue = externalPointerEvent.x;
   } else {
-    xValue = isContinuousScale(xScale)
-      ? xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys as number[]).value // TODO fix this cast
-      : xScale.invert(orientedProjectedPointerPosition.x);
-    if (isNil(xValue)) {
+    xValue = xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys as number[]).value; // TODO fix this cast
+    if (isNil(xValue) || Number.isNaN(xValue)) {
       return;
     }
   }

@@ -90,6 +90,18 @@ export class ScaleBand {
     return this.inverseProject(value);
   }
 
+  invertWithStep(
+    value: number,
+  ): {
+    withinBandwidth: boolean;
+    value: string | number | undefined;
+  } {
+    return {
+      withinBandwidth: true,
+      value: this.inverseProject(value),
+    };
+  }
+
   isSingleValue() {
     return this.domain.length < 2;
   }
