@@ -49,7 +49,7 @@ export const drawFrame = (
   hoverIndex: number,
   unitRowHeight: number,
   currentColor: Float32Array,
-) => (currentFocus: [number, number, number, number]) => {
+) => (currentFocus: [number, number, number, number], wobbleIndex: number, wobble: number) => {
   const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
 
   const minimapBottom = minimapTop + minimapHeight;
@@ -77,12 +77,14 @@ export const drawFrame = (
       (pickLayer ? 0 : canvasHeightExcess) + dpr * PADDING_BOTTOM,
       pickTexture,
       pickLayer ? pickTextureRenderer : roundedRectRenderer,
-      hoverIndex,
+      wobble ? NaN : hoverIndex, // no hover highlight during wobble
       unitRowHeight,
       currentFocus,
       columnarGeomData.label.length,
       true,
       pickLayer,
+      wobbleIndex,
+      wobble,
     );
 
   const drawContextLayer = (pickLayer: boolean) =>
@@ -101,6 +103,8 @@ export const drawFrame = (
       columnarGeomData.label.length,
       false,
       pickLayer,
+      wobbleIndex, // useful to wobble on the minimap too
+      wobble,
     );
 
   // base (focus) layer
@@ -112,7 +116,7 @@ export const drawFrame = (
   // base (focus) pick layer
   drawFocusLayer(true);
 
-  // minimap pick layer
+  // minimap pick layer -- just for clearing, to avoid hover tooltip
   drawContextLayer(true);
 
   // focus layer text

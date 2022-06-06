@@ -62,8 +62,7 @@
     "test:e2e:server:build": "cd e2e-server/server && webpack build",
     "typecheck:src": "lerna run --loglevel=silent --scope @elastic/charts typecheck --stream --no-prefix",
     "typecheck:all": "tsc -p ./tsconfig.json --noEmit",
-    "ts:prune": "ts-prune",
-    "link:kibana": "node ./packages/link_kibana"
+    "ts:prune": "ts-prune"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
@@ -73,7 +72,7 @@
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
     "@elastic/datemath": "^5.0.3",
-    "@elastic/eui": "^58.0.0",
+    "@elastic/eui": "^58.1.1",
     "@mdx-js/loader": "^1.6.6",
     "@microsoft/api-documenter": "^7.13.63",
     "@microsoft/api-extractor": "^7.18.16",
@@ -145,7 +144,6 @@
     "jest-puppeteer": "5.0.4",
     "jest-puppeteer-docker": "^1.4.2",
     "lerna": "^4.0.0",
-    "link-kibana": "link:./packages/link_kibana",
     "lint-staged": "^10.5.3",
     "lodash": "^4.17.15",
     "lorem-ipsum": "^2.0.3",
