@@ -91,7 +91,7 @@ export class MetricState implements InternalChartState {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getChartTypeDescription(globalState: GlobalChartState) {
-    return 'TODO new chart type';
+    return ''; // TODO new chart type
   }
 
   // TODO
