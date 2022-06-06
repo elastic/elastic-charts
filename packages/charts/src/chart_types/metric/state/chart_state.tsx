@@ -27,12 +27,7 @@ const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /** @internal */
 export class MetricState implements InternalChartState {
-  chartType = ChartType.Goal;
-
-  // eslint-disable-next-line @typescript-eslint/no-useless-constructor
-  constructor() {
-    // TODO add selectors that needs initialization
-  }
+  chartType = ChartType.Metric;
 
   isInitialized(globalState: GlobalChartState) {
     return getSpecsFromStore<MetricSpec>(globalState.specs, ChartType.Metric, SpecType.Series).length > 0
