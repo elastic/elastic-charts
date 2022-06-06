@@ -560,9 +560,32 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
-  private handleKeyPress = (e: KeyboardEvent) => {
+  private handleEnterKey = (e: KeyboardEvent) => {
     e.stopPropagation();
+    if (e.key === 'Enter') {
+      if (e.shiftKey) {
+        this.previousHit(e);
+      } else {
+        this.nextHit(e);
+      }
+      return true;
+    }
+    return false;
+  };
+
+  private handleEscapeKey = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    if (e.key === 'Escape' && this.searchInputRef.current) {
+      this.searchInputRef.current.value = '';
+    }
     this.searchForText(false);
+  };
+
+  private handleSearchFieldKeyPress = (e: KeyboardEvent) => {
+    e.stopPropagation();
+    if (!this.handleEnterKey(e)) {
+      this.searchForText(false);
+    }
   };
 
   private focusOnHit = (timestamp: number) => {
@@ -598,6 +621,30 @@ class FlameComponent extends React.Component<FlameProps> {
         this.wobbleIndex = datumIndex;
       }
     }
+  };
+
+  private previousHit = ({ timeStamp }: { timeStamp: number }) => {
+    const hitCount = this.currentSearchHitCount;
+    if (!this.currentSearchString || hitCount === 0) return;
+    this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+      ? hitCount - 1
+      : this.focusedMatchIndex === 0
+      ? NaN
+      : this.focusedMatchIndex - 1;
+    this.focusOnHit(timeStamp);
+    this.setState({});
+  };
+
+  private nextHit = ({ timeStamp }: { timeStamp: number }) => {
+    const hitCount = this.currentSearchHitCount;
+    if (!this.currentSearchString || hitCount === 0) return;
+    this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
+      ? 0
+      : this.focusedMatchIndex === hitCount - 1
+      ? NaN
+      : this.focusedMatchIndex + 1;
+    this.focusOnHit(timeStamp);
+    this.setState({});
   };
 
   render = () => {
@@ -644,8 +691,9 @@ class FlameComponent extends React.Component<FlameProps> {
             height={canvasHeight}
             onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
-            /*onKeyPress={this.handleKeyPress}*/
             onMouseLeave={this.handleMouseLeave}
+            onKeyPress={this.handleEnterKey}
+            onKeyUp={this.handleEscapeKey}
             onWheel={this.handleWheel}
             style={style}
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
@@ -664,8 +712,8 @@ class FlameComponent extends React.Component<FlameProps> {
             type="text"
             tabIndex={0}
             placeholder="Enter search string"
-            onKeyPress={this.handleKeyPress}
-            onKeyUp={this.handleKeyPress}
+            onKeyPress={this.handleSearchFieldKeyPress}
+            onKeyUp={this.handleEscapeKey}
             style={{
               border: '0px solid lightgray',
               padding: 3,
@@ -735,21 +783,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ◀
-            <input
-              type="checkbox"
-              tabIndex={0}
-              onClick={(e) => {
-                if (!this.currentSearchString || hitCount === 0) return;
-                this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
-                  ? hitCount - 1
-                  : this.focusedMatchIndex === 0
-                  ? NaN
-                  : this.focusedMatchIndex - 1;
-                this.focusOnHit(e.timeStamp);
-                this.setState({});
-              }}
-              style={{ display: 'none' }}
-            />
+            <input type="checkbox" tabIndex={0} onClick={this.previousHit} style={{ display: 'none' }} />
           </label>
           <label
             title="Next hit"
@@ -762,21 +796,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ▶
-            <input
-              type="checkbox"
-              tabIndex={0}
-              onClick={(e) => {
-                if (!this.currentSearchString || hitCount === 0) return;
-                this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
-                  ? 0
-                  : this.focusedMatchIndex === hitCount - 1
-                  ? NaN
-                  : this.focusedMatchIndex + 1;
-                this.focusOnHit(e.timeStamp);
-                this.setState({});
-              }}
-              style={{ display: 'none' }}
-            />
+            <input type="checkbox" tabIndex={0} onClick={this.nextHit} style={{ display: 'none' }} />
           </label>
 
           <p
