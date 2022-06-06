@@ -18,8 +18,8 @@ export const ProgressBar: React.FunctionComponent<{
   datum: Pick<MetricWProgress, 'domain' | 'value' | 'color'>;
   mode: MetricSpec['progressBarMode'];
   orientation: MetricSpec['progressBarOrientation'];
-  barBg: Color;
-}> = ({ datum: { domain, value, color }, mode, orientation, barBg }) => {
+  barBackground: Color;
+}> = ({ datum: { domain, value, color }, mode, orientation, barBackground }) => {
   const isVertical = orientation === LayoutDirection.Vertical;
   const isSmall = mode === ProgressBarMode.Small;
   const percent = clamp((domain ? value / (domain[1] - domain[0]) : 1) * 100, 0, 100);
@@ -36,7 +36,7 @@ export const ProgressBar: React.FunctionComponent<{
   });
   const percentProp = isVertical ? { height: `${percent}%` } : { width: `${percent}%` };
   return (
-    <div className={bgClassName} style={{ background: isSmall ? barBg : undefined }}>
+    <div className={bgClassName} style={{ background: isSmall ? barBackground : undefined }}>
       <div className={barClassName} style={{ background: color, ...percentProp }} />
     </div>
   );

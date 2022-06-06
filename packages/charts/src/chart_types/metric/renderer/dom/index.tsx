@@ -125,14 +125,14 @@ class Component extends React.Component<Props> {
                         mode={progressBarMode}
                         orientation={progressBarOrientation}
                         datum={d}
-                        barBg={style.barBg}
+                        barBackground={style.barBackground}
                       />
                     )}
                     {isMetricWProgress(d) && progressBarMode === ProgressBarMode.None && (
                       <ProgressBar
                         mode={progressBarMode}
                         orientation={progressBarOrientation}
-                        barBg={style.barBg}
+                        barBackground={style.barBackground}
                         datum={{
                           value: 100,
                           domain: [100, 100],

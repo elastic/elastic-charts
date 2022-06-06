@@ -304,7 +304,7 @@ export interface MetricStyle {
     lightColor: Color;
   };
   background: Color;
-  barBg: Color;
+  barBackground: Color;
   nonFiniteText: string;
 }
 
