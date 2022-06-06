@@ -13,8 +13,8 @@ import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
-import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
-import { LayoutDirection, stripUndefined } from '../../../utils/common';
+import { specComponentFactory } from '../../../state/spec_factory';
+import { LayoutDirection } from '../../../utils/common';
 
 /** @alpha */
 export type MetricBase = {
@@ -54,7 +54,8 @@ export interface MetricSpec extends Spec {
   data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[][];
 }
 
-const buildProps = buildSFProps<MetricSpec>()(
+/** @alpha */
+export const Metric = specComponentFactory<MetricSpec>()(
   {
     chartType: ChartType.Metric,
     specType: SpecType.Series,
@@ -64,24 +65,6 @@ const buildProps = buildSFProps<MetricSpec>()(
     progressBarOrientation: 'vertical',
   },
 );
-
-/**
- * Adds bar series to chart specs
- * @alpha
- */
-export const Metric = function (
-  props: SFProps<
-    MetricSpec,
-    keyof typeof buildProps['overrides'],
-    keyof typeof buildProps['defaults'],
-    keyof typeof buildProps['optionals'],
-    keyof typeof buildProps['requires']
-  >,
-) {
-  const { defaults, overrides } = buildProps;
-  useSpecFactory<MetricSpec>({ ...defaults, ...stripUndefined(props), ...overrides });
-  return null;
-};
 
 /** @alpha */
 export type MetricSpecProps = ComponentProps<typeof Metric>;
