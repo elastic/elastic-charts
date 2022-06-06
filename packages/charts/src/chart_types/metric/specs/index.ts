@@ -34,6 +34,8 @@ export type MetricWProgress = MetricBase & {
 /** @alpha */
 export type MetricWTrend = MetricBase & {
   trend: { x: number; y: number }[];
+  trendA11yTitle?: string;
+  trendA11yDescription?: string;
 };
 
 /** @alpha */

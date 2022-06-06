@@ -42,12 +42,13 @@ function findRange(ranges: [number, number, string][], value: number) {
 
 /** @internal */
 export const MetricText: React.FunctionComponent<{
+  id: string;
   datum: MetricBase | MetricWProgress | MetricWTrend;
   progressBarMode: MetricSpec['progressBarMode'];
   progressBarOrientation: MetricSpec['progressBarOrientation'];
   panel: Size;
   style: MetricStyle;
-}> = ({ datum, panel, progressBarMode, progressBarOrientation, style }) => {
+}> = ({ id, datum, panel, progressBarMode, progressBarOrientation, style }) => {
   const isVertical = progressBarOrientation === LayoutDirection.Vertical;
   const isSmall = progressBarMode === ProgressBarMode.Small;
   const { title, subtitle, extra, value } = datum;
@@ -78,8 +79,14 @@ export const MetricText: React.FunctionComponent<{
 
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
-      <div>{title && <h2 className={titleClassName}>{title}</h2>}</div>
-      <div>{showSubtitle && subtitle && <h3 className={subtitleClassName}>{subtitle}</h3>}</div>
+      <div>
+        {title && (
+          <h2 id={id} className={titleClassName}>
+            {title}
+            {showSubtitle && subtitle && <span className={subtitleClassName}> {subtitle}</span>}
+          </h2>
+        )}
+      </div>
       <div className="echMetricText__gap"></div>
       <div>{extra && <h5 className="echMetricText__extra">{extra}</h5>}</div>
       <div>

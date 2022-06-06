@@ -12,8 +12,9 @@
   padding: 8px;
   display: grid;
   grid-template-columns: 100%;
-  grid-template-rows: min-content min-content auto min-content min-content;
+  grid-template-rows: min-content auto min-content min-content;
   height: 100%;
+  z-index: 1;
   &__title {
     font-weight: 400;
     @include lineClamp(3);

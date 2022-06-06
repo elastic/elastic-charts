@@ -35,6 +35,7 @@ import { MetricText } from './text';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
+  chartId: string;
   size: {
     width: number;
     height: number;
@@ -66,6 +67,7 @@ class Component extends React.Component<Props> {
 
   render() {
     const {
+      chartId,
       initialized,
       size: { width, height },
       a11y,
@@ -98,6 +100,7 @@ class Component extends React.Component<Props> {
           .map((columns, ri) => {
             return [
               ...columns.map((d, ci) => {
+                const metricHTMLId = `echMetric-${chartId}-${ri}-${ci}`;
                 // fill undefined with empty panels
                 const emptyMetricClassName = classNames('echMetric', {
                   'echMetric--rightBorder': ci < maxColumns - 1,
@@ -115,11 +118,21 @@ class Component extends React.Component<Props> {
 
                 return (
                   <div
+                    role="figure"
+                    aria-labelledby={d.title && metricHTMLId}
                     key={`${d.title}${d.subtitle}${d.color}${ci}`}
                     className={metricPanelClassName}
                     style={{ backgroundColor: style.background }}
                   >
-                    {isMetricWTrend(d) && <SparkLine datum={d} curve="linear" />}
+                    <MetricText
+                      id={metricHTMLId}
+                      datum={d}
+                      panel={panel}
+                      style={style}
+                      progressBarMode={progressBarMode}
+                      progressBarOrientation={progressBarOrientation}
+                    />
+                    {isMetricWTrend(d) && <SparkLine id={metricHTMLId} datum={d} curve="linear" />}
                     {isMetricWProgress(d) && progressBarMode !== ProgressBarMode.None && (
                       <ProgressBar
                         mode={progressBarMode}
@@ -140,13 +153,6 @@ class Component extends React.Component<Props> {
                         }}
                       />
                     )}
-                    <MetricText
-                      datum={d}
-                      panel={panel}
-                      style={style}
-                      progressBarMode={progressBarMode}
-                      progressBarOrientation={progressBarOrientation}
-                    />
                   </div>
                 );
               }),
@@ -176,6 +182,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
+  chartId: '',
   specs: [],
   size: {
     width: 0,
@@ -190,6 +197,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
   return {
     initialized: true,
+    chartId: state.chartId,
     specs: getMetricSpecs(state),
     size: chartSize(state),
     a11y: getA11ySettingsSelector(state),

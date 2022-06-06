@@ -41,6 +41,9 @@ export const Example = () => {
       title: 'CPU Usage',
       subtitle: 'Overall percentage',
       trend: KIBANA_METRICS.metrics.kibana_os_load[1].data.map(([x, y]) => ({ x, y })),
+      trendA11yTitle: 'Last hour CPU percentage trend',
+      trendA11yDescription:
+        'The trend shows the CPU Usage in percentage in the last hour. The trend shows a general flat behaviour with peaks every 10 minutes',
       valueFormatter: defaultValueFormatter,
     },
     {
@@ -49,6 +52,9 @@ export const Example = () => {
       title: 'Memory Usage',
       subtitle: 'Overall percentage',
       trend: KIBANA_METRICS.metrics.kibana_memory[1].data.map(([x, y]) => ({ x, y })),
+      trendA11yTitle: 'Last hour Memory usage trend',
+      trendA11yDescription:
+        'The trend shows the memory usage in the last hour. The trend shows a general flat behaviour across the entire time window',
       valueFormatter: (d) => `${d} %`,
     },
     {
@@ -57,6 +63,9 @@ export const Example = () => {
       title: 'Cloud Revenue',
       subtitle: 'Quarterly',
       trend: KIBANA_METRICS.metrics.kibana_os_load[1].data.map(([x, y]) => ({ x, y })),
+      trendA11yTitle: 'Last quarter, daily Cloud Revenue trend',
+      trendA11yDescription:
+        'The trend shows the daily Cloud revenue in the last quarter, showing peaks during weekends.',
       extra: (
         <span>
           This Year <b>10M</b>

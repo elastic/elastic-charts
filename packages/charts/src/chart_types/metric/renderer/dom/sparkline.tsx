@@ -16,10 +16,11 @@ import { CurveType } from '../../../../utils/curves';
 import { MetricWTrend } from '../../specs';
 
 /** @internal */
-export const SparkLine: FunctionComponent<{ datum: MetricWTrend; curve: 'linear' | 'step' }> = ({
-  datum: { color, trend },
-  curve,
-}) => {
+export const SparkLine: FunctionComponent<{
+  id: string;
+  datum: MetricWTrend;
+  curve: 'linear' | 'step';
+}> = ({ id, datum: { color, trend, trendA11yTitle, trendA11yDescription }, curve }) => {
   if (!trend) {
     return null;
   }
@@ -38,6 +39,8 @@ export const SparkLine: FunctionComponent<{ datum: MetricWTrend; curve: 'linear'
 
   const [h, s, l] = colorToHsl(color);
   const pathColor = hslToColor(h, s, l >= 0.8 ? l - 0.1 : l + 0.1);
+  const titleId = `${id}-trend-title`;
+  const descriptionId = `${id}-trend-description`;
   return (
     <div className="echSingleMetricSparkline">
       <svg
@@ -46,7 +49,15 @@ export const SparkLine: FunctionComponent<{ datum: MetricWTrend; curve: 'linear'
         height="100%"
         viewBox="0 0 1 1"
         preserveAspectRatio="none"
+        role="img"
+        aria-labelledby={`${titleId} ${descriptionId}`}
       >
+        <title id={titleId} className="echScreenReaderOnly">
+          {trendA11yTitle}
+        </title>
+        <text id={descriptionId} className="echScreenReaderOnly">
+          {trendA11yDescription}
+        </text>
         <rect x={0} y={0} width={1} height={1} fill={color} />
         <path
           d={path.area(trend)}

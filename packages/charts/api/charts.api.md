@@ -1709,6 +1709,8 @@ export type MetricWTrend = MetricBase & {
         x: number;
         y: number;
     }[];
+    trendA11yTitle?: string;
+    trendA11yDescription?: string;
 };
 
 // @public (undocumented)
