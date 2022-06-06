@@ -24,7 +24,7 @@ import { ScaleContinuousType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
-import { clamp, mergePartial } from '../utils/common';
+import { clamp, isFiniteNumber, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
@@ -249,7 +249,7 @@ export class ScaleContinuous {
   }
 
   isValueInDomain(value: unknown): boolean {
-    return typeof value === 'number' && this.domain[0] <= value && value <= this.domain[1];
+    return isFiniteNumber(value) && this.domain[0] <= value && value <= this.domain[1];
   }
 }
 
