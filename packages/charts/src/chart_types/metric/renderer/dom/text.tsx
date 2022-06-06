@@ -25,9 +25,20 @@ import {
   ProgressBarMode,
 } from '../../specs';
 
-const MAX_SMALL_PANEL_WIDTH = 250;
-const MAX_SMALL_PANEL_HEIGHT = 300;
 const MIN_PANEL_HEIGHT_FOR_SUBTITLE = 130;
+
+const WIDTH_BP: [number, number, string][] = [
+  [0, 200, 's'],
+  [200, 300, 'm'],
+  [300, Infinity, 'l'],
+];
+
+function findRange(ranges: [number, number, string][], value: number) {
+  const range = ranges.find(([min, max]) => {
+    return value >= min && value < max;
+  });
+  return range ? range[2] : ranges[0][2];
+}
 
 /** @internal */
 export const MetricText: React.FunctionComponent<{
@@ -40,9 +51,9 @@ export const MetricText: React.FunctionComponent<{
   const isVertical = progressBarOrientation === LayoutDirection.Vertical;
   const isSmall = progressBarMode === ProgressBarMode.Small;
   const { title, subtitle, extra, value } = datum;
+  const size = findRange(WIDTH_BP, panel.width);
   // title size breakpoints
-  const titleSize = panel.width > MAX_SMALL_PANEL_WIDTH && panel.height > MAX_SMALL_PANEL_HEIGHT ? 'M' : 'S';
-  const metricTextSize = panel.width > MAX_SMALL_PANEL_WIDTH ? 'M' : 'S';
+
   const showSubtitle = panel.height > MIN_PANEL_HEIGHT_FOR_SUBTITLE;
   const containerClassName = classNames('echMetricText', {
     'echMetricText--small': isSmall,
@@ -50,10 +61,13 @@ export const MetricText: React.FunctionComponent<{
     'echMetricText--horizontal': !isVertical,
   });
   const titleClassName = classNames('echMetricText__title', {
-    [`echMetricText__title${titleSize}`]: true,
+    [`echMetricText__title--${size}`]: true,
+  });
+  const subtitleClassName = classNames('echMetricText__subtitle', {
+    [`echMetricText__subtitle--${size}`]: true,
   });
   const valueClassName = classNames('echMetricText__value', {
-    [`echMetricText__value${metricTextSize}`]: true,
+    [`echMetricText__value--${size}`]: true,
   });
   const parts = splitNumericSuffixPrefix(datum.valueFormatter(value));
   const bgColor =
@@ -65,7 +79,7 @@ export const MetricText: React.FunctionComponent<{
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
       <div>{title && <h2 className={titleClassName}>{title}</h2>}</div>
-      <div>{showSubtitle && subtitle && <h3 className="echMetricText__subtitle">{subtitle}</h3>}</div>
+      <div>{showSubtitle && subtitle && <h3 className={subtitleClassName}>{subtitle}</h3>}</div>
       <div className="echMetricText__gap"></div>
       <div>{extra && <h5 className="echMetricText__extra">{extra}</h5>}</div>
       <div>

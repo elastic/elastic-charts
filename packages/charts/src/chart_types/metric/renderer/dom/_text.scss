@@ -15,40 +15,61 @@
   grid-template-rows: min-content min-content auto min-content min-content;
   height: 100%;
   &__title {
-    font-weight: 500;
+    font-weight: 400;
     @include lineClamp(3);
+    &--s {
+      font-size: 12px;
+    }
+    &--m {
+      font-size: 16px;
+    }
+    &--l {
+      font-size: 22px;
+    }
   }
-  &__titleS {
-    font-size: 16px;
-  }
-  &__titleM {
-    font-size: 24px;
-  }
+
   &__subtitle {
     padding-top: 5px;
-    font-size: 14px;
     font-weight: 300;
     @include lineClamp(2);
+    &--s {
+      font-size: 12px;
+    }
+    &--m {
+      font-size: 14px;
+    }
+    &--l {
+      font-size: 14px;
+    }
+
+  }
+
+  &__extra {
+    text-align: right;
+    font-size: 14px;
+    font-weight: 400;
   }
 
   &__value {
     font-weight: 600;
     text-align: right;
     white-space: nowrap;
+    &--s {
+      font-size: 22px;
+    }
+    &--m {
+      font-size: 27px;
+    }
+    &--l {
+      font-size: 34px;
+    }
   }
-  &__valueS {
-    font-size: 32px;
-  }
-  &__valueM {
-    font-size: 48px;
-  }
+
   &__unit {
     font-size: 14px;
     font-weight: 400;
   }
-  &__extra {
-    text-align: right;
-  }
+
   &__gap {
     position: relative;
   }
