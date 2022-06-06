@@ -28,7 +28,7 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWProgress, isMetricWTrend, MetricSpec, ProgressBarMode } from '../../specs';
 import { chartSize } from '../../state/selectors/chart_size';
-import { getSpecs } from '../../state/selectors/data';
+import { getMetricSpecs } from '../../state/selectors/data';
 import { ProgressBar } from './progress';
 import { SparkLine } from './sparkline';
 import { MetricText } from './text';
@@ -190,7 +190,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
   return {
     initialized: true,
-    specs: getSpecs(state),
+    specs: getMetricSpecs(state),
     size: chartSize(state),
     a11y: getA11ySettingsSelector(state),
     style: getChartThemeSelector(state).metric,

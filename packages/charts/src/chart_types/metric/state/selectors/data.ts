@@ -8,15 +8,8 @@
 
 import { ChartType } from '../../..';
 import { SpecType } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSpecsFromStore } from '../../../../state/utils';
+import { getSpecsByType } from '../../../../state/selectors/get_specs_by_type';
 import { MetricSpec } from '../../specs';
 
 /** @internal */
-export const getSpecs = createCustomCachedSelector(
-  [(global: GlobalChartState) => global.specs],
-  (specs): MetricSpec[] => {
-    return getSpecsFromStore<MetricSpec>(specs, ChartType.Metric, SpecType.Series);
-  },
-);
+export const getMetricSpecs = getSpecsByType<MetricSpec>(ChartType.Metric, SpecType.Series);
