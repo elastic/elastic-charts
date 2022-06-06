@@ -8,7 +8,7 @@
 
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
-import { isDefined, Position, Rotation } from '../../../../utils/common';
+import { isDefined, isNil, Position, Rotation } from '../../../../utils/common';
 import { AxisId, GroupId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { AxisStyle } from '../../../../utils/themes/theme';
@@ -230,7 +230,9 @@ function limitValueToDomainRange(
     // extend to edge values if values are null/undefined
     return min !== null && max !== null && min > max ? [null, null] : [min, max];
   } else {
-    return [scale.domain[0], scale.domain[scale.domain.length - 1]];
+    const min = isNil(minValue) || !scale.domain.includes(minValue) ? scale.domain[0] : minValue;
+    const max = isNil(maxValue) || !scale.domain.includes(maxValue) ? scale.domain[scale.domain.length - 1] : maxValue;
+    return [min, max];
   }
 }
 

@@ -58,6 +58,8 @@ export function renderPoints(
     const prev = dataSeries.data[dataIndex - 1];
     const next = dataSeries.data[dataIndex + 1];
     // don't create the point if not within the xScale domain
+    if (!xScale.isValueInDomain(xValue)) return acc;
+
     // don't create the point if it that point was filled
     const x = xScale.scale(xValue);
 
@@ -107,9 +109,11 @@ export function renderPoints(
         panel,
         orphan,
       };
+      const yValue = valueAccessor(datum);
+      const isInYDomain = !isNil(yValue) && yScale.isValueInDomain(yValue);
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
-      if (isFiniteNumber(y) && yDefined(datum, valueAccessor) && !isDatumFilled(datum)) {
+      if (isFiniteNumber(y) && yDefined(datum, valueAccessor) && isInYDomain && !isDatumFilled(datum)) {
         points.push(pointGeometry);
       }
     });

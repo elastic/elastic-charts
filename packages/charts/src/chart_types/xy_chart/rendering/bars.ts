@@ -49,8 +49,8 @@ export function renderBars(
   const isInvertedY = yScale.isInverted;
   return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
     const xScaled = xScale.scale(datum.x);
-    if (Number.isNaN(xScaled)) {
-      return barTuple; // a NaN value means the datum is not within the scale range
+    if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
+      return barTuple; // don't create a bar if not within the xScale domain
     }
     const { barGeometries, indexedGeometryMap } = barTuple;
     const { y0, y1, initialY1, filled } = datum;

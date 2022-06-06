@@ -7,7 +7,6 @@
  */
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
-import { isContinuousScale } from '../../../../scales/types';
 import {
   PointerEvent,
   isPointerOutEvent,

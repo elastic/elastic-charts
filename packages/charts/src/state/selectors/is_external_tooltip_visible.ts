@@ -8,7 +8,6 @@
 
 import { computeChartDimensionsSelector } from '../../chart_types/xy_chart/state/selectors/compute_chart_dimensions';
 import { getComputedScalesSelector } from '../../chart_types/xy_chart/state/selectors/get_computed_scales';
-import { isContinuousScale } from '../../scales/types';
 import { PointerEventType } from '../../specs';
 import { isNil } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';

@@ -27,7 +27,7 @@ export class ScaleBand {
   readonly innerPadding: number;
   readonly originalBandwidth: number;
   readonly type: ScaleBandType;
-  readonly domain: [string | number, ...(string | number)[]];
+  readonly domain: (string | number)[];
   readonly range: number[];
   readonly barsPadding: number;
   readonly minInterval: number;
@@ -37,7 +37,7 @@ export class ScaleBand {
   private readonly inverseProject: (d: number) => string | number | undefined;
 
   constructor(
-    inputDomain: [string | number, ...(string | number)[]],
+    inputDomain: (string | number)[],
     range: Range,
     overrideBandwidth?: number,
     /**
@@ -61,10 +61,7 @@ export class ScaleBand {
     this.bandwidth = overrideBandwidth ? overrideBandwidth * (1 - safeBarPadding) : d3Scale.bandwidth() || 0;
     this.originalBandwidth = d3Scale.bandwidth() || 0;
     this.step = d3Scale.step();
-    this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as [
-      string | number,
-      ...(string | number)[]
-    ];
+    this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as (string | number)[];
     this.range = range.slice();
     this.bandwidthPadding = this.bandwidth;
     const invertedScale = scaleQuantize<string | number, undefined>()

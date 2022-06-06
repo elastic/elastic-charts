@@ -82,7 +82,7 @@ export function getCursorBandPosition(
   panel: Dimensions,
   cursorPosition: Point,
   invertedValue: {
-    value: any;
+    value: string | number;
     withinBandwidth: boolean;
   },
   snapEnabled: boolean,

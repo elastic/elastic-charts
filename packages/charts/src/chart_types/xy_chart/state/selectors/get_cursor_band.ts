@@ -86,10 +86,7 @@ function getCursorBand(
       verticalPanelValue: null,
       horizontalPanelValue: null,
     };
-    xValue = {
-      value: externalPointerEvent.x,
-      withinBandwidth: true,
-    };
+    xValue = externalPointerEvent.x;
   } else {
     xValue = isContinuousScale(xScale)
       ? xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys as number[]).value // TODO fix this cast

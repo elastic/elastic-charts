@@ -9,6 +9,7 @@
 import { ChartType } from '../..';
 import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { MockXDomain } from '../../../mocks/xy/domains';
+import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { Dimensions } from '../../../utils/dimensions';
@@ -128,27 +129,27 @@ describe('Crosshair utils linear scale', () => {
     xDomain: barSeriesDomains.xDomain,
     totalBarsInCluster: barSeries.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
   const multiBarSeriesScale = computeXScale({
     xDomain: multiBarSeriesDomains.xDomain,
     totalBarsInCluster: multiBarSeries.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
   const lineSeriesScale = computeXScale({
     xDomain: lineSeriesDomains.xDomain,
     totalBarsInCluster: lineSeries.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
   const multiLineSeriesScale = computeXScale({
     xDomain: multiLineSeriesDomains.xDomain,
     totalBarsInCluster: multiLineSeries.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
   const mixedLinesBarsSeriesScale = computeXScale({
     xDomain: mixedLinesBarsSeriesDomains.xDomain,
     totalBarsInCluster: mixedLinesBars.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
 
   /**
    * if we have lines on a linear scale, the snap position and band should
