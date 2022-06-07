@@ -7,9 +7,8 @@
  */
 
 import { CSSProperties } from 'react';
-import { $Values, Optional } from 'utility-types';
+import { $Values } from 'utility-types';
 
-import { AnimationOptions } from '../../chart_types/xy_chart/renderer/canvas/animations/animation';
 import { Color } from '../../common/colors';
 import { Pixels, Radian, Ratio } from '../../common/geometry';
 import { Font, FontStyle } from '../../common/text_utils';
@@ -699,9 +698,6 @@ export interface CrosshairStyle {
   crossLine: StrokeStyle & Visible & Partial<StrokeDashArray>;
 }
 
-/** @public */
-export type AnnotationAnimation = Optional<Required<AnimationOptions>, 'initialValue'>;
-
 /**
  * The style for a linear annotation
  * @public
@@ -712,10 +708,6 @@ export interface LineAnnotationStyle {
    */
   line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
   /**
-   * Animation options
-   */
-  animations: AnnotationAnimation;
-  /**
    * The style for the text shown on the tooltip.
    * @deprecated This style is not currently used and will
    * soon be removed.
@@ -724,9 +716,4 @@ export interface LineAnnotationStyle {
 }
 
 /** @public */
-export interface RectAnnotationStyle extends StrokeStyle, FillStyle, Opacity, Partial<StrokeDashArray> {
-  /**
-   * Animation options
-   */
-  animations: AnnotationAnimation;
-}
+export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;
