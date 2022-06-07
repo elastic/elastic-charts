@@ -10,6 +10,7 @@
 
 .echMetric {
   position: relative;
+  overflow: hidden;
 
   &--rightBorder {
     border-right: 1px solid #343741;

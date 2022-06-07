@@ -92,8 +92,8 @@ class Component extends React.Component<Props> {
         aria-labelledby={a11y.labelId}
         aria-describedby={a11y.descriptionId}
         style={{
-          gridTemplateColumns: `repeat(${maxColumns}, minmax(180px, 1fr)`,
-          gridTemplateRows: `repeat(${maxRows}, minmax(100px, 1fr)`,
+          gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr)`,
+          gridTemplateRows: `repeat(${maxRows}, minmax(64px, 1fr)`,
         }}
       >
         {data
@@ -109,9 +109,9 @@ class Component extends React.Component<Props> {
                 if (!d) {
                   return <div key={`empty-${ci}`} className={emptyMetricClassName}></div>;
                 }
-
+                const hasProgressBar = isMetricWProgress(d) && progressBarMode !== ProgressBarMode.None;
                 const metricPanelClassName = classNames(emptyMetricClassName, {
-                  'echMetric--small': progressBarMode === ProgressBarMode.Small,
+                  'echMetric--small': hasProgressBar,
                   'echMetric--vertical': progressBarOrientation === LayoutDirection.Vertical,
                   'echMetric--horizontal': progressBarOrientation === LayoutDirection.Horizontal,
                 });
@@ -129,7 +129,7 @@ class Component extends React.Component<Props> {
                       datum={d}
                       panel={panel}
                       style={style}
-                      progressBarMode={progressBarMode}
+                      progressBarMode={isMetricWTrend(d) ? ProgressBarMode.None : progressBarMode}
                       progressBarOrientation={progressBarOrientation}
                     />
                     {isMetricWTrend(d) && <SparkLine id={metricHTMLId} datum={d} curve="linear" />}

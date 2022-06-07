@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import { highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
@@ -25,19 +25,77 @@ import {
   ProgressBarMode,
 } from '../../specs';
 
-const MIN_PANEL_HEIGHT_FOR_SUBTITLE = 130;
+type BreakPoint = 's' | 'm' | 'l';
 
-const WIDTH_BP: [number, number, string][] = [
-  [0, 200, 's'],
-  [200, 300, 'm'],
+const WIDTH_BP: [number, number, BreakPoint][] = [
+  [0, 180, 's'],
+  [180, 300, 'm'],
   [300, Infinity, 'l'],
 ];
 
-function findRange(ranges: [number, number, string][], value: number) {
+const PADDING = 8;
+const MAGIC_NUMBER_LINE_HEIGHT = 1.1428571428571428; // TODO replace with the right calculation based on EUI or take it from body
+const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16 };
+const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
+const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
+const VALUE_FONT_SIZE: Record<BreakPoint, number> = { s: 22, m: 27, l: 34 };
+const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { s: 16, m: 20, l: 24 };
+
+function findRange(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
   const range = ranges.find(([min, max]) => {
     return value >= min && value < max;
   });
   return range ? range[2] : ranges[0][2];
+}
+
+type ElementVisibility = {
+  titleLines: number;
+  subtitleLines: number;
+  title: boolean;
+  subtitle: boolean;
+  extra: boolean;
+};
+
+function elementVisibility(
+  datum: MetricBase | MetricWProgress | MetricWTrend,
+  panel: Size,
+  size: BreakPoint,
+): ElementVisibility {
+  const titleHeight = (title: boolean, maxLines: number) =>
+    PADDING + (title ? maxLines * TITLE_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT : 0);
+  const subtitleHeight = (subtitle: boolean, maxLines: number) =>
+    subtitle ? maxLines * SUBTITLE_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT + PADDING : 0;
+  const extraHeight = (extra: boolean) => (extra ? EXTRA_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT : 0);
+  const valueHeight = VALUE_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT + PADDING;
+
+  const responsiveBreakPoints: Array<ElementVisibility> = [
+    { titleLines: 3, subtitleLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleLines: 3, subtitleLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleLines: 3, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
+    { titleLines: 2, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
+    { titleLines: 2, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: false },
+    { titleLines: 1, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: false },
+  ];
+
+  const isVisible = ({ titleLines, subtitleLines, title, subtitle, extra }: ElementVisibility) =>
+    titleHeight(title, titleLines) + subtitleHeight(subtitle, subtitleLines) + extraHeight(extra) + valueHeight <
+    panel.height;
+
+  return (
+    responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint)) ??
+    responsiveBreakPoints[responsiveBreakPoints.length - 1]
+  );
+}
+
+function lineClamp(maxLines: number): CSSProperties {
+  return {
+    textOverflow: 'ellipsis',
+    display: '-webkit-box',
+    WebkitLineClamp: maxLines, // due to an issue with react CSSProperties filtering out this line, see https://github.com/facebook/react/issues/23033
+    lineClamp: maxLines,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  };
 }
 
 /** @internal */
@@ -52,24 +110,16 @@ export const MetricText: React.FunctionComponent<{
   const isVertical = progressBarOrientation === LayoutDirection.Vertical;
   const isSmall = progressBarMode === ProgressBarMode.Small;
   const { title, subtitle, extra, value } = datum;
-  const size = findRange(WIDTH_BP, panel.width);
-  // title size breakpoints
 
-  const showSubtitle = panel.height > MIN_PANEL_HEIGHT_FOR_SUBTITLE;
+  const size = findRange(WIDTH_BP, panel.width);
   const containerClassName = classNames('echMetricText', {
     'echMetricText--small': isSmall,
     'echMetricText--vertical': isVertical,
     'echMetricText--horizontal': !isVertical,
   });
-  const titleClassName = classNames('echMetricText__title', {
-    [`echMetricText__title--${size}`]: true,
-  });
-  const subtitleClassName = classNames('echMetricText__subtitle', {
-    [`echMetricText__subtitle--${size}`]: true,
-  });
-  const valueClassName = classNames('echMetricText__value', {
-    [`echMetricText__value--${size}`]: true,
-  });
+
+  const visibility = elementVisibility(datum, panel, size);
+
   const parts = splitNumericSuffixPrefix(datum.valueFormatter(value));
   const bgColor =
     isMetricWTrend(datum) || (isMetricWProgress(datum) && progressBarMode === 'none') ? datum.color : style.background;
@@ -80,30 +130,49 @@ export const MetricText: React.FunctionComponent<{
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
       <div>
-        {title && (
-          <h2 id={id} className={titleClassName}>
+        {visibility.title && (
+          <h2
+            id={id}
+            className="echMetricText__title"
+            style={{ fontSize: `${TITLE_FONT_SIZE[size]}px`, ...lineClamp(visibility.titleLines) }}
+          >
             {title}
-            {showSubtitle && subtitle && <span className={subtitleClassName}> {subtitle}</span>}
           </h2>
         )}
       </div>
-      <div className="echMetricText__gap"></div>
-      <div>{extra && <h5 className="echMetricText__extra">{extra}</h5>}</div>
       <div>
-        <h4 className={valueClassName}>
+        {visibility.subtitle && (
+          <p
+            className="echMetricText__subtitle"
+            style={{ fontSize: `${SUBTITLE_FONT_SIZE[size]}px`, ...lineClamp(visibility.subtitleLines) }}
+          >
+            {subtitle}
+          </p>
+        )}
+      </div>
+      <div className="echMetricText__gap"></div>
+      <div>
+        {visibility.extra && (
+          <p className="echMetricText__extra" style={{ fontSize: `${EXTRA_FONT_SIZE[size]}px` }}>
+            {extra}
+          </p>
+        )}
+      </div>
+      <div>
+        <p className="echMetricText__value" style={{ fontSize: `${VALUE_FONT_SIZE[size]}px` }}>
           {isFiniteNumber(value)
             ? parts.map(([type, text], i) =>
                 type === 'numeric' ? (
                   text
                 ) : (
                   // eslint-disable-next-line react/no-array-index-key
-                  <span key={i} className="echMetricText__unit">
+                  <span key={i} className="echMetricText__part" style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}>
                     {text}
                   </span>
                 ),
               )
             : style.nonFiniteText}
-        </h4>
+        </p>
       </div>
     </div>
   );
