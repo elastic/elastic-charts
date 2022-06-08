@@ -1709,6 +1709,7 @@ export type MetricWTrend = MetricBase & {
         x: number;
         y: number;
     }[];
+    trendCurve?: typeof CurveType.LINEAR | typeof CurveType.CURVE_MONOTONE_X | typeof CurveType.CURVE_STEP_AFTER;
     trendA11yTitle?: string;
     trendA11yDescription?: string;
 };
