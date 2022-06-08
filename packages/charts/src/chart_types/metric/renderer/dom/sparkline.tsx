@@ -19,7 +19,7 @@ import { MetricWTrend } from '../../specs';
 export const SparkLine: FunctionComponent<{
   id: string;
   datum: MetricWTrend;
-}> = ({ id, datum: { color, trend, trendA11yTitle, trendA11yDescription, trendCurve } }) => {
+}> = ({ id, datum: { color, trend, trendA11yTitle, trendA11yDescription, trendShape } }) => {
   if (!trend) {
     return null;
   }
@@ -33,7 +33,7 @@ export const SparkLine: FunctionComponent<{
     () => 1,
     (d) => 1 - yScale(d.y),
     (d) => isFiniteNumber(d.x) && isFiniteNumber(d.y),
-    trendCurve ?? CurveType.LINEAR,
+    trendShape === 'bar' ? CurveType.CURVE_STEP_AFTER : CurveType.LINEAR,
   );
 
   const [h, s, l] = colorToHsl(color);

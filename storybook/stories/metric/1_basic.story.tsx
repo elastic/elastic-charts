@@ -9,7 +9,7 @@
 import { select, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, CurveType, Metric, ProgressBarMode, Settings } from '@elastic/charts';
+import { Chart, Metric, ProgressBarMode, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -33,13 +33,13 @@ export const Example = () => {
     'trend',
   );
   const maxDataPoints = number('trend data points', 30, { min: 0, max: 50, step: 1 });
-  const trendCurve = select(
-    'trend curve shape',
+  const trendShape = select(
+    'trend shape',
     {
-      [CurveType.LINEAR]: CurveType.LINEAR,
-      [CurveType.CURVE_STEP_AFTER]: CurveType.CURVE_STEP_AFTER,
+      area: 'area',
+      bar: 'bar',
     },
-    CurveType.LINEAR,
+    'area',
   );
   const trendA11yTitle = text('trend a11y title', 'The Cluster CPU Usage trend');
   const trendA11yDescription = text(
@@ -47,6 +47,7 @@ export const Example = () => {
     'The trend shows a peak of CPU usage in the last 5 minutes',
   );
 
+  let extra = text('extra', 'last <b>5m</b>');
   const progressMin = number('progress min', 0);
   const progressMax = number('progress max', 100);
   const value = number('value', 55.23);
@@ -54,18 +55,20 @@ export const Example = () => {
   const valuePostfix = text('value postfix', ' %');
   const metricColor = color('color', '#3c3c3c');
   const isProgressBar = progressOrTrend === 'vertical bar' || progressOrTrend === 'horizontal bar';
-
+  extra = extra.replace('&lt;b&gt;', '<b>');
+  extra = extra.replace('&lt;/b&gt;', '</b>');
   const data = {
     value,
     color: metricColor,
     title,
     subtitle,
     valueFormatter: (d: number) => `${valuePrefix}${d}${valuePostfix}`,
+    extra: <span dangerouslySetInnerHTML={{ __html: extra }}></span>,
     ...(isProgressBar ? { domain: { min: progressMin, max: progressMax } } : {}),
     ...(progressOrTrend === 'trend'
       ? {
           trend: KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
-          trendCurve,
+          trendShape,
           trendA11yTitle,
           trendA11yDescription,
         }
