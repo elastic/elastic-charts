@@ -132,7 +132,7 @@ class Component extends React.Component<Props> {
                       progressBarMode={isMetricWTrend(d) ? ProgressBarMode.None : progressBarMode}
                       progressBarOrientation={progressBarOrientation}
                     />
-                    {isMetricWTrend(d) && <SparkLine id={metricHTMLId} datum={d} curve="linear" />}
+                    {isMetricWTrend(d) && <SparkLine id={metricHTMLId} datum={d} />}
                     {isMetricWProgress(d) && progressBarMode !== ProgressBarMode.None && (
                       <ProgressBar
                         mode={progressBarMode}

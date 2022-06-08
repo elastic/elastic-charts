@@ -19,8 +19,7 @@ import { MetricWTrend } from '../../specs';
 export const SparkLine: FunctionComponent<{
   id: string;
   datum: MetricWTrend;
-  curve: 'linear' | 'step';
-}> = ({ id, datum: { color, trend, trendA11yTitle, trendA11yDescription }, curve }) => {
+}> = ({ id, datum: { color, trend, trendA11yTitle, trendA11yDescription, trendCurve } }) => {
   if (!trend) {
     return null;
   }
@@ -34,7 +33,7 @@ export const SparkLine: FunctionComponent<{
     () => 1,
     (d) => 1 - yScale(d.y),
     (d) => isFiniteNumber(d.x) && isFiniteNumber(d.y),
-    curve === 'linear' ? CurveType.LINEAR : CurveType.CURVE_STEP_AFTER,
+    trendCurve ?? CurveType.LINEAR,
   );
 
   const [h, s, l] = colorToHsl(color);
@@ -55,7 +54,7 @@ export const SparkLine: FunctionComponent<{
         <title id={titleId} className="echScreenReaderOnly">
           {trendA11yTitle}
         </title>
-        <text id={descriptionId} className="echScreenReaderOnly">
+        <text id={descriptionId} className="echScreenReaderOnly" fontSize={0}>
           {trendA11yDescription}
         </text>
         <rect x={0} y={0} width={1} height={1} fill={color} />

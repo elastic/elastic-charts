@@ -15,6 +15,7 @@ import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { specComponentFactory } from '../../../state/spec_factory';
 import { LayoutDirection } from '../../../utils/common';
+import { CurveType } from '../../../utils/curves';
 
 /** @alpha */
 export type MetricBase = {
@@ -34,6 +35,7 @@ export type MetricWProgress = MetricBase & {
 /** @alpha */
 export type MetricWTrend = MetricBase & {
   trend: { x: number; y: number }[];
+  trendCurve?: typeof CurveType.LINEAR | typeof CurveType.CURVE_MONOTONE_X | typeof CurveType.CURVE_STEP_AFTER;
   trendA11yTitle?: string;
   trendA11yDescription?: string;
 };
