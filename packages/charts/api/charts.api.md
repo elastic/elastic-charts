@@ -1651,7 +1651,7 @@ export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnn
 export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
 
 // @alpha (undocumented)
-export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data" | "progressBarOrientation", never, "id" | "progressBarMode">>;
+export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", never, "id">>;
 
 // @alpha (undocumented)
 export type MetricBase = {
@@ -1669,10 +1669,6 @@ export interface MetricSpec extends Spec {
     chartType: typeof ChartType.Metric;
     // (undocumented)
     data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[][];
-    // (undocumented)
-    progressBarMode: ProgressBarMode;
-    // (undocumented)
-    progressBarOrientation?: LayoutDirection;
     // (undocumented)
     specType: typeof SpecType.Series;
 }
@@ -1701,6 +1697,7 @@ export type MetricWProgress = MetricBase & {
         min: number;
         max: number;
     };
+    progressBarDirection?: LayoutDirection;
 };
 
 // @alpha (undocumented)
@@ -2030,15 +2027,6 @@ export type Predicate = $Values<typeof Predicate>;
 
 // @public
 export type PrimitiveValue = string | number | null;
-
-// @alpha (undocumented)
-export const ProgressBarMode: Readonly<{
-    None: "none";
-    Small: "small";
-}>;
-
-// @alpha (undocumented)
-export type ProgressBarMode = $Values<typeof ProgressBarMode>;
 
 // @public
 export type ProjectedValues = {

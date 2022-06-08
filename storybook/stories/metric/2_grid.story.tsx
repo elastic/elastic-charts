@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { select, number } from '@storybook/addon-knobs';
+import { select, number, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Metric, MetricBase, MetricWProgress, MetricWTrend, Settings } from '@elastic/charts';
@@ -19,19 +19,9 @@ function split(a: (any | undefined)[], size: number) {
 }
 
 export const Example = () => {
-  const smallProgress = select(
-    'progress bar',
-    {
-      small: 'small',
-      none: 'none',
-    },
-    'small',
-  );
-  const verticalProgress = select(
-    'progress bar orientation',
-    { horizontal: 'horizontal', vertical: 'vertical' },
-    'vertical',
-  );
+  const useProgressBar = boolean('use progress bar', true);
+
+  const progressBarDirection = select('progress bar direction', ['horizontal', 'vertical'], 'vertical');
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
 
   const defaultValueFormatter = (d: number) => `${d}`;
@@ -61,10 +51,34 @@ export const Example = () => {
     {
       value: 12.57,
       color: '#5e5e5e',
-      domain: { min: 0, max: 100 },
       title: 'Disk I/O',
       subtitle: 'Read',
       valueFormatter: (d) => `${d} Mb/s`,
+      ...(useProgressBar && {
+        domain: { min: 0, max: 100 },
+        progressBarDirection: progressBarDirection,
+        extra: (
+          <span>
+            max <b>100Mb/s</b>
+          </span>
+        ),
+      }),
+    },
+    {
+      value: 41.12,
+      color: '#5e5e5e',
+      title: 'Disk I/O',
+      subtitle: 'Write',
+      valueFormatter: (d) => `${d} Mb/s`,
+      ...(useProgressBar && {
+        domain: { min: 0, max: 100 },
+        progressBarDirection: progressBarDirection,
+        extra: (
+          <span>
+            max <b>100Mb/s</b>
+          </span>
+        ),
+      }),
     },
     {
       value: 24.85,
@@ -76,24 +90,10 @@ export const Example = () => {
     },
     {
       value: 3.57,
-      domain: { min: 0, max: 3.57 },
       color: '#FFBDAF',
       title: 'Inbound Traffic',
       subtitle: 'Network eth0',
       valueFormatter: (d) => `${d}KBps`,
-      extra: (
-        <span>
-          last <b>5m</b>
-        </span>
-      ),
-    },
-    {
-      value: 453.57,
-      color: '#E7664C',
-      domain: { min: 0, max: 453.57 },
-      title: 'Outbound Traffic',
-      subtitle: 'Network eth0',
-      valueFormatter: (d) => `${d}MBps`,
       extra: (
         <span>
           last <b>5m</b>
@@ -119,31 +119,22 @@ export const Example = () => {
     },
   ];
 
-  const displayOrientation = select('orientation', ['vertical', 'horizontal', 'grid'], 'grid');
+  const layout = select('layout', ['grid', 'vertical', 'horizontal'], 'grid');
   const configuredData =
-    displayOrientation === 'grid'
-      ? split(data, 4)
-      : displayOrientation === 'horizontal'
-      ? [data.slice(0, 4)]
-      : split(data.slice(0, 4), 1);
+    layout === 'grid' ? split(data, 4) : layout === 'horizontal' ? [data.slice(0, 4)] : split(data.slice(0, 4), 1);
   return (
     <div
       style={{
         resize: 'both',
         padding: '0px',
         overflow: 'auto',
-        height: displayOrientation === 'vertical' ? '720px' : displayOrientation === 'horizontal' ? '150px' : '300px',
-        width: displayOrientation === 'vertical' ? '180px' : '720px',
+        height: layout === 'vertical' ? '720px' : layout === 'horizontal' ? '150px' : '300px',
+        width: layout === 'vertical' ? '180px' : '720px',
       }}
     >
       <Chart>
         <Settings baseTheme={useBaseTheme()} />
-        <Metric
-          id="1"
-          data={configuredData}
-          progressBarMode={smallProgress}
-          progressBarOrientation={verticalProgress}
-        />
+        <Metric id="metric" data={configuredData} />
       </Chart>
     </div>
   );

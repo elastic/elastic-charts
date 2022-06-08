@@ -15,15 +15,7 @@ import { Colors } from '../../../../common/colors';
 import { isFiniteNumber, LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import {
-  isMetricWProgress,
-  isMetricWTrend,
-  MetricBase,
-  MetricSpec,
-  MetricWProgress,
-  MetricWTrend,
-  ProgressBarMode,
-} from '../../specs';
+import { isMetricWProgress, isMetricWTrend, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
 
 type BreakPoint = 's' | 'm' | 'l';
 
@@ -102,27 +94,24 @@ function lineClamp(maxLines: number): CSSProperties {
 export const MetricText: React.FunctionComponent<{
   id: string;
   datum: MetricBase | MetricWProgress | MetricWTrend;
-  progressBarMode: MetricSpec['progressBarMode'];
-  progressBarOrientation: MetricSpec['progressBarOrientation'];
   panel: Size;
   style: MetricStyle;
-}> = ({ id, datum, panel, progressBarMode, progressBarOrientation, style }) => {
-  const isVertical = progressBarOrientation === LayoutDirection.Vertical;
-  const isSmall = progressBarMode === ProgressBarMode.Small;
+}> = ({ id, datum, panel, style }) => {
   const { title, subtitle, extra, value } = datum;
 
   const size = findRange(WIDTH_BP, panel.width);
+  const hasProgressBar = isMetricWProgress(datum);
+  const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
   const containerClassName = classNames('echMetricText', {
-    'echMetricText--small': isSmall,
-    'echMetricText--vertical': isVertical,
-    'echMetricText--horizontal': !isVertical,
+    'echMetricText--small': hasProgressBar,
+    'echMetricText--vertical': progressBarDirection === LayoutDirection.Vertical,
+    'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
 
   const visibility = elementVisibility(datum, panel, size);
 
   const parts = splitNumericSuffixPrefix(datum.valueFormatter(value));
-  const bgColor =
-    isMetricWTrend(datum) || (isMetricWProgress(datum) && progressBarMode === 'none') ? datum.color : style.background;
+  const bgColor = isMetricWTrend(datum) || !isMetricWProgress(datum) ? datum.color : style.background;
 
   const highContrastTextColor =
     highContrastColor(colorToRgba(bgColor)) === Colors.White.rgba ? style.text.lightColor : style.text.darkColor;

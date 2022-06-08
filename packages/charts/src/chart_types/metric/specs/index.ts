@@ -7,7 +7,6 @@
  */
 
 import { ComponentProps, ReactElement } from 'react';
-import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
@@ -29,6 +28,7 @@ export type MetricBase = {
 /** @alpha */
 export type MetricWProgress = MetricBase & {
   domain: { min: number; max: number };
+  progressBarDirection?: LayoutDirection;
 };
 
 /** @alpha */
@@ -40,20 +40,9 @@ export type MetricWTrend = MetricBase & {
 };
 
 /** @alpha */
-export const ProgressBarMode = Object.freeze({
-  None: 'none' as const,
-  Small: 'small' as const,
-});
-
-/** @alpha */
-export type ProgressBarMode = $Values<typeof ProgressBarMode>;
-
-/** @alpha */
 export interface MetricSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Metric;
-  progressBarMode: ProgressBarMode; // TODO add 'full' when we are 100% sure about how to deal with color palettes and text
-  progressBarOrientation?: LayoutDirection;
   data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[][];
 }
 
@@ -65,7 +54,6 @@ export const Metric = specComponentFactory<MetricSpec>()(
   },
   {
     data: [],
-    progressBarOrientation: 'vertical',
   },
 );
 

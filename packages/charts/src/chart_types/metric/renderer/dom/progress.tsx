@@ -11,30 +11,29 @@ import React from 'react';
 
 import { Color } from '../../../../common/colors';
 import { clamp, LayoutDirection } from '../../../../utils/common';
-import { MetricWProgress, MetricSpec, ProgressBarMode } from '../../specs';
+import { MetricWProgress } from '../../specs';
 
 /** @internal */
 export const ProgressBar: React.FunctionComponent<{
-  datum: Pick<MetricWProgress, 'title' | 'domain' | 'value' | 'color'>;
-  mode: MetricSpec['progressBarMode'];
-  orientation: MetricSpec['progressBarOrientation'];
+  datum: Pick<MetricWProgress, 'title' | 'domain' | 'value' | 'color' | 'progressBarDirection'>;
   barBackground: Color;
-}> = ({ datum: { title, domain, value, color }, mode, orientation, barBackground }) => {
-  const isVertical = orientation === LayoutDirection.Vertical;
-  const isSmall = mode === ProgressBarMode.Small;
+}> = ({ datum: { title, domain, value, color, progressBarDirection }, barBackground }) => {
+  const verticalDirection = progressBarDirection === LayoutDirection.Vertical;
+  // currently we provide only the small progress bar;
+  const isSmall = true;
   const percent = Number(clamp((domain ? value / (domain.max - domain.min) : 1) * 100, 0, 100).toFixed(2));
 
   const bgClassName = classNames('echSingleMetricProgress', {
-    'echSingleMetricProgress--vertical': isVertical,
-    'echSingleMetricProgress--horizontal': !isVertical,
+    'echSingleMetricProgress--vertical': verticalDirection,
+    'echSingleMetricProgress--horizontal': !verticalDirection,
     'echSingleMetricProgress--small': isSmall,
   });
   const barClassName = classNames('echSingleMetricProgressBar', {
-    'echSingleMetricProgressBar--vertical': isVertical,
-    'echSingleMetricProgressBar--horizontal': !isVertical,
+    'echSingleMetricProgressBar--vertical': verticalDirection,
+    'echSingleMetricProgressBar--horizontal': !verticalDirection,
     'echSingleMetricProgressBar--small': isSmall,
   });
-  const percentProp = isVertical ? { height: `${percent}%` } : { width: `${percent}%` };
+  const percentProp = verticalDirection ? { height: `${percent}%` } : { width: `${percent}%` };
   return (
     <div className={bgClassName} style={{ background: isSmall ? barBackground : undefined }}>
       <div

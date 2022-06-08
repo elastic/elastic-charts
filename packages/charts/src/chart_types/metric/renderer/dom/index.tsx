@@ -26,7 +26,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { LayoutDirection } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, isMetricWTrend, MetricSpec, ProgressBarMode } from '../../specs';
+import { isMetricWProgress, isMetricWTrend, MetricSpec } from '../../specs';
 import { chartSize } from '../../state/selectors/chart_size';
 import { getMetricSpecs } from '../../state/selectors/data';
 import { ProgressBar } from './progress';
@@ -78,7 +78,7 @@ class Component extends React.Component<Props> {
       return null;
     }
     // ignoring other specs
-    const { data, progressBarMode, progressBarOrientation } = specs[0];
+    const { data } = specs[0];
 
     const maxRows = data.length;
     const maxColumns = data.reduce((acc, curr) => {
@@ -109,11 +109,12 @@ class Component extends React.Component<Props> {
                 if (!d) {
                   return <div key={`empty-${ci}`} className={emptyMetricClassName}></div>;
                 }
-                const hasProgressBar = isMetricWProgress(d) && progressBarMode !== ProgressBarMode.None;
+                const hasProgressBar = isMetricWProgress(d);
+                const progressBarDirection = isMetricWProgress(d) ? d.progressBarDirection : undefined;
                 const metricPanelClassName = classNames(emptyMetricClassName, {
                   'echMetric--small': hasProgressBar,
-                  'echMetric--vertical': progressBarOrientation === LayoutDirection.Vertical,
-                  'echMetric--horizontal': progressBarOrientation === LayoutDirection.Horizontal,
+                  'echMetric--vertical': progressBarDirection === LayoutDirection.Vertical,
+                  'echMetric--horizontal': progressBarDirection === LayoutDirection.Horizontal,
                 });
 
                 return (
@@ -122,37 +123,13 @@ class Component extends React.Component<Props> {
                     aria-labelledby={d.title && metricHTMLId}
                     key={`${d.title}${d.subtitle}${d.color}${ci}`}
                     className={metricPanelClassName}
-                    style={{ backgroundColor: style.background }}
+                    style={{
+                      backgroundColor: !isMetricWTrend(d) && !isMetricWProgress(d) ? d.color : style.background,
+                    }}
                   >
-                    <MetricText
-                      id={metricHTMLId}
-                      datum={d}
-                      panel={panel}
-                      style={style}
-                      progressBarMode={isMetricWTrend(d) ? ProgressBarMode.None : progressBarMode}
-                      progressBarOrientation={progressBarOrientation}
-                    />
+                    <MetricText id={metricHTMLId} datum={d} panel={panel} style={style} />
                     {isMetricWTrend(d) && <SparkLine id={metricHTMLId} datum={d} />}
-                    {isMetricWProgress(d) && progressBarMode !== ProgressBarMode.None && (
-                      <ProgressBar
-                        mode={progressBarMode}
-                        orientation={progressBarOrientation}
-                        datum={d}
-                        barBackground={style.barBackground}
-                      />
-                    )}
-                    {isMetricWProgress(d) && progressBarMode === ProgressBarMode.None && (
-                      <ProgressBar
-                        mode={progressBarMode}
-                        orientation={progressBarOrientation}
-                        barBackground={style.barBackground}
-                        datum={{
-                          value: 100,
-                          domain: { min: 100, max: 100 },
-                          color: d.color,
-                        }}
-                      />
-                    )}
+                    {isMetricWProgress(d) && <ProgressBar datum={d} barBackground={style.barBackground} />}
                   </div>
                 );
               }),
