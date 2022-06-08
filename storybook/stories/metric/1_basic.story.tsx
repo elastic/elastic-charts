@@ -64,7 +64,11 @@ export const Example = () => {
     subtitle,
     valueFormatter: (d: number) => `${valuePrefix}${d}${valuePostfix}`,
     extra: <span dangerouslySetInnerHTML={{ __html: extra }}></span>,
-    ...(isProgressBar ? { domain: { min: progressMin, max: progressMax } } : {}),
+    ...(isProgressBar
+      ? { domain: { min: progressMin, max: progressMax } }
+      : progressOrTrend === 'none'
+      ? { domain: { min: 0, max: value } }
+      : {}),
     ...(progressOrTrend === 'trend'
       ? {
           trend: KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
@@ -74,6 +78,7 @@ export const Example = () => {
         }
       : {}),
   };
+  console.log(data);
 
   return (
     <div
