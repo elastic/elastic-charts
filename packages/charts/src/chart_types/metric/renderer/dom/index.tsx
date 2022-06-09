@@ -10,7 +10,7 @@
 /* eslint-disable react/no-array-index-key */
 
 import classNames from 'classnames';
-import React, { RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -33,7 +33,7 @@ import { ProgressBar } from './progress';
 import { SparkLine } from './sparkline';
 import { MetricText } from './text';
 
-interface ReactiveChartStateProps {
+interface StateProps {
   initialized: boolean;
   chartId: string;
   size: {
@@ -45,17 +45,11 @@ interface ReactiveChartStateProps {
   style: MetricStyle;
 }
 
-interface ReactiveChartDispatchProps {
+interface DispatchProps {
   onChartRendered: typeof onChartRendered;
 }
 
-interface ReactiveChartOwnProps {
-  forwardStageRef: RefObject<HTMLCanvasElement>;
-}
-
-type Props = ReactiveChartStateProps & ReactiveChartDispatchProps & ReactiveChartOwnProps;
-
-class Component extends React.Component<Props> {
+class Component extends React.Component<StateProps & DispatchProps> {
   static displayName = 'Metric';
   componentDidMount() {
     this.props.onChartRendered();
@@ -149,7 +143,7 @@ class Component extends React.Component<Props> {
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators(
     {
       onChartRendered,
@@ -157,7 +151,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
     dispatch,
   );
 
-const DEFAULT_PROPS: ReactiveChartStateProps = {
+const DEFAULT_PROPS: StateProps = {
   initialized: false,
   chartId: '',
   specs: [],
@@ -168,7 +162,8 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   a11y: DEFAULT_A11Y_SETTINGS,
   style: LIGHT_THEME.metric,
 };
-const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
+
+const mapStateToProps = (state: GlobalChartState): StateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
