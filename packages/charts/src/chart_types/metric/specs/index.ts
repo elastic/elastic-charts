@@ -7,6 +7,7 @@
  */
 
 import { ComponentProps, ReactElement } from 'react';
+import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
@@ -32,9 +33,18 @@ export type MetricWProgress = MetricBase & {
 };
 
 /** @alpha */
+export const MetricTrendShape = Object.freeze({
+  Bars: 'bars' as const,
+  Area: 'area' as const,
+});
+
+/** @alpha */
+export type MetricTrendShape = $Values<typeof MetricTrendShape>;
+
+/** @alpha */
 export type MetricWTrend = MetricBase & {
   trend: { x: number; y: number }[];
-  trendShape?: 'area' | 'bar';
+  trendShape?: MetricTrendShape;
   trendA11yTitle?: string;
   trendA11yDescription?: string;
 };

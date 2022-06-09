@@ -1692,6 +1692,15 @@ export interface MetricStyle {
 }
 
 // @alpha (undocumented)
+export const MetricTrendShape: Readonly<{
+    Bars: "bars";
+    Area: "area";
+}>;
+
+// @alpha (undocumented)
+export type MetricTrendShape = $Values<typeof MetricTrendShape>;
+
+// @alpha (undocumented)
 export type MetricWProgress = MetricBase & {
     domain: {
         min: number;
@@ -1706,7 +1715,7 @@ export type MetricWTrend = MetricBase & {
         x: number;
         y: number;
     }[];
-    trendShape?: 'area' | 'bar';
+    trendShape?: MetricTrendShape;
     trendA11yTitle?: string;
     trendA11yDescription?: string;
 };

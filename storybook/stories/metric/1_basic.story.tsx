@@ -9,10 +9,11 @@
 import { select, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Metric, Settings } from '@elastic/charts';
+import { Chart, Metric, MetricTrendShape, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { getKnobsFromEnum } from '../utils/knobs';
 
 export const Example = () => {
   const title = text('title', '21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9');
@@ -32,14 +33,7 @@ export const Example = () => {
     'vertical',
   );
   const maxDataPoints = number('trend data points', 30, { min: 0, max: 50, step: 1 });
-  const trendShape = select(
-    'trend shape',
-    {
-      area: 'area',
-      bar: 'bars',
-    },
-    'area',
-  );
+  const trendShape = getKnobsFromEnum('trend shape', MetricTrendShape, MetricTrendShape.Area as MetricTrendShape);
   const trendA11yTitle = text('trend a11y title', 'The Cluster CPU Usage trend');
   const trendA11yDescription = text(
     'trend a11y description',

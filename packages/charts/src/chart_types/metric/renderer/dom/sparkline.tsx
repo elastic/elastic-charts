@@ -13,7 +13,7 @@ import { extent } from '../../../../common/math';
 import { areaGenerator } from '../../../../geoms/path';
 import { isFiniteNumber } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
-import { MetricWTrend } from '../../specs';
+import { MetricTrendShape, MetricWTrend } from '../../specs';
 
 /** @internal */
 export const SparkLine: FunctionComponent<{
@@ -33,7 +33,7 @@ export const SparkLine: FunctionComponent<{
     () => 1,
     (d) => 1 - yScale(d.y),
     (d) => isFiniteNumber(d.x) && isFiniteNumber(d.y),
-    trendShape === 'bar' ? CurveType.CURVE_STEP_AFTER : CurveType.LINEAR,
+    trendShape === MetricTrendShape.Bars ? CurveType.CURVE_STEP_AFTER : CurveType.LINEAR,
   );
 
   const [h, s, l] = colorToHsl(color);
