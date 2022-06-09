@@ -34,9 +34,7 @@ const VALUE_FONT_SIZE: Record<BreakPoint, number> = { s: 22, m: 27, l: 34 };
 const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { s: 16, m: 20, l: 24 };
 
 function findRange(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
-  const range = ranges.find(([min, max]) => {
-    return value >= min && value < max;
-  });
+  const range = ranges.find(([min, max]) => min <= value && value < max);
   return range ? range[2] : ranges[0][2];
 }
 
