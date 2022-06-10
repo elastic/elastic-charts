@@ -86,7 +86,6 @@ export function multilayerAxisEntry(
       return {
         ...combinedEntry,
         ...entry,
-        scale,
         ticks: (combinedEntry.ticks || []).concat(
           entry.ticks.filter(
             (tick, i, a) =>
@@ -107,6 +106,6 @@ export function multilayerAxisEntry(
         isHidden: true,
       },
       scale,
-    }, // this should turn into a full Projection
+    },
   );
 }
