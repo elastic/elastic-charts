@@ -766,6 +766,148 @@ svg text {
   border: 0;
   background: transparent;
 }
+
+.echMetricContainer {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  -ms-flex-line-pack: start;
+      align-content: start;
+  -webkit-box-pack: stretch;
+      -ms-flex-pack: stretch;
+          justify-content: stretch;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  -webkit-user-select: text;
+     -moz-user-select: text;
+      -ms-user-select: text;
+          user-select: text;
+}
+
+.echMetric {
+  position: relative;
+  overflow: hidden;
+}
+.echMetric--rightBorder {
+  border-right: 1px solid #343741;
+}
+.echMetric--bottomBorder {
+  border-bottom: 1px solid #343741;
+}
+.echMetric--vertical.echMetric--small {
+  padding-left: 10px;
+}
+.echMetric--horizontal.echMetric--small {
+  padding-bottom: 10px;
+}
+
+.echMetricText {
+  position: relative;
+  padding: 8px;
+  height: 100%;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: -webkit-min-content -webkit-min-content auto -webkit-min-content -webkit-min-content;
+  grid-template-rows: min-content min-content auto min-content min-content;
+}
+.echMetricText__title {
+  font-weight: 400;
+}
+.echMetricText__subtitle {
+  padding-top: 5px;
+  font-weight: 300;
+}
+.echMetricText__extra {
+  text-align: right;
+  font-weight: 400;
+}
+.echMetricText__value {
+  position: relative;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+.echMetricText__part {
+  font-weight: 400;
+}
+.echMetricText__gap {
+  position: relative;
+}
+
+.echSingleMetricProgress {
+  position: absolute;
+  overflow: hidden;
+}
+.echSingleMetricProgress--vertical {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+}
+.echSingleMetricProgress--vertical.echSingleMetricProgress--small {
+  right: auto;
+  width: 10px;
+}
+.echSingleMetricProgress--horizontal {
+  left: 0;
+  right: 0;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+}
+.echSingleMetricProgress--horizontal.echSingleMetricProgress--small {
+  top: auto;
+  height: 10px;
+}
+
+.echSingleMetricProgressBar--vertical {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+}
+.echSingleMetricProgressBar--horizontal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+}
+
+.echSingleMetricSparkline {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.echSingleMetricSparkline__svg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.echSingleMetricChart--small {
+  position: absolute;
+  top: auto;
+  left: auto;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 30px;
+}
 @charset "UTF-8";
 /**
 The MIT License (MIT)
@@ -42537,6 +42679,135 @@ html.light-theme .echCanvasRenderer {
   border: 0;
   background: transparent;
 }
+html.light-theme .echMetricContainer {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  align-content: start;
+  justify-content: stretch;
+  align-items: stretch;
+  -webkit-user-select: text;
+     -moz-user-select: text;
+      -ms-user-select: text;
+          user-select: text;
+}
+html.light-theme .echMetric {
+  position: relative;
+  overflow: hidden;
+}
+html.light-theme .echMetric--rightBorder {
+  border-right: 1px solid #343741;
+}
+html.light-theme .echMetric--bottomBorder {
+  border-bottom: 1px solid #343741;
+}
+html.light-theme .echMetric--vertical.echMetric--small {
+  padding-left: 10px;
+}
+html.light-theme .echMetric--horizontal.echMetric--small {
+  padding-bottom: 10px;
+}
+html.light-theme .echMetricText {
+  position: relative;
+  padding: 8px;
+  height: 100%;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: -webkit-min-content -webkit-min-content auto -webkit-min-content -webkit-min-content;
+  grid-template-rows: min-content min-content auto min-content min-content;
+}
+html.light-theme .echMetricText__title {
+  font-weight: 400;
+}
+html.light-theme .echMetricText__subtitle {
+  padding-top: 5px;
+  font-weight: 300;
+}
+html.light-theme .echMetricText__extra {
+  text-align: right;
+  font-weight: 400;
+}
+html.light-theme .echMetricText__value {
+  position: relative;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+html.light-theme .echMetricText__part {
+  font-weight: 400;
+}
+html.light-theme .echMetricText__gap {
+  position: relative;
+}
+html.light-theme .echSingleMetricProgress {
+  position: absolute;
+  overflow: hidden;
+}
+html.light-theme .echSingleMetricProgress--vertical {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+}
+html.light-theme .echSingleMetricProgress--vertical.echSingleMetricProgress--small {
+  right: auto;
+  width: 10px;
+}
+html.light-theme .echSingleMetricProgress--horizontal {
+  left: 0;
+  right: 0;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+}
+html.light-theme .echSingleMetricProgress--horizontal.echSingleMetricProgress--small {
+  top: auto;
+  height: 10px;
+}
+html.light-theme .echSingleMetricProgressBar--vertical {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+}
+html.light-theme .echSingleMetricProgressBar--horizontal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+}
+html.light-theme .echSingleMetricSparkline {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+html.light-theme .echSingleMetricSparkline__svg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+html.light-theme .echSingleMetricChart--small {
+  position: absolute;
+  top: auto;
+  left: auto;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 30px;
+}
 html.light-theme body,
 html.light-theme .echChart {
   background: white !important;
@@ -61893,6 +62164,135 @@ html.dark-theme .echCanvasRenderer {
   margin: 0;
   border: 0;
   background: transparent;
+}
+html.dark-theme .echMetricContainer {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  align-content: start;
+  justify-content: stretch;
+  align-items: stretch;
+  -webkit-user-select: text;
+     -moz-user-select: text;
+      -ms-user-select: text;
+          user-select: text;
+}
+html.dark-theme .echMetric {
+  position: relative;
+  overflow: hidden;
+}
+html.dark-theme .echMetric--rightBorder {
+  border-right: 1px solid #343741;
+}
+html.dark-theme .echMetric--bottomBorder {
+  border-bottom: 1px solid #343741;
+}
+html.dark-theme .echMetric--vertical.echMetric--small {
+  padding-left: 10px;
+}
+html.dark-theme .echMetric--horizontal.echMetric--small {
+  padding-bottom: 10px;
+}
+html.dark-theme .echMetricText {
+  position: relative;
+  padding: 8px;
+  height: 100%;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: -webkit-min-content -webkit-min-content auto -webkit-min-content -webkit-min-content;
+  grid-template-rows: min-content min-content auto min-content min-content;
+}
+html.dark-theme .echMetricText__title {
+  font-weight: 400;
+}
+html.dark-theme .echMetricText__subtitle {
+  padding-top: 5px;
+  font-weight: 300;
+}
+html.dark-theme .echMetricText__extra {
+  text-align: right;
+  font-weight: 400;
+}
+html.dark-theme .echMetricText__value {
+  position: relative;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+html.dark-theme .echMetricText__part {
+  font-weight: 400;
+}
+html.dark-theme .echMetricText__gap {
+  position: relative;
+}
+html.dark-theme .echSingleMetricProgress {
+  position: absolute;
+  overflow: hidden;
+}
+html.dark-theme .echSingleMetricProgress--vertical {
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+}
+html.dark-theme .echSingleMetricProgress--vertical.echSingleMetricProgress--small {
+  right: auto;
+  width: 10px;
+}
+html.dark-theme .echSingleMetricProgress--horizontal {
+  left: 0;
+  right: 0;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+}
+html.dark-theme .echSingleMetricProgress--horizontal.echSingleMetricProgress--small {
+  top: auto;
+  height: 10px;
+}
+html.dark-theme .echSingleMetricProgressBar--vertical {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+}
+html.dark-theme .echSingleMetricProgressBar--horizontal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+}
+html.dark-theme .echSingleMetricSparkline {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+html.dark-theme .echSingleMetricSparkline__svg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+html.dark-theme .echSingleMetricChart--small {
+  position: absolute;
+  top: auto;
+  left: auto;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 30px;
 }
 html.dark-theme body,
 html.dark-theme .echChart {
