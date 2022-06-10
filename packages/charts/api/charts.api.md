@@ -14,6 +14,7 @@ import { LegacyRef } from 'react';
 import { OptionalKeys } from 'utility-types';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
+import { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import { RequiredKeys } from 'utility-types';
 
@@ -523,6 +524,7 @@ export const ChartType: Readonly<{
     XYAxis: "xy_axis";
     Heatmap: "heatmap";
     Wordcloud: "wordcloud";
+    Metric: "metric";
 }>;
 
 // @public (undocumented)
@@ -1663,6 +1665,76 @@ export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnn
 // @public @deprecated
 export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
 
+// @alpha (undocumented)
+export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", never, "id">>;
+
+// @alpha (undocumented)
+export type MetricBase = {
+    value: number;
+    valueFormatter: (d: number) => string;
+    color: Color;
+    title?: string;
+    subtitle?: string;
+    extra?: ReactElement;
+};
+
+// @alpha (undocumented)
+export interface MetricSpec extends Spec {
+    // (undocumented)
+    chartType: typeof ChartType.Metric;
+    // (undocumented)
+    data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[][];
+    // (undocumented)
+    specType: typeof SpecType.Series;
+}
+
+// @alpha (undocumented)
+export type MetricSpecProps = ComponentProps<typeof Metric>;
+
+// @public (undocumented)
+export interface MetricStyle {
+    // (undocumented)
+    background: Color;
+    // (undocumented)
+    barBackground: Color;
+    // (undocumented)
+    nonFiniteText: string;
+    // (undocumented)
+    text: {
+        darkColor: Color;
+        lightColor: Color;
+    };
+}
+
+// @alpha (undocumented)
+export const MetricTrendShape: Readonly<{
+    Bars: "bars";
+    Area: "area";
+}>;
+
+// @alpha (undocumented)
+export type MetricTrendShape = $Values<typeof MetricTrendShape>;
+
+// @alpha (undocumented)
+export type MetricWProgress = MetricBase & {
+    domain: {
+        min: number;
+        max: number;
+    };
+    progressBarDirection?: LayoutDirection;
+};
+
+// @alpha (undocumented)
+export type MetricWTrend = MetricBase & {
+    trend: {
+        x: number;
+        y: number;
+    }[];
+    trendShape?: MetricTrendShape;
+    trendA11yTitle?: string;
+    trendA11yDescription?: string;
+};
+
 // @public (undocumented)
 export const MODEL_KEY = "parent";
 
@@ -2532,6 +2604,8 @@ export interface Theme {
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
     markSizeRatio?: number;
+    // (undocumented)
+    metric: MetricStyle;
     partition: PartitionStyle;
     // (undocumented)
     scales: ScalesConfig;

@@ -297,6 +297,17 @@ export interface HeatmapStyle {
 }
 
 /** @public */
+export interface MetricStyle {
+  text: {
+    darkColor: Color;
+    lightColor: Color;
+  };
+  background: Color;
+  barBackground: Color;
+  nonFiniteText: string;
+}
+
+/** @public */
 export interface ScalesConfig {
   /**
    * The proportion of the range that is reserved for blank space between bands.
@@ -448,6 +459,8 @@ export interface Theme {
    * Theme styles for heatmap chart types
    */
   heatmap: HeatmapStyle;
+
+  metric: MetricStyle;
 }
 
 /** @public */
