@@ -9,7 +9,7 @@
 import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
-import { AnimationConfig } from '../../../common/animation';
+import { LegacyAnimationConfig } from '../../../common/animation';
 import { Distance, Pixels, Radius } from '../../../common/geometry';
 import { BaseDatum, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
@@ -50,7 +50,7 @@ export interface Layer<D extends BaseDatum = Datum> {
  * Specifies the partition chart
  * @public
  */
-export interface PartitionSpec<D extends BaseDatum = Datum> extends Spec, AnimationConfig {
+export interface PartitionSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnimationConfig {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Partition;
   data: D[];
