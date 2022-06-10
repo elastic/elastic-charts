@@ -86,7 +86,7 @@ export const Example = () => {
         xAccessor={(d) => d[2]}
         yAccessor={(d) => d[0]}
         valueAccessor={(d) => d[3]}
-        valueFormatter={(value) => value.toFixed(0.2)}
+        valueFormatter={(value) => (Number.isFinite(value) ? value.toFixed(0.2) : '-')}
         xSortPredicate="alphaAsc"
         xAxisTitle={showXAxisTitle ? 'Popular baby names' : undefined}
         yAxisTitle={showYAxisTitle ? 'Years' : undefined}
