@@ -1,3 +1,10 @@
+# [46.10.0](https://github.com/elastic/elastic-charts/compare/v46.9.0...v46.10.0) (2022-06-10)
+
+
+### Features
+
+* Metric visualization ([#1658](https://github.com/elastic/elastic-charts/issues/1658)) ([fc2c955](https://github.com/elastic/elastic-charts/commit/fc2c955c1615c4d76079d01b685d7466e799c147))
+
 # [46.9.0](https://github.com/elastic/elastic-charts/compare/v46.8.0...v46.9.0) (2022-06-07)
 
 
