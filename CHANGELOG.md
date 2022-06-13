@@ -1,3 +1,12 @@
+## [46.10.1](https://github.com/elastic/elastic-charts/compare/v46.10.0...v46.10.1) (2022-06-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v59 ([#1711](https://github.com/elastic/elastic-charts/issues/1711)) ([105c98f](https://github.com/elastic/elastic-charts/commit/105c98f11b981569bd0468c7750573323cdc831b))
+* **flame:** no focus border ([#1709](https://github.com/elastic/elastic-charts/issues/1709)) ([fddb506](https://github.com/elastic/elastic-charts/commit/fddb506b85d88646ae48284b1200dec303e9e192))
+* **time_axis:** gracefully handle zero axis size ([#1710](https://github.com/elastic/elastic-charts/issues/1710)) ([bf67c1f](https://github.com/elastic/elastic-charts/commit/bf67c1f797a840c9ed54c92b818315ebfc5d3a92))
+
 # [46.10.0](https://github.com/elastic/elastic-charts/compare/v46.9.0...v46.10.0) (2022-06-10)
 
 
