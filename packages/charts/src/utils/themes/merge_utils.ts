@@ -7,7 +7,6 @@
  */
 
 import { mergePartial, RecursivePartial } from '../common';
-import { TimeFunction } from '../time_functions';
 import { LIGHT_THEME } from './light_theme';
 import { LineAnnotationStyle, PartialTheme, RectAnnotationStyle, Theme } from './theme';
 
@@ -25,13 +24,6 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
     fill: '#777',
     padding: 0,
   },
-  animations: {
-    enabled: true,
-    duration: 250,
-    delay: 50,
-    snapValues: [],
-    timeFunction: TimeFunction.easeInOut,
-  },
 };
 /** @public */
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
@@ -39,13 +31,6 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
   strokeWidth: 0,
   opacity: 0.25,
   fill: '#FFEEBC',
-  animations: {
-    enabled: true,
-    duration: 250,
-    delay: 50,
-    snapValues: [],
-    timeFunction: TimeFunction.easeInOut,
-  },
 };
 
 /** @public */
