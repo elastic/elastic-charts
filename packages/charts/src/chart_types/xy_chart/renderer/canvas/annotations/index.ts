@@ -36,12 +36,12 @@ export function renderAnnotations(
   hoveredAnnotationIds: string[],
   renderOnBackground: boolean = true,
 ) {
-  const getHoverParams = getAnnotationHoverParamsFn(hoveredAnnotationIds, sharedStyle);
   annotationDimensions.forEach((annotation, id) => {
     const spec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
     const isBackground = (spec?.zIndex ?? 0) <= 0;
 
     if (spec && isBackground === renderOnBackground) {
+      const getHoverParams = getAnnotationHoverParamsFn(hoveredAnnotationIds, sharedStyle, spec.animations);
       if (isLineAnnotation(spec)) {
         const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
         renderLineAnnotations(

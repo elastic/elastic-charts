@@ -8,12 +8,13 @@
 
 import Url from 'url';
 
-import { DRAG_DETECTION_TIMEOUT } from '../../packages/charts/src/state/reducers/interactions';
 // @ts-ignore - no type declarations
 import { port, hostname, debug, isLegacyVRTServer } from '../config';
 import { toMatchImageSnapshot } from '../jest_env_setup';
 
 const legacyBaseUrl = `http://${hostname}:${port}/iframe.html`;
+
+const DRAG_DETECTION_TIMEOUT = 100; // the minimum amount of time to consider for for dragging purposes
 
 // @ts-ignore - used to log console statements from within the page.evaluate blocks
 // page.on('console', (msg) => (msg._type === 'log' ? console.log('PAGE LOG:', msg._text) : null)); // eslint-disable-line no-console

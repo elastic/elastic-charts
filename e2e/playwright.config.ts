@@ -18,6 +18,7 @@ const config: PlaywrightTestConfig = {
     video: process.env.CI ? 'off' : 'retain-on-failure',
     launchOptions: {
       ignoreDefaultArgs: ['--hide-scrollbars'],
+      args: ['--use-gl=egl'],
     },
   },
   reporter: process.env.CI ? 'github' : [['html', { open: 'never', outputFolder: 'report' }], ['list']],

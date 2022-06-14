@@ -10,3 +10,5 @@ coverage/
 **/tmp/
 
 packages/charts/src/_reset.scss
+packages/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json
+packages/charts/src/mocks/hierarchical/data.json

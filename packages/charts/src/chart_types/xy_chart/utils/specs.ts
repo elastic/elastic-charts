@@ -9,7 +9,7 @@
 import { ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
-import { ChartType } from '../..';
+import { ChartType } from '../../../chart_types';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal/types';
 import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
@@ -38,6 +38,7 @@ import {
   ComponentWithAnnotationDatum,
   CustomAnnotationTooltip,
 } from '../annotations/types';
+import { AnimationOptions } from './../renderer/canvas/animations/animation';
 import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 
 /** @public */
@@ -837,6 +838,22 @@ export interface LineAnnotationDatum<D = any> {
 }
 
 /** @public */
+export const AnnotationAnimationTrigger = Object.freeze({
+  FadeOnFocusingOthers: 'FadeOnFocusingOthers' as const,
+});
+/** @public */
+export type AnnotationAnimationTrigger = $Values<typeof AnnotationAnimationTrigger>;
+
+/** @public */
+export interface AnimationConfig<T extends string> {
+  trigger: T;
+  options?: AnimationOptions;
+}
+
+/** @public */
+export type AnnotationAnimationConfig = AnimationConfig<AnnotationAnimationTrigger>;
+
+/** @public */
 export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<
   typeof AnnotationType.Line,
   LineAnnotationDatum<D>,
@@ -993,6 +1010,10 @@ export interface BaseAnnotationSpec<
    * Default specified per specific annotation spec.
    */
   zIndex?: number;
+  /**
+   * Animation configurations for annotations
+   */
+  animations?: AnnotationAnimationConfig[];
 }
 
 /** @public */

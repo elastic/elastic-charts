@@ -213,7 +213,6 @@ function focusRect(quadViewModel: QuadViewModel[], { left, width }: Dimensions, 
         ({ path }) => path.length === drilldown.length && path.every(({ value }, i) => value === drilldown[i]),
       ) ?? { x0: left, x1: left + width };
 }
-
 /** @internal */
 export const partitionDrilldownFocus = createCustomCachedSelector(
   [

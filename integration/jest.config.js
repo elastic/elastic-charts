@@ -12,8 +12,12 @@ const tsPreset = require('ts-jest/jest-preset');
 
 const { debug } = require('./config');
 
+const mergedConfig = {
+  ...(debug ? jestPuppeteer : jestPuppeteerDocker),
+  ...tsPreset,
+};
+
 module.exports = {
-  setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts', 'jest-extended'],
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.json',
@@ -29,6 +33,6 @@ module.exports = {
     HTMLElement: {},
   },
   reporters: ['default', 'jest-image-snapshot/src/outdated-snapshot-reporter.js'],
-  ...(debug ? jestPuppeteer : jestPuppeteerDocker),
-  ...tsPreset,
+  ...mergedConfig,
+  setupFilesAfterEnv: ['<rootDir>/jest_env_setup.ts', 'jest-extended', ...(mergedConfig.setupFilesAfterEnv ?? [])],
 };
