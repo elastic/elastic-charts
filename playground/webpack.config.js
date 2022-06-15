@@ -74,7 +74,7 @@ module.exports = {
       filename: 'index.html',
       favicon: '../public/favicon.ico',
     }),
-    new webpack.EnvironmentPlugin({ RNG_SEED: null, VRT: false }),
+    new webpack.EnvironmentPlugin({ RNG_SEED: null, VRT: 'false' }),
   ],
   resolve: {
     alias: {

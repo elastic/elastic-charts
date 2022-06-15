@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import React, { useEffect } from 'react';
+import { useEffect, FC, PropsWithChildren } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { specParsed, specUnmounted } from '../state/actions/specs';
 
-const SpecsParserComponent: React.FunctionComponent = (props) => {
+const SpecsParserComponent: FC<PropsWithChildren<DispatchProps>> = (props) => {
   const injected = props as DispatchProps;
   // clean all specs
   useEffect(() => {
@@ -24,6 +24,7 @@ const SpecsParserComponent: React.FunctionComponent = (props) => {
     },
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
+  // TODO eliminate the need for this type casting
   return props.children ? (props.children as React.ReactElement) : null;
 };
 
