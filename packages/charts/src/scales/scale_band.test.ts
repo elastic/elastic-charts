@@ -64,7 +64,6 @@ describe('Scale Band', () => {
     const scale = new ScaleBand(['a', 'b', 'c', 'd'], [0, 100]);
     expect(scale.scale('e')).toBeNaN();
     expect(scale.scale(0)).toBeNaN();
-    expect(scale.scale(null)).toBeNaN();
   });
   it('shall scale a numeric domain with padding', () => {
     const scale = new ScaleBand([0, 1, 2], [0, 120], undefined, 0.5);

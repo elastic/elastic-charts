@@ -6,13 +6,22 @@
  * Side Public License, v 1.
  */
 
-import { Scale } from '../../scales';
+import { ScaleContinuous } from '../../scales';
 import { ScaleType } from '../../scales/constants';
 import { mergePartial } from '../../utils/common';
 
 /** @internal */
 export class MockScale {
-  private static readonly base: Scale<number | string> = {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  private static readonly base: ScaleContinuous = {
+    project: jest.fn(),
+    inverseProject: jest.fn(),
+    isSingleValueHistogram: false,
+    linearBase: 0,
+    tickValues: [],
+    timeZone: '',
+    totalBarsInCluster: 0,
     scale: jest.fn().mockImplementation((x) => x),
     type: ScaleType.Linear,
     step: 0,
@@ -31,7 +40,7 @@ export class MockScale {
     isInverted: false,
   };
 
-  static default(partial: Partial<Scale<number | string>>): Scale<number | string> {
-    return mergePartial<Scale<number | string>>(MockScale.base, partial);
+  static default(partial: Partial<ScaleContinuous>): ScaleContinuous {
+    return mergePartial<ScaleContinuous>(MockScale.base, partial);
   }
 }

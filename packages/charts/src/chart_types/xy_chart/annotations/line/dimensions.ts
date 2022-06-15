@@ -8,7 +8,7 @@
 
 import { Colors } from '../../../../common/colors';
 import { Line } from '../../../../geoms/types';
-import { Scale } from '../../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import { Position, Rotation } from '../../../../utils/common';
 import { Dimensions, Size } from '../../../../utils/dimensions';
@@ -23,7 +23,7 @@ import { AnnotationLineProps } from './types';
 
 function computeYDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
-  yScale: Scale<number>,
+  yScale: ScaleContinuous,
   { vertical, horizontal }: SmallMultipleScales,
   chartRotation: Rotation,
   axisPosition?: Position,
@@ -114,7 +114,7 @@ function computeYDomainLineAnnotationDimensions(
 
 function computeXDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
-  xScale: Scale<number | string>,
+  xScale: ScaleContinuous | ScaleBand,
   { vertical, horizontal }: SmallMultipleScales,
   chartRotation: Rotation,
   isHistogramMode: boolean,
@@ -226,8 +226,8 @@ function computeXDomainLineAnnotationDimensions(
 export function computeLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
   chartRotation: Rotation,
-  yScales: Map<GroupId, Scale<number>>,
-  xScale: Scale<number | string>,
+  yScales: Map<GroupId, ScaleContinuous>,
+  xScale: ScaleContinuous | ScaleBand,
   smallMultipleScales: SmallMultipleScales,
   isHistogramMode: boolean,
   axisPosition?: Position,

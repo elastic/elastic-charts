@@ -9,7 +9,7 @@
 import { line } from 'd3-shape';
 
 import { Color } from '../../../common/colors';
-import { Scale } from '../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
 import { LineGeometry } from '../../../utils/geometry';
@@ -24,8 +24,8 @@ import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefined
 export function renderLine(
   shift: number,
   dataSeries: DataSeries,
-  xScale: Scale<number | string>,
-  yScale: Scale<number>,
+  xScale: ScaleBand | ScaleContinuous,
+  yScale: ScaleContinuous,
   panel: Dimensions,
   color: Color,
   curve: CurveType,

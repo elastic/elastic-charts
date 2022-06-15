@@ -7,7 +7,7 @@
  */
 
 import { Color } from '../../../common/colors';
-import { Scale } from '../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, mergePartial } from '../../../utils/common';
@@ -32,8 +32,8 @@ export function renderBars(
   measureText: TextMeasure,
   orderIndex: number,
   dataSeries: DataSeries,
-  xScale: Scale<number | string>,
-  yScale: Scale<number>,
+  xScale: ScaleContinuous | ScaleBand,
+  yScale: ScaleContinuous,
   panel: Dimensions,
   chartRotation: number,
   minBarHeight: number,
