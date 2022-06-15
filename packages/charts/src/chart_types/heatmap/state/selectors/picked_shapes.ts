@@ -8,7 +8,7 @@
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { Cell, InvertedPosition, TextBox } from '../../layout/types/viewmodel_types';
+import { Cell, GridCell, TextBox } from '../../layout/types/viewmodel_types';
 import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getHeatmapGeometries } from './geometries';
 
@@ -31,12 +31,9 @@ export const getPickedShapes = createCustomCachedSelector(
 );
 
 /** @internal */
-export const getXValue = createCustomCachedSelector(
+export const getPickedGridCell = createCustomCachedSelector(
   [getHeatmapGeometries, getCurrentPointerPosition, computeChartElementSizesSelector],
-  (geoms, pointerPosition): InvertedPosition => {
-    const picker = geoms.pickInvertedPosition;
-    const { x, y } = pointerPosition;
-    const pickedData = picker(x, y);
-    return pickedData;
+  (geoms, pointerPosition): GridCell | undefined => {
+    return geoms.pickGridCell(pointerPosition.x, pointerPosition.y);
   },
 );
