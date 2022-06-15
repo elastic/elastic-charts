@@ -22,7 +22,7 @@ import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getSpecOrNull } from './heatmap_spec';
-import { getCurrentPointerPosition, getXValue } from './picked_shapes';
+import { getCurrentPointerPosition, getPickedGridCell } from './picked_shapes';
 
 function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, changeTrigger: PointerUpdateTrigger) {
   const checkX = changeTrigger === PointerUpdateTrigger.X || changeTrigger === PointerUpdateTrigger.Both;
@@ -58,7 +58,7 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
           getLastClickSelector,
           getSettingsSpecSelector,
           getCurrentPointerPosition,
-          getXValue,
+          getPickedGridCell,
           getChartIdSelector,
         ],
         (
@@ -66,10 +66,10 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
           lastClick: PointerState | null,
           settings: SettingsSpec,
           currentPointer,
-          invertedValues,
+          gridCell,
           chartId,
         ): void => {
-          if (!spec) {
+          if (!spec || gridCell === undefined) {
             return;
           }
 
@@ -80,9 +80,9 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
           const nextPointerEvent = {
             chartId: state.chartId,
             type: currentPointer.x === -1 && currentPointer.y === -1 ? PointerEventType.Out : PointerEventType.Over,
-            scale: 'time',
-            x: invertedValues.xValue,
-            y: [{ value: invertedValues.yValue ?? null }],
+            scale: spec.xScale.type,
+            x: gridCell.x,
+            y: [{ value: gridCell.y }],
             smHorizontalValue: null,
             smVerticalValue: null,
           } as PointerOverEvent;
