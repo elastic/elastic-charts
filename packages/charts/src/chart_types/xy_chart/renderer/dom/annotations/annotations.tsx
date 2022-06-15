@@ -27,8 +27,7 @@ import { getSettingsSpecSelector } from '../../../../../state/selectors/get_sett
 import { Dimensions } from '../../../../../utils/dimensions';
 import { AnnotationId } from '../../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../../utils/themes/light_theme';
-import { mergeWithDefaultAnnotationLine } from '../../../../../utils/themes/merge_utils';
-import { LineAnnotationStyle, SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
+import { SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 import { AnnotationDimensions, AnnotationTooltipState } from '../../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../../state/selectors/compute_annotations';
@@ -38,7 +37,7 @@ import { getHighlightedAnnotationIdsSelector } from '../../../state/selectors/ge
 import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { getSpecsById } from '../../../state/utils/spec';
-import { isLineAnnotation, AnnotationSpec } from '../../../utils/specs';
+import { isLineAnnotation, AnnotationSpec, AnnotationAnimationConfig } from '../../../utils/specs';
 import { getAnnotationHoverParamsFn } from '../../common/utils';
 import { AnnotationTooltip } from './annotation_tooltip';
 import { LineMarker } from './line_marker';
@@ -76,17 +75,16 @@ function renderAnnotationLineMarkers(
   onDOMElementEnter: typeof onDOMElementEnterAction,
   onDOMElementLeave: typeof onDOMElementLeaveAction,
   hoveredIds: string[],
-  lineStyle: LineAnnotationStyle,
   sharedStyle: SharedGeometryStateStyle,
   clickable: boolean,
+  animations?: AnnotationAnimationConfig[],
 ) {
-  const getHoverStyles = getAnnotationHoverParamsFn(hoveredIds, sharedStyle);
+  const getHoverParams = getAnnotationHoverParamsFn(hoveredIds, sharedStyle, animations);
   return annotationLines.reduce<JSX.Element[]>((acc, props: AnnotationLineProps) => {
     if (props.markers.length === 0) {
       return acc;
     }
 
-    const { style } = getHoverStyles(props.id);
     acc.push(
       <LineMarker
         {...props}
@@ -97,8 +95,7 @@ function renderAnnotationLineMarkers(
         onDOMElementLeave={onDOMElementLeave}
         onDOMElementClick={onDOMElementClick}
         clickable={clickable}
-        style={style}
-        animationStyle={lineStyle.animations}
+        getHoverParams={getHoverParams}
       />,
     );
 
@@ -131,7 +128,6 @@ const AnnotationsComponent = ({
       }
 
       if (isLineAnnotation(annotationSpec)) {
-        const lineStyle = mergeWithDefaultAnnotationLine(annotationSpec.style);
         const annotationLines = dimensions as AnnotationLineProps[];
         const lineMarkers = renderAnnotationLineMarkers(
           chartAreaRef,
@@ -140,9 +136,9 @@ const AnnotationsComponent = ({
           onDOMElementEnter,
           onDOMElementLeave,
           hoveredAnnotationIds,
-          lineStyle,
           sharedStyle,
           clickable,
+          annotationSpec.animations,
         );
         lineMarkers.forEach((m) => markers.push(m));
       }

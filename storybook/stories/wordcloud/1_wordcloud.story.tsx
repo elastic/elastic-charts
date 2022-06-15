@@ -270,8 +270,3 @@ export const Example = () => {
     </Chart>
   );
 };
-
-Example.parameters = {
-  background: { disable: true },
-  theme: { disable: true },
-};

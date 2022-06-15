@@ -7,9 +7,8 @@
  */
 
 import { CSSProperties } from 'react';
-import { $Values, Optional } from 'utility-types';
+import { $Values } from 'utility-types';
 
-import { AnimationOptions } from '../../chart_types/xy_chart/renderer/canvas/animations/animation';
 import { Color } from '../../common/colors';
 import { Pixels, Radian, Ratio } from '../../common/geometry';
 import { Font, FontStyle } from '../../common/text_utils';
@@ -298,6 +297,17 @@ export interface HeatmapStyle {
 }
 
 /** @public */
+export interface MetricStyle {
+  text: {
+    darkColor: Color;
+    lightColor: Color;
+  };
+  background: Color;
+  barBackground: Color;
+  nonFiniteText: string;
+}
+
+/** @public */
 export interface ScalesConfig {
   /**
    * The proportion of the range that is reserved for blank space between bands.
@@ -449,6 +459,8 @@ export interface Theme {
    * Theme styles for heatmap chart types
    */
   heatmap: HeatmapStyle;
+
+  metric: MetricStyle;
 }
 
 /** @public */
@@ -699,9 +711,6 @@ export interface CrosshairStyle {
   crossLine: StrokeStyle & Visible & Partial<StrokeDashArray>;
 }
 
-/** @public */
-export type AnnotationAnimation = Optional<Required<AnimationOptions>, 'initialValue'>;
-
 /**
  * The style for a linear annotation
  * @public
@@ -712,10 +721,6 @@ export interface LineAnnotationStyle {
    */
   line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
   /**
-   * Animation options
-   */
-  animations: AnnotationAnimation;
-  /**
    * The style for the text shown on the tooltip.
    * @deprecated This style is not currently used and will
    * soon be removed.
@@ -724,9 +729,4 @@ export interface LineAnnotationStyle {
 }
 
 /** @public */
-export interface RectAnnotationStyle extends StrokeStyle, FillStyle, Opacity, Partial<StrokeDashArray> {
-  /**
-   * Animation options
-   */
-  animations: AnnotationAnimation;
-}
+export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;

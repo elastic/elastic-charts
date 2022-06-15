@@ -18,8 +18,9 @@ import {
 } from '../../../../../state/actions/dom_element';
 import { Position, renderWithProps } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
-import { AnnotationAnimation } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
+import { AnimationOptions } from '../../canvas/animations/animation';
+import { GetAnnotationParamsFn } from '../../common/utils';
 
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'markers' | 'panel'> & {
   chartAreaRef: RefObject<HTMLCanvasElement>;
@@ -28,8 +29,7 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   onDOMElementLeave: typeof onDOMElementLeaveAction;
   onDOMElementClick: typeof onDOMElementClickAction;
   clickable: boolean;
-  animationStyle: AnnotationAnimation;
-  style: CSSProperties;
+  getHoverParams: GetAnnotationParamsFn;
 };
 
 const MARKER_TRANSFORMS = {
@@ -59,20 +59,21 @@ export function LineMarker({
   onDOMElementLeave,
   onDOMElementClick,
   clickable,
-  style,
-  animationStyle,
+  getHoverParams,
 }: LineMarkerProps) {
+  const { style, options } = getHoverParams(id);
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
   const popper = useRef<Instance | null>(null);
   const markerStyle: CSSProperties = {
     ...style,
-    ...getAnimatedStyles(animationStyle, style),
+    ...getAnimatedStyles(options, style),
     color,
     top: chartDimensions.top + position.top + panel.top,
     left: chartDimensions.left + position.left + panel.left,
     cursor: clickable ? 'pointer' : DEFAULT_CSS_CURSOR,
   };
+
   const transform = { transform: getMarkerCentredTransform(alignment, Boolean(dimension)) };
   const setPopper = useCallback(() => {
     if (!iconRef.current || !testRef.current) return;
@@ -170,7 +171,7 @@ export function LineMarker({
 }
 
 function getAnimatedStyles(
-  { duration, delay, timeFunction, snapValues, enabled }: AnnotationAnimation,
+  { duration, delay, timeFunction, snapValues = [], enabled }: AnimationOptions,
   { opacity }: CSSProperties,
 ): CSSProperties {
   if (!enabled || (typeof opacity === 'number' && snapValues.includes(opacity))) return {};

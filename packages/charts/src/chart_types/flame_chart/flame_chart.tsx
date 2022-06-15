@@ -695,7 +695,7 @@ class FlameComponent extends React.Component<FlameProps> {
             onKeyPress={this.handleEnterKey}
             onKeyUp={this.handleEscapeKey}
             onWheel={this.handleWheel}
-            style={style}
+            style={{ ...style, outline: 'none' }}
             // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
             role="presentation"
           />

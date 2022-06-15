@@ -11,10 +11,10 @@ import { ComponentType } from 'react';
 import { CSSProperties } from 'react';
 import { FC } from 'react';
 import { LegacyRef } from 'react';
-import { Optional } from 'utility-types';
 import { OptionalKeys } from 'utility-types';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
+import { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import { RequiredKeys } from 'utility-types';
 
@@ -58,11 +58,11 @@ export interface AngleFromTo {
 export type AnimatedValue = number;
 
 // @public (undocumented)
-export interface AnimationConfig {
-    // @alpha (undocumented)
-    animation: {
-        duration: TimeMs;
-    };
+export interface AnimationConfig<T extends string> {
+    // (undocumented)
+    options?: AnimationOptions;
+    // (undocumented)
+    trigger: T;
 }
 
 // @public (undocumented)
@@ -98,7 +98,15 @@ export interface AnimKeyframe {
 }
 
 // @public (undocumented)
-export type AnnotationAnimation = Optional<Required<AnimationOptions>, 'initialValue'>;
+export type AnnotationAnimationConfig = AnimationConfig<AnnotationAnimationTrigger>;
+
+// @public (undocumented)
+export const AnnotationAnimationTrigger: Readonly<{
+    FadeOnFocusingOthers: "FadeOnFocusingOthers";
+}>;
+
+// @public (undocumented)
+export type AnnotationAnimationTrigger = $Values<typeof AnnotationAnimationTrigger>;
 
 // @public (undocumented)
 export type AnnotationClickListener = (annotations: {
@@ -349,6 +357,7 @@ export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 
 // @public (undocumented)
 export interface BaseAnnotationSpec<T extends typeof AnnotationType.Rectangle | typeof AnnotationType.Line, AD extends RectAnnotationDatum | LineAnnotationDatum<D>, S extends RectAnnotationStyle | LineAnnotationStyle, D = never> extends Spec, AnnotationPortalSettings {
+    animations?: AnnotationAnimationConfig[];
     annotationType: T;
     // (undocumented)
     chartType: typeof ChartType.XYAxis;
@@ -515,6 +524,7 @@ export const ChartType: Readonly<{
     XYAxis: "xy_axis";
     Heatmap: "heatmap";
     Wordcloud: "wordcloud";
+    Metric: "metric";
 }>;
 
 // @public (undocumented)
@@ -994,7 +1004,7 @@ export interface FlameLayerValue {
 }
 
 // @public
-export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, AnimationConfig {
+export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnimationConfig {
     // (undocumented)
     chartType: typeof ChartType.Flame;
     // (undocumented)
@@ -1441,6 +1451,14 @@ export const LayoutDirection: Readonly<{
 export type LayoutDirection = $Values<typeof LayoutDirection>;
 
 // @public
+export interface LegacyAnimationConfig {
+    // @alpha (undocumented)
+    animation: {
+        duration: TimeMs;
+    };
+}
+
+// @public
 export type LegendAction = ComponentType<LegendActionProps>;
 
 // @public
@@ -1539,7 +1557,7 @@ export interface LegendStyle {
 export const LIGHT_THEME: Theme;
 
 // @public
-export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, "chartType" | "specType", "style" | "zIndex" | "groupId" | "hideLines" | "hideLinesTooltips" | "annotationType" | "hideTooltips", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "marker" | "customTooltip" | "markerBody" | "markerDimensions" | "markerPosition" | "customTooltipDetails", "id" | "domainType" | "dataValues">) => null;
+export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, "chartType" | "specType", "style" | "zIndex" | "groupId" | "hideLines" | "hideLinesTooltips" | "annotationType" | "hideTooltips", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "marker" | "customTooltip" | "markerBody" | "markerDimensions" | "markerPosition" | "customTooltipDetails" | "animations", "id" | "domainType" | "dataValues">) => null;
 
 // @public
 export interface LineAnnotationDatum<D = any> {
@@ -1574,7 +1592,6 @@ export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<typeof AnnotationTy
 
 // @public
 export interface LineAnnotationStyle {
-    animations: AnnotationAnimation;
     // @deprecated
     details: TextStyle;
     line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
@@ -1647,6 +1664,76 @@ export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnn
 
 // @public @deprecated
 export function mergeWithDefaultTheme(theme: PartialTheme, defaultTheme?: Theme, auxiliaryThemes?: PartialTheme[]): Theme;
+
+// @alpha (undocumented)
+export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", never, "id">>;
+
+// @alpha (undocumented)
+export type MetricBase = {
+    value: number;
+    valueFormatter: (d: number) => string;
+    color: Color;
+    title?: string;
+    subtitle?: string;
+    extra?: ReactElement;
+};
+
+// @alpha (undocumented)
+export interface MetricSpec extends Spec {
+    // (undocumented)
+    chartType: typeof ChartType.Metric;
+    // (undocumented)
+    data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[][];
+    // (undocumented)
+    specType: typeof SpecType.Series;
+}
+
+// @alpha (undocumented)
+export type MetricSpecProps = ComponentProps<typeof Metric>;
+
+// @public (undocumented)
+export interface MetricStyle {
+    // (undocumented)
+    background: Color;
+    // (undocumented)
+    barBackground: Color;
+    // (undocumented)
+    nonFiniteText: string;
+    // (undocumented)
+    text: {
+        darkColor: Color;
+        lightColor: Color;
+    };
+}
+
+// @alpha (undocumented)
+export const MetricTrendShape: Readonly<{
+    Bars: "bars";
+    Area: "area";
+}>;
+
+// @alpha (undocumented)
+export type MetricTrendShape = $Values<typeof MetricTrendShape>;
+
+// @alpha (undocumented)
+export type MetricWProgress = MetricBase & {
+    domain: {
+        min: number;
+        max: number;
+    };
+    progressBarDirection?: LayoutDirection;
+};
+
+// @alpha (undocumented)
+export type MetricWTrend = MetricBase & {
+    trend: {
+        x: number;
+        y: number;
+    }[];
+    trendShape?: MetricTrendShape;
+    trendA11yTitle?: string;
+    trendA11yDescription?: string;
+};
 
 // @public (undocumented)
 export const MODEL_KEY = "parent";
@@ -1998,7 +2085,7 @@ export type Ratio = number;
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "style" | "zIndex" | "groupId" | "outside" | "annotationType", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "customTooltip" | "customTooltipDetails" | "hideTooltips" | "renderTooltip" | "outsideDimension", "id" | "dataValues">>;
+export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "style" | "zIndex" | "groupId" | "outside" | "annotationType", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "customTooltip" | "customTooltipDetails" | "hideTooltips" | "animations" | "renderTooltip" | "outsideDimension", "id" | "dataValues">>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -2029,9 +2116,7 @@ export type RectAnnotationSpec = BaseAnnotationSpec<typeof AnnotationType.Rectan
 };
 
 // @public (undocumented)
-export interface RectAnnotationStyle extends StrokeStyle, FillStyle, Opacity, Partial<StrokeDashArray> {
-    animations: AnnotationAnimation;
-}
+export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;
 
 // @public (undocumented)
 export interface RectBorderStyle {
@@ -2519,6 +2604,8 @@ export interface Theme {
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
     markSizeRatio?: number;
+    // (undocumented)
+    metric: MetricStyle;
     partition: PartitionStyle;
     // (undocumented)
     scales: ScalesConfig;

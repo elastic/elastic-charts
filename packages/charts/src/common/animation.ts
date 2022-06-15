@@ -14,8 +14,12 @@
 
 import { TimeMs } from './geometry';
 
-/** @public */
-export interface AnimationConfig {
+/**
+ * @public
+ *
+ * Pre-existing animation config to be refactored using new animation config
+ */
+export interface LegacyAnimationConfig {
   /** @alpha */
   animation: {
     duration: TimeMs;
