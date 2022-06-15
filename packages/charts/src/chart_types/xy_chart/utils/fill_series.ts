@@ -23,7 +23,7 @@ export function fillSeries(dataSeries: DataSeries[], xValues: Set<string | numbe
         data,
       };
     }
-    // fill x value only to stacked area charts. All other charts doesn't need that data processing
+    // fill x value only for stacked area charts. All other charts don't need this data processing
     // it used to correctly stack areas where a datapoint is not present on one of the stacked area dataset.
     const filledData: typeof data = [];
     const missingValues = new Set(xValues);
