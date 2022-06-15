@@ -61,14 +61,7 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
           getPickedGridCell,
           getChartIdSelector,
         ],
-        (
-          spec,
-          lastClick: PointerState | null,
-          settings: SettingsSpec,
-          currentPointer,
-          gridCell,
-          chartId,
-        ): void => {
+        (spec, lastClick: PointerState | null, settings: SettingsSpec, currentPointer, gridCell, chartId): void => {
           if (!spec || gridCell === undefined) {
             return;
           }
