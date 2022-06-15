@@ -36,8 +36,7 @@ export interface Cell {
 }
 
 /** @internal */
-export type GridCell = {x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValue>}
-
+export type GridCell = { x: NonNullable<PrimitiveValue>; y: NonNullable<PrimitiveValue> };
 
 /** @internal */
 export interface TextBox extends Box {
