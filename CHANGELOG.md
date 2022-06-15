@@ -1,3 +1,10 @@
+## [46.0.2](https://github.com/elastic/elastic-charts/compare/v46.0.1...v46.0.2) (2022-06-15)
+
+
+### Bug Fixes
+
+* **heatmap:** don't render null values ([#1708](https://github.com/elastic/elastic-charts/issues/1708)) ([8aa8c11](https://github.com/elastic/elastic-charts/commit/8aa8c11d22994e6f034345850de3b397b9a05744))
+
 ## [46.0.1](https://github.com/elastic/elastic-charts/compare/v46.0.0...v46.0.1) (2022-04-19)
 
 
