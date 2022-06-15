@@ -20,6 +20,7 @@ export const ChartType = Object.freeze({
   XYAxis: 'xy_axis' as const,
   Heatmap: 'heatmap' as const,
   Wordcloud: 'wordcloud' as const,
+  Metric: 'metric' as const,
 });
 /** @public */
 export type ChartType = $Values<typeof ChartType>;

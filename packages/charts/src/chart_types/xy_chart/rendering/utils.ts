@@ -7,7 +7,7 @@
  */
 
 import { LegendItem } from '../../../common/legend';
-import { Scale } from '../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isLogarithmicScale } from '../../../scales/types';
 import { MarkBuffer } from '../../../specs';
 import { getDistance } from '../../../utils/common';
@@ -55,7 +55,7 @@ export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
  */
 export function getClippedRanges(
   dataset: DataSeriesDatum[],
-  xScale: Scale<number | string>,
+  xScale: ScaleBand | ScaleContinuous,
   xScaleOffset: number,
 ): ClippedRanges {
   let firstNonNullX: number | null = null;
@@ -154,7 +154,7 @@ export function isPointOnGeometry(
   return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
 }
 
-const getScaleTypeValueValidator = (yScale: Scale<number>): ((n: number) => boolean) => {
+const getScaleTypeValueValidator = (yScale: ScaleContinuous): ((n: number) => boolean) => {
   if (!isLogarithmicScale(yScale)) return () => true;
   const domainPolarity = getDomainPolarity(yScale.domain);
   return (yValue: number) => domainPolarity === Math.sign(yValue);
@@ -169,7 +169,7 @@ const DEFAULT_ZERO_BASELINE = 0;
 export type YDefinedFn = (datum: DataSeriesDatum, getValueAccessor: (d: DataSeriesDatum) => number | null) => boolean;
 
 /** @internal */
-export function isYValueDefinedFn(yScale: Scale<number>, xScale: Scale<number | string>): YDefinedFn {
+export function isYValueDefinedFn(yScale: ScaleContinuous, xScale: ScaleBand | ScaleContinuous): YDefinedFn {
   const validator = getScaleTypeValueValidator(yScale);
   return (datum, getValueAccessor) => {
     const yValue = getValueAccessor(datum);
@@ -191,7 +191,7 @@ function chromeRenderBugBuffer(y1: number, y0: number): number {
 }
 
 /** @internal */
-export function getY1ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
+export function getY1ScaledValueFn(yScale: ScaleContinuous): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
   const scaleY0Value = getY0ScaledValueFn(yScale);
   return (datum) => {
@@ -202,7 +202,7 @@ export function getY1ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDat
 }
 
 /** @internal */
-export function getY0ScaledValueFn(yScale: Scale<number>): (datum: DataSeriesDatum) => number {
+export function getY0ScaledValueFn(yScale: ScaleContinuous): (datum: DataSeriesDatum) => number {
   const domainPolarity = getDomainPolarity(yScale.domain);
   const logBaseline = domainPolarity >= 0 ? Math.min(...yScale.domain) : Math.max(...yScale.domain);
   return ({ y0 }) =>

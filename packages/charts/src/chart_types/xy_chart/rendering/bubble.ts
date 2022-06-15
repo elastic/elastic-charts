@@ -7,7 +7,7 @@
  */
 
 import { Color } from '../../../common/colors';
-import { Scale } from '../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { Dimensions } from '../../../utils/dimensions';
 import { BubbleGeometry } from '../../../utils/geometry';
 import { BubbleSeriesStyle } from '../../../utils/themes/theme';
@@ -21,8 +21,8 @@ import { MarkSizeOptions } from './utils';
 export function renderBubble(
   shift: number,
   dataSeries: DataSeries,
-  xScale: Scale<number | string>,
-  yScale: Scale<number>,
+  xScale: ScaleContinuous | ScaleBand,
+  yScale: ScaleContinuous,
   color: Color,
   panel: Dimensions,
   hasY0Accessors: boolean,

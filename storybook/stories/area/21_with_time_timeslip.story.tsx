@@ -39,6 +39,7 @@ const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
 
 export const Example = () => {
+  const showLegend = boolean('Show legend', false);
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
   const yAxisTitle = 'CPU utilization';
@@ -70,6 +71,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings
+        showLegend={showLegend}
         baseTheme={useBaseTheme()}
         theme={{ axes: { tickLine: { visible: true } } }}
         xDomain={
@@ -120,7 +122,7 @@ export const Example = () => {
         tickFormat={(d) => `${Number(d).toFixed(0)}%`}
       />
       <AreaSeries
-        id="Utilization"
+        id="CPU Utilization"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}

@@ -9,6 +9,7 @@
 import { computeChartDimensionsSelector } from '../../chart_types/xy_chart/state/selectors/compute_chart_dimensions';
 import { getComputedScalesSelector } from '../../chart_types/xy_chart/state/selectors/get_computed_scales';
 import { PointerEventType } from '../../specs';
+import { isNil } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSettingsSpecSelector } from './get_settings_specs';
@@ -26,7 +27,12 @@ export const isExternalTooltipVisibleSelector = createCustomCachedSelector(
     computeChartDimensionsSelector,
   ],
   ({ externalPointerEvents }, hasExternalEvent, pointer, { xScale }, { chartDimensions }): boolean => {
-    if (!pointer || pointer.type !== PointerEventType.Over || externalPointerEvents.tooltip?.visible === false) {
+    if (
+      !pointer ||
+      pointer.type !== PointerEventType.Over ||
+      isNil(pointer.x) ||
+      externalPointerEvents.tooltip?.visible === false
+    ) {
       return false;
     }
     const x = xScale.pureScale(pointer.x);

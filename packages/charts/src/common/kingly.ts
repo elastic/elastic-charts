@@ -119,7 +119,7 @@ export const createLinkedProgram = (
   gl: WebGL2RenderingContext,
   vertexShader: WebGLShader,
   fragmentShader: WebGLShader,
-  attributeLocations: Map<string, number> = new Map(),
+  attributeLocations: Record<string, number>,
 ): WebGLProgram => {
   const program = gl.createProgram();
   if (!program) throw new Error(`Whoa, shader program could not be created`); // just appeasing the TS linter https://www.khronos.org/webgl/wiki/HandlingContextLost
@@ -128,7 +128,7 @@ export const createLinkedProgram = (
   if (GL_DEBUG && gl.getProgramParameter(program, GL.ATTACHED_SHADERS) !== 2)
     throw new Error('Did not manage to attach the two shaders');
 
-  attributeLocations.forEach((i, name) => gl.bindAttribLocation(program, i, name));
+  Object.entries(attributeLocations).forEach(([name, i]) => gl.bindAttribLocation(program, i, name));
 
   gl.linkProgram(program); // todo consider bulk gl.compileShader iteration, followed by bulk gl.linkProgram iteration https://www.khronos.org/registry/webgl/extensions/KHR_parallel_shader_compile/
 
@@ -153,9 +153,9 @@ export const createLinkedProgram = (
   return program;
 };
 
-/****************
- * Uniforms
- ***************/
+/*********************
+ * Singular uniforms
+ ********************/
 
 interface Sampler {
   setUniform: (location: WebGLUniformLocation) => void;
@@ -225,7 +225,7 @@ const uniformSetterLookup = {
 
 type UniformsMap = Map<string, (...args: any[]) => void>;
 
-const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): UniformsMap => {
+const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo: Uniforms): UniformsMap => {
   if (programUniforms.has(program)) return programUniforms.get(program);
   const uniforms = new Map(
     [...new Array(gl.getProgramParameter(program, GL.ACTIVE_UNIFORMS /* uniform count */))].map((_, index) => {
@@ -233,9 +233,9 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): Uniform
       if (!activeUniform) throw new Error(`Whoa, active uniform not found`); // just appeasing the TS linter
       const { name, type } = activeUniform;
       const location = gl.getUniformLocation(program, name);
-      if (location === null)
+      if (location === null && !uboInfo.has(name))
         throw new Error(`Whoa, uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
-      const setValue = uniformSetterLookup[type](gl, location);
+      const setValue = location ? uniformSetterLookup[type](gl, location) : () => {};
       if (GL_DEBUG && !setValue) throw new Error(`No setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
       return [name, setValue];
     }),
@@ -243,6 +243,42 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): Uniform
   programUniforms.set(program, uniforms);
   return uniforms;
 };
+
+/*******************
+ * Block uniforms
+ ******************/
+
+type UboData = { uniforms: Uniforms; uboBuffer: WebGLBuffer };
+
+/** @internal */
+export function blockUniforms(
+  gl: WebGL2RenderingContext,
+  uniformBlockName: string,
+  uboVariableNames: string[],
+  [program, ...otherPrograms]: WebGLProgram[],
+): UboData {
+  const blockIndex = gl.getUniformBlockIndex(program, uniformBlockName);
+  const blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, GL.UNIFORM_BLOCK_DATA_SIZE);
+  const uboBuffer = gl.createBuffer();
+  if (uboBuffer === null) throw new Error('Whoa, could not create uboBuffer');
+  gl.bindBuffer(gl.UNIFORM_BUFFER, uboBuffer);
+  gl.bufferData(gl.UNIFORM_BUFFER, blockSize, gl.DYNAMIC_DRAW);
+  // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
+  gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uboBuffer);
+  const uboVariableIndices = gl.getUniformIndices(program, uboVariableNames);
+  if (uboVariableIndices === null) throw new Error('Whoa, could not get uboVariableIndices');
+  const uboVariableOffsets = gl.getActiveUniforms(program, uboVariableIndices, gl.UNIFORM_OFFSET);
+  const uniforms = new Map(
+    uboVariableNames.map((name, i) => [name, { index: uboVariableIndices[i], offset: uboVariableOffsets[i] }]),
+  );
+
+  // per program part
+  [program, ...otherPrograms].forEach((p) =>
+    gl.uniformBlockBinding(p, gl.getUniformBlockIndex(p, uniformBlockName), 0),
+  );
+
+  return { uboBuffer, uniforms };
+}
 
 /************
  * Clearing
@@ -362,13 +398,10 @@ export const NullTexture: Texture = {
 /** @internal */
 export const createTexture = (
   gl: WebGL2RenderingContext,
-  { textureIndex, internalFormat, width: w, height: h, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
+  { textureIndex, internalFormat, width, height, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
 ): Texture => {
   if (GL_DEBUG && !(0 <= textureIndex && textureIndex <= gl.getParameter(GL.MAX_COMBINED_TEXTURE_IMAGE_UNITS)))
     throw new Error('WebGL2 is guaranteed to support at least 32 textures but not necessarily more than that');
-
-  const width: GLuint = Math.ceil(w);
-  const height: GLuint = Math.ceil(h);
 
   const srcFormat = textureSrcFormatLookup[internalFormat];
   const type = textureTypeLookup[internalFormat];
@@ -433,6 +466,14 @@ export const createTexture = (
   };
 };
 
+const pickPixel = new Uint8Array(4);
+
+/** @internal */
+export const readPixel = (gl: WebGL2RenderingContext, canvasX: GLint, canvasY: GLint) => {
+  gl.readPixels(canvasX, canvasY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pickPixel); // todo use bound FB/texture values to determine the 5th and 6th args
+  return pickPixel;
+};
+
 /****************
  * Attributes
  ***************/
@@ -449,13 +490,16 @@ const attribElementTypeLookup = {
 const integerTypes = new Set([GL.BYTE, GL.SHORT, GL.INT, GL.UNSIGNED_BYTE, GL.UNSIGNED_SHORT, GL.UNSIGNED_INT]);
 
 /** @internal */
+export type Uniforms = Map<string, { index: number; offset: number }>;
+
+/** @internal */
 export type Attributes = Map<string, (data: ArrayBufferView) => void>;
 
 /** @internal */
 export const getAttributes = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
-  attributeLocations: Map<string, GLuint>,
+  attributeLocations: Record<string, GLuint>,
 ): Attributes =>
   new Map(
     [...new Array(gl.getProgramParameter(program, GL.ACTIVE_ATTRIBUTES) /* attributesCount */)].map((_, index) => {
@@ -468,8 +512,7 @@ export const getAttributes = (
       const { name, type } = activeAttribInfo;
       if (name.startsWith('gl_')) return [name, () => {}]; // only populate expressly supplied attributes, NOT gl_VertexID or gl_InstanceID
 
-      const location = attributeLocations.get(name);
-      if (typeof location !== 'number') throw new Error(`Whoa, attribute location was not found in the cache`); // just appeasing the TS linter
+      const location = attributeLocations[name];
       const buffer = gl.createBuffer();
       gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
       gl.enableVertexAttribArray(location);
@@ -526,10 +569,11 @@ export type Render = (u: UseInfo) => void;
 export const getRenderer = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
+  { uniforms, uboBuffer }: UboData,
   vao: WebGLVertexArrayObject | null,
   { depthTest = false, blend = true, frontFace = GL.CCW },
 ): Render => {
-  const uniforms = getUniforms(gl, program);
+  const allUniforms = getUniforms(gl, program, uniforms);
   return ({ uniformValues, viewport, target, clear, scissor, draw }: UseInfo): void => {
     if (!setGlobalConstants.has(gl)) {
       setGlobalConstants.add(gl);
@@ -573,7 +617,19 @@ export const getRenderer = (
     if (vao) bindVertexArray(gl, vao);
 
     if (viewport) setViewport(gl, viewport.x, viewport.y, viewport.width, viewport.height);
-    if (uniformValues) uniforms.forEach((setValue, name) => uniformValues[name] && setValue(uniformValues[name]));
+    if (uniformValues) {
+      // non-ubo allUniforms
+      allUniforms.forEach(
+        (setValue, name) => uniformValues[name] && !uniforms.has(name) && setValue(uniformValues[name]),
+      );
+      // ubo allUniforms
+      gl.bindBuffer(GL.UNIFORM_BUFFER, uboBuffer);
+      uniforms.forEach(({ offset }, name) => {
+        const value = new Float32Array([uniformValues[name]].flat());
+        gl.bufferSubData(GL.UNIFORM_BUFFER, offset, value, 0);
+      });
+      // gl.bindBuffer(GL.UNIFORM_BUFFER, null);
+    }
 
     bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, target);
 
@@ -590,37 +646,6 @@ export const getRenderer = (
     }
   };
 };
-
-/****************
- * Misc
- ***************/
-
-const pickPixel = new Uint8Array(4);
-
-/** @internal */
-export const readPixel = (gl: WebGL2RenderingContext, canvasX: GLint, canvasY: GLint) => {
-  gl.readPixels(canvasX, canvasY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pickPixel); // todo use bound FB/texture values to determine the 5th and 6th args
-  return pickPixel;
-};
-
-const templateConcat = (strings: TemplateStringsArray, ...args: unknown[]) =>
-  strings
-    .map((s, i) => `${s}${args[i] ?? ''}`)
-    .join('')
-    .trim();
-
-/** @internal */
-export const vert = (strings: TemplateStringsArray, ...args: unknown[]) => `#version 300 es
-#pragma STDGL invariant(all)
-precision highp int;
-precision highp float;
-${templateConcat(strings, ...args)}`;
-
-/** @internal */
-export const frag = (strings: TemplateStringsArray, ...args: unknown[]) => `#version 300 es
-precision highp int;
-precision highp float;
-${templateConcat(strings, ...args)}`;
 
 /***********************
  *

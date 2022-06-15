@@ -8,13 +8,13 @@
 
 import { DateTime, Settings } from 'luxon';
 
-import { ScaleContinuous, ScaleBand } from '.';
+import { ScaleContinuous } from '.';
 import { computeXScale } from '../chart_types/xy_chart/utils/scales';
 import { MockXDomain } from '../mocks/xy/domains';
 import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 import { limitLogScaleDomain } from './scale_continuous';
-import { isLogarithmicScale } from './types';
+import { isContinuousScale, isLogarithmicScale } from './types';
 
 describe('Scale Continuous', () => {
   test('shall invert on continuous scale linear', () => {
@@ -55,12 +55,10 @@ describe('Scale Continuous', () => {
     const scaleLog = new ScaleContinuous({ type: ScaleType.Log, domain, range });
     const scaleTime = new ScaleContinuous({ type: ScaleType.Time, domain, range });
     const scaleSqrt = new ScaleContinuous({ type: ScaleType.Sqrt, domain, range });
-    const scaleBand = new ScaleBand(domain, range);
     expect(isLogarithmicScale(scaleLinear)).toBe(false);
     expect(isLogarithmicScale(scaleLog)).toBe(true);
     expect(isLogarithmicScale(scaleTime)).toBe(false);
     expect(isLogarithmicScale(scaleSqrt)).toBe(false);
-    expect(isLogarithmicScale(scaleBand)).toBe(false);
   });
   test('can get the right x value on linear scale', () => {
     const domain: ContinuousDomain = [0, 2];
@@ -96,7 +94,13 @@ describe('Scale Continuous', () => {
       minInterval: 1,
     });
 
-    const scaleLinear = computeXScale({ xDomain, totalBarsInCluster: 1, range: [0, 119], barsPadding: 0 });
+    const scaleLinear = computeXScale({
+      xDomain,
+      totalBarsInCluster: 1,
+      range: [0, 119],
+      barsPadding: 0,
+    }) as ScaleContinuous;
+    expect(isContinuousScale(scaleLinear)).toBe(true);
     expect(scaleLinear.bandwidth).toBe(119 / 3);
     expect(scaleLinear.invertWithStep(0, data)).toEqual({ value: 0, withinBandwidth: true });
 
@@ -136,7 +140,13 @@ describe('Scale Continuous', () => {
     });
     // we tweak the maxRange removing the bandwidth to correctly compute
     // a band linear scale in computeXScale
-    const scaleLinear = computeXScale({ xDomain, totalBarsInCluster: 1, range: [0, 109], barsPadding: 0 });
+    const scaleLinear = computeXScale({
+      xDomain,
+      totalBarsInCluster: 1,
+      range: [0, 109],
+      barsPadding: 0,
+    }) as ScaleContinuous;
+    expect(isContinuousScale(scaleLinear)).toBe(true);
     expect(scaleLinear.bandwidth).toBe(109 / 11);
 
     expect(scaleLinear.invertWithStep(0, data)).toEqual({ value: 0, withinBandwidth: true });

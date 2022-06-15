@@ -17,7 +17,7 @@ export interface GLResources {
 }
 
 /** @internal */
-export const NULL_GL_RESOURCES = {
+export const NULL_GL_RESOURCES: GLResources = {
   roundedRectRenderer: () => {},
   pickTextureRenderer: () => {},
   attributes: new Map(),

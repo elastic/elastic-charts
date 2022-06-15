@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AnimationConfig } from '../../../../common/animation';
+import { LegacyAnimationConfig } from '../../../../common/animation';
 import { CategoryKey } from '../../../../common/category';
 import { Color, Colors } from '../../../../common/colors';
 import {
@@ -130,7 +130,7 @@ export interface PartitionSmallMultiplesModel extends SmallMultiplesDescriptors 
 }
 
 /** @internal */
-export interface ShapeViewModel extends PartitionSmallMultiplesModel, AnimationConfig {
+export interface ShapeViewModel extends PartitionSmallMultiplesModel, LegacyAnimationConfig {
   style: Theme['partition'];
   chartDimensions: Size;
   layers: Layer[];

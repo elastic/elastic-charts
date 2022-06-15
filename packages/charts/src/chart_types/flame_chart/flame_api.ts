@@ -7,7 +7,7 @@
  */
 
 import { ChartType } from '..';
-import { AnimationConfig } from '../../common/animation';
+import { LegacyAnimationConfig } from '../../common/animation';
 import { BaseDatum, Spec } from '../../specs';
 import { SpecType } from '../../specs/constants'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
@@ -44,7 +44,7 @@ export interface ColumnarViewModel {
  * Specifies the flame chart
  * @public
  */
-export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, AnimationConfig {
+export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnimationConfig {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Flame;
   columnarData: ColumnarViewModel;

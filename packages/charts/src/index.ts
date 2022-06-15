@@ -135,4 +135,4 @@ export { GroupKeysOrKeyFn, GroupByKeyFn } from './chart_types/xy_chart/utils/gro
 export { computeRatioByGroups } from './utils/data/data_processing';
 export { TimeFunction } from './utils/time_functions';
 export * from './chart_types/flame_chart/flame_api';
-export { AnimationConfig } from './common/animation';
+export { LegacyAnimationConfig } from './common/animation';
