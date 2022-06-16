@@ -1,3 +1,11 @@
+## [46.10.2](https://github.com/elastic/elastic-charts/compare/v46.10.1...v46.10.2) (2022-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency d3-interpolate to v3.0.1 ([#1670](https://github.com/elastic/elastic-charts/issues/1670)) ([893e895](https://github.com/elastic/elastic-charts/commit/893e895567a47e7956d6311622c975e7d000f055))
+* **heatmap:** don't render null values ([#1708](https://github.com/elastic/elastic-charts/issues/1708)) ([1c140bf](https://github.com/elastic/elastic-charts/commit/1c140bfa93001de6943d17a9dd460f2e74913342))
+
 ## [46.10.1](https://github.com/elastic/elastic-charts/compare/v46.10.0...v46.10.1) (2022-06-13)
 
 
