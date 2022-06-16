@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Scale } from '../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { AxisSpec, SettingsSpec } from '../../../specs';
 import {
   degToRad,
@@ -92,7 +92,7 @@ export function getScaleForAxisSpec(
   return (
     { groupId, integersOnly, position }: Pick<AxisSpec, 'groupId' | 'integersOnly' | 'position'>,
     range: Range,
-  ): Scale<number | string> | null =>
+  ): ScaleContinuous | ScaleBand | null =>
     isXDomain(position, chartRotation)
       ? computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly })
       : computeYScales({ yDomains, range, integersOnly }).get(groupId) ?? null;

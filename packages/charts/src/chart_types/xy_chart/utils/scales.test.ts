@@ -37,10 +37,10 @@ describe('Series scales', () => {
     const scale = computeXScale({ xDomain: xDomainLinear, totalBarsInCluster: 1, range: [120, 0] });
     const expectedBandwidth = 120 / 4;
     expect(scale.bandwidth).toBe(expectedBandwidth);
-    expect(scale.scale(0)).toBe(expectedBandwidth * 3);
-    expect(scale.scale(1)).toBe(expectedBandwidth * 2);
-    expect(scale.scale(2)).toBe(expectedBandwidth);
-    expect(scale.scale(3)).toBe(0);
+    expect(scale.scale(0)).toBeCloseTo(expectedBandwidth * 3);
+    expect(scale.scale(1)).toBeCloseTo(expectedBandwidth * 2);
+    expect(scale.scale(2)).toBeCloseTo(expectedBandwidth);
+    expect(scale.scale(3)).toBeCloseTo(0);
   });
 
   describe('computeXScale with single value domain', () => {
