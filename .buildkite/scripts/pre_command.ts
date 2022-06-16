@@ -16,7 +16,7 @@ void (async function () {
       context,
       state: 'pending',
       target_url: jobUrl,
-      description: `Started${retryCount ? ` (retry ${retryCount})` : ''}`,
+      description: `Started${retryCount ? ` (retry #${retryCount})` : ''}`,
     });
   }
 })();
