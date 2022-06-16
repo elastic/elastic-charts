@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
@@ -22,6 +23,8 @@ export const Example = () => {
     <Chart size={[200, 200]}>
       <Settings
         baseTheme={useBaseTheme()}
+        onPointerUpdate={action('onPointerUpdate')}
+        pointerUpdateTrigger="both"
         theme={{
           heatmap: {
             grid: {
