@@ -6,14 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { WebhookEvents, WebhookEvent, EventTypesPayload } from '@octokit/webhooks';
+import { EmitterWebhookEventName, EmitterWebhookEvent } from '@octokit/webhooks';
+import { WebhookEvent } from '@octokit/webhooks-types'; // eslint-disable-line import/no-unresolved
 import { Context, Probot } from 'probot';
-
-import { PullRequestContext, PushContext } from '../utils/types';
-
-export type PullRequestPayload = PullRequestContext['payload'];
-export type PushPayload = PushContext['payload'];
 
 export type EventSetupFn = (app: Probot) => void;
 
-export type ProbotEventContext<E extends WebhookEvents> = EventTypesPayload[E] & Omit<Context, keyof WebhookEvent>;
+export type ProbotEventContext<E extends EmitterWebhookEventName> = EmitterWebhookEvent<E> &
+  Omit<Context, keyof WebhookEvent>;
+
+export type ProbotEventPayload<E extends EmitterWebhookEventName> = ProbotEventContext<E>['payload'];

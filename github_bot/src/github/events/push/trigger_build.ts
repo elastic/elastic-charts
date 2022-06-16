@@ -9,7 +9,7 @@
 import { Probot } from 'probot';
 
 import { buildkiteClient } from '../../../utils/buildkite';
-import { PushPayload } from '../../types';
+import { ProbotEventPayload } from '../../types';
 import { isBaseRepo, testPatternString } from '../../utils';
 
 export const branchPatterns: Array<string | RegExp> = ['master', 'alpha', 'next', /\d+.\d+.\d+/, /\d+.\d+.x/, /\d+.x/];
@@ -27,7 +27,7 @@ export function setupBuildTrigger(app: Probot) {
   });
 }
 
-async function triggerBuild(branch: string, { after }: PushPayload) {
+async function triggerBuild(branch: string, { after }: ProbotEventPayload<'push'>) {
   await buildkiteClient.triggerBuild({
     branch,
     commit: after,

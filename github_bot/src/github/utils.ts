@@ -11,7 +11,7 @@ import { RestEndpointMethodTypes } from '@octokit/rest';
 
 import { getConfig } from './../config';
 import { chartsRepoId } from './constants';
-import { ProbotEventContext, PullRequestPayload } from './types';
+import { ProbotEventContext, ProbotEventPayload } from './types';
 
 type GetPullResponseData = RestEndpointMethodTypes['pulls']['get']['response']['data'];
 
@@ -22,13 +22,15 @@ export function isBaseRepo({
   fork,
   name,
   owner,
-}: PullRequestPayload['repository'] | GetPullResponseData['base']['repo']) {
+}: ProbotEventPayload<'pull_request'>['repository'] | GetPullResponseData['base']['repo']) {
   // TODO decide if secondary check is needed
   if (id === chartsRepoId) return true;
   return !fork && owner.login === 'elastic' && name === 'elastic-charts';
 }
 
-export function hasSkipLabel(labels: PullRequestPayload['pull_request']['labels'] | GetPullResponseData['labels']) {
+export function hasSkipLabel(
+  labels: ProbotEventPayload<'pull_request'>['pull_request']['labels'] | GetPullResponseData['labels'],
+) {
   return labels.some(({ name }) => skipLabelPatterns.some(testPatternString(name)));
 }
 

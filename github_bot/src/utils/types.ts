@@ -6,9 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { EventPayloads } from '@octokit/webhooks';
-import { Context } from 'probot';
-
 export interface PullRequestBuildEnv {
   GITHUB_PR_NUMBER: string;
   GITHUB_PR_TARGET_BRANCH: string;
@@ -25,9 +22,6 @@ export interface PullRequestBuildEnv {
   GITHUB_PR_MAINTAINER_CAN_MODIFY: string;
   ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS: string;
 }
-
-export type PullRequestContext = Context<EventPayloads.WebhookPayloadPullRequest>;
-export type PushContext = Context<EventPayloads.WebhookPayloadPush>;
 
 export interface BuildkiteTriggerBuildOptions<
   E extends Record<string, string> = Record<string, never>,

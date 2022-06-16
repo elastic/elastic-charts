@@ -13,7 +13,7 @@ import { Probot } from 'probot';
 import { buildkiteClient } from '../../../utils/buildkite';
 import { githubClient } from '../../../utils/github';
 import { PullRequestBuildEnv } from '../../../utils/types';
-import { PullRequestPayload } from '../../types';
+import { ProbotEventPayload } from '../../types';
 import { isBaseRepo, hasSkipLabel, testPatternString, shouldIgnoreEvent } from '../../utils';
 
 const skipCommitPatterns: Array<string | RegExp> = ['[skip-ci]', '[skip ci]', '[ci skip]', '[ci-skip]'];
@@ -23,7 +23,7 @@ const updateScreenshotsCommitPatterns: Array<string | RegExp> = [
   '[update-screenshots]',
   '[screenshots-update]',
 ];
-const prActionTriggers = new Set<PullRequestPayload['action']>([
+const prActionTriggers = new Set<ProbotEventPayload<'pull_request'>['action']>([
   'synchronize',
   'opened',
   'reopened',
@@ -56,7 +56,7 @@ export async function triggerBuildFromPR(
     maintainer_can_modify,
     labels = [],
     user,
-  }: PullRequestPayload['pull_request'] | RestEndpointMethodTypes['pulls']['get']['response']['data'],
+  }: ProbotEventPayload<'pull_request'>['pull_request'] | RestEndpointMethodTypes['pulls']['get']['response']['data'],
   shouldTrigger?: (commit: components['schemas']['commit']) => Promise<boolean> | boolean,
 ) {
   if (!isBaseRepo(base.repo) || hasSkipLabel(labels) || !(await githubClient.isValidUser(user))) {

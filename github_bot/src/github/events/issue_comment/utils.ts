@@ -14,8 +14,7 @@ import { createIssueReaction } from '../../utils';
 export async function getPRFromComment(
   ctx: ProbotEventContext<'issue_comment'>,
 ): Promise<components['schemas']['pull-request'] | null> {
-  // missing octokit typings
-  const isPR = !!(ctx.payload.issue as any).pull_request;
+  const isPR = !!ctx.payload.issue.pull_request;
 
   if (!isPR) return null;
 
