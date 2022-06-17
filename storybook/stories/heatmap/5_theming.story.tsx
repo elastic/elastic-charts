@@ -68,6 +68,7 @@ export const Example = () => {
     grid: {
       stroke: {
         color: color('grid stroke color', 'gray', 'Theme'),
+        width: number('grid stroke width', 1, { range: true, min: 0, max: 10, step: 1 }, 'Theme'),
       },
     },
     cell: {
