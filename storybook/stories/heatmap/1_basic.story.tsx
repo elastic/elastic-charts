@@ -18,6 +18,7 @@ import {
   HeatmapElementEvent,
   HeatmapStyle,
   niceTimeFormatter,
+  PointerEvent,
   RecursivePartial,
   ScaleType,
   Settings,
@@ -34,6 +35,9 @@ export const Example = () => {
   const debugState = boolean('Enable debug state', true);
   const showXAxisTitle = boolean('Show x axis title', false);
   const showYAxisTitle = boolean('Show y axis title', false);
+  const pointerUpdate = (event: PointerEvent) => {
+    action('onPointerUpdate')(event);
+  };
 
   const handler = useCallback(() => {
     setSelection(undefined);
@@ -87,6 +91,7 @@ export const Example = () => {
     <Chart>
       <Settings
         onElementClick={onElementClick}
+        onPointerUpdate={pointerUpdate}
         onRenderChange={getDebugStateLogger(debugState)}
         showLegend
         legendPosition="right"

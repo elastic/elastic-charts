@@ -27,6 +27,7 @@ import { ChartElementSizes, HeatmapTable } from '../../state/selectors/compute_c
 import { ColorScale } from '../../state/selectors/get_color_scale';
 import {
   Cell,
+  GridCell,
   PickDragFunction,
   PickDragShapeFunction,
   PickHighlightedArea,
@@ -176,6 +177,24 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     };
     return acc;
   }, {});
+
+  /**
+   * Returns the corresponding x & y values of grid cell from the x & y positions
+   * @param x
+   * @param y
+   */
+  const pickGridCell = (x: Pixels, y: Pixels): GridCell | undefined => {
+    if (x < elementSizes.grid.left || y < elementSizes.grid.top) return undefined;
+    if (x > elementSizes.grid.width + elementSizes.grid.left || y > elementSizes.grid.top + elementSizes.grid.height)
+      return undefined;
+
+    const xValue = xInvertedScale(x - elementSizes.grid.left);
+    const yValue = yInvertedScale(y);
+
+    if (xValue === undefined || yValue === undefined) return undefined;
+
+    return { x: xValue, y: yValue };
+  };
 
   /**
    * Returns selected elements based on coordinates.
@@ -392,6 +411,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         },
       ],
     },
+    pickGridCell,
     pickQuads,
     pickDragArea,
     pickDragShape,
