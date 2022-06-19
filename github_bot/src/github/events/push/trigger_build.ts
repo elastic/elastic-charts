@@ -8,6 +8,7 @@
 
 import { Probot } from 'probot';
 
+import { getBuildConfig } from '../../../build';
 import { getConfig } from '../../../config';
 import { buildkiteClient } from '../../../utils/buildkite';
 import { isBaseRepo, testPatternString } from '../../utils';
@@ -27,6 +28,15 @@ export function setupBuildTrigger(app: Probot) {
       branch,
       commit: ctx.payload.after,
       ignore_pipeline_branch_filters: true,
+    });
+
+    const { main } = getBuildConfig(false);
+    await ctx.octokit.checks.create({
+      ...ctx.repo(),
+      name: main.name,
+      external_id: main.id,
+      head_ref: ctx.payload.after,
+      status: 'queued',
     });
   });
 }

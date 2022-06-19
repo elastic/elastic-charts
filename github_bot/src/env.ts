@@ -55,7 +55,7 @@ const devEnv: Env = {
     },
   },
   branch: {
-    base: ['master', 'alpha', 'next', /\d+.\d+.\d+/, /\d+.\d+.x/, /\d+.x/],
+    base: ['master', 'alpha', 'next', /\d+.\d+.\d+/, /\d+.\d+.x/, /\d+.x/, /buildkite-.+/],
   },
   label: {
     buildkite: {
@@ -86,7 +86,7 @@ const prodEnv: Env = {
     },
   },
   branch: {
-    base: ['master', 'alpha', 'next', /\d+.\d+.\d+/, /\d+.\d+.x/, /\d+.x/],
+    base: ['master', 'alpha', 'next', /\d+.\d+.\d+/, /\d+.\d+.x/, /\d+.x/, /buildkite-.+/],
   },
   label: {
     buildkite: {

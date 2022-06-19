@@ -8,6 +8,7 @@
 
 import { Probot } from 'probot';
 
+import { getBuildConfig } from '../../../build';
 import { buildkiteClient, getPRBuildParams } from '../../../utils/buildkite';
 import { PullRequestBuildEnv } from '../../../utils/types';
 import { checkUserFn, createIssueReaction, isValidUser, labelCheckFn } from '../../utils';
@@ -60,5 +61,13 @@ export function setupBuildTrigger(app: Probot) {
     });
 
     await createIssueReaction(ctx, '+1');
+    const { main } = getBuildConfig(false);
+    await ctx.octokit.checks.create({
+      ...ctx.repo(),
+      name: main.name,
+      external_id: main.id,
+      head_ref: head.sha,
+      status: 'queued',
+    });
   });
 }

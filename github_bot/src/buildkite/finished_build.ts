@@ -58,7 +58,6 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
       }[build.state] ?? 'failure',
   };
   const output = {
-    summary: `Build ${build.state}`,
     title: `Build ${build.state}`,
   };
   const { main } = getBuildConfig(false);
@@ -76,7 +75,8 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
     await githubClient.octokit.checks.create({
       ...githubClient.repoParams,
       head_sha: build?.commit,
-      name: main.id,
+      name: main.name,
+      external_id: main.id,
       details_url: build.web_url,
       output,
       ...buildStatus,

@@ -22,6 +22,7 @@ import {
   updateChecks,
   testPatternString,
 } from '../../utils';
+import { getBuildConfig } from './../../../build';
 
 const prActionTriggers = new Set<ProbotEventPayload<'pull_request'>['action']>([
   'synchronize',
@@ -95,6 +96,15 @@ export function setupBuildTrigger(app: Probot) {
       pull_request_id: number,
       pull_request_repository: head.repo.git_url,
       env: getPRBuildParams(ctx.payload.pull_request, commit),
+    });
+
+    const { main } = getBuildConfig(false);
+    await ctx.octokit.checks.create({
+      ...ctx.repo(),
+      name: main.name,
+      external_id: main.id,
+      head_ref: head.sha,
+      status: 'queued',
     });
   });
 }
