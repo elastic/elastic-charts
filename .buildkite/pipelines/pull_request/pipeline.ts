@@ -34,7 +34,7 @@ import {
 } from '../../utils';
 import { MetaDataKeys } from '../../utils/constants';
 
-const MAIN_CI_CONTEXT = '@elastic/charts CI';
+const MAIN_CI_CONTEXT = '@elastic/datavis CI';
 
 void (async () => {
   try {

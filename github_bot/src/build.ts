@@ -22,7 +22,7 @@ interface BuildConfig {
  * TODO update this to be have a single source of truth btw here and .buildkite/
  */
 export const getBuildConfig = (isMaster: boolean): BuildConfig => ({
-  main: { name: '@elastic/Datavis CI', id: 'main' },
+  main: { name: '@elastic/datavis CI', id: 'main' },
   jobs: [
     { name: 'Types', id: 'types' },
     { name: 'API', id: 'api' },
