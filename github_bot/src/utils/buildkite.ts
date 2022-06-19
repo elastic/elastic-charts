@@ -55,8 +55,13 @@ class Buildkite {
     return data;
   }
 
-  async cancelRunningBuilds(sha: string, branch?: string): Promise<string | null> {
+  async cancelRunningBuilds(sha: string, preCancel: (url: string) => Promise<void> | void, branch?: string) {
     const builds = await this.getRunningBuilds(sha, branch);
+
+    if (preCancel && builds[0]) {
+      await preCancel(builds[0].web_url);
+    }
+
     await Promise.all(
       builds.map(async ({ number }) => {
         const url = `organizations/elastic/pipelines/${this.pipelineSlug}/builds/${number}/cancel`;
@@ -65,8 +70,6 @@ class Buildkite {
         else console.log(`cancelled build #${number}`);
       }),
     );
-
-    return builds[0]?.web_url ?? null;
   }
 
   /**

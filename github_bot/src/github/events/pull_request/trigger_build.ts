@@ -52,11 +52,9 @@ export function setupBuildTrigger(app: Probot) {
     if (labelCheck('skip')) {
       if (ctx.payload.action === 'labeled') {
         // Try to cancel any running buildkite build for ref
-        const buildUrl = await buildkiteClient.cancelRunningBuilds(head.sha);
-
-        if (buildUrl) {
+        await buildkiteClient.cancelRunningBuilds(head.sha, async (buildUrl) => {
           await updateChecks(ctx, buildUrl);
-        }
+        });
       }
 
       return;

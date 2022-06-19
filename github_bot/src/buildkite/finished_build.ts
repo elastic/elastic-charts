@@ -62,16 +62,18 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
     summary: `Build ${build.state}`,
   };
   const { main } = getBuildConfig(false);
-  const mainCheckId = checkRuns.find(({ external_id }) => external_id === main.id)?.id;
+  const mainCheck = checkRuns.find(({ external_id }) => external_id === main.id);
 
-  if (mainCheckId) {
-    await githubClient.octokit.checks.update({
-      ...githubClient.repoParams,
-      check_run_id: mainCheckId, // required
-      details_url: build.web_url,
-      output,
-      ...buildStatus,
-    });
+  if (mainCheck) {
+    if (mainCheck.status !== 'completed') {
+      await githubClient.octokit.checks.update({
+        ...githubClient.repoParams,
+        check_run_id: mainCheck.id, // required
+        details_url: build.web_url,
+        output,
+        ...buildStatus,
+      });
+    }
   } else {
     await githubClient.octokit.checks.create({
       ...githubClient.repoParams,
