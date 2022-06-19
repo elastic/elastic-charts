@@ -66,7 +66,7 @@ export function setupBuildTrigger(app: Probot) {
       ...ctx.repo(),
       name: main.name,
       external_id: main.id,
-      head_ref: head.sha,
+      head_sha: head.sha,
       status: 'queued',
     });
   });
