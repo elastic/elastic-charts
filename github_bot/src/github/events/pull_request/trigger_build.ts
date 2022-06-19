@@ -49,13 +49,6 @@ export function setupBuildTrigger(app: Probot) {
     const labelCheck = labelCheckFn(labels);
 
     if (!labelCheck('buildkite')) return;
-
-    const yes = true;
-    if (yes) {
-      await updateChecks(ctx, 'https://buildkite.com/elastic/datavis-ci-test/builds/3');
-      return;
-    }
-
     if (labelCheck('skip')) {
       if (ctx.payload.action === 'labeled') {
         // Try to cancel any running buildkite build for ref
