@@ -59,6 +59,7 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
   };
   const output = {
     title: `Build ${build.state}`,
+    summary: `Build ${build.state}`,
   };
   const { main } = getBuildConfig(false);
   const mainCheckId = checkRuns.find(({ external_id }) => external_id === main.id)?.id;
