@@ -65,8 +65,8 @@ void (async () => {
       prettierStep(skipit),
       typeCheckStep(skipit),
       storybookStep(skipit),
-      e2eServerStep(skipit),
-      ghpDeployStep(),
+      e2eServerStep(),
+      ghpDeployStep(skipit),
       playwrightStep(),
       firebaseDeployStep(skipit),
     ].map((step) => step(changeCtx));

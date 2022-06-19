@@ -84,6 +84,9 @@ void (async () => {
     dest: 'e2e/server',
   });
 
+  startGroup('Check Architecture');
+  exec('arch');
+
   startGroup('Generating test examples.json');
   // TODO Fix this duplicate script that allows us to skip root node install on all e2e test runners
   exec('node ./e2e/scripts/extract_examples.js');

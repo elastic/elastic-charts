@@ -34,9 +34,7 @@ test.describe('Stylings stories', () => {
       });
 
       test(`should use hover opacity for texture`, async ({ page }) => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(
-          page,
-        )(
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
           `http://localhost:9001/?path=/story/stylings--texture-multiple-series&knob-Total series=4&knob-Show legend=true&knob-Show series fill=&knob-Chart color=rgba(0,0,0,1)&knob-Shape_Randomized parameters=true&knob-Rotation_Randomized parameters=&knob-Shape rotation_Randomized parameters=&knob-Size_Randomized parameters=true&knob-X spacing_Randomized parameters=&knob-Y spacing_Randomized parameters=&knob-X offset_Randomized parameters=&knob-Y offset_Randomized parameters=&knob-Series type=${seriesType}&knob-Shape_Default parameters=circle&knob-Stroke width_Default parameters=1&knob-Rotation (degrees)_Default parameters=45&knob-Shape rotation (degrees)_Default parameters=0&knob-Shape size_Default parameters=20&knob-Opacity_Default parameters=1&knob-Shape spacing - x_Default parameters=10&knob-Shape spacing - y_Default parameters=10&knob-Pattern offset - x_Default parameters=0&knob-Pattern offset - y_Default parameters=0`,
           { top: 45, right: 40 },
         );

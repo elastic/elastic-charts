@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomGroupStep, commandStepDefaults, Plugins } from '../utils';
+import { createStep, CustomGroupStep, commandStepDefaults } from '../utils';
 
 export const playwrightStep = createStep<CustomGroupStep>(() => {
   const skip = false;
@@ -19,7 +19,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e',
         skip,
-        parallelism: 12,
+        parallelism: 1,
         key: parallelKey,
         // depends_on: ['e2e_server'],
         plugins: [Plugins.docker.playwright(['UPDATE_SCREENSHOTS'])],
