@@ -182,7 +182,11 @@ export async function getPR(ctx: ProbotEventContext<'issue_comment' | 'pull_requ
   }
 }
 
-export async function updateChecks(ctx: ProbotEventContext<'pull_request'>, buildUrl: string) {
+export async function updateChecks(
+  ctx: ProbotEventContext<'pull_request'>,
+  buildUrl?: string,
+  options: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>> = {},
+) {
   const { head } = ctx.payload.pull_request;
   const { main, jobs } = getBuildConfig(false);
   const updatedCheckIds = new Set<string>();
@@ -213,6 +217,7 @@ export async function updateChecks(ctx: ProbotEventContext<'pull_request'>, buil
           status: 'completed',
           conclusion: 'skipped',
           details_url: details_url || buildUrl,
+          ...options,
         });
       }
       updatedCheckIds.add(external_id!);
@@ -231,6 +236,7 @@ export async function updateChecks(ctx: ProbotEventContext<'pull_request'>, buil
           conclusion: 'skipped',
           external_id: id,
           details_url: buildUrl,
+          ...options,
         });
       }),
   );

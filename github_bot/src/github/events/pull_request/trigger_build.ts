@@ -55,6 +55,8 @@ export function setupBuildTrigger(app: Probot) {
         await buildkiteClient.cancelRunningBuilds(head.sha, async (buildUrl) => {
           await updateChecks(ctx, buildUrl);
         });
+      } else if (['synchronize', 'opened', 'reopened'].includes(ctx.payload.action)) {
+        await updateChecks(ctx);
       }
 
       return;
