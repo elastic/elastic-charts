@@ -8,29 +8,25 @@
 
 import { Probot } from 'probot';
 
+import { getConfig } from '../../../config';
 import { buildkiteClient } from '../../../utils/buildkite';
-import { ProbotEventPayload } from '../../types';
 import { isBaseRepo, testPatternString } from '../../utils';
-
-export const branchPatterns: Array<string | RegExp> = ['master', 'alpha', 'next', /\d+.\d+.\d+/, /\d+.\d+.x/, /\d+.x/];
 
 /**
  * build trigger for pushes to select base branches not pull requests
  */
 export function setupBuildTrigger(app: Probot) {
   app.on('push', async (ctx) => {
-    const [branchName] = ctx.payload.ref.split('/').reverse();
+    const [branch] = ctx.payload.ref.split('/').reverse();
 
-    if (isBaseRepo(ctx.payload.repository) && branchPatterns.some(testPatternString(branchName))) {
-      await triggerBuild(branchName, ctx.payload);
+    if (!isBaseRepo(ctx.payload.repository) || !getConfig().github.env.branch.base.some(testPatternString(branch))) {
+      return;
     }
-  });
-}
 
-async function triggerBuild(branch: string, { after }: ProbotEventPayload<'push'>) {
-  await buildkiteClient.triggerBuild({
-    branch,
-    commit: after,
-    ignore_pipeline_branch_filters: true,
+    await buildkiteClient.triggerBuild({
+      branch,
+      commit: ctx.payload.after,
+      ignore_pipeline_branch_filters: true,
+    });
   });
 }

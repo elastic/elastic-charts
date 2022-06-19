@@ -40,6 +40,7 @@ This app and setup was inspired by [`elastic/buildkite-pr-bot`](https://github.c
 
 # Todos
 
+- [ ] Closing PRs should cleanup deployment and environment
 - [ ] Closing PRs should cancel buildkite build
 - [ ] Auto release every PR, skip based on PR label
 - [ ] Check PR for any previous approvals to use as user check

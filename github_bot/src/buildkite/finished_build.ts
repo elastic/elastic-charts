@@ -8,8 +8,9 @@
 
 import { Response } from 'express';
 
+import { getBuildConfig } from '../build';
 import { getConfig } from '../config';
-import { githubClient, MAIN_CI_CHECK } from '../utils/github';
+import { githubClient } from '../utils/github';
 import { BuildkiteWebhookPayload } from './types';
 
 /**
@@ -28,19 +29,24 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
     return;
   }
 
+  const { github } = getConfig();
+
   const {
+    status: resStatus,
     data: { total_count: totalCount, check_runs: checkRuns },
   } = await githubClient.octokit.checks.listForRef({
     ...githubClient.repoParams,
     ref: build?.commit,
-    app_id: Number(getConfig().github.auth.appId),
+    app_id: Number(github.auth.appId),
+    per_page: 100, // max
   });
-
-  console.log(checkRuns);
-
+  if (resStatus !== 200) throw new Error('Failed to get checks for ref');
   if (checkRuns.length < totalCount) {
+    // TODO handle this with pagination if check runs exceed 100
     throw new Error('Missing check runs, pagination required');
   }
+
+  console.log(checkRuns);
 
   const buildStatus = {
     status: 'completed',
@@ -55,7 +61,8 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
     summary: `Build ${build.state}`,
     title: `Build ${build.state}`,
   };
-  const mainCheckId = checkRuns.find(({ external_id }) => external_id === MAIN_CI_CHECK)?.id;
+  const { main } = getBuildConfig(false);
+  const mainCheckId = checkRuns.find(({ external_id }) => external_id === main.id)?.id;
 
   if (mainCheckId) {
     await githubClient.octokit.checks.update({
@@ -69,7 +76,7 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
     await githubClient.octokit.checks.create({
       ...githubClient.repoParams,
       head_sha: build?.commit,
-      name: MAIN_CI_CHECK,
+      name: main.id,
       details_url: build.web_url,
       output,
       ...buildStatus,

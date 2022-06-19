@@ -21,7 +21,7 @@ const probotApp = (app: Probot, { getRouter }: ApplicationFunctionOptions) => {
   setupGithub(app);
 
   // ngrok requires base path so this is only for development
-  const bkRoute = process.env.NODE_ENV === 'development' ? '/' : '/buildkite';
+  const bkRoute = getConfig().isDev ? '/' : '/buildkite';
   setupBuildkiteRoutes(getRouter(bkRoute));
 };
 

@@ -11,6 +11,8 @@ import path from 'path';
 import type { StrategyOptions } from '@octokit/auth-app';
 import { ServerOptions, Options } from 'probot/lib/types';
 
+import { Env, getEnv } from './env';
+
 type ConfigServerOptions = Omit<ServerOptions, 'Probot'>;
 type ProbotOptions = Omit<Options, keyof ConfigServerOptions>;
 
@@ -23,6 +25,7 @@ interface Config {
      * Token used for org requests, since GH app does not have permission
      */
     token: string;
+    env: Env;
   };
   buildkite: {
     token: string;
@@ -31,6 +34,7 @@ interface Config {
      */
     webhookNonce: string;
     agentsToken?: string;
+    pipelineSlug: string;
   };
   server: ConfigServerOptions;
   probot: ProbotOptions;
@@ -41,20 +45,30 @@ let config: Config;
 export const getConfig = (): Config => {
   if (config) return config;
 
-  validateEnvKeys(['GITHUB_AUTH', 'GITHUB_TOKEN', 'BUILDKITE_TOKEN', 'BUILDKITE_WEBHOOK_NONCE']);
-  const auth = JSON.parse(process.env.GITHUB_AUTH) as StrategyOptions;
+  validateEnvKeys([
+    'GITHUB_AUTH',
+    'GITHUB_TOKEN',
+    'BUILDKITE_TOKEN',
+    'BUILDKITE_WEBHOOK_NONCE',
+    'BUILDKITE_PIPELINE_SLUG',
+  ]);
+
+  const auth = JSON.parse(process.env.GITHUB_AUTH!) as StrategyOptions;
+  const isProd = process.env.NODE_ENV === 'production';
 
   config = {
-    isDev: (process.env.NODE_ENV ?? 'development') === 'development',
-    isProd: process.env.NODE_ENV === 'production',
+    isProd,
+    isDev: !isProd,
     github: {
       auth,
-      token: process.env.GITHUB_TOKEN,
+      token: process.env.GITHUB_TOKEN!,
+      env: getEnv(!isProd),
     },
     buildkite: {
-      token: process.env.BUILDKITE_TOKEN,
+      token: process.env.BUILDKITE_TOKEN!,
       agentsToken: process.env.BUILDKITE_AGENT_TOKEN,
-      webhookNonce: process.env.BUILDKITE_WEBHOOK_NONCE,
+      webhookNonce: process.env.BUILDKITE_WEBHOOK_NONCE!,
+      pipelineSlug: process.env.BUILDKITE_PIPELINE_SLUG!,
     },
     server: {
       host: process.env.HOST,

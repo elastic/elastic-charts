@@ -8,24 +8,57 @@
 
 import { Probot } from 'probot';
 
-import { createIssueReaction, shouldIgnoreEvent } from '../../utils';
-import { triggerBuildFromPR } from '../pull_request/trigger_build';
-import { getPRFromComment } from './utils';
-
-const triggerPattern = /^(buildkite|jenkins|davis) test/i;
+import { buildkiteClient, getPRBuildParams } from '../../../utils/buildkite';
+import { PullRequestBuildEnv } from '../../../utils/types';
+import { checkUserFn, createIssueReaction, isValidUser, labelCheckFn } from '../../utils';
+import { getPRFromComment, isCommentAction } from './utils';
 
 /**
  * build trigger for PR comment
  */
 export function setupBuildTrigger(app: Probot) {
   app.on('issue_comment.created', async (ctx) => {
-    const pullRequest = await getPRFromComment(ctx);
-    if (shouldIgnoreEvent(ctx, pullRequest)) return;
-    if (!triggerPattern.test(ctx.payload.comment.body)) return;
-
+    if (!isCommentAction(ctx, 'test') || checkUserFn(ctx.payload.sender)('bot')) return;
     console.log(`------- Triggered probot ${ctx.name} | ${ctx.payload.action}`);
 
-    await triggerBuildFromPR(pullRequest);
+    const isPR = Boolean(ctx.payload.issue.pull_request);
+    const pullRequest = isPR && (await getPRFromComment(ctx));
+    if (!pullRequest) {
+      await createIssueReaction(ctx, 'confused');
+      return;
+    }
+    const { head, base, number, labels = [] } = pullRequest;
+    const labelCheck = labelCheckFn(labels);
+
+    if (!labelCheck('buildkite')) return;
+    if (labelCheck('skip')) {
+      await ctx.octokit.issues.removeLabel({
+        ...ctx.issue(),
+        name: 'ci:skip',
+      });
+    }
+
+    if (!(await isValidUser(ctx))) {
+      await createIssueReaction(ctx, '-1');
+      return;
+    }
+
+    const { status, data: commit } = await ctx.octokit.repos.getCommit({
+      ...ctx.repo(),
+      ref: head.sha,
+    });
+    if (status !== 200) throw new Error('Unable to find commit for ref');
+
+    await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
+      branch: `${head.repo?.owner.login}:${head.ref}`,
+      commit: head.sha,
+      ignore_pipeline_branch_filters: true,
+      pull_request_base_branch: base.ref,
+      pull_request_id: number,
+      pull_request_repository: head.repo?.git_url,
+      env: getPRBuildParams(pullRequest, commit),
+    });
+
     await createIssueReaction(ctx, '+1');
   });
 }

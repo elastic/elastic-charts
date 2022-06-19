@@ -28,3 +28,25 @@ export async function getPRFromComment(
     throw new Error(error);
   }
 }
+
+const ciNamePattern = /^(buildkite|jenkins|davis) /i;
+
+const actions = {
+  test: /^test/i,
+};
+type Actions = typeof actions;
+
+/**
+ * Checks if issue comment action matches expected
+ */
+export function isCommentAction<T extends keyof Actions>(ctx: ProbotEventContext<'issue_comment'>, action: T): boolean {
+  const { body } = ctx.payload.comment;
+  if (!ciNamePattern.test(body)) return false;
+  const actionText = body.replace(ciNamePattern, '');
+  console.log({
+    body,
+    actionText,
+  });
+
+  return actions[action].test(actionText);
+}
