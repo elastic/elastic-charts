@@ -8434,171 +8434,6 @@ SOFTWARE.
   padding: 16px;
 }
 
-/**
- * 1. Make sure the quantity doesn't get an underline on hover
- */
-.euiFacetButton {
-  display: inline-block;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  white-space: nowrap;
-  max-width: 100%;
-  vertical-align: middle;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-  font-size: 14px;
-  font-size: 1rem;
-  line-height: 1.71429rem;
-  height: 32px;
-  text-align: left;
-  text-decoration: none;
-  transition: all 150ms ease-in;
-}
-
-.euiFacetButton:hover:not(:disabled) .euiFacetButton__text, .euiFacetButton:focus:not(:disabled) .euiFacetButton__text {
-  text-decoration: underline;
-  /* 1 */
-}
-
-.euiFacetButton:focus {
-  background-color: rgba(0, 119, 204, 0.1);
-  box-shadow: -4px 0 rgba(0, 119, 204, 0.1), 4px 0 rgba(0, 119, 204, 0.1);
-}
-
-.euiFacetButton:disabled {
-  color: #ABB4C4;
-  pointer-events: none;
-}
-
-.euiFacetButton:disabled .euiFacetButton__content {
-  pointer-events: auto;
-  cursor: not-allowed;
-}
-
-.euiFacetButton:disabled .euiFacetButton__icon,
-.euiFacetButton:disabled .euiFacetButton__quantity {
-  opacity: 0.5;
-}
-
-.euiFacetButton:disabled:focus {
-  background-color: transparent;
-}
-
-.euiFacetButton:disabled:hover, .euiFacetButton:disabled:focus {
-  text-decoration: none;
-}
-
-.euiFacetButton__content {
-  height: 100%;
-  width: 100%;
-  vertical-align: middle;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.euiFacetButton__content .euiButtonContent__icon,
-.euiFacetButton__content .euiButtonContent__spinner {
-  flex-shrink: 0;
-}
-
-.euiFacetButton__content > * + * {
-  -webkit-margin-start: 8px;
-  margin-inline-start: 8px;
-}
-
-.euiFacetButton__text {
-  max-width: 100%;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  word-wrap: normal !important;
-  flex-grow: 1;
-  vertical-align: middle;
-}
-
-.euiFacetButton__text::after {
-  display: block;
-  content: attr(data-text);
-  font-weight: 700;
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
-}
-
-.euiFacetButton--isSelected .euiFacetButton__text {
-  font-weight: 700;
-}
-
-.euiFacetButton__icon {
-  transition: all 150ms ease-in;
-}
-
-.euiFacetGroup--gutterNone .euiFacetButton {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.euiFacetGroup--gutterNone.euiFacetGroup--horizontal {
-  margin-left: -12px;
-}
-
-.euiFacetGroup--gutterNone.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 12px;
-  max-width: calc(100% - 12px);
-}
-
-.euiFacetGroup--gutterSmall .euiFacetButton {
-  margin-top: 2px;
-  margin-bottom: 2px;
-}
-
-.euiFacetGroup--gutterSmall.euiFacetGroup--horizontal {
-  margin-left: -16px;
-}
-
-.euiFacetGroup--gutterSmall.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 16px;
-  max-width: calc(100% - 16px);
-}
-
-.euiFacetGroup--gutterMedium .euiFacetButton {
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-
-.euiFacetGroup--gutterMedium.euiFacetGroup--horizontal {
-  margin-left: -20px;
-}
-
-.euiFacetGroup--gutterMedium.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 20px;
-  max-width: calc(100% - 20px);
-}
-
-.euiFacetGroup--gutterLarge .euiFacetButton {
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-
-.euiFacetGroup--gutterLarge.euiFacetGroup--horizontal {
-  margin-left: -24px;
-}
-
-.euiFacetGroup--gutterLarge.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 24px;
-  max-width: calc(100% - 24px);
-}
-
 .euiFilterGroup {
   display: inline-flex;
   max-width: 100%;
@@ -17666,6 +17501,7 @@ SOFTWARE.
   word-wrap: break-word;
   /* 1 */
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -20987,16 +20823,6 @@ button.euiSuggestItem:hover .euiSuggestItem__label, button.euiSuggestItem:focus 
   line-height: 1.5;
 }
 
-.euiFacetButton:focus {
-  background-color: transparent;
-  box-shadow: none;
-}
-
-.euiFacetButton:focus:not(:disabled) .euiFacetButton__text {
-  text-decoration: underline;
-  text-decoration-thickness: 2px !important;
-}
-
 .euiFilterGroup {
   border: none;
   border-radius: 6px;
@@ -22399,9 +22225,6 @@ html.light-theme {
     */
   /**
    * 1. Account for inner box-shadow style border
-   */
-  /**
-   * 1. Make sure the quantity doesn't get an underline on hover
    */
   /**
    * 1. Not always needed, but fixes an IE11 issue when flex-groups are nested under display: flex elements.
@@ -28875,141 +28698,6 @@ html.light-theme .euiEmptyPrompt--paddingLarge.euiEmptyPrompt--horizontal .euiEm
 html.light-theme .euiErrorBoundary {
   background: repeating-linear-gradient(45deg, rgba(189, 39, 30, 0.25), rgba(189, 39, 30, 0.25) 1px, rgba(189, 39, 30, 0.05) 1px, rgba(189, 39, 30, 0.05) 20px);
   padding: 16px;
-}
-html.light-theme .euiFacetButton {
-  display: inline-block;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  white-space: nowrap;
-  max-width: 100%;
-  vertical-align: middle;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-  font-size: 14px;
-  font-size: 1rem;
-  line-height: 1.71429rem;
-  height: 32px;
-  text-align: left;
-  text-decoration: none;
-  transition: all 150ms ease-in;
-}
-html.light-theme .euiFacetButton:hover:not(:disabled) .euiFacetButton__text, html.light-theme .euiFacetButton:focus:not(:disabled) .euiFacetButton__text {
-  text-decoration: underline;
-  /* 1 */
-}
-html.light-theme .euiFacetButton:focus {
-  background-color: rgba(0, 119, 204, 0.1);
-  box-shadow: -4px 0 rgba(0, 119, 204, 0.1), 4px 0 rgba(0, 119, 204, 0.1);
-}
-html.light-theme .euiFacetButton:disabled {
-  color: #ABB4C4;
-  pointer-events: none;
-}
-html.light-theme .euiFacetButton:disabled .euiFacetButton__content {
-  pointer-events: auto;
-  cursor: not-allowed;
-}
-html.light-theme .euiFacetButton:disabled .euiFacetButton__icon,
-html.light-theme .euiFacetButton:disabled .euiFacetButton__quantity {
-  opacity: 0.5;
-}
-html.light-theme .euiFacetButton:disabled:focus {
-  background-color: transparent;
-}
-html.light-theme .euiFacetButton:disabled:hover, html.light-theme .euiFacetButton:disabled:focus {
-  text-decoration: none;
-}
-html.light-theme .euiFacetButton__content {
-  height: 100%;
-  width: 100%;
-  vertical-align: middle;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-html.light-theme .euiFacetButton__content .euiButtonContent__icon,
-html.light-theme .euiFacetButton__content .euiButtonContent__spinner {
-  flex-shrink: 0;
-}
-html.light-theme .euiFacetButton__content > * + * {
-  -webkit-margin-start: 8px;
-  margin-inline-start: 8px;
-}
-html.light-theme .euiFacetButton__text {
-  max-width: 100%;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  word-wrap: normal !important;
-  flex-grow: 1;
-  vertical-align: middle;
-}
-html.light-theme .euiFacetButton__text::after {
-  display: block;
-  content: attr(data-text);
-  font-weight: 700;
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
-}
-html.light-theme .euiFacetButton--isSelected .euiFacetButton__text {
-  font-weight: 700;
-}
-html.light-theme .euiFacetButton__icon {
-  transition: all 150ms ease-in;
-}
-html.light-theme .euiFacetGroup--gutterNone .euiFacetButton {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-html.light-theme .euiFacetGroup--gutterNone.euiFacetGroup--horizontal {
-  margin-left: -12px;
-}
-html.light-theme .euiFacetGroup--gutterNone.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 12px;
-  max-width: calc(100% - 12px);
-}
-html.light-theme .euiFacetGroup--gutterSmall .euiFacetButton {
-  margin-top: 2px;
-  margin-bottom: 2px;
-}
-html.light-theme .euiFacetGroup--gutterSmall.euiFacetGroup--horizontal {
-  margin-left: -16px;
-}
-html.light-theme .euiFacetGroup--gutterSmall.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 16px;
-  max-width: calc(100% - 16px);
-}
-html.light-theme .euiFacetGroup--gutterMedium .euiFacetButton {
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-html.light-theme .euiFacetGroup--gutterMedium.euiFacetGroup--horizontal {
-  margin-left: -20px;
-}
-html.light-theme .euiFacetGroup--gutterMedium.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 20px;
-  max-width: calc(100% - 20px);
-}
-html.light-theme .euiFacetGroup--gutterLarge .euiFacetButton {
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-html.light-theme .euiFacetGroup--gutterLarge.euiFacetGroup--horizontal {
-  margin-left: -24px;
-}
-html.light-theme .euiFacetGroup--gutterLarge.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 24px;
-  max-width: calc(100% - 24px);
 }
 html.light-theme .euiFilterGroup {
   display: inline-flex;
@@ -36428,6 +36116,7 @@ html.light-theme .euiSelectableMessage {
   word-wrap: break-word;
   /* 1 */
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -39135,14 +38824,6 @@ html.light-theme .euiDatePopoverButton--end.euiDatePopoverButton--compressed {
 html.light-theme .euiDescriptionList.euiDescriptionList--inline.euiDescriptionList--compressed .euiDescriptionList__title {
   line-height: 1.5;
 }
-html.light-theme .euiFacetButton:focus {
-  background-color: transparent;
-  box-shadow: none;
-}
-html.light-theme .euiFacetButton:focus:not(:disabled) .euiFacetButton__text {
-  text-decoration: underline;
-  text-decoration-thickness: 2px !important;
-}
 html.light-theme .euiFilterGroup {
   border: none;
   border-radius: 6px;
@@ -40985,9 +40666,6 @@ html.dark-theme {
     */
   /**
    * 1. Account for inner box-shadow style border
-   */
-  /**
-   * 1. Make sure the quantity doesn't get an underline on hover
    */
   /**
    * 1. Not always needed, but fixes an IE11 issue when flex-groups are nested under display: flex elements.
@@ -47461,141 +47139,6 @@ html.dark-theme .euiEmptyPrompt--paddingLarge.euiEmptyPrompt--horizontal .euiEmp
 html.dark-theme .euiErrorBoundary {
   background: repeating-linear-gradient(45deg, rgba(248, 107, 99, 0.25), rgba(248, 107, 99, 0.25) 1px, rgba(248, 107, 99, 0.05) 1px, rgba(248, 107, 99, 0.05) 20px);
   padding: 16px;
-}
-html.dark-theme .euiFacetButton {
-  display: inline-block;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  white-space: nowrap;
-  max-width: 100%;
-  vertical-align: middle;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-weight: 400;
-  letter-spacing: normal;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  font-kerning: normal;
-  font-size: 14px;
-  font-size: 1rem;
-  line-height: 1.71429rem;
-  height: 32px;
-  text-align: left;
-  text-decoration: none;
-  transition: all 150ms ease-in;
-}
-html.dark-theme .euiFacetButton:hover:not(:disabled) .euiFacetButton__text, html.dark-theme .euiFacetButton:focus:not(:disabled) .euiFacetButton__text {
-  text-decoration: underline;
-  /* 1 */
-}
-html.dark-theme .euiFacetButton:focus {
-  background-color: rgba(54, 162, 239, 0.2);
-  box-shadow: -4px 0 rgba(54, 162, 239, 0.2), 4px 0 rgba(54, 162, 239, 0.2);
-}
-html.dark-theme .euiFacetButton:disabled {
-  color: #515761;
-  pointer-events: none;
-}
-html.dark-theme .euiFacetButton:disabled .euiFacetButton__content {
-  pointer-events: auto;
-  cursor: not-allowed;
-}
-html.dark-theme .euiFacetButton:disabled .euiFacetButton__icon,
-html.dark-theme .euiFacetButton:disabled .euiFacetButton__quantity {
-  opacity: 0.5;
-}
-html.dark-theme .euiFacetButton:disabled:focus {
-  background-color: transparent;
-}
-html.dark-theme .euiFacetButton:disabled:hover, html.dark-theme .euiFacetButton:disabled:focus {
-  text-decoration: none;
-}
-html.dark-theme .euiFacetButton__content {
-  height: 100%;
-  width: 100%;
-  vertical-align: middle;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-html.dark-theme .euiFacetButton__content .euiButtonContent__icon,
-html.dark-theme .euiFacetButton__content .euiButtonContent__spinner {
-  flex-shrink: 0;
-}
-html.dark-theme .euiFacetButton__content > * + * {
-  -webkit-margin-start: 8px;
-  margin-inline-start: 8px;
-}
-html.dark-theme .euiFacetButton__text {
-  max-width: 100%;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  word-wrap: normal !important;
-  flex-grow: 1;
-  vertical-align: middle;
-}
-html.dark-theme .euiFacetButton__text::after {
-  display: block;
-  content: attr(data-text);
-  font-weight: 700;
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
-}
-html.dark-theme .euiFacetButton--isSelected .euiFacetButton__text {
-  font-weight: 700;
-}
-html.dark-theme .euiFacetButton__icon {
-  transition: all 150ms ease-in;
-}
-html.dark-theme .euiFacetGroup--gutterNone .euiFacetButton {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-html.dark-theme .euiFacetGroup--gutterNone.euiFacetGroup--horizontal {
-  margin-left: -12px;
-}
-html.dark-theme .euiFacetGroup--gutterNone.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 12px;
-  max-width: calc(100% - 12px);
-}
-html.dark-theme .euiFacetGroup--gutterSmall .euiFacetButton {
-  margin-top: 2px;
-  margin-bottom: 2px;
-}
-html.dark-theme .euiFacetGroup--gutterSmall.euiFacetGroup--horizontal {
-  margin-left: -16px;
-}
-html.dark-theme .euiFacetGroup--gutterSmall.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 16px;
-  max-width: calc(100% - 16px);
-}
-html.dark-theme .euiFacetGroup--gutterMedium .euiFacetButton {
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-html.dark-theme .euiFacetGroup--gutterMedium.euiFacetGroup--horizontal {
-  margin-left: -20px;
-}
-html.dark-theme .euiFacetGroup--gutterMedium.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 20px;
-  max-width: calc(100% - 20px);
-}
-html.dark-theme .euiFacetGroup--gutterLarge .euiFacetButton {
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-html.dark-theme .euiFacetGroup--gutterLarge.euiFacetGroup--horizontal {
-  margin-left: -24px;
-}
-html.dark-theme .euiFacetGroup--gutterLarge.euiFacetGroup--horizontal .euiFacetButton {
-  margin-left: 24px;
-  max-width: calc(100% - 24px);
 }
 html.dark-theme .euiFilterGroup {
   display: inline-flex;
@@ -55014,6 +54557,7 @@ html.dark-theme .euiSelectableMessage {
   word-wrap: break-word;
   /* 1 */
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -57720,14 +57264,6 @@ html.dark-theme .euiDatePopoverButton--end.euiDatePopoverButton--compressed {
 }
 html.dark-theme .euiDescriptionList.euiDescriptionList--inline.euiDescriptionList--compressed .euiDescriptionList__title {
   line-height: 1.5;
-}
-html.dark-theme .euiFacetButton:focus {
-  background-color: transparent;
-  box-shadow: none;
-}
-html.dark-theme .euiFacetButton:focus:not(:disabled) .euiFacetButton__text {
-  text-decoration: underline;
-  text-decoration-thickness: 2px !important;
 }
 html.dark-theme .euiFilterGroup {
   border: none;
