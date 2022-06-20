@@ -132,7 +132,9 @@ export const Example = () => {
   const layout = select('layout', ['grid', 'vertical', 'horizontal'], 'grid');
   const configuredData =
     layout === 'grid' ? split(data, 4) : layout === 'horizontal' ? [data.slice(0, 4)] : split(data.slice(0, 4), 1);
-  const onEventClickAction = action('elementClick');
+  const onEventClickAction = action('click');
+  const onEventOverAction = action('over');
+  const onEventOutAction = action('out');
   return (
     <div
       style={{
@@ -158,6 +160,15 @@ export const Example = () => {
                 }
               : undefined
           }
+          onElementOver={([d]) => {
+            if (isMetricElementEvent(d)) {
+              const [rowIndex, columnIndex] = d.datumIndex;
+              onEventOverAction(
+                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+              );
+            }
+          }}
+          onElementOut={() => onEventOutAction('out')}
         />
         <Metric id="metric" data={configuredData} />
       </Chart>

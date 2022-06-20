@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { select, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Metric, MetricTrendShape, Settings } from '@elastic/charts';
+import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -67,7 +67,10 @@ export const Example = () => {
         }
       : {}),
   };
-  const onEventClickAction = action('elementClick');
+  const onEventClickAction = action('click');
+  const onEventOverAction = action('over');
+  const onEventOutAction = action('out');
+  const configuredData = [[data]];
 
   return (
     <div
@@ -80,8 +83,27 @@ export const Example = () => {
       }}
     >
       <Chart>
-        <Settings baseTheme={useBaseTheme()} onElementClick={onEventClickAction} />
-        <Metric id="1" data={[[data]]} />
+        <Settings
+          baseTheme={useBaseTheme()}
+          onElementClick={([d]) => {
+            if (isMetricElementEvent(d)) {
+              const [rowIndex, columnIndex] = d.datumIndex;
+              onEventClickAction(
+                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+              );
+            }
+          }}
+          onElementOver={([d]) => {
+            if (isMetricElementEvent(d)) {
+              const [rowIndex, columnIndex] = d.datumIndex;
+              onEventOverAction(
+                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+              );
+            }
+          }}
+          onElementOut={() => onEventOutAction('out')}
+        />
+        <Metric id="1" data={configuredData} />
       </Chart>
     </div>
   );

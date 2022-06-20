@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 
 import { changeColorLightness } from '../../../../common/color_library_wrappers';
-import { ElementClickListener } from '../../../../specs';
+import { BasicListener, ElementClickListener, ElementOverListener, MetricElementEvent } from '../../../../specs';
 import { LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
@@ -29,8 +29,22 @@ export const Metric: React.FunctionComponent<{
   datum: MetricBase | MetricWProgress | MetricWTrend;
   panel: Size;
   style: MetricStyle;
-  onClickHandler?: ElementClickListener;
-}> = ({ chartId, rowIndex, columnIndex, totalColumns, totalRows, datum, panel, style, onClickHandler }) => {
+  onElementClick?: ElementClickListener;
+  onElementOver?: ElementOverListener;
+  onElementOut?: BasicListener;
+}> = ({
+  chartId,
+  rowIndex,
+  columnIndex,
+  totalColumns,
+  totalRows,
+  datum,
+  panel,
+  style,
+  onElementClick,
+  onElementOver,
+  onElementOut,
+}) => {
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
   const metricHTMLId = `echMetric-${chartId}-${rowIndex}-${columnIndex}`;
   const hasProgressBar = isMetricWProgress(datum);
@@ -57,19 +71,24 @@ export const Metric: React.FunctionComponent<{
     background: backgroundInteractionColor,
   };
 
-  const ComponentType = onClickHandler ? 'button' : 'div';
+  const ComponentType = onElementClick ? 'button' : 'div';
+  const event: MetricElementEvent = { type: 'metricElementEvent', datumIndex: [rowIndex, columnIndex] };
   return (
     <ComponentType
       role="figure"
       aria-labelledby={datum.title && metricHTMLId}
       className={metricPanelClassName}
-      onMouseLeave={() => onClickHandler && setMouseState('leave')}
-      onMouseEnter={() => onClickHandler && setMouseState('enter')}
-      onMouseDown={() => onClickHandler && setMouseState('down')}
-      onMouseUp={() => onClickHandler && setMouseState('enter')}
-      onClick={() =>
-        onClickHandler && onClickHandler([{ type: 'metricElementEvent', datumIndex: [rowIndex, columnIndex] }])
-      }
+      onMouseLeave={() => {
+        if (onElementClick) setMouseState('leave');
+        if (onElementOut) onElementOut();
+      }}
+      onMouseEnter={() => {
+        if (onElementClick) setMouseState('enter');
+        if (onElementOver) onElementOver([event]);
+      }}
+      onMouseDown={() => onElementClick && setMouseState('down')}
+      onMouseUp={() => onElementClick && setMouseState('enter')}
+      onClick={() => onElementClick && onElementClick([event])}
       style={{
         backgroundColor:
           !isMetricWTrend(datumWithInteractionColor) && !isMetricWProgress(datumWithInteractionColor)

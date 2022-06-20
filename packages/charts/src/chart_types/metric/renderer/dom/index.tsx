@@ -14,7 +14,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { ElementClickListener } from '../../../../specs';
+import { BasicListener, ElementClickListener, ElementOverListener } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -42,7 +42,9 @@ interface StateProps {
   specs: MetricSpec[];
   a11y: A11ySettings;
   style: MetricStyle;
-  onClickHandler?: ElementClickListener;
+  onElementClick?: ElementClickListener;
+  onElementOut?: BasicListener;
+  onElementOver?: ElementOverListener;
 }
 
 interface DispatchProps {
@@ -67,7 +69,9 @@ class Component extends React.Component<StateProps & DispatchProps> {
       a11y,
       specs,
       style,
-      onClickHandler,
+      onElementClick,
+      onElementOut,
+      onElementOver,
     } = this.props;
     if (!initialized || specs.length === 0 || width === 0 || height === 0) {
       return null;
@@ -115,7 +119,9 @@ class Component extends React.Component<StateProps & DispatchProps> {
                     columnIndex={columnIndex}
                     panel={panel}
                     style={style}
-                    onClickHandler={onClickHandler}
+                    onElementClick={onElementClick}
+                    onElementOut={onElementOut}
+                    onElementOver={onElementOver}
                   />
                 );
               }),
@@ -159,13 +165,16 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
+  const { onElementClick, onElementOut, onElementOver } = getSettingsSpecSelector(state);
   return {
     initialized: true,
     chartId: state.chartId,
     specs: getMetricSpecs(state),
     size: chartSize(state),
     a11y: getA11ySettingsSelector(state),
-    onClickHandler: getSettingsSpecSelector(state).onElementClick,
+    onElementClick,
+    onElementOver,
+    onElementOut,
     style: getChartThemeSelector(state).metric,
   };
 };
