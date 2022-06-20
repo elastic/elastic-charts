@@ -113,6 +113,18 @@ export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 /** @public */
 export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
 
+/** @public */
+export type MetricElementEvent = {
+  type: 'metricElementEvent';
+  /* the [rowIndex, columnIndex] indices of the metric in the data array: data[rowIndex][columIndex] */
+  datumIndex: [number, number];
+};
+
+/** @public */
+export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]): e is MetricElementEvent {
+  return 'type' in e && e.type === 'metricElementEvent';
+}
+
 /**
  * An object that contains the scaled mouse position based on
  * the current chart configuration.
@@ -148,14 +160,24 @@ export type ProjectionClickListener = (values: ProjectedValues) => void;
 /** @public */
 export type ElementClickListener = (
   elements: Array<
-    XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent
+    | XYChartElementEvent
+    | PartitionElementEvent
+    | FlameElementEvent
+    | HeatmapElementEvent
+    | WordCloudElementEvent
+    | MetricElementEvent
   >,
 ) => void;
 
 /** @public */
 export type ElementOverListener = (
   elements: Array<
-    XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent
+    | XYChartElementEvent
+    | PartitionElementEvent
+    | FlameElementEvent
+    | HeatmapElementEvent
+    | WordCloudElementEvent
+    | MetricElementEvent
   >,
 ) => void;
 

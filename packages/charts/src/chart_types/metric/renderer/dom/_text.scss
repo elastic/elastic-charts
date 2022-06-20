@@ -15,7 +15,7 @@
   display: grid;
   grid-template-columns: 100%;
   grid-template-rows: min-content min-content auto min-content min-content;
-
+  text-align: left;
   &__title {
     font-weight: 400;
   }
