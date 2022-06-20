@@ -95,7 +95,7 @@ const prodEnv: Env = {
   },
   label: {
     buildkite: {
-      id: 4225285931,
+      name: 'ci:buildkite',
       patterns: [],
     },
     skip: {
