@@ -91,12 +91,7 @@ export function setupBuildTrigger(app: Probot) {
       env: getPRBuildParams(ctx.payload.pull_request, commit),
     });
 
-    const { main } = getBuildConfig(false);
-    await ctx.octokit.checks.create({
-      ...ctx.repo(),
-      name: main.name,
-      external_id: main.id,
-      head_sha: head.sha,
+    await updateChecks(ctx, undefined, {
       status: 'queued',
     });
   });
