@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, buildkiteGQLQuery, commitStatusIsPennding, getJobMetadata, getJobTimingStr, setStatus } from '../utils';
+import { bkEnv, buildkiteGQLQuery, commitStatusIsPennding, getJobMetadata, updateCheckStatus } from '../utils';
 
 void (async function () {
   const { checkId, jobId, jobUrl } = bkEnv;
@@ -17,26 +17,29 @@ void (async function () {
 
     if (jobStatus) {
       if (jobStatus.state === 'CANCELING') {
-        const timeingStr = await getJobTimingStr();
         const user = getCancelledBy(jobStatus.events ?? []);
-        const description = user ? `Canceled by ${user} after ${timeingStr}` : `Canceled after ${timeingStr}`;
-        await setStatus({
-          context: checkId,
-          state: 'error',
-          target_url: jobUrl,
-          description,
-        });
+        await updateCheckStatus(
+          {
+            status: 'completed',
+            conclusion: 'failure',
+            details_url: jobUrl,
+          },
+          checkId,
+          user && `Cancelled by ${user}`,
+        );
       } else {
         const isFailedJob = (await getJobMetadata('failed')) === 'true';
         console.log('isFailedJob', isFailedJob);
 
         if (isFailedJob || (await commitStatusIsPennding())) {
-          const state = isFailedJob ? 'failure' : 'success';
-          await setStatus({
-            context: checkId,
-            state,
-            target_url: jobUrl,
-          });
+          await updateCheckStatus(
+            {
+              status: 'completed',
+              conclusion: isFailedJob ? 'failure' : 'success',
+              details_url: jobUrl,
+            },
+            checkId,
+          );
         }
       }
     }

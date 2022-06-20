@@ -6,17 +6,19 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, setStatus } from '../utils';
+import { bkEnv, updateCheckStatus } from '../utils';
 
 void (async function () {
   const { checkId: checkId, retryCount, jobUrl } = bkEnv;
 
   if (checkId) {
-    await setStatus({
-      context: checkId,
-      state: 'pending',
-      target_url: jobUrl,
-      description: `Started${retryCount ? ` (retry #${retryCount})` : ''}`,
-    });
+    await updateCheckStatus(
+      {
+        status: 'in_progress',
+        details_url: jobUrl,
+      },
+      checkId,
+      !!retryCount && `retry #${retryCount}`,
+    );
   }
 })();

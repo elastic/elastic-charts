@@ -7,6 +7,7 @@
  */
 
 import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
+import { components } from '@octokit/openapi-types';
 import { retry } from '@octokit/plugin-retry';
 import { Octokit } from '@octokit/rest';
 import { getMetadata, metadataExists, setMetadata } from 'buildkite-agent-node';
@@ -14,7 +15,8 @@ import ghpages from 'gh-pages';
 import minimatch, { IOptions as MinimatchOptions } from 'minimatch';
 import { Optional } from 'utility-types';
 
-import { bkEnv, getJobTimingStr } from './buildkite';
+import { getJobCheckName } from './build';
+import { bkEnv } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
 import { CheckStatusOptions, CreateCheckOptions } from './octokit';
@@ -126,13 +128,6 @@ export class ChangeContext {
   }
 }
 
-const getDefaultDescription = async (state: OctokitParameters<'repos/create-commit-status'>['state']) => {
-  const timingStr = await getJobTimingStr();
-  if (state === 'success') return `Successful after ${timingStr}`;
-  if (state === 'failure') return `Failure after ${timingStr} - see logs...`;
-  if (state === 'error') return `Errored after ${timingStr} - see logs...`;
-};
-
 export const commitStatusIsPennding = async (context = bkEnv.checkId, userRef?: string): Promise<boolean> => {
   const ref = userRef ?? bkEnv.commit;
   if (!ref) throw new Error(`Failed to get status, no ref available`);
@@ -143,35 +138,6 @@ export const commitStatusIsPennding = async (context = bkEnv.checkId, userRef?: 
     ref,
   });
   return data.find((status) => status.context === context)?.state === 'pending' ?? false;
-};
-
-export const setStatus = async ({
-  state,
-  context,
-  ...options
-}: Optional<OctokitParameters<'repos/create-commit-status'>, 'sha'>) => {
-  if (process.env.BLOCK_REQUESTS) return;
-  const sha = options.sha ?? bkEnv.commit;
-  if (!sha) throw new Error(`Failed to set status, no sha provided`);
-  if (!context) throw new Error(`Failed to set status, no context provided`);
-
-  const description = options.description ?? (await getDefaultDescription(state));
-
-  try {
-    await octokit.repos.createCommitStatus({
-      ...defaultGHOptions,
-      target_url: bkEnv.jobUrl,
-      sha,
-      ...options,
-      description,
-      context,
-      state,
-    });
-  } catch (error) {
-    console.error(`Failed to set status for sha [${sha}]`);
-    console.error(error);
-    throw error;
-  }
 };
 
 export const codeCheckIsPending = async (name = bkEnv.checkId, userRef?: string): Promise<boolean> => {
@@ -186,42 +152,67 @@ export const codeCheckIsPending = async (name = bkEnv.checkId, userRef?: string)
   return data.check_runs.find(({ external_id }) => external_id === name)?.status !== 'completed' ?? false;
 };
 
-export const setCheckRunStatus = async ({
-  name,
-  ...options
-}: Optional<CreateCheckOptions, 'head_sha' | 'repo' | 'owner'> & CheckStatusOptions) => {
+const checkRunCache = new Map<string, components['schemas']['check-run']>();
+
+void octokit.checks
+  .listForRef({
+    ...defaultGHOptions,
+    ref: bkEnv.commit ?? '',
+    per_page: 100, // max
+  })
+  .then(({ data: { total_count: total, check_runs: checkRuns } }) => {
+    if (total >= checkRuns.length) throw new Error('Checks need pagination');
+
+    return checkRuns.forEach((checkRun) => {
+      if (checkRun.external_id) {
+        checkRunCache.set(checkRun.external_id, checkRun);
+      }
+    });
+  });
+
+export const updateCheckStatus = async (
+  options: Optional<Omit<CreateCheckOptions, 'name' | 'head_sha'>, 'repo' | 'owner'> & CheckStatusOptions,
+  checkId: string | undefined = bkEnv.checkId,
+  title?: string | boolean | null, // true for skip description
+) => {
   if (process.env.BLOCK_REQUESTS) return;
-  const head_sha = options.head_sha ?? bkEnv.commit;
-  if (!head_sha) throw new Error(`Failed to set status, no head_sha provided`);
-  if (!name) throw new Error(`Failed to set status, no name provided`);
+  if (!checkId) throw new Error('Attempted to update check run with no job id');
+  const checkRun = checkRunCache.get(checkId);
+  // In some cases a check run may have been skipped or otherwise completed and the only way to
+  // revert the completed check run is to create a new check run. This will not show as a duplicate run.
+  const newCheckNeeded = options.status !== 'completed' && checkRun?.status === 'completed';
 
   try {
-    const run = (
-      await octokit.checks.listForRef({
-        ...defaultGHOptions,
-        ref: head_sha,
-      })
-    ).data.check_runs.find((r) => r.external_id === name);
-
-    if (!run) {
+    const output =
+      title && typeof title === 'string'
+        ? {
+            title: title,
+            summary: title,
+            ...options.output,
+          }
+        : undefined;
+    if (!checkRun || newCheckNeeded) {
+      if (!bkEnv.commit) throw new Error(`Failed to set status, no head_sha provided`);
+      const name = getJobCheckName(checkId);
       await octokit.checks.create({
         ...defaultGHOptions,
         details_url: bkEnv.jobUrl,
-        head_sha,
         ...options,
+        output,
         name,
+        head_sha: bkEnv.commit,
       } as any); // octokit types are bad :(
     } else {
       await octokit.checks.update({
         ...defaultGHOptions,
-        check_run_id: run.id, // required
         details_url: bkEnv.jobUrl,
         ...options,
-        name,
+        output,
+        check_run_id: checkRun.id, // required
       } as any); // octokit types are bad :(
     }
   } catch (error) {
-    console.error(`Failed to create/update check run for sha [${head_sha}]`);
+    console.error(`Failed to create/update check run for sha [${bkEnv.commit}]`);
     console.error(error);
     throw error;
   }

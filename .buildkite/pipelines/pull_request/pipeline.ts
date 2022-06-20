@@ -26,15 +26,14 @@ import {
   bkEnv,
   ChangeContext,
   createDeployment,
-  setStatus,
   uploadPipeline,
   createDeploymentStatus,
   Step,
   CustomCommandStep,
 } from '../../utils';
+import { buildConfig } from '../../utils/build';
 import { MetaDataKeys } from '../../utils/constants';
-
-const MAIN_CI_CONTEXT = '@elastic/datavis CI';
+import { updateCheckStatus } from './../../utils/github';
 
 void (async () => {
   try {
@@ -45,55 +44,54 @@ void (async () => {
     const changeCtx = new ChangeContext();
     await changeCtx.init();
 
-    // Set main job status
-    await setStatus({
-      context: MAIN_CI_CONTEXT,
-      state: 'pending',
-      target_url: bkEnv.buildUrl,
-    });
+    // Update main job status
+    await updateCheckStatus(
+      {
+        status: 'in_progress',
+        details_url: bkEnv.buildUrl,
+      },
+      buildConfig.main.id,
+    );
 
     if (skipBuild()) {
       handleSkippedBuild();
       return;
     }
 
-    const skipit = { skip: true };
+    // const skipit = { skip: true };
     const steps: Step[] = [
-      jestStep(skipit),
-      eslintStep(skipit),
-      apiCheckStep(skipit),
-      prettierStep(skipit),
-      typeCheckStep(skipit),
-      storybookStep(skipit),
+      jestStep(),
+      eslintStep(),
+      apiCheckStep(),
+      prettierStep(),
+      typeCheckStep(),
+      storybookStep(),
       e2eServerStep(),
-      ghpDeployStep(skipit),
+      ghpDeployStep(),
       playwrightStep(),
-      firebaseDeployStep(skipit),
+      firebaseDeployStep(),
     ].map((step) => step(changeCtx));
 
     steps
       .map((step) => {
         const skip = 'steps' in step ? step.steps.every((s) => s.skip) : step.skip;
-        const context = (
+        const checkId = (
           'steps' in step ? step.steps.find((s) => s?.env?.ECH_CHECK_ID)?.env?.ECH_CHECK_ID : step?.env?.ECH_CHECK_ID
         ) as string | undefined;
-        return { skip, context };
+        return { skip, checkId };
       })
-      .filter(({ context }) => Boolean(context))
-      .forEach(({ skip, context }) => {
+      .filter(({ checkId }) => Boolean(checkId))
+      .forEach(({ skip, checkId }) => {
         if (skip) {
-          void setStatus({
-            context,
-            description: skip === true ? '[Skipped]' : `[Skipped] ${skip}`,
-            state: 'success',
-            target_url: bkEnv.buildUrl,
-          });
-        } else {
-          void setStatus({
-            context,
-            state: 'pending',
-            target_url: bkEnv.buildUrl,
-          });
+          void updateCheckStatus(
+            {
+              status: 'completed',
+              conclusion: 'skipped',
+              details_url: bkEnv.buildUrl,
+            },
+            checkId,
+            skip,
+          );
         }
       });
 

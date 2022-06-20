@@ -165,11 +165,6 @@ export async function getJobTiming(jobId = bkEnv.jobId) {
   };
 }
 
-export async function getJobTimingStr(): Promise<string> {
-  const { minutes, seconds } = await getJobTiming();
-  return minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
-}
-
 interface JobTimingReponse {
   data: {
     job: {

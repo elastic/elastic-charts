@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { bkEnv } from './buildkite';
+
 interface Job {
   name: string;
   id: string;
@@ -36,3 +38,11 @@ export const getBuildConfig = (isMaster: boolean): BuildConfig => ({
     { name: 'Playwright e2e', id: 'playwright' },
   ],
 });
+
+export const buildConfig = getBuildConfig(bkEnv.isPullRequest);
+
+export const getJobCheckName = (checkId: string) => {
+  const job = [buildConfig.main, ...buildConfig.jobs].find(({ id }) => id === checkId);
+  if (!job) throw new Error('Failed to find check name from step id');
+  return job.name;
+};

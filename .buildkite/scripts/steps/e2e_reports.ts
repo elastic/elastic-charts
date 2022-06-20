@@ -14,7 +14,6 @@ import { InstallationAccessTokenAuthentication, InstallationAuthOptions } from '
 import {
   bkEnv,
   exec,
-  setStatus,
   downloadArtifacts,
   getJobSteps,
   startGroup,
@@ -23,6 +22,7 @@ import {
   decompress,
   octokit,
   ScreenshotMeta,
+  updateCheckStatus,
 } from '../../utils';
 
 async function setGroupStatus() {
@@ -49,12 +49,15 @@ async function setGroupStatus() {
       ? `Failure in ${failedSteps.length} of ${e2eSteps.length} jobs`
       : `Successful in all ${e2eSteps.length} jobs`;
 
-  await setStatus({
-    context: checkId,
+  await updateCheckStatus(
+    {
+      status: 'completed',
+      conclusion: failedSteps.length > 0 ? 'failure' : 'success',
+      details_url: failedSteps.length === 1 ? failedSteps[0].url ?? bkEnv.buildUrl : bkEnv.buildUrl, // could set this to e2e-report
+    },
+    checkId,
     description,
-    state: failedSteps.length > 0 ? 'failure' : 'success',
-    target_url: failedSteps.length === 1 ? failedSteps[0].url ?? bkEnv.buildUrl : bkEnv.buildUrl, // could set this to e2e-report
-  });
+  );
 }
 
 async function commitNewScreenshots() {
@@ -115,38 +118,38 @@ async function commitNewScreenshots() {
 }
 
 void (async () => {
-  // yarnInstall('e2e');
+  yarnInstall('e2e');
 
-  // await setGroupStatus();
+  await setGroupStatus();
 
-  // downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
+  downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
 
-  // const reportDir = '.buildkite/artifacts/e2e_reports';
-  // const files = fs.readdirSync(reportDir);
-  // await Promise.all<void>(
-  //   files
-  //     .filter((f) => f.startsWith('report_'))
-  //     .map((f) =>
-  //       decompress({
-  //         src: path.join(reportDir, f),
-  //         dest: path.join('e2e/reports', path.basename(f, '.gz')),
-  //       }),
-  //     ),
-  // );
+  const reportDir = '.buildkite/artifacts/e2e_reports';
+  const files = fs.readdirSync(reportDir);
+  await Promise.all<void>(
+    files
+      .filter((f) => f.startsWith('report_'))
+      .map((f) =>
+        decompress({
+          src: path.join(reportDir, f),
+          dest: path.join('e2e/reports', path.basename(f, '.gz')),
+        }),
+      ),
+  );
 
-  // startGroup('Merging e2e reports');
+  startGroup('Merging e2e reports');
 
-  // exec('npx ts-node ./merge_html_reports.ts', {
-  //   cwd: 'e2e',
-  //   env: {
-  //     HTML_REPORT_DIR: 'merged_html_report',
-  //   },
-  // });
+  exec('npx ts-node ./merge_html_reports.ts', {
+    cwd: 'e2e',
+    env: {
+      HTML_REPORT_DIR: 'merged_html_report',
+    },
+  });
 
-  // await compress({
-  //   src: 'e2e/merged_html_report',
-  //   dest: '.buildkite/artifacts/merged_html_report.gz',
-  // });
+  await compress({
+    src: 'e2e/merged_html_report',
+    dest: '.buildkite/artifacts/merged_html_report.gz',
+  });
 
   if (bkEnv.updateScreenshots) {
     await commitNewScreenshots();
