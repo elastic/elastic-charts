@@ -113,14 +113,21 @@ export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 /** @public */
 export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
 
-/** @public */
+/**
+ * Describes a Metric element that is the subject of an interaction.
+ * In particular, it reports the index of the metric within the two-dimensional data array
+ * @public
+ */
 export type MetricElementEvent = {
   type: 'metricElementEvent';
   /* the [rowIndex, columnIndex] indices of the metric in the data array: data[rowIndex][columIndex] */
   datumIndex: [number, number];
 };
 
-/** @public */
+/**
+ * A type-guard for MetricElementEvents
+ * @public
+ */
 export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]): e is MetricElementEvent {
   return 'type' in e && e.type === 'metricElementEvent';
 }
