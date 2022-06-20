@@ -91,8 +91,13 @@ export function setupBuildTrigger(app: Probot) {
       env: getPRBuildParams(ctx.payload.pull_request, commit),
     });
 
-    await updateChecks(ctx, undefined, {
-      status: 'queued',
-    });
+    await updateChecks(
+      ctx,
+      undefined,
+      {
+        status: 'queued',
+      },
+      ['labeled', 'unlabeled'].includes(ctx.payload.action),
+    );
   });
 }

@@ -186,43 +186,46 @@ export async function updateChecks(
   ctx: ProbotEventContext<'pull_request'>,
   buildUrl?: string,
   options: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>> = {},
+  createNew: boolean = false,
 ) {
   const { head } = ctx.payload.pull_request;
   const { main, jobs } = getBuildConfig(false);
   const updatedCheckIds = new Set<string>();
 
-  const {
-    status: resStatus,
-    data: { total_count: totalCount, check_runs: checkRuns },
-  } = await ctx.octokit.checks.listForRef({
-    ...ctx.repo(),
-    ref: head.sha,
-    app_id: Number(getConfig().github.auth.appId),
-    per_page: 100, // max
-  });
-  if (resStatus !== 200) throw new Error('Failed to get checks for ref');
-  if (checkRuns.length < totalCount) {
-    // TODO handle this with pagination if check runs exceed 100
-    throw new Error('Missing check runs, pagination required');
+  if (!createNew) {
+    const {
+      status: resStatus,
+      data: { total_count: totalCount, check_runs: checkRuns },
+    } = await ctx.octokit.checks.listForRef({
+      ...ctx.repo(),
+      ref: head.sha,
+      app_id: Number(getConfig().github.auth.appId),
+      per_page: 100, // max
+    });
+    if (resStatus !== 200) throw new Error('Failed to get checks for ref');
+    if (checkRuns.length < totalCount) {
+      // TODO handle this with pagination if check runs exceed 100
+      throw new Error('Missing check runs, pagination required');
+    }
+
+    console.log(checkRuns);
+
+    await Promise.all(
+      checkRuns.map(async ({ id, external_id, details_url, status }) => {
+        if (status !== 'completed' || external_id === main.id) {
+          await ctx.octokit.checks.update({
+            ...ctx.repo(),
+            check_run_id: id,
+            status: 'completed',
+            conclusion: 'skipped',
+            details_url: details_url || buildUrl,
+            ...options,
+          });
+        }
+        updatedCheckIds.add(external_id!);
+      }),
+    );
   }
-
-  console.log(checkRuns);
-
-  await Promise.all(
-    checkRuns.map(async ({ id, external_id, details_url, status }) => {
-      if (status !== 'completed' || external_id === main.id) {
-        await ctx.octokit.checks.update({
-          ...ctx.repo(),
-          check_run_id: id,
-          status: 'completed',
-          conclusion: 'skipped',
-          details_url: details_url || buildUrl,
-          ...options,
-        });
-      }
-      updatedCheckIds.add(external_id!);
-    }),
-  );
 
   await Promise.all(
     [main, ...jobs]
