@@ -31,15 +31,14 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getTooltipTypeKnob, getPlacementKnob } from '../utils/knobs';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { DATA_6 } from '@elastic/charts/src/utils/data_samples/test_dataset_heatmap';
+import { heatmapData, lineChartData1, lineChartData2 } from './constants';
+import moment from 'moment';
 
 const chartTypes: Record<string, any> = {
   bar: BarSeries,
   line: LineSeries,
   area: AreaSeries,
 };
-
-//@todo: reset this if we are keeping example in heatmap section
-// if not change the data set to one compatible with heatmap
 
 const getSeriesKnob = (group?: string) => {
   const type =
@@ -74,10 +73,10 @@ export const Example = () => {
     }
 
   };
-  const { data } = KIBANA_METRICS.metrics.kibana_os_load[0];
-  const data1 = KIBANA_METRICS.metrics.kibana_os_load[0].data;
-  const data2 = KIBANA_METRICS.metrics.kibana_os_load[1].data;
+  const data1 = lineChartData1;
+  const data2 = lineChartData2;
 
+  console.log("data2", data2)
   const group1 = 'Top Chart';
   const group2 = 'Bottom Chart';
 
@@ -163,7 +162,7 @@ export const Example = () => {
 
   return (
     <>
-      <Chart>
+      <Chart ref={ref3} size={{ height: '50%' }} id="heatmap">
         <Settings
           onElementClick={onElementClick}
           onPointerUpdate={pointerUpdate}
@@ -171,7 +170,6 @@ export const Example = () => {
           showLegend
           legendPosition="right"
           brushAxis="both"
-          xDomain={{ min: 1572825600000 - 21409200000, max: 1572912000000 - 21409200000 }}
           debugState={debugState}
           theme={{ heatmap }}
           baseTheme={useBaseTheme()}
@@ -193,22 +191,33 @@ export const Example = () => {
               { start: 75, end: Infinity, color: '#fe5050' },
             ],
           }}
-          data={DATA_6.data.map(d => ({...d, x: d.x - 21409200000}))}
-          xAccessor="x"
-          yAccessor="y"
+          data={heatmapData}
+          xAccessor="time"
+          yAccessor="laneLabel"
           valueAccessor="value"
           valueFormatter={(d) => `${Number(d.toFixed(2))}℃`}
-          ySortPredicate="numAsc"
-          xScale={{ type: ScaleType.Time, interval: DATA_6.interval }}
-          xAxisLabelFormatter={(value) => {
-            return niceTimeFormatter([1572825600000 - 21409200000, 1572912000000 - 21409200000])(value, { timeZone: 'UTC' });
+          xScale={{
+            type: ScaleType.Time,
+            interval: {
+              type: 'fixed',
+              unit: 'ms',
+              value: 21600000,
+            },
           }}
+          xAxisLabelFormatter={(v) => {
+            return moment(v).format('YYYY-MM-DD HH:mm');
+          }}
+
           timeZone={DATA_6.timeZone}
           onBrushEnd={(e) => {
             setSelection({ x: e.x, y: e.y });
           }}
           highlightedData={persistCellsSelection ? selection : undefined}
-          xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
+          ySortPredicate="dataIndex"
+          yAxisLabelFormatter={(laneLabel) => {
+            return laneLabel === '' ? '' : String(laneLabel);
+          }}
+        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
           yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
         />
       </Chart>
@@ -229,18 +238,23 @@ export const Example = () => {
         <Axis
           id="bottom"
           position={Position.Bottom}
-          title={`External tooltip visible: ${topVisible} - boundary: scroll parent`}
-          tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+          tickFormat={(d: any) => moment(d).format('YYYY-MM-DD HH:mm')}
+          labelFormat={(v) => {
+            return moment(v).format('YYYY-MM-DD HH:mm');
+          }}
+
         />
-        <Axis id="left2" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
+        <Axis id="left2" position={Position.Left}
+        />
 
         <TopSeries
           id="Top"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
-          xAccessor={0}
-          yAccessors={[1]}
-          data={data1.slice(3, 60)}
+          xAccessor={'date'}
+          yAccessors={['value']}
+          data={data1}
+
         />
       </Chart>
       <Chart ref={ref2} size={{ height: '50%' }} id="chart2">
@@ -258,24 +272,26 @@ export const Example = () => {
         <Axis
           id="bottom"
           position={Position.Bottom}
-          title={`External tooltip visible: ${bottomVisible} - boundary: chart`}
-          tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+          tickFormat={(d: any) => moment(d).format('YYYY-MM-DD HH:mm')}
+          labelFormat={(v) => {
+            return moment(v).format('YYYY-MM-DD HH:mm');
+          }}
         />
         <Axis
           id="left2"
           position={Position.Left}
-          tickFormat={(d: any) => Number(d).toFixed(2)}
-          domain={{ min: 5, max: 20 }}
+
         />
 
         <BottomSeries
           id="Bottom"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Sqrt}
-          xAccessor={0}
-          yAccessors={[1]}
-          data={data2.slice(10)}
+          xAccessor={'date'}
+          yAccessors={['value']}
+          data={data2}
           color={palettes.echPaletteForLightBackground.colors[0]}
+
         />
       </Chart>
 
