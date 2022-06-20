@@ -16,7 +16,8 @@ export interface Label {
 
 export interface User {
   id?: number;
-  name?: string;
+  name: string;
+  email: string;
 }
 
 export interface Env {
@@ -52,6 +53,8 @@ const devEnv: Env = {
   user: {
     bot: {
       id: 107651659,
+      name: 'elastic-datavis-test[bot]',
+      email: '107651659+elastic-datavis-test[bot]@users.noreply.github.com',
     },
   },
   branch: {
@@ -83,6 +86,8 @@ const prodEnv: Env = {
   user: {
     bot: {
       id: 98618603,
+      name: 'elastic-datavis[bot]',
+      email: '98618603+elastic-datavis[bot]@users.noreply.github.com',
     },
   },
   branch: {
