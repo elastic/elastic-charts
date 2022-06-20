@@ -20,7 +20,7 @@ export function commentByKey(key: string) {
 
 export const comments = {
   communityPR() {
-    return `This appears to be community pull request. @elastic/datavis please react with 👍 to trigger this and future builds.`;
+    return `Community pull request, @elastic/datavis please add the \`ci:approved ✅\` label to allow this and future builds.`;
   },
 };
 

@@ -185,7 +185,10 @@ export async function getPR(ctx: ProbotEventContext<'issue_comment' | 'pull_requ
 export async function updateChecks(
   ctx: ProbotEventContext<'pull_request'>,
   buildUrl?: string,
-  options: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>> = {},
+  options: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>> = {
+    status: 'completed',
+    conclusion: 'skipped',
+  },
   createNew: boolean = false,
 ) {
   const { head } = ctx.payload.pull_request;
@@ -216,8 +219,6 @@ export async function updateChecks(
           await ctx.octokit.checks.update({
             ...ctx.repo(),
             check_run_id: id,
-            status: 'completed',
-            conclusion: 'skipped',
             details_url: details_url || buildUrl,
             ...options,
           });
@@ -235,8 +236,6 @@ export async function updateChecks(
           name,
           ...ctx.repo(),
           head_sha: head.sha,
-          status: 'completed',
-          conclusion: 'skipped',
           external_id: id,
           details_url: buildUrl,
           ...options,

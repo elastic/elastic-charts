@@ -22,7 +22,6 @@ import {
   updateChecks,
   testPatternString,
 } from '../../utils';
-import { getBuildConfig } from './../../../build';
 
 const prActionTriggers = new Set<ProbotEventPayload<'pull_request'>['action']>([
   'synchronize',

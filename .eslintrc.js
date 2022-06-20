@@ -418,6 +418,7 @@ module.exports = {
         'no-console': 0,
         'unicorn/no-process-exit': 0,
         'unicorn/prefer-ternary': 0,
+        'unicorn/no-object-as-default-parameter': 0,
         '@typescript-eslint/naming-convention': 0,
       },
     },
