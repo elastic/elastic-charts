@@ -26,7 +26,7 @@ const WIDTH_BP: [number, number, BreakPoint][] = [
 ];
 
 const PADDING = 8;
-const MAGIC_NUMBER_LINE_HEIGHT = 1.1428571428571428; // TODO replace with the right calculation based on EUI or take it from body
+const NUMBER_LINE_HEIGHT = 1.2; // aligned with our CSS
 const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
 const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
@@ -52,11 +52,11 @@ function elementVisibility(
   size: BreakPoint,
 ): ElementVisibility {
   const titleHeight = (title: boolean, maxLines: number) =>
-    PADDING + (title ? maxLines * TITLE_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT : 0);
+    PADDING + (title ? maxLines * TITLE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT : 0);
   const subtitleHeight = (subtitle: boolean, maxLines: number) =>
-    subtitle ? maxLines * SUBTITLE_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT + PADDING : 0;
-  const extraHeight = (extra: boolean) => (extra ? EXTRA_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT : 0);
-  const valueHeight = VALUE_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT + PADDING;
+    subtitle ? maxLines * SUBTITLE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT + PADDING : 0;
+  const extraHeight = (extra: boolean) => (extra ? EXTRA_FONT_SIZE[size] * NUMBER_LINE_HEIGHT : 0);
+  const valueHeight = VALUE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT + PADDING;
 
   const responsiveBreakPoints: Array<ElementVisibility> = [
     { titleLines: 3, subtitleLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
