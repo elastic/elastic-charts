@@ -23,26 +23,28 @@ interface BuildConfig {
  *
  * TODO update this to be have a single source of truth btw here and github_bot/src/build.ts
  */
-export const getBuildConfig = (isMaster: boolean): BuildConfig => ({
-  main: { name: '@elastic/datavis CI', id: 'main' },
-  jobs: [
-    { name: 'Types', id: 'types' },
-    { name: 'API', id: 'api' },
-    { name: 'Build - e2e server', id: 'build_e2e' },
-    { name: 'Build - Storybook', id: 'build_storybook' },
-    { name: 'Eslint', id: 'eslint' },
-    { name: 'Prettier', id: 'prettier' },
-    { name: 'Deploy - firebase', id: 'deploy_fb' },
-    ...(isMaster ? [{ name: 'Deploy - GitHub Pages', id: 'deploy_ghp' }] : []),
-    { name: 'Jest', id: 'jest' },
-    { name: 'Playwright e2e', id: 'playwright' },
-  ],
-});
-
-export const buildConfig = getBuildConfig(bkEnv.isPullRequest);
+export const getBuildConfig = (): BuildConfig => {
+  const isMaster = bkEnv.branch === 'master';
+  return {
+    main: { name: '@elastic/datavis CI', id: 'main' },
+    jobs: [
+      { name: 'Types', id: 'types' },
+      { name: 'API', id: 'api' },
+      { name: 'Build - e2e server', id: 'build_e2e' },
+      { name: 'Build - Storybook', id: 'build_storybook' },
+      { name: 'Eslint', id: 'eslint' },
+      { name: 'Prettier', id: 'prettier' },
+      { name: 'Deploy - firebase', id: 'deploy_fb' },
+      ...(isMaster ? [{ name: 'Deploy - GitHub Pages', id: 'deploy_ghp' }] : []),
+      { name: 'Jest', id: 'jest' },
+      { name: 'Playwright e2e', id: 'playwright' },
+    ],
+  };
+};
 
 export const getJobCheckName = (checkId: string) => {
-  const job = [buildConfig.main, ...buildConfig.jobs].find(({ id }) => id === checkId);
+  const { main, jobs } = getBuildConfig();
+  const job = [main, ...jobs].find(({ id }) => id === checkId);
   if (!job) throw new Error('Failed to find check name from step id');
   return job.name;
 };

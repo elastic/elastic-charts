@@ -31,7 +31,7 @@ import {
   Step,
   CustomCommandStep,
 } from '../../utils';
-import { buildConfig } from '../../utils/build';
+import { getBuildConfig } from '../../utils/build';
 import { MetaDataKeys } from '../../utils/constants';
 import { updateCheckStatus } from './../../utils/github';
 
@@ -50,7 +50,7 @@ void (async () => {
         status: 'in_progress',
         details_url: bkEnv.buildUrl,
       },
-      buildConfig.main.id,
+      getBuildConfig().main.id,
     );
 
     if (skipBuild()) {
