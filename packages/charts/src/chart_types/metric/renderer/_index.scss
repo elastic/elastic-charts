@@ -11,6 +11,7 @@
 .echMetric {
   position: relative;
   overflow: hidden;
+  transition: background-color ease-in-out 0.1s;
 
   &--rightBorder {
     border-right: 1px solid #343741;

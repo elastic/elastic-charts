@@ -35,10 +35,10 @@ export const ProgressBar: React.FunctionComponent<{
   });
   const percentProp = verticalDirection ? { height: `${percent}%` } : { width: `${percent}%` };
   return (
-    <div className={bgClassName} style={{ background: isSmall ? barBackground : undefined }}>
+    <div className={bgClassName} style={{ backgroundColor: isSmall ? barBackground : undefined }}>
       <div
         className={barClassName}
-        style={{ background: color, ...percentProp }}
+        style={{ backgroundColor: color, ...percentProp }}
         role="meter"
         aria-label={title ? `Percentage of ${title}` : 'Percentage'}
         aria-valuemin={0}
