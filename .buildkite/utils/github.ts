@@ -153,22 +153,23 @@ export const codeCheckIsPending = async (name = bkEnv.checkId, userRef?: string)
 };
 
 const checkRunCache = new Map<string, components['schemas']['check-run']>();
+const fillCheckRunCache = async () =>
+  await octokit.checks
+    .listForRef({
+      ...defaultGHOptions,
+      ref: bkEnv.commit ?? '',
+      per_page: 100, // max
+    })
+    .then(({ data: { total_count: total, check_runs: checkRuns } }) => {
+      if (total >= checkRuns.length) throw new Error('Checks need pagination');
 
-void octokit.checks
-  .listForRef({
-    ...defaultGHOptions,
-    ref: bkEnv.commit ?? '',
-    per_page: 100, // max
-  })
-  .then(({ data: { total_count: total, check_runs: checkRuns } }) => {
-    if (total >= checkRuns.length) throw new Error('Checks need pagination');
-
-    return checkRuns.forEach((checkRun) => {
-      if (checkRun.external_id) {
-        checkRunCache.set(checkRun.external_id, checkRun);
-      }
+      return checkRuns.forEach((checkRun) => {
+        if (checkRun.external_id) {
+          checkRunCache.set(checkRun.external_id, checkRun);
+        }
+      });
     });
-  });
+void fillCheckRunCache();
 
 export const updateCheckStatus = async (
   options: Optional<Omit<CreateCheckOptions, 'name' | 'head_sha'>, 'repo' | 'owner'> & CheckStatusOptions,
