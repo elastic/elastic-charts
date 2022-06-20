@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { action } from '@storybook/addon-actions';
 import { select, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
@@ -66,6 +67,7 @@ export const Example = () => {
         }
       : {}),
   };
+  const onEventClickAction = action('elementClick');
 
   return (
     <div
@@ -78,7 +80,7 @@ export const Example = () => {
       }}
     >
       <Chart>
-        <Settings baseTheme={useBaseTheme()} />
+        <Settings baseTheme={useBaseTheme()} onElementClick={onEventClickAction} />
         <Metric id="1" data={[[data]]} />
       </Chart>
     </div>

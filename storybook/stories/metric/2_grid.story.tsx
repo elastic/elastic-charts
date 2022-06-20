@@ -6,10 +6,19 @@
  * Side Public License, v 1.
  */
 
+import { action } from '@storybook/addon-actions';
 import { select, number, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Metric, MetricBase, MetricWProgress, MetricWTrend, Settings } from '@elastic/charts';
+import {
+  Chart,
+  isMetricElementEvent,
+  Metric,
+  MetricBase,
+  MetricWProgress,
+  MetricWTrend,
+  Settings,
+} from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -19,6 +28,7 @@ function split(a: (any | undefined)[], size: number) {
 }
 
 export const Example = () => {
+  const addMetricClick = boolean('attach click handler', true);
   const useProgressBar = boolean('use progress bar', true);
 
   const progressBarDirection = select('progress bar direction', ['horizontal', 'vertical'], 'vertical');
@@ -122,6 +132,7 @@ export const Example = () => {
   const layout = select('layout', ['grid', 'vertical', 'horizontal'], 'grid');
   const configuredData =
     layout === 'grid' ? split(data, 4) : layout === 'horizontal' ? [data.slice(0, 4)] : split(data.slice(0, 4), 1);
+  const onEventClickAction = action('elementClick');
   return (
     <div
       style={{
@@ -133,7 +144,21 @@ export const Example = () => {
       }}
     >
       <Chart>
-        <Settings baseTheme={useBaseTheme()} />
+        <Settings
+          baseTheme={useBaseTheme()}
+          onElementClick={
+            addMetricClick
+              ? ([d]) => {
+                  if (isMetricElementEvent(d)) {
+                    const [rowIndex, columnIndex] = d.datumIndex;
+                    onEventClickAction(
+                      `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+                    );
+                  }
+                }
+              : undefined
+          }
+        />
         <Metric id="metric" data={configuredData} />
       </Chart>
     </div>
