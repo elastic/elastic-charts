@@ -11,12 +11,12 @@ import { ChangeContext, createStep, CustomCommandStep, commandStepDefaults } fro
 export const typeCheckStep = createStep<CustomCommandStep>((ctx) => {
   return {
     ...commandStepDefaults,
-    label: ':typescript: Type Check',
-    key: 'type_check',
+    label: ':typescript: Types',
+    key: 'types',
     skip: isSkippable(ctx),
     commands: ['npx ts-node .buildkite/scripts/steps/type_check.ts'],
     env: {
-      ECH_GH_STATUS_CONTEXT: 'Type Check',
+      ECH_CHECK_ID: 'types',
     },
   };
 });

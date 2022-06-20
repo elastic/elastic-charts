@@ -75,9 +75,7 @@ void (async () => {
       .map((step) => {
         const skip = 'steps' in step ? step.steps.every((s) => s.skip) : step.skip;
         const context = (
-          'steps' in step
-            ? step.steps.find((s) => s?.env?.ECH_GH_STATUS_CONTEXT)?.env?.ECH_GH_STATUS_CONTEXT
-            : step?.env?.ECH_GH_STATUS_CONTEXT
+          'steps' in step ? step.steps.find((s) => s?.env?.ECH_CHECK_ID)?.env?.ECH_CHECK_ID : step?.env?.ECH_CHECK_ID
         ) as string | undefined;
         return { skip, context };
       })
@@ -99,7 +97,7 @@ void (async () => {
         }
       });
 
-    const skipDeployStep = (steps.find(({ key }) => key === 'deploy') as CustomCommandStep)?.skip ?? false;
+    const skipDeployStep = (steps.find(({ key }) => key === 'deploy_fb') as CustomCommandStep)?.skip ?? false;
     await setMetadata(MetaDataKeys.skipDeployment, skipDeployStep ? 'true' : 'false');
     if (!skipDeployStep) {
       console.log('DEPLOYYING');

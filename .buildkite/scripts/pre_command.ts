@@ -9,11 +9,11 @@
 import { bkEnv, setStatus } from '../utils';
 
 void (async function () {
-  const { context, retryCount, jobUrl } = bkEnv;
+  const { checkId: checkId, retryCount, jobUrl } = bkEnv;
 
-  if (context) {
+  if (checkId) {
     await setStatus({
-      context,
+      context: checkId,
       state: 'pending',
       target_url: jobUrl,
       description: `Started${retryCount ? ` (retry #${retryCount})` : ''}`,

@@ -16,7 +16,7 @@ export const eslintStep = createStep<CustomCommandStep>((ctx) => {
     skip: isSkippable(ctx),
     commands: ['npx ts-node .buildkite/scripts/steps/eslint.ts'],
     env: {
-      ECH_GH_STATUS_CONTEXT: 'Eslint',
+      ECH_CHECK_ID: 'eslint',
     },
   };
 });

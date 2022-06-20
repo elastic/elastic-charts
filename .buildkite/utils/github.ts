@@ -133,7 +133,7 @@ const getDefaultDescription = async (state: OctokitParameters<'repos/create-comm
   if (state === 'error') return `Errored after ${timingStr} - see logs...`;
 };
 
-export const commitStatusIsPennding = async (context = bkEnv.context, userRef?: string): Promise<boolean> => {
+export const commitStatusIsPennding = async (context = bkEnv.checkId, userRef?: string): Promise<boolean> => {
   const ref = userRef ?? bkEnv.commit;
   if (!ref) throw new Error(`Failed to get status, no ref available`);
   if (!context) throw new Error(`Failed to set status, no context available`);
@@ -174,7 +174,7 @@ export const setStatus = async ({
   }
 };
 
-export const codeCheckIsPending = async (name = bkEnv.context, userRef?: string): Promise<boolean> => {
+export const codeCheckIsPending = async (name = bkEnv.checkId, userRef?: string): Promise<boolean> => {
   const ref = userRef ?? bkEnv.commit;
   if (!ref) throw new Error(`Failed to get status, no ref provided`);
   if (!name) throw new Error(`Failed to set status, no name provided`);

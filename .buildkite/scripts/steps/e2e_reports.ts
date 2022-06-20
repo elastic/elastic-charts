@@ -26,10 +26,10 @@ import {
 } from '../../utils';
 
 async function setGroupStatus() {
-  const { context, stepKey } = bkEnv;
+  const { checkId, stepKey } = bkEnv;
 
-  if (!context) {
-    console.warn('Error: no context found, skipping e2e group status');
+  if (!checkId) {
+    console.warn('Error: no checkId found, skipping e2e group status');
     return;
   }
 
@@ -50,7 +50,7 @@ async function setGroupStatus() {
       : `Successful in all ${e2eSteps.length} jobs`;
 
   await setStatus({
-    context,
+    context: checkId,
     description,
     state: failedSteps.length > 0 ? 'failure' : 'success',
     target_url: failedSteps.length === 1 ? failedSteps[0].url ?? bkEnv.buildUrl : bkEnv.buildUrl, // could set this to e2e-report

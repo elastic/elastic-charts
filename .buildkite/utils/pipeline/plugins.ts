@@ -10,7 +10,7 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-import { ECH_GH_STATUS_CONTEXT } from '../constants';
+import { ECH_CHECK_ID } from '../constants';
 
 const DOCKER_VERSION = '3.12.0';
 
@@ -29,7 +29,14 @@ export const PLAYWRIGHT_TEST_VERSION = (/@playwright\/test@(.+)$/.exec(yarnListP
 
 if (!PLAYWRIGHT_TEST_VERSION) throw new Error('Error: Unable to find version of @playwright/test');
 
-const environment = ['GITHUB_AUTH', 'BUILDKITE_TOKEN', 'FIREBASE_AUTH', ECH_GH_STATUS_CONTEXT];
+const environment = [
+  'GITHUB_AUTH',
+  'BUILDKITE_TOKEN',
+  'FIREBASE_AUTH',
+  ECH_CHECK_ID,
+  'GITHUB_PR_MAINTAINER_CAN_MODIFY',
+  'ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS',
+];
 
 export class Plugins {
   static docker = {

@@ -11,13 +11,13 @@ import { createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 export const firebaseDeployStep = createStep<CustomCommandStep>(() => {
   return {
     ...commandStepDefaults,
-    label: ':firebase: Deploy',
-    key: 'deploy',
+    label: ':firebase: Deploy - firebase',
+    key: 'deploy_fb',
     allow_dependency_failure: true,
-    depends_on: ['storybook', 'e2e_server', { step: 'playwright', allow_failure: true }],
+    depends_on: ['build_storybook', 'build_e2e', { step: 'playwright', allow_failure: true }],
     commands: ['npx ts-node .buildkite/scripts/steps/firebase_deploy.ts'],
     env: {
-      ECH_GH_STATUS_CONTEXT: 'Deploy - firebase',
+      ECH_CHECK_ID: 'deploy_fb',
     },
   };
 });

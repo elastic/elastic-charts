@@ -59,10 +59,10 @@ export const yarnInstall = (cwd?: string) => {
 };
 
 async function setFailedStatus(failureMsg?: string) {
-  if (bkEnv.context) {
+  if (bkEnv.checkId) {
     const description = failureMsg ?? `Failure in ${await getJobTimingStr()} - see logs...`;
     await setStatus({
-      context: bkEnv.context,
+      context: bkEnv.checkId,
       state: 'failure',
       target_url: bkEnv.jobUrl,
       description,

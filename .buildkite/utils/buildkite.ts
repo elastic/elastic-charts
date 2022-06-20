@@ -9,7 +9,7 @@
 import axios from 'axios';
 import { getBuildkiteEnv, getMetadata, setMetadata } from 'buildkite-agent-node';
 
-import { ECH_GH_STATUS_CONTEXT } from './constants';
+import { ECH_CHECK_ID } from './constants';
 import { exec } from './exec';
 
 export const uploadPipeline = (pipelineContent: any) => {
@@ -31,12 +31,14 @@ export const uploadPipeline = (pipelineContent: any) => {
 
 /**
  * Buildkite environment variables
+ *
+ * TODO clean this up with new custom API env build variables
  */
 export const bkEnv = (() => {
   const { pullRequest: _, branch: bkBranch, ...env } = getBuildkiteEnv();
   const branch = bkBranch && bkBranch.split(':').reverse()[0];
   const pullRequestNumber = getEnvNumber('BUILDKITE_PULL_REQUEST');
-  const context = getEnvString(ECH_GH_STATUS_CONTEXT);
+  const checkId = getEnvString(ECH_CHECK_ID);
   const isPullRequest = Boolean(pullRequestNumber);
   const updateScreenshots = isPullRequest ? process.env.UPDATE_SCREENSHOTS === 'true' : false;
   let username: string | undefined;
@@ -55,13 +57,19 @@ export const bkEnv = (() => {
      * Step context for commit status
      */
     branch,
-    context,
+    checkId,
     username,
     isPullRequest,
     updateScreenshots,
     pullRequestNumber,
     buildUrl: env.buildUrl,
+    canModifyPR: process.env.GITHUB_PR_MAINTAINER_CAN_MODIFY === 'true',
     jobUrl: env.jobId ? `${env.buildUrl}#${env.jobId}` : undefined,
+    steps: {
+      playwright: {
+        updateScreenshots: process.env.ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS === 'true',
+      },
+    },
   };
 })();
 

@@ -17,14 +17,14 @@ void (async () => {
   const outDir = 'e2e-server/public';
 
   const storybookSrc = '.buildkite/artifacts/storybook.gz';
-  downloadArtifacts(storybookSrc, 'storybook');
+  downloadArtifacts(storybookSrc, 'build_storybook');
   await decompress({
     src: storybookSrc,
     dest: outDir,
   });
 
   const e2eSrc = '.buildkite/artifacts/e2e_server.gz';
-  downloadArtifacts(e2eSrc, 'e2e_server');
+  downloadArtifacts(e2eSrc, 'build_e2e');
   await decompress({
     src: e2eSrc,
     dest: path.join(outDir, 'e2e'),

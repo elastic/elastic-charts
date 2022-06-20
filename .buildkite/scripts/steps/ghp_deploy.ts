@@ -15,7 +15,7 @@ void (async () => {
   const outDir = 'storybook/.out';
 
   const storybookSrc = '.buildkite/artifacts/storybook.gz';
-  downloadArtifacts(storybookSrc, 'storybook', undefined);
+  downloadArtifacts(storybookSrc, 'build_storybook', undefined);
   await decompress({
     src: storybookSrc,
     dest: outDir,

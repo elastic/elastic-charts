@@ -9,9 +9,9 @@
 import { bkEnv, buildkiteGQLQuery, commitStatusIsPennding, getJobMetadata, getJobTimingStr, setStatus } from '../utils';
 
 void (async function () {
-  const { context, jobId, jobUrl } = bkEnv;
+  const { checkId, jobId, jobUrl } = bkEnv;
 
-  if (context && jobId) {
+  if (checkId && jobId) {
     const jobStatus = await getJobStatus(jobId);
     console.log(JSON.stringify(jobStatus, null, 2));
 
@@ -21,7 +21,7 @@ void (async function () {
         const user = getCancelledBy(jobStatus.events ?? []);
         const description = user ? `Canceled by ${user} after ${timeingStr}` : `Canceled after ${timeingStr}`;
         await setStatus({
-          context,
+          context: checkId,
           state: 'error',
           target_url: jobUrl,
           description,
@@ -33,7 +33,7 @@ void (async function () {
         if (isFailedJob || (await commitStatusIsPennding())) {
           const state = isFailedJob ? 'failure' : 'success';
           await setStatus({
-            context,
+            context: checkId,
             state,
             target_url: jobUrl,
           });

@@ -11,11 +11,11 @@ import { createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 export const storybookStep = createStep<CustomCommandStep>(() => {
   return {
     ...commandStepDefaults,
-    label: ':storybook: Storybook build',
-    key: 'storybook',
+    label: ':storybook: Build - Storybook',
+    key: 'build_storybook',
     commands: ['npx ts-node .buildkite/scripts/steps/storybook.ts'],
     env: {
-      ECH_GH_STATUS_CONTEXT: 'Storybook build',
+      ECH_CHECK_ID: 'build_storybook',
     },
   };
 });
