@@ -593,7 +593,12 @@ export function computeRatioByGroups<T extends Record<string, unknown>>(data: T[
 export type ContinuousDomain = [min: number, max: number];
 
 // @public
-export type ControlProviderCallback = (controlName: string, controlFunction: (...args: unknown[]) => void) => void;
+export interface ControlReceiverCallbacks {
+    // (undocumented)
+    focusOnNode: (control: FocusOnNodeControl) => void;
+    // (undocumented)
+    resetFocus: (control: ResetFocusControl) => void;
+}
 
 // @public (undocumented)
 export interface CrosshairStyle {
@@ -1010,7 +1015,7 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
     // (undocumented)
     columnarData: ColumnarViewModel;
     // (undocumented)
-    controlProviderCallback: ControlProviderCallback;
+    controlProviderCallback: Partial<ControlReceiverCallbacks>;
     // (undocumented)
     specType: typeof SpecType.Series;
     // (undocumented)
@@ -1020,6 +1025,9 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
     // (undocumented)
     valueGetter: (datumIndex: number) => number;
 }
+
+// @public
+export type FocusOnNodeControl = (nodeIndex: number) => void;
 
 // @public (undocumented)
 export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "initial", "unset"];
@@ -2163,6 +2171,9 @@ export type RenderChangeListener = (isRendered: boolean) => void;
 
 // @public (undocumented)
 export type Rendering = 'canvas' | 'svg';
+
+// @public
+export type ResetFocusControl = () => void;
 
 // @public (undocumented)
 export type RGB = number;

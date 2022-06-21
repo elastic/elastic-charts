@@ -10,6 +10,7 @@ import { DateTime } from 'luxon';
 import { createStore, Store } from 'redux';
 
 import { ChartType } from '../..';
+import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SettingsSpec } from '../../../specs';
 import { SpecType, DEFAULT_SETTINGS_SPEC } from '../../../specs/constants';
@@ -226,8 +227,8 @@ describe('Render chart', () => {
     test('check scale values', () => {
       const xValues = [date1, date2, date3];
       const state = store.getState();
-      const { xScale } = getComputedScalesSelector(state);
-
+      const computedScales = getComputedScalesSelector(state);
+      const xScale = computedScales.xScale as ScaleContinuous;
       expect(xScale.minInterval).toBe(1000 * 60 * 5);
       expect(xScale.domain).toEqual([date1, date3]);
       expect(xScale.range).toEqual([0, 100]);

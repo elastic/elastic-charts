@@ -62,7 +62,7 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
           getChartIdSelector,
         ],
         (spec, lastClick: PointerState | null, settings: SettingsSpec, currentPointer, gridCell, chartId): void => {
-          if (!spec || gridCell === undefined) {
+          if (!spec) {
             return;
           }
 
@@ -70,15 +70,17 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
             prevPointerEvent = { chartId, type: PointerEventType.Out };
           }
           const tempPrev = { ...prevPointerEvent };
-          const nextPointerEvent = {
-            chartId: state.chartId,
-            type: currentPointer.x === -1 && currentPointer.y === -1 ? PointerEventType.Out : PointerEventType.Over,
-            scale: spec.xScale.type,
-            x: gridCell.x,
-            y: [{ value: gridCell.y }],
-            smHorizontalValue: null,
-            smVerticalValue: null,
-          } as PointerOverEvent;
+          const nextPointerEvent: PointerEvent = gridCell
+            ? {
+              chartId: state.chartId,
+              type: currentPointer.x === -1 && currentPointer.y === -1 ? PointerEventType.Out : PointerEventType.Over,
+              scale: spec.xScale.type,
+              x: gridCell.x,
+              y: [{ value: gridCell.y, groupId: '' }],
+              smHorizontalValue: null,
+              smVerticalValue: null,
+            }
+            : { chartId, type: PointerEventType.Out };
           // we have to update the prevPointerEvents before possibly calling the onPointerUpdate
           // to avoid a recursive loop of calls caused by the impossibility to update the prevPointerEvent
           prevPointerEvent = nextPointerEvent;

@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Scale } from '.';
 import { ScaleType } from './constants';
 import { ScaleBand } from './scale_band';
 import { ScaleContinuous } from './scale_continuous';
@@ -15,7 +14,7 @@ import { ScaleContinuous } from './scale_continuous';
  * Check if a scale is logaritmic
  * @internal
  */
-export function isLogarithmicScale(scale: Scale<number | string>): scale is ScaleContinuous {
+export function isLogarithmicScale(scale: ScaleContinuous) {
   return scale.type === ScaleType.Log;
 }
 
@@ -23,7 +22,7 @@ export function isLogarithmicScale(scale: Scale<number | string>): scale is Scal
  * Check if a scale is Band
  * @internal
  */
-export function isBandScale<T extends number | string>(scale: Scale<T>): scale is ScaleBand<T> {
+export function isBandScale(scale: ScaleContinuous | ScaleBand): scale is ScaleBand {
   return scale.type === ScaleType.Ordinal;
 }
 
@@ -31,7 +30,7 @@ export function isBandScale<T extends number | string>(scale: Scale<T>): scale i
  * Check if a scale is continuous
  * @internal
  */
-export function isContinuousScale(scale: Scale<number | string>): scale is ScaleContinuous {
+export function isContinuousScale(scale: ScaleContinuous | ScaleBand): scale is ScaleContinuous {
   return scale.type !== ScaleType.Ordinal;
 }
 

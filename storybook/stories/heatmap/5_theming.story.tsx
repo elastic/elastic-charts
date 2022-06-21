@@ -68,6 +68,7 @@ export const Example = () => {
     grid: {
       stroke: {
         color: color('grid stroke color', 'gray', 'Theme'),
+        width: number('grid stroke width', 1, { range: true, min: 0, max: 10, step: 1 }, 'Theme'),
       },
     },
     cell: {
@@ -79,7 +80,7 @@ export const Example = () => {
         maxFontSize: number('cell label max fontSize', 12, { step: 1, min: 10, max: 64, range: true }, 'Theme'),
       },
       border: {
-        strokeWidth: number('border strokeWidth', 1, { range: true, min: 1, max: 5 }, 'Theme'),
+        strokeWidth: number('border strokeWidth', 0, { range: true, min: 0, max: 5 }, 'Theme'),
         stroke: color('border stroke color', 'gray', 'Theme'),
       },
     },

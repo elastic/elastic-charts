@@ -183,9 +183,9 @@ describe('Scale Test', () => {
       { bandwidth, minInterval: 1 },
     );
     const ordinalScale = new ScaleBand(domainOrdinal, [minRange, maxRange]);
-    expect(ordinalScale.invertWithStep(0)).toEqual({ value: 0, withinBandwidth: true });
-    expect(ordinalScale.invertWithStep(40)).toEqual({ value: 1, withinBandwidth: true });
-    expect(ordinalScale.invertWithStep(80)).toEqual({ value: 2, withinBandwidth: true });
+    expect(ordinalScale.invert(0)).toEqual(0);
+    expect(ordinalScale.invert(40)).toEqual(1);
+    expect(ordinalScale.invert(80)).toEqual(2);
     // linear scale have 1 pixel difference...
     expect(linearScale.invertWithStep(0, data)).toEqual({ value: 0, withinBandwidth: true });
     expect(linearScale.invertWithStep(41, data)).toEqual({ value: 1, withinBandwidth: true });
@@ -213,9 +213,9 @@ describe('Scale Test', () => {
     expect(linearScale.scale(0)).toBe(0);
     expect(linearScale.scale(1)).toBe(50);
 
-    expect(ordinalScale.invertWithStep(0)).toEqual({ value: 0, withinBandwidth: true });
-    expect(ordinalScale.invertWithStep(50)).toEqual({ value: 1, withinBandwidth: true });
-    expect(ordinalScale.invertWithStep(100)).toEqual({ value: 1, withinBandwidth: true });
+    expect(ordinalScale.invert(0)).toEqual(0);
+    expect(ordinalScale.invert(50)).toEqual(1);
+    expect(ordinalScale.invert(100)).toEqual(1);
     // linear scale have 1 pixel difference...
     expect(linearScale.invertWithStep(0, dataLinear)).toEqual({ value: 0, withinBandwidth: true });
     expect(linearScale.invertWithStep(51, dataLinear)).toEqual({ value: 1, withinBandwidth: true });

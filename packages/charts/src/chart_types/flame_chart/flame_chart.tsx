@@ -70,7 +70,6 @@ const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i
 });
 
 interface FocusRect {
-  timestamp: number;
   x0: number;
   x1: number;
   y0: number;
@@ -101,11 +100,7 @@ const focusRect = (
   columnarViewModel: FlameSpec['columnarData'],
   chartHeight: number,
   drilldownDatumIndex: number,
-  drilldownTimestamp: number,
-): FocusRect => ({
-  timestamp: drilldownTimestamp,
-  ...focusForArea(chartHeight, columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0)),
-});
+): FocusRect => focusForArea(chartHeight, columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0));
 
 const getColor = (c: Float32Array, i: number) => {
   const r = Math.round(255 * c[4 * i]);
@@ -136,6 +131,7 @@ const isAttributeKey = (keyCandidate: string): keyCandidate is keyof typeof attr
 
 interface StateProps {
   columnarViewModel: FlameSpec['columnarData'];
+  controlProviderCallback: FlameSpec['controlProviderCallback'];
   animationDuration: number;
   chartDimensions: Size;
   a11ySettings: ReturnType<typeof getA11ySettingsSelector>;
@@ -203,6 +199,10 @@ class FlameComponent extends React.Component<FlameProps> {
   private wobbleTimeLeft = 0;
   private wobbleIndex = NaN;
 
+  // navigation
+  private navQueue: number[] = [0];
+  private navIndex = 0;
+
   constructor(props: Readonly<FlameProps>) {
     super(props);
     const columns = this.props.columnarViewModel;
@@ -223,8 +223,9 @@ class FlameComponent extends React.Component<FlameProps> {
     if (datumCount !== columns.label.length)
       throw new Error('flame error: Mismatch between position1 (xy) and label length');
 
-    this.currentFocus = focusRect(columns, props.chartDimensions.height, 0, -Infinity);
-    this.targetFocus = { ...this.currentFocus };
+    this.targetFocus = this.getFocusOnRoot();
+    this.bindControls();
+    this.currentFocus = { ...this.targetFocus };
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
@@ -233,6 +234,42 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // search
     this.currentColor = columns.color;
+  }
+
+  private bindControls() {
+    const { controlProviderCallback } = this.props;
+    if (controlProviderCallback.resetFocus) {
+      controlProviderCallback.resetFocus(() => this.resetFocus());
+    }
+    if (controlProviderCallback.focusOnNode) {
+      controlProviderCallback.focusOnNode((nodeIndex: number) => {
+        if (this.navQueue[this.navIndex] !== nodeIndex) this.navQueue.splice(++this.navIndex, Infinity, nodeIndex);
+        this.focusOnNode(nodeIndex);
+      });
+    }
+  }
+
+  private resetFocus() {
+    if (this.navQueue[this.navIndex] !== 0) this.navQueue.splice(++this.navIndex, Infinity, 0);
+    this.targetFocus = this.getFocusOnRoot();
+    this.wobble(0);
+  }
+
+  private focusOnNode(nodeIndex: number) {
+    this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, nodeIndex);
+    this.wobble(nodeIndex);
+  }
+
+  private wobble(nodeIndex: number) {
+    this.wobbleTimeLeft = WOBBLE_DURATION;
+    this.wobbleIndex = nodeIndex;
+    this.prevT = NaN;
+    this.hoverIndex = NaN; // no highlight
+    this.setState({});
+  }
+
+  private getFocusOnRoot() {
+    return focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, 0);
   }
 
   private setupDevicePixelRatioChangeListener = () => {
@@ -286,6 +323,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   componentDidUpdate = () => {
     if (!this.ctx) this.tryCanvasContext();
+    this.bindControls();
     this.ensureTextureAndDraw();
     // eg. due to chartDimensions (parentDimensions) change
     // this.props.onChartRendered() // creates and infinite update loop
@@ -305,11 +343,10 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pointerY = e.clientY - box.top;
   }
 
-  private getHoveredDatumIndex = (e: { timeStamp: number }) => {
+  private getHoveredDatumIndex = () => {
     const pr = window.devicePixelRatio * this.pinchZoomScale;
     return {
       datumIndex: this.datumAtXY(pr * this.pointerX, pr * (this.props.chartDimensions.height - this.pointerY)),
-      timestamp: e.timeStamp,
     };
   };
 
@@ -321,7 +358,7 @@ class FlameComponent extends React.Component<FlameProps> {
     if (!this.isDragging(e)) {
       e.stopPropagation();
       this.updatePointerLocation(e);
-      const hovered = this.getHoveredDatumIndex(e);
+      const hovered = this.getHoveredDatumIndex();
       const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN;
       if (hovered) {
         this.hoverIndex = hovered.datumIndex;
@@ -340,7 +377,6 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseDragMove = (e: {
     stopPropagation: () => void;
-    timeStamp: number;
     buttons: number;
     clientX: number;
     clientY: number;
@@ -378,7 +414,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const newX1 = clamp(this.startOfDragFocusLeft + focusWidth + deltaX, 0, 1); // to avoid negligible FP domain breaches
       const newY0 = clamp(this.startOfDragFocusTop + deltaY, 0, 1); // to avoid negligible FP domain breaches
       const newY1 = clamp(this.startOfDragFocusTop + focusHeight + deltaY, 0, 1); // to avoid negligible FP domain breaches
-      const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1, timestamp: e.timeStamp };
+      const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1 };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
       this.smartDraw();
@@ -407,7 +443,6 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseUp = (e: {
     stopPropagation: () => void;
-    timeStamp: number;
     buttons: number;
     clientX: number;
     clientY: number;
@@ -420,23 +455,15 @@ class FlameComponent extends React.Component<FlameProps> {
     const dragDistanceX = this.getDragDistanceX(); // zero or NaN means that a non-zero drag didn't happen
     const dragDistanceY = this.getDragDistanceY(); // zero or NaN means that a non-zero drag didn't happen
     if (!dragDistanceX && !dragDistanceY) {
-      const hovered = this.getHoveredDatumIndex(e);
+      const hovered = this.getHoveredDatumIndex();
       const isDoubleClick = e.detail > 1;
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
       if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
-        this.targetFocus = focusRect(
-          this.props.columnarViewModel,
-          this.props.chartDimensions.height,
-          hovered.datumIndex,
-          hovered.timestamp,
-        );
-        this.wobbleTimeLeft = WOBBLE_DURATION;
-        this.wobbleIndex = hovered.datumIndex;
-        this.prevT = NaN;
-        this.hoverIndex = NaN; // no highlight
-        this.setState({});
-        this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
+        const { datumIndex } = hovered;
+        if (this.navQueue[this.navIndex] !== datumIndex) this.navQueue.splice(++this.navIndex, Infinity, datumIndex);
+        this.focusOnNode(datumIndex);
+        this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
       }
     }
     this.clearDrag();
@@ -493,7 +520,6 @@ class FlameComponent extends React.Component<FlameProps> {
         x1: xZoom ? newX1 : x1,
         y0: yZoom ? newY0 : y0,
         y1: yZoom ? newY1 : y1,
-        timestamp: e.timeStamp,
       };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
@@ -564,9 +590,9 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     if (e.key === 'Enter') {
       if (e.shiftKey) {
-        this.previousHit(e);
+        this.previousHit();
       } else {
-        this.nextHit(e);
+        this.nextHit();
       }
       return true;
     }
@@ -588,7 +614,7 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  private focusOnHit = (timestamp: number) => {
+  private focusOnHit = () => {
     if (Number.isNaN(this.focusedMatchIndex)) {
       // resetting to focus on everything
       this.focusOnAllMatches();
@@ -609,12 +635,7 @@ class FlameComponent extends React.Component<FlameProps> {
         }
       }
       if (hitEnumerator >= 0) {
-        this.targetFocus = focusRect(
-          this.props.columnarViewModel,
-          this.props.chartDimensions.height,
-          datumIndex,
-          timestamp,
-        );
+        this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
         this.wobbleTimeLeft = WOBBLE_DURATION;
@@ -623,7 +644,7 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  private previousHit = ({ timeStamp }: { timeStamp: number }) => {
+  private previousHit = () => {
     const hitCount = this.currentSearchHitCount;
     if (!this.currentSearchString || hitCount === 0) return;
     this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
@@ -631,11 +652,11 @@ class FlameComponent extends React.Component<FlameProps> {
       : this.focusedMatchIndex === 0
       ? NaN
       : this.focusedMatchIndex - 1;
-    this.focusOnHit(timeStamp);
+    this.focusOnHit();
     this.setState({});
   };
 
-  private nextHit = ({ timeStamp }: { timeStamp: number }) => {
+  private nextHit = () => {
     const hitCount = this.currentSearchHitCount;
     if (!this.currentSearchString || hitCount === 0) return;
     this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
@@ -643,9 +664,13 @@ class FlameComponent extends React.Component<FlameProps> {
       : this.focusedMatchIndex === hitCount - 1
       ? NaN
       : this.focusedMatchIndex + 1;
-    this.focusOnHit(timeStamp);
+    this.focusOnHit();
     this.setState({});
   };
+
+  private isAtHomePosition = () => this.targetFocus.x0 === 0 && this.targetFocus.x1 === 1 && this.targetFocus.y1 === 1;
+  private canNavigateForward = () => this.navIndex < this.navQueue.length - 1;
+  private canNavigateBackward = () => this.navQueue.length > 0 && this.navIndex > 0;
 
   render = () => {
     const {
@@ -706,6 +731,65 @@ class FlameComponent extends React.Component<FlameProps> {
             transform: `translateY(${this.props.chartDimensions.height - PADDING_BOTTOM + 4}px)`,
           }}
         >
+          <label
+            title="Navigate back"
+            style={{
+              color: this.canNavigateBackward() ? 'black' : 'darkgrey',
+              fontWeight: 'bolder',
+              paddingLeft: 16,
+              paddingRight: 4,
+            }}
+          >
+            ᐸ
+            <input
+              type="button"
+              tabIndex={0}
+              onClick={() => {
+                if (!this.canNavigateBackward()) return;
+                this.focusOnNode(this.navQueue[--this.navIndex]);
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <label
+            title="Reset"
+            style={{
+              color: this.isAtHomePosition() ? 'darkgray' : 'black',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+            }}
+          >
+            ▲
+            <input
+              type="button"
+              tabIndex={0}
+              onClick={() => {
+                if (this.isAtHomePosition()) return;
+                this.resetFocus();
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <label
+            title="Navigate forward"
+            style={{
+              color: this.canNavigateForward() ? 'black' : 'darkgray',
+              fontWeight: 'bolder',
+              paddingLeft: 4,
+              paddingRight: 16,
+            }}
+          >
+            ᐳ
+            <input
+              type="button"
+              tabIndex={0}
+              onClick={() => {
+                if (!this.canNavigateForward()) return;
+                this.focusOnNode(this.navQueue[++this.navIndex]);
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
           <input
             ref={this.searchInputRef}
             title="Search string or regex pattern"
@@ -736,7 +820,7 @@ class FlameComponent extends React.Component<FlameProps> {
           >
             Cc
             <input
-              type="checkbox"
+              type="button"
               tabIndex={0}
               onClick={() => {
                 if (!this.currentSearchString) return;
@@ -761,7 +845,7 @@ class FlameComponent extends React.Component<FlameProps> {
           >
             . *
             <input
-              type="checkbox"
+              type="button"
               tabIndex={0}
               onClick={() => {
                 if (!this.currentSearchString) return;
@@ -783,7 +867,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ◀
-            <input type="checkbox" tabIndex={0} onClick={this.previousHit} style={{ display: 'none' }} />
+            <input type="button" tabIndex={0} onClick={this.previousHit} style={{ display: 'none' }} />
           </label>
           <label
             title="Next hit"
@@ -796,7 +880,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ▶
-            <input type="checkbox" tabIndex={0} onClick={this.nextHit} style={{ display: 'none' }} />
+            <input type="button" tabIndex={0} onClick={this.nextHit} style={{ display: 'none' }} />
           </label>
 
           <p
@@ -1007,6 +1091,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const settingsSpec = getSettingsSpecSelector(state);
   return {
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
+    controlProviderCallback: flameSpec?.controlProviderCallback ?? {},
     animationDuration: flameSpec?.animation.duration ?? 0,
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
