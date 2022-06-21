@@ -129,6 +129,7 @@ export async function buildkiteGQLQuery<Response = any>(query: string) {
 
 export const getJobMetadata = async (prop: string) => {
   console.log('getJobMetadata:', prop);
+  console.log('getMetadataKeys:', await getMetadataKeys());
 
   try {
     const value = await getMetadata(`${bkEnv.jobId}__${prop}`);
@@ -151,7 +152,7 @@ export const setJobMetadata = async (prop: string, value: string) => {
     throw error;
   }
 
-  console.log(await getMetadataKeys());
+  console.log('getMetadataKeys:', await getMetadataKeys());
 };
 
 export async function getJobTiming(jobId = bkEnv.jobId) {

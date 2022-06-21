@@ -182,7 +182,7 @@ export const updateCheckStatus = async (
   if (process.env.BLOCK_REQUESTS || !checkId) return;
   console.log(bkEnv.jobUrl);
   // @ts-ignore test
-  console.trace(checkId, options.status, options.conclusion);
+  console.trace(checkId, options.status, options?.conclusion);
 
   if (!cacheFilled) await fillCheckRunCache();
   const checkRun = checkRunCache.get(checkId);
