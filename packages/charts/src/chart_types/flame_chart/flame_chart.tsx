@@ -70,7 +70,6 @@ const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i
 });
 
 interface FocusRect {
-  timestamp: number;
   x0: number;
   x1: number;
   y0: number;
@@ -101,11 +100,7 @@ const focusRect = (
   columnarViewModel: FlameSpec['columnarData'],
   chartHeight: number,
   drilldownDatumIndex: number,
-  drilldownTimestamp: number,
-): FocusRect => ({
-  timestamp: drilldownTimestamp,
-  ...focusForArea(chartHeight, columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0)),
-});
+): FocusRect => focusForArea(chartHeight, columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0));
 
 const getColor = (c: Float32Array, i: number) => {
   const r = Math.round(255 * c[4 * i]);
@@ -257,7 +252,7 @@ class FlameComponent extends React.Component<FlameProps> {
   }
 
   private getFocusOnRoot() {
-    return focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, 0, -Infinity);
+    return focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, 0);
   }
 
   private setupDevicePixelRatioChangeListener = () => {
@@ -330,11 +325,10 @@ class FlameComponent extends React.Component<FlameProps> {
     this.pointerY = e.clientY - box.top;
   }
 
-  private getHoveredDatumIndex = (e: { timeStamp: number }) => {
+  private getHoveredDatumIndex = () => {
     const pr = window.devicePixelRatio * this.pinchZoomScale;
     return {
       datumIndex: this.datumAtXY(pr * this.pointerX, pr * (this.props.chartDimensions.height - this.pointerY)),
-      timestamp: e.timeStamp,
     };
   };
 
@@ -346,7 +340,7 @@ class FlameComponent extends React.Component<FlameProps> {
     if (!this.isDragging(e)) {
       e.stopPropagation();
       this.updatePointerLocation(e);
-      const hovered = this.getHoveredDatumIndex(e);
+      const hovered = this.getHoveredDatumIndex();
       const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN;
       if (hovered) {
         this.hoverIndex = hovered.datumIndex;
@@ -365,7 +359,6 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseDragMove = (e: {
     stopPropagation: () => void;
-    timeStamp: number;
     buttons: number;
     clientX: number;
     clientY: number;
@@ -403,7 +396,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const newX1 = clamp(this.startOfDragFocusLeft + focusWidth + deltaX, 0, 1); // to avoid negligible FP domain breaches
       const newY0 = clamp(this.startOfDragFocusTop + deltaY, 0, 1); // to avoid negligible FP domain breaches
       const newY1 = clamp(this.startOfDragFocusTop + focusHeight + deltaY, 0, 1); // to avoid negligible FP domain breaches
-      const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1, timestamp: e.timeStamp };
+      const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1 };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
       this.smartDraw();
@@ -432,7 +425,6 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseUp = (e: {
     stopPropagation: () => void;
-    timeStamp: number;
     buttons: number;
     clientX: number;
     clientY: number;
@@ -445,7 +437,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const dragDistanceX = this.getDragDistanceX(); // zero or NaN means that a non-zero drag didn't happen
     const dragDistanceY = this.getDragDistanceY(); // zero or NaN means that a non-zero drag didn't happen
     if (!dragDistanceX && !dragDistanceY) {
-      const hovered = this.getHoveredDatumIndex(e);
+      const hovered = this.getHoveredDatumIndex();
       const isDoubleClick = e.detail > 1;
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
@@ -454,7 +446,6 @@ class FlameComponent extends React.Component<FlameProps> {
           this.props.columnarViewModel,
           this.props.chartDimensions.height,
           hovered.datumIndex,
-          hovered.timestamp,
         );
         this.wobble();
         this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
@@ -514,7 +505,6 @@ class FlameComponent extends React.Component<FlameProps> {
         x1: xZoom ? newX1 : x1,
         y0: yZoom ? newY0 : y0,
         y1: yZoom ? newY1 : y1,
-        timestamp: e.timeStamp,
       };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
@@ -585,9 +575,9 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     if (e.key === 'Enter') {
       if (e.shiftKey) {
-        this.previousHit(e);
+        this.previousHit();
       } else {
-        this.nextHit(e);
+        this.nextHit();
       }
       return true;
     }
@@ -609,7 +599,7 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  private focusOnHit = (timestamp: number) => {
+  private focusOnHit = () => {
     if (Number.isNaN(this.focusedMatchIndex)) {
       // resetting to focus on everything
       this.focusOnAllMatches();
@@ -630,12 +620,7 @@ class FlameComponent extends React.Component<FlameProps> {
         }
       }
       if (hitEnumerator >= 0) {
-        this.targetFocus = focusRect(
-          this.props.columnarViewModel,
-          this.props.chartDimensions.height,
-          datumIndex,
-          timestamp,
-        );
+        this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
         this.wobbleTimeLeft = WOBBLE_DURATION;
@@ -644,7 +629,7 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   };
 
-  private previousHit = ({ timeStamp }: { timeStamp: number }) => {
+  private previousHit = () => {
     const hitCount = this.currentSearchHitCount;
     if (!this.currentSearchString || hitCount === 0) return;
     this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
@@ -652,11 +637,11 @@ class FlameComponent extends React.Component<FlameProps> {
       : this.focusedMatchIndex === 0
       ? NaN
       : this.focusedMatchIndex - 1;
-    this.focusOnHit(timeStamp);
+    this.focusOnHit();
     this.setState({});
   };
 
-  private nextHit = ({ timeStamp }: { timeStamp: number }) => {
+  private nextHit = () => {
     const hitCount = this.currentSearchHitCount;
     if (!this.currentSearchString || hitCount === 0) return;
     this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
@@ -664,7 +649,7 @@ class FlameComponent extends React.Component<FlameProps> {
       : this.focusedMatchIndex === hitCount - 1
       ? NaN
       : this.focusedMatchIndex + 1;
-    this.focusOnHit(timeStamp);
+    this.focusOnHit();
     this.setState({});
   };
 
