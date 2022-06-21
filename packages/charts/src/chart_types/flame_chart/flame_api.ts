@@ -26,7 +26,9 @@ export type ResetFocusControl = () => void; // takes no arguments
 export type FocusOnNodeControl = (nodeIndex: number) => void; // takes no arguments
 
 /**
- * Provides direct controls for the Flame component user
+ * Provides direct controls for the Flame component user.
+ * The call site supplied callback function is invoked on the chart component initialization as well as on component update,
+ * so the callback must be idempotent.
  * @public
  */
 export interface ControlReceiverCallbacks {
