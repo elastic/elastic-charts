@@ -62,7 +62,7 @@ async function setGroupStatus() {
 
 async function commitNewScreenshots() {
   startGroup('Committing updated screenshots from e2e jobs');
-  downloadArtifacts('.buildkite/artifacts/screenshot_meta/*', 'playwright__parallel-step');
+  await downloadArtifacts('.buildkite/artifacts/screenshot_meta/*', 'playwright__parallel-step');
 
   const screenshotMetaDir = '.buildkite/artifacts/screenshot_meta';
   const metaFiles = fs.readdirSync(screenshotMetaDir);
@@ -79,7 +79,7 @@ async function commitNewScreenshots() {
   console.log(`Updating ${updatedFilePaths.length} screenshot${updatedFilePaths.length === 1 ? '' : 's'}:
   - ${updatedFilePaths.join('\n  - ')}`);
 
-  downloadArtifacts('.buildkite/artifacts/screenshots/*', 'playwright__parallel-step');
+  await downloadArtifacts('.buildkite/artifacts/screenshots/*', 'playwright__parallel-step');
   const screenshotDir = '.buildkite/artifacts/screenshots';
   const files = fs.readdirSync(screenshotDir);
 
@@ -95,13 +95,13 @@ async function commitNewScreenshots() {
       }),
     ),
   );
-  exec('git status');
+  await exec('git status');
 
   // TODO make this shared across GitHub bot app
   const botName = 'elastic-datavis[bot]';
   const botUid = 98618603;
-  exec(`git config user.name "${botName}"`);
-  exec(`git config user.email "${botUid}+${botName}@users.noreply.github.com"`);
+  await exec(`git config user.name "${botName}"`);
+  await exec(`git config user.email "${botUid}+${botName}@users.noreply.github.com"`);
 
   const { token } = (await octokit.auth({
     type: 'installation',
@@ -112,17 +112,17 @@ async function commitNewScreenshots() {
   }/elastic-charts.git`;
 
   const message = `test(vrt): update screenshots [skip ci]`;
-  exec('git add e2e/screenshots');
-  exec(`git commit -m "${message}"`);
-  exec(`git push ${remoteUrl} HEAD:${bkEnv.branch}`); // HEAD:* required when detached from HEAD
+  await exec('git add e2e/screenshots');
+  await exec(`git commit -m "${message}"`);
+  await exec(`git push ${remoteUrl} HEAD:${bkEnv.branch}`); // HEAD:* required when detached from HEAD
 }
 
 void (async () => {
-  yarnInstall('e2e');
+  await yarnInstall('e2e');
 
   await setGroupStatus();
 
-  downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
+  await downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
 
   const reportDir = '.buildkite/artifacts/e2e_reports';
   const files = fs.readdirSync(reportDir);
@@ -139,7 +139,7 @@ void (async () => {
 
   startGroup('Merging e2e reports');
 
-  exec('npx ts-node ./merge_html_reports.ts', {
+  await exec('npx ts-node ./merge_html_reports.ts', {
     cwd: 'e2e',
     env: {
       HTML_REPORT_DIR: 'merged_html_report',

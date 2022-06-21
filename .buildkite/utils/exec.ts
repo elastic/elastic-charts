@@ -24,7 +24,7 @@ interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
  * Wrapper for execSync to catch and handle errors.
  * Runs commands from repo root directory.
  */
-export const exec = (
+export const exec = async (
   command: string,
   { input, cwd, failureMsg, onFailure, onSuccess, env, stdio = ['pipe', 'inherit', 'inherit'] }: ExecOptions = {},
 ) => {
@@ -45,27 +45,22 @@ export const exec = (
     return result;
   } catch (error) {
     console.error(`Failed to run command: [${command}]`);
-    void setJobMetadata('failed', 'true');
+    await setJobMetadata('failed', 'true');
     onFailure?.();
-    try {
-      void updateCheckStatus(
-        {
-          status: 'completed',
-          conclusion: 'failure',
-        },
-        undefined,
-        failureMsg,
-      );
-    } catch (error) {
-      console.log('updateCheckStatus');
-      console.error(error);
-    }
+    await updateCheckStatus(
+      {
+        status: 'completed',
+        conclusion: 'failure',
+      },
+      undefined,
+      failureMsg,
+    );
 
     throw error;
   }
 };
 
-export const yarnInstall = (cwd?: string) => {
+export const yarnInstall = async (cwd?: string) => {
   startGroup(`Installing node modules${cwd ? ` [${cwd}]` : ''}`);
-  exec('yarn install --frozen-lockfile', { cwd });
+  await exec('yarn install --frozen-lockfile', { cwd });
 };

@@ -8,8 +8,10 @@
 
 import { exec, startGroup, yarnInstall } from '../../utils';
 
-yarnInstall();
+void (async () => {
+  await yarnInstall();
 
-startGroup('Running prettier checks');
+  startGroup('Running prettier checks');
 
-exec('yarn prettier:check');
+  await exec('yarn prettier:check');
+})();

@@ -37,9 +37,9 @@ if (jobIndex !== null && jobTotal !== null) {
 }
 
 async function compressNewScreenshots() {
-  exec('git add e2e/screenshots');
+  await exec('git add e2e/screenshots');
 
-  const output = exec(`git --no-pager diff --cached --name-only --diff-filter=ACMRU e2e/screenshots | cat`, {
+  const output = await exec(`git --no-pager diff --cached --name-only --diff-filter=ACMRU e2e/screenshots | cat`, {
     stdio: 'pipe',
   });
   const updatedScreenshotFiles = output.trim().split(/\n/).filter(Boolean);
@@ -75,21 +75,20 @@ async function compressNewScreenshots() {
 }
 
 void (async () => {
-  yarnInstall('e2e');
-
+  await yarnInstall('e2e');
   const src = '.buildkite/artifacts/e2e_server.gz';
-  downloadArtifacts(src, 'build_e2e');
+  await downloadArtifacts(src, 'build_e2e');
   await decompress({
     src,
     dest: 'e2e/server',
   });
 
   startGroup('Check Architecture');
-  exec('arch');
+  await exec('arch');
 
   startGroup('Generating test examples.json');
   // TODO Fix this duplicate script that allows us to skip root node install on all e2e test runners
-  exec('node ./e2e/scripts/extract_examples.js');
+  await exec('node ./e2e/scripts/extract_examples.js');
 
   startGroup('Running e2e playwright job');
   const reportDir = `reports/report_${shardIndex}`;
@@ -107,7 +106,7 @@ void (async () => {
   const command = `yarn playwright test ${pwFlags.join(' ')}`;
 
   try {
-    exec(command, {
+    await exec(command, {
       cwd: 'e2e',
       env: {
         [ENV_URL]: 'http://127.0.0.1:9002',

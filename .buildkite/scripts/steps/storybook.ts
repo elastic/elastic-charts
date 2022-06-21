@@ -9,12 +9,12 @@
 import { bkEnv, compress, createDeploymentStatus, exec, startGroup, yarnInstall } from '../../utils';
 
 void (async () => {
-  yarnInstall();
+  await yarnInstall();
 
   await createDeploymentStatus({ state: 'pending' });
 
   startGroup('Building storybook');
-  exec('yarn build', {
+  await exec('yarn build', {
     cwd: 'storybook',
     env: {
       NODE_ENV: bkEnv.branch === 'master' ? 'production' : 'development',

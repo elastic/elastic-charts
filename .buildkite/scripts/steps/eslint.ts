@@ -21,19 +21,21 @@ const hasLintConfigChanges = changes.files.has([
   'package.json',
 ]);
 
-yarnInstall();
+void (async () => {
+  await yarnInstall();
 
-if (bkEnv.isPullRequest && !hasLintConfigChanges) {
-  const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
+  if (bkEnv.isPullRequest && !hasLintConfigChanges) {
+    const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
 
-  if (filesToLint.length > 0) {
+    if (filesToLint.length > 0) {
+      startGroup('Running eslint checks');
+
+      await exec('yarn lint:it', {
+        input: filesToLint,
+      });
+    }
+  } else {
     startGroup('Running eslint checks');
-
-    exec('yarn lint:it', {
-      input: filesToLint,
-    });
+    await exec('yarn lint');
   }
-} else {
-  startGroup('Running eslint checks');
-  exec('yarn lint');
-}
+})();

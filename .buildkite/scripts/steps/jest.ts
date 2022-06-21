@@ -8,8 +8,10 @@
 
 import { exec, startGroup, yarnInstall } from '../../utils';
 
-yarnInstall();
+void (async () => {
+  await yarnInstall();
 
-startGroup('Running jest tests');
+  startGroup('Running jest tests');
 
-exec('yarn test --coverage');
+  await exec('yarn test --coverage');
+})();

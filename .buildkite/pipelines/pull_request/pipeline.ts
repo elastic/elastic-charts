@@ -106,7 +106,7 @@ void (async () => {
 
     pipeline.steps = steps;
 
-    uploadPipeline(pipeline);
+    await uploadPipeline(pipeline);
   } catch (error) {
     console.log(error);
     process.exit(1);

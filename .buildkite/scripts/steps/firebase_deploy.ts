@@ -17,21 +17,21 @@ void (async () => {
   const outDir = 'e2e-server/public';
 
   const storybookSrc = '.buildkite/artifacts/storybook.gz';
-  downloadArtifacts(storybookSrc, 'build_storybook');
+  await downloadArtifacts(storybookSrc, 'build_storybook');
   await decompress({
     src: storybookSrc,
     dest: outDir,
   });
 
   const e2eSrc = '.buildkite/artifacts/e2e_server.gz';
-  downloadArtifacts(e2eSrc, 'build_e2e');
+  await downloadArtifacts(e2eSrc, 'build_e2e');
   await decompress({
     src: e2eSrc,
     dest: path.join(outDir, 'e2e'),
   });
 
   const e2eReportSrc = '.buildkite/artifacts/merged_html_report.gz';
-  downloadArtifacts(e2eReportSrc, 'playwright_merge_and_status');
+  await downloadArtifacts(e2eReportSrc, 'playwright_merge_and_status');
   await decompress({
     src: e2eReportSrc,
     dest: path.join(outDir, 'e2e-report'),

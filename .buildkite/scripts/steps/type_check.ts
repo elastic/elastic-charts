@@ -8,8 +8,10 @@
 
 import { exec, startGroup, yarnInstall } from '../../utils';
 
-yarnInstall();
+void (async () => {
+  await yarnInstall();
 
-startGroup('Running type checks');
+  startGroup('Running type checks');
 
-exec('yarn typecheck:all');
+  await exec('yarn typecheck:all');
+})();

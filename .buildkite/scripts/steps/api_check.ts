@@ -8,6 +8,8 @@
 
 import { exec, yarnInstall } from '../../utils';
 
-yarnInstall();
+void (async () => {
+  await yarnInstall();
 
-exec('yarn api:check');
+  await exec('yarn api:check');
+})();

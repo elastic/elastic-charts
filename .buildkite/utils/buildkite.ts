@@ -12,7 +12,7 @@ import { getBuildkiteEnv, getMetadata, setMetadata, getMetadataKeys } from 'buil
 import { ECH_CHECK_ID } from './constants';
 import { exec } from './exec';
 
-export const uploadPipeline = (pipelineContent: any) => {
+export const uploadPipeline = async (pipelineContent: any) => {
   const str = typeof pipelineContent === 'string' ? pipelineContent : JSON.stringify(pipelineContent);
 
   if (process.env.TEST_BK_PIPELINE) {
@@ -24,7 +24,7 @@ export const uploadPipeline = (pipelineContent: any) => {
     console.log(JSON.stringify(JSON.parse(str), null, 2));
   }
 
-  exec('buildkite-agent pipeline upload', {
+  await exec('buildkite-agent pipeline upload', {
     input: str,
   });
 };
@@ -79,19 +79,19 @@ export const bkEnv = (() => {
  */
 export const startGroup = (msg: string) => console.log(`--- ${msg}`);
 
-export const downloadArtifacts = (query: string, step?: string, destination = '.', build?: string) => {
+export const downloadArtifacts = async (query: string, step?: string, destination = '.', build?: string) => {
   startGroup(`Downloading artifacts${step ? ` from step: ${step}` : ''}`);
   const dest = destination.endsWith('/') || destination === '.' ? destination : `${destination}/`;
   const stepArg = step ? ` --step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
   const buildId = build ?? bkEnv.buildId;
-  exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
+  await exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
 };
 
-export const uploadArtifacts = (query: string) => {
+export const uploadArtifacts = async (query: string) => {
   const q = query.includes('*') ? `"${query}"` : query;
   startGroup(`Uploading artifacts matching "${q}"`);
-  exec(`buildkite-agent artifact upload ${q}`);
+  await exec(`buildkite-agent artifact upload ${q}`);
 };
 
 function getEnvNumber(key: string) {
