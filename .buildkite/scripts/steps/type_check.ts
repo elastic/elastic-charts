@@ -6,8 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { exec, yarnInstall } from '../../utils';
+import { exec, startGroup, yarnInstall } from '../../utils';
 
 yarnInstall();
+
+startGroup('Running type checks');
 
 exec('yarn typecheck:all');

@@ -7,7 +7,7 @@
  */
 
 import { exec, yarnInstall } from '../../utils';
-import { bkEnv } from '../../utils/buildkite';
+import { bkEnv, startGroup } from '../../utils/buildkite';
 import { ChangeContext } from '../../utils/github';
 
 const changes = new ChangeContext();
@@ -27,10 +27,13 @@ if (bkEnv.isPullRequest && !hasLintConfigChanges) {
   const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
 
   if (filesToLint.length > 0) {
+    startGroup('Running eslint checks');
+
     exec('yarn lint:it', {
       input: filesToLint,
     });
   }
 } else {
+  startGroup('Running eslint checks');
   exec('yarn lint');
 }

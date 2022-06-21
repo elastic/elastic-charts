@@ -47,14 +47,19 @@ export const exec = (
     console.error(`Failed to run command: [${command}]`);
     void setJobMetadata('failed', 'true');
     onFailure?.();
-    void updateCheckStatus(
-      {
-        status: 'completed',
-        conclusion: 'failure',
-      },
-      undefined,
-      failureMsg,
-    );
+    try {
+      void updateCheckStatus(
+        {
+          status: 'completed',
+          conclusion: 'failure',
+        },
+        undefined,
+        failureMsg,
+      );
+    } catch (error) {
+      console.log('updateCheckStatus');
+      console.error(error);
+    }
 
     throw error;
   }
