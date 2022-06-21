@@ -142,7 +142,7 @@ export const codeCheckIsCompleted = async (id = bkEnv.checkId, userRef?: string)
     app_id: auth.appId,
     per_page: 1,
   });
-  if (status) throw new Error('Failed to find check completeness');
+  if (status !== 200) throw new Error('Failed to find check completeness');
 
   console.log(JSON.stringify(data, null, 2));
 
@@ -175,7 +175,9 @@ export const updateCheckStatus = async (
   title?: string | boolean | null, // true for skip description
 ) => {
   if (process.env.BLOCK_REQUESTS || !checkId) return;
-  console.trace(checkId, options.status);
+  console.log(bkEnv.jobUrl);
+  // @ts-ignore test
+  console.trace(checkId, options.status, options.conclusion);
 
   if (!cacheFilled) await fillCheckRunCache();
   const checkRun = checkRunCache.get(checkId);
