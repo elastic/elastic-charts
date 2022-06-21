@@ -229,11 +229,9 @@ class FlameComponent extends React.Component<FlameProps> {
     if (controlProviderCallback.resetFocus) {
       controlProviderCallback.resetFocus(() => this.resetFocus());
     }
-    console.log(this.navQueue.join(' > '), this.navIndex);
     if (controlProviderCallback.focusOnNode) {
       controlProviderCallback.focusOnNode((nodeIndex: number) => {
-        this.navQueue.splice(++this.navIndex, Infinity, nodeIndex);
-        console.log(this.navQueue.join(' > '), this.navIndex);
+        if (this.navQueue[this.navIndex] !== nodeIndex) this.navQueue.splice(++this.navIndex, Infinity, nodeIndex);
         this.focusOnNode(nodeIndex);
       });
     }
@@ -250,7 +248,7 @@ class FlameComponent extends React.Component<FlameProps> {
   }
 
   private resetFocus() {
-    this.navQueue.splice(++this.navIndex, Infinity, 0);
+    if (this.navQueue[this.navIndex] !== 0) this.navQueue.splice(++this.navIndex, Infinity, 0);
     console.log(this.navQueue.join(' > '), this.navIndex);
     this.targetFocus = this.getFocusOnRoot();
     this.wobble(0);
@@ -460,10 +458,11 @@ class FlameComponent extends React.Component<FlameProps> {
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
       if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
-        this.navQueue.splice(++this.navIndex, Infinity, hovered.datumIndex);
+        const { datumIndex } = hovered;
+        if (this.navQueue[this.navIndex] !== datumIndex) this.navQueue.splice(++this.navIndex, Infinity, datumIndex);
         console.log(this.navQueue.join(' > '), this.navIndex);
-        this.focusOnNode(hovered.datumIndex);
-        this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
+        this.focusOnNode(datumIndex);
+        this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
       }
     }
     this.clearDrag();
