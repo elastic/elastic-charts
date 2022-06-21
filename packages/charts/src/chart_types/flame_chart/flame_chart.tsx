@@ -742,7 +742,7 @@ class FlameComponent extends React.Component<FlameProps> {
           >
             ᐸ
             <input
-              type="checkbox"
+              type="button"
               tabIndex={0}
               onClick={() => {
                 if (!this.canNavigateBackward()) return;
@@ -761,7 +761,7 @@ class FlameComponent extends React.Component<FlameProps> {
           >
             ▲
             <input
-              type="checkbox"
+              type="button"
               tabIndex={0}
               onClick={() => {
                 if (this.isAtHomePosition()) return;
@@ -781,7 +781,7 @@ class FlameComponent extends React.Component<FlameProps> {
           >
             ᐳ
             <input
-              type="checkbox"
+              type="button"
               tabIndex={0}
               onClick={() => {
                 if (!this.canNavigateForward()) return;
@@ -820,7 +820,7 @@ class FlameComponent extends React.Component<FlameProps> {
           >
             Cc
             <input
-              type="checkbox"
+              type="button"
               tabIndex={0}
               onClick={() => {
                 if (!this.currentSearchString) return;
@@ -845,7 +845,7 @@ class FlameComponent extends React.Component<FlameProps> {
           >
             . *
             <input
-              type="checkbox"
+              type="button"
               tabIndex={0}
               onClick={() => {
                 if (!this.currentSearchString) return;
@@ -867,7 +867,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ◀
-            <input type="checkbox" tabIndex={0} onClick={this.previousHit} style={{ display: 'none' }} />
+            <input type="button" tabIndex={0} onClick={this.previousHit} style={{ display: 'none' }} />
           </label>
           <label
             title="Next hit"
@@ -880,7 +880,7 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ▶
-            <input type="checkbox" tabIndex={0} onClick={this.nextHit} style={{ display: 'none' }} />
+            <input type="button" tabIndex={0} onClick={this.nextHit} style={{ display: 'none' }} />
           </label>
 
           <p
