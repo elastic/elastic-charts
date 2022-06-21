@@ -58,18 +58,18 @@ void (async () => {
       return;
     }
 
-    // const skipit = { skip: true };
+    const skipit = { skip: true };
     const steps: Step[] = [
-      jestStep(),
-      eslintStep(),
-      apiCheckStep(),
+      jestStep(skipit),
+      eslintStep(skipit),
+      apiCheckStep(skipit),
       prettierStep(),
-      typeCheckStep(),
-      storybookStep(),
-      e2eServerStep(),
-      ghpDeployStep(),
+      typeCheckStep(skipit),
+      storybookStep(skipit),
+      e2eServerStep(skipit),
+      ghpDeployStep(skipit),
       playwrightStep(),
-      firebaseDeployStep(),
+      firebaseDeployStep(skipit),
     ].map((step) => step(changeCtx));
 
     steps

@@ -129,14 +129,27 @@ export async function buildkiteGQLQuery<Response = any>(query: string) {
 
 export const getJobMetadata = async (prop: string) => {
   console.log('getJobMetadata:', prop);
-  console.log(await getMetadataKeys());
 
-  return await getMetadata(`${bkEnv.jobId}__${prop}`);
+  try {
+    const value = await getMetadata(`${bkEnv.jobId}__${prop}`);
+    console.log(value);
+    return value;
+  } catch (error) {
+    console.log('failed to getMetadata');
+    console.error(error);
+    throw error;
+  }
 };
 
 export const setJobMetadata = async (prop: string, value: string) => {
-  await setMetadata(`${bkEnv.jobId}__${prop}`, value);
   console.log('setJobMetadata:', `${bkEnv.jobId}__${prop}`, value);
+  try {
+    await setMetadata(`${bkEnv.jobId}__${prop}`, value);
+  } catch (error) {
+    console.log('failed to setMetadata');
+    console.error(error);
+    throw error;
+  }
 
   console.log(await getMetadataKeys());
 };
