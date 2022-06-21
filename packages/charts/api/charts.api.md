@@ -593,7 +593,12 @@ export function computeRatioByGroups<T extends Record<string, unknown>>(data: T[
 export type ContinuousDomain = [min: number, max: number];
 
 // @public
-export type ControlProviderCallback = (controlName: string, controlFunction: (...args: unknown[]) => void) => void;
+export interface ControlReceiverCallbacks {
+    // (undocumented)
+    resetFocus: (control: ResetFocusControl) => void;
+    // (undocumented)
+    setFocusOnNode: (control: SetFocusOnNodeControl) => void;
+}
 
 // @public (undocumented)
 export interface CrosshairStyle {
@@ -1010,7 +1015,7 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
     // (undocumented)
     columnarData: ColumnarViewModel;
     // (undocumented)
-    controlProviderCallback: ControlProviderCallback;
+    controlProviderCallback: Partial<ControlReceiverCallbacks>;
     // (undocumented)
     specType: typeof SpecType.Series;
     // (undocumented)
@@ -2164,6 +2169,9 @@ export type RenderChangeListener = (isRendered: boolean) => void;
 // @public (undocumented)
 export type Rendering = 'canvas' | 'svg';
 
+// @public
+export type ResetFocusControl = () => void;
+
 // @public (undocumented)
 export type RGB = number;
 
@@ -2312,6 +2320,9 @@ export const SeriesType: Readonly<{
 
 // @public
 export type SeriesType = $Values<typeof SeriesType>;
+
+// @public
+export type SetFocusOnNodeControl = (nodeIndex: number) => void;
 
 // @public
 export const Settings: (props: SFProps<SettingsSpec, keyof typeof settingsBuildProps['overrides'], keyof typeof settingsBuildProps['defaults'], keyof typeof settingsBuildProps['optionals'], keyof typeof settingsBuildProps['requires']>) => null;

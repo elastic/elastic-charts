@@ -136,6 +136,7 @@ const isAttributeKey = (keyCandidate: string): keyCandidate is keyof typeof attr
 
 interface StateProps {
   columnarViewModel: FlameSpec['columnarData'];
+  controlProviderCallback: FlameSpec['controlProviderCallback'];
   animationDuration: number;
   chartDimensions: Size;
   a11ySettings: ReturnType<typeof getA11ySettingsSelector>;
@@ -223,8 +224,15 @@ class FlameComponent extends React.Component<FlameProps> {
     if (datumCount !== columns.label.length)
       throw new Error('flame error: Mismatch between position1 (xy) and label length');
 
-    this.currentFocus = focusRect(columns, props.chartDimensions.height, 0, -Infinity);
-    this.targetFocus = { ...this.currentFocus };
+    this.targetFocus = this.getFocusOnRoot();
+
+    if (this.props.controlProviderCallback.resetFocus) {
+      this.props.controlProviderCallback.resetFocus(() => {
+        this.resetFocus();
+      });
+    }
+
+    this.currentFocus = { ...this.targetFocus };
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
@@ -233,6 +241,23 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // search
     this.currentColor = columns.color;
+  }
+
+  private resetFocus() {
+    this.targetFocus = this.getFocusOnRoot();
+    this.wobble();
+  }
+
+  private wobble() {
+    this.wobbleTimeLeft = WOBBLE_DURATION;
+    this.wobbleIndex = 0;
+    this.prevT = NaN;
+    this.hoverIndex = NaN; // no highlight
+    this.setState({});
+  }
+
+  private getFocusOnRoot() {
+    return focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, 0, -Infinity);
   }
 
   private setupDevicePixelRatioChangeListener = () => {
@@ -431,11 +456,7 @@ class FlameComponent extends React.Component<FlameProps> {
           hovered.datumIndex,
           hovered.timestamp,
         );
-        this.wobbleTimeLeft = WOBBLE_DURATION;
-        this.wobbleIndex = hovered.datumIndex;
-        this.prevT = NaN;
-        this.hoverIndex = NaN; // no highlight
-        this.setState({});
+        this.wobble();
         this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
       }
     }
@@ -1007,6 +1028,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const settingsSpec = getSettingsSpecSelector(state);
   return {
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
+    controlProviderCallback: flameSpec?.controlProviderCallback ?? {},
     animationDuration: flameSpec?.animation.duration ?? 0,
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),

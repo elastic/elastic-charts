@@ -14,10 +14,25 @@ import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory'
 import { Datum, stripUndefined, ValueAccessor, ValueFormatter } from '../../utils/common';
 
 /**
- * Provides direct controls for the component user
+ * Control function for resetting chart focus
  * @public
  */
-export type ControlProviderCallback = (controlName: string, controlFunction: (...args: unknown[]) => void) => void;
+export type ResetFocusControl = () => void; // takes no arguments
+
+/**
+ * Control function for setting chart focus on a specific node
+ * @public
+ */
+export type SetFocusOnNodeControl = (nodeIndex: number) => void; // takes no arguments
+
+/**
+ * Provides direct controls for the Flame component user
+ * @public
+ */
+export interface ControlReceiverCallbacks {
+  resetFocus: (control: ResetFocusControl) => void; // call site responsibility to store and use the `control` function
+  setFocusOnNode: (control: SetFocusOnNodeControl) => void; // same but the control function passed to the call site uses one arg
+}
 
 /**
  * Column oriented data input for N data points:
@@ -48,7 +63,7 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Flame;
   columnarData: ColumnarViewModel;
-  controlProviderCallback: ControlProviderCallback;
+  controlProviderCallback: Partial<ControlReceiverCallbacks>; // call site may grab any number of controls
   valueAccessor: ValueAccessor<D>;
   valueFormatter: ValueFormatter;
   valueGetter: (datumIndex: number) => number;

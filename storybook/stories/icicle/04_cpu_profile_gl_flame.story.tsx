@@ -7,9 +7,10 @@
  */
 
 import { action } from '@storybook/addon-actions';
+import { button } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Flame, Settings, PartialTheme, ControlProviderCallback } from '@elastic/charts';
+import { Chart, Datum, Flame, Settings, PartialTheme, ResetFocusControl } from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -48,11 +49,9 @@ const columnarData = {
   size1: size,
 };
 
-export const Example = (
-  // should check why it's not a good idea; in the meantime:
-  // eslint-disable-next-line unicorn/no-object-as-default-parameter
-  props?: { controlProviderCallback: ControlProviderCallback },
-) => {
+let resetFocusControl: ResetFocusControl = () => {}; // initial value
+
+export const Example = () => {
   const onElementListeners = {
     onElementClick: action('onElementClick'),
     onElementOver: action('onElementOver'),
@@ -62,6 +61,9 @@ export const Example = (
     chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
   };
+  button('Reset focus', () => {
+    resetFocusControl();
+  });
   return (
     <Chart>
       <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} />
@@ -71,7 +73,11 @@ export const Example = (
         valueAccessor={(d: Datum) => d.value as number}
         valueFormatter={(value) => `${value}`}
         animation={{ duration: 500 }}
-        controlProviderCallback={props?.controlProviderCallback ?? (() => {})}
+        controlProviderCallback={{
+          resetFocus: (control) => {
+            resetFocusControl = control;
+          },
+        }}
       />
     </Chart>
   );
