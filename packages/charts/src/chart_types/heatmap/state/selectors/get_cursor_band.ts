@@ -37,10 +37,8 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
     getHeatmapGeometries,
     getOrientedProjectedPointerPositionSelector,
     getExternalPointerEventStateSelector,
-    // computeChartDimensionsSelector,
     computeChartElementSizesSelector,
     getSettingsSpecSelector,
-    // computeSeriesGeometriesSelector,
     getSeriesSpecsSelector,
     countBarsInClusterSelector,
     isTooltipSnapEnableSelector,
@@ -52,11 +50,9 @@ export const getCursorBandPositionSelector = createCustomCachedSelector(
 
 function getCursorBand(
   geoms: ShapeViewModel,
-
   orientedProjectedPointerPosition: PointerPosition,
   externalPointerEvent: PointerEvent | null,
   heatmapChartElementSizes: ChartElementSizes,
-
   settingsSpec: SettingsSpec,
   seriesSpecs: BasicSeriesSpec[],
   totalBarsInCluster: number,
