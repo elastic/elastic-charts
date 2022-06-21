@@ -135,7 +135,12 @@ export const codeCheckIsCompleted = async (id = bkEnv.checkId, userRef?: string)
   if (!id) throw new Error(`Failed to set status, no name provided`);
   const name = getJobCheckName(id);
 
-  const { status, data } = await octokit.checks.listForRef({
+  const {
+    status,
+    data: {
+      check_runs: [latestCheckRun],
+    },
+  } = await octokit.checks.listForRef({
     ...defaultGHOptions,
     ref,
     check_name: name,
@@ -144,9 +149,9 @@ export const codeCheckIsCompleted = async (id = bkEnv.checkId, userRef?: string)
   });
   if (status !== 200) throw new Error('Failed to find check completeness');
 
-  console.log(JSON.stringify(data, null, 2));
+  console.log(JSON.stringify(latestCheckRun, null, 2));
 
-  return data.total_count > 0;
+  return latestCheckRun?.status === 'completed';
 };
 
 let cacheFilled = false;
