@@ -49,7 +49,7 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
   const command = channelId
     ? `npx firebase-tools hosting:channel:deploy ${channelId} --expires ${expires} --no-authorized-domains --json`
     : `npx firebase-tools deploy --only hosting --json`;
-  const stdout = exec(command, {
+  const stdout = await exec(command, {
     cwd: './e2e-server',
     stdio: 'pipe',
     env: {
