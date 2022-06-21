@@ -19,8 +19,8 @@ function split(a: (any | undefined)[], size: number) {
   return Array.from(new Array(Math.ceil(a.length / size))).map((_, index) => a.slice(index * size, (index + 1) * size));
 }
 
-const getIcon = (type: string) => ({ color }: { width: number; height: number; color: string }) => (
-  <EuiIcon type={type} size="s" fill={color} viewBox="0 0 16 16" />
+const getIcon = (type: string) => ({ width, height, color }: { width: number; height: number; color: string }) => (
+  <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
 );
 
 export const Example = () => {
