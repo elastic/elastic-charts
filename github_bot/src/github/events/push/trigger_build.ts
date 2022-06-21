@@ -27,6 +27,7 @@ export function setupBuildTrigger(app: Probot) {
     await buildkiteClient.triggerBuild({
       branch,
       commit: ctx.payload.after,
+      message: ctx.payload.head_commit?.message,
       ignore_pipeline_branch_filters: true,
     });
 

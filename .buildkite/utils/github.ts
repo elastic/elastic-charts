@@ -152,6 +152,7 @@ export const codeCheckIsPending = async (name = bkEnv.checkId, userRef?: string)
   return data.check_runs.find(({ external_id }) => external_id === name)?.status !== 'completed' ?? false;
 };
 
+let cacheFilled = false;
 const checkRunCache = new Map<string, components['schemas']['check-run']>();
 const fillCheckRunCache = async () =>
   await octokit.checks
@@ -163,13 +164,13 @@ const fillCheckRunCache = async () =>
     .then(({ data: { total_count: total, check_runs: checkRuns } }) => {
       if (total >= checkRuns.length) throw new Error('Checks need pagination');
 
+      cacheFilled = true;
       return checkRuns.forEach((checkRun) => {
         if (checkRun.external_id) {
           checkRunCache.set(checkRun.external_id, checkRun);
         }
       });
     });
-void fillCheckRunCache();
 
 export const updateCheckStatus = async (
   options: Optional<Omit<CreateCheckOptions, 'name' | 'head_sha'>, 'repo' | 'owner'> & CheckStatusOptions,
@@ -178,6 +179,7 @@ export const updateCheckStatus = async (
 ) => {
   if (process.env.BLOCK_REQUESTS) return;
   if (!checkId) throw new Error('Attempted to update check run with no job id');
+  if (!cacheFilled) await fillCheckRunCache();
   const checkRun = checkRunCache.get(checkId);
   // In some cases a check run may have been skipped or otherwise completed and the only way to
   // revert the completed check run is to create a new check run. This will not show as a duplicate run.
