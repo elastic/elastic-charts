@@ -215,7 +215,7 @@ export const updateCheckStatus = async (
       } as any); // octokit types are bad :(
     }
   } catch (error) {
-    console.error(`Failed to create/update check run for sha [${bkEnv.commit}]`);
+    console.error(`Failed to create/update check run for ${checkId} [sha: ${bkEnv.commit}]`);
     console.error(error);
     throw error;
   }
