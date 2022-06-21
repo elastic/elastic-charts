@@ -12,7 +12,7 @@ import React, { CSSProperties } from 'react';
 import { highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
-import { isFiniteNumber, LayoutDirection } from '../../../../utils/common';
+import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWProgress, isMetricWTrend, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
@@ -27,6 +27,7 @@ const WIDTH_BP: [number, number, BreakPoint][] = [
 
 const PADDING = 8;
 const MAGIC_NUMBER_LINE_HEIGHT = 1.1428571428571428; // TODO replace with the right calculation based on EUI or take it from body
+const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 24, l: 24 };
 const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
 const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
@@ -125,6 +126,15 @@ export const MetricText: React.FunctionComponent<{
           >
             {title}
           </h2>
+        )}
+        {datum.icon && (
+          <div className="echMetricText__icon">
+            {renderWithProps(datum.icon, {
+              width: ICON_SIZE[size],
+              height: ICON_SIZE[size],
+              color: highContrastTextColor,
+            })}
+          </div>
         )}
       </div>
       <div>

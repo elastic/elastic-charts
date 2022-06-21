@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { EuiIcon } from '@elastic/eui';
 import { select, number, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
@@ -17,6 +18,10 @@ import { useBaseTheme } from '../../use_base_theme';
 function split(a: (any | undefined)[], size: number) {
   return Array.from(new Array(Math.ceil(a.length / size))).map((_, index) => a.slice(index * size, (index + 1) * size));
 }
+
+const getIcon = (type: string) => ({ color }: { width: number; height: number; color: string }) => (
+  <EuiIcon type={type} size="s" fill={color} viewBox="0 0 16 16" />
+);
 
 export const Example = () => {
   const useProgressBar = boolean('use progress bar', true);
@@ -36,6 +41,7 @@ export const Example = () => {
       trendA11yDescription:
         'The trend shows the CPU Usage in percentage in the last hour. The trend shows a general flat behaviour with peaks every 10 minutes',
       valueFormatter: defaultValueFormatter,
+      icon: getIcon('compute'),
     },
     {
       value: 33.57,
@@ -63,6 +69,7 @@ export const Example = () => {
           </span>
         ),
       }),
+      icon: getIcon('sortUp'),
     },
     {
       value: 41.12,
@@ -79,6 +86,7 @@ export const Example = () => {
           </span>
         ),
       }),
+      icon: getIcon('sortDown'),
     },
     {
       value: 24.85,
@@ -99,6 +107,7 @@ export const Example = () => {
           last <b>5m</b>
         </span>
       ),
+      icon: getIcon('sortUp'),
     },
     undefined,
     {

@@ -18,6 +18,12 @@
 
   &__title {
     font-weight: 400;
+    width: min(80%, calc(100% - 24px));
+  }
+  &__icon {
+    position: absolute;
+    right: 8px;
+    top: 8px;
   }
 
   &__subtitle {
