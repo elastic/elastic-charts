@@ -162,7 +162,7 @@ const fillCheckRunCache = async () =>
       per_page: 100, // max
     })
     .then(({ data: { total_count: total, check_runs: checkRuns } }) => {
-      if (total >= checkRuns.length) throw new Error('Checks need pagination');
+      if (total > checkRuns.length) throw new Error('Checks need pagination');
 
       cacheFilled = true;
       return checkRuns.forEach((checkRun) => {
