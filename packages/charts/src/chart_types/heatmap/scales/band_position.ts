@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { Dimensions, Rotation } from '../../..';
 import { Rect } from '../../../geoms/types';
 import { Scale } from '../../../scales';
 import { isContinuousScale } from '../../../scales/types';
+import { Rotation } from '../../../utils/common';
+import { Dimensions } from '../../../utils/dimensions';
 import { Point } from '../../../utils/point';
 import { DEFAULT_SNAP_POSITION_BAND } from '../../xy_chart/crosshair/crosshair_utils';
 import { isHorizontalRotation } from '../../xy_chart/state/utils/common';
@@ -40,7 +41,6 @@ export function getHeatmapSnapPosition(
   };
 }
 
-//@todo: move
 /** @internal */
 export function getHeatmapCursorBandPosition(
   chartRotation: Rotation,
