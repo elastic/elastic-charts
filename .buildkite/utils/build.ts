@@ -46,10 +46,9 @@ export const getJobCheckName = (checkId: string) => {
   const { main, jobs } = getBuildConfig();
   const job = [main, ...jobs].find(({ id }) => id === checkId);
   if (!job) {
-    console.log('getJobCheckName');
-    console.log([main, ...jobs]);
-
-    throw new Error('Failed to find check name from step id');
+    throw new Error(
+      `Failed to find check name from step id ${checkId}. Job ids are:\n\n\t${[main, ...jobs].join('\n\t')}`,
+    );
   }
   return job.name;
 };

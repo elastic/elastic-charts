@@ -19,7 +19,8 @@ export const ghpDeployStep = createStep<CustomCommandStep>(() => {
     depends_on: ['build_storybook'],
     commands: ['npx ts-node .buildkite/scripts/steps/ghp_deploy.ts'],
     env: {
-      ECH_CHECK_ID: 'deploy_ghp',
+      // ignore check run reporting when not master
+      ECH_CHECK_ID: isMaster ? 'deploy_ghp' : undefined,
     },
   };
 });
