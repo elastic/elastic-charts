@@ -7,7 +7,7 @@
  */
 
 import axios from 'axios';
-import { getBuildkiteEnv, getMetadata, setMetadata } from 'buildkite-agent-node';
+import { getBuildkiteEnv, getMetadata, setMetadata, getMetadataKeys } from 'buildkite-agent-node';
 
 import { ECH_CHECK_ID } from './constants';
 import { exec } from './exec';
@@ -128,11 +128,17 @@ export async function buildkiteGQLQuery<Response = any>(query: string) {
 }
 
 export const getJobMetadata = async (prop: string) => {
+  console.log('getJobMetadata:', prop);
+  console.log(await getMetadataKeys());
+
   return await getMetadata(`${bkEnv.jobId}__${prop}`);
 };
 
 export const setJobMetadata = async (prop: string, value: string) => {
   await setMetadata(`${bkEnv.jobId}__${prop}`, value);
+  console.log('setJobMetadata:', `${bkEnv.jobId}__${prop}`, value);
+
+  console.log(await getMetadataKeys());
 };
 
 export async function getJobTiming(jobId = bkEnv.jobId) {
