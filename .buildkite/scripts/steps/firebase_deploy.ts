@@ -31,7 +31,7 @@ void (async () => {
   });
 
   const e2eReportSrc = '.buildkite/artifacts/merged_html_report.gz';
-  downloadArtifacts(e2eReportSrc, 'playwright-merge-and-status');
+  downloadArtifacts(e2eReportSrc, 'playwright_merge_and_status');
   await decompress({
     src: e2eReportSrc,
     dest: path.join(outDir, 'e2e-report'),

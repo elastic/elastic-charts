@@ -21,7 +21,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         skip,
         parallelism: 1,
         key: parallelKey,
-        // depends_on: ['build_e2e'],
+        depends_on: ['build_e2e'],
         plugins: [Plugins.docker.playwright(['UPDATE_SCREENSHOTS'])],
         artifact_paths: [
           '.buildkite/artifacts/e2e_reports/*',
@@ -36,7 +36,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
       },
       {
         ...commandStepDefaults,
-        key: 'playwright-merge-and-status',
+        key: 'playwright_merge_and_status',
         label: ':playwright: Set group status and merge reports',
         skip,
         allow_dependency_failure: true,

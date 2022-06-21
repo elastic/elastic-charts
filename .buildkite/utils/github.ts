@@ -177,8 +177,9 @@ export const updateCheckStatus = async (
   checkId: string | undefined = bkEnv.checkId,
   title?: string | boolean | null, // true for skip description
 ) => {
-  if (process.env.BLOCK_REQUESTS) return;
-  if (!checkId) throw new Error('Attempted to update check run with no job id');
+  if (process.env.BLOCK_REQUESTS || !checkId) return;
+  console.trace(checkId, options.status);
+
   if (!cacheFilled) await fillCheckRunCache();
   const checkRun = checkRunCache.get(checkId);
   // In some cases a check run may have been skipped or otherwise completed and the only way to
