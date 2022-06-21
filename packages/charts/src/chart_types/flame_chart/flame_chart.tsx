@@ -199,6 +199,10 @@ class FlameComponent extends React.Component<FlameProps> {
   private wobbleTimeLeft = 0;
   private wobbleIndex = NaN;
 
+  // navigation
+  private navQueue: number[] = [0];
+  private navIndex = 0;
+
   constructor(props: Readonly<FlameProps>) {
     super(props);
     const columns = this.props.columnarViewModel;
@@ -225,8 +229,13 @@ class FlameComponent extends React.Component<FlameProps> {
     if (controlProviderCallback.resetFocus) {
       controlProviderCallback.resetFocus(() => this.resetFocus());
     }
+    console.log(this.navQueue.join(' > '), this.navIndex);
     if (controlProviderCallback.focusOnNode) {
-      controlProviderCallback.focusOnNode((nodeIndex: number) => this.focusOnNode(nodeIndex));
+      controlProviderCallback.focusOnNode((nodeIndex: number) => {
+        this.navQueue.splice(++this.navIndex, Infinity, nodeIndex);
+        console.log(this.navQueue.join(' > '), this.navIndex);
+        this.focusOnNode(nodeIndex);
+      });
     }
 
     this.currentFocus = { ...this.targetFocus };
@@ -241,6 +250,8 @@ class FlameComponent extends React.Component<FlameProps> {
   }
 
   private resetFocus() {
+    this.navQueue.splice(++this.navIndex, Infinity, 0);
+    console.log(this.navQueue.join(' > '), this.navIndex);
     this.targetFocus = this.getFocusOnRoot();
     this.wobble(0);
   }
@@ -449,6 +460,8 @@ class FlameComponent extends React.Component<FlameProps> {
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
       if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
+        this.navQueue.splice(++this.navIndex, Infinity, hovered.datumIndex);
+        console.log(this.navQueue.join(' > '), this.navIndex);
         this.focusOnNode(hovered.datumIndex);
         this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
       }
@@ -655,6 +668,10 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
+  private isAtHomePosition = () => this.targetFocus.x0 === 0 && this.targetFocus.x1 === 1 && this.targetFocus.y1 === 1;
+  private canNavigateForward = () => this.navIndex < this.navQueue.length - 1;
+  private canNavigateBackward = () => this.navQueue.length > 0 && this.navIndex > 0;
+
   render = () => {
     const {
       forwardStageRef,
@@ -714,6 +731,67 @@ class FlameComponent extends React.Component<FlameProps> {
             transform: `translateY(${this.props.chartDimensions.height - PADDING_BOTTOM + 4}px)`,
           }}
         >
+          <label
+            title="Navigate back"
+            style={{
+              color: this.canNavigateBackward() ? 'black' : 'darkgrey',
+              fontWeight: 'bolder',
+              paddingLeft: 16,
+              paddingRight: 4,
+            }}
+          >
+            ᐸ
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={() => {
+                if (!this.canNavigateBackward()) return;
+                this.focusOnNode(this.navQueue[--this.navIndex]);
+                console.log(this.navQueue.join(' > '), this.navIndex);
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <label
+            title="Reset"
+            style={{
+              color: this.isAtHomePosition() ? 'darkgray' : 'black',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+            }}
+          >
+            ▲
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={() => {
+                if (this.isAtHomePosition()) return;
+                this.resetFocus();
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+          <label
+            title="Navigate forward"
+            style={{
+              color: this.canNavigateForward() ? 'black' : 'darkgray',
+              fontWeight: 'bolder',
+              paddingLeft: 4,
+              paddingRight: 16,
+            }}
+          >
+            ᐳ
+            <input
+              type="checkbox"
+              tabIndex={0}
+              onClick={() => {
+                if (!this.canNavigateForward()) return;
+                this.focusOnNode(this.navQueue[++this.navIndex]);
+                console.log(this.navQueue.join(' > '), this.navIndex);
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
           <input
             ref={this.searchInputRef}
             title="Search string or regex pattern"
