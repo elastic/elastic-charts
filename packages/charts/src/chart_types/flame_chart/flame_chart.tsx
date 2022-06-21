@@ -221,10 +221,12 @@ class FlameComponent extends React.Component<FlameProps> {
 
     this.targetFocus = this.getFocusOnRoot();
 
-    if (this.props.controlProviderCallback.resetFocus) {
-      this.props.controlProviderCallback.resetFocus(() => {
-        this.resetFocus();
-      });
+    const { controlProviderCallback } = this.props;
+    if (controlProviderCallback.resetFocus) {
+      controlProviderCallback.resetFocus(() => this.resetFocus());
+    }
+    if (controlProviderCallback.focusOnNode) {
+      controlProviderCallback.focusOnNode((nodeIndex: number) => this.focusOnNode(nodeIndex));
     }
 
     this.currentFocus = { ...this.targetFocus };
@@ -240,12 +242,17 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private resetFocus() {
     this.targetFocus = this.getFocusOnRoot();
-    this.wobble();
+    this.wobble(0);
   }
 
-  private wobble() {
+  private focusOnNode(nodeIndex: number) {
+    this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, nodeIndex);
+    this.wobble(nodeIndex);
+  }
+
+  private wobble(nodeIndex: number) {
     this.wobbleTimeLeft = WOBBLE_DURATION;
-    this.wobbleIndex = 0;
+    this.wobbleIndex = nodeIndex;
     this.prevT = NaN;
     this.hoverIndex = NaN; // no highlight
     this.setState({});
@@ -442,12 +449,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
       if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
-        this.targetFocus = focusRect(
-          this.props.columnarViewModel,
-          this.props.chartDimensions.height,
-          hovered.datumIndex,
-        );
-        this.wobble();
+        this.focusOnNode(hovered.datumIndex);
         this.props.onElementClick([{ vmIndex: hovered.datumIndex }]); // userland callback
       }
     }

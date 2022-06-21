@@ -595,9 +595,9 @@ export type ContinuousDomain = [min: number, max: number];
 // @public
 export interface ControlReceiverCallbacks {
     // (undocumented)
-    resetFocus: (control: ResetFocusControl) => void;
+    focusOnNode: (control: FocusOnNodeControl) => void;
     // (undocumented)
-    setFocusOnNode: (control: SetFocusOnNodeControl) => void;
+    resetFocus: (control: ResetFocusControl) => void;
 }
 
 // @public (undocumented)
@@ -1025,6 +1025,9 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
     // (undocumented)
     valueGetter: (datumIndex: number) => number;
 }
+
+// @public
+export type FocusOnNodeControl = (nodeIndex: number) => void;
 
 // @public (undocumented)
 export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "initial", "unset"];
@@ -2320,9 +2323,6 @@ export const SeriesType: Readonly<{
 
 // @public
 export type SeriesType = $Values<typeof SeriesType>;
-
-// @public
-export type SetFocusOnNodeControl = (nodeIndex: number) => void;
 
 // @public
 export const Settings: (props: SFProps<SettingsSpec, keyof typeof settingsBuildProps['overrides'], keyof typeof settingsBuildProps['defaults'], keyof typeof settingsBuildProps['optionals'], keyof typeof settingsBuildProps['requires']>) => null;

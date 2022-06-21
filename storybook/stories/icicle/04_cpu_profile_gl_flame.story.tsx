@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { button } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Flame, Settings, PartialTheme, ResetFocusControl } from '@elastic/charts';
+import { Chart, Datum, Flame, Settings, PartialTheme, ResetFocusControl, FocusOnNodeControl } from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -50,6 +50,7 @@ const columnarData = {
 };
 
 let resetFocusControl: ResetFocusControl = () => {}; // initial value
+let focusOnNodeControl: FocusOnNodeControl = () => {}; // initial value
 
 export const Example = () => {
   const onElementListeners = {
@@ -64,6 +65,10 @@ export const Example = () => {
   button('Reset focus', () => {
     resetFocusControl();
   });
+  button('Set focus on random node', () => {
+    focusOnNodeControl(Math.floor(20 * Math.random()));
+  });
+
   return (
     <Chart>
       <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} />
@@ -76,6 +81,9 @@ export const Example = () => {
         controlProviderCallback={{
           resetFocus: (control) => {
             resetFocusControl = control;
+          },
+          focusOnNode: (control) => {
+            focusOnNodeControl = control;
           },
         }}
       />

@@ -23,7 +23,7 @@ export type ResetFocusControl = () => void; // takes no arguments
  * Control function for setting chart focus on a specific node
  * @public
  */
-export type SetFocusOnNodeControl = (nodeIndex: number) => void; // takes no arguments
+export type FocusOnNodeControl = (nodeIndex: number) => void; // takes no arguments
 
 /**
  * Provides direct controls for the Flame component user
@@ -31,7 +31,7 @@ export type SetFocusOnNodeControl = (nodeIndex: number) => void; // takes no arg
  */
 export interface ControlReceiverCallbacks {
   resetFocus: (control: ResetFocusControl) => void; // call site responsibility to store and use the `control` function
-  setFocusOnNode: (control: SetFocusOnNodeControl) => void; // same but the control function passed to the call site uses one arg
+  focusOnNode: (control: FocusOnNodeControl) => void; // same but the control function passed to the call site uses one arg
 }
 
 /**
