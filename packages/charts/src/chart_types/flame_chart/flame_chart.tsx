@@ -224,18 +224,7 @@ class FlameComponent extends React.Component<FlameProps> {
       throw new Error('flame error: Mismatch between position1 (xy) and label length');
 
     this.targetFocus = this.getFocusOnRoot();
-
-    const { controlProviderCallback } = this.props;
-    if (controlProviderCallback.resetFocus) {
-      controlProviderCallback.resetFocus(() => this.resetFocus());
-    }
-    if (controlProviderCallback.focusOnNode) {
-      controlProviderCallback.focusOnNode((nodeIndex: number) => {
-        if (this.navQueue[this.navIndex] !== nodeIndex) this.navQueue.splice(++this.navIndex, Infinity, nodeIndex);
-        this.focusOnNode(nodeIndex);
-      });
-    }
-
+    this.bindControls();
     this.currentFocus = { ...this.targetFocus };
 
     // browser pinch zoom handling
@@ -247,9 +236,21 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentColor = columns.color;
   }
 
+  private bindControls() {
+    const { controlProviderCallback } = this.props;
+    if (controlProviderCallback.resetFocus) {
+      controlProviderCallback.resetFocus(() => this.resetFocus());
+    }
+    if (controlProviderCallback.focusOnNode) {
+      controlProviderCallback.focusOnNode((nodeIndex: number) => {
+        if (this.navQueue[this.navIndex] !== nodeIndex) this.navQueue.splice(++this.navIndex, Infinity, nodeIndex);
+        this.focusOnNode(nodeIndex);
+      });
+    }
+  }
+
   private resetFocus() {
     if (this.navQueue[this.navIndex] !== 0) this.navQueue.splice(++this.navIndex, Infinity, 0);
-    console.log(this.navQueue.join(' > '), this.navIndex);
     this.targetFocus = this.getFocusOnRoot();
     this.wobble(0);
   }
@@ -322,6 +323,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   componentDidUpdate = () => {
     if (!this.ctx) this.tryCanvasContext();
+    this.bindControls();
     this.ensureTextureAndDraw();
     // eg. due to chartDimensions (parentDimensions) change
     // this.props.onChartRendered() // creates and infinite update loop
@@ -460,7 +462,6 @@ class FlameComponent extends React.Component<FlameProps> {
       if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
         const { datumIndex } = hovered;
         if (this.navQueue[this.navIndex] !== datumIndex) this.navQueue.splice(++this.navIndex, Infinity, datumIndex);
-        console.log(this.navQueue.join(' > '), this.navIndex);
         this.focusOnNode(datumIndex);
         this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
       }
@@ -746,7 +747,6 @@ class FlameComponent extends React.Component<FlameProps> {
               onClick={() => {
                 if (!this.canNavigateBackward()) return;
                 this.focusOnNode(this.navQueue[--this.navIndex]);
-                console.log(this.navQueue.join(' > '), this.navIndex);
               }}
               style={{ display: 'none' }}
             />
@@ -786,7 +786,6 @@ class FlameComponent extends React.Component<FlameProps> {
               onClick={() => {
                 if (!this.canNavigateForward()) return;
                 this.focusOnNode(this.navQueue[++this.navIndex]);
-                console.log(this.navQueue.join(' > '), this.navIndex);
               }}
               style={{ display: 'none' }}
             />

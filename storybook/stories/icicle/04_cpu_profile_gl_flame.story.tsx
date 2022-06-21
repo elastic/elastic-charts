@@ -49,10 +49,10 @@ const columnarData = {
   size1: size,
 };
 
-let resetFocusControl: ResetFocusControl = () => {}; // initial value
-let focusOnNodeControl: FocusOnNodeControl = () => {}; // initial value
-
 export const Example = () => {
+  let resetFocusControl: ResetFocusControl = () => {}; // initial value
+  let focusOnNodeControl: FocusOnNodeControl = () => {}; // initial value
+
   const onElementListeners = {
     onElementClick: action('onElementClick'),
     onElementOver: action('onElementOver'),
