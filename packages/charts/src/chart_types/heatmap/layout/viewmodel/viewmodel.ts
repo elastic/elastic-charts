@@ -1,4 +1,3 @@
-// @ts-nocheck
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -9,10 +8,12 @@
 
 import { bisectLeft } from 'd3-array';
 import { scaleBand, scaleQuantize } from 'd3-scale';
+
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
+import { ScaleBand } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -35,7 +36,6 @@ import {
   TextBox,
 } from '../types/viewmodel_types';
 import { BaseDatum } from './../../../xy_chart/utils/specs';
-import { ScaleBand } from '../../../../scales';
 
 /** @public */
 export interface HeatmapCellDatum {
@@ -76,7 +76,6 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     isValue: false,
     ...heatmapTheme.yAxisLabel,
   }));
-
 
   // compute the scale for the rows positions
   const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, elementSizes.fullHeatmapHeight]);
@@ -419,7 +418,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     pickDragArea,
     pickDragShape,
     pickHighlightedArea,
-    xScale: xScaleBand
+    xScaleBand,
   };
 }
 

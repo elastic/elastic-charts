@@ -8,6 +8,7 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean, button, number, select } from '@storybook/addon-knobs';
+import moment from 'moment';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import {
@@ -19,20 +20,23 @@ import {
   Settings,
   PointerEvent,
   Placement,
-  niceTimeFormatter,
   TooltipType,
   LineSeries,
-  AreaSeries, RecursivePartial, HeatmapStyle, ElementClickListener, HeatmapElementEvent, HeatmapBrushEvent, Heatmap,
+  AreaSeries,
+  RecursivePartial,
+  HeatmapStyle,
+  ElementClickListener,
+  HeatmapElementEvent,
+  HeatmapBrushEvent,
+  Heatmap,
 } from '@elastic/charts';
-import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+import { DATA_6 } from '@elastic/charts/src/utils/data_samples/test_dataset_heatmap';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getTooltipTypeKnob, getPlacementKnob } from '../utils/knobs';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
-import { DATA_6 } from '@elastic/charts/src/utils/data_samples/test_dataset_heatmap';
+import { getTooltipTypeKnob, getPlacementKnob } from '../utils/knobs';
 import { heatmapData, lineChartData1, lineChartData2 } from './constants';
-import moment from 'moment';
 
 const chartTypes: Record<string, any> = {
   bar: BarSeries,
@@ -71,12 +75,10 @@ export const Example = () => {
     if (ref3.current) {
       ref3.current.dispatchExternalPointerEvent(event);
     }
-
   };
   const data1 = lineChartData1;
   const data2 = lineChartData2;
 
-  console.log("data2", data2)
   const group1 = 'Top Chart';
   const group2 = 'Bottom Chart';
 
@@ -149,16 +151,12 @@ export const Example = () => {
     return styles;
   }, []);
 
-
-
   const onElementClick: ElementClickListener = useCallback((e) => {
-
     const cell = (e as HeatmapElementEvent[])[0][0];
     setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
   }, []);
 
   const onBrushEnd = action('onBrushEnd');
-
 
   return (
     <>
@@ -207,7 +205,6 @@ export const Example = () => {
           xAxisLabelFormatter={(v) => {
             return moment(v).format('YYYY-MM-DD HH:mm');
           }}
-
           timeZone={DATA_6.timeZone}
           onBrushEnd={(e) => {
             setSelection({ x: e.x, y: e.y });
@@ -217,7 +214,7 @@ export const Example = () => {
           yAxisLabelFormatter={(laneLabel) => {
             return laneLabel === '' ? '' : String(laneLabel);
           }}
-        xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
+          xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
           yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
         />
       </Chart>
@@ -242,19 +239,16 @@ export const Example = () => {
           labelFormat={(v) => {
             return moment(v).format('YYYY-MM-DD HH:mm');
           }}
-
         />
-        <Axis id="left2" position={Position.Left}
-        />
+        <Axis id="left2" position={Position.Left} />
 
         <TopSeries
           id="Top"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
-          xAccessor={'date'}
+          xAccessor="date"
           yAccessors={['value']}
           data={data1}
-
         />
       </Chart>
       <Chart ref={ref2} size={{ height: '50%' }} id="chart2">
@@ -266,7 +260,7 @@ export const Example = () => {
             type: bottomType,
           }}
           externalPointerEvents={{
-            tooltip: { visible: topVisible, placement: topPlacement },
+            tooltip: { visible: bottomVisible, placement: bottomPlacement },
           }}
         />
         <Axis
@@ -277,24 +271,18 @@ export const Example = () => {
             return moment(v).format('YYYY-MM-DD HH:mm');
           }}
         />
-        <Axis
-          id="left2"
-          position={Position.Left}
-
-        />
+        <Axis id="left2" position={Position.Left} />
 
         <BottomSeries
           id="Bottom"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Sqrt}
-          xAccessor={'date'}
+          xAccessor="date"
           yAccessors={['value']}
           data={data2}
           color={palettes.echPaletteForLightBackground.colors[0]}
-
         />
       </Chart>
-
     </>
   );
 };

@@ -22,24 +22,27 @@ import {
   niceTimeFormatter,
   TooltipType,
   LineSeries,
-  AreaSeries, RecursivePartial, HeatmapStyle, ElementClickListener, HeatmapElementEvent, HeatmapBrushEvent, Heatmap,
+  AreaSeries,
+  RecursivePartial,
+  HeatmapStyle,
+  ElementClickListener,
+  HeatmapElementEvent,
+  HeatmapBrushEvent,
+  Heatmap,
 } from '@elastic/charts';
+import { DATA_6 } from '@elastic/charts/src/utils/data_samples/test_dataset_heatmap';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getTooltipTypeKnob, getPlacementKnob } from '../utils/knobs';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
-import { DATA_6 } from '@elastic/charts/src/utils/data_samples/test_dataset_heatmap';
+import { getTooltipTypeKnob, getPlacementKnob } from '../utils/knobs';
 
 const chartTypes: Record<string, any> = {
   bar: BarSeries,
   line: LineSeries,
   area: AreaSeries,
 };
-
-//@todo: reset this if we are keeping example in heatmap section
-// if not change the data set to one compatible with heatmap
 
 const getSeriesKnob = (group?: string) => {
   const type =
@@ -72,7 +75,6 @@ export const Example = () => {
     if (ref3.current) {
       ref3.current.dispatchExternalPointerEvent(event);
     }
-
   };
   const { data } = KIBANA_METRICS.metrics.kibana_os_load[0];
   const data1 = KIBANA_METRICS.metrics.kibana_os_load[0].data;
@@ -150,16 +152,12 @@ export const Example = () => {
     return styles;
   }, []);
 
-
-
   const onElementClick: ElementClickListener = useCallback((e) => {
-
     const cell = (e as HeatmapElementEvent[])[0][0];
     setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
   }, []);
 
   const onBrushEnd = action('onBrushEnd');
-
 
   return (
     <>
@@ -193,7 +191,7 @@ export const Example = () => {
               { start: 75, end: Infinity, color: '#fe5050' },
             ],
           }}
-          data={DATA_6.data.map(d => ({...d, x: d.x - 21409200000}))}
+          data={DATA_6.data.map((d) => ({ ...d, x: d.x - 21409200000 }))}
           xAccessor="x"
           yAccessor="y"
           valueAccessor="value"
@@ -201,7 +199,9 @@ export const Example = () => {
           ySortPredicate="numAsc"
           xScale={{ type: ScaleType.Time, interval: DATA_6.interval }}
           xAxisLabelFormatter={(value) => {
-            return niceTimeFormatter([1572825600000 - 21409200000, 1572912000000 - 21409200000])(value, { timeZone: 'UTC' });
+            return niceTimeFormatter([1572825600000 - 21409200000, 1572912000000 - 21409200000])(value, {
+              timeZone: 'UTC',
+            });
           }}
           timeZone={DATA_6.timeZone}
           onBrushEnd={(e) => {
@@ -278,7 +278,6 @@ export const Example = () => {
           color={palettes.echPaletteForLightBackground.colors[0]}
         />
       </Chart>
-
     </>
   );
 };

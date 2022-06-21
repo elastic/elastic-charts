@@ -1,31 +1,39 @@
-// @ts-nocheck
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import { Rect } from '../../../../geoms/types';
+import { BasicSeriesSpec, PointerEvent, SettingsSpec } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getOrientedProjectedPointerPositionSelector } from '../../../xy_chart/state/selectors/get_oriented_projected_pointer_position';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { getSeriesSpecsSelector } from '../../../xy_chart/state/selectors/get_specs';
-import { countBarsInClusterSelector } from '../../../xy_chart/state/selectors/count_bars_in_cluster';
-import { isTooltipSnapEnableSelector } from '../../../xy_chart/state/selectors/is_tooltip_snap_enabled';
-import { getGeometriesIndexKeysSelector } from '../../../xy_chart/state/selectors/get_geometries_index_keys';
+import { isValidPointerOverEvent } from '../../../../utils/events';
+import { getCursorBandPosition } from '../../../xy_chart/crosshair/crosshair_utils';
 import {
   computeSmallMultipleScalesSelector,
   SmallMultipleScales,
 } from '../../../xy_chart/state/selectors/compute_small_multiple_scales';
+import { countBarsInClusterSelector } from '../../../xy_chart/state/selectors/count_bars_in_cluster';
+import { getGeometriesIndexKeysSelector } from '../../../xy_chart/state/selectors/get_geometries_index_keys';
+import { getOrientedProjectedPointerPositionSelector } from '../../../xy_chart/state/selectors/get_oriented_projected_pointer_position';
 import { PointerPosition } from '../../../xy_chart/state/selectors/get_projected_pointer_position';
-import { BasicSeriesSpec, PointerEvent, SettingsSpec } from '../../../../specs';
-import { Rect } from '../../../../geoms/types';
+import { getSeriesSpecsSelector } from '../../../xy_chart/state/selectors/get_specs';
+import { isTooltipSnapEnableSelector } from '../../../xy_chart/state/selectors/is_tooltip_snap_enabled';
 import { isLineAreaOnlyChart } from '../../../xy_chart/state/utils/common';
-import { isValidPointerOverEvent } from '../../../../utils/events';
-import { getCursorBandPosition } from '../../../xy_chart/crosshair/crosshair_utils';
+import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { ChartElementSizes, computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getHeatmapGeometries } from './geometries';
-import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
 /** @internal */
 export const getCursorLinePositionSelector = createCustomCachedSelector(
-  [getHeatmapGeometries,
+  [
+    getHeatmapGeometries,
     getOrientedProjectedPointerPositionSelector,
     getExternalPointerEventStateSelector,
     // computeChartDimensionsSelector,
@@ -54,13 +62,9 @@ function getCursorBand(
   geometriesIndexKeys: (string | number)[],
   smallMultipleScales: SmallMultipleScales,
 ): (Rect & { fromExternalEvent: boolean }) | undefined {
-
   const chartDimensions = heatmapChartElementSizes.grid;
-  const xScale = geoms.xScale
-  // const xScale = geoms.pickInvertedPosition,
-  // console.log("chartDimensions ", chartDimensions)
+  const xScale = geoms.xScale;
 
-  console.log("xScale", xScale)
   if (!xScale) {
     return;
   }

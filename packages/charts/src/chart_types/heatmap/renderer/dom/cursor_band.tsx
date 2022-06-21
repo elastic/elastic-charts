@@ -73,7 +73,6 @@ const mapStateToProps = (state: GlobalChartState): CursorBandProps => {
   const fromExternalEvent = cursorBandPosition?.fromExternalEvent;
   const tooltipType = getTooltipType(settings, fromExternalEvent);
 
-  console.log("cursorBandPosition", cursorBandPosition)
   return {
     theme: getChartThemeSelector(state),
     chartRotation: getChartRotationSelector(state),

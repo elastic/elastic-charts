@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+//@todo: remove
 import React from 'react';
 import { connect } from 'react-redux';
 
