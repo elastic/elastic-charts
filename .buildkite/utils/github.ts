@@ -24,10 +24,11 @@ import { OctokitParameters, FileDiff } from './types';
 
 if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
 
+const auth = JSON.parse(process.env.GITHUB_AUTH);
 const MyOctokit = Octokit.plugin(retry);
 export const octokit = new MyOctokit({
   authStrategy: createAppAuth,
-  auth: JSON.parse(process.env.GITHUB_AUTH),
+  auth: auth,
 });
 
 const defaultGHOptions = {
@@ -128,28 +129,24 @@ export class ChangeContext {
   }
 }
 
-export const commitStatusIsPennding = async (context = bkEnv.checkId, userRef?: string): Promise<boolean> => {
-  const ref = userRef ?? bkEnv.commit;
-  if (!ref) throw new Error(`Failed to get status, no ref available`);
-  if (!context) throw new Error(`Failed to set status, no context available`);
-
-  const { data } = await octokit.repos.listCommitStatusesForRef({
-    ...defaultGHOptions,
-    ref,
-  });
-  return data.find((status) => status.context === context)?.state === 'pending' ?? false;
-};
-
-export const codeCheckIsPending = async (name = bkEnv.checkId, userRef?: string): Promise<boolean> => {
+export const codeCheckIsCompleted = async (id = bkEnv.checkId, userRef?: string): Promise<boolean> => {
   const ref = userRef ?? bkEnv.commit;
   if (!ref) throw new Error(`Failed to get status, no ref provided`);
-  if (!name) throw new Error(`Failed to set status, no name provided`);
+  if (!id) throw new Error(`Failed to set status, no name provided`);
+  const name = getJobCheckName(id);
 
-  const { data } = await octokit.checks.listForRef({
+  const { status, data } = await octokit.checks.listForRef({
     ...defaultGHOptions,
     ref,
+    check_name: name,
+    app_id: auth.appId,
+    per_page: 1,
   });
-  return data.check_runs.find(({ external_id }) => external_id === name)?.status !== 'completed' ?? false;
+  if (status) throw new Error('Failed to find check completeness');
+
+  console.log(JSON.stringify(data, null, 2));
+
+  return data.total_count > 0;
 };
 
 let cacheFilled = false;

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, buildkiteGQLQuery, commitStatusIsPennding, getJobMetadata, updateCheckStatus } from '../utils';
+import { bkEnv, buildkiteGQLQuery, codeCheckIsCompleted, getJobMetadata, updateCheckStatus } from '../utils';
 
 void (async function () {
   const { checkId, jobId, jobUrl } = bkEnv;
@@ -16,8 +16,11 @@ void (async function () {
     console.log(JSON.stringify(jobStatus, null, 2));
 
     if (jobStatus) {
+      console.log('jobStatus.state:', jobStatus.state);
+
       if (jobStatus.state === 'CANCELING') {
         const user = getCancelledBy(jobStatus.events ?? []);
+        console.log('updateCheckStatus - 1');
         await updateCheckStatus(
           {
             status: 'completed',
@@ -28,10 +31,15 @@ void (async function () {
           user && `Cancelled by ${user}`,
         );
       } else {
+        console.log('else', await getJobMetadata('failed'));
+
         const isFailedJob = (await getJobMetadata('failed')) === 'true';
         console.log('isFailedJob', isFailedJob);
+        console.log('codeCheckIsCompleted', !(await codeCheckIsCompleted()));
 
-        if (isFailedJob || (await commitStatusIsPennding())) {
+        if (isFailedJob || !(await codeCheckIsCompleted())) {
+          console.log('updateCheckStatus - 2');
+
           await updateCheckStatus(
             {
               status: 'completed',
@@ -40,6 +48,8 @@ void (async function () {
             },
             checkId,
           );
+        } else {
+          console.log('not failed');
         }
       }
     }
