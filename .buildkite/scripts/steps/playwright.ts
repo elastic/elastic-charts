@@ -24,7 +24,8 @@ import { ENV_URL } from '../../utils/constants';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
 const shardIndex = jobIndex ? jobIndex + 1 : 1;
-const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
+const jobTotal = 10;
+// const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
 
 const pwFlags = ['--project=Chrome'];
 
