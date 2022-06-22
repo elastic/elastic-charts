@@ -149,8 +149,6 @@ export const codeCheckIsCompleted = async (id = bkEnv.checkId, userRef?: string)
   });
   if (status !== 200) throw new Error('Failed to find check completeness');
 
-  console.log(JSON.stringify(latestCheckRun, null, 2));
-
   return latestCheckRun?.status === 'completed';
 };
 
@@ -180,9 +178,6 @@ export const updateCheckStatus = async (
   title?: string | boolean | null, // true for skip description
 ) => {
   if (process.env.BLOCK_REQUESTS || !checkId) return;
-  console.log(bkEnv.jobUrl);
-  // @ts-ignore test
-  console.trace(checkId, options.status, options?.conclusion);
 
   if (!cacheFilled) await fillCheckRunCache();
   const checkRun = checkRunCache.get(checkId);

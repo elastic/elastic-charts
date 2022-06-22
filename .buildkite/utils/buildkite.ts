@@ -7,7 +7,7 @@
  */
 
 import axios from 'axios';
-import { getBuildkiteEnv, getMetadata, setMetadata, getMetadataKeys } from 'buildkite-agent-node';
+import { getBuildkiteEnv, getMetadata, setMetadata, metadataExists } from 'buildkite-agent-node';
 
 import { ECH_CHECK_ID } from './constants';
 import { exec } from './exec';
@@ -127,32 +127,20 @@ export async function buildkiteGQLQuery<Response = any>(query: string) {
   return data;
 }
 
-export const getJobMetadata = async (prop: string) => {
-  console.log('getJobMetadata:', prop);
-  console.log('getMetadataKeys:', await getMetadataKeys());
-
-  try {
-    const value = await getMetadata(`${bkEnv.jobId}__${prop}`);
-    console.log(value);
-    return value;
-  } catch (error) {
-    console.log('failed to getMetadata');
-    console.error(error);
-    throw error;
+export const getJobMetadata = async (prop: string, required: boolean = false) => {
+  const key = `${bkEnv.jobId}__${prop}`;
+  if (required && !(await metadataExists(key))) {
+    throw new Error(`Failed to find metaData key for "${key}"`);
   }
+  const value = await getMetadata(key);
+  console.log(`Found metaData value [${key}] -> ${value}`);
+  return value;
 };
 
 export const setJobMetadata = async (prop: string, value: string) => {
-  console.log('setJobMetadata:', `${bkEnv.jobId}__${prop}`, value);
-  try {
-    await setMetadata(`${bkEnv.jobId}__${prop}`, value);
-  } catch (error) {
-    console.log('failed to setMetadata');
-    console.error(error);
-    throw error;
-  }
-
-  console.log('getMetadataKeys:', await getMetadataKeys());
+  const key = `${bkEnv.jobId}__${prop}`;
+  await setMetadata(key, value);
+  console.log(`Set metaData value [${key}] -> ${value}`);
 };
 
 export async function getJobTiming(jobId = bkEnv.jobId) {
