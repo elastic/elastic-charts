@@ -248,9 +248,6 @@ class FlameComponent extends React.Component<FlameProps> {
         this.focusOnNode(nodeIndex);
       });
     }
-    if (controlProviderCallback.clearSearchText) {
-      controlProviderCallback.clearSearchText(() => this.clearSearchText());
-    }
   }
 
   private resetFocus() {

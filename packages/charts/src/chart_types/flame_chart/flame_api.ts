@@ -34,7 +34,6 @@ export type FlameNodeControl = (nodeIndex: number) => void; // takes no argument
 export interface ControlReceiverCallbacks {
   resetFocus: (control: FlameGlobalControl) => void; // call site responsibility to store and use the `control` function
   focusOnNode: (control: FlameNodeControl) => void; // same but the control function passed to the call site uses one arg
-  clearSearchText: (control: FlameGlobalControl) => void;
 }
 
 /**

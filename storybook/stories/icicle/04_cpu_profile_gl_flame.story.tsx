@@ -54,7 +54,6 @@ const noop = () => {};
 export const Example = () => {
   let resetFocusControl: FlameGlobalControl = noop; // initial value
   let focusOnNodeControl: FlameNodeControl = noop; // initial value
-  let clearSearchTextControl: FlameGlobalControl = noop; // initial value
 
   const onElementListeners = {
     onElementClick: action('onElementClick'),
@@ -71,9 +70,6 @@ export const Example = () => {
   button('Set focus on random node', () => {
     focusOnNodeControl(Math.floor(20 * Math.random()));
   });
-  button('Clear text search', () => {
-    clearSearchTextControl();
-  });
 
   return (
     <Chart>
@@ -87,7 +83,6 @@ export const Example = () => {
         controlProviderCallback={{
           resetFocus: (control) => (resetFocusControl = control),
           focusOnNode: (control) => (focusOnNodeControl = control),
-          clearSearchText: (control) => (clearSearchTextControl = control),
         }}
       />
     </Chart>
