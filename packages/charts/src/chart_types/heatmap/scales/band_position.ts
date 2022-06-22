@@ -7,7 +7,7 @@
  */
 
 import { Rect } from '../../../geoms/types';
-import { Scale } from '../../../scales';
+import { ScaleBand } from '../../../scales';
 import { isContinuousScale } from '../../../scales/types';
 import { Rotation } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
@@ -18,7 +18,7 @@ import { isHorizontalRotation } from '../../xy_chart/state/utils/common';
 /** @internal */
 export function getHeatmapSnapPosition(
   value: string | number,
-  scale: Scale<number | string>,
+  scale: ScaleBand,
   totalBarsInCluster = 1,
 ): { band: number; position: number } | undefined {
   const position = scale.pureScale(value);
@@ -51,7 +51,7 @@ export function getHeatmapCursorBandPosition(
     withinBandwidth: boolean;
   },
   snapEnabled: boolean,
-  xScale: Scale<number | string>,
+  xScale: ScaleBand,
   totalBarsInCluster?: number,
 ): Rect | undefined {
   const { top, left, width, height } = panel;

@@ -72,7 +72,7 @@ function getCursorBand(
   let xValue;
   let fromExternalEvent = false;
   // external pointer events takes precedence over the current mouse pointer
-  if (isValidPointerOverEvent(xScaleBand, externalPointerEvent)) {
+  if (isValidPointerOverEvent(xScaleBand, externalPointerEvent) && externalPointerEvent.x !== null) {
     fromExternalEvent = true;
     let x = xScaleBand.pureScale(externalPointerEvent.x);
 
@@ -103,8 +103,8 @@ function getCursorBand(
     }
   }
   const { horizontal, vertical } = smallMultipleScales;
-  const topPos = vertical.scale(pointerPosition.verticalPanelValue) || 0;
-  const leftPos = horizontal.scale(pointerPosition.horizontalPanelValue) || 0;
+  const topPos = pointerPosition.verticalPanelValue !== null ? vertical.scale(pointerPosition.verticalPanelValue) || 0 : 0;
+  const leftPos = pointerPosition.horizontalPanelValue !== null ?  horizontal.scale(pointerPosition.horizontalPanelValue) || 0 : 0;
 
   const panel = {
     width: horizontal.bandwidth,

@@ -115,7 +115,7 @@ export type ShapeViewModel = {
   pickDragShape: PickDragShapeFunction;
   pickHighlightedArea: PickHighlightedArea;
   pickGridCell: PickGridCell;
-  xScaleBand?: ScaleBand<string | number>;
+  xScaleBand?: ScaleBand;
 };
 
 /** @internal */

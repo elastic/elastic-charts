@@ -7,13 +7,12 @@
  */
 
 import { bisectLeft } from 'd3-array';
-import { scaleBand, scaleQuantize } from 'd3-scale';
+import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
-import { ScaleBand } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -36,6 +35,7 @@ import {
   TextBox,
 } from '../types/viewmodel_types';
 import { BaseDatum } from './../../../xy_chart/utils/specs';
+import { ScaleBand as ChartScaleBand } from '../../../../scales';
 
 /** @public */
 export interface HeatmapCellDatum {
@@ -86,7 +86,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
   // compute the scale for the columns positions
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, elementSizes.grid.width]);
-  const xScaleBand = new ScaleBand(xValues, [0, elementSizes.grid.width]);
+  const xScaleBand = new ChartScaleBand(xValues, [0, elementSizes.grid.width]);
 
   const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
     .domain([0, elementSizes.grid.width])
@@ -438,7 +438,7 @@ export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | Linear
 function getXTicks(
   spec: HeatmapSpec,
   style: HeatmapStyle['xAxisLabel'],
-  scale: ScaleBand<string | number>,
+  scale: ScaleBand<NonNullable<PrimitiveValue>>,
   values: NonNullable<PrimitiveValue>[],
 ): Array<TextBox> {
   const isTimeScale = isRasterTimeScale(spec.xScale);
