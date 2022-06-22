@@ -27,7 +27,7 @@ const WIDTH_BP: [number, number, BreakPoint][] = [
 
 const PADDING = 8;
 const MAGIC_NUMBER_LINE_HEIGHT = 1.1428571428571428; // TODO replace with the right calculation based on EUI or take it from body
-const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 24, l: 24 };
+const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 16, l: 24 };
 const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
 const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
