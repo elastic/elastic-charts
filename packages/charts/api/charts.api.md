@@ -595,8 +595,6 @@ export type ContinuousDomain = [min: number, max: number];
 // @public
 export interface ControlReceiverCallbacks {
     // (undocumented)
-    clearSearchText: (control: FlameGlobalControl) => void;
-    // (undocumented)
     focusOnNode: (control: FlameNodeControl) => void;
     // (undocumented)
     resetFocus: (control: FlameGlobalControl) => void;
