@@ -29,7 +29,7 @@ const jobTotal = 10;
 
 const pwFlags = ['--project=Chrome'];
 
-if (bkEnv.updateScreenshots) {
+if (bkEnv.steps.playwright.updateScreenshots) {
   pwFlags.push('--update-snapshots');
 }
 
@@ -99,7 +99,7 @@ void (async () => {
       dest: `.buildkite/artifacts/e2e_reports/report_${shardIndex}.gz`,
     });
 
-    if (bkEnv.updateScreenshots) {
+    if (bkEnv.steps.playwright.updateScreenshots) {
       await compressNewScreenshots();
     }
   }

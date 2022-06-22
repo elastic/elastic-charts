@@ -40,7 +40,6 @@ export const bkEnv = (() => {
   const pullRequestNumber = getEnvNumber('BUILDKITE_PULL_REQUEST');
   const checkId = getEnvString(ECH_CHECK_ID);
   const isPullRequest = Boolean(pullRequestNumber);
-  const updateScreenshots = isPullRequest ? process.env.UPDATE_SCREENSHOTS === 'true' : false;
   let username: string | undefined;
 
   if (isPullRequest) {
@@ -60,14 +59,13 @@ export const bkEnv = (() => {
     checkId,
     username,
     isPullRequest,
-    updateScreenshots,
     pullRequestNumber,
     buildUrl: env.buildUrl,
     canModifyPR: process.env.GITHUB_PR_MAINTAINER_CAN_MODIFY === 'true',
     jobUrl: env.jobId ? `${env.buildUrl}#${env.jobId}` : undefined,
     steps: {
       playwright: {
-        updateScreenshots: process.env.ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS === 'true',
+        updateScreenshots: isPullRequest ? process.env.ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS === 'true' : false,
       },
     },
   };

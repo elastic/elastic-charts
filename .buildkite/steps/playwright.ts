@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomGroupStep, commandStepDefaults, Plugins, bkEnv } from '../utils';
+import { createStep, CustomGroupStep, commandStepDefaults, Plugins } from '../utils';
 
 export const playwrightStep = createStep<CustomGroupStep>(() => {
   const skip = false;
@@ -23,7 +23,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         parallelism: 1,
         key: parallelKey,
         depends_on: ['build_e2e'],
-        plugins: [Plugins.docker.playwright(['UPDATE_SCREENSHOTS'])],
+        plugins: [Plugins.docker.playwright()],
         artifact_paths: [
           '.buildkite/artifacts/e2e_reports/*',
           '.buildkite/artifacts/screenshots/*',
@@ -31,9 +31,6 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
           'e2e/reports/json/*',
         ],
         commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
-        env: {
-          UPDATE_SCREENSHOTS: 'true',
-        },
       },
       {
         ...commandStepDefaults,
@@ -45,7 +42,6 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
         env: {
           ECH_CHECK_ID: 'playwright',
-          UPDATE_SCREENSHOTS: bkEnv.steps.playwright.updateScreenshots,
         },
       },
     ],
