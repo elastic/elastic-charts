@@ -50,6 +50,8 @@ export function setupBuildTrigger(app: Probot) {
     });
     if (status !== 200) throw new Error('Unable to find commit for ref');
 
+    await createIssueReaction(ctx, '+1');
+    await buildkiteClient.cancelRunningBuilds(head.sha);
     await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
       branch: `${head.repo?.owner.login}:${head.ref}`,
       commit: head.sha,
@@ -61,9 +63,6 @@ export function setupBuildTrigger(app: Probot) {
       env: getPRBuildParams(pullRequest, commit),
     });
 
-    await createIssueReaction(ctx, '+1');
-    const { main } = getBuildConfig(false);
-    await buildkiteClient.cancelRunningBuilds(head.sha);
     await updateAllChecks(
       ctx,
       undefined,
@@ -73,6 +72,7 @@ export function setupBuildTrigger(app: Probot) {
       true,
       pullRequest,
     );
+    const { main } = getBuildConfig(false);
     await ctx.octokit.checks.create({
       ...ctx.repo(),
       name: main.name,
