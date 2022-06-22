@@ -51,7 +51,9 @@ export function setupBuildTrigger(app: Probot) {
     if (status !== 200) throw new Error('Unable to find commit for ref');
 
     await createIssueReaction(ctx, '+1');
-    await buildkiteClient.cancelRunningBuilds(head.sha);
+    await buildkiteClient.cancelRunningBuilds(head.sha, (buildUrl) => {
+      updateAllChecks(ctx, buildUrl, { status: 'completed', conclusion: 'cancelled' }, false, pullRequest);
+    });
     await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
       branch: `${head.repo?.owner.login}:${head.ref}`,
       commit: head.sha,
