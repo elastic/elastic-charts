@@ -103,8 +103,10 @@ function getCursorBand(
     }
   }
   const { horizontal, vertical } = smallMultipleScales;
-  const topPos = pointerPosition.verticalPanelValue !== null ? vertical.scale(pointerPosition.verticalPanelValue) || 0 : 0;
-  const leftPos = pointerPosition.horizontalPanelValue !== null ?  horizontal.scale(pointerPosition.horizontalPanelValue) || 0 : 0;
+  const topPos =
+    pointerPosition.verticalPanelValue !== null ? vertical.scale(pointerPosition.verticalPanelValue) || 0 : 0;
+  const leftPos =
+    pointerPosition.horizontalPanelValue !== null ? horizontal.scale(pointerPosition.horizontalPanelValue) || 0 : 0;
 
   const panel = {
     width: horizontal.bandwidth,

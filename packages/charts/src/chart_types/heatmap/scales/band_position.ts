@@ -27,11 +27,10 @@ export function getHeatmapSnapPosition(
   }
 
   if (scale.bandwidth > 0) {
-    const band = scale.bandwidth / (1 - scale.barsPadding);
+    const band = scale.bandwidth;
 
-    const halfPadding = 0;
     return {
-      position: position - halfPadding * totalBarsInCluster,
+      position: position,
       band: band * totalBarsInCluster,
     };
   }

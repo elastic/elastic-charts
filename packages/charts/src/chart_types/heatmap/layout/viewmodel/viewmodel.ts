@@ -13,6 +13,7 @@ import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
+import { ScaleBand as ChartScaleBand } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -35,7 +36,6 @@ import {
   TextBox,
 } from '../types/viewmodel_types';
 import { BaseDatum } from './../../../xy_chart/utils/specs';
-import { ScaleBand as ChartScaleBand } from '../../../../scales';
 
 /** @public */
 export interface HeatmapCellDatum {
