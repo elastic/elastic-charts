@@ -1,3 +1,18 @@
+# [46.11.0](https://github.com/elastic/elastic-charts/compare/v46.10.2...v46.11.0) (2022-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^59.1.0 ([#1717](https://github.com/elastic/elastic-charts/issues/1717)) ([2d681d4](https://github.com/elastic/elastic-charts/commit/2d681d4723d7598be367b411276c578dad6c38ee))
+* **heatmap:** align cell edges to the grid ([#1716](https://github.com/elastic/elastic-charts/issues/1716)) ([299054b](https://github.com/elastic/elastic-charts/commit/299054b2ae70cf245c0c840438570668415f1209))
+
+
+### Features
+
+* **flame:** additional controls ([#1722](https://github.com/elastic/elastic-charts/issues/1722)) ([966a7fa](https://github.com/elastic/elastic-charts/commit/966a7faff13f3baf931bf1cf67758a2b5e097a94))
+* **flame:** navigation and controls ([#1719](https://github.com/elastic/elastic-charts/issues/1719)) ([dd39f3c](https://github.com/elastic/elastic-charts/commit/dd39f3cf3142f1cac1647a7945caee847bf8e187))
+* **heatmap:** Allows callback events whenever pointer cursor moves ([#1668](https://github.com/elastic/elastic-charts/issues/1668)) ([0448b08](https://github.com/elastic/elastic-charts/commit/0448b089ac4315d487f83e74eb80e059204ff2b7))
+
 ## [46.10.2](https://github.com/elastic/elastic-charts/compare/v46.10.1...v46.10.2) (2022-06-16)
 
 
