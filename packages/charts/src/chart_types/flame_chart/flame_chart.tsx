@@ -557,7 +557,7 @@ class FlameComponent extends React.Component<FlameProps> {
       }
     }
 
-    if (Number.isFinite(x0)) {
+    if (Number.isFinite(x0) && searchString.length > 0) {
       Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
     }
   };
@@ -793,9 +793,10 @@ class FlameComponent extends React.Component<FlameProps> {
           <input
             ref={this.searchInputRef}
             title="Search string or regex pattern"
+            size={16}
             type="text"
             tabIndex={0}
-            placeholder="Enter search string"
+            placeholder="Search string"
             onKeyPress={this.handleSearchFieldKeyPress}
             onKeyUp={this.handleEscapeKey}
             style={{
@@ -805,6 +806,32 @@ class FlameComponent extends React.Component<FlameProps> {
               background: 'rgba(255,0,255,0)',
             }}
           />
+          <label
+            title="Clear text"
+            style={{
+              backgroundColor: 'rgb(228, 228, 228)',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+              marginInline: 4,
+              borderRadius: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
+            }}
+          >
+            Clear
+            <input
+              type="button"
+              tabIndex={0}
+              onClick={() => {
+                if (this.currentSearchString && this.searchInputRef.current) {
+                  this.searchInputRef.current.value = '';
+                  this.searchForText(false);
+                }
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+
           <label
             title="Case sensitivity (highlighted: case sensitive)"
             style={{
