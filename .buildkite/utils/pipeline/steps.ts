@@ -33,6 +33,8 @@ export type CustomCommandStep = Omit<CommandStep, 'agents'> & {
 };
 
 export type CustomGroupStep = Omit<GroupStep, 'steps'> & {
+  /** Whole group skip status */
+  skip: boolean | string;
   steps: CustomCommandStep[];
 };
 

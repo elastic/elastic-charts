@@ -258,6 +258,11 @@ export const createDeploymentStatus = async (
   options: Optional<Omit<OctokitParameters<'repos/create-deployment-status'>, 'deployment_id'>> = {},
 ) => {
   if (process.env.BLOCK_REQUESTS) return;
+
+  console.trace('createDeploymentStatus', options.state);
+
+  console.log('MetaDataKeys.skipDeployment', await getMetadata(MetaDataKeys.skipDeployment));
+
   if ((await getMetadata(MetaDataKeys.skipDeployment)) === 'true') return;
 
   const deployment_id = getNumber(await getMetadata(MetaDataKeys.deploymentId));

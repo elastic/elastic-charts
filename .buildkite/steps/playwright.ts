@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomGroupStep, commandStepDefaults, Plugins, ChangeContext } from '../utils';
+import { createStep, CustomGroupStep, commandStepDefaults, Plugins } from '../utils';
 
-export const playwrightStep = createStep<CustomGroupStep>((ctx) => {
-  const skip = isSkippable(ctx);
+export const playwrightStep = createStep<CustomGroupStep>(() => {
+  const skip = false;
   const parallelKey = 'playwright__parallel-step';
   return {
     group: ':playwright: Playwright e2e',
@@ -52,27 +52,3 @@ export const playwrightStep = createStep<CustomGroupStep>((ctx) => {
     ],
   };
 });
-
-function isSkippable(changes: ChangeContext): boolean | string {
-  const hasPlaywrightChanges = changes.files.has([
-    // ter
-    'packages/charts/src/**/*',
-    'storybook/**/*',
-    'e2e-server/**/*',
-    'e2e/tests/**/*',
-  ]);
-  const hasJestConfigChanges = changes.files.has([
-    'tsconfig.json',
-    'e2e/*',
-    'e2e/scripts/**/*',
-    'e2e/page_objects/**/*',
-    'e2e/package.json',
-    'e2e/yarn.lock',
-    'e2e/playwright.config.ts',
-  ]);
-
-  if (hasPlaywrightChanges || hasJestConfigChanges) {
-    return false;
-  }
-  return 'No playwright config nor file changes';
-}

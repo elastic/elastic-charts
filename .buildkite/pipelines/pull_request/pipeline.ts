@@ -58,27 +58,26 @@ void (async () => {
       return;
     }
 
-    const skipit = { skip: true };
+    // const skipit = { skip: true };
     const steps: Step[] = [
-      jestStep(skipit),
-      eslintStep(skipit),
-      apiCheckStep(skipit),
+      jestStep(),
+      eslintStep(),
+      apiCheckStep(),
       prettierStep(),
-      typeCheckStep(skipit),
-      storybookStep(skipit),
-      e2eServerStep(skipit),
-      ghpDeployStep(skipit),
+      typeCheckStep(),
+      storybookStep(),
+      e2eServerStep(),
+      ghpDeployStep(),
       playwrightStep(),
-      firebaseDeployStep(skipit),
+      firebaseDeployStep(),
     ].map((step) => step(changeCtx));
 
     steps
       .map((step) => {
-        const skip = 'steps' in step ? step.steps.every((s) => s.skip) : step.skip;
         const checkId = (
           'steps' in step ? step.steps.find((s) => s?.env?.ECH_CHECK_ID)?.env?.ECH_CHECK_ID : step?.env?.ECH_CHECK_ID
         ) as string | undefined;
-        return { skip, checkId };
+        return { skip: step.skip, checkId };
       })
       .filter(({ checkId }) => Boolean(checkId))
       .forEach(({ skip, checkId }) => {
@@ -102,6 +101,9 @@ void (async () => {
 
       await createDeployment();
       await createDeploymentStatus({ state: 'queued' });
+    } else {
+      console.log('skipDeployStep', skipDeployStep);
+      console.log(steps);
     }
 
     pipeline.steps = steps;

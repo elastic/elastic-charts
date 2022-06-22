@@ -21,7 +21,7 @@ export const eslintStep = createStep<CustomCommandStep>((ctx) => {
   };
 });
 
-function isSkippable(changes: ChangeContext) {
+function isSkippable(changes: ChangeContext): boolean | string {
   const hasTSChanges = changes.files.has('**/*.ts?(x)');
   const hasLintConfigChanges = changes.files.has([
     '**/.eslintrc.js',

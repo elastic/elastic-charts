@@ -235,7 +235,7 @@ export async function updateAllChecks(
           await ctx.octokit.checks.update({
             ...ctx.repo(),
             check_run_id: id,
-            details_url: details_url || buildUrl,
+            details_url: buildUrl || details_url,
             ...options,
           });
         }

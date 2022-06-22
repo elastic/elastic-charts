@@ -22,7 +22,7 @@ export const jestStep = createStep<CustomCommandStep>((ctx) => {
   };
 });
 
-function isSkippable(changes: ChangeContext) {
+function isSkippable(changes: ChangeContext): boolean | string {
   const hasTSChanges = changes.files.has('packages/charts/src/**/*.ts?(x)');
   const hasJestConfigChanges = changes.files.has([
     'jest.config.js',
