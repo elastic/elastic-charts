@@ -19,7 +19,7 @@ import {
   isApprovedPR,
   postIssueComment,
   checkUserFn,
-  updateChecks,
+  updateAllChecks,
   testPatternString,
 } from '../../utils';
 
@@ -52,10 +52,10 @@ export function setupBuildTrigger(app: Probot) {
       if (ctx.payload.action === 'labeled') {
         // Try to cancel any running buildkite build for ref
         await buildkiteClient.cancelRunningBuilds(head.sha, async (buildUrl) => {
-          await updateChecks(ctx, buildUrl);
+          await updateAllChecks(ctx, buildUrl);
         });
       } else if (['synchronize', 'opened', 'reopened'].includes(ctx.payload.action)) {
-        await updateChecks(ctx);
+        await updateAllChecks(ctx);
       }
 
       return;
@@ -91,7 +91,7 @@ export function setupBuildTrigger(app: Probot) {
       env: getPRBuildParams(ctx.payload.pull_request, commit),
     });
 
-    await updateChecks(
+    await updateAllChecks(
       ctx,
       undefined,
       {

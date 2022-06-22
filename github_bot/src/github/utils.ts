@@ -182,16 +182,32 @@ export async function getPR(ctx: ProbotEventContext<'issue_comment' | 'pull_requ
   }
 }
 
-export async function updateChecks(
+export async function updateAllChecks(
+  ctx: ProbotEventContext<'issue_comment'>,
+  buildUrl?: string,
+  options?: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>>,
+  createNew?: boolean,
+  pullRequest?: components['schemas']['pull-request'] | null,
+);
+export async function updateAllChecks(
   ctx: ProbotEventContext<'pull_request'>,
+  buildUrl?: string,
+  options?: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>>,
+  createNew?: boolean,
+);
+export async function updateAllChecks(
+  ctx: ProbotEventContext<'pull_request' | 'issue_comment'>,
   buildUrl?: string,
   options: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>> = {
     status: 'completed',
     conclusion: 'skipped',
   },
   createNew: boolean = false,
+  pullRequest: components['schemas']['pull-request'] | null = null,
 ) {
-  const { head } = ctx.payload.pull_request;
+  const pr = ctx.name === 'issue_comment' ? pullRequest : ctx.payload.pull_request;
+  if (!pr) throw new Error('No pull request found to set check run');
+  const { head } = pr;
   const { main, jobs } = getBuildConfig(false);
   const updatedCheckIds = new Set<string>();
 
