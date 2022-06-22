@@ -53,12 +53,6 @@ void (async () => {
       getBuildConfig().main.id,
     );
 
-    if (skipBuild()) {
-      handleSkippedBuild();
-      return;
-    }
-
-    // const skipit = { skip: true };
     const steps: Step[] = [
       jestStep(),
       eslintStep(),
@@ -77,7 +71,8 @@ void (async () => {
         const checkId = (
           'steps' in step ? step.steps.find((s) => s?.env?.ECH_CHECK_ID)?.env?.ECH_CHECK_ID : step?.env?.ECH_CHECK_ID
         ) as string | undefined;
-        return { skip: step.skip, checkId };
+        // Never skip steps on pushes to base branches
+        return { skip: bkEnv.isPullRequest ? step.skip : false, checkId };
       })
       .filter(({ checkId }) => Boolean(checkId))
       .forEach(({ skip, checkId }) => {
@@ -114,14 +109,3 @@ void (async () => {
     process.exit(1);
   }
 })();
-
-function skipBuild() {
-  if (process.env.BUILDKITE_BUILD_AUTHOR === 'elastic-charts-bot[bot]') {
-    return true;
-  }
-}
-
-function handleSkippedBuild() {
-  // TODO
-  console.log('handleSkippedBuild');
-}
