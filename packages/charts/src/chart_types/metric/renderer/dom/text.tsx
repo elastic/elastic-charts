@@ -115,6 +115,9 @@ export const MetricText: React.FunctionComponent<{
   const highContrastTextColor =
     highContrastColor(colorToRgba(bgColor)) === Colors.White.rgba ? style.text.lightColor : style.text.darkColor;
 
+  const titleWidthMaxSize = size === 's' ? '100%' : '80%';
+  const titleWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
+
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
       <div>
@@ -122,7 +125,11 @@ export const MetricText: React.FunctionComponent<{
           <h2
             id={id}
             className="echMetricText__title"
-            style={{ fontSize: `${TITLE_FONT_SIZE[size]}px`, ...lineClamp(visibility.titleLines) }}
+            style={{
+              fontSize: `${TITLE_FONT_SIZE[size]}px`,
+              ...lineClamp(visibility.titleLines),
+              width: titleWidth,
+            }}
           >
             {title}
           </h2>
