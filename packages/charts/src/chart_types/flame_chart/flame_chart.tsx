@@ -210,7 +210,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // vector length checks
     const datumCount = columns.position1.length / 2;
-    if (datumCount % 1) throw new Error('flame error: position0 vector must have even values (x/y pairs)');
+    if (datumCount % 1) throw new Error('flame error: position1 vector must have even values (x/y pairs)');
     if (datumCount * 2 !== columns.position0.length)
       throw new Error('flame error: Mismatch between position0 (xy) and position1 (xy) length');
     if (datumCount !== columns.size0.length)
