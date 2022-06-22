@@ -595,9 +595,11 @@ export type ContinuousDomain = [min: number, max: number];
 // @public
 export interface ControlReceiverCallbacks {
     // (undocumented)
-    focusOnNode: (control: FocusOnNodeControl) => void;
+    clearSearchText: (control: FlameGlobalControl) => void;
     // (undocumented)
-    resetFocus: (control: ResetFocusControl) => void;
+    focusOnNode: (control: FlameNodeControl) => void;
+    // (undocumented)
+    resetFocus: (control: FlameGlobalControl) => void;
 }
 
 // @public (undocumented)
@@ -1003,10 +1005,16 @@ export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, "ch
 // @public (undocumented)
 export type FlameElementEvent = FlameLayerValue;
 
+// @public
+export type FlameGlobalControl = () => void;
+
 // @public (undocumented)
 export interface FlameLayerValue {
     vmIndex: number;
 }
+
+// @public
+export type FlameNodeControl = (nodeIndex: number) => void;
 
 // @public
 export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnimationConfig {
@@ -1025,9 +1033,6 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
     // (undocumented)
     valueGetter: (datumIndex: number) => number;
 }
-
-// @public
-export type FocusOnNodeControl = (nodeIndex: number) => void;
 
 // @public (undocumented)
 export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "initial", "unset"];
@@ -2171,9 +2176,6 @@ export type RenderChangeListener = (isRendered: boolean) => void;
 
 // @public (undocumented)
 export type Rendering = 'canvas' | 'svg';
-
-// @public
-export type ResetFocusControl = () => void;
 
 // @public (undocumented)
 export type RGB = number;

@@ -17,13 +17,13 @@ import { Datum, stripUndefined, ValueAccessor, ValueFormatter } from '../../util
  * Control function for resetting chart focus
  * @public
  */
-export type ResetFocusControl = () => void; // takes no arguments
+export type FlameGlobalControl = () => void; // takes no arguments
 
 /**
  * Control function for setting chart focus on a specific node
  * @public
  */
-export type FocusOnNodeControl = (nodeIndex: number) => void; // takes no arguments
+export type FlameNodeControl = (nodeIndex: number) => void; // takes no arguments
 
 /**
  * Provides direct controls for the Flame component user.
@@ -32,8 +32,9 @@ export type FocusOnNodeControl = (nodeIndex: number) => void; // takes no argume
  * @public
  */
 export interface ControlReceiverCallbacks {
-  resetFocus: (control: ResetFocusControl) => void; // call site responsibility to store and use the `control` function
-  focusOnNode: (control: FocusOnNodeControl) => void; // same but the control function passed to the call site uses one arg
+  resetFocus: (control: FlameGlobalControl) => void; // call site responsibility to store and use the `control` function
+  focusOnNode: (control: FlameNodeControl) => void; // same but the control function passed to the call site uses one arg
+  clearSearchText: (control: FlameGlobalControl) => void;
 }
 
 /**

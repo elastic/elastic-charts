@@ -248,6 +248,9 @@ class FlameComponent extends React.Component<FlameProps> {
         this.focusOnNode(nodeIndex);
       });
     }
+    if (controlProviderCallback.clearSearchText) {
+      controlProviderCallback.clearSearchText(() => this.clearSearchText());
+    }
   }
 
   private resetFocus() {
@@ -604,12 +607,17 @@ class FlameComponent extends React.Component<FlameProps> {
     return false;
   };
 
+  private clearSearchText = () => {
+    if (!this.searchInputRef.current) return;
+    this.searchInputRef.current.value = '';
+    this.searchForText(false);
+  };
+
   private handleEscapeKey = (e: KeyboardEvent) => {
     e.stopPropagation();
-    if (e.key === 'Escape' && this.searchInputRef.current) {
-      this.searchInputRef.current.value = '';
+    if (e.key === 'Escape') {
+      this.clearSearchText();
     }
-    this.searchForText(false);
   };
 
   private handleSearchFieldKeyPress = (e: KeyboardEvent) => {
@@ -833,8 +841,7 @@ class FlameComponent extends React.Component<FlameProps> {
               tabIndex={0}
               onClick={() => {
                 if (this.currentSearchString && this.searchInputRef.current) {
-                  this.searchInputRef.current.value = '';
-                  this.searchForText(false);
+                  this.clearSearchText();
                 }
               }}
               style={{ display: 'none' }}
