@@ -202,6 +202,7 @@ class FlameComponent extends React.Component<FlameProps> {
   // navigation
   private navQueue: number[] = [0];
   private navIndex = 0;
+  private lastNavLeft = false;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -417,6 +418,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1 };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
+      this.lastNavLeft = true;
       this.smartDraw();
     }
   };
@@ -462,6 +464,7 @@ class FlameComponent extends React.Component<FlameProps> {
       if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
         const { datumIndex } = hovered;
         if (this.navQueue[this.navIndex] !== datumIndex) this.navQueue.splice(++this.navIndex, Infinity, datumIndex);
+        this.lastNavLeft = false;
         this.focusOnNode(datumIndex);
         this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
       }
@@ -521,6 +524,7 @@ class FlameComponent extends React.Component<FlameProps> {
         y0: yZoom ? newY0 : y0,
         y1: yZoom ? newY1 : y1,
       };
+      this.lastNavLeft = true;
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
     }
@@ -558,6 +562,7 @@ class FlameComponent extends React.Component<FlameProps> {
     }
 
     if (Number.isFinite(x0) && searchString.length > 0) {
+      this.lastNavLeft = true;
       Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
     }
   };
@@ -635,6 +640,7 @@ class FlameComponent extends React.Component<FlameProps> {
         }
       }
       if (hitEnumerator >= 0) {
+        this.lastNavLeft = true;
         this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
@@ -670,7 +676,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private isAtHomePosition = () => this.targetFocus.x0 === 0 && this.targetFocus.x1 === 1 && this.targetFocus.y1 === 1;
   private canNavigateForward = () => this.navIndex < this.navQueue.length - 1;
-  private canNavigateBackward = () => this.navQueue.length > 0 && this.navIndex > 0;
+  private canNavigateBackward = () => this.navQueue.length > 0 && (this.navIndex > 0 || this.lastNavLeft);
 
   render = () => {
     const {
@@ -746,7 +752,8 @@ class FlameComponent extends React.Component<FlameProps> {
               tabIndex={0}
               onClick={() => {
                 if (!this.canNavigateBackward()) return;
-                this.focusOnNode(this.navQueue[--this.navIndex]);
+                this.focusOnNode(this.navQueue[this.lastNavLeft ? this.navIndex : --this.navIndex]);
+                this.lastNavLeft = false;
               }}
               style={{ display: 'none' }}
             />
@@ -764,6 +771,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="button"
               tabIndex={0}
               onClick={() => {
+                this.lastNavLeft = false;
                 if (this.isAtHomePosition()) return;
                 this.resetFocus();
               }}
@@ -785,6 +793,7 @@ class FlameComponent extends React.Component<FlameProps> {
               tabIndex={0}
               onClick={() => {
                 if (!this.canNavigateForward()) return;
+                this.lastNavLeft = false;
                 this.focusOnNode(this.navQueue[++this.navIndex]);
               }}
               style={{ display: 'none' }}
