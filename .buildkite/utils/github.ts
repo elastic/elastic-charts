@@ -20,7 +20,7 @@ import { bkEnv } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
 import { CheckStatusOptions, CreateCheckOptions } from './octokit';
-import { OctokitParameters, FileDiff } from './types';
+import { OctokitParameters } from './types';
 
 if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
 
@@ -37,40 +37,36 @@ const defaultGHOptions = {
 };
 
 class FilesContext {
-  private _files: FileDiff[] = [];
+  private _files: string[] = [];
 
   async init() {
     this._files = await getFileDiffs();
   }
 
-  get all(): readonly FileDiff[] {
-    return this._files;
-  }
-
   get names(): readonly string[] {
-    return this._files.map((f) => f.filename);
+    return this._files;
   }
 
   /**
    * Match files against regular expression
    */
-  filter(regex: RegExp): FileDiff[];
+  filter(regex: RegExp): string[];
   /**
    * Match files against multiple regular expressions
    */
-  filter(regexs: RegExp[]): FileDiff[];
+  filter(regexs: RegExp[]): string[];
   /**
    * Match files against a minimatch pattern
    */
-  filter(pattern: string, options?: MinimatchOptions): FileDiff[];
-  filter(patterns: string[], options?: MinimatchOptions): FileDiff[];
-  filter(patterns: (string | RegExp)[], options?: MinimatchOptions): FileDiff[];
-  filter(patternsArg: RegExp | string | (string | RegExp)[], options?: MinimatchOptions): FileDiff[] {
+  filter(pattern: string, options?: MinimatchOptions): string[];
+  filter(patterns: string[], options?: MinimatchOptions): string[];
+  filter(patterns: (string | RegExp)[], options?: MinimatchOptions): string[];
+  filter(patternsArg: RegExp | string | (string | RegExp)[], options?: MinimatchOptions): string[] {
     const patterns = Array.isArray(patternsArg) ? patternsArg : [patternsArg];
 
     if (patterns.length === 0) throw new Error('No pattern provided');
 
-    return this.all.filter(({ filename: f }) => {
+    return this.names.filter((f) => {
       return patterns.some((pattern) =>
         typeof pattern === 'string' ? minimatch(f, pattern, options) : pattern.exec(f),
       );
@@ -286,18 +282,61 @@ export const createDeploymentStatus = async (
   }
 };
 
-async function getFileDiffs(): Promise<FileDiff[]> {
+interface GLQPullRequestFiles {
+  repository: {
+    pullRequest: {
+      files: {
+        totalCount: number;
+        pageInfo: {
+          endCursor: string;
+          hasNextPage: boolean;
+        };
+        nodes: [
+          {
+            path: string;
+          },
+        ];
+      };
+    };
+  };
+}
+
+export async function getFileDiffs(): Promise<string[]> {
   if (!bkEnv.isPullRequest) return [];
   const prNumber = bkEnv.pullRequestNumber;
 
   if (!prNumber) throw new Error(`Failed to set status, no prNumber available`);
 
   try {
-    const { data } = await octokit.pulls.listFiles({
-      ...defaultGHOptions,
-      pull_number: prNumber,
-    });
-    return data;
+    const files: string[] = [];
+    let hasNextPage = true;
+    let after = '';
+
+    while (hasNextPage) {
+      const response = (
+        await octokit.graphql<GLQPullRequestFiles>(`query getFileNames {
+        repository(owner: "${defaultGHOptions.owner}", name: "${defaultGHOptions.repo}") {
+          pullRequest(number: ${prNumber}) {
+            files(first: 100${after}) {
+              totalCount
+              pageInfo {
+                endCursor
+                hasNextPage
+              }
+              nodes {
+                path
+              }
+            }
+          }
+        }
+      }`)
+      ).repository.pullRequest.files;
+      hasNextPage = response.pageInfo.hasNextPage;
+      after = `, after: "${response.pageInfo.endCursor}"`;
+      files.push(...response.nodes.map(({ path }) => path));
+    }
+
+    return files;
   } catch (error) {
     console.error(`Failed to list files for PR #${prNumber}`);
     throw error;
