@@ -71,7 +71,7 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
       zIndex={zIndex + 100}
       anchor={{
         position,
-        ref: chartRef.current,
+        ref: chartRef,
       }}
       visible={state?.isVisible ?? false}
       settings={popperSettings}

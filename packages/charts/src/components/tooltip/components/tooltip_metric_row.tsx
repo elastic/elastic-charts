@@ -6,7 +6,19 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export { Tooltip } from './tooltip';
-export * from './components';
-export * from './types';
+import React, { memo, ReactNode } from 'react';
+
+type TooltipMetricRowProps = {
+  label: string;
+  metric: ReactNode;
+};
+
+/** @public */
+export const TooltipMetricRow = memo(({ label, metric }: TooltipMetricRowProps) => {
+  return (
+    <div className="echTooltip__metricRow">
+      {label}
+      <b>{metric}</b>
+    </div>
+  );
+});

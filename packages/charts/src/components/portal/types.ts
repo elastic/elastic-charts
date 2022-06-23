@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { RefObject } from 'react';
 import { $Values } from 'utility-types';
 
 import { Padding } from '../../utils/dimensions';
@@ -59,21 +60,28 @@ export type AnchorPosition = {
 };
 
 /**
+ * Anchor element to position tooltip relative to invisible anchor via ref element
+ *
+ * @internal
+ */
+export type PortalAnchorRef = RefObject<HTMLElement>;
+
+/**
  * Used to position tooltip relative to invisible anchor via ref element
  *
  * @internal
  */
-export interface PortalAnchorRef {
+export interface PositionedPortalAnchorRef {
   /**
    * Positioning values relative to `anchorRef`. Return `null` if tooltip is not visible.
    */
   position: AnchorPosition | null;
   /**
-   * Anchor ref element to use as position reference
+   * Element to append new anchor node if anchorRef is not provided
    *
    * @defaultValue document.body
    */
-  ref: HTMLElement | null;
+  appendRef?: RefObject<HTMLElement>;
 }
 
 /**

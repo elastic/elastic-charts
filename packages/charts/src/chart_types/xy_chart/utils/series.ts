@@ -60,6 +60,7 @@ export interface DataSeriesDatum<T = any> {
 
 /** @public */
 export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier {
+  xAccessor: Accessor<D>;
   yAccessor: Accessor<D>;
   splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
   smVerticalAccessorValue?: string | number;
@@ -165,6 +166,7 @@ export function splitSeriesDataByAccessors(
     const smH = groupBySpec?.horizontal?.by?.(spec, datum);
     const smV = groupBySpec?.vertical?.by?.(spec, datum);
 
+    const xAccessorStr = getAccessorFieldName(xAccessor, 0);
     yAccessors.forEach((accessor, index) => {
       const cleanedDatum = extractYAndMarkFromDatum(
         datum,
@@ -175,13 +177,14 @@ export function splitSeriesDataByAccessors(
         markSizeAccessor,
       );
 
-      const accessorStr = getAccessorFieldName(accessor, index);
+      const yAccessorStr = getAccessorFieldName(accessor, index);
       const splitAccessorStrs = [...splitAccessors.values()].map((a, si) => getAccessorFieldName(a, si));
-      const seriesKeys = [...splitAccessorStrs, accessorStr];
+      const seriesKeys = [...splitAccessorStrs, yAccessorStr];
       const seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'> = {
         specId,
         seriesKeys,
-        yAccessor: accessorStr,
+        xAccessor: xAccessorStr,
+        yAccessor: yAccessorStr,
         splitAccessors,
         ...(!isNil(smV) && { smVerticalAccessorValue: smV }),
         ...(!isNil(smH) && { smHorizontalAccessorValue: smH }),
@@ -588,6 +591,7 @@ export function getSeriesColors(
   ).forEach((ds) => {
     const dsKeys = {
       specId: ds[0].specId,
+      xAccessor: ds[0].xAccessor,
       yAccessor: ds[0].yAccessor,
       splitAccessors: ds[0].splitAccessors,
       smVerticalAccessorValue: undefined,
@@ -606,6 +610,7 @@ export function getSeriesColors(
 /** @internal */
 export function getSeriesIdentifierFromDataSeries(dataSeries: DataSeries): XYChartSeriesIdentifier {
   const {
+    xAccessor,
     yAccessor,
     splitAccessors,
     smVerticalAccessorValue,
@@ -615,6 +620,7 @@ export function getSeriesIdentifierFromDataSeries(dataSeries: DataSeries): XYCha
     key,
   } = dataSeries;
   return {
+    xAccessor,
     yAccessor,
     splitAccessors,
     smVerticalAccessorValue,

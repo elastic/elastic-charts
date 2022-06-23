@@ -6,14 +6,12 @@
  * Side Public License, v 1.
  */
 
-import classNames from 'classnames';
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, memo, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { colorToRgba } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
-import { TooltipSettings, TooltipValue, TooltipValueFormatter } from '../../specs';
+import { TooltipSettings, TooltipValueFormatter } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
@@ -24,8 +22,9 @@ import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
+import { Rotation } from '../../utils/common';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
+import { TooltipBody } from './components/tooltip_body';
 import { getTooltipSettings } from './get_tooltip_settings';
 import { TooltipInfo } from './types';
 
@@ -47,11 +46,14 @@ interface TooltipStateProps {
 
 interface TooltipOwnProps {
   getChartContainerRef: BackwardRef;
+  anchorRef?: RefObject<HTMLDivElement>;
 }
 
 type TooltipProps = TooltipDispatchProps & TooltipStateProps & TooltipOwnProps;
 
-const TooltipComponent = ({
+/** @internal */
+export const TooltipComponent = ({
+  anchorRef,
   info,
   zIndex,
   headerFormatter,
@@ -71,95 +73,12 @@ const TooltipComponent = ({
     onPointerMove({ x: -1, y: -1 }, Date.now());
   };
 
+  console.log(JSON.stringify(info?.values));
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, true);
     return () => window.removeEventListener('scroll', handleScroll, true);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const renderHeader = useCallback(
-    (header: TooltipValue | null) => {
-      if (!header || !header.isVisible) {
-        return null;
-      }
-
-      return (
-        <div className="echTooltip__header">{headerFormatter ? headerFormatter(header) : header.formattedValue}</div>
-      );
-    },
-    [headerFormatter],
-  );
-
-  const renderValues = (values: TooltipValue[]) => (
-    <div className="echTooltip__list">
-      {values.map(
-        (
-          {
-            seriesIdentifier,
-            valueAccessor,
-            label,
-            markValue,
-            formattedValue,
-            formattedMarkValue,
-            color,
-            isHighlighted,
-            isVisible,
-          },
-          index,
-        ) => {
-          if (!isVisible) {
-            return null;
-          }
-
-          const classes = classNames('echTooltip__item', {
-            echTooltip__rowHighlighted: isHighlighted,
-          });
-
-          const adjustedBGColor = colorToRgba(color)[3] === 0 ? Colors.Transparent.keyword : backgroundColor;
-
-          return (
-            <div
-              // NOTE: temporary to avoid errors
-              key={`${seriesIdentifier.key}__${valueAccessor}__${index}`}
-              className={classes}
-              style={{
-                borderLeftColor: color,
-              }}
-            >
-              <div className="echTooltip__item--backgroundColor" style={{ backgroundColor: adjustedBGColor }}>
-                <div className="echTooltip__item--color" style={{ backgroundColor: color }} />
-              </div>
-
-              <div className="echTooltip__item--container">
-                <span className="echTooltip__label">{label}</span>
-                <span className="echTooltip__value">{formattedValue}</span>
-                {isDefined(markValue) && <span className="echTooltip__markValue">&nbsp;({formattedMarkValue})</span>}
-              </div>
-            </div>
-          );
-        },
-      )}
-    </div>
-  );
-
-  const renderTooltip = () => {
-    if (!info || !visible) {
-      return null;
-    }
-
-    if (typeof settings !== 'string' && settings?.customTooltip) {
-      const CustomTooltip = settings.customTooltip;
-      return <CustomTooltip {...info} />;
-    }
-
-    const isMostlyRTL = hasMostlyRTLItems([...info.values.map(({ label }) => label), info.header?.label ?? '']);
-
-    return (
-      <div className="echTooltip" dir={isMostlyRTL ? 'rtl' : 'ltr'}>
-        {renderHeader(info.header)}
-        {renderValues(info.values)}
-      </div>
-    );
-  };
 
   const popperSettings = useMemo((): TooltipPortalSettings | undefined => {
     if (!settings || typeof settings === 'string') {
@@ -180,23 +99,34 @@ const TooltipComponent = ({
     };
   }, [settings, chartRef, rotation]);
 
+  // console.log(JSON.stringify(info));
+
   if (!visible) {
     return null;
   }
+
   return (
     <TooltipPortal
       scope="MainTooltip"
       // increasing by 100 the tooltip portal zIndex to avoid conflicts with highlighters and other elements in the DOM
       zIndex={zIndex + 100}
-      anchor={{
-        position,
-        ref: chartRef.current,
-      }}
+      anchor={
+        anchorRef ?? {
+          position,
+          appendRef: chartRef,
+        }
+      }
       settings={popperSettings}
       chartId={chartId}
       visible={visible}
     >
-      {renderTooltip()}
+      <TooltipBody
+        info={info}
+        headerFormatter={headerFormatter}
+        settings={settings}
+        visible={visible}
+        backgroundColor={backgroundColor}
+      />
     </TooltipPortal>
   );
 };

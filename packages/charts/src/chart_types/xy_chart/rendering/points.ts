@@ -75,6 +75,7 @@ export function renderPoints(
       const seriesIdentifier: XYChartSeriesIdentifier = {
         key: dataSeries.key,
         specId: dataSeries.specId,
+        xAccessor: dataSeries.xAccessor,
         yAccessor: dataSeries.yAccessor,
         splitAccessors: dataSeries.splitAccessors,
         seriesKeys: dataSeries.seriesKeys,

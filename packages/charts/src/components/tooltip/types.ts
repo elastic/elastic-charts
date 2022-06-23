@@ -6,29 +6,49 @@
  * Side Public License, v 1.
  */
 
-import { ComponentType } from 'react';
+import { ComponentType, ReactNode } from 'react';
 
-import { TooltipValue } from '../../specs';
+import { SeriesIdentifier } from '../../common/series_id';
+import { BaseDatum, TooltipValue, TooltipValueFormatter } from '../../specs';
+import { Datum } from '../../utils/common';
 
 /**
  * The set of info used to render the a tooltip.
  * @public
  */
-export interface TooltipInfo {
+export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
   /**
    * The TooltipValue for the header. On XYAxis chart the x value
    */
-  header: TooltipValue | null;
+  header: TooltipValue<D, SI> | null;
   /**
    * The array of {@link TooltipValue}s to show on the tooltip.
    * On XYAxis chart correspond to the set of y values for each series
    */
-  values: TooltipValue[];
+  values: TooltipValue<D, SI>[];
+}
+
+/**
+ * The set of info used to render the a tooltip.
+ * @public
+ */
+export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
+  extends TooltipInfo<D, SI> {
+  headerFormatter?: TooltipValueFormatter;
+  className?: string;
+  dir: 'ltr' | 'rtl';
+  backgroundColor: string;
 }
 
 /**
  * The react component used to render a custom tooltip
- * with the {@link TooltipInfo} props
  * @public
  */
-export type CustomTooltip = ComponentType<TooltipInfo>;
+export type CustomTooltip = ComponentType<CustomTooltipProps>;
+
+/** @internal */
+export type PropsOrChildren<P, C extends Record<string, unknown> = Record<string, any>> =
+  | P
+  | ({
+      children: ReactNode;
+    } & C);

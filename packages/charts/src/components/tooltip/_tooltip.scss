@@ -1,5 +1,9 @@
 @import '../mixins';
 
+$tooltipBorderColor: #D4DAE6;
+$tooltipBorderWidth: 1px;
+$rowColorStripWidth: 4px;
+
 .echTooltip {
   @include euiToolTipStyle;
   @include euiFontSizeXS;
@@ -8,15 +12,88 @@
   pointer-events: none;
   user-select: none;
   max-width: 256px;
+  background-color: #FFF;
+  color: #343741;
+
+  &>:not(:last-child) {
+    border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
+  }
+
+  .euiTable {
+    background-color: transparent;
+  }
+
+  .euiTableFooterCell, .euiTableHeaderCell, .euiTableRowCell {
+    color: white;
+  }
 
   &__list {
-    padding: $euiSizeXS;
+    &--scrollable {
+      overflow-y: auto;
+      pointer-events: auto;
+    }
+  }
+
+  &__divider {
+    border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
+  }
+
+  &__metricRow {
+    padding: $euiSizeXS ($euiSizeXS * 2);
+    display: flex;
+    justify-content: space-between;
   }
 
   &__header {
-    @include euiToolTipTitle;
+    font-weight: $euiFontWeightBold;
     margin-bottom: 0;
     padding: $euiSizeXS ($euiSizeXS * 2);
+  }
+
+  &__footer {
+    font-weight: $euiFontWeightBold;
+    border-top: solid $tooltipBorderWidth $tooltipBorderColor;
+    margin-top: 0;
+    padding: $euiSizeXS ($euiSizeXS * 2);
+  }
+
+  &__stickyAction {
+    color: #69707D;
+    padding: $euiSizeS;
+    margin-left: $rowColorStripWidth;
+  }
+
+  &__table {
+    thead {
+      font-weight: $euiFontWeightBold;
+      margin-bottom: 0;
+    }
+
+    tbody {
+      border-top: solid $tooltipBorderWidth $tooltipBorderColor;
+
+      td {
+        padding: $euiSizeXS $euiSizeS;
+      }
+    }
+
+    tfoot {
+      font-weight: $euiFontWeightBold;
+      margin-top: 0;
+    }
+
+    td {
+      padding: $euiSizeS;
+      text-align: right;
+    }
+  }
+
+  &__tableRow {
+    .colorStripe {
+      padding-left: 0;
+      padding-right: 0;
+      width: $rowColorStripWidth;
+    }
   }
 
   &__item {
@@ -34,7 +111,7 @@
     &--backgroundColor {
       position: relative;
       width: $euiSizeXS;
-      margin-right: 3px;
+      margin-right: 8px;
       flex-shrink: 0;
     }
 
@@ -54,7 +131,6 @@
   }
 
   &__value {
-    font-weight: $euiFontWeightBold;
     text-align: right;
     font-feature-settings: 'tnum';
     margin-left: $euiSizeS;

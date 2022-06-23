@@ -236,7 +236,7 @@ export type PointerEvent = PointerOverEvent | PointerOutEvent;
  * This interface describe the properties of single value shown in the tooltip
  * @public
  */
-export interface TooltipValue<D extends BaseDatum = Datum> {
+export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
   /**
    * The label of the tooltip value
    */
@@ -272,7 +272,7 @@ export interface TooltipValue<D extends BaseDatum = Datum> {
   /**
    * The identifier of the related series
    */
-  seriesIdentifier: SeriesIdentifier;
+  seriesIdentifier: SI;
   /**
    * The accessor linked to the current tooltip value
    */

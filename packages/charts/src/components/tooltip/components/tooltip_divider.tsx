@@ -6,7 +6,13 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export { Tooltip } from './tooltip';
-export * from './components';
-export * from './types';
+import React, { CSSProperties } from 'react';
+
+interface TooltipDividerProps {
+  margin?: CSSProperties['margin'];
+}
+
+/** @public */
+export const TooltipDivider = ({ margin }: TooltipDividerProps) => {
+  return <div style={{ margin }} className="echTooltip__divider"></div>;
+};

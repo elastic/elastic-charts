@@ -6,7 +6,5 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export { Tooltip } from './tooltip';
-export * from './components';
-export * from './types';
+export * from './list';
+export * from './table';
