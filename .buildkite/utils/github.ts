@@ -315,21 +315,21 @@ export async function getFileDiffs(): Promise<string[]> {
     while (hasNextPage) {
       const response = (
         await octokit.graphql<GLQPullRequestFiles>(`query getFileNames {
-        repository(owner: "${defaultGHOptions.owner}", name: "${defaultGHOptions.repo}") {
-          pullRequest(number: ${prNumber}) {
-            files(first: 100${after}) {
-              totalCount
-              pageInfo {
-                endCursor
-                hasNextPage
-              }
-              nodes {
-                path
+          repository(owner: "${defaultGHOptions.owner}", name: "${defaultGHOptions.repo}") {
+            pullRequest(number: ${prNumber}) {
+              files(first: 100${after}) {
+                totalCount
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                }
+                nodes {
+                  path
+                }
               }
             }
           }
-        }
-      }`)
+        }`)
       ).repository.pullRequest.files;
       hasNextPage = response.pageInfo.hasNextPage;
       after = `, after: "${response.pageInfo.endCursor}"`;

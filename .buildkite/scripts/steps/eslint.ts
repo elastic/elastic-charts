@@ -10,18 +10,19 @@ import { exec, yarnInstall } from '../../utils';
 import { bkEnv, startGroup } from '../../utils/buildkite';
 import { ChangeContext } from '../../utils/github';
 
-const changes = new ChangeContext();
-const hasLintConfigChanges = changes.files.has([
-  '**/.eslintrc.js',
-  '**/.eslintignore',
-  '.prettierignore',
-  '.prettierrc.json',
-  'tsconfig.lint.json',
-  'tsconfig.json',
-  'package.json',
-]);
-
 void (async () => {
+  const changes = new ChangeContext();
+  await changes.init();
+  const hasLintConfigChanges = changes.files.has([
+    '**/.eslintrc.js',
+    '**/.eslintignore',
+    '.prettierignore',
+    '.prettierrc.json',
+    'tsconfig.lint.json',
+    'tsconfig.json',
+    'package.json',
+  ]);
+
   await yarnInstall();
 
   if (bkEnv.isPullRequest && !hasLintConfigChanges) {
