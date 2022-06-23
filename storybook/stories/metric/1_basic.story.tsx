@@ -87,7 +87,7 @@ export const Example = () => {
           baseTheme={useBaseTheme()}
           onElementClick={([d]) => {
             if (isMetricElementEvent(d)) {
-              const [rowIndex, columnIndex] = d.datumIndex;
+              const { rowIndex, columnIndex } = d;
               onEventClickAction(
                 `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
               );
@@ -95,7 +95,7 @@ export const Example = () => {
           }}
           onElementOver={([d]) => {
             if (isMetricElementEvent(d)) {
-              const [rowIndex, columnIndex] = d.datumIndex;
+              const { rowIndex, columnIndex } = d;
               onEventOverAction(
                 `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
               );
