@@ -30,7 +30,7 @@ export type CustomCommandStep = Omit<CommandStep, 'agents'> & {
   /**
    * Only applies to pull requests
    */
-  skip: CommandStep['skip'];
+  skip?: CommandStep['skip'];
   agents?: {
     queue: AgentQueue;
   };

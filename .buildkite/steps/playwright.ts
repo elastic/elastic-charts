@@ -38,7 +38,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         label: ':playwright: Set group status and merge reports',
         skip,
         allow_dependency_failure: true,
-        depends_on: [parallelKey],
+        depends_on: [{ step: parallelKey, allow_failure: true }],
         commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
         env: {
           ECH_CHECK_ID: 'playwright',
