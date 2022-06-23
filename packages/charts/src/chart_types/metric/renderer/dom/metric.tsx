@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { CSSProperties, useState } from 'react';
 
 import { changeColorLightness } from '../../../../common/color_library_wrappers';
 import { BasicListener, ElementClickListener, ElementOverListener, MetricElementEvent } from '../../../../specs';
@@ -50,7 +50,7 @@ export const Metric: React.FunctionComponent<{
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = hasProgressBar ? datum.progressBarDirection : undefined;
 
-  const metricPanelClassName = classNames('echMetric', {
+  const containerClassName = classNames('echMetric', {
     'echMetric--rightBorder': columnIndex < totalColumns - 1,
     'echMetric--bottomBorder': rowIndex < totalRows - 1,
     'echMetric--small': hasProgressBar,
@@ -71,36 +71,61 @@ export const Metric: React.FunctionComponent<{
     background: backgroundInteractionColor,
   };
 
-  const ComponentType = onElementClick ? 'button' : 'div';
   const event: MetricElementEvent = { type: 'metricElementEvent', datumIndex: [rowIndex, columnIndex] };
-  return (
-    <ComponentType
-      role="figure"
+
+  const containerStyle: CSSProperties = {
+    backgroundColor:
+      !isMetricWTrend(datumWithInteractionColor) && !isMetricWProgress(datumWithInteractionColor)
+        ? datumWithInteractionColor.color
+        : updatedStyle.background,
+  };
+  return onElementClick ? (
+    <button
       aria-labelledby={datum.title && metricHTMLId}
-      className={metricPanelClassName}
+      className={containerClassName}
+      style={containerStyle}
       onMouseLeave={() => {
-        if (onElementClick) setMouseState('leave');
+        setMouseState('leave');
         if (onElementOut) onElementOut();
       }}
       onMouseEnter={() => {
-        if (onElementClick) setMouseState('enter');
+        setMouseState('enter');
         if (onElementOver) onElementOver([event]);
       }}
-      onMouseDown={() => onElementClick && setMouseState('down')}
-      onMouseUp={() => onElementClick && setMouseState('enter')}
-      onClick={() => onElementClick && onElementClick([event])}
-      style={{
-        backgroundColor:
-          !isMetricWTrend(datumWithInteractionColor) && !isMetricWProgress(datumWithInteractionColor)
-            ? datumWithInteractionColor.color
-            : updatedStyle.background,
-      }}
+      onMouseDown={() => setMouseState('down')}
+      onMouseUp={() => setMouseState('enter')}
+      onClick={() => onElementClick([event])}
     >
-      <MetricText id={metricHTMLId} datum={datumWithInteractionColor} panel={panel} style={updatedStyle} />
-      {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
-      {isMetricWProgress(datumWithInteractionColor) && (
-        <ProgressBar datum={datumWithInteractionColor} barBackground={updatedStyle.barBackground} />
-      )}
-    </ComponentType>
+      <MetricContent id={metricHTMLId} datum={datumWithInteractionColor} panel={panel} style={updatedStyle} />
+    </button>
+  ) : (
+    <div
+      role="figure"
+      aria-labelledby={datum.title && metricHTMLId}
+      className={containerClassName}
+      style={containerStyle}
+    >
+      <MetricContent id={metricHTMLId} datum={datumWithInteractionColor} panel={panel} style={updatedStyle} />
+    </div>
   );
 };
+
+function MetricContent({
+  id,
+  datum,
+  panel,
+  style,
+}: {
+  id: string;
+  datum: MetricBase | MetricWProgress | MetricWTrend;
+  panel: Size;
+  style: MetricStyle;
+}) {
+  return (
+    <>
+      <MetricText id={id} datum={datum} panel={panel} style={style} />
+      {isMetricWTrend(datum) && <SparkLine id={id} datum={datum} />}
+      {isMetricWProgress(datum) && <ProgressBar datum={datum} barBackground={style.barBackground} />}
+    </>
+  );
+}
