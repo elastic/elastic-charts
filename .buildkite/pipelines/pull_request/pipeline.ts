@@ -103,6 +103,15 @@ void (async () => {
 
     pipeline.steps = steps;
 
+    pipeline.steps.push({
+      wait: null,
+      continue_on_failure: true,
+    });
+    pipeline.steps.push({
+      label: ':broom: Cleanup build',
+      command: 'echo "testing this thing"',
+    });
+
     await uploadPipeline(pipeline);
   } catch (error) {
     console.log(error);
