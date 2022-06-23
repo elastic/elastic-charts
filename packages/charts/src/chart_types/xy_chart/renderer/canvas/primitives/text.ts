@@ -82,8 +82,8 @@ export function wrapLines(
   const lineHeightPx = lineHeight * fontSize;
 
   const padding = 0;
-  const maxWidth = fixedWidth - padding * 2;
-  const maxHeightPx = fixedHeight - padding * 2;
+  const maxWidth = Math.max(fixedWidth - padding * 2, 0);
+  const maxHeightPx = Math.max(fixedHeight - padding * 2, 0);
   let currentHeightPx = 0;
   const shouldWrap = true;
   const textArr: string[] = [];
@@ -96,7 +96,7 @@ export function wrapLines(
   for (let i = 0, max = lines.length; i < max; ++i) {
     let line = lines[i];
     let lineWidth = getTextWidth(line);
-    if (fixedWidth && lineWidth > maxWidth) {
+    if (lineWidth > maxWidth) {
       while (line.length > 0) {
         let low = 0;
         let high = line.length;

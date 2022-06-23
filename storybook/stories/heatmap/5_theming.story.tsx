@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, color, number, text } from '@storybook/addon-knobs';
+import { boolean, select, color, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -38,6 +38,10 @@ export const Example = () => {
       },
     },
   };
+
+  const yAxisLabelWidthType = select('yAxisLabel width type', ['auto', 'static', 'max'], 'auto', 'Theme');
+  const yAxisLabelWidthSize = number('yAxisLabel width max/static', 100, { min: 0, max: 200, step: 1 }, 'Theme');
+
   const heatmap: RecursivePartial<HeatmapStyle> = {
     brushArea: {
       visible: boolean('brushArea visible', true, 'Theme'),
@@ -64,6 +68,12 @@ export const Example = () => {
       fontSize: number('yAxisLabel fontSize', 12, { range: true, min: 5, max: 20 }, 'Theme'),
       textColor: color('yAxisLabel textColor', 'black', 'Theme'),
       padding: number('yAxisLabel padding', 5, { range: true, min: 0, max: 15 }, 'Theme'),
+      width:
+        yAxisLabelWidthType === 'static'
+          ? yAxisLabelWidthSize
+          : yAxisLabelWidthType === 'max'
+          ? { max: yAxisLabelWidthSize }
+          : 'auto',
     },
     grid: {
       stroke: {
