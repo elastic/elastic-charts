@@ -120,8 +120,10 @@ export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
  */
 export type MetricElementEvent = {
   type: 'metricElementEvent';
-  /* the [rowIndex, columnIndex] indices of the metric in the data array: data[rowIndex][columIndex] */
-  datumIndex: [number, number];
+  /* the row index of the metric in the data array: data[rowIndex][columIndex] */
+  rowIndex: number;
+  /* the column index of the metric in the data array: data[rowIndex][columIndex] */
+  columnIndex: number;
 };
 
 /**

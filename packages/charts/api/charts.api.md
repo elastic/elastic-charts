@@ -1684,7 +1684,8 @@ export type MetricBase = {
 // @public
 export type MetricElementEvent = {
     type: 'metricElementEvent';
-    datumIndex: [number, number];
+    rowIndex: number;
+    columnIndex: number;
 };
 
 // @alpha (undocumented)

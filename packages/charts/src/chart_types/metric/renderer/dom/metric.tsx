@@ -71,7 +71,7 @@ export const Metric: React.FunctionComponent<{
     background: backgroundInteractionColor,
   };
 
-  const event: MetricElementEvent = { type: 'metricElementEvent', datumIndex: [rowIndex, columnIndex] };
+  const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
   const containerStyle: CSSProperties = {
     backgroundColor:
