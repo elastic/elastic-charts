@@ -101,5 +101,36 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
     }),
   );
 
+  // TODO improve this edge case logic when buildkite gets better conditional handling
+  // This is needed to update the deployment status whenever the deploy step fails and
+  // thus cannot update the deployment status itself.
+  const deployRun = checkRuns.find(({ external_id }) => external_id === 'deploy_fb');
+  if (deployRun?.status !== 'completed' || deployRun.conclusion !== 'success') {
+    const {
+      data: [deployment],
+    } = await githubClient.octokit.repos.listDeployments({
+      ...githubClient.repoParams,
+      head_sha: build?.commit,
+      per_page: 1,
+    });
+
+    if (deployment) {
+      const {
+        data: [status],
+      } = await githubClient.octokit.repos.listDeploymentStatuses({
+        ...githubClient.repoParams,
+        deployment_id: deployment.id,
+      });
+
+      if (['pending', 'queued', 'in_progress'].includes(status.state)) {
+        await githubClient.octokit.repos.createDeploymentStatus({
+          ...githubClient.repoParams,
+          deployment_id: deployment.id,
+          state: 'failure',
+        });
+      }
+    }
+  }
+
   res.sendStatus(200);
 }
