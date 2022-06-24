@@ -14,7 +14,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { getAccessorValue } from '../../../../utils/accessor';
 import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
-import { isFiniteNumber } from '../../../../utils/common';
+import { isFiniteNumber, isNonNullablePrimitiveValue } from '../../../../utils/common';
 import { HeatmapTable } from './compute_chart_dimensions';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 
@@ -34,17 +34,20 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
         const y = getAccessorValue(curr, yAccessor);
         const value = getAccessorValue(curr, valueAccessor);
 
-        // compute the data domain extent
-        const [min, max] = acc.extent;
-        acc.extent = [Math.min(min, value), Math.max(max, value)];
-
-        acc.table.push({
-          x,
-          y,
-          value,
-          originalIndex: index,
-        });
-
+        if (!isNonNullablePrimitiveValue(x) || !isNonNullablePrimitiveValue(y)) {
+          return acc;
+        }
+        // add a cell and update extent only if the value is finite
+        if (isFiniteNumber(value)) {
+          acc.extent = [Math.min(acc.extent[0], value), Math.max(acc.extent[1], value)];
+          acc.table.push({
+            x,
+            y,
+            value,
+            originalIndex: index,
+          });
+        }
+        // the x and y values are used for the scale domain, and we want to keep track of every element, even non-finite values
         if (!acc.xValues.includes(x)) {
           acc.xValues.push(x);
         }

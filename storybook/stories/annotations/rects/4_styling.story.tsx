@@ -6,74 +6,91 @@
  * Side Public License, v 1.
  */
 
-import { boolean, color, number } from '@storybook/addon-knobs';
-import React from 'react';
+import { action } from '@storybook/addon-actions';
+import { array, boolean, color, number, select } from '@storybook/addon-knobs';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 
-import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
+import {
+  AnnotationAnimationConfig,
+  AnnotationDomainType,
+  Axis,
+  Chart,
+  LineAnnotation,
+  LineAnnotationDatum,
+  RectAnnotation,
+  RectAnnotationStyle,
+  ScaleType,
+  Settings,
+} from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
-import { Position } from '@elastic/charts/src/utils/common';
+import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
+import { Position, RecursivePartial } from '@elastic/charts/src/utils/common';
+import { TimeFunction } from '@elastic/charts/src/utils/time_functions';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob } from '../../utils/knobs';
+import { getChartRotationKnob, getKnobsFromEnum, getXYSeriesKnob } from '../../utils/knobs';
 
-export const Example = () => {
+const rng = getRandomNumberGenerator();
+const randomArray = new Array(100).fill(0).map(() => rng(0, 10, 2));
+
+const ExampleChart = memo(({ animationOptions }: { animationOptions: AnnotationAnimationConfig['options'] }) => {
   const debug = boolean('debug', false);
+  const [SeriesType] = getXYSeriesKnob(undefined, 'line');
+  const xScaleType = select(
+    'Scale type',
+    {
+      Linear: ScaleType.Linear,
+      Ordinal: ScaleType.Ordinal,
+    },
+    ScaleType.Linear,
+  );
   const rotation = getChartRotationKnob();
-
   const dataValues = [
     {
       coordinates: {
-        x0: 0,
+        x0: -0.1,
         x1: 0.25,
-        y0: 0,
-        y1: 7,
       },
       details: 'annotation 1',
     },
     {
       coordinates: {
-        x0: -0.1,
-        x1: 0,
-        y0: 0,
-        y1: 7,
-      },
-      details: 'annotation 2',
-    },
-    {
-      coordinates: {
-        x0: 1.1,
-        x1: 1.3,
-        y0: 0,
-        y1: 7,
-      },
-      details: 'annotation 2',
-    },
-    {
-      coordinates: {
-        x0: 2.5,
+        x0: 2,
         x1: 3,
-        y0: 0,
-        y1: 7,
+      },
+      details: 'annotation 2',
+    },
+    {
+      coordinates: {
+        x0: 8,
+        x1: 9,
       },
       details: 'annotation 3',
     },
   ];
-
-  const zIndex = number('annotation zIndex', 0);
-
-  const style = {
-    strokeWidth: number('rect border stroke width', 1),
-    stroke: color('rect border stroke color', '#e5e5e5'),
-    fill: color('fill color', '#e5e5e5'),
-    opacity: number('annotation opacity', 0.5, {
-      range: true,
-      min: 0,
-      max: 1,
-      step: 0.1,
-    }),
+  const lineData = dataValues.flatMap<LineAnnotationDatum>(({ coordinates: { x0, x1 } }) => [
+    { dataValue: x0, details: 'start' },
+    { dataValue: x1, details: 'end' },
+  ]);
+  const zIndex = number('annotation zIndex', 0, {}, 'Styles');
+  const rectStyle: RecursivePartial<RectAnnotationStyle> = {
+    strokeWidth: number('rect border stroke width', 1, {}, 'Styles'),
+    stroke: color('rect border stroke color', '#e5e5e5', 'Styles'),
+    fill: color('fill color', '#e5e5e5', 'Styles'),
+    opacity: number(
+      'annotation opacity',
+      0.5,
+      {
+        range: true,
+        min: 0,
+        max: 1,
+        step: 0.1,
+      },
+      'Styles',
+    ),
   };
 
-  const hasCustomTooltip = boolean('has custom tooltip render', false);
+  const hasCustomTooltip = boolean('has custom tooltip render', false, 'Styles');
 
   const customTooltip = ({ details }: { details?: string }) => (
     <div>
@@ -82,14 +99,26 @@ export const Example = () => {
     </div>
   );
 
-  const isLeft = boolean('y-domain axis is Position.Left', true);
+  const isLeft = boolean('y-domain axis is Position.Left', true, 'Styles');
   const yAxisTitle = isLeft ? 'y-domain axis (left)' : 'y-domain axis (right)';
   const yAxisPosition = isLeft ? Position.Left : Position.Right;
 
-  const isBottom = boolean('x-domain axis is Position.Bottom', true);
+  const isBottom = boolean('x-domain axis is Position.Bottom', true, 'Styles');
   const xAxisTitle = isBottom ? 'x-domain axis (botttom)' : 'x-domain axis (top)';
   const xAxisPosition = isBottom ? Position.Bottom : Position.Top;
-  const hideTooltips = boolean('hide tooltips', false);
+  const hideTooltips = boolean('hide tooltips', false, 'Styles');
+  const showLineAnnotations = boolean('showLineAnnotations', true, 'Styles');
+  const minAnnoCount = lineData.length;
+  const annotationCount = number('annotation count', minAnnoCount, { min: minAnnoCount, max: 100 }, 'Styles');
+  randomArray.slice(0, annotationCount - minAnnoCount).forEach((dataValue) => {
+    lineData.push({ dataValue, details: `Autogen value: ${dataValue}` });
+  });
+  const fadeOnFocusingOthers = boolean('FadeOnFocusingOthers', true, 'Animations');
+  const animations: AnnotationAnimationConfig[] = [];
+
+  if (fadeOnFocusingOthers) {
+    animations.push({ trigger: 'FadeOnFocusingOthers', options: animationOptions });
+  }
 
   return (
     <Chart>
@@ -97,25 +126,88 @@ export const Example = () => {
       <RectAnnotation
         dataValues={dataValues}
         id="rect"
-        style={style}
+        style={{ ...rectStyle }}
+        animations={animations}
         customTooltip={hasCustomTooltip ? customTooltip : undefined}
         zIndex={zIndex}
         hideTooltips={hideTooltips}
       />
+      {showLineAnnotations && (
+        <LineAnnotation
+          id="annotation_1"
+          domainType={AnnotationDomainType.XDomain}
+          animations={animations}
+          dataValues={lineData}
+          marker={<Icon type="alert" />}
+        />
+      )}
       <Axis id="bottom" position={xAxisPosition} title={xAxisTitle} />
       <Axis id="left" title={yAxisTitle} position={yAxisPosition} />
-      <LineSeries
-        id="lines"
-        xScaleType={ScaleType.Linear}
+      <SeriesType
+        id="series"
+        xScaleType={xScaleType}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         data={[
           { x: 0, y: 2 },
-          { x: 1, y: 7 },
-          { x: 3, y: 6 },
+          { x: 1, y: 3 },
+          { x: 2, y: 10 },
+          { x: 3, y: 3 },
+          { x: 4, y: 6 },
+          { x: 5, y: 12 },
+          { x: 6, y: 2 },
+          { x: 7, y: 1 },
+          { x: 8, y: 8 },
+          { x: 9, y: 11 },
+          { x: 10, y: 7 },
         ]}
       />
     </Chart>
   );
+});
+
+let prevAnimationStr = '';
+
+export const Example = () => {
+  const [mountCount, setMountCount] = useState(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const animationOptions: Partial<AnnotationAnimationConfig['options']> = {
+    enabled: boolean('enabled', true, 'Animations'),
+    delay: number('delay (ms)', 50, { min: 0, max: 10000, step: 50 }, 'Animations'),
+    duration: number('duration (ms)', 250, { min: 0, max: 10000, step: 50 }, 'Animations'),
+    timeFunction: getKnobsFromEnum('time function', TimeFunction, TimeFunction.easeInOut as TimeFunction, {
+      group: 'Animations',
+    }),
+    snapValues: array('snap values', [], undefined, 'Animations').map(Number),
+  };
+
+  // The following is a HACK to remount the chart when the animation options change, see description in markdown
+  const animationsStr = useMemo(() => JSON.stringify(animationOptions), [animationOptions]);
+
+  useEffect(() => {
+    prevAnimationStr = animationsStr;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (prevAnimationStr !== animationsStr) setMountCount(mountCount + 1);
+    prevAnimationStr = animationsStr;
+  }, [animationsStr]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (mountCount % 2 === 0) {
+    return <ExampleChart animationOptions={animationOptions} />;
+  }
+
+  action('mounted new chart')();
+  setTimeout(() => setMountCount((c) => c + 1));
+  return null;
+};
+
+Example.parameters = {
+  markdown: `Annotations animations are configured via \`RectAnnotation.animations\` or \`LineAnnotation.animations\` which are only read once on intial
+render.
+
+> :warning: Animations options, excluding \`enabled\`, are set _only_ when the chart is _**mounted**_ and _**not**_ on every rerender. \
+For demonstration purposes, the chart on this story is forced to re-mount whenever the animation options change, hence the flashing.
+`,
 };

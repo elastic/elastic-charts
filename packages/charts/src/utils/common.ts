@@ -633,6 +633,11 @@ export function isFiniteNumber(value: unknown): value is number {
   return Number.isFinite(value);
 }
 
+/** @internal */
+export function isNonNullablePrimitiveValue(value: unknown): value is NonNullable<PrimitiveValue> {
+  return typeof value === 'string' || typeof value === 'number';
+}
+
 /**
  * Strips all undefined properties from object
  * @internal

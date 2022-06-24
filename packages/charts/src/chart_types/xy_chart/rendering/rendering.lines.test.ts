@@ -382,8 +382,8 @@ describe('Rendering points - line', () => {
       const zeroValueIndexdGeometry = geometriesIndex.find(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
-      // the zero value is moved vertically to infinity
-      expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(Infinity);
+      // the zero value is scaled to NaN
+      expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(NaN);
       expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(LIGHT_THEME.lineSeriesStyle.point.radius);
     });
   });

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Scale, ScaleBand, ScaleContinuous } from '../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { ContinuousDomain, Range } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
@@ -43,7 +43,7 @@ interface XScaleOptions {
  * Compute the x scale used to align geometries to the x axis.
  * @internal
  */
-export function computeXScale(options: XScaleOptions): Scale<number | string> {
+export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuous {
   const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly } = options;
   const { type, nice, minInterval, domain, isBandScale, timeZone, logBase, desiredTickCount } = xDomain;
   const rangeDiff = Math.abs(range[1] - range[0]);
@@ -106,7 +106,7 @@ interface YScaleOptions {
  * Compute the y scales, one per groupId for the y axis.
  * @internal
  */
-export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<number>> {
+export function computeYScales(options: YScaleOptions): Map<GroupId, ScaleContinuous> {
   const { yDomains, range, integersOnly } = options;
   return yDomains.reduce(
     (
@@ -137,6 +137,6 @@ export function computeYScales(options: YScaleOptions): Map<GroupId, Scale<numbe
       yScales.set(groupId, yScale);
       return yScales;
     },
-    new Map<GroupId, Scale<number>>(),
+    new Map<GroupId, ScaleContinuous>(),
   );
 }

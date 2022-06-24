@@ -23,7 +23,7 @@ const hoverMapStateToProps = (state: GlobalChartState): HighlighterProps => {
   const canvasDimension = getChartContainerDimensionsSelector(state);
   const { chartId } = state;
 
-  const allGeometries = partitionMultiGeometries(state); // .filter((g) => g.index === 0 && g.innerIndex === 0);
+  const allGeometries = partitionMultiGeometries(state);
   const geometriesFoci = partitionDrilldownFocus(state);
   const pickedGeometries = getPickedShapes(state);
 

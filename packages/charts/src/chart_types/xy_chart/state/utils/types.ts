@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Scale } from '../../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { OrdinalDomain } from '../../../../utils/domain';
 import {
   PointGeometry,
@@ -42,8 +42,8 @@ export interface GeometriesCounts {
 
 /** @internal */
 export interface ComputedScales {
-  xScale: Scale<number | string>;
-  yScales: Map<GroupId, Scale<number>>;
+  xScale: ScaleBand | ScaleContinuous;
+  yScales: Map<GroupId, ScaleContinuous>;
 }
 
 /** @internal */

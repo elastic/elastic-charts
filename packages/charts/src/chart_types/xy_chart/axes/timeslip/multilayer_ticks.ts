@@ -6,11 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Scale, ScaleContinuous } from '../../../../scales';
+import { ScaleContinuous } from '../../../../scales';
 import { XDomain } from '../../domains/types';
 import { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
-import { GetMeasuredTicks } from '../../state/selectors/visible_ticks';
-import { AxisTick } from '../../utils/axis_utils';
+import { GetMeasuredTicks, Projection } from '../../state/selectors/visible_ticks';
 import { rasters, TimeBin, TimeRaster } from './rasters';
 
 const MAX_TIME_TICK_COUNT = 50; // this doesn't do much for narrow charts, but limits tick count to a maximum on wider ones
@@ -40,9 +39,9 @@ export function multilayerAxisEntry(
   extendByOneBin: boolean,
   range: [number, number],
   timeAxisLayerCount: any,
-  scale: Scale<string | number> | ScaleContinuous, // fixme it's only the latter for now
+  scale: ScaleContinuous,
   getMeasuredTicks: GetMeasuredTicks,
-) {
+): Projection {
   const rasterSelector = rasters({ minimumTickPixelDistance: 24, locale: 'en-US' }, xDomain.timeZone);
   const domainValues = xDomain.domain; // todo consider a property or object type rename
   const domainFromS = Number(domainValues[0]) / 1000; // todo rely on a type guard or check rather than conversion
@@ -63,8 +62,8 @@ export function multilayerAxisEntry(
       fallbackAskedTickCount: NaN,
     };
   };
-  return layers.reduce(
-    (combinedEntry: { ticks: AxisTick[] }, l: TimeRaster<TimeBin>, detailedLayerIndex) => {
+  return layers.reduce<Projection>(
+    (combinedEntry, l, detailedLayerIndex) => {
       if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
       if (layerIndex >= timeAxisLayerCount) return combinedEntry;
       const binWidthS = binWidth / 1000;
@@ -85,8 +84,8 @@ export function multilayerAxisEntry(
       }
 
       return {
-        ...entry,
         ...combinedEntry,
+        ...entry,
         ticks: (combinedEntry.ticks || []).concat(
           entry.ticks.filter(
             (tick, i, a) =>
@@ -97,6 +96,16 @@ export function multilayerAxisEntry(
         ),
       };
     },
-    { ticks: [] }, // this should turn into a full Projection
+    {
+      ticks: [],
+      labelBox: {
+        maxLabelBboxWidth: 0,
+        maxLabelBboxHeight: 0,
+        maxLabelTextWidth: 0,
+        maxLabelTextHeight: 0,
+        isHidden: true,
+      },
+      scale,
+    },
   );
 }

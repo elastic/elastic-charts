@@ -406,8 +406,8 @@ describe('Rendering points - areas', () => {
       const zeroValueIndexdGeometry = geometriesIndex.find(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
-      // moved to the bottom of the chart
-      expect(zeroValueIndexdGeometry[0].y).toBe(Infinity);
+      // the zero value is scaled to NaN
+      expect(zeroValueIndexdGeometry[0].y).toBe(NaN);
       // default area theme point radius
       expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(LIGHT_THEME.areaSeriesStyle.point.radius);
     });

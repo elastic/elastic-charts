@@ -29,10 +29,11 @@ describe('Rect annotation tooltip', () => {
         datum: { coordinates: { x0: 0, x1: 10, y0: 0, y1: 10 } },
       }),
     ];
-    const id = 'rect1';
+    const specId = 'rect1';
 
     const expectedVisibleTooltipState: AnnotationTooltipState = {
-      id,
+      id: 'testing',
+      specId,
       isVisible: true,
       annotationType: AnnotationType.Rectangle,
       anchor: {
@@ -43,7 +44,7 @@ describe('Rect annotation tooltip', () => {
       },
       datum: { coordinates: { x0: 0, x1: 10, y0: 0, y1: 10 } },
     };
-    const visibleTooltip = getRectAnnotationTooltipState(cursorPosition, annotationRects, 0, chartDimensions, id);
+    const visibleTooltip = getRectAnnotationTooltipState(cursorPosition, annotationRects, 0, chartDimensions, specId);
 
     expect(visibleTooltip).toEqual(expectedVisibleTooltipState);
   });
