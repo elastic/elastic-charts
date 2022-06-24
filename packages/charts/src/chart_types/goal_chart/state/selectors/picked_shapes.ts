@@ -34,14 +34,11 @@ function fullBoundingBox(ctx: CanvasRenderingContext2D | null, geoms: Mark[]) {
 }
 
 /** @internal */
-export const getCaptureBoundingBox = createCustomCachedSelector(
-  [getPrimitiveGeoms],
-  (geoms): Rectangle => {
-    const textMeasurer = document.createElement('canvas');
-    const ctx = textMeasurer.getContext('2d');
-    return fullBoundingBox(ctx, geoms);
-  },
-);
+export const getCaptureBoundingBox = createCustomCachedSelector([getPrimitiveGeoms], (geoms): Rectangle => {
+  const textMeasurer = document.createElement('canvas');
+  const ctx = textMeasurer.getContext('2d');
+  return fullBoundingBox(ctx, geoms);
+});
 
 /** @internal */
 export const getPickedShapes = createCustomCachedSelector(

@@ -61,6 +61,8 @@ export function isAllSeriesDeselected(legendItems: LegendItem[]): boolean {
  * Sorts points in order from closest to farthest from cursor
  * @internal
  */
-export const sortClosestToPoint = (cursor: Point) => (a: Point, b: Point): number => {
-  return getDistance(cursor, a) - getDistance(cursor, b);
-};
+export const sortClosestToPoint =
+  (cursor: Point) =>
+  (a: Point, b: Point): number => {
+    return getDistance(cursor, a) - getDistance(cursor, b);
+  };
