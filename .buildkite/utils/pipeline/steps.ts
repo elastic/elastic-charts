@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { CommandStep, GroupStep, WaitStep } from '../../buildkite';
+import { CommandStep, GroupStep } from '../../buildkite';
 import { ChangeContext } from '../github';
 import { Plugins } from './plugins';
 
@@ -39,7 +39,7 @@ export type CustomCommandStep = Omit<CommandStep, 'agents'> & {
 export type CustomGroupStep = Omit<GroupStep, 'steps'> & {
   /** Whole group skip status */
   skip: boolean | string;
-  steps: (CustomCommandStep | WaitStep)[];
+  steps: CustomCommandStep[];
 };
 
 // Only current supported steps

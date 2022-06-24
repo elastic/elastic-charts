@@ -20,8 +20,8 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e',
         skip,
-        // parallelism: 2,
-        timeout_in_minutes: 1,
+        parallelism: 2,
+        timeout_in_minutes: 30, // buildkite sees timeouts as non-failures making them hard to handle
         key: parallelKey,
         depends_on: ['build_e2e'],
         plugins: [Plugins.docker.playwright()],
@@ -32,12 +32,6 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
           'e2e/reports/json/*',
         ],
         commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
-      },
-      {
-        wait: null,
-        depends_on: parallelKey,
-        continue_on_failure: true,
-        allow_dependency_failure: true,
       },
       {
         ...commandStepDefaults,
