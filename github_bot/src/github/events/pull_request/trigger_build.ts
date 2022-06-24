@@ -21,6 +21,7 @@ import {
   checkUserFn,
   updateAllChecks,
   testPatternString,
+  syncChecks,
 } from '../../utils';
 
 const prActionTriggers = new Set<ProbotEventPayload<'pull_request'>['action']>([
@@ -38,10 +39,11 @@ export function setupBuildTrigger(app: Probot) {
   app.on('pull_request', async (ctx) => {
     if (
       !prActionTriggers.has(ctx.payload.action) ||
-      checkUserFn(ctx.payload.sender)('bot') ||
       !getConfig().github.env.branch.base.some(testPatternString(ctx.payload.pull_request.base.ref))
-    )
+    ) {
       return;
+    }
+
     console.log(`------- Triggered probot ${ctx.name} | ${ctx.payload.action}`);
 
     const { head, base, number, labels = [] } = ctx.payload.pull_request;
@@ -78,7 +80,14 @@ export function setupBuildTrigger(app: Probot) {
     });
     if (status !== 200) throw new Error('Unable to find commit for ref');
 
-    if (checkCommitFn(commit.commit.message)('skip', true)) return;
+    if (checkCommitFn(commit.commit.message)('skip')) {
+      if (checkUserFn(ctx.payload.sender)('bot')) {
+        await syncChecks(ctx);
+      } else {
+        await updateAllChecks(ctx);
+      }
+      return;
+    }
 
     await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
       branch: head.label, // user:branch

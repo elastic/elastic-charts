@@ -42,6 +42,21 @@ class Buildkite {
     }
   }
 
+  async graphql<Response>(query: string) {
+    const { data } = await axios.post<Response>(
+      'https://graphql.buildkite.com/v1',
+      { query },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.BUILDKITE_TOKEN}`,
+        },
+      },
+    );
+
+    return data;
+  }
+
   async getRunningBuilds(sha: string, branch?: string): Promise<BuildkiteBuild[]> {
     const { status, data } = await this.http.get('builds', {
       params: {
@@ -117,7 +132,7 @@ export function getPRBuildParams(
   }: components['schemas']['pull-request'] | ProbotEventPayload<'pull_request'>['pull_request'],
   { commit }: components['schemas']['commit'],
 ): PullRequestBuildEnv {
-  const updateScreenshots = checkCommitFn(commit.message)('updateScreenshots', true);
+  const updateScreenshots = checkCommitFn(commit.message)('updateScreenshots');
   return {
     GITHUB_PR_NUMBER: number.toString(),
     GITHUB_PR_TARGET_BRANCH: base.ref,
@@ -132,3 +147,192 @@ export function getPRBuildParams(
     ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS: String(updateScreenshots),
   };
 }
+
+interface JobStep {
+  passed: boolean;
+  url: string | null;
+  state: JobState;
+  key: string;
+}
+
+export async function getBuildJobs(buildId: string, stepKey?: string): Promise<JobStep[]> {
+  const jobQuery = stepKey ? `first: 100, step: { key: "${stepKey}" }` : 'first: 100';
+  const { data } = await buildkiteClient.graphql<BuildJobsReponse>(`query getBuildJobs {
+    build(uuid: "${buildId}") {
+      jobs(${jobQuery}) {
+        edges {
+          node {
+            ... on JobTypeCommand {
+              passed
+              state
+              url
+              step {
+                key
+              }
+            }
+          }
+        }
+      }
+    }
+  }`);
+  return (
+    data?.build?.jobs?.edges.map(
+      ({
+        node: {
+          step: { key },
+          ...rest
+        },
+      }) => ({ ...rest, key }),
+    ) ?? []
+  );
+}
+
+interface BuildJobsReponse {
+  data: {
+    build: {
+      jobs: {
+        edges: {
+          node: {
+            passed: boolean;
+            url: string | null;
+            state: JobState;
+            step: {
+              key: string;
+            };
+          };
+        }[];
+      };
+    };
+  };
+}
+
+export const enum JobState {
+  /**
+   * The job has just been created and doesn't have a state yet
+   */
+  Pending = 'PENDING',
+
+  /**
+   * The job is waiting on a wait step to finish
+   */
+  Waiting = 'WAITING',
+
+  /**
+   * The job was in a WAITING state when the build failed
+   */
+  WaitingFailed = 'WAITING_FAILED',
+
+  /**
+   * The job is waiting on a block step to finish
+   */
+  Blocked = 'BLOCKED',
+
+  /**
+   * The job was in a BLOCKED state when the build failed
+   */
+  BlockedFailed = 'BLOCKED_FAILED',
+
+  /**
+   * This block job has been manually unblocked
+   */
+  Unblocked = 'UNBLOCKED',
+
+  /**
+   * This block job was in an UNBLOCKED state when the build failed
+   */
+  UnblockedFailed = 'UNBLOCKED_FAILED',
+
+  /**
+   * The job is waiting on a concurrency group check before becoming either LIMITED or SCHEDULED
+   */
+  Limiting = 'LIMITING',
+
+  /**
+   * The job is waiting for jobs with the same concurrency group to finish
+   */
+  Limited = 'LIMITED',
+
+  /**
+   * The job is scheduled and waiting for an agent
+   */
+  Scheduled = 'SCHEDULED',
+
+  /**
+   * The job has been assigned to an agent, and it's waiting for it to accept
+   */
+  Assigned = 'ASSIGNED',
+
+  /**
+   * The job was accepted by the agent, and now it's waiting to start running
+   */
+  Accepted = 'ACCEPTED',
+
+  /**
+   * The job is runing
+   */
+  Running = 'RUNNING',
+
+  /**
+   * The job has finished
+   */
+  Finished = 'FINISHED',
+
+  /**
+   * The job is currently canceling
+   */
+  Canceling = 'CANCELING',
+
+  /**
+   * The job was canceled
+   */
+  Canceled = 'CANCELED',
+
+  /**
+   * The job is timing out for taking too long
+   */
+  TimingOut = 'TIMING_OUT',
+
+  /**
+   * The job timed out
+   */
+  TimedOut = 'TIMED_OUT',
+
+  /**
+   * The job was skipped
+   */
+  Skipped = 'SKIPPED',
+
+  /**
+   * The jobs configuration means that it can't be run
+   */
+  Broken = 'BROKEN',
+
+  /**
+   * The job expired before it was started on an agent
+   */
+  Expired = 'EXPIRED',
+}
+
+export const jobStateMapping: Record<JobState, string> = {
+  PENDING: 'Pending',
+  WAITING: 'Waiting',
+  WAITING_FAILED: 'Waiting Failed',
+  BLOCKED: 'Blocked',
+  BLOCKED_FAILED: 'Blocked Failed',
+  UNBLOCKED: 'Unblocked',
+  UNBLOCKED_FAILED: 'Unblocked Failed',
+  LIMITING: 'Limiting',
+  LIMITED: 'Limited',
+  SCHEDULED: 'Scheduled',
+  ASSIGNED: 'Assigned',
+  ACCEPTED: 'Accepted',
+  RUNNING: 'Running',
+  FINISHED: 'Finished',
+  CANCELING: 'Canceling',
+  CANCELED: 'Canceled',
+  TIMING_OUT: 'TimingOut',
+  TIMED_OUT: 'TimedOut',
+  SKIPPED: 'Skipped',
+  BROKEN: 'Broken',
+  EXPIRED: 'Expired',
+};

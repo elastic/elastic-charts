@@ -45,10 +45,9 @@ async function setGroupStatus() {
   console.log('e2eJobs');
   console.log(e2eJobs);
 
-  const jobStateMap = new Map<string, number>([
-    ['Success', 0],
-    ['Failed', 0],
-  ]);
+  const jobStateMap = new Map<string, number>();
+  jobStateMap.set('Success', 0);
+  jobStateMap.set('Failed', 0);
 
   const failedJobs = e2eJobs.filter((s) => !s.passed);
   e2eJobs.forEach(({ state, passed }) => {
