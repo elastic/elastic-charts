@@ -69,9 +69,7 @@ void (async () => {
     steps
       .map((step) => {
         const checkId = (
-          'steps' in step
-            ? (step.steps as CustomCommandStep[]).find((s) => s?.env?.ECH_CHECK_ID)?.env?.ECH_CHECK_ID
-            : step?.env?.ECH_CHECK_ID
+          'steps' in step ? step.steps.find((s) => s?.env?.ECH_CHECK_ID)?.env?.ECH_CHECK_ID : step?.env?.ECH_CHECK_ID
         ) as string | undefined;
         // Never skip steps on pushes to base branches
         return { skip: bkEnv.isPullRequest ? step.skip : false, checkId };

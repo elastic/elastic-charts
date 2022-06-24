@@ -7,17 +7,20 @@
  */
 
 import { bkEnv, buildkiteGQLQuery, codeCheckIsCompleted, getJobMetadata, updateCheckStatus } from '../utils';
+import { yarnInstall } from './../utils/exec';
+
+const skipChecks = new Set('playwright');
 
 void (async function () {
   const { checkId, jobId, jobUrl } = bkEnv;
 
-  if (checkId && jobId) {
+  if (checkId && jobId && !skipChecks.has(checkId)) {
+    await yarnInstall();
     const jobStatus = await getJobStatus(jobId);
-
-    console.log('jobStatus', jobStatus);
 
     if (jobStatus) {
       if (jobStatus.state === 'CANCELING') {
+        console.log('jobStatus', jobStatus);
         const user = getCancelledBy(jobStatus.events ?? []);
         await updateCheckStatus(
           {
@@ -34,6 +37,7 @@ void (async function () {
         console.log('isFailedJob', isFailedJob);
 
         if (isFailedJob || !(await codeCheckIsCompleted())) {
+          console.log('jobStatus', jobStatus);
           await updateCheckStatus(
             {
               status: 'completed',

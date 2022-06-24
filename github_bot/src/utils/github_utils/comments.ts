@@ -28,7 +28,7 @@ type Comments = typeof comments;
 
 export function getComment<T extends keyof Comments>(key: T, ...args: Parameters<Comments[T]>): string {
   console.log(key, args);
-  // @ts-ignore conditional args
+  // @ts-ignore - conditional args
   const comment = comments[key](...args);
   return generateMsg(key, comment);
 }

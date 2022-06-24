@@ -235,8 +235,8 @@ export const createDeployment = async (
   try {
     const response = await octokit.repos.createDeployment({
       ...defaultGHOptions,
-      environment: 'buildkite', // TODO
-      transient_environment: false, // sets previous statuses to inactive
+      environment: bkEnv.isPullRequest ? 'pull-requests' : bkEnv.branch,
+      transient_environment: bkEnv.isPullRequest, // sets previous statuses to inactive
       production_environment: false,
       ...options,
       auto_merge: false, // use branch as is without merging with base

@@ -284,3 +284,36 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>, baseSh
     }),
   );
 }
+
+export async function updatePreviousDeployments(
+  ctx: ProbotEventContext<'pull_request'>,
+  state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
+) {
+  const { data: deployments } = await ctx.octokit.repos.listDeployments({
+    ...ctx.repo(),
+    ref: ctx.payload.pull_request.head.ref,
+    per_page: 100,
+  });
+
+  await Promise.all(
+    deployments.map(async ({ id }) => {
+      const {
+        data: [{ environment, state: currentState, ...status }],
+      } = await ctx.octokit.repos.listDeploymentStatuses({
+        ...ctx.repo(),
+        deployment_id: id,
+        per_page: 1,
+      });
+
+      if (['in_progress', 'queued', 'pending'].includes(currentState)) {
+        await ctx.octokit.repos.createDeploymentStatus({
+          ...ctx.repo(),
+          ...status,
+          // @ts-ignore - bad type for environment
+          environment,
+          state,
+        });
+      }
+    }),
+  );
+}

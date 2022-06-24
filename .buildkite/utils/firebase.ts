@@ -11,7 +11,7 @@ import { writeSync } from 'fs';
 import { setMetadata } from 'buildkite-agent-node';
 import { fileSync } from 'tmp';
 
-import { startGroup } from './buildkite';
+import { bkEnv, startGroup } from './buildkite';
 import { DEFAULT_FIREBASE_URL, MetaDataKeys } from './constants';
 import { exec } from './exec';
 import { createDeploymentStatus } from './github';
@@ -38,12 +38,11 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
 
   startGroup('Deploying to firebase');
 
-  const channelId = 'nick';
-  // const channelId = bkEnv.isPullRequest
-  //   ? `pr-${bkEnv.pullRequestNumber}`
-  //   : bkEnv.branch === 'master'
-  //   ? null
-  //   : bkEnv.branch;
+  const channelId = bkEnv.isPullRequest
+    ? `pr-${bkEnv.pullRequestNumber!}`
+    : bkEnv.branch === 'master'
+    ? null
+    : bkEnv.branch;
 
   const gacFile = createGACFile();
   const command = channelId
