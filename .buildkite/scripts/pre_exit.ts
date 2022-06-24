@@ -9,7 +9,7 @@
 import { bkEnv, buildkiteGQLQuery, codeCheckIsCompleted, getJobMetadata, updateCheckStatus } from '../utils';
 import { yarnInstall } from './../utils/exec';
 
-const skipChecks = new Set('playwright');
+const skipChecks = new Set(['playwright']);
 
 void (async function () {
   const { checkId, jobId, jobUrl } = bkEnv;

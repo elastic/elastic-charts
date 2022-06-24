@@ -31,7 +31,7 @@ export const octokit = new MyOctokit({
   auth: auth,
 });
 
-const defaultGHOptions = {
+export const defaultGHOptions = {
   owner: 'elastic',
   repo: 'elastic-charts',
 };

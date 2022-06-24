@@ -25,8 +25,8 @@ import {
   updateCheckStatus,
   jobStateMapping,
   JobState,
+  defaultGHOptions,
 } from '../../utils';
-import { githubClient } from './../../../github_bot/src/utils/github';
 
 async function setGroupStatus() {
   const { checkId } = bkEnv;
@@ -170,8 +170,8 @@ void (async () => {
       await commitNewScreenshots();
     } else {
       if (bkEnv.isPullRequest) {
-        await githubClient.octokit.issues.createComment({
-          ...githubClient.repoParams,
+        await octokit.issues.createComment({
+          ...defaultGHOptions,
           issue_number: bkEnv.pullRequestNumber!,
           body: `Your latest commit indicated you would like me to update the vrt screenshots but this PR disallows edits. Please update your PR to allow edits and tell me to \`test this\` again.
           <img width="297" alt="image" src="https://user-images.githubusercontent.com/19007109/175552884-7f8e4bba-3440-444b-b19c-de15d618ac23.png">`,
