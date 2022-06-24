@@ -20,7 +20,7 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e',
         skip,
-        parallelism: 2,
+        parallelism: 15,
         timeout_in_minutes: 30, // buildkite sees timeouts as non-failures making them hard to handle
         key: parallelKey,
         depends_on: ['build_e2e'],
