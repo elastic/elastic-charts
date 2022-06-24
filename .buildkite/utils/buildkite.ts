@@ -141,69 +141,50 @@ export const setJobMetadata = async (prop: string, value: string) => {
   console.log(`Set metaData value [${key}] -> ${value}`);
 };
 
-export async function getJobTiming(jobId = bkEnv.jobId) {
-  if (!jobId) throw new Error(`Error: no job id found [${jobId}]`);
-
-  const { data } = await buildkiteGQLQuery<JobTimingReponse>(`query getJobTimings {
-    job(uuid: "${jobId}") {
-      ... on JobTypeCommand {
-        startedAt
-        finishedAt
-        canceledAt
-      }
-    }
-  }`);
-  const { startedAt, finishedAt, canceledAt } = data.job;
-  if (!startedAt) {
-    throw new Error(`Error: unable to determine start time for job [${jobId}]`);
-  }
-  const date1 = new Date(startedAt);
-  const end = finishedAt || canceledAt;
-  const date2 = end ? new Date(end) : new Date();
-  const diffMs = Math.abs(date2.valueOf() - date1.valueOf());
-  const diffMin = diffMs / 1000 / 60;
-  const minutes = Math.floor(diffMin);
-  const seconds = Math.floor((diffMin - minutes) * 60);
-
-  return {
-    minutes,
-    seconds,
-  };
+interface JobStep {
+  passed: boolean;
+  url: string | null;
+  state: JobState;
+  key: string;
 }
 
-interface JobTimingReponse {
-  data: {
-    job: {
-      startedAt: string | null;
-      finishedAt: string | null;
-      canceledAt: string | null;
-    };
-  };
-}
-
-export async function getJobSteps(stepKey: string) {
+export async function getBuildJobs(stepKey?: string): Promise<JobStep[]> {
   const buildId = bkEnv.buildId;
 
   if (!buildId) throw new Error(`Error: no job id found [${buildId}]`);
 
-  const { data } = await buildkiteGQLQuery<JobStepsReponse>(`query getJobSteps {
+  const jobQuery = stepKey ? `first: 100, step: { key: "${stepKey}" }` : 'first: 100';
+  const { data } = await buildkiteGQLQuery<BuildJobsReponse>(`query getBuildJobs {
     build(uuid: "${buildId}") {
-      jobs(first: 100, step: { key: "${stepKey}" }) {
+      jobs(${jobQuery}) {
         edges {
           node {
             ... on JobTypeCommand {
               passed
+              state
               url
+              step {
+                key
+              }
             }
           }
         }
       }
     }
   }`);
-  return data?.build?.jobs?.edges.map(({ node }) => node) ?? [];
+  return (
+    data?.build?.jobs?.edges.map(
+      ({
+        node: {
+          step: { key },
+          ...rest
+        },
+      }) => ({ ...rest, key }),
+    ) ?? []
+  );
 }
 
-interface JobStepsReponse {
+interface BuildJobsReponse {
   data: {
     build: {
       jobs: {
@@ -211,9 +192,144 @@ interface JobStepsReponse {
           node: {
             passed: boolean;
             url: string | null;
+            state: JobState;
+            step: {
+              key: string;
+            };
           };
         }[];
       };
     };
   };
 }
+
+export const enum JobState {
+  /**
+   * The job has just been created and doesn't have a state yet
+   */
+  Pending = 'PENDING',
+
+  /**
+   * The job is waiting on a wait step to finish
+   */
+  Waiting = 'WAITING',
+
+  /**
+   * The job was in a WAITING state when the build failed
+   */
+  WaitingFailed = 'WAITING_FAILED',
+
+  /**
+   * The job is waiting on a block step to finish
+   */
+  Blocked = 'BLOCKED',
+
+  /**
+   * The job was in a BLOCKED state when the build failed
+   */
+  BlockedFailed = 'BLOCKED_FAILED',
+
+  /**
+   * This block job has been manually unblocked
+   */
+  Unblocked = 'UNBLOCKED',
+
+  /**
+   * This block job was in an UNBLOCKED state when the build failed
+   */
+  UnblockedFailed = 'UNBLOCKED_FAILED',
+
+  /**
+   * The job is waiting on a concurrency group check before becoming either LIMITED or SCHEDULED
+   */
+  Limiting = 'LIMITING',
+
+  /**
+   * The job is waiting for jobs with the same concurrency group to finish
+   */
+  Limited = 'LIMITED',
+
+  /**
+   * The job is scheduled and waiting for an agent
+   */
+  Scheduled = 'SCHEDULED',
+
+  /**
+   * The job has been assigned to an agent, and it's waiting for it to accept
+   */
+  Assigned = 'ASSIGNED',
+
+  /**
+   * The job was accepted by the agent, and now it's waiting to start running
+   */
+  Accepted = 'ACCEPTED',
+
+  /**
+   * The job is runing
+   */
+  Running = 'RUNNING',
+
+  /**
+   * The job has finished
+   */
+  Finished = 'FINISHED',
+
+  /**
+   * The job is currently canceling
+   */
+  Canceling = 'CANCELING',
+
+  /**
+   * The job was canceled
+   */
+  Canceled = 'CANCELED',
+
+  /**
+   * The job is timing out for taking too long
+   */
+  TimingOut = 'TIMING_OUT',
+
+  /**
+   * The job timed out
+   */
+  TimedOut = 'TIMED_OUT',
+
+  /**
+   * The job was skipped
+   */
+  Skipped = 'SKIPPED',
+
+  /**
+   * The jobs configuration means that it can't be run
+   */
+  Broken = 'BROKEN',
+
+  /**
+   * The job expired before it was started on an agent
+   */
+  Expired = 'EXPIRED',
+}
+
+export const jobStateMapping: Record<JobState, string> = {
+  PENDING: 'Pending',
+  WAITING: 'Waiting',
+  WAITING_FAILED: 'Waiting Failed',
+  BLOCKED: 'Blocked',
+  BLOCKED_FAILED: 'Blocked Failed',
+  UNBLOCKED: 'Unblocked',
+  UNBLOCKED_FAILED: 'Unblocked Failed',
+  LIMITING: 'Limiting',
+  LIMITED: 'Limited',
+  SCHEDULED: 'Scheduled',
+  ASSIGNED: 'Assigned',
+  ACCEPTED: 'Accepted',
+  RUNNING: 'Running',
+  FINISHED: 'Finished',
+  CANCELING: 'Canceling',
+  CANCELED: 'Canceled',
+  TIMING_OUT: 'TimingOut',
+  TIMED_OUT: 'TimedOut',
+  SKIPPED: 'Skipped',
+  BROKEN: 'Broken',
+  EXPIRED: 'Expired',
+};

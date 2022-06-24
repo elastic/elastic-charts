@@ -15,7 +15,7 @@ import {
   bkEnv,
   exec,
   downloadArtifacts,
-  getJobSteps,
+  getBuildJobs,
   startGroup,
   yarnInstall,
   compress,
@@ -23,6 +23,8 @@ import {
   octokit,
   ScreenshotMeta,
   updateCheckStatus,
+  jobStateMapping,
+  JobState,
 } from '../../utils';
 
 async function setGroupStatus() {
@@ -38,22 +40,39 @@ async function setGroupStatus() {
     return;
   }
 
-  const e2eSteps = await getJobSteps(stepKey);
+  const e2eJobs = await getBuildJobs(stepKey);
 
-  console.log('e2eSteps');
-  console.log(e2eSteps);
+  console.log('e2eJobs');
+  console.log(e2eJobs);
 
-  const failedSteps = e2eSteps.filter((s) => !s.passed);
-  const description =
-    failedSteps.length > 0
-      ? `Failure in ${failedSteps.length} of ${e2eSteps.length} jobs`
-      : `Successful in all ${e2eSteps.length} jobs`;
+  const jobStateMap = new Map<string, number>([
+    ['Success', 0],
+    ['Failed', 0],
+  ]);
+
+  const failedJobs = e2eJobs.filter((s) => !s.passed);
+  e2eJobs.forEach(({ state, passed }) => {
+    let key: string = jobStateMapping[state];
+    if (state === JobState.Finished) {
+      key = passed ? 'Success' : 'Failed';
+    }
+    const count = jobStateMap.get(key) ?? 0;
+    jobStateMap.set(key, count + 1);
+  });
+
+  console.log(jobStateMap);
+
+  const summaryParts = [...jobStateMap.entries()].map(([key, n]) => `${key}: ${n}`);
+  const description = `Test Summary: ${summaryParts.join(' | ')}`;
+
+  console.log(description);
 
   await updateCheckStatus(
     {
       status: 'completed',
-      conclusion: failedSteps.length > 0 ? 'failure' : 'success',
-      details_url: failedSteps.length === 1 ? failedSteps[0].url ?? bkEnv.buildUrl : bkEnv.buildUrl, // could set this to e2e-report
+      conclusion: failedJobs.length > 0 ? 'failure' : 'success',
+      // TODO improve this with detailed check output summary
+      details_url: failedJobs.length === 1 ? failedJobs[0].url ?? bkEnv.buildUrl : bkEnv.buildUrl, // could set this to e2e-report
     },
     checkId,
     description,
@@ -151,7 +170,7 @@ void (async () => {
     dest: '.buildkite/artifacts/merged_html_report.gz',
   });
 
-  if (bkEnv.updateScreenshots) {
+  if (bkEnv.steps.playwright.updateScreenshots) {
     await commitNewScreenshots();
   }
 })();

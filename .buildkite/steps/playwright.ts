@@ -34,6 +34,12 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
       },
       {
+        wait: null,
+        depends_on: parallelKey,
+        continue_on_failure: true,
+        allow_dependency_failure: true,
+      },
+      {
         ...commandStepDefaults,
         key: 'playwright_merge_and_status',
         label: ':playwright: Set group status and merge reports',
