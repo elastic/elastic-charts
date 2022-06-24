@@ -70,4 +70,10 @@ describe('Heatmap stories', () => {
       'http://localhost:9001/?path=/story/heatmap-alpha--label-rotation&globals=theme:light&knob-Y-axis auto width=true&knob-Y-axis width=50&knob-X-Axis visible=true&knob-X-Axis label fontSize=12&knob-X-Axis label padding=6&knob-X-Axis label rotation=45&knob-Use categorical data=&knob-Show legend=',
     );
   });
+
+  test('render table with all nulls', async () => {
+    await common.expectChartAtUrlToMatchScreenshot(
+      'http://localhost:9001/?path=/story/heatmap-alpha--sorting&globals=theme:light&knob-Fill gaps with nulls=true&knob-Fill everything with nulls=true&knob-X sorting predicate=dataIndex&knob-Y sorting predicate=dataIndex',
+    );
+  });
 });
