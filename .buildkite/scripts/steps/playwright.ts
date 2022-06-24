@@ -81,7 +81,8 @@ void (async () => {
   await yarnInstall('e2e');
 
   const key = `${bkEnv.checkId}--activeJobs`;
-  const activeJobs = (Number(await getMetadata(key)) ?? 0) + 1;
+  const value = Number(await getMetadata(key));
+  const activeJobs = (Number.isNaN(value) ? 0 : value) + 1;
   await setMetadata(key, String(activeJobs));
 
   await updateCheckStatus(
