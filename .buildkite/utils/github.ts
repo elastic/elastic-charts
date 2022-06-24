@@ -182,7 +182,7 @@ export const updateCheckStatus = async (
   const newCheckNeeded = options.status !== 'completed' && checkRun?.status === 'completed';
 
   console.trace('updateCheckStatus', checkId, title);
-  console.trace(JSON.stringify(options, null, 2));
+  console.log(JSON.stringify(options, null, 2));
 
   try {
     const output =

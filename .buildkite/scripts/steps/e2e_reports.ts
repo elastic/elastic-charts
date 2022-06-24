@@ -26,21 +26,17 @@ import {
   jobStateMapping,
   JobState,
 } from '../../utils';
+import { githubClient } from './../../../github_bot/src/utils/github';
 
 async function setGroupStatus() {
-  const { checkId, stepKey } = bkEnv;
+  const { checkId } = bkEnv;
 
   if (!checkId) {
     console.warn('Error: no checkId found, skipping e2e group status');
     return;
   }
 
-  if (!stepKey) {
-    console.warn('Error: no stepKey found, skipping e2e group status');
-    return;
-  }
-
-  const e2eJobs = await getBuildJobs(stepKey);
+  const e2eJobs = await getBuildJobs('playwright__parallel-step');
 
   console.log('e2eJobs');
   console.log(e2eJobs);
@@ -170,6 +166,17 @@ void (async () => {
   });
 
   if (bkEnv.steps.playwright.updateScreenshots) {
-    await commitNewScreenshots();
+    if (bkEnv.canModifyPR) {
+      await commitNewScreenshots();
+    } else {
+      if (bkEnv.isPullRequest) {
+        await githubClient.octokit.issues.createComment({
+          ...githubClient.repoParams,
+          issue_number: bkEnv.pullRequestNumber!,
+          body: `Your latest commit indicated you would like me to update the vrt screenshots but this PR disallows edits. Please update your PR to allow edits and tell me to \`test this\` again.
+          <img width="297" alt="image" src="https://user-images.githubusercontent.com/19007109/175552884-7f8e4bba-3440-444b-b19c-de15d618ac23.png">`,
+        });
+      }
+    }
   }
 })();
