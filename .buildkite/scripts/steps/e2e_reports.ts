@@ -57,8 +57,8 @@ async function setGroupStatus() {
 
   console.log(jobStateMap);
 
-  const summaryParts = [...jobStateMap.entries()].map(([key, n]) => `${key}: ${n}`);
-  const description = `Test Summary: ${summaryParts.join(' | ')}`;
+  const summaryParts = [...jobStateMap.entries()].map(([key, n]) => `${n} ${key}`);
+  const description = summaryParts.join(', ');
 
   console.log(description);
 
