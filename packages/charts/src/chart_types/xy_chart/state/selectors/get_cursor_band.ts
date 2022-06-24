@@ -11,6 +11,7 @@ import { SettingsSpec, PointerEvent } from '../../../../specs/settings';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
 import { ChartDimensions } from '../../utils/dimensions';
@@ -71,6 +72,9 @@ function getCursorBand(
   // external pointer events takes precedence over the current mouse pointer
   if (isValidPointerOverEvent(xScale, externalPointerEvent)) {
     fromExternalEvent = true;
+    if (isNil(externalPointerEvent.x)) {
+      return;
+    }
     const x = xScale.pureScale(externalPointerEvent.x);
     if (Number.isNaN(x) || x > chartDimensions.width || x < 0) {
       return;
@@ -81,19 +85,18 @@ function getCursorBand(
       verticalPanelValue: null,
       horizontalPanelValue: null,
     };
-    xValue = {
-      value: externalPointerEvent.x,
-      withinBandwidth: true,
-    };
+    xValue = externalPointerEvent.x;
   } else {
-    xValue = xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys);
-    if (!xValue) {
+    xValue = xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys as number[]).value; // TODO fix this cast
+    if (isNil(xValue) || Number.isNaN(xValue)) {
       return;
     }
   }
   const { horizontal, vertical } = smallMultipleScales;
-  const topPos = vertical.scale(pointerPosition.verticalPanelValue) || 0;
-  const leftPos = horizontal.scale(pointerPosition.horizontalPanelValue) || 0;
+  const topPos =
+    (!isNil(pointerPosition.verticalPanelValue) && vertical.scale(pointerPosition.verticalPanelValue)) || 0;
+  const leftPos =
+    (!isNil(pointerPosition.horizontalPanelValue) && horizontal.scale(pointerPosition.horizontalPanelValue)) || 0;
 
   const panel = {
     width: horizontal.bandwidth,
@@ -106,7 +109,7 @@ function getCursorBand(
     panel,
     pointerPosition,
     {
-      value: xValue.value,
+      value: xValue,
       withinBandwidth: true,
     },
     isTooltipSnapEnabled,

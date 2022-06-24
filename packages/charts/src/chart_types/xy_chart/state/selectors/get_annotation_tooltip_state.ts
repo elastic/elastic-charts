@@ -20,12 +20,12 @@ import { AnnotationLineProps } from '../../annotations/line/types';
 import { AnnotationRectProps } from '../../annotations/rect/types';
 import { computeRectAnnotationTooltipState } from '../../annotations/tooltip';
 import { AnnotationTooltipState, AnnotationDimensions } from '../../annotations/types';
-import { AxisSpec, AnnotationSpec, AnnotationType } from '../../utils/specs';
+import { AnnotationSpec, AnnotationType } from '../../utils/specs';
 import { ComputedGeometries } from '../utils/types';
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
+import { getAnnotationSpecsSelector } from './get_specs';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 
 const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
@@ -39,7 +39,6 @@ export const getAnnotationTooltipStateSelector = createCustomCachedSelector(
     computeSeriesGeometriesSelector,
     getChartRotationSelector,
     getAnnotationSpecsSelector,
-    getAxisSpecsSelector,
     computeAnnotationDimensionsSelector,
     getTooltipInfoSelector,
     getHoveredDOMElement,
@@ -57,7 +56,6 @@ function getAnnotationTooltipState(
   geometries: ComputedGeometries,
   chartRotation: Rotation,
   annotationSpecs: AnnotationSpec[],
-  axesSpecs: AxisSpec[],
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
   tooltip: TooltipInfo,
   hoveredDOMElement: DOMElement | null,
@@ -128,7 +126,8 @@ export function getTooltipStateForDOMElements(
   }
 
   return {
-    id: spec.id,
+    id: dimension.id,
+    specId: spec.id,
     isVisible: true,
     annotationType: AnnotationType.Line,
     datum: dimension.datum,

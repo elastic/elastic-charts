@@ -1,6 +1,8 @@
 # Checks related only to PRs and not code
 name: PR Checks
 
+# TODO: With the new github sync upstream UI this check is obsolete. To be removed with github actions.
+
 concurrency:
   group: '${{ github.workflow }} - ${{ github.head_ref }}'
   cancel-in-progress: true
@@ -26,6 +28,7 @@ on:
   # See https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request_target
   pull_request_target:
     branches:
+      - buildkite-main # to be removed
       - master
       - alpha
       - next
@@ -36,6 +39,7 @@ on:
 jobs:
   pr-sync:
     name: Sync
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'ci:buildkite') }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out branch # needed to use local action

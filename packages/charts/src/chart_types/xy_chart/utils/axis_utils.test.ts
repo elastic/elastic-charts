@@ -12,7 +12,6 @@ import moment from 'moment-timezone';
 import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs';
 // import { MockStore } from '../../../mocks/store/store';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
-import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { Position, mergePartial, HorizontalAlignment, VerticalAlignment } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
@@ -1308,7 +1307,7 @@ describe('Axis computational utils', () => {
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
     });
-    const scale: Scale<number | string> = computeXScale({
+    const scale = computeXScale({
       xDomain: xDomainTime,
       totalBarsInCluster: 0,
       range: [0, 603.5],
@@ -1316,16 +1315,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(
-        axisSpec,
-        scale as Scale<number>,
-        scale.ticks(),
-        offset,
-        (v: any) => formatter(v, tickFormatOption),
-        0,
-        0,
-        true,
-      ),
+      generateTicks(axisSpec, scale, scale.ticks(), offset, (v: any) => formatter(v, tickFormatOption), 0, 0, true),
     ).toEqual([
       { value: 1547208000000, label: '2019-01-11', position: 25.145833333333332, layer },
       { value: 1547251200000, label: '2019-01-12', position: 85.49583333333334, layer },
@@ -1358,7 +1348,7 @@ describe('Axis computational utils', () => {
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
     });
-    const scale: Scale<number | string> = computeXScale({
+    const scale = computeXScale({
       xDomain: xDomainTime,
       totalBarsInCluster: 0,
       range: [0, 603.5],
@@ -1366,7 +1356,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const ticks = generateTicks(
       axisSpec,
-      scale as Scale<number>,
+      scale,
       scale.ticks(),
       offset,
       (d) => tickFormat(d, { timeZone: xDomainTime.timeZone }),
@@ -1412,7 +1402,7 @@ describe('Axis computational utils', () => {
       minInterval: 86400000,
       timeZone: 'utc',
     });
-    const scale: Scale<number | string> = computeXScale({
+    const scale = computeXScale({
       xDomain: xDomainTime,
       totalBarsInCluster: 0,
       range: [0, 603.5],
@@ -1420,16 +1410,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(
-        axisSpec,
-        scale as Scale<number>,
-        scale.ticks(),
-        offset,
-        (v) => tickFormat(v, tickFormatOption),
-        0,
-        0,
-        true,
-      ),
+      generateTicks(axisSpec, scale, scale.ticks(), offset, (v) => tickFormat(v, tickFormatOption), 0, 0, true),
     ).toEqual([
       {
         value: 1547208000000,
@@ -1571,16 +1552,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(
-        axisSpec,
-        scale as Scale<number>,
-        scale.ticks(),
-        offset,
-        (v) => tickFormat(v, tickFormatOption),
-        0,
-        0,
-        true,
-      ),
+      generateTicks(axisSpec, scale, scale.ticks(), offset, (v) => tickFormat(v, tickFormatOption), 0, 0, true),
     ).toEqual([
       {
         value: 1547208000000,

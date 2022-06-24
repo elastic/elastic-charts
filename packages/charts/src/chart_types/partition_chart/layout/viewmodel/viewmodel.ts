@@ -144,7 +144,7 @@ export function makeQuadViewModel(
   innerIndex: number,
   fillLabel: FillLabelConfig,
   { color: backgroundColor, fallbackColor: fallbackBGColor }: BackgroundStyle,
-): Array<QuadViewModel> {
+): QuadViewModel[] {
   if (colorToRgba(backgroundColor)[3] < 1) {
     // Override handled in fill_text_color.ts
     Logger.expected(

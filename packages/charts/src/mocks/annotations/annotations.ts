@@ -50,6 +50,8 @@ export class MockAnnotationLineProps {
 /** @internal */
 export class MockAnnotationRectProps {
   private static readonly base: AnnotationRectProps = {
+    id: 'testing',
+    specId: 'rect',
     datum: { coordinates: { x0: 0, x1: 1, y0: 0, y1: 1 } },
     rect: { x: 0, y: 0, width: 0, height: 0 },
     panel: { width: 100, height: 100, top: 0, left: 0 },

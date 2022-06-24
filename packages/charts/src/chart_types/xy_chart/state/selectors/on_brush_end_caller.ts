@@ -9,7 +9,8 @@
 import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
-import { Scale } from '../../../../scales';
+import { ScaleContinuous } from '../../../../scales';
+import { isContinuousScale } from '../../../../scales/types';
 import { GroupBrushExtent, SeriesSpecs, XYBrushEvent } from '../../../../specs';
 import { BrushAxis } from '../../../../specs/constants';
 import { DragState, GlobalChartState } from '../../../../state/chart_state';
@@ -70,9 +71,9 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
             lastDrag,
             onBrushEnd,
           };
-          if (lastDrag !== null && hasDragged(prevProps, nextProps) && onBrushEnd) {
+          const { yScales, xScale } = computedScales;
+          if (lastDrag !== null && hasDragged(prevProps, nextProps) && onBrushEnd && isContinuousScale(xScale)) {
             const brushAreaEvent: XYBrushEvent = {};
-            const { yScales, xScale } = computedScales;
 
             if (brushAxis === BrushAxis.X || brushAxis === BrushAxis.Both) {
               brushAreaEvent.x = getXBrushExtent(
@@ -80,7 +81,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
                 lastDrag,
                 rotation,
                 histogramMode,
-                xScale as Scale<number>,
+                xScale,
                 smallMultipleScales,
                 allowBrushingLastHistogramBin,
                 seriesSpec,
@@ -132,7 +133,7 @@ function getXBrushExtent(
   lastDrag: DragState,
   rotation: Rotation,
   histogramMode: boolean,
-  xScale: Scale<number>,
+  xScale: ScaleContinuous, // brush is available only on continuous scale right now
   smallMultipleScales: SmallMultipleScales,
   allowBrushingLastHistogramBin: boolean,
   seriesSpecs: SeriesSpecs,
@@ -190,7 +191,7 @@ function getYBrushExtents(
   chartDimensions: Dimensions,
   lastDrag: DragState,
   rotation: Rotation,
-  yScales: Map<GroupId, Scale<number>>,
+  yScales: Map<GroupId, ScaleContinuous>,
   smallMultipleScales: SmallMultipleScales,
   minBrushDelta?: number,
 ): GroupBrushExtent[] | undefined {

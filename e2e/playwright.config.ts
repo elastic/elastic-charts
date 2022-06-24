@@ -23,6 +23,7 @@ const config: PlaywrightTestConfig = {
     video: 'retain-on-failure',
     launchOptions: {
       ignoreDefaultArgs: ['--hide-scrollbars'],
+      args: ['--use-gl=egl'],
     },
   },
   reporter: [

@@ -84,6 +84,7 @@ describe('Annotation utils', () => {
     ]);
     expectedDimensions.set('rect', [
       MockAnnotationRectProps.default({
+        id: 'rect______a__b__3__5____0',
         rect: { x: 0, y: 50, width: 50, height: 20 },
         panel: { top: 0, left: 0, width: 100, height: 100 },
         datum: { coordinates: { x0: 'a', x1: 'b', y0: 3, y1: 5 } },

@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Settings, Wordcloud, FontStyle, WordcloudSpec, Color } from '@elastic/charts';
+import { Chart, Settings, Wordcloud, FontStyle, WordcloudSpec, Color, WordCloudElementEvent } from '@elastic/charts';
 import { WeightFn, WordModel } from '@elastic/charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes as euiPalettes } from '@elastic/charts/src/utils/themes/colors';
@@ -249,11 +249,11 @@ export const Example = () => {
         theme={{ background: { color: backgroundColor } }}
         baseTheme={useBaseTheme()}
         onElementClick={(d) => {
-          const datum = d[0][0] as WordModel;
+          const datum = (d as WordCloudElementEvent[])[0][0];
           action('onElementClick')(`${datum.text}: ${datum.weight}`);
         }}
         onElementOver={(d) => {
-          const datum = d[0][0] as WordModel;
+          const datum = (d as WordCloudElementEvent[])[0][0];
           action('onElementOver')(`${datum.text}: ${datum.weight}`);
         }}
       />
@@ -269,9 +269,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-
-Example.parameters = {
-  background: { disable: true },
-  theme: { disable: true },
 };

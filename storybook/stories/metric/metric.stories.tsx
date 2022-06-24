@@ -6,6 +6,9 @@
  * Side Public License, v 1.
  */
 
-const main = require('./main');
+export default {
+  title: 'Metric (@alpha)',
+};
 
-void main();
+export { Example as basic } from './1_basic.story';
+export { Example as grid } from './2_grid.story';

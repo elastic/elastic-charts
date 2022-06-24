@@ -10,6 +10,7 @@ import { AnchorPosition } from '../../../../components/portal/types';
 import { isTooltipType } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { isNil } from '../../../../utils/common';
 import { getTooltipAnchorPosition } from '../../crosshair/crosshair_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
@@ -36,8 +37,14 @@ export const getTooltipAnchorPositionSelector = createCustomCachedSelector(
       return null;
     }
 
-    const topPos = vertical.scale(projectedPointerPosition.verticalPanelValue) || 0;
-    const leftPos = horizontal.scale(projectedPointerPosition.horizontalPanelValue) || 0;
+    const topPos =
+      (!isNil(projectedPointerPosition.verticalPanelValue) &&
+        vertical.scale(projectedPointerPosition.verticalPanelValue)) ||
+      0;
+    const leftPos =
+      (!isNil(projectedPointerPosition.horizontalPanelValue) &&
+        horizontal.scale(projectedPointerPosition.horizontalPanelValue)) ||
+      0;
 
     const panel = {
       width: horizontal.bandwidth,

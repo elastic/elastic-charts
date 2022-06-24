@@ -8,7 +8,7 @@
 
 import { Colors } from '../../../common/colors';
 import { getPredicateFn } from '../../../common/predicate';
-import { safeFormat, ValueFormatter } from '../../../utils/common';
+import { isFiniteNumber, safeFormat, ValueFormatter } from '../../../utils/common';
 import { ColorBand, HeatmapBandsColorScale } from '../specs/heatmap';
 import { ColorScale } from '../state/selectors/get_color_scale';
 
@@ -43,6 +43,10 @@ export function getBandsColorScale(
 
 function getBandScale(bands: ColorBand[]): ColorScale {
   return (value) => {
+    // this prevents assigning a color to NaN values
+    if (!isFiniteNumber(value)) {
+      return Colors.Transparent.keyword;
+    }
     for (let i = 0; i < bands.length; i++) {
       const { start, end, color } = bands[i];
       if (start <= value && value < end) {

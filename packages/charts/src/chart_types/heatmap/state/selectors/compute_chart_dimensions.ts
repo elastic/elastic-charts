@@ -151,7 +151,7 @@ function getYAxisHorizontalUsedSpace(
     return Math.max(width + horizontalPad(style.padding), acc);
   }, 0);
 
-  return style.width === 'auto' ? longestLabelWidth : Math.max(longestLabelWidth, style.width.max);
+  return style.width === 'auto' ? longestLabelWidth : Math.min(longestLabelWidth, style.width.max);
 }
 
 function getTextSizeDimension(
