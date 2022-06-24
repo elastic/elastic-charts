@@ -122,7 +122,7 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
         deployment_id: deployment.id,
       });
 
-      if (['pending', 'queued', 'in_progress'].includes(status.state)) {
+      if (['pending', 'queued', 'in_progress'].includes(status?.state)) {
         await githubClient.octokit.repos.createDeploymentStatus({
           ...githubClient.repoParams,
           deployment_id: deployment.id,
