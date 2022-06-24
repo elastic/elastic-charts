@@ -202,6 +202,7 @@ export const updateCheckStatus = async (
         ...options,
         output,
         name,
+        external_id: checkId,
         head_sha: bkEnv.commit,
       } as any); // octokit types are bad :(
     } else {
@@ -210,6 +211,7 @@ export const updateCheckStatus = async (
         details_url: bkEnv.jobUrl,
         ...options,
         output,
+        external_id: checkId,
         check_run_id: checkRun.id, // required
       } as any); // octokit types are bad :(
     }

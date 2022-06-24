@@ -62,8 +62,7 @@
     "test:e2e:server": "sh ./e2e-server/scripts/start.sh",
     "test:e2e:server:build": "cd e2e-server/server && webpack build",
     "typecheck:src": "lerna run --loglevel=silent --scope @elastic/charts typecheck --stream --no-prefix",
-    "typecheck:jest": "tsc -p ./tsconfig.jest.json --noEmit",
-    "typecheck:all": "yarn typecheck:jest && yarn typecheck:src",
+    "typecheck:all": "tsc -p ./tsconfig.json --noEmit",
     "ts:prune": "ts-prune"
   },
   "devDependencies": {

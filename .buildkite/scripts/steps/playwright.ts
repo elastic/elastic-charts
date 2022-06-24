@@ -9,6 +9,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import { getMetadata, setMetadata } from 'buildkite-agent-node';
+
 import {
   exec,
   downloadArtifacts,
@@ -21,6 +23,7 @@ import {
   ScreenshotMeta,
 } from '../../utils';
 import { ENV_URL } from '../../utils/constants';
+import { updateCheckStatus } from './../../utils/github';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
 const shardIndex = jobIndex ? jobIndex + 1 : 1;
@@ -76,6 +79,19 @@ async function compressNewScreenshots() {
 
 void (async () => {
   await yarnInstall('e2e');
+
+  const key = `${bkEnv.checkId}--activeJobs`;
+  const activeJobs = (Number(await getMetadata(key)) ?? 0) + 1;
+  await setMetadata(key, String(activeJobs));
+
+  await updateCheckStatus(
+    {
+      status: 'in_progress',
+    },
+    'playwright',
+    `${activeJobs} of ${jobTotal} jobs started`,
+  );
+
   const src = '.buildkite/artifacts/e2e_server.gz';
   await downloadArtifacts(src, 'build_e2e');
   await decompress({

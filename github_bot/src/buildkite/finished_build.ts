@@ -91,11 +91,12 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
   // This requires knowing the external_ids of all check to be set
   const unresolvedChecks = checkRuns.filter(({ status }) => status !== 'completed');
   await Promise.all(
-    unresolvedChecks.map(({ id }) => {
+    unresolvedChecks.map(({ id, external_id }) => {
       return githubClient.octokit.checks.update({
         ...githubClient.repoParams,
         check_run_id: id, // required
         output,
+        external_id,
         ...buildStatus,
       });
     }),

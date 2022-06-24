@@ -25,6 +25,7 @@ void (async () => {
 
   await yarnInstall();
   // TODO: fix this to where we can install only the necessary packages in one script
+  await yarnInstall('e2e');
   await yarnInstall('.buildkite');
   await yarnInstall('github_bot');
 
