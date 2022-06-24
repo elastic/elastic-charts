@@ -24,6 +24,9 @@ void (async () => {
   ]);
 
   await yarnInstall();
+  // TODO: fix this to where we can install only the necessary packages in one script
+  await yarnInstall('.buildkite');
+  await yarnInstall('github_bot');
 
   if (bkEnv.isPullRequest && !hasLintConfigChanges) {
     const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
