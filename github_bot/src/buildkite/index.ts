@@ -11,13 +11,12 @@ import { Router } from 'express';
 import { getConfig } from '../config';
 import { handleFinishedBuild } from './finished_build';
 import { BuildkiteWebhookPayload } from './types';
-
 interface RouteParams {
   nonce?: string;
 }
 
 export function setupBuildkiteRoutes(router: Router) {
-  router.post<'/', never, never, BuildkiteWebhookPayload, RouteParams>('/', (req, res) => {
+  router.post<'/', any, any, BuildkiteWebhookPayload, RouteParams>('/', (req, res) => {
     const { webhookNonce } = getConfig().buildkite;
 
     // TODO find why buildkite doesn't send token in headers

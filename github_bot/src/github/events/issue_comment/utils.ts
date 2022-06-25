@@ -25,7 +25,7 @@ export async function getPRFromComment(
   } catch (error) {
     console.error(error);
     await createIssueReaction(ctx, '-1');
-    throw new Error(error);
+    throw new Error(String(error));
   }
 }
 

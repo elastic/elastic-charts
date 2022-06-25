@@ -109,8 +109,8 @@ export async function isValidUser(ctx: ProbotEventContext<'issue_comment' | 'pul
       console.log('user does not have correct permission');
     }
   } catch (error) {
-    if (error.status !== 404) {
-      throw new Error(error);
+    if ((error as any).status !== 404) {
+      throw new Error(String(error));
     }
   }
 
@@ -129,8 +129,8 @@ export async function isValidUser(ctx: ProbotEventContext<'issue_comment' | 'pul
       console.log('user not a member of elastic');
     }
   } catch (error) {
-    if (error.status !== 404) {
-      throw new Error(error);
+    if ((error as any).status !== 404) {
+      throw new Error(String(error));
     }
   }
 
@@ -188,13 +188,13 @@ export async function updateAllChecks(
   options?: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>>,
   createNew?: boolean,
   pullRequest?: components['schemas']['pull-request'] | null,
-);
+): Promise<void>;
 export async function updateAllChecks(
   ctx: ProbotEventContext<'pull_request'>,
   buildUrl?: string,
   options?: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>>,
   createNew?: boolean,
-);
+): Promise<void>;
 export async function updateAllChecks(
   ctx: ProbotEventContext<'pull_request' | 'issue_comment'>,
   buildUrl?: string,
@@ -204,7 +204,7 @@ export async function updateAllChecks(
   },
   createNew: boolean = false,
   pullRequest: components['schemas']['pull-request'] | null = null,
-) {
+): Promise<void> {
   const pr = ctx.name === 'issue_comment' ? pullRequest : ctx.payload.pull_request;
   if (!pr) throw new Error('No pull request found to set check run');
   const { head } = pr;
