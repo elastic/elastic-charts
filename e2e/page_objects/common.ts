@@ -15,6 +15,9 @@ import { paramCase } from 'change-case';
 
 import { environmentUrl } from '../e2e_config';
 
+// TODO determine if this is still necessary
+const DRAG_DETECTION_TIMEOUT = 100; // the minimum amount of time to consider for for dragging purposes
+
 interface MousePosition {
   /**
    * position from top of reference element, trumps bottom
@@ -280,6 +283,7 @@ export class CommonPage {
       const { x: x1, y: y1 } = getCursorPosition(end, element);
       await this.moveMouse(page)(x0, y0);
       await page.mouse.down();
+      await page.waitForTimeout(DRAG_DETECTION_TIMEOUT);
       await this.moveMouse(page)(x1, y1);
     };
 
