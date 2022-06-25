@@ -17596,72 +17596,6 @@ SOFTWARE.
   font-weight: 500;
 }
 
-.euiStat .euiStat__title {
-  color: #000;
-}
-
-.euiStat .euiStat__title--subdued {
-  color: #69707D;
-}
-
-.euiStat .euiStat__title--primary {
-  color: #0071c2;
-}
-
-.euiStat .euiStat__title--success {
-  color: #007e77;
-}
-
-.euiStat .euiStat__title--danger {
-  color: #BD271E;
-}
-
-.euiStat .euiStat__title--accent {
-  color: #c4407c;
-}
-
-.euiStat .euiStat__title-isLoading {
-  -webkit-animation: euiStatPulse 1.5s infinite ease-in-out;
-  animation: euiStatPulse 1.5s infinite ease-in-out;
-}
-
-.euiStat.euiStat--leftAligned {
-  text-align: left;
-  align-items: flex-start;
-}
-
-.euiStat.euiStat--centerAligned {
-  text-align: center;
-  align-items: center;
-}
-
-.euiStat.euiStat--rightAligned {
-  text-align: right;
-  align-items: flex-end;
-}
-
-@-webkit-keyframes euiStatPulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes euiStatPulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
-  100% {
-    opacity: 1;
-  }
-}
 .euiStepNumber {
   width: 32px;
   height: 32px;
@@ -36192,62 +36126,6 @@ html.light-theme .euiSelectableTemplateSitewide__optionMeta--platform {
   color: #807234;
   font-weight: 500;
 }
-html.light-theme .euiStat .euiStat__title {
-  color: #000;
-}
-html.light-theme .euiStat .euiStat__title--subdued {
-  color: #69707D;
-}
-html.light-theme .euiStat .euiStat__title--primary {
-  color: #0071c2;
-}
-html.light-theme .euiStat .euiStat__title--success {
-  color: #007e77;
-}
-html.light-theme .euiStat .euiStat__title--danger {
-  color: #BD271E;
-}
-html.light-theme .euiStat .euiStat__title--accent {
-  color: #c4407c;
-}
-html.light-theme .euiStat .euiStat__title-isLoading {
-  -webkit-animation: euiStatPulse 1.5s infinite ease-in-out;
-  animation: euiStatPulse 1.5s infinite ease-in-out;
-}
-html.light-theme .euiStat.euiStat--leftAligned {
-  text-align: left;
-  align-items: flex-start;
-}
-html.light-theme .euiStat.euiStat--centerAligned {
-  text-align: center;
-  align-items: center;
-}
-html.light-theme .euiStat.euiStat--rightAligned {
-  text-align: right;
-  align-items: flex-end;
-}
-@-webkit-keyframes euiStatPulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes euiStatPulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
-  100% {
-    opacity: 1;
-  }
-}
 html.light-theme .euiStepNumber {
   width: 32px;
   height: 32px;
@@ -54632,62 +54510,6 @@ html.dark-theme .euiSelectableTemplateSitewide__optionMeta--case {
 html.dark-theme .euiSelectableTemplateSitewide__optionMeta--platform {
   color: #D6BF57;
   font-weight: 500;
-}
-html.dark-theme .euiStat .euiStat__title {
-  color: #FFF;
-}
-html.dark-theme .euiStat .euiStat__title--subdued {
-  color: #7a7f89;
-}
-html.dark-theme .euiStat .euiStat__title--primary {
-  color: #36A2EF;
-}
-html.dark-theme .euiStat .euiStat__title--success {
-  color: #7DDED8;
-}
-html.dark-theme .euiStat .euiStat__title--danger {
-  color: #F86B63;
-}
-html.dark-theme .euiStat .euiStat__title--accent {
-  color: #F68FBE;
-}
-html.dark-theme .euiStat .euiStat__title-isLoading {
-  -webkit-animation: euiStatPulse 1.5s infinite ease-in-out;
-  animation: euiStatPulse 1.5s infinite ease-in-out;
-}
-html.dark-theme .euiStat.euiStat--leftAligned {
-  text-align: left;
-  align-items: flex-start;
-}
-html.dark-theme .euiStat.euiStat--centerAligned {
-  text-align: center;
-  align-items: center;
-}
-html.dark-theme .euiStat.euiStat--rightAligned {
-  text-align: right;
-  align-items: flex-end;
-}
-@-webkit-keyframes euiStatPulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes euiStatPulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
-  100% {
-    opacity: 1;
-  }
 }
 html.dark-theme .euiStepNumber {
   width: 32px;
