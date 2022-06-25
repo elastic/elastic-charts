@@ -14,7 +14,7 @@ import { fileSync } from 'tmp';
 import { bkEnv, startGroup } from './buildkite';
 import { DEFAULT_FIREBASE_URL, MetaDataKeys } from './constants';
 import { exec } from './exec';
-import { createDeploymentStatus } from './github';
+import { createDeploymentStatus, updatePreviousDeployments } from './github';
 
 // Set up Google Application Credentials for use by the Firebase CLI
 // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
@@ -73,6 +73,11 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
 
     if (!redeploy) {
       await setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
+
+      if (bkEnv.isPullRequest) {
+        // deactivate old deployments
+        await updatePreviousDeployments();
+      }
       await createDeploymentStatus({
         state: 'success',
         environment_url: deploymentUrl,

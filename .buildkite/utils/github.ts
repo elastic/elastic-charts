@@ -9,7 +9,7 @@
 import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
 import { components } from '@octokit/openapi-types';
 import { retry } from '@octokit/plugin-retry';
-import { Octokit } from '@octokit/rest';
+import { Octokit, RestEndpointMethodTypes } from '@octokit/rest';
 import { getMetadata, metadataExists, setMetadata } from 'buildkite-agent-node';
 import ghpages from 'gh-pages';
 import minimatch, { IOptions as MinimatchOptions } from 'minimatch';
@@ -222,6 +222,9 @@ export const updateCheckStatus = async (
   }
 };
 
+export const getDeploymentTask = () =>
+  bkEnv.isPullRequest ? `deploy:pr:${bkEnv.pullRequestNumber}` : `deploy:${bkEnv.branch}`;
+
 export const createDeployment = async (
   options: Optional<OctokitParameters<'repos/create-deployment-status'>> = {},
 ): Promise<number | null> => {
@@ -240,6 +243,7 @@ export const createDeployment = async (
       environment: bkEnv.isPullRequest ? 'pull-requests' : bkEnv.branch,
       transient_environment: bkEnv.isPullRequest, // sets previous statuses to inactive
       production_environment: false,
+      task: getDeploymentTask(),
       ...options,
       auto_merge: false, // use branch as is without merging with base
       required_contexts: [],
@@ -256,7 +260,7 @@ export const createDeployment = async (
 };
 
 export const createDeploymentStatus = async (
-  options: Optional<Omit<OctokitParameters<'repos/create-deployment-status'>, 'deployment_id'>> = {},
+  options: Optional<OctokitParameters<'repos/create-deployment-status'>> = {},
 ) => {
   if (process.env.BLOCK_REQUESTS) return;
 
@@ -266,7 +270,7 @@ export const createDeploymentStatus = async (
 
   if ((await getMetadata(MetaDataKeys.skipDeployment)) === 'true') return;
 
-  const deployment_id = getNumber(await getMetadata(MetaDataKeys.deploymentId));
+  const deployment_id = options.deployment_id ?? getNumber(await getMetadata(MetaDataKeys.deploymentId));
 
   if (deployment_id === null) throw new Error(`Failed to set status, no deployment found`);
 
@@ -301,6 +305,39 @@ interface GLQPullRequestFiles {
       };
     };
   };
+}
+
+export async function updatePreviousDeployments(
+  state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
+) {
+  const { data: deployments } = await octokit.repos.listDeployments({
+    ...defaultGHOptions,
+    ref: bkEnv.branch,
+    task: getDeploymentTask(),
+    per_page: 100, // should never get this high
+  });
+
+  await Promise.all(
+    deployments.map(async ({ id }) => {
+      const {
+        data: [{ environment, state: currentState, ...status }],
+      } = await octokit.repos.listDeploymentStatuses({
+        ...defaultGHOptions,
+        deployment_id: id,
+        per_page: 1,
+      });
+
+      if (['in_progress', 'queued', 'pending', 'success'].includes(currentState)) {
+        await octokit.repos.createDeploymentStatus({
+          ...defaultGHOptions,
+          ...status,
+          // @ts-ignore - bad type for environment
+          environment,
+          state,
+        });
+      }
+    }),
+  );
 }
 
 export async function getFileDiffs(): Promise<string[]> {

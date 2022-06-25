@@ -285,6 +285,7 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>, baseSh
   );
 }
 
+// TODO remove or use this function
 export async function updatePreviousDeployments(
   ctx: ProbotEventContext<'pull_request'>,
   state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
