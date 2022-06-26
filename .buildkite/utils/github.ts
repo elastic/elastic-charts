@@ -323,7 +323,7 @@ export async function updatePreviousDeployments(
     deployments.map(async ({ id }) => {
       if (id === currentDeploymentId) return;
       const {
-        data: [{ environment, state: currentState, log_url, environment_url, description }],
+        data: [{ state: currentState, log_url, environment_url }],
       } = await octokit.repos.listDeploymentStatuses({
         ...defaultGHOptions,
         deployment_id: id,
@@ -336,11 +336,9 @@ export async function updatePreviousDeployments(
         await octokit.repos.createDeploymentStatus({
           ...defaultGHOptions,
           deployment_id: id,
-          description,
+          description: 'This deployment precedes a newer deployment',
           log_url,
           environment_url,
-          // @ts-ignore - bad type for environment
-          environment,
           state,
         });
       }
