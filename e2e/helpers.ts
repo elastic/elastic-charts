@@ -40,10 +40,10 @@ const storiesToSkip: Record<string, Record<string, string[]>> = {
     storybook: ['No Series'],
     examples: ['noSeries'],
   },
-  Composable: {
-    storybook: ['Basic'],
-    examples: ['basic'],
-  },
+  // Composable: {
+  //   storybook: ['Basic'],
+  //   examples: ['basic'],
+  // },
 };
 
 export function getStorybookInfo(): StoryGroupInfo[] {
