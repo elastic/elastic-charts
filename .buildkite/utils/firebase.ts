@@ -72,18 +72,14 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
 
     console.log(bkEnv.isPullRequest);
 
-    try {
-      if (bkEnv.isPullRequest) {
-        // deactivate old deployments
-        await updatePreviousDeployments();
-      }
-      await createDeploymentStatus({
-        state: 'success',
-        environment_url: deploymentUrl,
-      });
-    } catch (error) {
-      console.trace(error);
+    if (bkEnv.isPullRequest) {
+      // deactivate old deployments
+      await updatePreviousDeployments();
     }
+    await createDeploymentStatus({
+      state: 'success',
+      environment_url: deploymentUrl,
+    });
     return deploymentUrl;
   } else {
     throw new Error(`Error: Firebase deployment resulted in ${status}`);

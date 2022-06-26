@@ -310,10 +310,7 @@ interface GLQPullRequestFiles {
 export async function updatePreviousDeployments(
   state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
 ) {
-  console.log('updatePreviousDeployments');
   const currentDeploymentId = getNumber(await getMetadata(MetaDataKeys.deploymentId));
-  console.log('currentDeploymentId', currentDeploymentId);
-
   const { data: deployments } = await octokit.repos.listDeployments({
     ...defaultGHOptions,
     task: getDeploymentTask(),
@@ -326,7 +323,7 @@ export async function updatePreviousDeployments(
     deployments.map(async ({ id }) => {
       if (id === currentDeploymentId) return;
       const {
-        data: [{ environment, state: currentState, ...status }],
+        data: [{ environment, state: currentState, log_url, environment_url, description }],
       } = await octokit.repos.listDeploymentStatuses({
         ...defaultGHOptions,
         deployment_id: id,
@@ -338,7 +335,10 @@ export async function updatePreviousDeployments(
       if (['in_progress', 'queued', 'pending', 'success'].includes(currentState)) {
         await octokit.repos.createDeploymentStatus({
           ...defaultGHOptions,
-          ...status,
+          deployment_id: id,
+          description,
+          log_url,
+          environment_url,
           // @ts-ignore - bad type for environment
           environment,
           state,
