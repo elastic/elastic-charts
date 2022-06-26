@@ -46,7 +46,7 @@ export const exec = async (
   } catch (error) {
     console.error(`Failed to run command: [${command}]`);
     await setJobMetadata('failed', 'true');
-    onFailure?.();
+    await onFailure?.();
     await updateCheckStatus(
       {
         status: 'completed',

@@ -27,7 +27,8 @@ import { updateCheckStatus } from './../../utils/github';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
 const shardIndex = jobIndex ? jobIndex + 1 : 1;
-const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
+const jobTotal = 20;
+// const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
 
 const pwFlags = ['--project=Chrome'];
 

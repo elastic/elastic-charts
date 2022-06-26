@@ -34,7 +34,6 @@ interface DeployOptions {
 
 export const firebaseDeploy = async (opt: DeployOptions = {}) => {
   const expires = opt.expires ?? '7d';
-  const redeploy = opt.redeploy ?? false;
 
   startGroup('Deploying to firebase');
 
@@ -55,12 +54,10 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
       ...process.env,
       GOOGLE_APPLICATION_CREDENTIALS: gacFile,
     },
-    onFailure() {
-      if (!redeploy) {
-        void createDeploymentStatus({
-          state: 'failure',
-        });
-      }
+    async onFailure() {
+      await createDeploymentStatus({
+        state: 'failure',
+      });
     },
   });
 
@@ -71,18 +68,18 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
     if (!deploymentUrl) throw new Error('Error: No url found for deployments');
     console.log(`Successfully deployed to ${deploymentUrl}`);
 
-    if (!redeploy) {
-      await setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
+    await setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
 
-      if (bkEnv.isPullRequest) {
-        // deactivate old deployments
-        await updatePreviousDeployments();
-      }
-      await createDeploymentStatus({
-        state: 'success',
-        environment_url: deploymentUrl,
-      });
+    console.log(bkEnv.isPullRequest);
+
+    if (bkEnv.isPullRequest) {
+      // deactivate old deployments
+      await updatePreviousDeployments();
     }
+    await createDeploymentStatus({
+      state: 'success',
+      environment_url: deploymentUrl,
+    });
     return deploymentUrl;
   } else {
     throw new Error(`Error: Firebase deployment resulted in ${status}`);
