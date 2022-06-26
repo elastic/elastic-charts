@@ -77,8 +77,8 @@ async function setGroupStatus() {
 
 async function commitNewScreenshots() {
   startGroup('Committing updated screenshots from e2e jobs');
-  await searchArtifacts('.buildkite/artifacts/screenshot_meta/*', 'playwright__parallel-step');
-  await downloadArtifacts('.buildkite/artifacts/screenshot_meta/*', 'playwright__parallel-step');
+  await searchArtifacts('.buildkite/artifacts/screenshot_meta/*');
+  await downloadArtifacts('.buildkite/artifacts/screenshot_meta/*');
 
   const screenshotMetaDir = '.buildkite/artifacts/screenshot_meta';
   const metaFiles = fs.readdirSync(screenshotMetaDir);
@@ -95,7 +95,8 @@ async function commitNewScreenshots() {
   console.log(`Updating ${updatedFilePaths.length} screenshot${updatedFilePaths.length === 1 ? '' : 's'}:
   - ${updatedFilePaths.join('\n  - ')}`);
 
-  await downloadArtifacts('.buildkite/artifacts/screenshots/*', 'playwright__parallel-step');
+  await searchArtifacts('.buildkite/artifacts/screenshots/*');
+  await downloadArtifacts('.buildkite/artifacts/screenshots/*');
   const screenshotDir = '.buildkite/artifacts/screenshots';
   const files = fs.readdirSync(screenshotDir);
 
