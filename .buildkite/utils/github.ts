@@ -311,6 +311,8 @@ export async function updatePreviousDeployments(
   state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
 ) {
   console.log('updatePreviousDeployments');
+  const currentDeploymentId = getNumber(await getMetadata(MetaDataKeys.deploymentId));
+  console.log('currentDeploymentId', currentDeploymentId);
 
   const { data: deployments } = await octokit.repos.listDeployments({
     ...defaultGHOptions,
@@ -322,6 +324,7 @@ export async function updatePreviousDeployments(
 
   await Promise.all(
     deployments.map(async ({ id }) => {
+      if (id === currentDeploymentId) return;
       const {
         data: [{ environment, state: currentState, ...status }],
       } = await octokit.repos.listDeploymentStatuses({
@@ -330,7 +333,7 @@ export async function updatePreviousDeployments(
         per_page: 1,
       });
 
-      console.log({ currentState, state });
+      console.log({ id, currentState, state });
 
       if (['in_progress', 'queued', 'pending', 'success'].includes(currentState)) {
         await octokit.repos.createDeploymentStatus({
