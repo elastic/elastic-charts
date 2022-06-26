@@ -314,7 +314,6 @@ export async function updatePreviousDeployments(
 
   const { data: deployments } = await octokit.repos.listDeployments({
     ...defaultGHOptions,
-    ref: bkEnv.branch,
     task: getDeploymentTask(),
     per_page: 100, // should never get this high
   });
