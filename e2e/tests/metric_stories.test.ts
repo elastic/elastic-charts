@@ -10,7 +10,7 @@ import { test } from '@playwright/test';
 
 import { common } from '../page_objects';
 
-describe('Metric', () => {
+test.describe('Metric', () => {
   test('should render horizontal progress bar', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:light&knob-use progress bar=true&knob-progress bar direction=horizontal&knob-max trend data points=30&knob-layout=grid',
