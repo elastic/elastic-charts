@@ -83,7 +83,22 @@ export const downloadArtifacts = async (query: string, step?: string, destinatio
   const stepArg = step ? ` --step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
   const buildId = build ?? bkEnv.buildId;
+  console.log('downloadArtifacts command');
+  console.log(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
+
   await exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
+};
+
+export const searchArtifacts = async (query: string, step?: string, destination = '.', build?: string) => {
+  startGroup(`Searching artifacts${step ? ` from step: ${step}` : ''}`);
+  const dest = destination.endsWith('/') || destination === '.' ? destination : `${destination}/`;
+  const stepArg = step ? ` --step ${step}` : '';
+  const q = query.includes('*') ? `"${query}"` : query;
+  const buildId = build ?? bkEnv.buildId;
+  console.log('downloadArtifacts command');
+  console.log(`buildkite-agent artifact search ${q} ${dest}${stepArg} --build ${buildId}`);
+
+  await exec(`buildkite-agent artifact search ${q} ${dest}${stepArg} --build ${buildId}`);
 };
 
 export const uploadArtifacts = async (query: string) => {

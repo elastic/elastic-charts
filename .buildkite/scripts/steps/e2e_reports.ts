@@ -26,6 +26,7 @@ import {
   jobStateMapping,
   JobState,
   defaultGHOptions,
+  searchArtifacts,
 } from '../../utils';
 
 async function setGroupStatus() {
@@ -76,6 +77,7 @@ async function setGroupStatus() {
 
 async function commitNewScreenshots() {
   startGroup('Committing updated screenshots from e2e jobs');
+  await searchArtifacts('.buildkite/artifacts/screenshot_meta/*', 'playwright__parallel-step');
   await downloadArtifacts('.buildkite/artifacts/screenshot_meta/*', 'playwright__parallel-step');
 
   const screenshotMetaDir = '.buildkite/artifacts/screenshot_meta';
