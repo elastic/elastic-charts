@@ -10,9 +10,11 @@
 
 .echMetric {
   position: relative;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   transition: background-color ease-in-out 0.1s;
-  //border: 1px solid transparent;
+
   .echMetric--outline {
     position: absolute;
     top: 0;

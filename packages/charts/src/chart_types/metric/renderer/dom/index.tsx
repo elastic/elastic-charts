@@ -87,7 +87,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
     const panel = { width: width / totalColumns, height: height / totalRows };
 
     return (
-      <div
+      <ul
         className="echMetricContainer"
         aria-labelledby={a11y.labelId}
         aria-describedby={a11y.descriptionId}
@@ -106,23 +106,28 @@ class Component extends React.Component<StateProps & DispatchProps> {
                   'echMetric--bottomBorder': rowIndex < totalRows - 1,
                 });
                 if (!datum) {
-                  return <div key={`empty-${columnIndex}`} className={emptyMetricClassName}></div>;
+                  return (
+                    <li key={`empty-${columnIndex}`} role="presentation">
+                      <div className={emptyMetricClassName}></div>
+                    </li>
+                  );
                 }
                 return (
-                  <MetricComponent
-                    key={`${datum.title}${datum.subtitle}${datum.color}${columnIndex}`}
-                    chartId={chartId}
-                    datum={datum}
-                    totalRows={totalRows}
-                    totalColumns={totalColumns}
-                    rowIndex={rowIndex}
-                    columnIndex={columnIndex}
-                    panel={panel}
-                    style={style}
-                    onElementClick={onElementClick}
-                    onElementOut={onElementOut}
-                    onElementOver={onElementOver}
-                  />
+                  <li key={`${datum.title}${datum.subtitle}${datum.color}${columnIndex}`}>
+                    <MetricComponent
+                      chartId={chartId}
+                      datum={datum}
+                      totalRows={totalRows}
+                      totalColumns={totalColumns}
+                      rowIndex={rowIndex}
+                      columnIndex={columnIndex}
+                      panel={panel}
+                      style={style}
+                      onElementClick={onElementClick}
+                      onElementOut={onElementOut}
+                      onElementOver={onElementOver}
+                    />
+                  </li>
                 );
               }),
               // fill the grid row with empty panels
@@ -131,12 +136,16 @@ class Component extends React.Component<StateProps & DispatchProps> {
                   'echMetric--rightBorder': columns.length + columIndex < totalColumns - 1,
                   'echMetric--bottomBorder': rowIndex < totalRows - 1,
                 });
-                return <div key={`missing-${columIndex}`} className={emptyMetricClassName}></div>;
+                return (
+                  <li key={`missing-${columIndex}`} role="presentation">
+                    <div className={emptyMetricClassName}></div>
+                  </li>
+                );
               }),
             ];
           })
           .flat()}
-      </div>
+      </ul>
     );
   }
 }
