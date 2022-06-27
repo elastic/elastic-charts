@@ -275,15 +275,23 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
     ref: previousCommitSha,
   });
 
-  console.log('checks');
-  console.log(checks);
+  console.log('checks - start');
+  console.log(checks.map((c) => `${c.name} [${c.external_id}] -> ${c.id}`));
+  console.log('checks - end');
 
   await Promise.all(
-    checks.map(async (check) => {
+    checks.map(async ({ name, details_url, external_id, status, started_at, conclusion, completed_at, output }) => {
       return await ctx.octokit.checks.create({
-        ...check,
         ...ctx.repo(),
         head_sha: ctx.payload.pull_request.head.sha,
+        name,
+        details_url,
+        external_id,
+        status,
+        started_at,
+        conclusion,
+        completed_at,
+        output,
       });
     }),
   );
