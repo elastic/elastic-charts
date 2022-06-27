@@ -264,9 +264,6 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
   console.log('syncChecks');
 
   const [previousCommitSha] = await getLatestCommits(ctx);
-
-  console.log('previousCommitSha', previousCommitSha);
-
   const {
     data: { check_runs: checks },
   } = await ctx.octokit.checks.listForRef({
@@ -275,12 +272,9 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
     ref: previousCommitSha,
   });
 
-  console.log('checks - start');
-  console.log(checks.map((c) => `${c.name} [${c.external_id}] -> ${c.id}`));
-  console.log('checks - end');
-
   await Promise.all(
     checks.map(async ({ name, details_url, external_id, status, started_at, conclusion, completed_at, output }) => {
+      const { title, summary } = output;
       return await ctx.octokit.checks.create({
         ...ctx.repo(),
         head_sha: ctx.payload.pull_request.head.sha,
@@ -291,7 +285,10 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
         started_at,
         conclusion,
         completed_at,
-        output,
+        output: {
+          title,
+          summary,
+        },
       });
     }),
   );
