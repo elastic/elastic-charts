@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React, { CSSProperties, useState } from 'react';
 
 import { Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
@@ -86,6 +86,8 @@ export const Example = () => {
   const axisYEnabled = boolean('show y axis', true);
   const axisXEnabled = boolean('show x axis', true);
 
+  const padding = number('chart paddings', 50, { min: 0, max: 100, range: true, step: 1 });
+
   const [dimensions, setDimensions] = useState<{ projection: Dimensions; parent: Dimensions } | null>(null);
   const onAreaChangeAction = action('onProjectionAreaChange');
   const onAreaChangeHandler = (areas: { projection: Dimensions; parent: Dimensions }) => {
@@ -156,10 +158,10 @@ export const Example = () => {
                 color: 'transparent',
               },
               chartMargins: {
-                top: 50,
-                bottom: 50,
-                left: 50,
-                right: 50,
+                top: padding,
+                bottom: padding,
+                left: padding,
+                right: padding,
               },
             },
           ]}
