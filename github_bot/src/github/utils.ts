@@ -312,7 +312,7 @@ export async function getLatestCommits(ctx: ProbotEventContext<'pull_request'>, 
   console.log('getLatestCommits');
 
   const { owner, repo, pull_number } = ctx.pullRequest();
-  const { data } = await ctx.octokit.graphql<PRCommitResponse>(`query getLatestCommits {
+  const response = await ctx.octokit.graphql<PRCommitResponse>(`query getLatestCommits {
     repository(owner: "${owner}", name: "${repo}") {
       pullRequest(number: ${pull_number}) {
         commits(last: ${count}) {
@@ -327,7 +327,9 @@ export async function getLatestCommits(ctx: ProbotEventContext<'pull_request'>, 
     }
   }`);
 
-  return data.repository.pullRequest.commits.nodes.map((n) => n.commit.oid);
+  console.log(response);
+
+  return response.data.repository.pullRequest.commits.nodes.map((n) => n.commit.oid);
 }
 
 // TODO remove or use this function
