@@ -332,8 +332,6 @@ export async function updatePreviousDeployments(
     per_page: 100, // should never get this high
   });
 
-  console.log(deployments);
-
   await Promise.all(
     deployments.map(async ({ id }) => {
       if (id === currentDeploymentId) return;
@@ -345,18 +343,20 @@ export async function updatePreviousDeployments(
         per_page: 1,
       });
 
-      console.log({ id, currentState, state });
-
-      if (['in_progress', 'queued', 'pending', 'success'].includes(currentState)) {
-        await octokit.repos.createDeploymentStatus({
-          ...defaultGHOptions,
-          deployment_id: id,
-          description: 'This deployment precedes a newer deployment',
-          log_url,
-          environment_url,
-          state,
-        });
+      if (!['in_progress', 'queued', 'pending', 'success'].includes(currentState)) {
+        return;
       }
+
+      console.log(`Updating deployment ${id} state: ${currentState} -> ${state}`);
+
+      await octokit.repos.createDeploymentStatus({
+        ...defaultGHOptions,
+        deployment_id: id,
+        description: 'This deployment precedes a newer deployment',
+        log_url,
+        environment_url,
+        state,
+      });
     }),
   );
 }

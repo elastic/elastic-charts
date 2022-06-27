@@ -81,9 +81,9 @@ void (async () => {
   await yarnInstall('e2e');
 
   const key = `${bkEnv.checkId}--activeJobs`;
-  // TODO improve this status logic, not easy to communicate state of parallel steps
   const value = shardIndex === jobTotal ? jobTotal - 1 : Number(await getMetadata(key));
-  const activeJobs = Math.max((Number.isNaN(value) ? 0 : value) + 1, jobTotal ?? 1);
+  // TODO improve this status logic, not easy to communicate state of parallel steps
+  const activeJobs = Math.min((Number.isNaN(value) ? 0 : value) + 1, jobTotal ?? 1);
   await setMetadata(key, String(activeJobs));
 
   await updateCheckStatus(

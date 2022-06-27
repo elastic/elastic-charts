@@ -77,33 +77,33 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
 
     await setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
 
-    console.log(bkEnv.isPullRequest);
-
     if (bkEnv.isPullRequest) {
       // deactivate old deployments
       await updatePreviousDeployments();
+
+      const { data: botComments } = await octokit.issues.listComments({
+        ...defaultGHOptions,
+        issue_number: bkEnv.pullRequestNumber!,
+      });
+      const deployComments = botComments.filter((c) => commentByKey('deployments')(c.body));
+      await Promise.all(
+        deployComments.map(async ({ id }) => {
+          await octokit.issues.deleteComment({
+            ...defaultGHOptions,
+            comment_id: id,
+          });
+        }),
+      );
+      await octokit.issues.createComment({
+        ...defaultGHOptions,
+        issue_number: bkEnv.pullRequestNumber!,
+        body: getComment('deployments', deploymentUrl),
+      });
     }
     await createDeploymentStatus({
       state: 'success',
       environment_url: deploymentUrl,
     });
-
-    const { data: botComments } = await octokit.issues.listComments();
-    const deployComments = botComments.filter((c) => commentByKey('deployments')(c.body));
-    await Promise.all(
-      deployComments.map(async ({ id }) => {
-        await octokit.issues.deleteComment({
-          ...defaultGHOptions,
-          comment_id: id,
-        });
-      }),
-    );
-    await octokit.issues.createComment({
-      ...defaultGHOptions,
-      issue_number: bkEnv.pullRequestNumber!,
-      body: getComment('deployments', deploymentUrl),
-    });
-
     return deploymentUrl;
   } else {
     throw new Error(`Error: Firebase deployment resulted in ${status}`);
