@@ -260,7 +260,7 @@ export async function updateAllChecks(
   );
 }
 
-export async function syncChecks(ctx: ProbotEventContext<'pull_request'>, baseSha?: string) {
+export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
   console.log('syncChecks');
 
   const [previousCommitSha] = await getLatestCommits(ctx);
@@ -271,8 +271,8 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>, baseSh
     data: { check_runs: checks },
   } = await ctx.octokit.checks.listForRef({
     ...ctx.repo(),
-    ref: baseSha ?? ctx.payload.pull_request.head.sha,
     app_id: Number(getConfig().github.auth.appId),
+    ref: previousCommitSha,
   });
 
   console.log('checks');
@@ -281,9 +281,9 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>, baseSh
   await Promise.all(
     checks.map(async (check) => {
       return await ctx.octokit.checks.create({
-        ...ctx.repo(),
         ...check,
-        head_sha: previousCommitSha,
+        ...ctx.repo(),
+        head_sha: ctx.payload.pull_request.head.sha,
       });
     }),
   );
