@@ -19,11 +19,15 @@
   line-height: 1.2;
   &__title {
     font-weight: 400;
+    button {
+      text-align: left;
+    }
   }
 
   &__subtitle {
     padding-top: 5px;
     font-weight: 300;
+    text-align: left;
   }
 
   &__extra {

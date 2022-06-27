@@ -9,13 +9,11 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { highContrastColor } from '../../../../common/color_calcs';
-import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Colors } from '../../../../common/colors';
+import { Color } from '../../../../common/colors';
 import { isFiniteNumber, LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, isMetricWTrend, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
+import { isMetricWProgress, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
 
 type BreakPoint = 's' | 'm' | 'l';
 
@@ -94,7 +92,9 @@ export const MetricText: React.FunctionComponent<{
   datum: MetricBase | MetricWProgress | MetricWTrend;
   panel: Size;
   style: MetricStyle;
-}> = ({ id, datum, panel, style }) => {
+  onElementClick: () => void;
+  highContrastTextColor: Color;
+}> = ({ id, datum, panel, style, onElementClick, highContrastTextColor }) => {
   const { title, subtitle, extra, value } = datum;
 
   const size = findRange(WIDTH_BP, panel.width);
@@ -109,10 +109,6 @@ export const MetricText: React.FunctionComponent<{
   const visibility = elementVisibility(datum, panel, size);
 
   const parts = splitNumericSuffixPrefix(datum.valueFormatter(value));
-  const bgColor = isMetricWTrend(datum) || !isMetricWProgress(datum) ? datum.color : style.background;
-
-  const highContrastTextColor =
-    highContrastColor(colorToRgba(bgColor)) === Colors.White.rgba ? style.text.lightColor : style.text.darkColor;
 
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
@@ -123,7 +119,16 @@ export const MetricText: React.FunctionComponent<{
             className="echMetricText__title"
             style={{ fontSize: `${TITLE_FONT_SIZE[size]}px`, ...lineClamp(visibility.titleLines) }}
           >
-            {title}
+            <button
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                onElementClick();
+              }}
+            >
+              {title}
+            </button>
           </h2>
         )}
       </div>

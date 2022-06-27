@@ -9,7 +9,10 @@
 import classNames from 'classnames';
 import React, { CSSProperties, useState } from 'react';
 
-import { changeColorLightness } from '../../../../common/color_library_wrappers';
+import { highContrastColor } from '../../../../common/color_calcs';
+import { changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
+import { Colors } from '../../../../common/colors';
+import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { BasicListener, ElementClickListener, ElementOverListener, MetricElementEvent } from '../../../../specs';
 import { LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
@@ -46,6 +49,7 @@ export const Metric: React.FunctionComponent<{
   onElementOut,
 }) => {
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
+  const [lastMouseDownTimestamp, setLastMouseDownTimestamp] = useState<number>(0);
   const metricHTMLId = `echMetric-${chartId}-${rowIndex}-${columnIndex}`;
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = hasProgressBar ? datum.progressBarDirection : undefined;
@@ -78,9 +82,18 @@ export const Metric: React.FunctionComponent<{
       !isMetricWTrend(datumWithInteractionColor) && !isMetricWProgress(datumWithInteractionColor)
         ? datumWithInteractionColor.color
         : updatedStyle.background,
+    cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
   };
-  return onElementClick ? (
-    <button
+
+  const bgColor = isMetricWTrend(datum) || !isMetricWProgress(datum) ? datum.color : style.background;
+
+  const highContrastTextColor =
+    highContrastColor(colorToRgba(bgColor)) === Colors.White.rgba ? style.text.lightColor : style.text.darkColor;
+
+  const onElementClickHandler = () => onElementClick && onElementClick([event]);
+  return (
+    <div
+      role="presentation"
       aria-labelledby={datum.title && metricHTMLId}
       className={containerClassName}
       style={containerStyle}
@@ -92,40 +105,39 @@ export const Metric: React.FunctionComponent<{
         setMouseState('enter');
         if (onElementOver) onElementOver([event]);
       }}
-      onMouseDown={() => setMouseState('down')}
-      onMouseUp={() => setMouseState('enter')}
-      onClick={() => onElementClick([event])}
+      onMouseDown={() => {
+        setMouseState('down');
+        setLastMouseDownTimestamp(Date.now());
+      }}
+      onMouseUp={() => {
+        setMouseState('enter');
+        if (Date.now() - lastMouseDownTimestamp < 200 && onElementClick) {
+          onElementClickHandler();
+        }
+      }}
+      onFocus={() => {
+        setMouseState('enter');
+      }}
+      onBlur={() => {
+        setMouseState('leave');
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     >
-      <MetricContent id={metricHTMLId} datum={datumWithInteractionColor} panel={panel} style={updatedStyle} />
-    </button>
-  ) : (
-    <div
-      role="figure"
-      aria-labelledby={datum.title && metricHTMLId}
-      className={containerClassName}
-      style={containerStyle}
-    >
-      <MetricContent id={metricHTMLId} datum={datumWithInteractionColor} panel={panel} style={updatedStyle} />
+      <MetricText
+        id={metricHTMLId}
+        datum={datumWithInteractionColor}
+        panel={panel}
+        style={updatedStyle}
+        onElementClick={onElementClickHandler}
+        highContrastTextColor={highContrastTextColor}
+      />
+      {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
+      {isMetricWProgress(datumWithInteractionColor) && (
+        <ProgressBar datum={datumWithInteractionColor} barBackground={updatedStyle.barBackground} />
+      )}
+      <div className="echMetric--outline" style={{ color: highContrastTextColor }}></div>
     </div>
   );
 };
-
-function MetricContent({
-  id,
-  datum,
-  panel,
-  style,
-}: {
-  id: string;
-  datum: MetricBase | MetricWProgress | MetricWTrend;
-  panel: Size;
-  style: MetricStyle;
-}) {
-  return (
-    <>
-      <MetricText id={id} datum={datum} panel={panel} style={style} />
-      {isMetricWTrend(datum) && <SparkLine id={id} datum={datum} />}
-      {isMetricWProgress(datum) && <ProgressBar datum={datum} barBackground={style.barBackground} />}
-    </>
-  );
-}
