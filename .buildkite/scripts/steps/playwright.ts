@@ -81,8 +81,9 @@ void (async () => {
   await yarnInstall('e2e');
 
   const key = `${bkEnv.checkId}--activeJobs`;
+  // TODO improve this status logic, not easy to communicate state of parallel steps
   const value = shardIndex === jobTotal ? jobTotal - 1 : Number(await getMetadata(key));
-  const activeJobs = (Number.isNaN(value) ? 0 : value) + 1;
+  const activeJobs = Math.max((Number.isNaN(value) ? 0 : value) + 1, jobTotal ?? 1);
   await setMetadata(key, String(activeJobs));
 
   await updateCheckStatus(
@@ -90,7 +91,7 @@ void (async () => {
       status: 'in_progress',
     },
     'playwright',
-    `${activeJobs} of ${jobTotal} jobs started`,
+    `${activeJobs} of ${jobTotal ?? 1} jobs started`,
   );
 
   const src = '.buildkite/artifacts/e2e_server.gz';

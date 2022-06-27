@@ -285,10 +285,14 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
         started_at,
         conclusion,
         completed_at,
-        output: {
-          title,
-          summary,
-        },
+        // TODO update this sync for advanced outputs
+        ...(title &&
+          summary && {
+            output: {
+              title,
+              summary,
+            },
+          }),
       });
     }),
   );
@@ -312,8 +316,6 @@ interface PRCommitResponse {
 }
 
 export async function getLatestCommits(ctx: ProbotEventContext<'pull_request'>, count = 2): Promise<string[]> {
-  console.log('getLatestCommits');
-
   const { owner, repo, pull_number } = ctx.pullRequest();
   const response = await ctx.octokit.graphql<PRCommitResponse>(`query getLatestCommits {
     repository(owner: "${owner}", name: "${repo}") {
@@ -329,8 +331,6 @@ export async function getLatestCommits(ctx: ProbotEventContext<'pull_request'>, 
       }
     }
   }`);
-
-  console.log(response);
 
   return response.repository.pullRequest.commits.nodes.map((n) => n.commit.oid);
 }
