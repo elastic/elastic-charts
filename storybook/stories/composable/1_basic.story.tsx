@@ -102,7 +102,7 @@ export const Example = () => {
               top: HTML_CHART_PADDING,
               left: HTML_CHART_PADDING + dimensions.projection.left,
               width: dimensions.projection.width,
-              height: dimensions.projection.height,
+              height: 20,
             }}
             horizontal={true}
             text={`projection left: ${dimensions.projection.left} width: ${dimensions.projection.width}`}
