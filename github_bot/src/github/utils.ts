@@ -261,12 +261,12 @@ export async function updateAllChecks(
 }
 
 export async function syncChecks(ctx: ProbotEventContext<'pull_request'>, baseSha?: string) {
-  const {
-    data: [, previousCommit],
-  } = await ctx.octokit.pulls.listCommits({
-    ...ctx.pullRequest(),
-    per_page: 2,
-  });
+  console.log('syncChecks');
+
+  const [, previousCommitSha] = await getLatestCommits(ctx);
+
+  console.log('previousCommitSha', previousCommitSha);
+
   const {
     data: { check_runs: checks },
   } = await ctx.octokit.checks.listForRef({
@@ -274,15 +274,60 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>, baseSh
     ref: baseSha ?? ctx.payload.pull_request.head.sha,
     app_id: Number(getConfig().github.auth.appId),
   });
+
+  console.log('checks');
+  console.log(checks);
+
   await Promise.all(
     checks.map(async (check) => {
       return await ctx.octokit.checks.create({
         ...ctx.repo(),
         ...check,
-        head_sha: previousCommit.sha,
+        head_sha: previousCommitSha,
       });
     }),
   );
+}
+
+interface PRCommitResponse {
+  data: {
+    repository: {
+      pullRequest: {
+        commits: {
+          nodes: [
+            {
+              commit: {
+                message: string;
+                oid: string;
+              };
+            },
+          ];
+        };
+      };
+    };
+  };
+}
+
+export async function getLatestCommits(ctx: ProbotEventContext<'pull_request'>, count = 2): Promise<string[]> {
+  console.log('getLatestCommits');
+
+  const { owner, repo, pull_number } = ctx.pullRequest();
+  const { data } = await ctx.octokit.graphql<PRCommitResponse>(`query getLatestCommits {
+    repository(owner: "${owner}", name: "${repo}") {
+      pullRequest(number: ${pull_number}) {
+        commits(last: ${count}) {
+          nodes {
+            commit {
+              message
+              oid
+            }
+          }
+        }
+      }
+    }
+  }`);
+
+  return data.repository.pullRequest.commits.nodes.map((n) => n.commit.oid);
 }
 
 // TODO remove or use this function
