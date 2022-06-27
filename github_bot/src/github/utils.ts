@@ -327,7 +327,7 @@ export async function getLatestCommits(ctx: ProbotEventContext<'pull_request'>, 
 
   console.log(response);
 
-  return response.data.repository.pullRequest.commits.nodes.map((n) => n.commit.oid);
+  return response.repository.pullRequest.commits.nodes.map((n) => n.commit.oid);
 }
 
 // TODO remove or use this function

@@ -123,11 +123,15 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
         deployment_id: deployment.id,
       });
 
-      if (['pending', 'queued', 'in_progress'].includes(status?.state)) {
+      if (status && ['pending', 'queued', 'in_progress'].includes(status.state)) {
+        const { log_url, environment_url } = status;
         await githubClient.octokit.repos.createDeploymentStatus({
           ...githubClient.repoParams,
+          description: 'Obsolete deployment, newer deployment pending.',
+          log_url,
+          environment_url,
           deployment_id: deployment.id,
-          state: 'failure',
+          state: 'inactive',
         });
       }
     }
