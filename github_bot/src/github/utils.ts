@@ -263,7 +263,7 @@ export async function updateAllChecks(
 export async function syncChecks(ctx: ProbotEventContext<'pull_request'>, baseSha?: string) {
   console.log('syncChecks');
 
-  const [, previousCommitSha] = await getLatestCommits(ctx);
+  const [previousCommitSha] = await getLatestCommits(ctx);
 
   console.log('previousCommitSha', previousCommitSha);
 
