@@ -290,19 +290,17 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>, baseSh
 }
 
 interface PRCommitResponse {
-  data: {
-    repository: {
-      pullRequest: {
-        commits: {
-          nodes: [
-            {
-              commit: {
-                message: string;
-                oid: string;
-              };
-            },
-          ];
-        };
+  repository: {
+    pullRequest: {
+      commits: {
+        nodes: [
+          {
+            commit: {
+              message: string;
+              oid: string;
+            };
+          },
+        ];
       };
     };
   };
