@@ -8,7 +8,6 @@
 
 import { components } from '@octokit/openapi-types';
 import { RestEndpointMethodTypes } from '@octokit/rest';
-import { setMetadata } from 'buildkite-agent-node';
 
 import { getBuildConfig } from '../build';
 import { Env } from '../env';
@@ -265,8 +264,6 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
   console.log('syncChecks');
 
   const [previousCommitSha] = await getLatestCommits(ctx);
-  // flags final build cleanup to sync checks on new commit
-  await setMetadata('syncCommit', previousCommitSha);
 
   const {
     data: { check_runs: checks },
@@ -279,7 +276,7 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
   await Promise.all(
     checks.map(async ({ name, details_url, external_id, status, started_at, conclusion, completed_at, output }) => {
       const { title, summary } = output;
-      return await ctx.octokit.checks.create({
+      await ctx.octokit.checks.create({
         ...ctx.repo(),
         head_sha: ctx.payload.pull_request.head.sha,
         name,

@@ -10,6 +10,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { InstallationAccessTokenAuthentication, InstallationAuthOptions } from '@octokit/auth-app';
+import { setMetadata } from 'buildkite-agent-node';
 
 import {
   bkEnv,
@@ -132,6 +133,11 @@ async function commitNewScreenshots() {
   await exec('git add e2e/screenshots');
   await exec(`git commit -m "${message}"`);
   await exec(`git push ${remoteUrl} HEAD:${bkEnv.branch}`); // HEAD:* required when detached from HEAD
+  const previousCommitSha = await exec('git rev-parse --verify HEAD', {
+    stdio: 'pipe',
+  });
+  // flags final build cleanup to sync checks on new commit
+  await setMetadata('syncCommit', previousCommitSha);
 }
 
 void (async () => {
