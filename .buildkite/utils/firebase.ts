@@ -14,7 +14,14 @@ import { fileSync } from 'tmp';
 import { bkEnv, startGroup } from './buildkite';
 import { DEFAULT_FIREBASE_URL, MetaDataKeys } from './constants';
 import { exec } from './exec';
-import { createDeploymentStatus, updatePreviousDeployments } from './github';
+import {
+  octokit,
+  commentByKey,
+  createDeploymentStatus,
+  updatePreviousDeployments,
+  defaultGHOptions,
+  getComment,
+} from './github';
 
 // Set up Google Application Credentials for use by the Firebase CLI
 // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
@@ -80,6 +87,23 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
       state: 'success',
       environment_url: deploymentUrl,
     });
+
+    const { data: botComments } = await octokit.issues.listComments();
+    const deployComments = botComments.filter((c) => commentByKey('deployments')(c.body));
+    await Promise.all(
+      deployComments.map(async ({ id }) => {
+        await octokit.issues.deleteComment({
+          ...defaultGHOptions,
+          comment_id: id,
+        });
+      }),
+    );
+    await octokit.issues.createComment({
+      ...defaultGHOptions,
+      issue_number: bkEnv.pullRequestNumber!,
+      body: getComment('deployments', deploymentUrl),
+    });
+
     return deploymentUrl;
   } else {
     throw new Error(`Error: Firebase deployment resulted in ${status}`);

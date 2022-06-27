@@ -193,9 +193,9 @@ export const updateCheckStatus = async (
             ...options.output,
           }
         : undefined;
+    const name = getJobCheckName(checkId);
     if (!checkRun || newCheckNeeded) {
       if (!bkEnv.commit) throw new Error(`Failed to set status, no head_sha provided`);
-      const name = getJobCheckName(checkId);
       await octokit.checks.create({
         ...defaultGHOptions,
         details_url: bkEnv.jobUrl,
@@ -214,6 +214,21 @@ export const updateCheckStatus = async (
         external_id: checkId,
         check_run_id: checkRun.id, // required
       } as any); // octokit types are bad :(
+
+      const syncCommit = options.status === 'completed' && (await getMetadata('syncCommit'));
+      if (syncCommit) {
+        // TODO find a better way to do this for commits by datavis bot
+        // Syncs checks to newer skipped commit
+        await octokit.checks.create({
+          ...defaultGHOptions,
+          details_url: bkEnv.jobUrl,
+          ...options,
+          output,
+          name,
+          external_id: checkId,
+          head_sha: syncCommit,
+        } as any); // octokit types are bad :(
+      }
     }
   } catch (error) {
     console.error(`Failed to create/update check run for ${checkId} [sha: ${bkEnv.commit}]`);
@@ -411,4 +426,39 @@ export async function ghpDeploy(outDir: string) {
       },
     );
   });
+}
+
+function generateMsg(key: string, body: string): string {
+  return `<!-- comment-key: ${key} -->\n${body}`;
+}
+
+const reMsgKey = /^<!-- comment-key: (.+) -->/;
+export function commentByKey<T extends keyof Comments>(key: T) {
+  return (comment?: string): boolean => {
+    if (!comment) return false;
+    const [, commentKey] = reMsgKey.exec(comment) ?? [];
+    return commentKey === key;
+  };
+}
+
+export const comments = {
+  communityPR() {
+    return `Community pull request, @elastic/datavis please add the \`ci:approved ✅\` label to allow this and future builds.`;
+  },
+  deployments(deploymentUrl: string) {
+    return `## Deployments
+
+- Storybook ([link](${deploymentUrl}))
+- e2e server ([link](${deploymentUrl}/e2e))
+- Playwright report ([link](${deploymentUrl}/e2e-report))`;
+  },
+};
+
+type Comments = typeof comments;
+
+export function getComment<T extends keyof Comments>(key: T, ...args: Parameters<Comments[T]>): string {
+  console.log(key, args);
+  // @ts-ignore - conditional args
+  const comment = comments[key](...args);
+  return generateMsg(key, comment);
 }

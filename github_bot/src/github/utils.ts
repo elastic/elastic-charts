@@ -8,6 +8,7 @@
 
 import { components } from '@octokit/openapi-types';
 import { RestEndpointMethodTypes } from '@octokit/rest';
+import { setMetadata } from 'buildkite-agent-node';
 
 import { getBuildConfig } from '../build';
 import { Env } from '../env';
@@ -70,10 +71,10 @@ export async function createIssueReaction(
   });
 }
 
-const allowedUsers = new Set<string>([]);
+const allowedUsers = new Set<string>(['renovate[bot]', 'dependabot[bot]']);
 const allowedUserIds = new Set([
-  49699333, // dependabot
-  29139614, // renovate
+  49699333, // dependabot[bot]
+  29139614, // renovate[bot]
 ]);
 const requiredPermission = new Set(['admin', 'write']);
 
@@ -82,14 +83,6 @@ const requiredPermission = new Set(['admin', 'write']);
  */
 export async function isValidUser(ctx: ProbotEventContext<'issue_comment' | 'pull_request'>): Promise<boolean> {
   const { id, login: username } = getUser(ctx);
-
-  // is a specific user
-  if (allowedUsers.has(username) || allowedUserIds.has(id)) {
-    console.log(`User ${username} is on allowed list`);
-    return true;
-  } else {
-    console.log(`User ${username} is NOT on allowed list`);
-  }
 
   // TODO remove orgOctokit after testing and once the app permissions include org:user:read
   try {
@@ -132,6 +125,14 @@ export async function isValidUser(ctx: ProbotEventContext<'issue_comment' | 'pul
     if ((error as any).status !== 404) {
       throw new Error(String(error));
     }
+  }
+
+  // is a specific user
+  if (allowedUsers.has(username) || allowedUserIds.has(id)) {
+    console.log(`User ${username} is on allowed list`);
+    return true;
+  } else {
+    console.log(`User ${username} is NOT on allowed list`);
   }
 
   console.log(`Ignoring pull request from user '${username}'`);
@@ -264,6 +265,9 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
   console.log('syncChecks');
 
   const [previousCommitSha] = await getLatestCommits(ctx);
+  // flags final build cleanup to sync checks on new commit
+  await setMetadata('syncCommit', previousCommitSha);
+
   const {
     data: { check_runs: checks },
   } = await ctx.octokit.checks.listForRef({

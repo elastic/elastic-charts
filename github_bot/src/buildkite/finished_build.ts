@@ -13,6 +13,10 @@ import { getConfig } from '../config';
 import { githubClient } from '../utils/github';
 import { BuildkiteWebhookPayload } from './types';
 
+interface MetaData {
+  syncCommit?: string;
+}
+
 /**
  * Handles Buildkite ci run cleanup for completed finished jobs
  *
@@ -20,7 +24,7 @@ import { BuildkiteWebhookPayload } from './types';
  * The only mechanism is a webhook that fires at the end of each build.
  * This function runs to cleanup the commit statuses for all build statuses.
  */
-export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Response) {
+export async function handleFinishedBuild(body: BuildkiteWebhookPayload<any, MetaData>, res: Response) {
   console.log(body);
 
   const build = body?.build;
@@ -91,8 +95,8 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload, res: Re
   // This requires knowing the external_ids of all check to be set
   const unresolvedChecks = checkRuns.filter(({ status }) => status !== 'completed');
   await Promise.all(
-    unresolvedChecks.map(({ id, external_id }) => {
-      return githubClient.octokit.checks.update({
+    unresolvedChecks.map(async ({ id, external_id }) => {
+      await githubClient.octokit.checks.update({
         ...githubClient.repoParams,
         check_run_id: id, // required
         output,

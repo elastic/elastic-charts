@@ -6,14 +6,17 @@
  * Side Public License, v 1.
  */
 
-export interface BuildkiteWebhookPayload<E extends Record<string, any> = Record<string, never>> {
+export interface BuildkiteWebhookPayload<
+  E extends Record<string, any> = Record<string, never>,
+  M extends Record<string, any> = Record<string, never>,
+> {
   event: string;
-  build: Build;
+  build: Build<M>;
   pipeline: Pipeline<E>;
   sender: Sender;
 }
 
-export interface Build {
+export interface Build<M extends Record<string, any>> {
   id: string;
   graphql_id: string;
   url: string;
@@ -33,7 +36,7 @@ export interface Build {
   scheduled_at: string;
   started_at: string;
   finished_at: string;
-  meta_data: MetaData;
+  meta_data: M & MetaData;
   pull_request: null;
   rebuilt_from: null;
 }

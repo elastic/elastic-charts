@@ -29,7 +29,7 @@ export async function getPRFromComment(
   }
 }
 
-const ciNamePattern = /^(buildkite|jenkins|davis) /i;
+const ciNamePattern = /^(buildkite|datavis) /i;
 
 const actions = {
   test: /^test/i,
