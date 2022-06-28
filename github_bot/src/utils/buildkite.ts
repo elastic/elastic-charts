@@ -143,7 +143,10 @@ export function getPRBuildParams(
     GITHUB_PR_BRANCH: head.ref,
     GITHUB_PR_TRIGGERED_SHA: head.sha,
     GITHUB_PR_LABELS: labels.map((label) => label.name).join(','),
-    GITHUB_PR_MAINTAINER_CAN_MODIFY: String(maintainer_can_modify),
+    GITHUB_PR_MAINTAINER_CAN_MODIFY: String(
+      // TODO improve this check for is base repo
+      maintainer_can_modify || base.repo.owner.login === getConfig().github.env.repo.owner,
+    ),
     ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS: String(updateScreenshots),
   };
 }
