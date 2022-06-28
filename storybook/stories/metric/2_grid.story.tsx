@@ -160,15 +160,15 @@ export const Example = () => {
                 }
               : undefined
           }
-          // onElementOver={([d]) => {
-          //   if (isMetricElementEvent(d)) {
-          //     const { rowIndex, columnIndex } = d;
-          //     onEventOverAction(
-          //       `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
-          //     );
-          //   }
-          // }}
-          // onElementOut={() => onEventOutAction('out')}
+          onElementOver={([d]) => {
+            if (isMetricElementEvent(d)) {
+              const { rowIndex, columnIndex } = d;
+              onEventOverAction(
+                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+              );
+            }
+          }}
+          onElementOut={() => onEventOutAction('out')}
         />
         <Metric id="metric" data={configuredData} />
       </Chart>

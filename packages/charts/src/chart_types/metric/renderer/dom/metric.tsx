@@ -92,6 +92,7 @@ export const Metric: React.FunctionComponent<{
 
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions,jsx-a11y/click-events-have-key-events
     <div
       role="figure"
       aria-labelledby={datum.title && metricHTMLId}
