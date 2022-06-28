@@ -31,7 +31,10 @@ export async function updateLastDeployment(
 
     if (!status) continue;
     const { state: currentState, log_url, environment_url } = status;
-    if ('success' !== currentState) return;
+
+    if (!['in_progress', 'queued', 'pending', 'success'].includes(currentState)) {
+      continue;
+    }
 
     console.log(`Updating deployment ${deployment.id} state: ${currentState} -> ${state}`);
 
