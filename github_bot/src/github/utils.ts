@@ -278,25 +278,27 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
   await Promise.all(
     checks.map(async ({ name, details_url, external_id, status, started_at, conclusion, completed_at, output }) => {
       const { title, summary } = output;
-      await ctx.octokit.checks.create({
-        ...ctx.repo(),
-        head_sha: ctx.payload.pull_request.head.sha,
-        name,
-        details_url,
-        external_id,
-        status,
-        started_at,
-        conclusion,
-        completed_at,
-        // TODO update this sync for advanced outputs
-        ...(title &&
-          summary && {
-            output: {
-              title,
-              summary,
-            },
-          }),
-      });
+      await ctx.octokit.checks.create(
+        pickDefined({
+          ...ctx.repo(),
+          head_sha: ctx.payload.pull_request.head.sha,
+          name,
+          details_url,
+          external_id,
+          status,
+          started_at,
+          conclusion,
+          completed_at,
+          // TODO update this sync for advanced outputs
+          ...(title &&
+            summary && {
+              output: {
+                title,
+                summary,
+              },
+            }),
+        }),
+      );
     }),
   );
 }
@@ -370,4 +372,15 @@ export async function updatePreviousDeployments(
       }
     }),
   );
+}
+
+export function pickDefined<R extends Record<string, unknown>>(source: R): R {
+  return Object.keys(source).reduce((acc, key) => {
+    const val = source[key];
+    if (val !== undefined) {
+      // @ts-ignore - building new R from {}
+      acc[key] = val;
+    }
+    return acc;
+  }, {} as R);
 }

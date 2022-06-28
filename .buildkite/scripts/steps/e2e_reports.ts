@@ -132,12 +132,8 @@ async function commitNewScreenshots() {
   const previousCommitSha = await exec('git rev-parse --verify HEAD', {
     stdio: 'pipe',
   });
-  console.log('latest commits');
-  const lastCommits = await getLatestCommits();
-  console.log(lastCommits);
-
   // flags final build cleanup to sync checks on new commit
-  await setMetadata('syncCommit', previousCommitSha);
+  await setMetadata('syncCommit', previousCommitSha.trim());
 }
 
 interface PRCommitResponse {
