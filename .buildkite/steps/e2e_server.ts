@@ -11,11 +11,11 @@ import { createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 export const e2eServerStep = createStep<CustomCommandStep>(() => {
   return {
     ...commandStepDefaults,
-    label: ':building_construction: E2E server build',
-    key: 'e2e_server',
+    label: ':building_construction: Build - e2e server',
+    key: 'build_e2e',
     commands: ['npx ts-node .buildkite/scripts/steps/e2e_server.ts'],
     env: {
-      ECH_GH_STATUS_CONTEXT: 'E2E server build',
+      ECH_CHECK_ID: 'build_e2e',
     },
   };
 });

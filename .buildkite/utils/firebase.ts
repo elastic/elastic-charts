@@ -11,10 +11,17 @@ import { writeSync } from 'fs';
 import { setMetadata } from 'buildkite-agent-node';
 import { fileSync } from 'tmp';
 
-import { startGroup } from './buildkite';
+import { bkEnv, startGroup } from './buildkite';
 import { DEFAULT_FIREBASE_URL, MetaDataKeys } from './constants';
 import { exec } from './exec';
-import { createDeploymentStatus } from './github';
+import {
+  octokit,
+  commentByKey,
+  createDeploymentStatus,
+  updatePreviousDeployments,
+  defaultGHOptions,
+  getComment,
+} from './github';
 
 // Set up Google Application Credentials for use by the Firebase CLI
 // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
@@ -34,34 +41,30 @@ interface DeployOptions {
 
 export const firebaseDeploy = async (opt: DeployOptions = {}) => {
   const expires = opt.expires ?? '7d';
-  const redeploy = opt.redeploy ?? false;
 
   startGroup('Deploying to firebase');
 
-  const channelId = 'nick';
-  // const channelId = bkEnv.pullRequest
-  //   ? `pr-${bkEnv.pullRequestNumber}`
-  //   : bkEnv.branch === 'master'
-  //   ? null
-  //   : bkEnv.branch;
+  const channelId = bkEnv.isPullRequest
+    ? `pr-${bkEnv.pullRequestNumber!}`
+    : bkEnv.branch === 'master'
+    ? null
+    : bkEnv.branch;
 
   const gacFile = createGACFile();
   const command = channelId
     ? `npx firebase-tools hosting:channel:deploy ${channelId} --expires ${expires} --no-authorized-domains --json`
     : `npx firebase-tools deploy --only hosting --json`;
-  const stdout = exec(command, {
-    cwd: './e2e-server',
+  const stdout = await exec(command, {
+    cwd: './e2e_server',
     stdio: 'pipe',
     env: {
       ...process.env,
       GOOGLE_APPLICATION_CREDENTIALS: gacFile,
     },
-    onFailure() {
-      if (!redeploy) {
-        void createDeploymentStatus({
-          state: 'failure',
-        });
-      }
+    async onFailure() {
+      await createDeploymentStatus({
+        state: 'failure',
+      });
     },
   });
 
@@ -72,13 +75,35 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
     if (!deploymentUrl) throw new Error('Error: No url found for deployments');
     console.log(`Successfully deployed to ${deploymentUrl}`);
 
-    if (!redeploy) {
-      await setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
-      await createDeploymentStatus({
-        state: 'success',
-        environment_url: deploymentUrl,
+    await setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
+
+    if (bkEnv.isPullRequest) {
+      // deactivate old deployments
+      await updatePreviousDeployments();
+
+      const { data: botComments } = await octokit.issues.listComments({
+        ...defaultGHOptions,
+        issue_number: bkEnv.pullRequestNumber!,
+      });
+      const deployComments = botComments.filter((c) => commentByKey('deployments')(c.body));
+      await Promise.all(
+        deployComments.map(async ({ id }) => {
+          await octokit.issues.deleteComment({
+            ...defaultGHOptions,
+            comment_id: id,
+          });
+        }),
+      );
+      await octokit.issues.createComment({
+        ...defaultGHOptions,
+        issue_number: bkEnv.pullRequestNumber!,
+        body: getComment('deployments', deploymentUrl, bkEnv.commit!),
       });
     }
+    await createDeploymentStatus({
+      state: 'success',
+      environment_url: deploymentUrl,
+    });
     return deploymentUrl;
   } else {
     throw new Error(`Error: Firebase deployment resulted in ${status}`);

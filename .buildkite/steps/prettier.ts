@@ -16,7 +16,7 @@ export const prettierStep = createStep<CustomCommandStep>(() => {
     skip: false, // TODO: add skippable logic - hard to tell what exactly would cause this and task is lightweight
     commands: ['npx ts-node .buildkite/scripts/steps/prettier.ts'],
     env: {
-      ECH_GH_STATUS_CONTEXT: 'Prettier',
+      ECH_CHECK_ID: 'prettier',
     },
   };
 });

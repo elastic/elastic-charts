@@ -14,6 +14,6 @@ if [[ -n "${LOCAL_VRT_SERVER}" ]] && [[ ! -f "$FILE" ]]; then
   exit 1
 fi
 
-cd e2e-server/server
+cd e2e_server/server
 
 node ../../node_modules/webpack/bin/webpack.js serve --progress "$@"

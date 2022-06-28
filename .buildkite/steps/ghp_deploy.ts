@@ -13,13 +13,14 @@ export const ghpDeployStep = createStep<CustomCommandStep>(() => {
 
   return {
     ...commandStepDefaults,
-    label: ':github: Deploy',
-    key: 'ghp-deploy',
+    label: ':github: Deploy - GitHub Pages',
+    key: 'deploy_ghp',
     skip: isMaster ? false : 'Not target branch',
-    depends_on: ['storybook'],
+    depends_on: ['build_storybook'],
     commands: ['npx ts-node .buildkite/scripts/steps/ghp_deploy.ts'],
     env: {
-      ECH_GH_STATUS_CONTEXT: isMaster ? 'Deploy - GitHub pages' : undefined,
+      // ignore check run reporting when not master
+      ECH_CHECK_ID: isMaster ? 'deploy_ghp' : undefined,
     },
   };
 });

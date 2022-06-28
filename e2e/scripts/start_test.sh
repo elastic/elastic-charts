@@ -30,6 +30,6 @@ docker run \
   -e PLAYWRIGHT_HTML_REPORT=${PLAYWRIGHT_HTML_REPORT} `# where to save the playwright html report ` \
   -w /app/e2e `# working directory` \
   -v $(pwd)/:/app/e2e `# mount local e2e/ directory in app/e2e directory in container` \
-  -v $(pwd)/../e2e-server/tmp/:/app/e2e-server/tmp `# mount required example.json file in container` \
+  -v $(pwd)/../e2e_server/tmp/:/app/e2e_server/tmp `# mount required example.json file in container` \
   ${pw_image} `# playwright docker image derived above from @playwright/test version used ` \
   yarn test:playwright "$@" # runs test.sh forwarding any additional passed args

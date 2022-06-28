@@ -35,31 +35,32 @@ export const Example = () => {
   const showAction = boolean('show legend action', false);
 
   const CustomColorPicker: LegendColorPicker = useMemo(
-    () => ({ anchor, color, onClose, seriesIdentifiers, onChange }) => {
-      const handleClose = () => {
-        onClose();
-        setColors((prevColors) => ({
-          ...prevColors,
-          ...toEntries(seriesIdentifiers, 'key', color),
-        }));
-      };
-      const handleChange = (c: Color | null) => {
-        setColors((prevColors) => ({
-          ...prevColors,
-          ...toEntries(seriesIdentifiers, 'key', c),
-        }));
-        onChange(c);
-        onChangeAction(c);
-      };
+    () =>
+      ({ anchor, color, onClose, seriesIdentifiers, onChange }) => {
+        const handleClose = () => {
+          onClose();
+          setColors((prevColors) => ({
+            ...prevColors,
+            ...toEntries(seriesIdentifiers, 'key', color),
+          }));
+        };
+        const handleChange = (c: Color | null) => {
+          setColors((prevColors) => ({
+            ...prevColors,
+            ...toEntries(seriesIdentifiers, 'key', c),
+          }));
+          onChange(c);
+          onChangeAction(c);
+        };
 
-      return getColorPicker()({
-        anchor,
-        color,
-        onClose: handleClose,
-        onChange: handleChange,
-        seriesIdentifiers,
-      });
-    },
+        return getColorPicker()({
+          anchor,
+          color,
+          onClose: handleClose,
+          onChange: handleChange,
+          seriesIdentifiers,
+        });
+      },
     [setColors],
   );
   CustomColorPicker.displayName = 'CustomColorPicker';

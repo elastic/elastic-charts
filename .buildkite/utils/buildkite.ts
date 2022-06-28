@@ -7,12 +7,12 @@
  */
 
 import axios from 'axios';
-import { getBuildkiteEnv, getMetadata, setMetadata } from 'buildkite-agent-node';
+import { getBuildkiteEnv, getMetadata, setMetadata, metadataExists } from 'buildkite-agent-node';
 
-import { ECH_GH_STATUS_CONTEXT } from './constants';
+import { ECH_CHECK_ID } from './constants';
 import { exec } from './exec';
 
-export const uploadPipeline = (pipelineContent: any) => {
+export const uploadPipeline = async (pipelineContent: any) => {
   const str = typeof pipelineContent === 'string' ? pipelineContent : JSON.stringify(pipelineContent);
 
   if (process.env.TEST_BK_PIPELINE) {
@@ -24,28 +24,50 @@ export const uploadPipeline = (pipelineContent: any) => {
     console.log(JSON.stringify(JSON.parse(str), null, 2));
   }
 
-  exec('buildkite-agent pipeline upload', {
+  await exec('buildkite-agent pipeline upload', {
     input: str,
   });
 };
 
 /**
  * Buildkite environment variables
+ *
+ * TODO clean this up with new custom API env build variables
  */
 export const bkEnv = (() => {
-  const env = getBuildkiteEnv();
+  const { pullRequest: _, branch: bkBranch, ...env } = getBuildkiteEnv();
+  const branch = bkBranch && bkBranch.split(':').reverse()[0];
   const pullRequestNumber = getEnvNumber('BUILDKITE_PULL_REQUEST');
-  const context = getEnvString(ECH_GH_STATUS_CONTEXT);
+  const checkId = getEnvString(ECH_CHECK_ID);
+  const isPullRequest = Boolean(pullRequestNumber);
+  let username: string | undefined;
+
+  if (isPullRequest) {
+    const userRE = /^\b(?:git|https)\b:\/\/github\.com\/([^#./]+)\/[^#./]+\.git$/;
+    const [, repoOwner] = userRE.exec(env.pullRequestRepo ?? '') ?? [];
+    if (repoOwner !== 'elastic') {
+      username = repoOwner;
+    }
+  }
 
   return {
     ...env,
     /**
      * Step context for commit status
      */
-    context,
+    branch,
+    checkId,
+    username,
+    isPullRequest,
     pullRequestNumber,
     buildUrl: env.buildUrl,
+    canModifyPR: process.env.GITHUB_PR_MAINTAINER_CAN_MODIFY === 'true',
     jobUrl: env.jobId ? `${env.buildUrl}#${env.jobId}` : undefined,
+    steps: {
+      playwright: {
+        updateScreenshots: isPullRequest ? process.env.ECH_STEP_PLAYWRIGHT_UPDATE_SCREENSHOTS === 'true' : false,
+      },
+    },
   };
 })();
 
@@ -55,19 +77,34 @@ export const bkEnv = (() => {
  */
 export const startGroup = (msg: string) => console.log(`--- ${msg}`);
 
-export const downloadArtifacts = (query: string, step?: string, destination = '.', build?: string) => {
+export const downloadArtifacts = async (query: string, step?: string, destination = '.', build?: string) => {
   startGroup(`Downloading artifacts${step ? ` from step: ${step}` : ''}`);
   const dest = destination.endsWith('/') || destination === '.' ? destination : `${destination}/`;
   const stepArg = step ? ` --step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
   const buildId = build ?? bkEnv.buildId;
-  exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
+  console.log('downloadArtifacts command');
+  console.log(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
+
+  await exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
 };
 
-export const uploadArtifacts = (query: string) => {
+export const searchArtifacts = async (query: string, step?: string, destination = '.', build?: string) => {
+  startGroup(`Searching artifacts${step ? ` from step: ${step}` : ''}`);
+  const dest = destination.endsWith('/') || destination === '.' ? destination : `${destination}/`;
+  const stepArg = step ? ` --step ${step}` : '';
+  const q = query.includes('*') ? `"${query}"` : query;
+  const buildId = build ?? bkEnv.buildId;
+  console.log('downloadArtifacts command');
+  console.log(`buildkite-agent artifact search ${q} ${dest}${stepArg} --build ${buildId}`);
+
+  await exec(`buildkite-agent artifact search ${q} ${dest}${stepArg} --build ${buildId}`);
+};
+
+export const uploadArtifacts = async (query: string) => {
   const q = query.includes('*') ? `"${query}"` : query;
   startGroup(`Uploading artifacts matching "${q}"`);
-  exec(`buildkite-agent artifact upload ${q}`);
+  await exec(`buildkite-agent artifact upload ${q}`);
 };
 
 function getEnvNumber(key: string) {
@@ -103,82 +140,66 @@ export async function buildkiteGQLQuery<Response = any>(query: string) {
   return data;
 }
 
-export const getJobMetadata = async (prop: string) => {
-  return await getMetadata(`${bkEnv.jobId}__${prop}`);
+export const getJobMetadata = async (prop: string, required: boolean = false) => {
+  const key = `${bkEnv.jobId}__${prop}`;
+  if (required && !(await metadataExists(key))) {
+    throw new Error(`Failed to find metaData key for "${key}"`);
+  }
+  const value = await getMetadata(key);
+  console.log(`Found metaData value [${key}] -> ${value}`);
+  return value;
 };
 
 export const setJobMetadata = async (prop: string, value: string) => {
-  await setMetadata(`${bkEnv.jobId}__${prop}`, value);
+  const key = `${bkEnv.jobId}__${prop}`;
+  await setMetadata(key, value);
+  console.log(`Set metaData value [${key}] -> ${value}`);
 };
 
-export async function getJobTiming(jobId = bkEnv.jobId) {
-  if (!jobId) throw new Error(`Error: no job id found [${jobId}]`);
-
-  const { data } = await buildkiteGQLQuery<JobTimingReponse>(`query getJobTimings {
-    job(uuid: "${jobId}") {
-      ... on JobTypeCommand {
-        startedAt
-        finishedAt
-        canceledAt
-      }
-    }
-  }`);
-  const { startedAt, finishedAt, canceledAt } = data.job;
-  if (!startedAt) {
-    throw new Error(`Error: unable to determine start time for job [${jobId}]`);
-  }
-  const date1 = new Date(startedAt);
-  const end = finishedAt || canceledAt;
-  const date2 = end ? new Date(end) : new Date();
-  const diffMs = Math.abs(date2.valueOf() - date1.valueOf());
-  const diffMin = diffMs / 1000 / 60;
-  const minutes = Math.floor(diffMin);
-  const seconds = Math.floor((diffMin - minutes) * 60);
-
-  return {
-    minutes,
-    seconds,
-  };
+interface JobStep {
+  passed: boolean;
+  url: string | null;
+  state: JobState;
+  key: string;
 }
 
-export async function getJobTimingStr(): Promise<string> {
-  const { minutes, seconds } = await getJobTiming();
-  return minutes > 0 ? `${minutes}m ${seconds}s` : `${seconds}s`;
-}
-
-interface JobTimingReponse {
-  data: {
-    job: {
-      startedAt: string | null;
-      finishedAt: string | null;
-      canceledAt: string | null;
-    };
-  };
-}
-
-export async function getJobSteps(stepKey: string) {
+export async function getBuildJobs(stepKey?: string): Promise<JobStep[]> {
   const buildId = bkEnv.buildId;
 
   if (!buildId) throw new Error(`Error: no job id found [${buildId}]`);
 
-  const { data } = await buildkiteGQLQuery<JobStepsReponse>(`query getJobSteps {
+  const jobQuery = stepKey ? `first: 100, step: { key: "${stepKey}" }` : 'first: 100';
+  const { data } = await buildkiteGQLQuery<BuildJobsReponse>(`query getBuildJobs {
     build(uuid: "${buildId}") {
-      jobs(first: 100, step: { key: "${stepKey}" }) {
+      jobs(${jobQuery}) {
         edges {
           node {
             ... on JobTypeCommand {
               passed
+              state
               url
+              step {
+                key
+              }
             }
           }
         }
       }
     }
   }`);
-  return data?.build?.jobs?.edges.map(({ node }) => node) ?? [];
+  return (
+    data?.build?.jobs?.edges.map(
+      ({
+        node: {
+          step: { key },
+          ...rest
+        },
+      }) => ({ ...rest, key }),
+    ) ?? []
+  );
 }
 
-interface JobStepsReponse {
+interface BuildJobsReponse {
   data: {
     build: {
       jobs: {
@@ -186,9 +207,144 @@ interface JobStepsReponse {
           node: {
             passed: boolean;
             url: string | null;
+            state: JobState;
+            step: {
+              key: string;
+            };
           };
         }[];
       };
     };
   };
 }
+
+export const enum JobState {
+  /**
+   * The job has just been created and doesn't have a state yet
+   */
+  Pending = 'PENDING',
+
+  /**
+   * The job is waiting on a wait step to finish
+   */
+  Waiting = 'WAITING',
+
+  /**
+   * The job was in a WAITING state when the build failed
+   */
+  WaitingFailed = 'WAITING_FAILED',
+
+  /**
+   * The job is waiting on a block step to finish
+   */
+  Blocked = 'BLOCKED',
+
+  /**
+   * The job was in a BLOCKED state when the build failed
+   */
+  BlockedFailed = 'BLOCKED_FAILED',
+
+  /**
+   * This block job has been manually unblocked
+   */
+  Unblocked = 'UNBLOCKED',
+
+  /**
+   * This block job was in an UNBLOCKED state when the build failed
+   */
+  UnblockedFailed = 'UNBLOCKED_FAILED',
+
+  /**
+   * The job is waiting on a concurrency group check before becoming either LIMITED or SCHEDULED
+   */
+  Limiting = 'LIMITING',
+
+  /**
+   * The job is waiting for jobs with the same concurrency group to finish
+   */
+  Limited = 'LIMITED',
+
+  /**
+   * The job is scheduled and waiting for an agent
+   */
+  Scheduled = 'SCHEDULED',
+
+  /**
+   * The job has been assigned to an agent, and it's waiting for it to accept
+   */
+  Assigned = 'ASSIGNED',
+
+  /**
+   * The job was accepted by the agent, and now it's waiting to start running
+   */
+  Accepted = 'ACCEPTED',
+
+  /**
+   * The job is runing
+   */
+  Running = 'RUNNING',
+
+  /**
+   * The job has finished
+   */
+  Finished = 'FINISHED',
+
+  /**
+   * The job is currently canceling
+   */
+  Canceling = 'CANCELING',
+
+  /**
+   * The job was canceled
+   */
+  Canceled = 'CANCELED',
+
+  /**
+   * The job is timing out for taking too long
+   */
+  TimingOut = 'TIMING_OUT',
+
+  /**
+   * The job timed out
+   */
+  TimedOut = 'TIMED_OUT',
+
+  /**
+   * The job was skipped
+   */
+  Skipped = 'SKIPPED',
+
+  /**
+   * The jobs configuration means that it can't be run
+   */
+  Broken = 'BROKEN',
+
+  /**
+   * The job expired before it was started on an agent
+   */
+  Expired = 'EXPIRED',
+}
+
+export const jobStateMapping: Record<JobState, string> = {
+  PENDING: 'Pending',
+  WAITING: 'Waiting',
+  WAITING_FAILED: 'Waiting Failed',
+  BLOCKED: 'Blocked',
+  BLOCKED_FAILED: 'Blocked Failed',
+  UNBLOCKED: 'Unblocked',
+  UNBLOCKED_FAILED: 'Unblocked Failed',
+  LIMITING: 'Limiting',
+  LIMITED: 'Limited',
+  SCHEDULED: 'Scheduled',
+  ASSIGNED: 'Assigned',
+  ACCEPTED: 'Accepted',
+  RUNNING: 'Running',
+  FINISHED: 'Finished',
+  CANCELING: 'Canceling',
+  CANCELED: 'Canceled',
+  TIMING_OUT: 'TimingOut',
+  TIMED_OUT: 'TimedOut',
+  SKIPPED: 'Skipped',
+  BROKEN: 'Broken',
+  EXPIRED: 'Expired',
+};

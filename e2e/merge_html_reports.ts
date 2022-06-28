@@ -21,6 +21,7 @@ void (async () => {
     throw new Error('Error: No e2e reports found in e2e/reports/* to merge');
   }
 
+  // eslint-disable-next-line no-console
   console.log(`Merging ${inputReportPaths.length} playwright html reports:\n\n\t${inputReportPaths.join('\n\t')}\n`);
 
   const config = {

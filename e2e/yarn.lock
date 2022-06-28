@@ -1267,9 +1267,10 @@ playwright-core@1.21.1:
     yauzl "2.10.0"
     yazl "2.5.1"
 
-playwright-merge-html-reports@nickofthyme/playwright-merge-html-reports#temp:
-  version "0.2.0"
-  resolved "https://codeload.github.com/nickofthyme/playwright-merge-html-reports/tar.gz/c039df1dcf7acd9efa9e1f80d14d49b0de4ab304"
+playwright-merge-html-reports@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/playwright-merge-html-reports/-/playwright-merge-html-reports-0.2.3.tgz#4979c929f7a8fc7b5a5bb26ab5e99de488424ea4"
+  integrity sha512-YDTTLfRannqy64tSElNQzoj1zDlHzx9zo5nLu0shBOI515CQxOMKyAKY+7Lfv7BRjxQcYOdNA3sPUpf4MwpM+Q==
   dependencies:
     jszip "^3.7.1"
     yazl "^2.5.1"
