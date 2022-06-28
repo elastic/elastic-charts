@@ -7,14 +7,20 @@
     concurrent: true
     node: master
     triggers:
+      # https://jenkins-job-builder.readthedocs.io/en/latest/triggers.html?highlight=%22allow-whitelist-orgs-as-admins%22#triggers.github-pull-request
       - github-pull-request:
           org-list:
             - elastic
+          black-list-labels:
+            - 'ci:buildkite'
           allow-whitelist-orgs-as-admins: true
           trigger-phrase: '(.*(?:jenkins\W+)?test\W+(?:this|it)(?:\W+please)?.*)|^retest$'
           github-hooks: true
-          status-context: '@elastic/charts CI'
+          status-context: 'Puppeteer'
           cancel-builds-on-update: true
+          triggered-status: 'Running visual regression tests'
+          success-status: 'All visual regression tests passed'
+          failure-status: 'Some visual regression tests failed'
     builders:
       - multijob:
           name: run child jobs
