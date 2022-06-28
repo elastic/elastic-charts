@@ -214,21 +214,21 @@ export const updateCheckStatus = async (
         external_id: checkId,
         check_run_id: checkRun.id, // required
       } as any); // octokit types are bad :(
+    }
 
-      const syncCommit = options.status === 'completed' && (await getMetadata('syncCommit'));
-      if (syncCommit) {
-        // TODO find a better way to do this for commits by datavis bot
-        // Syncs checks to newer skipped commit
-        await octokit.checks.create({
-          ...defaultGHOptions,
-          details_url: bkEnv.jobUrl,
-          ...options,
-          output,
-          name,
-          external_id: checkId,
-          head_sha: syncCommit,
-        } as any); // octokit types are bad :(
-      }
+    const syncCommit = options.status === 'completed' && (await getMetadata('syncCommit'));
+    if (syncCommit) {
+      // TODO find a better way to do this for commits by datavis bot
+      // Syncs checks to newer skipped commit
+      await octokit.checks.create({
+        ...defaultGHOptions,
+        details_url: bkEnv.jobUrl,
+        ...options,
+        output,
+        name,
+        external_id: checkId,
+        head_sha: syncCommit,
+      } as any); // octokit types are bad :(
     }
   } catch (error) {
     console.error(`Failed to create/update check run for ${checkId} [sha: ${bkEnv.commit}]`);
