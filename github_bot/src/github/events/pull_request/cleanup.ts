@@ -30,10 +30,12 @@ export function cleanup(app: Probot) {
     const { head } = ctx.payload.pull_request;
 
     await buildkiteClient.cancelRunningBuilds(head.sha, async () => {
-      await updateAllChecks(ctx, {
-        status: 'completed',
-        conclusion: 'cancelled',
-      });
+      if (!ctx.payload.pull_request.merged) {
+        await updateAllChecks(ctx, {
+          status: 'completed',
+          conclusion: 'cancelled',
+        });
+      }
     });
 
     await updateLastDeployment(ctx);
