@@ -67,11 +67,6 @@ export function setupBuildTrigger(app: Probot) {
           status: 'completed',
           conclusion: 'skipped',
         });
-        // } else if (ctx.payload.action === 'reopened') {
-        //   await updateAllChecks(ctx, {
-        //     status: 'completed',
-        //     conclusion: 'skipped',
-        //   });
       }
 
       return;
