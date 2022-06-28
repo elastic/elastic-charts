@@ -1,3 +1,12 @@
+## [46.11.1](https://github.com/elastic/elastic-charts/compare/v46.11.0...v46.11.1) (2022-06-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v60 ([#1727](https://github.com/elastic/elastic-charts/issues/1727)) ([cb4a9df](https://github.com/elastic/elastic-charts/commit/cb4a9dff4631a954b3b890c7098ab1534c13c587))
+* **example:** make events work in the composable story ([#1729](https://github.com/elastic/elastic-charts/issues/1729)) ([cd84972](https://github.com/elastic/elastic-charts/commit/cd849726915ebbd366bc92722ed9f21d9af79c03))
+* **heatmap:** correctly compute vertical axis width max size ([#1723](https://github.com/elastic/elastic-charts/issues/1723)) ([aaeb4d3](https://github.com/elastic/elastic-charts/commit/aaeb4d30af7d89791fe8e3a9019fddd54fbd5eb1))
+
 # [46.11.0](https://github.com/elastic/elastic-charts/compare/v46.10.2...v46.11.0) (2022-06-22)
 
 
