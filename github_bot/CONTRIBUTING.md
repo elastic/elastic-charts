@@ -11,9 +11,33 @@ cd ./github_bot/CONTRIBUTING.md
 yarn install
 ```
 
+### Github Apps
+
+There are two GitHub apps, one for testing locally and one for production. The apps are owned by elastic GitHub organization and only need to be changed or accessed for permissions, events or config changes. See @nickofthyme if you require any changes.
+
+#### Production app
+
+url: https://github.com/apps/elastic-datavis
+
+This app is installed on [`@elastic/elastic-charts`](https://github.com/elastic/elastic-charts) repo and is isolated from the test environment.
+
+See [`DEPLOYING.md`](DEPLOYING.md).
+
+#### Testing app
+
+url: https://github.com/apps/elastic-datavis-test
+
+
+This app uses [`smee.io`](https://smee.io/) to tunnel *live* GitHub webhooks to localhost.
+
+This app is installed on [`@elastic/datavis-ci-test`](https://github.com/elastic/datavis-ci-test) repo and is isolated from the production environment.
+
+See [Running locally](#running-locally) section below.
+
+
 ### Environment Variables
 
-We use `.env` files to run this app locally. You can access all but two of the required variables [here](https://p.elstc.co/paste/byxL670y#GBaoH3fslcdTAjo9eZdSW4anOYySjycUPL1NQGr0CBC) (must be an elastic employee). Copy this content into `github_bot/.env` file, don't worry this file is `.gitignore`'d.
+We use `.env` files to run this app locally. You can access all but two of the required variables [here](https://p.elstc.co/paste/qVr+LQSn#E7OsWIHLB3uSEhaXid-I08ZAgtVD3Xgu/l980Ng3D/g) (must be an elastic employee). These values are for the testing app, prod values are not necessary here. Copy this content into `github_bot/.env` file, don't worry this file is `.gitignore`'d.
 
 <details><summary>See example `.env` file here</summary>
 <p>
@@ -55,17 +79,16 @@ Create a new `BUILDKITE_TOKEN` [here](https://buildkite.com/user/api-access-toke
 - REST Scopes: read_agents, read_artifacts, read_builds, write_builds, read_build_logs, read_pipelines
 - GraphQL Access: Enabled
 
-### Setup `smee` (only if local dev fails)
-
-[`smee.io`](https://smee.io/) tunnels *live* GitHub webhooks to localhost.
-
-This should be setup already but if it fails you can create a new channel [here](https://smee.io/new) and update the `WEBHOOK_PROXY_URL` value in your `.env` file with the provided url.
-
-You must also register this webhook in `elastic-charts` [here](https://github.com/elastic/elastic-charts/settings/hooks/new). Input the smee url as **Payload URL** and set **Content type** to `application/json`. Input the secret string as the value of `WEBHOOK_SECRET` from the `.env` file. For simplicity, select the `Send me everything` option for events. Make sure the **active** option is checked and click add the webhook.
-
 ### Setup ngrok (only required for developing `/buildkite` routes)
 
 This step leverages `ngrok` for tunneling *live* buildkite webhooks to localhost. You can download it [here](https://ngrok.com/download). Follow the steps for setup.
+
+Then to test this add this webhook url to the buildkite pipeline config [here](https://buildkite.com/elastic/datavis-ci/steps) and save it.
+
+```yml
+notify:
+  - webhook: "https://<some-id>.ngrok.io"
+```
 
 ## Running locally
 
@@ -88,7 +111,7 @@ yarn start // non-watch mode
 
 From here you are now running the full service on your local machine and handling live data from GitHub so be mindful of changes you make and api calls your run.
 
-I would suggest referencing the [https://probot.github.io/docs/webhooks/](probot docs) to get started.
+I would suggest referencing the [probot docs](https://probot.github.io/docs/webhooks/) to get started.
 
 > The deployed instance will **_not_** stop receiving requests while you are running a local development instance. This is necessary to avoid missing actionable events.
 >
@@ -110,4 +133,4 @@ docker run datavis-github-bot:local -e PORT=3000 -e NODE_ENV=production -e ...
 
 ## Deploy to GCP Cloud Run
 
-Deploying requires some additional setup that is detailed in [DEPLOYING.md]
+Deploying requires some additional setup that is detailed in [`DEPLOYING.md`](DEPLOYING.md)

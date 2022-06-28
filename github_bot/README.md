@@ -47,3 +47,4 @@ This app and setup was inspired by [`elastic/buildkite-pr-bot`](https://github.c
 - [ ] Run step skip logic from cloud fn instead of buildkite pipeline
 - [ ] Check `./buildkite` directory for changes
 - [ ] Read options from config file (i.e. skip label, user check options, etc).
+- [ ] Parallel steps don't know about each other so retries of steps won't report status
