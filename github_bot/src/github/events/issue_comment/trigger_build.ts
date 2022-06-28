@@ -8,7 +8,6 @@
 
 import { Probot } from 'probot';
 
-import { getBuildConfig } from '../../../build';
 import { buildkiteClient, getPRBuildParams } from '../../../utils/buildkite';
 import { PullRequestBuildEnv } from '../../../utils/types';
 import { checkUserFn, createIssueReaction, isValidUser, labelCheckFn, updateAllChecks } from '../../utils';
@@ -52,9 +51,18 @@ export function setupBuildTrigger(app: Probot) {
 
     await createIssueReaction(ctx, '+1');
     await buildkiteClient.cancelRunningBuilds(head.sha, async (buildUrl) => {
-      await updateAllChecks(ctx, buildUrl, { status: 'completed', conclusion: 'cancelled' }, false, pullRequest);
+      await updateAllChecks(
+        ctx,
+        {
+          status: 'completed',
+          conclusion: 'cancelled',
+        },
+        buildUrl,
+        false,
+        head.sha,
+      );
     });
-    await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
+    const build = await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
       branch: `${head.repo?.owner.login}:${head.ref}`,
       commit: head.sha,
       message: commit.commit.message,
@@ -67,20 +75,12 @@ export function setupBuildTrigger(app: Probot) {
 
     await updateAllChecks(
       ctx,
-      undefined,
       {
         status: 'queued',
       },
+      build.web_url,
       true,
-      pullRequest,
+      head.sha,
     );
-    const { main } = getBuildConfig(false);
-    await ctx.octokit.checks.create({
-      ...ctx.repo(),
-      name: main.name,
-      external_id: main.id,
-      head_sha: head.sha,
-      status: 'queued',
-    });
   });
 }

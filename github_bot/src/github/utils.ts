@@ -183,31 +183,27 @@ export async function getPR(ctx: ProbotEventContext<'issue_comment' | 'pull_requ
 }
 
 export async function updateAllChecks(
-  ctx: ProbotEventContext<'issue_comment'>,
+  ctx: ProbotEventContext<'issue_comment' | 'push'>,
+  options: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>>,
   buildUrl?: string,
-  options?: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>>,
   createNew?: boolean,
-  pullRequest?: components['schemas']['pull-request'] | null,
+  sha?: string,
 ): Promise<void>;
 export async function updateAllChecks(
   ctx: ProbotEventContext<'pull_request'>,
+  options: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>>,
   buildUrl?: string,
-  options?: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>>,
   createNew?: boolean,
 ): Promise<void>;
 export async function updateAllChecks(
-  ctx: ProbotEventContext<'pull_request' | 'issue_comment'>,
+  ctx: ProbotEventContext<'pull_request' | 'issue_comment' | 'push'>,
+  options: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>>,
   buildUrl?: string,
-  options: Partial<Pick<components['schemas']['check-run'], 'status' | 'conclusion'>> = {
-    status: 'completed',
-    conclusion: 'skipped',
-  },
   createNew: boolean = false,
-  pullRequest: components['schemas']['pull-request'] | null = null,
+  sha?: string,
 ): Promise<void> {
-  const pr = ctx.name === 'issue_comment' ? pullRequest : ctx.payload.pull_request;
-  if (!pr) throw new Error('No pull request found to set check run');
-  const { head } = pr;
+  const headSha = ctx.name === 'pull_request' ? ctx.payload.pull_request.head.sha : sha;
+  if (!headSha) throw new Error('No sha provided to set check run');
   const { main, jobs } = getBuildConfig(false);
   const updatedCheckIds = new Set<string>();
 
@@ -217,7 +213,7 @@ export async function updateAllChecks(
       data: { total_count: totalCount, check_runs: checkRuns },
     } = await ctx.octokit.checks.listForRef({
       ...ctx.repo(),
-      ref: head.sha,
+      ref: headSha,
       app_id: Number(getConfig().github.auth.appId),
       per_page: 100, // max
     });
@@ -229,35 +225,30 @@ export async function updateAllChecks(
 
     console.log(checkRuns);
 
-    await Promise.all(
-      checkRuns.map(async ({ id, external_id, details_url, status }) => {
-        if (status !== 'completed' || external_id === main.id) {
-          await ctx.octokit.checks.update({
-            ...ctx.repo(),
-            check_run_id: id,
-            details_url: buildUrl || details_url,
-            ...options,
-          });
-        }
-        updatedCheckIds.add(external_id!);
-      }),
-    );
-  }
-
-  await Promise.all(
-    [main, ...jobs]
-      .filter(({ id }) => !updatedCheckIds.has(id))
-      .map(async ({ id, name }) => {
-        await ctx.octokit.checks.create({
-          name,
+    for (const { id, external_id, details_url, status } of checkRuns) {
+      if (status !== 'completed' || external_id === main.id) {
+        await ctx.octokit.checks.update({
           ...ctx.repo(),
-          head_sha: head.sha,
-          external_id: id,
-          details_url: buildUrl,
+          check_run_id: id,
+          details_url: buildUrl || details_url,
           ...options,
         });
-      }),
-  );
+      }
+      // skip all already completed steps unless createNew explicitly set to true
+      updatedCheckIds.add(external_id!);
+    }
+  }
+
+  for (const { id, name } of [main, ...jobs].filter((j) => !updatedCheckIds.has(j.id))) {
+    await ctx.octokit.checks.create({
+      name,
+      ...ctx.repo(),
+      head_sha: headSha,
+      external_id: id,
+      details_url: buildUrl,
+      ...options,
+    });
+  }
 }
 
 export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {

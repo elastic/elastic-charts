@@ -54,10 +54,25 @@ export function setupBuildTrigger(app: Probot) {
       if (ctx.payload.action === 'labeled') {
         // Try to cancel any running buildkite build for ref
         await buildkiteClient.cancelRunningBuilds(head.sha, async (buildUrl) => {
-          await updateAllChecks(ctx, buildUrl);
+          await updateAllChecks(
+            ctx,
+            {
+              status: 'completed',
+              conclusion: 'skipped',
+            },
+            buildUrl,
+          );
         });
       } else if (['synchronize', 'opened', 'reopened'].includes(ctx.payload.action)) {
-        await updateAllChecks(ctx);
+        await updateAllChecks(ctx, {
+          status: 'completed',
+          conclusion: 'skipped',
+        });
+        // } else if (ctx.payload.action === 'reopened') {
+        //   await updateAllChecks(ctx, {
+        //     status: 'completed',
+        //     conclusion: 'skipped',
+        //   });
       }
 
       return;
@@ -84,12 +99,15 @@ export function setupBuildTrigger(app: Probot) {
       if (checkUserFn(ctx.payload.sender)('bot')) {
         await syncChecks(ctx);
       } else {
-        await updateAllChecks(ctx);
+        await updateAllChecks(ctx, {
+          status: 'completed',
+          conclusion: 'skipped',
+        });
       }
       return;
     }
 
-    await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
+    const build = await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
       branch: head.label, // user:branch
       commit: head.sha,
       message: commit.commit.message,
@@ -102,11 +120,11 @@ export function setupBuildTrigger(app: Probot) {
 
     await updateAllChecks(
       ctx,
-      undefined,
       {
         status: 'queued',
       },
-      ['labeled', 'unlabeled'].includes(ctx.payload.action),
+      build.web_url,
+      ['labeled', 'unlabeled', 'reopened'].includes(ctx.payload.action),
     );
   });
 }

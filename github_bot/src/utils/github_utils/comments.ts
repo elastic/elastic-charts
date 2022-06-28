@@ -11,8 +11,9 @@ function generateMsg(key: string, body: string): string {
 }
 
 const reMsgKey = /^<!-- comment-key: (.+) -->/;
-export function commentByKey(key: string) {
-  return (comment: string): boolean => {
+export function commentByKey<T extends keyof Comments>(key: T) {
+  return (comment?: string): boolean => {
+    if (!comment) return false;
     const [, commentKey] = reMsgKey.exec(comment) ?? [];
     return commentKey === key;
   };

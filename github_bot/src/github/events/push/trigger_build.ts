@@ -8,10 +8,9 @@
 
 import { Probot } from 'probot';
 
-import { getBuildConfig } from '../../../build';
 import { getConfig } from '../../../config';
 import { buildkiteClient } from '../../../utils/buildkite';
-import { isBaseRepo, testPatternString } from '../../utils';
+import { isBaseRepo, testPatternString, updateAllChecks } from '../../utils';
 
 /**
  * build trigger for pushes to select base branches not pull requests
@@ -24,20 +23,21 @@ export function setupBuildTrigger(app: Probot) {
       return;
     }
 
-    await buildkiteClient.triggerBuild({
+    const build = await buildkiteClient.triggerBuild({
       branch,
       commit: ctx.payload.after,
       message: ctx.payload.head_commit?.message,
       ignore_pipeline_branch_filters: true,
     });
 
-    const { main } = getBuildConfig(false);
-    await ctx.octokit.checks.create({
-      ...ctx.repo(),
-      name: main.name,
-      external_id: main.id,
-      head_sha: ctx.payload.after,
-      status: 'queued',
-    });
+    await updateAllChecks(
+      ctx,
+      {
+        status: 'queued',
+      },
+      build.web_url,
+      true,
+      ctx.payload.after,
+    );
   });
 }
