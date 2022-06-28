@@ -97,7 +97,7 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
       await octokit.issues.createComment({
         ...defaultGHOptions,
         issue_number: bkEnv.pullRequestNumber!,
-        body: getComment('deployments', deploymentUrl),
+        body: getComment('deployments', deploymentUrl, bkEnv.commit!),
       });
     }
     await createDeploymentStatus({

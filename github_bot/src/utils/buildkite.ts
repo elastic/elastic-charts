@@ -70,11 +70,11 @@ class Buildkite {
     return data;
   }
 
-  async cancelRunningBuilds(sha: string, preCancel?: (url: string) => Promise<void> | void, branch?: string) {
+  async cancelRunningBuilds(sha: string, preCancel?: (url?: string) => Promise<void> | void, branch?: string) {
     const builds = await this.getRunningBuilds(sha, branch);
 
-    if (preCancel && builds[0]) {
-      await preCancel(builds[0].web_url);
+    if (preCancel) {
+      await preCancel(builds?.[0]?.web_url);
     }
 
     await Promise.all(
