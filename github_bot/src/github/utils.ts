@@ -377,7 +377,7 @@ export async function updatePreviousDeployments(
 export function pickDefined<R extends Record<string, unknown>>(source: R): R {
   return Object.keys(source).reduce((acc, key) => {
     const val = source[key];
-    if (val !== undefined) {
+    if (val !== undefined && val !== null && val !== '') {
       // @ts-ignore - building new R from {}
       acc[key] = val;
     }
