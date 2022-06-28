@@ -14,36 +14,34 @@ export async function updateLastDeployment(
   ctx: ProbotEventContext<'pull_request'>,
   state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
 ) {
-  const {
-    data: [deployment],
-  } = await ctx.octokit.repos.listDeployments({
+  const { data: deployments = [] } = await ctx.octokit.repos.listDeployments({
     ...ctx.repo(),
     task: `deploy:pr:${ctx.payload.pull_request.number}`,
-    per_page: 1,
+    per_page: 2, // in case there is on successful and one pending
   });
 
-  if (!deployment) return;
+  for (const deployment of deployments) {
+    const {
+      data: [status],
+    } = await ctx.octokit.repos.listDeploymentStatuses({
+      ...ctx.repo(),
+      deployment_id: deployment.id,
+      per_page: 1,
+    });
 
-  const {
-    data: [status],
-  } = await ctx.octokit.repos.listDeploymentStatuses({
-    ...ctx.repo(),
-    deployment_id: deployment.id,
-    per_page: 1,
-  });
+    if (!status) continue;
+    const { state: currentState, log_url, environment_url } = status;
+    if ('success' !== currentState) return;
 
-  if (!status) return;
-  const { state: currentState, log_url, environment_url } = status;
-  if ('success' !== currentState) return;
+    console.log(`Updating deployment ${deployment.id} state: ${currentState} -> ${state}`);
 
-  console.log(`Updating deployment ${deployment.id} state: ${currentState} -> ${state}`);
-
-  await ctx.octokit.repos.createDeploymentStatus({
-    ...ctx.repo(),
-    deployment_id: deployment.id,
-    description: 'Deployment destroyed after PR closed',
-    log_url,
-    environment_url,
-    state,
-  });
+    await ctx.octokit.repos.createDeploymentStatus({
+      ...ctx.repo(),
+      deployment_id: deployment.id,
+      description: 'Deployment destroyed after PR closed',
+      log_url,
+      environment_url,
+      state,
+    });
+  }
 }

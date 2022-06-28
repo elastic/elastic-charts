@@ -7,6 +7,7 @@
  */
 
 import { EventSetupFn } from '../../types';
+import { cleanup } from './cleanup';
 import { setupBuildTrigger } from './trigger_build';
 
-export const setupFns: EventSetupFn[] = [setupBuildTrigger];
+export const setupFns: EventSetupFn[] = [setupBuildTrigger, cleanup];

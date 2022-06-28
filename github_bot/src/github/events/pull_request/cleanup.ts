@@ -20,7 +20,7 @@ import { updateLastDeployment } from '../../../utils/github_utils/deployments';
  * TODOs
  * - deletes firebase deployment (auto expires after 7 days)
  */
-export function setupBuildTrigger(app: Probot) {
+export function cleanup(app: Probot) {
   app.on(['pull_request.closed'], async (ctx) => {
     console.log(`------- Triggered probot ${ctx.name} | ${ctx.payload.action}`);
 
