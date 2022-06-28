@@ -132,8 +132,49 @@ async function commitNewScreenshots() {
   const previousCommitSha = await exec('git rev-parse --verify HEAD', {
     stdio: 'pipe',
   });
+  console.log('latest commits');
+  const lastCommits = await getLatestCommits();
+  console.log(lastCommits);
+
   // flags final build cleanup to sync checks on new commit
   await setMetadata('syncCommit', previousCommitSha);
+}
+
+interface PRCommitResponse {
+  repository: {
+    pullRequest: {
+      commits: {
+        nodes: [
+          {
+            commit: {
+              message: string;
+              oid: string;
+            };
+          },
+        ];
+      };
+    };
+  };
+}
+
+export async function getLatestCommits(count = 2) {
+  const { owner, repo } = defaultGHOptions;
+  const response = await octokit.graphql<PRCommitResponse>(`query getLatestCommits {
+    repository(owner: "${owner}", name: "${repo}") {
+      pullRequest(number: ${bkEnv.pullRequestNumber!}) {
+        commits(last: ${count}) {
+          nodes {
+            commit {
+              message
+              oid
+            }
+          }
+        }
+      }
+    }
+  }`);
+
+  return response.repository.pullRequest.commits.nodes.map((n) => n.commit);
 }
 
 void (async () => {

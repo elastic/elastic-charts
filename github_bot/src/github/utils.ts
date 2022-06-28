@@ -273,6 +273,8 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
     ref: previousCommitSha,
   });
 
+  console.log(checks.map((c) => `${c.name}: status ${c.status}`));
+
   await Promise.all(
     checks.map(async ({ name, details_url, external_id, status, started_at, conclusion, completed_at, output }) => {
       const { title, summary } = output;
