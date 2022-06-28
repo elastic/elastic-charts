@@ -26,15 +26,14 @@ import {
   bkEnv,
   ChangeContext,
   createDeployment,
-  setStatus,
   uploadPipeline,
   createDeploymentStatus,
   Step,
   CustomCommandStep,
 } from '../../utils';
+import { getBuildConfig } from '../../utils/build';
 import { MetaDataKeys } from '../../utils/constants';
-
-const MAIN_CI_CONTEXT = '@elastic/charts CI';
+import { updateCheckStatus } from './../../utils/github';
 
 void (async () => {
   try {
@@ -45,67 +44,67 @@ void (async () => {
     const changeCtx = new ChangeContext();
     await changeCtx.init();
 
-    // Set main job status
-    await setStatus({
-      context: MAIN_CI_CONTEXT,
-      state: 'pending',
-      target_url: bkEnv.buildUrl,
-    });
+    // Update main job status
+    await updateCheckStatus(
+      {
+        status: 'in_progress',
+        details_url: bkEnv.buildUrl,
+      },
+      getBuildConfig().main.id,
+    );
 
-    const skipit = { skip: true };
     const steps: Step[] = [
-      jestStep(skipit),
-      eslintStep(skipit),
-      apiCheckStep(skipit),
-      prettierStep(skipit),
-      typeCheckStep(skipit),
-      storybookStep(skipit),
+      jestStep(),
+      eslintStep(),
+      apiCheckStep(),
+      prettierStep(),
+      typeCheckStep(),
+      storybookStep(),
       e2eServerStep(),
-      ghpDeployStep(skipit),
+      ghpDeployStep(),
       playwrightStep(),
-      firebaseDeployStep(skipit),
+      firebaseDeployStep(),
     ].map((step) => step(changeCtx));
 
-    steps
-      .map((step) => {
-        const skip = 'steps' in step ? step.steps.every((s) => s.skip) : step.skip;
-        const context = (
-          'steps' in step
-            ? step.steps.find((s) => s?.env?.ECH_GH_STATUS_CONTEXT)?.env?.ECH_GH_STATUS_CONTEXT
-            : step?.env?.ECH_GH_STATUS_CONTEXT
-        ) as string | undefined;
-        return { skip, context };
-      })
-      .filter(({ context }) => Boolean(context))
-      .forEach(({ skip, context }) => {
-        if (skip) {
-          void setStatus({
-            context,
-            description: skip === true ? '[Skipped]' : `[Skipped] ${skip}`,
-            state: 'success',
-            target_url: bkEnv.buildUrl,
-          });
-        } else {
-          void setStatus({
-            context,
-            state: 'pending',
-            target_url: bkEnv.buildUrl,
-          });
-        }
-      });
+    await Promise.all(
+      steps
+        .map((step) => {
+          const checkId = (
+            'steps' in step ? step.steps.find((s) => s?.env?.ECH_CHECK_ID)?.env?.ECH_CHECK_ID : step?.env?.ECH_CHECK_ID
+          ) as string | undefined;
+          // Never skip steps on pushes to base branches
+          return { skip: bkEnv.isPullRequest ? step.skip : false, checkId };
+        })
+        .filter(({ checkId }) => Boolean(checkId))
+        .map(({ skip, checkId }) => {
+          if (skip) {
+            return updateCheckStatus(
+              {
+                status: 'completed',
+                conclusion: 'skipped',
+                details_url: bkEnv.buildUrl,
+              },
+              checkId,
+              skip,
+            );
+          }
+        }),
+    );
 
-    const skipDeployStep = (steps.find(({ key }) => key === 'deploy') as CustomCommandStep)?.skip ?? false;
+    const skipDeployStep = (steps.find(({ key }) => key === 'deploy_fb') as CustomCommandStep)?.skip ?? false;
     await setMetadata(MetaDataKeys.skipDeployment, skipDeployStep ? 'true' : 'false');
     if (!skipDeployStep) {
       console.log('DEPLOYYING');
 
       await createDeployment();
       await createDeploymentStatus({ state: 'queued' });
+    } else {
+      console.log('skipDeployStep', skipDeployStep);
+      console.log(steps);
     }
 
     pipeline.steps = steps;
-
-    uploadPipeline(pipeline);
+    await uploadPipeline(pipeline);
   } catch (error) {
     console.log(error);
     process.exit(1);

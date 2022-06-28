@@ -311,15 +311,8 @@ export function shapeViewModel(
     specialFirstInnermostSector,
     animation,
   } = spec;
-  const {
-    emptySizeRatio,
-    outerSizeRatio,
-    linkLabel,
-    minFontSize,
-    sectorLineWidth,
-    sectorLineStroke,
-    fillLabel,
-  } = style;
+  const { emptySizeRatio, outerSizeRatio, linkLabel, minFontSize, sectorLineWidth, sectorLineStroke, fillLabel } =
+    style;
   const { width, height } = chartDimensions;
   const { marginLeftPx, marginTopPx, panel } = panelModel;
 

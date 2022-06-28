@@ -62,7 +62,7 @@ module.exports = {
         loader: 'ts-loader',
         exclude: /node_modules/,
         options: {
-          configFile: 'e2e-server/server/webpack.tsconfig.json',
+          configFile: 'e2e_server/server/webpack.tsconfig.json',
           transpileOnly: true,
         },
       },

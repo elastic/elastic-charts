@@ -35,25 +35,27 @@ export type GetAnnotationParamsFn = (id: string) => AnnotationHoverParams;
  * Returns function to get geometry styles for a given id
  * @internal
  */
-export const getAnnotationHoverParamsFn = (
-  hoveredElementIds: string[],
-  styles: SharedGeometryStateStyle,
-  animations: AnimationConfig<AnnotationAnimationTrigger>[] = [],
-): GetAnnotationParamsFn => (id) => {
-  const fadeOutConfig = animations.find(({ trigger }) => trigger === AnnotationAnimationTrigger.FadeOnFocusingOthers);
-  const isHighlighted = hoveredElementIds.includes(id);
-  const style =
-    hoveredElementIds.length === 0 || !fadeOutConfig
-      ? styles.default
-      : isHighlighted
-      ? styles.highlighted
-      : styles.unhighlighted;
-  const shouldTransition = !isHighlighted && hoveredElementIds.length > 0;
+export const getAnnotationHoverParamsFn =
+  (
+    hoveredElementIds: string[],
+    styles: SharedGeometryStateStyle,
+    animations: AnimationConfig<AnnotationAnimationTrigger>[] = [],
+  ): GetAnnotationParamsFn =>
+  (id) => {
+    const fadeOutConfig = animations.find(({ trigger }) => trigger === AnnotationAnimationTrigger.FadeOnFocusingOthers);
+    const isHighlighted = hoveredElementIds.includes(id);
+    const style =
+      hoveredElementIds.length === 0 || !fadeOutConfig
+        ? styles.default
+        : isHighlighted
+        ? styles.highlighted
+        : styles.unhighlighted;
+    const shouldTransition = !isHighlighted && hoveredElementIds.length > 0;
 
-  return {
-    style,
-    isHighlighted,
-    shouldTransition,
-    options: mergePartial(DEFAULT_ANNOTATION_ANIMATION_OPTIONS, fadeOutConfig?.options),
+    return {
+      style,
+      isHighlighted,
+      shouldTransition,
+      options: mergePartial(DEFAULT_ANNOTATION_ANIMATION_OPTIONS, fadeOutConfig?.options),
+    };
   };
-};

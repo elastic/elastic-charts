@@ -7,66 +7,66 @@
  */
 
 import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
+import { components } from '@octokit/openapi-types';
 import { retry } from '@octokit/plugin-retry';
-import { Octokit } from '@octokit/rest';
+import { Octokit, RestEndpointMethodTypes } from '@octokit/rest';
 import { getMetadata, metadataExists, setMetadata } from 'buildkite-agent-node';
 import ghpages from 'gh-pages';
 import minimatch, { IOptions as MinimatchOptions } from 'minimatch';
 import { Optional } from 'utility-types';
 
-import { bkEnv, getJobTimingStr } from './buildkite';
+import { getJobCheckName } from './build';
+import { bkEnv } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
-import { OctokitParameters, FileDiff } from './types';
+import { CheckStatusOptions, CreateCheckOptions } from './octokit';
+import { OctokitParameters } from './types';
 
 if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
 
+const auth = JSON.parse(process.env.GITHUB_AUTH);
 const MyOctokit = Octokit.plugin(retry);
 export const octokit = new MyOctokit({
   authStrategy: createAppAuth,
-  auth: JSON.parse(process.env.GITHUB_AUTH),
+  auth: auth,
 });
 
-const defaultGHOptions = {
+export const defaultGHOptions = {
   owner: 'elastic',
   repo: 'elastic-charts',
 };
 
 class FilesContext {
-  private _files: FileDiff[] = [];
+  private _files: string[] = [];
 
   async init() {
     this._files = await getFileDiffs();
   }
 
-  get all(): readonly FileDiff[] {
-    return this._files;
-  }
-
   get names(): readonly string[] {
-    return this._files.map((f) => f.filename);
+    return this._files;
   }
 
   /**
    * Match files against regular expression
    */
-  filter(regex: RegExp): FileDiff[];
+  filter(regex: RegExp): string[];
   /**
    * Match files against multiple regular expressions
    */
-  filter(regexs: RegExp[]): FileDiff[];
+  filter(regexs: RegExp[]): string[];
   /**
    * Match files against a minimatch pattern
    */
-  filter(pattern: string, options?: MinimatchOptions): FileDiff[];
-  filter(patterns: string[], options?: MinimatchOptions): FileDiff[];
-  filter(patterns: (string | RegExp)[], options?: MinimatchOptions): FileDiff[];
-  filter(patternsArg: RegExp | string | (string | RegExp)[], options?: MinimatchOptions): FileDiff[] {
+  filter(pattern: string, options?: MinimatchOptions): string[];
+  filter(patterns: string[], options?: MinimatchOptions): string[];
+  filter(patterns: (string | RegExp)[], options?: MinimatchOptions): string[];
+  filter(patternsArg: RegExp | string | (string | RegExp)[], options?: MinimatchOptions): string[] {
     const patterns = Array.isArray(patternsArg) ? patternsArg : [patternsArg];
 
     if (patterns.length === 0) throw new Error('No pattern provided');
 
-    return this.all.filter(({ filename: f }) => {
+    return this.names.filter((f) => {
       return patterns.some((pattern) =>
         typeof pattern === 'string' ? minimatch(f, pattern, options) : pattern.exec(f),
       );
@@ -125,53 +125,152 @@ export class ChangeContext {
   }
 }
 
-const getDefaultDescription = async (state: OctokitParameters<'repos/create-commit-status'>['state']) => {
-  const timingStr = await getJobTimingStr();
-  if (state === 'success') return `Successful after ${timingStr}`;
-  if (state === 'failure') return `Failure after ${timingStr} - see logs...`;
-  if (state === 'error') return `Errored after ${timingStr} - see logs...`;
-};
-
-export const commitStatusIsPennding = async (context = bkEnv.context, userRef?: string): Promise<boolean> => {
+export const codeCheckIsCompleted = async (id = bkEnv.checkId, userRef?: string): Promise<boolean> => {
   const ref = userRef ?? bkEnv.commit;
-  if (!ref) throw new Error(`Failed to get status, no ref available`);
-  if (!context) throw new Error(`Failed to set status, no context available`);
+  if (!ref) throw new Error(`Failed to get status, no ref provided`);
+  if (!id) throw new Error(`Failed to set status, no name provided`);
+  const name = getJobCheckName(id);
 
-  const { data } = await octokit.repos.listCommitStatusesForRef({
+  const {
+    status,
+    data: {
+      check_runs: [latestCheckRun],
+    },
+  } = await octokit.checks.listForRef({
     ...defaultGHOptions,
     ref,
+    check_name: name,
+    app_id: auth.appId,
+    per_page: 1,
   });
-  return data.find((status) => status.context === context)?.state === 'pending' ?? false;
+  if (status !== 200) throw new Error('Failed to find check completeness');
+
+  return latestCheckRun?.status === 'completed';
 };
 
-export const setStatus = async (
-  { state, context, ...options }: Optional<OctokitParameters<'repos/create-commit-status'>, 'sha'>,
-  checkPending = false,
-) => {
-  if (process.env.BLOCK_REQUESTS) return;
-  const sha = options.sha ?? bkEnv.commit;
-  if (!sha) throw new Error(`Failed to set status, no sha available`);
-  if (!context) throw new Error(`Failed to set status, no context available`);
-  if (checkPending && (await commitStatusIsPennding(context, sha))) return;
+let cacheFilled = false;
+const checkRunCache = new Map<string, components['schemas']['check-run']>();
+const fillCheckRunCache = async () =>
+  await octokit.checks
+    .listForRef({
+      ...defaultGHOptions,
+      ref: bkEnv.commit ?? '',
+      per_page: 100, // max
+    })
+    .then(({ data: { total_count: total, check_runs: checkRuns } }) => {
+      if (total > checkRuns.length) throw new Error('Checks need pagination');
 
-  const description = options.description ?? (await getDefaultDescription(state));
+      cacheFilled = true;
+      return checkRuns.forEach((checkRun) => {
+        if (checkRun.external_id) {
+          checkRunCache.set(checkRun.external_id, checkRun);
+        }
+      });
+    });
+
+function pickDefined<R extends Record<string, unknown>>(source: R): R {
+  return Object.keys(source).reduce((acc, key) => {
+    const val = source[key];
+    if (val !== undefined && val !== null && val !== '') {
+      // @ts-ignore - building new R from {}
+      acc[key] = val;
+    }
+    return acc;
+  }, {} as R);
+}
+
+export async function syncCheckRun({
+  name,
+  details_url,
+  external_id,
+  status,
+  conclusion,
+  started_at,
+  completed_at,
+  output: { title, summary },
+}: components['schemas']['check-run']) {
+  const syncCommit = await getMetadata('syncCommit');
+  if (syncCommit) {
+    console.log('syncCheckRun');
+
+    const output = title && summary ? { title, summary } : undefined;
+    // TODO find a better way to do this for commits by datavis bot
+    // Syncs checks to newer skipped commit
+    await octokit.checks.create(
+      pickDefined({
+        ...defaultGHOptions,
+        name,
+        details_url,
+        external_id,
+        output,
+        status,
+        conclusion,
+        started_at,
+        completed_at,
+        head_sha: syncCommit,
+      }),
+    );
+  }
+}
+
+export const updateCheckStatus = async (
+  options: Optional<Omit<CreateCheckOptions, 'name' | 'head_sha'>, 'repo' | 'owner'> & CheckStatusOptions,
+  checkId: string | undefined = bkEnv.checkId,
+  title?: string | boolean | null, // true for skip description
+) => {
+  if (process.env.BLOCK_REQUESTS || !checkId) return;
+
+  if (!cacheFilled) await fillCheckRunCache();
+  const checkRun = checkRunCache.get(checkId);
+  // In some cases a check run may have been skipped or otherwise completed and the only way to
+  // revert the completed check run is to create a new check run. This will not show as a duplicate run.
+  const newCheckNeeded = options.status !== 'completed' && checkRun?.status === 'completed';
+
+  console.trace('updateCheckStatus', checkId, title);
+  console.log(JSON.stringify(options, null, 2));
 
   try {
-    await octokit.repos.createCommitStatus({
-      ...defaultGHOptions,
-      target_url: bkEnv.jobUrl,
-      sha,
-      ...options,
-      description,
-      context,
-      state,
-    });
+    const output =
+      title && typeof title === 'string'
+        ? {
+            title: title,
+            summary: title,
+            ...options.output,
+          }
+        : undefined;
+    const name = getJobCheckName(checkId);
+    if (!checkRun || newCheckNeeded) {
+      if (!bkEnv.commit) throw new Error(`Failed to set status, no head_sha provided`);
+      const { data: check } = await octokit.checks.create({
+        ...defaultGHOptions,
+        details_url: bkEnv.jobUrl,
+        ...options,
+        output,
+        name,
+        external_id: checkId,
+        head_sha: bkEnv.commit,
+      } as any); // octokit types are bad :(
+      await syncCheckRun(check);
+    } else {
+      const { data: check } = await octokit.checks.update({
+        ...defaultGHOptions,
+        details_url: bkEnv.jobUrl,
+        ...options,
+        output,
+        external_id: checkId,
+        check_run_id: checkRun.id, // required
+      } as any); // octokit types are bad :(
+      await syncCheckRun(check);
+    }
   } catch (error) {
-    console.error(`Failed to set status for sha [${sha}]`);
+    console.error(`Failed to create/update check run for ${checkId} [sha: ${bkEnv.commit}]`);
     console.error(error);
     throw error;
   }
 };
+
+export const getDeploymentTask = () =>
+  bkEnv.isPullRequest ? `deploy:pr:${bkEnv.pullRequestNumber}` : `deploy:${bkEnv.branch}`;
 
 export const createDeployment = async (
   options: Optional<OctokitParameters<'repos/create-deployment-status'>> = {},
@@ -188,9 +287,10 @@ export const createDeployment = async (
   try {
     const response = await octokit.repos.createDeployment({
       ...defaultGHOptions,
-      environment: 'buildkite', // TODO
-      transient_environment: false, // sets previous statuses to inactive
+      environment: bkEnv.isPullRequest ? 'pull-requests' : bkEnv.branch,
+      transient_environment: bkEnv.isPullRequest, // sets previous statuses to inactive
       production_environment: false,
+      task: getDeploymentTask(),
       ...options,
       auto_merge: false, // use branch as is without merging with base
       required_contexts: [],
@@ -207,12 +307,17 @@ export const createDeployment = async (
 };
 
 export const createDeploymentStatus = async (
-  options: Optional<Omit<OctokitParameters<'repos/create-deployment-status'>, 'deployment_id'>> = {},
+  options: Optional<OctokitParameters<'repos/create-deployment-status'>> = {},
 ) => {
   if (process.env.BLOCK_REQUESTS) return;
+
+  console.trace('createDeploymentStatus', options.state);
+
+  console.log('MetaDataKeys.skipDeployment', await getMetadata(MetaDataKeys.skipDeployment));
+
   if ((await getMetadata(MetaDataKeys.skipDeployment)) === 'true') return;
 
-  const deployment_id = getNumber(await getMetadata(MetaDataKeys.deploymentId));
+  const deployment_id = options.deployment_id ?? getNumber(await getMetadata(MetaDataKeys.deploymentId));
 
   if (deployment_id === null) throw new Error(`Failed to set status, no deployment found`);
 
@@ -230,18 +335,100 @@ export const createDeploymentStatus = async (
   }
 };
 
-async function getFileDiffs(): Promise<FileDiff[]> {
-  if (!bkEnv.pullRequest) return [];
+interface GLQPullRequestFiles {
+  repository: {
+    pullRequest: {
+      files: {
+        totalCount: number;
+        pageInfo: {
+          endCursor: string;
+          hasNextPage: boolean;
+        };
+        nodes: [
+          {
+            path: string;
+          },
+        ];
+      };
+    };
+  };
+}
+
+export async function updatePreviousDeployments(
+  state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
+) {
+  const currentDeploymentId = getNumber(await getMetadata(MetaDataKeys.deploymentId));
+  const { data: deployments } = await octokit.repos.listDeployments({
+    ...defaultGHOptions,
+    task: getDeploymentTask(),
+    per_page: 100, // should never get this high
+  });
+
+  await Promise.all(
+    deployments.map(async ({ id }) => {
+      if (id === currentDeploymentId) return;
+      const {
+        data: [{ state: currentState, log_url, environment_url }],
+      } = await octokit.repos.listDeploymentStatuses({
+        ...defaultGHOptions,
+        deployment_id: id,
+        per_page: 1,
+      });
+
+      if (!['in_progress', 'queued', 'pending', 'success'].includes(currentState)) {
+        return;
+      }
+
+      console.log(`Updating deployment ${id} state: ${currentState} -> ${state}`);
+
+      await octokit.repos.createDeploymentStatus({
+        ...defaultGHOptions,
+        deployment_id: id,
+        description: 'This deployment precedes a newer deployment',
+        log_url,
+        environment_url,
+        state,
+      });
+    }),
+  );
+}
+
+export async function getFileDiffs(): Promise<string[]> {
+  if (!bkEnv.isPullRequest) return [];
   const prNumber = bkEnv.pullRequestNumber;
 
   if (!prNumber) throw new Error(`Failed to set status, no prNumber available`);
 
   try {
-    const { data } = await octokit.pulls.listFiles({
-      ...defaultGHOptions,
-      pull_number: prNumber,
-    });
-    return data;
+    const files: string[] = [];
+    let hasNextPage = true;
+    let after = '';
+
+    while (hasNextPage) {
+      const response = (
+        await octokit.graphql<GLQPullRequestFiles>(`query getFileNames {
+          repository(owner: "${defaultGHOptions.owner}", name: "${defaultGHOptions.repo}") {
+            pullRequest(number: ${prNumber}) {
+              files(first: 100${after}) {
+                totalCount
+                pageInfo {
+                  endCursor
+                  hasNextPage
+                }
+                nodes {
+                  path
+                }
+              }
+            }
+          }
+        }`)
+      ).repository.pullRequest.files;
+      hasNextPage = response.pageInfo.hasNextPage;
+      after = `, after: "${response.pageInfo.endCursor}"`;
+      files.push(...response.nodes.map(({ path }) => path));
+    }
+
+    return files;
   } catch (error) {
     console.error(`Failed to list files for PR #${prNumber}`);
     throw error;
@@ -271,4 +458,39 @@ export async function ghpDeploy(outDir: string) {
       },
     );
   });
+}
+
+function generateMsg(key: string, body: string): string {
+  return `<!-- comment-key: ${key} -->\n${body}`;
+}
+
+const reMsgKey = /^<!-- comment-key: (.+) -->/;
+export function commentByKey<T extends keyof Comments>(key: T) {
+  return (comment?: string): boolean => {
+    if (!comment) return false;
+    const [, commentKey] = reMsgKey.exec(comment) ?? [];
+    return commentKey === key;
+  };
+}
+
+export const comments = {
+  communityPR() {
+    return `Community pull request, @elastic/datavis please add the \`ci:approved ✅\` label to allow this and future builds.`;
+  },
+  deployments(deploymentUrl: string, sha: string) {
+    return `## Deployments - ${sha}
+
+- Storybook ([link](${deploymentUrl}))
+- e2e server ([link](${deploymentUrl}/e2e))
+- Playwright report ([link](${deploymentUrl}/e2e-report))`;
+  },
+};
+
+type Comments = typeof comments;
+
+export function getComment<T extends keyof Comments>(key: T, ...args: Parameters<Comments[T]>): string {
+  console.log(key, args);
+  // @ts-ignore - conditional args
+  const comment = comments[key](...args);
+  return generateMsg(key, comment);
 }

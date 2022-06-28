@@ -4,6 +4,6 @@ set -euo pipefail
 
 cd '.buildkite'
 
-echo '--- build pipeline'
+echo '--- Build pipeline'
 
 yarn build:pipeline

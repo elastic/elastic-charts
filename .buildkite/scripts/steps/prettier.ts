@@ -6,8 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { exec, yarnInstall } from '../../utils';
+import { exec, startGroup, yarnInstall } from '../../utils';
 
-yarnInstall();
+void (async () => {
+  await yarnInstall();
 
-exec('yarn prettier:check');
+  startGroup('Running prettier checks');
+
+  await exec('yarn prettier:check');
+})();

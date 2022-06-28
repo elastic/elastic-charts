@@ -9,8 +9,8 @@
 import { execSync, ExecSyncOptionsWithBufferEncoding } from 'child_process';
 import path from 'path';
 
-import { setJobMetadata, bkEnv, getJobTimingStr, startGroup } from './buildkite';
-import { setStatus } from './github';
+import { setJobMetadata, startGroup } from './buildkite';
+import { updateCheckStatus } from './github';
 
 interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
   input?: string;
@@ -24,7 +24,7 @@ interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
  * Wrapper for execSync to catch and handle errors.
  * Runs commands from repo root directory.
  */
-export const exec = (
+export const exec = async (
   command: string,
   { input, cwd, failureMsg, onFailure, onSuccess, env, stdio = ['pipe', 'inherit', 'inherit'] }: ExecOptions = {},
 ) => {
@@ -45,27 +45,22 @@ export const exec = (
     return result;
   } catch (error) {
     console.error(`Failed to run command: [${command}]`);
-    void setJobMetadata('failed', 'true');
-    onFailure?.();
-    void setFailedStatus(failureMsg);
+    await setJobMetadata('failed', 'true');
+    await onFailure?.();
+    await updateCheckStatus(
+      {
+        status: 'completed',
+        conclusion: 'failure',
+      },
+      undefined,
+      failureMsg,
+    );
 
     throw error;
   }
 };
 
-export const yarnInstall = (cwd?: string) => {
+export const yarnInstall = async (cwd?: string) => {
   startGroup(`Installing node modules${cwd ? ` [${cwd}]` : ''}`);
-  exec('yarn install --frozen-lockfile', { cwd });
+  await exec('yarn install --frozen-lockfile', { cwd });
 };
-
-async function setFailedStatus(failureMsg?: string) {
-  if (bkEnv.context) {
-    const description = failureMsg ?? `Failure in ${await getJobTimingStr()} - see logs...`;
-    await setStatus({
-      context: bkEnv.context,
-      state: 'failure',
-      target_url: bkEnv.jobUrl,
-      description,
-    });
-  }
-}

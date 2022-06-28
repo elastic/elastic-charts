@@ -6,50 +6,125 @@
  * Side Public License, v 1.
  */
 
+import fs from 'fs';
 import path from 'path';
 
-import { exec, downloadArtifacts, startGroup, yarnInstall, getNumber, decompress, compress } from '../../utils';
+import { getMetadata, setMetadata } from 'buildkite-agent-node';
+
+import {
+  exec,
+  downloadArtifacts,
+  startGroup,
+  yarnInstall,
+  getNumber,
+  decompress,
+  compress,
+  bkEnv,
+  ScreenshotMeta,
+} from '../../utils';
 import { ENV_URL } from '../../utils/constants';
+import { updateCheckStatus } from './../../utils/github';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
 const shardIndex = jobIndex ? jobIndex + 1 : 1;
 const jobTotal = getNumber(process.env.BUILDKITE_PARALLEL_JOB_COUNT);
 
-const shard = jobIndex !== null && jobTotal !== null ? ` --shard=${shardIndex}/${jobTotal}` : '';
+const pwFlags = ['--project=Chrome'];
+
+if (bkEnv.steps.playwright.updateScreenshots) {
+  pwFlags.push('--update-snapshots');
+}
+
+if (jobIndex !== null && jobTotal !== null) {
+  pwFlags.push(`--shard=${shardIndex}/${jobTotal}`);
+}
+
+async function compressNewScreenshots() {
+  await exec('git add e2e/screenshots');
+
+  const output = await exec(`git --no-pager diff --cached --name-only --diff-filter=ACMRU e2e/screenshots | cat`, {
+    stdio: 'pipe',
+  });
+  const updatedScreenshotFiles = output.trim().split(/\n/).filter(Boolean);
+  const meta: ScreenshotMeta = {
+    files: updatedScreenshotFiles,
+  };
+  fs.mkdirSync('.buildkite/artifacts/screenshot_meta', { recursive: true });
+  fs.writeFileSync(`.buildkite/artifacts/screenshot_meta/shard_${shardIndex}.json`, JSON.stringify(meta));
+
+  if (updatedScreenshotFiles.length > 0) {
+    const uploadDir = 'e2e/screenshots/__upload';
+    updatedScreenshotFiles
+      .filter((f) => f.endsWith('.png'))
+      .forEach((file) => {
+        const dest = file.replace('e2e/screenshots', uploadDir);
+        console.log(dest);
+        fs.mkdirSync(path.dirname(dest), { recursive: true });
+
+        fs.copyFileSync(file, dest);
+      });
+
+    await compress({
+      src: uploadDir,
+      dest: `.buildkite/artifacts/screenshots/shard_${shardIndex}.gz`,
+    });
+    console.log(`Found ${updatedScreenshotFiles.length} screenshot${
+      updatedScreenshotFiles.length === 1 ? '' : 's'
+    } to be updated:
+  - ${updatedScreenshotFiles.join('\n  - ')}`);
+  } else {
+    console.log('No screenshots to be updated');
+  }
+}
 
 void (async () => {
-  yarnInstall('e2e');
+  await yarnInstall('e2e');
+
+  const key = `${bkEnv.checkId}--activeJobs`;
+  const value = shardIndex === jobTotal ? jobTotal - 1 : Number(await getMetadata(key));
+  // TODO improve this status logic, not easy to communicate state of parallel steps
+  const activeJobs = Math.min((Number.isNaN(value) ? 0 : value) + 1, jobTotal ?? 1);
+  await setMetadata(key, String(activeJobs));
+
+  await updateCheckStatus(
+    {
+      status: 'in_progress',
+    },
+    'playwright',
+    `${activeJobs} of ${jobTotal ?? 1} jobs started`,
+  );
 
   const src = '.buildkite/artifacts/e2e_server.gz';
-  downloadArtifacts(src, 'e2e_server');
+  await downloadArtifacts(src, 'build_e2e');
   await decompress({
     src,
     dest: 'e2e/server',
   });
 
   startGroup('Check Architecture');
-  exec('arch');
+  await exec('arch');
 
   startGroup('Generating test examples.json');
   // TODO Fix this duplicate script that allows us to skip root node install on all e2e test runners
-  exec('node ./e2e/scripts/extract_examples.js');
+  await exec('node ./e2e/scripts/extract_examples.js');
 
   startGroup('Running e2e playwright job');
   const reportDir = `reports/report_${shardIndex}`;
-  async function compressReport() {
+  async function postCommandTasks() {
     await compress({
       src: path.join('e2e', reportDir),
       dest: `.buildkite/artifacts/e2e_reports/report_${shardIndex}.gz`,
     });
+
+    if (bkEnv.steps.playwright.updateScreenshots) {
+      await compressNewScreenshots();
+    }
   }
 
-  // TODO revert this toggle
-  const command =
-    (jobTotal ?? 0) > 1
-      ? `yarn playwright test --project=Chrome${shard}`
-      : 'sh ./scripts/start_test.sh --project=Chrome stylings_stories.test.ts';
+  const command = `yarn playwright test ${pwFlags.join(' ')}`;
+
   try {
-    exec(command, {
+    await exec(command, {
       cwd: 'e2e',
       env: {
         [ENV_URL]: 'http://127.0.0.1:9002',
@@ -57,9 +132,9 @@ void (async () => {
         PLAYWRIGHT_JSON_OUTPUT_NAME: `reports/json/report_${shardIndex}.json`,
       },
     });
-    await compressReport();
+    await postCommandTasks();
   } catch (error) {
-    await compressReport();
+    await postCommandTasks();
     throw error;
   }
 })();

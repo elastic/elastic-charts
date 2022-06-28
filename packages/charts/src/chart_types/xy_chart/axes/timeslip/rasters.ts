@@ -316,31 +316,33 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: true,
     minimumTickPixelDistance: 2 * minimumTickPixelDistance,
     binStarts: (domainFrom, domainTo) =>
-      ([...days.binStarts(domainFrom, domainTo)].flatMap(({ year, month, dayOfMonth, dayOfWeek }) =>
-        [0, 6, 12, 18].map((hour) => {
-          const temporalArgs = {
-            timeZone,
-            year,
-            month,
-            day: dayOfMonth,
-            hour,
-          };
-          const timePoint = cachedZonedDateTimeFrom(temporalArgs);
-          const timePointSec = timePoint[timeProp.epochSeconds];
-          return Number.isNaN(timePointSec)
-            ? []
-            : {
-                dayOfMonth,
-                // fontColor: offHourFontColor && (hour < workHourMin || hour > workHourMax) ? offHourFontColor : defaultFontColor,
-                dayOfWeek,
-                hour,
-                year,
-                month,
-                timePointSec,
-                nextTimePointSec: timePointSec + 6 * 60 * 60, // fixme this is not correct in case the day is 23hrs long due to winter->summer time switch
-              };
-        }),
-      ) as Array<TimeBin & YearToHour>).map((b: TimeBin & YearToHour, i, a) =>
+      (
+        [...days.binStarts(domainFrom, domainTo)].flatMap(({ year, month, dayOfMonth, dayOfWeek }) =>
+          [0, 6, 12, 18].map((hour) => {
+            const temporalArgs = {
+              timeZone,
+              year,
+              month,
+              day: dayOfMonth,
+              hour,
+            };
+            const timePoint = cachedZonedDateTimeFrom(temporalArgs);
+            const timePointSec = timePoint[timeProp.epochSeconds];
+            return Number.isNaN(timePointSec)
+              ? []
+              : {
+                  dayOfMonth,
+                  // fontColor: offHourFontColor && (hour < workHourMin || hour > workHourMax) ? offHourFontColor : defaultFontColor,
+                  dayOfWeek,
+                  hour,
+                  year,
+                  month,
+                  timePointSec,
+                  nextTimePointSec: timePointSec + 6 * 60 * 60, // fixme this is not correct in case the day is 23hrs long due to winter->summer time switch
+                };
+          }),
+        ) as Array<TimeBin & YearToHour>
+      ).map((b: TimeBin & YearToHour, i, a) =>
         Object.assign(b, { nextTimePointSec: i === a.length - 1 ? b.nextTimePointSec : a[i + 1].timePointSec }),
       ),
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, {

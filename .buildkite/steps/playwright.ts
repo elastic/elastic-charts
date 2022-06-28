@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomGroupStep, commandStepDefaults } from '../utils';
+import { createStep, CustomGroupStep, commandStepDefaults, Plugins } from '../utils';
 
 export const playwrightStep = createStep<CustomGroupStep>(() => {
   const skip = false;
@@ -14,32 +14,37 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
   return {
     group: ':playwright: Playwright e2e',
     key: 'playwright',
+    skip,
     steps: [
       {
         ...commandStepDefaults,
         label: ':playwright: Playwright e2e',
         skip,
-        parallelism: 1,
+        parallelism: 10,
+        timeout_in_minutes: 30, // buildkite sees timeouts as non-failures making them hard to handle
         key: parallelKey,
-        depends_on: ['e2e_server'],
-        plugins: [],
-        // plugins: [Plugins.docker.playwright()],
-        artifact_paths: ['.buildkite/artifacts/e2e_reports/*', 'e2e/reports/json/report_*.json'],
+        depends_on: ['build_e2e'],
+        plugins: [Plugins.docker.playwright()],
+        artifact_paths: [
+          '.buildkite/artifacts/e2e_reports/*',
+          '.buildkite/artifacts/screenshots/*',
+          '.buildkite/artifacts/screenshot_meta/*',
+          'e2e/reports/json/*',
+        ],
         commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
       },
-      // {
-      //   ...commandStepDefaults,
-      //   key: 'playwright-merge-and-status',
-      //   label: ':playwright: Set group status and merge reports',
-      //   skip,
-      //   allow_dependency_failure: true,
-      //   depends_on: [parallelKey],
-      //   commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
-      //   env: {
-      //     // TODO fix this status update
-      //     ECH_GH_STATUS_CONTEXT: 'Playwright e2e',
-      //   },
-      // },
+      {
+        ...commandStepDefaults,
+        key: 'playwright_merge_and_status',
+        label: ':playwright: Set group status and merge reports',
+        skip,
+        allow_dependency_failure: true,
+        depends_on: [{ step: parallelKey, allow_failure: true }],
+        commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
+        env: {
+          ECH_CHECK_ID: 'playwright',
+        },
+      },
     ],
   };
 });

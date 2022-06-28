@@ -6,8 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { exec, yarnInstall } from '../../utils';
+import { exec, startGroup, yarnInstall } from '../../utils';
 
-yarnInstall();
+void (async () => {
+  await yarnInstall();
+  // TODO: fix this to where we can install only the necessary packages in one script
+  await yarnInstall('e2e');
+  await yarnInstall('.buildkite');
+  await yarnInstall('github_bot');
 
-exec('yarn typecheck:all');
+  startGroup('Running type checks');
+
+  await exec('yarn typecheck:all');
+})();

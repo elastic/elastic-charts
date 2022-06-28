@@ -11,17 +11,17 @@ import { ChangeContext, createStep, CustomCommandStep, commandStepDefaults } fro
 export const apiCheckStep = createStep<CustomCommandStep>((ctx) => {
   return {
     ...commandStepDefaults,
-    label: ':robot_face: API Check',
-    key: 'api_check',
+    label: ':api-extractor: API',
+    key: 'api',
     skip: isSkippable(ctx),
     commands: ['npx ts-node .buildkite/scripts/steps/api_check.ts'],
     env: {
-      ECH_GH_STATUS_CONTEXT: 'API Check',
+      ECH_CHECK_ID: 'api',
     },
   };
 });
 
-function isSkippable(changes: ChangeContext) {
+function isSkippable(changes: ChangeContext): boolean | string {
   const hasTSChanges = changes.files.has('**/*.ts?(x)');
   const hasApiConfigChanges = changes.files.has([
     'package.json',

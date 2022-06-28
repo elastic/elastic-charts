@@ -7,30 +7,40 @@
  */
 
 import { exec, yarnInstall } from '../../utils';
-import { bkEnv } from '../../utils/buildkite';
+import { bkEnv, startGroup } from '../../utils/buildkite';
 import { ChangeContext } from '../../utils/github';
 
-const changes = new ChangeContext();
-const hasLintConfigChanges = changes.files.has([
-  '**/.eslintrc.js',
-  '**/.eslintignore',
-  '.prettierignore',
-  '.prettierrc.json',
-  'tsconfig.lint.json',
-  'tsconfig.json',
-  'package.json',
-]);
+void (async () => {
+  const changes = new ChangeContext();
+  await changes.init();
+  const hasLintConfigChanges = changes.files.has([
+    '**/.eslintrc.js',
+    '**/.eslintignore',
+    '.prettierignore',
+    '.prettierrc.json',
+    'tsconfig.lint.json',
+    'tsconfig.json',
+    'package.json',
+  ]);
 
-yarnInstall();
+  await yarnInstall();
+  // TODO: fix this to where we can install only the necessary packages in one script
+  await yarnInstall('e2e');
+  await yarnInstall('.buildkite');
+  await yarnInstall('github_bot');
 
-if (bkEnv.pullRequest && !hasLintConfigChanges) {
-  const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
+  if (bkEnv.isPullRequest && !hasLintConfigChanges) {
+    const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
 
-  if (filesToLint.length > 0) {
-    exec('yarn lint:it', {
-      input: filesToLint,
-    });
+    if (filesToLint.length > 0) {
+      startGroup('Running eslint checks');
+
+      await exec('yarn lint:it', {
+        input: filesToLint,
+      });
+    }
+  } else {
+    startGroup('Running eslint checks');
+    await exec('yarn lint');
   }
-} else {
-  exec('yarn lint');
-}
+})();

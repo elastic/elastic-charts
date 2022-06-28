@@ -6,37 +6,46 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, buildkiteGQLQuery, commitStatusIsPennding, getJobMetadata, getJobTimingStr, setStatus } from '../utils';
+import { bkEnv, buildkiteGQLQuery, codeCheckIsCompleted, getJobMetadata, updateCheckStatus } from '../utils';
+import { yarnInstall } from './../utils/exec';
+
+const skipChecks = new Set(['playwright']);
 
 void (async function () {
-  const { context, jobId, jobUrl } = bkEnv;
+  const { checkId, jobId, jobUrl } = bkEnv;
 
-  if (context && jobId) {
+  if (checkId && jobId && !skipChecks.has(checkId)) {
+    await yarnInstall();
     const jobStatus = await getJobStatus(jobId);
-    console.log(JSON.stringify(jobStatus, null, 2));
 
     if (jobStatus) {
       if (jobStatus.state === 'CANCELING') {
-        const timeingStr = await getJobTimingStr();
+        console.log('jobStatus', jobStatus);
         const user = getCancelledBy(jobStatus.events ?? []);
-        const description = user ? `Canceled by ${user} after ${timeingStr}` : `Canceled after ${timeingStr}`;
-        await setStatus({
-          context,
-          state: 'error',
-          target_url: jobUrl,
-          description,
-        });
+        await updateCheckStatus(
+          {
+            status: 'completed',
+            conclusion: 'cancelled',
+            details_url: jobUrl,
+          },
+          checkId,
+          user && `Cancelled by ${user}`,
+        );
       } else {
         const isFailedJob = (await getJobMetadata('failed')) === 'true';
+
         console.log('isFailedJob', isFailedJob);
 
-        if (isFailedJob || (await commitStatusIsPennding())) {
-          const state = isFailedJob ? 'failure' : 'success';
-          await setStatus({
-            context,
-            state,
-            target_url: jobUrl,
-          });
+        if (isFailedJob || !(await codeCheckIsCompleted())) {
+          console.log('jobStatus', jobStatus);
+          await updateCheckStatus(
+            {
+              status: 'completed',
+              conclusion: isFailedJob ? 'failure' : 'success',
+              details_url: jobUrl,
+            },
+            checkId,
+          );
         }
       }
     }

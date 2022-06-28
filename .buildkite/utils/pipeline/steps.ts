@@ -27,12 +27,18 @@ export type AgentQueue =
   | 'c2-4';
 
 export type CustomCommandStep = Omit<CommandStep, 'agents'> & {
+  /**
+   * Only applies to pull requests
+   */
+  skip?: CommandStep['skip'];
   agents?: {
     queue: AgentQueue;
   };
 };
 
 export type CustomGroupStep = Omit<GroupStep, 'steps'> & {
+  /** Whole group skip status */
+  skip: boolean | string;
   steps: CustomCommandStep[];
 };
 
@@ -43,6 +49,7 @@ export const commandStepDefaults: Partial<CustomCommandStep> = {
   agents: {
     queue: 'n2-2' as AgentQueue,
   },
+  skip: false,
   priority: 10,
   plugins: [Plugins.docker.node()],
   timeout_in_minutes: 10,

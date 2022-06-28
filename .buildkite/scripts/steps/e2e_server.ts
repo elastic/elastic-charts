@@ -9,15 +9,15 @@
 import { createDeploymentStatus, exec, yarnInstall, compress, startGroup } from '../../utils';
 
 void (async () => {
-  yarnInstall();
+  await yarnInstall();
 
   await createDeploymentStatus({ state: 'pending' });
 
   startGroup('Generating e2e server files');
-  exec('yarn test:e2e:generate');
+  await exec('yarn test:e2e:generate');
 
   startGroup('Building e2e server');
-  exec('yarn test:e2e:server:build', {
+  await exec('yarn test:e2e:server:build', {
     env: {
       NODE_ENV: 'production',
     },
@@ -25,7 +25,7 @@ void (async () => {
 
   const dest = '.buildkite/artifacts/e2e_server.gz';
   await compress({
-    src: './e2e-server/.out',
+    src: './e2e_server/.out',
     dest,
   });
 })();

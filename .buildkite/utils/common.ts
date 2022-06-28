@@ -11,8 +11,6 @@ import path from 'path';
 
 import targz from 'targz';
 
-import { startGroup } from './buildkite';
-
 /**
  * Returns a finite number or null
  */
@@ -24,7 +22,7 @@ export function getNumber(value?: string): number | null {
 
 export const compress = (opts: targz.options) =>
   new Promise<void>((resolve, reject) => {
-    startGroup(`Compressing files in "${opts.src}"`);
+    console.log(`Compressing files in "${opts.src}"`);
     const destPath = path.dirname(opts.dest);
     console.log(destPath);
 
@@ -41,14 +39,14 @@ export const compress = (opts: targz.options) =>
 
 export const decompress = (opts: targz.options) =>
   new Promise<void>((resolve, reject) => {
-    startGroup(`Decompressing from "${opts.src}"`);
+    console.log(`Decompressing from "${opts.src}"`);
     const destPath = path.dirname(opts.dest);
     fs.mkdirSync(destPath, { recursive: true });
     targz.decompress(opts, function (err) {
       if (err) {
         reject(err);
       } else {
-        fs.rmSync(opts.src); // delete source to prevent uploading again
+        // fs.rmSync(opts.src); // delete source to prevent uploading again
         console.log(`Decompressed files successfully to "${opts.dest}"`);
         resolve();
       }

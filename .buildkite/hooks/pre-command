@@ -4,6 +4,22 @@ set -euo pipefail
 
 source .buildkite/scripts/utils.sh
 
+echo '--- Setting job environment variables'
+
+# kibanamachine token to access org
+GITHUB_TOKEN=$(retry 5 5 vault read -field=github_token secret/kibana-issues/dev/kibanamachine)
+export GITHUB_TOKEN
+
+# charts github app to send checks
+GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
+export GITHUB_AUTH
+
+FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/firebase)
+export FIREBASE_AUTH
+
+BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/datavis/buildkite)
+export BUILDKITE_TOKEN
+
 cd '.buildkite'
 
 echo '--- Installing buildkite dependencies'
@@ -14,19 +30,8 @@ echo '--- Generating buildkite files'
 
 yarn build:bk:types
 
-cd ..
+echo '--- Updating commit status for jobs'
 
-echo '--- Setting up job environment'
+npx ts-node scripts/pre_command.ts
 
-GITHUB_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/github)
-export GITHUB_AUTH
-
-FIREBASE_AUTH=$(retry 5 5 vault read -field=auth secret/datavis/firebase)
-export FIREBASE_AUTH
-
-BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/datavis/buildkite)
-export BUILDKITE_TOKEN
-
-echo '--- Updating commit status for job'
-
-npx ts-node .buildkite/scripts/pre_command.ts
+cd '../'

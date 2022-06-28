@@ -23,7 +23,7 @@ export const DEFAULT_FIREBASE_URL = 'https://ech-e2e-ci.web.app/';
 /**
  * Commit context to update GitHub status
  */
-export const ECH_GH_STATUS_CONTEXT = 'ECH_GH_STATUS_CONTEXT';
+export const ECH_CHECK_ID = 'ECH_CHECK_ID';
 /**
  * Environment url to point e2e tests at
  */
