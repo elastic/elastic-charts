@@ -79,6 +79,8 @@ Create a new `BUILDKITE_TOKEN` [here](https://buildkite.com/user/api-access-toke
 - REST Scopes: read_agents, read_artifacts, read_builds, write_builds, read_build_logs, read_pipelines
 - GraphQL Access: Enabled
 
+In addition to `.env` file, we also use `github_bot/src/env.ts` file to select a set of environment variables that applies differently to the test app than it does the production app.
+
 ### Setup ngrok (only required for developing `/buildkite` routes)
 
 This step leverages `ngrok` for tunneling *live* buildkite webhooks to localhost. You can download it [here](https://ngrok.com/download). Follow the steps for setup.
