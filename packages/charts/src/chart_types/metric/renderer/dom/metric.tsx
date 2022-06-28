@@ -93,7 +93,7 @@ export const Metric: React.FunctionComponent<{
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
   return (
     <div
-      role="presentation"
+      role="figure"
       aria-labelledby={datum.title && metricHTMLId}
       className={containerClassName}
       style={containerStyle}

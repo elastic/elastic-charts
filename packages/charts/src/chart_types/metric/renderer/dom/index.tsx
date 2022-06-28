@@ -87,7 +87,9 @@ class Component extends React.Component<StateProps & DispatchProps> {
     const panel = { width: width / totalColumns, height: height / totalRows };
 
     return (
+      // eslint-disable-next-line jsx-a11y/no-redundant-roles
       <ul
+        role="list"
         className="echMetricContainer"
         aria-labelledby={a11y.labelId}
         aria-describedby={a11y.descriptionId}
