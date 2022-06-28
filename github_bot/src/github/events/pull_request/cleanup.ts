@@ -24,15 +24,16 @@ import { updateAllChecks } from '../../utils';
  * - deletes firebase deployment (auto expires after 7 days)
  */
 export function cleanup(app: Probot) {
-  app.on(['pull_request.closed'], async (ctx) => {
+  app.on('pull_request.closed', async (ctx) => {
     console.log(`------- Triggered probot ${ctx.name} | ${ctx.payload.action}`);
 
     const { head } = ctx.payload.pull_request;
 
-    await buildkiteClient.cancelRunningBuilds(head.sha);
-    await updateAllChecks(ctx, {
-      status: 'completed',
-      conclusion: 'cancelled',
+    await buildkiteClient.cancelRunningBuilds(head.sha, async () => {
+      await updateAllChecks(ctx, {
+        status: 'completed',
+        conclusion: 'cancelled',
+      });
     });
 
     await updateLastDeployment(ctx);
@@ -41,6 +42,7 @@ export function cleanup(app: Probot) {
       ...ctx.repo(),
       issue_number: ctx.payload.pull_request.number,
     });
+
     const deployComments = botComments.filter((c) => commentByKey('deployments')(c.body));
     for (const { id } of deployComments) {
       await ctx.octokit.issues.deleteComment({
