@@ -14,7 +14,7 @@ import { createDeploymentStatus, firebaseDeploy, downloadArtifacts, startGroup, 
 void (async () => {
   await createDeploymentStatus({ state: 'in_progress' });
 
-  const outDir = 'e2e-server/public';
+  const outDir = 'e2e_server/public';
 
   const storybookSrc = '.buildkite/artifacts/storybook.gz';
   await downloadArtifacts(storybookSrc, 'build_storybook');
@@ -38,9 +38,9 @@ void (async () => {
   });
 
   startGroup('Check deployment files');
-  const hasStorybookIndex = fs.existsSync('./e2e-server/public/index.html');
-  const hasE2EIndex = fs.existsSync('./e2e-server/public/e2e/index.html');
-  const hasE2EReportIndex = fs.existsSync('./e2e-server/public/e2e-report/index.html');
+  const hasStorybookIndex = fs.existsSync('./e2e_server/public/index.html');
+  const hasE2EIndex = fs.existsSync('./e2e_server/public/e2e/index.html');
+  const hasE2EReportIndex = fs.existsSync('./e2e_server/public/e2e-report/index.html');
   const missingFiles = [
     ['storybook', hasStorybookIndex],
     ['e2e server', hasE2EIndex],
