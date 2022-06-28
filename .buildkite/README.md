@@ -33,3 +33,4 @@ Shared scripts to be used throughout `.buildkite/`. Includes buildkite and GitHu
 - [ ] Improve yarn install, better isolation of required dependencies
 - [ ] Improve node module caching
 - [ ] Improve agent run time with our own agents
+- [ ] Improve skip logic to build a running state of previously successful runs based on files changed since then
