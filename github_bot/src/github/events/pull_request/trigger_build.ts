@@ -49,7 +49,6 @@ export function setupBuildTrigger(app: Probot) {
     const { head, base, number, labels = [] } = ctx.payload.pull_request;
     const labelCheck = labelCheckFn(labels);
 
-    if (!labelCheck('buildkite')) return;
     if (labelCheck('skip')) {
       if (ctx.payload.action === 'labeled') {
         // Try to cancel any running buildkite build for ref

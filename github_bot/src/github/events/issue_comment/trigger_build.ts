@@ -30,7 +30,6 @@ export function setupBuildTrigger(app: Probot) {
     const { head, base, number, labels = [] } = pullRequest;
     const labelCheck = labelCheckFn(labels);
 
-    if (!labelCheck('buildkite')) return;
     if (labelCheck('skip')) {
       await ctx.octokit.issues.removeLabel({
         ...ctx.issue(),
