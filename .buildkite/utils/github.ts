@@ -168,6 +168,51 @@ const fillCheckRunCache = async () =>
       });
     });
 
+function pickDefined<R extends Record<string, unknown>>(source: R): R {
+  return Object.keys(source).reduce((acc, key) => {
+    const val = source[key];
+    if (val !== undefined && val !== null && val !== '') {
+      // @ts-ignore - building new R from {}
+      acc[key] = val;
+    }
+    return acc;
+  }, {} as R);
+}
+
+export async function syncCheckRun({
+  name,
+  details_url,
+  external_id,
+  status,
+  conclusion,
+  started_at,
+  completed_at,
+  output: { title, summary },
+}: components['schemas']['check-run']) {
+  const syncCommit = await getMetadata('syncCommit');
+  if (syncCommit) {
+    console.log('syncCheckRun');
+
+    const output = title && summary ? { title, summary } : undefined;
+    // TODO find a better way to do this for commits by datavis bot
+    // Syncs checks to newer skipped commit
+    await octokit.checks.create(
+      pickDefined({
+        ...defaultGHOptions,
+        name,
+        details_url,
+        external_id,
+        output,
+        status,
+        conclusion,
+        started_at,
+        completed_at,
+        head_sha: syncCommit,
+      }),
+    );
+  }
+}
+
 export const updateCheckStatus = async (
   options: Optional<Omit<CreateCheckOptions, 'name' | 'head_sha'>, 'repo' | 'owner'> & CheckStatusOptions,
   checkId: string | undefined = bkEnv.checkId,
@@ -196,7 +241,7 @@ export const updateCheckStatus = async (
     const name = getJobCheckName(checkId);
     if (!checkRun || newCheckNeeded) {
       if (!bkEnv.commit) throw new Error(`Failed to set status, no head_sha provided`);
-      await octokit.checks.create({
+      const { data: check } = await octokit.checks.create({
         ...defaultGHOptions,
         details_url: bkEnv.jobUrl,
         ...options,
@@ -205,8 +250,9 @@ export const updateCheckStatus = async (
         external_id: checkId,
         head_sha: bkEnv.commit,
       } as any); // octokit types are bad :(
+      await syncCheckRun(check);
     } else {
-      await octokit.checks.update({
+      const { data: check } = await octokit.checks.update({
         ...defaultGHOptions,
         details_url: bkEnv.jobUrl,
         ...options,
@@ -214,21 +260,7 @@ export const updateCheckStatus = async (
         external_id: checkId,
         check_run_id: checkRun.id, // required
       } as any); // octokit types are bad :(
-    }
-
-    const syncCommit = options.status === 'completed' && (await getMetadata('syncCommit'));
-    if (syncCommit) {
-      // TODO find a better way to do this for commits by datavis bot
-      // Syncs checks to newer skipped commit
-      await octokit.checks.create({
-        ...defaultGHOptions,
-        details_url: bkEnv.jobUrl,
-        ...options,
-        output,
-        name,
-        external_id: checkId,
-        head_sha: syncCommit,
-      } as any); // octokit types are bad :(
+      await syncCheckRun(check);
     }
   } catch (error) {
     console.error(`Failed to create/update check run for ${checkId} [sha: ${bkEnv.commit}]`);

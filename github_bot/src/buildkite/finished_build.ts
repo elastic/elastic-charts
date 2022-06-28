@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { components } from '@octokit/openapi-types';
 import { Response } from 'express';
 
 import { getBuildConfig } from '../build';
@@ -34,6 +35,7 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload<any, Met
   }
 
   const { github } = getConfig();
+  const { syncCommit } = build.meta_data;
 
   const {
     status: resStatus,
@@ -70,16 +72,18 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload<any, Met
 
   if (mainCheck) {
     if (mainCheck.status !== 'completed') {
-      await githubClient.octokit.checks.update({
+      const { data: check } = await githubClient.octokit.checks.update({
         ...githubClient.repoParams,
         check_run_id: mainCheck.id, // required
         details_url: build.web_url,
         output,
         ...buildStatus,
       });
+
+      await syncCheckRun(check, syncCommit);
     }
   } else {
-    await githubClient.octokit.checks.create({
+    const { data: check } = await githubClient.octokit.checks.create({
       ...githubClient.repoParams,
       head_sha: build?.commit,
       name: main.name,
@@ -88,6 +92,7 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload<any, Met
       output,
       ...buildStatus,
     });
+    await syncCheckRun(check, syncCommit);
   }
 
   // All incomplete check after build is finished
@@ -96,13 +101,14 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload<any, Met
   const unresolvedChecks = checkRuns.filter(({ status }) => status !== 'completed');
   await Promise.all(
     unresolvedChecks.map(async ({ id, external_id }) => {
-      await githubClient.octokit.checks.update({
+      const { data: check } = await githubClient.octokit.checks.update({
         ...githubClient.repoParams,
         check_run_id: id, // required
         output,
         external_id,
         ...buildStatus,
       });
+      await syncCheckRun(check, syncCommit);
     }),
   );
 
@@ -142,4 +148,51 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload<any, Met
   }
 
   res.sendStatus(200);
+}
+
+function pickDefined<R extends Record<string, unknown>>(source: R): R {
+  return Object.keys(source).reduce((acc, key) => {
+    const val = source[key];
+    if (val !== undefined && val !== null && val !== '') {
+      // @ts-ignore - building new R from {}
+      acc[key] = val;
+    }
+    return acc;
+  }, {} as R);
+}
+
+export async function syncCheckRun(
+  {
+    name,
+    details_url,
+    external_id,
+    status,
+    conclusion,
+    started_at,
+    completed_at,
+    output: { title, summary },
+  }: components['schemas']['check-run'],
+  syncCommit?: string,
+) {
+  if (syncCommit) {
+    console.log('syncCheckRun');
+
+    const output = title && summary ? { title, summary } : undefined;
+    // TODO find a better way to do this for commits by datavis bot
+    // Syncs checks to newer skipped commit, always creates to avoid id lookup
+    await githubClient.octokit.checks.create(
+      pickDefined({
+        ...githubClient.repoParams,
+        name,
+        details_url,
+        external_id,
+        output,
+        status,
+        conclusion,
+        started_at,
+        completed_at,
+        head_sha: syncCommit,
+      }),
+    );
+  }
 }
