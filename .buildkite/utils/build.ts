@@ -24,7 +24,6 @@ interface BuildConfig {
  * TODO update this to be have a single source of truth btw here and github_bot/src/build.ts
  */
 export const getBuildConfig = (): BuildConfig => {
-  const isMaster = bkEnv.branch === 'master';
   return {
     main: { name: '@elastic/datavis CI', id: 'main' },
     jobs: [
@@ -35,7 +34,7 @@ export const getBuildConfig = (): BuildConfig => {
       { name: 'Eslint', id: 'eslint' },
       { name: 'Prettier', id: 'prettier' },
       { name: 'Deploy - firebase', id: 'deploy_fb' },
-      ...(isMaster ? [{ name: 'Deploy - GitHub Pages', id: 'deploy_ghp' }] : []),
+      ...(bkEnv.isMaster ? [{ name: 'Deploy - GitHub Pages', id: 'deploy_ghp' }] : []),
       { name: 'Jest', id: 'jest' },
       { name: 'Playwright e2e', id: 'playwright' },
     ],

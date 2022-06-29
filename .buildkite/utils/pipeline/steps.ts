@@ -7,6 +7,7 @@
  */
 
 import { CommandStep, GroupStep } from '../../buildkite';
+import { bkEnv } from '../buildkite';
 import { ChangeContext } from '../github';
 import { Plugins } from './plugins';
 
@@ -60,8 +61,11 @@ export const createStep =
   <S extends Step>(getStep: (ctx: ChangeContext) => S) =>
   (overrides?: Partial<S>) =>
   (ctx: ChangeContext) => {
+    const { skip, ...step } = getStep(ctx);
     return {
-      ...getStep(ctx),
+      ...step,
       ...overrides,
+      // Never skip steps on pushes to base branches
+      skip: bkEnv.isPullRequest ? skip ?? commandStepDefaults.skip ?? false : false,
     };
   };

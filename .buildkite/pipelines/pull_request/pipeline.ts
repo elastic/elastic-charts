@@ -9,7 +9,7 @@
 import { setMetadata } from 'buildkite-agent-node';
 import { Required } from 'utility-types';
 
-import { JSONSchemaForBuildkitePipelineConfigurationFiles as BuildkitePipeline } from '../../buildkite.d';
+import type { JSONSchemaForBuildkitePipelineConfigurationFiles as BuildkitePipeline } from '../../buildkite.d';
 import {
   apiCheckStep,
   ghpDeployStep,
@@ -72,8 +72,7 @@ void (async () => {
           const checkId = (
             'steps' in step ? step.steps.find((s) => s?.env?.ECH_CHECK_ID)?.env?.ECH_CHECK_ID : step?.env?.ECH_CHECK_ID
           ) as string | undefined;
-          // Never skip steps on pushes to base branches
-          return { skip: bkEnv.isPullRequest ? step.skip : false, checkId };
+          return { skip: step.skip, checkId };
         })
         .filter(({ checkId }) => Boolean(checkId))
         .map(({ skip, checkId }) => {
