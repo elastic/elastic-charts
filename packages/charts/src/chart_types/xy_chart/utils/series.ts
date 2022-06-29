@@ -619,6 +619,7 @@ export function getSeriesIdentifierFromDataSeries(dataSeries: DataSeries): XYCha
     specId,
     key,
   } = dataSeries;
+
   return {
     xAccessor,
     yAccessor,

@@ -24,21 +24,21 @@ fi
 
 export ENV_URL="${ENV_URL:-"http://${hostname}:${PORT}"}"
 
-until $(curl --output /dev/null --silent --head --fail ${ENV_URL}); do
-    if [ ${attempt_counter} -eq ${retries} ];then
-      echo "Failed to connect to e2e server at ${ENV_URL}"
-      exit 1
-    fi
+# until $(curl --output /dev/null --silent --head --fail ${ENV_URL}); do
+#     if [ ${attempt_counter} -eq ${retries} ];then
+#       echo "Failed to connect to e2e server at ${ENV_URL}"
+#       exit 1
+#     fi
 
-    echo "Connecting to e2e server..."
+#     echo "Connecting to e2e server..."
 
-    attempt_counter=$(($attempt_counter+1))
-    sleep ${interval}
-done
+#     attempt_counter=$(($attempt_counter+1))
+#     sleep ${interval}
+# done
 
 echo "Connected to e2e server at ${ENV_URL}"
 
-# Install dependencies for e2e testing only
+# Install dependencies only e2e modules for testing
 yarn install --frozen-lockfile
 
 # Run playwright tests with passed args

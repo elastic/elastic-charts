@@ -17,21 +17,23 @@ const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but th
 const MAX_TIME_GRID_COUNT = 12;
 
 /** @internal */
-export const notTooDense = (
-  domainFrom: number,
-  domainTo: number,
-  binWidth: number,
-  cartesianWidth: number,
-  maxTickCount = MAX_TIME_TICK_COUNT,
-) => (raster: TimeRaster<TimeBin>) => {
-  const domainInSeconds = domainTo - domainFrom;
-  const pixelsPerSecond = cartesianWidth / domainInSeconds;
-  return (
-    pixelsPerSecond > raster.minimumPixelsPerSecond &&
-    raster.approxWidthInMs * WIDTH_FUDGE >= binWidth &&
-    (domainInSeconds * 1000) / maxTickCount <= raster.approxWidthInMs
-  );
-};
+export const notTooDense =
+  (
+    domainFrom: number,
+    domainTo: number,
+    binWidth: number,
+    cartesianWidth: number,
+    maxTickCount = MAX_TIME_TICK_COUNT,
+  ) =>
+  (raster: TimeRaster<TimeBin>) => {
+    const domainInSeconds = domainTo - domainFrom;
+    const pixelsPerSecond = cartesianWidth / domainInSeconds;
+    return (
+      pixelsPerSecond > raster.minimumPixelsPerSecond &&
+      raster.approxWidthInMs * WIDTH_FUDGE >= binWidth &&
+      (domainInSeconds * 1000) / maxTickCount <= raster.approxWidthInMs
+    );
+  };
 
 /** @internal */
 export function multilayerAxisEntry(

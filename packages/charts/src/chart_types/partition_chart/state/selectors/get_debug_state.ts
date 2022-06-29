@@ -15,32 +15,27 @@ import { isSunburst } from '../../layout/viewmodel/viewmodel';
 import { partitionMultiGeometries } from './geometries';
 
 /** @internal */
-export const getDebugStateSelector = createCustomCachedSelector(
-  [partitionMultiGeometries],
-  (geoms): DebugState => {
-    return {
-      partition: geoms.reduce<PartitionDebugState[]>((acc, { layout, panel, quadViewModel, diskCenter }) => {
-        const partitions: PartitionDebugState['partitions'] = quadViewModel.map((model) => {
-          const { dataName, depth, fillColor, value } = model;
-          return {
-            name: dataName,
-            depth,
-            color: fillColor,
-            value,
-            coords: isSunburst(layout)
-              ? getCoordsForSector(model, diskCenter)
-              : getCoordsForRectangle(model, diskCenter),
-          };
-        });
-        acc.push({
-          panelTitle: panel.title,
-          partitions,
-        });
-        return acc;
-      }, []),
-    };
-  },
-);
+export const getDebugStateSelector = createCustomCachedSelector([partitionMultiGeometries], (geoms): DebugState => {
+  return {
+    partition: geoms.reduce<PartitionDebugState[]>((acc, { layout, panel, quadViewModel, diskCenter }) => {
+      const partitions: PartitionDebugState['partitions'] = quadViewModel.map((model) => {
+        const { dataName, depth, fillColor, value } = model;
+        return {
+          name: dataName,
+          depth,
+          color: fillColor,
+          value,
+          coords: isSunburst(layout) ? getCoordsForSector(model, diskCenter) : getCoordsForRectangle(model, diskCenter),
+        };
+      });
+      acc.push({
+        panelTitle: panel.title,
+        partitions,
+      });
+      return acc;
+    }, []),
+  };
+});
 
 function getCoordsForSector({ x0, x1, y1px, y0px }: QuadViewModel, diskCenter: PointObject): [Pixels, Pixels] {
   const X0 = x0 - TAU / 4;
