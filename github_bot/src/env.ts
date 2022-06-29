@@ -91,7 +91,7 @@ const prodEnv: Env = {
     },
   },
   branch: {
-    base: ['master', 'alpha', 'next', /\d+.\d+.\d+/, /\d+.\d+.x/, /\d+.x/, /buildkite-.+/],
+    base: ['master', 'alpha', 'next', /\d+.\d+.\d+/, /\d+.\d+.x/, /\d+.x/],
   },
   label: {
     buildkite: {
