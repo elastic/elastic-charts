@@ -3,7 +3,9 @@
   Elastic Charts
 </h1>
 <p align="center">
-  <img alt="Build Status - master branch" src="https://badge.buildkite.com/1b2f6369ef27e5b23a7fccf2545d7d6e31bff1957c7c941d31.svg?branch=master">
+  <a href="https://buildkite.com/elastic/datavis-ci/builds?branch=master">
+    <img alt="Build Status - master branch" src="https://badge.buildkite.com/1b2f6369ef27e5b23a7fccf2545d7d6e31bff1957c7c941d31.svg?branch=master">
+  </a>
   <a href="https://www.npmjs.com/@elastic/charts"><img alt="NPM version" src="https://img.shields.io/npm/v/@elastic/charts.svg"></a>
   <a href="http://commitizen.github.io/cz-cli/"><img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"></a>
   <a href="https://elastic.github.io/elastic-charts">
