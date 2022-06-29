@@ -256,6 +256,10 @@ export const updateCheckStatus = async (
         ...defaultGHOptions,
         details_url: bkEnv.jobUrl,
         ...options,
+        ...(options.status === 'in_progress' && {
+          // Updates start time when job actually starts to run
+          started_at: new Date().toISOString(),
+        }),
         output,
         external_id: checkId,
         check_run_id: checkRun.id, // required
