@@ -60,21 +60,23 @@ export function useSpecFactory<Props extends Spec>(props: Props) {
  * > enforing that the types are derived from the defined `Spec`.
  * @internal
  */
-export const specComponentFactory = <S extends Spec>() => <
-  Overrides extends SFOverrideKeys<S>,
-  Defaults extends SFDefaultKeys<S, Overrides>,
-  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
-  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>
->(
-  overrides: SFOverrides<S, Overrides>,
-  defaults: SFDefaults<S, Overrides, Defaults>,
-): FC<SFProps<S, Overrides, Defaults, Optionals, Requires>> => {
-  return (props) => {
-    // @ts-ignore - All Spec keys are guaranteed to be included
-    useSpecFactory<S>({ ...defaults, ...stripUndefined(props), ...overrides });
-    return null;
+export const specComponentFactory =
+  <S extends Spec>() =>
+  <
+    Overrides extends SFOverrideKeys<S>,
+    Defaults extends SFDefaultKeys<S, Overrides>,
+    Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+    Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>,
+  >(
+    overrides: SFOverrides<S, Overrides>,
+    defaults: SFDefaults<S, Overrides, Defaults>,
+  ): FC<SFProps<S, Overrides, Defaults, Optionals, Requires>> => {
+    return (props) => {
+      // @ts-ignore - All Spec keys are guaranteed to be included
+      useSpecFactory<S>({ ...defaults, ...stripUndefined(props), ...overrides });
+      return null;
+    };
   };
-};
 
 /**
  * Takes in prop overrides and defaults with enforced types.
@@ -91,20 +93,22 @@ export const specComponentFactory = <S extends Spec>() => <
  * > enforing that the types are derived from the defined `Spec`.
  * @internal
  */
-export const buildSFProps = <S extends Spec>() => <
-  Overrides extends SFOverrideKeys<S>,
-  Defaults extends SFDefaultKeys<S, Overrides>,
-  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
-  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>
->(
-  overrides: SFOverrides<S, Overrides>,
-  defaults: SFDefaults<S, Overrides, Defaults>,
-): BuildProps<S, Overrides, Defaults, Optionals, Requires> => ({
-  overrides,
-  defaults,
-  optionals: {} as Pick<S, Optionals>, // used to transfer type only
-  requires: {} as Pick<S, Requires>, // used to transfer type only
-});
+export const buildSFProps =
+  <S extends Spec>() =>
+  <
+    Overrides extends SFOverrideKeys<S>,
+    Defaults extends SFDefaultKeys<S, Overrides>,
+    Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+    Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>,
+  >(
+    overrides: SFOverrides<S, Overrides>,
+    defaults: SFDefaults<S, Overrides, Defaults>,
+  ): BuildProps<S, Overrides, Defaults, Optionals, Requires> => ({
+    overrides,
+    defaults,
+    optionals: {} as Pick<S, Optionals>, // used to transfer type only
+    requires: {} as Pick<S, Requires>, // used to transfer type only
+  });
 
 /*
 ------------------------------------------------------------
@@ -121,7 +125,7 @@ export type SFProps<
   Overrides extends SFOverrideKeys<S>,
   Defaults extends SFDefaultKeys<S, Overrides>,
   Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
-  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>
+  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>,
 > = Pick<S, Optionals | Requires> & Partial<Pick<S, Defaults>>;
 
 /** @public */
@@ -130,7 +134,7 @@ export interface BuildProps<
   Overrides extends SFOverrideKeys<S>,
   Defaults extends SFDefaultKeys<S, Overrides>,
   Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
-  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>
+  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>,
 > {
   overrides: SFOverrides<S, Overrides>;
   defaults: SFDefaults<S, Overrides, Defaults>;
@@ -149,13 +153,13 @@ type SFDefaultKeys<S extends Spec, Overrides extends keyof S> = keyof Omit<S, Ov
 type SFOptionalKeys<
   S extends Spec,
   Overrides extends keyof S,
-  Defaults extends keyof Omit<S, Overrides>
+  Defaults extends keyof Omit<S, Overrides>,
 > = OptionalKeys<Omit<S, Overrides | Defaults>>;
 type SFRequiredKeys<
   S extends Spec,
   Overrides extends keyof S,
   Defaults extends keyof Omit<S, Overrides>,
-  Optionals extends SFOptionalKeys<S, Overrides, Defaults>
+  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
 > = RequiredKeys<Omit<S, Overrides | Defaults | Optionals>>;
 
 /* Object types defined from key types above */
@@ -163,5 +167,5 @@ type SFOverrides<S extends Spec, Overrides extends keyof S> = Required<Pick<S, O
 type SFDefaults<
   S extends Spec,
   Overrides extends SFOverrideKeys<S>,
-  Defaults extends SFDefaultKeys<S, Overrides>
+  Defaults extends SFDefaultKeys<S, Overrides>,
 > = Required<Pick<S, Defaults>>;

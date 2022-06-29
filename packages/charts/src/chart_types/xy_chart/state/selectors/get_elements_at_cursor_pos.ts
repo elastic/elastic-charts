@@ -59,8 +59,10 @@ function getElementAtCursorPosition(
     // TODO: Handle external event with spatial points
     return geometriesIndex.find(externalPointerEvent.x, { x: -1, y: -1 });
   }
-  const xValue = scales.xScale.invertWithStep(orientedProjectedPointerPosition.x, geometriesIndexKeys as number[])
-    .value;
+  const xValue = scales.xScale.invertWithStep(
+    orientedProjectedPointerPosition.x,
+    geometriesIndexKeys as number[],
+  ).value;
   if (isNil(xValue) || Number.isNaN(xValue)) {
     return [];
   }

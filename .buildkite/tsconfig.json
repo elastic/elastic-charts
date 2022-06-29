@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": false,
+    "sourceMap": true,
+    "preserveConstEnums": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "target": "es5",
+    "lib": ["esnext", "dom"],
+    "moduleResolution": "node",
+    "jsx": "react",
+    "allowJs": false,
+    "skipLibCheck": true,
+    "downlevelIteration": true,
+    "stripInternal": true,
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types"],
+    "paths": {
+      "*": ["./declarations/*", "./*"],
+      "/@elastic/charts$": ["./packages/charts/src"],
+      "/@elastic/charts/src/*": ["./packages/charts/src/*"]
+    }
+  },
+  "include": ["./**/*"],
+  "exclude": [".buildkite/scripts/*"]
+}
