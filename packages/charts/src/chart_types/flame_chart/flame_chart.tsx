@@ -202,6 +202,7 @@ class FlameComponent extends React.Component<FlameProps> {
   // navigation
   private navQueue: number[] = [0];
   private navIndex = 0;
+  private lastNavLeft = false;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -209,7 +210,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // vector length checks
     const datumCount = columns.position1.length / 2;
-    if (datumCount % 2) throw new Error('flame error: position0 vector must have even values (x/y pairs)');
+    if (datumCount % 1) throw new Error('flame error: position1 vector must have even values (x/y pairs)');
     if (datumCount * 2 !== columns.position0.length)
       throw new Error('flame error: Mismatch between position0 (xy) and position1 (xy) length');
     if (datumCount !== columns.size0.length)
@@ -417,6 +418,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1 };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
+      this.lastNavLeft = true;
       this.smartDraw();
     }
   };
@@ -462,6 +464,7 @@ class FlameComponent extends React.Component<FlameProps> {
       if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
         const { datumIndex } = hovered;
         if (this.navQueue[this.navIndex] !== datumIndex) this.navQueue.splice(++this.navIndex, Infinity, datumIndex);
+        this.lastNavLeft = false;
         this.focusOnNode(datumIndex);
         this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
       }
@@ -521,6 +524,7 @@ class FlameComponent extends React.Component<FlameProps> {
         y0: yZoom ? newY0 : y0,
         y1: yZoom ? newY1 : y1,
       };
+      this.lastNavLeft = true;
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
     }
@@ -557,7 +561,8 @@ class FlameComponent extends React.Component<FlameProps> {
       }
     }
 
-    if (Number.isFinite(x0)) {
+    if (Number.isFinite(x0) && searchString.length > 0) {
+      this.lastNavLeft = true;
       Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
     }
   };
@@ -599,12 +604,17 @@ class FlameComponent extends React.Component<FlameProps> {
     return false;
   };
 
+  private clearSearchText = () => {
+    if (!this.searchInputRef.current) return;
+    this.searchInputRef.current.value = '';
+    this.searchForText(false);
+  };
+
   private handleEscapeKey = (e: KeyboardEvent) => {
     e.stopPropagation();
-    if (e.key === 'Escape' && this.searchInputRef.current) {
-      this.searchInputRef.current.value = '';
+    if (e.key === 'Escape') {
+      this.clearSearchText();
     }
-    this.searchForText(false);
   };
 
   private handleSearchFieldKeyPress = (e: KeyboardEvent) => {
@@ -635,6 +645,7 @@ class FlameComponent extends React.Component<FlameProps> {
         }
       }
       if (hitEnumerator >= 0) {
+        this.lastNavLeft = true;
         this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
@@ -670,7 +681,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private isAtHomePosition = () => this.targetFocus.x0 === 0 && this.targetFocus.x1 === 1 && this.targetFocus.y1 === 1;
   private canNavigateForward = () => this.navIndex < this.navQueue.length - 1;
-  private canNavigateBackward = () => this.navQueue.length > 0 && this.navIndex > 0;
+  private canNavigateBackward = () => this.navQueue.length > 0 && (this.navIndex > 0 || this.lastNavLeft);
 
   render = () => {
     const {
@@ -746,7 +757,8 @@ class FlameComponent extends React.Component<FlameProps> {
               tabIndex={0}
               onClick={() => {
                 if (!this.canNavigateBackward()) return;
-                this.focusOnNode(this.navQueue[--this.navIndex]);
+                this.focusOnNode(this.navQueue[this.lastNavLeft ? this.navIndex : --this.navIndex]);
+                this.lastNavLeft = false;
               }}
               style={{ display: 'none' }}
             />
@@ -764,6 +776,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="button"
               tabIndex={0}
               onClick={() => {
+                this.lastNavLeft = false;
                 if (this.isAtHomePosition()) return;
                 this.resetFocus();
               }}
@@ -785,6 +798,7 @@ class FlameComponent extends React.Component<FlameProps> {
               tabIndex={0}
               onClick={() => {
                 if (!this.canNavigateForward()) return;
+                this.lastNavLeft = false;
                 this.focusOnNode(this.navQueue[++this.navIndex]);
               }}
               style={{ display: 'none' }}
@@ -793,9 +807,10 @@ class FlameComponent extends React.Component<FlameProps> {
           <input
             ref={this.searchInputRef}
             title="Search string or regex pattern"
+            size={16}
             type="text"
             tabIndex={0}
-            placeholder="Enter search string"
+            placeholder="Search string"
             onKeyPress={this.handleSearchFieldKeyPress}
             onKeyUp={this.handleEscapeKey}
             style={{
@@ -805,6 +820,31 @@ class FlameComponent extends React.Component<FlameProps> {
               background: 'rgba(255,0,255,0)',
             }}
           />
+          <label
+            title="Clear text"
+            style={{
+              backgroundColor: 'rgb(228, 228, 228)',
+              fontWeight: 'bolder',
+              paddingInline: 4,
+              marginInline: 4,
+              borderRadius: 4,
+              opacity: this.currentSearchString ? 1 : 0,
+              transition: 'opacity 250ms ease-in-out',
+            }}
+          >
+            Clear
+            <input
+              type="button"
+              tabIndex={0}
+              onClick={() => {
+                if (this.currentSearchString && this.searchInputRef.current) {
+                  this.clearSearchText();
+                }
+              }}
+              style={{ display: 'none' }}
+            />
+          </label>
+
           <label
             title="Case sensitivity (highlighted: case sensitive)"
             style={{

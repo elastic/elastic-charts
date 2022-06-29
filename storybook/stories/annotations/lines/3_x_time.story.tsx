@@ -49,11 +49,7 @@ export const Example = () => {
   const rotation = getChartRotationKnob();
 
   const dataValues = generateTimeAnnotationData([
-    1551438150000,
-    1551438180000,
-    1551438390000,
-    1551438450000,
-    1551438480000,
+    1551438150000, 1551438180000, 1551438390000, 1551438450000, 1551438480000,
   ]);
 
   return (

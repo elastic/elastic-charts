@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { button } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Flame, Settings, PartialTheme, ResetFocusControl, FocusOnNodeControl } from '@elastic/charts';
+import { Chart, Datum, Flame, Settings, PartialTheme, FlameGlobalControl, FlameNodeControl } from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -49,9 +49,11 @@ const columnarData = {
   size1: size,
 };
 
+const noop = () => {};
+
 export const Example = () => {
-  let resetFocusControl: ResetFocusControl = () => {}; // initial value
-  let focusOnNodeControl: FocusOnNodeControl = () => {}; // initial value
+  let resetFocusControl: FlameGlobalControl = noop; // initial value
+  let focusOnNodeControl: FlameNodeControl = noop; // initial value
 
   const onElementListeners = {
     onElementClick: action('onElementClick'),
@@ -79,12 +81,8 @@ export const Example = () => {
         valueFormatter={(value) => `${value}`}
         animation={{ duration: 500 }}
         controlProviderCallback={{
-          resetFocus: (control) => {
-            resetFocusControl = control;
-          },
-          focusOnNode: (control) => {
-            focusOnNodeControl = control;
-          },
+          resetFocus: (control) => (resetFocusControl = control),
+          focusOnNode: (control) => (focusOnNodeControl = control),
         }}
       />
     </Chart>

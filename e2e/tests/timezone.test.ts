@@ -16,11 +16,13 @@ test.describe('Time zone', () => {
       'http://localhost:9001/?path=/story/scales--timezone-configuration&globals=theme:light&knob-dataset=utc%2B8&knob-tooltip=utc',
     );
   });
+
   test('UTC minus 8', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/scales--timezone-configuration&globals=theme:light&knob-dataset=utc-8&knob-tooltip=utc',
     );
   });
+
   test.describe('timezone America/New_York', () => {
     const timezoneId = 'America/New_York';
     test.use({ timezoneId });
@@ -33,6 +35,7 @@ test.describe('Time zone', () => {
       );
     });
   });
+
   test.describe('timezone Europe/Rome', () => {
     const timezoneId = 'Europe/Rome';
     test.use({ timezoneId });

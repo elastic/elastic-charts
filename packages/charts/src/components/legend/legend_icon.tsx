@@ -22,9 +22,12 @@ const MARKER_SIZE = 8;
 
 /** @internal */
 export const LegendIcon = ({ pointStyle, color, ariaLabel }: LegendIconProps) => {
-  const { shape = PointShape.Circle, stroke = color, strokeWidth = 1, opacity = 1 } = pointStyle?.shape
-    ? pointStyle
-    : {};
+  const {
+    shape = PointShape.Circle,
+    stroke = color,
+    strokeWidth = 1,
+    opacity = 1,
+  } = pointStyle?.shape ? pointStyle : {};
   const [shapeFn, rotation] = ShapeRendererFn[shape];
 
   const adjustedSize = MARKER_SIZE - (strokeWidth ?? 0);

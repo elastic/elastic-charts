@@ -13,9 +13,6 @@ import { Dimensions } from '../../../../utils/dimensions';
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
 /** @internal */
-export const chartSize = createCustomCachedSelector(
-  [getParentDimension],
-  (container): Dimensions => {
-    return { ...container };
-  },
-);
+export const chartSize = createCustomCachedSelector([getParentDimension], (container): Dimensions => {
+  return { ...container };
+});

@@ -51,7 +51,7 @@ export class ScaleBand {
     const safeBarPadding = isObjectPad ? 0 : clamp(barsPadding, 0, 1);
     this.type = ScaleType.Ordinal;
     const d3Scale = scaleBand<string | number>()
-      .domain(inputDomain.length > 0 ? inputDomain : [(undefined as unknown) as string | number]) // TODO fix this trick
+      .domain(inputDomain.length > 0 ? inputDomain : [undefined as unknown as string | number]) // TODO fix this trick
       .range(range)
       .paddingInner(isObjectPad ? barsPadding.inner : safeBarPadding)
       .paddingOuter(isObjectPad ? barsPadding.outer : safeBarPadding / 2);
@@ -66,7 +66,7 @@ export class ScaleBand {
     this.bandwidthPadding = this.bandwidth;
     const invertedScale = scaleQuantize<string | number, undefined>()
       .domain(range)
-      .range(inputDomain.length > 0 ? [...new Set(inputDomain)] : [(undefined as unknown) as string | number]);
+      .range(inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined as unknown as string | number]);
 
     this.minInterval = 0; // FIXED doesn't exist in reality
     this.project = (d) => d3Scale(d) ?? NaN;
@@ -90,9 +90,7 @@ export class ScaleBand {
     return this.inverseProject(value);
   }
 
-  invertWithStep(
-    value: number,
-  ): {
+  invertWithStep(value: number): {
     withinBandwidth: boolean;
     value: string | number | undefined;
   } {
