@@ -26,7 +26,7 @@ export const Example = () => (
       id="spec_1"
       data={mocks.pie
         .slice(0, 2)
-        .concat(mocks.pie.slice(2, 3).map((s) => ({ ...s, exportVal: (undefined as unknown) as number })))
+        .concat(mocks.pie.slice(2, 3).map((s) => ({ ...s, exportVal: undefined as unknown as number })))
         .concat(mocks.pie.slice(3))}
       layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}

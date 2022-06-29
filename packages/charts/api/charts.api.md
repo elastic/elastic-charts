@@ -593,7 +593,12 @@ export function computeRatioByGroups<T extends Record<string, unknown>>(data: T[
 export type ContinuousDomain = [min: number, max: number];
 
 // @public
-export type ControlProviderCallback = (controlName: string, controlFunction: (...args: unknown[]) => void) => void;
+export interface ControlReceiverCallbacks {
+    // (undocumented)
+    focusOnNode: (control: FlameNodeControl) => void;
+    // (undocumented)
+    resetFocus: (control: FlameGlobalControl) => void;
+}
 
 // @public (undocumented)
 export interface CrosshairStyle {
@@ -998,10 +1003,16 @@ export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, "ch
 // @public (undocumented)
 export type FlameElementEvent = FlameLayerValue;
 
+// @public
+export type FlameGlobalControl = () => void;
+
 // @public (undocumented)
 export interface FlameLayerValue {
     vmIndex: number;
 }
+
+// @public
+export type FlameNodeControl = (nodeIndex: number) => void;
 
 // @public
 export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnimationConfig {
@@ -1010,7 +1021,7 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
     // (undocumented)
     columnarData: ColumnarViewModel;
     // (undocumented)
-    controlProviderCallback: ControlProviderCallback;
+    controlProviderCallback: Partial<ControlReceiverCallbacks>;
     // (undocumented)
     specType: typeof SpecType.Series;
     // (undocumented)

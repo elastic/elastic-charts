@@ -66,25 +66,34 @@ test.describe('Area series stories', () => {
       const action = async () => {
         await page.click('.echLegendItem:nth-child(2) .echLegendItem__label');
       };
-      await common.expectChartAtUrlToMatchScreenshot(
-        page,
-      )('http://localhost:9001/?path=/story/area-chart--with-negative-and-positive&knob-Y scale=log', { action });
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/area-chart--with-negative-and-positive&knob-Y scale=log',
+        { action },
+      );
     });
 
     test('shows only negative values when hiding positive one', async ({ page }) => {
       const action = async () => {
         await page.click('.echLegendItem:nth-child(1) .echLegendItem__label');
       };
-      await common.expectChartAtUrlToMatchScreenshot(
-        page,
-      )('http://localhost:9001/?path=/story/area-chart--with-negative-and-positive&knob-Y scale=log', { action });
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/area-chart--with-negative-and-positive&knob-Y scale=log',
+        { action },
+      );
     });
   });
+
   test.describe('Area with orphan data points', () => {
     test('render correctly fit function', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/line-chart--test-orphan-data-points&knob-enable fit function=&knob-switch to area=true',
       );
     });
+  });
+
+  test('small multiples with log scale dont clip', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/small-multiples-alpha--vertical-areas&globals=theme:light&knob-Show Legend=true&knob-Use log scale (different data)=true',
+    );
   });
 });

@@ -28,13 +28,15 @@ const triangle: SVGPathFn = (r: number) => {
 /**
  * Returns shape function based on rotation of square in degrees
  */
-const square = (rotation = 0): SVGPathFn => (r: number) => {
-  const d = degToRad(rotation);
-  const s = Math.abs(Math.cos(d) + Math.sin(d));
-  // scaled r to account for rotation;
-  const sr = s > 0 ? r / s : r;
-  return `M ${-sr} ${-sr} L ${-sr} ${sr} L ${sr} ${sr} L ${sr} ${-sr} Z`;
-};
+const square =
+  (rotation = 0): SVGPathFn =>
+  (r: number) => {
+    const d = degToRad(rotation);
+    const s = Math.abs(Math.cos(d) + Math.sin(d));
+    // scaled r to account for rotation;
+    const sr = s > 0 ? r / s : r;
+    return `M ${-sr} ${-sr} L ${-sr} ${sr} L ${sr} ${sr} L ${sr} ${-sr} Z`;
+  };
 
 const circle: SVGPathFn = (r: number) => {
   return `M ${-r} 0 a ${r},${r} 0 1,0 ${r * 2},0 a ${r},${r} 0 1,0 ${-r * 2},0`;

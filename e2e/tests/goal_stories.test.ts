@@ -8,7 +8,7 @@
 
 import { test } from '@playwright/test';
 
-import { eachTheme } from '../helpers';
+import { eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
 test.describe('Goal stories', () => {
@@ -19,9 +19,7 @@ test.describe('Goal stories', () => {
   });
 
   test('should render actual tooltip color on hover', async ({ page }) => {
-    await common.expectChartWithMouseAtUrlToMatchScreenshot(
-      page,
-    )(
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/goal-alpha--gaps&knob-show target=false&knob-target=260&globals=background:white',
       { right: 245, bottom: 120 },
     );
@@ -76,5 +74,63 @@ test.describe('Goal stories', () => {
         `https://elastic.github.io/elastic-charts/?path=/story/goal-alpha--vertical-negative&${urlParam}`,
       );
     });
+  });
+
+  test('should prevent overlapping angles - clockwise', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:light&knob-endAngle%20(%CF%80)=-0.625&knob-startAngle%20(%CF%80)=1.5',
+    );
+  });
+
+  test('should prevent overlapping angles - counterclockwise', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:light&knob-endAngle%20(%CF%80)=1.625&knob-startAngle%20(%CF%80)=-0.5',
+    );
+  });
+
+  test.describe('auto ticks', () => {
+    pwEach.test<boolean>([true, false])(
+      (p) => `goal - reverse ${p}`,
+      async (page, reverse) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          `http://localhost:9001/?path=/story/goal-alpha--auto-linear-ticks&knob-subtype=goal&knob-reverse=${reverse}`,
+        );
+      },
+    );
+  });
+
+  test.describe('sagitta shifted goal charts', () => {
+    pwEach.test<[title: string, startAngle: number, endAngle: number]>([
+      // top openings
+      ['π/8 -> neg π', 1 / 8, -1],
+      ['neg π/8 -> neg π', -1 / 8, -1],
+      ['neg π -> π/8', -1, 1 / 8],
+      ['neg π -> neg π/8', -1, -1 / 8],
+      ['neg π/4 -> neg 3π/4', -1 / 4, -3 / 4],
+      ['neg 3π/4 -> neg π/4', -3 / 4, -1 / 4],
+    ])(
+      ([p]) => `should apply correct top shift (${p})`,
+      async (page, [, startAngle, endAngle]) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          `http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:light&knob-startAngle%20(%CF%80)=${startAngle}&knob-endAngle%20(%CF%80)=${endAngle}`,
+        );
+      },
+    );
+    pwEach.test<[title: string, startAngle: number, endAngle: number]>([
+      // bottom openings
+      ['π -> 0', 1, 0],
+      ['3π/4 -> 0', 3 / 4, 0],
+      ['neg π/8 -> π', -1 / 8, 1],
+      ['π/8 -> π', 1 / 8, 1],
+      ['3π/4 -> π/4', 3 / 4, 1 / 4],
+      ['π/4 -> 3π/4', 1 / 4, 3 / 4],
+    ])(
+      ([p]) => `should apply correct bottom shift (${p})`,
+      async (page, [, startAngle, endAngle]) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          `http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:light&knob-startAngle%20(%CF%80)=${startAngle}&knob-endAngle%20(%CF%80)=${endAngle}`,
+        );
+      },
+    );
   });
 });
