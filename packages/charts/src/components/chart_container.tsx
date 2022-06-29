@@ -151,16 +151,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     const { onMouseUp } = this.props;
 
     window.removeEventListener('mouseup', this.handleBrushEnd);
-
-    requestAnimationFrame(() => {
-      onMouseUp(
-        {
-          x: -1,
-          y: -1,
-        },
-        Date.now(),
-      );
-    });
+    onMouseUp({ x: -1, y: -1 }, Date.now());
   };
 
   render() {

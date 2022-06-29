@@ -45,7 +45,7 @@ const storiesToSkip: Record<string, Record<string, string[]>> = {
 export function getStorybookInfo(): StoryGroupInfo[] {
   try {
     // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-    const examples = require('../e2e-server/tmp/examples.json') as TestExamples;
+    const examples = require('../e2e_server/tmp/examples.json') as TestExamples;
 
     return examples.map<StoryGroupInfo>(({ groupTitle: group, slugifiedGroupTitle, exampleFiles }) => {
       return {

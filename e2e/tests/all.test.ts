@@ -15,9 +15,9 @@ import { common } from '../page_objects';
 const storyGroups = getStorybookInfo();
 
 // Top level is needed to run in parallel
-test.describe.parallel('Baselines', () => {
+test.describe('Baselines', () => {
   storyGroups.forEach(({ group, stories, encodedGroup }) => {
-    test.describe.parallel(group, () => {
+    test.describe(group, () => {
       stories.forEach(({ name, slugifiedName }) => {
         // takes camelCase storybook name and converts to dash-case for file naming
         test(paramCase(name), async ({ page }) => {

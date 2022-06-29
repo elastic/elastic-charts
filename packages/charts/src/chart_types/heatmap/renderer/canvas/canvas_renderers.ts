@@ -130,7 +130,7 @@ export function renderCanvas2d(
               text,
               font,
               theme.yAxisLabel.fontSize,
-              heatmapViewModel.gridOrigin.x - horizontalPadding,
+              Math.max(elementSizes.yAxis.width - horizontalPadding, 0),
               theme.yAxisLabel.fontSize,
               { shouldAddEllipsis: true, wrapAtWord: false },
             ).lines;

@@ -202,28 +202,25 @@ export function mapsToArrays(
   innerGroups: LegendPath,
 ): HierarchyOfArrays {
   const groupByMap = (node: HierarchyOfMaps, parent: ArrayNode) => {
-    const items = Array.from(
-      node,
-      ([key, value]: [Key, MapNode]): ArrayEntry => {
-        const valueElement = value[CHILDREN_KEY];
-        const resultNode: ArrayNode = {
-          [AGGREGATE_KEY]: NaN,
-          [STATISTICS_KEY]: { globalAggregate: NaN },
-          [CHILDREN_KEY]: [],
-          [DEPTH_KEY]: NaN,
-          [SORT_INDEX_KEY]: NaN,
-          [PARENT_KEY]: parent,
-          [INPUT_KEY]: [],
-          [PATH_KEY]: [],
-        };
-        const newValue: ArrayNode = Object.assign(
-          resultNode,
-          value,
-          valueElement && { [CHILDREN_KEY]: groupByMap(valueElement, resultNode) },
-        );
-        return [key, newValue];
-      },
-    );
+    const items = Array.from(node, ([key, value]: [Key, MapNode]): ArrayEntry => {
+      const valueElement = value[CHILDREN_KEY];
+      const resultNode: ArrayNode = {
+        [AGGREGATE_KEY]: NaN,
+        [STATISTICS_KEY]: { globalAggregate: NaN },
+        [CHILDREN_KEY]: [],
+        [DEPTH_KEY]: NaN,
+        [SORT_INDEX_KEY]: NaN,
+        [PARENT_KEY]: parent,
+        [INPUT_KEY]: [],
+        [PATH_KEY]: [],
+      };
+      const newValue: ArrayNode = Object.assign(
+        resultNode,
+        value,
+        valueElement && { [CHILDREN_KEY]: groupByMap(valueElement, resultNode) },
+      );
+      return [key, newValue];
+    });
     if (sortSpecs.some((s) => s !== null)) {
       items.sort((e1: ArrayEntry, e2: ArrayEntry) => {
         const node1 = e1[1];
