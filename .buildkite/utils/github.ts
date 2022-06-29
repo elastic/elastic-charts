@@ -256,6 +256,10 @@ export const updateCheckStatus = async (
         ...defaultGHOptions,
         details_url: bkEnv.jobUrl,
         ...options,
+        ...(options.status === 'in_progress' && {
+          // Updates start time when job actually starts to run
+          started_at: new Date().toISOString(),
+        }),
         output,
         external_id: checkId,
         check_run_id: checkRun.id, // required
@@ -395,8 +399,8 @@ export async function updatePreviousDeployments(
 
 export async function getFileDiffs(): Promise<string[]> {
   if (!bkEnv.isPullRequest) return [];
-  const prNumber = bkEnv.pullRequestNumber;
 
+  const prNumber = bkEnv.pullRequestNumber;
   if (!prNumber) throw new Error(`Failed to set status, no prNumber available`);
 
   try {
@@ -447,7 +451,12 @@ export async function ghpDeploy(outDir: string) {
     ghpages.publish(
       outDir,
       {
-        silent: true,
+        user: {
+          // TODO share this between github_bot package
+          name: 'elastic-datavis[bot]',
+          email: '98618603+elastic-datavis[bot]@users.noreply.github.com',
+        },
+        silent: false,
         branch: 'gh-pages',
         message: `Deploying ${bkEnv.commit ?? 'latest changes'} 🚀`,
         repo: `https://git:${token}@github.com/elastic/elastic-charts.git`,

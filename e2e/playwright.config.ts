@@ -57,8 +57,8 @@ const config: PlaywrightTestConfig = {
     ? {
         command: 'yarn start',
         port: 9002,
-        timeout: 20 * 1000,
-        reuseExistingServer: false,
+        timeout: 120 * 1000,
+        reuseExistingServer: process.env.CI !== 'true',
       }
     : undefined,
 };

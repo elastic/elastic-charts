@@ -9,7 +9,7 @@
 import { createStep, CustomCommandStep, commandStepDefaults, bkEnv } from '../utils';
 
 export const ghpDeployStep = createStep<CustomCommandStep>(() => {
-  const isMaster = bkEnv.branch === 'master';
+  const isMaster = bkEnv.isMaster;
 
   return {
     ...commandStepDefaults,
