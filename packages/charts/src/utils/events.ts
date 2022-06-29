@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { Scale } from '../scales';
+import { ScaleBand, ScaleContinuous } from '../scales';
 import { BrushEndListener, isPointerOverEvent, PointerEvent, PointerOverEvent } from '../specs';
 import { DragState } from '../state/chart_state';
 
 /** @internal */
 export function isValidPointerOverEvent(
-  mainScale: Scale<number | string>,
+  mainScale: ScaleBand | ScaleContinuous,
   event: PointerEvent | null | undefined,
 ): event is PointerOverEvent {
   return isPointerOverEvent(event) && (event.unit === undefined || event.unit === mainScale.unit);

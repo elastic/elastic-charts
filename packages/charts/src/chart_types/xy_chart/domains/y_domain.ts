@@ -25,7 +25,11 @@ export type YBasicSeriesSpec = Pick<
 > & { stackMode?: StackMode; enableHistogramMode?: boolean };
 
 /** @internal */
-export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: ScaleConfigs['y']): YDomain[] {
+export function mergeYDomain(
+  yScaleAPIConfig: ScaleConfigs['y'],
+  dataSeries: DataSeries[],
+  annotationYValueMap: Map<GroupId, number[]>,
+): YDomain[] {
   const dataSeriesByGroupId = groupBy(dataSeries, ({ spec }) => getSpecDomainGroupId(spec), true);
   return dataSeriesByGroupId.reduce<YDomain[]>((acc, groupedDataSeries) => {
     const stacked = groupedDataSeries.filter(({ isStacked, isFiltered }) => isStacked && !isFiltered);
@@ -33,7 +37,13 @@ export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: ScaleCon
     const hasNonZeroBaselineTypes = groupedDataSeries.some(
       ({ seriesType, isFiltered }) => seriesType === SeriesType.Bar || (seriesType === SeriesType.Area && !isFiltered),
     );
-    const domain = mergeYDomainForGroup(stacked, nonStacked, hasNonZeroBaselineTypes, yScaleAPIConfig);
+    const domain = mergeYDomainForGroup(
+      stacked,
+      nonStacked,
+      annotationYValueMap,
+      hasNonZeroBaselineTypes,
+      yScaleAPIConfig,
+    );
     return domain ? [...acc, domain] : acc;
   }, []);
 }
@@ -41,6 +51,7 @@ export function mergeYDomain(dataSeries: DataSeries[], yScaleAPIConfig: ScaleCon
 function mergeYDomainForGroup(
   stacked: DataSeries[],
   nonStacked: DataSeries[],
+  annotationYValueMap: Map<GroupId, number[]>,
   hasZeroBaselineSpecs: boolean,
   yScaleConfig: ScaleConfigs['y'],
 ): YDomain | null {
@@ -57,8 +68,9 @@ function mergeYDomainForGroup(
   if (isStacked && stackMode === StackMode.Percentage) {
     mergedDomain = computeContinuousDataDomain([0, 1], type, customDomain);
   } else {
-    const stackedDomain = computeYDomain(stacked, hasZeroBaselineSpecs, type, newCustomDomain);
-    const nonStackedDomain = computeYDomain(nonStacked, hasZeroBaselineSpecs, type, newCustomDomain);
+    const annotationData = annotationYValueMap.get(groupId) ?? [];
+    const stackedDomain = computeYDomain(stacked, annotationData, hasZeroBaselineSpecs, type, newCustomDomain);
+    const nonStackedDomain = computeYDomain(nonStacked, annotationData, hasZeroBaselineSpecs, type, newCustomDomain);
     mergedDomain = computeContinuousDataDomain([...stackedDomain, ...nonStackedDomain], type, newCustomDomain);
     const [computedDomainMin, computedDomainMax] = mergedDomain;
 
@@ -98,6 +110,7 @@ function mergeYDomainForGroup(
 
 function computeYDomain(
   dataSeries: DataSeries[],
+  annotationYValues: number[],
   hasZeroBaselineSpecs: boolean,
   scaleType: ScaleType,
   customDomain: YDomainRange,
@@ -114,7 +127,7 @@ function computeYDomain(
   }
   // padding already applied, set to 0 here to avoid duplicating
   const domainOptions = { ...customDomain, padding: 0 };
-  return computeContinuousDataDomain([...yValues], scaleType, domainOptions);
+  return computeContinuousDataDomain([...yValues, ...annotationYValues], scaleType, domainOptions);
 }
 
 /** @internal */

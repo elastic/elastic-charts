@@ -14,7 +14,17 @@ The rationale behind this refactoring is the need for a testable and decoupled a
 
 This new implementation revisits the concept of a charting library and tries to apply a unidirectional rendering flow to the concept of charting. The rendering flow is the following:
 
-![rendering-pipeline](https://user-images.githubusercontent.com/1421091/49724064-bba8cb80-fc68-11e8-8378-9d59b941f15d.png)
+```mermaid
+%%{init: {'theme': 'neutral', "flowchart" : { "curve" : "basis" } } }%%
+flowchart TD
+  A(Aquire chart specs)
+  B(Compute series domains)
+  C(Compute chart dimensions)
+  D(Compute chart geometries)
+  E(Render chart)
+
+  A --> B --> C --> D --> E
+```
 
 This controlled flow allows us to achieve the following points:
 

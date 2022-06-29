@@ -221,6 +221,17 @@ export const DARK_THEME: Theme = {
   goal: {
     minFontSize: 8,
     maxFontSize: 64,
+    maxCircularSize: 360,
+    maxBulletSize: 500,
+    barThicknessMinSizeRatio: 1 / 10,
+    baselineArcThickness: 32,
+    baselineBarThickness: 32,
+    marginRatio: 0.05,
+    maxTickFontSize: 24,
+    maxLabelFontSize: 32,
+    maxCentralFontSize: 38,
+    arcBoxSamplePitch: (5 / 360) * TAU,
+    capturePad: 16,
     tickLabel: {
       fontStyle: 'normal',
       fontFamily: 'sans-serif',
@@ -383,5 +394,14 @@ export const DARK_THEME: Theme = {
         stroke: 'snow',
       },
     },
+  },
+  metric: {
+    text: {
+      lightColor: '#E0E5EE',
+      darkColor: '#343741',
+    },
+    barBackground: '#343741',
+    background: '#1D1E23',
+    nonFiniteText: 'N/A',
   },
 };

@@ -605,15 +605,8 @@ export function getSeriesColors(
 
 /** @internal */
 export function getSeriesIdentifierFromDataSeries(dataSeries: DataSeries): XYChartSeriesIdentifier {
-  const {
-    yAccessor,
-    splitAccessors,
-    smVerticalAccessorValue,
-    smHorizontalAccessorValue,
-    seriesKeys,
-    specId,
-    key,
-  } = dataSeries;
+  const { yAccessor, splitAccessors, smVerticalAccessorValue, smHorizontalAccessorValue, seriesKeys, specId, key } =
+    dataSeries;
   return {
     yAccessor,
     splitAccessors,

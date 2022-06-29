@@ -1,3 +1,202 @@
+## [46.11.2](https://github.com/elastic/elastic-charts/compare/v46.11.1...v46.11.2) (2022-06-28)
+
+
+### Bug Fixes
+
+* **events:** remove async callbacks from code ([#1730](https://github.com/elastic/elastic-charts/issues/1730)) ([27a7256](https://github.com/elastic/elastic-charts/commit/27a7256e04415989361858273a920d007cb19b29))
+
+## [46.11.1](https://github.com/elastic/elastic-charts/compare/v46.11.0...v46.11.1) (2022-06-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v60 ([#1727](https://github.com/elastic/elastic-charts/issues/1727)) ([cb4a9df](https://github.com/elastic/elastic-charts/commit/cb4a9dff4631a954b3b890c7098ab1534c13c587))
+* **example:** make events work in the composable story ([#1729](https://github.com/elastic/elastic-charts/issues/1729)) ([cd84972](https://github.com/elastic/elastic-charts/commit/cd849726915ebbd366bc92722ed9f21d9af79c03))
+* **heatmap:** correctly compute vertical axis width max size ([#1723](https://github.com/elastic/elastic-charts/issues/1723)) ([aaeb4d3](https://github.com/elastic/elastic-charts/commit/aaeb4d30af7d89791fe8e3a9019fddd54fbd5eb1))
+
+# [46.11.0](https://github.com/elastic/elastic-charts/compare/v46.10.2...v46.11.0) (2022-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^59.1.0 ([#1717](https://github.com/elastic/elastic-charts/issues/1717)) ([2d681d4](https://github.com/elastic/elastic-charts/commit/2d681d4723d7598be367b411276c578dad6c38ee))
+* **heatmap:** align cell edges to the grid ([#1716](https://github.com/elastic/elastic-charts/issues/1716)) ([299054b](https://github.com/elastic/elastic-charts/commit/299054b2ae70cf245c0c840438570668415f1209))
+
+
+### Features
+
+* **flame:** additional controls ([#1722](https://github.com/elastic/elastic-charts/issues/1722)) ([966a7fa](https://github.com/elastic/elastic-charts/commit/966a7faff13f3baf931bf1cf67758a2b5e097a94))
+* **flame:** navigation and controls ([#1719](https://github.com/elastic/elastic-charts/issues/1719)) ([dd39f3c](https://github.com/elastic/elastic-charts/commit/dd39f3cf3142f1cac1647a7945caee847bf8e187))
+* **heatmap:** Allows callback events whenever pointer cursor moves ([#1668](https://github.com/elastic/elastic-charts/issues/1668)) ([0448b08](https://github.com/elastic/elastic-charts/commit/0448b089ac4315d487f83e74eb80e059204ff2b7))
+
+## [46.10.2](https://github.com/elastic/elastic-charts/compare/v46.10.1...v46.10.2) (2022-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency d3-interpolate to v3.0.1 ([#1670](https://github.com/elastic/elastic-charts/issues/1670)) ([893e895](https://github.com/elastic/elastic-charts/commit/893e895567a47e7956d6311622c975e7d000f055))
+* **heatmap:** don't render null values ([#1708](https://github.com/elastic/elastic-charts/issues/1708)) ([1c140bf](https://github.com/elastic/elastic-charts/commit/1c140bfa93001de6943d17a9dd460f2e74913342))
+
+## [46.10.1](https://github.com/elastic/elastic-charts/compare/v46.10.0...v46.10.1) (2022-06-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v59 ([#1711](https://github.com/elastic/elastic-charts/issues/1711)) ([105c98f](https://github.com/elastic/elastic-charts/commit/105c98f11b981569bd0468c7750573323cdc831b))
+* **flame:** no focus border ([#1709](https://github.com/elastic/elastic-charts/issues/1709)) ([fddb506](https://github.com/elastic/elastic-charts/commit/fddb506b85d88646ae48284b1200dec303e9e192))
+* **time_axis:** gracefully handle zero axis size ([#1710](https://github.com/elastic/elastic-charts/issues/1710)) ([bf67c1f](https://github.com/elastic/elastic-charts/commit/bf67c1f797a840c9ed54c92b818315ebfc5d3a92))
+
+# [46.10.0](https://github.com/elastic/elastic-charts/compare/v46.9.0...v46.10.0) (2022-06-10)
+
+
+### Features
+
+* Metric visualization ([#1658](https://github.com/elastic/elastic-charts/issues/1658)) ([fc2c955](https://github.com/elastic/elastic-charts/commit/fc2c955c1615c4d76079d01b685d7466e799c147))
+
+# [46.9.0](https://github.com/elastic/elastic-charts/compare/v46.8.0...v46.9.0) (2022-06-07)
+
+
+### Features
+
+* **annotations:** animated fade trigger ([#1693](https://github.com/elastic/elastic-charts/issues/1693)) ([dbd91cb](https://github.com/elastic/elastic-charts/commit/dbd91cb3fccaecbb53988e5070c6c1054fc35121))
+
+# [46.8.0](https://github.com/elastic/elastic-charts/compare/v46.7.1...v46.8.0) (2022-06-03)
+
+
+### Features
+
+* **flame:** keyboard shortcuts for the text field ([#1697](https://github.com/elastic/elastic-charts/issues/1697)) ([ee29fae](https://github.com/elastic/elastic-charts/commit/ee29fae0448772834def86f55df8fe80d4235a82))
+
+## [46.7.1](https://github.com/elastic/elastic-charts/compare/v46.7.0...v46.7.1) (2022-06-03)
+
+
+### Bug Fixes
+
+* **bubble:** tooltip visibility on hover ([#1674](https://github.com/elastic/elastic-charts/issues/1674)) ([d3cabbe](https://github.com/elastic/elastic-charts/commit/d3cabbe59f3ce7678a5e635d713272a13baf7076))
+* **deps:** update dependency @elastic/eui to ^58.1.1 ([#1689](https://github.com/elastic/elastic-charts/issues/1689)) ([c8d6eed](https://github.com/elastic/elastic-charts/commit/c8d6eeda40d288065e4caea25b6f2311e0a387d0))
+* **flame:** safari and zoom regressions fixed and misc improvs ([#1695](https://github.com/elastic/elastic-charts/issues/1695)) ([9a48783](https://github.com/elastic/elastic-charts/commit/9a4878387151e663558ee922a1f40d6c9d1c4766))
+
+# [46.7.0](https://github.com/elastic/elastic-charts/compare/v46.6.0...v46.7.0) (2022-06-01)
+
+
+### Features
+
+* pulsate node on click and search hit ([#1694](https://github.com/elastic/elastic-charts/issues/1694)) ([5068742](https://github.com/elastic/elastic-charts/commit/5068742032d376d70a405fe2c727efa2a87770f2))
+
+# [46.6.0](https://github.com/elastic/elastic-charts/compare/v46.5.0...v46.6.0) (2022-05-31)
+
+
+### Features
+
+* **flame:** show two ancestors ([#1692](https://github.com/elastic/elastic-charts/issues/1692)) ([3ced28b](https://github.com/elastic/elastic-charts/commit/3ced28bac664cf156929416e84ce24ab20ae50a3))
+
+# [46.5.0](https://github.com/elastic/elastic-charts/compare/v46.4.0...v46.5.0) (2022-05-26)
+
+
+### Features
+
+* **flame:** context loss handling ([#1682](https://github.com/elastic/elastic-charts/issues/1682)) ([0e32209](https://github.com/elastic/elastic-charts/commit/0e3220955661348c6cf02d4e379ddec340f0ccfc))
+
+# [46.4.0](https://github.com/elastic/elastic-charts/compare/v46.3.0...v46.4.0) (2022-05-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v58 ([#1677](https://github.com/elastic/elastic-charts/issues/1677)) ([69ad62b](https://github.com/elastic/elastic-charts/commit/69ad62bf57d880f45a5250b8ccfb75da54c8f205))
+
+
+### Features
+
+* **flame:** minimap pan ([#1678](https://github.com/elastic/elastic-charts/issues/1678)) ([fc81ada](https://github.com/elastic/elastic-charts/commit/fc81ada306c042b751a523588bf0eead43881327))
+
+# [46.3.0](https://github.com/elastic/elastic-charts/compare/v46.2.0...v46.3.0) (2022-05-19)
+
+
+### Features
+
+* **flame:** search and other utilities ([#1676](https://github.com/elastic/elastic-charts/issues/1676)) ([b8eaa1f](https://github.com/elastic/elastic-charts/commit/b8eaa1f6266e150cf7153c30c5d7a1c6e21bbac4))
+
+# [46.2.0](https://github.com/elastic/elastic-charts/compare/v46.1.0...v46.2.0) (2022-05-18)
+
+
+### Bug Fixes
+
+* runtime error with `process.env` in src ([#1672](https://github.com/elastic/elastic-charts/issues/1672)) ([47a6b0b](https://github.com/elastic/elastic-charts/commit/47a6b0b9ab88cc33229ca8c132e10deb6729cd57))
+* **deps:** update dependency @elastic/eui to v56 ([#1667](https://github.com/elastic/elastic-charts/issues/1667)) ([285ec8b](https://github.com/elastic/elastic-charts/commit/285ec8bdd05dee758f03b503cb1df311b140c778))
+
+
+### Features
+
+* flame graph with WebGL ([#1664](https://github.com/elastic/elastic-charts/issues/1664)) ([96368ea](https://github.com/elastic/elastic-charts/commit/96368ea45e093cf0e1b0b6db7356568e98be25c9))
+
+# [46.1.0](https://github.com/elastic/elastic-charts/compare/v46.0.1...v46.1.0) (2022-05-05)
+
+
+### Bug Fixes
+
+* **animations:** flashing when using grouped parameterized keys ([#1665](https://github.com/elastic/elastic-charts/issues/1665)) ([1323edc](https://github.com/elastic/elastic-charts/commit/1323edc76f496028ffe2119ec83af2834484bede))
+* **deps:** update dependency @elastic/eui to ^55.1.0 ([#1663](https://github.com/elastic/elastic-charts/issues/1663)) ([ef8a185](https://github.com/elastic/elastic-charts/commit/ef8a185fc621890d561432953846112e957bdb5d))
+* **deps:** update dependency @elastic/eui to v55 ([#1659](https://github.com/elastic/elastic-charts/issues/1659)) ([5fc4af3](https://github.com/elastic/elastic-charts/commit/5fc4af3c84b1ff9d2818862d1eb19de780de4208))
+
+
+### Features
+
+* **annotations:** animated focus states for hovered annotation ([#1628](https://github.com/elastic/elastic-charts/issues/1628)) ([0bbb809](https://github.com/elastic/elastic-charts/commit/0bbb809132897dc691f1a71c676c46ec91aa59df))
+
+## [46.0.1](https://github.com/elastic/elastic-charts/compare/v46.0.0...v46.0.1) (2022-04-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^54.1.0 ([#1652](https://github.com/elastic/elastic-charts/issues/1652)) ([c9c6d31](https://github.com/elastic/elastic-charts/commit/c9c6d31aca342df83271efcbaeed5a79c02a71a3))
+* **rendering:** clip at panel sizes on small multiples ([#1651](https://github.com/elastic/elastic-charts/issues/1651)) ([2850530](https://github.com/elastic/elastic-charts/commit/285053061f286d6171221cb99483dd500dfaf52a))
+
+# [46.0.0](https://github.com/elastic/elastic-charts/compare/v45.1.1...v46.0.0) (2022-04-14)
+
+
+### Bug Fixes
+
+* **axis:** ticks generation for linear scale on bar charts ([#1645](https://github.com/elastic/elastic-charts/issues/1645)) ([65d0e7d](https://github.com/elastic/elastic-charts/commit/65d0e7deeba4f6b98d13e3eeff5442aefcb85132))
+* **axis:** use correct desired tick count based on axis type ([#1646](https://github.com/elastic/elastic-charts/issues/1646)) ([512a6cd](https://github.com/elastic/elastic-charts/commit/512a6cda80a6df0fc7709b4a0b1d5516df8782f2))
+* **deps:** update dependency @elastic/eui to v53 ([#1639](https://github.com/elastic/elastic-charts/issues/1639)) ([34bf325](https://github.com/elastic/elastic-charts/commit/34bf3251d69e07dde3537a2bececd84905836732))
+* **deps:** update dependency @elastic/eui to v54 ([#1642](https://github.com/elastic/elastic-charts/issues/1642)) ([6eaca0a](https://github.com/elastic/elastic-charts/commit/6eaca0a5052fd877aa380216a155982ca2198a2c))
+
+
+### Features
+
+* **axes:** option to fit domain to list of annotation `SpecIds` ([#1641](https://github.com/elastic/elastic-charts/issues/1641)) ([220350d](https://github.com/elastic/elastic-charts/commit/220350df862b52de364b7e96088f6c5651cb396b))
+* **goal:** auto generated linear ticks ([#1637](https://github.com/elastic/elastic-charts/issues/1637)) ([5437d8e](https://github.com/elastic/elastic-charts/commit/5437d8e985ecc8cfa32651ccc97fdf7b9da84b01))
+* **legend:** expose sorting function ([#1644](https://github.com/elastic/elastic-charts/issues/1644)) ([128114c](https://github.com/elastic/elastic-charts/commit/128114c57d722702faceb1d3277f5b12f3407dac))
+
+
+### BREAKING CHANGES
+
+* **goal:** goal chart now requires domain min and max to be defined
+
+## [45.1.1](https://github.com/elastic/elastic-charts/compare/v45.1.0...v45.1.1) (2022-03-30)
+
+
+### Bug Fixes
+
+* **style:** remove unnecessary eui exports ([3b8243c](https://github.com/elastic/elastic-charts/commit/3b8243c8222fc335670cf77b2013aadf9e7dcc7a))
+
+# [45.1.0](https://github.com/elastic/elastic-charts/compare/v45.0.1...v45.1.0) (2022-03-29)
+
+
+### Bug Fixes
+
+* **axis:** ordinal number ending fix for the weekly resolution ([#1634](https://github.com/elastic/elastic-charts/issues/1634)) ([18b4077](https://github.com/elastic/elastic-charts/commit/18b4077f4fdb0c2b38bc351809706f5112fc2690))
+* **deps:** update dependency @elastic/eui to ^52.2.0 ([#1632](https://github.com/elastic/elastic-charts/issues/1632)) ([7e0be07](https://github.com/elastic/elastic-charts/commit/7e0be078f86453c32bb1109b0390bfd03ecb39b6))
+* **deps:** update dependency @elastic/eui to v50 ([#1622](https://github.com/elastic/elastic-charts/issues/1622)) ([0eb7975](https://github.com/elastic/elastic-charts/commit/0eb79759621e0b1b0e7df36115fd7df9589b7ce9))
+* **deps:** update dependency @elastic/eui to v51 ([#1624](https://github.com/elastic/elastic-charts/issues/1624)) ([64d87e5](https://github.com/elastic/elastic-charts/commit/64d87e58632c37f8e05ee179ab4fffb3e68233af))
+* **deps:** update dependency @elastic/eui to v52 ([#1630](https://github.com/elastic/elastic-charts/issues/1630)) ([ada254e](https://github.com/elastic/elastic-charts/commit/ada254e563807e18bd7002f41c148c6ba7e78dc7))
+* **goal:** chart placement and overlap issues ([#1620](https://github.com/elastic/elastic-charts/issues/1620)) ([b5d375b](https://github.com/elastic/elastic-charts/commit/b5d375b53499fcfb9640a4f4f18383a5f1afff1d))
+
+
+### Features
+
+* **goal:** expose max sizing limits in theme.goal options ([#1621](https://github.com/elastic/elastic-charts/issues/1621)) ([60a14ba](https://github.com/elastic/elastic-charts/commit/60a14ba87f3f63910df9aa99312dfe4b8d6ce847))
+
 ## [45.0.1](https://github.com/elastic/elastic-charts/compare/v45.0.0...v45.0.1) (2022-03-04)
 
 

@@ -19,6 +19,24 @@ describe('Annotations stories', () => {
     });
   });
 
+  describe('Hover state', () => {
+    const url =
+      'http://localhost:9001/?path=/story/annotations-rects--styling&knob-showLineAnnotations=true&knob-chartRotation=0';
+
+    it('should fade all other annotations when line marker is hovered', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(url, {
+        bottom: 52,
+        left: 196,
+      });
+    });
+    it('should fade all other annotations when rect annotation is hovered', async () => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(url, {
+        bottom: 188,
+        left: 225,
+      });
+    });
+  });
+
   describe('Render within domain', () => {
     it('cover from 0 to end domain', async () => {
       await common.expectChartAtUrlToMatchScreenshot(

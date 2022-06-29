@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { CSSProperties } from 'react';
 import { $Values } from 'utility-types';
 
 import { Color } from '../../common/colors';
-import { Pixels, Ratio } from '../../common/geometry';
+import { Pixels, Radian, Ratio } from '../../common/geometry';
 import { Font, FontStyle } from '../../common/text_utils';
 import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, Padding, SimplePadding } from '../dimensions';
@@ -88,10 +89,10 @@ export interface GeometryStateStyle {
 }
 
 /** @public */
-export interface SharedGeometryStateStyle {
-  default: GeometryStateStyle;
-  highlighted: GeometryStateStyle;
-  unhighlighted: GeometryStateStyle;
+export interface SharedGeometryStateStyle<S extends CSSProperties = GeometryStateStyle> {
+  default: S;
+  highlighted: S;
+  unhighlighted: S;
 }
 
 /**
@@ -187,6 +188,41 @@ export interface GoalStyles {
   minorCenterLabel: Omit<TextStyle, 'padding' | 'fontSize'>;
   minFontSize: number;
   maxFontSize: number;
+  /**
+   * Circular goal/gauge size limit. The chart will _NOT_ be bigger even if there's ample room.
+   */
+  maxCircularSize: number;
+  /**
+   * Bullet goal/gauge size limit. The chart will _NOT_ be bigger even if there's ample room.
+   */
+  maxBulletSize: number;
+  /**
+   * The bar thickness is a maximum of this fraction of the smaller graph area size
+   */
+  barThicknessMinSizeRatio: number;
+  /**
+   * Bar thickness if there's ample room, no need for greater thickness even if there's a large area
+   */
+  baselineArcThickness: number;
+  /**
+   * Bar thickness if there's ample room, no need for greater thickness even if there's a large area
+   */
+  baselineBarThickness: number;
+  /**
+   * same ratio on each side
+   */
+  marginRatio: number;
+  maxTickFontSize: number;
+  maxLabelFontSize: number;
+  maxCentralFontSize: number;
+  /**
+   * 5-degree pitch ie. a circle is 72 steps
+   */
+  arcBoxSamplePitch: Radian;
+  /**
+   * mouse hover is detected in the padding too (eg. for Fitts law)
+   */
+  capturePad: number;
 }
 
 /**
@@ -258,6 +294,17 @@ export interface HeatmapStyle {
     };
   };
   maxLegendHeight?: number;
+}
+
+/** @public */
+export interface MetricStyle {
+  text: {
+    darkColor: Color;
+    lightColor: Color;
+  };
+  background: Color;
+  barBackground: Color;
+  nonFiniteText: string;
 }
 
 /** @public */
@@ -412,6 +459,8 @@ export interface Theme {
    * Theme styles for heatmap chart types
    */
   heatmap: HeatmapStyle;
+
+  metric: MetricStyle;
 }
 
 /** @public */

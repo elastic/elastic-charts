@@ -9,7 +9,6 @@
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { Position } from '../../../utils/common';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
 
 const SPEC_ID = 'spec_1';
@@ -359,16 +358,8 @@ describe('Rendering points - bubble', () => {
       ] = bubbles;
       // all the points minus the undefined ones on a log scale
       expect(points.length).toBe(7);
-      // all the points including null geometries
-      expect(geometriesIndex.size).toEqual(9);
-
-      const zeroValueIndexdGeometry = geometriesIndex.find(null, {
-        x: 56.25,
-        y: 100,
-      });
-      expect(zeroValueIndexdGeometry).toBeDefined();
-      expect(zeroValueIndexdGeometry.length).toBe(3);
-      expect(zeroValueIndexdGeometry.find(({ value: { x } }) => x === 5)).toBeDefined();
+      // we expect the same size of geometries as we exclude non-finite ones
+      expect(geometriesIndex.size).toEqual(7);
     });
   });
   describe('Remove points datum is not in domain', () => {
@@ -386,10 +377,10 @@ describe('Rendering points - bubble', () => {
       yScaleType: ScaleType.Linear,
     });
     const settings = MockGlobalSpec.settingsNoMargins({
-      xDomain: { min: NaN, max: 2 },
+      xDomain: { max: 2 },
       theme: { colors: { vizColors: ['red', 'blue'] } },
     });
-    const axis = MockGlobalSpec.axis({ position: Position.Left, hide: true, domain: { min: NaN, max: 1 } });
+    const axis = MockGlobalSpec.yAxis({ hide: true, domain: { max: 1 } });
     const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
     MockStore.addSpecs([pointSeriesSpec, axis, settings], store);
     const {

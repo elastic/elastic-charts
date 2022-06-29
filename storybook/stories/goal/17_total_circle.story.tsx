@@ -6,16 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Goal, Settings } from '@elastic/charts';
-import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
 import { Color } from '../../../packages/charts/src/common/colors';
 import { useBaseTheme } from '../../use_base_theme';
-
-const subtype = GoalSubtype.Goal;
 
 const colorMap: { [k: number]: Color } = {
   200: '#fc8d62',
@@ -25,25 +23,30 @@ const colorMap: { [k: number]: Color } = {
 
 const bandFillColor = (x: number): Color => colorMap[x];
 
-export const Example = () => (
-  <Chart>
-    <Settings baseTheme={useBaseTheme()} />
-    <Goal
-      id="spec_1"
-      subtype={subtype}
-      base={0}
-      target={260}
-      actual={280}
-      bands={[200, 250, 300]}
-      ticks={[0, 50, 100, 150, 200, 250, 265, 280]}
-      tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-      bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
-      labelMajor=""
-      labelMinor=""
-      centralMajor="280 MB/s"
-      centralMinor=""
-      angleStart={Math.PI + Math.PI / 2}
-      angleEnd={-Math.PI / 2}
-    />
-  </Chart>
-);
+export const Example = () => {
+  const start = number('startAngle (π)', 1.5, { min: -2, max: 2, step: 1 / 8 });
+  const end = number('endAngle (π)', -0.5, { min: -2, max: 2, step: 1 / 8 });
+  return (
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
+      <Goal
+        id="spec_1"
+        subtype={GoalSubtype.Goal}
+        base={0}
+        target={260}
+        actual={280}
+        domain={{ min: 0, max: 300 }}
+        bands={[200, 250, 300]}
+        ticks={[0, 50, 100, 150, 200, 250, 265, 280]}
+        tickValueFormatter={({ value }) => String(value)}
+        bandFillColor={({ value }) => bandFillColor(value)}
+        labelMajor=""
+        labelMinor=""
+        centralMajor="280 MB/s"
+        centralMinor=""
+        angleStart={start * Math.PI}
+        angleEnd={end * Math.PI}
+      />
+    </Chart>
+  );
+};

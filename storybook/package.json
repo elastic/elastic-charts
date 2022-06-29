@@ -7,13 +7,13 @@
     "start": "start-storybook -s ../public -p 9001 -c . --ci --no-version-updates",
     "dev": "start-storybook -s ../public -p 9001 -c . --no-version-updates",
     "build": "rm -rf ../.out && build-storybook -s ../public -c . -o ../.out",
-    "build:firebase": "build-storybook -s ../public -c . -o ../e2e-server/public",
+    "build:firebase": "build-storybook -s ../public -c . -o ../e2e_server/public",
     "typecheck": "tsc -p ./tsconfig.json --noEmit"
   },
   "dependencies": {
     "@elastic/charts": "^30.2.0",
     "@elastic/datemath": "^5.0.3",
-    "@elastic/eui": "^49.0.0",
+    "@elastic/eui": "^60.0.0",
     "@emotion/react": "^11.7.1",
     "luxon": "^1.27.0",
     "moment": "^2.29.1",

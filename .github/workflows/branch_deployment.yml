@@ -22,13 +22,13 @@ on:
       - 'Deployment | Branch'
 
 jobs:
-  deployment-waiting-check:
-    name: Deployment Waiting check
-    uses: elastic/elastic-charts/.github/workflows/e2e_waiting.reusable.yml@master
-    with:
-      sha: ${{ github.event.client_payload.sha }}
-      current_run_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
-      environment: "${{ github.event.client_payload.environment }}"
+  # deployment-waiting-check:
+  #   name: Deployment Waiting check
+  #   uses: elastic/elastic-charts/.github/workflows/e2e_waiting.reusable.yml@master
+  #   with:
+  #     sha: ${{ github.event.client_payload.sha }}
+  #     current_run_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
+  #     environment: "${{ github.event.client_payload.environment }}"
 
 #########################################################################################################
 
@@ -56,11 +56,11 @@ jobs:
 
       - name: Building storybook
         working-directory: storybook
-        run: yarn build:firebase # Outputs build to /e2e-server/public
+        run: yarn build:firebase # Outputs build to /e2e_server/public
       - name: Generate e2e server files
         run: yarn test:e2e:generate
       - name: Build e2e server inside storybook output directory
-        run: yarn test:e2e:server:build -o '../public/e2e' # Outputs build to /e2e-server/public/e2e
+        run: yarn test:e2e:server:build -o '../public/e2e' # Outputs build to /e2e_server/public/e2e
 
 #########################################################################################################
 
@@ -69,7 +69,7 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           expires: 14d # this updates for every new deployment
-          entryPoint: 'e2e-server'
+          entryPoint: 'e2e_server'
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           # New project on elastic's GCP org
           # See https://console.cloud.google.com/iam-admin/iam?project=ech-e2e-ci
@@ -118,35 +118,35 @@ jobs:
 
 #########################################################################################################
 
-  e2e-tests:
-    name: e2e Tests
-    uses: elastic/elastic-charts/.github/workflows/e2e_tests.reusable.yml@master
-    if: ${{ success() }}
-    needs: [build-deploy, cleanup]
-    with:
-      status_context: Playwright e2e
-      sha: ${{ github.event.client_payload.sha }}
-      commit_sha: "${{ github.event.client_payload.sha }}"
-      current_run_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
-      environment: "${{ github.event.client_payload.environment }}"
-      environment_url: "${{ needs.build-deploy.outputs.environment_url }}"
+  # e2e-tests:
+  #   name: e2e Tests
+  #   uses: elastic/elastic-charts/.github/workflows/e2e_tests.reusable.yml@master
+  #   if: ${{ success() }}
+  #   needs: [build-deploy, cleanup]
+  #   with:
+  #     status_context: Playwright e2e
+  #     sha: ${{ github.event.client_payload.sha }}
+  #     commit_sha: "${{ github.event.client_payload.sha }}"
+  #     current_run_url: "${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}"
+  #     environment: "${{ github.event.client_payload.environment }}"
+  #     environment_url: "${{ needs.build-deploy.outputs.environment_url }}"
 
 #########################################################################################################
 
-  failure-check:
-    name: Print context on failure
-    # if: ${{ failure() }} # TODO this
-    if: ${{ always() }}
-    needs: [build-deploy, cleanup, e2e-tests]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print github context
-        shell: python
-        run: |
-          print("""${{ toJSON(github) }}""")
-      - name: Print needs context
-        shell: python
-        run: |
-          print("""${{ toJSON(needs) }}""")
+  # failure-check:
+  #   name: Print context on failure
+  #   # if: ${{ failure() }} # TODO this
+  #   if: ${{ always() }}
+  #   needs: [build-deploy, cleanup, e2e-tests]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Print github context
+  #       shell: python
+  #       run: |
+  #         print("""${{ toJSON(github) }}""")
+  #     - name: Print needs context
+  #       shell: python
+  #       run: |
+  #         print("""${{ toJSON(needs) }}""")
 
 #########################################################################################################

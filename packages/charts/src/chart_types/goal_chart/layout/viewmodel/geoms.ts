@@ -15,19 +15,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel } from '../types/viewmodel_types';
-import { getSagitta, getMinSagitta } from './utils';
-
-const referenceCircularSizeCap = 360; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
-const referenceBulletSizeCap = 500; // goal/gauge won't be bigger even if there's ample room: it'd be a waste of space
-const barThicknessMinSizeRatio = 1 / 10; // bar thickness is a maximum of this fraction of the smaller graph area size
-const baselineArcThickness = 32; // bar is this thick if there's ample room; no need for greater thickness even if there's a large area
-const baselineBarThickness = 32; // bar is this thick if there's ample room; no need for greater thickness even if there's a large area
-const marginRatio = 0.05; // same ratio on each side
-const maxTickFontSize = 24;
-const maxLabelFontSize = 32;
-const maxCentralFontSize = 38;
-const arcBoxSamplePitch: Radian = (5 / 360) * TAU; // 5-degree pitch ie. a circle is 72 steps
-const capturePad = 16; // mouse hover is detected in the padding too; eg. for Fitts law
+import { getSagitta, getMinSagitta, getTranformDirection } from './utils';
 
 /** @internal */
 export interface Mark {
@@ -43,14 +31,24 @@ export class Section implements Mark {
   protected readonly yTo: number;
   protected readonly lineWidth: number;
   protected readonly strokeStyle: string;
+  protected readonly capturePad: number;
 
-  constructor(x: number, y: number, xTo: number, yTo: number, lineWidth: number, strokeStyle: string) {
+  constructor(
+    x: number,
+    y: number,
+    xTo: number,
+    yTo: number,
+    lineWidth: number,
+    strokeStyle: string,
+    capturePad: number,
+  ) {
     this.x = x;
     this.y = y;
     this.xTo = xTo;
     this.yTo = yTo;
     this.lineWidth = lineWidth;
     this.strokeStyle = strokeStyle;
+    this.capturePad = capturePad;
   }
 
   boundingBoxes() {
@@ -61,10 +59,10 @@ export class Section implements Mark {
       ? []
       : [
           {
-            x0: Math.min(this.x, this.xTo) - this.lineWidth / 2 - capturePad,
-            y0: Math.min(this.y, this.yTo) - this.lineWidth / 2 - capturePad,
-            x1: Math.max(this.x, this.xTo) + this.lineWidth / 2 + capturePad,
-            y1: Math.max(this.y, this.yTo) + this.lineWidth / 2 + capturePad,
+            x0: Math.min(this.x, this.xTo) - this.lineWidth / 2 - this.capturePad,
+            y0: Math.min(this.y, this.yTo) - this.lineWidth / 2 - this.capturePad,
+            x1: Math.max(this.x, this.xTo) + this.lineWidth / 2 + this.capturePad,
+            y1: Math.max(this.y, this.yTo) + this.lineWidth / 2 + this.capturePad,
           },
         ];
   }
@@ -92,6 +90,8 @@ export class Arc implements Mark {
   protected readonly anticlockwise: boolean;
   protected readonly lineWidth: number;
   protected readonly strokeStyle: string;
+  protected readonly arcBoxSamplePitch: number;
+  protected readonly capturePad: number;
 
   constructor(
     x: number,
@@ -102,6 +102,8 @@ export class Arc implements Mark {
     anticlockwise: boolean,
     lineWidth: number,
     strokeStyle: string,
+    capturePad: number,
+    arcBoxSamplePitch: number,
   ) {
     this.x = x;
     this.y = y;
@@ -111,6 +113,8 @@ export class Arc implements Mark {
     this.anticlockwise = anticlockwise;
     this.lineWidth = lineWidth;
     this.strokeStyle = strokeStyle;
+    this.capturePad = capturePad;
+    this.arcBoxSamplePitch = arcBoxSamplePitch;
   }
 
   boundingBoxes() {
@@ -126,9 +130,9 @@ export class Arc implements Mark {
     const endAngle = this.endAngle + rotationCount * TAU;
 
     // snapping to the closest `arcBoxSamplePitch` increment
-    const angleFrom: Radian = Math.round(startAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
-    const angleTo: Radian = Math.round(endAngle / arcBoxSamplePitch) * arcBoxSamplePitch;
-    const signedIncrement = arcBoxSamplePitch * Math.sign(angleTo - angleFrom);
+    const angleFrom: Radian = Math.round(startAngle / this.arcBoxSamplePitch) * this.arcBoxSamplePitch;
+    const angleTo: Radian = Math.round(endAngle / this.arcBoxSamplePitch) * this.arcBoxSamplePitch;
+    const signedIncrement = this.arcBoxSamplePitch * Math.sign(angleTo - angleFrom);
 
     for (let angle: Radian = angleFrom; angle <= angleTo; angle += signedIncrement) {
       // unit vector for the angle direction
@@ -145,10 +149,10 @@ export class Arc implements Mark {
       const outerX = this.x + vx * outerRadius;
       const outerY = this.y + vy * outerRadius;
 
-      box.x0 = Math.min(box.x0, innerX - capturePad, outerX - capturePad);
-      box.y0 = Math.min(box.y0, innerY - capturePad, outerY - capturePad);
-      box.x1 = Math.max(box.x1, innerX + capturePad, outerX + capturePad);
-      box.y1 = Math.max(box.y1, innerY + capturePad, outerY + capturePad);
+      box.x0 = Math.min(box.x0, innerX - this.capturePad, outerX - this.capturePad);
+      box.y0 = Math.min(box.y0, innerY - this.capturePad, outerY - this.capturePad);
+      box.x1 = Math.max(box.x1, innerX + this.capturePad, outerX + this.capturePad);
+      box.y1 = Math.max(box.y1, innerY + this.capturePad, outerY + this.capturePad);
 
       if (signedIncrement === 0) break; // happens if fromAngle === toAngle
     }
@@ -175,6 +179,7 @@ export class Text implements Mark {
   protected readonly fontShape: Font;
   protected readonly fontSize: number;
   protected readonly fillStyle: string;
+  protected readonly capturePad: number;
 
   constructor(
     x: number,
@@ -185,6 +190,7 @@ export class Text implements Mark {
     fontShape: Font,
     fontSize: number,
     fillStyle: string,
+    capturePad: number,
   ) {
     this.x = x;
     this.y = y;
@@ -194,6 +200,7 @@ export class Text implements Mark {
     this.fontShape = fontShape;
     this.fontSize = fontSize;
     this.fillStyle = fillStyle;
+    this.capturePad = capturePad;
   }
 
   setCanvasTextState(ctx: CanvasRenderingContext2D) {
@@ -207,10 +214,10 @@ export class Text implements Mark {
     const box = measureText(ctx)(this.text, this.fontShape, this.fontSize);
     return [
       {
-        x0: -box.width / 2 + this.x - capturePad,
-        y0: -box.height / 2 + this.y - capturePad,
-        x1: box.width / 2 + this.x + capturePad,
-        y1: box.height / 2 + this.y + capturePad,
+        x0: -box.width / 2 + this.x - this.capturePad,
+        y0: -box.height / 2 + this.y - this.capturePad,
+        x1: box.width / 2 + this.x + this.capturePad,
+        y1: box.height / 2 + this.y + this.capturePad,
       },
     ];
   }
@@ -247,8 +254,8 @@ export function geoms(
     labelMinor,
     centralMajor,
     centralMinor,
-    angleStart,
     angleEnd,
+    angleStart,
   } = bulletViewModel;
 
   const circular = subtype === GoalSubtype.Goal;
@@ -276,21 +283,21 @@ export function geoms(
 
   const referenceSize =
     Math.min(
-      circular ? referenceCircularSizeCap : referenceBulletSizeCap,
+      circular ? theme.maxCircularSize : theme.maxBulletSize,
       circular ? minSize : vertical ? parentDimensions.height : parentDimensions.width,
     ) *
-    (1 - 2 * marginRatio);
+    (1 - 2 * theme.marginRatio);
 
   const barThickness = Math.min(
-    circular ? baselineArcThickness : baselineBarThickness,
-    referenceSize * barThicknessMinSizeRatio,
+    circular ? theme.baselineArcThickness : theme.baselineBarThickness,
+    referenceSize * theme.barThicknessMinSizeRatio,
   );
 
   const tickLength = barThickness * Math.pow(1 / GOLDEN_RATIO, 3);
   const tickOffset = -tickLength / 2 - barThickness / 2;
-  const tickFontSize = Math.min(maxTickFontSize, referenceSize / 25);
-  const labelFontSize = Math.min(maxLabelFontSize, referenceSize / 18);
-  const centralFontSize = Math.min(maxCentralFontSize, referenceSize / 14);
+  const tickFontSize = Math.min(theme.maxTickFontSize, referenceSize / 25);
+  const labelFontSize = Math.min(theme.maxLabelFontSize, referenceSize / 18);
+  const centralFontSize = Math.min(theme.maxCentralFontSize, referenceSize / 14);
 
   const shape = circular ? 'arc' : 'line';
 
@@ -395,7 +402,8 @@ export function geoms(
   if (circular) {
     const sagitta = getMinSagitta(angleStart, angleEnd, r);
     const maxSagitta = getSagitta((3 / 2) * Math.PI, r);
-    data.yOffset.value = sagitta >= maxSagitta ? 0 : (maxSagitta - sagitta) / 2;
+    const direction = getTranformDirection(angleStart, angleEnd);
+    data.yOffset.value = Math.abs(sagitta) >= maxSagitta ? 0 : (direction * (maxSagitta - sagitta)) / 2;
   }
 
   const fullSize = referenceSize;
@@ -452,6 +460,7 @@ export function geoms(
           fontShape,
           fontSize,
           strokeStyle,
+          theme.capturePad,
         );
       } else if (aes.shape === 'arc') {
         const cx = chartCenter.x + pxRangeMid;
@@ -461,7 +470,18 @@ export function geoms(
         const endAngle = at ? angleScale(data[at].value) - Math.PI / 360 : angleScale(data[to].value);
         // prettier-ignore
         const anticlockwise = at || clockwise === (data[from].value < data[to].value);
-        return new Arc(cx, cy, radius, -startAngle, -endAngle, !anticlockwise, lineWidth, strokeStyle);
+        return new Arc(
+          cx,
+          cy,
+          radius,
+          -startAngle,
+          -endAngle,
+          !anticlockwise,
+          lineWidth,
+          strokeStyle,
+          theme.capturePad,
+          theme.arcBoxSamplePitch,
+        );
       } else {
         const translateX = chartCenter.x + (vertical ? axisNormalOffset : axisTangentOffset);
         const translateY = chartCenter.y - (vertical ? axisTangentOffset : axisNormalOffset) + yOffsetValue;
@@ -472,7 +492,7 @@ export function geoms(
         const y0 = vertical ? translateY - fromPx : translateY;
         const x1 = vertical ? translateX : translateX + toPx;
         const y1 = vertical ? translateY - toPx : translateY;
-        return new Section(x0, y0, x1, y1, lineWidth, strokeStyle);
+        return new Section(x0, y0, x1, y1, lineWidth, strokeStyle, theme.capturePad);
       }
     });
 }

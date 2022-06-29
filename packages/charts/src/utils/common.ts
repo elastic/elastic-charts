@@ -351,6 +351,8 @@ export function renderWithProps<P extends Record<string, any>>(El: ReactNode | C
  *
  * @param base structure to be duplicated, must have all props of `partial`
  * @param partial structure to override values from base
+ * @param options options to control merge behaviour
+ * @param additionalPartials partials to be used before base and after partial
  *
  * @returns new base structure with updated partial values
  * @internal
@@ -631,6 +633,11 @@ export function isFiniteNumber(value: unknown): value is number {
   return Number.isFinite(value);
 }
 
+/** @internal */
+export function isNonNullablePrimitiveValue(value: unknown): value is NonNullable<PrimitiveValue> {
+  return typeof value === 'string' || typeof value === 'number';
+}
+
 /**
  * Strips all undefined properties from object
  * @internal
@@ -645,3 +652,30 @@ export function stripUndefined<R extends Record<string, unknown>>(source: R): R 
     return acc;
   }, {} as R);
 }
+
+/**
+ * Returns `Array.filter` callback for values between a min and max
+ * @internal
+ */
+export const isBetween = (min: number, max: number, exclusive = false): ((n: number) => boolean) =>
+  exclusive ? (n) => n < max && n > min : (n) => n <= max && n >= min;
+
+/**
+ * Returns `Array.reduce` callback to clamp values and remove duplicates
+ * @internal
+ */
+export const clampAll = (
+  min: number,
+  max: number,
+): [callbackfn: (acc: number[], value: number) => number[], initialAcc: number[]] => {
+  const seen = new Set<number>();
+  return [
+    (acc: number[], n: number) => {
+      const clampValue = clamp(n, min, max);
+      if (!seen.has(clampValue)) acc.push(clampValue);
+      seen.add(clampValue);
+      return acc;
+    },
+    [],
+  ];
+};

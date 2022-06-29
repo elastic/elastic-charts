@@ -33,6 +33,7 @@ import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
+import { createOnPointerUpdateCaller } from './selectors/on_pointer_update_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 
 const EMPTY_MAP = new Map();
@@ -48,6 +49,8 @@ export class HeatmapState implements InternalChartState {
   onElementOutCaller: (state: GlobalChartState) => void = createOnElementOutCaller();
 
   onBrushEndCaller: (state: GlobalChartState) => void = createOnBrushEndCaller();
+
+  onPointerUpdate: (state: GlobalChartState) => void = createOnPointerUpdateCaller();
 
   isInitialized(globalState: GlobalChartState) {
     return getSpecOrNull(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
@@ -129,5 +132,6 @@ export class HeatmapState implements InternalChartState {
     this.onElementOutCaller(globalState);
     this.onElementClickCaller(globalState);
     this.onBrushEndCaller(globalState);
+    this.onPointerUpdate(globalState);
   }
 }

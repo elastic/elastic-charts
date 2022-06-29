@@ -12,6 +12,8 @@ import { RectAnnotationDatum } from '../../utils/specs';
 
 /** @internal */
 export interface AnnotationRectProps {
+  specId: string;
+  id: string;
   datum: RectAnnotationDatum;
   rect: Rect;
   panel: Dimensions;

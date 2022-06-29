@@ -10,6 +10,7 @@ concurrency:
 on:
   pull_request:
     branches:
+      - buildkite-main # to be removed
       - master
       - alpha
       - next
@@ -23,6 +24,7 @@ jobs:
 
   checks-workflow:
     name: Checks
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'ci:buildkite') }}
     uses: elastic/elastic-charts/.github/workflows/checks.reusable.yml@master
 
 #########################################################################################################

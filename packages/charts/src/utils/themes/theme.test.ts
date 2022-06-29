@@ -16,7 +16,7 @@ import {
   mergeWithDefaultAnnotationRect,
   mergeWithDefaultTheme,
 } from './merge_utils';
-import { AreaSeriesStyle, LineSeriesStyle, PartialTheme, TextStyle, Theme } from './theme';
+import { AreaSeriesStyle, LineAnnotationStyle, LineSeriesStyle, PartialTheme, TextStyle, Theme } from './theme';
 
 describe('Theme', () => {
   let CLONED_LIGHT_THEME: Theme;
@@ -65,11 +65,17 @@ describe('Theme', () => {
         padding: 0,
       };
 
-      const expectedMergedCustomLineConfig = { line: customLineConfig, details: defaultDetailsConfig };
+      const expectedMergedCustomLineConfig = {
+        line: customLineConfig,
+        details: defaultDetailsConfig,
+      } as LineAnnotationStyle;
       const mergedCustomLineConfig = mergeWithDefaultAnnotationLine({ line: customLineConfig });
       expect(mergedCustomLineConfig).toEqual(expectedMergedCustomLineConfig);
 
-      const expectedMergedCustomDetailsConfig = { line: defaultLineConfig, details: customDetailsConfig };
+      const expectedMergedCustomDetailsConfig = {
+        line: defaultLineConfig,
+        details: customDetailsConfig,
+      } as LineAnnotationStyle;
       const mergedCustomDetailsConfig = mergeWithDefaultAnnotationLine({ details: customDetailsConfig });
       expect(mergedCustomDetailsConfig).toEqual(expectedMergedCustomDetailsConfig);
     });

@@ -30,7 +30,7 @@ const e5 = Math.sqrt(10);
 const e2 = Math.sqrt(2);
 
 /** @internal */
-export function getLinearTicks(start: number, stop: number, count: number, base: number = 2) {
+export function getLinearTicks(start: number, stop: number, count: number, base: number = 2): number[] {
   let reverse,
     i = -1,
     n,

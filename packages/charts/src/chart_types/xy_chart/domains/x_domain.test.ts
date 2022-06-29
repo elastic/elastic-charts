@@ -667,7 +667,7 @@ describe('X Domain', () => {
 
   test('should account for custom domain when merging a linear domain: lower bounded domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
-    const xDomain = { min: 0, max: NaN };
+    const xDomain = { min: 0 };
     const specs = [MockSeriesSpec.line({ xScaleType: ScaleType.Linear })];
 
     const mergedDomain = mergeXDomain(
@@ -676,7 +676,7 @@ describe('X Domain', () => {
     );
     expect(mergedDomain.domain).toEqual([0, 5]);
 
-    const invalidXDomain = { min: 10, max: NaN };
+    const invalidXDomain = { min: 10 };
     const { domain } = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
       xValues,
@@ -689,7 +689,7 @@ describe('X Domain', () => {
 
   test('should account for custom domain when merging a linear domain: upper bounded domain', () => {
     const xValues = new Set([1, 2, 3, 4, 5]);
-    const xDomain = { min: NaN, max: 3 };
+    const xDomain = { max: 3 };
     const specs = [MockSeriesSpec.line({ xScaleType: ScaleType.Linear })];
 
     const mergedDomain = mergeXDomain(
@@ -698,7 +698,7 @@ describe('X Domain', () => {
     );
     expect(mergedDomain.domain).toEqual([1, 3]);
 
-    const invalidXDomain = { min: NaN, max: -1 };
+    const invalidXDomain = { max: -1 };
     const { domain } = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
       xValues,
@@ -735,7 +735,7 @@ describe('X Domain', () => {
     const specs = [MockSeriesSpec.bar({ xScaleType: ScaleType.Linear })];
 
     test('with valid minInterval', () => {
-      const xDomain = { minInterval: 0.5, min: NaN, max: NaN };
+      const xDomain = { minInterval: 0.5 };
       const mergedDomain = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
         xValues,
@@ -744,7 +744,7 @@ describe('X Domain', () => {
     });
 
     test('with valid minInterval greater than computed minInterval for single datum set', () => {
-      const xDomain = { minInterval: 10, min: NaN, max: NaN };
+      const xDomain = { minInterval: 10 };
       const mergedDomain = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
         new Set([5]),
@@ -753,7 +753,7 @@ describe('X Domain', () => {
     });
 
     test('with invalid minInterval greater than computed minInterval for multi data set', () => {
-      const invalidXDomain = { minInterval: 10, min: NaN, max: NaN };
+      const invalidXDomain = { minInterval: 10 };
       const { minInterval } = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
         xValues,
@@ -765,7 +765,7 @@ describe('X Domain', () => {
     });
 
     test('with invalid minInterval less than 0', () => {
-      const invalidXDomain = { minInterval: -1, min: NaN, max: NaN };
+      const invalidXDomain = { minInterval: -1 };
       const { minInterval } = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
         xValues,

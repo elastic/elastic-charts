@@ -117,7 +117,7 @@ function renderXYAxisChart() {
 
       <BarSeries
         id="series bars chart"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
@@ -145,6 +145,7 @@ function renderGoalchart() {
       base={0}
       target={260}
       actual={280}
+      domain={{ min: 0, max: 300 }}
       bands={[200, 250, 300]}
       ticks={[0, 50, 100, 150, 200, 250, 300]}
       tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}

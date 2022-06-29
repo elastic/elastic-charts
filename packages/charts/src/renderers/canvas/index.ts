@@ -13,11 +13,6 @@ import { ClippedRanges } from '../../utils/geometry';
 /** @internal */
 export type CanvasRenderer = (ctx: CanvasRenderingContext2D) => void;
 
-/** @internal */
-export function isCanvasRenderer(thing: unknown): thing is CanvasRenderer {
-  return thing instanceof Function; // can't / needn't check more than this for it to pass
-}
-
 /**
  * withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
  * The idea is that you just set what's needed for the enclosed snippet, which may temporarily override values in the

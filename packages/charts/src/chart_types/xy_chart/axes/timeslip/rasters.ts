@@ -86,15 +86,32 @@ const hourFormat: Partial<ConstructorParameters<typeof Intl.DateTimeFormat>[1]> 
   hour12: false,
 };
 
+const englishOrdinalEndings = {
+  zero: 'th',
+  one: 'st',
+  two: 'nd',
+  few: 'rd',
+  many: 'th',
+  other: 'th',
+};
+const englishPluralRules = new Intl.PluralRules('en-US', { type: 'ordinal' });
+const englishOrdinalEnding = (signedNumber: number) => englishOrdinalEndings[englishPluralRules.select(signedNumber)];
+
 /** @internal */
 export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, timeZone: string) => {
-  const minorDayFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
+  const minorDayBaseFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
+  const minorDayFormat = (d: number) => {
+    const numberString = minorDayBaseFormat(d);
+    const number = Number.parseInt(numberString, 10);
+    return locale.substr(0, 2) === 'en' ? `${numberString}${englishOrdinalEnding(number)}` : numberString;
+  };
   const detailedDayFormat = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     timeZone,
   }).format;
+
   const detailedHourFormatBase = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'short',
@@ -231,21 +248,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       }
     },
     detailedLabelFormat: detailedDayFormat,
-    minorTickLabelFormat: (d) => {
-      const numberString = minorDayFormat(d);
-      const number = Number.parseInt(numberString, 10);
-      return locale.substr(0, 2) === 'en'
-        ? `${numberString}${
-            number === 1 || number === 21 || number === 31
-              ? 'st'
-              : number === 2 || number === 22
-              ? 'nd'
-              : number === 3 || number === 23
-              ? 'rd'
-              : 'th'
-          }`
-        : numberString;
-    },
+    minorTickLabelFormat: minorDayFormat,
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -268,7 +271,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         }
       }
     },
-    minorTickLabelFormat: (d) => `${minorDayFormat(d)}th`,
+    minorTickLabelFormat: minorDayFormat,
     detailedLabelFormat: detailedDayFormat,
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
@@ -313,31 +316,33 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: true,
     minimumTickPixelDistance: 2 * minimumTickPixelDistance,
     binStarts: (domainFrom, domainTo) =>
-      ([...days.binStarts(domainFrom, domainTo)].flatMap(({ year, month, dayOfMonth, dayOfWeek }) =>
-        [0, 6, 12, 18].map((hour) => {
-          const temporalArgs = {
-            timeZone,
-            year,
-            month,
-            day: dayOfMonth,
-            hour,
-          };
-          const timePoint = cachedZonedDateTimeFrom(temporalArgs);
-          const timePointSec = timePoint[timeProp.epochSeconds];
-          return Number.isNaN(timePointSec)
-            ? []
-            : {
-                dayOfMonth,
-                // fontColor: offHourFontColor && (hour < workHourMin || hour > workHourMax) ? offHourFontColor : defaultFontColor,
-                dayOfWeek,
-                hour,
-                year,
-                month,
-                timePointSec,
-                nextTimePointSec: timePointSec + 6 * 60 * 60, // fixme this is not correct in case the day is 23hrs long due to winter->summer time switch
-              };
-        }),
-      ) as Array<TimeBin & YearToHour>).map((b: TimeBin & YearToHour, i, a) =>
+      (
+        [...days.binStarts(domainFrom, domainTo)].flatMap(({ year, month, dayOfMonth, dayOfWeek }) =>
+          [0, 6, 12, 18].map((hour) => {
+            const temporalArgs = {
+              timeZone,
+              year,
+              month,
+              day: dayOfMonth,
+              hour,
+            };
+            const timePoint = cachedZonedDateTimeFrom(temporalArgs);
+            const timePointSec = timePoint[timeProp.epochSeconds];
+            return Number.isNaN(timePointSec)
+              ? []
+              : {
+                  dayOfMonth,
+                  // fontColor: offHourFontColor && (hour < workHourMin || hour > workHourMax) ? offHourFontColor : defaultFontColor,
+                  dayOfWeek,
+                  hour,
+                  year,
+                  month,
+                  timePointSec,
+                  nextTimePointSec: timePointSec + 6 * 60 * 60, // fixme this is not correct in case the day is 23hrs long due to winter->summer time switch
+                };
+          }),
+        ) as Array<TimeBin & YearToHour>
+      ).map((b: TimeBin & YearToHour, i, a) =>
         Object.assign(b, { nextTimePointSec: i === a.length - 1 ? b.nextTimePointSec : a[i + 1].timePointSec }),
       ),
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, {

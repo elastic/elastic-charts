@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Scale } from '../../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
@@ -52,7 +52,7 @@ export const getFallBackTickFormatter = createCustomCachedSelector(
 );
 
 const getUnitScales = createCustomCachedSelector([getScaleFunction, getAxisSpecsSelector], (getScale, axesSpecs) =>
-  axesSpecs.reduce<Map<AxisId, Scale<string | number>>>((unitScales, axisSpec) => {
+  axesSpecs.reduce<Map<AxisId, ScaleBand | ScaleContinuous>>((unitScales, axisSpec) => {
     const scale = getScale(axisSpec, [0, 1]);
     if (scale) unitScales.set(axisSpec.id, scale);
     else Logger.warn(`Cannot compute scale for axis spec ${axisSpec.id}. Axis will not be displayed.`);
@@ -69,7 +69,7 @@ const getThemedAxesStyles = createCustomCachedSelector(
 /** @internal */
 export type JoinedAxisData = {
   axisSpec: AxisSpec;
-  scale: Scale<number | string>;
+  scale: ScaleContinuous | ScaleBand;
   axesStyle: AxisStyle;
   gridLine: GridLineStyle;
   isXAxis: boolean;

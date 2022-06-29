@@ -68,10 +68,7 @@ function getProjectedPointerPosition(
   };
 }
 
-function getPosRelativeToPanel(
-  panelScale: ScaleBand<number | string>,
-  pos: number,
-): { pos: number; value: PrimitiveValue } {
+function getPosRelativeToPanel(panelScale: ScaleBand, pos: number): { pos: number; value: PrimitiveValue } {
   const outerPadding = panelScale.outerPadding * panelScale.step;
   const innerPadding = panelScale.innerPadding * panelScale.step;
   const numOfDomainSteps = panelScale.domain.length;

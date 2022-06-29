@@ -7,10 +7,9 @@
  */
 
 import { createPopper, Instance } from '@popperjs/core';
-import React, { RefObject, useRef, useEffect, useCallback } from 'react';
+import React, { RefObject, useRef, useEffect, useCallback, CSSProperties } from 'react';
 
 import { DEFAULT_CSS_CURSOR } from '../../../../../common/constants';
-import { AnnotationClickListener } from '../../../../../specs';
 import {
   DOMElementType,
   onDOMElementEnter as onDOMElementEnterAction,
@@ -20,6 +19,8 @@ import {
 import { Position, renderWithProps } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { AnnotationLineProps } from '../../../annotations/line/types';
+import { AnimationOptions } from '../../canvas/animations/animation';
+import { GetAnnotationParamsFn } from '../../common/utils';
 
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'markers' | 'panel'> & {
   chartAreaRef: RefObject<HTMLCanvasElement>;
@@ -27,7 +28,8 @@ type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'ma
   onDOMElementEnter: typeof onDOMElementEnterAction;
   onDOMElementLeave: typeof onDOMElementLeaveAction;
   onDOMElementClick: typeof onDOMElementClickAction;
-  annotationSpec?: AnnotationClickListener;
+  clickable: boolean;
+  getHoverParams: GetAnnotationParamsFn;
 };
 
 const MARKER_TRANSFORMS = {
@@ -56,19 +58,23 @@ export function LineMarker({
   onDOMElementEnter,
   onDOMElementLeave,
   onDOMElementClick,
-  annotationSpec,
+  clickable,
+  getHoverParams,
 }: LineMarkerProps) {
+  const { style, options } = getHoverParams(id);
   const iconRef = useRef<HTMLDivElement | null>(null);
   const testRef = useRef<HTMLDivElement | null>(null);
   const popper = useRef<Instance | null>(null);
-  const style = {
+  const markerStyle: CSSProperties = {
+    ...style,
+    ...getAnimatedStyles(options, style),
     color,
     top: chartDimensions.top + position.top + panel.top,
     left: chartDimensions.left + position.left + panel.left,
-    cursor: annotationSpec ? 'pointer' : DEFAULT_CSS_CURSOR,
+    cursor: clickable ? 'pointer' : DEFAULT_CSS_CURSOR,
   };
-  const transform = { transform: getMarkerCentredTransform(alignment, Boolean(dimension)) };
 
+  const transform = { transform: getMarkerCentredTransform(alignment, Boolean(dimension)) };
   const setPopper = useCallback(() => {
     if (!iconRef.current || !testRef.current) return;
 
@@ -111,11 +117,11 @@ export function LineMarker({
   }, [setPopper, body]);
 
   void popper?.current?.update?.();
+
   // want it to be tabbable if interactive if there is a click handler
   return onDOMElementClick ? (
     <button
       className="echAnnotation"
-      key={`annotation-${id}`}
       onMouseEnter={() => {
         onDOMElementEnter({
           createdBySpecId: specId,
@@ -126,7 +132,7 @@ export function LineMarker({
       }}
       onMouseLeave={onDOMElementLeave}
       onClick={onDOMElementClick}
-      style={{ ...style, ...transform }}
+      style={{ ...markerStyle, ...transform }}
       type="button"
     >
       <div ref={iconRef} className="echAnnotation__icon">
@@ -141,7 +147,6 @@ export function LineMarker({
   ) : (
     <div
       className="echAnnotation"
-      key={`annotation-${id}`}
       onMouseEnter={() => {
         onDOMElementEnter({
           createdBySpecId: specId,
@@ -151,7 +156,7 @@ export function LineMarker({
         });
       }}
       onMouseLeave={onDOMElementLeave}
-      style={{ ...style, ...transform }}
+      style={{ ...markerStyle, ...transform }}
     >
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
@@ -163,4 +168,17 @@ export function LineMarker({
       )}
     </div>
   );
+}
+
+function getAnimatedStyles(
+  { duration, delay, timeFunction, snapValues = [], enabled }: AnimationOptions,
+  { opacity }: CSSProperties,
+): CSSProperties {
+  if (!enabled || (typeof opacity === 'number' && snapValues.includes(opacity))) return {};
+  return {
+    transitionDuration: `${duration}ms`,
+    transitionDelay: `${delay}ms`,
+    transitionProperty: 'opacity',
+    transitionTimingFunction: timeFunction,
+  };
 }

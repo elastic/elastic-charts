@@ -9,13 +9,10 @@
 import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 
-import { ChartType } from '../..';
 import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs';
 // import { MockStore } from '../../../mocks/store/store';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
-import { Scale } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
 import { Position, mergePartial, HorizontalAlignment, VerticalAlignment } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { OrdinalDomain } from '../../../utils/domain';
@@ -103,37 +100,28 @@ describe('Axis computational utils', () => {
     maxLabelTextHeight: 10,
     isHidden: false,
   };
-  const verticalAxisSpec = MockGlobalSpec.axis({
-    chartType: ChartType.XYAxis,
-    specType: SpecType.Axis,
+  const verticalAxisSpec = MockGlobalSpec.yAxis({
     id: 'axis_1',
     title: 'Axis 1',
     groupId: 'group_1',
     hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
-    position: Position.Left,
     style,
     showGridLines: true,
     integersOnly: false,
   });
 
-  const horizontalAxisSpec = MockGlobalSpec.axis({
-    chartType: ChartType.XYAxis,
-    specType: SpecType.Axis,
+  const horizontalAxisSpec = MockGlobalSpec.xAxis({
     id: 'axis_2',
     title: 'Axis 2',
     groupId: 'group_1',
     hide: false,
-    showOverlappingTicks: false,
-    showOverlappingLabels: false,
     position: Position.Top,
     style,
     integersOnly: false,
   });
 
   /*
-    const verticalAxisSpecWTitle = MockGlobalSpec.axis({
+    const verticalAxisSpecWTitle = MockGlobalSpec.yAxis({
       chartType: ChartType.XYAxis,
       specType: SpecType.Axis,
       id: 'axis_1',
@@ -1019,7 +1007,7 @@ describe('Axis computational utils', () => {
         [
           MockGlobalSpec.settingsNoMargins(),
           lineSeriesSpec,
-          MockGlobalSpec.axis({
+          MockGlobalSpec.yAxis({
             ...verticalAxisSpec,
             hide: true,
             gridLine: {
@@ -1319,7 +1307,7 @@ describe('Axis computational utils', () => {
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
     });
-    const scale: Scale<number | string> = computeXScale({
+    const scale = computeXScale({
       xDomain: xDomainTime,
       totalBarsInCluster: 0,
       range: [0, 603.5],
@@ -1327,16 +1315,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(
-        axisSpec,
-        scale as Scale<number>,
-        scale.ticks(),
-        offset,
-        (v: any) => formatter(v, tickFormatOption),
-        0,
-        0,
-        true,
-      ),
+      generateTicks(axisSpec, scale, scale.ticks(), offset, (v: any) => formatter(v, tickFormatOption), 0, 0, true),
     ).toEqual([
       { value: 1547208000000, label: '2019-01-11', position: 25.145833333333332, layer },
       { value: 1547251200000, label: '2019-01-12', position: 85.49583333333334, layer },
@@ -1369,7 +1348,7 @@ describe('Axis computational utils', () => {
       domain: [1547190000000, 1547622000000],
       minInterval: 86400000,
     });
-    const scale: Scale<number | string> = computeXScale({
+    const scale = computeXScale({
       xDomain: xDomainTime,
       totalBarsInCluster: 0,
       range: [0, 603.5],
@@ -1377,7 +1356,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const ticks = generateTicks(
       axisSpec,
-      scale as Scale<number>,
+      scale,
       scale.ticks(),
       offset,
       (d) => tickFormat(d, { timeZone: xDomainTime.timeZone }),
@@ -1423,7 +1402,7 @@ describe('Axis computational utils', () => {
       minInterval: 86400000,
       timeZone: 'utc',
     });
-    const scale: Scale<number | string> = computeXScale({
+    const scale = computeXScale({
       xDomain: xDomainTime,
       totalBarsInCluster: 0,
       range: [0, 603.5],
@@ -1431,16 +1410,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(
-        axisSpec,
-        scale as Scale<number>,
-        scale.ticks(),
-        offset,
-        (v) => tickFormat(v, tickFormatOption),
-        0,
-        0,
-        true,
-      ),
+      generateTicks(axisSpec, scale, scale.ticks(), offset, (v) => tickFormat(v, tickFormatOption), 0, 0, true),
     ).toEqual([
       {
         value: 1547208000000,
@@ -1582,16 +1552,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(
-        axisSpec,
-        scale as Scale<number>,
-        scale.ticks(),
-        offset,
-        (v) => tickFormat(v, tickFormatOption),
-        0,
-        0,
-        true,
-      ),
+      generateTicks(axisSpec, scale, scale.ticks(), offset, (v) => tickFormat(v, tickFormatOption), 0, 0, true),
     ).toEqual([
       {
         value: 1547208000000,

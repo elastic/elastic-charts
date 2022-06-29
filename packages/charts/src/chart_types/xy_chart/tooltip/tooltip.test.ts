@@ -40,7 +40,7 @@ describe('Tooltip formatting', () => {
     ...SPEC_1,
     y0Accessors: [1],
   });
-  const YAXIS_SPEC = MockGlobalSpec.axis({
+  const YAXIS_SPEC = MockGlobalSpec.yAxis({
     chartType: ChartType.XYAxis,
     specType: SpecType.Axis,
     id: 'axis_1',

@@ -13,37 +13,57 @@ import {
   mergeWithDefaultAnnotationLine,
   mergeWithDefaultAnnotationRect,
 } from '../../../../../utils/themes/merge_utils';
+import { SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 import { AnnotationRectProps } from '../../../annotations/rect/types';
 import { AnnotationDimensions } from '../../../annotations/types';
 import { getSpecsById } from '../../../state/utils/spec';
 import { AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../../utils/specs';
+import { getAnnotationHoverParamsFn } from '../../common/utils';
+import { AnimationContext } from '../animations';
 import { renderLineAnnotations } from './lines';
 import { renderRectAnnotations } from './rect';
-
-interface AnnotationProps {
-  annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
-  annotationSpecs: AnnotationSpec[];
-  rotation: Rotation;
-  renderingArea: Dimensions;
-}
 
 /** @internal */
 export function renderAnnotations(
   ctx: CanvasRenderingContext2D,
-  { annotationDimensions, annotationSpecs, rotation, renderingArea }: AnnotationProps,
+  aCtx: AnimationContext,
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
+  annotationSpecs: AnnotationSpec[],
+  rotation: Rotation,
+  renderingArea: Dimensions,
+  sharedStyle: SharedGeometryStateStyle,
+  hoveredAnnotationIds: string[],
   renderOnBackground: boolean = true,
 ) {
   annotationDimensions.forEach((annotation, id) => {
     const spec = getSpecsById<AnnotationSpec>(annotationSpecs, id);
     const isBackground = (spec?.zIndex ?? 0) <= 0;
+
     if (spec && isBackground === renderOnBackground) {
+      const getHoverParams = getAnnotationHoverParamsFn(hoveredAnnotationIds, sharedStyle, spec.animations);
       if (isLineAnnotation(spec)) {
         const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
-        renderLineAnnotations(ctx, annotation as AnnotationLineProps[], lineStyle, rotation, renderingArea);
+        renderLineAnnotations(
+          ctx,
+          aCtx,
+          annotation as AnnotationLineProps[],
+          lineStyle,
+          getHoverParams,
+          rotation,
+          renderingArea,
+        );
       } else if (isRectAnnotation(spec)) {
         const rectStyle = mergeWithDefaultAnnotationRect(spec.style);
-        renderRectAnnotations(ctx, annotation as AnnotationRectProps[], rectStyle, rotation, renderingArea);
+        renderRectAnnotations(
+          ctx,
+          aCtx,
+          annotation as AnnotationRectProps[],
+          rectStyle,
+          getHoverParams,
+          rotation,
+          renderingArea,
+        );
       }
     }
   });
