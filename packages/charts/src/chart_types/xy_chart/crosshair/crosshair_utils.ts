@@ -8,7 +8,7 @@
 
 import { AnchorPosition } from '../../../components/portal/types';
 import { Line, Rect } from '../../../geoms/types';
-import { Scale } from '../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isContinuousScale } from '../../../scales/types';
 import { TooltipStickTo } from '../../../specs/constants';
 import { Rotation } from '../../../utils/common';
@@ -22,7 +22,7 @@ export const DEFAULT_SNAP_POSITION_BAND = 1;
 /** @internal */
 export function getSnapPosition(
   value: string | number,
-  scale: Scale<number | string>,
+  scale: ScaleBand | ScaleContinuous,
   totalBarsInCluster = 1,
 ): { band: number; position: number } | undefined {
   const position = scale.scale(value);
@@ -82,11 +82,11 @@ export function getCursorBandPosition(
   panel: Dimensions,
   cursorPosition: Point,
   invertedValue: {
-    value: any;
+    value: string | number;
     withinBandwidth: boolean;
   },
   snapEnabled: boolean,
-  xScale: Scale<number | string>,
+  xScale: ScaleBand | ScaleContinuous,
   totalBarsInCluster?: number,
 ): Rect | undefined {
   const { top, left, width, height } = panel;

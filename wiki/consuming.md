@@ -51,6 +51,12 @@ If using Elastic Charts in the same project that is already compiling EUI's Sass
 @import './node_modules/@elastic/charts/theme_dark';
 ```
 
+## Supported React versions
+
+By default `@elastic/charts` supports, develops and tests against the version of `react` defined in [`kibana/package.json`](https://github.com/elastic/kibana/blob/main/package.json), most currently `react@^16`.
+
+> We understand the desire to use later versions of `react` and we have verified the usage of `@elastic/charts` with `react@^17` and see no perceivable impact. We advice using caution when consuming charts with `react@^17` until kibana is upgraded and we start to develop and test against this latest version, see https://github.com/elastic/kibana/issues/129095.
+
 ## Polyfills
 
 Elastic Charts is transpiled to es5 but requires the `core-js/stable` polyfill for IE11.

@@ -479,26 +479,8 @@ describe('Rendering utils', () => {
 
       describe('Dataset validations', () => {
         const expectedValues = [
-          15.29,
-          40.89,
-          13.39,
-          36.81,
-          44.66,
-          44.34,
-          51.01,
-          6.97,
-          34.04,
-          49.07,
-          45.11,
-          25.44,
-          8.98,
-          9.33,
-          50.62,
-          48.89,
-          44.34,
-          1,
-          33.09,
-          5.94,
+          15.29, 40.89, 13.39, 36.81, 44.66, 44.34, 51.01, 6.97, 34.04, 49.07, 45.11, 25.44, 8.98, 9.33, 50.62, 48.89,
+          44.34, 1, 33.09, 5.94,
         ];
         it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedValues[i]]))(
           'should return stepped value from domain - data[%#]',

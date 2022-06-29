@@ -16,20 +16,30 @@ import {
   ScalePower,
   scaleSqrt,
   scaleUtc,
+  ScaleTime,
 } from 'd3-scale';
 import { Required } from 'utility-types';
 
-import { Scale, ScaleContinuousType } from '.';
+import { ScaleContinuousType } from '.';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
-import { clamp, mergePartial } from '../utils/common';
+import { clamp, isFiniteNumber, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 import { LogScaleOptions } from './types';
 
-const SCALES = {
+type ContinuousScaleType =
+  | typeof ScaleType.Time
+  | typeof ScaleType.Linear
+  | typeof ScaleType.Log
+  | typeof ScaleType.Sqrt;
+
+const SCALES: Record<
+  ContinuousScaleType,
+  () => ScaleContinuousNumeric<number, number, undefined> | ScaleTime<number, number, undefined>
+> = {
   [ScaleType.Linear]: scaleLinear,
   [ScaleType.Log]: scaleLog,
   [ScaleType.Sqrt]: scaleSqrt,
@@ -55,7 +65,7 @@ const defaultScaleOptions: ScaleOptions = {
 const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
 
 /** @internal */
-export class ScaleContinuous implements Scale<number> {
+export class ScaleContinuous {
   readonly bandwidth: number;
   readonly totalBarsInCluster: number;
   readonly bandwidthPadding: number;
@@ -70,6 +80,7 @@ export class ScaleContinuous implements Scale<number> {
   readonly timeZone: string;
   readonly barsPadding: number;
   readonly isSingleValueHistogram: boolean;
+  readonly unit?: string;
   private readonly project: (d: number) => number;
   private readonly inverseProject: (d: number) => number | Date;
 
@@ -165,21 +176,22 @@ export class ScaleContinuous implements Scale<number> {
         : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount);
 
     this.domain = nicePaddedDomain;
-    this.project = (d: number) => d3Scale(d);
-    this.inverseProject = (d: number) => d3Scale.invert(d);
+    // Returning NaN means that the value is projectable/invertible within the domain or range
+    this.project = (d: number) => d3Scale(d) ?? NaN;
+    this.inverseProject = (d: number) => d3Scale.invert(d) ?? NaN;
   }
 
-  scale(value?: PrimitiveValue) {
+  scale(value?: PrimitiveValue): number {
     return typeof value === 'number'
       ? this.project(value) + (this.bandwidthPadding / 2) * this.totalBarsInCluster
       : NaN;
   }
 
-  pureScale(value?: PrimitiveValue) {
+  pureScale(value?: PrimitiveValue): number {
     return typeof value === 'number' ? this.project(this.bandwidth === 0 ? value : value + this.minInterval / 2) : NaN;
   }
 
-  ticks() {
+  ticks(): number[] {
     return this.tickValues;
   }
 
@@ -232,15 +244,13 @@ export class ScaleContinuous implements Scale<number> {
     };
   }
 
-  isSingleValue() {
+  isSingleValue(): boolean {
     return this.isSingleValueHistogram || isDegenerateDomain(this.domain);
   }
 
-  isValueInDomain(value: number) {
-    return this.domain[0] <= value && value <= this.domain[1];
+  isValueInDomain(value: unknown): boolean {
+    return isFiniteNumber(value) && this.domain[0] <= value && value <= this.domain[1];
   }
-
-  handleDomainPadding() {}
 }
 
 function getTimeTicks(domain: number[], desiredTickCount: number, timeZone: string, minInterval: number) {

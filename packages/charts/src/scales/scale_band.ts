@@ -6,13 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { scaleBand, scaleQuantize, ScaleQuantize, ScaleBand as D3ScaleBand } from 'd3-scale';
+import { scaleBand, scaleQuantize } from 'd3-scale';
 
-import { Scale, ScaleBandType } from '.';
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { ScaleBandType } from '.';
 import { Ratio } from '../common/geometry';
 import { RelativeBandsPadding } from '../specs';
-import { clamp, stringifyNullsUndefined } from '../utils/common';
+import { clamp } from '../utils/common';
 import { Range } from '../utils/domain';
 import { ScaleType } from './constants';
 
@@ -20,37 +19,25 @@ import { ScaleType } from './constants';
  * Categorical scale
  * @internal
  */
-export class ScaleBand<T extends number | string> implements Scale<T> {
+export class ScaleBand {
   readonly bandwidth: number;
-
   readonly bandwidthPadding: number;
-
   readonly step: number;
-
   readonly outerPadding: number;
-
   readonly innerPadding: number;
-
   readonly originalBandwidth: number;
-
   readonly type: ScaleBandType;
-
-  readonly domain: [T, ...T[]];
-
+  readonly domain: (string | number)[];
   readonly range: number[];
-
-  readonly isInverted: boolean;
-
-  readonly invertedScale: ScaleQuantize<T>;
-
-  readonly minInterval: number;
-
   readonly barsPadding: number;
+  readonly minInterval: number;
+  readonly unit?: string;
 
-  private readonly d3Scale: D3ScaleBand<NonNullable<PrimitiveValue>>;
+  private readonly project: (d: string | number) => number;
+  private readonly inverseProject: (d: number) => string | number | undefined;
 
   constructor(
-    inputDomain: T[],
+    inputDomain: (string | number)[],
     range: Range,
     overrideBandwidth?: number,
     /**
@@ -63,48 +50,53 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     const isObjectPad = typeof barsPadding === 'object';
     const safeBarPadding = isObjectPad ? 0 : clamp(barsPadding, 0, 1);
     this.type = ScaleType.Ordinal;
-    this.d3Scale = scaleBand<NonNullable<PrimitiveValue>>();
-    this.d3Scale.domain(inputDomain.length > 0 ? inputDomain : [(undefined as unknown) as T]);
-    this.d3Scale.range(range);
-    this.d3Scale.paddingInner(isObjectPad ? barsPadding.inner : safeBarPadding);
-    this.d3Scale.paddingOuter(isObjectPad ? barsPadding.outer : safeBarPadding / 2);
+    const d3Scale = scaleBand<string | number>()
+      .domain(inputDomain.length > 0 ? inputDomain : [undefined as unknown as string | number]) // TODO fix this trick
+      .range(range)
+      .paddingInner(isObjectPad ? barsPadding.inner : safeBarPadding)
+      .paddingOuter(isObjectPad ? barsPadding.outer : safeBarPadding / 2);
     this.barsPadding = isObjectPad ? barsPadding.inner : safeBarPadding;
-    this.outerPadding = this.d3Scale.paddingOuter();
-    this.innerPadding = this.d3Scale.paddingInner();
-    this.bandwidth = overrideBandwidth ? overrideBandwidth * (1 - safeBarPadding) : this.d3Scale.bandwidth() || 0;
-    this.originalBandwidth = this.d3Scale.bandwidth() || 0;
-    this.step = this.d3Scale.step();
-    this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as [T, ...T[]];
+    this.outerPadding = d3Scale.paddingOuter();
+    this.innerPadding = d3Scale.paddingInner();
+    this.bandwidth = overrideBandwidth ? overrideBandwidth * (1 - safeBarPadding) : d3Scale.bandwidth() || 0;
+    this.originalBandwidth = d3Scale.bandwidth() || 0;
+    this.step = d3Scale.step();
+    this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as (string | number)[];
     this.range = range.slice();
     this.bandwidthPadding = this.bandwidth;
-    this.isInverted = false;
-    this.invertedScale = scaleQuantize<T>()
+    const invertedScale = scaleQuantize<string | number, undefined>()
       .domain(range)
-      .range(inputDomain.length > 0 ? [...new Set(inputDomain)] : [(undefined as unknown) as T]);
-    this.minInterval = 0;
+      .range(inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined as unknown as string | number]);
+
+    this.minInterval = 0; // FIXED doesn't exist in reality
+    this.project = (d) => d3Scale(d) ?? NaN;
+    this.inverseProject = (d) => invertedScale(d);
   }
 
-  scale(value?: PrimitiveValue) {
-    const scaleValue = this.d3Scale(stringifyNullsUndefined(value));
-    return typeof scaleValue === 'number' && Number.isFinite(scaleValue) ? scaleValue : NaN; // fixme when TS improves
+  scale(value: string | number): number {
+    return this.project(value);
   }
 
-  pureScale(value?: PrimitiveValue) {
+  // TODO this can be removed, it is there just to simplify the code with the continuous scale
+  pureScale(value: string | number) {
     return this.scale(value);
   }
 
-  ticks() {
+  ticks(): (string | number)[] {
     return this.domain;
   }
 
-  invert(value: number) {
-    return this.invertedScale(value);
+  invert(value: number): string | number | undefined {
+    return this.inverseProject(value);
   }
 
-  invertWithStep(value: number) {
+  invertWithStep(value: number): {
+    withinBandwidth: boolean;
+    value: string | number | undefined;
+  } {
     return {
-      value: this.invertedScale(value),
       withinBandwidth: true,
+      value: this.inverseProject(value),
     };
   }
 
@@ -112,7 +104,7 @@ export class ScaleBand<T extends number | string> implements Scale<T> {
     return this.domain.length < 2;
   }
 
-  isValueInDomain(value: T) {
+  isValueInDomain(value: string | number) {
     return this.domain.includes(value);
   }
 }

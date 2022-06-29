@@ -36,6 +36,9 @@ export interface Cell {
 }
 
 /** @internal */
+export type GridCell = { x: NonNullable<PrimitiveValue>; y: NonNullable<PrimitiveValue> };
+
+/** @internal */
 export interface TextBox extends Box {
   value: NonNullable<PrimitiveValue>;
   x: number;
@@ -97,6 +100,9 @@ export type PickHighlightedArea = (
 ) => Rect | null;
 
 /** @internal */
+export type PickGridCell = (x: Pixels, y: Pixels) => GridCell | undefined;
+
+/** @internal */
 export type DragShape = ReturnType<PickDragShapeFunction>;
 
 /** @internal */
@@ -107,6 +113,7 @@ export type ShapeViewModel = {
   pickDragArea: PickDragFunction;
   pickDragShape: PickDragShapeFunction;
   pickHighlightedArea: PickHighlightedArea;
+  pickGridCell: PickGridCell;
 };
 
 /** @internal */
@@ -136,4 +143,5 @@ export const nullShapeViewModel = (): ShapeViewModel => ({
   pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartType.Heatmap }),
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   pickHighlightedArea: () => ({ x: 0, y: 0, width: 0, height: 0 }),
+  pickGridCell: () => undefined,
 });

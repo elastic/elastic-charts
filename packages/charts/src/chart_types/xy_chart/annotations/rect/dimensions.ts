@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { Scale, ScaleBand, ScaleContinuous } from '../../../../scales';
+import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
-import { isDefined, Position, Rotation } from '../../../../utils/common';
+import { isDefined, isNil, Position, Rotation } from '../../../../utils/common';
 import { AxisId, GroupId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { AxisStyle } from '../../../../utils/themes/theme';
@@ -32,8 +32,8 @@ export function isWithinRectBounds({ x, y }: Point, { startX, endX, startY, endY
 /** @internal */
 export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
-  yScales: Map<GroupId, Scale<number>>,
-  xScale: Scale<number>,
+  yScales: Map<GroupId, ScaleContinuous>,
+  xScale: ScaleBand | ScaleContinuous,
   axesSpecs: AxisSpec[],
   smallMultiplesScales: SmallMultipleScales,
   chartRotation: Rotation,
@@ -95,6 +95,7 @@ export function computeRectAnnotationDimensions(
               }),
         };
         rectsProps.push({
+          specId: annotationSpecId,
           rect: rectDimensions,
           datum,
         });
@@ -137,6 +138,7 @@ export function computeRectAnnotationDimensions(
     };
 
     rectsProps.push({
+      specId: annotationSpecId,
       rect: rectDimensions,
       datum,
     });
@@ -159,9 +161,9 @@ export function computeRectAnnotationDimensions(
 }
 
 function scaleXonBandScale(
-  xScale: ScaleBand<number | string>,
-  x0: PrimitiveValue,
-  x1: PrimitiveValue,
+  xScale: ScaleBand,
+  x0: string | number,
+  x1: string | number,
 ): { x: number; width: number } | null {
   // the band scale return the start of the band, we need to cover
   // also the inner padding of the bar
@@ -216,18 +218,22 @@ function scaleXonContinuousScale(
  * @param isHistogram
  */
 function limitValueToDomainRange(
-  scale: Scale<number>,
+  scale: ScaleBand | ScaleContinuous,
   minValue?: PrimitiveValue,
   maxValue?: PrimitiveValue,
   isHistogram = false,
 ): [PrimitiveValue, PrimitiveValue] {
-  const [domainStartValue] = scale.domain;
-  // this fix the case where rendering on categorical scale and we have only one element
-  const domainEndValue = scale.domain.length > 0 ? scale.domain[scale.domain.length - 1] : scale.domain[0];
-  const min = maxOf(domainStartValue, minValue);
-  const max = minOf(isHistogram ? domainEndValue + scale.minInterval : domainEndValue, maxValue);
-  // extend to edge values if values are null/undefined
-  return isContinuousScale(scale) && min !== null && max !== null && min > max ? [null, null] : [min, max];
+  if (isContinuousScale(scale)) {
+    const [domainStartValue, domainEndValue] = scale.domain;
+    const min = maxOf(domainStartValue, minValue);
+    const max = minOf(isHistogram ? domainEndValue + scale.minInterval : domainEndValue, maxValue);
+    // extend to edge values if values are null/undefined
+    return min !== null && max !== null && min > max ? [null, null] : [min, max];
+  } else {
+    const min = isNil(minValue) || !scale.domain.includes(minValue) ? scale.domain[0] : minValue;
+    const max = isNil(maxValue) || !scale.domain.includes(maxValue) ? scale.domain[scale.domain.length - 1] : maxValue;
+    return [min, max];
+  }
 }
 
 function minOf(base: number, value?: number | string | null | undefined): number | string {

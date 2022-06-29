@@ -30,11 +30,13 @@ const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
 
 const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.7]));
 
-const defaultFillColor = (colorMaker: any) => ({ [MODEL_KEY]: model }: any) => {
-  const root = model.parent;
-  const siblingCountLayer1 = root.children.length;
-  return colorMaker(model.sortIndex / (siblingCountLayer1 + 1));
-};
+const defaultFillColor =
+  (colorMaker: any) =>
+  ({ [MODEL_KEY]: model }: any) => {
+    const root = model.parent;
+    const siblingCountLayer1 = root.children.length;
+    return colorMaker(model.sortIndex / (siblingCountLayer1 + 1));
+  };
 
 const theme: PartialTheme = {
   chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },

@@ -103,7 +103,7 @@ module.exports = {
     'consistent-return': 0,
     'no-plusplus': 0,
     'no-bitwise': 0,
-    'no-void': 1,
+    'no-void': [2, { allowAsStatement: true }],
     yoda: 0,
     'no-restricted-globals': 0,
     'no-case-declarations': 0,
@@ -112,7 +112,7 @@ module.exports = {
     'no-continue': 0,
     'no-lonely-if': 0,
     'no-return-assign': 0,
-    'no-underscore-dangle': ['error', { allow: ['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] }],
+    'no-underscore-dangle': 0,
     'no-confusing-arrow': 0,
     'prefer-destructuring': 0,
     'function-paren-newline': 0,
@@ -162,6 +162,7 @@ module.exports = {
      * @typescript-eslint plugin
      */
     '@typescript-eslint/interface-name-prefix': 0,
+    '@typescript-eslint/ban-types': process.env.NODE_ENV === 'production' ? 2 : 1,
     '@typescript-eslint/return-await': ['error', 'always'], // https://v8.dev/blog/fast-async
     '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
     '@typescript-eslint/no-explicit-any': 0,
@@ -170,6 +171,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 0,
     '@typescript-eslint/indent': 0,
     '@typescript-eslint/no-inferrable-types': 0,
+    '@typescript-eslint/prefer-regexp-exec': 0,
     '@typescript-eslint/ban-ts-comment': [
       2,
       {
@@ -343,7 +345,10 @@ module.exports = {
                 'error',
                 {
                   zones: [
-                    { target: './packages/charts/src', from: './packages/charts/src/index.ts' },
+                    {
+                      target: './packages/charts/src',
+                      from: './packages/charts/src/index.ts',
+                    },
                     {
                       target: './packages/charts/src',
                       from: './',
@@ -408,6 +413,16 @@ module.exports = {
       },
     },
     {
+      files: ['.buildkite/**/*', 'github_bot/**/*'],
+      rules: {
+        'no-console': 0,
+        'unicorn/no-process-exit': 0,
+        'unicorn/prefer-ternary': 0,
+        'unicorn/no-object-as-default-parameter': 0,
+        '@typescript-eslint/naming-convention': 0,
+      },
+    },
+    {
       files: ['./**/@types/*.d.ts'],
       rules: {
         'unicorn/filename-case': 0,
@@ -458,13 +473,6 @@ module.exports = {
             message: 'Please remove before committing changes.',
           },
         ],
-      },
-    },
-    {
-      files: ['packages/link_kibana/**/*.js'],
-      rules: {
-        'no-console': 0,
-        'promise/no-promise-in-callback': 0,
       },
     },
     {

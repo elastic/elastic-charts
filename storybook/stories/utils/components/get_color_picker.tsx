@@ -19,31 +19,36 @@ import React, { FC } from 'react';
 
 import { LegendColorPickerProps } from '@elastic/charts';
 
-export const getColorPicker = (anchorPosition: PopoverAnchorPosition = 'leftCenter'): FC<LegendColorPickerProps> => ({
-  anchor,
-  color,
-  onClose,
-  onChange,
-}) => (
-  <EuiWrappingPopover isOpen button={anchor} closePopover={onClose} anchorPosition={anchorPosition} ownFocus>
-    <EuiColorPicker display="inline" color={color} onChange={onChange} />
-    <EuiSpacer size="m" />
-    <EuiFlexItem grow={false}>
-      <EuiButtonEmpty
-        color="danger"
-        size="s"
-        onClick={() => {
-          onChange(null);
-          anchor.focus();
-          onClose();
-        }}
-        title="Clear color selection"
+export const getColorPicker =
+  (anchorPosition: PopoverAnchorPosition = 'leftCenter'): FC<LegendColorPickerProps> =>
+  ({ anchor, color, onClose, onChange }) =>
+    (
+      <EuiWrappingPopover
+        isOpen
+        button={anchor}
+        closePopover={onClose}
+        panelStyle={{ padding: 16 }}
+        anchorPosition={anchorPosition}
+        ownFocus
       >
-        Clear color
-      </EuiButtonEmpty>
-    </EuiFlexItem>
-    <EuiButton fullWidth size="s" iconType="check" title="Confirm color selection" onClick={onClose}>
-      Done
-    </EuiButton>
-  </EuiWrappingPopover>
-);
+        <EuiColorPicker display="inline" color={color} onChange={onChange} />
+        <EuiSpacer size="m" />
+        <EuiFlexItem grow={false}>
+          <EuiButtonEmpty
+            color="danger"
+            size="s"
+            onClick={() => {
+              onChange(null);
+              anchor.focus();
+              onClose();
+            }}
+            title="Clear color selection"
+          >
+            Clear color
+          </EuiButtonEmpty>
+        </EuiFlexItem>
+        <EuiButton fullWidth size="s" iconType="check" title="Confirm color selection" onClick={onClose}>
+          Done
+        </EuiButton>
+      </EuiWrappingPopover>
+    );
