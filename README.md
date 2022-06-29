@@ -3,11 +3,11 @@
   Elastic Charts
 </h1>
 <p align="center">
-  <img alt="Build Status" src="https://github.com/elastic/elastic-charts/workflows/Unit%20testing/badge.svg?branch=master">
-  <a href="https://www.npmjs.com/@elastic/charts"><img alt="NPM version" src="https://img.shields.io/npm/v/@elastic/charts.svg?style=flat"></a>
+  <img alt="Build Status - master branch" src="https://badge.buildkite.com/1b2f6369ef27e5b23a7fccf2545d7d6e31bff1957c7c941d31.svg?branch=master">
+  <a href="https://www.npmjs.com/@elastic/charts"><img alt="NPM version" src="https://img.shields.io/npm/v/@elastic/charts.svg"></a>
   <a href="http://commitizen.github.io/cz-cli/"><img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"></a>
   <a href="https://elastic.github.io/elastic-charts">
-    <img src="https://img.shields.io/static/v1?label=examples&message=storybook&color=blueviolet">
+    <img src="https://img.shields.io/static/v1?label=examples&message=storybook&color=ff4685">
   </a>
 </p>
 
