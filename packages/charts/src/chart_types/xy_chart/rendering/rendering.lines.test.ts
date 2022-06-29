@@ -10,7 +10,6 @@ import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { Position } from '../../../utils/common';
 import { PointGeometry } from '../../../utils/geometry';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
@@ -383,8 +382,8 @@ describe('Rendering points - line', () => {
       const zeroValueIndexdGeometry = geometriesIndex.find(5)!;
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
-      // the zero value is moved vertically to infinity
-      expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(Infinity);
+      // the zero value is scaled to NaN
+      expect((zeroValueIndexdGeometry[0] as PointGeometry).y).toBe(NaN);
       expect((zeroValueIndexdGeometry[0] as PointGeometry).radius).toBe(LIGHT_THEME.lineSeriesStyle.point.radius);
     });
   });
@@ -404,10 +403,10 @@ describe('Rendering points - line', () => {
       yScaleType: ScaleType.Linear,
     });
     const settings = MockGlobalSpec.settingsNoMargins({
-      xDomain: { min: NaN, max: 2 },
+      xDomain: { max: 2 },
       theme: { colors: { vizColors: ['red', 'blue'] } },
     });
-    const axis = MockGlobalSpec.axis({ position: Position.Left, hide: true, domain: { min: NaN, max: 1 } });
+    const axis = MockGlobalSpec.yAxis({ hide: true, domain: { max: 1 } });
     const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
     MockStore.addSpecs([pointSeriesSpec, axis, settings], store);
 
@@ -446,7 +445,7 @@ describe('Rendering points - line', () => {
         xScaleType: ScaleType.Linear,
         yScaleType,
       });
-      const axis = MockGlobalSpec.axis({ position: Position.Left });
+      const axis = MockGlobalSpec.yAxis();
       const store = MockStore.default();
       MockStore.addSpecs([pointSeriesSpec, axis], store);
       // eslint-disable-next-line prefer-destructuring

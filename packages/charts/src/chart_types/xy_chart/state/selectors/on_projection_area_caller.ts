@@ -43,9 +43,7 @@ export function createOnProjectionAreaCaller(): (state: GlobalChartState) => voi
             isDiff(prevProps.projection, nextProps.projection) ||
             isDiff(nextProps.parent, nextProps.parent);
           if (onProjectionAreaChange && areDifferent) {
-            requestAnimationFrame(() => {
-              onProjectionAreaChange(nextProps);
-            });
+            onProjectionAreaChange(nextProps);
           }
           prevProps = nextProps;
         },

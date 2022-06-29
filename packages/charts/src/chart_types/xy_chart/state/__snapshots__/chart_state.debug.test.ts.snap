@@ -8,7 +8,7 @@ Object {
     "x": Array [
       Object {
         "gridlines": Array [],
-        "id": "left",
+        "id": "xAxis",
         "labels": Array [
           "0",
           "1",
@@ -42,7 +42,7 @@ Object {
     "y": Array [
       Object {
         "gridlines": Array [],
-        "id": "bottom",
+        "id": "yAxis",
         "labels": Array [
           "0",
           "1",
@@ -89,7 +89,7 @@ Object {
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,141.5L58,99.4L145,0",
+      "path": "M0,141.5L58,99.39999999999999L145,0",
       "points": Array [
         Object {
           "mark": null,
@@ -122,7 +122,7 @@ Object {
     "x": Array [
       Object {
         "gridlines": Array [],
-        "id": "bottom",
+        "id": "xAxis",
         "labels": Array [
           "0",
           "1",
@@ -156,7 +156,7 @@ Object {
     "y": Array [
       Object {
         "gridlines": Array [],
-        "id": "left",
+        "id": "yAxis",
         "labels": Array [
           "0",
           "1",
@@ -236,7 +236,7 @@ Object {
     "x": Array [
       Object {
         "gridlines": Array [],
-        "id": "left",
+        "id": "xAxis",
         "labels": Array [
           "0",
           "1",
@@ -270,7 +270,7 @@ Object {
     "y": Array [
       Object {
         "gridlines": Array [],
-        "id": "bottom",
+        "id": "yAxis",
         "labels": Array [
           "0",
           "1",
@@ -317,7 +317,7 @@ Object {
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,141.5L58,99.4L145,0",
+      "path": "M0,141.5L58,99.39999999999999L145,0",
       "points": Array [
         Object {
           "mark": null,
@@ -350,7 +350,7 @@ Object {
     "x": Array [
       Object {
         "gridlines": Array [],
-        "id": "bottom",
+        "id": "xAxis",
         "labels": Array [
           "0",
           "1",
@@ -384,7 +384,7 @@ Object {
     "y": Array [
       Object {
         "gridlines": Array [],
-        "id": "left",
+        "id": "yAxis",
         "labels": Array [
           "0",
           "1",

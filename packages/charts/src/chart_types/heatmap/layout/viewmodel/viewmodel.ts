@@ -17,7 +17,7 @@ import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
-import { clamp, Datum } from '../../../../utils/common';
+import { clamp, Datum, isFiniteNumber } from '../../../../utils/common';
 import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
@@ -27,6 +27,7 @@ import { ChartElementSizes, HeatmapTable } from '../../state/selectors/compute_c
 import { ColorScale } from '../../state/selectors/get_color_scale';
 import {
   Cell,
+  GridCell,
   PickDragFunction,
   PickDragShapeFunction,
   PickHighlightedArea,
@@ -116,8 +117,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     };
   });
 
-  const cellWidthInner = cellWidth - gridStrokeWidth * 2;
-  const cellHeightInner = cellHeight - gridStrokeWidth * 2;
+  const cellWidthInner = cellWidth - gridStrokeWidth;
+  const cellHeightInner = cellHeight - gridStrokeWidth;
 
   if (colorToRgba(background.color)[3] < 1) {
     Logger.expected(
@@ -130,10 +131,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   // compute each available cell position, color and value
   const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
     const x = xScale(String(d.x));
-    const y = yScale(String(d.y))! + gridStrokeWidth;
+    const y = yScale(String(d.y));
     const yIndex = yValues.indexOf(d.y);
 
-    if (x === undefined || y === undefined || yIndex === -1) {
+    if (!isFiniteNumber(x) || !isFiniteNumber(y) || yIndex === -1) {
       return acc;
     }
     const cellBackgroundColor = colorScale(d.value);
@@ -155,8 +156,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     acc[cellKey] = {
       x:
         (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
-        gridStrokeWidth,
-      y,
+        gridStrokeWidth / 2,
+      y: y + gridStrokeWidth / 2,
       yIndex,
       width: cellWidthInner,
       height: cellHeightInner,
@@ -176,6 +177,24 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     };
     return acc;
   }, {});
+
+  /**
+   * Returns the corresponding x & y values of grid cell from the x & y positions
+   * @param x
+   * @param y
+   */
+  const pickGridCell = (x: Pixels, y: Pixels): GridCell | undefined => {
+    if (x < elementSizes.grid.left || y < elementSizes.grid.top) return undefined;
+    if (x > elementSizes.grid.width + elementSizes.grid.left || y > elementSizes.grid.top + elementSizes.grid.height)
+      return undefined;
+
+    const xValue = xInvertedScale(x - elementSizes.grid.left);
+    const yValue = yInvertedScale(y);
+
+    if (xValue === undefined || yValue === undefined) return undefined;
+
+    return { x: xValue, y: yValue };
+  };
 
   /**
    * Returns selected elements based on coordinates.
@@ -392,6 +411,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         },
       ],
     },
+    pickGridCell,
     pickQuads,
     pickDragArea,
     pickDragShape,

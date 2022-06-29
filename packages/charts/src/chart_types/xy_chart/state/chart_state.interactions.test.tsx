@@ -1222,7 +1222,7 @@ describe('Clickable annotations', () => {
 
     expect(onAnnotationClick).toBeCalled();
     const callArgs = onAnnotationClick.mock.calls[0][0];
-    expect(callArgs.rects[0].id).toEqual('rect1');
+    expect(callArgs.rects[0].id).toEqual('rect1______0__1__0__4__details about this annotation__0');
     // confirming there is only one rect annotation being picked up
     expect(callArgs.rects.length).toEqual(1);
   });
@@ -1289,32 +1289,28 @@ describe('Clickable annotations', () => {
 
     expect(onAnnotationClick).toBeCalled();
     const callArgs = onAnnotationClick.mock.calls[0][0];
-    expect(callArgs.rects).toIncludeSameMembers([
-      {
-        id: 'rect2',
-        datum: {
-          coordinates: {
-            x0: 1,
-            x1: 2,
-            y0: 1,
-            y1: 5,
-          },
-          details: 'details about this other annotation',
+    expect(callArgs.rects[1]).toMatchObject({
+      datum: {
+        coordinates: {
+          x0: 1,
+          x1: 2,
+          y0: 1,
+          y1: 5,
         },
+        details: 'details about this other annotation',
       },
-      {
-        id: 'rect1',
-        datum: {
-          coordinates: {
-            x0: 0,
-            x1: 1,
-            y0: 0,
-            y1: 4,
-          },
-          details: 'details about this annotation',
+    });
+    expect(callArgs.rects[0]).toMatchObject({
+      datum: {
+        coordinates: {
+          x0: 0,
+          x1: 1,
+          y0: 0,
+          y1: 4,
         },
+        details: 'details about this annotation',
       },
-    ]);
+    });
   });
   test.skip('click line marker annotation', () => {
     const store = MockStore.default({ width: 500, height: 500, top: 0, left: 0 }, 'chartId');

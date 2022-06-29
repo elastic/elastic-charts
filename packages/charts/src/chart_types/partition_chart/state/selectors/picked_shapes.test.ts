@@ -18,6 +18,7 @@ import {
   GroupBySpec,
   SmallMultiplesSpec,
   WordCloudElementEvent,
+  FlameElementEvent,
 } from '../../../../specs';
 import { updateParentDimensions } from '../../../../state/actions/chart_settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
@@ -36,6 +37,7 @@ function initStore() {
 
 describe('Picked shapes selector', () => {
   function addSeries(store: Store<GlobalChartState>, spec: PartitionSpec, settings?: Partial<SettingsSpec>) {
+    // @ts-ignore - nesting limitation
     store.dispatch(upsertSpec(MockGlobalSpec.settings(settings)));
     store.dispatch(upsertSpec(spec));
     store.dispatch(specParsed());
@@ -94,7 +96,9 @@ describe('Picked shapes selector', () => {
   test('treemap check picked geometries', () => {
     const onClickListener = jest.fn<
       undefined,
-      Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>[]
+      Array<
+        XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | FlameElementEvent | WordCloudElementEvent
+      >[]
     >((): undefined => undefined);
     addSeries(store, treemapSpec, {
       onElementClick: onClickListener,
@@ -149,7 +153,9 @@ describe('Picked shapes selector', () => {
   test('small multiples pie chart check picked geometries', () => {
     const onClickListener = jest.fn<
       undefined,
-      Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>[]
+      Array<
+        XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | FlameElementEvent | WordCloudElementEvent
+      >[]
     >((): undefined => undefined);
     addSmallMultiplesSeries(
       store,
@@ -218,7 +224,9 @@ describe('Picked shapes selector', () => {
   test('sunburst check picked geometries', () => {
     const onClickListener = jest.fn<
       undefined,
-      Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>[]
+      Array<
+        XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | FlameElementEvent | WordCloudElementEvent
+      >[]
     >((): undefined => undefined);
     addSeries(store, sunburstSpec, {
       onElementClick: onClickListener,

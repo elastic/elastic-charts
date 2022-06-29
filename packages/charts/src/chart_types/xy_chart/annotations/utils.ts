@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Scale } from '../../../scales';
 import { SettingsSpec } from '../../../specs';
 import { Rotation, Position } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
@@ -146,7 +145,7 @@ export function computeAnnotationDimensions(
       const dimensions = computeRectAnnotationDimensions(
         annotationSpec,
         yScales,
-        xScale as Scale<number>,
+        xScale,
         axesSpecs,
         smallMultipleScales,
         chartRotation,

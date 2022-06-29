@@ -1,3 +1,5 @@
+# TODO move this run to buildkite
+
 name: Publish a Release
 
 on:
@@ -10,46 +12,46 @@ env:
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
 
 jobs:
-  status:
-    name: Check status
-    runs-on: ubuntu-latest
-    outputs:
-      allSuccess: ${{ steps.validate.outputs.allSuccess == 'true' }}
-    steps:
-      - name: Get current check runs
-        id: check
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/{repo}/commits/{ref}/check-runs
-          repo: ${{ github.repository }}
-          ref: ${{ github.sha }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Validate check runs
-        id: validate
-        if: ${{ success() }}
-        shell: python
-        # TODO: find a better way to do this, the check-runs api has no usable id other than name
-        run: |
-          import json
-          count = ${{ fromJSON(steps.check.outputs.data).total_count }}
-          checks = json.loads("""${{ toJSON(fromJSON(steps.check.outputs.data).check_runs) }}""")
-          allSuccess = True
+  # status:
+  #   name: Check status
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     allSuccess: ${{ steps.validate.outputs.allSuccess == 'true' }}
+  #   steps:
+  #     - name: Get current check runs
+  #       id: check
+  #       uses: octokit/request-action@v2.x
+  #       with:
+  #         route: GET /repos/{repo}/commits/{ref}/check-runs
+  #         repo: ${{ github.repository }}
+  #         ref: ${{ github.sha }}
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Validate check runs
+  #       id: validate
+  #       if: ${{ success() }}
+  #       shell: python
+  #       # TODO: find a better way to do this, the check-runs api has no usable id other than name
+  #       run: |
+  #         import json
+  #         count = ${{ fromJSON(steps.check.outputs.data).total_count }}
+  #         checks = json.loads("""${{ toJSON(fromJSON(steps.check.outputs.data).check_runs) }}""")
+  #         allSuccess = True
 
-          for check in checks:
-            if check["name"] in ["Eslint", "Prettier", "Unit tests", "API Changes"]:
-                allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
+  #         for check in checks:
+  #           if check["name"] in ["Eslint", "Prettier", "Unit tests", "API Changes"]:
+  #               allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
 
-          print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
+  #         print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
 
   checks:
     name: Release Checks
     runs-on: ubuntu-latest
-    needs: status
+    # needs: status # Not working atm
     # Runs checks when others running on master may be in process
     # This is likely an edge case unless published shortly following a merge
     # This also covers a case where master checks did not complete/succeed
-    if: needs.status.outputs.allSuccess
+    # if: needs.status.outputs.allSuccess
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -59,9 +61,26 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
+
+      # TODO: fix unnecessary yarn installs
       - name: Install node_modules
         uses: bahmutov/npm-install@v1
         with:
+          useRollingCache: true
+      - name: Install e2e node_modules
+        uses: bahmutov/npm-install@v1
+        with:
+          working-directory: e2e
+          useRollingCache: true
+      - name: Install e2e node_modules
+        uses: bahmutov/npm-install@v1
+        with:
+          working-directory: .buildkite
+          useRollingCache: true
+      - name: Install e2e node_modules
+        uses: bahmutov/npm-install@v1
+        with:
+          working-directory: github_bot
           useRollingCache: true
 
       - name: Lint check
@@ -87,10 +106,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
+
       - name: Install node_modules
         uses: bahmutov/npm-install@v1
         with:
           useRollingCache: true
+
       - name: Build library
         run: yarn build
 

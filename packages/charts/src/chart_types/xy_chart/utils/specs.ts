@@ -9,7 +9,7 @@
 import { ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
-import { ChartType } from '../..';
+import { ChartType } from '../../../chart_types';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal/types';
 import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
@@ -20,7 +20,7 @@ import { AccessorFormat, AccessorFn, Accessor } from '../../../utils/accessor';
 import { RecursivePartial, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';
 import { OrdinalDomain } from '../../../utils/domain';
-import { AxisId, GroupId } from '../../../utils/ids';
+import { AxisId, GroupId, SpecId } from '../../../utils/ids';
 import {
   AreaSeriesStyle,
   BarSeriesStyle,
@@ -38,6 +38,7 @@ import {
   ComponentWithAnnotationDatum,
   CustomAnnotationTooltip,
 } from '../annotations/types';
+import { AnimationOptions } from './../renderer/canvas/animations/animation';
 import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 
 /** @public */
@@ -325,6 +326,13 @@ export interface YDomainBase {
    * @defaultValue false
    */
   fit?: boolean;
+  /**
+   * Specify a series of specIds to include into the domain calculation.
+   * Currently, it will work only for annotations, everything else is already included in the domain automatically.
+   * Setting `domain.max` or `domain.min` will override this functionality.
+   * @defaultValue []
+   */
+  includeDataFromIds?: SpecId[];
   /**
    * Padding for computed domain as positive number.
    * Applied to domain __before__ nicing
@@ -830,6 +838,22 @@ export interface LineAnnotationDatum<D = any> {
 }
 
 /** @public */
+export const AnnotationAnimationTrigger = Object.freeze({
+  FadeOnFocusingOthers: 'FadeOnFocusingOthers' as const,
+});
+/** @public */
+export type AnnotationAnimationTrigger = $Values<typeof AnnotationAnimationTrigger>;
+
+/** @public */
+export interface AnimationConfig<T extends string> {
+  trigger: T;
+  options?: AnimationOptions;
+}
+
+/** @public */
+export type AnnotationAnimationConfig = AnimationConfig<AnnotationAnimationTrigger>;
+
+/** @public */
 export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<
   typeof AnnotationType.Line,
   LineAnnotationDatum<D>,
@@ -955,7 +979,7 @@ export interface BaseAnnotationSpec<
   T extends typeof AnnotationType.Rectangle | typeof AnnotationType.Line,
   AD extends RectAnnotationDatum | LineAnnotationDatum<D>,
   S extends RectAnnotationStyle | LineAnnotationStyle,
-  D = never
+  D = never,
 > extends Spec,
     AnnotationPortalSettings {
   chartType: typeof ChartType.XYAxis;
@@ -976,7 +1000,7 @@ export interface BaseAnnotationSpec<
   /**
    * Custom annotation style
    */
-  style?: Partial<S>;
+  style?: RecursivePartial<S>;
   /**
    * Toggles tooltip annotation visibility
    */
@@ -986,6 +1010,10 @@ export interface BaseAnnotationSpec<
    * Default specified per specific annotation spec.
    */
   zIndex?: number;
+  /**
+   * Animation configurations for annotations
+   */
+  animations?: AnnotationAnimationConfig[];
 }
 
 /** @public */

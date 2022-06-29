@@ -8,7 +8,13 @@
 
 import { PopoverAnchorPosition } from '@elastic/eui';
 import { select, array, number, optionsKnob } from '@storybook/addon-knobs';
-import { SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
+import {
+  OptionsTypeKnobSingleValue,
+  OptionsTypeKnobValue,
+  OptionsTypeOptionsProp,
+  SelectTypeKnobValue,
+} from '@storybook/addon-knobs/dist/components/types';
+import { OptionsKnobOptionsDisplay } from '@storybook/addon-knobs/dist/components/types/Options';
 import { startCase, kebabCase } from 'lodash';
 import { $Values } from 'utility-types';
 
@@ -66,6 +72,13 @@ export const getTooltipTypeKnob = (
     groupId,
   );
 
+interface KnobFromEnumOptions<T extends SelectTypeKnobValue> {
+  group?: string;
+  allowUndefined?: boolean;
+  include?: T[];
+  exclude?: T[];
+}
+
 /**
  * Generates storybook knobs from const enum
  *
@@ -75,17 +88,7 @@ export const getKnobsFromEnum = <T extends SelectTypeKnobValue, O extends Record
   name: string,
   options: O,
   defaultValue: T,
-  {
-    group,
-    allowUndefined,
-    include,
-    exclude,
-  }: {
-    group?: string;
-    allowUndefined?: boolean;
-    include?: Array<T>;
-    exclude?: Array<T>;
-  } = {},
+  { group, allowUndefined, include, exclude }: KnobFromEnumOptions<T> = {},
 ): T | undefined =>
   select<T>(
     name,
@@ -188,8 +191,34 @@ export function arrayKnobs(name: string, values: (string | number)[]): (string |
   );
 }
 
-export const getFallbackPlacementsKnob = (): Placement[] | undefined => {
-  const knob = optionsKnob<Placement>(
+/**
+ * This throws from storybook when values array becomes empty :(
+ */
+export function getMultiSelectKnob<T extends OptionsTypeKnobSingleValue>(
+  name: string,
+  valuesObj: OptionsTypeOptionsProp<T>,
+  value: OptionsTypeKnobValue<T>,
+  display: OptionsKnobOptionsDisplay = 'multi-select',
+  groupId?: string,
+): T[] {
+  const knob = optionsKnob<T>(
+    name,
+    valuesObj,
+    value,
+    {
+      display,
+    },
+    groupId,
+  );
+
+  if (Array.isArray(knob)) return knob as T[];
+  if (typeof knob === 'string') return knob.split(', ') as T[];
+  if (typeof knob === 'number') return [knob] as T[];
+  return !knob ? [] : knob;
+}
+
+export const getFallbackPlacementsKnob = (groupId?: string): Placement[] => {
+  return getMultiSelectKnob<Placement>(
     'Fallback Placements',
     {
       Top: Placement.Top,
@@ -209,18 +238,9 @@ export const getFallbackPlacementsKnob = (): Placement[] | undefined => {
       AutoEnd: Placement.AutoEnd,
     },
     [Placement.Right, Placement.Left, Placement.Top, Placement.Bottom],
-    {
-      display: 'multi-select',
-    },
+    undefined,
+    groupId,
   );
-
-  if (knob.length === 0) {
-    return;
-  }
-
-  if (typeof knob === 'string') return knob.split(', ') as Placement[];
-
-  return knob;
 };
 
 const boundaryMap: Record<string, TooltipProps['boundary'] | null> = {

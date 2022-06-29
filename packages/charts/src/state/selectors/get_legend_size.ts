@@ -6,11 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
 import { LegendPositionConfig } from '../../specs/settings';
 import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
-import { Position, isDefined, LayoutDirection } from '../../utils/common';
+import { isDefined, LayoutDirection, Position } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
@@ -25,8 +26,6 @@ const MARKER_WIDTH = 16;
 const SHARED_MARGIN = 4;
 const VERTICAL_PADDING = 4;
 const TOP_MARGIN = 2;
-const MAGIC_FONT_FAMILY =
-  '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
 
 /** @internal */
 export type LegendSizing = Size & {
@@ -47,7 +46,7 @@ export const getLegendSizeSelector = createCustomCachedSelector(
         (acc, { label, depth }) => {
           const { width, height } = textMeasure(
             label,
-            { fontFamily: MAGIC_FONT_FAMILY, fontVariant: 'normal', fontWeight: 400, fontStyle: 'normal' },
+            { fontFamily: DEFAULT_FONT_FAMILY, fontVariant: 'normal', fontWeight: 400, fontStyle: 'normal' },
             12,
             1.5,
           );

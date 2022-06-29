@@ -9,7 +9,6 @@
 const path = require('path');
 
 const CircularDependencyPlugin = require('circular-dependency-plugin');
-const webpack = require('webpack');
 
 const nonce = 'Pk1rZ1XDlMuYe8ubWV3Lh0BzwrTigJQ=';
 
@@ -41,17 +40,6 @@ const MAX_CYCLES = 0;
 let numCyclesDetected = 0;
 
 module.exports = ({ config }) => {
-  config.plugins.push(
-    new webpack.EnvironmentPlugin({
-      RNG_SEED: null,
-      VRT: process.env.VRT ?? null,
-    }),
-  );
-
-  // Checking CI value here
-  // eslint-disable-next-line no-console
-  console.log(`process.env.CI =`, process.env.CI);
-
   if (process.env.CI) {
     config.plugins.push(
       new CircularDependencyPlugin({

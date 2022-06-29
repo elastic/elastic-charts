@@ -351,6 +351,8 @@ export function renderWithProps<P extends Record<string, any>>(El: ReactNode | C
  *
  * @param base structure to be duplicated, must have all props of `partial`
  * @param partial structure to override values from base
+ * @param options options to control merge behaviour
+ * @param additionalPartials partials to be used before base and after partial
  *
  * @returns new base structure with updated partial values
  * @internal
@@ -629,6 +631,11 @@ export function getOppositeAlignment<A extends HorizontalAlignment | VerticalAli
 /** @internal */
 export function isFiniteNumber(value: unknown): value is number {
   return Number.isFinite(value);
+}
+
+/** @internal */
+export function isNonNullablePrimitiveValue(value: unknown): value is NonNullable<PrimitiveValue> {
+  return typeof value === 'string' || typeof value === 'number';
 }
 
 /**

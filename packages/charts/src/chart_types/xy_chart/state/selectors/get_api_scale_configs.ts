@@ -15,10 +15,9 @@ import { GroupId } from '../../../../utils/ids';
 import { convertXScaleTypes } from '../../domains/x_domain';
 import { coerceYScaleTypes } from '../../domains/y_domain';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../scales/scale_defaults';
-import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
+import { isXDomain } from '../../utils/axis_utils';
 import { groupBy } from '../../utils/group_data_series';
 import { AxisSpec, BasicSeriesSpec, CustomXDomain, XScaleType, YDomainRange } from '../../utils/specs';
-import { isHorizontalRotation } from '../utils/common';
 import { getSpecDomainGroupId } from '../utils/spec';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { mergeYCustomDomainsByGroupId } from './merge_y_custom_domains';
@@ -54,19 +53,17 @@ export function getScaleConfigsFromSpecs(
   seriesSpecs: BasicSeriesSpec[],
   settingsSpec: SettingsSpec,
 ): ScaleConfigs {
-  const isHorizontalChart = isHorizontalRotation(settingsSpec.rotation);
-
   // x axis
-  const xAxes = axisSpecs.filter((d) => isHorizontalChart === isHorizontalAxis(d.position));
-  const xTicks = xAxes.reduce<number>((acc, { ticks = X_SCALE_DEFAULT.desiredTickCount }) => {
+  const xAxesSpecs = axisSpecs.filter((spec) => isXDomain(spec.position, settingsSpec.rotation));
+  const maxTickCountForXAxes = xAxesSpecs.reduce<number>((acc, { ticks = X_SCALE_DEFAULT.desiredTickCount }) => {
     return Math.max(acc, ticks);
-  }, X_SCALE_DEFAULT.desiredTickCount);
+  }, -Infinity);
 
   const xScaleConfig = convertXScaleTypes(seriesSpecs);
   const x: ScaleConfigs['x'] = {
     customDomain: settingsSpec.xDomain,
     ...xScaleConfig,
-    desiredTickCount: xTicks,
+    desiredTickCount: Number.isFinite(maxTickCountForXAxes) ? maxTickCountForXAxes : X_SCALE_DEFAULT.desiredTickCount,
   };
 
   // y axes
@@ -80,16 +77,19 @@ export function getScaleConfigsFromSpecs(
 
   const customDomainByGroupId = mergeYCustomDomainsByGroupId(axisSpecs, settingsSpec.rotation);
 
-  const yAxes = axisSpecs.filter((d) => isHorizontalChart === isVerticalAxis(d.position));
+  const yAxisSpecs = axisSpecs.filter((spec) => !isXDomain(spec.position, settingsSpec.rotation));
   const y = Object.keys(scaleConfigsByGroupId).reduce<ScaleConfigs['y']>((acc, groupId) => {
-    const axis = yAxes.find((yAxis) => yAxis.groupId === groupId);
-    const desiredTickCount = axis?.ticks ?? Y_SCALE_DEFAULT.desiredTickCount;
-    const scaleConfig = scaleConfigsByGroupId[groupId];
-    const customDomain = customDomainByGroupId.get(groupId);
+    const maxTickCountYAxes = yAxisSpecs.reduce<number>((maxTickCount, yAxis) => {
+      return yAxis.groupId === groupId
+        ? Math.max(maxTickCount, yAxis.ticks ?? Y_SCALE_DEFAULT.desiredTickCount)
+        : maxTickCount;
+    }, -Infinity);
+    const desiredTickCount = Number.isFinite(maxTickCountYAxes) ? maxTickCountYAxes : Y_SCALE_DEFAULT.desiredTickCount;
+
     if (!acc[groupId]) {
       acc[groupId] = {
-        customDomain,
-        ...scaleConfig,
+        customDomain: customDomainByGroupId.get(groupId),
+        ...scaleConfigsByGroupId[groupId],
         desiredTickCount,
       };
     }

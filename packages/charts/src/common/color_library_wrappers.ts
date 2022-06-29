@@ -81,3 +81,14 @@ export function colorToRgba(color: Color): RgbaTuple {
   }
   return cachedValue;
 }
+
+/** @internal */
+export function colorToHsl(color: Color) {
+  const [r, g, b] = colorToRgba(color);
+  return chroma.rgb(r, g, b).hsl();
+}
+/** @internal */
+export function hslToColor(h: number, s: number, l: number): Color {
+  const rgba = chroma.hsl(h, s, l).rgba();
+  return RGBATupleToString(rgba);
+}

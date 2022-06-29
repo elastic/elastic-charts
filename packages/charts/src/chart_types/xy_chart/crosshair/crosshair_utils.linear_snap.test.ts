@@ -9,6 +9,7 @@
 import { ChartType } from '../..';
 import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { MockXDomain } from '../../../mocks/xy/domains';
+import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { Dimensions } from '../../../utils/dimensions';
@@ -93,57 +94,62 @@ describe('Crosshair utils linear scale', () => {
   const barSeriesDomains = computeSeriesDomains(
     barSeries,
     getScaleConfigsFromSpecs([], barSeries, MockGlobalSpec.settings()),
+    [],
   );
 
   const multiBarSeries = [barSeries1, barSeries2];
   const multiBarSeriesDomains = computeSeriesDomains(
     multiBarSeries,
     getScaleConfigsFromSpecs([], multiBarSeries, MockGlobalSpec.settings()),
+    [],
   );
 
   const lineSeries = [lineSeries1];
   const lineSeriesDomains = computeSeriesDomains(
     lineSeries,
     getScaleConfigsFromSpecs([], lineSeries, MockGlobalSpec.settings()),
+    [],
   );
 
   const multiLineSeries = [lineSeries1, lineSeries2];
   const multiLineSeriesDomains = computeSeriesDomains(
     multiLineSeries,
     getScaleConfigsFromSpecs([], multiLineSeries, MockGlobalSpec.settings()),
+    [],
   );
 
   const mixedLinesBars = [lineSeries1, lineSeries2, barSeries1, barSeries2];
   const mixedLinesBarsSeriesDomains = computeSeriesDomains(
     mixedLinesBars,
     getScaleConfigsFromSpecs([], mixedLinesBars, MockGlobalSpec.settings()),
+    [],
   );
 
   const barSeriesScale = computeXScale({
     xDomain: barSeriesDomains.xDomain,
     totalBarsInCluster: barSeries.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
   const multiBarSeriesScale = computeXScale({
     xDomain: multiBarSeriesDomains.xDomain,
     totalBarsInCluster: multiBarSeries.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
   const lineSeriesScale = computeXScale({
     xDomain: lineSeriesDomains.xDomain,
     totalBarsInCluster: lineSeries.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
   const multiLineSeriesScale = computeXScale({
     xDomain: multiLineSeriesDomains.xDomain,
     totalBarsInCluster: multiLineSeries.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
   const mixedLinesBarsSeriesScale = computeXScale({
     xDomain: mixedLinesBarsSeriesDomains.xDomain,
     totalBarsInCluster: mixedLinesBars.length,
     range: [0, 120],
-  });
+  }) as ScaleContinuous;
 
   /**
    * if we have lines on a linear scale, the snap position and band should

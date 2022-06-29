@@ -83,6 +83,14 @@ export interface LayerValue {
 }
 
 /** @public */
+export interface FlameLayerValue {
+  /**
+   * The zero-based index of the data point
+   */
+  vmIndex: number;
+}
+
+/** @public */
 export interface GroupBrushExtent {
   groupId: GroupId;
   extent: [number, number];
@@ -98,6 +106,8 @@ export interface XYBrushEvent {
 export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
 /** @public */
 export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
+/** @public */
+export type FlameElementEvent = FlameLayerValue;
 /** @public */
 export type HeatmapElementEvent = [Cell, SeriesIdentifier];
 /** @public */
@@ -137,11 +147,16 @@ export type ProjectionClickListener = (values: ProjectedValues) => void;
 
 /** @public */
 export type ElementClickListener = (
-  elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>,
+  elements: Array<
+    XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent
+  >,
 ) => void;
+
 /** @public */
 export type ElementOverListener = (
-  elements: Array<XYChartElementEvent | PartitionElementEvent | HeatmapElementEvent | WordCloudElementEvent>,
+  elements: Array<
+    XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent
+  >,
 ) => void;
 
 /** @public */
@@ -484,6 +499,10 @@ export interface LegendSpec {
    */
   legendAction?: LegendAction;
   legendColorPicker?: LegendColorPicker;
+  /**
+   * A SeriesSortFn to sort the legend values (top-bottom)
+   */
+  legendSort?: SeriesCompareFn;
 }
 
 /**

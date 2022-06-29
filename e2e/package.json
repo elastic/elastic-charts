@@ -5,13 +5,17 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "scripts": {
     "clean": "./scripts/clean.sh",
-    "regroup": "ts-node ./scripts/group_tests.ts",
     "test": "./scripts/start.sh",
+    "start": "npx http-server ./server --port 9002",
     "test:playwright": "./scripts/test.sh",
     "playwright": "playwright"
   },
   "dependencies": {
-    "@playwright/test": "^1.18.1",
-    "change-case": "^4.1.2"
+    "@playwright/test": "^1.23.0",
+    "change-case": "^4.1.2",
+    "expect-playwright": "^0.8.0",
+    "playwright-merge-html-reports": "^0.2.3",
+    "slugify": "^1.6.5",
+    "typescript": "^4.6.3"
   }
 }

@@ -17,13 +17,11 @@ import { AnnotationId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { computeMultipleRectAnnotationTooltipState } from '../../annotations/tooltip';
 import { AnnotationTooltipState, AnnotationDimensions } from '../../annotations/types';
-import { AxisSpec, AnnotationSpec, AnnotationType } from '../../utils/specs';
-import { ComputedGeometries } from '../utils/types';
+import { AnnotationSpec, AnnotationType } from '../../utils/specs';
 import { computeAnnotationDimensionsSelector } from './compute_annotations';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getTooltipStateForDOMElements } from './get_annotation_tooltip_state';
-import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
+import { getAnnotationSpecsSelector } from './get_specs';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 
 const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
@@ -34,10 +32,8 @@ export const getMultipleRectangleAnnotations = createCustomCachedSelector(
   [
     getCurrentPointerPosition,
     computeChartDimensionsSelector,
-    computeSeriesGeometriesSelector,
     getChartRotationSelector,
     getAnnotationSpecsSelector,
-    getAxisSpecsSelector,
     computeAnnotationDimensionsSelector,
     getTooltipInfoSelector,
     getHoveredDOMElement,
@@ -52,10 +48,8 @@ function getMultipleRectangularAnnotationTooltipState(
   }: {
     chartDimensions: Dimensions;
   },
-  geometries: ComputedGeometries,
   chartRotation: Rotation,
   annotationSpecs: AnnotationSpec[],
-  axesSpecs: AxisSpec[],
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>,
   tooltip: TooltipInfo,
   hoveredDOMElement: DOMElement | null,

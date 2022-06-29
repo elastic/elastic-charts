@@ -58,9 +58,7 @@ test.describe('Legend stories', () => {
   });
 
   test('should break multiline legends with long url characters', async ({ page }) => {
-    await common.expectChartWithMouseAtUrlToMatchScreenshot(
-      page,
-    )(
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/legend--inside-chart&globals=theme:light&knob-Number of series=5&knob-Series with long name=3&knob-Inside chart_Legend=false&knob-Show legend action_Legend=true&knob-floating columns_Legend=1&knob-vAlign_Legend=bottom&knob-hAlign_Legend=right&knob-direction_Legend=vertical&knob-max label lines_Legend=0&knob-long label_Legend=/people/type:astronauts/name:gregory-chamitoff/profile',
       { left: 182, top: 178 },
     );

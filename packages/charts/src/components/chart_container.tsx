@@ -68,8 +68,11 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   handleMouseMove = ({
     nativeEvent: { offsetX, offsetY, timeStamp },
   }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { isChartEmpty, onPointerMove } = this.props;
-    if (isChartEmpty) {
+    const { isChartEmpty, onPointerMove, internalChartRenderer } = this.props;
+    if (isChartEmpty || internalChartRenderer.name === 'FlameWithTooltip') {
+      // Flame chart does its own event handling, and panning temporarily attaches
+      // an event handler onto `window`. So this `chart_container.handleMouseMove`
+      // can not be avoided with `e.stopPropagation()`. So we should avoid emission
       return;
     }
 
@@ -148,16 +151,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     const { onMouseUp } = this.props;
 
     window.removeEventListener('mouseup', this.handleBrushEnd);
-
-    requestAnimationFrame(() => {
-      onMouseUp(
-        {
-          x: -1,
-          y: -1,
-        },
-        Date.now(),
-      );
-    });
+    onMouseUp({ x: -1, y: -1 }, Date.now());
   };
 
   render() {

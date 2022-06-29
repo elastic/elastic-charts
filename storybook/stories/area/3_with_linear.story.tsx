@@ -17,22 +17,22 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => {
   const start = KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0];
   const data = KIBANA_METRICS.metrics.kibana_os_load[0].data
-    .slice(0, 20)
-    .map((d) => [(d[0] - start) / 30000, clamp(d[1] - 10, 0, 3)]);
+    .slice(0, 21)
+    .map((d) => [(d[0] - start) / 30000, clamp(d[1], 0, 30)]);
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
-      <Axis id="bottom" title="index" position={Position.Bottom} />
+      <Axis id="bottom" position={Position.Bottom} ticks={3} tickFormat={(d) => `${d} sec`} />
       <Axis
         id="left"
-        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
         position={Position.Left}
-        tickFormat={(d) => `${Math.round(Number(d))}`}
-        ticks={7}
+        labelFormat={(d) => `${d.toFixed(0)}%`}
+        tickFormat={(d) => `${d.toFixed(1)}%`}
+        ticks={5}
       />
 
       <AreaSeries
-        id="areas"
+        id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         yNice

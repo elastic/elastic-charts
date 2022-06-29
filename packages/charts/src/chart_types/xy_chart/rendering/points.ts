@@ -7,8 +7,8 @@
  */
 
 import { Color } from '../../../common/colors';
-import { Scale } from '../../../scales';
-import { isNil } from '../../../utils/common';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
+import { isFiniteNumber, isNil } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
 import { PointStyle } from '../../../utils/themes/theme';
@@ -30,8 +30,8 @@ import {
 export function renderPoints(
   shift: number,
   dataSeries: DataSeries,
-  xScale: Scale<number | string>,
-  yScale: Scale<number>,
+  xScale: ScaleBand | ScaleContinuous,
+  yScale: ScaleContinuous,
   panel: Dimensions,
   color: Color,
   pointStyle: PointStyle,
@@ -109,10 +109,14 @@ export function renderPoints(
         panel,
         orphan,
       };
-      const isInYDomain = yScale.isValueInDomain(valueAccessor(datum));
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
-      if (y !== null && yDefined(datum, valueAccessor) && isInYDomain && !isDatumFilled(datum)) {
+      if (
+        isFiniteNumber(y) &&
+        yDefined(datum, valueAccessor) &&
+        yScale.isValueInDomain(valueAccessor(datum)) &&
+        !isDatumFilled(datum)
+      ) {
         points.push(pointGeometry);
       }
     });

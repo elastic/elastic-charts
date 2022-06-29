@@ -26,6 +26,7 @@ on:
 # See https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request_target
   pull_request_target:
     branches:
+      - buildkite-main # to be removed
       - master
       - alpha
       - next
@@ -37,6 +38,7 @@ jobs:
   should-trigger:
     name: Check for e2e/groups.json
     runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'ci:buildkite') }}
     outputs:
       check: ${{ steps.e2e.outputs.enabled == 'true' }}
     steps:
@@ -176,8 +178,7 @@ jobs:
 
   failure-check:
     name: Print context on failure
-    # if: ${{ failure() }} # TODO this
-    if: ${{ always() }}
+    if: ${{ failure() }}
     needs: [should-trigger, trigger-deploy]
     runs-on: ubuntu-latest
     steps:

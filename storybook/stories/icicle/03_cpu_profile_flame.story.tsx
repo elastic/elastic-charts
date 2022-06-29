@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
@@ -28,6 +29,11 @@ const getLayerSpec = (maxDepth: number = 30) =>
   }));
 
 export const Example = () => {
+  const onElementListeners = {
+    onElementClick: action('onElementClick'),
+    onElementOver: action('onElementOver'),
+    onElementOut: action('onElementOut'),
+  };
   const clipText = boolean("Allow, and clip, texts that wouldn't otherwise fit", true);
   const theme: PartialTheme = {
     chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
@@ -42,7 +48,7 @@ export const Example = () => {
   };
   return (
     <Chart>
-      <Settings theme={theme} baseTheme={useBaseTheme()} />
+      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} />
       <Partition
         id="spec_1"
         data={data.facts}

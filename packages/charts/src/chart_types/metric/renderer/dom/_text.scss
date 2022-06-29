@@ -1,0 +1,47 @@
+@mixin lineClamp($maxLines) {
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $maxLines; /* number of lines to show */
+  line-clamp: $maxLines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.echMetricText {
+  position: relative;
+  padding: 8px;
+  height: 100%;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: min-content min-content auto min-content min-content;
+
+  &__title {
+    font-weight: 400;
+  }
+
+  &__subtitle {
+    padding-top: 5px;
+    font-weight: 300;
+  }
+
+  &__extra {
+    text-align: right;
+    font-weight: 400;
+  }
+
+  &__value {
+    position: relative;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  &__part {
+    font-weight: 400;
+  }
+
+  &__gap {
+    position: relative;
+  }
+}
