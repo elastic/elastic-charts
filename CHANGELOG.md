@@ -1,3 +1,10 @@
+## [46.11.2](https://github.com/elastic/elastic-charts/compare/v46.11.1...v46.11.2) (2022-06-28)
+
+
+### Bug Fixes
+
+* **events:** remove async callbacks from code ([#1730](https://github.com/elastic/elastic-charts/issues/1730)) ([27a7256](https://github.com/elastic/elastic-charts/commit/27a7256e04415989361858273a920d007cb19b29))
+
 ## [46.11.1](https://github.com/elastic/elastic-charts/compare/v46.11.0...v46.11.1) (2022-06-28)
 
 

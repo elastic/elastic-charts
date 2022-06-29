@@ -7,7 +7,7 @@
  */
 
 import { test } from '@playwright/test';
-import { camelCase } from 'lodash';
+import { camelCase } from 'change-case';
 
 import { Placement } from '../constants';
 import { eachRotation, pwEach } from '../helpers';
@@ -133,9 +133,10 @@ test.describe('Interactions', () => {
     });
 
     test('should show tooltip on sunburst', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )('http://localhost:9001/?path=/story/interactions--sunburst-slice-clicks', { left: 350, top: 100 });
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/interactions--sunburst-slice-clicks',
+        { left: 350, top: 100 },
+      );
     });
 
     test('should render custom tooltip', async ({ page }) => {
@@ -147,15 +148,17 @@ test.describe('Interactions', () => {
     });
 
     test('should render current tooltip for split and y accessors', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )('http://localhost:9001/?path=/story/bar-chart--bar-chart2y2g', { left: 330, top: 40 });
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/bar-chart--bar-chart2y2g',
+        { left: 330, top: 40 },
+      );
     });
 
     test('should render current tooltip in dark theme', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )('http://localhost:9001/?path=/story/stylings--dark-theme', { left: 120, bottom: 80 });
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/stylings--dark-theme',
+        { left: 120, bottom: 80 },
+      );
     });
 
     pwEach.describe<[element: string, groups: number]>([
@@ -266,18 +269,14 @@ test.describe('Interactions', () => {
 
   test.describe('Tooltip formatting', () => {
     test('should use all custom tick formatters', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )(
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show%20legend_Y%20axis=true&knob-Disable%20Axis%20tickFormat_Y%20axis=&knob-Axis%20value%20format_Y%20axis=0[.]0&knob-Axis%20unit_Y%20axis=pets&knob-Disable%20header%20tickFormat_X%20axis=&knob-Header%20unit_X%20axis=(header)&knob-Disable%20Axis%20tickFormat_X%20axis=&knob-Axis%20unit_X%20axis=(axis)&knob-Disable%20dog%20line%20tickFormat_Y%20axis=&knob-Dog%20line%20unit_Y%20axis=dogs&knob-Disable%20cat%20line%20tickFormat_Y%20axis=&knob-Cat%20line%20unit_Y%20axis=cats',
         { left: 280, top: 80 },
       );
     });
 
     test('should use series tick formatter with no axis tick formatter', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )(
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=true&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
         { left: 280, top: 80 },
       );
@@ -286,9 +285,7 @@ test.describe('Interactions', () => {
     test('should use series tick formatter with no axis tick formatter, missing series tick formatter', async ({
       page,
     }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )(
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=true&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=true&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
         { left: 280, top: 80 },
       );
@@ -297,51 +294,45 @@ test.describe('Interactions', () => {
     test('should use default tick formatter with no axis tick formatter, nor series tick formatter', async ({
       page,
     }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )(
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=true&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=true&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=true&knob-Cat line unit_Y axis=cats',
         { left: 280, top: 80 },
       );
     });
 
     test('should use headerFormatter for x axis', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )(
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
         { left: 280, top: 80 },
       );
     });
 
     test('should use axis tick formatter with no headerFormatter', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )(
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=true&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
         { left: 280, top: 80 },
       );
     });
 
     test('should use default tick formatter with no axis tick formatter nor headerFormatter', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )(
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/axes--different-tooltip-formatter&knob-Show legend_Y axis=true&knob-Disable Axis tickFormat_Y axis=&knob-Axis value format_Y axis=0[.]0&knob-Axis unit_Y axis=pets&knob-Disable header tickFormat_X axis=true&knob-Header unit_X axis=(header)&knob-Disable Axis tickFormat_X axis=true&knob-Axis unit_X axis=(axis)&knob-Disable dog line tickFormat_Y axis=&knob-Dog line unit_Y axis=dogs&knob-Disable cat line tickFormat_Y axis=&knob-Cat line unit_Y axis=cats',
         { left: 280, top: 80 },
       );
     });
 
     test('should use custom mark formatters', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(
-        page,
-      )('http://localhost:9001/?path=/story/mixed-charts--mark-size-accessor', { left: 400, top: 80 });
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/mixed-charts--mark-size-accessor',
+        { left: 400, top: 80 },
+      );
     });
   });
   test('should size legends with ordinal x axis', async ({ page }) => {
-    await common.expectChartWithMouseAtUrlToMatchScreenshot(
-      page,
-    )('http://localhost:9001/iframe.html?id=axes--different-tooltip-formatter', { left: 350, top: 130 });
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/iframe.html?id=axes--different-tooltip-formatter',
+      { left: 350, top: 130 },
+    );
   });
 
   test.describe('legend items with color picker clicking hidden or unhidden', () => {
@@ -412,9 +403,7 @@ test.describe('Interactions', () => {
     pwEach.test<string>(['eui-light', 'eui-dark'])(
       (t) => `should show cursor when background is set with ${t} theme`,
       async (page, theme) => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(
-          page,
-        )(
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
           `http://localhost:9001/?path=/story/mixed-charts--lines-and-areas&globals=theme:${theme}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
           { top: 150, left: 250 },
         );
@@ -424,9 +413,7 @@ test.describe('Interactions', () => {
     pwEach.test<string>(['eui-light', 'eui-dark'])(
       (t) => `should show cursor band when background is set with ${t} theme`,
       async (page, theme) => {
-        await common.expectChartWithMouseAtUrlToMatchScreenshot(
-          page,
-        )(
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
           `http://localhost:9001/?path=/story/mixed-charts--bars-and-lines&globals=theme:${theme}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
           { top: 150, left: 150 },
         );

@@ -11,8 +11,8 @@
       - github-pull-request:
           org-list:
             - elastic
-          black-list-labels:
-            - 'ci:buildkite'
+          white-list-labels:
+            - 'ci:jenkins:vrt'
           allow-whitelist-orgs-as-admins: true
           trigger-phrase: '(.*(?:jenkins\W+)?test\W+(?:this|it)(?:\W+please)?.*)|^retest$'
           github-hooks: true
