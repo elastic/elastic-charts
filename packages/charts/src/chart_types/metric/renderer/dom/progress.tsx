@@ -21,7 +21,9 @@ export const ProgressBar: React.FunctionComponent<{
   const verticalDirection = progressBarDirection === LayoutDirection.Vertical;
   // currently we provide only the small progress bar;
   const isSmall = true;
-  const percent = Number(clamp((domain ? value / (domain.max - domain.min) : 1) * 100, 0, 100).toFixed(2));
+  const percent = Number(
+    clamp((domain ? (value - domain.min) / (domain.max - domain.min) : 1) * 100, 0, 100).toFixed(2),
+  );
 
   const bgClassName = classNames('echSingleMetricProgress', {
     'echSingleMetricProgress--vertical': verticalDirection,
