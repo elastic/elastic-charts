@@ -33,20 +33,33 @@ const ciNamePattern = /^(buildkite|datavis) /i;
 
 const actions = {
   test: /^test/i,
+  updateVrt: /^update (screenshots|vrt)/i,
 };
 type Actions = typeof actions;
 
 /**
  * Checks if issue comment action matches expected
  */
-export function isCommentAction<T extends keyof Actions>(ctx: ProbotEventContext<'issue_comment'>, action: T): boolean {
+export function hasCommentAction<T extends keyof Actions>(ctx: ProbotEventContext<'issue_comment'>, action: T): boolean;
+export function hasCommentAction<T extends keyof Actions>(
+  ctx: ProbotEventContext<'issue_comment'>,
+  action: T[],
+): boolean;
+export function hasCommentAction<T extends keyof Actions>(
+  ctx: ProbotEventContext<'issue_comment'>,
+  actionKey: T | T[],
+): boolean {
+  const actionKeys = Array.isArray(actionKey) ? actionKey : [actionKey];
   const { body } = ctx.payload.comment;
   if (!ciNamePattern.test(body)) return false;
   const actionText = body.replace(ciNamePattern, '');
+  const foundActions = actionKeys.filter((k) => actions[k].test(actionText));
+
   console.log({
     body,
     actionText,
+    actions: foundActions,
   });
 
-  return actions[action].test(actionText);
+  return foundActions.length > 0;
 }
