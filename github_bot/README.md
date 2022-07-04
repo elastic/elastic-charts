@@ -48,3 +48,5 @@ This app and setup was inspired by [`elastic/buildkite-pr-bot`](https://github.c
 - [ ] Check `./buildkite` directory for changes
 - [ ] Read options from config file (i.e. skip label, user check options, etc).
 - [ ] Parallel steps don't know about each other so retries of steps won't report status
+- [ ] Run jobs individually, especially being able to run update vrt on it's own to avoid running all jobs again.
+- [ ] Handle single job retries from buildkite, this may require our own agent to avoid too much pain.
