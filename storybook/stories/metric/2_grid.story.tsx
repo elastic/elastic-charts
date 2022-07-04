@@ -55,7 +55,7 @@ export const Example = () => {
       subtitle: 'Read',
       valueFormatter: (d) => `${d} Mb/s`,
       ...(useProgressBar && {
-        domain: { min: 0, max: 100 },
+        domainMax: 100,
         progressBarDirection: progressBarDirection,
         extra: (
           <span>
@@ -71,7 +71,7 @@ export const Example = () => {
       subtitle: 'Write',
       valueFormatter: (d) => `${d} Mb/s`,
       ...(useProgressBar && {
-        domain: { min: 0, max: 100 },
+        domainMax: 100,
         progressBarDirection: progressBarDirection,
         extra: (
           <span>

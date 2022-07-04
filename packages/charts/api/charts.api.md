@@ -1728,10 +1728,7 @@ export type MetricTrendShape = $Values<typeof MetricTrendShape>;
 
 // @alpha (undocumented)
 export type MetricWProgress = MetricBase & {
-    domain: {
-        min: number;
-        max: number;
-    };
+    domainMax: number;
     progressBarDirection?: LayoutDirection;
 };
 

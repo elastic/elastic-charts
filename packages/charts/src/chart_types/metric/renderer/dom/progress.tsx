@@ -15,15 +15,13 @@ import { MetricWProgress } from '../../specs';
 
 /** @internal */
 export const ProgressBar: React.FunctionComponent<{
-  datum: Pick<MetricWProgress, 'title' | 'domain' | 'value' | 'color' | 'progressBarDirection'>;
+  datum: MetricWProgress;
   barBackground: Color;
-}> = ({ datum: { title, domain, value, color, progressBarDirection }, barBackground }) => {
+}> = ({ datum: { title, domainMax, value, color, progressBarDirection }, barBackground }) => {
   const verticalDirection = progressBarDirection === LayoutDirection.Vertical;
   // currently we provide only the small progress bar;
   const isSmall = true;
-  const percent = Number(
-    clamp((domain ? (value - domain.min) / (domain.max - domain.min) : 1) * 100, 0, 100).toFixed(2),
-  );
+  const percent = Number(clamp((value / domainMax) * 100, 0, 100).toFixed(1));
 
   const bgClassName = classNames('echSingleMetricProgress', {
     'echSingleMetricProgress--vertical': verticalDirection,
