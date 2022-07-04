@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
-import { select, text, color, number } from '@storybook/addon-knobs';
+import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
@@ -50,6 +51,11 @@ export const Example = () => {
   const metricColor = color('color', '#3c3c3c');
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
+  const showIcon = boolean('show icon', false);
+  const iconType = text('EUI icon glyph name', 'alert');
+  const getIcon = (type: string) => ({ width, height, color }: { width: number; height: number; color: string }) => (
+    <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
+  );
   const data = {
     value,
     color: metricColor,
@@ -66,6 +72,7 @@ export const Example = () => {
           trendA11yDescription,
         }
       : {}),
+    ...(showIcon ? { icon: getIcon(iconType) } : {}),
   };
   const onEventClickAction = action('click');
   const onEventOverAction = action('over');

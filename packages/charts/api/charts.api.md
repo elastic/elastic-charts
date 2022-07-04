@@ -1690,6 +1690,11 @@ export type MetricBase = {
     title?: string;
     subtitle?: string;
     extra?: ReactElement;
+    icon?: ComponentType<{
+        width: number;
+        height: number;
+        color: Color;
+    }>;
 };
 
 // @public
