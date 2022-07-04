@@ -11,14 +11,14 @@ import { Probot } from 'probot';
 import { buildkiteClient, getPRBuildParams } from '../../../utils/buildkite';
 import { PullRequestBuildEnv } from '../../../utils/types';
 import { checkUserFn, createIssueReaction, isValidUser, labelCheckFn, updateAllChecks } from '../../utils';
-import { getPRFromComment, isCommentAction } from './utils';
+import { getPRFromComment, hasCommentAction } from './utils';
 
 /**
  * build trigger for PR comment
  */
 export function setupBuildTrigger(app: Probot) {
   app.on('issue_comment.created', async (ctx) => {
-    if (!isCommentAction(ctx, 'test') || checkUserFn(ctx.payload.sender)('bot')) return;
+    if (!hasCommentAction(ctx, ['test', 'updateVrt']) || checkUserFn(ctx.payload.sender)('bot')) return;
     console.log(`------- Triggered probot ${ctx.name} | ${ctx.payload.action}`);
 
     const isPR = Boolean(ctx.payload.issue.pull_request);
@@ -69,7 +69,7 @@ export function setupBuildTrigger(app: Probot) {
       pull_request_base_branch: base.ref,
       pull_request_id: number,
       pull_request_repository: head.repo?.git_url,
-      env: getPRBuildParams(pullRequest, commit),
+      env: getPRBuildParams(pullRequest, commit, hasCommentAction(ctx, 'updateVrt')),
     });
 
     await updateAllChecks(

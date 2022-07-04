@@ -10,13 +10,14 @@ All interactions with pull requests or pushes are automated to provide a seamles
 
 All interactions are performed on pull requests. Push events will always trigger on target branches and be cancelled if newer commits are pushed to the same branch.
 
-### Trigger build via comment
 
-We can skip the buildkite job altogether either by applying the [`ci:skip`](https://github.com/elastic/elastic-charts/labels/ci%3Askip) label to the pull request or adding `[skip-ci]` string to the latest commit message (e.g. `docs: update readme [skip-ci]`). The commit can contain any of `[skip-ci]`, `[skip ci]`, `[ci skip]`, `[ci-skip]` to trigger a skip.
+### Skip a build
+
+We can skip the buildkite build altogether either by applying the [`ci:skip`](https://github.com/elastic/elastic-charts/labels/ci%3Askip) label to the pull request or adding `[skip-ci]` string to the latest commit message (e.g. `docs: update readme [skip-ci]`). The commit can contain any of `[skip-ci]`, `[skip ci]`, `[ci skip]`, `[ci-skip]` to trigger a skip.
 
 This will cancel any previous buildkite builds and apply a `skipped` status to all pull request check runs.
 
-### Trigger build via comment
+### Trigger build
 
 Like jenkins we can use a special phrase `buildkite test this` as a PR comment and buildkite will start the build if the user has necessary permissions. A :+1: reaction will confirm this interaction was successfully processed.
 
@@ -25,6 +26,8 @@ Like jenkins we can use a special phrase `buildkite test this` as a PR comment a
 ### Update VRT screenshots
 
 We can now update the playwright screenshots in the CI by adding `[update-vrt]` string to the latest commit message (e.g. `chore: update vrt screenshots [update-vrt]`). The commit can contain any of `[update-vrt]`, `[vrt-update]`, `[update-screenshots]`, `[screenshots-update]` to trigger updating vrt screenshots.
+
+We can also use a special phrase `buildkite update screenshots` or `buildkite update vrt` which will restart the current build with running the playwright tests in update mode.
 
 This will run playwright in update mode and collate all new screenshots across the parallel `Playwright e2e` steps. Once all steps are completed, the new screenshots will be committed directly to the pull request.
 

@@ -7,10 +7,19 @@
  */
 
 import { EuiIcon } from '@elastic/eui';
+import { action } from '@storybook/addon-actions';
 import { select, number, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Metric, MetricBase, MetricWProgress, MetricWTrend, Settings } from '@elastic/charts';
+import {
+  Chart,
+  isMetricElementEvent,
+  Metric,
+  MetricBase,
+  MetricWProgress,
+  MetricWTrend,
+  Settings,
+} from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -24,6 +33,7 @@ const getIcon = (type: string) => ({ width, height, color }: { width: number; he
 );
 
 export const Example = () => {
+  const addMetricClick = boolean('attach click handler', true);
   const useProgressBar = boolean('use progress bar', true);
 
   const progressBarDirection = select('progress bar direction', ['horizontal', 'vertical'], 'vertical');
@@ -131,6 +141,9 @@ export const Example = () => {
   const layout = select('layout', ['grid', 'vertical', 'horizontal'], 'grid');
   const configuredData =
     layout === 'grid' ? split(data, 4) : layout === 'horizontal' ? [data.slice(0, 4)] : split(data.slice(0, 4), 1);
+  const onEventClickAction = action('click');
+  const onEventOverAction = action('over');
+  const onEventOutAction = action('out');
   return (
     <div
       style={{
@@ -142,7 +155,30 @@ export const Example = () => {
       }}
     >
       <Chart>
-        <Settings baseTheme={useBaseTheme()} />
+        <Settings
+          baseTheme={useBaseTheme()}
+          onElementClick={
+            addMetricClick
+              ? ([d]) => {
+                  if (isMetricElementEvent(d)) {
+                    const { rowIndex, columnIndex } = d;
+                    onEventClickAction(
+                      `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+                    );
+                  }
+                }
+              : undefined
+          }
+          onElementOver={([d]) => {
+            if (isMetricElementEvent(d)) {
+              const { rowIndex, columnIndex } = d;
+              onEventOverAction(
+                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+              );
+            }
+          }}
+          onElementOut={() => onEventOutAction('out')}
+        />
         <Metric id="metric" data={configuredData} />
       </Chart>
     </div>

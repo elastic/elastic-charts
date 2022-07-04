@@ -14,6 +14,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { BasicListener, ElementClickListener, ElementOverListener } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -23,15 +24,13 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
-import { LayoutDirection } from '../../../../utils/common';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, isMetricWTrend, MetricSpec } from '../../specs';
+import { MetricSpec } from '../../specs';
 import { chartSize } from '../../state/selectors/chart_size';
 import { getMetricSpecs } from '../../state/selectors/data';
-import { ProgressBar } from './progress';
-import { SparkLine } from './sparkline';
-import { MetricText } from './text';
+import { Metric as MetricComponent } from './metric';
 
 interface StateProps {
   initialized: boolean;
@@ -43,6 +42,9 @@ interface StateProps {
   specs: MetricSpec[];
   a11y: A11ySettings;
   style: MetricStyle;
+  onElementClick?: ElementClickListener;
+  onElementOut?: BasicListener;
+  onElementOver?: ElementOverListener;
 }
 
 interface DispatchProps {
@@ -67,6 +69,9 @@ class Component extends React.Component<StateProps & DispatchProps> {
       a11y,
       specs,
       style,
+      onElementClick,
+      onElementOut,
+      onElementOver,
     } = this.props;
     if (!initialized || specs.length === 0 || width === 0 || height === 0) {
       return null;
@@ -74,71 +79,75 @@ class Component extends React.Component<StateProps & DispatchProps> {
     // ignoring other specs
     const { data } = specs[0];
 
-    const maxRows = data.length;
-    const maxColumns = data.reduce((acc, curr) => {
+    const totalRows = data.length;
+    const totalColumns = data.reduce((acc, curr) => {
       return Math.max(acc, curr.length);
     }, 0);
-    const panel = { width: width / maxColumns, height: height / maxRows };
+
+    const panel = { width: width / totalColumns, height: height / totalRows };
 
     return (
-      <div
+      // eslint-disable-next-line jsx-a11y/no-redundant-roles
+      <ul
+        role="list"
         className="echMetricContainer"
         aria-labelledby={a11y.labelId}
         aria-describedby={a11y.descriptionId}
         style={{
-          gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr)`,
-          gridTemplateRows: `repeat(${maxRows}, minmax(64px, 1fr)`,
+          gridTemplateColumns: `repeat(${totalColumns}, minmax(0, 1fr)`,
+          gridTemplateRows: `repeat(${totalRows}, minmax(64px, 1fr)`,
         }}
       >
         {data
-          .map((columns, ri) => {
+          .map((columns, rowIndex) => {
             return [
-              ...columns.map((d, ci) => {
-                const metricHTMLId = `echMetric-${chartId}-${ri}-${ci}`;
+              ...columns.map((datum, columnIndex) => {
                 // fill undefined with empty panels
                 const emptyMetricClassName = classNames('echMetric', {
-                  'echMetric--rightBorder': ci < maxColumns - 1,
-                  'echMetric--bottomBorder': ri < maxRows - 1,
+                  'echMetric--rightBorder': columnIndex < totalColumns - 1,
+                  'echMetric--bottomBorder': rowIndex < totalRows - 1,
                 });
-                if (!d) {
-                  return <div key={`empty-${ci}`} className={emptyMetricClassName}></div>;
+                if (!datum) {
+                  return (
+                    <li key={`empty-${columnIndex}`} role="presentation">
+                      <div className={emptyMetricClassName}></div>
+                    </li>
+                  );
                 }
-                const hasProgressBar = isMetricWProgress(d);
-                const progressBarDirection = isMetricWProgress(d) ? d.progressBarDirection : undefined;
-                const metricPanelClassName = classNames(emptyMetricClassName, {
-                  'echMetric--small': hasProgressBar,
-                  'echMetric--vertical': progressBarDirection === LayoutDirection.Vertical,
-                  'echMetric--horizontal': progressBarDirection === LayoutDirection.Horizontal,
-                });
-
                 return (
-                  <div
-                    role="figure"
-                    aria-labelledby={d.title && metricHTMLId}
-                    key={`${d.title}${d.subtitle}${d.color}${ci}`}
-                    className={metricPanelClassName}
-                    style={{
-                      backgroundColor: !isMetricWTrend(d) && !isMetricWProgress(d) ? d.color : style.background,
-                    }}
-                  >
-                    <MetricText id={metricHTMLId} datum={d} panel={panel} style={style} />
-                    {isMetricWTrend(d) && <SparkLine id={metricHTMLId} datum={d} />}
-                    {isMetricWProgress(d) && <ProgressBar datum={d} barBackground={style.barBackground} />}
-                  </div>
+                  <li key={`${datum.title}${datum.subtitle}${datum.color}${columnIndex}`}>
+                    <MetricComponent
+                      chartId={chartId}
+                      datum={datum}
+                      totalRows={totalRows}
+                      totalColumns={totalColumns}
+                      rowIndex={rowIndex}
+                      columnIndex={columnIndex}
+                      panel={panel}
+                      style={style}
+                      onElementClick={onElementClick}
+                      onElementOut={onElementOut}
+                      onElementOver={onElementOver}
+                    />
+                  </li>
                 );
               }),
               // fill the grid row with empty panels
-              ...Array.from({ length: maxColumns - columns.length }, (d, ci) => {
+              ...Array.from({ length: totalColumns - columns.length }, (_, columIndex) => {
                 const emptyMetricClassName = classNames('echMetric', {
-                  'echMetric--rightBorder': columns.length + ci < maxColumns - 1,
-                  'echMetric--bottomBorder': ri < maxRows - 1,
+                  'echMetric--rightBorder': columns.length + columIndex < totalColumns - 1,
+                  'echMetric--bottomBorder': rowIndex < totalRows - 1,
                 });
-                return <div key={`missing-${ci}`} className={emptyMetricClassName}></div>;
+                return (
+                  <li key={`missing-${columIndex}`} role="presentation">
+                    <div className={emptyMetricClassName}></div>
+                  </li>
+                );
               }),
             ];
           })
           .flat()}
-      </div>
+      </ul>
     );
   }
 }
@@ -167,12 +176,16 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
+  const { onElementClick, onElementOut, onElementOver } = getSettingsSpecSelector(state);
   return {
     initialized: true,
     chartId: state.chartId,
     specs: getMetricSpecs(state),
     size: chartSize(state),
     a11y: getA11ySettingsSelector(state),
+    onElementClick,
+    onElementOver,
+    onElementOut,
     style: getChartThemeSelector(state).metric,
   };
 };
