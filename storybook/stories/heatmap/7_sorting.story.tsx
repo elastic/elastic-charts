@@ -17,6 +17,7 @@ import { getKnobsFromEnum } from '../utils/knobs';
 
 export const Example = () => {
   const keepNull = boolean('Fill gaps with nulls', true);
+  const onlyNulls = boolean('Fill everything with nulls', false);
   const xSort = getKnobsFromEnum('X sorting predicate', Predicate, Predicate.DataIndex as Predicate);
   const ySort = getKnobsFromEnum('Y sorting predicate', Predicate, Predicate.DataIndex as Predicate);
   return (
@@ -62,7 +63,9 @@ export const Example = () => {
           { x: 'C', y: '1', value: 23 },
           { x: 'C', y: '2', value: 35 },
           { x: 'C', y: '3', value: 50 },
-        ].filter((d) => (keepNull ? true : d.value !== null))}
+        ]
+          .filter((d) => (keepNull ? true : d.value !== null))
+          .map((d) => (onlyNulls ? { ...d, value: null } : d))}
         xAccessor="x"
         yAccessor="y"
         valueAccessor="value"
