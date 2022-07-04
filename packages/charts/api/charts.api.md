@@ -916,10 +916,10 @@ export interface DomainRange {
 }
 
 // @public (undocumented)
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
 
 // @public (undocumented)
-export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent>) => void;
+export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
 
 // @public (undocumented)
 export const entryKey: ([key]: ArrayEntry) => string;
@@ -1425,6 +1425,9 @@ export const INPUT_KEY = "inputIndex";
 export type IsAny<T, True, False = never> = True | False extends (T extends never ? True : False) ? True : False;
 
 // @public
+export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]): e is MetricElementEvent;
+
+// @public
 export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, False, True> : False;
 
 // @public (undocumented)
@@ -1687,6 +1690,13 @@ export type MetricBase = {
     title?: string;
     subtitle?: string;
     extra?: ReactElement;
+};
+
+// @public
+export type MetricElementEvent = {
+    type: 'metricElementEvent';
+    rowIndex: number;
+    columnIndex: number;
 };
 
 // @alpha (undocumented)

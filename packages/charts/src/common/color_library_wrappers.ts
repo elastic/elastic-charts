@@ -92,3 +92,9 @@ export function hslToColor(h: number, s: number, l: number): Color {
   const rgba = chroma.hsl(h, s, l).rgba();
   return RGBATupleToString(rgba);
 }
+
+/** @internal */
+export function changeColorLightness(color: Color, lightnessAmount: number, lightnessThreshold: number): Color {
+  const [h, s, l] = colorToHsl(color);
+  return hslToColor(h, s, l >= lightnessThreshold ? l - lightnessAmount : l + lightnessAmount);
+}

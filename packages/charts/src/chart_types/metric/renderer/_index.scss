@@ -10,7 +10,30 @@
 
 .echMetric {
   position: relative;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
+  transition: background-color ease-in-out 0.1s;
+
+  .echMetric--outline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+
+  &:focus-within {
+    .echMetric--outline {
+      outline: auto;
+      outline-offset: -1.5px;
+    }
+  }
+
+  &:focus-within button {
+    outline: none;
+  }
 
   &--rightBorder {
     border-right: 1px solid #343741;
