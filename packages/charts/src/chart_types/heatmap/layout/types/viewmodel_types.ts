@@ -11,7 +11,6 @@ import { Color, Colors } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
 import { Box, Font, TextAlign } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
-import { ScaleBand } from '../../../../scales';
 import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
@@ -101,6 +100,9 @@ export type PickHighlightedArea = (
 ) => Rect | null;
 
 /** @internal */
+export type PickCursorBand = (x: NonNullable<PrimitiveValue>) => Rect | undefined;
+
+/** @internal */
 export type PickGridCell = (x: Pixels, y: Pixels) => GridCell | undefined;
 
 /** @internal */
@@ -115,7 +117,7 @@ export type ShapeViewModel = {
   pickDragShape: PickDragShapeFunction;
   pickHighlightedArea: PickHighlightedArea;
   pickGridCell: PickGridCell;
-  xScaleBand?: ScaleBand;
+  pickCursorBand: PickCursorBand;
 };
 
 /** @internal */
@@ -146,5 +148,5 @@ export const nullShapeViewModel = (): ShapeViewModel => ({
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   pickHighlightedArea: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   pickGridCell: () => undefined,
-  xScaleBand: undefined,
+  pickCursorBand: () => undefined,
 });

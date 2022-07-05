@@ -13,7 +13,6 @@ import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
-import { ScaleBand as ChartScaleBand } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -29,6 +28,7 @@ import { ColorScale } from '../../state/selectors/get_color_scale';
 import {
   Cell,
   GridCell,
+  PickCursorBand,
   PickDragFunction,
   PickDragShapeFunction,
   PickHighlightedArea,
@@ -86,7 +86,6 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
   // compute the scale for the columns positions
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, elementSizes.grid.width]);
-  const xScaleBand = new ChartScaleBand(xValues, [0, elementSizes.grid.width]);
 
   const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
     .domain([0, elementSizes.grid.width])
@@ -335,6 +334,19 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return pickHighlightedArea(area.x, area.y);
   };
 
+  const pickCursorBand: PickCursorBand = (x) => {
+    const index = typeof x === 'number' ? xValues.findIndex((d) => d > x) - 1 : xValues.indexOf(x);
+    if (index < 0) {
+      return undefined;
+    }
+    return {
+      width: cellWidth,
+      x: elementSizes.grid.left + (xScale(xValues[index]) ?? NaN),
+      y: elementSizes.grid.top,
+      height: elementSizes.grid.height,
+    };
+  };
+
   // ordered left-right vertical lines
   const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => {
     const xAxisExtension = i % elementSizes.xAxisTickCadence === 0 ? 5 : 0;
@@ -418,7 +430,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     pickDragArea,
     pickDragShape,
     pickHighlightedArea,
-    xScaleBand,
+    pickCursorBand,
   };
 }
 
