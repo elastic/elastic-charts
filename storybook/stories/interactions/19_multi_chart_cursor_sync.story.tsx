@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { action } from '@storybook/addon-actions';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -32,7 +31,6 @@ export const Example = () => {
   const ref3 = React.useRef<Chart>(null);
 
   const pointerUpdate = (event: PointerEvent) => {
-    action('onPointerUpdate')(event);
     if (ref1.current) {
       ref1.current.dispatchExternalPointerEvent(event);
     }
@@ -58,7 +56,7 @@ export const Example = () => {
           pointerUpdateDebounce={0}
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{ tooltip: { visible: true, placement: Placement.Left } }}
-          tooltip={{ type: TooltipType.VerticalCursor }}
+          tooltip={{ type: TooltipType.VerticalCursor, placement: Placement.Left, stickTo: Position.Top }}
         />
         <Axis
           id="bottom"
@@ -103,7 +101,7 @@ export const Example = () => {
           pointerUpdateDebounce={0}
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{ tooltip: { visible: true, placement: Placement.Left } }}
-          tooltip={{ type: TooltipType.VerticalCursor }}
+          tooltip={{ type: TooltipType.VerticalCursor, placement: Placement.Left, stickTo: Position.Top }}
           theme={{
             chartPaddings: { top: 0, bottom: 0, left: 0, right: 0 },
             chartMargins: { top: 0, bottom: 0, left: 0, right: 0 },

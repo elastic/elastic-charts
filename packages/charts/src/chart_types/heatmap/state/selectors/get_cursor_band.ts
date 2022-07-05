@@ -44,17 +44,16 @@ function getCursorBand(
       }
     }
   }
-
-  // Use this if we want to show a cursor band always
-  // if (currentPointer.position.x > -1) {
-  //   const point = currentPointer.position;
-  //   const end = { x: point.x + 1, y: point.y + 1 };
-  //   const band = geoms.pickDragShape([point, end]);
-  //   if (band) {
-  //     return {
-  //       ...band,
-  //       fromExternalEvent: false,
-  //     };
-  //   }
-  // }
+  // display the current hovered cell
+  if (currentPointer.position.x > -1) {
+    const point = currentPointer.position;
+    const end = { x: point.x + Number.EPSILON, y: point.y + Number.EPSILON };
+    const band = geoms.pickDragShape([point, end]);
+    if (band) {
+      return {
+        ...band,
+        fromExternalEvent: false,
+      };
+    }
+  }
 }
