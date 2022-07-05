@@ -53,9 +53,10 @@ export const Example = () => {
   extra = extra.replace('&lt;/b&gt;', '</b>');
   const showIcon = boolean('show icon', false);
   const iconType = text('EUI icon glyph name', 'alert');
-  const getIcon = (type: string) => ({ width, height, color }: { width: number; height: number; color: string }) => (
-    <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
-  );
+  const getIcon =
+    (type: string) =>
+    ({ width, height, color }: { width: number; height: number; color: string }) =>
+      <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />;
   const data = {
     value,
     color: metricColor,
