@@ -19,7 +19,12 @@ export type ColorScale = (value: number) => Color;
  * @internal
  * Gets color scale based on specification and values range.
  */
-export const getColorScale = createCustomCachedSelector([getHeatmapSpecSelector], (spec): {
-  scale: ColorScale;
-  bands: Required<ColorBand>[];
-} => getBandsColorScale(spec.colorScale, spec.valueFormatter));
+export const getColorScale = createCustomCachedSelector(
+  [getHeatmapSpecSelector],
+  (
+    spec,
+  ): {
+    scale: ColorScale;
+    bands: Required<ColorBand>[];
+  } => getBandsColorScale(spec.colorScale, spec.valueFormatter),
+);

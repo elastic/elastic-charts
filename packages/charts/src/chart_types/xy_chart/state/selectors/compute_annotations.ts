@@ -19,7 +19,9 @@ import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 const getAxisStyleGetter = createCustomCachedSelector(
   [getAxesStylesSelector, getChartThemeSelector],
-  (axisStyles, { axes }) => (id: AxisId = '') => axisStyles.get(id) ?? axes,
+  (axisStyles, { axes }) =>
+    (id: AxisId = '') =>
+      axisStyles.get(id) ?? axes,
 );
 
 /** @internal */

@@ -201,7 +201,7 @@ describe('Mixed series stories', () => {
       describe.each([SeriesType.Bar, SeriesType.Area])('%s series', (type) => {
         it('should display correct stacking', async () => {
           await common.expectChartAtUrlToMatchScreenshot(
-            `http://localhost:9001/?path=/story/mixed-charts---polarized-stacked&globals=theme:light&knob-stacked=true&knob-data polarity=${polarity}&knob-custom domain=false&knob-stackMode=${mode}&knob-SeriesType=${type}`,
+            `http://localhost:9001/?path=/story/mixed-charts--polarized-stacked&globals=theme:light&knob-stacked=true&knob-data polarity=${polarity}&knob-custom domain=false&knob-stackMode=${mode}&knob-SeriesType=${type}`,
           );
         });
 
@@ -210,7 +210,7 @@ describe('Mixed series stories', () => {
             await page.click('.echLegendItem:nth-child(2) .echLegendItem__label');
           };
           await common.expectChartWithMouseAtUrlToMatchScreenshot(
-            `http://localhost:9001/?path=/story/mixed-charts---polarized-stacked&globals=theme:light&knob-stacked=true&knob-data polarity=${polarity}&knob-custom domain=false&knob-stackMode=${mode}&knob-SeriesType=${type}`,
+            `http://localhost:9001/?path=/story/mixed-charts--polarized-stacked&globals=theme:light&knob-stacked=true&knob-data polarity=${polarity}&knob-custom domain=false&knob-stackMode=${mode}&knob-SeriesType=${type}`,
             { top: 170, left: 490 },
             { action },
           );

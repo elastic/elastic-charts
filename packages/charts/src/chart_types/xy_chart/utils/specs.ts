@@ -979,7 +979,7 @@ export interface BaseAnnotationSpec<
   T extends typeof AnnotationType.Rectangle | typeof AnnotationType.Line,
   AD extends RectAnnotationDatum | LineAnnotationDatum<D>,
   S extends RectAnnotationStyle | LineAnnotationStyle,
-  D = never
+  D = never,
 > extends Spec,
     AnnotationPortalSettings {
   chartType: typeof ChartType.XYAxis;
