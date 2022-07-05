@@ -21,14 +21,54 @@ import {
   LineSeries,
   Heatmap,
 } from '@elastic/charts';
+import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
+import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { heatmapData, lineChartData1, lineChartData2 } from '../heatmap/constants';
+
+const rng = getRandomNumberGenerator();
+
+const aggData = [
+  ...KIBANA_METRICS.metrics.kibana_os_load[0].data
+    .reduce<{ x: number; y: string; value: number }[]>((acc, [x, y], i) => {
+      if (i % 5 === 0) {
+        acc.push({ x, y: '2fd4e', value: y });
+      } else {
+        acc[acc.length - 1].value += y;
+      }
+
+      return acc;
+    }, [])
+    .map(({ x, y, value }, i) => (rng()) > 0.6 ? { x, y, value: null } : { x, y, value })),
+  ...KIBANA_METRICS.metrics.kibana_os_load[1].data
+    .reduce<{ x: number; y: string; value: number }[]>((acc, [x, y], i) => {
+      if (i % 5 === 0) {
+        acc.push({ x, y: '3afad', value: y });
+      } else {
+        acc[acc.length - 1].value += y;
+      }
+
+      return acc;
+    }, [])
+    .map(({ x, y, value }, i) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
+  ...KIBANA_METRICS.metrics.kibana_os_load[2].data
+    .reduce<{ x: number; y: string; value: number }[]>((acc, [x, y], i) => {
+      if (i % 5 === 0) {
+        acc.push({ x, y: 'f9560', value: y });
+      } else {
+        acc[acc.length - 1].value += y;
+      }
+
+      return acc;
+    }, [])
+    .map(({ x, y, value }, i) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
+];
 
 export const Example = () => {
   const ref1 = React.useRef<Chart>(null);
   const ref2 = React.useRef<Chart>(null);
   const ref3 = React.useRef<Chart>(null);
+
 
   const pointerUpdate = (event: PointerEvent) => {
     if (ref1.current) {
@@ -45,12 +85,13 @@ export const Example = () => {
 
   return (
     <>
+      <div style={{ paddingLeft: 52 }}>Response times</div>
       <Chart ref={ref1} size={{ height: '30%' }} id="chart1">
         <Settings
           baseTheme={baseTheme}
           theme={{
             chartPaddings: { top: 0, bottom: 0, left: 0, right: 0 },
-            chartMargins: { top: 0, bottom: 0, left: 0, right: 0 },
+            chartMargins: { top: 0, bottom: 0, left: 16, right: 0 },
             lineSeriesStyle: { point: { visible: false } },
           }}
           pointerUpdateDebounce={0}
@@ -76,6 +117,7 @@ export const Example = () => {
           id="left2"
           ticks={2}
           position={Position.Left}
+          tickFormat={(d) => `${d / 1000}s`}
           style={{
             tickLine: { size: 0 },
             tickLabel: { padding: 4 },
@@ -85,16 +127,17 @@ export const Example = () => {
         />
 
         <LineSeries
-          id="Top"
+          id="Response time"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
-          xAccessor="date"
-          yAccessors={['value']}
-          data={lineChartData1}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={KIBANA_METRICS.metrics.kibana_response_times[0].data}
           yNice
+          color={"#343741"}
         />
       </Chart>
-      <div style={{ height: 20 }} />
+      <div style={{ paddingLeft: 52, height: 30, lineHeight: '30px' }}>Number of requests</div>
       <Chart ref={ref2} size={{ height: '30%' }} id="chart2">
         <Settings
           baseTheme={baseTheme}
@@ -104,7 +147,7 @@ export const Example = () => {
           tooltip={{ type: TooltipType.VerticalCursor, placement: Placement.Left, stickTo: Position.Top }}
           theme={{
             chartPaddings: { top: 0, bottom: 0, left: 0, right: 0 },
-            chartMargins: { top: 0, bottom: 0, left: 0, right: 0 },
+            chartMargins: { top: 0, bottom: 0, left: 16, right: 0 },
             lineSeriesStyle: { point: { visible: false } },
           }}
         />
@@ -133,16 +176,17 @@ export const Example = () => {
           }}
         />
         <LineSeries
-          id="Bottom"
+          id="# Requests"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
-          xAccessor="date"
-          yAccessors={['value']}
-          data={lineChartData2}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={KIBANA_METRICS.metrics.kibana_requests[0].data}
+          color={"#343741"}
           yNice
         />
       </Chart>
-      <div style={{ height: 20 }} />
+      <div style={{ paddingLeft: 52, height: 30, lineHeight: '30px' }}>Memory pressure</div>
       <Chart ref={ref3} size={{ height: '30%' }} id="heatmap">
         <Settings
           baseTheme={baseTheme}
@@ -162,7 +206,7 @@ export const Example = () => {
                 },
               },
               yAxisLabel: {
-                width: 32,
+                width: 50,
                 textColor: baseTheme.axes.tickLabel.fill,
                 fontSize: baseTheme.axes.tickLabel.fontSize,
                 fontFamily: baseTheme.axes.tickLabel.fontFamily,
@@ -181,33 +225,38 @@ export const Example = () => {
           externalPointerEvents={{ tooltip: { visible: true } }}
         />
         <Heatmap
-          id="heatmap1"
+          id="CPU temp"
           colorScale={{
             type: 'bands',
             bands: [
-              { start: -Infinity, end: 3.5, color: '#d2e9f7' },
-              { start: 3.5, end: 25, color: '#8bc8fb' },
-              { start: 25, end: 50, color: '#fdec25' },
-              { start: 50, end: 75, color: '#fba740' },
-              { start: 75, end: Infinity, color: '#fe5050' },
+              { start: -Infinity, end: 40, color: '#ffffb2' },
+              { start: 40, end: 50, color: '#fed976' },
+              { start: 50, end: 60, color: '#feb24c' },
+              { start: 60, end: 70, color: '#fd8d3c' },
+              { start: 70, end: 80, color: '#fc4e2a' },
+              { start: 80, end: 90, color: '#e31a1c' },
+              { start: 90, end: Infinity, color: '#b10026' },
             ],
           }}
-          data={heatmapData}
-          xAccessor="time"
-          yAccessor="laneLabel"
+          data={aggData}
+          xAccessor="x"
+          yAccessor="y"
           valueAccessor="value"
-          valueFormatter={(d) => `${Number(d.toFixed(2))}℃`}
+          valueFormatter={(d) => `${Number(d.toFixed(1))}℃`}
           xScale={{
             type: ScaleType.Time,
             interval: {
               type: 'fixed',
               unit: 'ms',
-              value: 21600000,
+              value: aggData[1].x - aggData[0].x,
             },
+
           }}
           xAxisLabelFormatter={(v) =>
             DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm', { timeZone: 'Europe/Rome' })
           }
+          xAxisLabelName="time"
+          yAxisLabelName="cluster"
           timeZone="UTC"
           ySortPredicate="dataIndex"
           yAxisLabelFormatter={(laneLabel) => `${laneLabel}`}

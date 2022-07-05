@@ -84,9 +84,9 @@ export class HeatmapState implements InternalChartState {
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
     return (
       <>
-        <CursorBand />
         <Tooltip getChartContainerRef={containerRef} />
         <Heatmap forwardStageRef={forwardStageRef} />
+        <CursorBand />
         <BrushTool />
         <HighlighterFromBrush />
       </>

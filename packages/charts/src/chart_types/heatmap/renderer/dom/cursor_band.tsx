@@ -54,7 +54,7 @@ class CursorBandComponent extends React.Component<CursorBandProps> {
     const { fill } = band;
     return (
       <svg className="echCrosshair__cursor" width="100%" height="100%">
-        <rect {...{ x, y, width, height, fill }} />
+        <rect {...{ x, y, width, height, fill, opacity: 0.5 }} />
       </svg>
     );
   }
