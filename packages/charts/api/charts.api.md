@@ -524,6 +524,7 @@ export const ChartType: Readonly<{
     Goal: "goal";
     Partition: "partition";
     Flame: "flame";
+    Timeslip: "timeslip";
     XYAxis: "xy_axis";
     Heatmap: "heatmap";
     Wordcloud: "wordcloud";
@@ -2716,6 +2717,33 @@ export type TimeMs = number;
 export interface TimeScale {
     // (undocumented)
     type: typeof ScaleType.Time;
+}
+
+// @public
+export const Timeslip: <D extends BaseDatum = any>(props: SFProps<TimeslipSpec<D>, "chartType" | "specType", "animation" | "valueAccessor" | "valueFormatter" | "valueGetter", never, "id" | "columnarData" | "controlProviderCallback">) => null;
+
+// @public
+export type TimeslipGlobalControl = () => void;
+
+// @public
+export type TimeslipNodeControl = (nodeIndex: number) => void;
+
+// @public
+export interface TimeslipSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnimationConfig {
+    // (undocumented)
+    chartType: typeof ChartType.Timeslip;
+    // (undocumented)
+    columnarData: ColumnarViewModel;
+    // (undocumented)
+    controlProviderCallback: Partial<ControlReceiverCallbacks>;
+    // (undocumented)
+    specType: typeof SpecType.Series;
+    // (undocumented)
+    valueAccessor: ValueAccessor<D>;
+    // (undocumented)
+    valueFormatter: ValueFormatter;
+    // (undocumented)
+    valueGetter: (datumIndex: number) => number;
 }
 
 // @public

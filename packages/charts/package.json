@@ -36,6 +36,7 @@
     "bezier-easing": "^2.1.0",
     "chroma-js": "^2.1.0",
     "classnames": "^2.2.6",
+    "dat.gui": "^0.7.9",
     "d3-array": "^1.2.4",
     "d3-cloud": "^1.2.5",
     "d3-collection": "^1.0.7",
