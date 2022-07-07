@@ -60,13 +60,19 @@ export function setupBuildTrigger(app: Probot) {
               conclusion: 'skipped',
             },
             buildUrl,
+            true,
           );
         });
       } else if (['synchronize', 'opened', 'reopened'].includes(ctx.payload.action)) {
-        await updateAllChecks(ctx, {
-          status: 'completed',
-          conclusion: 'skipped',
-        });
+        await updateAllChecks(
+          ctx,
+          {
+            status: 'completed',
+            conclusion: 'skipped',
+          },
+          undefined,
+          true,
+        );
       }
 
       return;

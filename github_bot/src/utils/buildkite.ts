@@ -131,8 +131,9 @@ export function getPRBuildParams(
     labels = [],
   }: components['schemas']['pull-request'] | ProbotEventPayload<'pull_request'>['pull_request'],
   { commit }: components['schemas']['commit'],
+  updateVrt?: boolean,
 ): PullRequestBuildEnv {
-  const updateScreenshots = checkCommitFn(commit.message)('updateScreenshots');
+  const updateScreenshots = updateVrt ?? checkCommitFn(commit.message)('updateScreenshots');
   return {
     GITHUB_PR_NUMBER: number.toString(),
     GITHUB_PR_TARGET_BRANCH: base.ref,

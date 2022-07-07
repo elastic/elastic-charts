@@ -2795,10 +2795,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^60.0.0":
-  version "60.0.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-60.0.0.tgz#7b2cc45b4305abb0fb7081bd2adbd3ab41e55e8a"
-  integrity sha512-TLYttLSBrTw3QloXjRXrTkHZLSmTf3YNi0rakWslG25IkFkllY9yGSKjEUNBLHDDm0SfV9aBReM7Vc9Whzhw+g==
+"@elastic/eui@^60.1.1":
+  version "60.1.1"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-60.1.1.tgz#e7f0469aae12462c89280732ec53e64a2e67a3c6"
+  integrity sha512-xiExXKJW/RSA1kwKRypvV9H4R6IOeEHKPI4HdzfRnmxqWwVxDFUWe8M2sXXpd2G2R6uA+1Pjn+fUgteliwWBAA==
   dependencies:
     "@types/chroma-js" "^2.0.0"
     "@types/lodash" "^4.14.160"
@@ -10779,8 +10779,7 @@ eslint-module-utils@^2.6.0:
     pkg-dir "^2.0.0"
 
 "eslint-plugin-elastic-charts@link:./packages/eslint-plugin-elastic-charts":
-  version "0.0.0"
-  uid ""
+  version "1.0.0"
 
 eslint-plugin-eslint-comments@^3.2.0:
   version "3.2.0"

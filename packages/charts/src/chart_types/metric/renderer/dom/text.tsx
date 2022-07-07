@@ -9,13 +9,11 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { highContrastColor } from '../../../../common/color_calcs';
-import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Colors } from '../../../../common/colors';
-import { isFiniteNumber, LayoutDirection } from '../../../../utils/common';
+import { Color } from '../../../../common/colors';
+import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, isMetricWTrend, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
+import { isMetricWProgress, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
 
 type BreakPoint = 's' | 'm' | 'l';
 
@@ -26,7 +24,8 @@ const WIDTH_BP: [number, number, BreakPoint][] = [
 ];
 
 const PADDING = 8;
-const MAGIC_NUMBER_LINE_HEIGHT = 1.1428571428571428; // TODO replace with the right calculation based on EUI or take it from body
+const NUMBER_LINE_HEIGHT = 1.2; // aligned with our CSS
+const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 16, l: 24 };
 const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
 const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
@@ -52,11 +51,11 @@ function elementVisibility(
   size: BreakPoint,
 ): ElementVisibility {
   const titleHeight = (title: boolean, maxLines: number) =>
-    PADDING + (title ? maxLines * TITLE_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT : 0);
+    PADDING + (title ? maxLines * TITLE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT : 0);
   const subtitleHeight = (subtitle: boolean, maxLines: number) =>
-    subtitle ? maxLines * SUBTITLE_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT + PADDING : 0;
-  const extraHeight = (extra: boolean) => (extra ? EXTRA_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT : 0);
-  const valueHeight = VALUE_FONT_SIZE[size] * MAGIC_NUMBER_LINE_HEIGHT + PADDING;
+    subtitle ? maxLines * SUBTITLE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT + PADDING : 0;
+  const extraHeight = (extra: boolean) => (extra ? EXTRA_FONT_SIZE[size] * NUMBER_LINE_HEIGHT : 0);
+  const valueHeight = VALUE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT + PADDING;
 
   const responsiveBreakPoints: Array<ElementVisibility> = [
     { titleLines: 3, subtitleLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
@@ -94,7 +93,9 @@ export const MetricText: React.FunctionComponent<{
   datum: MetricBase | MetricWProgress | MetricWTrend;
   panel: Size;
   style: MetricStyle;
-}> = ({ id, datum, panel, style }) => {
+  onElementClick: () => void;
+  highContrastTextColor: Color;
+}> = ({ id, datum, panel, style, onElementClick, highContrastTextColor }) => {
   const { title, subtitle, extra, value } = datum;
 
   const size = findRange(WIDTH_BP, panel.width);
@@ -109,10 +110,9 @@ export const MetricText: React.FunctionComponent<{
   const visibility = elementVisibility(datum, panel, size);
 
   const parts = splitNumericSuffixPrefix(datum.valueFormatter(value));
-  const bgColor = isMetricWTrend(datum) || !isMetricWProgress(datum) ? datum.color : style.background;
 
-  const highContrastTextColor =
-    highContrastColor(colorToRgba(bgColor)) === Colors.White.rgba ? style.text.lightColor : style.text.darkColor;
+  const titleWidthMaxSize = size === 's' ? '100%' : '80%';
+  const titleWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
 
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
@@ -121,10 +121,32 @@ export const MetricText: React.FunctionComponent<{
           <h2
             id={id}
             className="echMetricText__title"
-            style={{ fontSize: `${TITLE_FONT_SIZE[size]}px`, ...lineClamp(visibility.titleLines) }}
+            style={{
+              fontSize: `${TITLE_FONT_SIZE[size]}px`,
+              ...lineClamp(visibility.titleLines),
+              width: titleWidth,
+            }}
           >
-            {title}
+            <button
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                onElementClick();
+              }}
+            >
+              {title}
+            </button>
           </h2>
+        )}
+        {datum.icon && (
+          <div className="echMetricText__icon">
+            {renderWithProps(datum.icon, {
+              width: ICON_SIZE[size],
+              height: ICON_SIZE[size],
+              color: highContrastTextColor,
+            })}
+          </div>
         )}
       </div>
       <div>

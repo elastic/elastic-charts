@@ -6,10 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { select, text, color, number } from '@storybook/addon-knobs';
+import { EuiIcon } from '@elastic/eui';
+import { action } from '@storybook/addon-actions';
+import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Metric, MetricTrendShape, Settings } from '@elastic/charts';
+import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -48,6 +50,12 @@ export const Example = () => {
   const metricColor = color('color', '#3c3c3c');
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
+  const showIcon = boolean('show icon', false);
+  const iconType = text('EUI icon glyph name', 'alert');
+  const getIcon =
+    (type: string) =>
+    ({ width, height, color }: { width: number; height: number; color: string }) =>
+      <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />;
   const data = {
     value,
     color: metricColor,
@@ -64,7 +72,12 @@ export const Example = () => {
           trendA11yDescription,
         }
       : {}),
+    ...(showIcon ? { icon: getIcon(iconType) } : {}),
   };
+  const onEventClickAction = action('click');
+  const onEventOverAction = action('over');
+  const onEventOutAction = action('out');
+  const configuredData = [[data]];
 
   return (
     <div
@@ -77,8 +90,27 @@ export const Example = () => {
       }}
     >
       <Chart>
-        <Settings baseTheme={useBaseTheme()} />
-        <Metric id="1" data={[[data]]} />
+        <Settings
+          baseTheme={useBaseTheme()}
+          onElementClick={([d]) => {
+            if (isMetricElementEvent(d)) {
+              const { rowIndex, columnIndex } = d;
+              onEventClickAction(
+                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+              );
+            }
+          }}
+          onElementOver={([d]) => {
+            if (isMetricElementEvent(d)) {
+              const { rowIndex, columnIndex } = d;
+              onEventOverAction(
+                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+              );
+            }
+          }}
+          onElementOut={() => onEventOutAction('out')}
+        />
+        <Metric id="1" data={configuredData} />
       </Chart>
     </div>
   );
