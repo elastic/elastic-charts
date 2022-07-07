@@ -25,5 +25,7 @@ export const TooltipHeader = memo((props: TooltipHeaderProps) => {
   const { header, formatter } = props;
   if (!header || !header.isVisible) return null;
 
-  return <div className="echTooltip__header">{formatter ? formatter(header) : header.formattedValue}</div>;
+  const formattedValue = formatter ? formatter(header) : header.formattedValue;
+  if (!formattedValue) return null;
+  return <div className="echTooltip__header">{formattedValue}</div>;
 });
