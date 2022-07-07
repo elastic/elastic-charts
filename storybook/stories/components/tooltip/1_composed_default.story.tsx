@@ -9,7 +9,7 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { TooltipList, TooltipWrapper, CustomTooltip, TooltipHeader, TooltipListItem } from '@elastic/charts';
+import { TooltipWrapper, CustomTooltip, TooltipHeader } from '@elastic/charts';
 
 import * as dataSets from './data';
 import { TooltipShowcase } from './tooltip_showcase';
@@ -24,14 +24,15 @@ export const Example = () => {
     },
     'simple',
   );
-  const MyTooltip: CustomTooltip = ({ className, dir, values, header, backgroundColor }) => {
-    return (
-      <TooltipWrapper className={className} dir={dir}>
-        <TooltipHeader header={header} />
-        <TooltipList items={values} backgroundColor={backgroundColor} renderItem={TooltipListItem} />
-      </TooltipWrapper>
-    );
-  };
+  const MyTooltip = undefined;
+  // const MyTooltip: CustomTooltip = ({ className, dir, values, header, backgroundColor }) => {
+  //   return (
+  //     <TooltipWrapper className={className} dir={dir}>
+  //       <TooltipHeader header={header} />
+  //       <TooltipList items={values} backgroundColor={backgroundColor} renderItem={TooltipListItem} />
+  //     </TooltipWrapper>
+  //   );
+  // };
 
   return <TooltipShowcase info={dataSets[dataSet]} settings={{ customTooltip: MyTooltip }} />;
 };

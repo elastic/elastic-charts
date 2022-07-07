@@ -13,10 +13,6 @@ export * from './tooltip_footer';
 export * from './tooltip_divider';
 export * from './tooltip_metric_row';
 
-// list components
-export * from './tooltip_list';
-export * from './tooltip_list_item';
-
 // table components
 export * from './tooltip_table';
 export * from './tooltip_table_body';

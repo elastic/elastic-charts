@@ -9,15 +9,7 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  TooltipList,
-  TooltipWrapper,
-  CustomTooltip,
-  TooltipHeader,
-  TooltipListItem,
-  TooltipMetricRow,
-  TooltipFooter,
-} from '@elastic/charts';
+import { TooltipWrapper, CustomTooltip, TooltipHeader, TooltipMetricRow, TooltipFooter } from '@elastic/charts';
 
 import * as dataSets from './data';
 import { TooltipShowcase } from './tooltip_showcase';
@@ -32,21 +24,21 @@ export const Example = () => {
     },
     'simple',
   );
-  const Row: typeof TooltipListItem = ({ item }) => (
-    <div>
-      {item.formattedValue} (x = {item.datum.x})
-    </div>
-  );
-  const MyTooltip: CustomTooltip = ({ className, dir, values, header, backgroundColor }) => {
-    return (
-      <TooltipWrapper className={className} dir={dir}>
-        <TooltipHeader>My custom header</TooltipHeader>
-        <TooltipMetricRow label="Sum of values" metric={14} />
-        <TooltipList maxHeight={100} items={values} backgroundColor={backgroundColor} renderItem={Row}></TooltipList>
-        todo
-        <TooltipFooter>Here's my fooot!</TooltipFooter>
-      </TooltipWrapper>
-    );
-  };
-  return <TooltipShowcase info={dataSets[dataSet]} settings={{ customTooltip: MyTooltip }} />;
+  // const Row: typeof TooltipListItem = ({ item }) => (
+  //   <div>
+  //     {item.formattedValue} (x = {item.datum.x})
+  //   </div>
+  // );
+  // const MyTooltip: CustomTooltip = ({ className, dir, values, header, backgroundColor }) => {
+  //   return (
+  //     <TooltipWrapper className={className} dir={dir}>
+  //       <TooltipHeader>My custom header</TooltipHeader>
+  //       <TooltipMetricRow label="Sum of values" metric={14} />
+  //       <TooltipList maxHeight={100} items={values} backgroundColor={backgroundColor} renderItem={Row}></TooltipList>
+  //       todo
+  //       <TooltipFooter>Here's my fooot!</TooltipFooter>
+  //     </TooltipWrapper>
+  //   );
+  // };
+  return <TooltipShowcase info={dataSets[dataSet]} settings={{ customTooltip: undefined }} />;
 };
