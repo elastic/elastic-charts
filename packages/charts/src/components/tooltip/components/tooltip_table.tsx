@@ -7,20 +7,38 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, ReactNode } from 'react';
 
 import { TooltipValue } from '../../../specs';
 import { isNil } from '../../../utils/common';
 import { PropsOrChildren } from '../types';
-import { TooltipListItem } from './tooltip_list_item';
 import { TooltipTableBody } from './tooltip_table_body';
+import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
 
+/**
+ * Column definition for tooltip table
+ * @alpha
+ */
+export type TooltipTableColumn = {
+  id?: string;
+  className?: string;
+  textAlign?: CSSProperties['textAlign'];
+  header?: string | (() => string);
+  footer?: string | (() => string);
+  hidden?: boolean | ((items: TooltipValue[]) => boolean);
+} & (
+  | {
+      accessor: string | number;
+    }
+  | {
+      renderCell: (item: TooltipValue) => ReactNode;
+    }
+);
+
 type TooltipListContentProps = PropsOrChildren<{
-  columns: string[];
+  columns: TooltipTableColumn[];
   items: TooltipValue[];
-  backgroundColor: string;
-  renderItem?: typeof TooltipListItem;
 }>;
 
 type TooltipListProps = TooltipListContentProps & {
@@ -38,11 +56,15 @@ export const TooltipTable = ({ maxHeight, ...props }: TooltipListProps) => {
     );
   }
 
+  const columns = props.columns.filter(({ hidden }) => {
+    return !(typeof hidden === 'boolean' ? hidden : hidden?.(props.items) ?? false);
+  });
+
   return (
     <table className={className} style={{ maxHeight }}>
-      <TooltipTableHeader columns={props.columns} />
-      <TooltipTableBody items={props.items} />
-      {/* <TooltipTableFooter columns={props.columns} /> */}
+      <TooltipTableHeader columns={columns} />
+      <TooltipTableBody columns={columns} items={props.items} />
+      <TooltipTableFooter columns={columns} />
     </table>
   );
 };

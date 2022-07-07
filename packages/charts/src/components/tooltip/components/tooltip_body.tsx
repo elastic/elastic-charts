@@ -9,44 +9,36 @@
 import React from 'react';
 
 import { TooltipValueFormatter, TooltipSettings } from '../../../specs';
-import { hasMostlyRTLItems } from '../../../utils/common';
 import { TooltipInfo } from '../types';
 import { TooltipHeader } from './tooltip_header';
-import { TooltipList } from './tooltip_list';
+import { useTooltipContext } from './tooltip_provider';
+import { TooltipTable, TooltipTableColumn } from './tooltip_table';
 import { TooltipWrapper } from './tooltip_wrapper';
 
 interface TooltipBodyProps {
   visible: boolean;
   info?: TooltipInfo;
+  columns: TooltipTableColumn[];
   headerFormatter?: TooltipValueFormatter;
   settings?: TooltipSettings;
-  backgroundColor: string;
 }
 
 /** @internal */
-export const TooltipBody = ({ info, visible, settings, headerFormatter, backgroundColor }: TooltipBodyProps) => {
+export const TooltipBody = ({ info, visible, settings, headerFormatter, columns }: TooltipBodyProps) => {
+  const { backgroundColor, dir } = useTooltipContext();
   if (!info || !visible) {
     return null;
   }
 
-  const isMostlyRTL = hasMostlyRTLItems([...info.values.map(({ label }) => label), info.header?.label ?? '']);
-
   if (typeof settings !== 'string' && settings?.customTooltip) {
     const CustomTooltip = settings.customTooltip;
-    return (
-      <CustomTooltip
-        {...info}
-        headerFormatter={headerFormatter}
-        backgroundColor={backgroundColor}
-        dir={isMostlyRTL ? 'rtl' : 'ltr'}
-      />
-    );
+    return <CustomTooltip {...info} headerFormatter={headerFormatter} backgroundColor={backgroundColor} dir={dir} />;
   }
 
   return (
-    <TooltipWrapper className="echTooltip" dir={isMostlyRTL ? 'rtl' : 'ltr'}>
-      <TooltipHeader header={info.header} formatter={headerFormatter}></TooltipHeader>
-      <TooltipList items={info.values} backgroundColor={backgroundColor}></TooltipList>
+    <TooltipWrapper>
+      <TooltipHeader header={info.header} formatter={headerFormatter} />
+      <TooltipTable columns={columns} items={info.values} backgroundColor={backgroundColor} />
     </TooltipWrapper>
   );
 };

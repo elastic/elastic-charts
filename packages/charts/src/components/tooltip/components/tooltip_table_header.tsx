@@ -9,22 +9,22 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { isNil } from '../../../utils/common';
 import { PropsOrChildren } from '../types';
-import { TooltipListItem } from './tooltip_list_item';
+import { TooltipTableColumn } from './tooltip_table';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableRow } from './tooltip_table_row';
 
 type TooltipTableHeaderProps = PropsOrChildren<{
-  columns: string[];
-  renderItem?: typeof TooltipListItem;
+  columns: TooltipTableColumn[];
 }> & {
   maxHeight?: CSSProperties['maxHeight'];
+  textAlign?: CSSProperties['textAlign'];
+  padding?: CSSProperties['padding'];
 };
 
 /** @public */
 export const TooltipTableHeader = ({ maxHeight, ...props }: TooltipTableHeaderProps) => {
-  const className = classNames('echTooltip__tableHeader', { 'echTooltip__tableHeader--scrollable': !isNil(maxHeight) });
+  const className = classNames('echTooltip__tableHeader');
   if ('children' in props) {
     return (
       <thead className={className} style={{ maxHeight }}>
@@ -33,13 +33,20 @@ export const TooltipTableHeader = ({ maxHeight, ...props }: TooltipTableHeaderPr
     );
   }
 
+  if (!props.columns.some((c) => c.header)) return null;
+
   return (
     <thead className={className} style={{ maxHeight }}>
       <TooltipTableRow>
-        <TooltipTableCell className="colorStripe"> </TooltipTableCell>
-        {props.columns.map((column) => (
-          <TooltipTableCell key={column}>{column}</TooltipTableCell>
-        ))}
+        {props.columns.map(({ header, textAlign, id }) => {
+          if (!header) return null;
+          const headerStr = typeof header === 'string' ? header : header();
+          return (
+            <TooltipTableCell textAlign={textAlign ?? props.textAlign} key={id ?? headerStr}>
+              {headerStr}
+            </TooltipTableCell>
+          );
+        })}
       </TooltipTableRow>
     </thead>
   );

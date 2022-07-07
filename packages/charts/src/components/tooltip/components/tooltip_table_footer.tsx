@@ -9,40 +9,45 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { isNil } from '../../../utils/common';
 import { PropsOrChildren } from '../types';
-import { TooltipListItem } from './tooltip_list_item';
+import { TooltipTableColumn } from './tooltip_table';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableRow } from './tooltip_table_row';
 
 type TooltipTableFooterContentProps = PropsOrChildren<{
-  columns: string[];
-  renderItem?: typeof TooltipListItem;
+  columns: TooltipTableColumn[];
 }>;
 
 type TooltipTableFooterProps = TooltipTableFooterContentProps & {
   maxHeight?: CSSProperties['maxHeight'];
+  textAlign?: CSSProperties['textAlign'];
 };
 
 /** @public */
 export const TooltipTableFooter = ({ maxHeight, ...props }: TooltipTableFooterProps) => {
-  const className = classNames('echTooltip__tableFooter', { 'echTooltip__tableFooter--scrollable': !isNil(maxHeight) });
+  const className = classNames('echTooltip__tableFooter');
   if ('children' in props) {
     return (
       <tfoot className={className} style={{ maxHeight }}>
-        <TooltipTableCell> </TooltipTableCell>
         {props.children}
       </tfoot>
     );
   }
 
+  if (!props.columns.some((c) => c.footer)) return null;
+
   return (
     <tfoot>
-      <TooltipTableRow>
-        <TooltipTableCell className="colorStripe"> </TooltipTableCell>
-        {props.columns.map((column) => (
-          <TooltipTableCell key={column}>{column}</TooltipTableCell>
-        ))}
+      <TooltipTableRow maxHeight={maxHeight}>
+        {props.columns.map(({ footer, textAlign, id }) => {
+          if (!footer) return null;
+          const footerStr = typeof footer === 'string' ? footer : footer();
+          return (
+            <TooltipTableCell textAlign={textAlign ?? props.textAlign} key={id ?? footerStr}>
+              {footerStr}
+            </TooltipTableCell>
+          );
+        })}
       </TooltipTableRow>
     </tfoot>
   );

@@ -35,7 +35,6 @@ export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdent
 export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends TooltipInfo<D, SI> {
   headerFormatter?: TooltipValueFormatter;
-  className?: string;
   dir: 'ltr' | 'rtl';
   backgroundColor: string;
 }

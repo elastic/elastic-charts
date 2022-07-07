@@ -10,19 +10,22 @@ import classNames from 'classnames';
 import React, { ReactNode } from 'react';
 
 import { renderComplexChildren } from '../../../utils/common';
+import { useTooltipContext } from './tooltip_provider';
 
 interface TooltipWrapperProps {
   className?: string;
-  dir: 'ltr' | 'rtl';
   children: ReactNode;
 }
 
 /** @public */
-export const TooltipWrapper = ({ children, className = 'echTooltip', dir }: TooltipWrapperProps) => {
+export const TooltipWrapper = ({ children, className }: TooltipWrapperProps) => {
+  const { dir } = useTooltipContext();
+
   return (
-    <div className={classNames(className)} dir={dir}>
+    <div className={classNames('echTooltip', className)} dir={dir}>
       {renderComplexChildren(children)}
-      <div className="echTooltip__stickyAction">Click to stick tooltip</div>
+      {/* TODO: add when tooltip is sticky */}
+      {/* <div className="echTooltip__stickyAction">Click to stick tooltip</div> */}
     </div>
   );
 };

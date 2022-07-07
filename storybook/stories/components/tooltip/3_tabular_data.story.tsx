@@ -14,10 +14,15 @@ import { tableMultipleX } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
-  const MyTooltip: CustomTooltip = ({ className, dir, values, header, backgroundColor }) => {
+  const columns = [
+    { header: 'X Value', accessor: 'x' },
+    { header: 'Y Value', accessor: 'y' },
+    { header: 'Z Value', accessor: 'z' },
+  ];
+  const MyTooltip: CustomTooltip = ({ values, backgroundColor }) => {
     return (
-      <TooltipWrapper className={className} dir={dir}>
-        <TooltipTable items={values} columns={['X Value', 'Y Value', 'Z Value']} backgroundColor={backgroundColor} />
+      <TooltipWrapper>
+        <TooltipTable items={values} columns={columns} backgroundColor={backgroundColor} />
       </TooltipWrapper>
     );
   };

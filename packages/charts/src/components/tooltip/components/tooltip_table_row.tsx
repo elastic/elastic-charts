@@ -12,34 +12,69 @@ import React, { CSSProperties } from 'react';
 import { Color } from '../../../common/colors';
 import { isNil } from '../../../utils/common';
 import { PropsOrChildren } from '../types';
-import { TooltipListItem } from './tooltip_list_item';
+import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell } from './tooltip_table_cell';
 
-type TooltipTableRowContentProps = PropsOrChildren<{
-  renderItem?: typeof TooltipListItem;
-}>;
+type TooltipTableRowContentProps = PropsOrChildren<{}>;
 
 type TooltipTableRowProps = TooltipTableRowContentProps & {
   maxHeight?: CSSProperties['maxHeight'];
   color?: Color;
+  isHighlighted?: boolean;
+  isSeriesHidden?: boolean;
 };
 
 /** @public */
-export const TooltipTableRow = ({ maxHeight, color, ...props }: TooltipTableRowProps) => {
-  const className = classNames('echTooltip__tableRow', { 'echTooltip__tableRow--scrollable': !isNil(maxHeight) });
+export const TooltipTableRow = ({
+  maxHeight,
+  color,
+  isHighlighted = false,
+  isSeriesHidden,
+  ...props
+}: TooltipTableRowProps) => {
+  const { backgroundColor } = useTooltipContext();
+  const className = classNames('echTooltip__tableRow', {
+    'echTooltip__tableRow--scrollable': !isNil(maxHeight),
+    'echTooltip__tableRow--highlighted': isHighlighted,
+  });
   if ('children' in props) {
     return (
-      <tr className={className} style={{ maxHeight, borderColor: color }}>
+      <tr className={className} style={{ maxHeight }}>
+        <ColorStripCell color={color} backgroundColor={backgroundColor} />
         {props.children}
       </tr>
     );
   }
 
   return (
-    <>
+    <tr className={className} style={{ maxHeight }}>
+      <ColorStripCell color={color} backgroundColor={backgroundColor} />
       {[1].map((_, i) => (
         <TooltipTableCell key={i}>TODO</TooltipTableCell>
       ))}
-    </>
+    </tr>
   );
 };
+
+type ColorStripCellProps = {
+  color?: string;
+  backgroundColor: string;
+};
+
+function ColorStripCell({ color, backgroundColor }: ColorStripCellProps) {
+  return (
+    <TooltipTableCell
+      className={classNames('echTooltip__colorCell', {
+        'echTooltip__colorCell--empty': !color,
+      })}
+    >
+      {color && (
+        <>
+          <div className="echTooltip__colorStrip" style={{ backgroundColor }} />
+          <div className="echTooltip__colorStrip" style={{ backgroundColor: color }} />
+          <div className="echTooltip__colorStripSpacer" />
+        </>
+      )}
+    </TooltipTableCell>
+  );
+}

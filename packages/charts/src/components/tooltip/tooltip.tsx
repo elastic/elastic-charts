@@ -10,6 +10,7 @@ import React, { useEffect, useMemo, memo, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { TooltipTableColumn } from '.';
 import { Colors } from '../../common/colors';
 import { TooltipSettings, TooltipValueFormatter } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
@@ -22,9 +23,10 @@ import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
-import { Rotation } from '../../utils/common';
+import { hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
 import { TooltipBody } from './components/tooltip_body';
+import { TooltipProvider } from './components/tooltip_provider';
 import { getTooltipSettings } from './get_tooltip_settings';
 import { TooltipInfo } from './types';
 
@@ -73,8 +75,6 @@ export const TooltipComponent = ({
     onPointerMove({ x: -1, y: -1 }, Date.now());
   };
 
-  console.log(JSON.stringify(info?.values));
-
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, true);
     return () => window.removeEventListener('scroll', handleScroll, true);
@@ -99,11 +99,37 @@ export const TooltipComponent = ({
     };
   }, [settings, chartRef, rotation]);
 
-  // console.log(JSON.stringify(info));
-
   if (!visible) {
     return null;
   }
+
+  const isMostlyRTL = hasMostlyRTLItems([
+    ...(info?.values?.map?.(({ label }) => label) ?? []),
+    info?.header?.label ?? '',
+  ]);
+
+  const columns: TooltipTableColumn[] = [
+    {
+      id: 'label',
+      renderCell: ({ label }) => <span className="echTooltip__label">{label}</span>,
+      textAlign: 'left',
+    },
+    {
+      id: 'value',
+      renderCell: ({ formattedValue }) => (
+        <span className="echTooltip__value" dir="ltr">
+          {formattedValue}
+        </span>
+      ),
+      textAlign: 'right',
+    },
+    {
+      id: 'markValue',
+      hidden: (items) => items.every(({ markValue }) => !markValue),
+      renderCell: ({ markValue, formattedMarkValue }) =>
+        isDefined(markValue) ? <span className="echTooltip__markValue">&nbsp;({formattedMarkValue})</span> : null,
+    },
+  ];
 
   return (
     <TooltipPortal
@@ -120,13 +146,15 @@ export const TooltipComponent = ({
       chartId={chartId}
       visible={visible}
     >
-      <TooltipBody
-        info={info}
-        headerFormatter={headerFormatter}
-        settings={settings}
-        visible={visible}
-        backgroundColor={backgroundColor}
-      />
+      <TooltipProvider backgroundColor={backgroundColor} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
+        <TooltipBody
+          info={info}
+          columns={columns}
+          headerFormatter={headerFormatter}
+          settings={settings}
+          visible={visible}
+        />
+      </TooltipProvider>
     </TooltipPortal>
   );
 };
