@@ -22,7 +22,7 @@ import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
 import { getSpecsFromStore } from '../../state/utils';
-import { clamp } from '../../utils/common';
+import { clamp, isFiniteNumber } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
 import { roundUpSize } from './render/common';
@@ -153,6 +153,8 @@ interface OwnProps {
 
 type FlameProps = StateProps & DispatchProps & OwnProps;
 
+type NavRect = FocusRect & { index: number };
+
 class FlameComponent extends React.Component<FlameProps> {
   static displayName = 'Flame';
 
@@ -200,9 +202,8 @@ class FlameComponent extends React.Component<FlameProps> {
   private wobbleIndex = NaN;
 
   // navigation
-  private navQueue: number[] = [0];
   private navIndex = 0;
-  private lastNavLeft = false;
+  private navQueue: NavRect[] = [];
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -228,6 +229,9 @@ class FlameComponent extends React.Component<FlameProps> {
     this.bindControls();
     this.currentFocus = { ...this.targetFocus };
 
+    // Initialize nav queue with the root element
+    this.navQueue.push({ ...this.targetFocus, index: 0 });
+
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
     this.pinchZoomScale = browserRootWindow().visualViewport.scale;
@@ -237,6 +241,43 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentColor = columns.color;
   }
 
+  private canNavigateForward = () => this.navIndex < this.navQueue.length - 1;
+  private canNavigateBackward = () => this.navQueue.length > 0 && this.navIndex > 0;
+
+  private navForward() {
+    if (!this.canNavigateForward()) return;
+    this.focusOnNavElement(this.navQueue[++this.navIndex]);
+  }
+
+  private navBackward() {
+    if (!this.canNavigateBackward()) return;
+    this.focusOnNavElement(this.navQueue[--this.navIndex]);
+  }
+
+  private focusOnNavElement(element: NavRect) {
+    if (isFiniteNumber(element.index)) {
+      this.focusOnNode(element.index);
+    } else {
+      this.focusOnRect(element);
+    }
+  }
+
+  private addToNav(element: NavRect) {
+    const current = this.navQueue[this.navIndex];
+    if (Number.isNaN(current.index)) {
+      // if current is a pan/zoom then replace it
+      this.navQueue.splice(this.navIndex, Infinity, element);
+    } else if (current.index !== element.index) {
+      // if current is a click or we padding, add the padding element
+      this.navQueue.splice(++this.navIndex, Infinity, element);
+    }
+  }
+
+  private resetNav() {
+    this.navIndex = 0;
+    this.navQueue.splice(this.navIndex, Infinity, { ...this.getFocusOnRoot(), index: 0 });
+  }
+
   private bindControls() {
     const { controlProviderCallback } = this.props;
     if (controlProviderCallback.resetFocus) {
@@ -244,14 +285,15 @@ class FlameComponent extends React.Component<FlameProps> {
     }
     if (controlProviderCallback.focusOnNode) {
       controlProviderCallback.focusOnNode((nodeIndex: number) => {
-        if (this.navQueue[this.navIndex] !== nodeIndex) this.navQueue.splice(++this.navIndex, Infinity, nodeIndex);
+        const rect = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, nodeIndex);
+        this.addToNav({ ...rect, index: nodeIndex });
         this.focusOnNode(nodeIndex);
       });
     }
   }
 
   private resetFocus() {
-    if (this.navQueue[this.navIndex] !== 0) this.navQueue.splice(++this.navIndex, Infinity, 0);
+    this.resetNav();
     this.targetFocus = this.getFocusOnRoot();
     this.wobble(0);
   }
@@ -259,6 +301,11 @@ class FlameComponent extends React.Component<FlameProps> {
   private focusOnNode(nodeIndex: number) {
     this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, nodeIndex);
     this.wobble(nodeIndex);
+  }
+
+  private focusOnRect(rect: FocusRect) {
+    this.targetFocus = rect;
+    this.setState({});
   }
 
   private wobble(nodeIndex: number) {
@@ -418,7 +465,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1 };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
-      this.lastNavLeft = true;
+      this.addToNav({ ...newFocus, index: NaN });
       this.smartDraw();
     }
   };
@@ -463,8 +510,8 @@ class FlameComponent extends React.Component<FlameProps> {
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
       if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
         const { datumIndex } = hovered;
-        if (this.navQueue[this.navIndex] !== datumIndex) this.navQueue.splice(++this.navIndex, Infinity, datumIndex);
-        this.lastNavLeft = false;
+        const rect = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
+        this.addToNav({ ...rect, index: datumIndex });
         this.focusOnNode(datumIndex);
         this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
       }
@@ -524,7 +571,7 @@ class FlameComponent extends React.Component<FlameProps> {
         y0: yZoom ? newY0 : y0,
         y1: yZoom ? newY1 : y1,
       };
-      this.lastNavLeft = true;
+      this.addToNav({ ...newFocus, index: NaN });
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
     }
@@ -562,8 +609,8 @@ class FlameComponent extends React.Component<FlameProps> {
     }
 
     if (Number.isFinite(x0) && searchString.length > 0) {
-      this.lastNavLeft = true;
       Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
+      this.addToNav({ ...this.targetFocus, index: NaN });
     }
   };
 
@@ -645,8 +692,8 @@ class FlameComponent extends React.Component<FlameProps> {
         }
       }
       if (hitEnumerator >= 0) {
-        this.lastNavLeft = true;
         this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
+        this.addToNav({ ...this.targetFocus, index: NaN });
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
         this.wobbleTimeLeft = WOBBLE_DURATION;
@@ -680,8 +727,6 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private isAtHomePosition = () => this.targetFocus.x0 === 0 && this.targetFocus.x1 === 1 && this.targetFocus.y1 === 1;
-  private canNavigateForward = () => this.navIndex < this.navQueue.length - 1;
-  private canNavigateBackward = () => this.navQueue.length > 0 && (this.navIndex > 0 || this.lastNavLeft);
 
   render = () => {
     const {
@@ -756,9 +801,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="button"
               tabIndex={0}
               onClick={() => {
-                if (!this.canNavigateBackward()) return;
-                this.focusOnNode(this.navQueue[this.lastNavLeft ? this.navIndex : --this.navIndex]);
-                this.lastNavLeft = false;
+                this.navBackward();
               }}
               style={{ display: 'none' }}
             />
@@ -776,7 +819,6 @@ class FlameComponent extends React.Component<FlameProps> {
               type="button"
               tabIndex={0}
               onClick={() => {
-                this.lastNavLeft = false;
                 if (this.isAtHomePosition()) return;
                 this.resetFocus();
               }}
@@ -797,9 +839,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="button"
               tabIndex={0}
               onClick={() => {
-                if (!this.canNavigateForward()) return;
-                this.lastNavLeft = false;
-                this.focusOnNode(this.navQueue[++this.navIndex]);
+                this.navForward();
               }}
               style={{ display: 'none' }}
             />
