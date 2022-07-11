@@ -32,10 +32,16 @@ test.describe('Annotations stories', () => {
       });
     });
     test('should fade all other annotations when rect annotation is hovered', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(url, {
-        bottom: 188,
-        left: 225,
-      });
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        url,
+        {
+          bottom: 188,
+          left: 225,
+        },
+        {
+          delay: 100,
+        },
+      );
     });
   });
 

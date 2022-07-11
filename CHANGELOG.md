@@ -1,3 +1,18 @@
+# [46.12.0](https://github.com/elastic/elastic-charts/compare/v46.11.2...v46.12.0) (2022-07-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^60.1.1 ([#1739](https://github.com/elastic/elastic-charts/issues/1739)) ([a213e86](https://github.com/elastic/elastic-charts/commit/a213e862a00b1933c4a8381adbf7d40adcdd0631))
+* **heatmap:** empty state only when there is no valid data ([#1726](https://github.com/elastic/elastic-charts/issues/1726)) ([9938498](https://github.com/elastic/elastic-charts/commit/993849893fca65aaeffe89c96d5dc45e3267ca23))
+
+
+### Features
+
+* **metric:** add click handling ([#1718](https://github.com/elastic/elastic-charts/issues/1718)) ([fc31956](https://github.com/elastic/elastic-charts/commit/fc31956c6b68ff9e99c22a1dbeecfd89e5ad9d0e))
+* **metric:** add icon and title padding ([#1720](https://github.com/elastic/elastic-charts/issues/1720)) ([65d06ca](https://github.com/elastic/elastic-charts/commit/65d06caaf16132b6016d6302f01488d9a537069d))
+* **metric:** progress bar should always start from zero ([#1737](https://github.com/elastic/elastic-charts/issues/1737)) ([bcf6566](https://github.com/elastic/elastic-charts/commit/bcf65663ef338d668c186d3a6596f143c75bc911))
+
 ## [46.11.2](https://github.com/elastic/elastic-charts/compare/v46.11.1...v46.11.2) (2022-06-28)
 
 
