@@ -29,7 +29,7 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
     }
 
     return (
-      <TooltipWrapper>
+      <TooltipWrapper className="echAnnotation">
         <TooltipContent {...state} />
       </TooltipWrapper>
     );

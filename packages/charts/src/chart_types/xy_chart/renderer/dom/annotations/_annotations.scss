@@ -1,15 +1,15 @@
 .echAnnotation {
-  position: absolute;
+  padding: 0;
+  transition: opacity $euiAnimSpeedNormal;
+  pointer-events: none;
   user-select: none;
-  font-size: $euiFontSizeXS;
-  font-weight: $euiFontWeightBold;
+  max-width: 256px;
 
-  &__tooltip {
-    padding: 0;
-    transition: opacity $euiAnimSpeedNormal;
-    pointer-events: none;
+  &__marker {
+    position: absolute;
     user-select: none;
-    max-width: 256px;
+    font-size: $euiFontSizeXS;
+    font-weight: $euiFontWeightBold;
   }
 
   &__details {
