@@ -9,7 +9,7 @@
 import * as commonColors from '../../../../../common/color_library_wrappers';
 import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
-import { getMockCanvas, getMockCanvasContext2D, MockStyles } from '../../../../../mocks';
+import { MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
 import { getTextureStyles } from '../../../utils/texture';
 import { buildBarStyle } from './bar';
@@ -23,11 +23,6 @@ const COLOR = 'aquamarine';
 describe('Bar styles', () => {
   let ctx: CanvasRenderingContext2D;
   let imgCanvas: HTMLCanvasElement;
-
-  beforeEach(() => {
-    ctx = getMockCanvasContext2D();
-    imgCanvas = getMockCanvas();
-  });
 
   describe('#buildBarStyles', () => {
     let result: { fill: Fill; stroke: Stroke };

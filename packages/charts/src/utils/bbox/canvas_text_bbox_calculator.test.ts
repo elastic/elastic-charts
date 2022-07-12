@@ -8,7 +8,7 @@
 
 import { withTextMeasure } from './canvas_text_bbox_calculator';
 
-describe('CanvasTextBBoxCalculator', () => {
+describe.skip('CanvasTextBBoxCalculator', () => {
   test('can create a canvas for computing text measurement values', () =>
     withTextMeasure((textMeasure) => {
       const bbox = textMeasure(
