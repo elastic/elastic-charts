@@ -29,7 +29,7 @@ export type MetricBase = {
 
 /** @alpha */
 export type MetricWProgress = MetricBase & {
-  domain: { min: number; max: number };
+  domainMax: number;
   progressBarDirection?: LayoutDirection;
 };
 
@@ -73,10 +73,10 @@ export type MetricSpecProps = ComponentProps<typeof Metric>;
 
 /** @internal */
 export function isMetricWProgress(datum: MetricBase | MetricWProgress | MetricWTrend): datum is MetricWProgress {
-  return datum.hasOwnProperty('domain') && !datum.hasOwnProperty('trend');
+  return datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend');
 }
 
 /** @internal */
 export function isMetricWTrend(datum: MetricBase | MetricWProgress | MetricWTrend): datum is MetricWTrend {
-  return datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domain');
+  return datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domainMax');
 }
