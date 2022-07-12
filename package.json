@@ -115,7 +115,6 @@
     "@typescript-eslint/parser": "^4.31.1",
     "autoprefixer": "^9.0.0",
     "backport": "^5.6.6",
-    "canvas": "^2.8.0",
     "commitizen": "^4.2.3",
     "cross-env": "^7.0.2",
     "cz-conventional-changelog": "^3.3.0",
