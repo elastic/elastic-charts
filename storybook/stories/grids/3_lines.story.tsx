@@ -21,6 +21,7 @@ import {
   PartialTheme,
   StrokeStyle,
   StrokeDashArray,
+  Tooltip,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -75,12 +76,8 @@ export const Example = () => {
   };
   return (
     <Chart>
-      <Settings
-        debug={boolean('debug', false)}
-        tooltip={getTooltipTypeKnob('Tooltip type', TooltipType.Crosshairs)}
-        theme={theme}
-        baseTheme={useBaseTheme()}
-      />
+      <Settings debug={boolean('debug', false)} theme={theme} baseTheme={useBaseTheme()} />
+      <Tooltip type={getTooltipTypeKnob('Tooltip type', TooltipType.Crosshairs)} />
       <Axis {...getAxisKnobs(Position.Left)} />
       <Axis {...getAxisKnobs(Position.Bottom)} />
       <LineSeries

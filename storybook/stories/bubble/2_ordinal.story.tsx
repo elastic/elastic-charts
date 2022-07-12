@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { number, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType } from '@elastic/charts';
+import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType, Tooltip } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -44,10 +44,6 @@ export const Example = () => {
   return (
     <Chart>
       <Settings
-        tooltip={{
-          type: TooltipType.Follow,
-          snap: false,
-        }}
         theme={{
           markSizeRatio,
         }}
@@ -56,6 +52,7 @@ export const Example = () => {
         pointBuffer={(r) => 20 / r}
         {...onElementListeners}
       />
+      <Tooltip type={TooltipType.Follow} snap={false} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

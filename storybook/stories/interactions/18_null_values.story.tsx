@@ -24,6 +24,7 @@ import {
   LineSeries,
   AreaSeries,
   RectAnnotation,
+  Tooltip,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
@@ -80,8 +81,8 @@ export const Example = () => {
           externalPointerEvents={{
             tooltip: { visible: true, placement: Placement.Left },
           }}
-          tooltip={{ type: TooltipType.VerticalCursor, showNullValues }}
         />
+        <Tooltip type={TooltipType.VerticalCursor} showNullValues={showNullValues} />
         <Axis
           id="bottom"
           position={Position.Bottom}
@@ -120,11 +121,11 @@ export const Example = () => {
       <Chart className="story-chart" ref={ref2} size={{ height: '50%' }} id="chart2">
         <Settings
           onPointerUpdate={pointerUpdate}
-          tooltip={{ type: TooltipType.VerticalCursor, showNullValues }}
           externalPointerEvents={{
             tooltip: { visible: true, placement: Placement.Left, boundary: 'chart' },
           }}
         />
+        <Tooltip type={TooltipType.VerticalCursor} showNullValues={showNullValues} />
         <Axis
           id="bottom"
           position={Position.Bottom}
