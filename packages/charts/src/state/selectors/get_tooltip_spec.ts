@@ -28,7 +28,9 @@ export const getTooltipSpecSelector = createCustomCachedSelector(
     }
 
     // TODO fix typescript non-string undefined for arrays
-    const [tooltipSpec] = getSpecsFromStore<TooltipSpec>(specs, ChartType.Global, SpecType.Settings);
+    const [tooltipSpec] = getSpecsFromStore<TooltipSpec>(specs, ChartType.Global, SpecType.Tooltip);
+    console.log(tooltipSpec);
+
     return tooltipSpec ?? DEFAULT_TOOLTIP_SPEC;
   },
 );

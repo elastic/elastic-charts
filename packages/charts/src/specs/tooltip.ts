@@ -171,7 +171,7 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
   {
     id: '__global__tooltip___' as const,
     chartType: ChartType.Global,
-    specType: SpecType.Settings,
+    specType: SpecType.Tooltip,
   },
   {
     type: TooltipType.VerticalCursor,
