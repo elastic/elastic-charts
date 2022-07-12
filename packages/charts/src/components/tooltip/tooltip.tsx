@@ -12,7 +12,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { TooltipTableColumn } from '.';
 import { Colors } from '../../common/colors';
-import { TooltipSettings, TooltipValueFormatter } from '../../specs';
+import { SettingsSpec, TooltipProps, TooltipSettings, TooltipSpec, TooltipValueFormatter } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
@@ -21,13 +21,12 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../state/select
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
-import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
-import { getTooltipHeaderFormatterSelector } from '../../state/selectors/get_tooltip_header_formatter';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
+import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
 import { TooltipBody } from './components/tooltip_body';
 import { TooltipProvider } from './components/tooltip_provider';
-import { getTooltipSettings } from './get_tooltip_settings';
 import { TooltipInfo } from './types';
 
 interface TooltipDispatchProps {
@@ -51,7 +50,7 @@ interface TooltipOwnProps {
   anchorRef?: RefObject<HTMLDivElement>;
 }
 
-type TooltipProps = TooltipDispatchProps & TooltipStateProps & TooltipOwnProps;
+type TooltipComponentProps = TooltipDispatchProps & TooltipStateProps & TooltipOwnProps;
 
 /** @internal */
 export const TooltipComponent = ({
@@ -67,7 +66,7 @@ export const TooltipComponent = ({
   chartId,
   onPointerMove,
   backgroundColor,
-}: TooltipProps) => {
+}: TooltipComponentProps) => {
   const chartRef = getChartContainerRef();
 
   const handleScroll = () => {
@@ -161,6 +160,19 @@ export const TooltipComponent = ({
 
 TooltipComponent.displayName = 'Tooltip';
 
+function getTooltipSettings(
+  tooltip: TooltipSpec,
+  { externalPointerEvents }: SettingsSpec,
+  isExternalTooltipVisible: boolean,
+): TooltipProps {
+  if (!isExternalTooltipVisible) return tooltip;
+
+  return {
+    ...tooltip,
+    ...externalPointerEvents.tooltip,
+  };
+}
+
 const HIDDEN_TOOLTIP_PROPS = {
   zIndex: 0,
   visible: false,
@@ -176,13 +188,15 @@ const HIDDEN_TOOLTIP_PROPS = {
 const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
   bindActionCreators({ onPointerMove: onPointerMoveAction }, dispatch);
 
-const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 'visible' | 'position' | 'info'> =>
-  getInternalIsInitializedSelector(state) !== InitStatus.Initialized
+const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 'visible' | 'position' | 'info'> => {
+  const tooltip = getTooltipSpecSelector(state);
+  return getInternalIsInitializedSelector(state) !== InitStatus.Initialized
     ? HIDDEN_TOOLTIP_PROPS
     : {
         zIndex: state.zIndex,
-        headerFormatter: getTooltipHeaderFormatterSelector(state),
+        headerFormatter: tooltip.headerFormatter,
         settings: getTooltipSettings(
+          tooltip,
           getSettingsSpecSelector(state),
           getInternalIsTooltipVisibleSelector(state).isExternal,
         ),
@@ -190,6 +204,7 @@ const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 
         chartId: state.chartId,
         backgroundColor: getChartThemeSelector(state).background.color,
       };
+};
 
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
   getInternalIsInitializedSelector(state) !== InitStatus.Initialized

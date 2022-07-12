@@ -23,13 +23,14 @@ type TooltipShowcaseProps = Partial<Omit<BaseTooltipProps, 'settings' | 'visible
 };
 
 export const TooltipShowcase = memo((props: TooltipShowcaseProps) => {
-  const [visible, setVisible] = useState(false)
+  const [, setVisible] = useState(false);
   const divRef = useRef<HTMLDivElement | null>(null);
-  const anchorRef = useRef<HTMLDivElement| null>(null);
+  const anchorRef = useRef<HTMLDivElement | null>(null);
 
+  // Required to initially rerender tooltip
   useEffect(() => {
-    setVisible(true)
-    return () => setVisible(false)
+    setVisible(true);
+    return () => setVisible(false);
   }, []);
 
   const tooltipProps: BaseTooltipProps = {
@@ -55,10 +56,7 @@ export const TooltipShowcase = memo((props: TooltipShowcaseProps) => {
         <div id="tooltip-anchor" ref={anchorRef}>
           Tooltip Anchor
         </div>
-        <TooltipComponent
-          {...tooltipProps}
-          anchorRef={anchorRef}
-        />
+        <TooltipComponent {...tooltipProps} anchorRef={anchorRef} />
       </div>
     </div>
   );

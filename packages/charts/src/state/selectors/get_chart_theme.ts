@@ -12,7 +12,7 @@ import { Logger } from '../../utils/logger';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { PartialTheme, Theme } from '../../utils/themes/theme';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSettingsSpecSelector } from './get_settings_specs';
+import { getSettingsSpecSelector } from './get_settings_spec';
 
 /** @internal */
 export const getChartThemeSelector = createCustomCachedSelector(

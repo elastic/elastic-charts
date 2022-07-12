@@ -7,25 +7,23 @@
  */
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
-import { getTooltipType } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
 import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
 import { isExternalTooltipVisibleSelector } from '../../../../state/selectors/is_external_tooltip_visible';
 import { Point } from '../../../../utils/point';
+import { TooltipSpec } from './../../../../specs/tooltip';
+import { getTooltipSpecSelector } from './../../../../state/selectors/get_tooltip_spec';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';
-
-const getTooltipTypeSelector = (state: GlobalChartState): TooltipType => getTooltipType(getSettingsSpecSelector(state));
 
 const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
 
 /** @internal */
 export const isTooltipVisibleSelector = createCustomCachedSelector(
   [
-    getTooltipTypeSelector,
+    getTooltipSpecSelector,
     getPointerSelector,
     getProjectedPointerPositionSelector,
     getTooltipInfoSelector,
@@ -36,7 +34,7 @@ export const isTooltipVisibleSelector = createCustomCachedSelector(
 );
 
 function isTooltipVisible(
-  tooltipType: TooltipType,
+  { type: tooltipType }: TooltipSpec,
   pointer: PointerStates,
   projectedPointerPosition: Point,
   tooltip: TooltipInfo,

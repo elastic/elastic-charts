@@ -23,7 +23,7 @@ import {
   getInternalIsInitializedSelector,
   InitStatus,
 } from '../../../../../state/selectors/get_internal_is_intialized';
-import { getSettingsSpecSelector } from '../../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../../state/selectors/get_settings_spec';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { AnnotationId } from '../../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../../utils/themes/light_theme';

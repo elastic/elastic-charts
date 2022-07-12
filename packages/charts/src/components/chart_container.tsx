@@ -24,7 +24,7 @@ import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor
 import { getInternalIsBrushingSelector } from '../state/selectors/get_internal_is_brushing';
 import { getInternalIsBrushingAvailableSelector } from '../state/selectors/get_internal_is_brushing_available';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
-import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 import { deepEqual } from '../utils/fast_deep_equal';
 import { NoResults } from './no_results';

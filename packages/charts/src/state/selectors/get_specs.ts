@@ -6,5 +6,12 @@
  * Side Public License, v 1.
  */
 
-export * from './components';
-export * from './types';
+import { Selector } from 're-reselect';
+
+import { GlobalChartState, SpecList } from '../chart_state';
+
+/**
+ * Returns all specs for given chart
+ * @internal
+ */
+export const getSpecs: Selector<GlobalChartState, SpecList> = ({ specs }) => specs;

@@ -11,7 +11,7 @@ import { SpecType } from '../../specs/constants';
 import { SmallMultiplesSpec } from '../../specs/small_multiples';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecsFromStore } from '../utils';
-import { getSpecs } from './get_settings_specs';
+import { getSpecs } from './get_specs';
 
 /**
  * Return the small multiple specs

@@ -7,7 +7,7 @@
  */
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Rotation } from '../../../../utils/common';
 import { SpecId } from '../../../../utils/ids';
 import { defaultTickFormatter, isXDomain } from '../../utils/axis_utils';

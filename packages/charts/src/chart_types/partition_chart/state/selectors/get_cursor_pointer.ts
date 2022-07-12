@@ -8,7 +8,7 @@
 
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getPickedShapes } from './picked_shapes';
 
 /** @internal */

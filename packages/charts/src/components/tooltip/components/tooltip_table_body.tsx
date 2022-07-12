@@ -9,7 +9,7 @@
 import classNames from 'classnames';
 import React, { CSSProperties, ReactNode } from 'react';
 
-import { TooltipValue } from '../../../specs/settings';
+import { TooltipValue } from '../../../specs';
 import { Logger } from '../../../utils/logger';
 import { PropsOrChildren } from '../types';
 import { TooltipTableColumn } from './tooltip_table';

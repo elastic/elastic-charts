@@ -8,7 +8,7 @@
 
 import { getLegendPositionConfig } from '../../components/legend/position_style';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSettingsSpecSelector } from './get_settings_specs';
+import { getSettingsSpecSelector } from './get_settings_spec';
 
 /** @internal */
 export const getLegendConfigSelector = createCustomCachedSelector(
