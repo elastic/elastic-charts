@@ -9,13 +9,9 @@
 import React from 'react';
 
 import {
-  TooltipList,
   TooltipWrapper,
   CustomTooltip,
   TooltipHeader,
-  TooltipListItem,
-  TooltipDivider,
-  TooltipFooter,
   TooltipTable,
   TooltipTableBody,
   TooltipTableHeader,
@@ -28,9 +24,10 @@ import { tableSimple } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
-  const MyTooltip: CustomTooltip = ({ className, dir, values, header, backgroundColor }) => {
+  const MyTooltip: CustomTooltip = ({ values, header }) => {
     return (
-      <TooltipWrapper className={className} dir={dir}>
+      <TooltipWrapper>
+        <TooltipHeader header={header} />
         <TooltipTable>
           <TooltipTableHeader>
             <TooltipTableRow>
@@ -40,8 +37,8 @@ export const Example = () => {
             </TooltipTableRow>
           </TooltipTableHeader>
           <TooltipTableBody>
-            {values.map(({ datum, seriesIdentifier: { key } }) => (
-              <TooltipTableRow key={`${key}-${datum.x}`}>
+            {values.map(({ datum, seriesIdentifier: { key }, color }) => (
+              <TooltipTableRow key={`${key}-${datum.x}`} color={color}>
                 <TooltipTableCell>{datum.x}</TooltipTableCell>
                 <TooltipTableCell>{datum.y}</TooltipTableCell>
                 <TooltipTableCell>{datum.z}</TooltipTableCell>
@@ -59,5 +56,10 @@ export const Example = () => {
       </TooltipWrapper>
     );
   };
-  return <TooltipShowcase info={tableSimple} settings={{ customTooltip: MyTooltip }} />;
+  return <TooltipShowcase info={tableSimple} customTooltip={MyTooltip} />;
+};
+
+Example.parameters = {
+  markdown: `Tooltips may be composed with internal components to build out completely custom tooltips while maintaining a consistent style.\
+  This example shows how you can build a tabular tooltip by structuring the table components explicitly within \`TooltipTable\` instead of using the \`columns\` option.`,
 };

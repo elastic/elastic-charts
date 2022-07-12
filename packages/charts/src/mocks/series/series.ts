@@ -30,6 +30,7 @@ export class MockDataSeries {
   private static readonly base: DataSeries = {
     specId: 'spec1',
     seriesKeys: ['spec1'],
+    xAccessor: 'x',
     yAccessor: 'y',
     splitAccessors: new Map(),
     key: 'spec1',

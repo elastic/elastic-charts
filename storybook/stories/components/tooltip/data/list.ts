@@ -13,6 +13,7 @@ export const simple: TooltipInfo<any, XYChartSeriesIdentifier> = {
     seriesIdentifier: {
       key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-a}',
       specId: 'bars1',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'y1'],
@@ -32,6 +33,7 @@ export const simple: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-a}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a', 'y1'],
@@ -50,6 +52,7 @@ export const simple: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y2}splitAccessors{g-a}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y2',
         splitAccessors: new Map(),
         seriesKeys: ['a', 'y2'],
@@ -68,6 +71,7 @@ export const simple: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-b}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b', 'y1'],
@@ -86,6 +90,7 @@ export const simple: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y2}splitAccessors{g-b}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y2',
         splitAccessors: new Map(),
         seriesKeys: ['b', 'y2'],
@@ -108,6 +113,7 @@ export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
     seriesIdentifier: {
       key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-a}',
       specId: 'bars1',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'y1'],
@@ -127,6 +133,7 @@ export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-a}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a', 'y1'],
@@ -145,6 +152,7 @@ export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y2}splitAccessors{g-a}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y2',
         splitAccessors: new Map(),
         seriesKeys: ['a', 'y2'],
@@ -163,6 +171,7 @@ export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-b}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b', 'y1'],
@@ -181,6 +190,7 @@ export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y2}splitAccessors{g-b}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y2',
         splitAccessors: new Map(),
         seriesKeys: ['b', 'y2'],
@@ -199,6 +209,7 @@ export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-a}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['a', 'y1'],
@@ -217,6 +228,7 @@ export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y2}splitAccessors{g-a}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y2',
         splitAccessors: new Map(),
         seriesKeys: ['a', 'y2'],
@@ -235,6 +247,7 @@ export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-b}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['b', 'y1'],
@@ -253,6 +266,7 @@ export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bars1}yAccessor{y2}splitAccessors{g-b}',
         specId: 'bars1',
+        xAccessor: 'x',
         yAccessor: 'y2',
         splitAccessors: new Map(),
         seriesKeys: ['b', 'y2'],

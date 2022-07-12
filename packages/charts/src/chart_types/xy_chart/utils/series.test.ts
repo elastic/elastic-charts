@@ -583,6 +583,7 @@ describe('Series', () => {
     const deselectedDataSeries: XYChartSeriesIdentifier[] = [
       {
         specId: id,
+        xAccessor: 'x',
         yAccessor: yAccessors[0],
         splitAccessors: new Map(),
         seriesKeys: [],

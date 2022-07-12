@@ -15,7 +15,7 @@ import { Dimensions } from '../../../utils/dimensions';
 import { LineGeometry } from '../../../utils/geometry';
 import { LineSeriesStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { DataSeries, DataSeriesDatum } from '../utils/series';
+import { DataSeries, DataSeriesDatum, getSeriesIdentifierFromDataSeries } from '../utils/series';
 import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
 import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn, MarkSizeOptions } from './utils';
@@ -74,16 +74,7 @@ export function renderLine(
       x: shift,
       y: 0,
     },
-    seriesIdentifier: {
-      key: dataSeries.key,
-      specId: dataSeries.specId,
-      xAccessor: dataSeries.xAccessor,
-      yAccessor: dataSeries.yAccessor,
-      splitAccessors: dataSeries.splitAccessors,
-      seriesKeys: dataSeries.seriesKeys,
-      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
-      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
-    },
+    seriesIdentifier: getSeriesIdentifierFromDataSeries(dataSeries),
     style: seriesStyle,
     clippedRanges,
     shouldClip: hasFit,

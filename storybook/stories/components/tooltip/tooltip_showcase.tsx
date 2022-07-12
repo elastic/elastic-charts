@@ -18,9 +18,7 @@ import './tooltip_showcase.scss';
 
 type BaseTooltipProps = ComponentProps<typeof TooltipComponent>;
 
-type TooltipShowcaseProps = Partial<Omit<BaseTooltipProps, 'settings' | 'visible'>> & {
-  settings?: Partial<TooltipProps>;
-};
+type TooltipShowcaseProps = Partial<Omit<BaseTooltipProps, 'settings' | 'visible'>> & Partial<TooltipProps>;
 
 export const TooltipShowcase = memo((props: TooltipShowcaseProps) => {
   const [, setVisible] = useState(false);
@@ -38,7 +36,7 @@ export const TooltipShowcase = memo((props: TooltipShowcaseProps) => {
     zIndex: 200,
     info: props.info,
     settings: {
-      ...props.settings,
+      ...props,
       placement: getPlacementKnob(),
       boundary: divRef.current ?? undefined,
     },

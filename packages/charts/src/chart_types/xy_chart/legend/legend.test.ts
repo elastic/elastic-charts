@@ -309,6 +309,7 @@ describe('Legends', () => {
   it('returns the right series name for a color series', () => {
     const seriesIdentifier1 = {
       specId: '',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['y1'],
@@ -316,6 +317,7 @@ describe('Legends', () => {
     };
     const seriesIdentifier2 = {
       specId: '',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'b', 'y1'],
@@ -357,6 +359,7 @@ describe('Legends', () => {
   it('use the split value as name if has a single series and splitSeries is used', () => {
     const seriesIdentifier1 = {
       specId: '',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['y1'],
@@ -364,6 +367,7 @@ describe('Legends', () => {
     };
     const seriesIdentifier2 = {
       specId: '',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'b', 'y1'],
@@ -371,6 +375,7 @@ describe('Legends', () => {
     };
     const seriesIdentifier3 = {
       specId: '',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'y1'],

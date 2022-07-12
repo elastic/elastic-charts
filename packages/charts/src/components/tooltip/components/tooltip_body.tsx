@@ -38,7 +38,7 @@ export const TooltipBody = ({ info, visible, settings, headerFormatter, columns 
   return (
     <TooltipWrapper>
       <TooltipHeader header={info.header} formatter={headerFormatter} />
-      <TooltipTable columns={columns} items={info.values} backgroundColor={backgroundColor} />
+      <TooltipTable columns={columns} items={info.values} />
     </TooltipWrapper>
   );
 };

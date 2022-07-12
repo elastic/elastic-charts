@@ -15,7 +15,7 @@ import { Dimensions } from '../../../utils/dimensions';
 import { AreaGeometry } from '../../../utils/geometry';
 import { AreaSeriesStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { DataSeries, DataSeriesDatum } from '../utils/series';
+import { DataSeries, DataSeriesDatum, getSeriesIdentifierFromDataSeries } from '../utils/series';
 import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
 import {
@@ -93,16 +93,7 @@ export function renderArea(
       y: 0,
       x: shift,
     },
-    seriesIdentifier: {
-      key: dataSeries.key,
-      specId: dataSeries.specId,
-      xAccessor: dataSeries.xAccessor,
-      yAccessor: dataSeries.yAccessor,
-      splitAccessors: dataSeries.splitAccessors,
-      seriesKeys: dataSeries.seriesKeys,
-      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
-      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
-    },
+    seriesIdentifier: getSeriesIdentifierFromDataSeries(dataSeries),
     style,
     isStacked,
     clippedRanges,

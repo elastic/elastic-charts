@@ -46,7 +46,10 @@ export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends Seri
 export type CustomTooltip = ComponentType<CustomTooltipProps>;
 
 /** @internal */
-export type PropsOrChildren<P, C extends Record<string, unknown> = Record<string, any>> =
+export type PropsOrChildren<
+  P extends Record<string, unknown> = Record<string, any>,
+  C extends Record<string, unknown> = Record<string, any>,
+> =
   | P
   | ({
       children: ReactNode;

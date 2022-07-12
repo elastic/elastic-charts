@@ -26,5 +26,5 @@ export const Example = () => {
       </TooltipWrapper>
     );
   };
-  return <TooltipShowcase info={tableMultipleX} settings={{ customTooltip: MyTooltip }} />;
+  return <TooltipShowcase info={tableMultipleX} customTooltip={MyTooltip} />;
 };

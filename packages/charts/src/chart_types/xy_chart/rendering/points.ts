@@ -13,7 +13,13 @@ import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
 import { PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
+import {
+  DataSeries,
+  DataSeriesDatum,
+  FilledValues,
+  getSeriesIdentifierFromDataSeries,
+  XYChartSeriesIdentifier,
+} from '../utils/series';
 import { PointStyleAccessor, StackMode } from '../utils/specs';
 import { buildPointGeometryStyles } from './point_style';
 import {
@@ -72,16 +78,7 @@ export function renderPoints(
       const valueAccessor = getYDatumValueFn(yDatumKeyName);
       const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
       const originalY = getDatumYValue(datum, keyIndex === 0, isBandChart, dataSeries.stackMode);
-      const seriesIdentifier: XYChartSeriesIdentifier = {
-        key: dataSeries.key,
-        specId: dataSeries.specId,
-        xAccessor: dataSeries.xAccessor,
-        yAccessor: dataSeries.yAccessor,
-        splitAccessors: dataSeries.splitAccessors,
-        seriesKeys: dataSeries.seriesKeys,
-        smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
-        smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
-      };
+      const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
       const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
       const orphan = isOrphanDataPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);

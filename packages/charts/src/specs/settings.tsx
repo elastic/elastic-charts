@@ -254,6 +254,7 @@ export type PointerEvent = PointerOverEvent | PointerOutEvent;
 
 /**
  * The settings for handling external events.
+ * TODO consider moving this to Tooltip spec
  * @alpha
  */
 export interface ExternalPointerEventsSettings {

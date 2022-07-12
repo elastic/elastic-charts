@@ -15,14 +15,12 @@ import { PropsOrChildren } from '../types';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell } from './tooltip_table_cell';
 
-type TooltipTableRowContentProps = PropsOrChildren<{}>;
-
-type TooltipTableRowProps = TooltipTableRowContentProps & {
+type TooltipTableRowProps = PropsOrChildren<{
   maxHeight?: CSSProperties['maxHeight'];
   color?: Color;
   isHighlighted?: boolean;
   isSeriesHidden?: boolean;
-};
+}>;
 
 /** @public */
 export const TooltipTableRow = ({
