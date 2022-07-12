@@ -23,7 +23,7 @@ const config: PlaywrightTestConfig = {
     video: 'retain-on-failure',
     launchOptions: {
       ignoreDefaultArgs: ['--hide-scrollbars'],
-      args: ['--use-gl=egl'],
+      args: ['--override-use-software-gl-for-tests', '--use-gl=swiftshader'],
     },
   },
   reporter: [
