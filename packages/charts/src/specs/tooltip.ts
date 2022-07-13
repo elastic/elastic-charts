@@ -79,7 +79,7 @@ export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIden
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
 /**
- * Either a {@link (TooltipType)} or an {@link (TooltipProps:type)} configuration
+ * Either a {@link (TooltipProps:type)} or an {@link (TooltipProps:type)} configuration
  * @public
  * @deprecated use new Tooltip spec to set tooltip type and other options
  */
