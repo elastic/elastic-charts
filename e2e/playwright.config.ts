@@ -23,7 +23,7 @@ const config: PlaywrightTestConfig = {
     video: 'retain-on-failure',
     launchOptions: {
       ignoreDefaultArgs: ['--hide-scrollbars'],
-      args: ['--override-use-software-gl-for-tests', '--use-gl=swiftshader'],
+      args: [],
     },
   },
   reporter: [
@@ -49,7 +49,7 @@ const config: PlaywrightTestConfig = {
     {
       name: 'chrome',
       use: {
-        browserName: 'chromium',
+        browserName: 'firefox',
       },
     },
   ],

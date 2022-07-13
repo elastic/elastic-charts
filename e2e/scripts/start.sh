@@ -17,6 +17,8 @@ else
 fi
 
 # Run e2e playwright tests inside container
+#  -it \
+#  bash
 docker run \
   --ipc host `# recommended by playwright, see https://playwright.dev/docs/docker#end-to-end-tests` \
   --platform linux/arm64 `# explicitly set platform` \
