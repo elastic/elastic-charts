@@ -11,20 +11,22 @@ import React, { CSSProperties, ReactNode } from 'react';
 
 import { TooltipValue } from '../../../specs';
 import { Logger } from '../../../utils/logger';
-import { PropsOrChildren } from '../types';
+import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableColumn } from './tooltip_table';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableRow } from './tooltip_table_row';
 
-type TooltipTableBodyContentProps = PropsOrChildren<{
-  items: TooltipValue[];
-  columns: TooltipTableColumn[];
-}>;
-
-type TooltipTableBodyProps = TooltipTableBodyContentProps & {
-  maxHeight?: CSSProperties['maxHeight'];
-  textAlign?: CSSProperties['textAlign'];
-};
+type TooltipTableBodyProps = PropsOrChildrenWithProps<
+  {
+    items: TooltipValue[];
+    columns: TooltipTableColumn[];
+  },
+  {},
+  {
+    maxHeight?: CSSProperties['maxHeight'];
+    textAlign?: CSSProperties['textAlign'];
+  }
+>;
 
 /** @public */
 export const TooltipTableBody = ({ maxHeight, ...props }: TooltipTableBodyProps) => {

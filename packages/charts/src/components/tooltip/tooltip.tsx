@@ -12,7 +12,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { TooltipTableColumn } from '.';
 import { Colors } from '../../common/colors';
-import { SettingsSpec, TooltipProps, TooltipSettings, TooltipSpec, TooltipValueFormatter } from '../../specs';
+import { SettingsSpec, TooltipProps, TooltipSpec, TooltipValueFormatter } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
@@ -39,7 +39,7 @@ interface TooltipStateProps {
   position: AnchorPosition | null;
   info?: TooltipInfo;
   headerFormatter?: TooltipValueFormatter;
-  settings?: TooltipSettings;
+  settings?: TooltipProps;
   rotation: Rotation;
   chartId: string;
   backgroundColor: string;

@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { TooltipValueFormatter, TooltipSettings } from '../../../specs';
+import { TooltipValueFormatter, TooltipProps } from '../../../specs';
 import { TooltipInfo } from '../types';
 import { TooltipHeader } from './tooltip_header';
 import { useTooltipContext } from './tooltip_provider';
@@ -20,7 +20,7 @@ interface TooltipBodyProps {
   info?: TooltipInfo;
   columns: TooltipTableColumn[];
   headerFormatter?: TooltipValueFormatter;
-  settings?: TooltipSettings;
+  settings?: TooltipProps;
 }
 
 /** @internal */

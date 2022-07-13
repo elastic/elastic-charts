@@ -11,7 +11,7 @@ import React, { CSSProperties, ReactNode } from 'react';
 
 import { TooltipValue } from '../../../specs';
 import { isNil } from '../../../utils/common';
-import { PropsOrChildren } from '../types';
+import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableBody } from './tooltip_table_body';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
@@ -36,17 +36,19 @@ export type TooltipTableColumn = {
     }
 );
 
-type TooltipListContentProps = PropsOrChildren<{
-  columns: TooltipTableColumn[];
-  items: TooltipValue[];
-}>;
-
-type TooltipListProps = TooltipListContentProps & {
-  maxHeight?: CSSProperties['maxHeight'];
-};
+type TooltipTableProps = PropsOrChildrenWithProps<
+  {
+    columns: TooltipTableColumn[];
+    items: TooltipValue[];
+  },
+  {},
+  {
+    maxHeight?: CSSProperties['maxHeight'];
+  }
+>;
 
 /** @public */
-export const TooltipTable = ({ maxHeight, ...props }: TooltipListProps) => {
+export const TooltipTable = ({ maxHeight, ...props }: TooltipTableProps) => {
   const className = classNames('echTooltip__table', { 'echTooltip__table--scrollable': !isNil(maxHeight) });
   if ('children' in props) {
     return (

@@ -7,20 +7,14 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, PropsWithChildren } from 'react';
 
-import { PropsOrChildren } from '../types';
-
-type TooltipTableCellContentProps = PropsOrChildren<{
-  content: string;
-}>;
-
-type TooltipTableCellProps = TooltipTableCellContentProps & {
+type TooltipTableCellProps = PropsWithChildren<{
   maxHeight?: CSSProperties['maxHeight'];
   textAlign?: CSSProperties['textAlign'];
   padding?: CSSProperties['padding'];
   className?: string;
-};
+}>;
 
 /** @public */
 export const TooltipTableCell = ({
@@ -31,17 +25,9 @@ export const TooltipTableCell = ({
   ...props
 }: TooltipTableCellProps) => {
   const classes = classNames('echTooltip__tableCell', className);
-  if ('children' in props) {
-    return (
-      <td className={classes} style={{ maxHeight, textAlign, padding }}>
-        {props.children}
-      </td>
-    );
-  }
-
   return (
     <td className={classes} style={{ maxHeight, textAlign, padding }}>
-      {props.content}
+      {props.children}
     </td>
   );
 };

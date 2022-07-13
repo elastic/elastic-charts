@@ -102,7 +102,10 @@ export function getTooltipType(tooltip: TooltipSpec, settings: SettingsSpec, ext
   return visible ? TooltipType.VerticalCursor : TooltipType.None;
 }
 
-/** @alpha */
+/**
+ * Spec used to configure tooltip for chart
+ * @public
+ */
 export interface TooltipSpec extends Spec, TooltipPortalSettings<'chart'> {
   /**
    * The {@link (TooltipType:type) | TooltipType} of the tooltip

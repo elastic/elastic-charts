@@ -11,16 +11,21 @@ import React, { CSSProperties } from 'react';
 
 import { Color } from '../../../common/colors';
 import { isNil } from '../../../utils/common';
-import { PropsOrChildren } from '../types';
+import { PropsOrChildrenWithProps } from '../types';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell } from './tooltip_table_cell';
 
-type TooltipTableRowProps = PropsOrChildren<{
-  maxHeight?: CSSProperties['maxHeight'];
-  color?: Color;
-  isHighlighted?: boolean;
-  isSeriesHidden?: boolean;
-}>;
+type TooltipTableRowProps = PropsOrChildrenWithProps<
+  {
+    isSeriesHidden?: boolean;
+  },
+  {},
+  {
+    color?: Color;
+    isHighlighted?: boolean;
+    maxHeight?: CSSProperties['maxHeight'];
+  }
+>;
 
 /** @public */
 export const TooltipTableRow = ({
@@ -66,13 +71,13 @@ function ColorStripCell({ color, backgroundColor }: ColorStripCellProps) {
         'echTooltip__colorCell--empty': !color,
       })}
     >
-      {color && (
+      {color ? (
         <>
           <div className="echTooltip__colorStrip" style={{ backgroundColor }} />
           <div className="echTooltip__colorStrip" style={{ backgroundColor: color }} />
           <div className="echTooltip__colorStripSpacer" />
         </>
-      )}
+      ) : null}
     </TooltipTableCell>
   );
 }

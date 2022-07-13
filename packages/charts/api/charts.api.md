@@ -12,6 +12,7 @@ import { CSSProperties } from 'react';
 import { FC } from 'react';
 import { LegacyRef } from 'react';
 import { OptionalKeys } from 'utility-types';
+import { PropsWithChildren as PropsWithChildren_2 } from 'react';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactElement } from 'react';
@@ -635,7 +636,17 @@ export type CustomAnnotationTooltip = ComponentType<{
 }> | null;
 
 // @public
-export type CustomTooltip = ComponentType<TooltipInfo>;
+export type CustomTooltip = ComponentType<CustomTooltipProps>;
+
+// @public
+export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends TooltipInfo<D, SI> {
+    // (undocumented)
+    backgroundColor: string;
+    // (undocumented)
+    dir: 'ltr' | 'rtl';
+    // (undocumented)
+    headerFormatter?: TooltipValueFormatter;
+}
 
 // @public (undocumented)
 export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
@@ -829,10 +840,13 @@ export const DEFAULT_GLOBAL_ID = "__global__";
 // @public (undocumented)
 export const DEFAULT_SETTINGS_SPEC: SettingsSpec;
 
-// @public
+// @public @deprecated
 export const DEFAULT_TOOLTIP_SNAP = true;
 
-// @public
+// @public (undocumented)
+export const DEFAULT_TOOLTIP_SPEC: TooltipSpec;
+
+// @public @deprecated
 export const DEFAULT_TOOLTIP_TYPE: "vertical";
 
 // @public (undocumented)
@@ -1761,6 +1775,11 @@ export type MetricWTrend = MetricBase & {
 // @public (undocumented)
 export const MODEL_KEY = "parent";
 
+// @public
+export type Neverify<T extends Record<string, unknown>> = {
+    [Key in keyof T]?: never;
+};
+
 // @public (undocumented)
 export function niceTimeFormatByDay(days: number): "YYYY-MM-DD" | "MMMM DD" | "MM-DD HH:mm" | "HH:mm:ss";
 
@@ -2095,6 +2114,19 @@ export type ProjectionAreaChangeListener = (areas: {
 // @public
 export type ProjectionClickListener = (values: ProjectedValues) => void;
 
+// @public
+export type PropsOrChildrenWithProps<Props extends Record<string, unknown> = Record<string, any>, ChildrenProps extends Record<string, unknown> = Record<string, any>, ExtraProps extends Record<string, unknown> = Record<string, any>> = PropsWithChildren<ChildrenProps, ExtraProps, Props> | PropsWithoutChildren<Props, ExtraProps, ChildrenProps>;
+
+// @public
+export type PropsWithChildren<ChildrenProps extends Record<string, unknown> = Record<string, any>, ExtraProps extends Record<string, unknown> = Record<string, any>, Props extends Record<string, unknown> = Record<string, any>> = {
+    children: ReactNode;
+} & ChildrenProps & ExtraProps & Neverify<Props>;
+
+// @public
+export type PropsWithoutChildren<Props extends Record<string, unknown> = Record<string, any>, ExtraProps extends Record<string, unknown> = Record<string, any>, ChildrenProps extends Record<string, unknown> = Record<string, any>> = {
+    children?: never | undefined;
+} & Neverify<ChildrenProps> & Props & ExtraProps;
+
 // @public (undocumented)
 export interface RasterTimeScale extends TimeScale {
     // (undocumented)
@@ -2342,7 +2374,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof typeof settingsBuildP
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "tooltip" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "onElementOver" | "onElementClick" | "onElementOut" | "onRenderChange" | "xDomain" | "theme" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "pointBuffer" | "onBrushEnd" | "onPointerUpdate" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "externalPointerEvents" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "tooltip" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "onElementOver" | "onElementClick" | "onElementOut" | "onRenderChange" | "xDomain" | "theme" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "pointBuffer" | "onBrushEnd" | "onPointerUpdate" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -2396,7 +2428,8 @@ export interface SettingsSpec extends Spec, LegendSpec {
     rotation: Rotation;
     roundHistogramBrushValues?: boolean;
     theme?: PartialTheme | PartialTheme[];
-    tooltip: TooltipSettings;
+    // @deprecated
+    tooltip?: TooltipSettings;
     // (undocumented)
     xDomain?: CustomXDomain;
 }
@@ -2495,6 +2528,7 @@ export const SpecType: Readonly<{
     Axis: "axis";
     Annotation: "annotation";
     Settings: "settings";
+    Tooltip: "tooltip";
     IndexOrder: "index_order";
     SmallMultiples: "small_multiples";
 }>;
@@ -2678,10 +2712,36 @@ export interface TimeScale {
 export function toEntries<T extends Record<string, string>, S>(array: T[], accessor: keyof T, staticValue: S): Record<string, S>;
 
 // @public
-export interface TooltipInfo {
-    header: TooltipValue | null;
-    values: TooltipValue[];
+export const Tooltip: (props: SFProps<TooltipSpec, keyof typeof tooltipBuildProps['overrides'], keyof typeof tooltipBuildProps['defaults'], keyof typeof tooltipBuildProps['optionals'], keyof typeof tooltipBuildProps['requires']>) => null;
+
+// @public
+export const tooltipBuildProps: BuildProps<TooltipSpec, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
+
+// Warning: (ae-forgotten-export) The symbol "TooltipDividerProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipDivider: ({ margin }: TooltipDividerProps) => JSX.Element;
+
+// Warning: (ae-forgotten-export) The symbol "TooltipFooterProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipFooter: ({ children }: TooltipFooterProps) => JSX.Element;
+
+// Warning: (ae-forgotten-export) The symbol "TooltipHeaderProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipHeader: React_2.MemoExoticComponent<(props: TooltipHeaderProps) => JSX.Element | null>;
+
+// @public
+export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
+    header: TooltipValue<D, SI> | null;
+    values: TooltipValue<D, SI>[];
 }
+
+// Warning: (ae-forgotten-export) The symbol "TooltipMetricRowProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipMetricRow: React_2.MemoExoticComponent<({ label, metric }: TooltipMetricRowProps) => JSX.Element>;
 
 // @public
 export interface TooltipPortalSettings<B = never> {
@@ -2693,18 +2753,22 @@ export interface TooltipPortalSettings<B = never> {
 }
 
 // @public
-export type TooltipProps = TooltipPortalSettings<'chart'> & {
-    type?: TooltipType;
-    snap?: boolean;
-    headerFormatter?: TooltipValueFormatter;
-    unit?: string;
-    customTooltip?: CustomTooltip;
-    stickTo?: TooltipStickTo;
-    showNullValues?: boolean;
-};
+export type TooltipProps = ComponentProps<typeof Tooltip>;
+
+// @public @deprecated
+export type TooltipSettings = TooltipType | TooltipProps;
 
 // @public
-export type TooltipSettings = TooltipType | TooltipProps;
+export interface TooltipSpec extends Spec, TooltipPortalSettings<'chart'> {
+    customTooltip?: CustomTooltip;
+    headerFormatter?: TooltipValueFormatter;
+    showNullValues: boolean;
+    snap: boolean;
+    stickTo?: TooltipStickTo;
+    type: TooltipType;
+    // @alpha
+    unit?: string;
+}
 
 // @public
 export const TooltipStickTo: Readonly<{
@@ -2720,6 +2784,50 @@ export const TooltipStickTo: Readonly<{
 // @public (undocumented)
 export type TooltipStickTo = $Values<typeof TooltipStickTo>;
 
+// Warning: (ae-forgotten-export) The symbol "TooltipTableProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipTable: ({ maxHeight, ...props }: TooltipTableProps) => JSX.Element;
+
+// Warning: (ae-forgotten-export) The symbol "TooltipTableBodyProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipTableBody: ({ maxHeight, ...props }: TooltipTableBodyProps) => JSX.Element;
+
+// Warning: (ae-forgotten-export) The symbol "TooltipTableCellProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipTableCell: ({ className, maxHeight, textAlign, padding, ...props }: TooltipTableCellProps) => JSX.Element;
+
+// @alpha
+export type TooltipTableColumn = {
+    id?: string;
+    className?: string;
+    textAlign?: CSSProperties['textAlign'];
+    header?: string | (() => string);
+    footer?: string | (() => string);
+    hidden?: boolean | ((items: TooltipValue[]) => boolean);
+} & ({
+    accessor: string | number;
+} | {
+    renderCell: (item: TooltipValue) => ReactNode;
+});
+
+// Warning: (ae-forgotten-export) The symbol "TooltipTableFooterProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipTableFooter: ({ maxHeight, ...props }: TooltipTableFooterProps) => JSX.Element | null;
+
+// Warning: (ae-forgotten-export) The symbol "TooltipTableHeaderProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipTableHeader: ({ maxHeight, ...props }: TooltipTableHeaderProps) => JSX.Element | null;
+
+// Warning: (ae-forgotten-export) The symbol "TooltipTableRowProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipTableRow: ({ maxHeight, color, isHighlighted, isSeriesHidden, ...props }: TooltipTableRowProps) => JSX.Element;
+
 // @public
 export const TooltipType: Readonly<{
     VerticalCursor: "vertical";
@@ -2732,7 +2840,7 @@ export const TooltipType: Readonly<{
 export type TooltipType = $Values<typeof TooltipType>;
 
 // @public
-export interface TooltipValue<D extends BaseDatum = Datum> {
+export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
     color: Color;
     datum?: D;
     formattedMarkValue?: string | null;
@@ -2741,13 +2849,18 @@ export interface TooltipValue<D extends BaseDatum = Datum> {
     isVisible: boolean;
     label: string;
     markValue?: number | null;
-    seriesIdentifier: SeriesIdentifier;
+    seriesIdentifier: SI;
     value: any;
     valueAccessor?: Accessor<D>;
 }
 
 // @public
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
+
+// Warning: (ae-forgotten-export) The symbol "TooltipWrapperProps" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const TooltipWrapper: ({ children, className }: TooltipWrapperProps) => JSX.Element;
 
 // @public (undocumented)
 export type TreeLevel = number;
@@ -2904,6 +3017,8 @@ export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends Se
     smVerticalAccessorValue?: string | number;
     // (undocumented)
     splitAccessors: Map<string | number, string | number>;
+    // (undocumented)
+    xAccessor: Accessor<D>;
     // (undocumented)
     yAccessor: Accessor<D>;
 }

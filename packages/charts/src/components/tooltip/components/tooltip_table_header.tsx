@@ -9,18 +9,22 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { PropsOrChildren } from '../types';
+import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableColumn } from './tooltip_table';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableRow } from './tooltip_table_row';
 
-type TooltipTableHeaderProps = PropsOrChildren<{
-  columns: TooltipTableColumn[];
-}> & {
-  maxHeight?: CSSProperties['maxHeight'];
-  textAlign?: CSSProperties['textAlign'];
-  padding?: CSSProperties['padding'];
-};
+type TooltipTableHeaderProps = PropsOrChildrenWithProps<
+  {
+    columns: TooltipTableColumn[];
+  },
+  {},
+  {
+    maxHeight?: CSSProperties['maxHeight'];
+    textAlign?: CSSProperties['textAlign'];
+    padding?: CSSProperties['padding'];
+  }
+>;
 
 /** @public */
 export const TooltipTableHeader = ({ maxHeight, ...props }: TooltipTableHeaderProps) => {

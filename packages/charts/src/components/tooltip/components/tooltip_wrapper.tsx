@@ -7,15 +7,14 @@
  */
 
 import classNames from 'classnames';
-import React, { ReactNode } from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { renderComplexChildren } from '../../../utils/common';
 import { useTooltipContext } from './tooltip_provider';
 
-interface TooltipWrapperProps {
+type TooltipWrapperProps = PropsWithChildren<{
   className?: string;
-  children: ReactNode;
-}
+}>;
 
 /** @public */
 export const TooltipWrapper = ({ children, className }: TooltipWrapperProps) => {

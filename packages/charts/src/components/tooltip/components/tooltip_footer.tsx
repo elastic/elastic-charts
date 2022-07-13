@@ -6,20 +6,13 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { renderComplexChildren } from '../../../utils/common';
-import { PropsOrChildren } from '../types';
 
-type TooltipFooterProps = PropsOrChildren<{
-  test: string;
-}>;
+type TooltipFooterProps = PropsWithChildren<{}>;
 
 /** @public */
-export const TooltipFooter = (props: TooltipFooterProps) => {
-  if ('children' in props) {
-    return <div className="echTooltip__footer">{renderComplexChildren(props.children)}</div>;
-  }
-
-  return null;
+export const TooltipFooter = ({ children }: TooltipFooterProps) => {
+  return <div className="echTooltip__footer">{renderComplexChildren(children)}</div>;
 };

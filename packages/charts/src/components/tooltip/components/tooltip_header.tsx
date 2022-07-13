@@ -10,9 +10,9 @@ import React, { memo } from 'react';
 
 import { TooltipValue, TooltipValueFormatter } from '../../../specs';
 import { renderComplexChildren } from '../../../utils/common';
-import { PropsOrChildren } from '../types';
+import { PropsOrChildrenWithProps } from '../types';
 
-type TooltipHeaderProps = PropsOrChildren<{
+type TooltipHeaderProps = PropsOrChildrenWithProps<{
   header: TooltipValue | null;
   formatter?: TooltipValueFormatter;
 }>;

@@ -45,12 +45,48 @@ export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends Seri
  */
 export type CustomTooltip = ComponentType<CustomTooltipProps>;
 
-/** @internal */
-export type PropsOrChildren<
-  P extends Record<string, unknown> = Record<string, any>,
-  C extends Record<string, unknown> = Record<string, any>,
-> =
-  | P
-  | ({
-      children: ReactNode;
-    } & C);
+/**
+ * Defines exported component props with union of props **with** `children`
+ * @public
+ */
+export type PropsWithChildren<
+  ChildrenProps extends Record<string, unknown> = Record<string, any>,
+  ExtraProps extends Record<string, unknown> = Record<string, any>,
+  Props extends Record<string, unknown> = Record<string, any>,
+> = {
+  children: ReactNode;
+} & ChildrenProps &
+  ExtraProps &
+  Neverify<Props>;
+
+/**
+ * Defines exported component props with union of props **without** `children`
+ * @public
+ */
+export type PropsWithoutChildren<
+  Props extends Record<string, unknown> = Record<string, any>,
+  ExtraProps extends Record<string, unknown> = Record<string, any>,
+  ChildrenProps extends Record<string, unknown> = Record<string, any>,
+> = {
+  children?: never | undefined;
+} & Neverify<ChildrenProps> &
+  Props &
+  ExtraProps;
+
+/**
+ * Type used to define a union including and excluding children as a prop
+ * @public
+ */
+export type PropsOrChildrenWithProps<
+  Props extends Record<string, unknown> = Record<string, any>,
+  ChildrenProps extends Record<string, unknown> = Record<string, any>,
+  ExtraProps extends Record<string, unknown> = Record<string, any>,
+> = PropsWithChildren<ChildrenProps, ExtraProps, Props> | PropsWithoutChildren<Props, ExtraProps, ChildrenProps>;
+
+/**
+ * Converts all properties of a Record to optional-never
+ * @public
+ */
+export type Neverify<T extends Record<string, unknown>> = {
+  [Key in keyof T]?: never;
+};

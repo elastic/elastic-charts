@@ -9,19 +9,21 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { PropsOrChildren } from '../types';
+import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableColumn } from './tooltip_table';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableRow } from './tooltip_table_row';
 
-type TooltipTableFooterContentProps = PropsOrChildren<{
-  columns: TooltipTableColumn[];
-}>;
-
-type TooltipTableFooterProps = TooltipTableFooterContentProps & {
-  maxHeight?: CSSProperties['maxHeight'];
-  textAlign?: CSSProperties['textAlign'];
-};
+type TooltipTableFooterProps = PropsOrChildrenWithProps<
+  {
+    columns: TooltipTableColumn[];
+    textAlign?: CSSProperties['textAlign'];
+  },
+  {},
+  {
+    maxHeight?: CSSProperties['maxHeight'];
+  }
+>;
 
 /** @public */
 export const TooltipTableFooter = ({ maxHeight, ...props }: TooltipTableFooterProps) => {
@@ -39,11 +41,11 @@ export const TooltipTableFooter = ({ maxHeight, ...props }: TooltipTableFooterPr
   return (
     <tfoot>
       <TooltipTableRow maxHeight={maxHeight}>
-        {props.columns.map(({ footer, textAlign, id }) => {
+        {props.columns.map(({ footer, textAlign, id, className }) => {
           if (!footer) return null;
           const footerStr = typeof footer === 'string' ? footer : footer();
           return (
-            <TooltipTableCell textAlign={textAlign ?? props.textAlign} key={id ?? footerStr}>
+            <TooltipTableCell className={className} textAlign={textAlign ?? props.textAlign} key={id ?? footerStr}>
               {footerStr}
             </TooltipTableCell>
           );
