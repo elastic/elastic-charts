@@ -19,10 +19,10 @@ export const Example = () => {
     { header: 'Y Value', accessor: 'y' },
     { header: 'Z Value', accessor: 'z' },
   ];
-  const MyTooltip: CustomTooltip = ({ values, backgroundColor }) => {
+  const MyTooltip: CustomTooltip = ({ values }) => {
     return (
       <TooltipWrapper>
-        <TooltipTable items={values} columns={columns} backgroundColor={backgroundColor} />
+        <TooltipTable items={values} columns={columns} />
       </TooltipWrapper>
     );
   };
