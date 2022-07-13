@@ -1,3 +1,11 @@
+## [46.12.1](https://github.com/elastic/elastic-charts/compare/v46.12.0...v46.12.1) (2022-07-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^60.2.0 ([#1747](https://github.com/elastic/elastic-charts/issues/1747)) ([e0490c0](https://github.com/elastic/elastic-charts/commit/e0490c08d6ac7e3f96b1626eac7afe5a750547ac))
+* use typeof check to check for `process` variable ([#1751](https://github.com/elastic/elastic-charts/issues/1751)) ([93e4447](https://github.com/elastic/elastic-charts/commit/93e444798f6266e6c2b8987e6c74fdb876c57511))
+
 # [46.12.0](https://github.com/elastic/elastic-charts/compare/v46.11.2...v46.12.0) (2022-07-07)
 
 
