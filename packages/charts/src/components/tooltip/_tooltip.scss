@@ -1,6 +1,6 @@
 @import '../mixins';
 
-$tooltipBorderColor: #D4DAE6;
+$tooltipBorderColor: #d4dae6;
 $tooltipBorderWidth: 1px;
 $rowColorStripWidth: 5px;
 $maxRowColorStripWidth: 8px;
@@ -14,11 +14,11 @@ $rowColorStripAnimatedWidthDelta: 3px;
   pointer-events: none;
   user-select: none;
   max-width: 256px;
-  background-color: #FFF;
+  background-color: #fff;
   color: #343741;
   overflow: hidden;
 
-  &>:not(:last-child) {
+  & > :not(:last-child) {
     border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
   }
 
@@ -26,7 +26,9 @@ $rowColorStripAnimatedWidthDelta: 3px;
     background-color: transparent;
   }
 
-  .euiTableFooterCell, .euiTableHeaderCell, .euiTableRowCell {
+  .euiTableFooterCell,
+  .euiTableHeaderCell,
+  .euiTableRowCell {
     color: white;
   }
 
@@ -61,7 +63,7 @@ $rowColorStripAnimatedWidthDelta: 3px;
   }
 
   &__stickyAction {
-    color: #69707D;
+    color: #69707d;
     padding: $euiSizeS;
     margin-left: $rowColorStripWidth;
   }
