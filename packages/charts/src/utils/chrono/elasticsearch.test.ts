@@ -8,12 +8,12 @@
 
 import { DateTime } from 'luxon';
 
-import { snapDateToESInterval } from './elasticsearch';
+import { roundDateToESInterval } from './elasticsearch';
 
 describe('snap to interval', () => {
   it('should snap to begin of calendar interval', () => {
     const initialDate = DateTime.fromISO('2020-01-03T07:00:01Z');
-    const snappedDate = snapDateToESInterval(
+    const snappedDate = roundDateToESInterval(
       initialDate.toMillis(),
       { type: 'calendar', unit: 'd', value: 1 },
       'start',
@@ -24,7 +24,7 @@ describe('snap to interval', () => {
 
   it('should snap to end of calendar interval', () => {
     const initialDate = DateTime.fromISO('2020-01-03T07:00:01Z');
-    const snappedDate = snapDateToESInterval(
+    const snappedDate = roundDateToESInterval(
       initialDate.toMillis(),
       { type: 'calendar', unit: 'd', value: 1 },
       'end',
@@ -35,7 +35,7 @@ describe('snap to interval', () => {
 
   it('should snap to begin of fixed interval', () => {
     const initialDate = DateTime.fromISO('2020-01-03T07:00:01Z');
-    const snappedDate = snapDateToESInterval(
+    const snappedDate = roundDateToESInterval(
       initialDate.toMillis(),
       { type: 'fixed', unit: 'm', value: 30 },
       'start',
@@ -46,7 +46,7 @@ describe('snap to interval', () => {
 
   it('should snap to end of fixed interval', () => {
     const initialDate = DateTime.fromISO('2020-01-03T07:00:01Z');
-    const snappedDate = snapDateToESInterval(
+    const snappedDate = roundDateToESInterval(
       initialDate.toMillis(),
       { type: 'fixed', unit: 'm', value: 30 },
       'end',
