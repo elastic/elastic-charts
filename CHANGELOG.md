@@ -1,3 +1,10 @@
+# [46.13.0](https://github.com/elastic/elastic-charts/compare/v46.12.1...v46.13.0) (2022-07-14)
+
+
+### Features
+
+* **utils:** expose `roundDateToESInterval` function ([#1754](https://github.com/elastic/elastic-charts/issues/1754)) ([a687211](https://github.com/elastic/elastic-charts/commit/a6872114d86d0ac540f7dfacfe6745351ab0752c))
+
 ## [46.12.1](https://github.com/elastic/elastic-charts/compare/v46.12.0...v46.12.1) (2022-07-13)
 
 

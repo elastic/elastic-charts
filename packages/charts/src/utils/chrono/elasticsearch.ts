@@ -10,7 +10,10 @@ import { TimeMs } from '../../common/geometry';
 import { addTime, endOf, getUnixTimestamp, getUTCOffset, startOf } from './chrono';
 import { CalendarIntervalUnit, FixedIntervalUnit, UnixTimestamp } from './types';
 
-/** @public */
+/**
+ * An [Elasticsearch Calendar interval unit](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#calendar_intervals)
+ * @public
+ */
 export type ESCalendarIntervalUnit =
   | 'minute'
   | 'm'
@@ -27,7 +30,10 @@ export type ESCalendarIntervalUnit =
   | 'year'
   | 'y';
 
-/** @public */
+/**
+ * An [Elasticsearch fixed interval unit](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#fixed_intervals)
+ * @public
+ */
 export type ESFixedIntervalUnit = 'ms' | 's' | 'm' | 'h' | 'd';
 
 /** @internal */
@@ -39,14 +45,20 @@ export const ES_FIXED_INTERVAL_UNIT_TO_BASE: Record<ESFixedIntervalUnit, TimeMs>
   d: 1000 * 60 * 60 * 24,
 };
 
-/** @public */
+/**
+ * The definition of an [Elasticsearch Calendar interval](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#calendar_intervals)
+ * @public
+ */
 export interface ESCalendarInterval {
   type: 'calendar';
   unit: ESCalendarIntervalUnit;
   value: number;
 }
 
-/** @public */
+/**
+ * The definition of an [Elasticsearch fixed interval](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#fixed_intervals)
+ * @public
+ */
 export interface ESFixedInterval {
   type: 'fixed';
   unit: ESFixedIntervalUnit;
@@ -70,9 +82,19 @@ const esCalendarIntervalToChronoInterval: Record<ESCalendarIntervalUnit, Calenda
   y: 'year',
 };
 
-/** @internal */
-export function snapDateToESInterval(
-  date: number | Date,
+/**
+ * Round a Date or unix timestamp to the beginning or end of the corresponding Elasticsearch date histogram bucket.
+ * It uses the [date histogram aggregation Elasticsearch formula](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#datehistogram-aggregation-time-zone)
+ * to compute the fixed interval bucket, and it uses an internal selected date/time library to compute the calendar one.
+ *
+ * @param date - a unix timestamp or a Date object
+ * @param interval - the description of the Elasticsearch interval you want to round to
+ * @param snapTo - if you want to snap the date at the `start` or at the `end` of the interval
+ * @param timeZone - a IANA timezone
+ * @public
+ */
+export function roundDateToESInterval(
+  date: UnixTimestamp | Date,
   interval: ESCalendarInterval | ESFixedInterval,
   snapTo: 'start' | 'end',
   timeZone: string,
@@ -123,8 +145,8 @@ export function timeRange(
 }
 
 function calendarTimeRange(from: number, to: number, interval: ESCalendarInterval, timeZone: string): number[] {
-  const snappedFrom = snapDateToESInterval(from, interval, 'start', timeZone);
-  const snappedTo = snapDateToESInterval(to, interval, 'start', timeZone);
+  const snappedFrom = roundDateToESInterval(from, interval, 'start', timeZone);
+  const snappedTo = roundDateToESInterval(to, interval, 'start', timeZone);
   const values: number[] = [snappedFrom];
   let current = snappedFrom;
   while (addTime(current, timeZone, esCalendarIntervalToChronoInterval[interval.unit], interval.value) < snappedTo) {
@@ -135,8 +157,8 @@ function calendarTimeRange(from: number, to: number, interval: ESCalendarInterva
 }
 
 function fixedTimeRange(from: number, to: number, interval: ESFixedInterval, timeZone: string): number[] {
-  const snappedFrom = snapDateToESInterval(from, interval, 'start', timeZone);
-  const snappedTo = snapDateToESInterval(to, interval, 'start', timeZone);
+  const snappedFrom = roundDateToESInterval(from, interval, 'start', timeZone);
+  const snappedTo = roundDateToESInterval(to, interval, 'start', timeZone);
   const utcTo = localToUTC(snappedTo, timeZone);
   let current = localToUTC(snappedFrom, timeZone);
   const values: number[] = [current];
