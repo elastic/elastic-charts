@@ -941,7 +941,7 @@ export const entryKey: ([key]: ArrayEntry) => string;
 // @public (undocumented)
 export const entryValue: ([, value]: ArrayEntry) => ArrayNode;
 
-// @public (undocumented)
+// @public
 export interface ESCalendarInterval {
     // (undocumented)
     type: 'calendar';
@@ -951,10 +951,10 @@ export interface ESCalendarInterval {
     value: number;
 }
 
-// @public (undocumented)
+// @public
 export type ESCalendarIntervalUnit = 'minute' | 'm' | 'hour' | 'h' | 'day' | 'd' | 'week' | 'w' | 'month' | 'M' | 'quarter' | 'q' | 'year' | 'y';
 
-// @public (undocumented)
+// @public
 export interface ESFixedInterval {
     // (undocumented)
     type: 'fixed';
@@ -964,7 +964,7 @@ export interface ESFixedInterval {
     value: number;
 }
 
-// @public (undocumented)
+// @public
 export type ESFixedIntervalUnit = 'ms' | 's' | 'm' | 'h' | 'd';
 
 // @alpha
@@ -2228,6 +2228,9 @@ export type RgbaTuple = [r: RGB, g: RGB, b: RGB, alpha: A];
 // @public (undocumented)
 export type Rotation = 0 | 90 | -90 | 180;
 
+// @public
+export function roundDateToESInterval(date: UnixTimestamp | Date, interval: ESCalendarInterval | ESFixedInterval, snapTo: 'start' | 'end', timeZone: string): UnixTimestamp;
+
 // @public (undocumented)
 export type ScaleBandType = ScaleOrdinalType;
 
@@ -2885,6 +2888,9 @@ export interface UnaryAccessorFn<D extends BaseDatum = any, Return = any> {
     (datum: D): Return;
     fieldName?: string;
 }
+
+// @public
+export type UnixTimestamp = TimeMs;
 
 // @public
 export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, onClose: () => void];
