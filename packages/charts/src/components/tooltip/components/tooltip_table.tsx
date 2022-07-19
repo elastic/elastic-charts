@@ -7,11 +7,12 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, ReactNode } from 'react';
+import React, { CSSProperties, ReactNode, useEffect } from 'react';
 
 import { TooltipValue } from '../../../specs';
 import { isNil } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
+import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableBody } from './tooltip_table_body';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
@@ -44,12 +45,21 @@ type TooltipTableProps = PropsOrChildrenWithProps<
   {},
   {
     maxHeight?: CSSProperties['maxHeight'];
+    hideColor?: boolean;
   }
 >;
 
 /** @public */
 export const TooltipTable = ({ maxHeight, ...props }: TooltipTableProps) => {
   const className = classNames('echTooltip__table', { 'echTooltip__table--scrollable': !isNil(maxHeight) });
+  const { updateValues } = useTooltipContext();
+
+  useEffect(() => {
+    if (props.hideColor !== undefined) {
+      updateValues({ hideColor: props.hideColor });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   if ('children' in props) {
     return (
       <table className={className} style={{ maxHeight }}>

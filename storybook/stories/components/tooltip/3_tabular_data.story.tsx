@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { CustomTooltip, TooltipTable } from '@elastic/charts';
@@ -22,9 +23,13 @@ export const Example = () => {
   const MyTooltip: CustomTooltip = ({ values }) => {
     return (
       <>
-        <TooltipTable items={values} columns={columns} />
+        <TooltipTable items={values} columns={columns} hideColor={boolean('hide color', false)} />
       </>
     );
   };
   return <TooltipShowcase info={tableMultipleX} customTooltip={MyTooltip} />;
+};
+
+Example.parameters = {
+  background: { disable: true },
 };

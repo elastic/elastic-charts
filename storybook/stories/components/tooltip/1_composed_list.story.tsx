@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { select } from '@storybook/addon-knobs';
+import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { CustomTooltip, TooltipHeader, TooltipTable, TooltipTableColumn } from '@elastic/charts';
@@ -56,7 +56,7 @@ export const Example = () => {
     return (
       <>
         <TooltipHeader header={header} />
-        <TooltipTable columns={columns} items={values} />
+        <TooltipTable columns={columns} items={values} hideColor={boolean('hide color', false)} />
       </>
     );
   };
@@ -67,4 +67,5 @@ export const Example = () => {
 Example.parameters = {
   markdown: `Tooltips may be composed with internal components to build out completely custom tooltips while maintaining a consistent style.\
   This example shows how you can build the default list tooltip by defining the \`columns\` on the \`TooltipTable\` component inside a \`CustomTooltip\`.`,
+  background: { disable: true },
 };

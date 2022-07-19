@@ -35,15 +35,16 @@ export const TooltipTableRow = ({
   isSeriesHidden,
   ...props
 }: TooltipTableRowProps) => {
-  const { backgroundColor } = useTooltipContext();
+  const { backgroundColor, hideColor } = useTooltipContext();
   const className = classNames('echTooltip__tableRow', {
     'echTooltip__tableRow--scrollable': !isNil(maxHeight),
     'echTooltip__tableRow--highlighted': isHighlighted,
   });
+
   if ('children' in props) {
     return (
       <tr className={className} style={{ maxHeight }}>
-        <ColorStripCell color={color} backgroundColor={backgroundColor} />
+        <ColorStripCell hide={hideColor} color={color} backgroundColor={backgroundColor} />
         {props.children}
       </tr>
     );
@@ -51,7 +52,7 @@ export const TooltipTableRow = ({
 
   return (
     <tr className={className} style={{ maxHeight }}>
-      <ColorStripCell color={color} backgroundColor={backgroundColor} />
+      <ColorStripCell hide={hideColor} color={color} backgroundColor={backgroundColor} />
       {[1].map((_, i) => (
         <TooltipTableCell key={i}>TODO</TooltipTableCell>
       ))}
@@ -62,9 +63,12 @@ export const TooltipTableRow = ({
 type ColorStripCellProps = {
   color?: string;
   backgroundColor: string;
+  hide?: boolean;
 };
 
-function ColorStripCell({ color, backgroundColor }: ColorStripCellProps) {
+function ColorStripCell({ color, backgroundColor, hide }: ColorStripCellProps): JSX.Element | null {
+  if (hide) return null;
+
   return (
     <TooltipTableCell
       className={classNames('echTooltip__colorCell', {

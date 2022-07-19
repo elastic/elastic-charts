@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -27,7 +28,7 @@ export const Example = () => {
     return (
       <>
         <TooltipHeader header={header} />
-        <TooltipTable>
+        <TooltipTable hideColor={boolean('hide color', false)}>
           <TooltipTableHeader>
             <TooltipTableRow>
               <TooltipTableCell>X Value</TooltipTableCell>
