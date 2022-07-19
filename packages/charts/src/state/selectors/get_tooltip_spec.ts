@@ -27,7 +27,6 @@ export const getTooltipSpecSelector = createCustomCachedSelector(
       return mergePartial(DEFAULT_TOOLTIP_SPEC, legacyProps);
     }
 
-    // TODO fix typescript non-string undefined for arrays
     const [tooltipSpec] = getSpecsFromStore<TooltipSpec>(specs, ChartType.Global, SpecType.Tooltip);
     return tooltipSpec ?? DEFAULT_TOOLTIP_SPEC;
   },
