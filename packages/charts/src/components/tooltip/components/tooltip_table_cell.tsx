@@ -11,6 +11,7 @@ import React, { CSSProperties, PropsWithChildren } from 'react';
 
 type TooltipTableCellProps = PropsWithChildren<{
   maxHeight?: CSSProperties['maxHeight'];
+  tagName?: 'td' | 'th';
   textAlign?: CSSProperties['textAlign'];
   padding?: CSSProperties['padding'];
   className?: string;
@@ -20,11 +21,19 @@ type TooltipTableCellProps = PropsWithChildren<{
 export const TooltipTableCell = ({
   className,
   maxHeight,
+  tagName = 'td',
   textAlign = 'right',
   padding,
   ...props
 }: TooltipTableCellProps) => {
   const classes = classNames('echTooltip__tableCell', className);
+  if (tagName === 'th') {
+    return (
+      <th className={classes} style={{ maxHeight, textAlign, padding }}>
+        {props.children}
+      </th>
+    );
+  }
   return (
     <td className={classes} style={{ maxHeight, textAlign, padding }}>
       {props.children}
