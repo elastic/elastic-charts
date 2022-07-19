@@ -9,7 +9,7 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { TooltipWrapper, CustomTooltip, TooltipHeader, TooltipTable, TooltipTableColumn } from '@elastic/charts';
+import { CustomTooltip, TooltipHeader, TooltipTable, TooltipTableColumn } from '@elastic/charts';
 import { isDefined } from '@elastic/charts/src/utils/common';
 
 import { tableSimple, simple, long } from './data';
@@ -54,10 +54,10 @@ export const Example = () => {
   ];
   const MyTooltip: CustomTooltip = ({ header, values }) => {
     return (
-      <TooltipWrapper>
+      <>
         <TooltipHeader header={header} />
         <TooltipTable columns={columns} items={values} />
-      </TooltipWrapper>
+      </>
     );
   };
 
@@ -66,5 +66,5 @@ export const Example = () => {
 
 Example.parameters = {
   markdown: `Tooltips may be composed with internal components to build out completely custom tooltips while maintaining a consistent style.\
-  This example shows how you can build the default list tooltip by defining the \`columns\` on the \`TooltipTable\` component inside the \`TooltipWrapper\`.`,
+  This example shows how you can build the default list tooltip by defining the \`columns\` on the \`TooltipTable\` component inside a \`CustomTooltip\`.`,
 };

@@ -16,7 +16,7 @@ type TooltipWrapperProps = PropsWithChildren<{
   className?: string;
 }>;
 
-/** @public */
+/** @internal */
 export const TooltipWrapper = ({ children, className }: TooltipWrapperProps) => {
   const { dir } = useTooltipContext();
 

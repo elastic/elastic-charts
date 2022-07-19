@@ -2860,11 +2860,6 @@ export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIden
 // @public
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
-// Warning: (ae-forgotten-export) The symbol "TooltipWrapperProps" needs to be exported by the entry point index.d.ts
-//
-// @public (undocumented)
-export const TooltipWrapper: ({ children, className }: TooltipWrapperProps) => JSX.Element;
-
 // @public (undocumented)
 export type TreeLevel = number;
 

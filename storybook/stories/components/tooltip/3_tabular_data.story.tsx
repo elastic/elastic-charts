@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { TooltipWrapper, CustomTooltip, TooltipTable } from '@elastic/charts';
+import { CustomTooltip, TooltipTable } from '@elastic/charts';
 
 import { tableMultipleX } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
@@ -21,9 +21,9 @@ export const Example = () => {
   ];
   const MyTooltip: CustomTooltip = ({ values }) => {
     return (
-      <TooltipWrapper>
+      <>
         <TooltipTable items={values} columns={columns} />
-      </TooltipWrapper>
+      </>
     );
   };
   return <TooltipShowcase info={tableMultipleX} customTooltip={MyTooltip} />;

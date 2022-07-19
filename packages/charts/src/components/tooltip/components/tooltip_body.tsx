@@ -32,7 +32,11 @@ export const TooltipBody = ({ info, visible, settings, headerFormatter, columns 
 
   if (typeof settings !== 'string' && settings?.customTooltip) {
     const CustomTooltip = settings.customTooltip;
-    return <CustomTooltip {...info} headerFormatter={headerFormatter} backgroundColor={backgroundColor} dir={dir} />;
+    return (
+      <TooltipWrapper>
+        <CustomTooltip {...info} headerFormatter={headerFormatter} backgroundColor={backgroundColor} dir={dir} />
+      </TooltipWrapper>
+    );
   }
 
   return (

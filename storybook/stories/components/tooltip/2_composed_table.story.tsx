@@ -9,7 +9,6 @@
 import React from 'react';
 
 import {
-  TooltipWrapper,
   CustomTooltip,
   TooltipHeader,
   TooltipTable,
@@ -26,7 +25,7 @@ import { TooltipShowcase } from './tooltip_showcase';
 export const Example = () => {
   const MyTooltip: CustomTooltip = ({ values, header }) => {
     return (
-      <TooltipWrapper>
+      <>
         <TooltipHeader header={header} />
         <TooltipTable>
           <TooltipTableHeader>
@@ -53,7 +52,7 @@ export const Example = () => {
             </TooltipTableRow>
           </TooltipTableFooter>
         </TooltipTable>
-      </TooltipWrapper>
+      </>
     );
   };
   return <TooltipShowcase info={tableSimple} customTooltip={MyTooltip} />;
