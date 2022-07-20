@@ -21,8 +21,6 @@ type TooltipTableHeaderProps = PropsOrChildrenWithProps<
   {},
   {
     maxHeight?: CSSProperties['maxHeight'];
-    textAlign?: CSSProperties['textAlign'];
-    padding?: CSSProperties['padding'];
   }
 >;
 
@@ -42,11 +40,11 @@ export const TooltipTableHeader = ({ maxHeight, ...props }: TooltipTableHeaderPr
   return (
     <thead className={className} style={{ maxHeight }}>
       <TooltipTableRow>
-        {props.columns.map(({ header, textAlign, id }) => {
+        {props.columns.map(({ header, style, id }) => {
           if (!header) return null;
           const headerStr = typeof header === 'string' ? header : header();
           return (
-            <TooltipTableCell textAlign={textAlign ?? props.textAlign} key={id ?? headerStr}>
+            <TooltipTableCell style={style} key={id ?? headerStr}>
               {headerStr}
             </TooltipTableCell>
           );

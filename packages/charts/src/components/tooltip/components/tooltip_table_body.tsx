@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { TooltipValue } from '../../../specs';
 import { Logger } from '../../../utils/logger';
@@ -22,21 +22,14 @@ type TooltipTableBodyProps = PropsOrChildrenWithProps<
     columns: TooltipTableColumn[];
   },
   {},
-  {
-    maxHeight?: CSSProperties['maxHeight'];
-    textAlign?: CSSProperties['textAlign'];
-  }
+  {}
 >;
 
 /** @public */
-export const TooltipTableBody = ({ maxHeight, ...props }: TooltipTableBodyProps) => {
+export const TooltipTableBody = (props: TooltipTableBodyProps) => {
   const className = classNames('echTooltip__tableBody');
   if ('children' in props) {
-    return (
-      <tbody className={className} style={{ maxHeight }}>
-        {props.children}
-      </tbody>
-    );
+    return <tbody className={className}>{props.children}</tbody>;
   }
 
   return (
@@ -46,9 +39,9 @@ export const TooltipTableBody = ({ maxHeight, ...props }: TooltipTableBodyProps)
         if (!isVisible) return null;
         return (
           <TooltipTableRow key={i} color={color} isHighlighted={isHighlighted}>
-            {props.columns.map(({ id, textAlign, ...rest }, j) => {
+            {props.columns.map(({ id, style, ...rest }, j) => {
               return (
-                <TooltipTableCell textAlign={textAlign ?? props.textAlign} key={id ?? `${i}:${j}`}>
+                <TooltipTableCell style={style} key={id ?? `${i}:${j}`}>
                   {'renderCell' in rest ? rest.renderCell(item) : getValueFromItem(item, rest.accessor)}
                 </TooltipTableCell>
               );

@@ -111,7 +111,9 @@ export const TooltipComponent = ({
     {
       id: 'label',
       renderCell: ({ label }) => <span className="echTooltip__label">{label}</span>,
-      textAlign: 'left',
+      style: {
+        textAlign: 'left',
+      },
     },
     {
       id: 'value',
@@ -120,10 +122,15 @@ export const TooltipComponent = ({
           {formattedValue}
         </span>
       ),
-      textAlign: 'right',
+      style: {
+        textAlign: 'right',
+      },
     },
     {
       id: 'markValue',
+      style: {
+        paddingLeft: 0,
+      },
       hidden: (items) => items.every(({ markValue }) => !markValue),
       renderCell: ({ markValue, formattedMarkValue }) =>
         isDefined(markValue) ? <span className="echTooltip__markValue">&nbsp;({formattedMarkValue})</span> : null,

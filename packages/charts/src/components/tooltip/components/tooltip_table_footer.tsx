@@ -17,7 +17,6 @@ import { TooltipTableRow } from './tooltip_table_row';
 type TooltipTableFooterProps = PropsOrChildrenWithProps<
   {
     columns: TooltipTableColumn[];
-    textAlign?: CSSProperties['textAlign'];
   },
   {},
   {
@@ -39,13 +38,13 @@ export const TooltipTableFooter = ({ maxHeight, ...props }: TooltipTableFooterPr
   if (!props.columns.some((c) => c.footer)) return null;
 
   return (
-    <tfoot>
+    <tfoot className={className}>
       <TooltipTableRow maxHeight={maxHeight}>
-        {props.columns.map(({ footer, textAlign, id, className }) => {
+        {props.columns.map(({ footer, style, id, className }) => {
           if (!footer) return null;
           const footerStr = typeof footer === 'string' ? footer : footer();
           return (
-            <TooltipTableCell className={className} textAlign={textAlign ?? props.textAlign} key={id ?? footerStr}>
+            <TooltipTableCell className={className} style={style} key={id ?? footerStr}>
               {footerStr}
             </TooltipTableCell>
           );

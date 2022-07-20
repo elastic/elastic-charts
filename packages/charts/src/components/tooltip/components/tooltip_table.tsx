@@ -14,6 +14,7 @@ import { isNil } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableBody } from './tooltip_table_body';
+import { TooltipCellStyle } from './tooltip_table_cell';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
 
@@ -24,10 +25,10 @@ import { TooltipTableHeader } from './tooltip_table_header';
 export type TooltipTableColumn = {
   id?: string;
   className?: string;
-  textAlign?: CSSProperties['textAlign'];
   header?: string | (() => string);
   footer?: string | (() => string);
   hidden?: boolean | ((items: TooltipValue[]) => boolean);
+  style?: TooltipCellStyle;
 } & (
   | {
       accessor: string | number;

@@ -4,6 +4,8 @@
 
 ```ts
 
+/// <reference types="react" />
+
 import { $Keys } from 'utility-types';
 import { $Values } from 'utility-types';
 import { ComponentProps } from 'react';
@@ -2720,6 +2722,9 @@ export const Tooltip: (props: SFProps<TooltipSpec, keyof typeof tooltipBuildProp
 // @public
 export const tooltipBuildProps: BuildProps<TooltipSpec, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
 
+// @public (undocumented)
+export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
+
 // Warning: (ae-forgotten-export) The symbol "TooltipDividerProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -2795,21 +2800,21 @@ export const TooltipTable: ({ maxHeight, ...props }: TooltipTableProps) => JSX.E
 // Warning: (ae-forgotten-export) The symbol "TooltipTableBodyProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableBody: ({ maxHeight, ...props }: TooltipTableBodyProps) => JSX.Element;
+export const TooltipTableBody: (props: TooltipTableBodyProps) => JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableCellProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableCell: ({ className, maxHeight, textAlign, padding, ...props }: TooltipTableCellProps) => JSX.Element;
+export const TooltipTableCell: ({ className, tagName, ...props }: TooltipTableCellProps) => JSX.Element;
 
 // @alpha
 export type TooltipTableColumn = {
     id?: string;
     className?: string;
-    textAlign?: CSSProperties['textAlign'];
     header?: string | (() => string);
     footer?: string | (() => string);
     hidden?: boolean | ((items: TooltipValue[]) => boolean);
+    style?: TooltipCellStyle;
 } & ({
     accessor: string | number;
 } | {

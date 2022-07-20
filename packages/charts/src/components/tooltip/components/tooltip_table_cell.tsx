@@ -9,33 +9,34 @@
 import classNames from 'classnames';
 import React, { CSSProperties, PropsWithChildren } from 'react';
 
+/** @public */
+export type TooltipCellStyle = Pick<
+  CSSProperties,
+  'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
+>;
+
 type TooltipTableCellProps = PropsWithChildren<{
-  maxHeight?: CSSProperties['maxHeight'];
   tagName?: 'td' | 'th';
-  textAlign?: CSSProperties['textAlign'];
-  padding?: CSSProperties['padding'];
   className?: string;
+  style?: TooltipCellStyle;
 }>;
 
 /** @public */
-export const TooltipTableCell = ({
-  className,
-  maxHeight,
-  tagName = 'td',
-  textAlign = 'right',
-  padding,
-  ...props
-}: TooltipTableCellProps) => {
+export const TooltipTableCell = ({ className, tagName = 'td', ...props }: TooltipTableCellProps) => {
   const classes = classNames('echTooltip__tableCell', className);
+  const style: CSSProperties = {
+    ...props.style,
+    textAlign: 'right',
+  };
   if (tagName === 'th') {
     return (
-      <th className={classes} style={{ maxHeight, textAlign, padding }}>
+      <th className={classes} style={style}>
         {props.children}
       </th>
     );
   }
   return (
-    <td className={classes} style={{ maxHeight, textAlign, padding }}>
+    <td className={classes} style={style}>
       {props.children}
     </td>
   );
