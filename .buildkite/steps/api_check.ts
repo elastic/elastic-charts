@@ -24,6 +24,7 @@ export const apiCheckStep = createStep<CustomCommandStep>((ctx) => {
 function isSkippable(changes: ChangeContext): boolean | string {
   const hasTSChanges = changes.files.has('**/*.ts?(x)');
   const hasApiConfigChanges = changes.files.has([
+    'yarn.lock',
     'package.json',
     'packages/charts/package.json',
     'tsconfig.json',
