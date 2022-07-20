@@ -6,6 +6,14 @@
  * Side Public License, v 1.
  */
 
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
 import React, { createRef, CSSProperties, KeyboardEvent, MouseEvent, RefObject, WheelEventHandler } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -246,11 +254,18 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private navForward() {
     if (!this.canNavigateForward()) return;
+
+    if (Number.isNaN(this.navQueue[this.navIndex].index) && this.navIndex !== this.navQueue.length - 1) {
+      this.navQueue.splice(this.navIndex, 1);
+    }
     this.focusOnNavElement(this.navQueue[++this.navIndex]);
   }
 
   private navBackward() {
     if (!this.canNavigateBackward()) return;
+    if (Number.isNaN(this.navQueue[this.navIndex].index) && this.navIndex !== this.navQueue.length - 1) {
+      this.navQueue.splice(this.navIndex, 1);
+    }
     this.focusOnNavElement(this.navQueue[--this.navIndex]);
   }
 
@@ -262,14 +277,32 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   }
 
+  /**
+   * Add a click or zoom/pan event to the navigation
+   * @param element
+   * @private
+   */
   private addToNav(element: NavRect) {
     const current = this.navQueue[this.navIndex];
-    if (Number.isNaN(current.index)) {
-      // if current is a pan/zoom then replace it
-      this.navQueue.splice(this.navIndex, Infinity, element);
-    } else if (current.index !== element.index) {
-      // if current is a click or we padding, add the padding element
-      this.navQueue.splice(++this.navIndex, Infinity, element);
+    const currentType = Number.isNaN(current.index) ? 'zoompan' : 'click';
+    const toAddType = Number.isNaN(element.index) ? 'zoompan' : 'click';
+    // element is click
+    if (toAddType === 'click') {
+      if (currentType === 'zoompan') {
+        this.navQueue.splice(this.navIndex, Infinity, element); // replace zoom with the click and
+      } else {
+        this.navQueue.splice(++this.navIndex, Infinity, element); // replace click with current
+      }
+    } else {
+      if (currentType === 'zoompan') {
+        this.navQueue.splice(this.navIndex, 1, element);
+      } else {
+        if (Number.isNaN(this.navQueue[this.navIndex + 1]?.index)) {
+          this.navQueue.splice(this.navIndex, 1, element);
+        } else {
+          this.navQueue.splice(++this.navIndex, 0, element);
+        }
+      }
     }
   }
 
@@ -998,6 +1031,21 @@ class FlameComponent extends React.Component<FlameProps> {
           }}
           getChartContainerRef={this.props.containerRef}
         />
+        <div
+          style={{
+            position: 'absolute',
+            transform: `translate(20px, 20px)`,
+            background: 'beige',
+            opacity: 0.8,
+          }}
+        >
+          History
+          <ul>
+            {this.navQueue.map((d, i) => {
+              return <li>{`${Number.isNaN(d.index) ? 'ZOOM/PAN' : d.index}${this.navIndex === i ? '⬅' : ''}`}</li>;
+            })}
+          </ul>
+        </div>
       </>
     );
   };
