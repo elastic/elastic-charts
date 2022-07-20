@@ -106,7 +106,7 @@ export const Example = () => {
       />
       <AreaSeries
         id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
-        xScaleType={ScaleType.Time}
+        xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
