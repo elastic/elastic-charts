@@ -21,6 +21,7 @@ void (async () => {
     'tsconfig.lint.json',
     'tsconfig.json',
     'package.json',
+    'yarn.lock',
   ]);
 
   await yarnInstall();
