@@ -1048,7 +1048,7 @@ class FlameComponent extends React.Component<FlameProps> {
             <ul>
               {this.navQueue.map((d, i) => {
                 return (
-                  <li key={d.index}>{`${FlameComponent.isZoomPanNav(d) ? 'ZOOM/PAN' : d.index}${
+                  <li key={`${d.index}-${i}`}>{`${FlameComponent.isZoomPanNav(d) ? 'ZOOM/PAN' : d.index}${
                     this.navIndex === i ? '⬅' : ''
                   }`}</li>
                 );
