@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button } from '@storybook/addon-knobs';
+import { boolean, button, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Flame, Settings, PartialTheme, FlameGlobalControl, FlameNodeControl } from '@elastic/charts';
@@ -71,6 +71,16 @@ export const Example = () => {
     focusOnNodeControl(Math.floor(20 * Math.random()));
   });
   const debug = boolean('Debug history', true);
+  const navStrategy = select(
+    'Nav Strategy',
+    {
+      'add clicks everywhere': 0,
+      'click clear tip of history': 1,
+      'zoom stored only at the tip': 2,
+      'zoom stored when back/forth are clicked': 3,
+    },
+    3,
+  );
 
   return (
     <Chart>
@@ -85,6 +95,7 @@ export const Example = () => {
           resetFocus: (control) => (resetFocusControl = control),
           focusOnNode: (control) => (focusOnNodeControl = control),
         }}
+        navigationStrategy={navStrategy}
       />
     </Chart>
   );

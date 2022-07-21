@@ -33,6 +33,13 @@ import { getSpecsFromStore } from '../../state/utils';
 import { clamp, isFiniteNumber } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
+import {
+  NavigationStrategy,
+  ClickStrategy1,
+  ClickStrategy2,
+  ClickZoomStrategy1,
+  ClickZoomStrategy2,
+} from './navigation';
 import { roundUpSize } from './render/common';
 import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
@@ -77,7 +84,8 @@ const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i
   y1: position1[i * 2 + 1] + unitRowPitch(position1),
 });
 
-interface FocusRect {
+/** @internal */
+export interface FocusRect {
   x0: number;
   x1: number;
   y0: number;
@@ -149,6 +157,7 @@ interface StateProps {
   onElementClick: NonNullable<SettingsSpec['onElementClick']>;
   onElementOut: NonNullable<SettingsSpec['onElementOut']>;
   onRenderChange: NonNullable<SettingsSpec['onRenderChange']>;
+  navigationStrategy: number;
 }
 
 interface DispatchProps {
@@ -162,7 +171,8 @@ interface OwnProps {
 
 type FlameProps = StateProps & DispatchProps & OwnProps;
 
-type NavRect = FocusRect & { index: number };
+/** @internal */
+export type NavRect = FocusRect & { index: number };
 
 class FlameComponent extends React.Component<FlameProps> {
   static displayName = 'Flame';
@@ -211,8 +221,8 @@ class FlameComponent extends React.Component<FlameProps> {
   private wobbleIndex = NaN;
 
   // navigation
-  private navIndex = 0;
-  private navQueue: NavRect[] = [];
+  private navigator: NavigationStrategy;
+  private navigationStrategy: number;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -239,7 +249,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentFocus = { ...this.targetFocus };
 
     // Initialize nav queue with the root element
-    this.navQueue.push({ ...this.targetFocus, index: 0 });
+    this.navigator = this.getNavigationStrategy();
+    this.navigationStrategy = this.props.navigationStrategy;
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
@@ -250,29 +261,36 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentColor = columns.color;
   }
 
-  private canNavigateForward = () => this.navIndex < this.navQueue.length - 1;
-  private canNavigateBackward = () => this.navQueue.length > 0 && this.navIndex > 0;
+  private getNavigationStrategy(): NavigationStrategy {
+    const root = { ...this.getFocusOnRoot(), index: 0 };
+    switch (this.props.navigationStrategy) {
+      case 1:
+        return new ClickStrategy2(root);
+      case 2:
+        return new ClickZoomStrategy1(root);
+      case 3:
+        return new ClickZoomStrategy2(root);
+      default:
+      case 0:
+        return new ClickStrategy1(root);
+    }
+  }
+
+  private canNavigateForward = () => this.navigator.canNavForward();
+  private canNavigateBackward = () => this.navigator.canNavBackward();
 
   private navForward() {
-    if (!this.canNavigateForward()) return;
-
-    if (FlameComponent.isZoomPanNav(this.navQueue[this.navIndex]) && this.navIndex !== this.navQueue.length - 1) {
-      this.navQueue.splice(this.navIndex, 1);
-      this.focusOnNavElement(this.navQueue[this.navIndex]);
-    } else {
-      this.focusOnNavElement(this.navQueue[++this.navIndex]);
-    }
+    this.focusOnNavElement(this.navigator.navForward());
   }
 
   private navBackward() {
-    if (!this.canNavigateBackward()) return;
-    if (FlameComponent.isZoomPanNav(this.navQueue[this.navIndex]) && this.navIndex !== this.navQueue.length - 1) {
-      this.navQueue.splice(this.navIndex, 1);
-    }
-    this.focusOnNavElement(this.navQueue[--this.navIndex]);
+    this.focusOnNavElement(this.navigator.navBackward());
   }
 
-  private focusOnNavElement(element: NavRect) {
+  private focusOnNavElement(element?: NavRect) {
+    if (!element) {
+      return;
+    }
     if (isFiniteNumber(element.index)) {
       this.focusOnNode(element.index);
     } else {
@@ -289,29 +307,11 @@ class FlameComponent extends React.Component<FlameProps> {
    * @private
    */
   private addToNav(next: NavRect) {
-    const current = this.navQueue[this.navIndex];
-    // element is zoom/pan event
-    if (FlameComponent.isZoomPanNav(next)) {
-      if (FlameComponent.isZoomPanNav(current)) {
-        this.navQueue.splice(this.navIndex, 1, next); // replace existing zoom event
-      } else {
-        this.navQueue.splice(++this.navIndex, 0, next); // add the zoom event after current stack element
-      }
-    } else {
-      // element is click event
-      if (FlameComponent.isZoomPanNav(current)) {
-        this.navQueue.splice(this.navIndex, Infinity, next); // replace current zoom with the click event and clear the stack above it
-      } else {
-        if (current.index !== next.index) {
-          this.navQueue.splice(++this.navIndex, Infinity, next); // add click and clear the stack above it
-        }
-      }
-    }
+    this.navigator.add(next);
   }
 
   private resetNav() {
-    this.navIndex = 0;
-    this.navQueue.splice(this.navIndex, Infinity, { ...this.getFocusOnRoot(), index: 0 });
+    this.navigator.reset();
   }
 
   private bindControls() {
@@ -409,6 +409,11 @@ class FlameComponent extends React.Component<FlameProps> {
     if (!this.ctx) this.tryCanvasContext();
     this.bindControls();
     this.ensureTextureAndDraw();
+
+    if (this.navigationStrategy !== this.props.navigationStrategy) {
+      this.navigator = this.getNavigationStrategy();
+      this.navigationStrategy = this.props.navigationStrategy;
+    }
     // eg. due to chartDimensions (parentDimensions) change
     // this.props.onChartRendered() // creates and infinite update loop
   };
@@ -1046,10 +1051,10 @@ class FlameComponent extends React.Component<FlameProps> {
           >
             history:
             <ul>
-              {this.navQueue.map((d, i) => {
+              {this.navigator.queue().map((d, i) => {
                 return (
                   <li key={`${d.index}-${i}`}>{`${FlameComponent.isZoomPanNav(d) ? 'ZOOM/PAN' : d.index}${
-                    this.navIndex === i ? '⬅' : ''
+                    this.navigator.index() === i ? '⬅' : ''
                   }`}</li>
                 );
               })}
@@ -1229,6 +1234,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const settingsSpec = getSettingsSpecSelector(state);
   return {
     debugHistory: settingsSpec.debug,
+    navigationStrategy: flameSpec?.navigationStrategy,
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
     controlProviderCallback: flameSpec?.controlProviderCallback ?? {},
     animationDuration: flameSpec?.animation.duration ?? 0,
