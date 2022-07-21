@@ -26,11 +26,29 @@ export type TooltipCellStyle = Pick<
  * @alpha
  */
 export type TooltipTableColumnBase<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
+  /**
+   * Identifier for column to be used in callbacks if needed
+   */
   id?: string;
+  /**
+   * ClassName to be applied to table cells within column (i.e. `td` or `th`)
+   */
   className?: string;
-  header?: string | (() => string);
-  footer?: string | (() => string);
+  /**
+   * Table column header
+   */
+  header?: string | ((items: TooltipValue<D, SI>[]) => string);
+  /**
+   * Table column footer
+   */
+  footer?: string | ((items: TooltipValue<D, SI>[]) => string);
+  /**
+   * Boolean to hide entire column from table
+   */
   hidden?: boolean | ((items: TooltipValue<D, SI>[]) => boolean);
+  /**
+   * Limited styles to apply to table cells within column (i.e. `td` or `th`)
+   */
   style?: TooltipCellStyle;
 };
 
@@ -41,7 +59,10 @@ export type TooltipTableColumnBase<D extends BaseDatum = Datum, SI extends Serie
 export interface TooltipTableColumnCustom<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends TooltipTableColumnBase<D, SI> {
   type: 'custom';
-  renderCell: (item: TooltipValue<D, SI>) => ReactNode;
+  /**
+   * Renders column cell element inside a `td` element
+   */
+  cell: (item: TooltipValue<D, SI>) => ReactNode;
 }
 
 /**
@@ -62,7 +83,10 @@ export interface TooltipTableColumnColor<D extends BaseDatum = Datum, SI extends
 export interface TooltipTableColumnNumber<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends TooltipTableColumnBase<D, SI> {
   type: 'number';
-  renderCell: (item: TooltipValue<D, SI>) => string | number;
+  /**
+   * Renders column cell element inside a `td` element
+   */
+  cell: (item: TooltipValue<D, SI>) => string | number;
 }
 
 /**
@@ -72,7 +96,10 @@ export interface TooltipTableColumnNumber<D extends BaseDatum = Datum, SI extend
 export interface TooltipTableColumnText<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends TooltipTableColumnBase<D, SI> {
   type: 'text';
-  renderCell: (item: TooltipValue<D, SI>) => string;
+  /**
+   * Renders column cell element inside a `td` element
+   */
+  cell: (item: TooltipValue<D, SI>) => string;
 }
 
 /**

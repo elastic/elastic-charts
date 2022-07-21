@@ -80,13 +80,9 @@ function renderCellContent<D extends BaseDatum = Datum, SI extends SeriesIdentif
     return <TooltipTableColorCell color={item.color} key={key} />;
   }
 
-  if ('renderCell' in column) {
-    return (
-      <TooltipTableCell style={getCellStyles(column)} key={key}>
-        {column.renderCell(item)}
-      </TooltipTableCell>
-    );
-  }
-
-  return null;
+  return (
+    <TooltipTableCell style={getCellStyles(column)} key={key}>
+      {column.cell(item)}
+    </TooltipTableCell>
+  );
 }

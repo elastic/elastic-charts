@@ -155,13 +155,13 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
 
   /**
    * Custom header for tooltip. Ignored when used with `customTooltip`.
-   * > Note: This is not the table headers but spans the entire tooltip.
+   * \> Note: This is not the table headers but spans the entire tooltip.
    */
   header?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
 
   /**
    * Custom footer for tooltip. Ignored when used with `customTooltip`.
-   * > Note: This is not the table footers but spans the entire tooltip.
+   * \> Note: This is not the table footers but spans the entire tooltip.
    */
   footer?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
 }

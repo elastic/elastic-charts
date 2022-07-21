@@ -18,9 +18,9 @@ export const Example = () => {
   const MyTooltip: CustomTooltip<any, XYChartSeriesIdentifier> = ({ values }) => {
     const showColor = boolean('show color', true);
     const columns: TooltipTableColumn<any, XYChartSeriesIdentifier>[] = [
-      { type: 'custom', header: 'X Value', renderCell: ({ datum }) => datum.x },
-      { type: 'custom', header: 'Y Value', renderCell: ({ datum }) => datum.y },
-      { type: 'custom', header: 'Z Value', renderCell: ({ datum }) => datum.z },
+      { type: 'custom', header: 'X Value', cell: ({ datum }) => datum.x },
+      { type: 'custom', header: 'Y Value', cell: ({ datum }) => datum.y },
+      { type: 'custom', header: 'Z Value', cell: ({ datum }) => datum.z },
     ];
 
     if (showColor) {

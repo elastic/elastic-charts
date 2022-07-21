@@ -57,9 +57,9 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
 
   return (
     <table className={classes} style={{ maxHeight }}>
-      <TooltipTableHeader columns={columns} />
+      <TooltipTableHeader columns={columns} items={props.items} />
       <TooltipTableBody columns={columns} items={props.items} />
-      <TooltipTableFooter columns={columns} />
+      <TooltipTableFooter columns={columns} items={props.items} />
     </table>
   );
 };

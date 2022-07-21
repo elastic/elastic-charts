@@ -34,7 +34,7 @@ export const Example = () => {
     {
       id: 'label',
       type: 'custom',
-      renderCell: ({ label }) => <span className="echTooltip__label">{label}</span>,
+      cell: ({ label }) => <span className="echTooltip__label">{label}</span>,
       style: {
         textAlign: 'left',
       },
@@ -42,7 +42,7 @@ export const Example = () => {
     {
       id: 'value',
       type: 'custom',
-      renderCell: ({ formattedValue }) => (
+      cell: ({ formattedValue }) => (
         <span className="echTooltip__value" dir="ltr">
           {formattedValue}
         </span>
@@ -55,7 +55,7 @@ export const Example = () => {
       id: 'markValue',
       type: 'custom',
       hidden: (items) => items.every(({ markValue }) => !markValue),
-      renderCell: ({ markValue, formattedMarkValue }) =>
+      cell: ({ markValue, formattedMarkValue }) =>
         isDefined(markValue) ? <span className="echTooltip__markValue">&nbsp;({formattedMarkValue})</span> : null,
     },
   ];

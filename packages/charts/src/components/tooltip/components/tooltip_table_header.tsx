@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum } from '../../../specs';
+import { BaseDatum, TooltipValue } from '../../../specs';
 import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableCell } from './tooltip_table_cell';
@@ -24,6 +24,7 @@ type TooltipTableHeaderProps<
 > = PropsOrChildrenWithProps<
   {
     columns: TooltipTableColumn<D, SI>[];
+    items: TooltipValue<D, SI>[];
   },
   {},
   {
@@ -57,7 +58,7 @@ export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends Serie
           if (type === 'color') return <TooltipTableColorCell className={cn} style={style} key={key} />;
           return (
             <TooltipTableCell className={cn} style={style} key={key}>
-              {header ? (typeof header === 'string' ? header : header()) : undefined}
+              {header ? (typeof header === 'string' ? header : header(props.items)) : undefined}
             </TooltipTableCell>
           );
         })}

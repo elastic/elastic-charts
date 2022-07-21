@@ -2717,10 +2717,10 @@ export interface TimeScale {
 export function toEntries<T extends Record<string, string>, S>(array: T[], accessor: keyof T, staticValue: S): Record<string, S>;
 
 // @public
-export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>) => null;
+export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "footer" | "header" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>) => null;
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "footer" | "header" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
 
 // @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
@@ -2769,6 +2769,8 @@ export type TooltipSettings = TooltipType | TooltipProps;
 // @public
 export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends Spec, TooltipPortalSettings<'chart'> {
     customTooltip?: CustomTooltip<D, SI>;
+    footer?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+    header?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
     headerFormatter?: TooltipValueFormatter<D, SI>;
     showNullValues: boolean;
     snap: boolean;
@@ -2824,8 +2826,8 @@ export type TooltipTableColumn<D extends BaseDatum = Datum, SI extends SeriesIde
 export type TooltipTableColumnBase<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
     id?: string;
     className?: string;
-    header?: string | (() => string);
-    footer?: string | (() => string);
+    header?: string | ((items: TooltipValue<D, SI>[]) => string);
+    footer?: string | ((items: TooltipValue<D, SI>[]) => string);
     hidden?: boolean | ((items: TooltipValue<D, SI>[]) => boolean);
     style?: TooltipCellStyle;
 };
@@ -2842,24 +2844,21 @@ export interface TooltipTableColumnColor<D extends BaseDatum = Datum, SI extends
 
 // @alpha
 export interface TooltipTableColumnCustom<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends TooltipTableColumnBase<D, SI> {
-    // (undocumented)
-    renderCell: (item: TooltipValue<D, SI>) => ReactNode;
+    cell: (item: TooltipValue<D, SI>) => ReactNode;
     // (undocumented)
     type: 'custom';
 }
 
 // @alpha
 export interface TooltipTableColumnNumber<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends TooltipTableColumnBase<D, SI> {
-    // (undocumented)
-    renderCell: (item: TooltipValue<D, SI>) => string | number;
+    cell: (item: TooltipValue<D, SI>) => string | number;
     // (undocumented)
     type: 'number';
 }
 
 // @alpha
 export interface TooltipTableColumnText<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends TooltipTableColumnBase<D, SI> {
-    // (undocumented)
-    renderCell: (item: TooltipValue<D, SI>) => string;
+    cell: (item: TooltipValue<D, SI>) => string;
     // (undocumented)
     type: 'text';
 }
