@@ -9,16 +9,18 @@
 import React from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
-import { TooltipValueFormatter, TooltipProps, BaseDatum } from '../../../specs';
+import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps } from '../../../specs';
 import { Datum } from '../../../utils/common';
 import { TooltipInfo } from '../types';
+import { TooltipFooter } from './tooltip_footer';
 import { TooltipHeader } from './tooltip_header';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTable } from './tooltip_table';
 import { TooltipWrapper } from './tooltip_wrapper';
 import { TooltipTableColumn } from './types';
 
-interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
+interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
+  extends Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer'> {
   visible: boolean;
   info?: TooltipInfo<D, SI>;
   columns: TooltipTableColumn<D, SI>[];
@@ -33,6 +35,8 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   settings,
   headerFormatter,
   columns,
+  header,
+  footer,
 }: TooltipBodyProps<D, SI>) => {
   const { backgroundColor, dir } = useTooltipContext();
   if (!info || !visible) {
@@ -50,8 +54,13 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
 
   return (
     <TooltipWrapper>
-      <TooltipHeader header={info.header} formatter={headerFormatter} />
+      {header ? (
+        <TooltipHeader>{typeof header === 'string' ? header : header(info.values)}</TooltipHeader>
+      ) : (
+        <TooltipHeader header={info.header} formatter={headerFormatter} />
+      )}
       <TooltipTable columns={columns} items={info.values} />
+      {footer && <TooltipFooter>{typeof footer === 'string' ? footer : footer(info.values)}</TooltipFooter>}
     </TooltipWrapper>
   );
 };

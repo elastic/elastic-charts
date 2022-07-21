@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { ReactNode } from 'react';
+
 import { BaseDatum, SettingsSpec, Spec } from '.';
 import { ChartType } from '../chart_types';
 import { Color } from '../common/colors';
@@ -122,7 +124,7 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
   snap: boolean;
 
   /**
-   * A {@link TooltipValueFormatter} to format the header value
+   * A {@link TooltipValueFormatter} to format the header value. Ignored when header is defined.
    */
   headerFormatter?: TooltipValueFormatter<D, SI>;
 
@@ -150,6 +152,18 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    * @defaultValue false
    */
   showNullValues: boolean;
+
+  /**
+   * Custom header for tooltip. Ignored when used with `customTooltip`.
+   * > Note: This is not the table headers but spans the entire tooltip.
+   */
+  header?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+
+  /**
+   * Custom footer for tooltip. Ignored when used with `customTooltip`.
+   * > Note: This is not the table footers but spans the entire tooltip.
+   */
+  footer?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
 }
 
 /**

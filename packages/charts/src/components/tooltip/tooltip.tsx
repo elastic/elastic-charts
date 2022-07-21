@@ -12,7 +12,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { Colors } from '../../common/colors';
 import { SeriesIdentifier } from '../../common/series_id';
-import { BaseDatum, SettingsSpec, TooltipProps, TooltipSpec, TooltipValueFormatter } from '../../specs';
+import { BaseDatum, SettingsSpec, TooltipProps, TooltipSpec } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
@@ -34,12 +34,12 @@ interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
 }
 
-interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
+interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
+  extends Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer'> {
   zIndex: number;
   visible: boolean;
   position: AnchorPosition | null;
   info?: TooltipInfo<D, SI>;
-  headerFormatter?: TooltipValueFormatter<D, SI>;
   settings?: TooltipProps<D, SI>;
   rotation: Rotation;
   chartId: string;
@@ -71,6 +71,8 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   chartId,
   onPointerMove,
   backgroundColor,
+  header,
+  footer,
 }: TooltipComponentProps<D, SI>) => {
   const chartRef = getChartContainerRef();
 
@@ -171,6 +173,8 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           headerFormatter={headerFormatter}
           settings={settings}
           visible={visible}
+          header={header}
+          footer={footer}
         />
       </TooltipProvider>
     </TooltipPortal>
@@ -219,6 +223,8 @@ const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 
           getSettingsSpecSelector(state),
           getInternalIsTooltipVisibleSelector(state).isExternal,
         ),
+        header: tooltip.header,
+        footer: tooltip.footer,
         rotation: getChartRotationSelector(state),
         chartId: state.chartId,
         backgroundColor: getChartThemeSelector(state).background.color,
