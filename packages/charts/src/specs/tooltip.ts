@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
-
 import { BaseDatum, SettingsSpec, Spec } from '.';
 import { ChartType } from '../chart_types';
 import { Color } from '../common/colors';
@@ -76,7 +74,9 @@ export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIden
  * A value formatter of a {@link TooltipValue}
  * @public
  */
-export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
+export type TooltipValueFormatter<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = (
+  data: TooltipValue<D, SI>,
+) => JSX.Element | string;
 
 /**
  * Either a {@link (TooltipProps:type)} or an {@link (TooltipProps:type)} configuration
@@ -106,7 +106,9 @@ export function getTooltipType(tooltip: TooltipSpec, settings: SettingsSpec, ext
  * Spec used to configure tooltip for chart
  * @public
  */
-export interface TooltipSpec extends Spec, TooltipPortalSettings<'chart'> {
+export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
+  extends Spec,
+    TooltipPortalSettings<'chart'> {
   /**
    * The {@link (TooltipType:type) | TooltipType} of the tooltip
    * @defaultValue vertical
@@ -122,7 +124,7 @@ export interface TooltipSpec extends Spec, TooltipPortalSettings<'chart'> {
   /**
    * A {@link TooltipValueFormatter} to format the header value
    */
-  headerFormatter?: TooltipValueFormatter;
+  headerFormatter?: TooltipValueFormatter<D, SI>;
 
   /**
    * Unit for event (i.e. `time`, `feet`, `count`, etc.).
@@ -135,7 +137,7 @@ export interface TooltipSpec extends Spec, TooltipPortalSettings<'chart'> {
   /**
    * Render custom tooltip given header and values
    */
-  customTooltip?: CustomTooltip;
+  customTooltip?: CustomTooltip<D, SI>;
 
   /**
    * Stick the tooltip to a specific position within the current cursor
@@ -193,9 +195,9 @@ export const DEFAULT_TOOLTIP_SPEC: TooltipSpec = {
  * Adds settings spec to chart specs
  * @public
  */
-export const Tooltip = function (
+export const Tooltip = function <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
   props: SFProps<
-    TooltipSpec,
+    TooltipSpec<D, SI>,
     keyof typeof tooltipBuildProps['overrides'],
     keyof typeof tooltipBuildProps['defaults'],
     keyof typeof tooltipBuildProps['optionals'],
@@ -203,7 +205,7 @@ export const Tooltip = function (
   >,
 ) {
   const { defaults, overrides } = tooltipBuildProps;
-  useSpecFactory<TooltipSpec>({ ...defaults, ...stripUndefined(props), ...overrides });
+  useSpecFactory<TooltipSpec<D, SI>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 
@@ -211,4 +213,10 @@ export const Tooltip = function (
  * This interface describe the properties of single value shown in the tooltip
  * @public
  */
-export type TooltipProps = ComponentProps<typeof Tooltip>;
+export type TooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = SFProps<
+  TooltipSpec<D, SI>,
+  keyof typeof tooltipBuildProps['overrides'],
+  keyof typeof tooltipBuildProps['defaults'],
+  keyof typeof tooltipBuildProps['optionals'],
+  keyof typeof tooltipBuildProps['requires']
+>;

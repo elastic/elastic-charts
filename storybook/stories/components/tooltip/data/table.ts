@@ -6,17 +6,18 @@
  * Side Public License, v 1.
  */
 
-export const tableSimple = {
+import { TooltipInfo, XYChartSeriesIdentifier } from '@elastic/charts';
+
+export const tableSimple: TooltipInfo<any, XYChartSeriesIdentifier> = {
   header: null,
   values: [
     {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bubbles}yAccessor{y}splitAccessors{g-c}',
         specId: 'bubbles',
+        xAccessor: 'x',
         yAccessor: 'y',
-        splitAccessors: {
-          '_constructor-name_': 'Map',
-        },
+        splitAccessors: new Map(),
         seriesKeys: ['c', 'y'],
       },
       valueAccessor: 'y1',
@@ -39,10 +40,9 @@ export const tableSimple = {
       seriesIdentifier: {
         key: 'groupId{__global__}spec{bubbles}yAccessor{y}splitAccessors{g-c}',
         specId: 'bubbles',
+        xAccessor: 'x',
         yAccessor: 'y',
-        splitAccessors: {
-          '_constructor-name_': 'Map',
-        },
+        splitAccessors: new Map(),
         seriesKeys: ['c', 'y'],
       },
       valueAccessor: 'y1',
@@ -64,7 +64,7 @@ export const tableSimple = {
   ],
 };
 
-export const tableMultipleX = {
+export const tableMultipleX: TooltipInfo<any, XYChartSeriesIdentifier> = {
   header: null,
   values: [
     {
@@ -73,7 +73,7 @@ export const tableMultipleX = {
         specId: 'bubbles',
         xAccessor: 'x',
         yAccessor: 'y',
-        splitAccessors: { '_constructor-name_': 'Map' },
+        splitAccessors: new Map(),
         seriesKeys: ['a', 'y'],
       },
       valueAccessor: 'y1',
@@ -93,7 +93,7 @@ export const tableMultipleX = {
         specId: 'bubbles',
         xAccessor: 'x',
         yAccessor: 'y',
-        splitAccessors: { '_constructor-name_': 'Map' },
+        splitAccessors: new Map(),
         seriesKeys: ['b', 'y'],
       },
       valueAccessor: 'y1',
@@ -113,7 +113,7 @@ export const tableMultipleX = {
         specId: 'bubbles',
         xAccessor: 'x',
         yAccessor: 'y',
-        splitAccessors: { '_constructor-name_': 'Map' },
+        splitAccessors: new Map(),
         seriesKeys: ['c', 'y'],
       },
       valueAccessor: 'y1',
@@ -133,7 +133,7 @@ export const tableMultipleX = {
         specId: 'bubbles',
         xAccessor: 'x',
         yAccessor: 'y',
-        splitAccessors: { '_constructor-name_': 'Map' },
+        splitAccessors: new Map(),
         seriesKeys: ['c', 'y'],
       },
       valueAccessor: 'y1',
@@ -153,7 +153,7 @@ export const tableMultipleX = {
         specId: 'bubbles',
         xAccessor: 'x',
         yAccessor: 'y',
-        splitAccessors: { '_constructor-name_': 'Map' },
+        splitAccessors: new Map(),
         seriesKeys: ['c', 'y'],
       },
       valueAccessor: 'y1',
@@ -173,7 +173,7 @@ export const tableMultipleX = {
         specId: 'bubbles',
         xAccessor: 'x',
         yAccessor: 'y',
-        splitAccessors: { '_constructor-name_': 'Map' },
+        splitAccessors: new Map(),
         seriesKeys: ['d', 'y'],
       },
       valueAccessor: 'y1',

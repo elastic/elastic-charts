@@ -7,20 +7,28 @@
  */
 
 import { boolean, color } from '@storybook/addon-knobs';
-import React, { ComponentProps, memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 
-import { TooltipProps } from '@elastic/charts';
-import { TooltipComponent } from '@elastic/charts/src/components/tooltip/tooltip';
+import { BaseDatum, Datum, SeriesIdentifier, TooltipProps } from '@elastic/charts';
+import { TooltipComponent, TooltipComponentProps } from '@elastic/charts/src/components/tooltip/tooltip';
 
 import { getPlacementKnob } from '../../utils/knobs';
 
 import './tooltip_showcase.scss';
 
-type BaseTooltipProps = ComponentProps<typeof TooltipComponent>;
+type BaseTooltipProps<
+  D extends BaseDatum = Datum,
+  SI extends SeriesIdentifier = SeriesIdentifier,
+> = TooltipComponentProps<D, SI>;
 
-type TooltipShowcaseProps = Partial<Omit<BaseTooltipProps, 'settings' | 'visible'>> & Partial<TooltipProps>;
+type TooltipShowcaseProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = Partial<
+  Omit<TooltipComponentProps<D, SI>, 'settings' | 'visible'>
+> &
+  Partial<TooltipProps<D, SI>>;
 
-export const TooltipShowcase = memo((props: TooltipShowcaseProps) => {
+const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
+  props: TooltipShowcaseProps<D, SI>,
+) => {
   const [, setVisible] = useState(false);
   const divRef = useRef<HTMLDivElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
@@ -31,7 +39,7 @@ export const TooltipShowcase = memo((props: TooltipShowcaseProps) => {
     return () => setVisible(false);
   }, []);
 
-  const tooltipProps: BaseTooltipProps = {
+  const tooltipProps: BaseTooltipProps<D, SI> = {
     ...props,
     zIndex: 200,
     info: props.info,
@@ -58,4 +66,6 @@ export const TooltipShowcase = memo((props: TooltipShowcaseProps) => {
       </div>
     </div>
   );
-});
+};
+
+export const TooltipShowcase = memo(TooltipShowcaseInner) as typeof TooltipShowcaseInner;

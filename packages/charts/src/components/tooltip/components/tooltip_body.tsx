@@ -8,23 +8,32 @@
 
 import React from 'react';
 
-import { TooltipValueFormatter, TooltipProps } from '../../../specs';
+import { SeriesIdentifier } from '../../../common/series_id';
+import { TooltipValueFormatter, TooltipProps, BaseDatum } from '../../../specs';
+import { Datum } from '../../../utils/common';
 import { TooltipInfo } from '../types';
 import { TooltipHeader } from './tooltip_header';
 import { useTooltipContext } from './tooltip_provider';
-import { TooltipTable, TooltipTableColumn } from './tooltip_table';
+import { TooltipTable } from './tooltip_table';
 import { TooltipWrapper } from './tooltip_wrapper';
+import { TooltipTableColumn } from './types';
 
-interface TooltipBodyProps {
+interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
   visible: boolean;
-  info?: TooltipInfo;
-  columns: TooltipTableColumn[];
-  headerFormatter?: TooltipValueFormatter;
-  settings?: TooltipProps;
+  info?: TooltipInfo<D, SI>;
+  columns: TooltipTableColumn<D, SI>[];
+  headerFormatter?: TooltipValueFormatter<D, SI>;
+  settings?: TooltipProps<D, SI>;
 }
 
 /** @internal */
-export const TooltipBody = ({ info, visible, settings, headerFormatter, columns }: TooltipBodyProps) => {
+export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
+  info,
+  visible,
+  settings,
+  headerFormatter,
+  columns,
+}: TooltipBodyProps<D, SI>) => {
   const { backgroundColor, dir } = useTooltipContext();
   if (!info || !visible) {
     return null;

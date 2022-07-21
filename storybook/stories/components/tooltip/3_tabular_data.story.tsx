@@ -9,23 +9,25 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { CustomTooltip, TooltipTable } from '@elastic/charts';
+import { CustomTooltip, TooltipTable, TooltipTableColumn, XYChartSeriesIdentifier } from '@elastic/charts';
 
 import { tableMultipleX } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
-  const columns = [
-    { header: 'X Value', accessor: 'x' },
-    { header: 'Y Value', accessor: 'y' },
-    { header: 'Z Value', accessor: 'z' },
-  ];
-  const MyTooltip: CustomTooltip = ({ values }) => {
-    return (
-      <>
-        <TooltipTable items={values} columns={columns} hideColor={boolean('hide color', false)} />
-      </>
-    );
+  const MyTooltip: CustomTooltip<any, XYChartSeriesIdentifier> = ({ values }) => {
+    const showColor = boolean('show color', true);
+    const columns: TooltipTableColumn<any, XYChartSeriesIdentifier>[] = [
+      { type: 'custom', header: 'X Value', renderCell: ({ datum }) => datum.x },
+      { type: 'custom', header: 'Y Value', renderCell: ({ datum }) => datum.y },
+      { type: 'custom', header: 'Z Value', renderCell: ({ datum }) => datum.z },
+    ];
+
+    if (showColor) {
+      columns.unshift({ type: 'color' });
+    }
+
+    return <TooltipTable items={values} columns={columns} />;
   };
   return <TooltipShowcase info={tableMultipleX} customTooltip={MyTooltip} />;
 };

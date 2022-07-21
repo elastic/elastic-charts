@@ -9,43 +9,55 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
+import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum } from '../../../specs';
+import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
-import { TooltipTableColumn } from './tooltip_table';
 import { TooltipTableCell } from './tooltip_table_cell';
+import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
+import { TooltipTableColumn } from './types';
 
-type TooltipTableHeaderProps = PropsOrChildrenWithProps<
+type TooltipTableHeaderProps<
+  D extends BaseDatum = Datum,
+  SI extends SeriesIdentifier = SeriesIdentifier,
+> = PropsOrChildrenWithProps<
   {
-    columns: TooltipTableColumn[];
+    columns: TooltipTableColumn<D, SI>[];
   },
   {},
   {
+    className?: string;
     maxHeight?: CSSProperties['maxHeight'];
   }
 >;
 
 /** @public */
-export const TooltipTableHeader = ({ maxHeight, ...props }: TooltipTableHeaderProps) => {
-  const className = classNames('echTooltip__tableHeader');
+export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
+  maxHeight,
+  className,
+  ...props
+}: TooltipTableHeaderProps<D, SI>) => {
+  const classes = classNames('echTooltip__tableHeader', className);
   if ('children' in props) {
     return (
-      <thead className={className} style={{ maxHeight }}>
+      <thead className={classes} style={{ maxHeight }}>
         {props.children}
       </thead>
     );
   }
 
-  if (!props.columns.some((c) => c.header)) return null;
+  if (props.columns.every((c) => !c.header)) return null;
 
   return (
-    <thead className={className} style={{ maxHeight }}>
+    <thead className={classes} style={{ maxHeight }}>
       <TooltipTableRow>
-        {props.columns.map(({ header, style, id }) => {
-          if (!header) return null;
-          const headerStr = typeof header === 'string' ? header : header();
+        {props.columns.map(({ header, style, id, className: cn, type }, i) => {
+          const key = id ?? `${type}-${i}`;
+          if (type === 'color') return <TooltipTableColorCell className={cn} style={style} key={key} />;
           return (
-            <TooltipTableCell style={style} key={id ?? headerStr}>
-              {headerStr}
+            <TooltipTableCell className={cn} style={style} key={key}>
+              {header ? (typeof header === 'string' ? header : header()) : undefined}
             </TooltipTableCell>
           );
         })}

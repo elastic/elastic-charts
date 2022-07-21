@@ -7,63 +7,45 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, ReactNode, useEffect } from 'react';
+import React, { CSSProperties } from 'react';
 
-import { TooltipValue } from '../../../specs';
-import { isNil } from '../../../utils/common';
+import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum, TooltipValue } from '../../../specs';
+import { Datum, isNil } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
-import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableBody } from './tooltip_table_body';
-import { TooltipCellStyle } from './tooltip_table_cell';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
+import { TooltipTableColumn } from './types';
 
-/**
- * Column definition for tooltip table
- * @alpha
- */
-export type TooltipTableColumn = {
-  id?: string;
-  className?: string;
-  header?: string | (() => string);
-  footer?: string | (() => string);
-  hidden?: boolean | ((items: TooltipValue[]) => boolean);
-  style?: TooltipCellStyle;
-} & (
-  | {
-      accessor: string | number;
-    }
-  | {
-      renderCell: (item: TooltipValue) => ReactNode;
-    }
-);
-
-type TooltipTableProps = PropsOrChildrenWithProps<
+type TooltipTableProps<
+  D extends BaseDatum = Datum,
+  SI extends SeriesIdentifier = SeriesIdentifier,
+> = PropsOrChildrenWithProps<
   {
-    columns: TooltipTableColumn[];
-    items: TooltipValue[];
+    columns: TooltipTableColumn<D, SI>[];
+    items: TooltipValue<D, SI>[];
   },
   {},
   {
+    className?: string;
     maxHeight?: CSSProperties['maxHeight'];
-    hideColor?: boolean;
   }
 >;
 
 /** @public */
-export const TooltipTable = ({ maxHeight, ...props }: TooltipTableProps) => {
-  const className = classNames('echTooltip__table', { 'echTooltip__table--scrollable': !isNil(maxHeight) });
-  const { updateValues } = useTooltipContext();
-
-  useEffect(() => {
-    if (props.hideColor !== undefined) {
-      updateValues({ hideColor: props.hideColor });
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
+  maxHeight,
+  className,
+  ...props
+}: TooltipTableProps<D, SI>) => {
+  const classes = classNames('echTooltip__table', className, {
+    'echTooltip__table--scrollable': !isNil(maxHeight),
+  });
 
   if ('children' in props) {
     return (
-      <table className={className} style={{ maxHeight }}>
+      <table className={classes} style={{ maxHeight }}>
         {props.children}
       </table>
     );
@@ -74,7 +56,7 @@ export const TooltipTable = ({ maxHeight, ...props }: TooltipTableProps) => {
   });
 
   return (
-    <table className={className} style={{ maxHeight }}>
+    <table className={classes} style={{ maxHeight }}>
       <TooltipTableHeader columns={columns} />
       <TooltipTableBody columns={columns} items={props.items} />
       <TooltipTableFooter columns={columns} />

@@ -9,43 +9,55 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
+import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum } from '../../../specs';
+import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
-import { TooltipTableColumn } from './tooltip_table';
 import { TooltipTableCell } from './tooltip_table_cell';
+import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
+import { TooltipTableColumn } from './types';
 
-type TooltipTableFooterProps = PropsOrChildrenWithProps<
+type TooltipTableFooterProps<
+  D extends BaseDatum = Datum,
+  SI extends SeriesIdentifier = SeriesIdentifier,
+> = PropsOrChildrenWithProps<
   {
-    columns: TooltipTableColumn[];
+    columns: TooltipTableColumn<D, SI>[];
   },
   {},
   {
+    className?: string;
     maxHeight?: CSSProperties['maxHeight'];
   }
 >;
 
 /** @public */
-export const TooltipTableFooter = ({ maxHeight, ...props }: TooltipTableFooterProps) => {
-  const className = classNames('echTooltip__tableFooter');
+export const TooltipTableFooter = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
+  maxHeight,
+  className,
+  ...props
+}: TooltipTableFooterProps<D, SI>) => {
+  const classes = classNames('echTooltip__tableFooter', className);
   if ('children' in props) {
     return (
-      <tfoot className={className} style={{ maxHeight }}>
+      <tfoot className={classes} style={{ maxHeight }}>
         {props.children}
       </tfoot>
     );
   }
 
-  if (!props.columns.some((c) => c.footer)) return null;
+  if (props.columns.every((c) => !c.footer)) return null;
 
   return (
-    <tfoot className={className}>
+    <tfoot className={classes}>
       <TooltipTableRow maxHeight={maxHeight}>
-        {props.columns.map(({ footer, style, id, className }) => {
-          if (!footer) return null;
-          const footerStr = typeof footer === 'string' ? footer : footer();
+        {props.columns.map(({ style, id, className: cn, type, footer }, i) => {
+          const key = id ?? `${type}-${i}`;
+          if (type === 'color') return <TooltipTableColorCell className={cn} style={style} key={key} />;
           return (
-            <TooltipTableCell className={className} style={style} key={id ?? footerStr}>
-              {footerStr}
+            <TooltipTableCell className={cn} style={style} key={id ?? key}>
+              {footer ? (typeof footer === 'string' ? footer : footer()) : undefined}
             </TooltipTableCell>
           );
         })}

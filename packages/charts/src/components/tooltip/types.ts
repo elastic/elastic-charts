@@ -34,7 +34,7 @@ export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdent
  */
 export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends TooltipInfo<D, SI> {
-  headerFormatter?: TooltipValueFormatter;
+  headerFormatter?: TooltipValueFormatter<D, SI>;
   dir: 'ltr' | 'rtl';
   backgroundColor: string;
 }
@@ -43,7 +43,9 @@ export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends Seri
  * The react component used to render a custom tooltip
  * @public
  */
-export type CustomTooltip = ComponentType<CustomTooltipProps>;
+export type CustomTooltip<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = ComponentType<
+  CustomTooltipProps<D, SI>
+>;
 
 /**
  * Defines exported component props with union of props **with** `children`

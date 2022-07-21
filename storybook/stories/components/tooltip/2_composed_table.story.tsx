@@ -18,6 +18,7 @@ import {
   TooltipTableFooter,
   TooltipTableRow,
   TooltipTableCell,
+  TooltipTableColorCell,
 } from '@elastic/charts';
 
 import { tableSimple } from './data';
@@ -25,12 +26,14 @@ import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
   const MyTooltip: CustomTooltip = ({ values, header }) => {
+    const showColor = boolean('show color', true);
     return (
       <>
         <TooltipHeader header={header} />
-        <TooltipTable hideColor={boolean('hide color', false)}>
+        <TooltipTable>
           <TooltipTableHeader>
             <TooltipTableRow>
+              {showColor && <TooltipTableColorCell />}
               <TooltipTableCell>X Value</TooltipTableCell>
               <TooltipTableCell>Y Value</TooltipTableCell>
               <TooltipTableCell>Z Value</TooltipTableCell>
@@ -38,7 +41,8 @@ export const Example = () => {
           </TooltipTableHeader>
           <TooltipTableBody>
             {values.map(({ datum, seriesIdentifier: { key }, color }) => (
-              <TooltipTableRow key={`${key}-${datum.x}`} color={color}>
+              <TooltipTableRow key={`${key}-${datum.x}`}>
+                {showColor && <TooltipTableColorCell color={color} />}
                 <TooltipTableCell>{datum.x}</TooltipTableCell>
                 <TooltipTableCell>{datum.y}</TooltipTableCell>
                 <TooltipTableCell>{datum.z}</TooltipTableCell>
@@ -47,6 +51,7 @@ export const Example = () => {
           </TooltipTableBody>
           <TooltipTableFooter>
             <TooltipTableRow>
+              {showColor && <TooltipTableColorCell />}
               <TooltipTableCell>X Foot</TooltipTableCell>
               <TooltipTableCell>Y Foot</TooltipTableCell>
               <TooltipTableCell>Z Foot</TooltipTableCell>

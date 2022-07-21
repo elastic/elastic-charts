@@ -10,9 +10,9 @@ import React, { useEffect, useMemo, memo, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { TooltipTableColumn } from '.';
 import { Colors } from '../../common/colors';
-import { SettingsSpec, TooltipProps, TooltipSpec, TooltipValueFormatter } from '../../specs';
+import { SeriesIdentifier } from '../../common/series_id';
+import { BaseDatum, SettingsSpec, TooltipProps, TooltipSpec, TooltipValueFormatter } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
@@ -23,23 +23,24 @@ import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
-import { hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
+import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
 import { TooltipBody } from './components/tooltip_body';
 import { TooltipProvider } from './components/tooltip_provider';
+import { TooltipTableColumn } from './components/types';
 import { TooltipInfo } from './types';
 
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
 }
 
-interface TooltipStateProps {
+interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
   zIndex: number;
   visible: boolean;
   position: AnchorPosition | null;
-  info?: TooltipInfo;
-  headerFormatter?: TooltipValueFormatter;
-  settings?: TooltipProps;
+  info?: TooltipInfo<D, SI>;
+  headerFormatter?: TooltipValueFormatter<D, SI>;
+  settings?: TooltipProps<D, SI>;
   rotation: Rotation;
   chartId: string;
   backgroundColor: string;
@@ -50,10 +51,14 @@ interface TooltipOwnProps {
   anchorRef?: RefObject<HTMLDivElement>;
 }
 
-type TooltipComponentProps = TooltipDispatchProps & TooltipStateProps & TooltipOwnProps;
+/** @internal */
+export type TooltipComponentProps<
+  D extends BaseDatum = Datum,
+  SI extends SeriesIdentifier = SeriesIdentifier,
+> = TooltipDispatchProps & TooltipStateProps<D, SI> & TooltipOwnProps;
 
 /** @internal */
-export const TooltipComponent = ({
+export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   anchorRef,
   info,
   zIndex,
@@ -66,7 +71,7 @@ export const TooltipComponent = ({
   chartId,
   onPointerMove,
   backgroundColor,
-}: TooltipComponentProps) => {
+}: TooltipComponentProps<D, SI>) => {
   const chartRef = getChartContainerRef();
 
   const handleScroll = () => {
@@ -107,9 +112,14 @@ export const TooltipComponent = ({
     info?.header?.label ?? '',
   ]);
 
-  const columns: TooltipTableColumn[] = [
+  const columns: TooltipTableColumn<D, SI>[] = [
+    {
+      id: 'color',
+      type: 'color',
+    },
     {
       id: 'label',
+      type: 'custom',
       renderCell: ({ label }) => <span className="echTooltip__label">{label}</span>,
       style: {
         textAlign: 'left',
@@ -117,6 +127,7 @@ export const TooltipComponent = ({
     },
     {
       id: 'value',
+      type: 'custom',
       renderCell: ({ formattedValue }) => (
         <span className="echTooltip__value" dir="ltr">
           {formattedValue}
@@ -128,6 +139,7 @@ export const TooltipComponent = ({
     },
     {
       id: 'markValue',
+      type: 'custom',
       style: {
         paddingLeft: 0,
       },

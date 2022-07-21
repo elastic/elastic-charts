@@ -33,30 +33,46 @@ export const Example = () => {
   const columns: TooltipTableColumn[] = [
     {
       id: 'label',
+      type: 'custom',
       renderCell: ({ label }) => <span className="echTooltip__label">{label}</span>,
-      textAlign: 'left',
+      style: {
+        textAlign: 'left',
+      },
     },
     {
       id: 'value',
+      type: 'custom',
       renderCell: ({ formattedValue }) => (
         <span className="echTooltip__value" dir="ltr">
           {formattedValue}
         </span>
       ),
-      textAlign: 'right',
+      style: {
+        textAlign: 'right',
+      },
     },
     {
       id: 'markValue',
+      type: 'custom',
       hidden: (items) => items.every(({ markValue }) => !markValue),
       renderCell: ({ markValue, formattedMarkValue }) =>
         isDefined(markValue) ? <span className="echTooltip__markValue">&nbsp;({formattedMarkValue})</span> : null,
     },
   ];
+  const showColor = boolean('show color', true);
+
+  if (showColor) {
+    columns.unshift({
+      id: 'color',
+      type: 'color',
+    });
+  }
+
   const MyTooltip: CustomTooltip = ({ header, values }) => {
     return (
       <>
         <TooltipHeader header={header} />
-        <TooltipTable columns={columns} items={values} hideColor={boolean('hide color', false)} />
+        <TooltipTable columns={columns} items={values} />
       </>
     );
   };

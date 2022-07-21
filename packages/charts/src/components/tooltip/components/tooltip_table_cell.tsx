@@ -7,37 +7,30 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 
-/** @public */
-export type TooltipCellStyle = Pick<
-  CSSProperties,
-  'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
->;
+import { TooltipCellStyle } from './types';
 
-type TooltipTableCellProps = PropsWithChildren<{
+/** @internal */
+export type TooltipTableCellProps = PropsWithChildren<{
   tagName?: 'td' | 'th';
   className?: string;
   style?: TooltipCellStyle;
 }>;
 
 /** @public */
-export const TooltipTableCell = ({ className, tagName = 'td', ...props }: TooltipTableCellProps) => {
+export const TooltipTableCell = ({ style, tagName = 'td', className, children }: TooltipTableCellProps) => {
   const classes = classNames('echTooltip__tableCell', className);
-  const style: CSSProperties = {
-    ...props.style,
-    textAlign: 'right',
-  };
   if (tagName === 'th') {
     return (
       <th className={classes} style={style}>
-        {props.children}
+        {children}
       </th>
     );
   }
   return (
     <td className={classes} style={style}>
-      {props.children}
+      {children}
     </td>
   );
 };

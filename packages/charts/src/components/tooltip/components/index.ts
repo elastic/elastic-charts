@@ -13,10 +13,12 @@ export * from './tooltip_footer';
 export * from './tooltip_divider';
 export * from './tooltip_metric_row';
 
-// table components
+// table components and types
+export * from './types';
 export * from './tooltip_table';
 export * from './tooltip_table_body';
 export * from './tooltip_table_header';
 export * from './tooltip_table_row';
 export * from './tooltip_table_footer';
 export * from './tooltip_table_cell';
+export * from './tooltip_table_color_cell';
