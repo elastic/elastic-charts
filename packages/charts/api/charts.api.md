@@ -558,6 +558,11 @@ export interface ColorConfig {
     vizColors: Color[];
 }
 
+// @public (undocumented)
+export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children'> & {
+    color?: string;
+};
+
 // @public
 export const ColorVariant: Readonly<{
     Series: "__use__series__color__";
@@ -2814,8 +2819,6 @@ export type TooltipTableCellProps = PropsWithChildren_2<{
     style?: TooltipCellStyle;
 }>;
 
-// Warning: (ae-forgotten-export) The symbol "ColorStripCellProps" needs to be exported by the entry point index.d.ts
-//
 // @public
 export function TooltipTableColorCell({ color, className, ...cellProps }: ColorStripCellProps): JSX.Element | null;
 

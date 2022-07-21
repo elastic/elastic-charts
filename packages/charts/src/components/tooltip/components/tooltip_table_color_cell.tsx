@@ -12,7 +12,8 @@ import React from 'react';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
 
-type ColorStripCellProps = Omit<TooltipTableCellProps, 'children'> & {
+/** @public */
+export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children'> & {
   color?: string;
 };
 
