@@ -138,6 +138,7 @@ const isAttributeKey = (keyCandidate: string): keyCandidate is keyof typeof attr
   keyCandidate in attributeLocations;
 
 interface StateProps {
+  debugHistory: boolean;
   columnarViewModel: FlameSpec['columnarData'];
   controlProviderCallback: FlameSpec['controlProviderCallback'];
   animationDuration: number;
@@ -255,7 +256,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private navForward() {
     if (!this.canNavigateForward()) return;
 
-    if (Number.isNaN(this.navQueue[this.navIndex].index) && this.navIndex !== this.navQueue.length - 1) {
+    if (FlameComponent.isZoomPanNav(this.navQueue[this.navIndex]) && this.navIndex !== this.navQueue.length - 1) {
       this.navQueue.splice(this.navIndex, 1);
       this.focusOnNavElement(this.navQueue[this.navIndex]);
     } else {
@@ -265,7 +266,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private navBackward() {
     if (!this.canNavigateBackward()) return;
-    if (Number.isNaN(this.navQueue[this.navIndex].index) && this.navIndex !== this.navQueue.length - 1) {
+    if (FlameComponent.isZoomPanNav(this.navQueue[this.navIndex]) && this.navIndex !== this.navQueue.length - 1) {
       this.navQueue.splice(this.navIndex, 1);
     }
     this.focusOnNavElement(this.navQueue[--this.navIndex]);
@@ -279,30 +280,30 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   }
 
+  private static isZoomPanNav(nav: NavRect) {
+    return Number.isNaN(nav.index);
+  }
+
   /**
-   * Add a click or zoom/pan event to the navigation
-   * @param element
+   * Add a click or zoom/pan event to the navigation stack
    * @private
    */
-  private addToNav(element: NavRect) {
+  private addToNav(next: NavRect) {
     const current = this.navQueue[this.navIndex];
-    const currentType = Number.isNaN(current.index) ? 'zoompan' : 'click';
-    const toAddType = Number.isNaN(element.index) ? 'zoompan' : 'click';
-    // element is click
-    if (toAddType === 'click') {
-      if (currentType === 'zoompan') {
-        this.navQueue.splice(this.navIndex, Infinity, element); // replace zoom with the click and
+    // element is zoom/pan event
+    if (FlameComponent.isZoomPanNav(next)) {
+      if (FlameComponent.isZoomPanNav(current)) {
+        this.navQueue.splice(this.navIndex, 1, next); // replace existing zoom event
       } else {
-        this.navQueue.splice(++this.navIndex, Infinity, element); // replace click with current
+        this.navQueue.splice(++this.navIndex, 0, next); // add the zoom event after current stack element
       }
     } else {
-      if (currentType === 'zoompan') {
-        this.navQueue.splice(this.navIndex, 1, element);
+      // element is click event
+      if (FlameComponent.isZoomPanNav(current)) {
+        this.navQueue.splice(this.navIndex, Infinity, next); // replace current zoom with the click event and clear the stack above it
       } else {
-        if (Number.isNaN(this.navQueue[this.navIndex + 1]?.index)) {
-          this.navQueue.splice(this.navIndex, 1, element);
-        } else {
-          this.navQueue.splice(++this.navIndex, 0, element);
+        if (current.index !== next.index) {
+          this.navQueue.splice(++this.navIndex, Infinity, next); // add click and clear the stack above it
         }
       }
     }
@@ -768,6 +769,7 @@ class FlameComponent extends React.Component<FlameProps> {
       forwardStageRef,
       chartDimensions: { width: requestedWidth, height: requestedHeight },
       a11ySettings,
+      debugHistory,
     } = this.props;
     const width = roundUpSize(requestedWidth);
     const height = roundUpSize(requestedHeight);
@@ -1033,21 +1035,27 @@ class FlameComponent extends React.Component<FlameProps> {
           }}
           getChartContainerRef={this.props.containerRef}
         />
-        <div
-          style={{
-            position: 'absolute',
-            transform: `translate(20px, 20px)`,
-            background: 'beige',
-            opacity: 0.8,
-          }}
-        >
-          History
-          <ul>
-            {this.navQueue.map((d, i) => {
-              return <li>{`${Number.isNaN(d.index) ? 'ZOOM/PAN' : d.index}${this.navIndex === i ? '⬅' : ''}`}</li>;
-            })}
-          </ul>
-        </div>
+        {debugHistory && (
+          <div
+            style={{
+              position: 'absolute',
+              transform: `translate(20px, 20px)`,
+              background: 'beige',
+              opacity: 0.8,
+            }}
+          >
+            history:
+            <ul>
+              {this.navQueue.map((d, i) => {
+                return (
+                  <li key={d.index}>{`${FlameComponent.isZoomPanNav(d) ? 'ZOOM/PAN' : d.index}${
+                    this.navIndex === i ? '⬅' : ''
+                  }`}</li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
       </>
     );
   };
@@ -1220,6 +1228,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const flameSpec = getSpecsFromStore<FlameSpec>(state.specs, ChartType.Flame, SpecType.Series)[0];
   const settingsSpec = getSettingsSpecSelector(state);
   return {
+    debugHistory: settingsSpec.debug,
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
     controlProviderCallback: flameSpec?.controlProviderCallback ?? {},
     animationDuration: flameSpec?.animation.duration ?? 0,
