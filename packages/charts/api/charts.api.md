@@ -638,7 +638,7 @@ export type CustomAnnotationTooltip = ComponentType<{
 }> | null;
 
 // @public
-export type CustomTooltip = ComponentType<CustomTooltipProps>;
+export type CustomTooltip<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = ComponentType<CustomTooltipProps<D, SI>>;
 
 // @public
 export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends TooltipInfo<D, SI> {
@@ -647,7 +647,7 @@ export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends Seri
     // (undocumented)
     dir: 'ltr' | 'rtl';
     // (undocumented)
-    headerFormatter?: TooltipValueFormatter;
+    headerFormatter?: TooltipValueFormatter<D, SI>;
 }
 
 // @public (undocumented)
@@ -2717,12 +2717,12 @@ export interface TimeScale {
 export function toEntries<T extends Record<string, string>, S>(array: T[], accessor: keyof T, staticValue: S): Record<string, S>;
 
 // @public
-export const Tooltip: (props: SFProps<TooltipSpec, keyof typeof tooltipBuildProps['overrides'], keyof typeof tooltipBuildProps['defaults'], keyof typeof tooltipBuildProps['optionals'], keyof typeof tooltipBuildProps['requires']>) => null;
+export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>) => null;
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
 
-// @public (undocumented)
+// @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipDividerProps" needs to be exported by the entry point index.d.ts
@@ -2738,7 +2738,7 @@ export const TooltipFooter: ({ children }: TooltipFooterProps) => JSX.Element;
 // Warning: (ae-forgotten-export) The symbol "TooltipHeaderProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipHeader: React_2.MemoExoticComponent<(props: TooltipHeaderProps) => JSX.Element | null>;
+export const TooltipHeader: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: TooltipHeaderProps<D, SI>) => JSX.Element | null;
 
 // @public
 export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
@@ -2761,15 +2761,15 @@ export interface TooltipPortalSettings<B = never> {
 }
 
 // @public
-export type TooltipProps = ComponentProps<typeof Tooltip>;
+export type TooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = SFProps<TooltipSpec<D, SI>, keyof typeof tooltipBuildProps['overrides'], keyof typeof tooltipBuildProps['defaults'], keyof typeof tooltipBuildProps['optionals'], keyof typeof tooltipBuildProps['requires']>;
 
 // @public @deprecated
 export type TooltipSettings = TooltipType | TooltipProps;
 
 // @public
-export interface TooltipSpec extends Spec, TooltipPortalSettings<'chart'> {
-    customTooltip?: CustomTooltip;
-    headerFormatter?: TooltipValueFormatter;
+export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends Spec, TooltipPortalSettings<'chart'> {
+    customTooltip?: CustomTooltip<D, SI>;
+    headerFormatter?: TooltipValueFormatter<D, SI>;
     showNullValues: boolean;
     snap: boolean;
     stickTo?: TooltipStickTo;
@@ -2795,46 +2795,89 @@ export type TooltipStickTo = $Values<typeof TooltipStickTo>;
 // Warning: (ae-forgotten-export) The symbol "TooltipTableProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTable: ({ maxHeight, ...props }: TooltipTableProps) => JSX.Element;
+export const TooltipTable: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ maxHeight, className, ...props }: TooltipTableProps<D, SI>) => JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableBodyProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableBody: (props: TooltipTableBodyProps) => JSX.Element;
+export const TooltipTableBody: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableBodyProps<D, SI>) => JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "TooltipTableCellProps" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
-export const TooltipTableCell: ({ className, tagName, ...props }: TooltipTableCellProps) => JSX.Element;
+export const TooltipTableCell: ({ style, tagName, className, children }: TooltipTableCellProps) => JSX.Element;
+
+// @public (undocumented)
+export type TooltipTableCellProps = PropsWithChildren_2<{
+    tagName?: 'td' | 'th';
+    className?: string;
+    style?: TooltipCellStyle;
+}>;
+
+// Warning: (ae-forgotten-export) The symbol "ColorStripCellProps" needs to be exported by the entry point index.d.ts
+//
+// @public
+export function TooltipTableColorCell({ color, className, ...cellProps }: ColorStripCellProps): JSX.Element | null;
 
 // @alpha
-export type TooltipTableColumn = {
+export type TooltipTableColumn<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = TooltipTableColumnCustom<D, SI> | TooltipTableColumnColor<D, SI> | TooltipTableColumnNumber<D, SI> | TooltipTableColumnText<D, SI>;
+
+// @alpha
+export type TooltipTableColumnBase<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
     id?: string;
     className?: string;
     header?: string | (() => string);
     footer?: string | (() => string);
-    hidden?: boolean | ((items: TooltipValue[]) => boolean);
+    hidden?: boolean | ((items: TooltipValue<D, SI>[]) => boolean);
     style?: TooltipCellStyle;
-} & ({
-    accessor: string | number;
-} | {
-    renderCell: (item: TooltipValue) => ReactNode;
-});
+};
+
+// @alpha
+export interface TooltipTableColumnColor<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends Omit<TooltipTableColumnBase<D, SI>, 'header' | 'footer'> {
+    // (undocumented)
+    footer?: never;
+    // (undocumented)
+    header?: never;
+    // (undocumented)
+    type: 'color';
+}
+
+// @alpha
+export interface TooltipTableColumnCustom<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends TooltipTableColumnBase<D, SI> {
+    // (undocumented)
+    renderCell: (item: TooltipValue<D, SI>) => ReactNode;
+    // (undocumented)
+    type: 'custom';
+}
+
+// @alpha
+export interface TooltipTableColumnNumber<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends TooltipTableColumnBase<D, SI> {
+    // (undocumented)
+    renderCell: (item: TooltipValue<D, SI>) => string | number;
+    // (undocumented)
+    type: 'number';
+}
+
+// @alpha
+export interface TooltipTableColumnText<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends TooltipTableColumnBase<D, SI> {
+    // (undocumented)
+    renderCell: (item: TooltipValue<D, SI>) => string;
+    // (undocumented)
+    type: 'text';
+}
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableFooterProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableFooter: ({ maxHeight, ...props }: TooltipTableFooterProps) => JSX.Element | null;
+export const TooltipTableFooter: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ maxHeight, className, ...props }: TooltipTableFooterProps<D, SI>) => JSX.Element | null;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableHeaderProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableHeader: ({ maxHeight, ...props }: TooltipTableHeaderProps) => JSX.Element | null;
+export const TooltipTableHeader: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ maxHeight, className, ...props }: TooltipTableHeaderProps<D, SI>) => JSX.Element | null;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableRowProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableRow: ({ maxHeight, color, isHighlighted, isSeriesHidden, ...props }: TooltipTableRowProps) => JSX.Element;
+export const TooltipTableRow: ({ maxHeight, isHighlighted, children, className }: TooltipTableRowProps) => JSX.Element;
 
 // @public
 export const TooltipType: Readonly<{
@@ -2863,7 +2906,7 @@ export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIden
 }
 
 // @public
-export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
+export type TooltipValueFormatter<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = (data: TooltipValue<D, SI>) => JSX.Element | string;
 
 // @public (undocumented)
 export type TreeLevel = number;

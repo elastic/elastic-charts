@@ -11,7 +11,7 @@ import React, { PropsWithChildren } from 'react';
 
 import { TooltipCellStyle } from './types';
 
-/** @internal */
+/** @public */
 export type TooltipTableCellProps = PropsWithChildren<{
   tagName?: 'td' | 'th';
   className?: string;
