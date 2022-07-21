@@ -257,8 +257,10 @@ class FlameComponent extends React.Component<FlameProps> {
 
     if (Number.isNaN(this.navQueue[this.navIndex].index) && this.navIndex !== this.navQueue.length - 1) {
       this.navQueue.splice(this.navIndex, 1);
+      this.focusOnNavElement(this.navQueue[this.navIndex]);
+    } else {
+      this.focusOnNavElement(this.navQueue[++this.navIndex]);
     }
-    this.focusOnNavElement(this.navQueue[++this.navIndex]);
   }
 
   private navBackward() {
