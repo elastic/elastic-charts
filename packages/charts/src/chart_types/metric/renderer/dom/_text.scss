@@ -23,6 +23,11 @@
       text-align: left;
     }
   }
+  &__icon {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
 
   &__subtitle {
     padding-top: 5px;
