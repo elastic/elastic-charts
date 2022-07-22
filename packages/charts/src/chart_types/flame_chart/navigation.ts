@@ -189,6 +189,7 @@ export class ClickZoomStrategy2 extends NavigationStrategy {
     if (isZoomPanNav(toAdd)) {
       this.lastZoom = { ...toAdd };
     } else {
+      this.lastZoom = undefined;
       if (this.current()?.index !== toAdd.index) {
         this.navQueue.splice(++this.navIndex, Infinity, toAdd);
       }
