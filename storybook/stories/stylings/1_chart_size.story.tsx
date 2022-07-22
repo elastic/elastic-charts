@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { BarSeries, Chart, ScaleType, Settings, PartialTheme } from '@elastic/charts';
+import { BarSeries, Chart, ScaleType, Settings, PartialTheme, Tooltip } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
@@ -29,7 +29,8 @@ export const Example = () => {
   return (
     <div>
       <Chart size={{ width: 100, height: 50 }}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings theme={theme} baseTheme={useBaseTheme()} />
+        <Tooltip type={TooltipType.None} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -40,7 +41,8 @@ export const Example = () => {
         />
       </Chart>
       <Chart size={{ height: 50 }}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings theme={theme} baseTheme={useBaseTheme()} />
+        <Tooltip type={TooltipType.None} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -51,7 +53,8 @@ export const Example = () => {
         />
       </Chart>
       <Chart size={['50%', 50]}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings theme={theme} baseTheme={useBaseTheme()} />
+        <Tooltip type={TooltipType.None} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -62,7 +65,8 @@ export const Example = () => {
         />
       </Chart>
       <Chart size={[undefined, 50]}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings theme={theme} baseTheme={useBaseTheme()} />
+        <Tooltip type={TooltipType.None} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}
@@ -73,7 +77,8 @@ export const Example = () => {
         />
       </Chart>
       <Chart size={50}>
-        <Settings tooltip={TooltipType.None} theme={theme} baseTheme={useBaseTheme()} />
+        <Settings theme={theme} baseTheme={useBaseTheme()} />
+        <Tooltip type={TooltipType.None} />
         <BarSeries
           id="bars"
           xScaleType={ScaleType.Linear}

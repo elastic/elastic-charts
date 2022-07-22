@@ -28,7 +28,7 @@ import { getLegendConfigSelector } from '../../state/selectors/get_legend_config
 import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
-import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { hasMostlyRTLItems, HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
 import { Dimensions, Size } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';

@@ -43,7 +43,6 @@ export const Example = () => {
   );
 
   let extra = text('extra', 'last <b>5m</b>');
-  const progressMin = number('progress min', 0);
   const progressMax = number('progress max', 100);
   const value = number('value', 55.23);
   const valuePrefix = text('value prefix', '');
@@ -64,7 +63,7 @@ export const Example = () => {
     subtitle,
     valueFormatter: (d: number) => `${valuePrefix}${d}${valuePostfix}`,
     extra: <span dangerouslySetInnerHTML={{ __html: extra }}></span>,
-    ...(progressOrTrend === 'bar' ? { domain: { min: progressMin, max: progressMax }, progressBarDirection } : {}),
+    ...(progressOrTrend === 'bar' ? { domainMax: progressMax, progressBarDirection } : {}),
     ...(progressOrTrend === 'trend'
       ? {
           trend: KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),

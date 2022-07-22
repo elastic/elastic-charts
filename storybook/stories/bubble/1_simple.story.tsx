@@ -10,7 +10,17 @@ import { action } from '@storybook/addon-actions';
 import { number, boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType, PointShape } from '@elastic/charts';
+import {
+  Axis,
+  Chart,
+  BubbleSeries,
+  Position,
+  ScaleType,
+  Settings,
+  TooltipType,
+  PointShape,
+  Tooltip,
+} from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -48,10 +58,6 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        tooltip={{
-          type: TooltipType.Follow,
-          snap: false,
-        }}
         theme={{
           markSizeRatio,
         }}
@@ -60,6 +66,7 @@ export const Example = () => {
         pointBuffer={(r) => 20 / r}
         {...onElementListeners}
       />
+      <Tooltip type={TooltipType.Follow} snap={false} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

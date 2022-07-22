@@ -13,7 +13,7 @@ import { getOnElementClickSelector } from '../../../../common/event_handler_sele
 import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
 import { getSpecOrNull } from './wordcloud_spec';
 

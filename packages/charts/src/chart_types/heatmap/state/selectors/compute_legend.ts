@@ -28,7 +28,7 @@ export const computeLegendSelector = createCustomCachedSelector(
         seriesIdentifiers: [{ key: label, specId: label }],
         color,
         label,
-        isSeriesHidden: deselectedDataSeries.some((dataSeries) => dataSeries.key === label),
+        isSeriesHidden: deselectedDataSeries.some(({ key }) => key === label),
         isToggleable: true,
         path: [{ index: 0, value: label }],
         keys: [],

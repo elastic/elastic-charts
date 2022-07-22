@@ -61,7 +61,7 @@ export {
   AccessorObjectKey,
   AccessorArrayIndex,
 } from './utils/accessor';
-export { CustomTooltip, TooltipInfo } from './components/tooltip/types';
+export * from './components/tooltip';
 
 // scales
 export { ScaleType } from './scales/constants';
@@ -123,12 +123,14 @@ export { Color } from './common/colors';
 export { RGB, A, RgbaTuple } from './common/color_library_wrappers';
 export { Predicate } from './common/predicate';
 
-export {
+export type {
   ESCalendarInterval,
   ESCalendarIntervalUnit,
   ESFixedInterval,
   ESFixedIntervalUnit,
 } from './utils/chrono/elasticsearch';
+export type { UnixTimestamp } from './utils/chrono/types';
+export { roundDateToESInterval } from './utils/chrono/elasticsearch';
 
 // data utils
 export { GroupKeysOrKeyFn, GroupByKeyFn } from './chart_types/xy_chart/utils/group_data_series';

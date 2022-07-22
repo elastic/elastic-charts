@@ -8,23 +8,20 @@
 
 import { ComponentProps, ComponentType, ReactChild } from 'react';
 
-import { CustomXDomain, GroupByAccessor, Spec, TooltipStickTo } from '.';
+import { CustomXDomain, GroupByAccessor, Spec } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
-import { BaseDatum, LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
+import { LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Color } from '../common/colors';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
-import { CustomTooltip } from '../components/tooltip/types';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { LegendPath } from '../state/actions/legend';
 import { SFProps, useSpecFactory } from '../state/spec_factory';
-import { Accessor } from '../utils/accessor';
 import {
-  Datum,
   HorizontalAlignment,
   LayoutDirection,
   Position,
@@ -38,16 +35,8 @@ import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, Theme } from '../utils/themes/theme';
-import {
-  BinAgg,
-  BrushAxis,
-  DEFAULT_TOOLTIP_CONFIG,
-  Direction,
-  PointerEventType,
-  PointerUpdateTrigger,
-  TooltipType,
-  settingsBuildProps,
-} from './constants';
+import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
+import { TooltipSettings } from './tooltip';
 
 /** @public */
 export interface LayerValue {
@@ -264,113 +253,8 @@ export interface PointerOutEvent extends BasePointerEvent {
 export type PointerEvent = PointerOverEvent | PointerOutEvent;
 
 /**
- * This interface describe the properties of single value shown in the tooltip
- * @public
- */
-export interface TooltipValue<D extends BaseDatum = Datum> {
-  /**
-   * The label of the tooltip value
-   */
-  label: string;
-  /**
-   * The value
-   */
-  value: any;
-  /**
-   * The formatted value to display
-   */
-  formattedValue: string;
-  /**
-   * The mark value
-   */
-  markValue?: number | null;
-  /**
-   * The mark value to display
-   */
-  formattedMarkValue?: string | null;
-  /**
-   * The color of the graphic mark (by default the color of the series)
-   */
-  color: Color;
-  /**
-   * True if the mouse is over the graphic mark connected to the tooltip
-   */
-  isHighlighted: boolean;
-  /**
-   * True if the tooltip is visible, false otherwise
-   */
-  isVisible: boolean;
-  /**
-   * The identifier of the related series
-   */
-  seriesIdentifier: SeriesIdentifier;
-  /**
-   * The accessor linked to the current tooltip value
-   */
-  valueAccessor?: Accessor<D>;
-
-  /**
-   * The datum associated with the current tooltip value
-   * Maybe not available
-   */
-  datum?: D;
-}
-
-/**
- * A value formatter of a {@link TooltipValue}
- * @public
- */
-export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
-
-/**
- * The advanced configuration for the tooltip
- * @public
- */
-export type TooltipProps = TooltipPortalSettings<'chart'> & {
-  /**
-   * The {@link (TooltipType:type) | TooltipType} of the tooltip
-   */
-  type?: TooltipType;
-  /**
-   * Whenever the tooltip needs to snap to the x/band position or not
-   */
-  snap?: boolean;
-  /**
-   * A {@link TooltipValueFormatter} to format the header value
-   */
-  headerFormatter?: TooltipValueFormatter;
-  /**
-   * Unit for event (i.e. `time`, `feet`, `count`, etc.).
-   * Not currently used/implemented
-   *
-   * @alpha
-   */
-  unit?: string;
-  /**
-   * Render custom tooltip given header and values
-   */
-  customTooltip?: CustomTooltip;
-  /**
-   * Stick the tooltip to a specific position within the current cursor
-   * @defaultValue mousePosition
-   */
-  stickTo?: TooltipStickTo;
-
-  /**
-   * Show null values on the tooltip
-   * @defaultValue false
-   */
-  showNullValues?: boolean;
-};
-
-/**
- * Either a {@link (TooltipType:type)} or an {@link (TooltipProps:type)} configuration
- * @public
- */
-export type TooltipSettings = TooltipType | TooltipProps;
-
-/**
  * The settings for handling external events.
+ * TODO consider moving this to Tooltip spec
  * @alpha
  */
 export interface ExternalPointerEventsSettings {
@@ -564,8 +448,9 @@ export interface SettingsSpec extends Spec, LegendSpec {
 
   /**
    * The tooltip configuration {@link TooltipSettings}
+   * @deprecated please use the new Tooltip spec inside your Chart
    */
-  tooltip: TooltipSettings;
+  tooltip?: TooltipSettings;
   /**
    * {@inheritDoc ExternalPointerEventsSettings}
    * @alpha
@@ -764,60 +649,4 @@ export function isPointerOutEvent(event: PointerEvent | null | undefined): event
 /** @internal */
 export function isPointerOverEvent(event: PointerEvent | null | undefined): event is PointerOverEvent {
   return event?.type === PointerEventType.Over;
-}
-
-/** @internal */
-export function isTooltipProps(config: TooltipType | TooltipProps): config is TooltipProps {
-  return typeof config === 'object';
-}
-
-/** @internal */
-export function isTooltipType(config: TooltipType | TooltipProps): config is TooltipType {
-  return typeof config !== 'object'; // TooltipType is 'vertical'|'cross'|'follow'|'none' while TooltipProps is object
-}
-
-/** @internal */
-export function isCrosshairTooltipType(type: TooltipType) {
-  return type === TooltipType.VerticalCursor || type === TooltipType.Crosshairs;
-}
-
-/** @internal */
-export function isFollowTooltipType(type: TooltipType) {
-  return type === TooltipType.Follow;
-}
-
-/** @internal */
-export function getTooltipType(settings: SettingsSpec, externalTooltip = false): TooltipType {
-  const defaultType = TooltipType.VerticalCursor;
-  if (externalTooltip) return getExternalTooltipType(settings);
-
-  const { tooltip } = settings;
-  if (tooltip === undefined || tooltip === null) return defaultType;
-  if (isTooltipType(tooltip)) return tooltip;
-  if (isTooltipProps(tooltip)) return tooltip.type || defaultType;
-  return defaultType;
-}
-
-/**
- * Return snowNullValues or the default
- * @internal
- */
-export function getShowNullValues(settings: SettingsSpec): TooltipProps['showNullValues'] {
-  const { tooltip } = settings;
-  if (tooltip === undefined || tooltip === null) return DEFAULT_TOOLTIP_CONFIG.showNullValues;
-  if (isTooltipType(tooltip)) return DEFAULT_TOOLTIP_CONFIG.showNullValues;
-  if (isTooltipProps(tooltip)) return tooltip.showNullValues ?? DEFAULT_TOOLTIP_CONFIG.showNullValues;
-}
-
-/**
- * Always return a Vertical Cursor for external pointer events or None if hidden
- * @internal
- * @param settings - the SettingsSpec
- */
-export function getExternalTooltipType({
-  externalPointerEvents: {
-    tooltip: { visible },
-  },
-}: SettingsSpec): TooltipType {
-  return visible ? TooltipType.VerticalCursor : TooltipType.None;
 }

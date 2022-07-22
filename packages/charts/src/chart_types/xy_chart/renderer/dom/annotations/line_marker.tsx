@@ -121,7 +121,7 @@ export function LineMarker({
   // want it to be tabbable if interactive if there is a click handler
   return onDOMElementClick ? (
     <button
-      className="echAnnotation"
+      className="echAnnotation__marker"
       onMouseEnter={() => {
         onDOMElementEnter({
           createdBySpecId: specId,
@@ -146,7 +146,7 @@ export function LineMarker({
     </button>
   ) : (
     <div
-      className="echAnnotation"
+      className="echAnnotation__marker"
       onMouseEnter={() => {
         onDOMElementEnter({
           createdBySpecId: specId,

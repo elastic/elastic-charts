@@ -13,7 +13,7 @@ import { DEFAULT_SETTINGS_SPEC, SettingsSpec, Spec, SpecType } from '../../specs
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
 import { chartStoreReducer, GlobalChartState } from '../../state/chart_state';
-import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../utils/common';
 
 /** @internal */

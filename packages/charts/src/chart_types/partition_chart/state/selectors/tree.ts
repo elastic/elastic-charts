@@ -17,8 +17,8 @@ import {
   SpecType,
 } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSpecs } from '../../../../state/selectors/get_settings_specs';
 import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_multiples_spec';
+import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { Datum } from '../../../../utils/common';
 import { HierarchyOfArrays, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';

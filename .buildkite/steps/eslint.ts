@@ -31,6 +31,7 @@ function isSkippable(changes: ChangeContext): boolean | string {
     'tsconfig.lint.json',
     'tsconfig.json',
     'package.json',
+    'yarn.lock',
   ]);
 
   if (hasTSChanges || hasLintConfigChanges) {

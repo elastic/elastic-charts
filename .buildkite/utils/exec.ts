@@ -60,7 +60,8 @@ export const exec = async (
   }
 };
 
-export const yarnInstall = async (cwd?: string) => {
+export const yarnInstall = async (cwd?: string, ignoreScripts = true) => {
   startGroup(`Installing node modules${cwd ? ` [${cwd}]` : ''}`);
-  await exec('yarn install --frozen-lockfile', { cwd });
+  const scriptFlag = ignoreScripts ? ' --ignore-scripts' : '';
+  await exec(`yarn install --frozen-lockfile${scriptFlag}`, { cwd });
 };

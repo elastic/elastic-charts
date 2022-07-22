@@ -9,7 +9,7 @@
 import { ChartType } from '../../..';
 import { SpecType } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSpecs } from '../../../../state/selectors/get_settings_specs';
+import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { PartitionSpec } from '../../specs';
 

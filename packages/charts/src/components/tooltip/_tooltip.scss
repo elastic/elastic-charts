@@ -1,5 +1,11 @@
 @import '../mixins';
 
+$tooltipBorderColor: $euiColorLightShade;
+$tooltipBorderWidth: 1px;
+$rowColorStripWidth: 5px;
+$maxRowColorStripWidth: 8px;
+$rowColorStripAnimatedWidthDelta: 3px;
+
 .echTooltip {
   @include euiToolTipStyle;
   @include euiFontSizeXS;
@@ -8,84 +14,146 @@
   pointer-events: none;
   user-select: none;
   max-width: 256px;
+  background-color: $euiColorEmptyShade;
+  color: $euiTextColor;
+  overflow: hidden;
+
+  & > :not(:last-child) {
+    border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
+  }
+
+  .euiTable {
+    background-color: transparent;
+  }
+
+  .euiTableFooterCell,
+  .euiTableHeaderCell,
+  .euiTableRowCell {
+    color: white;
+  }
 
   &__list {
-    padding: $euiSizeXS;
+    &--scrollable {
+      overflow-y: auto;
+      pointer-events: auto;
+    }
+  }
+
+  &__divider {
+    border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
+  }
+
+  &__metricRow {
+    padding: $euiSizeXS ($euiSizeXS * 2);
+    display: flex;
+    justify-content: space-between;
   }
 
   &__header {
-    @include euiToolTipTitle;
+    font-weight: $euiFontWeightBold;
     margin-bottom: 0;
     padding: $euiSizeXS ($euiSizeXS * 2);
   }
 
-  &__item {
-    display: flex;
-    min-width: 1px;
+  &__footer {
+    font-weight: $euiFontWeightBold;
+    border-top: solid $tooltipBorderWidth $tooltipBorderColor;
+    margin-top: 0;
+    padding: $euiSizeXS ($euiSizeXS * 2);
+  }
 
-    &--container {
-      display: flex;
-      flex: 1 1 auto;
-      padding: 3px;
-      padding-left: 0;
-      min-width: 1px;
-    }
+  &__stickyAction {
+    color: #69707d;
+    padding: $euiSizeS;
+    margin-left: $rowColorStripWidth;
+  }
 
-    &--backgroundColor {
-      position: relative;
-      width: $euiSizeXS;
-      margin-right: 3px;
-      flex-shrink: 0;
-    }
+  &__table {
+    width: 100%;
 
-    &--color {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+    &--scrollable {
+      overflow-y: auto;
+      pointer-events: auto;
     }
+  }
+
+  &__tableHeader {
+    font-weight: $euiFontWeightBold;
+    margin-bottom: 0;
+    border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
+  }
+
+  &__tableCell:not(.echTooltip__colorCell) {
+    padding: 4px;
+  }
+
+  &__tableBody {
+    td:not(.echTooltip__colorCell) {
+      padding: 2px 4px;
+    }
+  }
+
+  &__tableFooter {
+    border-top: solid $tooltipBorderWidth $tooltipBorderColor;
+    font-weight: $euiFontWeightBold;
+    margin-top: 0;
+  }
+
+  &__tableRow {
+    position: relative;
+
+    &--highlighted {
+      background-color: transparentize($euiColorLightShade, 0.5);
+
+      // TODO save this for future sticky interactions
+      // .echTooltip__colorStrip {
+      //   width: $rowColorStripWidth + $rowColorStripAnimatedWidthDelta;
+      // }
+    }
+  }
+
+  &__colorCell {
+    padding: 0;
+    height: 100%;
+    position: relative;
+
+    &--empty {
+      width: 0;
+    }
+  }
+
+  &__colorStrip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: $rowColorStripWidth;
+    min-width: $rowColorStripWidth;
+    max-width: $maxRowColorStripWidth;
+    transition: width 200ms;
+  }
+
+  &__colorStripSpacer {
+    width: $maxRowColorStripWidth;
   }
 
   &__label {
     @include wrapText;
     min-width: 1px;
     flex: 1 1 auto;
+    text-align: left;
   }
 
   &__value {
-    font-weight: $euiFontWeightBold;
     text-align: right;
     font-feature-settings: 'tnum';
-    margin-left: $euiSizeS;
-    direction: ltr;
-  }
-
-  &__rowHighlighted {
-    background-color: transparentize($euiColorGhost, 0.9);
-  }
-
-  &--hidden {
-    opacity: 0;
   }
 
   &[dir='rtl'] {
     .echTooltip {
-      &__item {
-        &--container {
-          padding: 3px;
-          padding-right: 0;
-        }
-
-        &--backgroundColor {
-          margin-right: 0;
-          margin-left: 3px;
-        }
-      }
-
-      &__value {
-        margin-left: 0;
-        margin-right: $euiSizeS;
+      &__colorStrip {
+        left: auto;
+        right: 0;
       }
     }
   }

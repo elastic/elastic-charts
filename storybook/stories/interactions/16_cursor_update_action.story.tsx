@@ -23,6 +23,7 @@ import {
   TooltipType,
   LineSeries,
   AreaSeries,
+  Tooltip,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
@@ -104,8 +105,9 @@ export const Example = () => {
           externalPointerEvents={{
             tooltip: { visible: topVisible, placement: topPlacement },
           }}
-          tooltip={{ type: topType }}
         />
+        <Tooltip type={topType} />
+
         <Axis
           id="bottom"
           position={Position.Bottom}
@@ -128,13 +130,11 @@ export const Example = () => {
           showLegend
           showLegendExtra
           onPointerUpdate={pointerUpdate}
-          tooltip={{
-            type: bottomType,
-          }}
           externalPointerEvents={{
             tooltip: { visible: bottomVisible, placement: bottomPlacement, boundary: 'chart' },
           }}
         />
+        <Tooltip type={bottomType} />
         <Axis
           id="bottom"
           position={Position.Bottom}

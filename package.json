@@ -12,6 +12,7 @@
     ]
   },
   "scripts": {
+    "postinstall": "cd ./e2e && yarn install && cd ../.buildkite && yarn install && cd ../github_bot && yarn install",
     "run:bk:step": "cd .buildkite && yarn run:step",
     "prepack": "echo 'This package is not published, see pacakges/*' && exit 1",
     "autoprefix:css": "lerna run --loglevel=silent --scope @elastic/charts autoprefix:css --stream --no-prefix",
@@ -73,7 +74,7 @@
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
     "@elastic/datemath": "^5.0.3",
-    "@elastic/eui": "^60.0.0",
+    "@elastic/eui": "^60.3.0",
     "@mdx-js/loader": "^1.6.6",
     "@microsoft/api-documenter": "^7.13.63",
     "@microsoft/api-extractor": "^7.18.16",
@@ -115,7 +116,6 @@
     "@typescript-eslint/parser": "^4.31.1",
     "autoprefixer": "^9.0.0",
     "backport": "^5.6.6",
-    "canvas": "^2.8.0",
     "commitizen": "^4.2.3",
     "cross-env": "^7.0.2",
     "cz-conventional-changelog": "^3.3.0",
