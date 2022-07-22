@@ -50,7 +50,9 @@ export function wrapTextV3(
     return [];
   }
   const segmenter = textSegmenter('word', []);
-  const segments = Array.from(segmenter(text)).map((d) => ({
+  // remove new lines and multi-spaces.
+  const cleanedText = text.replace(/\n/g, ' ').replace(/ +(?= )/g, '');
+  const segments = Array.from(segmenter(cleanedText)).map((d) => ({
     ...d,
     width: measure(d.segment, font, fontSize, lineHeight).width,
   }));
@@ -95,7 +97,6 @@ export function wrapTextV3(
       }
     }
   }
-
   return lines;
 }
 
