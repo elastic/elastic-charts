@@ -61,7 +61,7 @@ export {
   AccessorObjectKey,
   AccessorArrayIndex,
 } from './utils/accessor';
-export { CustomTooltip, TooltipInfo } from './components/tooltip/types';
+export * from './components/tooltip';
 
 // scales
 export { ScaleType } from './scales/constants';

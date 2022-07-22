@@ -13,7 +13,7 @@ import { getOnElementOverSelector } from '../../../../common/event_handler_selec
 import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
 import { getSpecOrNull } from './wordcloud_spec';
 

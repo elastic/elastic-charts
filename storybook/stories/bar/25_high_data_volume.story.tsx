@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
@@ -17,12 +17,10 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => {
   const dg = new SeededDataGenerator();
   const data = dg.generateSimpleSeries(15000);
-  const tooltipProps = {
-    type: TooltipType.Follow,
-  };
   return (
     <Chart>
-      <Settings tooltip={tooltipProps} baseTheme={useBaseTheme()} />
+      <Settings baseTheme={useBaseTheme()} />
+      <Tooltip type={TooltipType.Follow} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

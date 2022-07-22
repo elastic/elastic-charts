@@ -14,12 +14,11 @@ import { mergePartial } from '../../utils/common';
 export class MockSeriesIdentifier {
   private static readonly base: XYChartSeriesIdentifier = {
     specId: 'bars',
+    xAccessor: 'x',
     yAccessor: 'y',
     seriesKeys: ['a'],
     splitAccessors: new Map().set('g', 'a'),
     key: 'spec{bars}yAccessor{y}splitAccessors{g-a}',
-    smHorizontalAccessorValue: undefined,
-    smVerticalAccessorValue: undefined,
   };
 
   static default(partial?: Partial<XYChartSeriesIdentifier>) {

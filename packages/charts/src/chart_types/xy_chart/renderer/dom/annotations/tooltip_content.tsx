@@ -8,6 +8,7 @@
 
 import React, { useCallback } from 'react';
 
+import { TooltipHeader } from '../../../../../components/tooltip';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../../../../specs';
 import { AnnotationTooltipState } from '../../../annotations/types';
 
@@ -21,10 +22,10 @@ export const TooltipContent = ({
   const renderLine = useCallback(() => {
     const { details, dataValue, header = dataValue.toString() } = datum as LineAnnotationDatum;
     return (
-      <div className="echAnnotation__tooltip">
-        <p className="echAnnotation__header">{header}</p>
+      <>
+        <TooltipHeader>{header}</TooltipHeader>
         <div className="echAnnotation__details">{customTooltipDetails ? customTooltipDetails(details) : details}</div>
-      </div>
+      </>
     );
   }, [datum, customTooltipDetails]);
 
@@ -35,13 +36,7 @@ export const TooltipContent = ({
       return null;
     }
 
-    return (
-      <div className="echAnnotation__tooltip">
-        <div className="echAnnotation__details">
-          <div className="echAnnotation__detailsText">{tooltipContent}</div>
-        </div>
-      </div>
-    );
+    return <div className="echAnnotation__details">{tooltipContent}</div>;
   }, [datum, customTooltipDetails]);
 
   if (CustomTooltip) {

@@ -16,7 +16,8 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { Rotation } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
@@ -74,9 +75,10 @@ const mapStateToProps = (state: GlobalChartState): CursorCrossLineProps => {
     };
   }
   const settings = getSettingsSpecSelector(state);
+  const tooltip = getTooltipSpecSelector(state);
   const cursorBandPosition = getCursorBandPositionSelector(state);
   const fromExternalEvent = cursorBandPosition?.fromExternalEvent;
-  const tooltipType = getTooltipType(settings, fromExternalEvent);
+  const tooltipType = getTooltipType(tooltip, settings, fromExternalEvent);
 
   return {
     theme: getChartThemeSelector(state),
