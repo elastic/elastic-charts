@@ -7,7 +7,7 @@
  */
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Transform } from '../utils/types';
 import { computeChartTransform } from '../utils/utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';

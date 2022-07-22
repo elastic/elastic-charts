@@ -6,15 +6,12 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export const getMockCanvasContext2D = (): CanvasRenderingContext2D => {
-  const ctx = document.createElement('canvas').getContext('2d');
-  if (ctx) return ctx;
+import { Selector } from 're-reselect';
 
-  throw new Error('Unable to create mock context');
-};
+import { GlobalChartState, SpecList } from '../chart_state';
 
-/** @internal */
-export const getMockCanvas = (): HTMLCanvasElement => {
-  return document.createElement('canvas');
-};
+/**
+ * Returns all specs for given chart
+ * @internal
+ */
+export const getSpecs: Selector<GlobalChartState, SpecList> = ({ specs }) => specs;

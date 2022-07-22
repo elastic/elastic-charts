@@ -10,7 +10,7 @@ import { text, boolean } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, Chart, LineSeries, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 
@@ -30,15 +30,11 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings
-        baseTheme={useBaseTheme()}
-        showLegendExtra
-        showLegend={showLegend}
-        tooltip={{
-          headerFormatter: disableHeaderFormat
-            ? undefined
-            : ({ value }) => `${value}${headerUnit ? ` ${headerUnit}` : ''}`,
-        }}
+      <Settings baseTheme={useBaseTheme()} showLegendExtra showLegend={showLegend} />
+      <Tooltip
+        headerFormatter={
+          disableHeaderFormat ? undefined : ({ value }) => `${value}${headerUnit ? ` ${headerUnit}` : ''}`
+        }
       />
       <Axis
         id="bottom"

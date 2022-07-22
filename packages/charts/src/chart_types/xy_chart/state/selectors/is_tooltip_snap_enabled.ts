@@ -7,11 +7,12 @@
  */
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { getTooltipSnapSelector } from './get_tooltip_snap';
 
 /** @internal */
 export const isTooltipSnapEnableSelector = createCustomCachedSelector(
-  [computeSeriesGeometriesSelector, getTooltipSnapSelector],
-  (seriesGeometries, snap) => (seriesGeometries.scales.xScale && seriesGeometries.scales.xScale.bandwidth > 0) || snap,
+  [computeSeriesGeometriesSelector, getTooltipSpecSelector],
+  (seriesGeometries, { snap }) =>
+    (seriesGeometries.scales.xScale && seriesGeometries.scales.xScale.bandwidth > 0) || snap,
 );

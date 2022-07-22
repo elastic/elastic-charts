@@ -9,13 +9,9 @@
 import { DEFAULT_SETTINGS_SPEC } from '../../specs/constants';
 import { SettingsSpec } from '../../specs/settings';
 import { isDefined } from '../../utils/common';
-import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 import { getChartIdSelector } from './get_chart_id';
-import { getSettingsSpecSelector } from './get_settings_specs';
-
-/** @internal */
-export const getSpecs = (state: GlobalChartState) => state.specs;
+import { getSettingsSpecSelector } from './get_settings_spec';
 
 /** @internal */
 export type A11ySettings = {

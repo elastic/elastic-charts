@@ -78,6 +78,7 @@ describe('Tooltip formatting', () => {
     seriesIdentifier: {
       specId: SPEC_ID_1,
       key: '',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
@@ -100,6 +101,7 @@ describe('Tooltip formatting', () => {
     seriesIdentifier: {
       specId: SPEC_ID_1,
       key: '',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
@@ -218,6 +220,7 @@ describe('Tooltip formatting', () => {
       seriesIdentifier: {
         specId: SPEC_ID_1,
         key: '',
+        xAccessor: 'x',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: ['y1'],

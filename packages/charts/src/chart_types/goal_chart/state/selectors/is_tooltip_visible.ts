@@ -6,19 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { getTooltipType } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { getTooltipInfoSelector } from './tooltip';
 
 /** @internal */
 export const isTooltipVisibleSelector = createCustomCachedSelector(
-  [getSettingsSpecSelector, getTooltipInfoSelector],
-  (settingsSpec, tooltipInfo): boolean => {
-    if (getTooltipType(settingsSpec) === TooltipType.None) {
-      return false;
-    }
+  [getTooltipSpecSelector, getTooltipInfoSelector],
+  ({ type }, tooltipInfo): boolean => {
+    if (type === TooltipType.None) return false;
     return tooltipInfo.values.length > 0;
   },
 );

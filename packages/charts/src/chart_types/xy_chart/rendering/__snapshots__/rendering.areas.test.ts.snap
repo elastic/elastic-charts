@@ -17,10 +17,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -75,10 +74,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -138,10 +136,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_2",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -196,10 +193,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_2",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -259,10 +255,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -317,10 +312,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -380,10 +374,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_2",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -438,10 +431,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_2",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -501,10 +493,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -559,10 +550,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -622,10 +612,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_2",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -680,10 +669,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_2",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -743,10 +731,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -801,10 +788,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -864,10 +850,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -922,10 +907,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -985,10 +969,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {
@@ -1043,10 +1026,9 @@ Array [
       "seriesKeys": Array [
         1,
       ],
-      "smHorizontalAccessorValue": undefined,
-      "smVerticalAccessorValue": undefined,
       "specId": "spec_1",
       "splitAccessors": Map {},
+      "xAccessor": 0,
       "yAccessor": 1,
     },
     "style": Object {

@@ -8,7 +8,7 @@
 
 import { DEFAULT_SETTINGS_SPEC } from '../../specs/constants';
 import { getInitialState } from '../chart_state';
-import { getSettingsSpecSelector } from './get_settings_specs';
+import { getSettingsSpecSelector } from './get_settings_spec';
 
 describe('selectors - getSettingsSpecSelector', () => {
   const state = getInitialState('chartId1');

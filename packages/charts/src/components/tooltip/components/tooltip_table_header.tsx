@@ -1,0 +1,68 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0 and the Server Side Public License, v 1; you may not use this file except
+ * in compliance with, at your election, the Elastic License 2.0 or the Server
+ * Side Public License, v 1.
+ */
+
+import classNames from 'classnames';
+import React, { CSSProperties } from 'react';
+
+import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum, TooltipValue } from '../../../specs';
+import { Datum } from '../../../utils/common';
+import { PropsOrChildrenWithProps } from '../types';
+import { TooltipTableCell } from './tooltip_table_cell';
+import { TooltipTableColorCell } from './tooltip_table_color_cell';
+import { TooltipTableRow } from './tooltip_table_row';
+import { TooltipTableColumn } from './types';
+
+type TooltipTableHeaderProps<
+  D extends BaseDatum = Datum,
+  SI extends SeriesIdentifier = SeriesIdentifier,
+> = PropsOrChildrenWithProps<
+  {
+    columns: TooltipTableColumn<D, SI>[];
+    items: TooltipValue<D, SI>[];
+  },
+  {},
+  {
+    className?: string;
+    maxHeight?: CSSProperties['maxHeight'];
+  }
+>;
+
+/** @public */
+export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
+  maxHeight,
+  className,
+  ...props
+}: TooltipTableHeaderProps<D, SI>) => {
+  const classes = classNames('echTooltip__tableHeader', className);
+  if ('children' in props) {
+    return (
+      <thead className={classes} style={{ maxHeight }}>
+        {props.children}
+      </thead>
+    );
+  }
+
+  if (props.columns.every((c) => !c.header)) return null;
+
+  return (
+    <thead className={classes} style={{ maxHeight }}>
+      <TooltipTableRow>
+        {props.columns.map(({ header, style, id, className: cn, type }, i) => {
+          const key = id ?? `${type}-${i}`;
+          if (type === 'color') return <TooltipTableColorCell className={cn} style={style} key={key} />;
+          return (
+            <TooltipTableCell className={cn} style={style} key={key}>
+              {header ? (typeof header === 'string' ? header : header(props.items)) : undefined}
+            </TooltipTableCell>
+          );
+        })}
+      </TooltipTableRow>
+    </thead>
+  );
+};

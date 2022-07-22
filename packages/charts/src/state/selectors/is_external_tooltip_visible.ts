@@ -12,7 +12,7 @@ import { PointerEventType } from '../../specs';
 import { isNil } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSettingsSpecSelector } from './get_settings_specs';
+import { getSettingsSpecSelector } from './get_settings_spec';
 import { hasExternalEventSelector } from './has_external_pointer_event';
 
 const getExternalEventPointer = ({ externalEvents: { pointer } }: GlobalChartState) => pointer;

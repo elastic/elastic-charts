@@ -18,6 +18,7 @@ import {
   CustomTooltip as CT,
   PartialTheme,
   defaultPartitionValueFormatter,
+  Tooltip,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
@@ -60,15 +61,15 @@ const theme: PartialTheme = {
 };
 
 export const Example = () => {
-  const tooltipOptions = {
-    placement: getPlacementKnob('Tooltip placement'),
-    fallbackPlacements: getFallbackPlacementsKnob(),
-    boundary: getBoundaryKnob(),
-    customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
-  };
   return (
     <Chart>
-      <Settings showLegend legendMaxDepth={1} tooltip={tooltipOptions} theme={theme} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendMaxDepth={1} theme={theme} baseTheme={useBaseTheme()} />
+      <Tooltip
+        placement={getPlacementKnob('Tooltip placement')}
+        fallbackPlacements={getFallbackPlacementsKnob()}
+        boundary={getBoundaryKnob()}
+        customTooltip={boolean('Custom Tooltip', false) ? CustomTooltip : undefined}
+      />
       <Partition
         id="spec_1"
         data={mocks.sunburst}

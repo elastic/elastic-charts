@@ -20,7 +20,7 @@ import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSpecOrNull } from './heatmap_spec';
 import { getCurrentPointerPosition, getPickedGridCell } from './picked_shapes';
 

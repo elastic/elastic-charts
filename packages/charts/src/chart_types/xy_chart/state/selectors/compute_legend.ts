@@ -10,7 +10,7 @@ import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_deselected_data_series';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { computeLegend } from '../../legend/legend';
 import { DataSeries } from '../../utils/series';
 import { getLastValues } from '../utils/get_last_value';

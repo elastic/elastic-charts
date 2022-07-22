@@ -10,17 +10,19 @@ import { test, Page } from '@playwright/test';
 
 import { Rotation } from './constants';
 
+interface FileExample {
+  slugifiedName: string;
+  name: string;
+  filename: string;
+  url: string;
+  filePath: string;
+}
+
 type TestExamples = {
   groupFile: string;
   slugifiedGroupTitle: string;
   groupTitle: string;
-  exampleFiles: {
-    slugifiedName: string;
-    name: string;
-    filename: string;
-    url: string;
-    filePath: string;
-  }[];
+  exampleFiles: FileExample[];
 }[];
 
 export interface StoryGroupInfo {
@@ -33,32 +35,44 @@ export interface StoryGroupInfo {
 }
 
 /**
- * Stories to skip in all vrt based on group.
+ * Groups to skip in all vrt.
  */
-const storiesToSkip: Record<string, Record<string, string[]>> = {
-  'Test Cases': {
-    storybook: ['No Series'],
-    examples: ['noSeries'],
-  },
-};
+const groupsToSkip: Set<string> = new Set(['Components/Tooltip']);
+
+/**
+ * Stories to skip in all vrt based by group.
+ */
+const storiesToSkip: Map<string, string[]> = new Map(
+  Object.entries({
+    'Test Cases': ['noSeries'],
+  }),
+);
 
 export function getStorybookInfo(): StoryGroupInfo[] {
   try {
     // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
     const examples = require('../e2e_server/tmp/examples.json') as TestExamples;
-
-    return examples.map<StoryGroupInfo>(({ groupTitle: group, slugifiedGroupTitle, exampleFiles }) => {
-      return {
-        group,
-        encodedGroup: slugifiedGroupTitle,
-        stories: exampleFiles
-          .filter(({ name }: any) => name && !storiesToSkip[group]?.examples.includes(name))
-          .map(({ name, slugifiedName }) => ({
-            name,
-            slugifiedName,
-          })),
-      };
-    });
+    return examples
+      .filter(
+        ({ groupTitle, slugifiedGroupTitle }) =>
+          !groupsToSkip.has(groupTitle) && !groupsToSkip.has(slugifiedGroupTitle),
+      )
+      .map<StoryGroupInfo>(({ groupTitle: group, slugifiedGroupTitle, exampleFiles }) => {
+        return {
+          group,
+          encodedGroup: slugifiedGroupTitle,
+          stories: exampleFiles
+            .filter(({ name, slugifiedName }: any) => {
+              const skipStoryName = name ? storiesToSkip.get(group)?.includes(name) : false;
+              const skipStorySlug = slugifiedName ? storiesToSkip.get(group)?.includes(slugifiedName) : false;
+              return !skipStoryName && !skipStorySlug;
+            })
+            .map(({ name, slugifiedName }) => ({
+              name,
+              slugifiedName,
+            })),
+        };
+      });
   } catch {
     throw new Error('A required file is not available, please run yarn test:e2e:generate');
   }

@@ -163,7 +163,7 @@ module.exports = {
      * @typescript-eslint plugin
      */
     '@typescript-eslint/interface-name-prefix': 0,
-    '@typescript-eslint/ban-types': process.env.NODE_ENV === 'production' ? 2 : 1,
+    '@typescript-eslint/ban-types': 1,
     '@typescript-eslint/return-await': ['error', 'always'], // https://v8.dev/blog/fast-async
     '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
     '@typescript-eslint/no-explicit-any': 0,
