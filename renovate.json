@@ -32,6 +32,7 @@
     {
       "groupName": "typescript",
       "matchPackagePatterns": [".*typescript.*", "ts-.+", "^@typescript-eslint/.+", "^@microsoft/api-.+"],
+      "excludePackageNames": ["ts-jest"],
       "automerge": true,
       "enabled": true
     },
