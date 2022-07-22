@@ -6,13 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { text as textInput, number } from '@storybook/addon-knobs';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Font, cssFontShorthand } from '@elastic/charts/src/common/text_utils';
 import { withContext } from '@elastic/charts/src/renderers/canvas';
 import { withTextMeasure } from '@elastic/charts/src/utils/bbox/canvas_text_bbox_calculator';
-import { wrapTextV3 } from '@elastic/charts/src/utils/text/wrap.ts';
+import { wrapTextV3 } from '@elastic/charts/src/utils/text/wrap';
 
 const fontSize = 24;
 const defaultText =
@@ -92,9 +91,13 @@ export const Example = () => {
           id="maxLines"
           onInput={(e) => setMaxLines(Number(e.currentTarget.value))}
         />
-        <div>
-          <label>HTML Text</label>
-          <br />
+        <div
+          style={{
+            margin: '20px 0',
+          }}
+        >
+          <p>HTML Text</p>
+
           <textarea
             style={{
               padding: 0,
@@ -116,7 +119,7 @@ export const Example = () => {
           />
         </div>
       </div>
-      <label>Canvas Text</label>
+      <p>Canvas Text</p>
       <canvas
         ref={canvasRef}
         width={width * window.devicePixelRatio}
