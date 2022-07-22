@@ -18,7 +18,13 @@
     {
       "matchPackagePatterns": [".*"],
       "excludePackageNames": ["@elastic/eui", "@elastic/datemath", "prettier", "pretty-quick"],
-      "excludePackagePatterns": [".*typescript.*", "ts-.+", ".*eslint.*", "^@typescript-eslint/.+", "^@microsoft/api-.+"],
+      "excludePackagePatterns": [
+        ".*typescript.*",
+        "ts-.+",
+        ".*eslint.*",
+        "^@typescript-eslint/.+",
+        "^@microsoft/api-.+"
+      ],
       "enabled": false
     },
     {
