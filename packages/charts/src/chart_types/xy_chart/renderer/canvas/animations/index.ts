@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { debounce } from 'ts-debounce';
-
+import { debounce } from '../../../../../utils/debounce';
 import { Logger } from './../../../../../utils/logger';
 import { AnimatedValue, Animation, AnimationOptions, AnimationState } from './animation';
 

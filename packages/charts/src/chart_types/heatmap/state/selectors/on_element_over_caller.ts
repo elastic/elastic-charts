@@ -17,7 +17,7 @@ import { Cell, isPickedCells } from '../../layout/types/viewmodel_types';
 import { getSpecOrNull } from './heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 
-function isOverElement(prev: Cell[] = [], next: Cell[]) {
+function isOverElement(prev: Cell[], next: Cell[]) {
   if (next.length === 0) {
     return;
   }

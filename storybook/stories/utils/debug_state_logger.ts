@@ -7,9 +7,9 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { debounce } from 'ts-debounce';
 
 import { DebugState } from '@elastic/charts';
+import { debounce } from '@elastic/charts/src/utils/debounce';
 
 export const getDebugStateLogger = (debugState: boolean) => {
   const dataStateAction = action('DataState');
@@ -23,5 +23,5 @@ export const getDebugStateLogger = (debugState: boolean) => {
         : null;
       if (dataState) dataStateAction(dataState);
     }
-  }, 100);
+  }, 100) as () => void;
 };
