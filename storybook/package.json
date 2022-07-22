@@ -10,7 +10,7 @@
     "typecheck": "tsc -p ./tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@elastic/charts": "^46.11.2",
+    "@elastic/charts": "*",
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "^60.3.0",
     "@emotion/react": "^11.7.1",

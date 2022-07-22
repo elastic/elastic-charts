@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-// import { action } from '@storybook/addon-actions';
-
 import { action } from '@storybook/addon-actions';
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
