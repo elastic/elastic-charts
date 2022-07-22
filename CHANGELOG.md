@@ -1,3 +1,28 @@
+# [47.0.0](https://github.com/elastic/elastic-charts/compare/v46.13.0...v47.0.0) (2022-07-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^60.3.0 ([#1755](https://github.com/elastic/elastic-charts/issues/1755)) ([623b19f](https://github.com/elastic/elastic-charts/commit/623b19fd616371b9f8b1b5a3ca474acd1e8956e5))
+
+
+### Features
+
+* **tooltip:** composable tooltips - phase 1 ([#1725](https://github.com/elastic/elastic-charts/issues/1725)) ([e79fa20](https://github.com/elastic/elastic-charts/commit/e79fa20fa8536186a404de65d23323902d0600e5))
+
+
+### BREAKING CHANGES
+
+* **tooltip:** `Settings.tooltip` is deprecated in favor of the new `Tooltip` spec. Type changes related to `TooltipProps`, `TooltipSettings` and others see #1725. Changes to tooltip styles from dark to light theme. The Annotation tooltip class `.echAnnotation` used to target the icon, but now refers to the tooltip itself similar to `.echTooltip` and now `.echAnnotation__marker` refers to the icon itself.
+
+```diff
+ const tooltipProps = {...};
+ <Chart>
+-  <Settings tooltip={tooltipProps} />
++  <Tooltip {...tooltipProps} />
+ </Chart>
+```
+
 # [46.13.0](https://github.com/elastic/elastic-charts/compare/v46.12.1...v46.13.0) (2022-07-14)
 
 
