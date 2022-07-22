@@ -74,10 +74,12 @@ export function wrapTextV3(
         breakupWords.length > 0 ? measure(breakupWords[breakupWords.length - 1], font, fontSize, lineHeight).width : 0;
     } else {
       if (lines.length === 0) {
-        lines.push('');
+        lines.push(segment.segment.trimStart());
+        currentLineWidth += measure(segment.segment.trimStart(), font, fontSize, lineHeight).width;
+      } else {
+        lines[lines.length - 1] += segment.segment;
+        currentLineWidth += segment.width;
       }
-      lines[lines.length - 1] += segment.segment;
-      currentLineWidth += segment.width;
     }
   }
   if (lines.length > maxLines) {
@@ -114,7 +116,7 @@ export function breakLongWordIntoLines(
     if (line.length === 0) {
       break;
     } else {
-      lines.push(line[0]);
+      lines.push(line[0].trimStart());
       currentWordSection = currentWordSection.slice(line[0].length, Infinity);
     }
   }
@@ -134,7 +136,7 @@ export function breakLongWord(
     (chars) => measure(word.slice(0, chars), font, fontSize, lineHeight).width,
     word.length,
     maxLineWidth,
-    (n: number) => Math.ceil(n),
+    (n: number) => Math.floor(n),
     0,
   );
 
