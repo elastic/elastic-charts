@@ -80,11 +80,11 @@ export interface AnimationOptions {
 
 // @public
 export const AnimationSpeed: Readonly<{
-    extraFast: number;
-    fast: number;
-    normal: number;
-    slow: number;
-    extraSlow: number;
+    extraFast: 90;
+    fast: 150;
+    normal: 250;
+    slow: 350;
+    extraSlow: 500;
 }>;
 
 // @public (undocumented)
@@ -1088,7 +1088,7 @@ export function getNodeName(node: ArrayNode): string;
 // Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha
-export const Goal: (props: SFProps<GoalSpec, keyof typeof buildProps['overrides'], keyof typeof buildProps['defaults'], keyof typeof buildProps['optionals'], keyof typeof buildProps['requires']>) => null;
+export const Goal: (props: SFProps<GoalSpec, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
 
 // @alpha (undocumented)
 export interface GoalDomainRange {
@@ -2379,7 +2379,7 @@ export const SeriesType: Readonly<{
 export type SeriesType = $Values<typeof SeriesType>;
 
 // @public
-export const Settings: (props: SFProps<SettingsSpec, keyof typeof settingsBuildProps['overrides'], keyof typeof settingsBuildProps['defaults'], keyof typeof settingsBuildProps['optionals'], keyof typeof settingsBuildProps['requires']>) => null;
+export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuildProps)['overrides'], keyof (typeof settingsBuildProps)['defaults'], keyof (typeof settingsBuildProps)['optionals'], keyof (typeof settingsBuildProps)['requires']>) => null;
 
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
