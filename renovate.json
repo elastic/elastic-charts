@@ -17,7 +17,7 @@
     {
       "matchPackagePatterns": [".*"],
       "excludePackageNames": ["@elastic/eui", "@elastic/datemath", "prettier", "pretty-quick"],
-      "excludePackagePatterns": [".*typescript.*", "ts-.+", ".*eslint.*"],
+      "excludePackagePatterns": [".*typescript.*", "ts-.+", ".*eslint.*", "^@microsoft/api-.+"],
       "enabled": false
     },
     {
@@ -30,7 +30,7 @@
     },
     {
       "groupName": "typescript",
-      "matchPackagePatterns": [".*typescript.*", "ts-.+"],
+      "matchPackagePatterns": [".*typescript.*", "ts-.+", "^@microsoft/api-.+"],
       "schedule": ["every 3 weeks on monday"],
       "automerge": true,
       "enabled": true
