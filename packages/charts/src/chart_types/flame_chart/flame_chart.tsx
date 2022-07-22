@@ -851,7 +851,7 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Reset"
             style={{
-              color: this.isAtHomePosition() ? 'darkgray' : 'black',
+              color: this.navigator.queue().length === 1 ? 'darkgray' : 'black',
               fontWeight: 'bolder',
               paddingInline: 4,
             }}
@@ -861,7 +861,7 @@ class FlameComponent extends React.Component<FlameProps> {
               type="button"
               tabIndex={0}
               onClick={() => {
-                if (this.isAtHomePosition()) return;
+                if (this.navigator.queue().length === 1) return;
                 this.resetFocus();
               }}
               style={{ display: 'none' }}
