@@ -70,7 +70,7 @@ export const Example = () => {
   button('Set focus on random node', () => {
     focusOnNodeControl(Math.floor(20 * Math.random()));
   });
-  const debug = boolean('Debug history', true);
+  const debug = boolean('Debug history', false);
 
   return (
     <Chart>
