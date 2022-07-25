@@ -14,24 +14,17 @@ import { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
 export function textSegmenter(
   granularity: 'word' | 'grapheme',
   locale: string[],
-): (text: string) => Generator<{ segment: string; index: number; isWordLike: boolean }, void, unknown> {
+): (text: string) => { segment: string; index: number; isWordLike?: boolean }[] {
   if ('Segmenter' in Intl) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     const fn = new Intl.Segmenter(locale, { granularity });
-    return (text: string) => fn.segment(text);
+    return (text: string) => Array.from(fn.segment(text));
   } else {
-    return function* (text: string) {
-      const segments = text.split(' ');
-      let index = 0;
-      for (let i = 0; i < segments.length; i++) {
-        yield { segment: segments[i], index, isWordLike: true };
-        index += segments[i].length;
-        if (i < segments.length - 1) {
-          yield { segment: '', index, isWordLike: false };
-          index += 1;
-        }
-      }
+    return function (text: string) {
+      return text.split(' ').map((segment, index) => {
+        return { segment, index, isWordLike: true };
+      });
     };
   }
 }
