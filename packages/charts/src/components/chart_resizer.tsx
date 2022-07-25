@@ -10,12 +10,12 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 import ResizeObserver from 'resize-observer-polyfill';
-import { debounce } from 'ts-debounce';
 
 import { updateParentDimensions } from '../state/actions/chart_settings';
 import { GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { isFiniteNumber } from '../utils/common';
+import { debounce, DebouncedFunction } from '../utils/debounce';
 import { Dimensions } from '../utils/dimensions';
 
 interface ResizerStateProps {
@@ -39,14 +39,16 @@ class Resizer extends React.Component<ResizerProps> {
 
   private animationFrameID: number;
 
-  private onResizeDebounced: (entries: ResizeObserverEntry[]) => void;
+  private onResizeDebounced?: DebouncedFunction<
+    [entries: ResizeObserverEntry[]],
+    (entries: ResizeObserverEntry[]) => void
+  >;
 
   constructor(props: ResizerProps) {
     super(props);
     this.containerRef = React.createRef();
     this.ro = new ResizeObserver(this.handleResize);
     this.animationFrameID = NaN;
-    this.onResizeDebounced = () => {};
   }
 
   componentDidMount() {
@@ -76,7 +78,7 @@ class Resizer extends React.Component<ResizerProps> {
 
   handleResize = (entries: ResizeObserverEntry[]) => {
     if (this.initialResizeComplete) {
-      this.onResizeDebounced(entries);
+      this.onResizeDebounced?.(entries);
     } else {
       this.initialResizeComplete = true;
       this.onResize(entries);

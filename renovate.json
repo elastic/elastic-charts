@@ -8,21 +8,51 @@
   "rangeStrategy": "bump",
   "assignAutomerge": true,
   "semanticCommits": "enabled",
+  "labels": ["dependencies", "skip-newsletter"],
+  "reviewers": ["team:datavis"],
+  "schedule": ["every 3 weeks on monday"],
   "vulnerabilityAlerts": {
     "enabled": false
   },
   "packageRules": [
     {
       "matchPackagePatterns": [".*"],
-      "excludePackageNames": ["@elastic/eui", "@elastic/datemath"],
+      "excludePackageNames": ["@elastic/eui", "@elastic/datemath", "prettier", "pretty-quick"],
+      "excludePackagePatterns": [
+        ".*typescript.*",
+        "ts-.+",
+        ".*eslint.*",
+        "^@typescript-eslint/.+",
+        "^@microsoft/api-.+"
+      ],
       "enabled": false
     },
     {
       "groupName": "@elastic/eui",
       "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
-      "matchUpdateTypes": ["major", "minor"],
-      "reviewers": ["team:datavis"],
-      "labels": ["dependencies", "skip-newsletter"],
+      "matchUpdateTypes": ["major"],
+      "schedule": ["every week on monday"],
+      "automerge": true,
+      "enabled": true
+    },
+    {
+      "groupName": "typescript",
+      "matchPackagePatterns": [".*typescript.*", "ts-.+", "^@typescript-eslint/.+", "^@microsoft/api-.+"],
+      "excludePackageNames": ["ts-jest"],
+      "automerge": true,
+      "enabled": true
+    },
+    {
+      "groupName": "eslint",
+      "matchPackagePatterns": [".*eslint.*"],
+      "matchPackageNames": ["prettier", "pretty-quick"],
+      "excludePackagePatterns": [".*typescript.*", "^@typescript-eslint/.+"],
+      "automerge": true,
+      "enabled": true
+    },
+    {
+      "groupName": "jest",
+      "matchPackagePatterns": [".*jest.*"],
       "automerge": true,
       "enabled": true
     }

@@ -10,7 +10,7 @@
     "typecheck": "tsc -p ./tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@elastic/charts": "^30.2.0",
+    "@elastic/charts": "*",
     "@elastic/datemath": "^5.0.3",
     "@elastic/eui": "^61.0.0",
     "@emotion/react": "^11.7.1",
@@ -41,6 +41,6 @@
     "storybook-addon-background-toggle": "^0.0.1",
     "terser-webpack-plugin": "^4.2.3",
     "ts-loader": "^7.0.5",
-    "typescript": "^4.4.3"
+    "typescript": "^4.7.4"
   }
 }

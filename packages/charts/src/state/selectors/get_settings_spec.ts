@@ -6,11 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { debounce } from 'ts-debounce';
-
 import { ChartType } from '../../chart_types';
 import { SpecType, DEFAULT_SETTINGS_SPEC } from '../../specs/constants';
 import { SettingsSpec } from '../../specs/settings';
+import { debounce } from '../../utils/debounce';
 import { SpecList } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecsFromStore } from '../utils';
