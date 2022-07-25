@@ -11,7 +11,7 @@ import { ScaleType } from '../../../../scales/constants';
 import { isContinuousScale } from '../../../../scales/types';
 import { AxisSpec, SettingsSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isRTLString, Position, Rotation } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';

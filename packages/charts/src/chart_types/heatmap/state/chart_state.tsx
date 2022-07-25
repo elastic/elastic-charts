@@ -10,7 +10,7 @@ import React, { RefObject } from 'react';
 
 import { ChartType } from '../..';
 import { BrushTool } from '../../../components/brush/brush';
-import { Tooltip } from '../../../components/tooltip';
+import { Tooltip } from '../../../components/tooltip/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';

@@ -60,7 +60,7 @@ export const getOnElementOutSelector =
     prev.pickedShapes = nextPickedShapes;
   };
 
-function isNewPickedShapes(prevPickedShapes: LayerValue[][] = [], nextPickedShapes: LayerValue[][]) {
+function isNewPickedShapes(prevPickedShapes: LayerValue[][], nextPickedShapes: LayerValue[][]) {
   if (nextPickedShapes.length === 0) {
     return;
   }

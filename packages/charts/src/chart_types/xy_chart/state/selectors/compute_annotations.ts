@@ -8,7 +8,7 @@
 
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { AxisId } from '../../../../utils/ids';
 import { computeAnnotationDimensions } from '../../annotations/utils';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';

@@ -25,6 +25,7 @@ export const jestStep = createStep<CustomCommandStep>((ctx) => {
 function isSkippable(changes: ChangeContext): boolean | string {
   const hasTSChanges = changes.files.has('packages/charts/src/**/*.ts?(x)');
   const hasJestConfigChanges = changes.files.has([
+    'yarn.lock',
     'jest.config.js',
     'jest.tz.config.js',
     'tsconfig.jest.json',

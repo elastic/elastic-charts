@@ -1,3 +1,58 @@
+# [47.0.0](https://github.com/elastic/elastic-charts/compare/v46.13.0...v47.0.0) (2022-07-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^60.3.0 ([#1755](https://github.com/elastic/elastic-charts/issues/1755)) ([623b19f](https://github.com/elastic/elastic-charts/commit/623b19fd616371b9f8b1b5a3ca474acd1e8956e5))
+
+
+### Features
+
+* **tooltip:** composable tooltips - phase 1 ([#1725](https://github.com/elastic/elastic-charts/issues/1725)) ([e79fa20](https://github.com/elastic/elastic-charts/commit/e79fa20fa8536186a404de65d23323902d0600e5))
+
+
+### BREAKING CHANGES
+
+* **tooltip:** `Settings.tooltip` is deprecated in favor of the new `Tooltip` spec. Type changes related to `TooltipProps`, `TooltipSettings` and others see #1725. Changes to tooltip styles from dark to light theme. The Annotation tooltip class `.echAnnotation` used to target the icon, but now refers to the tooltip itself similar to `.echTooltip` and now `.echAnnotation__marker` refers to the icon itself.
+
+```diff
+ const tooltipProps = {...};
+ <Chart>
+-  <Settings tooltip={tooltipProps} />
++  <Tooltip {...tooltipProps} />
+ </Chart>
+```
+
+# [46.13.0](https://github.com/elastic/elastic-charts/compare/v46.12.1...v46.13.0) (2022-07-14)
+
+
+### Features
+
+* **utils:** expose `roundDateToESInterval` function ([#1754](https://github.com/elastic/elastic-charts/issues/1754)) ([a687211](https://github.com/elastic/elastic-charts/commit/a6872114d86d0ac540f7dfacfe6745351ab0752c))
+
+## [46.12.1](https://github.com/elastic/elastic-charts/compare/v46.12.0...v46.12.1) (2022-07-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^60.2.0 ([#1747](https://github.com/elastic/elastic-charts/issues/1747)) ([e0490c0](https://github.com/elastic/elastic-charts/commit/e0490c08d6ac7e3f96b1626eac7afe5a750547ac))
+* use typeof check to check for `process` variable ([#1751](https://github.com/elastic/elastic-charts/issues/1751)) ([93e4447](https://github.com/elastic/elastic-charts/commit/93e444798f6266e6c2b8987e6c74fdb876c57511))
+
+# [46.12.0](https://github.com/elastic/elastic-charts/compare/v46.11.2...v46.12.0) (2022-07-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^60.1.1 ([#1739](https://github.com/elastic/elastic-charts/issues/1739)) ([a213e86](https://github.com/elastic/elastic-charts/commit/a213e862a00b1933c4a8381adbf7d40adcdd0631))
+* **heatmap:** empty state only when there is no valid data ([#1726](https://github.com/elastic/elastic-charts/issues/1726)) ([9938498](https://github.com/elastic/elastic-charts/commit/993849893fca65aaeffe89c96d5dc45e3267ca23))
+
+
+### Features
+
+* **metric:** add click handling ([#1718](https://github.com/elastic/elastic-charts/issues/1718)) ([fc31956](https://github.com/elastic/elastic-charts/commit/fc31956c6b68ff9e99c22a1dbeecfd89e5ad9d0e))
+* **metric:** add icon and title padding ([#1720](https://github.com/elastic/elastic-charts/issues/1720)) ([65d06ca](https://github.com/elastic/elastic-charts/commit/65d06caaf16132b6016d6302f01488d9a537069d))
+* **metric:** progress bar should always start from zero ([#1737](https://github.com/elastic/elastic-charts/issues/1737)) ([bcf6566](https://github.com/elastic/elastic-charts/commit/bcf65663ef338d668c186d3a6596f143c75bc911))
+
 ## [46.11.2](https://github.com/elastic/elastic-charts/compare/v46.11.1...v46.11.2) (2022-06-28)
 
 

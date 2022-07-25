@@ -345,6 +345,13 @@ export function renderWithProps<P extends Record<string, any>>(El: ReactNode | C
 }
 
 /**
+ * Aligns component children to the correct output type
+ * @internal */
+export function renderComplexChildren(children: ReactNode): JSX.Element {
+  return (() => <>{children}</>)();
+}
+
+/**
  * Merges values of a partial structure with a base structure.
  *
  * @note No nested array merging

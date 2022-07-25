@@ -17,6 +17,7 @@ import { Plugins } from './plugins';
  */
 export type AgentQueue =
   | 'default'
+  | 'datavis-n2-2'
   | 'ci-group'
   | 'ci-group-4d'
   | 'ci-group-6'
@@ -48,7 +49,7 @@ export type Step = CustomGroupStep | CustomCommandStep;
 
 export const commandStepDefaults: Partial<CustomCommandStep> = {
   agents: {
-    queue: 'n2-2' as AgentQueue,
+    queue: 'datavis-n2-2' as AgentQueue,
   },
   skip: false,
   priority: 10,

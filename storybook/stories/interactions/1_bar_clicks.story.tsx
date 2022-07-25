@@ -17,6 +17,7 @@ import {
   Position,
   ScaleType,
   Settings,
+  Tooltip,
   TooltipValue,
   TooltipValueFormatter,
 } from '@elastic/charts';
@@ -45,10 +46,6 @@ export const Example = () => {
     return tooltip.value;
   };
 
-  const tooltipProps = {
-    headerFormatter,
-  };
-
   return (
     <Chart>
       <Settings
@@ -57,8 +54,8 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
         {...onElementListeners}
-        tooltip={tooltipProps}
       />
+      <Tooltip headerFormatter={headerFormatter} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

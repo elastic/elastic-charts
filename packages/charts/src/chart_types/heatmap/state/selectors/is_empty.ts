@@ -11,5 +11,5 @@ import { getHeatmapTableSelector } from './get_heatmap_table';
 
 /** @internal */
 export const isEmptySelector = createCustomCachedSelector([getHeatmapTableSelector], (heatmap): boolean => {
-  return heatmap.table.length === 0;
+  return heatmap.xValues.length === 0 || heatmap.yValues.length === 0;
 });

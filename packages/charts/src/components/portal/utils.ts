@@ -25,7 +25,7 @@ export const DEFAULT_POPPER_SETTINGS: Required<TooltipPortalSettings, 'fallbackP
 export function getOrCreateNode(
   id: string,
   className?: string,
-  parent: HTMLElement = document.body,
+  parent?: HTMLElement | null,
   zIndex: number = 0,
 ): HTMLDivElement {
   // eslint-disable-next-line unicorn/prefer-query-selector
@@ -40,7 +40,7 @@ export function getOrCreateNode(
     newNode.classList.add(className);
   }
   newNode.style.zIndex = `${zIndex}`;
-  parent.appendChild(newNode);
+  (parent ?? document.body).appendChild(newNode);
   return newNode;
 }
 
@@ -49,7 +49,7 @@ export function getOrCreateNode(
  * @internal
  */
 export function isHTMLElement(value: any): value is HTMLElement {
-  return typeof value === 'object' && value !== null && value.hasOwnProperty('nodeName');
+  return typeof value === 'object' && value !== null && 'nodeName' in value;
 }
 
 /**

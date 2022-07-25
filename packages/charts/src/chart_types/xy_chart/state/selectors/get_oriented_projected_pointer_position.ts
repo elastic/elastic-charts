@@ -8,7 +8,7 @@
 
 import { SettingsSpec } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getOrientedXPosition, getOrientedYPosition } from '../../utils/interactions';
 import { getPanelSize } from '../../utils/panel';
 import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';

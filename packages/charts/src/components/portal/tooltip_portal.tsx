@@ -12,7 +12,7 @@ import { createPortal } from 'react-dom';
 
 import { isDefined, mergePartial } from '../../utils/common';
 import { Padding } from '../../utils/dimensions';
-import { PortalAnchorRef, TooltipPortalSettings } from './types';
+import { PortalAnchorRef, PositionedPortalAnchorRef, TooltipPortalSettings } from './types';
 import { DEFAULT_POPPER_SETTINGS, getOrCreateNode, isHTMLElement } from './utils';
 
 /**
@@ -39,7 +39,7 @@ type PortalTooltipProps = {
   /**
    * Anchor element to use as position reference
    */
-  anchor: HTMLElement | PortalAnchorRef | null;
+  anchor: PortalAnchorRef | PositionedPortalAnchorRef;
   /**
    * Chart Id to add new anchor for each chart on the page
    */
@@ -68,14 +68,23 @@ const TooltipPortalComponent = ({
   chartId,
   zIndex,
 }: PortalTooltipProps) => {
+  const skipPositioning = isHTMLElement((anchor as PortalAnchorRef).current);
+  const { position } = anchor as PositionedPortalAnchorRef;
+
   /**
    * Anchor element used to position tooltip
    */
-  const anchorNode = useRef(
-    isHTMLElement(anchor)
-      ? anchor
-      : getOrCreateNode(`echAnchor${scope}__${chartId}`, undefined, anchor?.ref ?? undefined),
-  );
+  const anchorNode = useMemo(() => {
+    return (
+      (anchor as PortalAnchorRef)?.current ??
+      getOrCreateNode(
+        `echAnchor${scope}__${chartId}`,
+        undefined,
+        (anchor as PositionedPortalAnchorRef)?.appendRef?.current,
+      )
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [(anchor as PortalAnchorRef)?.current ?? (anchor as PositionedPortalAnchorRef)?.appendRef?.current]);
 
   /**
    * This must not be removed from DOM throughout life of this component.
@@ -99,8 +108,6 @@ const TooltipPortalComponent = ({
     () => mergePartial(DEFAULT_POPPER_SETTINGS, settings),
     [settings],
   );
-  const anchorPosition = (anchor as PortalAnchorRef)?.position;
-  const position = useMemo(() => (isHTMLElement(anchor) ? null : anchorPosition), [anchor, anchorPosition]);
   const destroyPopper = useCallback(() => {
     if (popper.current) {
       popper.current.destroy();
@@ -109,12 +116,10 @@ const TooltipPortalComponent = ({
   }, []);
 
   const setPopper = useCallback(() => {
-    if (!isDefined(anchorNode.current) || !visible) {
-      return;
-    }
+    if (!visible) return;
 
     const { fallbackPlacements, placement, boundary, offset, boundaryPadding } = popperSettings;
-    popper.current = createPopper(anchorNode.current, portalNode.current, {
+    popper.current = createPopper(anchorNode, portalNode.current, {
       strategy: 'absolute',
       placement,
       modifiers: [
@@ -181,30 +186,30 @@ const TooltipPortalComponent = ({
   }, [destroyPopper, setPopper, visible]);
 
   const updateAnchorDimensions = useCallback(() => {
-    if (!position || !visible) {
+    if (!position || !visible || skipPositioning) {
       return;
     }
 
     const { x, y, width, height } = position;
-    anchorNode.current.style.transform = `translate(${x}px, ${y}px)`;
+    anchorNode.style.transform = `translate(${x}px, ${y}px)`;
 
     if (isDefined(width)) {
-      anchorNode.current.style.width = `${width}px`;
+      anchorNode.style.width = `${width}px`;
     }
 
     if (isDefined(height)) {
-      anchorNode.current.style.height = `${height}px`;
+      anchorNode.style.height = `${height}px`;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, anchorNode, position?.x, position?.y, position?.width, position?.height]);
 
   useEffect(() => {
-    if (!position) {
+    if (!position && !skipPositioning) {
       portalNode.current.classList.add('echTooltipPortal__invisible');
       return;
     }
     portalNode.current.classList.remove('echTooltipPortal__invisible');
-  }, [position]);
+  }, [position, skipPositioning]);
 
   useEffect(() => {
     if (popper.current) {

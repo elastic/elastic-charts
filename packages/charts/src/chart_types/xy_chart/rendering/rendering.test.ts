@@ -40,6 +40,7 @@ describe('Rendering utils', () => {
       color: 'red',
       seriesIdentifier: {
         specId: 'id',
+        xAccessor: 'x',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [],
@@ -71,6 +72,7 @@ describe('Rendering utils', () => {
       color: 'red',
       seriesIdentifier: {
         specId: 'id',
+        xAccessor: 'x',
         yAccessor: 'y1',
         splitAccessors: new Map(),
         seriesKeys: [],
@@ -114,6 +116,7 @@ describe('Rendering utils', () => {
   describe('should get common geometry style dependent on legend item highlight state', () => {
     const seriesIdentifier: XYChartSeriesIdentifier = {
       specId: 'id',
+      xAccessor: 'x',
       yAccessor: 'y1',
       splitAccessors: new Map(),
       seriesKeys: [],
@@ -241,6 +244,7 @@ describe('Rendering utils', () => {
     };
     const seriesIdentifier: XYChartSeriesIdentifier = {
       specId: 'test',
+      xAccessor: 'tex',
       yAccessor: 'test',
       splitAccessors: new Map(),
       seriesKeys: ['test'],
@@ -333,6 +337,7 @@ describe('Rendering utils', () => {
     };
     const seriesIdentifier: XYChartSeriesIdentifier = {
       specId: 'test',
+      xAccessor: 'tex',
       yAccessor: 'test',
       splitAccessors: new Map(),
       seriesKeys: ['test'],

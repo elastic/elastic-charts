@@ -8,7 +8,7 @@
 
 import React, { RefObject } from 'react';
 
-import { Tooltip } from '../../../../components/tooltip';
+import { Tooltip } from '../../../../components/tooltip/tooltip';
 import { BackwardRef } from '../../../../state/chart_state';
 import { Partition } from '../canvas/partition';
 import { HighlighterFromHover } from './highlighter_hover';

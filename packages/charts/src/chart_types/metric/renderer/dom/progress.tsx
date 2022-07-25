@@ -15,13 +15,13 @@ import { MetricWProgress } from '../../specs';
 
 /** @internal */
 export const ProgressBar: React.FunctionComponent<{
-  datum: Pick<MetricWProgress, 'title' | 'domain' | 'value' | 'color' | 'progressBarDirection'>;
+  datum: MetricWProgress;
   barBackground: Color;
-}> = ({ datum: { title, domain, value, color, progressBarDirection }, barBackground }) => {
+}> = ({ datum: { title, domainMax, value, color, progressBarDirection }, barBackground }) => {
   const verticalDirection = progressBarDirection === LayoutDirection.Vertical;
   // currently we provide only the small progress bar;
   const isSmall = true;
-  const percent = Number(clamp((domain ? value / (domain.max - domain.min) : 1) * 100, 0, 100).toFixed(2));
+  const percent = Number(clamp((value / domainMax) * 100, 0, 100).toFixed(1));
 
   const bgClassName = classNames('echSingleMetricProgress', {
     'echSingleMetricProgress--vertical': verticalDirection,
@@ -35,10 +35,10 @@ export const ProgressBar: React.FunctionComponent<{
   });
   const percentProp = verticalDirection ? { height: `${percent}%` } : { width: `${percent}%` };
   return (
-    <div className={bgClassName} style={{ background: isSmall ? barBackground : undefined }}>
+    <div className={bgClassName} style={{ backgroundColor: isSmall ? barBackground : undefined }}>
       <div
         className={barClassName}
-        style={{ background: color, ...percentProp }}
+        style={{ backgroundColor: color, ...percentProp }}
         role="meter"
         aria-label={title ? `Percentage of ${title}` : 'Percentage'}
         aria-valuemin={0}

@@ -279,7 +279,7 @@ function getTimeTicks(domain: number[], desiredTickCount: number, timeZone: stri
 function getLinearNonDenserTicks(
   domain: number[],
   desiredTickCount: number,
-  base: number = 2,
+  base: number,
   minInterval: number,
 ): number[] {
   const start = domain[0];

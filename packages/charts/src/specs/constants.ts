@@ -21,6 +21,7 @@ export const SpecType = Object.freeze({
   Axis: 'axis' as const,
   Annotation: 'annotation' as const,
   Settings: 'settings' as const,
+  Tooltip: 'tooltip' as const,
   IndexOrder: 'index_order' as const,
   SmallMultiples: 'small_multiples' as const,
 });
@@ -125,19 +126,6 @@ export const TooltipStickTo = Object.freeze({
 });
 /** @public */
 export type TooltipStickTo = $Values<typeof TooltipStickTo>;
-/**
- * Default value for the tooltip type
- * @defaultValue `vertical` {@link (TooltipType:type) | TooltipType.VerticalCursor}
- * @public
- */
-export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
-
-/**
- * Default value for the tooltip snap
- * @defaultValue `true`
- * @public
- */
-export const DEFAULT_TOOLTIP_SNAP = true;
 
 /**
  * Default legend config
@@ -149,16 +137,6 @@ export const DEFAULT_LEGEND_CONFIG = {
   showLegendExtra: false,
   legendMaxDepth: Infinity,
   legendPosition: Position.Right,
-};
-
-/**
- * Default tooltip config
- * @internal
- */
-export const DEFAULT_TOOLTIP_CONFIG = {
-  type: DEFAULT_TOOLTIP_TYPE,
-  snap: DEFAULT_TOOLTIP_SNAP,
-  showNullValues: false,
 };
 
 /** @public */
@@ -174,7 +152,6 @@ export const settingsBuildProps = buildSFProps<SettingsSpec>()(
     animateData: true,
     resizeDebounce: 10,
     debug: false,
-    tooltip: DEFAULT_TOOLTIP_CONFIG,
     pointerUpdateTrigger: PointerUpdateTrigger.X,
     externalPointerEvents: {
       tooltip: {

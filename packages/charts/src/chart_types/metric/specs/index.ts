@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps, ReactElement } from 'react';
+import { ComponentProps, ComponentType, ReactElement } from 'react';
 import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
@@ -24,11 +24,12 @@ export type MetricBase = {
   title?: string;
   subtitle?: string;
   extra?: ReactElement;
+  icon?: ComponentType<{ width: number; height: number; color: Color }>;
 };
 
 /** @alpha */
 export type MetricWProgress = MetricBase & {
-  domain: { min: number; max: number };
+  domainMax: number;
   progressBarDirection?: LayoutDirection;
 };
 
@@ -72,10 +73,10 @@ export type MetricSpecProps = ComponentProps<typeof Metric>;
 
 /** @internal */
 export function isMetricWProgress(datum: MetricBase | MetricWProgress | MetricWTrend): datum is MetricWProgress {
-  return datum.hasOwnProperty('domain') && !datum.hasOwnProperty('trend');
+  return datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend');
 }
 
 /** @internal */
 export function isMetricWTrend(datum: MetricBase | MetricWProgress | MetricWTrend): datum is MetricWTrend {
-  return datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domain');
+  return datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domainMax');
 }

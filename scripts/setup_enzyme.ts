@@ -45,3 +45,5 @@ window.ResizeObserver = ResizeObserverMock;
 class Path2D {}
 // @ts-ignore - setting mock override
 window.Path2D = Path2D;
+
+window.HTMLCanvasElement.prototype.getContext = jest.fn();

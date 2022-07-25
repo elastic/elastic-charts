@@ -295,8 +295,9 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
 
 /** @internal */
 export const chartStoreReducer = (chartId: string) => {
-  const initialState = getInitialState(chartId);
-  return (state = initialState, action: StateActions): GlobalChartState => {
+  // redux types controls state as first parameter
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  return (state = getInitialState(chartId), action: StateActions): GlobalChartState => {
     switch (action.type) {
       case Z_INDEX_EVENT:
         return {

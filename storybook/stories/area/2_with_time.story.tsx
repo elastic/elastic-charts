@@ -9,7 +9,17 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Placement, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
+import {
+  AreaSeries,
+  Axis,
+  Chart,
+  Placement,
+  Position,
+  ScaleType,
+  Settings,
+  timeFormatter,
+  Tooltip,
+} from '@elastic/charts';
 import { isDefined } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -20,15 +30,12 @@ const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => (
   <Chart>
-    <Settings
-      tooltip={{
-        stickTo: getStickToKnob('stickTo'),
-        placement: getPlacementKnob('placement', undefined),
-        fallbackPlacements: [getPlacementKnob('fallback placement', Placement.LeftStart)].filter(isDefined),
-        offset: number('placement offset', 5),
-      }}
-      baseTheme={useBaseTheme()}
-      rotation={getChartRotationKnob()}
+    <Settings baseTheme={useBaseTheme()} rotation={getChartRotationKnob()} />
+    <Tooltip
+      stickTo={getStickToKnob('stickTo')}
+      placement={getPlacementKnob('placement', undefined)}
+      fallbackPlacements={[getPlacementKnob('fallback placement', Placement.LeftStart)].filter(isDefined)}
+      offset={number('placement offset', 5)}
     />
     <Axis
       id="bottom"

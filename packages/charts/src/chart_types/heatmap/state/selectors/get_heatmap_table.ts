@@ -11,7 +11,7 @@ import { extent } from 'd3-array';
 import { getPredicateFn } from '../../../../common/predicate';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getAccessorValue } from '../../../../utils/accessor';
 import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { isFiniteNumber, isNonNullablePrimitiveValue } from '../../../../utils/common';

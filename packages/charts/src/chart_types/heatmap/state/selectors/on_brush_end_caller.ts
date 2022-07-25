@@ -13,7 +13,7 @@ import { HeatmapBrushEvent, SettingsSpec } from '../../../../specs/settings';
 import { DragState, GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { DragCheckProps, hasDragged } from '../../../../utils/events';
 import { HeatmapSpec } from '../../specs';
 import { getPickedCells } from './get_picked_cells';

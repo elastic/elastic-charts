@@ -24,6 +24,10 @@ import { OctokitParameters } from './types';
 
 if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
 
+const defaultMMOptions: MinimatchOptions = {
+  dot: true,
+};
+
 const auth = JSON.parse(process.env.GITHUB_AUTH);
 const MyOctokit = Octokit.plugin(retry);
 export const octokit = new MyOctokit({
@@ -68,7 +72,7 @@ class FilesContext {
 
     return this.names.filter((f) => {
       return patterns.some((pattern) =>
-        typeof pattern === 'string' ? minimatch(f, pattern, options) : pattern.exec(f),
+        typeof pattern === 'string' ? minimatch(f, pattern, { ...defaultMMOptions, ...options }) : pattern.exec(f),
       );
     });
   }
@@ -94,7 +98,7 @@ class FilesContext {
 
     return this.names.some((f) => {
       return patterns.some((pattern) =>
-        typeof pattern === 'string' ? minimatch(f, pattern, options) : pattern.exec(f),
+        typeof pattern === 'string' ? minimatch(f, pattern, { ...defaultMMOptions, ...options }) : pattern.exec(f),
       );
     });
   }
@@ -256,10 +260,11 @@ export const updateCheckStatus = async (
         ...defaultGHOptions,
         details_url: bkEnv.jobUrl,
         ...options,
-        ...(options.status === 'in_progress' && {
-          // Updates start time when job actually starts to run
-          started_at: new Date().toISOString(),
-        }),
+        ...(options.status === 'in_progress' &&
+          checkRun.status !== 'in_progress' && {
+            // Updates start time when job actually starts to run
+            started_at: new Date().toISOString(),
+          }),
         output,
         external_id: checkId,
         check_run_id: checkRun.id, // required
