@@ -57,7 +57,8 @@ export const Example = () => {
   const width = 500;
   const height = 500;
   return (
-    <>
+    <div className="echChart">
+      <div className="echChartStatus" data-ech-render-complete={true} />
       <div>
         <label style={{ display: 'inline-block', width: 200 }}> Max Line Width [{maxLineWidth}px]</label>
         <input
@@ -106,14 +107,15 @@ export const Example = () => {
             onInput={(e) => setText(e.currentTarget.value)}
           />
         </div>
+
+        <p>Canvas Text</p>
+        <canvas
+          ref={canvasRef}
+          width={width * window.devicePixelRatio}
+          height={height * window.devicePixelRatio}
+          style={{ width, height }}
+        />
       </div>
-      <p>Canvas Text</p>
-      <canvas
-        ref={canvasRef}
-        width={width * window.devicePixelRatio}
-        height={height * window.devicePixelRatio}
-        style={{ width, height }}
-      />
-    </>
+    </div>
   );
 };
