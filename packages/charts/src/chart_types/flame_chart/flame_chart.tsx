@@ -33,13 +33,7 @@ import { getSpecsFromStore } from '../../state/utils';
 import { clamp, isFiniteNumber } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
-import {
-  NavigationStrategy,
-  ClickStrategy1,
-  ClickStrategy2,
-  ClickZoomStrategy1,
-  ClickZoomStrategy2,
-} from './navigation';
+import { NavigationStrategy, NavBtnControlledZoomPanHistory } from './navigation';
 import { roundUpSize } from './render/common';
 import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
@@ -157,7 +151,6 @@ interface StateProps {
   onElementClick: NonNullable<SettingsSpec['onElementClick']>;
   onElementOut: NonNullable<SettingsSpec['onElementOut']>;
   onRenderChange: NonNullable<SettingsSpec['onRenderChange']>;
-  navigationStrategy: number;
 }
 
 interface DispatchProps {
@@ -222,7 +215,6 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // navigation
   private navigator: NavigationStrategy;
-  private navigationStrategy: number;
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
@@ -249,8 +241,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentFocus = { ...this.targetFocus };
 
     // Initialize nav queue with the root element
-    this.navigator = this.getNavigationStrategy();
-    this.navigationStrategy = this.props.navigationStrategy;
+    this.navigator = new NavBtnControlledZoomPanHistory({ ...this.getFocusOnRoot(), index: 0 });
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
@@ -259,21 +250,6 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // search
     this.currentColor = columns.color;
-  }
-
-  private getNavigationStrategy(): NavigationStrategy {
-    const root = { ...this.getFocusOnRoot(), index: 0 };
-    switch (this.props.navigationStrategy) {
-      case 1:
-        return new ClickStrategy2(root);
-      case 2:
-        return new ClickZoomStrategy1(root);
-      case 3:
-        return new ClickZoomStrategy2(root);
-      default:
-      case 0:
-        return new ClickStrategy1(root);
-    }
   }
 
   private canNavigateForward = () => this.navigator.canNavForward();
@@ -296,10 +272,6 @@ class FlameComponent extends React.Component<FlameProps> {
     } else {
       this.focusOnRect(element);
     }
-  }
-
-  private static isZoomPanNav(nav: NavRect) {
-    return Number.isNaN(nav.index);
   }
 
   /**
@@ -410,10 +382,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.bindControls();
     this.ensureTextureAndDraw();
 
-    if (this.navigationStrategy !== this.props.navigationStrategy) {
-      this.navigator = this.getNavigationStrategy();
-      this.navigationStrategy = this.props.navigationStrategy;
-    }
     // eg. due to chartDimensions (parentDimensions) change
     // this.props.onChartRendered() // creates and infinite update loop
   };
@@ -767,8 +735,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
-  private isAtHomePosition = () => this.targetFocus.x0 === 0 && this.targetFocus.x1 === 1 && this.targetFocus.y1 === 1;
-
   render = () => {
     const {
       forwardStageRef,
@@ -1053,7 +1019,7 @@ class FlameComponent extends React.Component<FlameProps> {
             <ul>
               {this.navigator.queue().map((d, i) => {
                 return (
-                  <li key={`${d.index}-${i}`}>{`${FlameComponent.isZoomPanNav(d) ? 'ZOOM/PAN' : d.index}${
+                  <li key={`${d.index}-${i}`}>{`${Number.isNaN(d.index) ? 'ZOOM/PAN' : d.index}${
                     this.navigator.index() === i ? '⬅' : ''
                   }`}</li>
                 );
@@ -1234,7 +1200,6 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const settingsSpec = getSettingsSpecSelector(state);
   return {
     debugHistory: settingsSpec.debug,
-    navigationStrategy: flameSpec?.navigationStrategy,
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
     controlProviderCallback: flameSpec?.controlProviderCallback ?? {},
     animationDuration: flameSpec?.animation.duration ?? 0,
