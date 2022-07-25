@@ -620,7 +620,8 @@ class FlameComponent extends React.Component<FlameProps> {
 
     if (Number.isFinite(x0) && searchString.length > 0) {
       Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
-      this.addToNav({ ...this.targetFocus, index: NaN });
+      // disabled for now, reintroduce it if we want to include it into the history nav
+      // this.addToNav({ ...this.targetFocus, index: NaN });
     }
   };
 
@@ -703,7 +704,8 @@ class FlameComponent extends React.Component<FlameProps> {
       }
       if (hitEnumerator >= 0) {
         this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
-        this.addToNav({ ...this.targetFocus, index: NaN });
+        // disable until we consider that part of the navigation
+        // this.addToNav({ ...this.targetFocus, index: NaN });
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
         this.wobbleTimeLeft = WOBBLE_DURATION;
@@ -818,7 +820,7 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Reset"
             style={{
-              color: this.navigator.queue().length === 1 ? 'darkgray' : 'black',
+              color: 'black',
               fontWeight: 'bolder',
               paddingInline: 4,
             }}
@@ -828,7 +830,6 @@ class FlameComponent extends React.Component<FlameProps> {
               type="button"
               tabIndex={0}
               onClick={() => {
-                if (this.navigator.queue().length === 1) return;
                 this.resetFocus();
               }}
               style={{ display: 'none' }}
