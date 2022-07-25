@@ -40,7 +40,7 @@ export const exec = async (
       },
     });
 
-    onSuccess?.();
+    await onSuccess?.();
 
     return result;
   } catch (error) {

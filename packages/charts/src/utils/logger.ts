@@ -23,7 +23,7 @@ export class Logger {
    * @param message
    * @param optionalParams
    */
-  static warn(message?: any, ...optionalParams: any[]) {
+  static warn(message?: unknown, ...optionalParams: unknown[]) {
     if (Logger.isDevelopment() && !Logger.isTest()) {
       console.warn(`${Logger.namespace} ${message}`, ...optionalParams);
     }
@@ -32,7 +32,7 @@ export class Logger {
   /**
    * Log expected value warning to console
    */
-  static expected(message: any, expected: any, received: any) {
+  static expected(message: unknown, expected: unknown, received: unknown) {
     if (Logger.isDevelopment() && !Logger.isTest()) {
       console.warn(
         `${Logger.namespace} ${message}`,
@@ -50,7 +50,7 @@ export class Logger {
    * @param message
    * @param optionalParams
    */
-  static error(message?: any, ...optionalParams: any[]) {
+  static error(message?: unknown, ...optionalParams: unknown[]) {
     if (Logger.isDevelopment() && !Logger.isTest()) {
       console.error(`${Logger.namespace} ${message}`, ...optionalParams);
     }

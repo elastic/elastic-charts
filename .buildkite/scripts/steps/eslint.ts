@@ -30,6 +30,11 @@ void (async () => {
   await yarnInstall('.buildkite');
   await yarnInstall('github_bot');
 
+  // TODO: fix this to avoid requiring build to run linting
+  // currently the storybook and others are loosely coupled to @elastic/charts/src
+  // such that types point to the local source and not a packaged release
+  await exec('yarn build:ts');
+
   if (bkEnv.isPullRequest && !hasLintConfigChanges) {
     const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
 

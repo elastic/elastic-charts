@@ -45,8 +45,8 @@ export class MockStore {
   }
 
   static updateDimensions(
-    { width, height, top, left } = { width: 100, height: 100, top: 0, left: 0 },
     store: Store<GlobalChartState>,
+    { width, height, top, left } = { width: 100, height: 100, top: 0, left: 0 },
   ) {
     store.dispatch(updateParentDimensions({ width, height, top, left }));
   }

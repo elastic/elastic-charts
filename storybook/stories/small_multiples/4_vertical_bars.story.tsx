@@ -32,7 +32,7 @@ import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const numOfDays = 7;
-function generateData(totalGroups = 2, mappings: Record<string, string>) {
+function generateData(totalGroups: number, mappings: Record<string, string>) {
   return dg.generateGroupedSeries(numOfDays, totalGroups).map((d) => {
     return {
       ...d,

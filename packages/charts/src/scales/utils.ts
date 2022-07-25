@@ -13,7 +13,7 @@ export function getLinearNonDenserTicks(
   start: number,
   stop: number,
   count: number,
-  base: number = 2,
+  base: number,
   minInterval: number,
 ): number[] {
   let currentCount = count;
