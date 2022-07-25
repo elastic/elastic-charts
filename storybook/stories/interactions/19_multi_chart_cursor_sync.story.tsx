@@ -20,6 +20,7 @@ import {
   TooltipType,
   LineSeries,
   Heatmap,
+  Tooltip,
 } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
@@ -39,7 +40,7 @@ const aggData = [
 
       return acc;
     }, [])
-    .map(({ x, y, value }, i) => (rng()) > 0.6 ? { x, y, value: null } : { x, y, value })),
+    .map(({ x, y, value }) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
   ...KIBANA_METRICS.metrics.kibana_os_load[1].data
     .reduce<{ x: number; y: string; value: number }[]>((acc, [x, y], i) => {
       if (i % 5 === 0) {
@@ -50,7 +51,7 @@ const aggData = [
 
       return acc;
     }, [])
-    .map(({ x, y, value }, i) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
+    .map(({ x, y, value }) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
   ...KIBANA_METRICS.metrics.kibana_os_load[2].data
     .reduce<{ x: number; y: string; value: number }[]>((acc, [x, y], i) => {
       if (i % 5 === 0) {
@@ -61,14 +62,13 @@ const aggData = [
 
       return acc;
     }, [])
-    .map(({ x, y, value }, i) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
+    .map(({ x, y, value }) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
 ];
 
 export const Example = () => {
   const ref1 = React.useRef<Chart>(null);
   const ref2 = React.useRef<Chart>(null);
   const ref3 = React.useRef<Chart>(null);
-
 
   const pointerUpdate = (event: PointerEvent) => {
     if (ref1.current) {
@@ -97,8 +97,8 @@ export const Example = () => {
           pointerUpdateDebounce={0}
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{ tooltip: { visible: true, placement: Placement.Left } }}
-          tooltip={{ type: TooltipType.VerticalCursor, placement: Placement.Left, stickTo: Position.Top }}
         />
+        <Tooltip type={TooltipType.VerticalCursor} placement={Placement.Left} stickTo={Position.Top} />
         <Axis
           id="bottom"
           position={Position.Bottom}
@@ -134,7 +134,7 @@ export const Example = () => {
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_response_times[0].data}
           yNice
-          color={"#343741"}
+          color="#343741"
         />
       </Chart>
       <div style={{ paddingLeft: 52, height: 30, lineHeight: '30px' }}>Number of requests</div>
@@ -144,13 +144,13 @@ export const Example = () => {
           pointerUpdateDebounce={0}
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{ tooltip: { visible: true, placement: Placement.Left } }}
-          tooltip={{ type: TooltipType.VerticalCursor, placement: Placement.Left, stickTo: Position.Top }}
           theme={{
             chartPaddings: { top: 0, bottom: 0, left: 0, right: 0 },
             chartMargins: { top: 0, bottom: 0, left: 16, right: 0 },
             lineSeriesStyle: { point: { visible: false } },
           }}
         />
+        <Tooltip type={TooltipType.VerticalCursor} placement={Placement.Left} stickTo={Position.Top} />
         <Axis
           id="bottom"
           position={Position.Bottom}
@@ -182,7 +182,7 @@ export const Example = () => {
           xAccessor={0}
           yAccessors={[1]}
           data={KIBANA_METRICS.metrics.kibana_requests[0].data}
-          color={"#343741"}
+          color="#343741"
           yNice
         />
       </Chart>
@@ -250,7 +250,6 @@ export const Example = () => {
               unit: 'ms',
               value: aggData[1].x - aggData[0].x,
             },
-
           }}
           xAxisLabelFormatter={(v) =>
             DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm', { timeZone: 'Europe/Rome' })

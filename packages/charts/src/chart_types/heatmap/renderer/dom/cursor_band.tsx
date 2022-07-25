@@ -13,18 +13,16 @@ import { Rect } from '../../../../geoms/types';
 import { getTooltipType } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
-import { Rotation } from '../../../../utils/common';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
 import { getCursorBandPositionSelector } from '../../state/selectors/get_cursor_band';
 
 interface CursorBandProps {
-  theme: Theme;
-  chartRotation: Rotation;
+  bandStyle: Theme['crosshair']['band'];
   cursorPosition?: Rect;
   tooltipType: TooltipType;
   fromExternalEvent?: boolean;
@@ -38,20 +36,13 @@ class CursorBandComponent extends React.Component<CursorBandProps> {
   static displayName = 'CursorBand';
 
   render() {
-    const {
-      theme: {
-        crosshair: { band },
-      },
-      cursorPosition,
-      tooltipType,
-      fromExternalEvent,
-    } = this.props;
+    const { bandStyle, cursorPosition, tooltipType, fromExternalEvent } = this.props;
     const isBand = (cursorPosition?.width ?? 0) > 0 && (cursorPosition?.height ?? 0) > 0;
-    if (!isBand || !cursorPosition || !canRenderBand(tooltipType, band.visible, fromExternalEvent)) {
+    if (!isBand || !cursorPosition || !canRenderBand(tooltipType, bandStyle.visible, fromExternalEvent)) {
       return null;
     }
     const { x, y, width, height } = cursorPosition;
-    const { fill } = band;
+    const { fill } = bandStyle;
     return (
       <svg className="echCrosshair__cursor" width="100%" height="100%">
         <rect {...{ x, y, width, height, fill, opacity: 0.5 }} />
@@ -63,19 +54,18 @@ class CursorBandComponent extends React.Component<CursorBandProps> {
 const mapStateToProps = (state: GlobalChartState): CursorBandProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return {
-      theme: LIGHT_THEME,
-      chartRotation: 0,
+      bandStyle: LIGHT_THEME.crosshair.band,
       tooltipType: TooltipType.None,
     };
   }
   const settings = getSettingsSpecSelector(state);
+  const tooltip = getTooltipSpecSelector(state);
   const cursorBandPosition = getCursorBandPositionSelector(state);
   const fromExternalEvent = cursorBandPosition?.fromExternalEvent;
-  const tooltipType = getTooltipType(settings, fromExternalEvent);
+  const tooltipType = getTooltipType(tooltip, settings, fromExternalEvent);
 
   return {
-    theme: getChartThemeSelector(state),
-    chartRotation: getChartRotationSelector(state),
+    bandStyle: getChartThemeSelector(state).crosshair.band,
     cursorPosition: cursorBandPosition,
     tooltipType,
     fromExternalEvent,

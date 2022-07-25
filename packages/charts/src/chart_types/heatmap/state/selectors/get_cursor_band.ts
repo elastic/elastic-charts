@@ -10,7 +10,7 @@ import { Rect } from '../../../../geoms/types';
 import { isPointerOverEvent, PointerEvent, SettingsSpec } from '../../../../specs';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { getHeatmapGeometries } from './geometries';
