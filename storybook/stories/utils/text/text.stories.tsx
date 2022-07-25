@@ -6,9 +6,8 @@
  * Side Public License, v 1.
  */
 
-export default {
-  title: 'Metric (@alpha)',
-};
+export { Example as wrap } from './1_wrap.story';
 
-export { Example as basic } from './1_basic.story';
-export { Example as grid } from './2_grid.story';
+export default {
+  title: 'Utils/Text',
+};

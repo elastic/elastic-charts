@@ -11,11 +11,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Font, cssFontShorthand } from '@elastic/charts/src/common/text_utils';
 import { withContext } from '@elastic/charts/src/renderers/canvas';
 import { withTextMeasure } from '@elastic/charts/src/utils/bbox/canvas_text_bbox_calculator';
-import { wrapTextV3 } from '@elastic/charts/src/utils/text/wrap';
+import { wrapText } from '@elastic/charts/src/utils/text/wrap';
 
 const fontSize = 24;
-const defaultText =
-  'Bacon ipsum dolor amet frankfurter chicken cupim, tri-tip flank kielbasa jerky. Pork strip steak jowl chuck filet mignon, burgdoggen kevin tail.';
 const font: Font = {
   fontStyle: 'normal',
   fontFamily: 'sans-serif',
@@ -23,44 +21,35 @@ const font: Font = {
   fontWeight: 500,
   textColor: 'red',
 };
+const fontStyle = cssFontShorthand(font, fontSize);
+const defaultText =
+  'Bacon ipsum dolor amet mongoloadgendecoblue58d844d55c-9c24dtip flank kielbasa. Pork strip steak jowl chuck filet mignon, burgdoggen kevin tail.';
 
 export const Example = () => {
-  // const text = textInput(
-  //   'text',
-  //   'Bacon ipsum dolor amet frankfurter chicken cupim, tri-tip flank kielbasa jerky. Pork strip steak jowl chuck filet mignon, burgdoggen kevin tail.',
-  // );
-  // const maxLineWidth = number('maxLineWidth', 150, { range: true, min: 0, max: 400 });
-  // const maxLines = number('maxLines', 3, { range: true, min: 1, max: 20 });
-
-  const [maxLineWidth, setMaxLineWidth] = useState(400);
-  const [maxLines, setMaxLines] = useState(4);
+  const [maxLineWidth, setMaxLineWidth] = useState(300);
+  const [maxLines, setMaxLines] = useState(3);
   const [text, setText] = useState(defaultText);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const fontStyle = cssFontShorthand(font, fontSize);
-
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext('2d')!;
 
     withContext(ctx, () => {
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       ctx.fillStyle = 'white';
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       ctx.font = fontStyle;
       ctx.textBaseline = 'hanging';
       ctx.strokeStyle = 'black';
-
+      ctx.fillStyle = 'black';
+      ctx.strokeRect(0, 0, maxLineWidth, fontSize * maxLines);
       withTextMeasure((measure) => {
-        const lines = wrapTextV3(text, measure, fontSize, font, fontSize, maxLineWidth, maxLines);
-        // const lines = breakLongWordIntoLines(text, measure, fontSize, font, fontSize, maxLineWidth, 2);
-        ctx.strokeRect(0, 0, maxLineWidth, fontSize * maxLines);
-        ctx.fillStyle = 'black';
-
+        const lines = wrapText(text, measure, fontSize, font, fontSize, maxLineWidth, maxLines);
         lines.forEach((line, i) => {
-          ctx.fillText(line, 1, 2 + i * fontSize);
+          ctx.fillText(line, 0, i * fontSize);
         });
       });
     });
@@ -96,7 +85,7 @@ export const Example = () => {
             margin: '20px 0',
           }}
         >
-          <p>HTML Text</p>
+          <p>HTML Text (editable)</p>
 
           <textarea
             style={{
@@ -107,7 +96,6 @@ export const Example = () => {
               fontSize,
               overflow: 'hidden',
               fontFamily: font.fontFamily,
-              // fontWeight: font.fontWeight,
               fontStyle: font.fontStyle,
               fontVariant: font.fontVariant,
               lineHeight: `${fontSize}px`,

@@ -37,7 +37,7 @@ export function textSegmenter(
 }
 
 /** @internal */
-export function wrapTextV3(
+export function wrapText(
   text: string,
   measure: TextMeasure,
   lineHeight: number,
