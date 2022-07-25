@@ -13,7 +13,7 @@ import { BinAgg, Direction, XScaleType } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
 import { ColorOverrides } from '../../../state/chart_state';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Datum, isNil } from '../../../utils/common';
+import { Datum, isNil, stripUndefined } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
@@ -60,6 +60,7 @@ export interface DataSeriesDatum<T = any> {
 
 /** @public */
 export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier {
+  xAccessor: Accessor<D>;
   yAccessor: Accessor<D>;
   splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
   smVerticalAccessorValue?: string | number;
@@ -165,6 +166,7 @@ export function splitSeriesDataByAccessors(
     const smH = groupBySpec?.horizontal?.by?.(spec, datum);
     const smV = groupBySpec?.vertical?.by?.(spec, datum);
 
+    const xAccessorStr = getAccessorFieldName(xAccessor, 0);
     yAccessors.forEach((accessor, index) => {
       const cleanedDatum = extractYAndMarkFromDatum(
         datum,
@@ -175,17 +177,18 @@ export function splitSeriesDataByAccessors(
         markSizeAccessor,
       );
 
-      const accessorStr = getAccessorFieldName(accessor, index);
+      const yAccessorStr = getAccessorFieldName(accessor, index);
       const splitAccessorStrs = [...splitAccessors.values()].map((a, si) => getAccessorFieldName(a, si));
-      const seriesKeys = [...splitAccessorStrs, accessorStr];
-      const seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'> = {
+      const seriesKeys = [...splitAccessorStrs, yAccessorStr];
+      const seriesIdentifier: Omit<XYChartSeriesIdentifier, 'key'> = stripUndefined({
         specId,
         seriesKeys,
-        yAccessor: accessorStr,
+        xAccessor: xAccessorStr,
+        yAccessor: yAccessorStr,
         splitAccessors,
-        ...(!isNil(smV) && { smVerticalAccessorValue: smV }),
-        ...(!isNil(smH) && { smHorizontalAccessorValue: smH }),
-      };
+        smVerticalAccessorValue: smV,
+        smHorizontalAccessorValue: smH,
+      });
       const seriesKey = getSeriesKey(seriesIdentifier, groupId);
       sum += cleanedDatum.y1 ?? 0;
       const newDatum = { x, ...cleanedDatum, smH, smV };
@@ -586,14 +589,14 @@ export function getSeriesColors(
     },
     true,
   ).forEach((ds) => {
-    const dsKeys = {
-      specId: ds[0].specId,
-      yAccessor: ds[0].yAccessor,
-      splitAccessors: ds[0].splitAccessors,
-      smVerticalAccessorValue: undefined,
-      smHorizontalAccessorValue: undefined,
-    };
-    const seriesKey = getSeriesKey(dsKeys, ds[0].groupId);
+    const seriesKey = getSeriesKey(
+      {
+        specId: ds[0].specId,
+        yAccessor: ds[0].yAccessor,
+        splitAccessors: ds[0].splitAccessors,
+      },
+      ds[0].groupId,
+    );
     const colorOverride = getHighestOverride(seriesKey, customColors, overrides);
     const color = colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length];
 
@@ -603,17 +606,30 @@ export function getSeriesColors(
   return seriesColorMap;
 }
 
-/** @internal */
+/**
+ * Return xy charts series identifier from data series.
+ * @internal
+ */
 export function getSeriesIdentifierFromDataSeries(dataSeries: DataSeries): XYChartSeriesIdentifier {
-  const { yAccessor, splitAccessors, smVerticalAccessorValue, smHorizontalAccessorValue, seriesKeys, specId, key } =
-    dataSeries;
-  return {
+  const {
+    key,
+    specId,
+    seriesKeys,
+    xAccessor,
     yAccessor,
     splitAccessors,
     smVerticalAccessorValue,
     smHorizontalAccessorValue,
-    seriesKeys,
-    specId,
+  } = dataSeries;
+
+  return stripUndefined({
     key,
-  };
+    specId,
+    seriesKeys,
+    xAccessor,
+    yAccessor,
+    splitAccessors,
+    smVerticalAccessorValue,
+    smHorizontalAccessorValue,
+  });
 }

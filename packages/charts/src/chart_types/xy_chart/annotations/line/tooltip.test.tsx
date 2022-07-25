@@ -55,16 +55,16 @@ describe('Annotation tooltips', () => {
           />
         </Chart>,
       );
-      const annotation = wrapper.find('.echAnnotation');
+      const annotation = wrapper.find('.echAnnotation__marker');
       expect(annotation).toHaveLength(1);
-      expect(wrapper.find('.echAnnotation__tooltip')).toHaveLength(0);
+      expect(wrapper.find('.echAnnotation')).toHaveLength(0);
       annotation.simulate('mouseenter');
-      const header = wrapper.find('.echAnnotation__header');
+      const header = wrapper.find('.echTooltip__header');
       expect(header).toHaveLength(1);
       expect(header.text()).toEqual('2');
       expect(wrapper.find('.echAnnotation__details').text()).toEqual('foo');
       annotation.simulate('mouseleave');
-      expect(wrapper.find('.echAnnotation__header')).toHaveLength(0);
+      expect(annotation.find('.echTooltip__header')).toHaveLength(0);
     });
 
     test('should now show tooltip if hidden', () => {
@@ -96,10 +96,10 @@ describe('Annotation tooltips', () => {
           />
         </Chart>,
       );
-      const annotation = wrapper.find('.echAnnotation');
-      expect(wrapper.find('.echAnnotation__tooltip')).toHaveLength(0);
+      const annotation = wrapper.find('.echAnnotation__marker');
+      expect(wrapper.find('.echAnnotation')).toHaveLength(0);
       annotation.simulate('mouseenter');
-      expect(wrapper.find('.echAnnotation__header')).toHaveLength(0);
+      expect(wrapper.find('.echTooltip__header')).toHaveLength(0);
     });
   });
 

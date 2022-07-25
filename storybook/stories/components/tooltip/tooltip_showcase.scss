@@ -1,0 +1,20 @@
+.showcase {
+  height: 100%;
+  width: 100%;
+  min-width: 500px;
+  display: flex;
+  align-items: center;
+
+  .tooltip-wrapper {
+    margin-left: 30px;
+  }
+
+  #tooltip-anchor {
+    background-color: #0aa1dd;
+    padding: 20px;
+    color: white;
+    font-weight: bold;
+    cursor: not-allowed;
+    border-radius: 10px;
+  }
+}

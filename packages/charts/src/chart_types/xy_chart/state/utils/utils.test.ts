@@ -154,6 +154,7 @@ describe('Chart State utils', () => {
     const dataSeriesValuesA: XYChartSeriesIdentifier = {
       specId: 'a',
       yAccessor: 'y1',
+      xAccessor: 'x',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'b', 'c'],
       key: 'a',
@@ -161,6 +162,7 @@ describe('Chart State utils', () => {
     const dataSeriesValuesB: XYChartSeriesIdentifier = {
       specId: 'b',
       yAccessor: 'y1',
+      xAccessor: 'x',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'b', 'c'],
       key: 'b',
@@ -168,6 +170,7 @@ describe('Chart State utils', () => {
     const dataSeriesValuesC: XYChartSeriesIdentifier = {
       specId: 'c',
       yAccessor: 'y1',
+      xAccessor: 'x',
       splitAccessors: new Map(),
       seriesKeys: ['a', 'b', 'd'],
       key: 'c',

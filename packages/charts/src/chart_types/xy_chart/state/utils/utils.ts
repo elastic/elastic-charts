@@ -80,6 +80,7 @@ export function getCustomSeriesColors(dataSeries: DataSeries[]): Map<SeriesKey, 
     const { spec, specId } = ds;
     const dataSeriesKey = {
       specId: ds.specId,
+      xAccessor: ds.xAccessor,
       yAccessor: ds.yAccessor,
       splitAccessors: ds.splitAccessors,
       smVerticalAccessorValue: undefined,

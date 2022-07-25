@@ -102,8 +102,8 @@ export function computeLegend(
   axesSpecs: AxisSpec[],
   settingsSpec: SettingsSpec,
   serialIdentifierDataSeriesMap: Record<string, DataSeries>,
-  deselectedDataSeries: SeriesIdentifier[] = [],
   theme: Theme,
+  deselectedDataSeries: SeriesIdentifier[] = [],
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;

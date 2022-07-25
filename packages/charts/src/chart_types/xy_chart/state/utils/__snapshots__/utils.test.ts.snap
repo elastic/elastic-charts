@@ -106,6 +106,7 @@ Array [
     "specId": "spec1",
     "splitAccessors": Map {},
     "stackMode": undefined,
+    "xAccessor": "x",
     "yAccessor": "y",
   },
   Object {
@@ -212,6 +213,7 @@ Array [
     "specId": "spec2",
     "splitAccessors": Map {},
     "stackMode": undefined,
+    "xAccessor": "x",
     "yAccessor": "y",
   },
 ]
@@ -356,6 +358,7 @@ Array [
       "g" => "a",
     },
     "stackMode": undefined,
+    "xAccessor": "x",
     "yAccessor": "y",
   },
   Object {
@@ -495,6 +498,7 @@ Array [
       "g" => "b",
     },
     "stackMode": undefined,
+    "xAccessor": "x",
     "yAccessor": "y",
   },
 ]
@@ -640,6 +644,7 @@ Array [
       "g" => "a",
     },
     "stackMode": undefined,
+    "xAccessor": "x",
     "yAccessor": "y",
   },
   Object {
@@ -780,6 +785,7 @@ Array [
       "g" => "b",
     },
     "stackMode": undefined,
+    "xAccessor": "x",
     "yAccessor": "y",
   },
 ]

@@ -48,14 +48,14 @@ module.exports = {
      * Rules that ensure sufficient freedom of expressing intent
      **************************************************************
      */
-    'no-else-return': 'off',
+    'no-else-return': 0,
     'no-param-reassign': [1, { props: false }],
     '@typescript-eslint/comma-spacing': 0,
     'unicorn/no-nested-ternary': 0,
     '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
-    'no-extra-parens': 'off', // it was already off by default; this line addition is just for documentation purposes
+    'no-extra-parens': 0, // it was already off by default; this line addition is just for documentation purposes
     '@typescript-eslint/restrict-template-expressions': 0, // it's OK to use numbers etc. in string templates
-    'unicorn/prefer-string-slice': 'off', // substr is just as fine as it's string specific and well named
+    'unicorn/prefer-string-slice': 0, // substr is just as fine as it's string specific and well named
 
     /**
      *****************************************
@@ -69,8 +69,9 @@ module.exports = {
     '@typescript-eslint/restrict-plus-operands': 0, // rule is broken
     '@typescript-eslint/no-unsafe-call': 0, // seems to have issues with default import types
     '@typescript-eslint/unbound-method': 1,
-    '@typescript-eslint/no-redeclare': 'off', // we use to declare enum type and object with the same name
-    '@typescript-eslint/no-shadow': 'off', // we use shadow mostly within the canvas renderer function when we need a new context
+    '@typescript-eslint/no-redeclare': 0, // we use to declare enum type and object with the same name
+    '@typescript-eslint/no-shadow': 0, // we use shadow mostly within the canvas renderer function when we need a new context
+    '@typescript-eslint/no-unsafe-argument': 1,
     'unicorn/consistent-function-scoping': 1,
     'unicorn/explicit-length-check': 1,
     'import/no-cycle': [0, { maxDepth: 3, ignoreExternal: true }], // TODO: should error when this is fixed https://github.com/benmosher/eslint-plugin-import/issues/1453
@@ -84,8 +85,9 @@ module.exports = {
     'no-shadow': 1,
     'react/no-array-index-key': 1,
     'react/prefer-stateless-function': 1,
-    'react/require-default-props': 'off',
-    'react/display-name': 'off',
+    'react/require-default-props': 0,
+    'react/display-name': 0,
+    'react/require-render-return': 0, // rule is broken for certain types of function syntax
     'jsx-a11y/no-static-element-interactions': 1,
     'jsx-a11y/mouse-events-have-key-events': 1,
     'jsx-a11y/click-events-have-key-events': 1,
@@ -163,7 +165,7 @@ module.exports = {
      * @typescript-eslint plugin
      */
     '@typescript-eslint/interface-name-prefix': 0,
-    '@typescript-eslint/ban-types': process.env.NODE_ENV === 'production' ? 2 : 1,
+    '@typescript-eslint/ban-types': 1,
     '@typescript-eslint/return-await': ['error', 'always'], // https://v8.dev/blog/fast-async
     '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'no-public' }],
     '@typescript-eslint/no-explicit-any': 0,
@@ -274,10 +276,10 @@ module.exports = {
         case: 'snakeCase',
       },
     ],
-    'unicorn/no-array-callback-reference': 'off',
-    'unicorn/no-array-reduce': 'off',
-    'unicorn/prefer-dom-node-append': 'off',
-    'unicorn/prefer-dom-node-remove': 'off',
+    'unicorn/no-array-callback-reference': 0,
+    'unicorn/no-array-reduce': 0,
+    'unicorn/prefer-dom-node-append': 0,
+    'unicorn/prefer-dom-node-remove': 0,
 
     /*
      * file-header plugin
@@ -367,6 +369,10 @@ module.exports = {
             importNames: ['default'],
             message: 'Please use `createCustomCachedSelector` instead.',
           },
+          {
+            name: 'ts-debounce',
+            message: 'Please import from packages/charts/src/state/utils.ts',
+          },
         ],
         'no-underscore-dangle': 2,
         'import/no-unresolved': 'error',
@@ -430,7 +436,12 @@ module.exports = {
       },
     },
     {
-      files: ['*.test.ts?(x)', '**/__mocks__/**/*.ts?(x)', 'packages/charts/src/mocks/**'],
+      files: [
+        '*.test.ts?(x)',
+        '**/__mocks__/**/*.ts?(x)',
+        'packages/charts/src/mocks/**',
+        'packages/charts/src/utils/data_samples/**',
+      ],
       excludedFiles: ['./e2e/**/*.test.ts'],
       extends: ['plugin:jest/recommended'],
       rules: {
@@ -444,6 +455,7 @@ module.exports = {
         // Cannot check extraneous deps in test files with this mono setup
         // see https://github.com/benmosher/eslint-plugin-import/issues/1174
         'import/no-extraneous-dependencies': 0,
+        '@typescript-eslint/no-loss-of-precision': 0,
       },
     },
     {

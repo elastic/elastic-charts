@@ -23,12 +23,13 @@ import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
 import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
-import { getTooltipType, SettingsSpec, SpecType, TooltipType } from '../../specs';
+import { SettingsSpec, SpecType, TooltipType } from '../../specs';
 import { onChartRendered } from '../../state/actions/chart';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
-import { getSettingsSpecSelector } from '../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
+import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils';
 import { clamp, isFiniteNumber } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
@@ -1205,7 +1206,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     animationDuration: flameSpec?.animation.duration ?? 0,
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
-    tooltipRequired: getTooltipType(settingsSpec) !== TooltipType.None,
+    tooltipRequired: getTooltipSpecSelector(state).type !== TooltipType.None,
 
     // mandatory charts API protocol; todo extract these mappings once there are other charts like Flame
     onElementOver: settingsSpec.onElementOver ?? (() => {}),

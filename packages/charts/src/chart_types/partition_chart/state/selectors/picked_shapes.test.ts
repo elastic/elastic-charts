@@ -100,7 +100,7 @@ describe('Picked shapes selector', () => {
     store.dispatch(onMouseDown({ x: 200, y: 200 }, 1));
     store.dispatch(onMouseUp({ x: 200, y: 200 }, 2));
     expect(onClickListener).toBeCalled();
-    expect(onClickListener.mock.calls[0][0]).toEqual([
+    expect(onClickListener).toBeCalledWith([
       [
         [
           {
@@ -179,7 +179,7 @@ describe('Picked shapes selector', () => {
     store.dispatch(onMouseDown({ x, y }, 1));
     store.dispatch(onMouseUp({ x, y }, 2));
     expect(onClickListener).toBeCalled();
-    expect(onClickListener.mock.calls[0][0]).toEqual([
+    expect(onClickListener).toBeCalledWith([
       [
         [
           {
@@ -218,7 +218,7 @@ describe('Picked shapes selector', () => {
     store.dispatch(onMouseDown({ x: 200, y: 200 }, 1));
     store.dispatch(onMouseUp({ x: 200, y: 200 }, 2));
     expect(onClickListener).toBeCalled();
-    expect(onClickListener.mock.calls[0][0]).toEqual([
+    expect(onClickListener).toBeCalledWith([
       [
         [
           {

@@ -12,7 +12,7 @@ import { Dimensions } from '../../../utils/dimensions';
 import { BubbleGeometry } from '../../../utils/geometry';
 import { BubbleSeriesStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { DataSeries } from '../utils/series';
+import { DataSeries, getSeriesIdentifierFromDataSeries } from '../utils/series';
 import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
 import { MarkSizeOptions } from './utils';
@@ -52,15 +52,7 @@ export function renderBubble(
   const bubbleGeometry = {
     points: pointGeometries,
     color,
-    seriesIdentifier: {
-      key: dataSeries.key,
-      specId: dataSeries.specId,
-      yAccessor: dataSeries.yAccessor,
-      splitAccessors: dataSeries.splitAccessors,
-      seriesKeys: dataSeries.seriesKeys,
-      smHorizontalAccessorValue: dataSeries.smHorizontalAccessorValue,
-      smVerticalAccessorValue: dataSeries.smVerticalAccessorValue,
-    },
+    seriesIdentifier: getSeriesIdentifierFromDataSeries(dataSeries),
     seriesPointStyle: seriesStyle.point,
   };
   return {

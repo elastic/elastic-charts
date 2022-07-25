@@ -10,7 +10,7 @@ import { ChartType } from '../../..';
 import { GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
 import { SpecType } from '../../../../specs/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSpecs } from '../../../../state/selectors/get_settings_specs';
+import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { AnnotationSpec, AxisSpec, BasicSeriesSpec } from '../../utils/specs';
 

@@ -22,7 +22,7 @@ import { SpecType, TooltipType, BrushAxis } from '../../../specs/constants';
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
 import { GlobalChartState } from '../../../state/chart_state';
-import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesType, AnnotationDomainType } from '../utils/specs';
@@ -301,7 +301,7 @@ describe('Chart state pointer interactions', () => {
       store.dispatch(onPointerMove({ x: chartLeft + 10, y: chartTop + 10 }, 0));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toBeCalledTimes(1);
-      expect(onPointerUpdateListener.mock.calls[0][0]).toEqual({
+      expect(onPointerUpdateListener).toBeCalledWith({
         chartId: 'chartId',
         scale: scaleType,
         type: 'Over',
@@ -412,7 +412,7 @@ describe('Chart state pointer interactions', () => {
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(onOverListener).toBeCalledTimes(1);
       expect(onOutListener).toBeCalledTimes(0);
-      expect(onOverListener.mock.calls[0][0]).toEqual([
+      expect(onOverListener).toBeCalledWith([
         [
           {
             x: 0,
@@ -426,6 +426,7 @@ describe('Chart state pointer interactions', () => {
             seriesKeys: [1],
             specId: 'spec_1',
             splitAccessors: new Map(),
+            xAccessor: 0,
             yAccessor: 1,
           },
         ],
@@ -458,7 +459,7 @@ describe('Chart state pointer interactions', () => {
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(onOverListener).toBeCalledTimes(1);
       expect(onOutListener).toBeCalledTimes(0);
-      expect(onOverListener.mock.calls[0][0]).toEqual([
+      expect(onOverListener).toBeCalledWith([
         [
           {
             x: 0,
@@ -472,6 +473,7 @@ describe('Chart state pointer interactions', () => {
             seriesKeys: [1],
             specId: 'spec_1',
             splitAccessors: new Map(),
+            xAccessor: 0,
             yAccessor: 1,
           },
         ],
@@ -507,7 +509,7 @@ describe('Chart state pointer interactions', () => {
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(onOverListener).toBeCalledTimes(1);
       expect(onOutListener).toBeCalledTimes(0);
-      expect(onOverListener.mock.calls[0][0]).toEqual([
+      expect(onOverListener).toBeCalledWith([
         [
           {
             x: 0,
@@ -521,6 +523,7 @@ describe('Chart state pointer interactions', () => {
             seriesKeys: [1],
             specId: 'spec_1',
             splitAccessors: new Map(),
+            xAccessor: 0,
             yAccessor: 1,
           },
         ],
@@ -561,7 +564,7 @@ describe('Chart state pointer interactions', () => {
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(onOverListener).toBeCalledTimes(1);
       expect(onOutListener).toBeCalledTimes(0);
-      expect(onOverListener.mock.calls[0][0]).toEqual([
+      expect(onOverListener).toBeCalledWith([
         [
           {
             x: (spec.data[0] as Array<any>)[0],
@@ -575,6 +578,7 @@ describe('Chart state pointer interactions', () => {
             seriesKeys: [1],
             specId: 'spec_1',
             splitAccessors: new Map(),
+            xAccessor: 0,
             yAccessor: 1,
           },
         ],
@@ -608,6 +612,7 @@ describe('Chart state pointer interactions', () => {
             seriesKeys: [1],
             specId: 'spec_1',
             splitAccessors: new Map(),
+            xAccessor: 0,
             yAccessor: 1,
           },
         ],
@@ -691,7 +696,7 @@ describe('Chart state pointer interactions', () => {
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(onOverListener).toBeCalledTimes(1);
-      expect(onOverListener.mock.calls[0][0]).toEqual([
+      expect(onOverListener).toBeCalledWith([
         [
           {
             x: 1,
@@ -705,6 +710,7 @@ describe('Chart state pointer interactions', () => {
             seriesKeys: [1],
             specId: 'spec_1',
             splitAccessors: new Map(),
+            xAccessor: 0,
             yAccessor: 1,
           },
         ],
@@ -845,7 +851,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toBeCalled();
         } else {
           expect(brushEndListener).toBeCalled();
-          expect(brushEndListener.mock.calls[0][0]).toEqual({ x: [0, 2.5] });
+          expect(brushEndListener).toBeCalledWith({ x: [0, 2.5] });
         }
         const start2 = { x: 75, y: 0 };
         const end2 = { x: 100, y: 0 };
@@ -926,7 +932,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toBeCalled();
         } else {
           expect(brushEndListener).toBeCalled();
-          expect(brushEndListener.mock.calls[0][0]).toEqual({ x: [0, 1] });
+          expect(brushEndListener).toBeCalledWith({ x: [0, 1] });
         }
         const start2 = { x: 0, y: 75 };
         const end2 = { x: 0, y: 100 };
@@ -1012,7 +1018,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toBeCalled();
         } else {
           expect(brushEndListener).toBeCalled();
-          expect(brushEndListener.mock.calls[0][0]).toEqual({
+          expect(brushEndListener).toBeCalledWith({
             y: [
               {
                 groupId: spec.groupId,
@@ -1088,7 +1094,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toBeCalled();
         } else {
           expect(brushEndListener).toBeCalled();
-          expect(brushEndListener.mock.calls[0][0]).toEqual({
+          expect(brushEndListener).toBeCalledWith({
             x: [0, 2.5],
             y: [
               {

@@ -19,7 +19,7 @@ import {
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isClicking } from '../../../../state/utils';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { AnnotationTooltipState } from '../../annotations/types';

@@ -7,9 +7,9 @@
  */
 
 import { AnchorPosition } from '../../../../components/portal/types';
-import { isTooltipType } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { isNil } from '../../../../utils/common';
 import { getTooltipAnchorPosition } from '../../crosshair/crosshair_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -25,6 +25,7 @@ export const getTooltipAnchorPositionSelector = createCustomCachedSelector(
     getCursorBandPositionSelector,
     getProjectedPointerPositionSelector,
     computeSmallMultipleScalesSelector,
+    getTooltipSpecSelector,
   ],
   (
     chartDimensions,
@@ -32,6 +33,7 @@ export const getTooltipAnchorPositionSelector = createCustomCachedSelector(
     cursorBandPosition,
     projectedPointerPosition,
     { horizontal, vertical },
+    tooltip,
   ): AnchorPosition | null => {
     if (!cursorBandPosition) {
       return null;
@@ -58,7 +60,7 @@ export const getTooltipAnchorPositionSelector = createCustomCachedSelector(
       cursorBandPosition,
       projectedPointerPosition,
       panel,
-      isTooltipType(settings.tooltip) ? undefined : settings.tooltip.stickTo,
+      tooltip.stickTo,
     );
   },
 );

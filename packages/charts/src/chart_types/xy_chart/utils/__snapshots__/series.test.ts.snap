@@ -59,6 +59,7 @@ Array [
     "splitAccessors": Map {
       2 => "a",
     },
+    "xAccessor": 0,
     "yAccessor": 1,
   },
   Object {
@@ -118,6 +119,7 @@ Array [
     "splitAccessors": Map {
       2 => "b",
     },
+    "xAccessor": 0,
     "yAccessor": 1,
   },
 ]
@@ -190,6 +192,7 @@ Array [
     ],
     "specId": "spec1",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y",
   },
 ]
@@ -269,6 +272,7 @@ Array [
     "splitAccessors": Map {
       "g" => "a",
     },
+    "xAccessor": "x",
     "yAccessor": "y",
   },
   Object {
@@ -343,6 +347,7 @@ Array [
     "splitAccessors": Map {
       "g" => "b",
     },
+    "xAccessor": "x",
     "yAccessor": "y",
   },
 ]
@@ -428,6 +433,7 @@ Array [
       "g1" => "a",
       "g2" => "s",
     },
+    "xAccessor": "x",
     "yAccessor": "y",
   },
   Object {
@@ -508,6 +514,7 @@ Array [
       "g1" => "a",
       "g2" => "p",
     },
+    "xAccessor": "x",
     "yAccessor": "y",
   },
   Object {
@@ -588,6 +595,7 @@ Array [
       "g1" => "b",
       "g2" => "s",
     },
+    "xAccessor": "x",
     "yAccessor": "y",
   },
   Object {
@@ -668,6 +676,7 @@ Array [
       "g1" => "b",
       "g2" => "p",
     },
+    "xAccessor": "x",
     "yAccessor": "y",
   },
 ]
@@ -744,6 +753,7 @@ Array [
     ],
     "specId": "spec1",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -815,6 +825,7 @@ Array [
     ],
     "specId": "spec1",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y2",
   },
 ]
@@ -898,6 +909,7 @@ Array [
     "splitAccessors": Map {
       "g" => "a",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -976,6 +988,7 @@ Array [
     "splitAccessors": Map {
       "g" => "a",
     },
+    "xAccessor": "x",
     "yAccessor": "y2",
   },
   Object {
@@ -1054,6 +1067,7 @@ Array [
     "splitAccessors": Map {
       "g" => "b",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -1132,6 +1146,7 @@ Array [
     "splitAccessors": Map {
       "g" => "b",
     },
+    "xAccessor": "x",
     "yAccessor": "y2",
   },
 ]
@@ -1238,6 +1253,7 @@ Array [
       "g1" => "cdn.google.com",
       "g2" => "direct-cdn",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -1339,6 +1355,7 @@ Array [
       "g1" => "cdn.google.com",
       "g2" => "direct-cdn",
     },
+    "xAccessor": "x",
     "yAccessor": "y2",
   },
   Object {
@@ -1440,6 +1457,7 @@ Array [
       "g1" => "cdn.google.com",
       "g2" => "indirect-cdn",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -1541,6 +1559,7 @@ Array [
       "g1" => "cdn.google.com",
       "g2" => "indirect-cdn",
     },
+    "xAccessor": "x",
     "yAccessor": "y2",
   },
   Object {
@@ -1642,6 +1661,7 @@ Array [
       "g1" => "cloudflare.com",
       "g2" => "direct-cdn",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -1743,6 +1763,7 @@ Array [
       "g1" => "cloudflare.com",
       "g2" => "direct-cdn",
     },
+    "xAccessor": "x",
     "yAccessor": "y2",
   },
   Object {
@@ -1844,6 +1865,7 @@ Array [
       "g1" => "cloudflare.com",
       "g2" => "indirect-cdn",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -1945,6 +1967,7 @@ Array [
       "g1" => "cloudflare.com",
       "g2" => "indirect-cdn",
     },
+    "xAccessor": "x",
     "yAccessor": "y2",
   },
 ]
@@ -11961,6 +11984,7 @@ Array [
     ],
     "specId": "spec1",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -21972,6 +21996,7 @@ Array [
     ],
     "specId": "spec1",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -22028,6 +22053,7 @@ Array [
     ],
     "specId": "spec1",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -22079,6 +22105,7 @@ Array [
     ],
     "specId": "spec1",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -22154,6 +22181,7 @@ Array [
     "splitAccessors": Map {
       "g" => "a",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -22224,6 +22252,7 @@ Array [
     "splitAccessors": Map {
       "g" => "b",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -22294,6 +22323,7 @@ Array [
     "splitAccessors": Map {
       "g" => "c",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -22364,6 +22394,7 @@ Array [
     "splitAccessors": Map {
       "g" => "d",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -22437,6 +22468,7 @@ Array [
     "splitAccessors": Map {
       "g" => "a",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -22503,6 +22535,7 @@ Array [
     "splitAccessors": Map {
       "g" => "b",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -22576,6 +22609,7 @@ Array [
     "splitAccessors": Map {
       "g" => "a",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -22642,6 +22676,7 @@ Array [
     "splitAccessors": Map {
       "g" => "b",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -22718,6 +22753,7 @@ Array [
     "splitAccessors": Map {
       "g" => "a",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -22792,6 +22828,7 @@ Array [
     "splitAccessors": Map {
       "g" => "b",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -22868,6 +22905,7 @@ Array [
     "splitAccessors": Map {
       "g" => "a",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -22942,6 +22980,7 @@ Array [
     "splitAccessors": Map {
       "g" => "b",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -23015,6 +23054,7 @@ Array [
     "splitAccessors": Map {
       "g" => "a",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -23081,6 +23121,7 @@ Array [
     "splitAccessors": Map {
       "g" => "b",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -23270,6 +23311,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cdn.google.com",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y1",
   },
   Object {
@@ -23454,6 +23496,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cloudflare.com",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y1",
   },
 ]
@@ -23643,6 +23686,7 @@ Array [
     "splitAccessors": Map {
       "(index:0)" => "cdn.google.com",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -23827,6 +23871,7 @@ Array [
     "splitAccessors": Map {
       "(index:0)" => "cloudflare.com",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -24016,6 +24061,7 @@ Array [
     "splitAccessors": Map {
       "custom name" => "cdn.google.com",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -24200,6 +24246,7 @@ Array [
     "splitAccessors": Map {
       "custom name" => "cloudflare.com",
     },
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
 ]
@@ -24389,6 +24436,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cdn.google.com",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y1",
   },
   Object {
@@ -24573,6 +24621,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cdn.google.com",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y2",
   },
   Object {
@@ -24757,6 +24806,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cloudflare.com",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y1",
   },
   Object {
@@ -24941,6 +24991,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cloudflare.com",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y2",
   },
 ]
@@ -26757,6 +26808,7 @@ Array [
     ],
     "specId": "spec1",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "(index:0)",
   },
 ]
@@ -26946,6 +26998,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cdn.google.com",
     },
+    "xAccessor": "x",
     "yAccessor": "(index:0)",
   },
   Object {
@@ -27130,6 +27183,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cloudflare.com",
     },
+    "xAccessor": "x",
     "yAccessor": "(index:0)",
   },
 ]
@@ -27319,6 +27373,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cdn.google.com",
     },
+    "xAccessor": "x",
     "yAccessor": "custom name",
   },
   Object {
@@ -27503,6 +27558,7 @@ Array [
     "splitAccessors": Map {
       "g1" => "cloudflare.com",
     },
+    "xAccessor": "x",
     "yAccessor": "custom name",
   },
 ]
@@ -27609,6 +27665,7 @@ Array [
       "(index:0)" => "cdn.google.com",
       "g2" => "direct-cdn",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y1",
   },
   Object {
@@ -27710,6 +27767,7 @@ Array [
       "(index:0)" => "cdn.google.com",
       "g2" => "direct-cdn",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "(index:1)",
   },
   Object {
@@ -27811,6 +27869,7 @@ Array [
       "(index:0)" => "cdn.google.com",
       "g2" => "indirect-cdn",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y1",
   },
   Object {
@@ -27912,6 +27971,7 @@ Array [
       "(index:0)" => "cdn.google.com",
       "g2" => "indirect-cdn",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "(index:1)",
   },
   Object {
@@ -28013,6 +28073,7 @@ Array [
       "(index:0)" => "cloudflare.com",
       "g2" => "direct-cdn",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y1",
   },
   Object {
@@ -28114,6 +28175,7 @@ Array [
       "(index:0)" => "cloudflare.com",
       "g2" => "direct-cdn",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "(index:1)",
   },
   Object {
@@ -28215,6 +28277,7 @@ Array [
       "(index:0)" => "cloudflare.com",
       "g2" => "indirect-cdn",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "y1",
   },
   Object {
@@ -28316,6 +28379,7 @@ Array [
       "(index:0)" => "cloudflare.com",
       "g2" => "indirect-cdn",
     },
+    "xAccessor": "(index:0)",
     "yAccessor": "(index:1)",
   },
 ]
@@ -28388,6 +28452,7 @@ Array [
     ],
     "specId": "spec2",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -28455,6 +28520,7 @@ Array [
     ],
     "specId": "spec2",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y2",
   },
   Object {
@@ -28522,6 +28588,7 @@ Array [
     ],
     "specId": "spec1",
     "splitAccessors": Map {},
+    "xAccessor": "x",
     "yAccessor": "y",
   },
 ]
@@ -28632,6 +28699,7 @@ Array [
     "specId": "spec1",
     "splitAccessors": Map {},
     "stackMode": undefined,
+    "xAccessor": "x",
     "yAccessor": "y",
   },
 ]
@@ -28754,6 +28822,7 @@ Array [
     "specId": "spec2",
     "splitAccessors": Map {},
     "stackMode": undefined,
+    "xAccessor": "x",
     "yAccessor": "y1",
   },
   Object {
@@ -28871,6 +28940,7 @@ Array [
     "specId": "spec2",
     "splitAccessors": Map {},
     "stackMode": undefined,
+    "xAccessor": "x",
     "yAccessor": "y2",
   },
 ]

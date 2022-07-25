@@ -23,7 +23,7 @@ export const typeCheckStep = createStep<CustomCommandStep>((ctx) => {
 
 function isSkippable(changes: ChangeContext): boolean | string {
   const hasTSChanges = changes.files.has('**/*.ts?(x)');
-  const hasConfigChanges = changes.files.has(['package.json', 'tsconfig.json']);
+  const hasConfigChanges = changes.files.has(['yarn.lock', 'package.json', 'tsconfig.json']);
 
   if (hasTSChanges || hasConfigChanges) {
     return false;

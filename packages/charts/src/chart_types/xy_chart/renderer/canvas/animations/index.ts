@@ -6,13 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { debounce } from 'ts-debounce';
-
+import { debounce } from '../../../../../utils/debounce';
 import { Logger } from './../../../../../utils/logger';
 import { AnimatedValue, Animation, AnimationOptions, AnimationState } from './animation';
 
 // TODO find a better way to do this when we have an actual build process
-const DISABLE_ANIMATIONS = (process && process.env && process.env.VRT) === 'true';
+const DISABLE_ANIMATIONS = (typeof process === 'object' && process.env && process.env.VRT) === 'true';
 
 /**
  * Function used to animate values from within a render context.

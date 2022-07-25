@@ -282,7 +282,7 @@ describe('Render rect annotation within', () => {
     const expected = computeAnnotationDimensionsSelector(store.getState());
     const [resultAnnotation] = expected.get('rect_annotation_1') ?? [];
     expect(resultAnnotation).toMatchObject({
-      rect: { height: 190 },
+      rect: { height: 200 },
     });
   });
   it('annotation with group id should render with x0 and x1 values', () => {

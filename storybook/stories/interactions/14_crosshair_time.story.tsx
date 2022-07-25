@@ -19,6 +19,7 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
+  Tooltip,
   TooltipType,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
@@ -43,19 +44,10 @@ export const Example = () => {
     TooltipType.Crosshairs,
   );
 
-  const tooltipProps = {
-    type: tooltipType,
-    snap: boolean('tooltip snap to grid', true),
-  };
-
   return (
     <Chart>
-      <Settings
-        debug={boolean('debug', false)}
-        tooltip={tooltipProps}
-        baseTheme={useBaseTheme()}
-        rotation={chartRotation}
-      />
+      <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} rotation={chartRotation} />
+      <Tooltip type={tooltipType} snap={boolean('tooltip snap to grid', true)} />
       <Axis
         id="bottom"
         position={Position.Bottom}

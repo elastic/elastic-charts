@@ -13,7 +13,7 @@ import { createStore, Store } from 'redux';
 
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../state/selectors/get_settings_specs';
+import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { Position, Rendering, Rotation } from '../utils/common';
 import { DARK_THEME } from '../utils/themes/dark_theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
