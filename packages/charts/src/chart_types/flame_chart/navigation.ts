@@ -67,11 +67,10 @@ export abstract class NavigationStrategy {
 }
 
 /**
- * Only click
- * Adds click even in middle of history
+ * Insert a click event between the current history item and the next one.
  * @internal
  */
-export class ClickStrategy1 extends NavigationStrategy {
+export class InsertClicksEverywhere extends NavigationStrategy {
   add(toAdd: NavRect) {
     if (isZoomPanNav(toAdd)) {
       return;
@@ -83,10 +82,10 @@ export class ClickStrategy1 extends NavigationStrategy {
 }
 
 /**
- * Only click. Clear recent queue after adding a click
+ * Add a click event after the current history item, and clear the rest of the history from here.
  * @internal
  */
-export class ClickStrategy2 extends NavigationStrategy {
+export class ClearQueueTipAndAddClick extends NavigationStrategy {
   add(toAdd: NavRect) {
     if (isZoomPanNav(toAdd)) {
       return;
@@ -98,13 +97,13 @@ export class ClickStrategy2 extends NavigationStrategy {
 }
 
 /**
- * Ignore zoom/pan if not at the end of the queue
+ * Same as ClearQueueTipAndAddClick but  includes zoom/pan events only at the tip of the queue
  * @internal
  */
-export class ClickZoomStrategy1 extends NavigationStrategy {
+export class PushZoomPanToQueueTip extends NavigationStrategy {
   add(toAdd: NavRect) {
     if (isZoomPanNav(toAdd)) {
-      // do not add zoom/pan event if not in the end of the queue
+      // do not add zoom/pan event if not at the end of the queue
       if (!this.lastInQueue()) {
         return;
       } else {
