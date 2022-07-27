@@ -42,46 +42,28 @@ export abstract class NavigationStrategy {
     return this.current();
   }
 
-  canNavForward() {
-    return this.navIndex < this.navQueue.length - 1;
-  }
+  canNavForward = () => this.navIndex < this.navQueue.length - 1;
 
-  canNavBackward() {
-    return this.navQueue.length > 0 && this.navIndex > 0;
-  }
+  canNavBackward = () => this.navQueue.length > 0 && this.navIndex > 0;
 
-  current(): NavRect | undefined {
-    return this.navQueue[this.navIndex];
-  }
+  current = (): NavRect | undefined => this.navQueue[this.navIndex];
 
-  next(): NavRect | undefined {
-    return this.navQueue[this.navIndex + 1];
-  }
+  next = (): NavRect | undefined => this.navQueue[this.navIndex + 1];
 
-  prev(): NavRect | undefined {
-    return this.navQueue[this.navIndex - 1];
-  }
+  prev = (): NavRect | undefined => this.navQueue[this.navIndex - 1];
 
   reset() {
     this.navIndex = 0;
     this.navQueue.splice(this.navIndex, Infinity, this.root);
   }
 
-  backToTop() {
-    this.navIndex = 0;
-  }
+  backToTop = () => (this.navIndex = 0);
 
-  queue() {
-    return this.navQueue;
-  }
+  queue = () => this.navQueue;
 
-  index() {
-    return this.navIndex;
-  }
+  index = () => this.navIndex;
 
-  lastInQueue() {
-    return this.navIndex === this.navQueue.length - 1;
-  }
+  lastInQueue = () => this.navIndex === this.navQueue.length - 1;
 }
 
 /**
