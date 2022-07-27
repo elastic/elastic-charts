@@ -245,17 +245,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentColor = columns.color;
   }
 
-  private canNavigateForward = () => this.navigator.canNavForward();
-  private canNavigateBackward = () => this.navigator.canNavBackward();
-
-  private navForward() {
-    this.focusOnNavElement(this.navigator.navForward());
-  }
-
-  private navBackward() {
-    this.focusOnNavElement(this.navigator.navBackward());
-  }
-
   private focusOnNavElement(element?: NavRect) {
     if (!element) {
       return;
@@ -267,18 +256,6 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   }
 
-  /**
-   * Add a click or zoom/pan event to the navigation stack
-   * @private
-   */
-  private addToNav(next: NavRect) {
-    this.navigator.add(next);
-  }
-
-  private resetNav() {
-    this.navigator.reset();
-  }
-
   private bindControls() {
     const { controlProviderCallback } = this.props;
     if (controlProviderCallback.resetFocus) {
@@ -287,14 +264,14 @@ class FlameComponent extends React.Component<FlameProps> {
     if (controlProviderCallback.focusOnNode) {
       controlProviderCallback.focusOnNode((nodeIndex: number) => {
         const rect = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, nodeIndex);
-        this.addToNav({ ...rect, index: nodeIndex });
+        this.navigator.add({ ...rect, index: nodeIndex });
         this.focusOnNode(nodeIndex);
       });
     }
   }
 
   private resetFocus() {
-    this.resetNav();
+    this.navigator.reset();
     this.targetFocus = this.getFocusOnRoot();
     this.wobble(0);
   }
@@ -467,7 +444,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const newFocus = { x0: newX0, x1: newX1, y0: newY0, y1: newY1 };
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
-      this.addToNav({ ...newFocus, index: NaN });
+      this.navigator.add({ ...newFocus, index: NaN });
       this.smartDraw();
     }
   };
@@ -513,7 +490,7 @@ class FlameComponent extends React.Component<FlameProps> {
       if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
         const { datumIndex } = hovered;
         const rect = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
-        this.addToNav({ ...rect, index: datumIndex });
+        this.navigator.add({ ...rect, index: datumIndex });
         this.focusOnNode(datumIndex);
         this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
       }
@@ -573,7 +550,7 @@ class FlameComponent extends React.Component<FlameProps> {
         y0: yZoom ? newY0 : y0,
         y1: yZoom ? newY1 : y1,
       };
-      this.addToNav({ ...newFocus, index: NaN });
+      this.navigator.add({ ...newFocus, index: NaN });
       this.currentFocus = newFocus;
       this.targetFocus = newFocus;
     }
@@ -613,7 +590,7 @@ class FlameComponent extends React.Component<FlameProps> {
     if (Number.isFinite(x0) && searchString.length > 0) {
       Object.assign(this.targetFocus, focusForArea(this.props.chartDimensions.height, { x0, x1, y0, y1 }));
       // disabled for now, reintroduce it if we want to include it into the history nav
-      // this.addToNav({ ...this.targetFocus, index: NaN });
+      // this.navigator.add({ ...this.targetFocus, index: NaN });
     }
   };
 
@@ -697,7 +674,7 @@ class FlameComponent extends React.Component<FlameProps> {
       if (hitEnumerator >= 0) {
         this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
         // disable until we consider that part of the navigation
-        // this.addToNav({ ...this.targetFocus, index: NaN });
+        // this.navigator.add({ ...this.targetFocus, index: NaN });
         this.prevT = NaN;
         this.hoverIndex = NaN; // no highlight
         this.wobbleTimeLeft = WOBBLE_DURATION;
@@ -793,7 +770,7 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Navigate back"
             style={{
-              color: this.canNavigateBackward() ? 'black' : 'darkgrey',
+              color: this.navigator.canNavBackward() ? 'black' : 'darkgrey',
               fontWeight: 'bolder',
               paddingLeft: 16,
               paddingRight: 4,
@@ -803,9 +780,7 @@ class FlameComponent extends React.Component<FlameProps> {
             <input
               type="button"
               tabIndex={0}
-              onClick={() => {
-                this.navBackward();
-              }}
+              onClick={() => this.focusOnNavElement(this.navigator.navBackward())}
               style={{ display: 'none' }}
             />
           </label>
@@ -818,19 +793,12 @@ class FlameComponent extends React.Component<FlameProps> {
             }}
           >
             ▲
-            <input
-              type="button"
-              tabIndex={0}
-              onClick={() => {
-                this.resetFocus();
-              }}
-              style={{ display: 'none' }}
-            />
+            <input type="button" tabIndex={0} onClick={() => this.resetFocus()} style={{ display: 'none' }} />
           </label>
           <label
             title="Navigate forward"
             style={{
-              color: this.canNavigateForward() ? 'black' : 'darkgray',
+              color: this.navigator.canNavForward() ? 'black' : 'darkgray',
               fontWeight: 'bolder',
               paddingLeft: 4,
               paddingRight: 16,
@@ -840,9 +808,7 @@ class FlameComponent extends React.Component<FlameProps> {
             <input
               type="button"
               tabIndex={0}
-              onClick={() => {
-                this.navForward();
-              }}
+              onClick={() => this.focusOnNavElement(this.navigator.navForward())}
               style={{ display: 'none' }}
             />
           </label>
