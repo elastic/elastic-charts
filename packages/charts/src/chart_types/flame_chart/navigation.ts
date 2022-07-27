@@ -160,7 +160,7 @@ export class ClickZoomStrategy1 extends NavigationStrategy {
  * Add Zoom/Pan events when back/forward button are clicked
  * @internal
  */
-export class NavBtnControlledZoomPanHistory extends NavigationStrategy {
+export class NavButtonControlledZoomPanHistory extends NavigationStrategy {
   navForward() {
     if (!this.canNavForward()) {
       return;

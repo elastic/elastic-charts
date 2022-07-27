@@ -26,7 +26,7 @@ import { getSpecsFromStore } from '../../state/utils';
 import { clamp, isFiniteNumber } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlameSpec } from './flame_api';
-import { NavigationStrategy, NavBtnControlledZoomPanHistory } from './navigation';
+import { NavigationStrategy, NavButtonControlledZoomPanHistory } from './navigation';
 import { roundUpSize } from './render/common';
 import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
@@ -234,7 +234,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentFocus = { ...this.targetFocus };
 
     // Initialize nav queue with the root element
-    this.navigator = new NavBtnControlledZoomPanHistory({ ...this.getFocusOnRoot(), index: 0 });
+    this.navigator = new NavButtonControlledZoomPanHistory({ ...this.getFocusOnRoot(), index: 0 });
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
