@@ -22,12 +22,21 @@ export function textSegmenter(
     return (text: string) => Array.from(fn.segment(text));
   } else {
     return function (text: string) {
-      return text.split(' ').map((segment, index) => {
-        return { segment, index, isWordLike: true };
-      });
+      return text
+        .split(' ')
+        .reduce<{ segment: string; index: number; isWordLike?: boolean }[]>((acc, segment, index, array) => {
+          const currentSegment = { segment, index: index === 0 ? 0 : acc[acc.length - 1].index + 1, isWordLike: true };
+          acc.push(currentSegment);
+          // adding space to simulate the same behaviour of the segmenter in firefox
+          if (index < array.length - 1) {
+            acc.push({ segment: ' ', index: currentSegment.index + segment.length, isWordLike: false });
+          }
+          return acc;
+        }, []);
     };
   }
 }
+const ELLIPSIS = '…';
 
 /** @internal */
 export function wrapText(
@@ -45,16 +54,18 @@ export function wrapText(
   const segmenter = textSegmenter('word', []);
   // remove new lines and multi-spaces.
   const cleanedText = text.replace(/\n/g, ' ').replace(/ +(?= )/g, '');
+
   const segments = Array.from(segmenter(cleanedText)).map((d) => ({
     ...d,
     width: measure(d.segment, font, fontSize, lineHeight).width,
   }));
-  const ELLIPSIS = '…';
+
   const ellipsisWidth = measure(ELLIPSIS, font, fontSize).width;
   const lines: string[] = [];
   let currentLineWidth = 0;
   for (const segment of segments) {
-    if (segment.width + currentLineWidth > maxLineWidth) {
+    // the word is longer then the available space and is not a space
+    if (currentLineWidth + segment.width > maxLineWidth && segment.segment.trimStart().length > 0) {
       const breakupWords = breakLongWordIntoLines(
         segment.segment,
         measure,
@@ -64,6 +75,9 @@ export function wrapText(
         maxLineWidth,
         Infinity,
       );
+      if (breakupWords.length === 0) {
+        break;
+      }
       lines.push(...breakupWords);
       currentLineWidth =
         breakupWords.length > 0 ? measure(breakupWords[breakupWords.length - 1], font, fontSize, lineHeight).width : 0;

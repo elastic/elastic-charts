@@ -26,7 +26,7 @@ const defaultText =
   'Bacon ipsum dolor amet mongoloadgendecoblue58d844d55c-9c24dtip flank kielbasa. Pork strip steak jowl chuck filet mignon, burgdoggen kevin tail.';
 
 export const Example = () => {
-  const [maxLineWidth, setMaxLineWidth] = useState(300);
+  const [maxLineWidth, setMaxLineWidth] = useState(250);
   const [maxLines, setMaxLines] = useState(3);
   const [text, setText] = useState(defaultText);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,7 +42,7 @@ export const Example = () => {
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       ctx.font = fontStyle;
-      ctx.textBaseline = 'hanging';
+      ctx.textBaseline = 'top';
       ctx.strokeStyle = 'black';
       ctx.fillStyle = 'black';
       ctx.strokeRect(0, 0, maxLineWidth, fontSize * maxLines);
