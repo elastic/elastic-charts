@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button, select } from '@storybook/addon-knobs';
+import { boolean, button } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Flame, Settings, PartialTheme, FlameGlobalControl, FlameNodeControl } from '@elastic/charts';
