@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { button } from '@storybook/addon-knobs';
+import { boolean, button, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Flame, Settings, PartialTheme, FlameGlobalControl, FlameNodeControl } from '@elastic/charts';
@@ -70,10 +70,11 @@ export const Example = () => {
   button('Set focus on random node', () => {
     focusOnNodeControl(Math.floor(20 * Math.random()));
   });
+  const debug = boolean('Debug history', false);
 
   return (
     <Chart>
-      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} />
+      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
       <Flame
         id="spec_1"
         columnarData={columnarData}
