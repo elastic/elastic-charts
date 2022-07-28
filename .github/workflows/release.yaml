@@ -83,6 +83,11 @@ jobs:
           working-directory: github_bot
           useRollingCache: true
 
+      # TODO: fix this to avoid requiring build to run linting
+      # currently the storybook and others are loosely coupled to @elastic/charts/src
+      # such that types point to the local source and not a packaged release
+      - name: Build charts typescript lib
+        run: yarn build:ts
       - name: Lint check
         run: yarn lint
       - name: Prettier check
