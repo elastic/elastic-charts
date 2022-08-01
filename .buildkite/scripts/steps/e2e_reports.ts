@@ -195,7 +195,7 @@ void (async () => {
 
   startGroup('Merging e2e reports');
 
-  await exec('npx ts-node ./merge_html_reports.ts', {
+  await exec('yarn merge:reports', {
     cwd: 'e2e',
     env: {
       HTML_REPORT_DIR: 'merged_html_report',
