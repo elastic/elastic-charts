@@ -41,21 +41,19 @@ export function wrapText(
     // the word is longer then the available space and is not a space
     if (currentLineWidth + segment.width > maxLineWidth && segment.segment.trimStart().length > 0) {
       // TODO call breakLongTextIntoLines with the remaining lines
-      const breakupWords = breakLongTextIntoLines(segment.segment, font, fontSize, maxLineWidth, Infinity, measure);
-      if (breakupWords.length === 0) {
+      const multilineText = breakLongTextIntoLines(segment.segment, font, fontSize, maxLineWidth, Infinity, measure);
+      // required to break the loop when a word can't fit into the next line. In this case, we don't want to skip that
+      // long word, but we want to interrupt the loop
+      if (multilineText.length === 0) {
         break;
       }
-      lines.push(...breakupWords);
+      lines.push(...multilineText);
       currentLineWidth =
-        breakupWords.length > 0 ? measure(breakupWords[breakupWords.length - 1], font, fontSize).width : 0;
+        multilineText.length > 0 ? measure(multilineText[multilineText.length - 1], font, fontSize).width : 0;
     } else {
-      if (lines.length === 0) {
-        lines.push(segment.segment.trimStart());
-        currentLineWidth += measure(segment.segment.trimStart(), font, fontSize).width;
-      } else {
-        lines[lines.length - 1] += segment.segment;
-        currentLineWidth += segment.width;
-      }
+      const lineIndex = lines.length > 0 ? lines.length - 1 : 0;
+      lines[lineIndex] = (lines[lineIndex] ?? '') + segment.segment;
+      currentLineWidth += segment.width;
     }
   }
   if (lines.length > maxLines) {
