@@ -1,3 +1,11 @@
+## [47.1.1](https://github.com/elastic/elastic-charts/compare/v47.1.0...v47.1.1) (2022-08-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v62 ([#1771](https://github.com/elastic/elastic-charts/issues/1771)) ([2f9f96f](https://github.com/elastic/elastic-charts/commit/2f9f96fe709f8829162b747d2017e0a6ed66f5f5))
+* **time:** render correctly 0-24 hourly clock ([#1765](https://github.com/elastic/elastic-charts/issues/1765)) ([cc2435b](https://github.com/elastic/elastic-charts/commit/cc2435b858d42c01cc3d9d2ece81e21ee72578f8))
+
 # [47.0.0](https://github.com/elastic/elastic-charts/compare/v46.13.0...v47.0.0) (2022-07-22)
 
 
