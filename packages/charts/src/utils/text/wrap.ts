@@ -12,13 +12,12 @@ import { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
 
 /** @internal */
 export function textSegmenter(
-  granularity: 'word' | 'grapheme',
   locale: string[],
 ): (text: string) => { segment: string; index: number; isWordLike?: boolean }[] {
   if ('Segmenter' in Intl) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    const fn = new Intl.Segmenter(locale, { granularity });
+    const fn = new Intl.Segmenter(locale, { granularity: 'word' });
     return (text: string) => Array.from(fn.segment(text));
   } else {
     return function (text: string) {
@@ -51,7 +50,8 @@ export function wrapText(
   if (maxLines <= 0) {
     return [];
   }
-  const segmenter = textSegmenter('word', []);
+  // TODO add locale
+  const segmenter = textSegmenter([]);
   // remove new lines and multi-spaces.
   const cleanedText = text.replace(/\n/g, ' ').replace(/ +(?= )/g, '');
 
