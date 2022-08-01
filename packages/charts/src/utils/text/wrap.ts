@@ -93,9 +93,9 @@ export function wrapText(
   }
   if (lines.length > maxLines) {
     const lastLineMaxLineWidth = maxLineWidth - ellipsisWidth;
-    const lastLine = breakLongWord(lines[maxLines - 1], measure, lineHeight, font, fontSize, lastLineMaxLineWidth);
+    const lastLine = clipTextToMaxWidth(lines[maxLines - 1], measure, lineHeight, font, fontSize, lastLineMaxLineWidth);
     if (lastLine.length > 0) {
-      lines.splice(maxLines - 1, Infinity, `${lastLine[0]}${ELLIPSIS}`);
+      lines.splice(maxLines - 1, Infinity, `${lastLine}${ELLIPSIS}`);
     } else {
       if (lastLineMaxLineWidth > 0) {
         lines.splice(maxLines - 1, Infinity, ELLIPSIS);
@@ -107,57 +107,43 @@ export function wrapText(
   return lines;
 }
 
-/** @internal */
-export function breakLongWordIntoLines(
+function breakLongWordIntoLines(
   word: string,
   measure: TextMeasure,
   lineHeight: number,
   font: Font,
   fontSize: number,
   maxLineWidth: number,
-  maxLines: number, // just for optimization
+  maxLines: number,
 ) {
   const lines: string[] = [];
   let currentWordSection = word;
   while (maxLines > lines.length && currentWordSection.length > 0) {
-    const line = breakLongWord(currentWordSection, measure, lineHeight, font, fontSize, maxLineWidth);
-    if (line.length === 0) {
+    const lineClippedText = clipTextToMaxWidth(currentWordSection, measure, lineHeight, font, fontSize, maxLineWidth);
+    if (lineClippedText.length === 0) {
       break;
     } else {
-      lines.push(line[0].trimStart());
-      currentWordSection = currentWordSection.slice(line[0].length, Infinity);
+      lines.push(lineClippedText.trimStart());
+      currentWordSection = currentWordSection.slice(lineClippedText.length, Infinity);
     }
   }
   return lines;
 }
 
-/** @internal */
-export function breakLongWord(
-  word: string,
+function clipTextToMaxWidth(
+  text: string,
   measure: TextMeasure,
   lineHeight: number,
   font: Font,
   fontSize: number,
   maxLineWidth: number,
-): string[] {
+): string {
   const maxCharsInLine = monotonicHillClimb(
-    (chars) => measure(word.slice(0, chars), font, fontSize, lineHeight).width,
-    word.length,
+    (chars) => measure(text.slice(0, chars), font, fontSize, lineHeight).width,
+    text.length,
     maxLineWidth,
     (n: number) => Math.floor(n),
     0,
   );
-
-  if (maxCharsInLine === 0) {
-    return [];
-  }
-
-  if (maxCharsInLine < word.length) {
-    return [word.slice(0, maxCharsInLine)];
-  }
-
-  if (Number.isNaN(maxCharsInLine)) {
-    return [];
-  }
-  return [word];
+  return text.slice(0, maxCharsInLine || 0);
 }
