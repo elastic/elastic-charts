@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 import { renderRaster } from './raster';
 
 /** @internal */

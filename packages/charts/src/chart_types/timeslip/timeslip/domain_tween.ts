@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 import { mix } from './utils/math';
 
 const REFERENCE_AF_LENGTH = 16.67; // ms

@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 /** @internal */
 export const getDesiredTickCount = (cartesianHeight, fontSize, sparse) => {
   const desiredMaxTickCount = Math.floor(cartesianHeight / (3 * fontSize));

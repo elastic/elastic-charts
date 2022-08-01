@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 const getNiceTicksForApproxCount = (domainMin, domainMax, approxDesiredTickCount) => {
   const diff = domainMax - domainMin;
   const rawPitch = diff / approxDesiredTickCount;

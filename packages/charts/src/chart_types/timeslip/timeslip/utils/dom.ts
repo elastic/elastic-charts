@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 /** @internal */
 export const zoomSafePointerX = (e) => e.layerX ?? e.clientX; // robust against Chrome, Safari, Firefox menu zooms and/or pinch zoom (FF needs zero margin)
 

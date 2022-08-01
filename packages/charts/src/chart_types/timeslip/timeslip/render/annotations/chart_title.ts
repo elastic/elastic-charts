@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 /** @internal */
 export function renderChartTitle(ctx, config, chartWidth, cartesianTop, aggregationFunctionName) {
   ctx.save();

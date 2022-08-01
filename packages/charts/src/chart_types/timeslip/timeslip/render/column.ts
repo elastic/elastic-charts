@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 import { renderBarGlyph } from './glyphs/bar';
 import { renderBoxplotGlyph } from './glyphs/boxplot';
 

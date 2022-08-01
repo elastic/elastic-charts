@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 import * as dat from 'dat.gui';
 
 import { cachedZonedDateTimeFrom, timeProp } from '../../xy_chart/axes/timeslip/chrono/cached_chrono';

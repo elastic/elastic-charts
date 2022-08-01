@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 /** @internal */
 export const toCallbackFn = (generatorObject) => {
   generatorObject.next(); // this starts the generator object, eg. resulting in initial render without any events

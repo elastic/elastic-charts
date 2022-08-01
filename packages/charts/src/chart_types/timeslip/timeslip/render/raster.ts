@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 import { clamp } from '../utils/math';
 import { renderColumn } from './column';
 

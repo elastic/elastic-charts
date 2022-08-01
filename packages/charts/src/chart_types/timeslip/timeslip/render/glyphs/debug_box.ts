@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 /** @internal */
 export function renderDebugBox(ctx, cartesianWidth, cartesianHeight) {
   ctx.save();

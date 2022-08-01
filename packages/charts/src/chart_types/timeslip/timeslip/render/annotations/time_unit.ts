@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 import { uiStrings } from '../../translations';
 
 /** @internal */

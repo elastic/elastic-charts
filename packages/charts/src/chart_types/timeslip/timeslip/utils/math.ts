@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+// @ts-noCheck
+
 /** @internal */
 export const mix = (start, end, a) => start * (1 - a) + end * a; // like the glsl function
 /** @internal */
