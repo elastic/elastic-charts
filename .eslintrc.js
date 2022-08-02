@@ -6,7 +6,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'airbnb/hooks',
-    'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
     'plugin:eslint-comments/recommended',
     'plugin:promise/recommended',
