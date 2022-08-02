@@ -73,6 +73,13 @@ module.exports = {
     '@typescript-eslint/no-unsafe-argument': 1,
     'unicorn/consistent-function-scoping': 1,
     'unicorn/explicit-length-check': 1,
+    'unicorn/no-array-for-each': 0,
+    'unicorn/no-static-only-class': 0,
+    'unicorn/prefer-logical-operator-over-ternary': 0, // use when fixable
+    'unicorn/prefer-code-point': 0, // use when fixable
+    'unicorn/no-new-array': 0, // use when fixable
+    'unicorn/consistent-destructuring': 0,
+    'unicorn/no-object-as-default-parameter': 0,
     'import/no-cycle': [0, { maxDepth: 3, ignoreExternal: true }], // TODO: should error when this is fixed https://github.com/benmosher/eslint-plugin-import/issues/1453
     'no-use-before-define': 0,
     'no-restricted-properties': 0, // need to find and filter desired options
@@ -273,12 +280,25 @@ module.exports = {
       'error',
       {
         case: 'snakeCase',
+        ignore: [/ts-debounce\.ts$/],
       },
     ],
     'unicorn/no-array-callback-reference': 0,
     'unicorn/no-array-reduce': 0,
     'unicorn/prefer-dom-node-append': 0,
     'unicorn/prefer-dom-node-remove': 0,
+    'unicorn/prefer-top-level-await': 0,
+    'unicorn/prefer-node-protocol': 0,
+    'unicorn/prefer-module': 0,
+    'unicorn/no-array-push-push': 0,
+    'unicorn/prefer-native-coercion-functions': 0, // user choice
+    'unicorn/numeric-separators-style': 0,
+    'unicorn/no-array-method-this-argument': 0, // This rule only looks for method names, thus fails on non-arrays
+    'unicorn/explicit-length-check': 0, // This rule only looks for property name, thus fails on non-maps
+    'unicorn/no-await-expression-member': 0,
+    'unicorn/prefer-object-from-entries': 0,
+    'unicorn/no-useless-switch-case': 0,
+    'unicorn/prefer-dom-node-dataset': 0,
 
     /*
      * file-header plugin
@@ -444,6 +464,7 @@ module.exports = {
       excludedFiles: ['./e2e/**/*.test.ts'],
       extends: ['plugin:jest/recommended'],
       rules: {
+        'jest/expect-expect': 0,
         'jest/no-standalone-expect': 0, // using custom expect functions
         'jest/no-disabled-tests': 0,
         'jest/no-identical-title': 0, // does not account for <describe|it>.each
@@ -490,7 +511,6 @@ module.exports = {
     {
       files: ['integration/**/*.test.ts?(x)'],
       rules: {
-        'jest/expect-expect': 0,
         'unicorn/consistent-function-scoping': 0,
       },
     },

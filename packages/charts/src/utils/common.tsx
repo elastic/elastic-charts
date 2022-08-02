@@ -314,7 +314,7 @@ export function shallowClone(value: any) {
   }
 
   if (value instanceof Set) {
-    return new Set([...value]);
+    return new Set(value);
   }
 
   if (typeof value === 'object' && value !== null) {

@@ -34,22 +34,20 @@ export function computeRatioByGroups<T extends Record<string, unknown>>(
   groupAccessors: GroupKeysOrKeyFn<T>,
   valueGetterSetters: Array<[(datum: T) => unknown, (datum: T, value: number) => T]>,
 ): T[] {
-  return groupBy(data, groupAccessors, true)
-    .map((groupedData) => {
-      const groupSum = groupedData.reduce((sum, datum) => {
-        return (
-          valueGetterSetters.reduce((valueSum, [getter]) => {
-            const value = getter(datum);
-            return valueSum + (isFiniteNumber(value) ? Math.abs(value) : 0);
-          }, 0) + sum
-        );
-      }, 0);
-      return groupedData.map((datum) => {
-        return valueGetterSetters.reduce<T>((acc, [getter, setter]) => {
-          const value = getter(acc);
-          return isFiniteNumber(value) ? setter(acc, groupSum === 0 ? 0 : Math.abs(value) / groupSum) : acc;
-        }, datum);
-      });
-    })
-    .flat();
+  return groupBy(data, groupAccessors, true).flatMap((groupedData) => {
+    const groupSum = groupedData.reduce((sum, datum) => {
+      return (
+        valueGetterSetters.reduce((valueSum, [getter]) => {
+          const value = getter(datum);
+          return valueSum + (isFiniteNumber(value) ? Math.abs(value) : 0);
+        }, 0) + sum
+      );
+    }, 0);
+    return groupedData.map((datum) => {
+      return valueGetterSetters.reduce<T>((acc, [getter, setter]) => {
+        const value = getter(acc);
+        return isFiniteNumber(value) ? setter(acc, groupSum === 0 ? 0 : Math.abs(value) / groupSum) : acc;
+      }, datum);
+    });
+  });
 }

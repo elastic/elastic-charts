@@ -63,7 +63,8 @@ const getLogKnobs = (isXAxis = false) => {
     allowUndefined: true,
   }) as 'common' | 'binary' | 'natural';
   return {
-    ...{ min: NaN, max: NaN },
+    min: NaN,
+    max: NaN,
     ...(!isXAxis && { fit: boolean('Fit domain', true, group) }),
     dataType: getDataType(group, isXAxis ? undefined : 'upDown'),
     negative: boolean('Use negative values', false, group),

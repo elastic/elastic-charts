@@ -175,8 +175,7 @@ function toggleDeselectedDataSeries(
   if (negate) {
     return alreadyDeselected || deselectedDataSeries.length !== legendItemsKeys.length - 1
       ? legendItems
-          .map(({ seriesIdentifiers }) => seriesIdentifiers)
-          .flat()
+          .flatMap(({ seriesIdentifiers }) => seriesIdentifiers)
           .filter(({ key }) => !actionSeriesKeys.includes(key))
       : legendItemIds;
   } else {

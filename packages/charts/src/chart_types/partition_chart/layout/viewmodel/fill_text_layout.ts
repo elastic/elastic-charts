@@ -115,7 +115,10 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
     typeof padding === 'number'
       ? { top: padding, right: padding, bottom: padding, left: padding }
       : {
-          ...{ top: defaultPad, right: defaultPad, bottom: defaultPad, left: defaultPad },
+          top: defaultPad,
+          right: defaultPad,
+          bottom: defaultPad,
+          left: defaultPad,
           ...padding,
         };
 
@@ -152,9 +155,7 @@ export const getRectangleRowGeometry: GetShapeRowGeometry<RectangleConstruction>
 function rowSetComplete(rowSet: RowSet, measuredBoxes: RowBox[]) {
   return (
     measuredBoxes.length === 0 &&
-    !rowSet.rows.some(
-      (r) => !Number.isFinite(r.length) || r.rowWords.length === 0 || r.rowWords.every((rw) => rw.text.length === 0),
-    )
+    !rowSet.rows.some((r) => !Number.isFinite(r.length) || r.rowWords.every((rw) => rw.text.length === 0))
   );
 }
 
