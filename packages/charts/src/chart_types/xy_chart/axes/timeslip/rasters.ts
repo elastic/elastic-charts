@@ -24,7 +24,7 @@ const approxWidthsInSeconds: Record<string, number> = {
   millisecond: 0.001,
 };
 
-/** @internal */
+/** @public */
 export interface TimeBin {
   timePointSec: number;
   nextTimePointSec: number;
