@@ -64,17 +64,22 @@ export function multilayerAxisEntry(
       fallbackAskedTickCount: NaN,
     };
   };
+
+  const binWidthS = binWidth / 1000; // seconds to milliseconds
+  const binStartsFrom = domainFromS - binWidthS;
+  const binStartsTo = domainToS + binWidthS;
+
   return layers.reduce<Projection>(
     (combinedEntry, l, detailedLayerIndex) => {
       if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
       if (layerIndex >= timeAxisLayerCount) return combinedEntry;
-      const binWidthS = binWidth / 1000;
+      const timeTicks = [...l.binStarts(binStartsFrom, binStartsTo)]
+        .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec <= domainToS)
+        .map((b) => 1000 * b.timePointSec);
       const { entry } = fillLayerTimeslip(
         layerIndex,
         detailedLayerIndex,
-        [...l.binStarts(domainFromS - binWidthS, domainToS + binWidthS)]
-          .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec <= domainToS)
-          .map((b) => 1000 * b.timePointSec),
+        timeTicks,
         !l.labeled ? () => '' : layerIndex === timeAxisLayerCount - 1 ? l.detailedLabelFormat : l.minorTickLabelFormat,
         notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0]), MAX_TIME_GRID_COUNT)(l),
       );
