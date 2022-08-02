@@ -14,6 +14,7 @@ import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
 import { MetricState } from '../chart_types/metric/state/chart_state';
 import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
+import { TimeslipState } from '../chart_types/timeslip/internal_chart_state';
 import { WordcloudState } from '../chart_types/wordcloud/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { CategoryKey } from '../common/category';
@@ -430,6 +431,7 @@ const constructors: Record<ChartType, () => InternalChartState | null> = {
   [ChartType.Goal]: () => new GoalState(),
   [ChartType.Partition]: () => new PartitionState(),
   [ChartType.Flame]: () => new FlameState(),
+  [ChartType.Timeslip]: () => new TimeslipState(),
   [ChartType.XYAxis]: () => new XYAxisChartState(),
   [ChartType.Heatmap]: () => new HeatmapState(),
   [ChartType.Wordcloud]: () => new WordcloudState(),
