@@ -8,8 +8,6 @@
 
 // @ts-noCheck
 
-import * as dat from 'dat.gui';
-
 import { cachedZonedDateTimeFrom, timeProp } from '../../xy_chart/axes/timeslip/chrono/cached_chrono';
 import { rasters } from '../../xy_chart/axes/timeslip/rasters';
 import { axisModel } from './axis_model';
@@ -82,9 +80,6 @@ export const timeslipRender = (canvas /*: HTMLCanvasElement*/, ctx /*: CanvasRen
     lumaSteps: lumaSteps.map((l) => 255 - l),
   };
 
-  const gui = new dat.gui.GUI({ width: 200 });
-  gui.domElement.parentElement.style['z-index'] = '1000000'; // might need a setTimeout in the future
-  gui.close();
   const config = {
     darkMode: initialDarkMode,
     sparse: false,
@@ -191,131 +186,7 @@ export const timeslipRender = (canvas /*: HTMLCanvasElement*/, ctx /*: CanvasRen
     dataResponse: { stats: {}, rows: [] },
   };
 
-  /**
-   * dat.gui event handlers
-   */
-
-  const updateGridAesthetics = ({ darkMode, sparse, implicit }) => {
-    // make implicit
-    const ls0 = implicit ? lumaSteps.map(() => 255) : lumaSteps;
-    const lst0 = implicit ? [1, ...lineThicknessSteps.slice(1)] : lineThicknessSteps;
-
-    // sparsify
-    const ls1 = sparse ? [0, ...ls0] : ls0;
-    const lst1 = sparse ? [0, ...lst0] : lst0;
-
-    // dark mode
-    const ls2 = darkMode ? ls1.map((d) => 255 - d) : ls1;
-    const lst2 = lst1;
-
-    config.lumaSteps = ls2;
-    config.lineThicknessSteps = lst2;
-  };
-
-  const guiFolders = {
-    a11y: gui.addFolder('Accessibility'),
-    theme: gui.addFolder('User prefs'),
-    navigation: gui.addFolder('Navigation'),
-    query: gui.addFolder('Query'),
-    queryParams: gui.addFolder('Query params'),
-    i18n: gui.addFolder('Internationalization'),
-  };
-
-  guiFolders.query.open();
-
-  guiFolders.navigation
-    .add(interactionState, 'zoom')
-    .min(minZoom)
-    .max(maxZoom)
-    .step(0.001)
-    .onChange(scheduleChartRender)
-    .listen();
-  guiFolders.navigation
-    .add(interactionState, 'pan')
-    .min(0)
-    .max(1)
-    .step(0.000001)
-    .onChange(scheduleChartRender)
-    .listen();
-
-  guiFolders.theme.add(config, 'darkMode').onChange(() => {
-    Object.assign(config, config.darkMode ? themeDark : themeLight);
-    updateGridAesthetics(config);
-    fullRender();
-  });
-  guiFolders.theme.add(config, 'sparse').onChange(() => {
-    updateGridAesthetics(config);
-    scheduleChartRender();
-  });
-  guiFolders.theme.add(config, 'implicit').onChange(() => {
-    updateGridAesthetics(config);
-    scheduleChartRender();
-  });
-  guiFolders.theme.add(config, 'maxLabelRowCount').min(2).max(3).step(1).onChange(scheduleChartRender);
-
-  guiFolders.query.add(config.queryConfig, 'metricFieldName', metricFieldNames).onChange(scheduleChartRender);
-  guiFolders.query
-    .add(
-      config.queryConfig,
-      'aggregation',
-      Object.fromEntries(Object.entries(aggregationFunctionNames).map(([k, v]) => [v, k])),
-    )
-    .onChange(scheduleChartRender);
-  guiFolders.query
-    .add(config.queryConfig, 'boxplot')
-    .onChange((newVal) => {
-      if (newVal && config.queryConfig.window !== 0) {
-        config.queryConfig.window = 0;
-      }
-      scheduleChartRender();
-    })
-    .listen();
-  guiFolders.queryParams
-    .add(config.queryConfig, 'window')
-    .min(0)
-    .max(10)
-    .step(1)
-    .onChange((newVal) => {
-      if (newVal > 0 && config.queryConfig.boxplot) {
-        config.queryConfig.boxplot = false;
-      }
-      scheduleChartRender();
-    })
-    .listen();
-  guiFolders.queryParams.add(config.queryConfig, 'alpha').min(0).max(1).step(0.1).onChange(scheduleChartRender);
-  guiFolders.queryParams.add(config.queryConfig, 'beta').min(0).max(1).step(0.1).onChange(scheduleChartRender);
-  guiFolders.queryParams.add(config.queryConfig, 'gamma').min(0).max(1).step(0.1).onChange(scheduleChartRender);
-  guiFolders.queryParams.add(config.queryConfig, 'period').min(0).max(25).step(1).onChange(scheduleChartRender);
-  guiFolders.queryParams.add(config.queryConfig, 'multiplicative').onChange(scheduleChartRender);
-  guiFolders.queryParams.add(config.queryConfig, 'binOffset').min(-30).max(30).step(1).onChange(scheduleChartRender);
-
-  let rasterSelector = rasters(config, timeZone);
-
-  guiFolders.i18n
-    .add(config, 'locale', {
-      Arabic: 'ar-TN',
-      German: 'de-CH',
-      French: 'fr-FR',
-      'US English': 'en-US',
-      Greek: 'el-GR',
-      Hungarian: 'hu-HU',
-      Hebrew: 'he-IL',
-      Hindi: 'hi-IN',
-      Italian: 'it-IT',
-      Japanese: 'ja-JA',
-      Russian: 'ru-RU',
-    })
-    .onChange((value) => {
-      canvas.setAttribute('dir', ['he-IL', 'ar-TN'].includes(value) ? 'rtl' : 'ltr');
-      rasterSelector = rasters(config, timeZone);
-      scheduleChartRender();
-    });
-
-  guiFolders.i18n.add(config, 'numUnit', ['none', 'short', 'long']).onChange(scheduleChartRender);
-  guiFolders.a11y.add(config.a11y, 'shortcuts').onChange(scheduleChartRender);
-  guiFolders.a11y.add(config.a11y, 'contrast', ['low', 'medium', 'high']).onChange(scheduleChartRender);
-  guiFolders.a11y.add(config.a11y, 'animation').onChange(scheduleChartRender);
-  guiFolders.a11y.add(config.a11y, 'sonification').onChange(scheduleChartRender);
+  const rasterSelector = rasters(config, timeZone);
 
   // todo this may need an update with locale change
   const defaultLabelFormat = new Intl.DateTimeFormat(config.locale, {
