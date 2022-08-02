@@ -6,19 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { action } from '@storybook/addon-actions';
-import { button } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Chart,
-  Timeslip,
-  Settings,
-  PartialTheme,
-  FlameGlobalControl,
-  FlameNodeControl,
-  GetData,
-} from '@elastic/charts';
+import { Chart, Timeslip, Settings, PartialTheme, GetData } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 
@@ -45,32 +35,16 @@ const getData = (dataDemand: Parameters<GetData>[0]) => {
   return result;
 };
 
-const noop = () => {};
-
 export const Example = () => {
-  const resetFocusControl: FlameGlobalControl = noop; // initial value
-  const focusOnNodeControl: FlameNodeControl = noop; // initial value
-
-  const onElementListeners = {
-    onElementClick: action('onElementClick'),
-    onElementOver: action('onElementOver'),
-    onElementOut: action('onElementOut'),
-  };
   const theme: PartialTheme = {
     chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
   };
-  button('Reset focus', () => {
-    resetFocusControl();
-  });
-  button('Set focus on random node', () => {
-    focusOnNodeControl(Math.floor(20 * Math.random()));
-  });
 
   // fixing width and height at multiples of 256 for now
   return (
     <Chart size={{ width: 1024, height: 512 }}>
-      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} />
+      <Settings theme={theme} baseTheme={useBaseTheme()} />
       <Timeslip id="spec_1" getData={getData} />
     </Chart>
   );
