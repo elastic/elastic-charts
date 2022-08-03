@@ -27,7 +27,7 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 
 import { useBaseTheme } from '../../use_base_theme';
 
-const rng = getRandomNumberGenerator();
+const rng = getRandomNumberGenerator('static');
 
 const aggData = [
   ...KIBANA_METRICS.metrics.kibana_os_load[0].data
@@ -103,7 +103,7 @@ export const Example = () => {
           id="bottom"
           position={Position.Bottom}
           timeAxisLayerCount={2}
-          tickFormat={(v) => DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm', { timeZone: 'Europe/Rome' })}
+          tickFormat={(v) => DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm:ss', { timeZone: 'Europe/Rome' })}
           style={{
             tickLine: { size: 0.0001, padding: 4 },
             tickLabel: {
@@ -155,7 +155,7 @@ export const Example = () => {
           id="bottom"
           position={Position.Bottom}
           timeAxisLayerCount={2}
-          tickFormat={(v) => DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm', { timeZone: 'Europe/Rome' })}
+          tickFormat={(v) => DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm:ss', { timeZone: 'Europe/Rome' })}
           style={{
             tickLine: { size: 0.0001, padding: 4 },
             tickLabel: {
@@ -252,7 +252,7 @@ export const Example = () => {
             },
           }}
           xAxisLabelFormatter={(v) =>
-            DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm', { timeZone: 'Europe/Rome' })
+            DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm:ss', { timeZone: 'Europe/Rome' })
           }
           xAxisLabelName="time"
           yAxisLabelName="cluster"

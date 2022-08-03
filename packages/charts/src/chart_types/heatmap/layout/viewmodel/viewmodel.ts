@@ -16,7 +16,7 @@ import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
+import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, Datum, isFiniteNumber } from '../../../../utils/common';
 import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
@@ -335,16 +335,21 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   };
 
   const pickCursorBand: PickCursorBand = (x) => {
-    const index = typeof x === 'number' ? xValues.findIndex((d) => d > x) - 1 : xValues.indexOf(x);
-    if (index < 0) {
-      return undefined;
-    }
-    return {
-      width: cellWidth,
-      x: elementSizes.grid.left + (xScale(xValues[index]) ?? NaN),
-      y: elementSizes.grid.top,
-      height: elementSizes.grid.height,
-    };
+    // TODO for Linear scale we need to round the numerical interval. see also https://github.com/elastic/elastic-charts/issues/1701
+    const roundedValue =
+      isRasterTimeScale(spec.xScale) && isFiniteNumber(x)
+        ? roundDateToESInterval(x, spec.xScale.interval, 'start', spec.timeZone)
+        : x;
+
+    const index = xValues.indexOf(roundedValue);
+    return index < 0
+      ? undefined
+      : {
+          width: cellWidth,
+          x: elementSizes.grid.left + (xScale(xValues[index]) ?? NaN),
+          y: elementSizes.grid.top,
+          height: elementSizes.grid.height,
+        };
   };
 
   // ordered left-right vertical lines
