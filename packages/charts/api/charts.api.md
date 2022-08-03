@@ -524,6 +524,7 @@ export const ChartType: Readonly<{
     Goal: "goal";
     Partition: "partition";
     Flame: "flame";
+    Timeslip: "timeslip";
     XYAxis: "xy_axis";
     Heatmap: "heatmap";
     Wordcloud: "wordcloud";
@@ -1081,6 +1082,18 @@ export interface GeometryValue {
     // (undocumented)
     y: any;
 }
+
+// @public
+export type GetData = (dataDemand: {
+    lo: TimeBin;
+    hi: TimeBin;
+    binUnit: string;
+    binUnitCount: number;
+    unitBarMaxWidthPixels: number;
+}) => Array<{
+    epochMs: number;
+    value: number;
+}>;
 
 // @public (undocumented)
 export function getNodeName(node: ArrayNode): string;
@@ -2718,6 +2731,21 @@ export interface TimeScale {
     type: typeof ScaleType.Time;
 }
 
+// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
+//
+// @public
+export const Timeslip: (props: SFProps<TimeslipSpec, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
+
+// @public
+export interface TimeslipSpec extends Spec {
+    // (undocumented)
+    chartType: typeof ChartType.Timeslip;
+    // (undocumented)
+    getData: GetData;
+    // (undocumented)
+    specType: typeof SpecType.Series;
+}
+
 // @public
 export function toEntries<T extends Record<string, string>, S>(array: T[], accessor: keyof T, staticValue: S): Record<string, S>;
 
@@ -3085,6 +3113,10 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
+
+// Warnings were encountered during analysis:
+//
+// src/chart_types/timeslip/timeslip_api.ts:21:3 - (ae-forgotten-export) The symbol "TimeBin" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

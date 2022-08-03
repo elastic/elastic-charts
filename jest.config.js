@@ -10,10 +10,11 @@ module.exports = {
   testMatch: ['**/?(*.)+(test).[jt]s?(x)'],
   roots: ['<rootDir>/packages/charts/src'],
   preset: 'ts-jest',
+  testEnvironment: 'jsdom',
   setupFilesAfterEnv: [
     '<rootDir>/scripts/setup_enzyme.ts',
     '<rootDir>/scripts/custom_matchers.mock.ts',
-    'jest-extended',
+    'jest-extended/all',
   ],
   coveragePathIgnorePatterns: [
     '<rootDir>/packages/charts/src/mocks',

@@ -23,7 +23,7 @@ function significantDigitCount(d: number): number {
   while (n !== 0 && n % 10 === 0) {
     n /= 10;
   }
-  return Math.floor(Math.log(n) / Math.LN10) + 1;
+  return Math.floor(Math.log10(n)) + 1;
 }
 
 /** @internal */

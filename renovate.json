@@ -31,7 +31,7 @@
       "groupName": "@elastic/eui",
       "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
       "matchUpdateTypes": ["major"],
-      "schedule": ["every week on monday"],
+      "schedule": ["every 1 week on monday"],
       "automerge": true,
       "enabled": true
     },

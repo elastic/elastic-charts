@@ -82,7 +82,7 @@ async function commitNewScreenshots() {
   const updatedFilePaths = metaFiles.sort().flatMap((f) => {
     const meta = JSON.parse(fs.readFileSync(path.join(screenshotMetaDir, f)).toString()) as ScreenshotMeta;
     return meta.files;
-  }, 0);
+  });
 
   if (updatedFilePaths.length === 0) {
     console.log('No screenshots to be updated');
@@ -195,7 +195,7 @@ void (async () => {
 
   startGroup('Merging e2e reports');
 
-  await exec('npx ts-node ./merge_html_reports.ts', {
+  await exec('yarn merge:reports', {
     cwd: 'e2e',
     env: {
       HTML_REPORT_DIR: 'merged_html_report',

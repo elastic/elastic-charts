@@ -98,55 +98,53 @@ class Component extends React.Component<StateProps & DispatchProps> {
           gridTemplateRows: `repeat(${totalRows}, minmax(64px, 1fr)`,
         }}
       >
-        {data
-          .map((columns, rowIndex) => {
-            return [
-              ...columns.map((datum, columnIndex) => {
-                // fill undefined with empty panels
-                const emptyMetricClassName = classNames('echMetric', {
-                  'echMetric--rightBorder': columnIndex < totalColumns - 1,
-                  'echMetric--bottomBorder': rowIndex < totalRows - 1,
-                });
-                if (!datum) {
-                  return (
-                    <li key={`empty-${columnIndex}`} role="presentation">
-                      <div className={emptyMetricClassName}></div>
-                    </li>
-                  );
-                }
+        {data.flatMap((columns, rowIndex) => {
+          return [
+            ...columns.map((datum, columnIndex) => {
+              // fill undefined with empty panels
+              const emptyMetricClassName = classNames('echMetric', {
+                'echMetric--rightBorder': columnIndex < totalColumns - 1,
+                'echMetric--bottomBorder': rowIndex < totalRows - 1,
+              });
+              if (!datum) {
                 return (
-                  <li key={`${datum.title}${datum.subtitle}${datum.color}${columnIndex}`}>
-                    <MetricComponent
-                      chartId={chartId}
-                      datum={datum}
-                      totalRows={totalRows}
-                      totalColumns={totalColumns}
-                      rowIndex={rowIndex}
-                      columnIndex={columnIndex}
-                      panel={panel}
-                      style={style}
-                      onElementClick={onElementClick}
-                      onElementOut={onElementOut}
-                      onElementOver={onElementOver}
-                    />
-                  </li>
-                );
-              }),
-              // fill the grid row with empty panels
-              ...Array.from({ length: totalColumns - columns.length }, (_, columIndex) => {
-                const emptyMetricClassName = classNames('echMetric', {
-                  'echMetric--rightBorder': columns.length + columIndex < totalColumns - 1,
-                  'echMetric--bottomBorder': rowIndex < totalRows - 1,
-                });
-                return (
-                  <li key={`missing-${columIndex}`} role="presentation">
+                  <li key={`empty-${columnIndex}`} role="presentation">
                     <div className={emptyMetricClassName}></div>
                   </li>
                 );
-              }),
-            ];
-          })
-          .flat()}
+              }
+              return (
+                <li key={`${datum.title}${datum.subtitle}${datum.color}${columnIndex}`}>
+                  <MetricComponent
+                    chartId={chartId}
+                    datum={datum}
+                    totalRows={totalRows}
+                    totalColumns={totalColumns}
+                    rowIndex={rowIndex}
+                    columnIndex={columnIndex}
+                    panel={panel}
+                    style={style}
+                    onElementClick={onElementClick}
+                    onElementOut={onElementOut}
+                    onElementOver={onElementOver}
+                  />
+                </li>
+              );
+            }),
+            // fill the grid row with empty panels
+            ...Array.from({ length: totalColumns - columns.length }, (_, columIndex) => {
+              const emptyMetricClassName = classNames('echMetric', {
+                'echMetric--rightBorder': columns.length + columIndex < totalColumns - 1,
+                'echMetric--bottomBorder': rowIndex < totalRows - 1,
+              });
+              return (
+                <li key={`missing-${columIndex}`} role="presentation">
+                  <div className={emptyMetricClassName}></div>
+                </li>
+              );
+            }),
+          ];
+        })}
       </ul>
     );
   }

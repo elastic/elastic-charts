@@ -24,7 +24,7 @@ const approxWidthsInSeconds: Record<string, number> = {
   millisecond: 0.001,
 };
 
-/** @internal */
+/** @public */
 export interface TimeBin {
   timePointSec: number;
   nextTimePointSec: number;
@@ -83,7 +83,9 @@ interface YearToHour extends YearToDay {
 // todo DRY up the config for the other time units too, where sensible
 const hourFormat: Partial<ConstructorParameters<typeof Intl.DateTimeFormat>[1]> = {
   hour: '2-digit',
-  hour12: false,
+  // this is mutual exclusive with `hour12` and
+  // fix the issue of rendering the time from midnight starting at 24:00 to 24:59 to 01:00
+  hourCycle: 'h23',
 };
 
 const englishOrdinalEndings = {

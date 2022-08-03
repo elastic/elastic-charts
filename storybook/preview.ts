@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { storybookParameters } from './parameters';
 import { StoryWrapper } from './story_wrapper';
 
 import './style.scss';
 
-export const parameters = storybookParameters;
 export const decorators = [StoryWrapper];
+
+export { storybookParameters as parameters } from './parameters';

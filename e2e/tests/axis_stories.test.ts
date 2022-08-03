@@ -20,6 +20,11 @@ test.describe('Axis stories', () => {
       );
     });
   });
+  test('should render hour raster from 00:00 to 23:59', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin%20width%20in%20ms%20(0:%20none%20specifed)=0&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Stretch%20time=2.4&knob-Time%20zoom=120&knob-layerCount=3',
+    );
+  });
   test('should use a decades raster', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Minor%20grid%20lines=true&knob-Shift%20time=0&knob-Shorter%20X%20axis%20minor%20whiskers=true&knob-Stretch%20time=18&knob-Time%20zoom=120&knob-X%20axis%20minor%20whiskers=true&knob-showOverlappingLabels%20time%20axis=true',
