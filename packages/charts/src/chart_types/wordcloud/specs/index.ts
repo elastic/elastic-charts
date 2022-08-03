@@ -12,15 +12,7 @@ import { ChartType } from '../..';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { specComponentFactory } from '../../../state/spec_factory';
-import {
-  WordModel,
-  defaultWordcloudSpec,
-  WeightFn,
-  OutOfRoomCallback,
-  WordcloudViewModel,
-} from '../layout/types/viewmodel_types';
-
-export { WordModel, WeightFn, OutOfRoomCallback };
+import { defaultWordcloudSpec, WordcloudViewModel } from '../layout/types/viewmodel_types';
 
 /** @alpha */
 export interface WordcloudSpec extends Spec, WordcloudViewModel {
@@ -44,3 +36,5 @@ export const Wordcloud = specComponentFactory<WordcloudSpec>()(
 
 /** @public */
 export type WordcloudProps = ComponentProps<typeof Wordcloud>;
+
+export { WordModel, WeightFn, OutOfRoomCallback } from '../layout/types/viewmodel_types';

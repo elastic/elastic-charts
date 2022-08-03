@@ -140,7 +140,6 @@ export const eachRotation = {
     return it.each<[string, Rotation]>(rotationCases)(title, (_, r) => fn(r));
   },
   describe(fn: (rotation: Rotation) => any, title = 'rotation - %s') {
-    // eslint-disable-next-line jest/valid-title, jest/valid-describe-callback
     return describe.each<[string, Rotation]>(rotationCases)(title, (_, r) => fn(r));
   },
 };
@@ -157,7 +156,6 @@ export const eachTheme = {
     return it.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `globals=theme:${theme}`));
   },
   describe(fn: (theme: ThemeId, urlParam: string) => any, title = 'theme - %s') {
-    // eslint-disable-next-line jest/valid-title, jest/valid-describe-callback
     return describe.each<ThemeId>(themeIds)(title, (theme) => fn(theme, `globals=theme:${theme}`));
   },
 };

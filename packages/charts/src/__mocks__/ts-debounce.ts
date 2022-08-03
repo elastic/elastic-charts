@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-/* eslint-disable unicorn/filename-case */
+/* eslint-disable unicorn/prefer-export-from */
 
 import { debounce as debounceLodash } from 'lodash';
 
 // Need ability to flush debouncer in unit tests. Otherwise functions the same
 export const debounce = debounceLodash;
 
-/* eslint-enable unicorn/filename-case */
+/* eslint-enable unicorn/prefer-export-from */
