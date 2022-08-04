@@ -1,3 +1,12 @@
+# [47.2.0](https://github.com/elastic/elastic-charts/compare/v47.1.1...v47.2.0) (2022-08-04)
+
+
+### Features
+
+* **heatmap:** sync cursor between cartesian chart and heatmap ([#1721](https://github.com/elastic/elastic-charts/issues/1721)) ([2b58e90](https://github.com/elastic/elastic-charts/commit/2b58e90ff9e6b95f2193da30e43a0a61044a2391))
+* **text:** improved word wrap function ([#1761](https://github.com/elastic/elastic-charts/issues/1761)) ([eaf0d59](https://github.com/elastic/elastic-charts/commit/eaf0d59edbb185be0d6d770f59ef5720c68008bf))
+* timeslip prototype added ([#1767](https://github.com/elastic/elastic-charts/issues/1767)) ([b079766](https://github.com/elastic/elastic-charts/commit/b07976604e13eae5ea566cf78584c9c9e83d82af))
+
 ## [47.1.1](https://github.com/elastic/elastic-charts/compare/v47.1.0...v47.1.1) (2022-08-01)
 
 
