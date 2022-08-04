@@ -30,5 +30,6 @@ export { Example as brushDisabledOnOrdinalXAxis } from './13_brush_disabled_ordi
 export { Example as crosshairWithTimeAxis } from './14_crosshair_time.story';
 export { Example as renderChangeAction } from './15_render_change.story';
 export { Example as cursorUpdateAction } from './16_cursor_update_action.story';
+export { Example as multiChartCursorSync } from './19_multi_chart_cursor_sync.story';
 export { Example as interactionWithNullValues } from './18_null_values.story';
 export { Example as pngExportAction } from './17_png_export.story';

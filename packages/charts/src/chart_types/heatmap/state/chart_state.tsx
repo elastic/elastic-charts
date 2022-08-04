@@ -16,6 +16,7 @@ import { getChartContainerDimensionsSelector } from '../../../state/selectors/ge
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
+import { CursorBand } from '../renderer/dom/cursor_band';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
 import { computeChartElementSizesSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
@@ -85,6 +86,7 @@ export class HeatmapState implements InternalChartState {
       <>
         <Tooltip getChartContainerRef={containerRef} />
         <Heatmap forwardStageRef={forwardStageRef} />
+        <CursorBand />
         <BrushTool />
         <HighlighterFromBrush />
       </>

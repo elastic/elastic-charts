@@ -16,7 +16,7 @@ import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { addIntervalToTime } from '../../../../utils/chrono/elasticsearch';
+import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, Datum, isFiniteNumber } from '../../../../utils/common';
 import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
@@ -28,6 +28,7 @@ import { ColorScale } from '../../state/selectors/get_color_scale';
 import {
   Cell,
   GridCell,
+  PickCursorBand,
   PickDragFunction,
   PickDragShapeFunction,
   PickHighlightedArea,
@@ -333,6 +334,24 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return pickHighlightedArea(area.x, area.y);
   };
 
+  const pickCursorBand: PickCursorBand = (x) => {
+    // TODO for Linear scale we need to round the numerical interval. see also https://github.com/elastic/elastic-charts/issues/1701
+    const roundedValue =
+      isRasterTimeScale(spec.xScale) && isFiniteNumber(x)
+        ? roundDateToESInterval(x, spec.xScale.interval, 'start', spec.timeZone)
+        : x;
+
+    const index = xValues.indexOf(roundedValue);
+    return index < 0
+      ? undefined
+      : {
+          width: cellWidth,
+          x: elementSizes.grid.left + (xScale(xValues[index]) ?? NaN),
+          y: elementSizes.grid.top,
+          height: elementSizes.grid.height,
+        };
+  };
+
   // ordered left-right vertical lines
   const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => {
     const xAxisExtension = i % elementSizes.xAxisTickCadence === 0 ? 5 : 0;
@@ -416,6 +435,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     pickDragArea,
     pickDragShape,
     pickHighlightedArea,
+    pickCursorBand,
   };
 }
 
@@ -435,7 +455,7 @@ export function isRasterTimeScale(scale: RasterTimeScale | OrdinalScale | Linear
 function getXTicks(
   spec: HeatmapSpec,
   style: HeatmapStyle['xAxisLabel'],
-  scale: ScaleBand<string | number>,
+  scale: ScaleBand<NonNullable<PrimitiveValue>>,
   values: NonNullable<PrimitiveValue>[],
 ): Array<TextBox> {
   const isTimeScale = isRasterTimeScale(spec.xScale);

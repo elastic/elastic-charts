@@ -100,6 +100,9 @@ export type PickHighlightedArea = (
 ) => Rect | null;
 
 /** @internal */
+export type PickCursorBand = (x: NonNullable<PrimitiveValue>) => Rect | undefined;
+
+/** @internal */
 export type PickGridCell = (x: Pixels, y: Pixels) => GridCell | undefined;
 
 /** @internal */
@@ -114,6 +117,7 @@ export type ShapeViewModel = {
   pickDragShape: PickDragShapeFunction;
   pickHighlightedArea: PickHighlightedArea;
   pickGridCell: PickGridCell;
+  pickCursorBand: PickCursorBand;
 };
 
 /** @internal */
@@ -144,4 +148,5 @@ export const nullShapeViewModel = (): ShapeViewModel => ({
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   pickHighlightedArea: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   pickGridCell: () => undefined,
+  pickCursorBand: () => undefined,
 });
