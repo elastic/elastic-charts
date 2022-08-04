@@ -7,17 +7,21 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button } from '@storybook/addon-knobs';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Chart, Datum, Flame, Settings, PartialTheme, FlameGlobalControl, FlameNodeControl } from '@elastic/charts';
+import {
+  Chart,
+  ColumnarViewModel,
+  Datum,
+  Flame,
+  Settings,
+  PartialTheme,
+  ControlProviderCallback,
+} from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-
-const position = new Float32Array(columnarMock.position);
-const size = new Float32Array(columnarMock.size);
 
 const pseudoRandom = getRandomNumberGenerator('a_seed');
 
@@ -36,55 +40,85 @@ const paletteColorBrewerCat12 = [
   [255, 237, 111],
 ];
 
-const columnarData = {
-  label: columnarMock.label.map((index: number) => columnarMock.dictionary[index]), // reversing the dictionary encoding
-  value: new Float64Array(columnarMock.value),
-  // color: new Float32Array((columnarMock.color.match(/.{2}/g) ?? []).map((hex: string) => Number.parseInt(hex, 16) / 255)),
-  color: new Float32Array(
-    columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[pseudoRandom(0, 11)].map((c) => c / 255), 1]),
-  ),
-  position0: position, // new Float32Array([...position].slice(1)), // try with the wrong array length
-  position1: position,
-  size0: size,
-  size1: size,
-};
+function generateColorsForLabels(labels: any[]): number[] {
+  return labels.flatMap(() => [...paletteColorBrewerCat12[pseudoRandom(0, 11)].map((c) => c / 255), 1]);
+}
 
-const noop = () => {};
+const largeDataset: ColumnarViewModel = (() => {
+  return {
+    label: columnarMock.label.map((index: number) => columnarMock.dictionary[index]),
+    value: new Float64Array(columnarMock.value),
+    color: new Float32Array(generateColorsForLabels(columnarMock.label)),
+    position0: new Float32Array(columnarMock.position),
+    position1: new Float32Array(columnarMock.position),
+    size0: new Float32Array(columnarMock.size),
+    size1: new Float32Array(columnarMock.size),
+  };
+})();
 
-export const Example = () => {
-  let resetFocusControl: FlameGlobalControl = noop; // initial value
-  let focusOnNodeControl: FlameNodeControl = noop; // initial value
+const smallDataset: ColumnarViewModel = (() => {
+  const labels = ['root', 'kernel', 'libxul.so', 'libxul.so'];
+  const value = [1428, 1428, 1099, 329];
+  const position = [0, 0.67, 0, 0.33, 0, 0, 0.769607, 0];
+  const size = [1, 1, 0.769607, 0.230393];
+
+  return {
+    label: labels,
+    value: new Float64Array(value),
+    color: new Float32Array(generateColorsForLabels(labels)),
+    position0: new Float32Array(position),
+    position1: new Float32Array(position),
+    size0: new Float32Array(size),
+    size1: new Float32Array(size),
+  };
+})();
+
+export const Example = (
+  // should check why it's not a good idea; in the meantime:
+  // eslint-disable-next-line unicorn/no-object-as-default-parameter
+  props?: { controlProviderCallback: ControlProviderCallback },
+) => {
+  const [columnarData, setColumnarData] = useState(largeDataset);
+  const [seconds, setSeconds] = useState(0);
 
   const onElementListeners = {
     onElementClick: action('onElementClick'),
     onElementOver: action('onElementOver'),
     onElementOut: action('onElementOut'),
   };
+
   const theme: PartialTheme = {
     chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
   };
-  button('Reset focus', () => {
-    resetFocusControl();
-  });
-  button('Set focus on random node', () => {
-    focusOnNodeControl(Math.floor(20 * Math.random()));
-  });
-  const debug = boolean('Debug history', false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds((seconds) => seconds + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (seconds > 0 && seconds % 10 === 0) {
+      if ((seconds / 10) % 2 === 0) {
+        setColumnarData(largeDataset);
+      } else {
+        setColumnarData(smallDataset);
+      }
+    }
+  }, [seconds]);
 
   return (
     <Chart>
-      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
+      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} />
       <Flame
         id="spec_1"
         columnarData={columnarData}
         valueAccessor={(d: Datum) => d.value as number}
         valueFormatter={(value) => `${value}`}
         animation={{ duration: 500 }}
-        controlProviderCallback={{
-          resetFocus: (control) => (resetFocusControl = control),
-          focusOnNode: (control) => (focusOnNodeControl = control),
-        }}
+        controlProviderCallback={props?.controlProviderCallback ?? (() => {})}
       />
     </Chart>
   );

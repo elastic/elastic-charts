@@ -211,6 +211,10 @@ class FlameComponent extends React.Component<FlameProps> {
 
   constructor(props: Readonly<FlameProps>) {
     super(props);
+    this.initialize();
+  }
+
+  initialize = () => {
     const columns = this.props.columnarViewModel;
 
     // vector length checks
@@ -243,7 +247,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // search
     this.currentColor = columns.color;
-  }
+  };
 
   private focusOnNavElement(element?: NavRect) {
     if (!element) {
@@ -331,6 +335,7 @@ class FlameComponent extends React.Component<FlameProps> {
      * the DOM element has just been appended, and getContext('2d') is always non-null,
      * so we could use a couple of ! non-null assertions but no big plus
      */
+    this.initialize();
     this.tryCanvasContext();
     this.drawCanvas();
     this.props.onChartRendered();
@@ -348,6 +353,9 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   componentDidUpdate = () => {
+    console.log('component did update');
+    this.initialize();
+    this.restoreGL(this.glContext);
     if (!this.ctx) this.tryCanvasContext();
     this.bindControls();
     this.ensureTextureAndDraw();
@@ -970,7 +978,7 @@ class FlameComponent extends React.Component<FlameProps> {
           <div
             style={{
               position: 'absolute',
-              transform: `translate(20px, 20px)`,
+              transform: 'translate(20px, 20px)',
               background: 'beige',
               opacity: 0.8,
             }}
