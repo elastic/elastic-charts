@@ -22,7 +22,9 @@ import {
   ToggleDeselectSeriesAction,
 } from '../actions/legend';
 import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../actions/mouse';
+import { ON_TOOLTIP_ITEM_SELECTED, ON_TOOLTIP_STICK, TooltipActions } from '../actions/tooltip';
 import { GlobalChartState, InteractionsState } from '../chart_state';
+import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInitialPointerState } from '../utils';
 
 /**
@@ -33,13 +35,24 @@ const DRAG_DETECTION_PIXEL_DELTA = 4;
 /** @internal */
 export function interactionsReducer(
   globalState: GlobalChartState,
-  action: LegendActions | MouseActions | KeyActions | DOMElementActions,
+  action: LegendActions | MouseActions | KeyActions | DOMElementActions | TooltipActions,
   legendItems: LegendItem[],
 ): InteractionsState {
   const { interactions: state } = globalState;
   switch (action.type) {
     case ON_KEY_UP:
       if (action.key === 'Escape') {
+        if (state.tooltip.stuck) {
+          return {
+            ...state,
+            pointer: getInitialPointerState(),
+            tooltip: {
+              stuck: false,
+              selected: [],
+            },
+          };
+        }
+
         return {
           ...state,
           pointer: getInitialPointerState(),
@@ -57,15 +70,18 @@ export function interactionsReducer(
         pointer: {
           ...state.pointer,
           dragging,
-          current: {
-            position: {
-              ...action.position,
-            },
-            time: action.time,
-          },
+          current: state.tooltip.stuck
+            ? state.pointer.current
+            : {
+                position: {
+                  ...action.position,
+                },
+                time: action.time,
+              },
         },
       };
     case ON_MOUSE_DOWN:
+      if (state.tooltip.stuck) return state;
       return {
         ...state,
         drilldown: getDrilldownData(globalState),
@@ -151,6 +167,49 @@ export function interactionsReducer(
         ...state,
         hoveredDOMElement: null,
       };
+    case ON_TOOLTIP_STICK: {
+      console.log('ON_TOOLTIP_STICK');
+
+      if (state.tooltip.stuck) {
+        return {
+          ...state,
+          pointer: getInitialPointerState(),
+          tooltip: {
+            stuck: false,
+            selected: [],
+          },
+        };
+      }
+
+      if (!getInternalIsTooltipVisibleSelector(globalState).visible) {
+        return state;
+      }
+
+      return {
+        ...state,
+        tooltip: {
+          ...state.tooltip,
+          stuck: true,
+        },
+      };
+    }
+    case ON_TOOLTIP_ITEM_SELECTED: {
+      if (!state.tooltip.stuck) return state;
+      let updatedItems = [...state.tooltip.selected];
+      if (updatedItems.some(({ key }) => key === action.itemId.key)) {
+        updatedItems = updatedItems.filter(({ key }) => key !== action.itemId.key);
+      } else {
+        updatedItems.push(action.itemId);
+      }
+
+      return {
+        ...state,
+        tooltip: {
+          ...state.tooltip,
+          selected: updatedItems,
+        },
+      };
+    }
     default:
       return state;
   }

@@ -18,6 +18,10 @@ import {
   onMouseDown as onMouseDownAction,
   onPointerMove as onPointerMoveAction,
 } from '../state/actions/mouse';
+import {
+  onToggleTooltipStick as onToggleTooltipStickAction,
+  onToggleSelectedTooltipItem as onToggleSelectedTooltipItemAction,
+} from '../state/actions/tooltip';
 import { GlobalChartState, BackwardRef } from '../state/chart_state';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';
@@ -34,6 +38,7 @@ interface ChartContainerComponentStateProps {
   isChartEmpty?: boolean;
   pointerCursor: string;
   isBrushing: boolean;
+  stuckTooltip: boolean;
   initialized?: boolean;
   isBrushingAvailable: boolean;
   settings?: SettingsSpec;
@@ -47,6 +52,8 @@ interface ChartContainerComponentDispatchProps {
   onMouseUp: typeof onMouseUpAction;
   onMouseDown: typeof onMouseDownAction;
   onKeyPress: typeof onKeyPressAction;
+  onToggleTooltipStick: typeof onToggleTooltipStickAction;
+  onToggleSelectedTooltipItem: typeof onToggleSelectedTooltipItemAction;
 }
 
 interface ChartContainerComponentOwnProps {
@@ -60,6 +67,7 @@ type ReactiveChartProps = ChartContainerComponentStateProps &
 
 class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   static displayName = 'ChartContainer';
+  static watchedKeys: KeyboardEvent['key'][] = ['Escape'];
 
   shouldComponentUpdate(nextProps: ReactiveChartProps) {
     return !deepEqual(this.props, nextProps);
@@ -119,13 +127,28 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     );
   };
 
+  handleMouseRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { isChartEmpty } = this.props;
+    if (isChartEmpty) {
+      return;
+    }
+
+    e.preventDefault(); // prevent browser context menu
+
+    window.addEventListener('keyup', this.handleKeyUp);
+
+    this.props.onToggleTooltipStick();
+  };
+
   handleMouseUp = ({ nativeEvent: { offsetX, offsetY, timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { isChartEmpty, onMouseUp } = this.props;
     if (isChartEmpty) {
       return;
     }
 
-    window.removeEventListener('keyup', this.handleKeyUp);
+    if (!this.props.stuckTooltip) {
+      window.removeEventListener('keyup', this.handleKeyUp);
+    }
 
     onMouseUp(
       {
@@ -137,6 +160,8 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   };
 
   handleKeyUp = ({ key }: KeyboardEvent) => {
+    if (!ChartContainerComponent.watchedKeys.includes(key)) return;
+
     window.removeEventListener('keyup', this.handleKeyUp);
 
     const { isChartEmpty, onKeyPress } = this.props;
@@ -175,13 +200,16 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     return (
       <div
         className="echChartPointerContainer"
-        style={{
-          cursor: pointerCursor,
-        }}
+        style={
+          {
+            // cursor: pointerCursor,
+          }
+        }
         onMouseMove={this.handleMouseMove}
         onMouseLeave={this.handleMouseLeave}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
+        onContextMenu={this.handleMouseRightClick}
       >
         {internalChartRenderer(getChartContainerRef, forwardStageRef)}
       </div>
@@ -196,6 +224,8 @@ const mapDispatchToProps = (dispatch: Dispatch): ChartContainerComponentDispatch
       onMouseUp: onMouseUpAction,
       onMouseDown: onMouseDownAction,
       onKeyPress: onKeyPressAction,
+      onToggleTooltipStick: onToggleTooltipStickAction,
+      onToggleSelectedTooltipItem: onToggleSelectedTooltipItemAction,
     },
     dispatch,
   );
@@ -203,11 +233,13 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
   const status = getInternalIsInitializedSelector(state);
   const settings = getSettingsSpecSelector(state);
   const initialized = !state.specParsing && state.specsInitialized;
+  const stuckTooltip = state.interactions.tooltip.stuck;
 
   if (status !== InitStatus.Initialized) {
     return {
       status,
       initialized,
+      stuckTooltip,
       pointerCursor: DEFAULT_CSS_CURSOR,
       isBrushingAvailable: false,
       isBrushing: false,
@@ -219,6 +251,7 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
   return {
     status,
     initialized,
+    stuckTooltip,
     isChartEmpty: isInternalChartEmptySelector(state),
     pointerCursor: getInternalPointerCursor(state),
     isBrushingAvailable: getInternalIsBrushingAvailableSelector(state),

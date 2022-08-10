@@ -14,6 +14,7 @@ import { Colors } from '../../common/colors';
 import { SeriesIdentifier } from '../../common/series_id';
 import { BaseDatum, SettingsSpec, TooltipProps, TooltipSpec } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
+import { onToggleSelectedTooltipItem as onToggleSelectedTooltipItemAction } from '../../state/actions/tooltip';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
@@ -22,6 +23,7 @@ import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_i
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
+import { getTooltipSelectedItems } from '../../state/selectors/get_tooltip_selected_items';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
@@ -32,6 +34,7 @@ import { TooltipInfo } from './types';
 
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
+  onToggleSelectedTooltipItem: typeof onToggleSelectedTooltipItemAction;
 }
 
 interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
@@ -44,6 +47,8 @@ interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdenti
   rotation: Rotation;
   chartId: string;
   backgroundColor: string;
+  stuck: boolean;
+  selected: Array<SeriesIdentifier>;
 }
 
 interface TooltipOwnProps {
@@ -73,6 +78,9 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   backgroundColor,
   header,
   footer,
+  stuck,
+  selected,
+  onToggleSelectedTooltipItem,
 }: TooltipComponentProps<D, SI>) => {
   const chartRef = getChartContainerRef();
 
@@ -166,7 +174,12 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       chartId={chartId}
       visible={visible}
     >
-      <TooltipProvider backgroundColor={backgroundColor} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
+      <TooltipProvider
+        backgroundColor={backgroundColor}
+        dir={isMostlyRTL ? 'rtl' : 'ltr'}
+        stuck={stuck}
+        selected={selected}
+      >
         <TooltipBody
           info={info}
           columns={columns}
@@ -175,6 +188,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           visible={visible}
           header={header}
           footer={footer}
+          onSelect={onToggleSelectedTooltipItem}
         />
       </TooltipProvider>
     </TooltipPortal>
@@ -196,7 +210,7 @@ function getTooltipSettings(
   };
 }
 
-const HIDDEN_TOOLTIP_PROPS = {
+const HIDDEN_TOOLTIP_PROPS: TooltipStateProps = {
   zIndex: 0,
   visible: false,
   info: undefined,
@@ -206,10 +220,18 @@ const HIDDEN_TOOLTIP_PROPS = {
   rotation: 0 as Rotation,
   chartId: '',
   backgroundColor: Colors.Transparent.keyword,
+  stuck: false,
+  selected: [],
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
-  bindActionCreators({ onPointerMove: onPointerMoveAction }, dispatch);
+  bindActionCreators(
+    {
+      onPointerMove: onPointerMoveAction,
+      onToggleSelectedTooltipItem: onToggleSelectedTooltipItemAction,
+    },
+    dispatch,
+  );
 
 const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 'visible' | 'position' | 'info'> => {
   const tooltip = getTooltipSpecSelector(state);
@@ -228,6 +250,8 @@ const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 
         rotation: getChartRotationSelector(state),
         chartId: state.chartId,
         backgroundColor: getChartThemeSelector(state).background.color,
+        stuck: state.interactions.tooltip.stuck,
+        selected: getTooltipSelectedItems(state),
       };
 };
 

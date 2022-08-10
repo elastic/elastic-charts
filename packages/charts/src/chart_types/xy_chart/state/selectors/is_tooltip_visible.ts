@@ -8,7 +8,7 @@
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { TooltipType } from '../../../../specs/constants';
-import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
+import { GlobalChartState, InteractionsState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { isExternalTooltipVisibleSelector } from '../../../../state/selectors/is_external_tooltip_visible';
 import { Point } from '../../../../utils/point';
@@ -18,13 +18,13 @@ import { getProjectedPointerPositionSelector } from './get_projected_pointer_pos
 import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';
 
-const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
+const getTooltipInteractionsSelector = (state: GlobalChartState) => state.interactions.tooltip;
 
 /** @internal */
 export const isTooltipVisibleSelector = createCustomCachedSelector(
   [
     getTooltipSpecSelector,
-    getPointerSelector,
+    getTooltipInteractionsSelector,
     getProjectedPointerPositionSelector,
     getTooltipInfoSelector,
     isAnnotationTooltipVisibleSelector,
@@ -35,7 +35,7 @@ export const isTooltipVisibleSelector = createCustomCachedSelector(
 
 function isTooltipVisible(
   { type: tooltipType }: TooltipSpec,
-  pointer: PointerStates,
+  { stuck }: InteractionsState['tooltip'],
   projectedPointerPosition: Point,
   tooltip: TooltipInfo,
   isAnnotationTooltipVisible: boolean,
@@ -43,14 +43,13 @@ function isTooltipVisible(
 ) {
   const isLocalTooltip =
     tooltipType !== TooltipType.None &&
-    pointer.down === null &&
     projectedPointerPosition.x > -1 &&
     projectedPointerPosition.y > -1 &&
     tooltip.values.length > 0 &&
     !isAnnotationTooltipVisible;
   const isExternalTooltip = externalTooltipVisible && tooltip.values.length > 0;
   return {
-    visible: isLocalTooltip || isExternalTooltip,
+    visible: isLocalTooltip || isExternalTooltip || stuck,
     isExternal: externalTooltipVisible,
   };
 }

@@ -3,20 +3,26 @@
 $tooltipBorderColor: $euiColorLightShade;
 $tooltipBorderWidth: 1px;
 $rowColorStripWidth: 5px;
-$maxRowColorStripWidth: 8px;
-$rowColorStripAnimatedWidthDelta: 3px;
+$maxRowColorStripWidth: 10px;
+$rowColorStripAnimatedWidthDelta: 2px;
 
 .echTooltip {
   @include euiToolTipStyle;
   @include euiFontSizeXS;
   padding: 0;
   transition: opacity $euiAnimSpeedNormal;
-  pointer-events: none;
-  user-select: none;
+  // pointer-events: none;
+  // user-select: none;
   max-width: 256px;
   background-color: $euiColorEmptyShade;
   color: $euiTextColor;
   overflow: hidden;
+  cursor: default;
+  transition: box-shadow 400ms;
+
+  &--stuck {
+    @include euiBottomShadowSmall;
+  }
 
   & > :not(:last-child) {
     border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
@@ -70,14 +76,10 @@ $rowColorStripAnimatedWidthDelta: 3px;
 
   &__table {
     width: 100%;
-
-    &--scrollable {
-      overflow-y: auto;
-      pointer-events: auto;
-    }
   }
 
   &__tableHeader {
+    cursor: default;
     font-weight: $euiFontWeightBold;
     margin-bottom: 0;
     border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
@@ -88,6 +90,19 @@ $rowColorStripAnimatedWidthDelta: 3px;
   }
 
   &__tableBody {
+    pointer-events: auto;
+
+    &--limited {
+      max-height: (21px * 3.5);
+      overflow: hidden;
+    }
+
+    &--stuck {
+      max-height: (21px * 4);
+      overflow-y: auto;
+      cursor: pointer;
+    }
+
     td:not(.echTooltip__colorCell) {
       padding: 2px 4px;
     }
@@ -104,11 +119,23 @@ $rowColorStripAnimatedWidthDelta: 3px;
 
     &--highlighted {
       background-color: transparentize($euiColorLightShade, 0.5);
+    }
 
+    &:hover:not(&--selected) {
+      .echTooltip__colorStrip {
+        width: $rowColorStripWidth + $rowColorStripAnimatedWidthDelta;
+      }
+    }
+
+    &--selected {
       // TODO save this for future sticky interactions
-      // .echTooltip__colorStrip {
-      //   width: $rowColorStripWidth + $rowColorStripAnimatedWidthDelta;
-      // }
+      .echTooltip__colorStrip {
+        width: $rowColorStripWidth + $maxRowColorStripWidth;
+
+        &::before {
+          opacity: 1;
+        }
+      }
     }
   }
 
@@ -131,6 +158,17 @@ $rowColorStripAnimatedWidthDelta: 3px;
     min-width: $rowColorStripWidth;
     max-width: $maxRowColorStripWidth;
     transition: width 200ms;
+
+    &::before {
+      opacity: 0;
+      content: '·';
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 92%; // to center dot better
+      font-size: 200%;
+      transition: opacity 200ms;
+    }
   }
 
   &__colorStripSpacer {

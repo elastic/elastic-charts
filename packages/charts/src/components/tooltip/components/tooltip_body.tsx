@@ -10,6 +10,7 @@ import React from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps } from '../../../specs';
+import { onToggleSelectedTooltipItem } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { TooltipInfo } from '../types';
 import { TooltipFooter } from './tooltip_footer';
@@ -26,6 +27,7 @@ interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentif
   columns: TooltipTableColumn<D, SI>[];
   headerFormatter?: TooltipValueFormatter<D, SI>;
   settings?: TooltipProps<D, SI>;
+  onSelect: typeof onToggleSelectedTooltipItem;
 }
 
 /** @internal */
@@ -37,8 +39,9 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   columns,
   header,
   footer,
+  onSelect,
 }: TooltipBodyProps<D, SI>) => {
-  const { backgroundColor, dir } = useTooltipContext();
+  const { backgroundColor, dir, stuck, selected } = useTooltipContext();
   if (!info || !visible) {
     return null;
   }
@@ -59,7 +62,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
       ) : (
         <TooltipHeader header={info.header} formatter={headerFormatter} />
       )}
-      <TooltipTable columns={columns} items={info.values} />
+      <TooltipTable columns={columns} items={info.values} stuck={stuck} onSelect={onSelect} selected={selected} />
       {footer && <TooltipFooter>{typeof footer === 'string' ? footer : footer(info.values)}</TooltipFooter>}
     </TooltipWrapper>
   );

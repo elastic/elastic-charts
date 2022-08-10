@@ -14,18 +14,28 @@ import { isNil } from '../../../utils/common';
 type TooltipTableRowProps = PropsWithChildren<{
   className?: string;
   isHighlighted?: boolean;
+  isSelected?: boolean;
   maxHeight?: CSSProperties['maxHeight'];
+  onSelect: () => void;
 }>;
 
 /** @public */
-export const TooltipTableRow = ({ maxHeight, isHighlighted = false, children, className }: TooltipTableRowProps) => {
+export const TooltipTableRow = ({
+  maxHeight,
+  isHighlighted = false,
+  isSelected = false,
+  children,
+  onSelect,
+  className,
+}: TooltipTableRowProps) => {
   const classes = classNames('echTooltip__tableRow', className, {
     'echTooltip__tableRow--scrollable': !isNil(maxHeight),
     'echTooltip__tableRow--highlighted': isHighlighted,
+    'echTooltip__tableRow--selected': isSelected,
   });
 
   return (
-    <tr className={classes} style={{ maxHeight }}>
+    <tr className={classes} style={{ maxHeight }} onClick={onSelect}>
       {children}
     </tr>
   );

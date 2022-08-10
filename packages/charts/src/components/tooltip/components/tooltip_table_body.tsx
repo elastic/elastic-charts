@@ -11,6 +11,7 @@ import React, { ReactNode } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
+import { onToggleSelectedTooltipItem } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableCell } from './tooltip_table_cell';
@@ -25,6 +26,9 @@ type TooltipTableBodyProps<
   {
     items: TooltipValue<D, SI>[];
     columns: TooltipTableColumn<D, SI>[];
+    stuck: boolean;
+    onSelect: typeof onToggleSelectedTooltipItem;
+    selected: SeriesIdentifier[];
   },
   {},
   {
@@ -37,18 +41,34 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   className,
   ...props
 }: TooltipTableBodyProps<D, SI>) => {
-  const classes = classNames('echTooltip__tableBody', className);
   if ('children' in props) {
+    const classes = classNames('echTooltip__tableBody', className);
     return <tbody className={classes}>{props.children}</tbody>;
   }
+
+  const highlightedCount = props.items.reduce((acc, { isHighlighted }) => acc + (isHighlighted ? 1 : 0), 0);
+  const noneHighlighted = highlightedCount === 0;
+  const tooManyHighlighted = highlightedCount > 3;
+  const canShowAll = props.items.length <= 3;
+  const classes = classNames('echTooltip__tableBody', {
+    'echTooltip__tableBody--limited': !props.stuck && !canShowAll && (noneHighlighted || tooManyHighlighted),
+    'echTooltip__tableBody--stuck': props.stuck,
+  });
 
   return (
     <tbody className={classes}>
       {props.items.map((item, i) => {
         const { isHighlighted, isVisible } = item;
+        // console.log(props.stuck && props.selected.some(({ key }) => key === item.seriesIdentifier.key));
+
         if (!isVisible) return null;
         return (
-          <TooltipTableRow key={i} isHighlighted={isHighlighted}>
+          <TooltipTableRow
+            key={i}
+            isHighlighted={!props.stuck && isHighlighted}
+            isSelected={props.stuck && props.selected.some(({ key }) => key === item.seriesIdentifier.key)}
+            onSelect={() => props.onSelect(item.seriesIdentifier)}
+          >
             {props.columns.map((column, j) => {
               return renderCellContent(item, column, column.id ?? `${column.type}-${j}`);
             })}

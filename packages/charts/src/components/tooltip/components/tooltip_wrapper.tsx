@@ -18,10 +18,19 @@ type TooltipWrapperProps = PropsWithChildren<{
 
 /** @internal */
 export const TooltipWrapper = ({ children, className }: TooltipWrapperProps) => {
-  const { dir } = useTooltipContext();
+  const { dir, stuck } = useTooltipContext();
 
   return (
-    <div className={classNames('echTooltip', className)} dir={dir}>
+    <div
+      className={classNames('echTooltip', className, {
+        'echTooltip--stuck': stuck,
+      })}
+      dir={dir}
+      onClick={(e) => {
+        // e.stopPropagation();
+        console.log('clicked');
+      }}
+    >
       {renderComplexChildren(children)}
       {/* TODO: add when tooltip is sticky */}
       {/* <div className="echTooltip__stickyAction">Click to stick tooltip</div> */}

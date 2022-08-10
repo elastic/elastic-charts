@@ -189,6 +189,10 @@ export interface InteractionsState {
   hoveredDOMElement: DOMElement | null;
   drilldown: CategoryKey[];
   prevDrilldown: CategoryKey[];
+  tooltip: {
+    stuck: boolean;
+    selected: SeriesIdentifier[];
+  };
 }
 
 /** @internal */
@@ -282,6 +286,10 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     hoveredDOMElement: null,
     drilldown: [],
     prevDrilldown: [],
+    tooltip: {
+      stuck: false,
+      selected: [],
+    },
   },
   externalEvents: {
     pointer: null,
