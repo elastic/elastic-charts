@@ -104,6 +104,13 @@ export function getTooltipType(tooltip: TooltipSpec, settings: SettingsSpec, ext
   return visible ? TooltipType.VerticalCursor : TooltipType.None;
 }
 
+/** @internal */
+export type TooltipAction<SI extends SeriesIdentifier = SeriesIdentifier> = {
+  label: (series: SI[]) => ReactNode;
+  hide?: (series: SI[]) => boolean;
+  onSelect: (series: SI[], toggleStuck: () => boolean) => void;
+};
+
 /**
  * Spec used to configure tooltip for chart
  * @public
@@ -164,6 +171,11 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    * \> Note: This is not the table footers but spans the entire tooltip.
    */
   footer?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+
+  /**
+   * Actions to enable tooltip selection
+   */
+  actions: TooltipAction<SI>[];
 }
 
 /**
@@ -196,6 +208,7 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     type: TooltipType.VerticalCursor,
     snap: true,
     showNullValues: false,
+    actions: [],
   },
 );
 

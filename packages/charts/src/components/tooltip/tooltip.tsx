@@ -14,7 +14,10 @@ import { Colors } from '../../common/colors';
 import { SeriesIdentifier } from '../../common/series_id';
 import { BaseDatum, SettingsSpec, TooltipProps, TooltipSpec } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
-import { onToggleSelectedTooltipItem as onToggleSelectedTooltipItemAction } from '../../state/actions/tooltip';
+import {
+  onToggleSelectedTooltipItem as onToggleSelectedTooltipItemAction,
+  onToggleTooltipStick as onToggleTooltipStickAction,
+} from '../../state/actions/tooltip';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
@@ -35,10 +38,11 @@ import { TooltipInfo } from './types';
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
   onToggleSelectedTooltipItem: typeof onToggleSelectedTooltipItemAction;
+  onToggleTooltipStick: typeof onToggleTooltipStickAction;
 }
 
 interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
-  extends Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer'> {
+  extends Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer' | 'actions'> {
   zIndex: number;
   visible: boolean;
   position: AnchorPosition | null;
@@ -78,9 +82,11 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   backgroundColor,
   header,
   footer,
+  actions,
   stuck,
   selected,
   onToggleSelectedTooltipItem,
+  onToggleTooltipStick,
 }: TooltipComponentProps<D, SI>) => {
   const chartRef = getChartContainerRef();
 
@@ -179,6 +185,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         dir={isMostlyRTL ? 'rtl' : 'ltr'}
         stuck={stuck}
         selected={selected}
+        toggleStuck={onToggleTooltipStick}
       >
         <TooltipBody
           info={info}
@@ -189,6 +196,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           header={header}
           footer={footer}
           onSelect={onToggleSelectedTooltipItem}
+          actions={actions}
         />
       </TooltipProvider>
     </TooltipPortal>
@@ -217,6 +225,7 @@ const HIDDEN_TOOLTIP_PROPS: TooltipStateProps = {
   position: null,
   headerFormatter: undefined,
   settings: {},
+  actions: [],
   rotation: 0 as Rotation,
   chartId: '',
   backgroundColor: Colors.Transparent.keyword,
@@ -229,6 +238,7 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
     {
       onPointerMove: onPointerMoveAction,
       onToggleSelectedTooltipItem: onToggleSelectedTooltipItemAction,
+      onToggleTooltipStick: onToggleTooltipStickAction,
     },
     dispatch,
   );
@@ -247,6 +257,7 @@ const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 
         ),
         header: tooltip.header,
         footer: tooltip.footer,
+        actions: tooltip.actions,
         rotation: getChartRotationSelector(state),
         chartId: state.chartId,
         backgroundColor: getChartThemeSelector(state).background.color,

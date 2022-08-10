@@ -29,6 +29,7 @@ import { getInternalIsBrushingSelector } from '../state/selectors/get_internal_i
 import { getInternalIsBrushingAvailableSelector } from '../state/selectors/get_internal_is_brushing_available';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
+import { getTooltipSpecSelector } from '../state/selectors/get_tooltip_spec';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 import { deepEqual } from '../utils/fast_deep_equal';
 import { NoResults } from './no_results';
@@ -38,7 +39,8 @@ interface ChartContainerComponentStateProps {
   isChartEmpty?: boolean;
   pointerCursor: string;
   isBrushing: boolean;
-  stuckTooltip: boolean;
+  tooltipStuck: boolean;
+  hasTooltipActions: boolean;
   initialized?: boolean;
   isBrushingAvailable: boolean;
   settings?: SettingsSpec;
@@ -105,12 +107,12 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   };
 
   handleMouseDown = ({
-    nativeEvent: { offsetX, offsetY, timeStamp },
+    nativeEvent: { offsetX, offsetY, timeStamp, button },
   }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { isChartEmpty, onMouseDown, isBrushingAvailable } = this.props;
-    if (isChartEmpty) {
-      return;
-    }
+
+    // button 2 to block brushing on right click
+    if (button === 2 || isChartEmpty) return;
 
     if (isBrushingAvailable) {
       window.addEventListener('mouseup', this.handleBrushEnd);
@@ -146,7 +148,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
       return;
     }
 
-    if (!this.props.stuckTooltip) {
+    if (!this.props.tooltipStuck) {
       window.removeEventListener('keyup', this.handleKeyUp);
     }
 
@@ -197,6 +199,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     }
 
     const { pointerCursor, internalChartRenderer, getChartContainerRef, forwardStageRef } = this.props;
+
     return (
       <div
         className="echChartPointerContainer"
@@ -209,7 +212,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
         onMouseLeave={this.handleMouseLeave}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
-        onContextMenu={this.handleMouseRightClick}
+        onContextMenu={this.props.hasTooltipActions ? this.handleMouseRightClick : undefined}
       >
         {internalChartRenderer(getChartContainerRef, forwardStageRef)}
       </div>
@@ -232,14 +235,16 @@ const mapDispatchToProps = (dispatch: Dispatch): ChartContainerComponentDispatch
 const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateProps => {
   const status = getInternalIsInitializedSelector(state);
   const settings = getSettingsSpecSelector(state);
+  const { actions: tooltipActions } = getTooltipSpecSelector(state);
   const initialized = !state.specParsing && state.specsInitialized;
-  const stuckTooltip = state.interactions.tooltip.stuck;
+  const { stuck: tooltipStuck } = state.interactions.tooltip;
 
   if (status !== InitStatus.Initialized) {
     return {
       status,
       initialized,
-      stuckTooltip,
+      tooltipStuck,
+      hasTooltipActions: tooltipActions.length > 0,
       pointerCursor: DEFAULT_CSS_CURSOR,
       isBrushingAvailable: false,
       isBrushing: false,
@@ -251,7 +256,8 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
   return {
     status,
     initialized,
-    stuckTooltip,
+    tooltipStuck,
+    hasTooltipActions: tooltipActions.length > 0,
     isChartEmpty: isInternalChartEmptySelector(state),
     pointerCursor: getInternalPointerCursor(state),
     isBrushingAvailable: getInternalIsBrushingAvailableSelector(state),

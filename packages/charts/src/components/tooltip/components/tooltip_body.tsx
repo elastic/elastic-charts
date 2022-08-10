@@ -9,7 +9,7 @@
 import React from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
-import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps } from '../../../specs';
+import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps, TooltipAction } from '../../../specs';
 import { onToggleSelectedTooltipItem } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { TooltipInfo } from '../types';
@@ -27,6 +27,7 @@ interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentif
   columns: TooltipTableColumn<D, SI>[];
   headerFormatter?: TooltipValueFormatter<D, SI>;
   settings?: TooltipProps<D, SI>;
+  actions: TooltipAction<SI>[];
   onSelect: typeof onToggleSelectedTooltipItem;
 }
 
@@ -39,6 +40,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   columns,
   header,
   footer,
+  actions,
   onSelect,
 }: TooltipBodyProps<D, SI>) => {
   const { backgroundColor, dir, stuck, selected } = useTooltipContext();
@@ -49,14 +51,14 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   if (typeof settings !== 'string' && settings?.customTooltip) {
     const CustomTooltip = settings.customTooltip;
     return (
-      <TooltipWrapper>
+      <TooltipWrapper actions={actions}>
         <CustomTooltip {...info} headerFormatter={headerFormatter} backgroundColor={backgroundColor} dir={dir} />
       </TooltipWrapper>
     );
   }
 
   return (
-    <TooltipWrapper>
+    <TooltipWrapper actions={actions}>
       {header ? (
         <TooltipHeader>{typeof header === 'string' ? header : header(info.values)}</TooltipHeader>
       ) : (

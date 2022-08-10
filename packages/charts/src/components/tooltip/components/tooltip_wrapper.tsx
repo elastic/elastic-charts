@@ -9,16 +9,23 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
 
+import { SeriesIdentifier } from '../../../common/series_id';
+import { TooltipAction } from '../../../specs/tooltip';
 import { renderComplexChildren } from '../../../utils/common';
 import { useTooltipContext } from './tooltip_provider';
 
-type TooltipWrapperProps = PropsWithChildren<{
+type TooltipWrapperProps<SI extends SeriesIdentifier = SeriesIdentifier> = PropsWithChildren<{
   className?: string;
+  actions: TooltipAction<SI>[];
 }>;
 
 /** @internal */
-export const TooltipWrapper = ({ children, className }: TooltipWrapperProps) => {
-  const { dir, stuck } = useTooltipContext();
+export const TooltipWrapper = <SI extends SeriesIdentifier = SeriesIdentifier>({
+  children,
+  actions,
+  className,
+}: TooltipWrapperProps<SI>) => {
+  const { dir, stuck, selected, toggleStuck } = useTooltipContext<SI>();
 
   return (
     <div
@@ -26,14 +33,27 @@ export const TooltipWrapper = ({ children, className }: TooltipWrapperProps) => 
         'echTooltip--stuck': stuck,
       })}
       dir={dir}
-      onClick={(e) => {
-        // e.stopPropagation();
-        console.log('clicked');
-      }}
+      // onClick={(e) => {
+      //   e.stopPropagation();
+      //   console.log('clicked');
+      // }}
     >
       {renderComplexChildren(children)}
-      {/* TODO: add when tooltip is sticky */}
-      {/* <div className="echTooltip__stickyAction">Click to stick tooltip</div> */}
+      {actions.length > 0 && (
+        <div className="echTooltip__actions">
+          {stuck ? (
+            actions
+              .filter(({ hide }) => !hide || hide(selected))
+              .map(({ onSelect, label }, i) => (
+                <div className="echTooltip__action" key={i} onClick={() => onSelect(selected, toggleStuck)}>
+                  {label(selected)}
+                </div>
+              ))
+          ) : (
+            <div className="echTooltip__prompt">Right click to stick tooltip</div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

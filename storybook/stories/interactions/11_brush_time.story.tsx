@@ -22,6 +22,7 @@ import {
   Position,
   ScaleType,
   Settings,
+  Tooltip,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -40,9 +41,11 @@ export const Example = () => {
     }
     action('onBrushEnd')(formatter(x[0]), formatter(x[1]));
   };
+  const disableActions = boolean('disable actions', false);
   return (
     <Chart>
       <Settings
+        showLegend
         baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         onBrushEnd={brushEndListener}
@@ -51,6 +54,35 @@ export const Example = () => {
       />
       <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks tickFormat={formatter} />
       <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
+
+      <Tooltip
+        actions={
+          disableActions
+            ? []
+            : [
+                {
+                  label: () => 'Log storybook action',
+                  onSelect: action('onTooltipAction'),
+                },
+                {
+                  label: ({ length }) => (
+                    <span>
+                      Alert keys of all <b>{length}</b> selected series
+                    </span>
+                  ),
+                  hide: ({ length }) => length > 0,
+                  onSelect: (series) => alert(`Selected the following: \n - ${series.map((s) => s.key).join('\n - ')}`),
+                },
+                {
+                  label: () => 'Unstick tooltip after action triggered',
+                  onSelect: (series, toggleStuck) => {
+                    action('onTooltipAction')(series);
+                    toggleStuck();
+                  },
+                },
+              ]
+        }
+      />
 
       <BarSeries
         id="bars"

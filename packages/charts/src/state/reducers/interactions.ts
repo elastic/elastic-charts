@@ -168,8 +168,6 @@ export function interactionsReducer(
         hoveredDOMElement: null,
       };
     case ON_TOOLTIP_STICK: {
-      console.log('ON_TOOLTIP_STICK');
-
       if (state.tooltip.stuck) {
         return {
           ...state,

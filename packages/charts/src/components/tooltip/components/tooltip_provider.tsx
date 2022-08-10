@@ -6,15 +6,17 @@
  * Side Public License, v 1.
  */
 
-import React, { PropsWithChildren, useContext } from 'react';
+import React, { PropsWithChildren, Context, useContext } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
+import { onToggleTooltipStick } from '../../../state/actions/tooltip';
 
-interface TooltipContext {
+interface TooltipContext<SI extends SeriesIdentifier = SeriesIdentifier> {
   backgroundColor: string;
   dir: 'rtl' | 'ltr';
   stuck: boolean;
-  selected: SeriesIdentifier[];
+  selected: SI[];
+  toggleStuck: typeof onToggleTooltipStick;
 }
 
 const TooltipContext = React.createContext<TooltipContext>({
@@ -22,15 +24,25 @@ const TooltipContext = React.createContext<TooltipContext>({
   dir: 'ltr',
   stuck: false,
   selected: [],
+  toggleStuck: onToggleTooltipStick,
 });
 
 /** @internal */
-export const useTooltipContext = () => useContext(TooltipContext);
+export const useTooltipContext = <SI extends SeriesIdentifier = SeriesIdentifier>() =>
+  // cannot predetermine generic type of SI but initial value is always an empty array
+  useContext<TooltipContext<SI>>(TooltipContext as unknown as Context<TooltipContext<SI>>);
 
 type TooltipProviderProps = PropsWithChildren<TooltipContext>;
 
 /** @internal */
-export const TooltipProvider = ({ backgroundColor, dir, stuck, selected, children }: TooltipProviderProps) => {
+export const TooltipProvider = ({
+  backgroundColor,
+  dir,
+  stuck,
+  selected,
+  toggleStuck,
+  children,
+}: TooltipProviderProps) => {
   return (
     <TooltipContext.Provider
       value={{
@@ -38,6 +50,7 @@ export const TooltipProvider = ({ backgroundColor, dir, stuck, selected, childre
         dir,
         stuck,
         selected,
+        toggleStuck,
       }}
     >
       {children}

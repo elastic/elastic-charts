@@ -68,10 +68,30 @@ $rowColorStripAnimatedWidthDelta: 2px;
     padding: $euiSizeXS ($euiSizeXS * 2);
   }
 
-  &__stickyAction {
+  &__actions {
+    margin-left: $rowColorStripWidth;
+    margin-top: $euiSizeS;
+    margin-bottom: $euiSizeS;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    pointer-events: auto;
+  }
+
+  &__action,
+  &__prompt {
     color: #69707d;
     padding: $euiSizeS;
-    margin-left: $rowColorStripWidth;
+    padding-bottom: 0;
+
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+
+  &__action:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
 
   &__table {
@@ -143,6 +163,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
     padding: 0;
     height: 100%;
     position: relative;
+    width: $maxRowColorStripWidth;
 
     &--empty {
       width: 0;
