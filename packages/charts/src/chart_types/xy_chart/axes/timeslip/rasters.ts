@@ -361,6 +361,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: false,
     minimumTickPixelDistance: minimumTickPixelDistance / 2,
   };
+  const minuteFormatter = new Intl.DateTimeFormat(locale, { minute: '2-digit', timeZone });
   const minutes: TimeRaster<TimeBin> = {
     unit: 'minute',
     unitMultiplier: 1,
@@ -375,11 +376,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       minute: 'numeric',
       timeZone,
     }).format,
-    minorTickLabelFormat: (d) =>
-      `${new Intl.DateTimeFormat(locale, {
-        minute: 'numeric',
-        timeZone,
-      }).format(d)}'`,
+    minorTickLabelFormat: (d) => `:${minuteFormatter.format(d).padStart(2, '0')}`, // what DateTimeFormat doing?
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
