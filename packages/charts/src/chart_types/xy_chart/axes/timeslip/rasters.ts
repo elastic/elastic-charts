@@ -80,13 +80,14 @@ interface YearToHour extends YearToDay {
   hour: number;
 }
 
-// todo DRY up the config for the other time units too, where sensible
+const hourCycle = 'h23';
+
 const hourFormat: Partial<ConstructorParameters<typeof Intl.DateTimeFormat>[1]> = {
   hour: '2-digit',
   minute: '2-digit',
   // this is mutual exclusive with `hour12` and
   // fix the issue of rendering the time from midnight starting at 24:00 to 24:59 to 01:00
-  hourCycle: 'h23',
+  hourCycle,
 };
 
 const englishOrdinalEndings = {
@@ -294,11 +295,12 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: false,
     minimumTickPixelDistance: minimumTickPixelDistance / 2,
   };
+  const hhMmDistanceMultiplier = 1.8;
   const hours: TimeRaster<TimeBin> = {
     unit: 'hour',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: 2 * minimumTickPixelDistance,
+    minimumTickPixelDistance: hhMmDistanceMultiplier * minimumTickPixelDistance,
     binStarts: millisecondBinStarts(60 * 60 * 1000),
     detailedLabelFormat: detailedHourFormat,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, {
@@ -361,12 +363,12 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: false,
     minimumTickPixelDistance: minimumTickPixelDistance / 2,
   };
-  const minuteFormatter = new Intl.DateTimeFormat(locale, { minute: '2-digit', timeZone });
+  const minuteFormatter = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', timeZone, hourCycle });
   const minutes: TimeRaster<TimeBin> = {
     unit: 'minute',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance,
+    minimumTickPixelDistance: hhMmDistanceMultiplier * minimumTickPixelDistance,
     binStarts: millisecondBinStarts(60 * 1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
@@ -376,7 +378,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       minute: 'numeric',
       timeZone,
     }).format,
-    minorTickLabelFormat: (d) => `:${minuteFormatter.format(d).padStart(2, '0')}`, // what DateTimeFormat doing?
+    minorTickLabelFormat: (d) => `${minuteFormatter.format(d).padStart(2, '0')}`, // what DateTimeFormat doing?
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -384,7 +386,6 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...minutes,
     unitMultiplier: 15,
     labeled: true,
-    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(15 * 60 * 1000),
   };
   const quarterHoursUnlabelled = {
@@ -396,7 +397,6 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...minutes,
     unitMultiplier: 5,
     labeled: true,
-    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(5 * 60 * 1000),
   };
   const fiveMinutesUnlabelled = {
@@ -461,11 +461,12 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: false,
     minimumTickPixelDistance: minimumTickPixelDistance / 2,
   };
+  const millisecondDistanceMultiplier = 1.8;
   const milliseconds: TimeRaster<TimeBin> = {
     unit: 'millisecond',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance * 1.8,
+    minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
     binStarts: millisecondBinStarts(1),
     minorTickLabelFormat: (d) => `${d % 1000}ms`,
     detailedLabelFormat: (d) => `${d % 1000}ms`,
@@ -476,14 +477,14 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...milliseconds,
     unitMultiplier: 10,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance * 1.8,
+    minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
     binStarts: millisecondBinStarts(10),
   };
   const hundredMilliseconds = {
     ...milliseconds,
     unitMultiplier: 100,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance * 1.8,
+    minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
     binStarts: millisecondBinStarts(100),
   };
   const millisecondsUnlabelled = {
