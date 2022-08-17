@@ -586,12 +586,21 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         [sixHours, []],
       ]),
     ],
-    [quarterHours, new Map([[quarterHoursUnlabelled, []]])],
+    [
+      quarterHours,
+      new Map([
+        [quarterHoursUnlabelled, []],
+        [hours, []],
+        [sixHours, []],
+      ]),
+    ],
     [
       fiveMinutes,
       new Map([
         [fiveMinutesUnlabelled, []],
         [quarterHours, [quarterHoursUnlabelled]],
+        [hours, []],
+        [sixHours, []],
       ]),
     ],
     [
@@ -600,6 +609,8 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         [minutesUnlabelled, []],
         [quarterHours, [quarterHoursUnlabelled]],
         [fiveMinutes, [fiveMinutesUnlabelled]],
+        [hours, []],
+        [sixHours, []],
       ]),
     ],
     [quarterMinutes, new Map([[quarterMinutesUnlabelled, []]])],
