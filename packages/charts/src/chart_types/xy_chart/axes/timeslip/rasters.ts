@@ -363,7 +363,8 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: false,
     minimumTickPixelDistance: minimumTickPixelDistance / 2,
   };
-  const minuteFormatter = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', timeZone, hourCycle });
+  const minutesFormatter = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', timeZone, hourCycle });
+  const secondsFormatter = new Intl.DateTimeFormat(locale, { minute: '2-digit', second: '2-digit', timeZone });
   const minutes: TimeRaster<TimeBin> = {
     unit: 'minute',
     unitMultiplier: 1,
@@ -378,7 +379,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       minute: 'numeric',
       timeZone,
     }).format,
-    minorTickLabelFormat: (d) => `${minuteFormatter.format(d).padStart(2, '0')}`, // what DateTimeFormat doing?
+    minorTickLabelFormat: (d) => `${minutesFormatter.format(d).padStart(2, '0')}`, // what DateTimeFormat doing?
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -413,7 +414,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     unit: 'second',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance,
+    minimumTickPixelDistance: hhMmDistanceMultiplier * minimumTickPixelDistance,
     binStarts: millisecondBinStarts(1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
@@ -424,11 +425,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       second: 'numeric',
       timeZone,
     }).format,
-    minorTickLabelFormat: (d: number) =>
-      `${new Intl.DateTimeFormat(locale, {
-        second: 'numeric',
-        timeZone,
-      }).format(d)}"`,
+    minorTickLabelFormat: (d) => `${secondsFormatter.format(d).padStart(2, '0')}`, // what DateTimeFormat doing?
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -436,7 +433,6 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...seconds,
     unitMultiplier: 15,
     labeled: true,
-    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(15 * 1000),
   };
   const quarterMinutesUnlabelled = {
@@ -448,7 +444,6 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...seconds,
     unitMultiplier: 5,
     labeled: true,
-    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(5 * 1000),
   };
   const fiveSecondsUnlabelled = {
