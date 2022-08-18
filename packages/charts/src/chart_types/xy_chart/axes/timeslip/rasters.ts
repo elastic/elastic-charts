@@ -296,6 +296,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     minimumTickPixelDistance: minimumTickPixelDistance / 2,
   };
   const hhMmDistanceMultiplier = 1.8;
+  const hhMmSsDistanceMultiplier = 2.5;
   const hours: TimeRaster<TimeBin> = {
     unit: 'hour',
     unitMultiplier: 1,
@@ -364,7 +365,13 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     minimumTickPixelDistance: minimumTickPixelDistance / 2,
   };
   const minutesFormatter = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', timeZone, hourCycle });
-  const secondsFormatter = new Intl.DateTimeFormat(locale, { minute: '2-digit', second: '2-digit', timeZone });
+  const secondsFormatter = new Intl.DateTimeFormat(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone,
+    hourCycle,
+  });
   const minutes: TimeRaster<TimeBin> = {
     unit: 'minute',
     unitMultiplier: 1,
@@ -414,7 +421,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     unit: 'second',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: hhMmDistanceMultiplier * minimumTickPixelDistance,
+    minimumTickPixelDistance: hhMmSsDistanceMultiplier * minimumTickPixelDistance,
     binStarts: millisecondBinStarts(1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
@@ -608,12 +615,19 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         [sixHours, []],
       ]),
     ],
-    [quarterMinutes, new Map([[quarterMinutesUnlabelled, []]])],
+    [
+      quarterMinutes,
+      new Map([
+        [quarterMinutesUnlabelled, []],
+        [minutes, []],
+      ]),
+    ],
     [
       fiveSeconds,
       new Map([
         [fiveSecondsUnlabelled, []],
         [quarterMinutes, [quarterMinutesUnlabelled]],
+        [minutes, []],
       ]),
     ],
     [
@@ -622,6 +636,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         [secondsUnlabelled, []],
         [quarterMinutes, [quarterMinutesUnlabelled]],
         [fiveSeconds, [fiveSecondsUnlabelled]],
+        [minutes, []],
       ]),
     ],
     [hundredMilliseconds, new Map([[hundredMillisecondsUnlabelled, []]])],
