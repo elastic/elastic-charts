@@ -150,7 +150,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
-  const unlabeledGridMinimumPixelDistance = minimumTickPixelDistance / 2;
+  const unlabeledGridMinimumPixelDistance = minimumTickPixelDistance / 1.618;
   const yearsUnlabelled: TimeRaster<TimeBin & { year: number }> = {
     ...years,
     labeled: false,
