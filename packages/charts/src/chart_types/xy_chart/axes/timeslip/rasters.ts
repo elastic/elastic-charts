@@ -514,6 +514,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     narrowMonths,
     shortMonths,
     months,
+    weeksUnlabelled,
     weekStartDays,
     daysUnlabelled,
     days,
@@ -574,6 +575,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         [shortMonths, []],
       ]),
     ],
+    [weekStartDays, new Map([[weeksUnlabelled, []]])],
     [
       days,
       new Map([
