@@ -261,7 +261,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     unit: 'week',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance,
+    minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
     binStarts: function* (domainFrom, domainTo) {
       for (const { year, month } of months.binStarts(domainFrom, domainTo)) {
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
