@@ -84,7 +84,7 @@ export const timeslipRender = (canvas /*: HTMLCanvasElement*/, ctx /*: CanvasRen
     darkMode: initialDarkMode,
     sparse: false,
     implicit: false,
-    maxLabelRowCount: 3, // can be 1, 2, 3
+    maxLabelRowCount: 2, // can be 1, 2, 3
     queryConfig: {
       metricFieldName: metricFieldNames[0],
       aggregation: 'value_count',
