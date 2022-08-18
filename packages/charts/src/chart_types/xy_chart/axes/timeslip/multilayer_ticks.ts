@@ -40,7 +40,7 @@ export function multilayerAxisEntry(
   xDomain: XDomain,
   extendByOneBin: boolean,
   range: [number, number],
-  timeAxisLayerCount: any,
+  timeAxisLayerCount: number,
   scale: ScaleContinuous,
   getMeasuredTicks: GetMeasuredTicks,
 ): Projection {
