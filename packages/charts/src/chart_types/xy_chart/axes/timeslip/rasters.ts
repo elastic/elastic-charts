@@ -111,14 +111,14 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
   };
   const detailedDayFormat = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
     timeZone,
   }).format;
 
   const detailedHourFormatBase = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
     ...hourFormat,
     timeZone,
@@ -381,7 +381,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     binStarts: millisecondBinStarts(60 * 1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       ...hourFormat,
       minute: 'numeric',
@@ -426,7 +426,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     binStarts: millisecondBinStarts(1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       ...hourFormat,
       minute: 'numeric',
