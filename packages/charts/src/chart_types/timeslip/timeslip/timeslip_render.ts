@@ -53,7 +53,7 @@ export const timeslipRender = (canvas /*: HTMLCanvasElement*/, ctx /*: CanvasRen
   const metricFieldNames = ['machine.ram', 'bytes', 'memory'];
 
   const minZoom = 0;
-  const maxZoom = 33;
+  const maxZoom = 35;
 
   // these are hand tweaked constants that fulfill various design constraints, let's discuss before changing them
   const lineThicknessSteps = [/*0,*/ 0.5, 0.75, 1, 1, 1, 1.25, 1.25, 1.5, 1.5, 1.75, 1.75, 2, 2, 2, 2, 2];
