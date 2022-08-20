@@ -14,11 +14,11 @@ import { createCustomCachedSelector } from '../create_selector';
 export const getTooltipToggledItems = (state: GlobalChartState) => state.interactions.tooltip.selected;
 
 /** @internal */
-export const getTooltipStick = (state: GlobalChartState) => state.interactions.tooltip.stuck;
+export const getTooltipPinned = (state: GlobalChartState) => state.interactions.tooltip.pinned;
 
 /** @internal */
 export const getTooltipSelectedItems = createCustomCachedSelector(
-  [getTooltipToggledItems, getTooltipStick],
+  [getTooltipToggledItems, getTooltipPinned],
   (toggledItems, tooltipStick): SeriesIdentifier[] => {
     if (!tooltipStick) {
       return [];

@@ -108,7 +108,7 @@ export function getTooltipType(tooltip: TooltipSpec, settings: SettingsSpec, ext
 export type TooltipAction<SI extends SeriesIdentifier = SeriesIdentifier> = {
   label: (series: SI[]) => ReactNode;
   hide?: (series: SI[]) => boolean;
-  onSelect: (series: SI[], toggleStuck: () => boolean) => void;
+  onSelect: (series: SI[]) => void;
 };
 
 /**

@@ -7,7 +7,7 @@
  */
 
 /** @internal */
-export const DEFAULT_CSS_CURSOR = 'default';
+export const DEFAULT_CSS_CURSOR = undefined;
 /** @internal */
 export const TAU = 2 * Math.PI;
 /** @internal */

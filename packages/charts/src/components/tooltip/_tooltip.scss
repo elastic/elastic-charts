@@ -10,18 +10,20 @@ $rowColorStripAnimatedWidthDelta: 2px;
   @include euiToolTipStyle;
   @include euiFontSizeXS;
   padding: 0;
-  transition: opacity $euiAnimSpeedNormal;
-  // pointer-events: none;
-  // user-select: none;
+  pointer-events: none;
+  user-select: none;
   max-width: 256px;
   background-color: $euiColorEmptyShade;
   color: $euiTextColor;
   overflow: hidden;
   cursor: default;
   transition: box-shadow 400ms;
+  transition: opacity $euiAnimSpeedNormal;
 
-  &--stuck {
+  &--pinned {
     @include euiBottomShadowSmall;
+    pointer-events: auto;
+    user-select: auto;
   }
 
   & > :not(:last-child) {
@@ -117,7 +119,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
       overflow: hidden;
     }
 
-    &--stuck {
+    &--pinned {
       max-height: (21px * 4);
       overflow-y: auto;
       cursor: pointer;

@@ -62,7 +62,7 @@ export const Example = () => {
             : [
                 {
                   label: () => 'Log storybook action',
-                  onSelect: action('onTooltipAction'),
+                  onSelect: (s) => action('onTooltipAction')(s),
                 },
                 {
                   label: ({ length }) => (
@@ -72,13 +72,6 @@ export const Example = () => {
                   ),
                   hide: ({ length }) => length > 0,
                   onSelect: (series) => alert(`Selected the following: \n - ${series.map((s) => s.key).join('\n - ')}`),
-                },
-                {
-                  label: () => 'Unstick tooltip after action triggered',
-                  onSelect: (series, toggleStuck) => {
-                    action('onTooltipAction')(series);
-                    toggleStuck();
-                  },
                 },
               ]
         }
@@ -99,7 +92,7 @@ export const Example = () => {
         ]}
       />
       <LineSeries
-        id="baras"
+        id="lines"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor="x"

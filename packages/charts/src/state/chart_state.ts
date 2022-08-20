@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import React, { CSSProperties, RefObject } from 'react';
 
 import { ChartType } from '../chart_types';
 import { FlameState } from '../chart_types/flame_chart/internal_chart_state';
@@ -42,7 +42,7 @@ import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_in
 import { getLegendItemsSelector } from './selectors/get_legend_items';
 import { LegendItemLabel } from './selectors/get_legend_items_labels';
 import { DebugState } from './types';
-import { getInitialPointerState } from './utils';
+import { getInitialPointerState, getInitialTooltipState } from './utils';
 
 /** @internal */
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
@@ -100,7 +100,7 @@ export interface InternalChartState {
    * Returns the CSS pointer cursor depending on the internal chart state
    * @param globalState
    */
-  getPointerCursor(globalState: GlobalChartState): string;
+  getPointerCursor(globalState: GlobalChartState): CSSProperties['cursor'];
   /**
    * Describe if the tooltip is visible and comes from an external source
    * @param globalState
@@ -176,6 +176,7 @@ export interface PointerStates {
   dragging: boolean;
   current: PointerState;
   down: PointerState | null;
+  pinned: PointerState | null;
   up: PointerState | null;
   lastDrag: DragState | null;
   lastClick: PointerState | null;
@@ -189,10 +190,13 @@ export interface InteractionsState {
   hoveredDOMElement: DOMElement | null;
   drilldown: CategoryKey[];
   prevDrilldown: CategoryKey[];
-  tooltip: {
-    stuck: boolean;
-    selected: SeriesIdentifier[];
-  };
+  tooltip: TooltipInteractionState;
+}
+
+/** @internal */
+export interface TooltipInteractionState {
+  pinned: boolean;
+  selected: SeriesIdentifier[];
 }
 
 /** @internal */
@@ -286,10 +290,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     hoveredDOMElement: null,
     drilldown: [],
     prevDrilldown: [],
-    tooltip: {
-      stuck: false,
-      selected: [],
-    },
+    tooltip: getInitialTooltipState(),
   },
   externalEvents: {
     pointer: null,
@@ -359,7 +360,15 @@ export const chartStoreReducer = (chartId: string) => {
       case UPDATE_PARENT_DIMENSION:
         return {
           ...state,
-          interactions: { ...state.interactions, prevDrilldown: state.interactions.drilldown },
+          interactions: {
+            ...state.interactions,
+            prevDrilldown: state.interactions.drilldown,
+            tooltip: getInitialTooltipState(),
+            pointer: {
+              ...state.interactions.pointer,
+              pinned: null,
+            },
+          },
           parentDimensions: {
             ...action.dimensions,
           },

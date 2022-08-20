@@ -10,7 +10,7 @@ import React from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps, TooltipAction } from '../../../specs';
-import { onToggleSelectedTooltipItem } from '../../../state/actions/tooltip';
+import { onTooltipItemSelected } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { TooltipInfo } from '../types';
 import { TooltipFooter } from './tooltip_footer';
@@ -28,7 +28,7 @@ interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentif
   headerFormatter?: TooltipValueFormatter<D, SI>;
   settings?: TooltipProps<D, SI>;
   actions: TooltipAction<SI>[];
-  onSelect: typeof onToggleSelectedTooltipItem;
+  onSelect: typeof onTooltipItemSelected;
 }
 
 /** @internal */
@@ -43,7 +43,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   actions,
   onSelect,
 }: TooltipBodyProps<D, SI>) => {
-  const { backgroundColor, dir, stuck, selected } = useTooltipContext();
+  const { backgroundColor, dir, pinned, selected } = useTooltipContext();
   if (!info || !visible) {
     return null;
   }
@@ -64,7 +64,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
       ) : (
         <TooltipHeader header={info.header} formatter={headerFormatter} />
       )}
-      <TooltipTable columns={columns} items={info.values} stuck={stuck} onSelect={onSelect} selected={selected} />
+      <TooltipTable columns={columns} items={info.values} pinned={pinned} onSelect={onSelect} selected={selected} />
       {footer && <TooltipFooter>{typeof footer === 'string' ? footer : footer(info.values)}</TooltipFooter>}
     </TooltipWrapper>
   );

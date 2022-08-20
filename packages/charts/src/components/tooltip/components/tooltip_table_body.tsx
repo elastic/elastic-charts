@@ -11,7 +11,7 @@ import React, { ReactNode } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
-import { onToggleSelectedTooltipItem } from '../../../state/actions/tooltip';
+import { onTooltipItemSelected } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableCell } from './tooltip_table_cell';
@@ -26,8 +26,8 @@ type TooltipTableBodyProps<
   {
     items: TooltipValue<D, SI>[];
     columns: TooltipTableColumn<D, SI>[];
-    stuck: boolean;
-    onSelect: typeof onToggleSelectedTooltipItem;
+    pinned: boolean;
+    onSelect: typeof onTooltipItemSelected;
     selected: SeriesIdentifier[];
   },
   {},
@@ -51,22 +51,20 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   const tooManyHighlighted = highlightedCount > 3;
   const canShowAll = props.items.length <= 3;
   const classes = classNames('echTooltip__tableBody', {
-    'echTooltip__tableBody--limited': !props.stuck && !canShowAll && (noneHighlighted || tooManyHighlighted),
-    'echTooltip__tableBody--stuck': props.stuck,
+    'echTooltip__tableBody--limited': !props.pinned && !canShowAll && (noneHighlighted || tooManyHighlighted),
+    'echTooltip__tableBody--pinned': props.pinned,
   });
 
   return (
     <tbody className={classes}>
       {props.items.map((item, i) => {
         const { isHighlighted, isVisible } = item;
-        // console.log(props.stuck && props.selected.some(({ key }) => key === item.seriesIdentifier.key));
-
         if (!isVisible) return null;
         return (
           <TooltipTableRow
             key={i}
-            isHighlighted={!props.stuck && isHighlighted}
-            isSelected={props.stuck && props.selected.some(({ key }) => key === item.seriesIdentifier.key)}
+            isHighlighted={!props.pinned && isHighlighted}
+            isSelected={props.pinned && props.selected.some(({ key }) => key === item.seriesIdentifier.key)}
             onSelect={() => props.onSelect(item.seriesIdentifier)}
           >
             {props.columns.map((column, j) => {

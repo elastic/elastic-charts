@@ -35,7 +35,7 @@ export const isTooltipVisibleSelector = createCustomCachedSelector(
 
 function isTooltipVisible(
   { type: tooltipType }: TooltipSpec,
-  { stuck }: InteractionsState['tooltip'],
+  { pinned }: InteractionsState['tooltip'],
   projectedPointerPosition: Point,
   tooltip: TooltipInfo,
   isAnnotationTooltipVisible: boolean,
@@ -49,7 +49,7 @@ function isTooltipVisible(
     !isAnnotationTooltipVisible;
   const isExternalTooltip = externalTooltipVisible && tooltip.values.length > 0;
   return {
-    visible: isLocalTooltip || isExternalTooltip || stuck,
+    visible: isLocalTooltip || isExternalTooltip || pinned,
     isExternal: externalTooltipVisible,
   };
 }

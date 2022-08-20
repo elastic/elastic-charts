@@ -9,14 +9,15 @@
 import { SeriesIdentifier } from '../../common/series_id';
 
 /** @internal */
-export const ON_TOOLTIP_STICK = 'ON_TOOLTIP_STICK';
+export const ON_TOOLTIP_PINNED = 'ON_TOOLTIP_PINNED';
 
 /** @internal */
 export const ON_TOOLTIP_ITEM_SELECTED = 'ON_TOOLTIP_ITEM_SELECTED';
 
 /** @internal */
 export interface ToggleTooltipStickAction {
-  type: typeof ON_TOOLTIP_STICK;
+  type: typeof ON_TOOLTIP_PINNED;
+  pinned: boolean;
 }
 
 /** @internal */
@@ -26,12 +27,12 @@ export interface ToggleSelectedTooltipItemAction {
 }
 
 /** @internal */
-export function onToggleTooltipStick(): ToggleTooltipStickAction {
-  return { type: ON_TOOLTIP_STICK };
+export function onTooltipPinned(pinned: boolean): ToggleTooltipStickAction {
+  return { type: ON_TOOLTIP_PINNED, pinned };
 }
 
 /** @internal */
-export function onToggleSelectedTooltipItem(itemId: SeriesIdentifier): ToggleSelectedTooltipItemAction {
+export function onTooltipItemSelected(itemId: SeriesIdentifier): ToggleSelectedTooltipItemAction {
   return { type: ON_TOOLTIP_ITEM_SELECTED, itemId };
 }
 

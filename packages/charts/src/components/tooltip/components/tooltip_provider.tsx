@@ -9,22 +9,22 @@
 import React, { PropsWithChildren, Context, useContext } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
-import { onToggleTooltipStick } from '../../../state/actions/tooltip';
+import { onTooltipPinned } from '../../../state/actions/tooltip';
 
 interface TooltipContext<SI extends SeriesIdentifier = SeriesIdentifier> {
   backgroundColor: string;
   dir: 'rtl' | 'ltr';
-  stuck: boolean;
+  pinned: boolean;
   selected: SI[];
-  toggleStuck: typeof onToggleTooltipStick;
+  tooltipPinned: typeof onTooltipPinned;
 }
 
 const TooltipContext = React.createContext<TooltipContext>({
   backgroundColor: '#fff',
   dir: 'ltr',
-  stuck: false,
+  pinned: false,
   selected: [],
-  toggleStuck: onToggleTooltipStick,
+  tooltipPinned: onTooltipPinned,
 });
 
 /** @internal */
@@ -38,9 +38,9 @@ type TooltipProviderProps = PropsWithChildren<TooltipContext>;
 export const TooltipProvider = ({
   backgroundColor,
   dir,
-  stuck,
+  pinned,
   selected,
-  toggleStuck,
+  tooltipPinned,
   children,
 }: TooltipProviderProps) => {
   return (
@@ -48,9 +48,9 @@ export const TooltipProvider = ({
       value={{
         backgroundColor,
         dir,
-        stuck,
+        pinned,
         selected,
-        toggleStuck,
+        tooltipPinned,
       }}
     >
       {children}

@@ -11,7 +11,7 @@ import React, { CSSProperties } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
-import { onToggleSelectedTooltipItem } from '../../../state/actions/tooltip';
+import { onTooltipItemSelected } from '../../../state/actions/tooltip';
 import { Datum, isNil } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableBody } from './tooltip_table_body';
@@ -26,8 +26,8 @@ type TooltipTableProps<
   {
     columns: TooltipTableColumn<D, SI>[];
     items: TooltipValue<D, SI>[];
-    stuck: boolean;
-    onSelect: typeof onToggleSelectedTooltipItem;
+    pinned: boolean;
+    onSelect: typeof onTooltipItemSelected;
     selected: SeriesIdentifier[];
   },
   {},
@@ -65,7 +65,7 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
       <TooltipTableBody
         columns={columns}
         items={props.items}
-        stuck={props.stuck}
+        pinned={props.pinned}
         onSelect={props.onSelect}
         selected={props.selected}
       />

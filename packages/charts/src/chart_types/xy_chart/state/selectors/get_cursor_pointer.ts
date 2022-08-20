@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { CSSProperties } from 'react';
+
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -17,6 +19,7 @@ import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_ge
 import { isBrushAvailableSelector } from './is_brush_available';
 
 const getCurrentPointerPositionSelector = (state: GlobalChartState) => state.interactions.pointer.current.position;
+const getTooltipStateSelector = (state: GlobalChartState) => state.interactions.tooltip;
 
 /** @internal */
 export const getPointerCursorSelector = createCustomCachedSelector(
@@ -28,6 +31,7 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     computeChartDimensionsSelector,
     isBrushAvailableSelector,
     getAnnotationTooltipStateSelector,
+    getTooltipStateSelector,
   ],
   (
     highlightedGeometries,
@@ -37,7 +41,9 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     { chartDimensions },
     isBrushAvailable,
     annotationTooltipState,
-  ): string => {
+    tooltipState,
+  ): CSSProperties['cursor'] => {
+    if (tooltipState.pinned) return;
     const { x, y } = currentPointerPosition;
     // get positions relative to chart
     const xPos = x - chartDimensions.left;

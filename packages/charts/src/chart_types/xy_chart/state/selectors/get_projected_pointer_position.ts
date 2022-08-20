@@ -15,10 +15,12 @@ import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_r
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 
-const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
+const getCurrentPointerPosition = ({ interactions }: GlobalChartState) =>
+  interactions.pointer.pinned?.position ?? interactions.pointer.current.position;
 
 /** @internal */
 export type PointerPosition = Point & { horizontalPanelValue: PrimitiveValue; verticalPanelValue: PrimitiveValue };
+
 /**
  * Get the x and y pointer position relative to the chart projection area
  * @internal
