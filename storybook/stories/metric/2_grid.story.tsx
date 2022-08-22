@@ -8,8 +8,8 @@
 
 import { EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
-import { select, number, boolean } from '@storybook/addon-knobs';
-import React from 'react';
+import { select, number, boolean, button } from '@storybook/addon-knobs';
+import React, { useState } from 'react';
 
 import {
   Chart,
@@ -142,6 +142,22 @@ export const Example = () => {
   const layout = select('layout', ['grid', 'vertical', 'horizontal'], 'grid');
   const configuredData =
     layout === 'grid' ? split(data, 4) : layout === 'horizontal' ? [data.slice(0, 4)] : split(data.slice(0, 4), 1);
+  const [chartData, setChartData] = useState(configuredData);
+  button('randomize data', () => {
+    setChartData(
+      split(
+        data
+          .slice()
+          .map((d) => {
+            return Math.random() > 0.8 ? undefined : d;
+          })
+          .slice(0, Math.ceil(Math.random() * data.length)),
+        Math.ceil((Math.random() * data.length) / 2),
+      ),
+    );
+  });
+  const debugRandomizedData = boolean('debug randomized data', false);
+
   const onEventClickAction = action('click');
   const onEventOverAction = action('over');
   const onEventOutAction = action('out');
@@ -155,6 +171,11 @@ export const Example = () => {
         width: layout === 'vertical' ? '180px' : '720px',
       }}
     >
+      {debugRandomizedData &&
+        chartData
+          .flat()
+          .map((d) => `[${d?.value}]`)
+          .join(' ')}
       <Chart>
         <Settings
           baseTheme={useBaseTheme()}
@@ -180,7 +201,7 @@ export const Example = () => {
           }}
           onElementOut={() => onEventOutAction('out')}
         />
-        <Metric id="metric" data={configuredData} />
+        <Metric id="metric" data={chartData} />
       </Chart>
     </div>
   );

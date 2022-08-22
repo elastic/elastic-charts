@@ -108,13 +108,13 @@ class Component extends React.Component<StateProps & DispatchProps> {
               });
               if (!datum) {
                 return (
-                  <li key={`empty-${columnIndex}`} role="presentation">
+                  <li key={`${columnIndex}-${rowIndex}`} role="presentation">
                     <div className={emptyMetricClassName}></div>
                   </li>
                 );
               }
               return (
-                <li key={`${datum.title}${datum.subtitle}${datum.color}${columnIndex}`}>
+                <li key={`${columnIndex}-${rowIndex}`}>
                   <MetricComponent
                     chartId={chartId}
                     datum={datum}
@@ -132,13 +132,14 @@ class Component extends React.Component<StateProps & DispatchProps> {
               );
             }),
             // fill the grid row with empty panels
-            ...Array.from({ length: totalColumns - columns.length }, (_, columIndex) => {
+            ...Array.from({ length: totalColumns - columns.length }, (_, zeroBasedColumnIndex) => {
+              const columnIndex = zeroBasedColumnIndex + columns.length;
               const emptyMetricClassName = classNames('echMetric', {
-                'echMetric--rightBorder': columns.length + columIndex < totalColumns - 1,
+                'echMetric--rightBorder': columns.length + columnIndex < totalColumns - 1,
                 'echMetric--bottomBorder': rowIndex < totalRows - 1,
               });
               return (
-                <li key={`missing-${columIndex}`} role="presentation">
+                <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
                   <div className={emptyMetricClassName}></div>
                 </li>
               );
