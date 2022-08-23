@@ -387,7 +387,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       minute: 'numeric',
       timeZone,
     }).format,
-    minorTickLabelFormat: (d) => `${minutesFormatter.format(d).padStart(2, '0')}`, // what DateTimeFormat doing?
+    minorTickLabelFormat: (d) => `${minutesFormatter.format(d)}`,
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
