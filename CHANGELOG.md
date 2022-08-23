@@ -1,3 +1,13 @@
+## [47.2.1](https://github.com/elastic/elastic-charts/compare/v47.2.0...v47.2.1) (2022-08-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v63 ([#1783](https://github.com/elastic/elastic-charts/issues/1783)) ([554f370](https://github.com/elastic/elastic-charts/commit/554f370ff7f780e9bed2772ed042eaed05927bd6))
+* **deps:** update dependency @elastic/eui to v64 ([#1798](https://github.com/elastic/elastic-charts/issues/1798)) ([bb028e9](https://github.com/elastic/elastic-charts/commit/bb028e91f45a5354b3642253bccaba6c26baad93))
+* **metric:** clip title at right length ([#1790](https://github.com/elastic/elastic-charts/issues/1790)) ([7d7ad55](https://github.com/elastic/elastic-charts/commit/7d7ad5506c5fb2c7b6596c3ab9bf255e658317ab))
+* **metric:** use a correct React key for each grid item ([#1789](https://github.com/elastic/elastic-charts/issues/1789)) ([076406e](https://github.com/elastic/elastic-charts/commit/076406e954bf27ecea0cbdde7e53eed3ae59d340))
+
 # [47.2.0](https://github.com/elastic/elastic-charts/compare/v47.1.1...v47.2.0) (2022-08-04)
 
 
