@@ -138,9 +138,7 @@ export const createLinkedProgram = (
     gl.validateProgram(program);
     if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
       throw new Error(`Whoa, could not validate the shader program: ${gl.getProgramInfoLog(program)}`);
-  }
-
-  if (!GL_DEBUG) {
+  } else {
     // no rush with the deletion; avoid adding workload to the synchronous preparation
     window.setTimeout(() => {
       gl.detachShader(program, vertexShader);
@@ -235,6 +233,7 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo:
       if (!activeUniform) throw new Error(`Whoa, active uniform not found`); // just appeasing the TS linter
       const { name, type } = activeUniform;
       const location = gl.getUniformLocation(program, name);
+      // todo check if this uboInfo test below is still needed
       if (location === null && !uboInfo.has(name))
         throw new Error(`Whoa, uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
       const setValue = location ? uniformSetterLookup[type](gl, location) : () => {};
@@ -259,10 +258,12 @@ export function blockUniforms(
   uboVariableNames: string[],
   [program, ...otherPrograms]: WebGLProgram[],
 ): UboData {
-  const blockIndex = gl.getUniformBlockIndex(program, uniformBlockName);
-  const blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, GL.UNIFORM_BLOCK_DATA_SIZE);
   const uboBuffer = gl.createBuffer();
   if (uboBuffer === null) throw new Error('Whoa, could not create uboBuffer');
+  if (!program) return { uboBuffer, uniforms: new Map() };
+  const blockIndex = gl.getUniformBlockIndex(program, uniformBlockName);
+  const blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, GL.UNIFORM_BLOCK_DATA_SIZE);
+  if (typeof blockSize !== 'number') throw new Error('Whoa, non-numeric blockSize');
   gl.bindBuffer(gl.UNIFORM_BUFFER, uboBuffer);
   gl.bufferData(gl.UNIFORM_BUFFER, blockSize, gl.DYNAMIC_DRAW);
   // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
