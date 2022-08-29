@@ -59,7 +59,7 @@ type WordcloudKnobs = Omit<WordcloudSpec, 'specType' | 'chartType' | 'data' | 'o
   backgroundColor: Color;
 };
 
-// Used in integration testing
+// Used in e2e testing
 export const TEMPLATES = ['edit', 'single', 'rightAngled', 'multiple', 'squareWords', 'smallWaves', 'sparse'];
 const getTemplate = (name: string): WordcloudKnobs => {
   switch (name) {
