@@ -12,38 +12,6 @@ env:
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
 
 jobs:
-  # status:
-  #   name: Check status
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     allSuccess: ${{ steps.validate.outputs.allSuccess == 'true' }}
-  #   steps:
-  #     - name: Get current check runs
-  #       id: check
-  #       uses: octokit/request-action@v2.x
-  #       with:
-  #         route: GET /repos/{repo}/commits/{ref}/check-runs
-  #         repo: ${{ github.repository }}
-  #         ref: ${{ github.sha }}
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     - name: Validate check runs
-  #       id: validate
-  #       if: ${{ success() }}
-  #       shell: python
-  #       # TODO: find a better way to do this, the check-runs api has no usable id other than name
-  #       run: |
-  #         import json
-  #         count = ${{ fromJSON(steps.check.outputs.data).total_count }}
-  #         checks = json.loads("""${{ toJSON(fromJSON(steps.check.outputs.data).check_runs) }}""")
-  #         allSuccess = True
-
-  #         for check in checks:
-  #           if check["name"] in ["Eslint", "Prettier", "Unit tests", "API Changes"]:
-  #               allSuccess = allSuccess and check["status"] == "completed" and check["conclusion"] == "success"
-
-  #         print(f"::set-output name=allSuccess::{str(count >= 7 and allSuccess).lower()}")
-
   checks:
     name: Release Checks
     runs-on: ubuntu-latest
