@@ -409,7 +409,7 @@ module.exports = {
       },
     },
     {
-      files: ['*.js', 'integration/**/*.ts?(x)'],
+      files: ['*.js'],
       rules: {
         '@typescript-eslint/no-var-requires': 0,
         '@typescript-eslint/no-unsafe-call': 0,
@@ -506,12 +506,6 @@ module.exports = {
             message: 'Please remove before committing changes.',
           },
         ],
-      },
-    },
-    {
-      files: ['integration/**/*.test.ts?(x)'],
-      rules: {
-        'unicorn/consistent-function-scoping': 0,
       },
     },
   ],

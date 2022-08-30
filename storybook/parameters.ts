@@ -81,7 +81,7 @@ export const storybookParameters: Parameters = {
     viewports: {
       vrt: {
         // to match vrt default viewport to help with mouse positioning
-        // See integration/jest_puppeteer.config.js#L19-L22
+        // See e2e/playwright.config.ts#L20
         name: 'VRT Viewport',
         styles: {
           width: '785px',
