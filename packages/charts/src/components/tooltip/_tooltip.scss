@@ -24,6 +24,10 @@ $rowColorStripAnimatedWidthDelta: 2px;
     @include euiBottomShadowSmall;
     pointer-events: auto;
     user-select: auto;
+
+    .echTooltip__tableRow {
+      cursor: pointer;
+    }
   }
 
   & > :not(:last-child) {
@@ -113,17 +117,10 @@ $rowColorStripAnimatedWidthDelta: 2px;
 
   &__tableBody {
     pointer-events: auto;
-
-    &--limited {
-      max-height: (21px * 3.5);
-      overflow: hidden;
-    }
-
-    &--pinned {
-      max-height: (21px * 4);
-      overflow-y: auto;
-      cursor: pointer;
-    }
+    overflow-y: auto;
+    max-height: 120px;
+    display: flex;
+    flex-direction: column;
 
     td:not(.echTooltip__colorCell) {
       padding: 2px 4px;
@@ -138,6 +135,8 @@ $rowColorStripAnimatedWidthDelta: 2px;
 
   &__tableRow {
     position: relative;
+    display: table;
+    overflow: hidden; // to avoid extra height from color strip styles
 
     &--highlighted {
       background-color: transparentize($euiColorLightShade, 0.5);

@@ -7,9 +7,8 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
-import { DateTime } from 'luxon';
-import * as moment from 'moment-timezone';
+import { boolean, number } from '@storybook/addon-knobs';
+import moment from 'moment-timezone';
 import React from 'react';
 
 import {
@@ -24,17 +23,18 @@ import {
   Settings,
   Tooltip,
 } from '@elastic/charts';
+import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob } from '../utils/knobs';
 
+const dg = new SeededDataGenerator();
+const rng = getRandomNumberGenerator();
+
 export const Example = () => {
-  const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
-  const oneDay = 1000 * 60 * 60 * 24;
-  const oneDays = moment.duration(1, 'd');
-  const twoDays = moment.duration(2, 'd');
-  const fiveDays = moment.duration(5, 'd');
-  const formatter = niceTimeFormatter([now, fiveDays.add(now).asMilliseconds()]);
+  const now = moment('2019-01-11T00:00:00.000');
+  const days = 5;
+  const formatter = niceTimeFormatter([now.valueOf(), now.clone().add(days, 'days').valueOf()]);
   const brushEndListener: BrushEndListener = ({ x }) => {
     if (!x) {
       return;
@@ -42,6 +42,16 @@ export const Example = () => {
     action('onBrushEnd')(formatter(x[0]), formatter(x[1]));
   };
   const disableActions = boolean('disable actions', false);
+  const seriesCount = number('series count', 10, { step: 1, min: 1 });
+  const groupData = dg.generateGroupedSeries(days, seriesCount).map(({ y, g }, i) => ({
+    y,
+    x: now
+      .clone()
+      .add(i % days, 'days')
+      .valueOf(),
+    g: `Group ${g.toUpperCase()}`,
+  }));
+
   return (
     <Chart>
       <Settings
@@ -78,32 +88,30 @@ export const Example = () => {
       />
 
       <BarSeries
-        id="bars"
+        id="Bars"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
+        splitSeriesAccessors={seriesCount > 1 ? ['g'] : undefined}
+        stackAccessors={['']}
         timeZone="Europe/Rome"
-        data={[
-          { x: now, y: 2 },
-          { x: oneDays.add(now).asMilliseconds(), y: 7 },
-          { x: twoDays.add(now).asMilliseconds(), y: 3 },
-          { x: now + oneDay * 5, y: 6 },
-        ]}
+        data={groupData}
       />
       <LineSeries
-        id="lines"
+        id="Lines"
+        color="red"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
         timeZone="Europe/Rome"
-        data={[
-          { x: now, y: 2 },
-          { x: now + oneDay, y: 7 },
-          { x: now + oneDay * 2, y: 3 },
-          { x: now + oneDay * 5, y: 6 },
-        ]}
+        data={groupData
+          .filter(({ g }) => g === 'Group A')
+          .map(({ x }) => {
+            const scaleFactor = seriesCount === 1 ? 0 : seriesCount * 5;
+            return { x, y: rng(3, scaleFactor + 10) };
+          })}
       />
     </Chart>
   );

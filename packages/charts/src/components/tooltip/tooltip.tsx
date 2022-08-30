@@ -87,7 +87,13 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
 }: TooltipComponentProps<D, SI>) => {
   const chartRef = getChartContainerRef();
 
-  const handleScroll = () => {
+  const handleScroll = (e: Event) => {
+    const target = e.target as Element;
+    if (target.classList.contains('echTooltip__tableBody')) {
+      // catch scroll when scrolling on tableBody
+      e.stopImmediatePropagation();
+      return;
+    }
     // TODO: handle scroll cursor update
     onPointerMove({ x: -1, y: -1 }, Date.now());
   };
