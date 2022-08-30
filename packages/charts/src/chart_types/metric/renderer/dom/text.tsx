@@ -118,15 +118,7 @@ export const MetricText: React.FunctionComponent<{
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
       <div>
         {visibility.title && (
-          <h2
-            id={id}
-            className="echMetricText__title"
-            style={{
-              fontSize: `${TITLE_FONT_SIZE[size]}px`,
-              ...lineClamp(visibility.titleLines),
-              width: titleWidth,
-            }}
-          >
+          <h2 id={id} className="echMetricText__title">
             <button
               onMouseDown={(e) => e.stopPropagation()}
               onMouseUp={(e) => e.stopPropagation()}
@@ -135,7 +127,15 @@ export const MetricText: React.FunctionComponent<{
                 onElementClick();
               }}
             >
-              {title}
+              <span
+                style={{
+                  fontSize: `${TITLE_FONT_SIZE[size]}px`,
+                  ...lineClamp(visibility.titleLines),
+                  width: titleWidth,
+                }}
+              >
+                {title}
+              </span>
             </button>
           </h2>
         )}

@@ -36,6 +36,7 @@ export const getColorPicker =
         <EuiFlexItem grow={false}>
           <EuiButtonEmpty
             color="danger"
+            style={{ color: '#ab231c' }}
             size="s"
             onClick={() => {
               onChange(null);
@@ -47,7 +48,14 @@ export const getColorPicker =
             Clear color
           </EuiButtonEmpty>
         </EuiFlexItem>
-        <EuiButton fullWidth size="s" iconType="check" title="Confirm color selection" onClick={onClose}>
+        <EuiButton
+          fullWidth
+          size="s"
+          iconType="check"
+          title="Confirm color selection"
+          onClick={onClose}
+          style={{ color: '#0061a6', backgroundColor: '#cce4f5', borderRadius: 4 }}
+        >
           Done
         </EuiButton>
       </EuiWrappingPopover>
