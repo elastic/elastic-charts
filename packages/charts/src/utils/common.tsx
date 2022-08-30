@@ -8,7 +8,7 @@
 
 import React, { ComponentType, isValidElement, ReactNode } from 'react';
 import { $Values, isPrimitive } from 'utility-types';
-import { v1 as uuidV1 } from 'uuid';
+import { v1 as uuidv1 } from 'uuid';
 
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Color, Colors } from '../common/colors';
@@ -171,8 +171,8 @@ export const radToDeg = (radian: Radian): Degrees => (radian * 180) / Math.PI;
  * @internal
  */
 export function htmlIdGenerator(idPrefix?: string) {
-  const prefix = idPrefix || `i${uuidV1()}`;
-  return (suffix?: string) => `${prefix}_${suffix || uuidV1()}`;
+  const prefix = idPrefix || `i${uuidv1()}`;
+  return (suffix?: string) => `${prefix}_${suffix || uuidv1()}`;
 }
 
 /**
