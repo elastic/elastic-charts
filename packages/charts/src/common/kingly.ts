@@ -20,9 +20,6 @@ type ShaderType = typeof GL.FRAGMENT_SHADER | typeof GL.VERTEX_SHADER;
 // a data structure that maps each uniform name (string) to a value setter for that uniform
 type UniformsMap = Map<string, (...args: any[]) => void>;
 
-// this wraps the uniforms details and the uniforms buffer object
-type UboData = { uniforms: Uniforms; uboBuffer: WebGLBuffer };
-
 // we can use a frame buffer (the Canvas itself, or a texture) for reading, writing or both
 type FrameBufferTarget = typeof GL.READ_FRAMEBUFFER | typeof GL.DRAW_FRAMEBUFFER | typeof GL.FRAMEBUFFER;
 
@@ -74,9 +71,6 @@ export interface UseInfo {
   scissor?: [number, number, number, number];
   draw?: { geom: GLuint; offset: GLuint; count: GLuint; instanceCount?: GLuint };
 }
-
-/** @internal */
-export type Uniforms = Map<string, { index: number; offset: number }>;
 
 /** @internal */
 export type Attributes = Map<string, (data: ArrayBufferView) => void>;
@@ -291,7 +285,7 @@ const uniformSetterLookup = {
     },
 };
 
-const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo: Uniforms): UniformsMap => {
+const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): UniformsMap => {
   if (programUniforms.has(program)) return programUniforms.get(program);
   const uniforms = new Map(
     [...new Array(gl.getProgramParameter(program, GL.ACTIVE_UNIFORMS /* uniform count */))].map((_, index) => {
@@ -299,8 +293,7 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo:
       if (!activeUniform) throw new Error(`Whoa, active uniform not found`); // just appeasing the TS linter
       const { name, type } = activeUniform;
       const location = gl.getUniformLocation(program, name);
-      // todo check if this uboInfo test below is still needed
-      if (location === null && !uboInfo.has(name))
+      if (location === null)
         throw new Error(`Whoa, uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
       const setValue = location ? uniformSetterLookup[type](gl, location) : () => {};
       if (GL_DEBUG && !setValue) throw new Error(`No setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
@@ -310,42 +303,6 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo:
   programUniforms.set(program, uniforms);
   return uniforms;
 };
-
-/*******************
- * Block uniforms
- ******************/
-
-/** @internal */
-export function blockUniforms(
-  gl: WebGL2RenderingContext,
-  uniformBlockName: string,
-  uboVariableNames: string[],
-  [program, ...otherPrograms]: WebGLProgram[],
-): UboData {
-  const uboBuffer = gl.createBuffer();
-  if (uboBuffer === null) throw new Error('Whoa, could not create uboBuffer');
-  if (!program) return { uboBuffer, uniforms: new Map() };
-  const blockIndex = gl.getUniformBlockIndex(program, uniformBlockName);
-  const blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, GL.UNIFORM_BLOCK_DATA_SIZE);
-  if (typeof blockSize !== 'number') throw new Error('Whoa, non-numeric blockSize');
-  gl.bindBuffer(gl.UNIFORM_BUFFER, uboBuffer);
-  gl.bufferData(gl.UNIFORM_BUFFER, blockSize, gl.DYNAMIC_DRAW);
-  // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
-  gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uboBuffer);
-  const uboVariableIndices = gl.getUniformIndices(program, uboVariableNames);
-  if (uboVariableIndices === null) throw new Error('Whoa, could not get uboVariableIndices');
-  const uboVariableOffsets = gl.getActiveUniforms(program, uboVariableIndices, gl.UNIFORM_OFFSET);
-  const uniforms = new Map(
-    uboVariableNames.map((name, i) => [name, { index: uboVariableIndices[i], offset: uboVariableOffsets[i] }]),
-  );
-
-  // per program part
-  [program, ...otherPrograms].forEach((p) =>
-    gl.uniformBlockBinding(p, gl.getUniformBlockIndex(p, uniformBlockName), 0),
-  );
-
-  return { uboBuffer, uniforms };
-}
 
 /**************
  * Clearing
@@ -584,11 +541,10 @@ export const bindVertexArray = (gl: WebGL2RenderingContext, vertexArrayObject: W
 export const getRenderer = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
-  { uniforms, uboBuffer }: UboData,
   vao: WebGLVertexArrayObject | null,
   { depthTest = false, blend = true, frontFace = GL.CCW },
 ): Render => {
-  const allUniforms = getUniforms(gl, program, uniforms);
+  const uniforms = getUniforms(gl, program);
   return ({ uniformValues, viewport, target, clear, scissor, draw }: UseInfo): void => {
     if (!setGlobalConstants.has(gl)) {
       setGlobalConstants.add(gl);
@@ -633,17 +589,7 @@ export const getRenderer = (
 
     if (viewport) setViewport(gl, viewport.x, viewport.y, viewport.width, viewport.height);
     if (uniformValues) {
-      // non-ubo allUniforms
-      allUniforms.forEach(
-        (setValue, name) => uniformValues[name] && !uniforms.has(name) && setValue(uniformValues[name]),
-      );
-      // ubo allUniforms
-      gl.bindBuffer(GL.UNIFORM_BUFFER, uboBuffer);
-      uniforms.forEach(({ offset }, name) => {
-        const value = new Float32Array([uniformValues[name]].flat());
-        gl.bufferSubData(GL.UNIFORM_BUFFER, offset, value, 0);
-      });
-      // gl.bindBuffer(GL.UNIFORM_BUFFER, null);
+      uniforms.forEach((setValue, name) => uniformValues[name] && setValue(uniformValues[name]));
     }
 
     bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, target);
