@@ -39,7 +39,7 @@ test.describe('Annotations stories', () => {
           left: 225,
         },
         {
-          delay: 100,
+          maxDiffPixels: 10,
         },
       );
     });
