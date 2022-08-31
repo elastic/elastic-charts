@@ -39,7 +39,7 @@ const config: PlaywrightTestConfig = {
     },
   },
   // TODO limit this to only flaky tests. Watch https://github.com/microsoft/playwright/issues/15657
-  retries: 3,
+  retries: 1,
   forbidOnly: isCI,
   timeout: 10 * 1000,
   preserveOutput: 'failures-only',

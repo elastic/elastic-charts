@@ -383,7 +383,7 @@ export class CommonPage {
       if (!element) {
         throw new Error(`Failed to find element at \`${selector}\`\n\n\t${url}`);
       } else {
-        expect(element).toMatchSnapshot(screenshotPath, options);
+        expect(element).toMatchSnapshot(screenshotPath, getSnapshotOptions(options));
       }
     };
 
@@ -525,6 +525,18 @@ export class CommonPage {
         strict: false, // should be true but some stories have multiple charts
       });
     };
+}
+
+function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {
+  if (options?.maxDiffPixels !== undefined) {
+    // need to clear default options for maxDiffPixels to be respected, else could still fail on threshold or maxDiffPixelRatio
+    return {
+      threshold: 1,
+      maxDiffPixelRatio: 1,
+      ...options,
+    };
+  }
+  return options;
 }
 
 export const common = new CommonPage();
