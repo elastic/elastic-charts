@@ -14,15 +14,29 @@ const GL_DEBUG = true; // to be set to false once GL charts are in non-alpha and
  * Types
  *************/
 
+// there are two shader types
 type ShaderType = typeof GL.FRAGMENT_SHADER | typeof GL.VERTEX_SHADER;
+
+// a data structure that maps each uniform name (string) to a value setter for that uniform
 type UniformsMap = Map<string, (...args: any[]) => void>;
+
+// this wraps the uniforms details and the uniforms buffer object
 type UboData = { uniforms: Uniforms; uboBuffer: WebGLBuffer };
+
+// we can use a frame buffer (the Canvas itself, or a texture) for reading, writing or both
 type FrameBufferTarget = typeof GL.READ_FRAMEBUFFER | typeof GL.DRAW_FRAMEBUFFER | typeof GL.FRAMEBUFFER;
 
+// samplers (texture samplers) act as uniforms; `setUniform` sets the desired texture for the shader code to read (sample) from
 interface Sampler {
   setUniform: (location: WebGLUniformLocation) => void;
 }
 
+/**
+ * Clearing can be constrained to a rectangle; not just the color buffer but the depth buffer may also be cleared
+ * One role of the depth buffer (z-buffer) is to keep track of the Z coordinate closest to the viewer for each pixel on the screen
+ * as it can be used to reject future pixel (fragment) shading that would be beneath this and would be invisible anyway
+ * The stencil buffer may also be cleared simultaneously https://en.wikipedia.org/wiki/Stencil_buffer
+ */
 interface ClearInfo {
   rect?: [number, number, number, number];
   color?: [number, number, number, number];
@@ -30,14 +44,15 @@ interface ClearInfo {
   stencilIndex?: number;
 }
 
+// A tuple of texture data for functions like `gl.texImage2D` and `gl.texParameteri` - metadata of a texture
 interface TextureSpecification {
-  textureIndex: GLuint;
-  internalFormat: GLuint;
-  width: GLuint;
-  height: GLuint;
-  data: ArrayBufferView | null;
-  min?: GLuint;
-  mag?: GLuint;
+  textureIndex: GLuint; // used for identifying the specific texture in a `gl.activeTexture` setter call
+  internalFormat: GLuint; // colors and bits per color https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
+  width: GLuint; // texture width in pixels
+  height: GLuint; // texture height in pixels
+  data: ArrayBufferView | null; // the buffer containing the actual pixel grid
+  min?: GLuint; // when using texture for data lookup, we usually want the nearest exact value, rather than interpolated or aggregated
+  mag?: GLuint; // when using texture for data lookup, we usually want the nearest exact value, rather than interpolated or aggregated
 }
 
 /** @internal */
