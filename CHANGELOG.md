@@ -1,3 +1,21 @@
+# [48.0.0](https://github.com/elastic/elastic-charts/compare/v47.2.1...v48.0.0) (2022-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v65 ([#1802](https://github.com/elastic/elastic-charts/issues/1802)) ([37a0ce7](https://github.com/elastic/elastic-charts/commit/37a0ce74067f8de5fea0704687ad0cc241a9b7a8))
+* **deps:** upgrade uuid to latest version ([#1794](https://github.com/elastic/elastic-charts/issues/1794)) ([35bb737](https://github.com/elastic/elastic-charts/commit/35bb737b7c5031a8b64b68eb85720bbe3f033df6))
+
+
+### Features
+
+* **xy:** collapsing time into a single hh:mm[:ss] layer ([#1791](https://github.com/elastic/elastic-charts/issues/1791)) ([577cfee](https://github.com/elastic/elastic-charts/commit/577cfee01bb8be6e362086bde53189169ef6e430))
+
+
+### BREAKING CHANGES
+
+* **xy:** show hh:mm in a single labeled axis layer and other grid related adjustments
+
 ## [47.2.1](https://github.com/elastic/elastic-charts/compare/v47.2.0...v47.2.1) (2022-08-23)
 
 
