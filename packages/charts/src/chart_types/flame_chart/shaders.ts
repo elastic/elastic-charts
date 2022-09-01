@@ -46,8 +46,8 @@ const uniformDefs = /* language=GLSL */ `
   uniform float rowHeight1;
   uniform float t; // 0: start position; 1: end position
   uniform float cornerRadiusPx;
-  uniform float hoverIndex;
-  uniform float wobbleIndex;
+  uniform int hoverIndex;
+  uniform int wobbleIndex;
   uniform float wobble;
   uniform bool pickLayer;
 `;
@@ -106,8 +106,8 @@ const getGeom = /* language=GLSL */ `
       : vec4(
           color.rgb,
           color.a
-            * (gl_InstanceID == int(hoverIndex) - GEOM_INDEX_OFFSET ? HOVER_OPACITY : 1.0)
-            * (gl_InstanceID == int(wobbleIndex) - GEOM_INDEX_OFFSET && wobble > 0.0 ? 1.0 - wobble : 1.0)
+            * (gl_InstanceID == hoverIndex - GEOM_INDEX_OFFSET ? HOVER_OPACITY : 1.0)
+            * (gl_InstanceID == wobbleIndex - GEOM_INDEX_OFFSET && wobble > 0.0 ? 1.0 - wobble : 1.0)
         );
 
     return Geom(
