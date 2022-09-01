@@ -25,7 +25,7 @@ test.describe('Flame stories', () => {
           );
         },
         // replace this with render count selector when render count fixed
-        delay: 5000, // wait for tweening and blinking to finish
+        delay: 300, // wait for tweening and blinking to finish
       },
     );
   });
