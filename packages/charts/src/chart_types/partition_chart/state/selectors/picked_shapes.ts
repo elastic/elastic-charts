@@ -6,18 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { pickedShapes, pickShapesLayerValues } from '../../layout/viewmodel/picked_shapes';
+import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
 import { partitionDrilldownFocus, partitionMultiGeometries } from './geometries';
-
-function getCurrentPointerPosition(state: GlobalChartState) {
-  return state.interactions.pointer.current.position;
-}
 
 /** @internal */
 export const getPickedShapes = createCustomCachedSelector(
-  [partitionMultiGeometries, getCurrentPointerPosition, partitionDrilldownFocus],
+  [partitionMultiGeometries, getActivePointerPosition, partitionDrilldownFocus],
   pickedShapes,
 );
 
