@@ -1,3 +1,11 @@
+## [48.0.1](https://github.com/elastic/elastic-charts/compare/v48.0.0...v48.0.1) (2022-09-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v66 ([#1810](https://github.com/elastic/elastic-charts/issues/1810)) ([3f1db71](https://github.com/elastic/elastic-charts/commit/3f1db718ba2d957a14710aaa80faa38e633b6a4b))
+* **flame:** undo the conversion to uniform buffer objects ([#1808](https://github.com/elastic/elastic-charts/issues/1808)) ([2b49347](https://github.com/elastic/elastic-charts/commit/2b493476e65f4376b9f79147eeaadfeb491bc003))
+
 # [48.0.0](https://github.com/elastic/elastic-charts/compare/v47.2.1...v48.0.0) (2022-08-31)
 
 
