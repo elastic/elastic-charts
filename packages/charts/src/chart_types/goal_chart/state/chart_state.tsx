@@ -13,6 +13,7 @@ import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
 import { Tooltip } from '../../../components/tooltip/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
 import { DebugState } from '../../../state/types';
@@ -96,7 +97,7 @@ export class GoalState implements InternalChartState {
   }
 
   getTooltipAnchor(state: GlobalChartState) {
-    const { position } = state.interactions.pointer.current;
+    const position = getActivePointerPosition(state);
     return {
       isRotated: false,
       x: position.x,
