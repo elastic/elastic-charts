@@ -1069,7 +1069,7 @@ describe('Axis computational utils', () => {
         );
       };
 
-      expect(computeScalelessSpec).toThrowError('Cannot compute scale for axis spec axis_1');
+      expect(computeScalelessSpec).toThrow('Cannot compute scale for axis spec axis_1');
     });
   */
 
@@ -1133,7 +1133,7 @@ describe('Axis computational utils', () => {
       mergeYCustomDomainsByGroupId(axesSpecs, 0);
     };
 
-    expect(attemptToMerge).toThrowError('[Axis axis_2]: custom domain for xDomain should be defined in Settings');
+    expect(attemptToMerge).toThrow('[Axis axis_2]: custom domain for xDomain should be defined in Settings');
   });
 
   test('should merge axis domains by group id: partial upper bounded prevDomain with complete domain', () => {
@@ -1281,7 +1281,7 @@ describe('Axis computational utils', () => {
     };
     const expectedError = '[Axis axis_1]: custom domain is invalid, min is greater than max';
 
-    expect(attemptToMerge).toThrowError(expectedError);
+    expect(attemptToMerge).toThrow(expectedError);
   });
 
   test.skip('should show unique tick labels if duplicateTicks is set to false', () => {

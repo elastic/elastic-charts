@@ -652,7 +652,7 @@ describe('X Domain', () => {
     );
     expect(domain).toEqual([1, 5]);
     const warnMessage = 'xDomain for continuous scale should be a DomainRange object, not an array';
-    expect(Logger.warn).toBeCalledWith(warnMessage);
+    expect(Logger.warn).toHaveBeenCalledWith(warnMessage);
 
     (Logger.warn as jest.Mock).mockClear();
 
@@ -662,7 +662,9 @@ describe('X Domain', () => {
       xValues,
     ).domain;
     expect(domain).toEqual([1, 5]);
-    expect(Logger.warn).toBeCalledWith('Custom xDomain is invalid: min is greater than max. Custom domain is ignored.');
+    expect(Logger.warn).toHaveBeenCalledWith(
+      'Custom xDomain is invalid: min is greater than max. Custom domain is ignored.',
+    );
   });
 
   test('should account for custom domain when merging a linear domain: lower bounded domain', () => {
@@ -682,7 +684,7 @@ describe('X Domain', () => {
       xValues,
     );
     expect(domain).toEqual([1, 5]);
-    expect(Logger.warn).toBeCalledWith(
+    expect(Logger.warn).toHaveBeenCalledWith(
       'Custom xDomain is invalid: custom min is greater than computed max. Custom domain is ignored.',
     );
   });
@@ -704,7 +706,7 @@ describe('X Domain', () => {
       xValues,
     );
     expect(domain).toEqual([1, 5]);
-    expect(Logger.warn).toBeCalledWith(
+    expect(Logger.warn).toHaveBeenCalledWith(
       'Custom xDomain is invalid: computed min is greater than custom max. Custom domain is ignored.',
     );
   });
@@ -727,7 +729,7 @@ describe('X Domain', () => {
     expect(domain).toEqual(['a', 'b', 'c', 'd']);
     const warnMessage =
       'xDomain for ordinal scale should be an array of values, not a DomainRange object. xDomain is ignored.';
-    expect(Logger.warn).toBeCalledWith(warnMessage);
+    expect(Logger.warn).toHaveBeenCalledWith(warnMessage);
   });
 
   describe('should account for custom minInterval', () => {
@@ -761,7 +763,7 @@ describe('X Domain', () => {
       expect(minInterval).toEqual(1);
       const expectedWarning =
         'Custom xDomain is invalid: custom minInterval is greater than computed minInterval. Using computed minInterval.';
-      expect(Logger.warn).toBeCalledWith(expectedWarning);
+      expect(Logger.warn).toHaveBeenCalledWith(expectedWarning);
     });
 
     test('with invalid minInterval less than 0', () => {
@@ -773,7 +775,7 @@ describe('X Domain', () => {
       expect(minInterval).toEqual(1);
       const expectedWarning =
         'Custom xDomain is invalid: custom minInterval is less than 0. Using computed minInterval.';
-      expect(Logger.warn).toBeCalledWith(expectedWarning);
+      expect(Logger.warn).toHaveBeenCalledWith(expectedWarning);
     });
   });
 

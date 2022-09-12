@@ -49,11 +49,11 @@ describe('Bar styles', () => {
     });
 
     it('should call getColorFromVariant with correct args for fill', () => {
-      expect(common.getColorFromVariant).nthCalledWith(1, baseColor, themeRectStyle.fill);
+      expect(common.getColorFromVariant).toHaveBeenNthCalledWith(1, baseColor, themeRectStyle.fill);
     });
 
     it('should call getColorFromVariant with correct args for border', () => {
-      expect(common.getColorFromVariant).nthCalledWith(1, baseColor, themeRectBorderStyle.stroke);
+      expect(common.getColorFromVariant).toHaveBeenNthCalledWith(1, baseColor, themeRectBorderStyle.stroke);
     });
 
     describe('Colors', () => {
@@ -69,8 +69,8 @@ describe('Bar styles', () => {
       });
 
       it('should call colorToRgba with values from getColorFromVariant', () => {
-        expect(colorToRgba).nthCalledWith(1, fillColor);
-        expect(colorToRgba).nthCalledWith(2, strokeColor);
+        expect(colorToRgba).toHaveBeenNthCalledWith(1, fillColor);
+        expect(colorToRgba).toHaveBeenNthCalledWith(2, strokeColor);
       });
 
       it('should return fill with color', () => {
@@ -166,8 +166,8 @@ describe('Bar styles', () => {
       });
 
       it('should call getTextureStyles with params', () => {
-        expect(getTextureStyles).toBeCalledTimes(1);
-        expect(getTextureStyles).toBeCalledWith(ctx, imgCanvas, baseColor, expect.anything(), texture);
+        expect(getTextureStyles).toHaveBeenCalledTimes(1);
+        expect(getTextureStyles).toHaveBeenCalledWith(ctx, imgCanvas, baseColor, expect.anything(), texture);
       });
     });
   });

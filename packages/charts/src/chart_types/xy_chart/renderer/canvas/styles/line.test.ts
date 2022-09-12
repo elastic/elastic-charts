@@ -36,7 +36,7 @@ describe('Line styles', () => {
     });
 
     it('should call getColorFromVariant with correct args for stroke', () => {
-      expect(common.getColorFromVariant).nthCalledWith(1, baseColor, themeLineStyle.stroke);
+      expect(common.getColorFromVariant).toHaveBeenNthCalledWith(1, baseColor, themeLineStyle.stroke);
     });
 
     it('should set strokeWidth from themeLineStyle', () => {
@@ -56,7 +56,7 @@ describe('Line styles', () => {
       });
 
       it('should call colorToRgba with values from getColorFromVariant', () => {
-        expect(colorToRgba).nthCalledWith(1, strokeColor);
+        expect(colorToRgba).toHaveBeenNthCalledWith(1, strokeColor);
       });
 
       it('should return stroke with color', () => {

@@ -271,7 +271,7 @@ describe('Rendering utils', () => {
     it('should call barStyleAccessor with datum and seriesIdentifier', () => {
       getBarStyleOverrides(datum, seriesIdentifier, sampleSeriesStyle, mockAccessor);
 
-      expect(mockAccessor).toBeCalledWith(datum, seriesIdentifier);
+      expect(mockAccessor).toHaveBeenCalledWith(datum, seriesIdentifier);
     });
 
     it('should return seriesStyle with updated fill color', () => {
@@ -364,7 +364,7 @@ describe('Rendering utils', () => {
     it('should call pointStyleAccessor with datum and seriesIdentifier', () => {
       getPointStyleOverrides(datum, seriesIdentifier, mockAccessor);
 
-      expect(mockAccessor).toBeCalledWith(datum, seriesIdentifier);
+      expect(mockAccessor).toHaveBeenCalledWith(datum, seriesIdentifier);
     });
 
     it('should return seriesStyle with updated stroke color', () => {
@@ -445,7 +445,7 @@ describe('Rendering utils', () => {
     it('should call scale to get x value for each datum', () => {
       getClippedRanges(dataSeries.data, xScale, 0);
 
-      expect(xScale.scale).toHaveBeenNthCalledWith(1, dataSeries.data[0].x);
+      expect(xScale.scale).toHaveBeentoHaveBeenNthCalledWith(1, dataSeries.data[0].x);
       expect(xScale.scale).toHaveBeenCalledTimes(dataSeries.data.length);
       expect(xScale.scale).toHaveBeenCalledWith(dataSeries.data[12].x);
     });
