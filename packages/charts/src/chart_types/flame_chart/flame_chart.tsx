@@ -239,7 +239,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
-    this.pinchZoomScale = browserRootWindow().visualViewport.scale;
+    this.pinchZoomScale = browserRootWindow().visualViewport?.scale ?? 1;
     this.setupViewportScaleChangeListener();
 
     // search
@@ -319,7 +319,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private setupViewportScaleChangeListener = () => {
     window.clearInterval(this.pinchZoomSetInterval);
     this.pinchZoomSetInterval = window.setInterval(() => {
-      const pinchZoomScale = browserRootWindow().visualViewport.scale; // not cached, to avoid holding a reference to a `window` object
+      const pinchZoomScale = browserRootWindow().visualViewport?.scale ?? 1; // not cached, to avoid holding a reference to a `window` object
       if (pinchZoomScale !== this.pinchZoomScale) {
         this.pinchZoomScale = pinchZoomScale;
         this.setState({});
