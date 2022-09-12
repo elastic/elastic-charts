@@ -445,7 +445,7 @@ describe('Rendering utils', () => {
     it('should call scale to get x value for each datum', () => {
       getClippedRanges(dataSeries.data, xScale, 0);
 
-      expect(xScale.scale).toHaveBeentoHaveBeenNthCalledWith(1, dataSeries.data[0].x);
+      expect(xScale.scale).toHaveBeenNthCalledWith(1, dataSeries.data[0].x);
       expect(xScale.scale).toHaveBeenCalledTimes(dataSeries.data.length);
       expect(xScale.scale).toHaveBeenCalledWith(dataSeries.data[12].x);
     });
