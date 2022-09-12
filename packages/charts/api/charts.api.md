@@ -1293,7 +1293,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     };
     // (undocumented)
     name?: string;
-    // Warning: (ae-forgotten-export) The symbol "HeatmapBrushEvent" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "HeatmapBrushEvent_2" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
     onBrushEnd?: (brushArea: HeatmapBrushEvent_2) => void;
@@ -1959,7 +1959,7 @@ export interface PartitionStyle extends FillFontSizeRange {
     outerSizeRatio: SizeRatio;
     // (undocumented)
     radialPadding: Distance;
-    // Warning: (ae-forgotten-export) The symbol "StrokeStyle" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "StrokeStyle_2" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
     sectorLineStroke: StrokeStyle_2;
@@ -2731,7 +2731,7 @@ export interface TimeScale {
     type: typeof ScaleType.Time;
 }
 
-// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps_2" needs to be exported by the entry point index.d.ts
 //
 // @public
 export const Timeslip: (props: SFProps<TimeslipSpec, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
