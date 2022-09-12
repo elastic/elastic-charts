@@ -51,9 +51,10 @@ const LEFT_MOUSE_BUTTON = 1;
 const MINIMAP_SIZE_RATIO_X = 3;
 const MINIMAP_SIZE_RATIO_Y = 3;
 const SHOWN_ANCESTOR_COUNT = 2; // how many rows above the focused in node should be shown
-const WOBBLE_DURATION = 1000;
+const SHOULD_DISABLE_WOBBLE = (typeof process === 'object' && process.env && process.env.VRT) === 'true';
+const WOBBLE_DURATION = SHOULD_DISABLE_WOBBLE ? 0 : 1000;
 const WOBBLE_REPEAT_COUNT = 2;
-const WOBBLE_FREQUENCY = 2 * Math.PI * (WOBBLE_REPEAT_COUNT / WOBBLE_DURATION); // e.g. 1/30 means a cycle of every 30ms
+const WOBBLE_FREQUENCY = SHOULD_DISABLE_WOBBLE ? 0 : 2 * Math.PI * (WOBBLE_REPEAT_COUNT / WOBBLE_DURATION); // e.g. 1/30 means a cycle of every 30ms
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -238,7 +239,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
-    this.pinchZoomScale = browserRootWindow().visualViewport.scale;
+    this.pinchZoomScale = browserRootWindow().visualViewport?.scale ?? 1;
     this.setupViewportScaleChangeListener();
 
     // search
@@ -318,7 +319,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private setupViewportScaleChangeListener = () => {
     window.clearInterval(this.pinchZoomSetInterval);
     this.pinchZoomSetInterval = window.setInterval(() => {
-      const pinchZoomScale = browserRootWindow().visualViewport.scale; // not cached, to avoid holding a reference to a `window` object
+      const pinchZoomScale = browserRootWindow().visualViewport?.scale ?? 1; // not cached, to avoid holding a reference to a `window` object
       if (pinchZoomScale !== this.pinchZoomScale) {
         this.pinchZoomScale = pinchZoomScale;
         this.setState({});

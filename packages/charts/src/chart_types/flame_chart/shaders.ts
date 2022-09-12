@@ -38,20 +38,18 @@ const attribDefs = /* language=GLSL */ `
 `;
 
 const uniformDefs = /* language=GLSL */ `
-  uniform Settings {
-    mat4 focus; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
-    vec2 resolution;
-    vec2 gapPx;
-    vec2 minFillRatio; // at least this ratio of the rectangle's full width/height must be filled
-    float rowHeight0;
-    float rowHeight1;
-    float t; // 0: start position; 1: end position
-    float cornerRadiusPx;
-    float hoverIndex;
-    float wobbleIndex;
-    float wobble;
-    bool pickLayer;
-  };
+  uniform mat4 focus; // [[focusLoX, focusHiX], [focusLoY, focusHiY]]
+  uniform vec2 resolution;
+  uniform vec2 gapPx;
+  uniform vec2 minFillRatio; // at least this ratio of the rectangle's full width/height must be filled
+  uniform float rowHeight0;
+  uniform float rowHeight1;
+  uniform float t; // 0: start position; 1: end position
+  uniform float cornerRadiusPx;
+  uniform float hoverIndex;
+  uniform float wobbleIndex;
+  uniform float wobble;
+  uniform bool pickLayer;
 `;
 
 const constants = /* language=GLSL */ `

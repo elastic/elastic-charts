@@ -8,7 +8,6 @@
 
 import {
   bindVertexArray,
-  blockUniforms,
   createCompiledShader,
   createLinkedProgram,
   getAttributes,
@@ -56,33 +55,13 @@ export function ensureWebgl(
     attributeLocations,
   );
 
-  const blockUniformsData = blockUniforms(
-    gl,
-    'Settings',
-    [
-      'focus',
-      'resolution',
-      'gapPx',
-      'minFillRatio',
-      'rowHeight0',
-      'rowHeight1',
-      't',
-      'cornerRadiusPx',
-      'hoverIndex',
-      'wobbleIndex',
-      'wobble',
-      'pickLayer',
-    ],
-    [geomProgram, pickProgram],
-  );
-
   /**
    * Resource allocation: Render setup
    */
 
   // couple the program with the attribute input and global GL flags
-  const roundedRectRenderer = getRenderer(gl, geomProgram, blockUniformsData, vao, { depthTest: false, blend: true });
-  const pickTextureRenderer = getRenderer(gl, pickProgram, blockUniformsData, vao, { depthTest: false, blend: false });
+  const roundedRectRenderer = getRenderer(gl, geomProgram, vao, { depthTest: false, blend: true });
+  const pickTextureRenderer = getRenderer(gl, pickProgram, vao, { depthTest: false, blend: false });
 
   const attributes = getAttributes(gl, geomProgram, attributeLocations);
 

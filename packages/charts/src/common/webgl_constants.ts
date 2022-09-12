@@ -6,6 +6,16 @@
  * Side Public License, v 1.
  */
 
+/**
+ * WebGL uses integers (GLUInt, just a number in JS) as fake enums (mostly) for WebGL API function call parameters.
+ * While it's possible to use the integer code directly, there's documentational value in naming them, in line with specs.
+ * WebGL queries, typically run for exception handling and debugging situations, often return such "enums" too.
+ * By having the number here, it's easy to search for the meaning, though it's possible to do it on the web too.
+ * Most of these constants aren't currently used, but it'd be tedious to add them one by one.
+ *
+ * Note that there are functions (currently, `gl.activeTexture`) that take an "enum" but then add offset numbers to it.
+ */
+
 /** @internal */
 export const GL = {
   DEPTH_BUFFER_BIT: 256,
