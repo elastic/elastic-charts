@@ -7,11 +7,15 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties } from 'react';
+import React from 'react';
 
 import { Color } from '../../../../common/colors';
+import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
+import { Font } from '../../../../common/text_utils';
+import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
+import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWProgress, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
 
@@ -24,7 +28,7 @@ const WIDTH_BP: [number, number, BreakPoint][] = [
 ];
 
 const PADDING = 8;
-const NUMBER_LINE_HEIGHT = 1.2; // aligned with our CSS
+const LINE_HEIGHT = 1.2; // aligned with our CSS
 const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 16, l: 24 };
 const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
@@ -38,8 +42,8 @@ function findRange(ranges: [number, number, BreakPoint][], value: number): Break
 }
 
 type ElementVisibility = {
-  titleLines: number;
-  subtitleLines: number;
+  titleMaxLines: number;
+  subtitleMaxLines: number;
   title: boolean;
   subtitle: boolean;
   extra: boolean;
@@ -49,42 +53,87 @@ function elementVisibility(
   datum: MetricBase | MetricWProgress | MetricWTrend,
   panel: Size,
   size: BreakPoint,
-): ElementVisibility {
-  const titleHeight = (title: boolean, maxLines: number) =>
-    PADDING + (title ? maxLines * TITLE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT : 0);
-  const subtitleHeight = (subtitle: boolean, maxLines: number) =>
-    subtitle ? maxLines * SUBTITLE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT + PADDING : 0;
-  const extraHeight = (extra: boolean) => (extra ? EXTRA_FONT_SIZE[size] * NUMBER_LINE_HEIGHT : 0);
-  const valueHeight = VALUE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT + PADDING;
+): ElementVisibility & { titleLines: string[]; subtitleLines: string[] } {
+  const LEFT_RIGHT_PADDING = 16;
+  const maxTitlesWidth = (size === 's' ? 1 : 0.8) * panel.width - (datum.icon ? 24 : 0) - LEFT_RIGHT_PADDING;
+
+  const titleFont: Font = {
+    fontStyle: 'normal',
+    fontFamily: DEFAULT_FONT_FAMILY,
+    fontVariant: 'normal',
+    fontWeight: 400,
+    textColor: 'black',
+  };
+  const subtitleFont: Font = {
+    ...titleFont,
+    fontWeight: 300,
+  };
+  const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
+    return datum.title
+      ? PADDING +
+          wrapText(datum.title, titleFont, TITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure).length *
+            TITLE_FONT_SIZE[size] *
+            LINE_HEIGHT
+      : 0;
+  };
+
+  const subtitleHeight = (maxLines: number, textMeasure: TextMeasure) => {
+    return datum.subtitle
+      ? PADDING +
+          wrapText(datum.subtitle, subtitleFont, SUBTITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure)
+            .length *
+            SUBTITLE_FONT_SIZE[size] *
+            LINE_HEIGHT
+      : 0;
+  };
+
+  const extraHeight = EXTRA_FONT_SIZE[size] * LINE_HEIGHT;
+  const valueHeight = VALUE_FONT_SIZE[size] * LINE_HEIGHT + PADDING;
 
   const responsiveBreakPoints: Array<ElementVisibility> = [
-    { titleLines: 3, subtitleLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleLines: 3, subtitleLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleLines: 3, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
-    { titleLines: 2, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
-    { titleLines: 2, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: false },
-    { titleLines: 1, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: false },
+    { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 3, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 2, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 1, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
+    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
+    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
   ];
 
-  const isVisible = ({ titleLines, subtitleLines, title, subtitle, extra }: ElementVisibility) =>
-    titleHeight(title, titleLines) + subtitleHeight(subtitle, subtitleLines) + extraHeight(extra) + valueHeight <
+  const isVisible = (
+    { titleMaxLines, subtitleMaxLines, title, subtitle, extra }: ElementVisibility,
+    measure: TextMeasure,
+  ) =>
+    (title && titleMaxLines > 0 ? titleHeight(titleMaxLines, measure) : 0) +
+      (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
+      (extra ? extraHeight : 0) +
+      valueHeight <
     panel.height;
 
-  return (
-    responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint)) ??
-    responsiveBreakPoints[responsiveBreakPoints.length - 1]
-  );
-}
-
-function lineClamp(maxLines: number): CSSProperties {
-  return {
-    textOverflow: 'ellipsis',
-    display: '-webkit-box',
-    WebkitLineClamp: maxLines, // due to an issue with react CSSProperties filtering out this line, see https://github.com/facebook/react/issues/23033
-    lineClamp: maxLines,
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
-  };
+  return withTextMeasure((textMeasure) => {
+    const visibilityBreakpoint =
+      responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ??
+      responsiveBreakPoints[responsiveBreakPoints.length - 1];
+    return {
+      ...visibilityBreakpoint,
+      titleLines: wrapText(
+        datum.title ?? '',
+        titleFont,
+        TITLE_FONT_SIZE[size],
+        maxTitlesWidth,
+        visibilityBreakpoint.titleMaxLines,
+        textMeasure,
+      ),
+      subtitleLines: wrapText(
+        datum.subtitle ?? '',
+        subtitleFont,
+        SUBTITLE_FONT_SIZE[size],
+        maxTitlesWidth,
+        visibilityBreakpoint.subtitleMaxLines,
+        textMeasure,
+      ),
+    };
+  });
 }
 
 /** @internal */
@@ -96,9 +145,9 @@ export const MetricText: React.FunctionComponent<{
   onElementClick: () => void;
   highContrastTextColor: Color;
 }> = ({ id, datum, panel, style, onElementClick, highContrastTextColor }) => {
-  const { title, subtitle, extra, value } = datum;
+  const { extra, value } = datum;
 
-  const size = findRange(WIDTH_BP, panel.width);
+  const size = findRange(WIDTH_BP, panel.width - 16);
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
   const containerClassName = classNames('echMetricText', {
@@ -111,8 +160,8 @@ export const MetricText: React.FunctionComponent<{
 
   const parts = splitNumericSuffixPrefix(datum.valueFormatter(value));
 
-  const titleWidthMaxSize = size === 's' ? '100%' : '80%';
-  const titleWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
+  const titlesMaxWidthRatio = size === 's' ? '100%' : '80%';
+  const titlesWidth = `min(${titlesMaxWidthRatio}, calc(${titlesMaxWidthRatio} - ${datum.icon ? '24px' : '0px'}))`;
 
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
@@ -130,11 +179,11 @@ export const MetricText: React.FunctionComponent<{
               <span
                 style={{
                   fontSize: `${TITLE_FONT_SIZE[size]}px`,
-                  ...lineClamp(visibility.titleLines),
-                  width: titleWidth,
+                  whiteSpace: 'pre-wrap',
+                  width: titlesWidth,
                 }}
               >
-                {title}
+                {visibility.titleLines.join('\n')}
               </span>
             </button>
           </h2>
@@ -153,9 +202,13 @@ export const MetricText: React.FunctionComponent<{
         {visibility.subtitle && (
           <p
             className="echMetricText__subtitle"
-            style={{ fontSize: `${SUBTITLE_FONT_SIZE[size]}px`, ...lineClamp(visibility.subtitleLines) }}
+            style={{
+              fontSize: `${SUBTITLE_FONT_SIZE[size]}px`,
+              width: titlesWidth,
+              whiteSpace: 'pre-wrap',
+            }}
           >
-            {subtitle}
+            {visibility.subtitleLines.join('\n')}
           </p>
         )}
       </div>
