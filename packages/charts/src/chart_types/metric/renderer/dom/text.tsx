@@ -13,7 +13,14 @@ import { Color } from '../../../../common/colors';
 import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
+import {
+  isMetricWNumber,
+  isMetricWProgress,
+  MetricWNumber,
+  MetricWProgress,
+  MetricWText,
+  MetricWTrend,
+} from '../../specs';
 
 type BreakPoint = 's' | 'm' | 'l';
 
@@ -46,7 +53,7 @@ type ElementVisibility = {
 };
 
 function elementVisibility(
-  datum: MetricBase | MetricWProgress | MetricWTrend,
+  datum: MetricWText | MetricWNumber | MetricWProgress | MetricWTrend,
   panel: Size,
   size: BreakPoint,
 ): ElementVisibility {
@@ -90,7 +97,7 @@ function lineClamp(maxLines: number): CSSProperties {
 /** @internal */
 export const MetricText: React.FunctionComponent<{
   id: string;
-  datum: MetricBase | MetricWProgress | MetricWTrend;
+  datum: MetricWText | MetricWNumber | MetricWProgress | MetricWTrend;
   panel: Size;
   style: MetricStyle;
   onElementClick: () => void;
@@ -108,8 +115,6 @@ export const MetricText: React.FunctionComponent<{
   });
 
   const visibility = elementVisibility(datum, panel, size);
-
-  const parts = splitNumericSuffixPrefix(datum.valueFormatter(value));
 
   const titleWidthMaxSize = size === 's' ? '100%' : '80%';
   const titleWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
@@ -169,18 +174,24 @@ export const MetricText: React.FunctionComponent<{
       </div>
       <div>
         <p className="echMetricText__value" style={{ fontSize: `${VALUE_FONT_SIZE[size]}px` }}>
-          {isFiniteNumber(value)
-            ? parts.map(([type, text], i) =>
-                type === 'numeric' ? (
-                  text
-                ) : (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <span key={i} className="echMetricText__part" style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}>
-                    {text}
-                  </span>
-                ),
-              )
-            : style.nonFiniteText}
+          {isMetricWNumber(datum)
+            ? isFiniteNumber(value)
+              ? splitNumericSuffixPrefix(datum.valueFormatter(value)).map(([type, text], i) =>
+                  type === 'numeric' ? (
+                    text
+                  ) : (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <span
+                      key={`${text}${i}`}
+                      className="echMetricText__part"
+                      style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}
+                    >
+                      {text}
+                    </span>
+                  ),
+                )
+              : style.nonFiniteText
+            : value}
         </p>
       </div>
     </div>

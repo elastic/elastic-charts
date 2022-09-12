@@ -11,7 +11,17 @@ import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
+import {
+  Chart,
+  isMetricElementEvent,
+  Metric,
+  MetricTrendShape,
+  MetricWProgress,
+  MetricWTrend,
+  MetricWText,
+  MetricWNumber,
+  Settings,
+} from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -44,7 +54,8 @@ export const Example = () => {
 
   let extra = text('extra', 'last <b>5m</b>');
   const progressMax = number('progress max', 100);
-  const value = number('value', 55.23);
+  const numberTextSwitch = boolean('is numeric metric', true);
+  const value = text('value', '55.23');
   const valuePrefix = text('value prefix', '');
   const valuePostfix = text('value postfix', ' %');
   const metricColor = color('color', '#3c3c3c');
@@ -57,12 +68,17 @@ export const Example = () => {
     ({ width, height, color }: { width: number; height: number; color: string }) =>
       <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />;
   const data = {
-    value,
     color: metricColor,
     title,
     subtitle,
-    valueFormatter: (d: number) => `${valuePrefix}${d}${valuePostfix}`,
     extra: <span dangerouslySetInnerHTML={{ __html: extra }}></span>,
+    ...(showIcon ? { icon: getIcon(iconType) } : {}),
+  };
+
+  const numericData: MetricWProgress | MetricWNumber | MetricWTrend = {
+    ...data,
+    value: Number.parseFloat(value),
+    valueFormatter: (d: number) => `${valuePrefix}${d}${valuePostfix}`,
     ...(progressOrTrend === 'bar' ? { domainMax: progressMax, progressBarDirection } : {}),
     ...(progressOrTrend === 'trend'
       ? {
@@ -72,13 +88,17 @@ export const Example = () => {
           trendA11yDescription,
         }
       : {}),
-    ...(showIcon ? { icon: getIcon(iconType) } : {}),
   };
+  const textualData: MetricWText = {
+    ...data,
+    value,
+  };
+
   const onEventClickAction = action('click');
   const onEventOverAction = action('over');
   const onEventOutAction = action('out');
-  const configuredData = [[data]];
 
+  const configuredData = [[numberTextSwitch ? numericData : textualData]];
   return (
     <div
       style={{

@@ -36,6 +36,8 @@ export {
   MetricSpecProps,
   MetricSpec,
   MetricBase,
+  MetricWText,
+  MetricWNumber,
   MetricWProgress,
   MetricWTrend,
   MetricTrendShape,
