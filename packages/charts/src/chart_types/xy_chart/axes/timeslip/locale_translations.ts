@@ -7,7 +7,7 @@
  */
 
 /** @internal */
-export const TIME_UNIT_TRANSLATIONS = {
+export const LOCALE_TRANSLATIONS = {
   'ar-TN': {
     bar: 'حاجز',
     year: ['سنة', 'سنوات'],
@@ -18,6 +18,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['دقيقة', 'دقائق'],
     second: ['ثانية', 'ثواني'],
     millisecond: ['مللي ثانية', 'مللي ثانية'],
+    one: ['', ''],
   },
   'de-CH': {
     bar: 'Balken',
@@ -29,6 +30,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['Minute', 'Minuten'],
     second: ['Sekunde', 'Sekunden'],
     millisecond: ['Millisekunde', 'Millisekunden'],
+    one: ['', ''],
   },
   'fr-FR': {
     bar: 'barre',
@@ -40,6 +42,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['minute', 'minutes'],
     second: ['seconde', 'secondes'],
     millisecond: ['milliseconde', 'millisecondes'],
+    one: ['', ''],
   },
   'en-US': {
     bar: 'bar',
@@ -51,6 +54,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['minute', 'minutes'],
     second: ['second', 'seconds'],
     millisecond: ['millisecond', 'milliseconds'],
+    one: ['', ''],
   },
   'el-GR': {
     bar: 'γραμμή',
@@ -62,6 +66,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['λεπτό', 'λεπτά'],
     second: ['δευτερόλεπτο', 'δευτερόλεπτα'],
     millisecond: ['χιλιοστό του δευτερολέπτου', 'χιλιοστά του δευτερολέπτου'],
+    one: ['', ''],
   },
   'hu-HU': {
     bar: 'oszlop',
@@ -73,6 +78,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['perc', 'perc'],
     second: ['másodperc', 'másodperc'],
     millisecond: ['ezredmásodperc', 'ezredmásodperc'],
+    one: ['', ''],
   },
   'he-IL': {
     bar: 'עַמוּדָה',
@@ -84,6 +90,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['דקות', 'דקות'],
     second: ['השני', 'שניות'],
     millisecond: ['אלפית השנייה', 'אלפיות השנייה'],
+    one: ['', ''],
   },
   'hi-IN': {
     bar: 'बार',
@@ -95,6 +102,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['मिनट', 'मिनट'],
     second: ['सेकंड', 'सेकंड'],
     millisecond: ['मिलीसेकंड', 'मिलीसेकेंड'],
+    one: ['', ''],
   },
   'it-IT': {
     bar: 'barra',
@@ -106,6 +114,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['minuto', 'minuti'],
     second: ['secondo', 'secondi'],
     millisecond: ['millisecondo', 'millisecondi'],
+    one: ['', ''],
   },
   'ja-JA': {
     bar: '棒',
@@ -117,6 +126,7 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['分', '分間'],
     second: ['秒', '秒間'],
     millisecond: ['ミリ秒', 'ミリ秒'],
+    one: ['', ''],
   },
   'ru-RU': {
     bar: 'полоса',
@@ -128,5 +138,6 @@ export const TIME_UNIT_TRANSLATIONS = {
     minute: ['минута', 'минут'],
     second: ['секунда', 'секунд'],
     millisecond: ['миллисекунда', 'миллисекунд'],
+    one: ['', ''],
   },
 };

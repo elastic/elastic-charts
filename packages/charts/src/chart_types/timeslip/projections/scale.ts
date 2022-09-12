@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { NumericScale } from '../timeslip_render';
-
 /** @internal */
 export const getDesiredTickCount = (cartesianHeight: number, fontSize: number, sparse: boolean) => {
   const desiredMaxTickCount = Math.floor(cartesianHeight / (3 * fontSize));
@@ -15,9 +13,18 @@ export const getDesiredTickCount = (cartesianHeight: number, fontSize: number, s
 };
 
 /** @internal */
-export const axisScale = (niceDomainMin: number, niceDomainMax: number): NumericScale => {
-  const niceDomainExtent = niceDomainMax - niceDomainMin;
-  const yScaleMultiplier = 1 / (niceDomainExtent || 1);
-  const offset = -niceDomainMin * yScaleMultiplier;
-  return (d) => offset + d * yScaleMultiplier;
+export type NumericScale = (n: number) => number;
+
+/** @internal */
+export const makeLinearScale = (
+  domainFrom: number,
+  domainTo: number,
+  rangeFrom: number,
+  rangeTo: number,
+): NumericScale => {
+  const domainExtent = domainTo - domainFrom;
+  const rangeExtent = rangeTo - rangeFrom;
+  const scale = rangeExtent / domainExtent;
+  const offset = rangeFrom - scale * domainFrom;
+  return (d: number) => offset + scale * d;
 };

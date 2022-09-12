@@ -9,7 +9,6 @@
 import { Logger } from './logger';
 
 const isValidTimeZone = (timeZone?: string): boolean => {
-  if (!timeZone) return false;
   try {
     Intl.DateTimeFormat(undefined, { timeZone });
     return true;

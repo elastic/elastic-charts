@@ -16,7 +16,7 @@ export function renderTimeExtentAnnotation(
   localeOptions: LocaleOptions,
   { domainFrom, domainTo }: { domainFrom: number; domainTo: number },
   cartesianWidth: number,
-  chartTopFontSize: number,
+  yOffset: number,
 ) {
   ctx.save();
   ctx.textBaseline = 'bottom';
@@ -29,7 +29,7 @@ export function renderTimeExtentAnnotation(
       domainTo * 1000,
     ).toLocaleString(config.locale, localeOptions)}`,
     cartesianWidth,
-    -0.5 * chartTopFontSize,
+    yOffset,
   );
   ctx.restore();
 }

@@ -6,252 +6,116 @@
  * Side Public License, v 1.
  */
 
-import { getZoneFromSpecs, getValidatedTimeZone } from '../../../utils/time_zone';
-import { cachedZonedDateTimeFrom, timeProp } from '../../xy_chart/axes/timeslip/chrono/cached_chrono';
-import { DEFAULT_LOCALE, MINIMUM_TICK_PIXEL_DISTANCE } from '../../xy_chart/axes/timeslip/multilayer_ticks';
-import { BinUnit, RasterConfig, rasters, TimeBin } from '../../xy_chart/axes/timeslip/rasters';
+import { continuousTimeRasters } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
+import { numericalRasters } from '../../xy_chart/axes/timeslip/numerical_rasters';
+import { axisModel } from '../projections/axis_model';
+import { domainTween } from '../projections/domain_tween';
+import { getDesiredTickCount, makeLinearScale } from '../projections/scale';
+import {
+  doPanFromJumpDelta,
+  doPanFromPosition,
+  doZoomAroundPosition,
+  doZoomFromJumpDelta,
+  endDrag,
+  getFocusDomain,
+  initialZoomPan,
+  kineticFlywheel,
+  markDragStartPosition,
+  multiplierToZoom,
+  panOngoing,
+  resetTouchZoom,
+  startTouchZoom,
+  touchOngoing,
+  ZoomPan,
+} from '../projections/zoom_pan';
 import { GetData } from '../timeslip_api';
-import { axisModel } from './axis_model';
+import { withAnimation, withDeltaTime } from '../utils/animation';
+import { elementSize, ElementSize, zoomSafePointerX, zoomSafePointerY } from '../utils/dom';
+import {
+  continuedTwoPointTouch,
+  eraseMultitouch,
+  getPinchRatio,
+  initialMultitouch,
+  Multitouch,
+  setNewMultitouch,
+  touches,
+  touchMidpoint,
+  twoTouchPinch,
+  zeroTouch,
+} from '../utils/multitouch';
+import {
+  backgroundFillStyle,
+  chartTopFontSize,
+  config,
+  defaultLabelFormat,
+  defaultMinorTickLabelFormat,
+  drawCartesianBox,
+  fadeOutPixelWidth,
+  horizontalCartesianAreaPad,
+  keyPanVelocityDivisor,
+  keyZoomVelocityDivisor,
+  localeOptions,
+  rasterConfig,
+  timeZone,
+  verticalCartesianAreaPad,
+  wheelPanVelocity,
+  wheelZoomVelocity,
+  HORIZONTAL_AXIS,
+  ZERO_Y_BASE,
+} from './config';
 import { getEnrichedData } from './data';
-import { domainTween } from './domain_tween';
+import { DataState, getNullDataState, invalid, updateDataState } from './data_fetch';
 import { renderChartTitle } from './render/annotations/chart_title';
-import { LocaleOptions, renderTimeExtentAnnotation } from './render/annotations/time_extent';
+import { renderTimeExtentAnnotation } from './render/annotations/time_extent';
 import { renderTimeUnitAnnotation } from './render/annotations/time_unit';
-import { DataDemand, renderCartesian } from './render/cartesian';
-import { BoxplotRow } from './render/glyphs/boxplot';
+import { renderCartesian } from './render/cartesian';
 import { renderDebugBox } from './render/glyphs/debug_box';
-import { ElementSize, elementSizes, zoomSafePointerX, zoomSafePointerY } from './utils/dom';
-import { clamp, mix, unitClamp } from './utils/math';
-import { axisScale, getDesiredTickCount } from './utils/scale';
 
-const panOngoing = (interactionState: { dragStartX: number }) => Number.isFinite(interactionState.dragStartX);
+const HEADER_ROW_Y_OFFSET = 3; // 3 normal text height gap between unit/range annotation on top and the Cartesian area
 
-const initialDarkMode = false;
-const drawCartesianBox = false;
-
-const minZoom = 0;
-const maxZoom = 35;
-
-// these are hand tweaked constants that fulfill various design constraints, let's discuss before changing them
-const lineThicknessSteps = [/*0,*/ 0.5, 0.75, 1, 1, 1, 1.25, 1.25, 1.5, 1.5, 1.75, 1.75, 2, 2, 2, 2, 2];
-const lumaSteps = [/*255,*/ 192, 72, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0];
-
-const smallFontSize = 12;
-const timeZone = getValidatedTimeZone(getZoneFromSpecs([])); // should eventually come from settings
-
-type RGBObject = { r: number; g: number; b: number };
-
-interface MappedTouch {
-  id: number;
-  x: number;
-}
-
-interface TimeslipTheme {
-  defaultFontColor: string;
-  subduedFontColor: string;
-  offHourFontColor: string;
-  weekendFontColor: string;
-  backgroundColor: RGBObject;
-  lumaSteps: number[];
-}
-
-const themeLight: TimeslipTheme = {
-  defaultFontColor: 'black',
-  subduedFontColor: '#393939',
-  offHourFontColor: 'black',
-  weekendFontColor: 'darkred',
-  backgroundColor: { r: 255, g: 255, b: 255 },
-  lumaSteps,
-};
-
-const themeDark: TimeslipTheme = {
-  defaultFontColor: 'white',
-  subduedFontColor: 'darkgrey',
-  offHourFontColor: 'white',
-  weekendFontColor: 'indianred',
-  backgroundColor: { r: 0, g: 0, b: 0 },
-  lumaSteps: lumaSteps.map((l) => 255 - l),
-};
-
-type CompactDisplay = 'short' | 'long'; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
+const getNullDimensions = (): ElementSize => ({
+  outerSize: NaN,
+  innerLeading: NaN,
+  innerTrailing: NaN,
+  innerSize: NaN,
+});
 
 /** @internal */
-export interface TimeslipConfig extends TimeslipTheme, RasterConfig {
-  darkMode: boolean;
-  sparse: false;
-  implicit: false;
-  maxLabelRowCount: 1 | 2 | 3;
-  a11y: { contrast: 'low' | 'medium' | 'high' };
-  numUnit: CompactDisplay | 'none';
-  barChroma: RGBObject;
-  barFillAlpha: number;
-  lineThicknessSteps: number[];
-  domainFrom: number;
-  domainTo: number;
-  smallFontSize: number;
-  cssFontShorthand: string;
-  monospacedFontShorthand: string;
-  rowPixelPitch: number;
-  horizontalPixelOffset: number;
-  verticalPixelOffset: number;
-  clipLeft: boolean;
-  clipRight: boolean;
-  yTickOverhang: number;
-  yTickGap: number;
-}
-
-const rasterConfig: RasterConfig = {
-  minimumTickPixelDistance: MINIMUM_TICK_PIXEL_DISTANCE,
-  locale: DEFAULT_LOCALE,
-};
-
-const config: TimeslipConfig = {
-  darkMode: initialDarkMode,
-  ...(initialDarkMode ? themeDark : themeLight),
-  ...rasterConfig,
-  sparse: false,
-  implicit: false,
-  maxLabelRowCount: 2, // can be 1, 2, 3
-  a11y: {
-    contrast: 'medium',
-  },
-  numUnit: 'short',
-  barChroma: { r: 96, g: 146, b: 192 },
-  barFillAlpha: 0.3,
-  lineThicknessSteps,
-  domainFrom: cachedZonedDateTimeFrom({ timeZone, year: 2012, month: 1, day: 1 })[timeProp.epochSeconds],
-  domainTo: cachedZonedDateTimeFrom({ timeZone, year: 2022, month: 1, day: 1 })[timeProp.epochSeconds],
-  smallFontSize,
-  cssFontShorthand: `normal normal 100 ${smallFontSize}px Inter, Helvetica, Arial, sans-serif`,
-  monospacedFontShorthand: `normal normal 100 ${smallFontSize}px "Roboto Mono", Consolas, Menlo, Courier, monospace`,
-  rowPixelPitch: 16,
-  horizontalPixelOffset: 4,
-  verticalPixelOffset: 6,
-  clipLeft: true,
-  clipRight: true,
-  yTickOverhang: 8,
-  yTickGap: 8,
-};
-
-const rasterSelector = rasters(rasterConfig, timeZone);
-
-// constants for Y
-const ZERO_Y_BASE = true;
-
-const horizontalCartesianAreaPad: [number, number] = [0.04, 0.04];
-const verticalCartesianAreaPad: [number, number] = [0.12, 0.12];
-
-const initialZoom = 5.248;
-const initialPan = 0.961;
-
-const localeOptions: LocaleOptions = {
-  hour12: false,
-  year: 'numeric',
-  month: 'short',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-};
-
-// todo this may need an update with locale change
-const defaultLabelFormat = new Intl.DateTimeFormat(config.locale, {
-  weekday: 'short',
-  hour: 'numeric',
-  minute: 'numeric',
-  timeZone,
-}).format.bind(Intl.DateTimeFormat);
-
-// todo this may need an update with locale change
-const defaultMinorTickLabelFormat = new Intl.DateTimeFormat(config.locale, {
-  weekday: 'short',
-  hour: 'numeric',
-  minute: 'numeric',
-  timeZone,
-}).format.bind(Intl.DateTimeFormat);
-
-const fadeOutPixelWidth = 12; // todo add to config
-
-const chartTopFontSize = config.smallFontSize + 2; // todo move to config
-const background = config.backgroundColor;
-const backgroundFillStyle = `rgba(${background.r},${background.g},${background.b},1)`;
-
-// these two change together: the kinetic friction deceleration from a click drag, and from a wheel drag should match
-// currently, the narrower the chart, the higher the deceleration, which is perhaps better than width invariant slowing
-const dragVelocityAttenuation = 0.92;
-const wheelPanVelocityDivisor = 1000;
-
-const wheelZoomVelocityDivisor = 250;
-const keyZoomVelocityDivisor = 2; // 1 means, on each up/down keypress, double/halve the visible time domain
-const keyPanVelocityDivisor = 10; // 1 means, on each left/right keypress, move the whole of current visible time domain
-
-const velocityThreshold = 0.01;
-
-interface InteractionState {
-  // current zoom and pan level
-  zoom: number;
-  pan: number;
-
+export interface InteractionState {
   // remembering touch points for zoom/pam
-  multitouch: MappedTouch[];
+  multitouch: Multitouch;
 
   // zoom/pan
-  dragStartX: number;
-  zoomStart: number;
-  panStart: number;
-
-  // kinetic pan
-  lastDragX: number;
-  dragVelocity: number;
-  flyVelocity: number;
+  horizontalZoomPan: ZoomPan;
 
   // Y domain
   niceDomainMin: number;
   niceDomainMax: number;
 
   // other
-  screenDimensions: ElementSize;
+  horizontalScreenDimensions: ElementSize;
+  verticalScreenDimensions: ElementSize;
 }
 
-const touchMidpoint = (multitouch: MappedTouch[]) => (multitouch[0].x + multitouch[1].x) / 2;
+const getNullInteractionState = (): InteractionState => ({
+  // current zoom and pan level
 
-const isNonNull = <T>(thing: T | null): thing is T => thing !== null;
+  horizontalZoomPan: initialZoomPan(),
 
-/** @internal */
-export type NumericScale = (n: number) => number;
+  // remembering touch points for zoom/pam
+  multitouch: initialMultitouch(),
 
-/** @public */
-export type TimeslipDataRows = Array<{ epochMs: number; boxplot?: BoxplotRow['boxplot']; value?: number }>;
+  // Y domain
+  niceDomainMin: NaN,
+  niceDomainMax: NaN,
 
-type DataResponse = { stats: { minValue: number; maxValue: number }; rows: TimeslipDataRows };
+  // other
+  horizontalScreenDimensions: getNullDimensions(),
+  verticalScreenDimensions: getNullDimensions(),
+});
 
-/** @internal */
-export interface DataState {
-  valid: boolean;
-  pending: boolean;
-  lo: (TimeBin & Partial<Record<BinUnit, number>>) | null;
-  hi: (TimeBin & Partial<Record<BinUnit, number>>) | null;
-  binUnit: BinUnit;
-  binUnitCount: number;
-  dataResponse: DataResponse;
-}
-
-const invalid = (dataState: DataState, dataDemand: DataDemand) =>
-  !dataState.valid ||
-  dataState.binUnit !== dataDemand.binUnit ||
-  dataState.binUnitCount !== dataDemand.binUnitCount ||
-  (dataDemand.lo?.timePointSec ?? -Infinity) < (dataState.lo?.timePointSec ?? -Infinity) ||
-  (dataDemand.hi?.timePointSec ?? Infinity) > (dataState.hi?.timePointSec ?? Infinity);
-
-const updateDataState = (dataState: DataState, dataDemand: Parameters<GetData>[0], dataResponse: DataResponse) => {
-  dataState.pending = false;
-  dataState.valid = true;
-  dataState.lo = dataDemand.lo;
-  dataState.hi = dataDemand.hi;
-  dataState.binUnit = dataDemand.binUnit;
-  dataState.binUnitCount = dataDemand.binUnitCount;
-  dataState.dataResponse = dataResponse;
-};
+const rasterSelector =
+  HORIZONTAL_AXIS === 'continuousTime' ? continuousTimeRasters(rasterConfig, timeZone) : numericalRasters(rasterConfig);
 
 const yTickNumberFormatter = new Intl.NumberFormat(
   config.locale,
@@ -263,154 +127,55 @@ const yTickNumberFormatter = new Intl.NumberFormat(
       },
 ).format.bind(Intl.NumberFormat);
 
-const zoomMultiplier = (zoom: number) => 2 ** zoom;
-
-const inCartesianArea = (screenDimensions: ElementSize, e: MouseEvent) => {
-  const x = zoomSafePointerX(e);
-  const y = zoomSafePointerY(e);
-  const { innerTop, innerBottom, innerLeft, innerRight } = screenDimensions;
-  return innerLeft <= x && x <= innerRight && innerTop <= y && y <= innerBottom;
-};
-
-const getTimeDomain = (interactionState: InteractionState, fromSec: number, toSec: number) => {
-  const fullTimeExtent = toSec - fromSec;
-  const { pan } = interactionState;
-  const zoomedTimeExtent = fullTimeExtent / zoomMultiplier(interactionState.zoom);
-  const leeway = fullTimeExtent - zoomedTimeExtent;
-  const domainFrom = fromSec + pan * leeway;
-  const domainTo = toSec - (1 - pan) * leeway;
-  return { domainFrom, domainTo };
-};
-
-const getPanDeltaPerDragPixel = (interactionState: InteractionState) =>
-  1 / ((zoomMultiplier(interactionState.zoom) - 1) * interactionState.screenDimensions.innerWidth);
-
-const panFromDeltaPixel = (interactionState: InteractionState, panStart: number, delta: number) => {
-  const panDeltaPerDragPixel = getPanDeltaPerDragPixel(interactionState);
-  interactionState.pan = Math.max(0, Math.min(1, panStart - panDeltaPerDragPixel * delta)) || 0;
-};
-
-const inCartesianBand = (screenDimensions: ElementSize, y: number) => {
-  const { innerTop: cartesianTop, innerBottom: cartesianBottom } = screenDimensions;
-  return cartesianTop <= y && y <= cartesianBottom;
-};
-
-const zoom = (interactionState: InteractionState, pointerUnitLocation: number, newZoom: number, panDelta = 0) => {
-  const oldInvisibleFraction = 1 - 1 / zoomMultiplier(interactionState.zoom);
-  interactionState.zoom = clamp(newZoom, minZoom, maxZoom);
-  const newInvisibleFraction = 1 - 1 / zoomMultiplier(interactionState.zoom);
-  interactionState.pan =
-    unitClamp(mix(pointerUnitLocation + panDelta, interactionState.pan, oldInvisibleFraction / newInvisibleFraction)) ||
-    0;
-};
-const zoomAroundX = (interactionState: InteractionState, centerX: number, newZoom: number, panDelta = 0) => {
-  const { innerWidth: cartesianWidth, innerLeft: cartesianLeft } = interactionState.screenDimensions;
-  const unitZoomCenter = Math.max(0, Math.min(cartesianWidth, centerX - cartesianLeft)) / cartesianWidth;
-  zoom(interactionState, unitZoomCenter, newZoom, panDelta);
-};
-
-const pan = (interactionState: InteractionState, normalizedDeltaPan: number) => {
-  const deltaPan = normalizedDeltaPan / 2 ** interactionState.zoom;
-  interactionState.pan = unitClamp(interactionState.pan + deltaPan) || 0;
-};
-
-const panZoomJump = (interactionState: InteractionState, panDirection: number, zoomDirection: number) => {
-  const panOrZoom = panDirection || zoomDirection;
-  if (panOrZoom) {
-    if (panDirection) pan(interactionState, panDirection / keyPanVelocityDivisor);
-    if (zoomDirection) zoom(interactionState, 0.5, interactionState.zoom + zoomDirection / keyZoomVelocityDivisor);
+const touchUpdate = (interactionState: InteractionState, newMultitouch: Multitouch) => {
+  const { multitouch, horizontalZoomPan: zoomPan, horizontalScreenDimensions } = interactionState;
+  const noPreviousTouch = zeroTouch(multitouch);
+  const isTwoTouchPinch = twoTouchPinch(newMultitouch);
+  const center = touchMidpoint(newMultitouch);
+  const isPinchStart = noPreviousTouch && isTwoTouchPinch;
+  if (isPinchStart) {
+    setNewMultitouch(multitouch, newMultitouch);
+    startTouchZoom(zoomPan);
+    markDragStartPosition(zoomPan, center);
+  } else if (!isTwoTouchPinch || !continuedTwoPointTouch(multitouch, newMultitouch)) {
+    eraseMultitouch(multitouch);
+    resetTouchZoom(zoomPan);
   }
-  return panOrZoom;
-};
-
-const dragStartAtX = (interactionState: InteractionState, startingX: number) => {
-  interactionState.dragStartX = startingX;
-  interactionState.lastDragX = startingX;
-  interactionState.dragVelocity = NaN;
-  interactionState.flyVelocity = NaN;
-  interactionState.panStart = interactionState.pan;
-};
-
-const zoomOrPan = (interactionState: InteractionState, panning: boolean, centerX: number, deltaY: number) => {
-  if (panning) {
-    pan(interactionState, -deltaY / wheelPanVelocityDivisor);
-  } else {
-    const newZoom = interactionState.zoom - deltaY / wheelZoomVelocityDivisor;
-    zoomAroundX(interactionState, centerX, newZoom);
-  }
-};
-
-const endDrag = (interactionState: InteractionState) => {
-  interactionState.flyVelocity = interactionState.dragVelocity;
-  interactionState.dragVelocity = NaN;
-  interactionState.dragStartX = NaN;
-  interactionState.panStart = NaN;
-};
-
-const panFromX = (interactionState: InteractionState, currentX: number) => {
-  const deltaX = currentX - interactionState.lastDragX;
-  const { dragVelocity } = interactionState;
-  interactionState.dragVelocity =
-    deltaX * dragVelocity > 0 && Math.abs(deltaX) < Math.abs(dragVelocity)
-      ? dragVelocity // mix(dragVelocity, deltaX, 0.04)
-      : deltaX;
-  interactionState.lastDragX = currentX;
-  const delta = currentX - interactionState.dragStartX;
-  panFromDeltaPixel(interactionState, interactionState.panStart, delta);
-  return delta;
-};
-
-const touches = (e: TouchEvent) =>
-  [...new Array(e.touches?.length ?? 0)]
-    .map((n: number) => e.touches.item(n))
-    .filter(isNonNull)
-    .map((t: Touch) => ({ id: t.identifier, x: t.clientX }))
-    .sort(({ x: a }, { x: b }) => a - b);
-
-const touchUpdate = (interactionState: InteractionState, multitouch: MappedTouch[]) => {
-  if (interactionState.multitouch.length === 0 && multitouch.length === 2) {
-    interactionState.multitouch = multitouch;
-    interactionState.zoomStart = interactionState.zoom;
-    const centerX = touchMidpoint(multitouch);
-    dragStartAtX(interactionState, centerX);
-  } else if (
-    multitouch.length !== 2 ||
-    [...multitouch, ...interactionState.multitouch].filter((t, i, a) => a.findIndex((tt) => tt.id === t.id) === i)
-      .length !== 2
-  ) {
-    interactionState.multitouch = [];
-    interactionState.zoomStart = NaN;
-  }
-  const isPinchZoom = interactionState.multitouch.length === 2;
+  const isPinchZoom = twoTouchPinch(multitouch);
+  const isTouchOngoing = touchOngoing(zoomPan);
+  const isPanOngoing = panOngoing(zoomPan);
   if (isPinchZoom) {
-    const centerX = touchMidpoint(multitouch);
-    const zoomMultiplierValue =
-      (multitouch[1].x - multitouch[0].x) / (interactionState.multitouch[1].x - interactionState.multitouch[0].x);
-    const panDelta = 0; // panFromX(centerX)
-    zoomAroundX(interactionState, centerX, interactionState.zoomStart + Math.log2(zoomMultiplierValue), panDelta);
-  }
-  return isPinchZoom;
-};
-
-const kineticFlywheel = (interactionState: InteractionState) => {
-  const velocity = interactionState.flyVelocity;
-  const needsViewUpdate = Math.abs(velocity) > velocityThreshold;
-  if (needsViewUpdate) {
-    panFromDeltaPixel(interactionState, interactionState.pan, velocity);
-    interactionState.flyVelocity *= dragVelocityAttenuation;
+    const pinchRatio = getPinchRatio(multitouch, newMultitouch);
+    const desiredZoomChange = multiplierToZoom(pinchRatio);
+    doZoomAroundPosition(
+      zoomPan,
+      horizontalScreenDimensions,
+      center,
+      desiredZoomChange,
+      0, // panFromPosition(center),
+      true,
+    );
+    // doing both clashes in ways
+    // doPanFromPosition(zoomPan, horizontalScreenDimensions.innerSize, center);
   } else {
-    interactionState.flyVelocity = NaN;
+    const inCartesianBand = true; // let's assume for now
+    if (inCartesianBand || isTouchOngoing) {
+      if (isPanOngoing) {
+        doPanFromPosition(zoomPan, horizontalScreenDimensions.innerSize, center);
+      } else {
+        markDragStartPosition(zoomPan, center); // was dragStart(e)
+      }
+    }
   }
-  return needsViewUpdate;
+  return isPinchZoom || (isTouchOngoing && isPanOngoing);
 };
 
-const touchstart = (/* e: TouchEvent */) => {
-  // inCartesianArea(e) && dragStart(e)
-};
+const inCartesianBand = (size: ElementSize, value: number) => size.innerLeading <= value && value <= size.innerTrailing;
 
 const ensureCanvasResolution = (
   canvas: HTMLCanvasElement,
-  { outerWidth, outerHeight }: ElementSize,
+  outerWidth: number,
+  outerHeight: number,
   newCanvasWidth: number,
   newCanvasHeight: number,
 ) => {
@@ -420,23 +185,6 @@ const ensureCanvasResolution = (
   if (newCanvasHeight !== outerHeight) {
     canvas.setAttribute('height', String(newCanvasHeight));
   }
-};
-
-const withAnimation = (renderer: FrameRequestCallback) => {
-  let rAF = -1;
-  return () => {
-    window.cancelAnimationFrame(rAF);
-    rAF = window.requestAnimationFrame(renderer);
-  };
-};
-
-const withDeltaTime = (renderer: FrameRequestCallback) => {
-  let prevT = 0;
-  return (t: DOMHighResTimeStamp) => {
-    const deltaT = t - prevT;
-    prevT = t;
-    renderer(deltaT);
-  };
 };
 
 const doCartesian = (
@@ -460,8 +208,7 @@ const doCartesian = (
   const desiredTickCount = getDesiredTickCount(cartesianHeight, config.smallFontSize, config.sparse);
   const { niceDomainMin, niceDomainMax, niceTicks } = axisModel(domainLandmarks, desiredTickCount);
   const yTweenOngoing = domainTween(interactionState, deltaT, niceDomainMin, niceDomainMax); // updates interactionState
-  const yUnitScale = axisScale(interactionState.niceDomainMin, interactionState.niceDomainMax);
-  const yUnitScaleClamped: NumericScale = (d) => unitClamp(yUnitScale(d));
+  const yUnitScale = makeLinearScale(interactionState.niceDomainMin, interactionState.niceDomainMax, 0, 1);
 
   const dataDemand = renderCartesian(
     ctx,
@@ -477,7 +224,6 @@ const doCartesian = (
     cartesianHeight,
     timeDomain,
     yUnitScale,
-    yUnitScaleClamped,
     niceTicks,
   );
 
@@ -491,7 +237,13 @@ const renderChartWithTime = (
   backgroundFillStyle: string,
   newCanvasWidth: number,
   newCanvasHeight: number,
-  config: TimeslipConfig,
+  config: {
+    locale: string;
+    monospacedFontShorthand: string;
+    subduedFontColor: string;
+    defaultFontColor: string;
+    a11y: { contrast: 'low' | 'medium' | 'high' };
+  },
   chartWidth: number,
   cartesianTop: number,
   cartesianLeft: number,
@@ -514,11 +266,11 @@ const renderChartWithTime = (
   ctx.fillRect(0, 0, newCanvasWidth, newCanvasHeight);
 
   // chart title
-  renderChartTitle(ctx, config.subduedFontColor, chartWidth, cartesianTop);
+  renderChartTitle(ctx, config.subduedFontColor, chartWidth /*, cartesianTop*/);
 
   ctx.translate(cartesianLeft, cartesianTop);
 
-  const timeDomain = getTimeDomain(interactionState, fromSec, toSec);
+  const timeDomain = getFocusDomain(interactionState.horizontalZoomPan, fromSec, toSec);
 
   // cartesian
   const { yTweenOngoing, dataDemand } = doCartesian(
@@ -537,6 +289,8 @@ const renderChartWithTime = (
     renderDebugBox(ctx, cartesianWidth, cartesianHeight);
   }
 
+  const headerRowOffsetY = -chartTopFontSize * HEADER_ROW_Y_OFFSET;
+
   // chart time unit info
   renderTimeUnitAnnotation(
     ctx,
@@ -544,11 +298,12 @@ const renderChartWithTime = (
     dataDemand.binUnitCount,
     dataDemand.binUnit,
     chartTopFontSize,
+    headerRowOffsetY,
     dataDemand.unitBarMaxWidthPixels,
   );
 
   // chart time from/to extent info
-  renderTimeExtentAnnotation(ctx, config, localeOptions, timeDomain, cartesianWidth, chartTopFontSize);
+  renderTimeExtentAnnotation(ctx, config, localeOptions, timeDomain, cartesianWidth, headerRowOffsetY);
 
   ctx.restore();
   return { yTweenOngoing, dataDemand };
@@ -557,28 +312,44 @@ const renderChartWithTime = (
 const chartWithTime = (
   canvas: HTMLCanvasElement,
   ctx: CanvasRenderingContext2D,
-  config: TimeslipConfig,
+  config: {
+    locale: string;
+    monospacedFontShorthand: string;
+    subduedFontColor: string;
+    defaultFontColor: string;
+    a11y: { contrast: 'low' | 'medium' | 'high' };
+
+    domainFrom: number;
+    domainTo: number;
+  },
   interactionState: InteractionState,
   dataState: DataState,
   deltaT: number,
   dpi: number,
   emWidth: number,
 ) => {
-  const newScreenDimensions = elementSizes(canvas, horizontalCartesianAreaPad, verticalCartesianAreaPad);
-  const {
-    outerWidth: chartWidth,
-    outerHeight: chartHeight,
-    innerLeft: cartesianLeft,
-    innerWidth: cartesianWidth,
-    innerTop: cartesianTop,
-    innerHeight: cartesianHeight,
-  } = newScreenDimensions;
+  const newHorizontalScreenDimensions = elementSize(canvas, true, horizontalCartesianAreaPad);
+  const chartWidth = newHorizontalScreenDimensions.outerSize;
+  const cartesianLeft = newHorizontalScreenDimensions.innerLeading;
+  const cartesianWidth = newHorizontalScreenDimensions.innerSize;
+
+  const newVerticalScreenDimensions = elementSize(canvas, false, verticalCartesianAreaPad);
+  const chartHeight = newVerticalScreenDimensions.outerSize;
+  const cartesianTop = newVerticalScreenDimensions.innerLeading;
+  const cartesianHeight = newVerticalScreenDimensions.innerSize;
 
   // resize if needed
   const newCanvasWidth = dpi * chartWidth;
   const newCanvasHeight = dpi * chartHeight;
-  ensureCanvasResolution(canvas, interactionState.screenDimensions, newCanvasWidth, newCanvasHeight);
-  interactionState.screenDimensions = newScreenDimensions;
+  ensureCanvasResolution(
+    canvas,
+    interactionState.horizontalScreenDimensions.outerSize,
+    interactionState.verticalScreenDimensions.outerSize,
+    newCanvasWidth,
+    newCanvasHeight,
+  );
+  interactionState.horizontalScreenDimensions = newHorizontalScreenDimensions;
+  interactionState.verticalScreenDimensions = newVerticalScreenDimensions;
 
   // render chart
   const { yTweenOngoing, dataDemand } = renderChartWithTime(
@@ -616,42 +387,6 @@ const chartWithTime = (
   return { dataArrived, yTweenOngoing, dataDemand };
 };
 
-const getNullInteractionState = (canvas: HTMLCanvasElement): InteractionState => ({
-  // current zoom and pan level
-  zoom: initialZoom,
-  pan: initialPan,
-
-  // remembering touch points for zoom/pam
-  multitouch: [],
-
-  // zoom/pan
-  dragStartX: NaN,
-  zoomStart: NaN,
-  panStart: NaN,
-
-  // kinetic pan
-  lastDragX: NaN,
-  dragVelocity: NaN,
-  flyVelocity: NaN,
-
-  // Y domain
-  niceDomainMin: NaN,
-  niceDomainMax: NaN,
-
-  // other
-  screenDimensions: elementSizes(canvas, horizontalCartesianAreaPad, verticalCartesianAreaPad),
-});
-
-const getNullDataState = (): DataState => ({
-  valid: false,
-  pending: false,
-  lo: { timePointSec: Infinity, nextTimePointSec: Infinity },
-  hi: { timePointSec: -Infinity, nextTimePointSec: -Infinity },
-  binUnit: 'year',
-  binUnitCount: NaN,
-  dataResponse: { stats: { minValue: NaN, maxValue: NaN }, rows: [] },
-});
-
 const setupEventHandlers = (
   canvas: HTMLCanvasElement,
   interactionState: InteractionState,
@@ -659,15 +394,36 @@ const setupEventHandlers = (
   scheduleChartRender: () => void,
 ) => {
   const wheel = (e: WheelEvent) => {
-    if (!inCartesianBand(interactionState.screenDimensions, zoomSafePointerY(e))) return;
-    zoomOrPan(interactionState, e.metaKey, zoomSafePointerX(e), e.deltaY);
+    // resolution and DOM dependent part
+    const isPanning = e.metaKey;
+    const wheeledDistanceRatio = e.deltaY / interactionState.horizontalScreenDimensions.innerSize; // for resolution independence
+    if (!inCartesianBand(interactionState.verticalScreenDimensions, zoomSafePointerY(e))) return;
+
+    // resolution independent part
+    if (isPanning) {
+      const innerSizeRelativeDelta = wheeledDistanceRatio * wheelPanVelocity;
+      doPanFromJumpDelta(interactionState.horizontalZoomPan, -innerSizeRelativeDelta);
+    } else {
+      const desiredZoomChange = -wheeledDistanceRatio * wheelZoomVelocity;
+      doZoomAroundPosition(
+        interactionState.horizontalZoomPan,
+        interactionState.horizontalScreenDimensions,
+        zoomSafePointerX(e),
+        desiredZoomChange,
+        0,
+        false,
+      );
+    }
     scheduleChartRender();
   };
 
-  const dragStart = (e: MouseEvent) => dragStartAtX(interactionState, zoomSafePointerX(e));
+  const dragStart = (e: MouseEvent) => markDragStartPosition(interactionState.horizontalZoomPan, zoomSafePointerX(e));
 
   const kineticDragFlywheel = (t: DOMHighResTimeStamp) => {
-    const needsRerender = kineticFlywheel(interactionState);
+    const needsRerender = kineticFlywheel(
+      interactionState.horizontalZoomPan,
+      interactionState.horizontalScreenDimensions.innerSize,
+    );
     if (needsRerender) {
       timedRender(t); // it's important that it be synchronous (rather than scheduleChartRender()) otherwise zoom-pan combos freeze a bit
       window.requestAnimationFrame(kineticDragFlywheel);
@@ -675,7 +431,7 @@ const setupEventHandlers = (
   };
 
   const dragEnd = () => {
-    endDrag(interactionState);
+    endDrag(interactionState.horizontalZoomPan);
     window.requestAnimationFrame(kineticDragFlywheel);
   };
 
@@ -686,11 +442,16 @@ const setupEventHandlers = (
 
   const mousemove = (e: MouseEvent) => {
     if (e.buttons !== 1) return;
-    interactionState.multitouch = [];
-    interactionState.zoomStart = NaN;
-    if (inCartesianArea(interactionState.screenDimensions, e) || Number.isFinite(interactionState.panStart)) {
-      if (panOngoing(interactionState)) {
-        panFromX(interactionState, zoomSafePointerX(e));
+    interactionState.multitouch = initialMultitouch();
+    const zoomPan = interactionState.horizontalZoomPan;
+    resetTouchZoom(zoomPan);
+    if (
+      (inCartesianBand(interactionState.horizontalScreenDimensions, zoomSafePointerX(e)) &&
+        inCartesianBand(interactionState.verticalScreenDimensions, zoomSafePointerY(e))) ||
+      touchOngoing(zoomPan)
+    ) {
+      if (panOngoing(zoomPan)) {
+        doPanFromPosition(zoomPan, interactionState.horizontalScreenDimensions.innerSize, zoomSafePointerX(e));
         scheduleChartRender();
       } else {
         dragStart(e);
@@ -698,12 +459,26 @@ const setupEventHandlers = (
     }
   };
 
-  const mousedown = (e: MouseEvent) => inCartesianArea(interactionState.screenDimensions, e) && dragStart(e);
+  const mousedown = (e: MouseEvent) =>
+    inCartesianBand(interactionState.horizontalScreenDimensions, zoomSafePointerX(e)) &&
+    inCartesianBand(interactionState.verticalScreenDimensions, zoomSafePointerY(e)) &&
+    dragStart(e);
 
   const keydown = (e: KeyboardEvent) => {
     const panDirection = { ArrowLeft: -1, ArrowRight: 1 }[e.code] ?? 0;
     const zoomDirection = { ArrowUp: -1, ArrowDown: 1 }[e.code] ?? 0;
-    if (panZoomJump(interactionState, panDirection, zoomDirection)) {
+
+    // todo move to zoompan ts
+    if (panDirection || zoomDirection) {
+      if (panDirection) {
+        const normalizedDeltaPan = panDirection / keyPanVelocityDivisor;
+        doPanFromJumpDelta(interactionState.horizontalZoomPan, normalizedDeltaPan);
+      }
+      if (zoomDirection) {
+        const normalizedDeltaZoom = zoomDirection / keyZoomVelocityDivisor;
+        const center = 0.5;
+        doZoomFromJumpDelta(interactionState.horizontalZoomPan, normalizedDeltaZoom, center);
+      }
       e.preventDefault(); // preventDefault needed because otherwise a right arrow key takes the user to the next element
       scheduleChartRender();
     }
@@ -715,7 +490,6 @@ const setupEventHandlers = (
   canvas.addEventListener('mousedown', mousedown, { passive: false });
   canvas.addEventListener('mouseup', dragEnd, { passive: false });
   canvas.addEventListener('touchmove', touchmove, { passive: false });
-  canvas.addEventListener('touchstart', touchstart, { passive: false });
   canvas.addEventListener('touchend', dragEnd, { passive: false });
   canvas.addEventListener('touchcancel', dragEnd, { passive: false });
   canvas.addEventListener('keydown', keydown, { passive: false });
@@ -726,7 +500,7 @@ export const timeslipRender = (canvas: HTMLCanvasElement, ctx: CanvasRenderingCo
   const dpi = window.devicePixelRatio;
   const emWidth = ctx.measureText('mmmmmmmmmm').width / 10; // approx width to avoid too many measurements
 
-  const interactionState = getNullInteractionState(canvas);
+  const interactionState = getNullInteractionState();
   const dataState = getNullDataState();
 
   const chartWithUpdate = (t: DOMHighResTimeStamp) => {
