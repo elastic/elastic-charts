@@ -63,7 +63,8 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
     this.props.onChartRendered();
     this.props.containerRef().current?.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
 
-    timeslipRender(this.props.forwardStageRef.current, this.ctx, this.props.getData);
+    const canvas = this.props.forwardStageRef.current;
+    if (canvas && this.ctx) timeslipRender(canvas, this.ctx, this.props.getData);
   };
 
   componentWillUnmount() {

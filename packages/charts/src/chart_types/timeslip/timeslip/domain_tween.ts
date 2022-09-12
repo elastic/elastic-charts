@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
-
 import { mix } from './utils/math';
 
 const REFERENCE_AF_LENGTH = 16.67; // ms
@@ -15,7 +13,12 @@ const REFERENCE_Y_RECURRENCE_ALPHA = 0.1;
 const TWEEN_DONE_EPSILON = 0.001;
 
 /** @internal */
-export const domainTween = (interactionState, deltaT, targetMin, targetMax) => {
+export const domainTween = (
+  interactionState: { niceDomainMin: number; niceDomainMax: number },
+  deltaT: number,
+  targetMin: number,
+  targetMax: number,
+) => {
   const { niceDomainMin: currentMin, niceDomainMax: currentMax } = interactionState;
 
   // pure logic

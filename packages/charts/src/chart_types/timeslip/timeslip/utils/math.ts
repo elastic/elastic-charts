@@ -6,11 +6,9 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
-
 /** @internal */
-export const mix = (start, end, a) => start * (1 - a) + end * a; // like the glsl function
+export const mix = (start: number, end: number, a: number) => start * (1 - a) + end * a; // like the glsl function
 /** @internal */
-export const clamp = (n, lo, hi) => (n < lo ? lo : n > hi ? hi : n);
+export const clamp = (n: number, lo: number, hi: number) => (n < lo ? lo : n > hi ? hi : n);
 /** @internal */
-export const unitClamp = (n) => (n < 0 ? 0 : n > 1 ? 1 : n);
+export const unitClamp = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);

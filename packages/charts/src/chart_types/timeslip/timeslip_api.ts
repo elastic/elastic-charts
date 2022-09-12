@@ -11,19 +11,14 @@ import { Spec } from '../../specs';
 import { SpecType } from '../../specs/constants'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
-import { TimeBin } from '../xy_chart/axes/timeslip/rasters';
+import { DataDemand } from './timeslip/render/cartesian';
+import { TimeslipDataRows } from './timeslip/timeslip_render';
 
 /**
  * data getter function
  * @public
  */
-export type GetData = (dataDemand: {
-  lo: TimeBin; // iirc TimeBin is enough, and the other TimeRaster etc. props aren't needed
-  hi: TimeBin; // iirc TimeBin is enough, and the other TimeRaster etc. props aren't needed
-  binUnit: string; // TimeRaster<TimeBin>['unit']; // as of the initial commit, it's just a string
-  binUnitCount: number;
-  unitBarMaxWidthPixels: number;
-}) => Array<{ epochMs: number; value: number }>;
+export type GetData = (dataDemand: DataDemand) => TimeslipDataRows;
 
 /**
  * Specifies the timeslip chart
