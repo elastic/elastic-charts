@@ -106,9 +106,9 @@ describe('Legend', () => {
     expect(legendItems.exists).toBeTruthy();
     legendItems.forEach((legendItem, i) => {
       legendItem.simulate('mouseenter');
-      expect(onLegendItemOver).toBeCalledTimes(i + 1);
+      expect(onLegendItemOver).toHaveBeenCalledTimes(i + 1);
       legendItem.simulate('mouseleave');
-      expect(onLegendItemOut).toBeCalledTimes(i + 1);
+      expect(onLegendItemOut).toHaveBeenCalledTimes(i + 1);
     });
   });
   it('shall call click listener for every list item', () => {
@@ -137,7 +137,7 @@ describe('Legend', () => {
     legendItems.forEach((legendItem, i) => {
       // the click is only enabled on the title
       legendItem.find('.echLegendItem__label').simulate('click');
-      expect(onLegendItemClick).toBeCalledTimes(i + 1);
+      expect(onLegendItemClick).toHaveBeenCalledTimes(i + 1);
     });
   });
 
@@ -273,7 +273,7 @@ describe('Legend', () => {
       legendItems.forEach((legendItem, i) => {
         // toggle click is only enabled on the title
         legendItem.find('.echLegendItem__label').simulate('click');
-        expect(onLegendItemClick).toBeCalledTimes(i + 1);
+        expect(onLegendItemClick).toHaveBeenCalledTimes(i + 1);
       });
     });
   });
@@ -299,7 +299,7 @@ describe('Legend', () => {
       legendItems.forEach((legendItem) => {
         // the click is only enabled on the title
         legendItem.find('.echLegendItem__label').simulate('click');
-        expect(onLegendItemClick).toBeCalledTimes(0);
+        expect(onLegendItemClick).toHaveBeenCalledTimes(0);
       });
     });
   });

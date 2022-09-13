@@ -424,7 +424,7 @@ describe('Y Domain', () => {
     expect(domain).toEqual([20, 20]);
 
     const warnMessage = 'custom yDomain for a is invalid, custom min is greater than computed max.';
-    expect(Logger.warn).toBeCalledWith(warnMessage);
+    expect(Logger.warn).toHaveBeenCalledWith(warnMessage);
   });
   test('Should merge Y domain accounting for custom domain limits: partial upper bounded domain', () => {
     const store = MockStore.default();
@@ -469,7 +469,7 @@ describe('Y Domain', () => {
     expect(domain).toEqual([-1, -1]);
 
     const warnMessage = 'custom yDomain for a is invalid, custom max is less than computed max.';
-    expect(Logger.warn).toBeCalledWith(warnMessage);
+    expect(Logger.warn).toHaveBeenCalledWith(warnMessage);
   });
   test('Should merge Y domain with stacked as percentage', () => {
     const store = MockStore.default();

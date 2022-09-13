@@ -153,13 +153,13 @@ describe('Chart state pointer interactions', () => {
       onElementOverCaller(store.getState());
     });
     store.dispatch(onPointerMove({ x: 20, y: 20 }, 0));
-    expect(onOutListener).toBeCalledTimes(0);
+    expect(onOutListener).toHaveBeenCalledTimes(0);
 
     // no more calls after the first out one outside chart
     store.dispatch(onPointerMove({ x: 5, y: 5 }, 1));
-    expect(onOutListener).toBeCalledTimes(1);
+    expect(onOutListener).toHaveBeenCalledTimes(1);
     store.dispatch(onPointerMove({ x: 3, y: 3 }, 2));
-    expect(onOutListener).toBeCalledTimes(1);
+    expect(onOutListener).toHaveBeenCalledTimes(1);
   });
 
   test('can respond to tooltip types changes', () => {
@@ -236,14 +236,14 @@ describe('Chart state pointer interactions', () => {
     it('should avoid calling pointer update listener if moving over the same element', () => {
       store.dispatch(onPointerMove({ x: chartLeft + 10, y: chartTop + 10 }, 0));
       MockStore.flush(store);
-      expect(onPointerUpdateListener).toBeCalledTimes(1);
+      expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
       const tooltipInfo1 = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo1.tooltip.values.length).toBe(1);
       // avoid calls
       store.dispatch(onPointerMove({ x: chartLeft + 12, y: chartTop + 12 }, 1));
       MockStore.flush(store);
-      expect(onPointerUpdateListener).toBeCalledTimes(1);
+      expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
       const tooltipInfo2 = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo2.tooltip.values.length).toBe(1);
@@ -254,14 +254,14 @@ describe('Chart state pointer interactions', () => {
       MockStore.updateSettings(store, { pointerUpdateTrigger: 'y' });
       store.dispatch(onPointerMove({ x: chartLeft + 10, y: chartTop + 10 }, 0));
       MockStore.flush(store);
-      expect(onPointerUpdateListener).toBeCalledTimes(1);
+      expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
       const tooltipInfo1 = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo1.tooltip.values.length).toBe(1);
       // avoid calls
       store.dispatch(onPointerMove({ x: chartLeft + 12, y: chartTop + 10 }, 1));
       MockStore.flush(store);
-      expect(onPointerUpdateListener).toBeCalledTimes(1);
+      expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
       const tooltipInfo2 = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo2.tooltip.values.length).toBe(1);
@@ -271,7 +271,7 @@ describe('Chart state pointer interactions', () => {
     it.skip('should call projection update listener if moving over the same element with differnt y', () => {
       store.dispatch(onPointerMove({ x: chartLeft + 10, y: chartTop + 10 }, 0));
       MockStore.flush(store);
-      expect(onPointerUpdateListener).toBeCalledTimes(1);
+      expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
       expect(onPointerUpdateListener.mock.calls[0][0]).toMatchObject({
         x: 0,
         y: [
@@ -285,7 +285,7 @@ describe('Chart state pointer interactions', () => {
       // avoid calls
       store.dispatch(onPointerMove({ x: chartLeft + 10, y: chartTop + 11 }, 1));
       MockStore.flush(store);
-      expect(onPointerUpdateListener).toBeCalledTimes(2);
+      expect(onPointerUpdateListener).toHaveBeenCalledTimes(2);
       expect(onPointerUpdateListener.mock.calls[1][0]).toMatchObject({
         x: 0,
         y: [
@@ -300,8 +300,8 @@ describe('Chart state pointer interactions', () => {
     it('should call pointer update listeners on move', () => {
       store.dispatch(onPointerMove({ x: chartLeft + 10, y: chartTop + 10 }, 0));
       MockStore.flush(store);
-      expect(onPointerUpdateListener).toBeCalledTimes(1);
-      expect(onPointerUpdateListener).toBeCalledWith({
+      expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
+      expect(onPointerUpdateListener).toHaveBeenCalledWith({
         chartId: 'chartId',
         scale: scaleType,
         type: 'Over',
@@ -320,7 +320,7 @@ describe('Chart state pointer interactions', () => {
       // avoid multiple calls for the same value
       store.dispatch(onPointerMove({ x: chartLeft + 50, y: chartTop + 11 }, 1));
       MockStore.flush(store);
-      expect(onPointerUpdateListener).toBeCalledTimes(2);
+      expect(onPointerUpdateListener).toHaveBeenCalledTimes(2);
 
       expect(onPointerUpdateListener.mock.calls[1][0]).toEqual({
         chartId: 'chartId',
@@ -340,7 +340,7 @@ describe('Chart state pointer interactions', () => {
 
       store.dispatch(onPointerMove({ x: chartLeft + 200, y: chartTop + 12 }, 1));
       MockStore.flush(store);
-      expect(onPointerUpdateListener).toBeCalledTimes(3);
+      expect(onPointerUpdateListener).toHaveBeenCalledTimes(3);
       expect(onPointerUpdateListener.mock.calls[2][0]).toEqual({
         chartId: 'chartId',
         type: 'Out',
@@ -410,9 +410,9 @@ describe('Chart state pointer interactions', () => {
       tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
-      expect(onOverListener).toBeCalledTimes(1);
-      expect(onOutListener).toBeCalledTimes(0);
-      expect(onOverListener).toBeCalledWith([
+      expect(onOverListener).toHaveBeenCalledTimes(1);
+      expect(onOutListener).toHaveBeenCalledTimes(0);
+      expect(onOverListener).toHaveBeenCalledWith([
         [
           {
             x: 0,
@@ -440,8 +440,8 @@ describe('Chart state pointer interactions', () => {
       tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.tooltip.values.length).toBe(0);
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
-      expect(onOverListener).toBeCalledTimes(1);
-      expect(onOutListener).toBeCalledTimes(1);
+      expect(onOverListener).toHaveBeenCalledTimes(1);
+      expect(onOutListener).toHaveBeenCalledTimes(1);
     });
 
     test('can hover bottom-left corner of the first bar', () => {
@@ -457,9 +457,9 @@ describe('Chart state pointer interactions', () => {
       let tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
-      expect(onOverListener).toBeCalledTimes(1);
-      expect(onOutListener).toBeCalledTimes(0);
-      expect(onOverListener).toBeCalledWith([
+      expect(onOverListener).toHaveBeenCalledTimes(1);
+      expect(onOutListener).toHaveBeenCalledTimes(0);
+      expect(onOverListener).toHaveBeenCalledWith([
         [
           {
             x: 0,
@@ -486,8 +486,8 @@ describe('Chart state pointer interactions', () => {
       tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.tooltip.values.length).toBe(0);
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
-      expect(onOverListener).toBeCalledTimes(1);
-      expect(onOutListener).toBeCalledTimes(1);
+      expect(onOverListener).toHaveBeenCalledTimes(1);
+      expect(onOutListener).toHaveBeenCalledTimes(1);
     });
 
     test('can hover top-right corner of the first bar', () => {
@@ -507,9 +507,9 @@ describe('Chart state pointer interactions', () => {
       let tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
-      expect(onOverListener).toBeCalledTimes(1);
-      expect(onOutListener).toBeCalledTimes(0);
-      expect(onOverListener).toBeCalledWith([
+      expect(onOverListener).toHaveBeenCalledTimes(1);
+      expect(onOutListener).toHaveBeenCalledTimes(0);
+      expect(onOverListener).toHaveBeenCalledWith([
         [
           {
             x: 0,
@@ -541,8 +541,8 @@ describe('Chart state pointer interactions', () => {
       tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
-      expect(onOverListener).toBeCalledTimes(1);
-      expect(onOutListener).toBeCalledTimes(1);
+      expect(onOverListener).toHaveBeenCalledTimes(1);
+      expect(onOutListener).toHaveBeenCalledTimes(1);
     });
 
     test('can hover bottom-right corner of the first bar', () => {
@@ -562,9 +562,9 @@ describe('Chart state pointer interactions', () => {
       let tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
-      expect(onOverListener).toBeCalledTimes(1);
-      expect(onOutListener).toBeCalledTimes(0);
-      expect(onOverListener).toBeCalledWith([
+      expect(onOverListener).toHaveBeenCalledTimes(1);
+      expect(onOutListener).toHaveBeenCalledTimes(0);
+      expect(onOverListener).toHaveBeenCalledWith([
         [
           {
             x: (spec.data[0] as Array<any>)[0],
@@ -597,7 +597,7 @@ describe('Chart state pointer interactions', () => {
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       // we are over the second bar here
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
-      expect(onOverListener).toBeCalledTimes(2);
+      expect(onOverListener).toHaveBeenCalledTimes(2);
       expect(onOverListener.mock.calls[1][0]).toEqual([
         [
           {
@@ -618,14 +618,14 @@ describe('Chart state pointer interactions', () => {
         ],
       ]);
 
-      expect(onOutListener).toBeCalledTimes(0);
+      expect(onOutListener).toHaveBeenCalledTimes(0);
 
       store.dispatch(onPointerMove({ x: chartLeft + 47 + scaleOffset, y: chartTop + 89 }, 2));
     });
 
     test('can hover top-right corner of the chart', () => {
-      expect(onOverListener).toBeCalledTimes(0);
-      expect(onOutListener).toBeCalledTimes(0);
+      expect(onOverListener).toHaveBeenCalledTimes(0);
+      expect(onOutListener).toHaveBeenCalledTimes(0);
       let tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
       expect(tooltipInfo.tooltip.values.length).toBe(0);
@@ -643,13 +643,13 @@ describe('Chart state pointer interactions', () => {
       tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
-      expect(onOverListener).toBeCalledTimes(0);
-      expect(onOutListener).toBeCalledTimes(0);
+      expect(onOverListener).toHaveBeenCalledTimes(0);
+      expect(onOutListener).toHaveBeenCalledTimes(0);
     });
 
     test('will call only one time the listener with the same values', () => {
-      expect(onOverListener).toBeCalledTimes(0);
-      expect(onOutListener).toBeCalledTimes(0);
+      expect(onOverListener).toHaveBeenCalledTimes(0);
+      expect(onOutListener).toHaveBeenCalledTimes(0);
       let halfWidth = 45;
       if (scaleType !== ScaleType.Ordinal) {
         halfWidth = 46;
@@ -657,26 +657,26 @@ describe('Chart state pointer interactions', () => {
       let timeCounter = 0;
       for (let i = 0; i < halfWidth; i++) {
         store.dispatch(onPointerMove({ x: chartLeft + i, y: chartTop + 89 }, timeCounter));
-        expect(onOverListener).toBeCalledTimes(1);
-        expect(onOutListener).toBeCalledTimes(0);
+        expect(onOverListener).toHaveBeenCalledTimes(1);
+        expect(onOutListener).toHaveBeenCalledTimes(0);
         timeCounter++;
       }
       for (let i = halfWidth; i < 90; i++) {
         store.dispatch(onPointerMove({ x: chartLeft + i, y: chartTop + 89 }, timeCounter));
-        expect(onOverListener).toBeCalledTimes(2);
-        expect(onOutListener).toBeCalledTimes(0);
+        expect(onOverListener).toHaveBeenCalledTimes(2);
+        expect(onOutListener).toHaveBeenCalledTimes(0);
         timeCounter++;
       }
       for (let i = 0; i < halfWidth; i++) {
         store.dispatch(onPointerMove({ x: chartLeft + i, y: chartTop + 0 }, timeCounter));
-        expect(onOverListener).toBeCalledTimes(3);
-        expect(onOutListener).toBeCalledTimes(0);
+        expect(onOverListener).toHaveBeenCalledTimes(3);
+        expect(onOutListener).toHaveBeenCalledTimes(0);
         timeCounter++;
       }
       for (let i = halfWidth; i < 90; i++) {
         store.dispatch(onPointerMove({ x: chartLeft + i, y: chartTop + 0 }, timeCounter));
-        expect(onOverListener).toBeCalledTimes(3);
-        expect(onOutListener).toBeCalledTimes(1);
+        expect(onOverListener).toHaveBeenCalledTimes(3);
+        expect(onOutListener).toHaveBeenCalledTimes(1);
         timeCounter++;
       }
     });
@@ -695,8 +695,8 @@ describe('Chart state pointer interactions', () => {
       const tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
-      expect(onOverListener).toBeCalledTimes(1);
-      expect(onOverListener).toBeCalledWith([
+      expect(onOverListener).toHaveBeenCalledTimes(1);
+      expect(onOverListener).toHaveBeenCalledWith([
         [
           {
             x: 1,
@@ -715,7 +715,7 @@ describe('Chart state pointer interactions', () => {
           },
         ],
       ]);
-      expect(onOutListener).toBeCalledTimes(0);
+      expect(onOutListener).toHaveBeenCalledTimes(0);
     });
 
     describe.skip('can position tooltip within chart when xScale is a single value scale', () => {
@@ -848,10 +848,10 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end1, 200));
         store.dispatch(onMouseUp(end1, 300));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
-          expect(brushEndListener).toBeCalledWith({ x: [0, 2.5] });
+          expect(brushEndListener).toHaveBeenCalled();
+          expect(brushEndListener).toHaveBeenCalledWith({ x: [0, 2.5] });
         }
         const start2 = { x: 75, y: 0 };
         const end2 = { x: 100, y: 0 };
@@ -860,9 +860,9 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end2, 500));
         store.dispatch(onMouseUp(end2, 600));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
+          expect(brushEndListener).toHaveBeenCalled();
           expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [2.5, 3] });
         }
 
@@ -872,9 +872,9 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end3, 800));
         store.dispatch(onMouseUp(end3, 900));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
+          expect(brushEndListener).toHaveBeenCalled();
           expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [2.5, 3] });
         }
 
@@ -884,9 +884,9 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end4, 1100));
         store.dispatch(onMouseUp(end4, 1200));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
+          expect(brushEndListener).toHaveBeenCalled();
           expect(brushEndListener.mock.calls[3][0]).toEqual({ x: [0, 0.5] });
         }
 
@@ -894,7 +894,7 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove({ x: 28, y: 0 }, 1390));
         store.dispatch(onMouseUp({ x: 28, y: 0 }, 1400));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
           expect(brushEndListener.mock.calls[4]).toBeUndefined();
         }
@@ -929,10 +929,10 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end1, 100));
         store.dispatch(onMouseUp(end1, 200));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
-          expect(brushEndListener).toBeCalledWith({ x: [0, 1] });
+          expect(brushEndListener).toHaveBeenCalled();
+          expect(brushEndListener).toHaveBeenCalledWith({ x: [0, 1] });
         }
         const start2 = { x: 0, y: 75 };
         const end2 = { x: 0, y: 100 };
@@ -941,9 +941,9 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end2, 500));
         store.dispatch(onMouseUp(end2, 600));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
+          expect(brushEndListener).toHaveBeenCalled();
           expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [1, 1] });
         }
 
@@ -953,9 +953,9 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end3, 800));
         store.dispatch(onMouseUp(end3, 900));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
+          expect(brushEndListener).toHaveBeenCalled();
           expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [1, 1] }); // max of chart
         }
 
@@ -965,9 +965,9 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end4, 1100));
         store.dispatch(onMouseUp(end4, 1200));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
+          expect(brushEndListener).toHaveBeenCalled();
           expect(brushEndListener.mock.calls[3][0]).toEqual({ x: [0, 0] });
         }
       });
@@ -1015,10 +1015,10 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end1, 100));
         store.dispatch(onMouseUp(end1, 200));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
-          expect(brushEndListener).toBeCalledWith({
+          expect(brushEndListener).toHaveBeenCalled();
+          expect(brushEndListener).toHaveBeenCalledWith({
             y: [
               {
                 groupId: spec.groupId,
@@ -1034,9 +1034,9 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end2, 500));
         store.dispatch(onMouseUp(end2, 600));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
+          expect(brushEndListener).toHaveBeenCalled();
           expect(brushEndListener.mock.calls[1][0]).toEqual({
             y: [
               {
@@ -1091,10 +1091,10 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end1, 100));
         store.dispatch(onMouseUp(end1, 300));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
-          expect(brushEndListener).toBeCalledWith({
+          expect(brushEndListener).toHaveBeenCalled();
+          expect(brushEndListener).toHaveBeenCalledWith({
             x: [0, 2.5],
             y: [
               {
@@ -1111,9 +1111,9 @@ describe('Chart state pointer interactions', () => {
         store.dispatch(onPointerMove(end2, 500));
         store.dispatch(onMouseUp(end2, 600));
         if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toBeCalled();
+          expect(brushEndListener).not.toHaveBeenCalled();
         } else {
-          expect(brushEndListener).toBeCalled();
+          expect(brushEndListener).toHaveBeenCalled();
           expect(brushEndListener.mock.calls[1][0]).toEqual({
             x: [2.5, 3],
             y: [
@@ -1173,7 +1173,7 @@ describe('Negative bars click and hover', () => {
     store.dispatch(onMouseDown({ x: 50, y: 75 }, 100));
     store.dispatch(onMouseUp({ x: 50, y: 75 }, 200));
 
-    expect(onElementClick).toBeCalled();
+    expect(onElementClick).toHaveBeenCalled();
     const callArgs = onElementClick.mock.calls[0][0];
     expect(callArgs[0][0].datum).toEqual([1, -10]);
   });
@@ -1226,7 +1226,7 @@ describe('Clickable annotations', () => {
     store.dispatch(onMouseDown({ x: 130, y: 217 }, 100));
     store.dispatch(onMouseUp({ x: 130, y: 217 }, 200));
 
-    expect(onAnnotationClick).toBeCalled();
+    expect(onAnnotationClick).toHaveBeenCalled();
     const callArgs = onAnnotationClick.mock.calls[0][0];
     expect(callArgs.rects[0].id).toEqual('rect1______0__1__0__4__details about this annotation__0');
     // confirming there is only one rect annotation being picked up
@@ -1293,7 +1293,7 @@ describe('Clickable annotations', () => {
     store.dispatch(onMouseDown({ x: 200, y: 195 }, 100));
     store.dispatch(onMouseUp({ x: 200, y: 195 }, 200));
 
-    expect(onAnnotationClick).toBeCalled();
+    expect(onAnnotationClick).toHaveBeenCalled();
     const callArgs = onAnnotationClick.mock.calls[0][0];
     expect(callArgs.rects[1]).toMatchObject({
       datum: {
@@ -1355,7 +1355,7 @@ describe('Clickable annotations', () => {
     store.dispatch(onPointerMove({ x: 10, y: 10 }, 0));
     store.dispatch(onMouseDown({ x: 10, y: 10 }, 100));
     store.dispatch(onMouseUp({ x: 10, y: 10 }, 200));
-    expect(onAnnotationClick).toBeCalled();
+    expect(onAnnotationClick).toHaveBeenCalled();
   });
 
   describe('Tooltip on null/missing values', () => {

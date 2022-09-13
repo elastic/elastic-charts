@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Computed chart dimensions should be equal to parent dimension with no axis minus margins 1`] = `
-Object {
+{
   "height": 60,
   "left": 20,
   "top": 20,
@@ -10,7 +10,7 @@ Object {
 `;
 
 exports[`Computed chart dimensions should be padded by a bottom axis 1`] = `
-Object {
+{
   "height": 30,
   "left": 25,
   "top": 20,
@@ -19,7 +19,7 @@ Object {
 `;
 
 exports[`Computed chart dimensions should be padded by a left axis 1`] = `
-Object {
+{
   "height": 50,
   "left": 50,
   "top": 25,
@@ -28,7 +28,7 @@ Object {
 `;
 
 exports[`Computed chart dimensions should be padded by a right axis 1`] = `
-Object {
+{
   "height": 50,
   "left": 20,
   "top": 25,
@@ -37,7 +37,7 @@ Object {
 `;
 
 exports[`Computed chart dimensions should be padded by a top axis 1`] = `
-Object {
+{
   "height": 30,
   "left": 25,
   "top": 50,

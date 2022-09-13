@@ -126,7 +126,7 @@ describe('Tooltip formatting', () => {
     expect(tooltipValue.value).toBe(10);
     expect(tooltipValue.formattedValue).toBe('10');
     expect(tooltipValue.formattedValue).toBe('10');
-    expect(YAXIS_SPEC.tickFormat).not.toBeCalledWith(null);
+    expect(YAXIS_SPEC.tickFormat).not.toHaveBeenCalledWith(null);
   });
   it('should set name as spec name when provided', () => {
     const name = 'test - spec';
@@ -361,7 +361,7 @@ describe('Tooltip formatting', () => {
       expect(tooltipValue).toBeDefined();
       expect(tooltipValue.markValue).toBe(10);
       expect(tooltipValue.formattedMarkValue).toBe('10 number');
-      expect(markFormat).toBeCalledWith(10, undefined);
+      expect(markFormat).toHaveBeenCalledWith(10, undefined);
     });
 
     it('should format mark value with defaultTickFormatter', () => {
@@ -369,7 +369,7 @@ describe('Tooltip formatting', () => {
       expect(tooltipValue).toBeDefined();
       expect(tooltipValue.markValue).toBe(10);
       expect(tooltipValue.formattedMarkValue).toBe('10');
-      expect(markFormat).not.toBeCalled();
+      expect(markFormat).not.toHaveBeenCalled();
     });
   });
 });
