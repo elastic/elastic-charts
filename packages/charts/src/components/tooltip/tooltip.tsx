@@ -29,6 +29,8 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getTooltipSelectedItems } from '../../state/selectors/get_tooltip_selected_items';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
+import { LIGHT_THEME } from '../../utils/themes/light_theme';
+import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
 import { TooltipBody } from './components/tooltip_body';
 import { TooltipProvider } from './components/tooltip_provider';
@@ -53,6 +55,7 @@ interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdenti
   backgroundColor: string;
   pinned: boolean;
   selected: Array<SeriesIdentifier>;
+  tooltipTheme: TooltipStyle;
 }
 
 interface TooltipOwnProps {
@@ -68,13 +71,14 @@ export type TooltipComponentProps<
 
 /** @internal */
 export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
-  tooltip: { header, footer, actions, headerFormatter },
+  tooltip: { header, footer, actions, headerFormatter, actionPrompt, selectionPrompt },
   anchorRef,
   info,
   zIndex,
   position,
   getChartContainerRef,
   settings,
+  tooltipTheme,
   visible,
   rotation,
   chartId,
@@ -168,6 +172,9 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     },
   ];
 
+  const hideActions =
+    (info?.disableActions ?? false) || actions.length === 0 || info?.values.every((v) => v.displayOnly);
+
   return (
     <TooltipPortal
       scope="MainTooltip"
@@ -189,6 +196,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         pinned={pinned}
         selected={selected}
         tooltipPinned={onTooltipPinned}
+        theme={tooltipTheme}
       >
         <TooltipBody
           info={info}
@@ -199,7 +207,9 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           header={header}
           footer={footer}
           onSelect={onTooltipItemSelected}
-          actions={actions}
+          actions={hideActions ? [] : actions}
+          actionPrompt={actionPrompt}
+          selectionPrompt={selectionPrompt}
         />
       </TooltipProvider>
     </TooltipPortal>
@@ -233,6 +243,7 @@ const HIDDEN_TOOLTIP_PROPS: TooltipStateProps = {
   backgroundColor: Colors.Transparent.keyword,
   pinned: false,
   selected: [],
+  tooltipTheme: LIGHT_THEME.tooltip,
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
@@ -247,6 +258,10 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
 
 const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 'visible' | 'position' | 'info'> => {
   const tooltip = getTooltipSpecSelector(state);
+  const {
+    background: { color: backgroundColor },
+    tooltip: tooltipTheme,
+  } = getChartThemeSelector(state);
   return getInternalIsInitializedSelector(state) !== InitStatus.Initialized
     ? HIDDEN_TOOLTIP_PROPS
     : {
@@ -257,9 +272,10 @@ const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 
           getSettingsSpecSelector(state),
           getInternalIsTooltipVisibleSelector(state).isExternal,
         ),
+        tooltipTheme,
         rotation: getChartRotationSelector(state),
         chartId: state.chartId,
-        backgroundColor: getChartThemeSelector(state).background.color,
+        backgroundColor,
         pinned: state.interactions.tooltip.pinned,
         selected: getTooltipSelectedItems(state),
       };

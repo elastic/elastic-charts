@@ -403,4 +403,7 @@ export const LIGHT_THEME: Theme = {
     background: '#FFFFFF',
     nonFiniteText: 'N/A',
   },
+  tooltip: {
+    maxTableBodyHeight: 120,
+  },
 };

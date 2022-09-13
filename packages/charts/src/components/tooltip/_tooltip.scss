@@ -25,7 +25,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
     pointer-events: auto;
     user-select: auto;
 
-    .echTooltip__tableRow {
+    .echTooltip__tableRow--selectable {
       cursor: pointer;
     }
   }
@@ -42,13 +42,6 @@ $rowColorStripAnimatedWidthDelta: 2px;
   .euiTableHeaderCell,
   .euiTableRowCell {
     color: white;
-  }
-
-  &__list {
-    &--scrollable {
-      overflow-y: auto;
-      pointer-events: auto;
-    }
   }
 
   &__divider {
@@ -86,7 +79,6 @@ $rowColorStripAnimatedWidthDelta: 2px;
 
   &__action,
   &__prompt {
-    color: #69707d;
     padding: $euiSizeS;
     padding-bottom: 0;
 
@@ -95,13 +87,31 @@ $rowColorStripAnimatedWidthDelta: 2px;
     }
   }
 
-  &__action:hover {
+  &__action {
+    color: $euiTextColor;
+  }
+
+  &__prompt {
+    color: $euiTextSubduedColor;
+  }
+
+  &__action{
     cursor: pointer;
-    text-decoration: underline;
+
+    &:not([disabled]):hover {
+      text-decoration: underline;
+    }
+
+    &[disabled] {
+      cursor: not-allowed;
+      color: $euiTextSubduedColor;
+    }
   }
 
   &__table {
     width: 100%;
+    display: block;
+    overflow: auto;
   }
 
   &__tableHeader {
@@ -118,7 +128,6 @@ $rowColorStripAnimatedWidthDelta: 2px;
   &__tableBody {
     pointer-events: auto;
     overflow-y: auto;
-    max-height: 120px;
     display: flex;
     flex-direction: column;
 
@@ -142,15 +151,14 @@ $rowColorStripAnimatedWidthDelta: 2px;
       background-color: transparentize($euiColorLightShade, 0.5);
     }
 
-    &:hover:not(&--selected) {
+    &:hover:not(&--selected) :not(.echTooltip__colorCell--static) {
       .echTooltip__colorStrip {
         width: $rowColorStripWidth + $rowColorStripAnimatedWidthDelta;
       }
     }
 
     &--selected {
-      // TODO save this for future sticky interactions
-      .echTooltip__colorStrip {
+      :not(.echTooltip__colorCell--static) .echTooltip__colorStrip {
         width: $rowColorStripWidth + $maxRowColorStripWidth;
 
         &::before {
@@ -168,6 +176,10 @@ $rowColorStripAnimatedWidthDelta: 2px;
 
     &--empty {
       width: 0;
+    }
+
+    &--static {
+      width: $rowColorStripWidth;
     }
   }
 

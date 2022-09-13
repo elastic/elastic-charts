@@ -10,6 +10,8 @@ import React, { PropsWithChildren, Context, useContext } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { onTooltipPinned } from '../../../state/actions/tooltip';
+import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { TooltipStyle } from '../../../utils/themes/theme';
 
 interface TooltipContext<SI extends SeriesIdentifier = SeriesIdentifier> {
   backgroundColor: string;
@@ -17,6 +19,7 @@ interface TooltipContext<SI extends SeriesIdentifier = SeriesIdentifier> {
   pinned: boolean;
   selected: SI[];
   tooltipPinned: typeof onTooltipPinned;
+  theme: TooltipStyle;
 }
 
 const TooltipContext = React.createContext<TooltipContext>({
@@ -25,6 +28,7 @@ const TooltipContext = React.createContext<TooltipContext>({
   pinned: false,
   selected: [],
   tooltipPinned: onTooltipPinned,
+  theme: LIGHT_THEME.tooltip,
 });
 
 /** @internal */
@@ -42,6 +46,7 @@ export const TooltipProvider = ({
   selected,
   tooltipPinned,
   children,
+  theme,
 }: TooltipProviderProps) => {
   return (
     <TooltipContext.Provider
@@ -51,6 +56,7 @@ export const TooltipProvider = ({
         pinned,
         selected,
         tooltipPinned,
+        theme,
       }}
     >
       {children}

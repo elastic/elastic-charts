@@ -64,12 +64,17 @@ export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIden
    * The accessor linked to the current tooltip value
    */
   valueAccessor?: Accessor<D>;
-
   /**
    * The datum associated with the current tooltip value
    * Maybe not available
    */
   datum?: D;
+  /**
+   * Internal flag used to simplify interactions for heatmap tooltip
+   * TODO: replace this flag with better internal tooltip info structures
+   * @internal
+   */
+  displayOnly?: boolean;
 }
 
 /**
@@ -106,8 +111,22 @@ export function getTooltipType(tooltip: TooltipSpec, settings: SettingsSpec, ext
 
 /** @internal */
 export type TooltipAction<SI extends SeriesIdentifier = SeriesIdentifier> = {
+  /**
+   * Clickable label to display action
+   */
   label: (series: SI[]) => ReactNode;
+  /**
+   * Hides action from list
+   */
   hide?: (series: SI[]) => boolean;
+  /**
+   * Disables action when true or string description is passed
+   * If a string is passed, it will be used as the title to display reason for disablement
+   */
+  disabled?: (series: SI[]) => boolean | string;
+  /**
+   * Callback trigger when action is selected
+   */
   onSelect: (series: SI[]) => void;
 };
 
@@ -176,6 +195,16 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    * Actions to enable tooltip selection
    */
   actions: TooltipAction<SI>[];
+
+  /**
+   * Prompt to display to indicate user can right-click for contextual menu
+   */
+  actionPrompt: string;
+
+  /**
+   * Prompt to display when tooltip is pinned but all actions are hidden
+   */
+  selectionPrompt: string;
 }
 
 /**
@@ -209,6 +238,8 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     snap: true,
     showNullValues: false,
     actions: [],
+    actionPrompt: 'Right click to pin tooltip',
+    selectionPrompt: 'Please select a series',
   },
 );
 

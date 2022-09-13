@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { ReactNode, useEffect, useRef } from 'react';
+import React, { CSSProperties, ReactNode, useEffect, useRef } from 'react';
 
 import { useRenderSkip } from '../../../common/hooks/use_render_skip';
 import { SeriesIdentifier } from '../../../common/series_id';
@@ -16,6 +16,7 @@ import { onTooltipItemSelected } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { debounce } from '../../../utils/debounce';
 import { PropsOrChildrenWithProps } from '../types';
+import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
@@ -37,6 +38,7 @@ type TooltipTableBodyProps<
   {},
   {
     className?: string;
+    maxHeight?: CSSProperties['maxHeight'];
   }
 >;
 
@@ -46,6 +48,8 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   ...props
 }: TooltipTableBodyProps<D, SI>) => {
   const ready = useRenderSkip();
+  const { theme } = useTooltipContext<SI>();
+  const maxHeight = props.maxHeight ?? theme.maxTableBodyHeight;
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null);
   const targetRowIndex = 'items' in props ? (props?.items ?? []).findIndex(({ isHighlighted }) => isHighlighted) : -1;
   const scrollToTarget = debounce((i) => {
@@ -60,23 +64,27 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
 
   if ('children' in props) {
     const classes = classNames('echTooltip__tableBody', className);
-    return <tbody className={classes}>{props.children}</tbody>;
+    return (
+      <tbody className={classes} style={{ maxHeight }}>
+        {props.children}
+      </tbody>
+    );
   }
 
   const classes = classNames('echTooltip__tableBody');
 
   return (
-    <tbody className={classes} ref={tableBodyRef}>
+    <tbody className={classes} ref={tableBodyRef} style={{ maxHeight }}>
       {props.items.map((item, i) => {
-        const { isHighlighted, isVisible } = item;
+        const { isHighlighted, isVisible, displayOnly } = item;
         if (!isVisible) return null;
         return (
           <TooltipTableRow
-            key={item.seriesIdentifier.key}
+            key={`${item.seriesIdentifier.key}-${item.value}`}
             id={getRowId(i)}
             isHighlighted={!props.pinned && isHighlighted}
             isSelected={props.pinned && props.selected.some(({ key }) => key === item.seriesIdentifier.key)}
-            onSelect={() => props.onSelect(item.seriesIdentifier)}
+            onSelect={displayOnly ? undefined : () => props.onSelect(item.seriesIdentifier)}
           >
             {props.columns.map((column, j) => {
               return renderCellContent(item, column, column.id ?? `${column.type}-${j}`);
@@ -106,7 +114,7 @@ function renderCellContent<D extends BaseDatum = Datum, SI extends SeriesIdentif
   key: string,
 ): ReactNode {
   if (column.type === 'color') {
-    return <TooltipTableColorCell color={item.color} key={key} />;
+    return <TooltipTableColorCell displayOnly={item.displayOnly} color={item.color} key={key} />;
   }
 
   return (

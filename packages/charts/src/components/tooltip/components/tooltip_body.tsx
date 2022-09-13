@@ -21,7 +21,7 @@ import { TooltipWrapper } from './tooltip_wrapper';
 import { TooltipTableColumn } from './types';
 
 interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
-  extends Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer'> {
+  extends Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer' | 'actionPrompt' | 'selectionPrompt'> {
   visible: boolean;
   info?: TooltipInfo<D, SI>;
   columns: TooltipTableColumn<D, SI>[];
@@ -42,6 +42,8 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   footer,
   actions,
   onSelect,
+  actionPrompt,
+  selectionPrompt,
 }: TooltipBodyProps<D, SI>) => {
   const { backgroundColor, dir, pinned, selected } = useTooltipContext();
   if (!info || !visible) {
@@ -51,14 +53,14 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   if (typeof settings !== 'string' && settings?.customTooltip) {
     const CustomTooltip = settings.customTooltip;
     return (
-      <TooltipWrapper actions={actions}>
+      <TooltipWrapper actions={actions} actionPrompt={actionPrompt} selectionPrompt={selectionPrompt}>
         <CustomTooltip {...info} headerFormatter={headerFormatter} backgroundColor={backgroundColor} dir={dir} />
       </TooltipWrapper>
     );
   }
 
   return (
-    <TooltipWrapper actions={actions}>
+    <TooltipWrapper actions={actions} actionPrompt={actionPrompt} selectionPrompt={selectionPrompt}>
       {header ? (
         <TooltipHeader>{typeof header === 'string' ? header : header(info.values)}</TooltipHeader>
       ) : (

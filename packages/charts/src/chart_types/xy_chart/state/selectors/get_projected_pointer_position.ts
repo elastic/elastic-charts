@@ -7,16 +7,13 @@
  */
 
 import { ScaleBand } from '../../../../scales/scale_band';
-import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
-
-const getCurrentPointerPosition = ({ interactions }: GlobalChartState) =>
-  interactions.pointer.pinned?.position ?? interactions.pointer.current.position;
 
 /** @internal */
 export type PointerPosition = Point & { horizontalPanelValue: PrimitiveValue; verticalPanelValue: PrimitiveValue };
@@ -26,7 +23,7 @@ export type PointerPosition = Point & { horizontalPanelValue: PrimitiveValue; ve
  * @internal
  */
 export const getProjectedPointerPositionSelector = createCustomCachedSelector(
-  [getCurrentPointerPosition, computeChartDimensionsSelector, computeSmallMultipleScalesSelector],
+  [getActivePointerPosition, computeChartDimensionsSelector, computeSmallMultipleScalesSelector],
   (currentPointerPosition, { chartDimensions }, smallMultipleScales): PointerPosition =>
     getProjectedPointerPosition(currentPointerPosition, chartDimensions, smallMultipleScales),
 );

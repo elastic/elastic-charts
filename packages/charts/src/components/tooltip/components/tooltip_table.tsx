@@ -12,7 +12,7 @@ import React, { CSSProperties } from 'react';
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
 import { onTooltipItemSelected } from '../../../state/actions/tooltip';
-import { Datum, isNil } from '../../../utils/common';
+import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableBody } from './tooltip_table_body';
 import { TooltipTableFooter } from './tooltip_table_footer';
@@ -39,13 +39,11 @@ type TooltipTableProps<
 
 /** @public */
 export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
-  maxHeight,
   className,
+  maxHeight,
   ...props
 }: TooltipTableProps<D, SI>) => {
-  const classes = classNames('echTooltip__table', className, {
-    'echTooltip__table--scrollable': !isNil(maxHeight),
-  });
+  const classes = classNames('echTooltip__table', className);
 
   if ('children' in props) {
     return (

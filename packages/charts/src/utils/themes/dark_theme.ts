@@ -404,4 +404,7 @@ export const DARK_THEME: Theme = {
     background: '#1D1E23',
     nonFiniteText: 'N/A',
   },
+  tooltip: {
+    maxTableBodyHeight: 120,
+  },
 };

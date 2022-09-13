@@ -7,7 +7,7 @@
  */
 
 import { PopoverAnchorPosition } from '@elastic/eui';
-import { select, array, number, optionsKnob } from '@storybook/addon-knobs';
+import { select, array, number, optionsKnob, boolean } from '@storybook/addon-knobs';
 import {
   OptionsTypeKnobSingleValue,
   OptionsTypeKnobValue,
@@ -35,6 +35,14 @@ import { VerticalAlignment, HorizontalAlignment } from '@elastic/charts/src/util
 
 export const getPositiveNumberKnob = (name: string, value: number, groupId?: string) =>
   number(name, value, { min: 0 }, groupId);
+
+export function getToggledNumber<T>(initEnabled: boolean, fallbackValue: T) {
+  return (...[name, initialValue, options, groupId]: Parameters<typeof number>) => {
+    const enabled = boolean(`${name} - enabled`, initEnabled, groupId);
+    const value = number(name, initialValue, options, groupId);
+    return enabled ? value : fallbackValue;
+  };
+}
 
 export const numberSelect = <T extends number>(
   name: string,

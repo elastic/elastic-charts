@@ -63,6 +63,17 @@ export interface TextAlignment {
 }
 
 /**
+ * Tooltip styles
+ * @public
+ */
+export interface TooltipStyle {
+  /**
+   * Sets max height of scrolling tooltip table body
+   */
+  maxTableBodyHeight: CSSProperties['maxHeight'];
+}
+
+/**
  * Shared style properties for varies geometries
  * @public
  */
@@ -459,8 +470,14 @@ export interface Theme {
    * Theme styles for heatmap chart types
    */
   heatmap: HeatmapStyle;
-
+  /**
+   * Theme styles for metric chart types
+   */
   metric: MetricStyle;
+  /**
+   * Theme styles for tooltip
+   */
+  tooltip: TooltipStyle;
 }
 
 /** @public */

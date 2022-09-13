@@ -17,15 +17,48 @@ import { useTooltipContext } from './tooltip_provider';
 type TooltipWrapperProps<SI extends SeriesIdentifier = SeriesIdentifier> = PropsWithChildren<{
   className?: string;
   actions?: TooltipAction<SI>[];
+  actionPrompt: string;
+  selectionPrompt: string;
 }>;
 
 /** @internal */
 export const TooltipWrapper = <SI extends SeriesIdentifier = SeriesIdentifier>({
   children,
   actions = [],
+  actionPrompt,
+  selectionPrompt,
   className,
 }: TooltipWrapperProps<SI>) => {
   const { dir, pinned, selected, tooltipPinned } = useTooltipContext<SI>();
+
+  const renderActions = () => {
+    const visibleActions = actions.filter(({ hide }) => !hide || hide(selected));
+
+    if (visibleActions.length === 0) {
+      return <div className="echTooltip__prompt">{selectionPrompt}</div>;
+    }
+
+    return visibleActions.map(({ onSelect, label, disabled }, i) => {
+      const reason = disabled && disabled(selected);
+      // console.log(reason);
+
+      return (
+        <button
+          className="echTooltip__action"
+          key={i}
+          title={typeof reason === 'string' ? reason : undefined}
+          disabled={Boolean(reason)}
+          onClick={() => {
+            tooltipPinned(false);
+            // timeout used to close tooltip before calling action
+            setTimeout(onSelect, 0, selected);
+          }}
+        >
+          {label(selected)}
+        </button>
+      );
+    });
+  };
 
   return (
     <div
@@ -40,25 +73,7 @@ export const TooltipWrapper = <SI extends SeriesIdentifier = SeriesIdentifier>({
       {renderComplexChildren(children)}
       {actions.length > 0 && (
         <div className="echTooltip__actions">
-          {pinned ? (
-            actions
-              .filter(({ hide }) => !hide || hide(selected))
-              .map(({ onSelect, label }, i) => (
-                <div
-                  className="echTooltip__action"
-                  key={i}
-                  onClick={() => {
-                    tooltipPinned(false);
-                    // timeout used to close tooltip before calling action
-                    setTimeout(onSelect, 0, selected);
-                  }}
-                >
-                  {label(selected)}
-                </div>
-              ))
-          ) : (
-            <div className="echTooltip__prompt">Right click to stick tooltip</div>
-          )}
+          {pinned ? renderActions() : <div className="echTooltip__prompt">{actionPrompt}</div>}
         </div>
       )}
     </div>

@@ -26,6 +26,13 @@ export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdent
    * On XYAxis chart correspond to the set of y values for each series
    */
   values: TooltipValue<D, SI>[];
+  /**
+   * Internal flag to disable tooltip actions. Needed for heatmap to hide actions.
+   *
+   * TODO: replace this flag with better internal tooltip info structures
+   * @internal
+   */
+  disableActions?: boolean;
 }
 
 /**

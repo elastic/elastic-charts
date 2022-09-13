@@ -15,19 +15,26 @@ import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
 /** @public */
 export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children'> & {
   color?: string;
+  displayOnly?: boolean;
 };
 
 /**
  * Renders color strip column cell
  * @public
  */
-export function TooltipTableColorCell({ color, className, ...cellProps }: ColorStripCellProps): JSX.Element | null {
+export function TooltipTableColorCell({
+  color,
+  className,
+  displayOnly,
+  ...cellProps
+}: ColorStripCellProps): JSX.Element | null {
   const { backgroundColor } = useTooltipContext();
   return (
     <TooltipTableCell
       {...cellProps}
       className={classNames('echTooltip__colorCell', className, {
         'echTooltip__colorCell--empty': !color,
+        'echTooltip__colorCell--static': displayOnly,
       })}
     >
       {color ? (

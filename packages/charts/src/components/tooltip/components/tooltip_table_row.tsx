@@ -17,7 +17,7 @@ type TooltipTableRowProps = PropsWithChildren<{
   isHighlighted?: boolean;
   isSelected?: boolean;
   maxHeight?: CSSProperties['maxHeight'];
-  onSelect: () => void;
+  onSelect?: () => void;
 }>;
 
 /** @public */
@@ -31,9 +31,9 @@ export const TooltipTableRow = ({
   className,
 }: TooltipTableRowProps) => {
   const classes = classNames('echTooltip__tableRow', className, {
-    'echTooltip__tableRow--scrollable': !isNil(maxHeight),
     'echTooltip__tableRow--highlighted': isHighlighted,
     'echTooltip__tableRow--selected': isSelected,
+    'echTooltip__tableRow--selectable': !isNil(onSelect),
   });
 
   return (

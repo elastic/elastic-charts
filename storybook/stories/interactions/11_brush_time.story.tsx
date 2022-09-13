@@ -18,6 +18,7 @@ import {
   Chart,
   LineSeries,
   niceTimeFormatter,
+  PartialTheme,
   Position,
   ScaleType,
   Settings,
@@ -26,7 +27,7 @@ import {
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { getChartRotationKnob, getToggledNumber } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();
 const rng = getRandomNumberGenerator();
@@ -52,10 +53,22 @@ export const Example = () => {
     g: `Group ${g.toUpperCase()}`,
   }));
 
+  const partialTheme: PartialTheme = {
+    tooltip: {
+      maxTableBodyHeight: getToggledNumber(true, undefined)(
+        'max table body height',
+        100,
+        { min: 0, step: 1 },
+        'Tooltip styles',
+      ),
+    },
+  };
+
   return (
     <Chart>
       <Settings
         showLegend
+        theme={partialTheme}
         baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         onBrushEnd={brushEndListener}
@@ -80,7 +93,8 @@ export const Example = () => {
                       Alert keys of all <b>{length}</b> selected series
                     </span>
                   ),
-                  hide: ({ length }) => length > 0,
+                  disabled: ({ length }) => (length < 1 ? 'Select at least one series' : false),
+                  // hide: ({ length }) => length > 0,
                   onSelect: (series) => alert(`Selected the following: \n - ${series.map((s) => s.key).join('\n - ')}`),
                 },
               ]
