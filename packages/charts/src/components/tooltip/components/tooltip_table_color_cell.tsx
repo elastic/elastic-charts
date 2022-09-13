@@ -9,6 +9,8 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import { combineColors, highContrastColor } from '../../../common/color_calcs';
+import { colorToRgba, RGBATupleToString } from '../../../common/color_library_wrappers';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
 
@@ -29,6 +31,21 @@ export function TooltipTableColorCell({
   ...cellProps
 }: ColorStripCellProps): JSX.Element | null {
   const { backgroundColor } = useTooltipContext();
+
+  const renderColorStrip = (stripColor: string) => {
+    const foregroundRGBA = colorToRgba(stripColor);
+    const backgroundRGBA = colorToRgba(backgroundColor);
+    const blendedFgBg = combineColors(foregroundRGBA, backgroundRGBA);
+    const dotColor = RGBATupleToString(highContrastColor(blendedFgBg));
+    return (
+      <>
+        <div className="echTooltip__colorStrip" style={{ backgroundColor }} />
+        <div className="echTooltip__colorStrip" style={{ backgroundColor: color, color: dotColor }} />
+        <div className="echTooltip__colorStripSpacer" />
+      </>
+    );
+  };
+
   return (
     <TooltipTableCell
       {...cellProps}
@@ -37,13 +54,7 @@ export function TooltipTableColorCell({
         'echTooltip__colorCell--static': displayOnly,
       })}
     >
-      {color ? (
-        <>
-          <div className="echTooltip__colorStrip" style={{ backgroundColor }} />
-          <div className="echTooltip__colorStrip" style={{ backgroundColor: color }} />
-          <div className="echTooltip__colorStripSpacer" />
-        </>
-      ) : null}
+      {color ? renderColorStrip(color) : null}
     </TooltipTableCell>
   );
 }
