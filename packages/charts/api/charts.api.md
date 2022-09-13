@@ -1785,7 +1785,7 @@ export type MetricWNumber = MetricBase & {
 // @alpha (undocumented)
 export type MetricWProgress = MetricWNumber & {
     domainMax: number;
-    progressBarDirection?: LayoutDirection;
+    progressBarDirection: LayoutDirection;
 };
 
 // @alpha (undocumented)
@@ -1799,7 +1799,7 @@ export type MetricWTrend = MetricWNumber & {
         x: number;
         y: number;
     }[];
-    trendShape?: MetricTrendShape;
+    trendShape: MetricTrendShape;
     trendA11yTitle?: string;
     trendA11yDescription?: string;
 };

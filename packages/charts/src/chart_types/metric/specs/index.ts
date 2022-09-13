@@ -39,7 +39,7 @@ export type MetricWNumber = MetricBase & {
 /** @alpha */
 export type MetricWProgress = MetricWNumber & {
   domainMax: number;
-  progressBarDirection?: LayoutDirection;
+  progressBarDirection: LayoutDirection;
 };
 
 /** @alpha */
@@ -54,7 +54,7 @@ export type MetricTrendShape = $Values<typeof MetricTrendShape>;
 /** @alpha */
 export type MetricWTrend = MetricWNumber & {
   trend: { x: number; y: number }[];
-  trendShape?: MetricTrendShape;
+  trendShape: MetricTrendShape;
   trendA11yTitle?: string;
   trendA11yDescription?: string;
 };
