@@ -17,7 +17,7 @@ import { BasicListener, ElementClickListener, ElementOverListener, MetricElement
 import { LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, isMetricWTrend, MetricWProgress, MetricWText, MetricWTrend } from '../../specs';
+import { isMetricWProgress, isMetricWTrend, MetricDatum } from '../../specs';
 import { ProgressBar } from './progress';
 import { SparkLine } from './sparkline';
 import { MetricText } from './text';
@@ -29,7 +29,7 @@ export const Metric: React.FunctionComponent<{
   columnIndex: number;
   totalColumns: number;
   totalRows: number;
-  datum: MetricWText | MetricWProgress | MetricWTrend;
+  datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
   onElementClick?: ElementClickListener;
@@ -66,7 +66,7 @@ export const Metric: React.FunctionComponent<{
   const interactionColor = changeColorLightness(datum.color, lightnessAmount, 0.8);
   const backgroundInteractionColor = changeColorLightness(style.background, lightnessAmount, 0.8);
 
-  const datumWithInteractionColor: MetricWText | MetricWProgress | MetricWTrend = {
+  const datumWithInteractionColor: MetricDatum = {
     ...datum,
     color: interactionColor,
   };

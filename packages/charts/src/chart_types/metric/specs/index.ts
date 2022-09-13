@@ -60,10 +60,13 @@ export type MetricWTrend = MetricWNumber & {
 };
 
 /** @alpha */
+export type MetricDatum =  MetricWNumber | MetricWText | MetricWProgress | MetricWTrend;
+
+/** @alpha */
 export interface MetricSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Metric;
-  data: (MetricWText | MetricWProgress | MetricWTrend | undefined)[][];
+  data: (MetricDatum | undefined)[][];
 }
 
 /** @alpha */
@@ -82,21 +85,21 @@ export type MetricSpecProps = ComponentProps<typeof Metric>;
 
 /** @internal */
 export function isMetricWNumber(
-  datum: MetricWNumber | MetricWText | MetricWProgress | MetricWTrend,
+  datum: MetricDatum,
 ): datum is MetricWNumber {
   return typeof datum.value === 'number' && datum.hasOwnProperty('valueFormatter');
 }
 
 /** @internal */
 export function isMetricWProgress(
-  datum: MetricWNumber | MetricWText | MetricWProgress | MetricWTrend,
+  datum: MetricDatum,
 ): datum is MetricWProgress {
   return typeof datum.value === 'number' && datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend');
 }
 
 /** @internal */
 export function isMetricWTrend(
-  datum: MetricWNumber | MetricWText | MetricWProgress | MetricWTrend,
+  datum: MetricDatum,
 ): datum is MetricWTrend {
   return datum.value === 'number' && datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domainMax');
 }

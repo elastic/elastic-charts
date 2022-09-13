@@ -17,14 +17,7 @@ import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../ut
 import { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import {
-  isMetricWNumber,
-  isMetricWProgress,
-  MetricWNumber,
-  MetricWProgress,
-  MetricWText,
-  MetricWTrend,
-} from '../../specs';
+import { isMetricWNumber, isMetricWProgress, MetricDatum } from '../../specs';
 
 type BreakPoint = 's' | 'm' | 'l';
 
@@ -57,7 +50,7 @@ type ElementVisibility = {
 };
 
 function elementVisibility(
-  datum: MetricWText | MetricWNumber | MetricWProgress | MetricWTrend,
+  datum: MetricDatum,
   panel: Size,
   size: BreakPoint,
 ): ElementVisibility & { titleLines: string[]; subtitleLines: string[] } {
@@ -146,7 +139,7 @@ function elementVisibility(
 /** @internal */
 export const MetricText: React.FunctionComponent<{
   id: string;
-  datum: MetricWText | MetricWNumber | MetricWProgress | MetricWTrend;
+  datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
   onElementClick: () => void;

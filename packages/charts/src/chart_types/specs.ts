@@ -41,4 +41,5 @@ export {
   MetricWProgress,
   MetricWTrend,
   MetricTrendShape,
+  MetricDatum,
 } from './metric/specs';

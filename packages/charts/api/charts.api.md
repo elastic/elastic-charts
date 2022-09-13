@@ -1729,6 +1729,9 @@ export type MetricBase = {
     }>;
 };
 
+// @alpha (undocumented)
+export type MetricDatum = MetricWNumber | MetricWText | MetricWProgress | MetricWTrend;
+
 // @public
 export type MetricElementEvent = {
     type: 'metricElementEvent';
@@ -1741,7 +1744,7 @@ export interface MetricSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.Metric;
     // (undocumented)
-    data: (MetricWText | MetricWProgress | MetricWTrend | undefined)[][];
+    data: (MetricDatum | undefined)[][];
     // (undocumented)
     specType: typeof SpecType.Series;
 }
