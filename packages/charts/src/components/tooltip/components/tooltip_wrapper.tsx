@@ -40,7 +40,6 @@ export const TooltipWrapper = <SI extends SeriesIdentifier = SeriesIdentifier>({
 
     return visibleActions.map(({ onSelect, label, disabled }, i) => {
       const reason = disabled && disabled(selected);
-      // console.log(reason);
 
       return (
         <button

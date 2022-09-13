@@ -89,6 +89,9 @@ $rowColorStripAnimatedWidthDelta: 2px;
 
   &__action {
     color: $euiTextColor;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
   }
 
   &__prompt {
