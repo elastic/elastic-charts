@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Rendering points - areas Multi series area chart - linear can render first spec points 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -22,9 +22,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -32,8 +32,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -42,13 +42,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         0,
         10,
       ],
@@ -59,19 +59,19 @@ Array [
     "x": 0,
     "y": 50,
   },
-  Object {
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -79,9 +79,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -89,8 +89,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -99,13 +99,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1,
         5,
       ],
@@ -120,20 +120,20 @@ Array [
 `;
 
 exports[`Rendering points - areas Multi series area chart - linear can render second spec points 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "blue",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_2",
@@ -141,9 +141,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -151,8 +151,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           0,
           0,
           255,
@@ -161,13 +161,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         0,
         20,
       ],
@@ -178,19 +178,19 @@ Array [
     "x": 0,
     "y": 0,
   },
-  Object {
+  {
     "color": "blue",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_2",
@@ -198,9 +198,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -208,8 +208,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           0,
           0,
           255,
@@ -218,13 +218,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1,
         10,
       ],
@@ -239,20 +239,20 @@ Array [
 `;
 
 exports[`Rendering points - areas Multi series area chart - ordinal can render first spec points 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -260,9 +260,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -270,8 +270,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -280,13 +280,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 25,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         0,
         10,
       ],
@@ -297,19 +297,19 @@ Array [
     "x": 0,
     "y": 50,
   },
-  Object {
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -317,9 +317,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -327,8 +327,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -337,13 +337,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 25,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1,
         5,
       ],
@@ -358,20 +358,20 @@ Array [
 `;
 
 exports[`Rendering points - areas Multi series area chart - ordinal can render second spec points 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "blue",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_2",
@@ -379,9 +379,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -389,8 +389,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           0,
           0,
           255,
@@ -399,13 +399,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 25,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         0,
         20,
       ],
@@ -416,19 +416,19 @@ Array [
     "x": 0,
     "y": 0,
   },
-  Object {
+  {
     "color": "blue",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_2",
@@ -436,9 +436,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -446,8 +446,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           0,
           0,
           255,
@@ -456,13 +456,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 25,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1,
         10,
       ],
@@ -477,20 +477,20 @@ Array [
 `;
 
 exports[`Rendering points - areas Multi series area chart - time can render first spec points 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -498,9 +498,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -508,8 +508,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -518,13 +518,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1546300800000,
         10,
       ],
@@ -535,19 +535,19 @@ Array [
     "x": 0,
     "y": 50,
   },
-  Object {
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -555,9 +555,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -565,8 +565,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -575,13 +575,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1546387200000,
         5,
       ],
@@ -596,20 +596,20 @@ Array [
 `;
 
 exports[`Rendering points - areas Multi series area chart - time can render second spec points 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "blue",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_2",
@@ -617,9 +617,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -627,8 +627,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           0,
           0,
           255,
@@ -637,13 +637,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1546300800000,
         20,
       ],
@@ -654,19 +654,19 @@ Array [
     "x": 0,
     "y": 0,
   },
-  Object {
+  {
     "color": "blue",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_2}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_2",
@@ -674,9 +674,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -684,8 +684,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           0,
           0,
           255,
@@ -694,13 +694,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1546387200000,
         10,
       ],
@@ -715,20 +715,20 @@ Array [
 `;
 
 exports[`Rendering points - areas Single series area chart - linear Can render two points 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -736,9 +736,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -746,8 +746,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -756,13 +756,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         0,
         10,
       ],
@@ -773,19 +773,19 @@ Array [
     "x": 0,
     "y": 0,
   },
-  Object {
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -793,9 +793,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -803,8 +803,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -813,13 +813,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1,
         5,
       ],
@@ -834,20 +834,20 @@ Array [
 `;
 
 exports[`Rendering points - areas Single series area chart - ordinal Can render two points 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -855,9 +855,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -865,8 +865,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -875,13 +875,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 25,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         0,
         10,
       ],
@@ -892,19 +892,19 @@ Array [
     "x": 0,
     "y": 0,
   },
-  Object {
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -912,9 +912,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -922,8 +922,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -932,13 +932,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 25,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1,
         5,
       ],
@@ -953,20 +953,20 @@ Array [
 `;
 
 exports[`Rendering points - areas Single series area chart - time Can render two points 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -974,9 +974,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -984,8 +984,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -994,13 +994,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1546300800000,
         10,
       ],
@@ -1011,19 +1011,19 @@ Array [
     "x": 0,
     "y": 0,
   },
-  Object {
+  {
     "color": "red",
     "orphan": false,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
     "radius": 2,
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -1031,9 +1031,9 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "style": Object {
-      "fill": Object {
-        "color": Array [
+    "style": {
+      "fill": {
+        "color": [
           255,
           255,
           255,
@@ -1041,8 +1041,8 @@ Array [
         ],
       },
       "shape": "circle",
-      "stroke": Object {
-        "color": Array [
+      "stroke": {
+        "color": [
           255,
           0,
           0,
@@ -1051,13 +1051,13 @@ Array [
         "width": 1,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1546387200000,
         5,
       ],
@@ -1072,9 +1072,9 @@ Array [
 `;
 
 exports[`Rendering points - areas Stacked areas with 0 values 1`] = `
-Array [
-  Object {
-    "datum": Array [
+[
+  {
+    "datum": [
       1546300800000,
       0,
     ],
@@ -1086,8 +1086,8 @@ Array [
     "y0": 0,
     "y1": 0,
   },
-  Object {
-    "datum": Array [
+  {
+    "datum": [
       1546387200000,
       5,
     ],
@@ -1103,9 +1103,9 @@ Array [
 `;
 
 exports[`Rendering points - areas Stacked areas with null values 1`] = `
-Array [
-  Object {
-    "datum": Array [
+[
+  {
+    "datum": [
       1546300800000,
       null,
     ],
@@ -1117,8 +1117,8 @@ Array [
     "y0": 0,
     "y1": 0,
   },
-  Object {
-    "datum": Array [
+  {
+    "datum": [
       1546387200000,
       5,
     ],
@@ -1134,9 +1134,9 @@ Array [
 `;
 
 exports[`Rendering points - areas Stacked areas with null values 2`] = `
-Array [
-  Object {
-    "datum": Array [
+[
+  {
+    "datum": [
       1546300800000,
       3,
     ],
@@ -1148,8 +1148,8 @@ Array [
     "y0": 0,
     "y1": 3,
   },
-  Object {
-    "datum": Array [
+  {
+    "datum": [
       1546387200000,
       null,
     ],

@@ -126,7 +126,7 @@ describe('color library wrappers utils', () => {
       'should return null if %s is NaN',
       (color) => {
         expect(colorToRgba(color)).toEqual(Colors.Red.rgba);
-        expect(Logger.warn).toBeCalledTimes(1);
+        expect(Logger.warn).toHaveBeenCalledTimes(1);
       },
     );
   });

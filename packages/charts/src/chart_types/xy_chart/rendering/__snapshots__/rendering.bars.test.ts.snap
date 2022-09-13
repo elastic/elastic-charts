@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Rendering bars Can render two bars within domain 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "red",
     "displayValue": undefined,
     "height": 100,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -22,8 +22,8 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "seriesStyle": Object {
-      "displayValue": Object {
+    "seriesStyle": {
+      "displayValue": {
         "fill": "#777",
         "fontFamily": "sans-serif",
         "fontSize": 8,
@@ -32,21 +32,21 @@ Array [
         "offsetY": 0,
         "padding": 0,
       },
-      "rect": Object {
+      "rect": {
         "opacity": 1,
       },
-      "rectBorder": Object {
+      "rectBorder": {
         "strokeWidth": 1,
         "visible": false,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         0,
         10,
       ],
@@ -58,19 +58,19 @@ Array [
     "x": 0,
     "y": 0,
   },
-  Object {
+  {
     "color": "red",
     "displayValue": undefined,
     "height": 50,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "spec_1",
@@ -78,8 +78,8 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "seriesStyle": Object {
-      "displayValue": Object {
+    "seriesStyle": {
+      "displayValue": {
         "fill": "#777",
         "fontFamily": "sans-serif",
         "fontSize": 8,
@@ -88,21 +88,21 @@ Array [
         "offsetY": 0,
         "padding": 0,
       },
-      "rect": Object {
+      "rect": {
         "opacity": 1,
       },
-      "rectBorder": Object {
+      "rectBorder": {
         "strokeWidth": 1,
         "visible": false,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1,
         5,
       ],
@@ -118,20 +118,20 @@ Array [
 `;
 
 exports[`Rendering bars Multi series bar chart - ordinal can render first spec bars 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "red",
     "displayValue": undefined,
     "height": 50,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{bar1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "bar1",
@@ -139,8 +139,8 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "seriesStyle": Object {
-      "displayValue": Object {
+    "seriesStyle": {
+      "displayValue": {
         "fill": "#777",
         "fontFamily": "sans-serif",
         "fontSize": 8,
@@ -149,21 +149,21 @@ Array [
         "offsetY": 0,
         "padding": 0,
       },
-      "rect": Object {
+      "rect": {
         "opacity": 1,
       },
-      "rectBorder": Object {
+      "rectBorder": {
         "strokeWidth": 1,
         "visible": false,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         0,
         10,
       ],
@@ -175,19 +175,19 @@ Array [
     "x": 0,
     "y": 50,
   },
-  Object {
+  {
     "color": "red",
     "displayValue": undefined,
     "height": 25,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{bar1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "bar1",
@@ -195,8 +195,8 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "seriesStyle": Object {
-      "displayValue": Object {
+    "seriesStyle": {
+      "displayValue": {
         "fill": "#777",
         "fontFamily": "sans-serif",
         "fontSize": 8,
@@ -205,21 +205,21 @@ Array [
         "offsetY": 0,
         "padding": 0,
       },
-      "rect": Object {
+      "rect": {
         "opacity": 1,
       },
-      "rectBorder": Object {
+      "rectBorder": {
         "strokeWidth": 1,
         "visible": false,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1,
         5,
       ],
@@ -235,20 +235,20 @@ Array [
 `;
 
 exports[`Rendering bars Multi series bar chart - ordinal can render second spec bars 1`] = `
-Array [
-  Object {
+[
+  {
     "color": "blue",
     "displayValue": undefined,
     "height": 100,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{bar2}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "bar2",
@@ -256,8 +256,8 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "seriesStyle": Object {
-      "displayValue": Object {
+    "seriesStyle": {
+      "displayValue": {
         "fill": "#777",
         "fontFamily": "sans-serif",
         "fontSize": 8,
@@ -266,21 +266,21 @@ Array [
         "offsetY": 0,
         "padding": 0,
       },
-      "rect": Object {
+      "rect": {
         "opacity": 1,
       },
-      "rectBorder": Object {
+      "rectBorder": {
         "strokeWidth": 1,
         "visible": false,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         0,
         20,
       ],
@@ -292,19 +292,19 @@ Array [
     "x": 25,
     "y": 0,
   },
-  Object {
+  {
     "color": "blue",
     "displayValue": undefined,
     "height": 50,
-    "panel": Object {
+    "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
-    "seriesIdentifier": Object {
+    "seriesIdentifier": {
       "key": "groupId{group_1}spec{bar2}yAccessor{1}splitAccessors{}",
-      "seriesKeys": Array [
+      "seriesKeys": [
         1,
       ],
       "specId": "bar2",
@@ -312,8 +312,8 @@ Array [
       "xAccessor": 0,
       "yAccessor": 1,
     },
-    "seriesStyle": Object {
-      "displayValue": Object {
+    "seriesStyle": {
+      "displayValue": {
         "fill": "#777",
         "fontFamily": "sans-serif",
         "fontSize": 8,
@@ -322,21 +322,21 @@ Array [
         "offsetY": 0,
         "padding": 0,
       },
-      "rect": Object {
+      "rect": {
         "opacity": 1,
       },
-      "rectBorder": Object {
+      "rectBorder": {
         "strokeWidth": 1,
         "visible": false,
       },
     },
-    "transform": Object {
+    "transform": {
       "x": 0,
       "y": 0,
     },
-    "value": Object {
+    "value": {
       "accessor": "y1",
-      "datum": Array [
+      "datum": [
         1,
         10,
       ],

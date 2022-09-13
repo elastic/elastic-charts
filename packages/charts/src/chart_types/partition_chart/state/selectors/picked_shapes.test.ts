@@ -99,8 +99,8 @@ describe('Picked shapes selector', () => {
     store.dispatch(onPointerMove({ x: 200, y: 200 }, 0));
     store.dispatch(onMouseDown({ x: 200, y: 200 }, 1));
     store.dispatch(onMouseUp({ x: 200, y: 200 }, 2));
-    expect(onClickListener).toBeCalled();
-    expect(onClickListener).toBeCalledWith([
+    expect(onClickListener).toHaveBeenCalled();
+    expect(onClickListener).toHaveBeenCalledWith([
       [
         [
           {
@@ -178,8 +178,8 @@ describe('Picked shapes selector', () => {
     store.dispatch(onPointerMove({ x, y }, 0));
     store.dispatch(onMouseDown({ x, y }, 1));
     store.dispatch(onMouseUp({ x, y }, 2));
-    expect(onClickListener).toBeCalled();
-    expect(onClickListener).toBeCalledWith([
+    expect(onClickListener).toHaveBeenCalled();
+    expect(onClickListener).toHaveBeenCalledWith([
       [
         [
           {
@@ -217,8 +217,8 @@ describe('Picked shapes selector', () => {
     store.dispatch(onPointerMove({ x: 200, y: 200 }, 0));
     store.dispatch(onMouseDown({ x: 200, y: 200 }, 1));
     store.dispatch(onMouseUp({ x: 200, y: 200 }, 2));
-    expect(onClickListener).toBeCalled();
-    expect(onClickListener).toBeCalledWith([
+    expect(onClickListener).toHaveBeenCalled();
+    expect(onClickListener).toHaveBeenCalledWith([
       [
         [
           {

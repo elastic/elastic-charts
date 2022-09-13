@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Chart State utils should compute and format specifications for non stacked chart 1`] = `
-Array [
-  Object {
-    "data": Array [
-      Object {
-        "datum": Object {
+[
+  {
+    "data": [
+      {
+        "datum": {
           "x": 0,
           "y": 1,
         },
@@ -18,8 +18,8 @@ Array [
         "y0": null,
         "y1": 1,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "x": 1,
           "y": 2,
         },
@@ -32,8 +32,8 @@ Array [
         "y0": null,
         "y1": 2,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "x": 2,
           "y": 10,
         },
@@ -46,8 +46,8 @@ Array [
         "y0": null,
         "y1": 10,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "x": 3,
           "y": 6,
         },
@@ -66,26 +66,26 @@ Array [
     "isFiltered": false,
     "isStacked": false,
     "key": "groupId{group1}spec{spec1}yAccessor{y}splitAccessors{}",
-    "seriesKeys": Array [
+    "seriesKeys": [
       "y",
     ],
     "seriesType": "line",
-    "spec": Object {
+    "spec": {
       "chartType": "xy_axis",
-      "data": Array [
-        Object {
+      "data": [
+        {
           "x": 0,
           "y": 1,
         },
-        Object {
+        {
           "x": 1,
           "y": 2,
         },
-        Object {
+        {
           "x": 2,
           "y": 10,
         },
-        Object {
+        {
           "x": 3,
           "y": 6,
         },
@@ -98,7 +98,7 @@ Array [
       "specType": "series",
       "xAccessor": "x",
       "xScaleType": "linear",
-      "yAccessors": Array [
+      "yAccessors": [
         "y",
       ],
       "yScaleType": "log",
@@ -109,10 +109,10 @@ Array [
     "xAccessor": "x",
     "yAccessor": "y",
   },
-  Object {
-    "data": Array [
-      Object {
-        "datum": Object {
+  {
+    "data": [
+      {
+        "datum": {
           "x": 0,
           "y": 1,
         },
@@ -125,8 +125,8 @@ Array [
         "y0": null,
         "y1": 1,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "x": 1,
           "y": 2,
         },
@@ -139,8 +139,8 @@ Array [
         "y0": null,
         "y1": 2,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "x": 2,
           "y": 10,
         },
@@ -153,8 +153,8 @@ Array [
         "y0": null,
         "y1": 10,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "x": 3,
           "y": 6,
         },
@@ -173,26 +173,26 @@ Array [
     "isFiltered": false,
     "isStacked": false,
     "key": "groupId{group2}spec{spec2}yAccessor{y}splitAccessors{}",
-    "seriesKeys": Array [
+    "seriesKeys": [
       "y",
     ],
     "seriesType": "line",
-    "spec": Object {
+    "spec": {
       "chartType": "xy_axis",
-      "data": Array [
-        Object {
+      "data": [
+        {
           "x": 0,
           "y": 1,
         },
-        Object {
+        {
           "x": 1,
           "y": 2,
         },
-        Object {
+        {
           "x": 2,
           "y": 10,
         },
-        Object {
+        {
           "x": 3,
           "y": 6,
         },
@@ -205,7 +205,7 @@ Array [
       "specType": "series",
       "xAccessor": "x",
       "xScaleType": "linear",
-      "yAccessors": Array [
+      "yAccessors": [
         "y",
       ],
       "yScaleType": "log",
@@ -220,11 +220,11 @@ Array [
 `;
 
 exports[`Chart State utils should compute and format specifications for stacked chart 1`] = `
-Array [
-  Object {
-    "data": Array [
-      Object {
-        "datum": Object {
+[
+  {
+    "data": [
+      {
+        "datum": {
           "g": "a",
           "x": 0,
           "y": 1,
@@ -237,8 +237,8 @@ Array [
         "y0": 0,
         "y1": 1,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "a",
           "x": 1,
           "y": 2,
@@ -251,8 +251,8 @@ Array [
         "y0": 0,
         "y1": 2,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "a",
           "x": 2,
           "y": 3,
@@ -265,8 +265,8 @@ Array [
         "y0": 0,
         "y1": 3,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "a",
           "x": 3,
           "y": 4,
@@ -285,50 +285,50 @@ Array [
     "isFiltered": false,
     "isStacked": true,
     "key": "groupId{group2}spec{spec2}yAccessor{y}splitAccessors{g-a}",
-    "seriesKeys": Array [
+    "seriesKeys": [
       "a",
       "y",
     ],
     "seriesType": "line",
-    "spec": Object {
+    "spec": {
       "chartType": "xy_axis",
-      "data": Array [
-        Object {
+      "data": [
+        {
           "g": "a",
           "x": 0,
           "y": 1,
         },
-        Object {
+        {
           "g": "b",
           "x": 0,
           "y": 2,
         },
-        Object {
+        {
           "g": "a",
           "x": 1,
           "y": 2,
         },
-        Object {
+        {
           "g": "b",
           "x": 1,
           "y": 3,
         },
-        Object {
+        {
           "g": "a",
           "x": 2,
           "y": 3,
         },
-        Object {
+        {
           "g": "b",
           "x": 2,
           "y": 4,
         },
-        Object {
+        {
           "g": "a",
           "x": 3,
           "y": 4,
         },
-        Object {
+        {
           "g": "b",
           "x": 3,
           "y": 5,
@@ -340,15 +340,15 @@ Array [
       "id": "spec2",
       "seriesType": "line",
       "specType": "series",
-      "splitSeriesAccessors": Array [
+      "splitSeriesAccessors": [
         "g",
       ],
-      "stackAccessors": Array [
+      "stackAccessors": [
         "x",
       ],
       "xAccessor": "x",
       "xScaleType": "linear",
-      "yAccessors": Array [
+      "yAccessors": [
         "y",
       ],
       "yScaleType": "log",
@@ -361,10 +361,10 @@ Array [
     "xAccessor": "x",
     "yAccessor": "y",
   },
-  Object {
-    "data": Array [
-      Object {
-        "datum": Object {
+  {
+    "data": [
+      {
+        "datum": {
           "g": "b",
           "x": 0,
           "y": 2,
@@ -377,8 +377,8 @@ Array [
         "y0": 1,
         "y1": 3,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "b",
           "x": 1,
           "y": 3,
@@ -391,8 +391,8 @@ Array [
         "y0": 2,
         "y1": 5,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "b",
           "x": 2,
           "y": 4,
@@ -405,8 +405,8 @@ Array [
         "y0": 3,
         "y1": 7,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "b",
           "x": 3,
           "y": 5,
@@ -425,50 +425,50 @@ Array [
     "isFiltered": false,
     "isStacked": true,
     "key": "groupId{group2}spec{spec2}yAccessor{y}splitAccessors{g-b}",
-    "seriesKeys": Array [
+    "seriesKeys": [
       "b",
       "y",
     ],
     "seriesType": "line",
-    "spec": Object {
+    "spec": {
       "chartType": "xy_axis",
-      "data": Array [
-        Object {
+      "data": [
+        {
           "g": "a",
           "x": 0,
           "y": 1,
         },
-        Object {
+        {
           "g": "b",
           "x": 0,
           "y": 2,
         },
-        Object {
+        {
           "g": "a",
           "x": 1,
           "y": 2,
         },
-        Object {
+        {
           "g": "b",
           "x": 1,
           "y": 3,
         },
-        Object {
+        {
           "g": "a",
           "x": 2,
           "y": 3,
         },
-        Object {
+        {
           "g": "b",
           "x": 2,
           "y": 4,
         },
-        Object {
+        {
           "g": "a",
           "x": 3,
           "y": 4,
         },
-        Object {
+        {
           "g": "b",
           "x": 3,
           "y": 5,
@@ -480,15 +480,15 @@ Array [
       "id": "spec2",
       "seriesType": "line",
       "specType": "series",
-      "splitSeriesAccessors": Array [
+      "splitSeriesAccessors": [
         "g",
       ],
-      "stackAccessors": Array [
+      "stackAccessors": [
         "x",
       ],
       "xAccessor": "x",
       "xScaleType": "linear",
-      "yAccessors": Array [
+      "yAccessors": [
         "y",
       ],
       "yScaleType": "log",
@@ -505,11 +505,11 @@ Array [
 `;
 
 exports[`Chart State utils should compute and format specifications for stacked chart 2`] = `
-Array [
-  Object {
-    "data": Array [
-      Object {
-        "datum": Object {
+[
+  {
+    "data": [
+      {
+        "datum": {
           "g": "a",
           "x": 0,
           "y": 1,
@@ -523,8 +523,8 @@ Array [
         "y0": null,
         "y1": 1,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "a",
           "x": 1,
           "y": 2,
@@ -538,8 +538,8 @@ Array [
         "y0": null,
         "y1": 2,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "a",
           "x": 2,
           "y": 3,
@@ -553,8 +553,8 @@ Array [
         "y0": null,
         "y1": 3,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "a",
           "x": 3,
           "y": 4,
@@ -574,50 +574,50 @@ Array [
     "isFiltered": false,
     "isStacked": false,
     "key": "groupId{group1}spec{spec1}yAccessor{y}splitAccessors{g-a}",
-    "seriesKeys": Array [
+    "seriesKeys": [
       "a",
       "y",
     ],
     "seriesType": "line",
-    "spec": Object {
+    "spec": {
       "chartType": "xy_axis",
-      "data": Array [
-        Object {
+      "data": [
+        {
           "g": "a",
           "x": 0,
           "y": 1,
         },
-        Object {
+        {
           "g": "b",
           "x": 0,
           "y": 2,
         },
-        Object {
+        {
           "g": "a",
           "x": 1,
           "y": 2,
         },
-        Object {
+        {
           "g": "b",
           "x": 1,
           "y": 3,
         },
-        Object {
+        {
           "g": "a",
           "x": 2,
           "y": 3,
         },
-        Object {
+        {
           "g": "b",
           "x": 2,
           "y": 4,
         },
-        Object {
+        {
           "g": "a",
           "x": 3,
           "y": 4,
         },
-        Object {
+        {
           "g": "b",
           "x": 3,
           "y": 5,
@@ -629,12 +629,12 @@ Array [
       "id": "spec1",
       "seriesType": "line",
       "specType": "series",
-      "splitSeriesAccessors": Array [
+      "splitSeriesAccessors": [
         "g",
       ],
       "xAccessor": "x",
       "xScaleType": "linear",
-      "yAccessors": Array [
+      "yAccessors": [
         "y",
       ],
       "yScaleType": "log",
@@ -647,10 +647,10 @@ Array [
     "xAccessor": "x",
     "yAccessor": "y",
   },
-  Object {
-    "data": Array [
-      Object {
-        "datum": Object {
+  {
+    "data": [
+      {
+        "datum": {
           "g": "b",
           "x": 0,
           "y": 2,
@@ -664,8 +664,8 @@ Array [
         "y0": null,
         "y1": 2,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "b",
           "x": 1,
           "y": 3,
@@ -679,8 +679,8 @@ Array [
         "y0": null,
         "y1": 3,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "b",
           "x": 2,
           "y": 4,
@@ -694,8 +694,8 @@ Array [
         "y0": null,
         "y1": 4,
       },
-      Object {
-        "datum": Object {
+      {
+        "datum": {
           "g": "b",
           "x": 3,
           "y": 5,
@@ -715,50 +715,50 @@ Array [
     "isFiltered": false,
     "isStacked": false,
     "key": "groupId{group1}spec{spec1}yAccessor{y}splitAccessors{g-b}",
-    "seriesKeys": Array [
+    "seriesKeys": [
       "b",
       "y",
     ],
     "seriesType": "line",
-    "spec": Object {
+    "spec": {
       "chartType": "xy_axis",
-      "data": Array [
-        Object {
+      "data": [
+        {
           "g": "a",
           "x": 0,
           "y": 1,
         },
-        Object {
+        {
           "g": "b",
           "x": 0,
           "y": 2,
         },
-        Object {
+        {
           "g": "a",
           "x": 1,
           "y": 2,
         },
-        Object {
+        {
           "g": "b",
           "x": 1,
           "y": 3,
         },
-        Object {
+        {
           "g": "a",
           "x": 2,
           "y": 3,
         },
-        Object {
+        {
           "g": "b",
           "x": 2,
           "y": 4,
         },
-        Object {
+        {
           "g": "a",
           "x": 3,
           "y": 4,
         },
-        Object {
+        {
           "g": "b",
           "x": 3,
           "y": 5,
@@ -770,12 +770,12 @@ Array [
       "id": "spec1",
       "seriesType": "line",
       "specType": "series",
-      "splitSeriesAccessors": Array [
+      "splitSeriesAccessors": [
         "g",
       ],
       "xAccessor": "x",
       "xScaleType": "linear",
-      "yAccessors": Array [
+      "yAccessors": [
         "y",
       ],
       "yScaleType": "log",

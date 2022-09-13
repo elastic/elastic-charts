@@ -747,7 +747,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(ds.data, Fit.Lookahead, scaleType);
             const [current, next] = ds.data;
 
-            expect(testModule.getValue).nthCalledWith(
+            expect(testModule.getValue).toHaveBeenNthCalledWith(
               1,
               expect.objectContaining(current),
               0,
@@ -765,7 +765,7 @@ describe('Fit Function', () => {
             const current = ds.data[8];
             const next = ds.data[11];
 
-            expect(testModule.getValue).nthCalledWith(
+            expect(testModule.getValue).toHaveBeenNthCalledWith(
               4,
               expect.objectContaining(current),
               8,
@@ -781,7 +781,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(ds.data, Fit.Lookahead, scaleType);
             const [current, previous] = ds.data.slice().reverse();
 
-            expect(testModule.getValue).lastCalledWith(
+            expect(testModule.getValue).toHaveBeenLastCalledWith(
               expect.objectContaining(current),
               12,
               expect.objectContaining(previous),
@@ -796,7 +796,7 @@ describe('Fit Function', () => {
 
             const { length } = dataSeries.data.filter(({ y1 }) => y1 === null);
 
-            expect(testModule.getValue).toBeCalledTimes(length);
+            expect(testModule.getValue).toHaveBeenCalledTimes(length);
           });
 
           it('should fill null values correctly', () => {
@@ -824,7 +824,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(ds.data, Fit.Nearest, scaleType);
             const [current, next] = ds.data;
 
-            expect(testModule.getValue).nthCalledWith(
+            expect(testModule.getValue).toHaveBeenNthCalledWith(
               1,
               expect.objectContaining(current),
               0,
@@ -842,7 +842,7 @@ describe('Fit Function', () => {
             const current = ds.data[8];
             const next = ds.data[11];
 
-            expect(testModule.getValue).nthCalledWith(
+            expect(testModule.getValue).toHaveBeenNthCalledWith(
               4,
               expect.objectContaining(current),
               8,
@@ -858,7 +858,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(ds.data, Fit.Nearest, scaleType);
             const [current, previous] = ds.data.slice().reverse();
 
-            expect(testModule.getValue).lastCalledWith(
+            expect(testModule.getValue).toHaveBeenLastCalledWith(
               expect.objectContaining(current),
               12,
               expect.objectContaining(previous),
@@ -872,7 +872,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(dataSeries.data, Fit.Nearest, scaleType);
             const { length } = dataSeries.data.filter(({ y1 }) => y1 === null);
 
-            expect(testModule.getValue).toBeCalledTimes(length);
+            expect(testModule.getValue).toHaveBeenCalledTimes(length);
           });
 
           it('should fill null values correctly', () => {
@@ -901,7 +901,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(ds.data, Fit.Average, scaleType);
             const [current, next] = ds.data;
 
-            expect(testModule.getValue).nthCalledWith(
+            expect(testModule.getValue).toHaveBeenNthCalledWith(
               1,
               expect.objectContaining(current),
               0,
@@ -919,7 +919,7 @@ describe('Fit Function', () => {
             const current = ds.data[8];
             const next = ds.data[11];
 
-            expect(testModule.getValue).nthCalledWith(
+            expect(testModule.getValue).toHaveBeenNthCalledWith(
               4,
               expect.objectContaining(current),
               8,
@@ -935,7 +935,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(ds.data, Fit.Average, scaleType);
             const [current, previous] = ds.data.slice().reverse();
 
-            expect(testModule.getValue).lastCalledWith(
+            expect(testModule.getValue).toHaveBeenLastCalledWith(
               expect.objectContaining(current),
               12,
               expect.objectContaining(previous),
@@ -949,7 +949,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(dataSeries.data, Fit.Average, scaleType);
             const { length } = dataSeries.data.filter(({ y1 }) => y1 === null);
 
-            expect(testModule.getValue).toBeCalledTimes(length);
+            expect(testModule.getValue).toHaveBeenCalledTimes(length);
           });
 
           it('should fill null values correctly', () => {
@@ -978,7 +978,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(ds.data, Fit.Linear, scaleType);
             const [current, next] = ds.data;
 
-            expect(testModule.getValue).nthCalledWith(
+            expect(testModule.getValue).toHaveBeenNthCalledWith(
               1,
               expect.objectContaining(current),
               0,
@@ -996,7 +996,7 @@ describe('Fit Function', () => {
             const current = ds.data[8];
             const next = ds.data[11];
 
-            expect(testModule.getValue).nthCalledWith(
+            expect(testModule.getValue).toHaveBeenNthCalledWith(
               4,
               expect.objectContaining(current),
               8,
@@ -1012,7 +1012,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(ds.data, Fit.Linear, scaleType);
             const [current, previous] = ds.data.slice().reverse();
 
-            expect(testModule.getValue).lastCalledWith(
+            expect(testModule.getValue).toHaveBeenLastCalledWith(
               expect.objectContaining(current),
               12,
               expect.objectContaining(previous),
@@ -1026,7 +1026,7 @@ describe('Fit Function', () => {
             testModule.fitFunction(dataSeries.data, Fit.Linear, scaleType);
             const { length } = dataSeries.data.filter(({ y1 }) => y1 === null);
 
-            expect(testModule.getValue).toBeCalledTimes(length);
+            expect(testModule.getValue).toHaveBeenCalledTimes(length);
           });
 
           it('should fill null values correctly', () => {
