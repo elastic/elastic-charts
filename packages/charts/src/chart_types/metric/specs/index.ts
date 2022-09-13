@@ -94,12 +94,12 @@ export function isMetricWNumber(
 export function isMetricWProgress(
   datum: MetricDatum,
 ): datum is MetricWProgress {
-  return typeof datum.value === 'number' && datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend');
+  return isMetricWNumber(datum) && datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend');
 }
 
 /** @internal */
 export function isMetricWTrend(
   datum: MetricDatum,
 ): datum is MetricWTrend {
-  return datum.value === 'number' && datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domainMax');
+  return isMetricWNumber(datum) && datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domainMax');
 }
