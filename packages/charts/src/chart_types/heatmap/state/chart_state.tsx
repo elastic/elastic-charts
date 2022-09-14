@@ -98,7 +98,7 @@ export class HeatmapState implements InternalChartState {
   }
 
   isTooltipVisible(globalState: GlobalChartState) {
-    return { visible: isTooltipVisibleSelector(globalState), isExternal: false };
+    return isTooltipVisibleSelector(globalState);
   }
 
   getTooltipInfo(globalState: GlobalChartState) {

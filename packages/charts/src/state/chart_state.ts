@@ -47,6 +47,13 @@ import { getInitialPointerState, getInitialTooltipState } from './utils';
 /** @internal */
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 
+/** @internal */
+export interface TooltipVisibility {
+  visible: boolean;
+  isExternal: boolean;
+  displayOnly: boolean;
+}
+
 /**
  * A set of chart-type-dependant functions that required by all chart type
  * @internal
@@ -105,7 +112,7 @@ export interface InternalChartState {
    * Describe if the tooltip is visible and comes from an external source
    * @param globalState
    */
-  isTooltipVisible(globalState: GlobalChartState): { visible: boolean; isExternal: boolean };
+  isTooltipVisible(globalState: GlobalChartState): TooltipVisibility;
   /**
    * Get the tooltip information to display
    * @param globalState the GlobalChartState

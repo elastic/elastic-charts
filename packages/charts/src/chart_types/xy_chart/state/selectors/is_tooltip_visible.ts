@@ -8,7 +8,7 @@
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { TooltipType } from '../../../../specs/constants';
-import { InteractionsState } from '../../../../state/chart_state';
+import { InteractionsState, TooltipVisibility } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { isExternalTooltipVisibleSelector } from '../../../../state/selectors/is_external_tooltip_visible';
@@ -39,7 +39,7 @@ function isTooltipVisible(
   tooltip: TooltipInfo,
   isAnnotationTooltipVisible: boolean,
   externalTooltipVisible: boolean,
-) {
+): TooltipVisibility {
   const isLocalTooltip =
     tooltipType !== TooltipType.None &&
     projectedPointerPosition.x > -1 &&
@@ -50,5 +50,6 @@ function isTooltipVisible(
   return {
     visible: isLocalTooltip || isExternalTooltip || pinned,
     isExternal: externalTooltipVisible,
+    displayOnly: false,
   };
 }

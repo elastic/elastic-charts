@@ -16,6 +16,7 @@ import { getPickedShapes } from './picked_shapes';
 const EMPTY_TOOLTIP = Object.freeze({
   header: null,
   values: [],
+  disableActions: false,
 });
 
 /** @internal */
@@ -29,6 +30,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
     const tooltipInfo: TooltipInfo = {
       header: null,
       values: [],
+      disableActions: false,
     };
 
     if (Array.isArray(pickedShapes)) {
@@ -48,6 +50,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
             value: `${shape.datum.x}`,
             formattedValue: spec.xAxisLabelFormatter(shape.datum.x),
             datum: shape.datum,
+            displayOnly: true,
           });
 
           // Y-axis value
@@ -63,6 +66,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
             value: `${shape.datum.y}`,
             formattedValue: spec.yAxisLabelFormatter(shape.datum.y),
             datum: shape.datum,
+            displayOnly: true,
           });
 
           // Cell value
@@ -93,7 +97,9 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
         value: `${pickedShapes.value}`,
         formattedValue: `${pickedShapes.value}`,
         datum: pickedShapes.value,
+        displayOnly: true,
       });
+      tooltipInfo.disableActions = true;
     }
 
     return tooltipInfo;

@@ -166,15 +166,18 @@ export function interactionsReducer(
       if (!action.pinned) {
         return {
           ...state,
-          pointer: {
-            ...state.pointer,
-            pinned: null,
-          },
+          pointer: action.resetPointer
+            ? getInitialPointerState()
+            : {
+                ...state.pointer,
+                pinned: null,
+              },
           tooltip: getInitialTooltipState(),
         };
       }
 
-      if (!getInternalIsTooltipVisibleSelector(globalState).visible) {
+      const { visible, displayOnly } = getInternalIsTooltipVisibleSelector(globalState);
+      if (!visible || displayOnly) {
         return state;
       }
 

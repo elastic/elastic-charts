@@ -87,6 +87,7 @@ export class PartitionState implements InternalChartState {
     return {
       visible: isTooltipVisibleSelector(globalState),
       isExternal: false,
+      displayOnly: false,
     };
   }
 

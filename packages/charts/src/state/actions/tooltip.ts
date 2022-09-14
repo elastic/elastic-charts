@@ -18,6 +18,7 @@ export const ON_TOOLTIP_ITEM_SELECTED = 'ON_TOOLTIP_ITEM_SELECTED';
 export interface ToggleTooltipStickAction {
   type: typeof ON_TOOLTIP_PINNED;
   pinned: boolean;
+  resetPointer: boolean;
 }
 
 /** @internal */
@@ -27,8 +28,8 @@ export interface ToggleSelectedTooltipItemAction {
 }
 
 /** @internal */
-export function onTooltipPinned(pinned: boolean): ToggleTooltipStickAction {
-  return { type: ON_TOOLTIP_PINNED, pinned };
+export function onTooltipPinned(pinned: boolean, resetPointer: boolean = false): ToggleTooltipStickAction {
+  return { type: ON_TOOLTIP_PINNED, pinned, resetPointer };
 }
 
 /** @internal */

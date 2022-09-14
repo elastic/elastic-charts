@@ -12,7 +12,7 @@ import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
 import { Tooltip } from '../../../components/tooltip/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { InternalChartState, GlobalChartState, BackwardRef, TooltipVisibility } from '../../../state/chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
@@ -88,8 +88,12 @@ export class GoalState implements InternalChartState {
     return DEFAULT_CSS_CURSOR;
   }
 
-  isTooltipVisible(globalState: GlobalChartState) {
-    return { visible: isTooltipVisibleSelector(globalState), isExternal: false };
+  isTooltipVisible(globalState: GlobalChartState): TooltipVisibility {
+    return {
+      visible: isTooltipVisibleSelector(globalState),
+      isExternal: false,
+      displayOnly: false,
+    };
   }
 
   getTooltipInfo(globalState: GlobalChartState) {

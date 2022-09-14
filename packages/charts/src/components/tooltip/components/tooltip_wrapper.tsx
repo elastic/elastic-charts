@@ -48,7 +48,7 @@ export const TooltipWrapper = <SI extends SeriesIdentifier = SeriesIdentifier>({
           title={typeof reason === 'string' ? reason : undefined}
           disabled={Boolean(reason)}
           onClick={() => {
-            tooltipPinned(false);
+            tooltipPinned(false, true);
             // timeout used to close tooltip before calling action
             setTimeout(onSelect, 0, selected);
           }}

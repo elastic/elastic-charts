@@ -9,6 +9,7 @@
 import { BrushAxis } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -17,14 +18,13 @@ import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_s
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getIsDragging = (state: GlobalChartState) => state.interactions.pointer.dragging;
-const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
 
 /** @internal */
 export const getBrushAreaSelector = createCustomCachedSelector(
   [
     getIsDragging,
     getMouseDownPosition,
-    getCurrentPointerPosition,
+    getActivePointerPosition,
     getSettingsSpecSelector,
     computeChartElementSizesSelector,
     getBrushedHighlightedShapesSelector,
