@@ -55,7 +55,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   const scrollToTarget = debounce((i) => {
     const target = tableBodyRef.current?.querySelector(`#${getRowId(i)}`);
     if (!target) return;
-    target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'start' });
   }, 100);
   useEffect(() => {
     if (!ready || targetRowIndex === -1 || props.pinned) return;
