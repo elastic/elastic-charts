@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, {CSSProperties} from 'react';
+import React, { CSSProperties } from 'react';
 
 import { Color } from '../../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
@@ -172,6 +172,13 @@ export const MetricText: React.FunctionComponent<{
   const titleWidthMaxSize = size === 's' ? '100%' : '80%';
   const titlesWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
 
+  const isNumericalMetric = isMetricWNumber(datum);
+  const textParts = isNumericalMetric
+    ? isFiniteNumber(value)
+      ? splitNumericSuffixPrefix(datum.valueFormatter(value))
+      : [['normal', style.nonFiniteText]]
+    : [['normal', datum.value]];
+
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
       <div>
@@ -190,7 +197,7 @@ export const MetricText: React.FunctionComponent<{
                   fontSize: `${TITLE_FONT_SIZE[size]}px`,
                   whiteSpace: 'pre-wrap',
                   width: titlesWidth,
-                  ...lineClamp(visibility.titleLines.length)
+                  ...lineClamp(visibility.titleLines.length),
                 }}
                 title={datum.title}
               >
@@ -217,7 +224,7 @@ export const MetricText: React.FunctionComponent<{
               fontSize: `${SUBTITLE_FONT_SIZE[size]}px`,
               width: titlesWidth,
               whiteSpace: 'pre-wrap',
-              ...lineClamp(visibility.subtitleLines.length)
+              ...lineClamp(visibility.subtitleLines.length),
             }}
             title={datum.subtitle}
           >
@@ -234,42 +241,45 @@ export const MetricText: React.FunctionComponent<{
         )}
       </div>
       <div>
-        <p className="echMetricText__value" style={{ fontSize: `${VALUE_FONT_SIZE[size]}px`, textOverflow: isMetricWNumber(datum) ? undefined : 'ellipsis'}}>
-          {isMetricWNumber(datum)
-            ? isFiniteNumber(value)
-              ? splitNumericSuffixPrefix(datum.valueFormatter(value)).map(([type, text], i) =>
-                  type === 'numeric' ? (
-                    text
-                  ) : (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <span
-                      key={`${text}${i}`}
-                      className="echMetricText__part"
-                      style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}
-                    >
-                      {text}
-                    </span>
-                  ),
-                )
-              : style.nonFiniteText
-            : value}
+        <p
+          className="echMetricText__value"
+          style={{
+            fontSize: `${VALUE_FONT_SIZE[size]}px`,
+            textOverflow: isNumericalMetric ? undefined : 'ellipsis',
+          }}
+          title={textParts.map(([, text]) => text).join('')}
+        >
+          {textParts.map(([emphasis, text], i) => {
+            return emphasis === 'small' ? (
+              <span
+                key={`${text}${i}`}
+                className="echMetricText__part"
+                style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}
+              >
+                {text}
+              </span>
+            ) : (
+              text
+            );
+          })}
         </p>
       </div>
     </div>
   );
 };
 
-function splitNumericSuffixPrefix(text: string) {
+function splitNumericSuffixPrefix(text: string): ['normal' | 'small', string][] {
   const charts = text.split('');
-  const parts = charts.reduce<Array<[string, string[]]>>((acc, curr) => {
-    const type = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'numeric' : 'string';
+  return charts
+    .reduce<Array<['normal' | 'small', string[]]>>((acc, curr) => {
+      const type = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'normal' : 'small';
 
-    if (acc.length > 0 && acc[acc.length - 1][0] === type) {
-      acc[acc.length - 1][1].push(curr);
-    } else {
-      acc.push([type, [curr]]);
-    }
-    return acc;
-  }, []);
-  return parts.map(([type, chars]) => [type, chars.join('')]);
+      if (acc.length > 0 && acc[acc.length - 1][0] === type) {
+        acc[acc.length - 1][1].push(curr);
+      } else {
+        acc.push([type, [curr]]);
+      }
+      return acc;
+    }, [])
+    .map(([type, chars]) => [type, chars.join('')]);
 }
