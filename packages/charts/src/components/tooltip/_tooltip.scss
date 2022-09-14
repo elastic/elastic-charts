@@ -17,8 +17,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
   color: $euiTextColor;
   overflow: hidden;
   cursor: default;
-  transition: box-shadow 400ms;
-  transition: opacity $euiAnimSpeedNormal;
+  transition: box-shadow 400ms, opacity $euiAnimSpeedNormal;
 
   &--pinned {
     @include euiBottomShadowSmall;
@@ -98,7 +97,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
     color: $euiTextSubduedColor;
   }
 
-  &__action{
+  &__action {
     cursor: pointer;
 
     &:not([disabled]):hover {

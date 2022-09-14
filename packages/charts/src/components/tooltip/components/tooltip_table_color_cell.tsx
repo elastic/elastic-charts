@@ -11,6 +11,7 @@ import React from 'react';
 
 import { combineColors, highContrastColor } from '../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../common/color_library_wrappers';
+import { Colors } from '../../../common/colors';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
 
@@ -36,7 +37,7 @@ export function TooltipTableColorCell({
     const foregroundRGBA = colorToRgba(stripColor);
     const backgroundRGBA = colorToRgba(backgroundColor);
     const blendedFgBg = combineColors(foregroundRGBA, backgroundRGBA);
-    const dotColor = RGBATupleToString(highContrastColor(blendedFgBg));
+    const dotColor = RGBATupleToString(highContrastColor(blendedFgBg, 'WCAG3'));
     return (
       <>
         <div className="echTooltip__colorStrip" style={{ backgroundColor }} />
@@ -54,7 +55,7 @@ export function TooltipTableColorCell({
         'echTooltip__colorCell--static': displayOnly,
       })}
     >
-      {color ? renderColorStrip(color) : null}
+      {color && color !== Colors.Transparent.keyword ? renderColorStrip(color) : null}
     </TooltipTableCell>
   );
 }
