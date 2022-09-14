@@ -234,7 +234,7 @@ export const MetricText: React.FunctionComponent<{
         )}
       </div>
       <div>
-        <p className="echMetricText__value" style={{ fontSize: `${VALUE_FONT_SIZE[size]}px` }}>
+        <p className="echMetricText__value" style={{ fontSize: `${VALUE_FONT_SIZE[size]}px`, textOverflow: isMetricWNumber(datum) ? undefined : 'ellipsis'}}>
           {isMetricWNumber(datum)
             ? isFiniteNumber(value)
               ? splitNumericSuffixPrefix(datum.valueFormatter(value)).map(([type, text], i) =>
