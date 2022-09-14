@@ -180,6 +180,7 @@ export const MetricText: React.FunctionComponent<{
                   whiteSpace: 'pre-wrap',
                   width: titlesWidth,
                 }}
+                title={datum.title}
               >
                 {visibility.titleLines.join('\n')}
               </span>
@@ -205,6 +206,7 @@ export const MetricText: React.FunctionComponent<{
               width: titlesWidth,
               whiteSpace: 'pre-wrap',
             }}
+            title={datum.subtitle}
           >
             {visibility.subtitleLines.join('\n')}
           </p>
