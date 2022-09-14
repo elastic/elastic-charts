@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React from 'react';
+import React, {CSSProperties} from 'react';
 
 import { Color } from '../../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
@@ -136,6 +136,17 @@ function elementVisibility(
   });
 }
 
+function lineClamp(maxLines: number): CSSProperties {
+  return {
+    textOverflow: 'ellipsis',
+    display: '-webkit-box',
+    WebkitLineClamp: maxLines, // due to an issue with react CSSProperties filtering out this line, see https://github.com/facebook/react/issues/23033
+    lineClamp: maxLines,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  };
+}
+
 /** @internal */
 export const MetricText: React.FunctionComponent<{
   id: string;
@@ -179,10 +190,11 @@ export const MetricText: React.FunctionComponent<{
                   fontSize: `${TITLE_FONT_SIZE[size]}px`,
                   whiteSpace: 'pre-wrap',
                   width: titlesWidth,
+                  ...lineClamp(visibility.titleLines.length)
                 }}
                 title={datum.title}
               >
-                {visibility.titleLines.join('\n')}
+                {datum.title}
               </span>
             </button>
           </h2>
@@ -205,10 +217,11 @@ export const MetricText: React.FunctionComponent<{
               fontSize: `${SUBTITLE_FONT_SIZE[size]}px`,
               width: titlesWidth,
               whiteSpace: 'pre-wrap',
+              ...lineClamp(visibility.subtitleLines.length)
             }}
             title={datum.subtitle}
           >
-            {visibility.subtitleLines.join('\n')}
+            {datum.subtitle}
           </p>
         )}
       </div>
