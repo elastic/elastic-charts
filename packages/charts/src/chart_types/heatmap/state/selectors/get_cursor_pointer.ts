@@ -19,6 +19,8 @@ export const getPointerCursorSelector = createCustomCachedSelector(
   [getPickedShapes, isBrushingSelector, getTooltipInteractionState],
   (pickedShapes, isBrushing, tooltipState): CSSProperties['cursor'] => {
     if (tooltipState.pinned) return;
-    return isBrushing || (Array.isArray(pickedShapes) && pickedShapes.length > 0) ? 'pointer' : DEFAULT_CSS_CURSOR;
+    return isBrushing || (Array.isArray(pickedShapes) && pickedShapes.some(({ visible }) => visible))
+      ? 'pointer'
+      : DEFAULT_CSS_CURSOR;
   },
 );
