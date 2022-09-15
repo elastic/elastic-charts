@@ -1759,6 +1759,8 @@ export interface MetricStyle {
     // (undocumented)
     barBackground: Color;
     // (undocumented)
+    border: Color;
+    // (undocumented)
     nonFiniteText: string;
     // (undocumented)
     text: {
