@@ -44,7 +44,6 @@ export const Example = () => {
   const defaultValueFormatter = (d: number) => `${d}`;
   const data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[] = [
     {
-
       color: '#3c3c3c',
       title: 'CPU Usage',
       subtitle: 'Overall percentage',
@@ -87,7 +86,6 @@ export const Example = () => {
       }),
     },
     {
-
       color: '#5e5e5e',
       title: 'Disk I/O',
       subtitle: 'Write',
@@ -177,10 +175,9 @@ export const Example = () => {
         height: layout === 'vertical' ? '720px' : layout === 'horizontal' ? '150px' : '300px',
         width: layout === 'vertical' ? '180px' : '720px',
         ...(showGridBorder && {
-          boxShadow: "5px 5px 15px 5px rgba(0,0,0,0.29)",
-          borderRadius: '6px'
-        })
-
+          boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
+          borderRadius: '6px',
+        }),
       }}
     >
       {debugRandomizedData &&
@@ -206,9 +203,7 @@ export const Example = () => {
           onElementOver={([d]) => {
             if (isMetricElementEvent(d)) {
               const { rowIndex, columnIndex } = d;
-              onEventOverAction(
-                `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`,
-              );
+              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`);
             }
           }}
           onElementOut={() => onEventOutAction('out')}
