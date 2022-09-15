@@ -83,6 +83,7 @@ export const Metric: React.FunctionComponent<{
         ? datumWithInteractionColor.color
         : updatedStyle.background,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
+    borderColor: style.border,
   };
 
   const bgColor = isMetricWTrend(datum) || !isMetricWProgress(datum) ? datum.color : style.background;

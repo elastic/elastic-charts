@@ -34,6 +34,7 @@ const getIcon =
     <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />;
 
 export const Example = () => {
+  const showGridBorder = boolean('show grid border', false);
   const addMetricClick = boolean('attach click handler', true);
   const useProgressBar = boolean('use progress bar', true);
 
@@ -169,6 +170,11 @@ export const Example = () => {
         overflow: 'auto',
         height: layout === 'vertical' ? '720px' : layout === 'horizontal' ? '150px' : '300px',
         width: layout === 'vertical' ? '180px' : '720px',
+        ...(showGridBorder && {
+          boxShadow: "5px 5px 15px 5px rgba(0,0,0,0.29)",
+          borderRadius: '6px'
+        })
+
       }}
     >
       {debugRandomizedData &&
@@ -185,7 +191,7 @@ export const Example = () => {
                   if (isMetricElementEvent(d)) {
                     const { rowIndex, columnIndex } = d;
                     onEventClickAction(
-                      `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`,
                     );
                   }
                 }
@@ -195,7 +201,7 @@ export const Example = () => {
             if (isMetricElementEvent(d)) {
               const { rowIndex, columnIndex } = d;
               onEventOverAction(
-                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+                `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`,
               );
             }
           }}
