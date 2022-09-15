@@ -403,5 +403,6 @@ export const LIGHT_THEME: Theme = {
     barBackground: '#EDF0F5',
     background: '#FFFFFF',
     nonFiniteText: 'N/A',
+    minHeight: 64,
   },
 };
