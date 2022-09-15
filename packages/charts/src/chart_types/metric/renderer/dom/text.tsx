@@ -176,8 +176,8 @@ export const MetricText: React.FunctionComponent<{
   const textParts = isNumericalMetric
     ? isFiniteNumber(value)
       ? splitNumericSuffixPrefix(datum.valueFormatter(value))
-      : [['normal', style.nonFiniteText]]
-    : [['normal', datum.value]];
+      : [{ emphasis: 'normal', text: style.nonFiniteText }]
+    : [{ emphasis: 'normal', text: datum.value }];
 
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
@@ -247,9 +247,9 @@ export const MetricText: React.FunctionComponent<{
             fontSize: `${VALUE_FONT_SIZE[size]}px`,
             textOverflow: isNumericalMetric ? undefined : 'ellipsis',
           }}
-          title={textParts.map(([, text]) => text).join('')}
+          title={textParts.map(({ text }) => text).join('')}
         >
-          {textParts.map(([emphasis, text], i) => {
+          {textParts.map(({ emphasis, text }, i) => {
             return emphasis === 'small' ? (
               <span
                 key={`${text}${i}`}
@@ -268,18 +268,20 @@ export const MetricText: React.FunctionComponent<{
   );
 };
 
-function splitNumericSuffixPrefix(text: string): ['normal' | 'small', string][] {
-  const charts = text.split('');
-  return charts
-    .reduce<Array<['normal' | 'small', string[]]>>((acc, curr) => {
-      const type = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'normal' : 'small';
-
-      if (acc.length > 0 && acc[acc.length - 1][0] === type) {
-        acc[acc.length - 1][1].push(curr);
+function splitNumericSuffixPrefix(text: string): { emphasis: 'normal' | 'small'; text: string }[] {
+  return text
+    .split('')
+    .reduce<{ emphasis: 'normal' | 'small'; textParts: string[] }[]>((acc, curr) => {
+      const emphasis = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'normal' : 'small';
+      if (acc.length > 0 && acc[acc.length - 1].emphasis === emphasis) {
+        acc[acc.length - 1].textParts.push(curr);
       } else {
-        acc.push([type, [curr]]);
+        acc.push({ emphasis, textParts: [curr] });
       }
       return acc;
     }, [])
-    .map(([type, chars]) => [type, chars.join('')]);
+    .map(({ emphasis, textParts }) => ({
+      emphasis,
+      text: textParts.join(''),
+    }));
 }
