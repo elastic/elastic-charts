@@ -306,6 +306,7 @@ export interface MetricStyle {
   background: Color;
   barBackground: Color;
   nonFiniteText: string;
+  minHeight: Pixels;
 }
 
 /** @public */

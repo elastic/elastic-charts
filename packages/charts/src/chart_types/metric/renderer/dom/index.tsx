@@ -103,7 +103,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
         aria-describedby={a11y.descriptionId}
         style={{
           gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr)`,
-          gridTemplateRows: `repeat(${totalRows}, minmax(64px, 1fr)`,
+          gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr)`,
         }}
       >
         {data.flatMap((columns, rowIndex) => {

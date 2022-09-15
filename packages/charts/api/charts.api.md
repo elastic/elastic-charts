@@ -1761,6 +1761,8 @@ export interface MetricStyle {
     // (undocumented)
     border: Color;
     // (undocumented)
+    minHeight: Pixels;
+    // (undocumented)
     nonFiniteText: string;
     // (undocumented)
     text: {
