@@ -14,6 +14,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { highContrastColor } from '../../../../common/color_calcs';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { Colors } from '../../../../common/colors';
 import { BasicListener, ElementClickListener, ElementOverListener } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -27,13 +30,10 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import {MetricSpec} from '../../specs';
+import { MetricSpec } from '../../specs';
 import { chartSize } from '../../state/selectors/chart_size';
 import { getMetricSpecs } from '../../state/selectors/data';
 import { Metric as MetricComponent } from './metric';
-import {highContrastColor} from "../../../../common/color_calcs";
-import {colorToRgba} from "../../../../common/color_library_wrappers";
-import {Colors} from "../../../../common/colors";
 
 interface StateProps {
   initialized: boolean;
@@ -90,7 +90,9 @@ class Component extends React.Component<StateProps & DispatchProps> {
     const panel = { width: width / maxColumns, height: height / totalRows };
 
     const emptyForegroundColor =
-      highContrastColor(colorToRgba(style.background)) === Colors.White.rgba ? style.text.lightColor : style.text.darkColor;
+      highContrastColor(colorToRgba(style.background)) === Colors.White.rgba
+        ? style.text.lightColor
+        : style.text.darkColor;
 
     return (
       // eslint-disable-next-line jsx-a11y/no-redundant-roles
@@ -113,12 +115,12 @@ class Component extends React.Component<StateProps & DispatchProps> {
                 'echMetric--bottomBorder': rowIndex < totalRows - 1,
               });
               return !datum ? (
-                  <li key={`${columnIndex}-${rowIndex}`} role="presentation">
-                    <div className={emptyMetricClassName} style={{borderColor: style.border}}>
-                      <div className="echMetricEmpty" style={{borderColor: emptyForegroundColor}}></div>
-                    </div>
-                  </li>
-                ) : (
+                <li key={`${columnIndex}-${rowIndex}`} role="presentation">
+                  <div className={emptyMetricClassName} style={{ borderColor: style.border }}>
+                    <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor }}></div>
+                  </div>
+                </li>
+              ) : (
                 <li key={`${columnIndex}-${rowIndex}`}>
                   <MetricComponent
                     chartId={chartId}
@@ -144,7 +146,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
               });
               return (
                 <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
-                  <div className={emptyMetricClassName} style={{borderColor: style.border}}></div>
+                  <div className={emptyMetricClassName} style={{ borderColor: style.border }}></div>
                 </li>
               );
             }),

@@ -13,11 +13,17 @@ import { highContrastColor } from '../../../../common/color_calcs';
 import { changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
-import { BasicListener, ElementClickListener, ElementOverListener, MetricElementEvent } from '../../../../specs';
+import {
+  BasicListener,
+  ElementClickListener,
+  ElementOverListener,
+  MetricDatum,
+  MetricElementEvent,
+} from '../../../../specs';
 import { LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, isMetricWTrend, MetricDatum } from '../../specs';
+import { isMetricWProgress, isMetricWTrend } from '../../specs';
 import { ProgressBar } from './progress';
 import { SparkLine } from './sparkline';
 import { MetricText } from './text';
