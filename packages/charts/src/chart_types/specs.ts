@@ -36,7 +36,10 @@ export {
   MetricSpecProps,
   MetricSpec,
   MetricBase,
+  MetricWText,
+  MetricWNumber,
   MetricWProgress,
   MetricWTrend,
   MetricTrendShape,
+  MetricDatum,
 } from './metric/specs';

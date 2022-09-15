@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import { Color } from '../../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
@@ -17,7 +17,7 @@ import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../ut
 import { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
+import { isMetricWNumber, isMetricWProgress, MetricDatum } from '../../specs';
 
 type BreakPoint = 's' | 'm' | 'l';
 
@@ -50,7 +50,7 @@ type ElementVisibility = {
 };
 
 function elementVisibility(
-  datum: MetricBase | MetricWProgress | MetricWTrend,
+  datum: MetricDatum,
   panel: Size,
   size: BreakPoint,
 ): ElementVisibility & { titleLines: string[]; subtitleLines: string[] } {
@@ -136,10 +136,21 @@ function elementVisibility(
   });
 }
 
+function lineClamp(maxLines: number): CSSProperties {
+  return {
+    textOverflow: 'ellipsis',
+    display: '-webkit-box',
+    WebkitLineClamp: maxLines, // due to an issue with react CSSProperties filtering out this line, see https://github.com/facebook/react/issues/23033
+    lineClamp: maxLines,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  };
+}
+
 /** @internal */
 export const MetricText: React.FunctionComponent<{
   id: string;
-  datum: MetricBase | MetricWProgress | MetricWTrend;
+  datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
   onElementClick: () => void;
@@ -158,10 +169,15 @@ export const MetricText: React.FunctionComponent<{
 
   const visibility = elementVisibility(datum, panel, size);
 
-  const parts = splitNumericSuffixPrefix(datum.valueFormatter(value));
+  const titleWidthMaxSize = size === 's' ? '100%' : '80%';
+  const titlesWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
 
-  const titlesMaxWidthRatio = size === 's' ? '100%' : '80%';
-  const titlesWidth = `min(${titlesMaxWidthRatio}, calc(${titlesMaxWidthRatio} - ${datum.icon ? '24px' : '0px'}))`;
+  const isNumericalMetric = isMetricWNumber(datum);
+  const textParts = isNumericalMetric
+    ? isFiniteNumber(value)
+      ? splitNumericSuffixPrefix(datum.valueFormatter(value))
+      : [{ emphasis: 'normal', text: style.nonFiniteText }]
+    : [{ emphasis: 'normal', text: datum.value }];
 
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
@@ -181,9 +197,11 @@ export const MetricText: React.FunctionComponent<{
                   fontSize: `${TITLE_FONT_SIZE[size]}px`,
                   whiteSpace: 'pre-wrap',
                   width: titlesWidth,
+                  ...lineClamp(visibility.titleLines.length),
                 }}
+                title={datum.title}
               >
-                {visibility.titleLines.join('\n')}
+                {datum.title}
               </span>
             </button>
           </h2>
@@ -206,9 +224,11 @@ export const MetricText: React.FunctionComponent<{
               fontSize: `${SUBTITLE_FONT_SIZE[size]}px`,
               width: titlesWidth,
               whiteSpace: 'pre-wrap',
+              ...lineClamp(visibility.subtitleLines.length),
             }}
+            title={datum.subtitle}
           >
-            {visibility.subtitleLines.join('\n')}
+            {datum.subtitle}
           </p>
         )}
       </div>
@@ -221,36 +241,47 @@ export const MetricText: React.FunctionComponent<{
         )}
       </div>
       <div>
-        <p className="echMetricText__value" style={{ fontSize: `${VALUE_FONT_SIZE[size]}px` }}>
-          {isFiniteNumber(value)
-            ? parts.map(([type, text], i) =>
-                type === 'numeric' ? (
-                  text
-                ) : (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <span key={i} className="echMetricText__part" style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}>
-                    {text}
-                  </span>
-                ),
-              )
-            : style.nonFiniteText}
+        <p
+          className="echMetricText__value"
+          style={{
+            fontSize: `${VALUE_FONT_SIZE[size]}px`,
+            textOverflow: isNumericalMetric ? undefined : 'ellipsis',
+          }}
+          title={textParts.map(({ text }) => text).join('')}
+        >
+          {textParts.map(({ emphasis, text }, i) => {
+            return emphasis === 'small' ? (
+              <span
+                key={`${text}${i}`}
+                className="echMetricText__part"
+                style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}
+              >
+                {text}
+              </span>
+            ) : (
+              text
+            );
+          })}
         </p>
       </div>
     </div>
   );
 };
 
-function splitNumericSuffixPrefix(text: string) {
-  const charts = text.split('');
-  const parts = charts.reduce<Array<[string, string[]]>>((acc, curr) => {
-    const type = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'numeric' : 'string';
-
-    if (acc.length > 0 && acc[acc.length - 1][0] === type) {
-      acc[acc.length - 1][1].push(curr);
-    } else {
-      acc.push([type, [curr]]);
-    }
-    return acc;
-  }, []);
-  return parts.map(([type, chars]) => [type, chars.join('')]);
+function splitNumericSuffixPrefix(text: string): { emphasis: 'normal' | 'small'; text: string }[] {
+  return text
+    .split('')
+    .reduce<{ emphasis: 'normal' | 'small'; textParts: string[] }[]>((acc, curr) => {
+      const emphasis = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'normal' : 'small';
+      if (acc.length > 0 && acc[acc.length - 1].emphasis === emphasis) {
+        acc[acc.length - 1].textParts.push(curr);
+      } else {
+        acc.push({ emphasis, textParts: [curr] });
+      }
+      return acc;
+    }, [])
+    .map(({ emphasis, textParts }) => ({
+      emphasis,
+      text: textParts.join(''),
+    }));
 }

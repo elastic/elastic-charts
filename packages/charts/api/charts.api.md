@@ -1718,8 +1718,6 @@ export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", ne
 
 // @alpha (undocumented)
 export type MetricBase = {
-    value: number;
-    valueFormatter: (d: number) => string;
     color: Color;
     title?: string;
     subtitle?: string;
@@ -1730,6 +1728,9 @@ export type MetricBase = {
         color: Color;
     }>;
 };
+
+// @alpha (undocumented)
+export type MetricDatum = MetricWNumber | MetricWText | MetricWProgress | MetricWTrend;
 
 // @public
 export type MetricElementEvent = {
@@ -1743,7 +1744,7 @@ export interface MetricSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.Metric;
     // (undocumented)
-    data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[][];
+    data: (MetricDatum | undefined)[][];
     // (undocumented)
     specType: typeof SpecType.Series;
 }
@@ -1778,18 +1779,29 @@ export const MetricTrendShape: Readonly<{
 export type MetricTrendShape = $Values<typeof MetricTrendShape>;
 
 // @alpha (undocumented)
-export type MetricWProgress = MetricBase & {
-    domainMax: number;
-    progressBarDirection?: LayoutDirection;
+export type MetricWNumber = MetricBase & {
+    value: number;
+    valueFormatter: (d: number) => string;
 };
 
 // @alpha (undocumented)
-export type MetricWTrend = MetricBase & {
+export type MetricWProgress = MetricWNumber & {
+    domainMax: number;
+    progressBarDirection: LayoutDirection;
+};
+
+// @alpha (undocumented)
+export type MetricWText = MetricBase & {
+    value: string;
+};
+
+// @alpha (undocumented)
+export type MetricWTrend = MetricWNumber & {
     trend: {
         x: number;
         y: number;
     }[];
-    trendShape?: MetricTrendShape;
+    trendShape: MetricTrendShape;
     trendA11yTitle?: string;
     trendA11yDescription?: string;
 };
