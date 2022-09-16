@@ -28,7 +28,7 @@ interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentif
   headerFormatter?: TooltipValueFormatter<D, SI>;
   settings?: TooltipProps<D, SI>;
   actions: TooltipAction<SI>[];
-  onSelect: typeof onTooltipItemSelected;
+  onSelect: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
 }
 
 /** @internal */

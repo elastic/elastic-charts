@@ -39,8 +39,10 @@ import { TooltipInfo } from './types';
 
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
-  onTooltipItemSelected: typeof onTooltipItemSelectedAction;
-  onTooltipPinned: typeof onTooltipPinnedAction;
+  onTooltipItemSelected:
+    | typeof onTooltipItemSelectedAction
+    | ((...args: Parameters<typeof onTooltipItemSelectedAction>) => void);
+  onTooltipPinned: typeof onTooltipPinnedAction | ((...args: Parameters<typeof onTooltipPinnedAction>) => void);
 }
 
 interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
@@ -196,7 +198,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         dir={isMostlyRTL ? 'rtl' : 'ltr'}
         pinned={pinned}
         selected={selected}
-        tooltipPinned={onTooltipPinned}
+        onTooltipPinned={onTooltipPinned}
         theme={tooltipTheme}
       >
         <TooltipBody
@@ -257,7 +259,8 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
     dispatch,
   );
 
-const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 'visible' | 'position' | 'info'> => {
+type BasicTooltipProps = Omit<TooltipStateProps, 'visible' | 'position' | 'info' | 'pinned' | 'selected'>;
+const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
   const tooltip = getTooltipSpecSelector(state);
   const {
     background: { color: backgroundColor },
@@ -277,8 +280,6 @@ const mapStateToPropsBasic = (state: GlobalChartState): Omit<TooltipStateProps, 
         rotation: getChartRotationSelector(state),
         chartId: state.chartId,
         backgroundColor,
-        pinned: state.interactions.tooltip.pinned,
-        selected: getTooltipSelectedItems(state),
       };
 };
 
@@ -290,6 +291,8 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
         visible: getInternalIsTooltipVisibleSelector(state).visible,
         position: getInternalTooltipAnchorPositionSelector(state),
         info: getInternalTooltipInfoSelector(state),
+        pinned: state.interactions.tooltip.pinned,
+        selected: getTooltipSelectedItems(state),
       };
 
 /** @internal */

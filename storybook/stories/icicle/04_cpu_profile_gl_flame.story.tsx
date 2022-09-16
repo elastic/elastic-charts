@@ -10,7 +10,16 @@ import { action } from '@storybook/addon-actions';
 import { boolean, button } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Flame, Settings, PartialTheme, FlameGlobalControl, FlameNodeControl } from '@elastic/charts';
+import {
+  Chart,
+  Datum,
+  Flame,
+  Settings,
+  PartialTheme,
+  FlameGlobalControl,
+  FlameNodeControl,
+  Tooltip,
+} from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -71,10 +80,32 @@ export const Example = () => {
     focusOnNodeControl(Math.floor(20 * Math.random()));
   });
   const debug = boolean('Debug history', false);
+  const disableActions = boolean('disable actions', false);
 
   return (
     <Chart>
       <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
+      <Tooltip
+        actions={
+          disableActions
+            ? []
+            : [
+                {
+                  label: () => 'Log storybook action',
+                  onSelect: (s) => action('onTooltipAction')(s),
+                },
+                {
+                  label: ({ length }) => (
+                    <span>
+                      Alert keys of all <b>{length}</b> selected series
+                    </span>
+                  ),
+                  hide: ({ length }) => length > 0,
+                  onSelect: (series) => alert(`Selected the following: \n - ${series.map((s) => s.key).join('\n - ')}`),
+                },
+              ]
+        }
+      />
       <Flame
         id="spec_1"
         columnarData={columnarData}

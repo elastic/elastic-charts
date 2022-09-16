@@ -29,7 +29,7 @@ export const TooltipWrapper = <SI extends SeriesIdentifier = SeriesIdentifier>({
   selectionPrompt,
   className,
 }: TooltipWrapperProps<SI>) => {
-  const { dir, pinned, selected, tooltipPinned } = useTooltipContext<SI>();
+  const { dir, pinned, selected, onTooltipPinned } = useTooltipContext<SI>();
 
   const renderActions = () => {
     const visibleActions = actions.filter(({ hide }) => !hide || hide(selected));
@@ -48,7 +48,7 @@ export const TooltipWrapper = <SI extends SeriesIdentifier = SeriesIdentifier>({
           title={typeof reason === 'string' ? reason : undefined}
           disabled={Boolean(reason)}
           onClick={() => {
-            tooltipPinned(false, true);
+            onTooltipPinned(false, true);
             // timeout used to close tooltip before calling action
             setTimeout(onSelect, 0, selected);
           }}

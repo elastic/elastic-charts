@@ -6,16 +6,17 @@
  * Side Public License, v 1.
  */
 
-import React, { createRef, CSSProperties, KeyboardEvent, MouseEvent, RefObject, WheelEventHandler } from 'react';
+import React, { createRef, CSSProperties, RefObject, WheelEventHandler } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
+import { SeriesIdentifier } from '../../common/series_id';
 import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
-import { SettingsSpec, SpecType, TooltipType } from '../../specs';
+import { SettingsSpec, SpecType, TooltipType, TooltipValue } from '../../specs';
 import { onChartRendered } from '../../state/actions/chart';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
@@ -178,6 +179,14 @@ class FlameComponent extends React.Component<FlameProps> {
   private pointerX: number = NaN;
   private pointerY: number = NaN;
 
+  // mouse coordinates for pinned tooltip
+  private pinnedPointerX: number = NaN;
+  private pinnedPointerY: number = NaN;
+
+  // pinned tooltip state
+  private tooltipPinned: boolean = false;
+  private tooltipSelectedSeries: SeriesIdentifier[] = [];
+
   // currently hovered over datum
   private hoverIndex: number = NaN;
 
@@ -244,6 +253,24 @@ class FlameComponent extends React.Component<FlameProps> {
     // search
     this.currentColor = columns.color;
   }
+
+  private onTooltipPinned = (pinned: boolean): void => {
+    console.log('onTooltipPinned', pinned);
+
+    if (!pinned) {
+      this.unpinTooltip();
+      return;
+    }
+
+    this.tooltipPinned = true;
+  };
+
+  private onTooltipItemSelected = (itemId: SeriesIdentifier): void => {
+    // itemId is arbitrary for flame elements - just toggle selection
+    if (!this.tooltipPinned) return;
+    this.tooltipSelectedSeries = this.tooltipSelectedSeries.length === 0 ? [itemId] : [];
+    this.setState({});
+  };
 
   private focusOnNavElement(element?: NavRect) {
     if (!element) {
@@ -366,14 +393,31 @@ class FlameComponent extends React.Component<FlameProps> {
   private updatePointerLocation(e: { clientX: number; clientY: number }) {
     if (!this.props.forwardStageRef.current || !this.ctx) return;
     const box = this.props.forwardStageRef.current.getBoundingClientRect();
+
     this.pointerX = e.clientX - box.left;
     this.pointerY = e.clientY - box.top;
+
+    if (!this.tooltipPinned) {
+      this.pinnedPointerX = this.pointerX;
+      this.pinnedPointerY = this.pointerY;
+    }
+  }
+
+  private unpinTooltip() {
+    this.pinnedPointerX = NaN;
+    this.pinnedPointerY = NaN;
+    this.tooltipPinned = false;
+    this.tooltipSelectedSeries = [];
+    this.updateHoverIndex();
+    this.smartDraw();
   }
 
   private getHoveredDatumIndex = () => {
     const pr = window.devicePixelRatio * this.pinchZoomScale;
+    const x = this.tooltipPinned ? this.pinnedPointerX : this.pointerX;
+    const y = this.tooltipPinned ? this.pinnedPointerY : this.pointerY;
     return {
-      datumIndex: this.datumAtXY(pr * this.pointerX, pr * (this.props.chartDimensions.height - this.pointerY)),
+      datumIndex: this.datumAtXY(pr * x, pr * (this.props.chartDimensions.height - y)),
     };
   };
 
@@ -381,26 +425,30 @@ class FlameComponent extends React.Component<FlameProps> {
   private getDragDistanceY = () => -(this.pointerY - this.startOfDragY);
   private isDragging = ({ buttons }: { buttons: number }) => buttons & LEFT_MOUSE_BUTTON;
 
-  private handleMouseHoverMove = (e: React.MouseEvent<HTMLCanvasElement, globalThis.MouseEvent>) => {
+  private handleMouseHoverMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (!this.isDragging(e)) {
       e.stopPropagation();
       this.updatePointerLocation(e);
-      const hovered = this.getHoveredDatumIndex();
-      const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN;
-      if (hovered) {
-        this.hoverIndex = hovered.datumIndex;
-        if (!Object.is(this.hoverIndex, prevHoverIndex)) {
-          if (Number.isFinite(hovered.datumIndex)) {
-            this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
-          } else {
-            this.hoverIndex = NaN;
-            this.props.onElementOut(); // userland callback
-          }
-        }
-        this.setState({}); // exact tooltip location needs an update
-      }
+      this.updateHoverIndex();
     }
   };
+
+  private updateHoverIndex() {
+    const hovered = this.getHoveredDatumIndex();
+    const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN;
+    if (hovered) {
+      this.hoverIndex = hovered.datumIndex;
+      if (!Object.is(this.hoverIndex, prevHoverIndex)) {
+        if (Number.isFinite(hovered.datumIndex)) {
+          this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
+        } else {
+          this.hoverIndex = NaN;
+          this.props.onElementOut(); // userland callback
+        }
+      }
+      this.setState({}); // exact tooltip location needs an update
+    }
+  }
 
   private handleMouseDragMove = (e: {
     stopPropagation: () => void;
@@ -461,24 +509,31 @@ class FlameComponent extends React.Component<FlameProps> {
     this.startOfDragY = this.pointerY;
   };
 
-  private handleMouseDown = (e: MouseEvent<HTMLCanvasElement>) => {
+  private handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
     if (Number.isNaN(this.pointerX + this.pointerY)) return; // don't reset from minimap
-    this.resetDrag();
+
+    // non-context click
+    if (e.button !== 2) {
+      this.resetDrag();
+    }
     window.addEventListener('mousemove', this.handleMouseDragMove, { passive: true });
     window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
+    this.setState({}); // updates cursor
   };
 
-  private handleMouseUp = (e: {
-    stopPropagation: () => void;
-    buttons: number;
-    clientX: number;
-    clientY: number;
-    detail: number;
-  }) => {
+  private handleMouseUp = (e: MouseEvent) => {
     e.stopPropagation();
+
     window.removeEventListener('mousemove', this.handleMouseDragMove);
     window.removeEventListener('mouseup', this.handleMouseUp);
+
+    if (this.tooltipPinned) {
+      this.unpinTooltip();
+      this.clearDrag();
+      return;
+    }
+
     this.updatePointerLocation(e); // just in case: eg. the user tabbed away, moved mouse elsewhere, and came back
     const dragDistanceX = this.getDragDistanceX(); // zero or NaN means that a non-zero drag didn't happen
     const dragDistanceY = this.getDragDistanceY(); // zero or NaN means that a non-zero drag didn't happen
@@ -487,21 +542,52 @@ class FlameComponent extends React.Component<FlameProps> {
       const isDoubleClick = e.detail > 1;
       const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
-      if (mustFocus && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
+      const isContextClick = e.button === 2;
+
+      if (mustFocus && !isContextClick && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
         const { datumIndex } = hovered;
         const rect = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
         this.navigator.add({ ...rect, index: datumIndex });
         this.focusOnNode(datumIndex);
         this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
       }
+
+      if (mustFocus && isContextClick) {
+        this.handleContextClick(e);
+      }
     }
     this.clearDrag();
     this.setState({});
   };
 
-  private handleMouseLeave = (e: MouseEvent<HTMLCanvasElement>) => {
+  private handleContextClose = () => {
+    window.removeEventListener('click', this.handleContextClose);
+    this.onTooltipPinned(false);
+  };
+
+  private handleContextClick = (e: MouseEvent) => {
+    e.preventDefault(); // prevent browser context menu
+
+    window.addEventListener('keyup', this.handleKeyUp);
+    window.addEventListener('click', this.handleContextClose);
+
+    this.onTooltipPinned(!this.tooltipPinned);
+  };
+
+  static watchedKeys: KeyboardEvent['key'][] = ['Escape'];
+  private handleKeyUp = ({ key }: KeyboardEvent) => {
+    if (!FlameComponent.watchedKeys.includes(key)) return;
+
+    window.removeEventListener('keyup', this.handleKeyUp);
+
+    this.unpinTooltip();
+  };
+
+  private handleMouseLeave = (e: React.MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    this.smartDraw();
+    if (!this.tooltipPinned) {
+      this.smartDraw();
+    }
   };
 
   private preventScroll = (e: WheelEvent) => e.metaKey === IS_META_REQUIRED_FOR_ZOOM && e.preventDefault();
@@ -509,7 +595,9 @@ class FlameComponent extends React.Component<FlameProps> {
   private handleWheel: WheelEventHandler = (e) => {
     if (e.metaKey !== IS_META_REQUIRED_FOR_ZOOM) return; // one way: zoom; other way: let scroll happen
 
+    this.unpinTooltip();
     this.updatePointerLocation(e);
+
     const { x0, x1, y0, y1 } = this.currentFocus;
     const wheelDelta = -e.deltaY; // mapbox convention: scroll down increases magnification
     const delta = wheelDelta * ZOOM_SPEED;
@@ -618,7 +706,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
-  private handleEnterKey = (e: KeyboardEvent) => {
+  private handleEnterKey = (e: React.KeyboardEvent<HTMLCanvasElement | HTMLInputElement>) => {
     e.stopPropagation();
     if (e.key === 'Enter') {
       if (e.shiftKey) {
@@ -637,14 +725,14 @@ class FlameComponent extends React.Component<FlameProps> {
     this.searchForText(false);
   };
 
-  private handleEscapeKey = (e: KeyboardEvent) => {
+  private handleEscapeKey = (e: React.KeyboardEvent<HTMLCanvasElement | HTMLInputElement>) => {
     e.stopPropagation();
     if (e.key === 'Escape') {
       this.clearSearchText();
     }
   };
 
-  private handleSearchFieldKeyPress = (e: KeyboardEvent) => {
+  private handleSearchFieldKeyPress = (e: React.KeyboardEvent<HTMLCanvasElement | HTMLInputElement>) => {
     e.stopPropagation();
     if (!this.handleEnterKey(e)) {
       this.searchForText(false);
@@ -707,6 +795,37 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
+  private getTooltipValues(): TooltipValue[] {
+    const columns = this.props.columnarViewModel;
+    const test =
+      this.hoverIndex >= 0
+        ? [
+            {
+              label: columns.label[this.hoverIndex],
+              color: getColor(columns.color, this.hoverIndex),
+              isHighlighted: false,
+              isVisible: true,
+              seriesIdentifier: { specId: '', key: '' },
+              value: columns.value[this.hoverIndex],
+              formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
+              valueAccessor: this.hoverIndex,
+            },
+          ]
+        : [];
+    if (test.length === 0) {
+      // console.log('hoverIndex', this.hoverIndex);
+    }
+    return test;
+  }
+
+  private getActiveCursor(): CSSProperties['cursor'] {
+    if (this.tooltipPinned) return DEFAULT_CSS_CURSOR;
+    if (this.startOfDragX) return 'grabbing';
+    if (this.hoverIndex >= 0) return 'pointer';
+
+    return 'grab';
+  }
+
   render = () => {
     const {
       forwardStageRef,
@@ -725,12 +844,12 @@ class FlameComponent extends React.Component<FlameProps> {
       margin: 0,
       border: 0,
       position: 'absolute',
-      cursor: this.startOfDragX ? 'grab' : this.hoverIndex >= 0 ? 'pointer' : DEFAULT_CSS_CURSOR,
+      cursor: this.getActiveCursor(),
     };
+
     const dpr = window.devicePixelRatio * this.pinchZoomScale;
     const canvasWidth = width * dpr;
     const canvasHeight = height * dpr;
-    const columns = this.props.columnarViewModel;
     const hitCount = this.currentSearchHitCount;
     return (
       <>
@@ -944,25 +1063,21 @@ class FlameComponent extends React.Component<FlameProps> {
         </div>
         <BasicTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
-          position={{ x: this.pointerX, y: this.pointerY, width: 0, height: 0 }}
-          visible={this.props.tooltipRequired && this.hoverIndex >= 0 && !(this.wobbleTimeLeft > 0)}
+          position={
+            this.tooltipPinned
+              ? { x: this.pinnedPointerX, y: this.pinnedPointerY, width: 0, height: 0 }
+              : { x: this.pointerX, y: this.pointerY, width: 0, height: 0 }
+          }
+          pinned={this.tooltipPinned}
+          selected={this.tooltipSelectedSeries}
+          onTooltipPinned={this.onTooltipPinned}
+          onTooltipItemSelected={this.onTooltipItemSelected}
+          visible={
+            this.tooltipPinned || (this.props.tooltipRequired && this.hoverIndex >= 0 && !(this.wobbleTimeLeft > 0))
+          }
           info={{
             header: null,
-            values:
-              this.hoverIndex >= 0
-                ? [
-                    {
-                      label: columns.label[this.hoverIndex],
-                      color: getColor(columns.color, this.hoverIndex),
-                      isHighlighted: false,
-                      isVisible: true,
-                      seriesIdentifier: { specId: '', key: '' },
-                      value: columns.value[this.hoverIndex],
-                      formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
-                      valueAccessor: this.hoverIndex,
-                    },
-                  ]
-                : [],
+            values: this.getTooltipValues(),
           }}
           getChartContainerRef={this.props.containerRef}
         />

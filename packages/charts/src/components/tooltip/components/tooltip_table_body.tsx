@@ -32,7 +32,7 @@ type TooltipTableBodyProps<
     items: TooltipValue<D, SI>[];
     columns: TooltipTableColumn<D, SI>[];
     pinned: boolean;
-    onSelect: typeof onTooltipItemSelected;
+    onSelect: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
     selected: SeriesIdentifier[];
   },
   {},
