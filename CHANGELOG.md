@@ -1,3 +1,24 @@
+# [49.0.0](https://github.com/elastic/elastic-charts/compare/v48.0.1...v49.0.0) (2022-09-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v67 ([#1815](https://github.com/elastic/elastic-charts/issues/1815)) ([a45b3d3](https://github.com/elastic/elastic-charts/commit/a45b3d34c47d05c1059cfb43cf507f7b74722a4c))
+* **metric:** improve multi-line wrapping ([#1816](https://github.com/elastic/elastic-charts/issues/1816)) ([f9c790e](https://github.com/elastic/elastic-charts/commit/f9c790ef2c4a8b97d278c9ee7e27f2c5081297ed))
+
+
+### Features
+
+* **metric:** add a textual value ([#1817](https://github.com/elastic/elastic-charts/issues/1817)) ([d7610ad](https://github.com/elastic/elastic-charts/commit/d7610ad548e26e34623fe97b4c3408b543be82ed))
+* **metric:** add empty cell marker ([#1819](https://github.com/elastic/elastic-charts/issues/1819)) ([58ca9c3](https://github.com/elastic/elastic-charts/commit/58ca9c3b3307bbda2100b932426b8b71779583e6))
+* **metric:** expose min metric height ([#1825](https://github.com/elastic/elastic-charts/issues/1825)) ([c9bd634](https://github.com/elastic/elastic-charts/commit/c9bd6344f37c90340c9e7fa7f0c4e05b5f130011))
+
+
+### BREAKING CHANGES
+
+* **metric:** the metric types have been changed: the `value: number` and `valueFormatter` are only available for a numerical, progress bar, or trend metric. For the textual metric, the `value` has a `string` type.
+The `progressBarDirection` and `trendShape` properties are now required.
+
 ## [48.0.1](https://github.com/elastic/elastic-charts/compare/v48.0.0...v48.0.1) (2022-09-08)
 
 
