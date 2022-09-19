@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { getTimeZone, validatedTimeZone } from '../../../utils/time_zone';
+import { getZoneFromSpecs, getValidatedTimeZone } from '../../../utils/time_zone';
 import { cachedZonedDateTimeFrom, timeProp } from '../../xy_chart/axes/timeslip/chrono/cached_chrono';
 import { DEFAULT_LOCALE, MINIMUM_TICK_PIXEL_DISTANCE } from '../../xy_chart/axes/timeslip/multilayer_ticks';
 import { BinUnit, RasterConfig, rasters, TimeBin } from '../../xy_chart/axes/timeslip/rasters';
@@ -37,7 +37,7 @@ const lineThicknessSteps = [/*0,*/ 0.5, 0.75, 1, 1, 1, 1.25, 1.25, 1.5, 1.5, 1.7
 const lumaSteps = [/*255,*/ 192, 72, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0];
 
 const smallFontSize = 12;
-const timeZone = validatedTimeZone(getTimeZone([])); // should eventually come from settings
+const timeZone = getValidatedTimeZone(getZoneFromSpecs([])); // should eventually come from settings
 
 type RGBObject = { r: number; g: number; b: number };
 

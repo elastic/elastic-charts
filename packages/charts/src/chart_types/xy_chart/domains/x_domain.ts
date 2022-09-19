@@ -12,7 +12,7 @@ import { ScaleType } from '../../../scales/constants';
 import { compareByValueAsc } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
-import { getTimeZone, validatedTimeZone } from '../../../utils/time_zone';
+import { getZoneFromSpecs, getValidatedTimeZone } from '../../../utils/time_zone';
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
@@ -98,7 +98,7 @@ export function mergeXDomain(
     isBandScale,
     domain: seriesXComputedDomains,
     minInterval,
-    timeZone: validatedTimeZone(timeZone),
+    timeZone: getValidatedTimeZone(timeZone),
     logBase: customDomain && 'logBase' in customDomain ? customDomain.logBase : 10, // fixme preexisting TS workaround
     desiredTickCount,
   };
@@ -156,7 +156,7 @@ export function convertXScaleTypes(
   const seriesTypes = new Set<string | undefined>(specs.map((s) => s.seriesType));
   const scaleTypes = new Set(specs.map((s) => getXScaleTypeFromSpec(s.xScaleType)));
   const niceDomains = specs.map((s) => getXNiceFromSpec(s.xNice));
-  const timeZone = validatedTimeZone(getTimeZone(specs));
+  const timeZone = getZoneFromSpecs(specs);
   const type =
     scaleTypes.size === 1
       ? scaleTypes.values().next().value // pick the only scaleType present

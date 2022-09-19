@@ -6,10 +6,7 @@
  * Side Public License, v 1.
  */
 
-// the 'local' timeZone is a tech debt that we keep in place until Kibana hasn't switch to Intl for timezones
-const DEFAULT_TZ = 'local';
-
-const isValidTimeZone = (timeZone: string): boolean => {
+const isValidTimeZone = (timeZone?: string): boolean => {
   try {
     Intl.DateTimeFormat(undefined, { timeZone });
     return true;
@@ -23,11 +20,13 @@ const isValidTimeZone = (timeZone: string): boolean => {
 };
 
 /** @internal */
-export const getTimeZone = (specs: { timeZone?: string }[]): string =>
-  specs.find((s) => s.timeZone)?.timeZone?.toLowerCase() ?? DEFAULT_TZ; // second coalescing is TS 4.8.3 appeasement
+export const getValidatedTimeZone = (specifiedTimeZone?: string): string =>
+  isValidTimeZone(specifiedTimeZone) ? specifiedTimeZone ?? '' : Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 /** @internal */
-export const validatedTimeZone = (specifiedTimeZone?: string) =>
-  specifiedTimeZone === 'local' || !specifiedTimeZone || !isValidTimeZone(specifiedTimeZone)
-    ? Intl.DateTimeFormat().resolvedOptions().timeZone
-    : specifiedTimeZone;
+export const getZoneFromSpecs = (specs: { timeZone?: string }[]): string => {
+  const allValidTimezones = new Set<string>(specs.map((s) => getValidatedTimeZone(s.timeZone ?? '')));
+  return new Set(allValidTimezones).size === 1
+    ? allValidTimezones.values().next().value
+    : Intl.DateTimeFormat().resolvedOptions().timeZone;
+};

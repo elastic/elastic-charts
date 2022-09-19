@@ -119,7 +119,7 @@ describe('X Domain', () => {
       {
         seriesType: SeriesType.Line,
         xScaleType: ScaleType.Time,
-        timeZone: 'Indian/Antananarivo',
+        timeZone: 'America/Araguaina',
       },
       {
         seriesType: SeriesType.Line,
