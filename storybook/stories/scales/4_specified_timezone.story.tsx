@@ -16,7 +16,11 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => (
   <Chart>
     <Settings baseTheme={useBaseTheme()} />
-    <Axis id="time" position={Position.Bottom} tickFormat={(d) => DateTime.fromMillis(d, { zone: 'utc-6' }).toISO()} />
+    <Axis
+      id="time"
+      position={Position.Bottom}
+      tickFormat={(d) => DateTime.fromMillis(d, { zone: 'UTC-06:00' }).toISO()}
+    />
     <Axis id="y" position={Position.Left} />
     <LineSeries
       id="lines"
