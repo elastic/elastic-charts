@@ -82,7 +82,7 @@ describe('X Domain', () => {
       {
         seriesType: SeriesType.Line,
         xScaleType: ScaleType.Time,
-        timeZone: 'UTC+03:00',
+        timeZone: 'Indian/Antananarivo',
       },
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
@@ -90,7 +90,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Time),
       nice: getXNiceFromSpec(),
       isBandScale: false,
-      timeZone: 'UTC+03:00',
+      timeZone: 'Indian/Antananarivo',
     });
   });
   test('Should return correct scale type with multi line with same scale types (time) same tz', () => {
@@ -98,12 +98,12 @@ describe('X Domain', () => {
       {
         seriesType: SeriesType.Line,
         xScaleType: ScaleType.Time,
-        timeZone: 'UTC+03:00',
+        timeZone: 'Indian/Antananarivo',
       },
       {
         seriesType: SeriesType.Line,
         xScaleType: ScaleType.Time,
-        timeZone: 'UTC+03:00',
+        timeZone: 'Indian/Antananarivo',
       },
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
@@ -111,7 +111,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Time),
       nice: getXNiceFromSpec(),
       isBandScale: false,
-      timeZone: 'UTC+03:00',
+      timeZone: 'Indian/Antananarivo',
     });
   });
   test('Should return correct scale type with multi line with same scale types (time) coerce to UTC', () => {
@@ -119,12 +119,12 @@ describe('X Domain', () => {
       {
         seriesType: SeriesType.Line,
         xScaleType: ScaleType.Time,
-        timeZone: 'UTC+03:00',
+        timeZone: 'Indian/Antananarivo',
       },
       {
         seriesType: SeriesType.Line,
         xScaleType: ScaleType.Time,
-        timeZone: 'UTC+03:00',
+        timeZone: 'Indian/Antananarivo',
       },
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
@@ -183,7 +183,7 @@ describe('X Domain', () => {
       {
         seriesType: SeriesType.Area,
         xScaleType: ScaleType.Time,
-        timeZone: 'UTC+03:00',
+        timeZone: 'Indian/Antananarivo',
       },
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
@@ -191,7 +191,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Linear),
       nice: getXNiceFromSpec(),
       isBandScale: true,
-      timeZone: 'UTC+03:00',
+      timeZone: 'Indian/Antananarivo',
     });
   });
 
