@@ -21,7 +21,9 @@ const isValidTimeZone = (timeZone?: string): boolean => {
 
 /** @internal */
 export const getValidatedTimeZone = (specifiedTimeZone?: string): string =>
-  isValidTimeZone(specifiedTimeZone) ? specifiedTimeZone ?? '' : Intl.DateTimeFormat().resolvedOptions().timeZone;
+  specifiedTimeZone && isValidTimeZone(specifiedTimeZone)
+    ? specifiedTimeZone
+    : Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 /** @internal */
 export const getZoneFromSpecs = (specs: { timeZone?: string }[]): string => {
