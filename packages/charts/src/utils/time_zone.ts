@@ -25,7 +25,7 @@ export const getValidatedTimeZone = (specifiedTimeZone?: string): string =>
 
 /** @internal */
 export const getZoneFromSpecs = (specs: { timeZone?: string }[]): string => {
-  const allValidTimezones = new Set<string>(specs.map((s) => getValidatedTimeZone(s.timeZone ?? '')));
+  const allValidTimezones = new Set<string>(specs.map((s) => s.timeZone ?? '').filter(isValidTimeZone));
   return new Set(allValidTimezones).size === 1
     ? allValidTimezones.values().next().value
     : Intl.DateTimeFormat().resolvedOptions().timeZone;

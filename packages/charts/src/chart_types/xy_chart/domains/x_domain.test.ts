@@ -98,12 +98,12 @@ describe('X Domain', () => {
       {
         seriesType: SeriesType.Line,
         xScaleType: ScaleType.Time,
-        timeZone: 'Indian/Antananarivo',
+        timeZone: 'Etc/GMT+3',
       },
       {
         seriesType: SeriesType.Line,
         xScaleType: ScaleType.Time,
-        timeZone: 'Indian/Antananarivo',
+        timeZone: 'Etc/GMT+3',
       },
     ];
     const mainXScale = convertXScaleTypes(seriesSpecs);
@@ -111,7 +111,7 @@ describe('X Domain', () => {
       type: getXScaleTypeFromSpec(ScaleType.Time),
       nice: getXNiceFromSpec(),
       isBandScale: false,
-      timeZone: 'Indian/Antananarivo',
+      timeZone: 'Etc/GMT+3',
     });
   });
   test('Should return correct scale type with multi line with same scale types (time) coerce to UTC', () => {
