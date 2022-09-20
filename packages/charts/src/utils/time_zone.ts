@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
+import { Logger } from './logger';
+
 const isValidTimeZone = (timeZone?: string): boolean => {
   try {
     Intl.DateTimeFormat(undefined, { timeZone });
     return true;
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`The supplied timeZone ${timeZone} does not exist. The default time zone will be used.`);
-    // eslint-disable-next-line no-console
-    console.error(error);
+    Logger.warn(`The supplied timeZone ${timeZone} does not exist. The default time zone will be used.`);
+    Logger.warn(error);
     return false;
   }
 };
@@ -26,7 +26,7 @@ export const getValidatedTimeZone = (specifiedTimeZone?: string): string =>
 /** @internal */
 export const getZoneFromSpecs = (specs: { timeZone?: string }[]): string => {
   const allValidTimezones = new Set<string>(specs.map((s) => s.timeZone ?? '').filter(isValidTimeZone));
-  return new Set(allValidTimezones).size === 1
+  return allValidTimezones.size === 1
     ? allValidTimezones.values().next().value
     : Intl.DateTimeFormat().resolvedOptions().timeZone;
 };

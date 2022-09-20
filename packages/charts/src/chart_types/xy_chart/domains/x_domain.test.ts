@@ -77,6 +77,22 @@ describe('X Domain', () => {
       timeZone: 'UTC',
     });
   });
+  test('Should return correct scale type with an empty timezone string', () => {
+    const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[] = [
+      {
+        seriesType: SeriesType.Line,
+        xScaleType: ScaleType.Time,
+        timeZone: '',
+      },
+    ];
+    const mainXScale = convertXScaleTypes(seriesSpecs);
+    expect(mainXScale).toEqual({
+      type: getXScaleTypeFromSpec(ScaleType.Time),
+      nice: getXNiceFromSpec(),
+      isBandScale: false,
+      timeZone: 'UTC',
+    });
+  });
   test('Should return correct scale type with single line (time)', () => {
     const seriesSpecs: Pick<BasicSeriesSpec, 'seriesType' | 'xScaleType' | 'timeZone'>[] = [
       {
