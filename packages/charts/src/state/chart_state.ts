@@ -23,7 +23,7 @@ import { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { SeriesIdentifier, SeriesKey } from '../common/series_id';
 import { AnchorPosition } from '../components/portal/types';
 import { TooltipInfo } from '../components/tooltip/types';
-import { DEFAULT_SETTINGS_SPEC, PointerEvent, Spec } from '../specs';
+import { DEFAULT_SETTINGS_SPEC, PointerEvent, Spec, TooltipValue } from '../specs';
 import { keepDistinct } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 import { Logger } from '../utils/logger';
@@ -203,7 +203,7 @@ export interface InteractionsState {
 /** @internal */
 export interface TooltipInteractionState {
   pinned: boolean;
-  selected: SeriesIdentifier[];
+  selected: TooltipValue[];
 }
 
 /** @internal */

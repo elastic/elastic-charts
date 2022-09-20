@@ -79,6 +79,7 @@ export const Example = () => {
       <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <Tooltip
+        // type="follow"
         actions={
           disableActions
             ? []
@@ -94,8 +95,8 @@ export const Example = () => {
                     </span>
                   ),
                   disabled: ({ length }) => (length < 1 ? 'Select at least one series' : false),
-                  // hide: ({ length }) => length > 0,
-                  onSelect: (series) => alert(`Selected the following: \n - ${series.map((s) => s.key).join('\n - ')}`),
+                  onSelect: (series) =>
+                    alert(`Selected the following: \n - ${series.map((s) => s.seriesIdentifier.key).join('\n - ')}`),
                 },
               ]
         }

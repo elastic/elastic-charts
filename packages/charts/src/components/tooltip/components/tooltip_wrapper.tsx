@@ -10,26 +10,30 @@ import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum } from '../../../specs';
 import { TooltipAction } from '../../../specs/tooltip';
-import { renderComplexChildren } from '../../../utils/common';
+import { Datum, renderComplexChildren } from '../../../utils/common';
 import { useTooltipContext } from './tooltip_provider';
 
-type TooltipWrapperProps<SI extends SeriesIdentifier = SeriesIdentifier> = PropsWithChildren<{
+type TooltipWrapperProps<
+  D extends BaseDatum = Datum,
+  SI extends SeriesIdentifier = SeriesIdentifier,
+> = PropsWithChildren<{
   className?: string;
-  actions?: TooltipAction<SI>[];
-  actionPrompt: string;
-  selectionPrompt: string;
+  actions?: TooltipAction<D, SI>[];
+  actionPrompt?: string;
+  selectionPrompt?: string;
 }>;
 
 /** @internal */
-export const TooltipWrapper = <SI extends SeriesIdentifier = SeriesIdentifier>({
+export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   children,
   actions = [],
   actionPrompt,
   selectionPrompt,
   className,
-}: TooltipWrapperProps<SI>) => {
-  const { dir, pinned, selected, onTooltipPinned } = useTooltipContext<SI>();
+}: TooltipWrapperProps<D, SI>) => {
+  const { dir, pinned, selected, onTooltipPinned } = useTooltipContext<D, SI>();
 
   const renderActions = () => {
     const visibleActions = actions.filter(({ hide }) => !hide || hide(selected));

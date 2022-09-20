@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { SeriesIdentifier } from '../../common/series_id';
+import { TooltipValue } from '../../specs';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
@@ -19,7 +19,7 @@ export const getTooltipPinned = (state: GlobalChartState) => state.interactions.
 /** @internal */
 export const getTooltipSelectedItems = createCustomCachedSelector(
   [getTooltipToggledItems, getTooltipPinned],
-  (toggledItems, tooltipStick): SeriesIdentifier[] => {
+  (toggledItems, tooltipStick): TooltipValue[] => {
     if (!tooltipStick) {
       return [];
     }

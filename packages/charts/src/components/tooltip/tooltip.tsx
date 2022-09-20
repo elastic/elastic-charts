@@ -12,7 +12,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { Colors } from '../../common/colors';
 import { SeriesIdentifier } from '../../common/series_id';
-import { BaseDatum, DEFAULT_TOOLTIP_SPEC, SettingsSpec, TooltipProps, TooltipSpec } from '../../specs';
+import { BaseDatum, DEFAULT_TOOLTIP_SPEC, SettingsSpec, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import {
   onTooltipItemSelected as onTooltipItemSelectedAction,
@@ -56,7 +56,7 @@ interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdenti
   chartId: string;
   backgroundColor: string;
   pinned: boolean;
-  selected: Array<SeriesIdentifier>;
+  selected: TooltipValue<D, SI>[];
   tooltipTheme: TooltipStyle;
 }
 

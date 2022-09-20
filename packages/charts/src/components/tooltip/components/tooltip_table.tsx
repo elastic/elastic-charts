@@ -28,7 +28,7 @@ type TooltipTableProps<
     items: TooltipValue<D, SI>[];
     pinned: boolean;
     onSelect: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
-    selected: SeriesIdentifier[];
+    selected: TooltipValue<D, SI>[];
   },
   {},
   {

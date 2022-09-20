@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { SeriesIdentifier } from '../../common/series_id';
+import { TooltipValue } from '../../specs';
 
 /** @internal */
 export const ON_TOOLTIP_PINNED = 'ON_TOOLTIP_PINNED';
@@ -24,7 +24,7 @@ export interface ToggleTooltipStickAction {
 /** @internal */
 export interface ToggleSelectedTooltipItemAction {
   type: typeof ON_TOOLTIP_ITEM_SELECTED;
-  itemId: SeriesIdentifier;
+  selected: TooltipValue;
 }
 
 /** @internal */
@@ -33,8 +33,8 @@ export function onTooltipPinned(pinned: boolean, resetPointer: boolean = false):
 }
 
 /** @internal */
-export function onTooltipItemSelected(itemId: SeriesIdentifier): ToggleSelectedTooltipItemAction {
-  return { type: ON_TOOLTIP_ITEM_SELECTED, itemId };
+export function onTooltipItemSelected(selected: TooltipValue): ToggleSelectedTooltipItemAction {
+  return { type: ON_TOOLTIP_ITEM_SELECTED, selected };
 }
 
 /** @internal */

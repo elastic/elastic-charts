@@ -124,7 +124,8 @@ export const Example = () => {
                     </span>
                   ),
                   hide: ({ length }) => length > 0,
-                  onSelect: (series) => alert(`Selected the following: \n - ${series.map((s) => s.key).join('\n - ')}`),
+                  onSelect: (series) =>
+                    alert(`Selected the following: \n - ${series.map((s) => s.seriesIdentifier.key).join('\n - ')}`),
                 },
               ]
         }

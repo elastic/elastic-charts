@@ -186,9 +186,9 @@ export function interactionsReducer(
         tooltip: {
           ...state.tooltip,
           pinned: true,
-          selected: (getInternalTooltipInfoSelector(globalState)?.values ?? [])
-            .filter(({ isHighlighted }) => isHighlighted)
-            .map(({ seriesIdentifier }) => seriesIdentifier),
+          selected: (getInternalTooltipInfoSelector(globalState)?.values ?? []).filter(
+            ({ isHighlighted }) => isHighlighted,
+          ),
         },
         pointer: {
           ...state.pointer,
@@ -199,10 +199,10 @@ export function interactionsReducer(
     case ON_TOOLTIP_ITEM_SELECTED: {
       if (!state.tooltip.pinned) return state;
       let updatedItems = [...state.tooltip.selected];
-      if (updatedItems.some(({ key }) => key === action.itemId.key)) {
-        updatedItems = updatedItems.filter(({ key }) => key !== action.itemId.key);
+      if (updatedItems.includes(action.selected)) {
+        updatedItems = updatedItems.filter((item) => item !== action.selected);
       } else {
-        updatedItems.push(action.itemId);
+        updatedItems.push(action.selected);
       }
 
       return {

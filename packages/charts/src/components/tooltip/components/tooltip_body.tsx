@@ -27,7 +27,7 @@ interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentif
   columns: TooltipTableColumn<D, SI>[];
   headerFormatter?: TooltipValueFormatter<D, SI>;
   settings?: TooltipProps<D, SI>;
-  actions: TooltipAction<SI>[];
+  actions: TooltipAction<D, SI>[];
   onSelect: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
 }
 
@@ -45,7 +45,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   actionPrompt,
   selectionPrompt,
 }: TooltipBodyProps<D, SI>) => {
-  const { backgroundColor, dir, pinned, selected } = useTooltipContext();
+  const { backgroundColor, dir, pinned, selected } = useTooltipContext<D, SI>();
   if (!info || !visible) {
     return null;
   }

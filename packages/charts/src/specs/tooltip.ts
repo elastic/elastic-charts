@@ -110,24 +110,24 @@ export function getTooltipType(tooltip: TooltipSpec, settings: SettingsSpec, ext
 }
 
 /** @internal */
-export type TooltipAction<SI extends SeriesIdentifier = SeriesIdentifier> = {
+export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
   /**
    * Clickable label to display action
    */
-  label: (series: SI[]) => ReactNode;
+  label: (items: TooltipValue<D, SI>[]) => ReactNode;
   /**
    * Hides action from list
    */
-  hide?: (series: SI[]) => boolean;
+  hide?: (items: TooltipValue<D, SI>[]) => boolean;
   /**
    * Disables action when true or string description is passed
    * If a string is passed, it will be used as the title to display reason for disablement
    */
-  disabled?: (series: SI[]) => boolean | string;
+  disabled?: (items: TooltipValue<D, SI>[]) => boolean | string;
   /**
    * Callback trigger when action is selected
    */
-  onSelect: (series: SI[]) => void;
+  onSelect: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => void;
 };
 
 /**
@@ -194,7 +194,7 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
   /**
    * Actions to enable tooltip selection
    */
-  actions: TooltipAction<SI>[];
+  actions: TooltipAction<D, SI>[];
 
   /**
    * Prompt to display to indicate user can right-click for contextual menu

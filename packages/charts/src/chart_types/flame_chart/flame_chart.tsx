@@ -13,7 +13,6 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
-import { SeriesIdentifier } from '../../common/series_id';
 import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
 import { SettingsSpec, SpecType, TooltipType, TooltipValue } from '../../specs';
@@ -185,7 +184,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // pinned tooltip state
   private tooltipPinned: boolean = false;
-  private tooltipSelectedSeries: SeriesIdentifier[] = [];
+  private tooltipSelectedSeries: TooltipValue[] = [];
 
   // currently hovered over datum
   private hoverIndex: number = NaN;
@@ -255,20 +254,19 @@ class FlameComponent extends React.Component<FlameProps> {
   }
 
   private onTooltipPinned = (pinned: boolean): void => {
-    console.log('onTooltipPinned', pinned);
-
     if (!pinned) {
       this.unpinTooltip();
       return;
     }
 
     this.tooltipPinned = true;
+    this.tooltipSelectedSeries = this.getTooltipValues();
   };
 
-  private onTooltipItemSelected = (itemId: SeriesIdentifier): void => {
-    // itemId is arbitrary for flame elements - just toggle selection
+  private onTooltipItemSelected = (tooltipValue: TooltipValue): void => {
+    // selection is arbitrary for flame elements - just toggle single selection
     if (!this.tooltipPinned) return;
-    this.tooltipSelectedSeries = this.tooltipSelectedSeries.length === 0 ? [itemId] : [];
+    this.tooltipSelectedSeries = this.tooltipSelectedSeries.length === 0 ? [tooltipValue] : [];
     this.setState({});
   };
 
@@ -726,7 +724,6 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private handleEscapeKey = (e: React.KeyboardEvent<HTMLCanvasElement | HTMLInputElement>) => {
-    e.stopPropagation();
     if (e.key === 'Escape') {
       this.clearSearchText();
     }
@@ -797,32 +794,26 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private getTooltipValues(): TooltipValue[] {
     const columns = this.props.columnarViewModel;
-    const test =
-      this.hoverIndex >= 0
-        ? [
-            {
-              label: columns.label[this.hoverIndex],
-              color: getColor(columns.color, this.hoverIndex),
-              isHighlighted: false,
-              isVisible: true,
-              seriesIdentifier: { specId: '', key: '' },
-              value: columns.value[this.hoverIndex],
-              formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
-              valueAccessor: this.hoverIndex,
-            },
-          ]
-        : [];
-    if (test.length === 0) {
-      // console.log('hoverIndex', this.hoverIndex);
-    }
-    return test;
+    return this.hoverIndex >= 0
+      ? [
+          {
+            label: columns.label[this.hoverIndex],
+            color: getColor(columns.color, this.hoverIndex),
+            isHighlighted: false,
+            isVisible: true,
+            seriesIdentifier: { specId: '', key: '' },
+            value: columns.value[this.hoverIndex],
+            formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
+            valueAccessor: this.hoverIndex,
+          },
+        ]
+      : [];
   }
 
   private getActiveCursor(): CSSProperties['cursor'] {
     if (this.tooltipPinned) return DEFAULT_CSS_CURSOR;
     if (this.startOfDragX) return 'grabbing';
     if (this.hoverIndex >= 0) return 'pointer';
-
     return 'grab';
   }
 

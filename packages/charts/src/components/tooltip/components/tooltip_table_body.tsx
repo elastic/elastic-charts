@@ -33,7 +33,7 @@ type TooltipTableBodyProps<
     columns: TooltipTableColumn<D, SI>[];
     pinned: boolean;
     onSelect: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
-    selected: SeriesIdentifier[];
+    selected: TooltipValue<D, SI>[];
   },
   {},
   {
@@ -48,7 +48,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   ...props
 }: TooltipTableBodyProps<D, SI>) => {
   const ready = useRenderSkip();
-  const { theme } = useTooltipContext<SI>();
+  const { theme } = useTooltipContext<D, SI>();
   const maxHeight = props.maxHeight ?? theme.maxTableBodyHeight;
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null);
   const targetRowIndex = 'items' in props ? (props?.items ?? []).findIndex(({ isHighlighted }) => isHighlighted) : -1;
@@ -83,8 +83,8 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
             key={`${item.seriesIdentifier.key}-${item.value}`}
             id={getRowId(i)}
             isHighlighted={!props.pinned && isHighlighted}
-            isSelected={props.pinned && props.selected.some(({ key }) => key === item.seriesIdentifier.key)}
-            onSelect={displayOnly ? undefined : () => props.onSelect(item.seriesIdentifier)}
+            isSelected={props.pinned && props.selected.includes(item)}
+            onSelect={displayOnly ? undefined : () => props.onSelect(item)}
           >
             {props.columns.map((column, j) => {
               return renderCellContent(item, column, column.id ?? `${column.type}-${j}`);
