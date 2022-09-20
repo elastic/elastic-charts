@@ -19,7 +19,7 @@ export const Example = () => (
     <Axis
       id="time"
       position={Position.Bottom}
-      tickFormat={(d) => DateTime.fromMillis(d, { zone: 'UTC-06:00' }).toISO()}
+      tickFormat={(d) => DateTime.fromMillis(d, { zone: 'Etc/GMT+6' }).toISO()}
     />
     <Axis id="y" position={Position.Left} />
     <LineSeries

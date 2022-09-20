@@ -80,7 +80,7 @@ export interface TimeslipConfig extends TimeslipTheme, RasterConfig {
   darkMode: boolean;
   sparse: false;
   implicit: false;
-  maxLabelRowCount: number; // can be 1, 2, 3
+  maxLabelRowCount: 1 | 2 | 3;
   a11y: { contrast: 'low' | 'medium' | 'high' };
   numUnit: CompactDisplay | 'none';
   barChroma: RGBObject;
