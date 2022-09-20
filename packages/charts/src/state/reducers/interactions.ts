@@ -181,14 +181,16 @@ export function interactionsReducer(
         return state;
       }
 
+      const selected = (getInternalTooltipInfoSelector(globalState)?.values ?? []).filter((v) =>
+        globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
+      );
+
       return {
         ...state,
         tooltip: {
           ...state.tooltip,
           pinned: true,
-          selected: (getInternalTooltipInfoSelector(globalState)?.values ?? []).filter(
-            ({ isHighlighted }) => isHighlighted,
-          ),
+          selected,
         },
         pointer: {
           ...state.pointer,

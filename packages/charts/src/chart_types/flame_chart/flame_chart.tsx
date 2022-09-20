@@ -188,6 +188,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // currently hovered over datum
   private hoverIndex: number = NaN;
+  private tooltipValues: TooltipValue[] = [];
 
   // drilldown animation
   private animationRafId: number = NaN;
@@ -260,7 +261,8 @@ class FlameComponent extends React.Component<FlameProps> {
     }
 
     this.tooltipPinned = true;
-    this.tooltipSelectedSeries = this.getTooltipValues();
+    this.tooltipSelectedSeries = this.tooltipValues;
+    // this.setState({});
   };
 
   private onTooltipItemSelected = (tooltipValue: TooltipValue): void => {
@@ -443,6 +445,25 @@ class FlameComponent extends React.Component<FlameProps> {
           this.hoverIndex = NaN;
           this.props.onElementOut(); // userland callback
         }
+      }
+
+      if (prevHoverIndex !== this.hoverIndex) {
+        const columns = this.props.columnarViewModel;
+        this.tooltipValues =
+          this.hoverIndex >= 0
+            ? [
+                {
+                  label: columns.label[this.hoverIndex],
+                  color: getColor(columns.color, this.hoverIndex),
+                  isHighlighted: false,
+                  isVisible: true,
+                  seriesIdentifier: { specId: '', key: '' },
+                  value: columns.value[this.hoverIndex],
+                  formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
+                  valueAccessor: this.hoverIndex,
+                },
+              ]
+            : [];
       }
       this.setState({}); // exact tooltip location needs an update
     }
@@ -792,24 +813,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.setState({});
   };
 
-  private getTooltipValues(): TooltipValue[] {
-    const columns = this.props.columnarViewModel;
-    return this.hoverIndex >= 0
-      ? [
-          {
-            label: columns.label[this.hoverIndex],
-            color: getColor(columns.color, this.hoverIndex),
-            isHighlighted: false,
-            isVisible: true,
-            seriesIdentifier: { specId: '', key: '' },
-            value: columns.value[this.hoverIndex],
-            formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
-            valueAccessor: this.hoverIndex,
-          },
-        ]
-      : [];
-  }
-
   private getActiveCursor(): CSSProperties['cursor'] {
     if (this.tooltipPinned) return DEFAULT_CSS_CURSOR;
     if (this.startOfDragX) return 'grabbing';
@@ -1068,7 +1071,7 @@ class FlameComponent extends React.Component<FlameProps> {
           }
           info={{
             header: null,
-            values: this.getTooltipValues(),
+            values: this.tooltipValues,
           }}
           getChartContainerRef={this.props.containerRef}
         />

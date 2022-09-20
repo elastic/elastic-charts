@@ -133,7 +133,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     window.removeEventListener('keyup', this.handleKeyUp);
     window.removeEventListener('click', this.handleContextClose);
     window.removeEventListener('scroll', this.handleContextClose);
-    this.props.onTooltipPinned(false);
+    this.props.onTooltipPinned(false, true);
   };
 
   handleMouseRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -144,11 +144,16 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
 
     e.preventDefault(); // prevent browser context menu
 
+    if (tooltipState.pinned) {
+      this.handleContextClose();
+      return;
+    }
+
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('click', this.handleContextClose);
     window.addEventListener('scroll', this.handleContextClose);
 
-    this.props.onTooltipPinned(!tooltipState.pinned);
+    this.props.onTooltipPinned(true);
   };
 
   handleMouseUp = ({ nativeEvent: { offsetX, offsetY, timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
