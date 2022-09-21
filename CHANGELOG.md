@@ -1,3 +1,19 @@
+# [50.0.0](https://github.com/elastic/elastic-charts/compare/v49.0.0...v50.0.0) (2022-09-21)
+
+
+### chore
+
+* **xy:** timeslip typescript and timezone verification ([#1826](https://github.com/elastic/elastic-charts/issues/1826)) ([1ee26a5](https://github.com/elastic/elastic-charts/commit/1ee26a5ab85178e07308cddb8fd14bbff38df7f1))
+
+
+### BREAKING CHANGES
+
+* **xy:** non-IANA timezones such as `"utc-3"` are no longer accepted. Use a standard IANA location code or test with a relative one such as `"Etc/GMT+3"`
+
+* chore: timeslip typescript and other typing improvements
+* test: more tightly ensure correct time zone for xy charts
+* refactor: timeslip extraction of small functions to remove some large functions
+
 # [49.0.0](https://github.com/elastic/elastic-charts/compare/v48.0.1...v49.0.0) (2022-09-17)
 
 
