@@ -6,17 +6,20 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
-
 /** @internal */
-export function renderChartTitle(ctx, config, chartWidth, cartesianTop, aggregationFunctionName) {
+export function renderChartTitle(
+  ctx: CanvasRenderingContext2D,
+  fontColor: string,
+  chartWidth: number,
+  cartesianTop: number,
+) {
   ctx.save();
   const titleFontSize = 32; // todo move to config
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'center';
   ctx.font = `normal normal 200 ${titleFontSize}px Inter, Helvetica, Arial, sans-serif`; // todo move to config
-  ctx.fillStyle = config.subduedFontColor;
-  ctx.fillText(config.queryConfig.metricFieldName, chartWidth / 2, cartesianTop / 2 - titleFontSize * 0.5);
-  ctx.fillText(aggregationFunctionName, chartWidth / 2, cartesianTop / 2 + titleFontSize * 0.5);
+  ctx.fillStyle = fontColor;
+  ctx.fillText('machine.ram', chartWidth / 2, cartesianTop / 2 - titleFontSize * 0.5);
+  ctx.fillText('KiB', chartWidth / 2, cartesianTop / 2 + titleFontSize * 0.5);
   ctx.restore();
 }

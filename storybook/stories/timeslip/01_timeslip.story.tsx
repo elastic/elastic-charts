@@ -13,9 +13,9 @@ import { Chart, Timeslip, Settings, PartialTheme, GetData } from '@elastic/chart
 import { useBaseTheme } from '../../use_base_theme';
 
 const getData = (dataDemand: Parameters<GetData>[0]) => {
-  const from = dataDemand.lo.timePointSec;
-  const to = dataDemand.hi.nextTimePointSec;
-  const binWidth = dataDemand.lo.nextTimePointSec - from;
+  const from = dataDemand.lo?.timePointSec ?? NaN;
+  const to = dataDemand.hi?.nextTimePointSec ?? NaN;
+  const binWidth = (dataDemand.lo?.nextTimePointSec ?? NaN) - from;
   const result = [];
   let time = from;
   while (time < to) {

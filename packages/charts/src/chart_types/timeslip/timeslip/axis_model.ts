@@ -6,9 +6,7 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
-
-const getNiceTicksForApproxCount = (domainMin, domainMax, approxDesiredTickCount) => {
+const getNiceTicksForApproxCount = (domainMin: number, domainMax: number, approxDesiredTickCount: number) => {
   const diff = domainMax - domainMin;
   const rawPitch = diff / approxDesiredTickCount;
   const exponent = Math.floor(Math.log10(rawPitch));
@@ -26,8 +24,8 @@ const getNiceTicksForApproxCount = (domainMin, domainMax, approxDesiredTickCount
   return result;
 };
 
-const getNiceTicks = (domainMin, domainMax, maximumTickCount) => {
-  let bestCandidate = [];
+const getNiceTicks = (domainMin: number, domainMax: number, maximumTickCount: number) => {
+  let bestCandidate: number[] = [];
   for (let i = 0; i <= maximumTickCount; i++) {
     const candidate = getNiceTicksForApproxCount(domainMin, domainMax, maximumTickCount - i);
     if (candidate.length <= maximumTickCount && candidate.length > 0) return candidate;
@@ -41,7 +39,10 @@ const getNiceTicks = (domainMin, domainMax, maximumTickCount) => {
 };
 
 /** @internal */
-export const axisModel = (domainLandmarks, desiredTickCount) => {
+export const axisModel = (
+  domainLandmarks: number[],
+  desiredTickCount: number,
+): { niceDomainMin: number; niceDomainMax: number; niceTicks: number[] } => {
   const domainMin = Math.min(...domainLandmarks);
   const domainMax = Math.max(...domainLandmarks);
   const niceTicks = getNiceTicks(domainMin, domainMax, desiredTickCount);

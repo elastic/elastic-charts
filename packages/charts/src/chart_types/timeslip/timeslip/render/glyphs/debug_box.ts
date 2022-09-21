@@ -6,10 +6,8 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
-
 /** @internal */
-export function renderDebugBox(ctx, cartesianWidth, cartesianHeight) {
+export function renderDebugBox(ctx: CanvasRenderingContext2D, cartesianWidth: number, cartesianHeight: number) {
   ctx.save();
   ctx.beginPath();
   ctx.rect(0, 0, cartesianWidth, cartesianHeight);

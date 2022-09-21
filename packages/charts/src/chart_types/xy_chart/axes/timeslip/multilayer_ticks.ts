@@ -12,26 +12,33 @@ import { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
 import { GetMeasuredTicks, Projection } from '../../state/selectors/visible_ticks';
 import { rasters, TimeBin, TimeRaster } from './rasters';
 
-const MAX_TIME_TICK_COUNT = 50; // this doesn't do much for narrow charts, but limits tick count to a maximum on wider ones
 const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but there's no raster that's just 5% denser/sparser, so it's safe
-const MAX_TIME_GRID_COUNT = 12;
+
+/** @internal */
+export const MAX_TIME_TICK_COUNT = 50; // this doesn't do much for narrow charts, but limits tick count to a maximum on wider ones
+
+/** @internal */
+export const MAX_TIME_GRID_COUNT = 12;
+
+/** @internal */
+export const DEFAULT_LOCALE = 'en-US';
+
+/** @internal */
+export const MINIMUM_TICK_PIXEL_DISTANCE = 24;
 
 /** @internal */
 export const notTooDense =
-  (
-    domainFrom: number,
-    domainTo: number,
-    binWidth: number,
-    cartesianWidth: number,
-    maxTickCount = MAX_TIME_TICK_COUNT,
-  ) =>
-  (raster: TimeRaster<TimeBin>) => {
+  (domainFrom: number, domainTo: number, binWidth: number, cartesianWidth: number, maxTickCount: number) =>
+  ({
+    minimumPixelsPerSecond,
+    approxWidthInMs,
+  }: Pick<TimeRaster<TimeBin>, 'minimumPixelsPerSecond' | 'approxWidthInMs'>) => {
     const domainInSeconds = domainTo - domainFrom;
     const pixelsPerSecond = cartesianWidth / domainInSeconds;
     return (
-      pixelsPerSecond > raster.minimumPixelsPerSecond &&
-      raster.approxWidthInMs * WIDTH_FUDGE >= binWidth &&
-      (domainInSeconds * 1000) / maxTickCount <= raster.approxWidthInMs
+      pixelsPerSecond > minimumPixelsPerSecond &&
+      approxWidthInMs * WIDTH_FUDGE >= binWidth &&
+      (domainInSeconds * 1000) / maxTickCount <= approxWidthInMs
     );
   };
 
@@ -44,13 +51,17 @@ export function multilayerAxisEntry(
   scale: ScaleContinuous,
   getMeasuredTicks: GetMeasuredTicks,
 ): Projection {
-  const rasterSelector = rasters({ minimumTickPixelDistance: 24, locale: 'en-US' }, xDomain.timeZone);
+  const rasterSelector = rasters(
+    { minimumTickPixelDistance: MINIMUM_TICK_PIXEL_DISTANCE, locale: DEFAULT_LOCALE },
+    xDomain.timeZone,
+  );
   const domainValues = xDomain.domain; // todo consider a property or object type rename
   const domainFromS = Number(domainValues[0]) / 1000; // todo rely on a type guard or check rather than conversion
   const binWidth = xDomain.minInterval;
   const domainExtension = extendByOneBin ? binWidth : 0;
   const domainToS = ((Number(domainValues[domainValues.length - 1]) || NaN) + domainExtension) / 1000;
-  const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0])));
+  const cartesianWidth = Math.abs(range[1] - range[0]);
+  const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, cartesianWidth, MAX_TIME_TICK_COUNT));
   let layerIndex = -1;
   const fillLayerTimeslip = (
     layer: number,
@@ -81,7 +92,7 @@ export function multilayerAxisEntry(
         detailedLayerIndex,
         timeTicks,
         !l.labeled ? () => '' : layerIndex === timeAxisLayerCount - 1 ? l.detailedLabelFormat : l.minorTickLabelFormat,
-        notTooDense(domainFromS, domainToS, binWidth, Math.abs(range[1] - range[0]), MAX_TIME_GRID_COUNT)(l),
+        notTooDense(domainFromS, domainToS, binWidth, cartesianWidth, MAX_TIME_GRID_COUNT)(l),
       );
       const minLabelGap = 4;
 

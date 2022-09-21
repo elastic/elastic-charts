@@ -1083,17 +1083,11 @@ export interface GeometryValue {
     y: any;
 }
 
+// Warning: (ae-forgotten-export) The symbol "DataDemand" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "TimeslipDataRows" needs to be exported by the entry point index.d.ts
+//
 // @public
-export type GetData = (dataDemand: {
-    lo: TimeBin;
-    hi: TimeBin;
-    binUnit: string;
-    binUnitCount: number;
-    unitBarMaxWidthPixels: number;
-}) => Array<{
-    epochMs: number;
-    value: number;
-}>;
+export type GetData = (dataDemand: DataDemand) => TimeslipDataRows;
 
 // @public (undocumented)
 export function getNodeName(node: ArrayNode): string;
@@ -3129,10 +3123,6 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
-
-// Warnings were encountered during analysis:
-//
-// src/chart_types/timeslip/timeslip_api.ts:21:3 - (ae-forgotten-export) The symbol "TimeBin" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

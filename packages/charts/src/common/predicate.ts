@@ -51,3 +51,7 @@ export function getPredicateFn<T>(predicate: Predicate, accessor?: keyof T): (a:
       return () => 0;
   }
 }
+
+/** @internal */
+export const hasKey = <T extends Record<string, unknown>>(obj: T, key: string): key is string & keyof T =>
+  obj.hasOwnProperty(key);

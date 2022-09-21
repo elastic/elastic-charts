@@ -11,6 +11,7 @@
 
 import { cachedTimeDelta, cachedZonedDateTimeFrom, timeProp } from './chrono/cached_chrono';
 import { epochInSecondsToYear } from './chrono/chrono';
+import { TIME_UNIT_TRANSLATIONS } from './time_unit_translations';
 
 // utils
 const approxWidthsInSeconds: Record<string, number> = {
@@ -30,31 +31,35 @@ export interface TimeBin {
   nextTimePointSec: number;
 }
 
-type TimeBinGenerator<T extends TimeBin> = (domainFrom: number, domainTo: number) => Generator<T, void> | T[];
+/** @internal */
+export type TimeBinGenerator<T extends TimeBin> = (domainFrom: number, domainTo: number) => Generator<T, void> | T[];
+
+/** @public */
+export type BinUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond';
+
+/** @internal */
+export type NumberFormatter = (n: number) => string;
+
+/** @internal */
+export type TimeFormatter = NumberFormatter & ReturnType<typeof Intl.DateTimeFormat>['format']; // numeric input to Intl.DateTimeFormat only
 
 /** @internal */
 export interface TimeRaster<T extends TimeBin> {
-  unit: string;
+  unit: BinUnit;
   unitMultiplier: number;
   labeled: boolean;
   minimumTickPixelDistance: number;
   binStarts: TimeBinGenerator<T>;
-  detailedLabelFormat: (time: number) => string;
-  minorTickLabelFormat: (time: number) => string;
+  detailedLabelFormat: TimeFormatter;
+  minorTickLabelFormat: TimeFormatter;
   minimumPixelsPerSecond: number;
   approxWidthInMs: number;
 }
 
-interface RasterConfig {
+/** @internal */
+export interface RasterConfig {
   minimumTickPixelDistance: number;
-  locale: string;
-  /*
-  defaultFontColor: string;
-  weekendFontColor: string;
-  offHourFontColor: string;
-  workHourMin: number;
-  workHourMax: number;
-  */
+  locale: keyof typeof TIME_UNIT_TRANSLATIONS;
 }
 
 const millisecondBinStarts = (rasterMs: number): TimeBinGenerator<TimeBin> =>
@@ -73,7 +78,6 @@ interface YearToDay {
   month: number;
   dayOfMonth: number;
   dayOfWeek: number;
-  // fontColor: string | undefined;
 }
 
 interface YearToHour extends YearToDay {
@@ -471,8 +475,8 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
     binStarts: millisecondBinStarts(1),
-    minorTickLabelFormat: (d) => `${d % 1000}ms`,
-    detailedLabelFormat: (d) => `${d % 1000}ms`,
+    minorTickLabelFormat: (d: number) => `${d % 1000}ms`,
+    detailedLabelFormat: (d: number) => `${d % 1000}ms`,
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -588,7 +592,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       hours,
       new Map([
         [hoursUnlabelled, []],
-        [sixHours, []],
+        [sixHours, [sixHoursUnlabelled]],
       ]),
     ],
     [

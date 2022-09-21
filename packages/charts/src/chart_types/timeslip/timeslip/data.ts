@@ -6,20 +6,15 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
-
 /** @internal */
-export const dataSource = Symbol('dataSource');
-
-/** @internal */
-export const getEnrichedData = (rows) => {
+export const getEnrichedData = (rows: { epochMs: number; value?: number }[]) => {
   const stats = rows.reduce(
     (p, { epochMs, value }) => {
       const { minEpochMs, maxEpochMs, minValue, maxValue } = p;
       p.minEpochMs = Math.min(minEpochMs, epochMs);
       p.maxEpochMs = Math.max(maxEpochMs, epochMs);
-      p.minValue = Math.min(minValue, value);
-      p.maxValue = Math.max(maxValue, value);
+      p.minValue = Math.min(minValue, value ?? minValue);
+      p.maxValue = Math.max(maxValue, value ?? maxValue);
       return p;
     },
     {

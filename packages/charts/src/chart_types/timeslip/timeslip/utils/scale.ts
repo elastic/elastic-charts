@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
+import { NumericScale } from '../timeslip_render';
 
 /** @internal */
-export const getDesiredTickCount = (cartesianHeight, fontSize, sparse) => {
+export const getDesiredTickCount = (cartesianHeight: number, fontSize: number, sparse: boolean) => {
   const desiredMaxTickCount = Math.floor(cartesianHeight / (3 * fontSize));
   return sparse ? 1 + Math.ceil(Math.pow(desiredMaxTickCount, 0.25)) : 1 + Math.ceil(Math.sqrt(desiredMaxTickCount));
 };
 
 /** @internal */
-export const axisScale = (niceDomainMin, niceDomainMax) => {
+export const axisScale = (niceDomainMin: number, niceDomainMax: number): NumericScale => {
   const niceDomainExtent = niceDomainMax - niceDomainMin;
   const yScaleMultiplier = 1 / (niceDomainExtent || 1);
   const offset = -niceDomainMin * yScaleMultiplier;

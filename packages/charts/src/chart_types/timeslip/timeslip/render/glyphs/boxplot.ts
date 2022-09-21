@@ -6,24 +6,28 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
+import { NumericScale } from '../../timeslip_render';
+
+const goldenRatio = 1.618; // todo move it into constants
+
+/** @public */
+export type BoxplotRow = { boxplot: { lower: number; q1: number; q2: number; q3: number; upper: number } };
 
 /** @internal */
 export function renderBoxplotGlyph(
-  ctx,
-  barMaxWidthPixels,
-  barX,
-  leftShortfall,
-  foundRow,
-  maxBarHeight,
-  yUnitScaleClamped,
-  opacityMultiplier,
-  r,
-  g,
-  b,
-  maxOpacity,
+  ctx: CanvasRenderingContext2D,
+  barMaxWidthPixels: number,
+  barX: number,
+  leftShortfall: number,
+  foundRow: BoxplotRow,
+  maxBarHeight: number,
+  yUnitScaleClamped: NumericScale,
+  opacityMultiplier: number,
+  r: number,
+  g: number,
+  b: number,
+  maxOpacity: number,
 ) {
-  const goldenRatio = 1.618; // todo move it into constants
   const boxplotWidth = barMaxWidthPixels / goldenRatio; // - clamp(rightShortfall etc etc)
   const whiskerWidth = boxplotWidth / 2;
   const boxplotLeftX = barX + (barMaxWidthPixels - boxplotWidth) / 2 - leftShortfall;
