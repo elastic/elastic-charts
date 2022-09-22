@@ -1,0 +1,63 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.drawFrame = exports.EPSILON = exports.PADDING_RIGHT = exports.PADDING_LEFT = exports.PADDING_BOTTOM = exports.PADDING_TOP = void 0;
+var common_1 = require("./common");
+var draw_canvas_1 = require("./draw_canvas");
+var draw_webgl_1 = require("./draw_webgl");
+var CHART_BOX_LINE_WIDTH = 0.5;
+var MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;
+var MINIMAP_BOX_LINE_WIDTH = 1;
+exports.PADDING_TOP = 16;
+exports.PADDING_BOTTOM = 24;
+exports.PADDING_LEFT = 16;
+exports.PADDING_RIGHT = 16;
+var FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH = 0.5;
+var MINIMUM_FOCUS_INDICATOR_LENGTH = 4;
+var TERMINAL_TICK_LINE_WIDTH = 1;
+var TERMINAL_TICK_LINE_LENGTH = 4;
+exports.EPSILON = 1e-4;
+var drawFrame = function (ctx, gl, cssWidth, cssHeight, minimapWidth, minimapHeight, minimapLeft, minimapTop, dpr, columnarGeomData, pickTexture, pickTextureRenderer, roundedRectRenderer, hoverIndex, unitRowHeight, currentColor) {
+    return function (currentFocus, wobbleIndex, wobble) {
+        var canvasHeightExcess = ((0, common_1.roundUpSize)(cssHeight) - cssHeight) * dpr;
+        var minimapBottom = minimapTop + minimapHeight;
+        var minimapCanvasWidth = minimapWidth * dpr;
+        var minimapCanvasHeight = minimapHeight * dpr;
+        var minimapCanvasX = minimapLeft * dpr;
+        var minimapCanvasY = canvasHeightExcess;
+        var focusLayerCssWidth = cssWidth - exports.PADDING_LEFT - exports.PADDING_RIGHT;
+        var focusLayerCanvasWidth = focusLayerCssWidth * dpr;
+        var focusLayerCanvasOffsetX = exports.PADDING_LEFT * dpr;
+        var focusLayerCssHeight = cssHeight - exports.PADDING_TOP - exports.PADDING_BOTTOM;
+        var fullFocus = [0, 1, 0, 1];
+        var drawFocusLayer = function (pickLayer) {
+            return (0, draw_webgl_1.drawWebgl)(gl, 1, focusLayerCanvasWidth, focusLayerCssHeight * dpr, focusLayerCanvasOffsetX, (pickLayer ? 0 : canvasHeightExcess) + dpr * exports.PADDING_BOTTOM, pickTexture, pickLayer ? pickTextureRenderer : roundedRectRenderer, wobble ? NaN : hoverIndex, unitRowHeight, currentFocus, columnarGeomData.label.length, true, pickLayer, wobbleIndex, wobble);
+        };
+        var drawContextLayer = function (pickLayer) {
+            return (0, draw_webgl_1.drawWebgl)(gl, 1, minimapCanvasWidth, minimapCanvasHeight, minimapCanvasX, pickLayer ? 0 : minimapCanvasY, pickTexture, pickLayer ? pickTextureRenderer : roundedRectRenderer, hoverIndex, unitRowHeight, fullFocus, columnarGeomData.label.length, false, pickLayer, wobbleIndex, wobble);
+        };
+        drawFocusLayer(false);
+        drawContextLayer(false);
+        drawFocusLayer(true);
+        drawContextLayer(true);
+        (0, draw_canvas_1.drawCanvas2d)(ctx, 1, focusLayerCssWidth, focusLayerCssHeight, exports.PADDING_LEFT, exports.PADDING_TOP, dpr, columnarGeomData, unitRowHeight, currentFocus, currentColor);
+        (0, draw_canvas_1.drawRect)(ctx, focusLayerCssWidth, focusLayerCssHeight, exports.PADDING_LEFT, focusLayerCssHeight + exports.PADDING_TOP, dpr, fullFocus, '', 'black', CHART_BOX_LINE_WIDTH);
+        (0, draw_canvas_1.drawRect)(ctx, focusLayerCssWidth, 0, exports.PADDING_LEFT, FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2, dpr, fullFocus, '', 'lightgrey', FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH);
+        (0, draw_canvas_1.drawRect)(ctx, Math.max(0, focusLayerCssWidth * (currentFocus[1] - currentFocus[0])), 0, exports.PADDING_LEFT + focusLayerCssWidth * currentFocus[0], FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2, dpr, fullFocus, '', 'black', FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH);
+        var atWallLeft = Math.abs(currentFocus[0]) < exports.EPSILON ? 4 : 1;
+        (0, draw_canvas_1.drawRect)(ctx, TERMINAL_TICK_LINE_WIDTH * atWallLeft, TERMINAL_TICK_LINE_LENGTH * atWallLeft, exports.PADDING_LEFT + focusLayerCssWidth * currentFocus[0] - (TERMINAL_TICK_LINE_WIDTH * atWallLeft) / 2, TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallLeft) / 2, dpr, fullFocus, 'black', '', 0);
+        var atWallRight = Math.abs(currentFocus[1] - 1) < exports.EPSILON ? 4 : 1;
+        (0, draw_canvas_1.drawRect)(ctx, TERMINAL_TICK_LINE_WIDTH * atWallRight, TERMINAL_TICK_LINE_LENGTH * atWallRight, exports.PADDING_LEFT + focusLayerCssWidth * currentFocus[1] - (TERMINAL_TICK_LINE_WIDTH * atWallRight) / 2, TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallRight) / 2, dpr, fullFocus, 'black', '', 0);
+        (0, draw_canvas_1.drawRect)(ctx, 0, focusLayerCssHeight, FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2, focusLayerCssHeight + exports.PADDING_TOP, dpr, fullFocus, '', 'lightgrey', FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH);
+        (0, draw_canvas_1.drawRect)(ctx, 0, Math.max(MINIMUM_FOCUS_INDICATOR_LENGTH, focusLayerCssHeight * (currentFocus[3] - currentFocus[2])), FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH / 2, focusLayerCssHeight * (1 - currentFocus[2]) + exports.PADDING_TOP, dpr, fullFocus, '', 'black', FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH);
+        var atWallTop = Math.abs(currentFocus[2]) < exports.EPSILON ? 4 : 1;
+        (0, draw_canvas_1.drawRect)(ctx, TERMINAL_TICK_LINE_LENGTH + 1, TERMINAL_TICK_LINE_WIDTH * atWallTop, 0, focusLayerCssHeight * (1 - currentFocus[2]) + exports.PADDING_TOP, dpr, fullFocus, 'black', '', 0);
+        var atWallBottom = Math.abs(currentFocus[3] - 1) < exports.EPSILON ? 4 : 1;
+        (0, draw_canvas_1.drawRect)(ctx, TERMINAL_TICK_LINE_LENGTH + 1, TERMINAL_TICK_LINE_WIDTH * atWallBottom, 0, focusLayerCssHeight * (1 - currentFocus[3]) + exports.PADDING_TOP, dpr, fullFocus, 'black', '', 0);
+        (0, draw_canvas_1.drawRect)(ctx, minimapWidth, minimapHeight, minimapLeft, minimapBottom, dpr, fullFocus, 'rgba(255,255,255,1)', '', 0);
+        (0, draw_canvas_1.drawRect)(ctx, minimapWidth, minimapHeight, minimapLeft, minimapBottom, dpr, fullFocus, 'transparent', '', 0);
+        (0, draw_canvas_1.drawRect)(ctx, minimapWidth, minimapHeight, minimapLeft, minimapBottom, dpr, currentFocus, '', 'magenta', MINIMAP_FOCUS_BOX_LINE_WIDTH);
+        (0, draw_canvas_1.drawRect)(ctx, minimapWidth, minimapHeight, minimapLeft, minimapBottom, dpr, fullFocus, '', 'black', MINIMAP_BOX_LINE_WIDTH);
+    };
+};
+exports.drawFrame = drawFrame;
+//# sourceMappingURL=draw_a_frame.js.map

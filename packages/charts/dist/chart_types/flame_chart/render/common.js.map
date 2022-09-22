@@ -1,0 +1,1 @@
+{"version":3,"file":"common.js","sourceRoot":"","sources":["../../../../src/chart_types/flame_chart/render/common.ts"],"names":[],"mappings":";;;AASa,QAAA,kBAAkB,GAAG,GAAG,CAAC;AAGzB,QAAA,gBAAgB,GAAG,CAAC,CAAC;AAElC,IAAM,qBAAqB,GAAG,GAAG,CAAC;AAG3B,IAAM,WAAW,GAAG,UAAC,YAAoB;IAC9C,OAAA,qBAAqB,GAAG,IAAI,CAAC,IAAI,CAAC,YAAY,GAAG,qBAAqB,CAAC;AAAvE,CAAuE,CAAC;AAD7D,QAAA,WAAW,eACkD"}

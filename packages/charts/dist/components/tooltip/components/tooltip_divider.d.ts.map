@@ -1,0 +1,1 @@
+{"version":3,"file":"tooltip_divider.d.ts","sourceRoot":"","sources":["../../../../src/components/tooltip/components/tooltip_divider.tsx"],"names":[],"mappings":"AAQA,OAAc,EAAE,aAAa,EAAE,MAAM,OAAO,CAAC;AAE7C,UAAU,mBAAmB;IAC3B,MAAM,CAAC,EAAE,aAAa,CAAC,QAAQ,CAAC,CAAC;CAClC;AAED,cAAc;AACd,eAAO,MAAM,cAAc,eAAgB,mBAAmB,gBAE7D,CAAC"}

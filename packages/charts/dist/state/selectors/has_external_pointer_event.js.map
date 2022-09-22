@@ -1,0 +1,1 @@
+{"version":3,"file":"has_external_pointer_event.js","sourceRoot":"","sources":["../../../src/state/selectors/has_external_pointer_event.ts"],"names":[],"mappings":";;;AAQA,qCAA+C;AAIxC,IAAM,wBAAwB,GAAG,UAAC,EAAiD;QAA7B,OAAO,4BAAA;IAClE,OAAA,OAAO,KAAK,IAAI,IAAI,OAAO,CAAC,IAAI,KAAK,wBAAgB,CAAC,GAAG;AAAzD,CAAyD,CAAC;AAD/C,QAAA,wBAAwB,4BACuB"}
