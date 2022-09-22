@@ -256,7 +256,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private onTooltipPinned = (pinned: boolean): void => {
     if (!pinned) {
-      this.unpinTooltip();
+      this.unpinTooltip(true);
       return;
     }
 
@@ -374,8 +374,15 @@ class FlameComponent extends React.Component<FlameProps> {
     this.drawCanvas();
   };
 
-  componentDidUpdate = () => {
+  private chartDimensionsChanged({ height, width }: Size): boolean {
+    return this.props.chartDimensions.height !== height || this.props.chartDimensions.width !== width;
+  }
+
+  componentDidUpdate = ({ chartDimensions }: FlameProps) => {
     if (!this.ctx) this.tryCanvasContext();
+    if (this.tooltipPinned && this.chartDimensionsChanged(chartDimensions)) {
+      this.unpinTooltip();
+    }
     this.bindControls();
     this.ensureTextureAndDraw();
 
@@ -393,7 +400,6 @@ class FlameComponent extends React.Component<FlameProps> {
   private updatePointerLocation(e: { clientX: number; clientY: number }) {
     if (!this.props.forwardStageRef.current || !this.ctx) return;
     const box = this.props.forwardStageRef.current.getBoundingClientRect();
-
     this.pointerX = e.clientX - box.left;
     this.pointerY = e.clientY - box.top;
 
@@ -403,13 +409,15 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   }
 
-  private unpinTooltip() {
+  private unpinTooltip(redraw = false) {
     this.pinnedPointerX = NaN;
     this.pinnedPointerY = NaN;
     this.tooltipPinned = false;
     this.tooltipSelectedSeries = [];
     this.updateHoverIndex();
-    this.smartDraw();
+    if (redraw) {
+      this.smartDraw();
+    }
   }
 
   private getHoveredDatumIndex = () => {
@@ -429,7 +437,10 @@ class FlameComponent extends React.Component<FlameProps> {
     if (!this.isDragging(e)) {
       e.stopPropagation();
       this.updatePointerLocation(e);
-      this.updateHoverIndex();
+
+      if (!this.tooltipPinned) {
+        this.updateHoverIndex();
+      }
     }
   };
 
@@ -477,6 +488,7 @@ class FlameComponent extends React.Component<FlameProps> {
   }) => {
     e.stopPropagation();
     this.updatePointerLocation(e);
+
     if (this.isDragging(e)) {
       const dragInMinimap = this.pointerInMinimap(this.startOfDragX, this.startOfDragY);
       const focusMoveDirection = dragInMinimap ? 1 : -1; // focus box moves in direction of drag: positive; opposite: negative
@@ -536,8 +548,11 @@ class FlameComponent extends React.Component<FlameProps> {
     if (e.button !== 2) {
       this.resetDrag();
     }
+
+    // prevent dragging while tooltip is pinned
+    if (this.tooltipPinned) return;
     window.addEventListener('mousemove', this.handleMouseDragMove, { passive: true });
-    window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
+    window.addEventListener('mouseup', this.handleMouseUp);
     this.setState({}); // updates cursor
   };
 
@@ -580,7 +595,9 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private handleContextClose = () => {
+    window.removeEventListener('keyup', this.handleKeyUp);
     window.removeEventListener('click', this.handleContextClose);
+    window.removeEventListener('visibilitychange', this.handleContextClose);
     this.onTooltipPinned(false);
   };
 
@@ -589,6 +606,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('click', this.handleContextClose);
+    window.addEventListener('visibilitychange', this.handleContextClose);
 
     this.onTooltipPinned(!this.tooltipPinned);
   };

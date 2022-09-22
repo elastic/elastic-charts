@@ -133,6 +133,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     window.removeEventListener('keyup', this.handleKeyUp);
     window.removeEventListener('click', this.handleContextClose);
     window.removeEventListener('scroll', this.handleContextClose);
+    window.removeEventListener('visibilitychange', this.handleContextClose);
     this.props.onTooltipPinned(false, true);
   };
 
@@ -152,6 +153,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('click', this.handleContextClose);
     window.addEventListener('scroll', this.handleContextClose);
+    window.addEventListener('visibilitychange', this.handleContextClose);
 
     this.props.onTooltipPinned(true);
   };
