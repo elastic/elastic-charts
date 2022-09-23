@@ -1,1 +1,0 @@
-{"version":3,"file":"get_geometries_index.js","sourceRoot":"","sources":["../../../../../src/chart_types/xy_chart/state/selectors/get_geometries_index.ts"],"names":[],"mappings":";;;AAQA,qEAA+E;AAE/E,yEAA8E;AAGjE,QAAA,0BAA0B,GAAG,IAAA,4CAA0B,EAClE,CAAC,2DAA+B,CAAC,EACjC,UAAC,EAAmB;QAAjB,eAAe,qBAAA;IAA2B,OAAA,eAAe;AAAf,CAAe,CAC7D,CAAC"}
