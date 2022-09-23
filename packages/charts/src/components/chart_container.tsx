@@ -23,6 +23,7 @@ import {
   onTooltipItemSelected as onTooltipItemSelectedAction,
 } from '../state/actions/tooltip';
 import { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
+import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';
 import { getInternalIsBrushingSelector } from '../state/selectors/get_internal_is_brushing';
@@ -41,6 +42,7 @@ interface ChartContainerComponentStateProps {
   isBrushing: boolean;
   tooltipState: TooltipInteractionState;
   initialized?: boolean;
+  canPinTooltip: boolean;
   isBrushingAvailable: boolean;
   settings?: SettingsSpec;
   tooltip: TooltipSpec;
@@ -213,7 +215,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     }
 
     const { pointerCursor, internalChartRenderer, getChartContainerRef, forwardStageRef } = this.props;
-    const pinnableTooltip = this.props.tooltip.actions.length > 0;
+    const pinnableTooltip = this.props.canPinTooltip && this.props.tooltip.actions.length > 0;
 
     return (
       <div
@@ -257,6 +259,7 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
       status,
       initialized,
       tooltipState,
+      canPinTooltip: false,
       pointerCursor: DEFAULT_CSS_CURSOR,
       isBrushingAvailable: false,
       isBrushing: false,
@@ -271,6 +274,7 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
     initialized,
     tooltipState,
     isChartEmpty: isInternalChartEmptySelector(state),
+    canPinTooltip: isPinnableTooltip(state),
     pointerCursor: getInternalPointerCursor(state),
     isBrushingAvailable: getInternalIsBrushingAvailableSelector(state),
     isBrushing: getInternalIsBrushingSelector(state),

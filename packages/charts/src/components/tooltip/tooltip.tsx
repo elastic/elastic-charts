@@ -19,6 +19,7 @@ import {
   onTooltipPinned as onTooltipPinnedAction,
 } from '../../state/actions/tooltip';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
+import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
@@ -54,6 +55,7 @@ interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdenti
   settings?: TooltipProps<D, SI>;
   rotation: Rotation;
   chartId: string;
+  canPinTooltip: boolean;
   backgroundColor: string;
   pinned: boolean;
   selected: TooltipValue<D, SI>[];
@@ -90,6 +92,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   selected,
   onTooltipItemSelected,
   onTooltipPinned,
+  canPinTooltip,
 }: TooltipComponentProps<D, SI>) => {
   const chartRef = getChartContainerRef();
 
@@ -210,7 +213,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           header={header}
           footer={footer}
           onSelect={onTooltipItemSelected}
-          actions={hideActions ? [] : actions}
+          actions={hideActions || !canPinTooltip ? [] : actions}
           actionPrompt={actionPrompt}
           selectionPrompt={selectionPrompt}
         />
@@ -243,6 +246,7 @@ const HIDDEN_TOOLTIP_PROPS: TooltipStateProps = {
   settings: {},
   rotation: 0 as Rotation,
   chartId: '',
+  canPinTooltip: false,
   backgroundColor: Colors.Transparent.keyword,
   pinned: false,
   selected: [],
@@ -278,6 +282,7 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
         ),
         tooltipTheme,
         rotation: getChartRotationSelector(state),
+        canPinTooltip: isPinnableTooltip(state),
         chartId: state.chartId,
         backgroundColor,
       };
