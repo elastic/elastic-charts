@@ -113,6 +113,7 @@ module.exports = {
     'consistent-return': 0,
     'no-plusplus': 0,
     'no-bitwise': 0,
+    'object-shorthand': ['error', 'properties'],
     'no-void': [2, { allowAsStatement: true }],
     yoda: 0,
     'no-restricted-globals': 0,
