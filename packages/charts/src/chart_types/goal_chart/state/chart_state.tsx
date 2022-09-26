@@ -93,6 +93,7 @@ export class GoalState implements InternalChartState {
       visible: isTooltipVisibleSelector(globalState),
       isExternal: false,
       displayOnly: false,
+      isPinnable: false,
     };
   }
 

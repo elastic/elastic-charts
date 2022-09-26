@@ -22,6 +22,7 @@ export const isTooltipVisibleSelector = createCustomCachedSelector(
         visible: false,
         isExternal: false,
         displayOnly: false,
+        isPinnable: false,
       };
     }
 
@@ -29,6 +30,7 @@ export const isTooltipVisibleSelector = createCustomCachedSelector(
       visible: tooltipInfo.values.length > 0 || pinned,
       displayOnly: tooltipInfo.values.every(({ displayOnly }) => displayOnly),
       isExternal: false,
+      isPinnable: tooltipInfo.values.length > 0,
     };
   },
 );

@@ -13,5 +13,5 @@ export const getInternalIsTooltipVisibleSelector = (state: GlobalChartState): To
   if (state.internalChartState) {
     return state.internalChartState.isTooltipVisible(state);
   }
-  return { visible: false, isExternal: false, displayOnly: false };
+  return { visible: false, isExternal: false, displayOnly: false, isPinnable: false };
 };
