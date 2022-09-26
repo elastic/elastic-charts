@@ -204,8 +204,9 @@ export const getHighlightedTooltipTooltipValuesSelector = createCustomCachedSele
   ({ pinned }, values, tooltip, settings): TooltipAndHighlightedGeoms => {
     const tooltipType = getTooltipType(tooltip, settings);
     const highlightedValues = values.tooltip.values.filter((v) => v.isHighlighted);
+    const hasTooltipContent = values.tooltip.values.length > tooltip.maxTooltipItems && highlightedValues.length > 0;
 
-    if (!pinned && (isFollowTooltipType(tooltipType) || values.tooltip.values.length > tooltip.maxTooltipItems)) {
+    if (!pinned && (isFollowTooltipType(tooltipType) || hasTooltipContent)) {
       return {
         ...values,
         tooltip: {

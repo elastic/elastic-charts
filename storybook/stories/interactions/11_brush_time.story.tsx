@@ -43,7 +43,7 @@ export const Example = () => {
     action('onBrushEnd')(formatter(x[0]), formatter(x[1]));
   };
   const disableActions = boolean('disable actions', false);
-  const seriesCount = number('series count', 10, { step: 1, min: 1 });
+  const seriesCount = number('series count', 5, { step: 1, min: 1 });
   const groupData = dg.generateGroupedSeries(days, seriesCount).map(({ y, g }, i) => ({
     y,
     x: now
@@ -80,7 +80,7 @@ export const Example = () => {
 
       <Tooltip
         maxTooltipItems={number('maxTooltipItems', 5, { min: 1, step: 1 }, 'Tooltip styles')}
-        type={getTooltipTypeKnob('tooltip type', 'follow', 'Tooltip styles')}
+        type={getTooltipTypeKnob('tooltip type', 'vertical', 'Tooltip styles')}
         actions={
           disableActions
             ? []
