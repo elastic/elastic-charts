@@ -263,7 +263,10 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
     dispatch,
   );
 
-type BasicTooltipProps = Omit<TooltipStateProps, 'visible' | 'position' | 'info' | 'pinned' | 'selected'>;
+type BasicTooltipProps = Omit<
+  TooltipStateProps,
+  'visible' | 'position' | 'info' | 'pinned' | 'selected' | 'canPinTooltip'
+>;
 const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
   const tooltip = getTooltipSpecSelector(state);
   const {
@@ -282,7 +285,6 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
         ),
         tooltipTheme,
         rotation: getChartRotationSelector(state),
-        canPinTooltip: isPinnableTooltip(state),
         chartId: state.chartId,
         backgroundColor,
       };
@@ -298,6 +300,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
         info: getInternalTooltipInfoSelector(state),
         pinned: state.interactions.tooltip.pinned,
         selected: getTooltipSelectedItems(state),
+        canPinTooltip: isPinnableTooltip(state),
       };
 
 /** @internal */

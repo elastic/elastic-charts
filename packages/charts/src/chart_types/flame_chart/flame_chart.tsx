@@ -436,6 +436,12 @@ class FlameComponent extends React.Component<FlameProps> {
   private handleMouseHoverMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (!this.isDragging(e)) {
       e.stopPropagation();
+
+      if (e.buttons === 2) {
+        // prevent context menu click + drag
+        window.removeEventListener('mouseup', this.handleMouseUp);
+      }
+
       this.updatePointerLocation(e);
 
       if (!this.tooltipPinned) {
@@ -480,12 +486,7 @@ class FlameComponent extends React.Component<FlameProps> {
     }
   }
 
-  private handleMouseDragMove = (e: {
-    stopPropagation: () => void;
-    buttons: number;
-    clientX: number;
-    clientY: number;
-  }) => {
+  private handleMouseDragMove = (e: MouseEvent) => {
     e.stopPropagation();
     this.updatePointerLocation(e);
 
@@ -542,17 +543,22 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
+    if (e.button === 2) return; // context menu click
     if (Number.isNaN(this.pointerX + this.pointerY)) return; // don't reset from minimap
+    if (this.tooltipPinned) return; // prevent dragging while tooltip is pinned
 
-    // non-context click
-    if (e.button !== 2) {
-      this.resetDrag();
-    }
+    this.resetDrag();
 
-    // prevent dragging while tooltip is pinned
-    if (this.tooltipPinned) return;
     window.addEventListener('mousemove', this.handleMouseDragMove, { passive: true });
-    window.addEventListener('mouseup', this.handleMouseUp);
+    window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
+  };
+
+  private handleContextMenu = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    e.stopPropagation();
+    e.preventDefault(); // prevent browser context menu
+
+    window.addEventListener('mousemove', this.handleMouseDragMove, { passive: true });
+    window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
     this.setState({}); // updates cursor
   };
 
@@ -587,28 +593,21 @@ class FlameComponent extends React.Component<FlameProps> {
       }
 
       if (mustFocus && isContextClick) {
-        this.handleContextClick(e);
+        window.addEventListener('keyup', this.handleKeyUp);
+        window.addEventListener('click', this.handleUnpinningTooltip);
+        window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
+        this.onTooltipPinned(!this.tooltipPinned);
       }
     }
     this.clearDrag();
     this.setState({});
   };
 
-  private handleContextClose = () => {
+  private handleUnpinningTooltip = () => {
     window.removeEventListener('keyup', this.handleKeyUp);
-    window.removeEventListener('click', this.handleContextClose);
-    window.removeEventListener('visibilitychange', this.handleContextClose);
+    window.removeEventListener('click', this.handleUnpinningTooltip);
+    window.removeEventListener('visibilitychange', this.handleUnpinningTooltip);
     this.onTooltipPinned(false);
-  };
-
-  private handleContextClick = (e: MouseEvent) => {
-    e.preventDefault(); // prevent browser context menu
-
-    window.addEventListener('keyup', this.handleKeyUp);
-    window.addEventListener('click', this.handleContextClose);
-    window.addEventListener('visibilitychange', this.handleContextClose);
-
-    this.onTooltipPinned(!this.tooltipPinned);
   };
 
   static watchedKeys: KeyboardEvent['key'][] = ['Escape'];
@@ -883,6 +882,7 @@ class FlameComponent extends React.Component<FlameProps> {
             height={canvasHeight}
             onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
+            onContextMenu={this.handleContextMenu}
             onMouseLeave={this.handleMouseLeave}
             onKeyPress={this.handleEnterKey}
             onKeyUp={this.handleEscapeKey}
@@ -1074,6 +1074,7 @@ class FlameComponent extends React.Component<FlameProps> {
           </p>
         </div>
         <BasicTooltip
+          canPinTooltip
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={
             this.tooltipPinned
