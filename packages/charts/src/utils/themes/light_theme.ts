@@ -399,9 +399,11 @@ export const LIGHT_THEME: Theme = {
       lightColor: '#E0E5EE',
       darkColor: '#343741',
     },
+    border: '#EDF0F5',
     barBackground: '#EDF0F5',
     background: '#FFFFFF',
     nonFiniteText: 'N/A',
+    minHeight: 64,
   },
   tooltip: {
     maxTableBodyHeight: 120,

@@ -1,8 +1,0 @@
-name: 'Check yarn caching'
-description: 'Checks for cache hit from bahmutov/npm-install'
-outputs:
-  cacheHit:
-    description: 'has yarn cache for ref'
-runs:
-  using: 'node12'
-  main: './index.js'

@@ -10,10 +10,14 @@ import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
 import { Color } from '../../../../common/colors';
+import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
+import { Font } from '../../../../common/text_utils';
+import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
+import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
+import { isMetricWNumber, isMetricWProgress, MetricDatum } from '../../specs';
 
 type BreakPoint = 's' | 'm' | 'l';
 
@@ -24,7 +28,7 @@ const WIDTH_BP: [number, number, BreakPoint][] = [
 ];
 
 const PADDING = 8;
-const NUMBER_LINE_HEIGHT = 1.2; // aligned with our CSS
+const LINE_HEIGHT = 1.2; // aligned with our CSS
 const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 16, l: 24 };
 const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
@@ -38,42 +42,98 @@ function findRange(ranges: [number, number, BreakPoint][], value: number): Break
 }
 
 type ElementVisibility = {
-  titleLines: number;
-  subtitleLines: number;
+  titleMaxLines: number;
+  subtitleMaxLines: number;
   title: boolean;
   subtitle: boolean;
   extra: boolean;
 };
 
 function elementVisibility(
-  datum: MetricBase | MetricWProgress | MetricWTrend,
+  datum: MetricDatum,
   panel: Size,
   size: BreakPoint,
-): ElementVisibility {
-  const titleHeight = (title: boolean, maxLines: number) =>
-    PADDING + (title ? maxLines * TITLE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT : 0);
-  const subtitleHeight = (subtitle: boolean, maxLines: number) =>
-    subtitle ? maxLines * SUBTITLE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT + PADDING : 0;
-  const extraHeight = (extra: boolean) => (extra ? EXTRA_FONT_SIZE[size] * NUMBER_LINE_HEIGHT : 0);
-  const valueHeight = VALUE_FONT_SIZE[size] * NUMBER_LINE_HEIGHT + PADDING;
+): ElementVisibility & { titleLines: string[]; subtitleLines: string[] } {
+  const LEFT_RIGHT_PADDING = 16;
+  const maxTitlesWidth = (size === 's' ? 1 : 0.8) * panel.width - (datum.icon ? 24 : 0) - LEFT_RIGHT_PADDING;
+
+  const titleFont: Font = {
+    fontStyle: 'normal',
+    fontFamily: DEFAULT_FONT_FAMILY,
+    fontVariant: 'normal',
+    fontWeight: 400,
+    textColor: 'black',
+  };
+  const subtitleFont: Font = {
+    ...titleFont,
+    fontWeight: 300,
+  };
+  const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
+    return datum.title
+      ? PADDING +
+          wrapText(datum.title, titleFont, TITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure).length *
+            TITLE_FONT_SIZE[size] *
+            LINE_HEIGHT
+      : 0;
+  };
+
+  const subtitleHeight = (maxLines: number, textMeasure: TextMeasure) => {
+    return datum.subtitle
+      ? PADDING +
+          wrapText(datum.subtitle, subtitleFont, SUBTITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure)
+            .length *
+            SUBTITLE_FONT_SIZE[size] *
+            LINE_HEIGHT
+      : 0;
+  };
+
+  const extraHeight = EXTRA_FONT_SIZE[size] * LINE_HEIGHT;
+  const valueHeight = VALUE_FONT_SIZE[size] * LINE_HEIGHT + PADDING;
 
   const responsiveBreakPoints: Array<ElementVisibility> = [
-    { titleLines: 3, subtitleLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleLines: 3, subtitleLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleLines: 3, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
-    { titleLines: 2, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
-    { titleLines: 2, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: false },
-    { titleLines: 1, subtitleLines: 0, title: !!datum.title, subtitle: false, extra: false },
+    { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 3, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 2, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 1, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
+    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
+    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
   ];
 
-  const isVisible = ({ titleLines, subtitleLines, title, subtitle, extra }: ElementVisibility) =>
-    titleHeight(title, titleLines) + subtitleHeight(subtitle, subtitleLines) + extraHeight(extra) + valueHeight <
+  const isVisible = (
+    { titleMaxLines, subtitleMaxLines, title, subtitle, extra }: ElementVisibility,
+    measure: TextMeasure,
+  ) =>
+    (title && titleMaxLines > 0 ? titleHeight(titleMaxLines, measure) : 0) +
+      (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
+      (extra ? extraHeight : 0) +
+      valueHeight <
     panel.height;
 
-  return (
-    responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint)) ??
-    responsiveBreakPoints[responsiveBreakPoints.length - 1]
-  );
+  return withTextMeasure((textMeasure) => {
+    const visibilityBreakpoint =
+      responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ??
+      responsiveBreakPoints[responsiveBreakPoints.length - 1];
+    return {
+      ...visibilityBreakpoint,
+      titleLines: wrapText(
+        datum.title ?? '',
+        titleFont,
+        TITLE_FONT_SIZE[size],
+        maxTitlesWidth,
+        visibilityBreakpoint.titleMaxLines,
+        textMeasure,
+      ),
+      subtitleLines: wrapText(
+        datum.subtitle ?? '',
+        subtitleFont,
+        SUBTITLE_FONT_SIZE[size],
+        maxTitlesWidth,
+        visibilityBreakpoint.subtitleMaxLines,
+        textMeasure,
+      ),
+    };
+  });
 }
 
 function lineClamp(maxLines: number): CSSProperties {
@@ -90,15 +150,15 @@ function lineClamp(maxLines: number): CSSProperties {
 /** @internal */
 export const MetricText: React.FunctionComponent<{
   id: string;
-  datum: MetricBase | MetricWProgress | MetricWTrend;
+  datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
   onElementClick: () => void;
   highContrastTextColor: Color;
 }> = ({ id, datum, panel, style, onElementClick, highContrastTextColor }) => {
-  const { title, subtitle, extra, value } = datum;
+  const { extra, value } = datum;
 
-  const size = findRange(WIDTH_BP, panel.width);
+  const size = findRange(WIDTH_BP, panel.width - 16);
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
   const containerClassName = classNames('echMetricText', {
@@ -109,24 +169,21 @@ export const MetricText: React.FunctionComponent<{
 
   const visibility = elementVisibility(datum, panel, size);
 
-  const parts = splitNumericSuffixPrefix(datum.valueFormatter(value));
-
   const titleWidthMaxSize = size === 's' ? '100%' : '80%';
-  const titleWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
+  const titlesWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
+
+  const isNumericalMetric = isMetricWNumber(datum);
+  const textParts = isNumericalMetric
+    ? isFiniteNumber(value)
+      ? splitNumericSuffixPrefix(datum.valueFormatter(value))
+      : [{ emphasis: 'normal', text: style.nonFiniteText }]
+    : [{ emphasis: 'normal', text: datum.value }];
 
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
       <div>
         {visibility.title && (
-          <h2
-            id={id}
-            className="echMetricText__title"
-            style={{
-              fontSize: `${TITLE_FONT_SIZE[size]}px`,
-              ...lineClamp(visibility.titleLines),
-              width: titleWidth,
-            }}
-          >
+          <h2 id={id} className="echMetricText__title">
             <button
               onMouseDown={(e) => e.stopPropagation()}
               onMouseUp={(e) => e.stopPropagation()}
@@ -135,7 +192,17 @@ export const MetricText: React.FunctionComponent<{
                 onElementClick();
               }}
             >
-              {title}
+              <span
+                style={{
+                  fontSize: `${TITLE_FONT_SIZE[size]}px`,
+                  whiteSpace: 'pre-wrap',
+                  width: titlesWidth,
+                  ...lineClamp(visibility.titleLines.length),
+                }}
+                title={datum.title}
+              >
+                {datum.title}
+              </span>
             </button>
           </h2>
         )}
@@ -153,9 +220,15 @@ export const MetricText: React.FunctionComponent<{
         {visibility.subtitle && (
           <p
             className="echMetricText__subtitle"
-            style={{ fontSize: `${SUBTITLE_FONT_SIZE[size]}px`, ...lineClamp(visibility.subtitleLines) }}
+            style={{
+              fontSize: `${SUBTITLE_FONT_SIZE[size]}px`,
+              width: titlesWidth,
+              whiteSpace: 'pre-wrap',
+              ...lineClamp(visibility.subtitleLines.length),
+            }}
+            title={datum.subtitle}
           >
-            {subtitle}
+            {datum.subtitle}
           </p>
         )}
       </div>
@@ -168,36 +241,47 @@ export const MetricText: React.FunctionComponent<{
         )}
       </div>
       <div>
-        <p className="echMetricText__value" style={{ fontSize: `${VALUE_FONT_SIZE[size]}px` }}>
-          {isFiniteNumber(value)
-            ? parts.map(([type, text], i) =>
-                type === 'numeric' ? (
-                  text
-                ) : (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <span key={i} className="echMetricText__part" style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}>
-                    {text}
-                  </span>
-                ),
-              )
-            : style.nonFiniteText}
+        <p
+          className="echMetricText__value"
+          style={{
+            fontSize: `${VALUE_FONT_SIZE[size]}px`,
+            textOverflow: isNumericalMetric ? undefined : 'ellipsis',
+          }}
+          title={textParts.map(({ text }) => text).join('')}
+        >
+          {textParts.map(({ emphasis, text }, i) => {
+            return emphasis === 'small' ? (
+              <span
+                key={`${text}${i}`}
+                className="echMetricText__part"
+                style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}
+              >
+                {text}
+              </span>
+            ) : (
+              text
+            );
+          })}
         </p>
       </div>
     </div>
   );
 };
 
-function splitNumericSuffixPrefix(text: string) {
-  const charts = text.split('');
-  const parts = charts.reduce<Array<[string, string[]]>>((acc, curr) => {
-    const type = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'numeric' : 'string';
-
-    if (acc.length > 0 && acc[acc.length - 1][0] === type) {
-      acc[acc.length - 1][1].push(curr);
-    } else {
-      acc.push([type, [curr]]);
-    }
-    return acc;
-  }, []);
-  return parts.map(([type, chars]) => [type, chars.join('')]);
+function splitNumericSuffixPrefix(text: string): { emphasis: 'normal' | 'small'; text: string }[] {
+  return text
+    .split('')
+    .reduce<{ emphasis: 'normal' | 'small'; textParts: string[] }[]>((acc, curr) => {
+      const emphasis = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'normal' : 'small';
+      if (acc.length > 0 && acc[acc.length - 1].emphasis === emphasis) {
+        acc[acc.length - 1].textParts.push(curr);
+      } else {
+        acc.push({ emphasis, textParts: [curr] });
+      }
+      return acc;
+    }, [])
+    .map(({ emphasis, textParts }) => ({
+      emphasis,
+      text: textParts.join(''),
+    }));
 }

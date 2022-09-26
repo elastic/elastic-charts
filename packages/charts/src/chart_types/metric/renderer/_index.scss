@@ -56,6 +56,14 @@
   }
 }
 
+.echMetricEmpty {
+  position: absolute;
+  bottom: 9px;
+  right: 11px;
+  width: 20px;
+  border-bottom: 1px solid;
+}
+
 @import 'dom/text';
 @import 'dom/progress';
 @import 'dom/sparkline';

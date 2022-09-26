@@ -6,17 +6,17 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
+/** @internal */
+export type LocaleOptions = Parameters<Date['toLocaleString']>[1];
 
 /** @internal */
 export function renderTimeExtentAnnotation(
-  ctx,
-  config,
-  localeOptions,
-  timeDomainFrom,
-  timeDomainTo,
-  cartesianWidth,
-  chartTopFontSize,
+  ctx: CanvasRenderingContext2D,
+  config: { locale: string; monospacedFontShorthand: string; subduedFontColor: string },
+  localeOptions: LocaleOptions,
+  { domainFrom, domainTo }: { domainFrom: number; domainTo: number },
+  cartesianWidth: number,
+  chartTopFontSize: number,
 ) {
   ctx.save();
   ctx.textBaseline = 'bottom';
@@ -25,11 +25,11 @@ export function renderTimeExtentAnnotation(
   ctx.fillStyle = config.subduedFontColor;
   // todo switch to new Intl.DateTimeFormat for more performance https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
   ctx.fillText(
-    `${new Date(timeDomainFrom * 1000).toLocaleString(config.locale, localeOptions)} — ${new Date(
-      timeDomainTo * 1000,
+    `${new Date(domainFrom * 1000).toLocaleString(config.locale, localeOptions)} — ${new Date(
+      domainTo * 1000,
     ).toLocaleString(config.locale, localeOptions)}`,
     cartesianWidth,
-    -chartTopFontSize * 0.5,
+    -0.5 * chartTopFontSize,
   );
   ctx.restore();
 }

@@ -4,7 +4,7 @@ export TZ=UTC
 export RNG_SEED=elastic-charts
 export NODE_ENV=development
 
-FILE=integration/tmp/examples.json
+FILE=e2e_server/tmp/examples.json
 
 if [[ -n "${LOCAL_VRT_SERVER}" ]] && [[ ! -f "$FILE" ]]; then
   echo

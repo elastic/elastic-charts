@@ -1083,17 +1083,11 @@ export interface GeometryValue {
     y: any;
 }
 
+// Warning: (ae-forgotten-export) The symbol "DataDemand" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "TimeslipDataRows" needs to be exported by the entry point index.d.ts
+//
 // @public
-export type GetData = (dataDemand: {
-    lo: TimeBin;
-    hi: TimeBin;
-    binUnit: string;
-    binUnitCount: number;
-    unitBarMaxWidthPixels: number;
-}) => Array<{
-    epochMs: number;
-    value: number;
-}>;
+export type GetData = (dataDemand: DataDemand) => TimeslipDataRows;
 
 // @public (undocumented)
 export function getNodeName(node: ArrayNode): string;
@@ -1293,7 +1287,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
     };
     // (undocumented)
     name?: string;
-    // Warning: (ae-forgotten-export) The symbol "HeatmapBrushEvent" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "HeatmapBrushEvent_2" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
     onBrushEnd?: (brushArea: HeatmapBrushEvent_2) => void;
@@ -1718,8 +1712,6 @@ export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", ne
 
 // @alpha (undocumented)
 export type MetricBase = {
-    value: number;
-    valueFormatter: (d: number) => string;
     color: Color;
     title?: string;
     subtitle?: string;
@@ -1730,6 +1722,9 @@ export type MetricBase = {
         color: Color;
     }>;
 };
+
+// @alpha (undocumented)
+export type MetricDatum = MetricWNumber | MetricWText | MetricWProgress | MetricWTrend;
 
 // @public
 export type MetricElementEvent = {
@@ -1743,7 +1738,7 @@ export interface MetricSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.Metric;
     // (undocumented)
-    data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[][];
+    data: (MetricDatum | undefined)[][];
     // (undocumented)
     specType: typeof SpecType.Series;
 }
@@ -1757,6 +1752,10 @@ export interface MetricStyle {
     background: Color;
     // (undocumented)
     barBackground: Color;
+    // (undocumented)
+    border: Color;
+    // (undocumented)
+    minHeight: Pixels;
     // (undocumented)
     nonFiniteText: string;
     // (undocumented)
@@ -1776,18 +1775,29 @@ export const MetricTrendShape: Readonly<{
 export type MetricTrendShape = $Values<typeof MetricTrendShape>;
 
 // @alpha (undocumented)
-export type MetricWProgress = MetricBase & {
-    domainMax: number;
-    progressBarDirection?: LayoutDirection;
+export type MetricWNumber = MetricBase & {
+    value: number;
+    valueFormatter: (d: number) => string;
 };
 
 // @alpha (undocumented)
-export type MetricWTrend = MetricBase & {
+export type MetricWProgress = MetricWNumber & {
+    domainMax: number;
+    progressBarDirection: LayoutDirection;
+};
+
+// @alpha (undocumented)
+export type MetricWText = MetricBase & {
+    value: string;
+};
+
+// @alpha (undocumented)
+export type MetricWTrend = MetricWNumber & {
     trend: {
         x: number;
         y: number;
     }[];
-    trendShape?: MetricTrendShape;
+    trendShape: MetricTrendShape;
     trendA11yTitle?: string;
     trendA11yDescription?: string;
 };
@@ -1959,7 +1969,7 @@ export interface PartitionStyle extends FillFontSizeRange {
     outerSizeRatio: SizeRatio;
     // (undocumented)
     radialPadding: Distance;
-    // Warning: (ae-forgotten-export) The symbol "StrokeStyle" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "StrokeStyle_2" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
     sectorLineStroke: StrokeStyle_2;
@@ -2731,7 +2741,7 @@ export interface TimeScale {
     type: typeof ScaleType.Time;
 }
 
-// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps_2" needs to be exported by the entry point index.d.ts
 //
 // @public
 export const Timeslip: (props: SFProps<TimeslipSpec, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
@@ -3113,10 +3123,6 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
-
-// Warnings were encountered during analysis:
-//
-// src/chart_types/timeslip/timeslip_api.ts:21:3 - (ae-forgotten-export) The symbol "TimeBin" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

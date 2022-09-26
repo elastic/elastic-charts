@@ -13,11 +13,17 @@ import { highContrastColor } from '../../../../common/color_calcs';
 import { changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
-import { BasicListener, ElementClickListener, ElementOverListener, MetricElementEvent } from '../../../../specs';
+import {
+  BasicListener,
+  ElementClickListener,
+  ElementOverListener,
+  MetricDatum,
+  MetricElementEvent,
+} from '../../../../specs';
 import { LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, isMetricWTrend, MetricBase, MetricWProgress, MetricWTrend } from '../../specs';
+import { isMetricWProgress, isMetricWTrend } from '../../specs';
 import { ProgressBar } from './progress';
 import { SparkLine } from './sparkline';
 import { MetricText } from './text';
@@ -29,7 +35,7 @@ export const Metric: React.FunctionComponent<{
   columnIndex: number;
   totalColumns: number;
   totalRows: number;
-  datum: MetricBase | MetricWProgress | MetricWTrend;
+  datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
   onElementClick?: ElementClickListener;
@@ -66,7 +72,7 @@ export const Metric: React.FunctionComponent<{
   const interactionColor = changeColorLightness(datum.color, lightnessAmount, 0.8);
   const backgroundInteractionColor = changeColorLightness(style.background, lightnessAmount, 0.8);
 
-  const datumWithInteractionColor: MetricBase | MetricWProgress | MetricWTrend = {
+  const datumWithInteractionColor: MetricDatum = {
     ...datum,
     color: interactionColor,
   };
@@ -83,6 +89,7 @@ export const Metric: React.FunctionComponent<{
         ? datumWithInteractionColor.color
         : updatedStyle.background,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
+    borderColor: style.border,
   };
 
   const bgColor = isMetricWTrend(datum) || !isMetricWProgress(datum) ? datum.color : style.background;

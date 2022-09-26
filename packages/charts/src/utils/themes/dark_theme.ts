@@ -400,9 +400,11 @@ export const DARK_THEME: Theme = {
       lightColor: '#E0E5EE',
       darkColor: '#343741',
     },
+    border: '#343741',
     barBackground: '#343741',
     background: '#1D1E23',
     nonFiniteText: 'N/A',
+    minHeight: 64,
   },
   tooltip: {
     maxTableBodyHeight: 120,

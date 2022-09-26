@@ -11,6 +11,7 @@
 
 import { cachedTimeDelta, cachedZonedDateTimeFrom, timeProp } from './chrono/cached_chrono';
 import { epochInSecondsToYear } from './chrono/chrono';
+import { TIME_UNIT_TRANSLATIONS } from './time_unit_translations';
 
 // utils
 const approxWidthsInSeconds: Record<string, number> = {
@@ -30,31 +31,35 @@ export interface TimeBin {
   nextTimePointSec: number;
 }
 
-type TimeBinGenerator<T extends TimeBin> = (domainFrom: number, domainTo: number) => Generator<T, void> | T[];
+/** @internal */
+export type TimeBinGenerator<T extends TimeBin> = (domainFrom: number, domainTo: number) => Generator<T, void> | T[];
+
+/** @public */
+export type BinUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond';
+
+/** @internal */
+export type NumberFormatter = (n: number) => string;
+
+/** @internal */
+export type TimeFormatter = NumberFormatter & ReturnType<typeof Intl.DateTimeFormat>['format']; // numeric input to Intl.DateTimeFormat only
 
 /** @internal */
 export interface TimeRaster<T extends TimeBin> {
-  unit: string;
+  unit: BinUnit;
   unitMultiplier: number;
   labeled: boolean;
   minimumTickPixelDistance: number;
   binStarts: TimeBinGenerator<T>;
-  detailedLabelFormat: (time: number) => string;
-  minorTickLabelFormat: (time: number) => string;
+  detailedLabelFormat: TimeFormatter;
+  minorTickLabelFormat: TimeFormatter;
   minimumPixelsPerSecond: number;
   approxWidthInMs: number;
 }
 
-interface RasterConfig {
+/** @internal */
+export interface RasterConfig {
   minimumTickPixelDistance: number;
-  locale: string;
-  /*
-  defaultFontColor: string;
-  weekendFontColor: string;
-  offHourFontColor: string;
-  workHourMin: number;
-  workHourMax: number;
-  */
+  locale: keyof typeof TIME_UNIT_TRANSLATIONS;
 }
 
 const millisecondBinStarts = (rasterMs: number): TimeBinGenerator<TimeBin> =>
@@ -73,19 +78,20 @@ interface YearToDay {
   month: number;
   dayOfMonth: number;
   dayOfWeek: number;
-  // fontColor: string | undefined;
 }
 
 interface YearToHour extends YearToDay {
   hour: number;
 }
 
-// todo DRY up the config for the other time units too, where sensible
+const hourCycle = 'h23';
+
 const hourFormat: Partial<ConstructorParameters<typeof Intl.DateTimeFormat>[1]> = {
   hour: '2-digit',
+  minute: '2-digit',
   // this is mutual exclusive with `hour12` and
   // fix the issue of rendering the time from midnight starting at 24:00 to 24:59 to 01:00
-  hourCycle: 'h23',
+  hourCycle,
 };
 
 const englishOrdinalEndings = {
@@ -109,14 +115,14 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
   };
   const detailedDayFormat = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
     timeZone,
   }).format;
 
   const detailedHourFormatBase = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
     ...hourFormat,
     timeZone,
@@ -148,10 +154,11 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
+  const unlabeledGridMinimumPixelDistance = minimumTickPixelDistance / 1.618;
   const yearsUnlabelled: TimeRaster<TimeBin & { year: number }> = {
     ...years,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const decades: TimeRaster<TimeBin & { year: number }> = {
     unit: 'year',
@@ -258,7 +265,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     unit: 'week',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance,
+    minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
     binStarts: function* (domainFrom, domainTo) {
       for (const { year, month } of months.binStarts(domainFrom, domainTo)) {
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
@@ -281,23 +288,25 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
   const daysUnlabelled: TimeRaster<TimeBin & YearToDay> = {
     ...days,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const weeksUnlabelled: TimeRaster<TimeBin & { dayOfMonth: number }> = {
     ...weekStartDays,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const monthsUnlabelled = {
     ...months,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
+  const hhMmDistanceMultiplier = 1.8;
+  const hhMmSsDistanceMultiplier = 2.5;
   const hours: TimeRaster<TimeBin> = {
     unit: 'hour',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: 2 * minimumTickPixelDistance,
+    minimumTickPixelDistance: hhMmDistanceMultiplier * minimumTickPixelDistance,
     binStarts: millisecondBinStarts(60 * 60 * 1000),
     detailedLabelFormat: detailedHourFormat,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, {
@@ -310,7 +319,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
   const hoursUnlabelled = {
     ...hours,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const sixHours: TimeRaster<TimeBin & YearToHour> = {
     unit: 'hour',
@@ -358,27 +367,31 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
   const sixHoursUnlabelled = {
     ...sixHours,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
+  const minutesFormatter = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', timeZone, hourCycle });
+  const secondsFormatter = new Intl.DateTimeFormat(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone,
+    hourCycle,
+  });
   const minutes: TimeRaster<TimeBin> = {
     unit: 'minute',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance,
+    minimumTickPixelDistance: hhMmDistanceMultiplier * minimumTickPixelDistance,
     binStarts: millisecondBinStarts(60 * 1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       ...hourFormat,
       minute: 'numeric',
       timeZone,
     }).format,
-    minorTickLabelFormat: (d) =>
-      `${new Intl.DateTimeFormat(locale, {
-        minute: 'numeric',
-        timeZone,
-      }).format(d)}'`,
+    minorTickLabelFormat: (d) => `${minutesFormatter.format(d)}`,
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -386,51 +399,45 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...minutes,
     unitMultiplier: 15,
     labeled: true,
-    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(15 * 60 * 1000),
   };
   const quarterHoursUnlabelled = {
     ...quarterHours,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const fiveMinutes = {
     ...minutes,
     unitMultiplier: 5,
     labeled: true,
-    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(5 * 60 * 1000),
   };
   const fiveMinutesUnlabelled = {
     ...fiveMinutes,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const minutesUnlabelled = {
     ...minutes,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const seconds: TimeRaster<TimeBin> = {
     unit: 'second',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance,
+    minimumTickPixelDistance: hhMmSsDistanceMultiplier * minimumTickPixelDistance,
     binStarts: millisecondBinStarts(1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
-      month: 'short',
+      month: 'long',
       day: 'numeric',
       ...hourFormat,
       minute: 'numeric',
       second: 'numeric',
       timeZone,
     }).format,
-    minorTickLabelFormat: (d: number) =>
-      `${new Intl.DateTimeFormat(locale, {
-        second: 'numeric',
-        timeZone,
-      }).format(d)}"`,
+    minorTickLabelFormat: (d) => `${secondsFormatter.format(d).padStart(2, '0')}`, // what DateTimeFormat doing?
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -438,39 +445,38 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...seconds,
     unitMultiplier: 15,
     labeled: true,
-    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(15 * 1000),
   };
   const quarterMinutesUnlabelled = {
     ...quarterMinutes,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const fiveSeconds = {
     ...seconds,
     unitMultiplier: 5,
     labeled: true,
-    minimumTickPixelDistance,
     binStarts: millisecondBinStarts(5 * 1000),
   };
   const fiveSecondsUnlabelled = {
     ...fiveSeconds,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const secondsUnlabelled = {
     ...seconds,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
+  const millisecondDistanceMultiplier = 1.8;
   const milliseconds: TimeRaster<TimeBin> = {
     unit: 'millisecond',
     unitMultiplier: 1,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance * 1.8,
+    minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
     binStarts: millisecondBinStarts(1),
-    minorTickLabelFormat: (d) => `${d % 1000}ms`,
-    detailedLabelFormat: (d) => `${d % 1000}ms`,
+    minorTickLabelFormat: (d: number) => `${d % 1000}ms`,
+    detailedLabelFormat: (d: number) => `${d % 1000}ms`,
     minimumPixelsPerSecond: NaN,
     approxWidthInMs: NaN,
   };
@@ -478,30 +484,30 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...milliseconds,
     unitMultiplier: 10,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance * 1.8,
+    minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
     binStarts: millisecondBinStarts(10),
   };
   const hundredMilliseconds = {
     ...milliseconds,
     unitMultiplier: 100,
     labeled: true,
-    minimumTickPixelDistance: minimumTickPixelDistance * 1.8,
+    minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
     binStarts: millisecondBinStarts(100),
   };
   const millisecondsUnlabelled = {
     ...milliseconds,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const tenMillisecondsUnlabelled = {
     ...tenMilliseconds,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const hundredMillisecondsUnlabelled = {
     ...hundredMilliseconds,
     labeled: false,
-    minimumTickPixelDistance: minimumTickPixelDistance / 2,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
 
   const allRasters = [
@@ -512,6 +518,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     narrowMonths,
     shortMonths,
     months,
+    weeksUnlabelled,
     weekStartDays,
     daysUnlabelled,
     days,
@@ -572,6 +579,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         [shortMonths, []],
       ]),
     ],
+    [weekStartDays, new Map([[weeksUnlabelled, []]])],
     [
       days,
       new Map([
@@ -584,15 +592,24 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       hours,
       new Map([
         [hoursUnlabelled, []],
+        [sixHours, [sixHoursUnlabelled]],
+      ]),
+    ],
+    [
+      quarterHours,
+      new Map([
+        [quarterHoursUnlabelled, []],
+        [hours, []],
         [sixHours, []],
       ]),
     ],
-    [quarterHours, new Map([[quarterHoursUnlabelled, []]])],
     [
       fiveMinutes,
       new Map([
         [fiveMinutesUnlabelled, []],
         [quarterHours, [quarterHoursUnlabelled]],
+        [hours, []],
+        [sixHours, []],
       ]),
     ],
     [
@@ -601,14 +618,23 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         [minutesUnlabelled, []],
         [quarterHours, [quarterHoursUnlabelled]],
         [fiveMinutes, [fiveMinutesUnlabelled]],
+        [hours, []],
+        [sixHours, []],
       ]),
     ],
-    [quarterMinutes, new Map([[quarterMinutesUnlabelled, []]])],
+    [
+      quarterMinutes,
+      new Map([
+        [quarterMinutesUnlabelled, []],
+        [minutes, []],
+      ]),
+    ],
     [
       fiveSeconds,
       new Map([
         [fiveSecondsUnlabelled, []],
         [quarterMinutes, [quarterMinutesUnlabelled]],
+        [minutes, []],
       ]),
     ],
     [
@@ -617,6 +643,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         [secondsUnlabelled, []],
         [quarterMinutes, [quarterMinutesUnlabelled]],
         [fiveSeconds, [fiveSecondsUnlabelled]],
+        [minutes, []],
       ]),
     ],
     [hundredMilliseconds, new Map([[hundredMillisecondsUnlabelled, []]])],

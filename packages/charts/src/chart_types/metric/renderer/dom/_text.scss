@@ -19,7 +19,9 @@
   line-height: 1.2;
   &__title {
     font-weight: 400;
+    word-wrap: break-word;
     button {
+      width: 100%;
       text-align: left;
     }
   }
@@ -45,6 +47,7 @@
     font-weight: 600;
     text-align: right;
     white-space: nowrap;
+    overflow: hidden;
   }
 
   &__part {

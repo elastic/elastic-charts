@@ -17,7 +17,7 @@ import { Datum, stripUndefined, ValueAccessor, ValueFormatter } from '../../util
  * Control function for resetting chart focus
  * @public
  */
-export type FlameGlobalControl = () => void; // takes no arguments
+export type FlameGlobalControl = () => void; // takes no argument
 
 /**
  * Control function for setting chart focus on a specific node

@@ -88,6 +88,24 @@ interface ScreenshotDOMElementOptions {
    * @deprecated
    */
   debug?: boolean;
+  /**
+   * An acceptable ratio of pixels that are different to the total amount of pixels, between `0` and `1`. Default is
+   * configurable with `TestConfig.expect`. Unset by default.
+   */
+  maxDiffPixelRatio?: number;
+
+  /**
+   * An acceptable amount of pixels that could be different. Default is configurable with `TestConfig.expect`. Unset by
+   * default.
+   */
+  maxDiffPixels?: number;
+
+  /**
+   * An acceptable perceived color difference in the [YIQ color space](https://en.wikipedia.org/wiki/YIQ) between the same
+   * pixel in compared images, between zero (strict) and one (lax), default is configurable with `TestConfig.expect`.
+   * Defaults to `0.2`.
+   */
+  threshold?: number;
 }
 
 type ScreenshotElementAtUrlOptions = ScreenshotDOMElementOptions & {
@@ -365,7 +383,7 @@ export class CommonPage {
       if (!element) {
         throw new Error(`Failed to find element at \`${selector}\`\n\n\t${url}`);
       } else {
-        expect(element).toMatchSnapshot(screenshotPath);
+        expect(element).toMatchSnapshot(screenshotPath, getSnapshotOptions(options));
       }
     };
 
@@ -507,6 +525,18 @@ export class CommonPage {
         strict: false, // should be true but some stories have multiple charts
       });
     };
+}
+
+function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {
+  if (options?.maxDiffPixels !== undefined) {
+    // need to clear default options for maxDiffPixels to be respected, else could still fail on threshold or maxDiffPixelRatio
+    return {
+      threshold: 1,
+      maxDiffPixelRatio: 1,
+      ...options,
+    };
+  }
+  return options;
 }
 
 export const common = new CommonPage();

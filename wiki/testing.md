@@ -30,67 +30,69 @@ Each test with the specific timezone postfix will be executed only on that timez
 These tests are not included in the code coverage yet.
 
 
-## Visual Regression Testing
+## Visual Regression Testing with Playwright
 
-Every story created for Storybook is tested through our Visual Regression Test suite.
-The tests are available in `integration/tests` folder. One main test `all.test.ts` goes through all stories, takes screenshots of each story
-and compare it to the existing baseline available at `integration/test/__image_snapshots__`. You can add your own test,
-using Puppeteer to drive the page/chart interactions and use Jest screenshot interactions.
+Every story created for Storybook is tested through our Visual Regression Testing suite. The tests are available in [`e2e/tests`](../e2e/tests/) directory and are grouped by example usages. The [`all.test.ts`](../e2e/tests/all.test.ts) file is unique to the other as it auto generates tests for all stories, to take a screenshot of each story and compare it to the existing baseline available at [`e2e/screenshots`](../e2e/screenshots/). You can add your own test, using Playwright to drive the page/chart interactions and capture screenshots.
 
-To run the suite
-```
-yarn test:integration:generate
-
-yarn test:integration
+To run the suite we first must generate files from the storybook details.
 
 ```
-
-The first command will generate the required code to be run on the server, extracting all the stories from Storybook
-and compiling a simple web app for the testing. You need to run this only the first time you need to run VRTs and only
-if you have added a new story to Storybook. You don't need to run it if you have just changed the existing stories.
-
-The second command will automatically start a separate server and a docker machine with chromium,
-controlled by Puppeteer and Jest, that takes and compare screenshots.
-
-If the screenshot differ from the baseline, a test error is raised and a diff image will be stored in `integration/test/__image_snapshots__/__diff_output__`.
-
-If a new test is added, a new screenshot `.png` file is written as part of the baseline.
-
-To update all existing screenshot baselines to the new version run:
-```
-yarn test:integration -u
+yarn test:e2e:generate
 ```
 
-The VRT suite starts automatically the server, but this can take a significant amount of time everytime you want to 
-run your suite. You can avoid starting everytime the server by running the following command that keep the server up and
-running:
+This command will generate the required code to be run on the server, extracting all the stories from Storybook and build a simple web app for the testing. You need to run this only the first time you need to run VRTs and only if you have added a new story to Storybook. You don't need to run it if you have just changed the existing stories.
+
+Next we can start the `e2e_server` which is used as a simplified-storybook server to point our e2e tests at.
+
+> You may want to debug issues with the `e2e_server` build that is causing screenshot failures not present in storybook. In such cases, this command can be used to debug any issues.
 
 ```
-yarn test:integration:server
+yarn test:e2e:server
 ```
 The server is accessible at `http://localhost:9002`
 
-To run the VRT against that local server you can use:
+In a separate terminal you can run the playwright tests against the `e2e_server`.
+
 ```
-yarn test:integration:local
+yarn test:e2e
 ```
+
+This command will automatically start Playwright inside a docker container with chromium, controlled by Playwright, that runs the e2e tests and takes and compares screenshots.
+
+If the screenshot differ from the baseline, a test error is raised and a diff images and files will be stored in [`e2e/test_failures/`](../e2e/test_failures/) grouped by test suite.
+
+If a new test is added the test will fail and you must update screenshots, see below.
+
+To update all existing screenshot baselines to the new version run:
+
+```
+yarn test:e2e -u
+```
+
+If a new test is added, a new screenshot `.png` file is written as part of the baseline.
+
+> NOTE: Due to differences in architecture between local machines, even when running in docker, screenshots may produce slight diffs that are *irrelevant* to code changes. All local screenshots that are non-linux based (i.e. `-linux.png`) are `.gitignore`d. Please use this only for local testing and debugging and update screenshots from github, see below.
+
 
 To run a specific test file run
-```
-yarn test:integration test_file_name
-# or with local server
-yarn test:integration:local test_file_name
-```
-
-To run the test on a specific story name or story group name use `--testNamePattern=<regex>` or `-t`
-see [Jest](https://jestjs.io/docs/en/cli.html#--testnamepatternregex). This example will run the integration test
-on all.test.ts file for all matching test name in `describe` or `it` with `tree*` regex.
 
 ```
-yarn test:integration all.test.ts --testNamePattern tree*
+# only runs tests from all.test.ts file
+yarn test:e2e all.test.ts
+```
 
-# or
-
-yarn test:integration all.test.ts -t tree*
+To run the test on a specific story name or story group name use `--grep=<slugified test string>` see [docs](https://playwright.dev/docs/test-cli) for more filter options. This example will run the e2e test on `all.test.ts` file for all matching test name in `describe` or `test` with `<slugified test string>`.
 
 ```
+yarn test:e2e all.test.ts --grep polarized-stacked
+```
+
+Updating screenshots from CI
+
+The best way to update screenshots from the baseline is from GitHub directly. Is to post a comment on your pull request with the string `'buildkite update vrt'`.
+
+<img width="1018" alt="image" src="https://user-images.githubusercontent.com/19007109/187287446-5ff2ddf7-e866-4bac-949b-f32a4fae64a9.png">
+
+This will tell buildkite to run the playwright tests in _update mode_ and commit any updated screenshots **directly** to your pull request.
+
+<img width="1013" alt="image" src="https://user-images.githubusercontent.com/19007109/187287604-0e896e6f-7c02-4adf-b7ad-ec0016d6340d.png">

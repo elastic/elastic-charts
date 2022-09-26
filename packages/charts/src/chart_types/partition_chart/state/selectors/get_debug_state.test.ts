@@ -97,7 +97,7 @@ describe.each([
       expectCorrectClickInfo(store, onClickListener, partition, counter);
       counter++;
     }
-    expect(onClickListener).toBeCalledTimes(numberOfCalls);
+    expect(onClickListener).toHaveBeenCalledTimes(numberOfCalls);
   });
 });
 
@@ -121,7 +121,7 @@ function expectCorrectClickInfo(
   store.dispatch(onMouseDown({ x, y }, index * 3 + 1));
   store.dispatch(onMouseUp({ x, y }, index * 3 + 2));
 
-  expect(onClickListener).toBeCalledTimes(index + 1);
+  expect(onClickListener).toHaveBeenCalledTimes(index + 1);
   const obj = onClickListener.mock.calls[index][0][0][0] as LayerValue[];
   // pick the last element of the path
   expect(obj[obj.length - 1]).toMatchObject({

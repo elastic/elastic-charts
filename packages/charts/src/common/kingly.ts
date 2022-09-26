@@ -8,7 +8,75 @@
 
 import { GL } from './webgl_constants';
 
-const GL_DEBUG = true;
+const GL_DEBUG = true; // to be set to false once GL charts are in non-alpha and broad use for 6-12 months or earlier if perf constrained
+
+/**************
+ * Types
+ *************/
+
+// there are two shader types
+type ShaderType = typeof GL.FRAGMENT_SHADER | typeof GL.VERTEX_SHADER;
+
+// a data structure that maps each uniform name (string) to a value setter for that uniform
+type UniformsMap = Map<string, (...args: any[]) => void>;
+
+// we can use a frame buffer (the Canvas itself, or a texture) for reading, writing or both
+type FrameBufferTarget = typeof GL.READ_FRAMEBUFFER | typeof GL.DRAW_FRAMEBUFFER | typeof GL.FRAMEBUFFER;
+
+// samplers (texture samplers) act as uniforms; `setUniform` sets the desired texture for the shader code to read (sample) from
+interface Sampler {
+  setUniform: (location: WebGLUniformLocation) => void;
+}
+
+/**
+ * Clearing can be constrained to a rectangle; not just the color buffer but the depth buffer may also be cleared
+ * One role of the depth buffer (z-buffer) is to keep track of the Z coordinate closest to the viewer for each pixel on the screen
+ * as it can be used to reject future pixel (fragment) shading that would be beneath this and would be invisible anyway
+ * The stencil buffer may also be cleared simultaneously https://en.wikipedia.org/wiki/Stencil_buffer
+ */
+interface ClearInfo {
+  rect?: [number, number, number, number];
+  color?: [number, number, number, number];
+  depth?: number;
+  stencilIndex?: number;
+}
+
+// A tuple of texture data for functions like `gl.texImage2D` and `gl.texParameteri` - metadata of a texture
+interface TextureSpecification {
+  textureIndex: GLuint; // used for identifying the specific texture in a `gl.activeTexture` setter call
+  internalFormat: GLuint; // colors and bits per color https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/texImage2D
+  width: GLuint; // texture width in pixels
+  height: GLuint; // texture height in pixels
+  data: ArrayBufferView | null; // the buffer containing the actual pixel grid
+  min?: GLuint; // when using texture for data lookup, we usually want the nearest exact value, rather than interpolated or aggregated
+  mag?: GLuint; // when using texture for data lookup, we usually want the nearest exact value, rather than interpolated or aggregated
+}
+
+/** @internal */
+export interface Texture {
+  clear: () => void;
+  setUniform: (location: WebGLUniformLocation) => void;
+  target: () => WebGLFramebuffer | null;
+  delete: () => void;
+  width: number;
+  height: number;
+}
+
+/** @internal */
+export interface UseInfo {
+  uniformValues: any;
+  viewport: { x: number; y: number; width: number; height: number };
+  target: WebGLFramebuffer | null;
+  clear?: ClearInfo;
+  scissor?: [number, number, number, number];
+  draw?: { geom: GLuint; offset: GLuint; count: GLuint; instanceCount?: GLuint };
+}
+
+/** @internal */
+export type Attributes = Map<string, (data: ArrayBufferView) => void>;
+
+/** @internal */
+export type Render = (u: UseInfo) => void;
 
 /****************
  * Minimize calls
@@ -95,8 +163,6 @@ const flagSet = (gl: WebGL2RenderingContext, key: number, value: boolean) => {
  * Programs
  ***************/
 
-type ShaderType = typeof GL.FRAGMENT_SHADER | typeof GL.VERTEX_SHADER;
-
 /** @internal */
 export const createCompiledShader = (
   gl: WebGL2RenderingContext,
@@ -138,9 +204,7 @@ export const createLinkedProgram = (
     gl.validateProgram(program);
     if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
       throw new Error(`Whoa, could not validate the shader program: ${gl.getProgramInfoLog(program)}`);
-  }
-
-  if (!GL_DEBUG) {
+  } else {
     // no rush with the deletion; avoid adding workload to the synchronous preparation
     window.setTimeout(() => {
       gl.detachShader(program, vertexShader);
@@ -156,10 +220,6 @@ export const createLinkedProgram = (
 /*********************
  * Singular uniforms
  ********************/
-
-interface Sampler {
-  setUniform: (location: WebGLUniformLocation) => void;
-}
 
 const uniformSetterLookup = {
   [GL.BOOL]: (gl: WebGL2RenderingContext, location: WebGLUniformLocation) => (value: GLuint) => {
@@ -225,9 +285,7 @@ const uniformSetterLookup = {
     },
 };
 
-type UniformsMap = Map<string, (...args: any[]) => void>;
-
-const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo: Uniforms): UniformsMap => {
+const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): UniformsMap => {
   if (programUniforms.has(program)) return programUniforms.get(program);
   const uniforms = new Map(
     [...new Array(gl.getProgramParameter(program, GL.ACTIVE_UNIFORMS /* uniform count */))].map((_, index) => {
@@ -235,7 +293,7 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo:
       if (!activeUniform) throw new Error(`Whoa, active uniform not found`); // just appeasing the TS linter
       const { name, type } = activeUniform;
       const location = gl.getUniformLocation(program, name);
-      if (location === null && !uboInfo.has(name))
+      if (location === null)
         throw new Error(`Whoa, uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
       const setValue = location ? uniformSetterLookup[type](gl, location) : () => {};
       if (GL_DEBUG && !setValue) throw new Error(`No setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
@@ -246,57 +304,12 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram, uboInfo:
   return uniforms;
 };
 
-/*******************
- * Block uniforms
- ******************/
-
-type UboData = { uniforms: Uniforms; uboBuffer: WebGLBuffer };
-
-/** @internal */
-export function blockUniforms(
-  gl: WebGL2RenderingContext,
-  uniformBlockName: string,
-  uboVariableNames: string[],
-  [program, ...otherPrograms]: WebGLProgram[],
-): UboData {
-  const blockIndex = gl.getUniformBlockIndex(program, uniformBlockName);
-  const blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, GL.UNIFORM_BLOCK_DATA_SIZE);
-  const uboBuffer = gl.createBuffer();
-  if (uboBuffer === null) throw new Error('Whoa, could not create uboBuffer');
-  gl.bindBuffer(gl.UNIFORM_BUFFER, uboBuffer);
-  gl.bufferData(gl.UNIFORM_BUFFER, blockSize, gl.DYNAMIC_DRAW);
-  // gl.bindBuffer(gl.UNIFORM_BUFFER, null);
-  gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uboBuffer);
-  const uboVariableIndices = gl.getUniformIndices(program, uboVariableNames);
-  if (uboVariableIndices === null) throw new Error('Whoa, could not get uboVariableIndices');
-  const uboVariableOffsets = gl.getActiveUniforms(program, uboVariableIndices, gl.UNIFORM_OFFSET);
-  const uniforms = new Map(
-    uboVariableNames.map((name, i) => [name, { index: uboVariableIndices[i], offset: uboVariableOffsets[i] }]),
-  );
-
-  // per program part
-  [program, ...otherPrograms].forEach((p) =>
-    gl.uniformBlockBinding(p, gl.getUniformBlockIndex(p, uniformBlockName), 0),
-  );
-
-  return { uboBuffer, uniforms };
-}
-
-/************
+/**************
  * Clearing
- ***********/
-
-interface ClearInfo {
-  rect?: [number, number, number, number];
-  color?: [number, number, number, number];
-  depth?: number;
-  stencilIndex?: number;
-}
-
-/**
+ *
  * Clears the color, depth and/or stencil index of the canvas or a rectangular area
  * @internal
- */
+ *************/
 export const clearRect = (gl: WebGL2RenderingContext, { rect, color, depth, stencilIndex }: ClearInfo) => {
   // constrain clearing to a rectangle if needed
   if (rect) {
@@ -338,8 +351,6 @@ const textureTypeLookup = {
   [GL.RGBA32F]: GL.FLOAT,
 };
 
-type FrameBufferTarget = typeof GL.READ_FRAMEBUFFER | typeof GL.DRAW_FRAMEBUFFER | typeof GL.FRAMEBUFFER;
-
 /** @internal */
 export const bindFramebuffer = (
   gl: WebGL2RenderingContext,
@@ -366,26 +377,6 @@ export const bindFramebuffer = (
     gl.bindFramebuffer(targetToUpdate, targetFrameBuffer);
   }
 };
-
-interface TextureSpecification {
-  textureIndex: GLuint;
-  internalFormat: GLuint;
-  width: GLuint;
-  height: GLuint;
-  data: ArrayBufferView | null;
-  min?: GLuint;
-  mag?: GLuint;
-}
-
-/** @internal */
-export interface Texture {
-  clear: () => void;
-  setUniform: (location: WebGLUniformLocation) => void;
-  target: () => WebGLFramebuffer | null;
-  delete: () => void;
-  width: number;
-  height: number;
-}
 
 /** @internal */
 export const NullTexture: Texture = {
@@ -492,12 +483,6 @@ const attribElementTypeLookup = {
 const integerTypes = new Set([GL.BYTE, GL.SHORT, GL.INT, GL.UNSIGNED_BYTE, GL.UNSIGNED_SHORT, GL.UNSIGNED_INT]);
 
 /** @internal */
-export type Uniforms = Map<string, { index: number; offset: number }>;
-
-/** @internal */
-export type Attributes = Map<string, (data: ArrayBufferView) => void>;
-
-/** @internal */
 export const getAttributes = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
@@ -553,29 +538,13 @@ export const bindVertexArray = (gl: WebGL2RenderingContext, vertexArrayObject: W
  * Ensures that the draw calls will operate under the desired state (context flags, bound attribs)
  * @internal
  */
-
-/** @internal */
-export interface UseInfo {
-  uniformValues: any;
-  viewport: { x: number; y: number; width: number; height: number };
-  target: WebGLFramebuffer | null;
-  clear?: ClearInfo;
-  scissor?: [number, number, number, number];
-  draw?: { geom: GLuint; offset: GLuint; count: GLuint; instanceCount?: GLuint };
-}
-
-/** @internal */
-export type Render = (u: UseInfo) => void;
-
-/** @internal */
 export const getRenderer = (
   gl: WebGL2RenderingContext,
   program: WebGLProgram,
-  { uniforms, uboBuffer }: UboData,
   vao: WebGLVertexArrayObject | null,
   { depthTest = false, blend = true, frontFace = GL.CCW },
 ): Render => {
-  const allUniforms = getUniforms(gl, program, uniforms);
+  const uniforms = getUniforms(gl, program);
   return ({ uniformValues, viewport, target, clear, scissor, draw }: UseInfo): void => {
     if (!setGlobalConstants.has(gl)) {
       setGlobalConstants.add(gl);
@@ -620,17 +589,7 @@ export const getRenderer = (
 
     if (viewport) setViewport(gl, viewport.x, viewport.y, viewport.width, viewport.height);
     if (uniformValues) {
-      // non-ubo allUniforms
-      allUniforms.forEach(
-        (setValue, name) => uniformValues[name] && !uniforms.has(name) && setValue(uniformValues[name]),
-      );
-      // ubo allUniforms
-      gl.bindBuffer(GL.UNIFORM_BUFFER, uboBuffer);
-      uniforms.forEach(({ offset }, name) => {
-        const value = new Float32Array([uniformValues[name]].flat());
-        gl.bufferSubData(GL.UNIFORM_BUFFER, offset, value, 0);
-      });
-      // gl.bindBuffer(GL.UNIFORM_BUFFER, null);
+      uniforms.forEach((setValue, name) => uniformValues[name] && setValue(uniformValues[name]));
     }
 
     bindFramebuffer(gl, GL.DRAW_FRAMEBUFFER, target);

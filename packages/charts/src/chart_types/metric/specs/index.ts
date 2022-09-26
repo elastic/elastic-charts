@@ -18,8 +18,6 @@ import { LayoutDirection } from '../../../utils/common';
 
 /** @alpha */
 export type MetricBase = {
-  value: number;
-  valueFormatter: (d: number) => string;
   color: Color;
   title?: string;
   subtitle?: string;
@@ -28,9 +26,20 @@ export type MetricBase = {
 };
 
 /** @alpha */
-export type MetricWProgress = MetricBase & {
+export type MetricWText = MetricBase & {
+  value: string;
+};
+
+/** @alpha */
+export type MetricWNumber = MetricBase & {
+  value: number;
+  valueFormatter: (d: number) => string;
+};
+
+/** @alpha */
+export type MetricWProgress = MetricWNumber & {
   domainMax: number;
-  progressBarDirection?: LayoutDirection;
+  progressBarDirection: LayoutDirection;
 };
 
 /** @alpha */
@@ -43,18 +52,21 @@ export const MetricTrendShape = Object.freeze({
 export type MetricTrendShape = $Values<typeof MetricTrendShape>;
 
 /** @alpha */
-export type MetricWTrend = MetricBase & {
+export type MetricWTrend = MetricWNumber & {
   trend: { x: number; y: number }[];
-  trendShape?: MetricTrendShape;
+  trendShape: MetricTrendShape;
   trendA11yTitle?: string;
   trendA11yDescription?: string;
 };
 
 /** @alpha */
+export type MetricDatum = MetricWNumber | MetricWText | MetricWProgress | MetricWTrend;
+
+/** @alpha */
 export interface MetricSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Metric;
-  data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[][];
+  data: (MetricDatum | undefined)[][];
 }
 
 /** @alpha */
@@ -72,11 +84,16 @@ export const Metric = specComponentFactory<MetricSpec>()(
 export type MetricSpecProps = ComponentProps<typeof Metric>;
 
 /** @internal */
-export function isMetricWProgress(datum: MetricBase | MetricWProgress | MetricWTrend): datum is MetricWProgress {
-  return datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend');
+export function isMetricWNumber(datum: MetricDatum): datum is MetricWNumber {
+  return typeof datum.value === 'number' && datum.hasOwnProperty('valueFormatter');
 }
 
 /** @internal */
-export function isMetricWTrend(datum: MetricBase | MetricWProgress | MetricWTrend): datum is MetricWTrend {
-  return datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domainMax');
+export function isMetricWProgress(datum: MetricDatum): datum is MetricWProgress {
+  return isMetricWNumber(datum) && datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend');
+}
+
+/** @internal */
+export function isMetricWTrend(datum: MetricDatum): datum is MetricWTrend {
+  return isMetricWNumber(datum) && datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domainMax');
 }

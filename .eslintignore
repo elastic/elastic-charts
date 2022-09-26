@@ -23,3 +23,4 @@ packages/charts/src/utils/d3-delaunay
 **/tmp
 docs/
 .buildkite/buildkite.d.ts
+e2e/reports/

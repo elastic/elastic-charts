@@ -14,3 +14,13 @@ export function map<InElem, OutElem>(fun: (arg: InElem, index: number) => OutEle
     for (const next of iterable) yield fun(next, i++);
   })();
 }
+
+/** @internal */
+export function filter<Elem>(fun: (arg: Elem, index: number) => boolean, iterable: Iterable<Elem>) {
+  let i = 0;
+  return (function* mapGenerator() {
+    for (const next of iterable) {
+      if (fun(next, i++)) yield next;
+    }
+  })();
+}

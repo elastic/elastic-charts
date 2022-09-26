@@ -12,6 +12,7 @@ import { ScaleType } from '../../../scales/constants';
 import { compareByValueAsc } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
+import { getZoneFromSpecs, getValidatedTimeZone } from '../../../utils/time_zone';
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
@@ -90,9 +91,6 @@ export function mergeXDomain(
     const computedMinInterval = findMinInterval([...xValues.values()] as number[]);
     minInterval = getMinInterval(computedMinInterval, xValues.size, customMinInterval);
   }
-  // the 'local' timeZone is a tech debt that we keep in place until Kibana hasn't switch to Intl for timezones
-  const validatedTimeZone =
-    timeZone === 'local' || !timeZone ? Intl.DateTimeFormat().resolvedOptions().timeZone : timeZone;
 
   return {
     type: fallbackScale ?? type,
@@ -100,7 +98,7 @@ export function mergeXDomain(
     isBandScale,
     domain: seriesXComputedDomains,
     minInterval,
-    timeZone: validatedTimeZone,
+    timeZone: getValidatedTimeZone(timeZone),
     logBase: customDomain && 'logBase' in customDomain ? customDomain.logBase : 10, // fixme preexisting TS workaround
     desiredTickCount,
   };
@@ -157,8 +155,8 @@ export function convertXScaleTypes(
 } {
   const seriesTypes = new Set<string | undefined>(specs.map((s) => s.seriesType));
   const scaleTypes = new Set(specs.map((s) => getXScaleTypeFromSpec(s.xScaleType)));
-  const timeZones = new Set(specs.filter((s) => s.timeZone).map((s) => s.timeZone!.toLowerCase()));
   const niceDomains = specs.map((s) => getXNiceFromSpec(s.xNice));
+  const timeZone = getZoneFromSpecs(specs);
   const type =
     scaleTypes.size === 1
       ? scaleTypes.values().next().value // pick the only scaleType present
@@ -167,6 +165,5 @@ export function convertXScaleTypes(
       : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether it's present or not
   const nice = !niceDomains.includes(false);
   const isBandScale = seriesTypes.has(SeriesType.Bar);
-  const timeZone = timeZones.size === 1 ? timeZones.values().next().value : 'local';
   return { type, nice, isBandScale, timeZone };
 }

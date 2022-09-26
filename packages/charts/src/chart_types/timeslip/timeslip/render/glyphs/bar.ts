@@ -6,23 +6,26 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
+import { NumericScale } from '../../timeslip_render';
+
+/** @internal */
+export type BarRow = { value: number };
 
 /** @internal */
 export function renderBarGlyph(
-  ctx,
-  barWidthPixels,
-  leftShortfall,
-  maxBarHeight,
-  yUnitScale,
-  foundRow,
-  yUnitScaleClamped,
-  r,
-  g,
-  b,
-  opacity,
-  barX,
-  opacityDependentLineThickness,
+  ctx: CanvasRenderingContext2D,
+  barWidthPixels: number,
+  leftShortfall: number,
+  maxBarHeight: number,
+  yUnitScale: NumericScale,
+  foundRow: BarRow,
+  yUnitScaleClamped: NumericScale,
+  r: number,
+  g: number,
+  b: number,
+  opacity: number,
+  barX: number,
+  opacityDependentLineThickness: number,
 ) {
   const renderedBarWidth = Math.max(0, barWidthPixels - leftShortfall);
   const barEnd = -maxBarHeight * yUnitScale(foundRow.value);

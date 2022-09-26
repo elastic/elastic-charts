@@ -14,6 +14,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { highContrastColor } from '../../../../common/color_calcs';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { Colors } from '../../../../common/colors';
 import { BasicListener, ElementClickListener, ElementOverListener } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -80,11 +83,16 @@ class Component extends React.Component<StateProps & DispatchProps> {
     const { data } = specs[0];
 
     const totalRows = data.length;
-    const totalColumns = data.reduce((acc, curr) => {
-      return Math.max(acc, curr.length);
+    const maxColumns = data.reduce((acc, row) => {
+      return Math.max(acc, row.length);
     }, 0);
 
-    const panel = { width: width / totalColumns, height: height / totalRows };
+    const panel = { width: width / maxColumns, height: height / totalRows };
+
+    const emptyForegroundColor =
+      highContrastColor(colorToRgba(style.background)) === Colors.White.rgba
+        ? style.text.lightColor
+        : style.text.darkColor;
 
     return (
       // eslint-disable-next-line jsx-a11y/no-redundant-roles
@@ -94,8 +102,8 @@ class Component extends React.Component<StateProps & DispatchProps> {
         aria-labelledby={a11y.labelId}
         aria-describedby={a11y.descriptionId}
         style={{
-          gridTemplateColumns: `repeat(${totalColumns}, minmax(0, 1fr)`,
-          gridTemplateRows: `repeat(${totalRows}, minmax(64px, 1fr)`,
+          gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr)`,
+          gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr)`,
         }}
       >
         {data.flatMap((columns, rowIndex) => {
@@ -103,23 +111,22 @@ class Component extends React.Component<StateProps & DispatchProps> {
             ...columns.map((datum, columnIndex) => {
               // fill undefined with empty panels
               const emptyMetricClassName = classNames('echMetric', {
-                'echMetric--rightBorder': columnIndex < totalColumns - 1,
+                'echMetric--rightBorder': columnIndex < maxColumns - 1,
                 'echMetric--bottomBorder': rowIndex < totalRows - 1,
               });
-              if (!datum) {
-                return (
-                  <li key={`empty-${columnIndex}`} role="presentation">
-                    <div className={emptyMetricClassName}></div>
-                  </li>
-                );
-              }
-              return (
-                <li key={`${datum.title}${datum.subtitle}${datum.color}${columnIndex}`}>
+              return !datum ? (
+                <li key={`${columnIndex}-${rowIndex}`} role="presentation">
+                  <div className={emptyMetricClassName} style={{ borderColor: style.border }}>
+                    <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor }}></div>
+                  </div>
+                </li>
+              ) : (
+                <li key={`${columnIndex}-${rowIndex}`}>
                   <MetricComponent
                     chartId={chartId}
                     datum={datum}
                     totalRows={totalRows}
-                    totalColumns={totalColumns}
+                    totalColumns={maxColumns}
                     rowIndex={rowIndex}
                     columnIndex={columnIndex}
                     panel={panel}
@@ -132,14 +139,14 @@ class Component extends React.Component<StateProps & DispatchProps> {
               );
             }),
             // fill the grid row with empty panels
-            ...Array.from({ length: totalColumns - columns.length }, (_, columIndex) => {
+            ...Array.from({ length: maxColumns - columns.length }, (_, zeroBasedColumnIndex) => {
+              const columnIndex = zeroBasedColumnIndex + columns.length;
               const emptyMetricClassName = classNames('echMetric', {
-                'echMetric--rightBorder': columns.length + columIndex < totalColumns - 1,
                 'echMetric--bottomBorder': rowIndex < totalRows - 1,
               });
               return (
-                <li key={`missing-${columIndex}`} role="presentation">
-                  <div className={emptyMetricClassName}></div>
+                <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
+                  <div className={emptyMetricClassName} style={{ borderColor: style.border }}></div>
                 </li>
               );
             }),

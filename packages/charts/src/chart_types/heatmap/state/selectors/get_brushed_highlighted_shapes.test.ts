@@ -71,7 +71,7 @@ describe('Categorical heatmap brush', () => {
     store.dispatch(onPointerMove({ x: 150, y: 250 }, 200));
     store.dispatch(onMouseUp({ x: 150, y: 250 }, 300));
     caller(store.getState());
-    expect(onBrushEndMock).toBeCalledTimes(1);
+    expect(onBrushEndMock).toHaveBeenCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(6);
     expect(brushEvent.x).toEqual(['a', 'b']);
@@ -135,7 +135,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onPointerMove({ x: 250, y: 250 }, 200));
     store.dispatch(onMouseUp({ x: 250, y: 250 }, 300));
     caller(store.getState());
-    expect(onBrushEndMock).toBeCalledTimes(1);
+    expect(onBrushEndMock).toHaveBeenCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(9);
     // it covers from the beginning of the cell to the end of the next cell
@@ -149,7 +149,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onPointerMove({ x: 60, y: 60 }, 200));
     store.dispatch(onMouseUp({ x: 60, y: 60 }, 300));
     caller(store.getState());
-    expect(onBrushEndMock).toBeCalledTimes(1);
+    expect(onBrushEndMock).toHaveBeenCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.cells).toHaveLength(1);
     // it covers from the beginning of the cell to the end of the next cell

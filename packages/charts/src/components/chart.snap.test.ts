@@ -15,6 +15,6 @@ describe('test getPNGSnapshot in Chart class', () => {
     const spy = jest.spyOn(chart, 'getPNGSnapshot');
     chart.getPNGSnapshot({ backgroundColor: 'white' });
 
-    expect(spy).toBeCalled();
+    expect(spy).toHaveBeenCalled();
   });
 });

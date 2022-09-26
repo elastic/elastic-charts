@@ -313,9 +313,11 @@ export interface MetricStyle {
     darkColor: Color;
     lightColor: Color;
   };
+  border: Color;
   background: Color;
   barBackground: Color;
   nonFiniteText: string;
+  minHeight: Pixels;
 }
 
 /** @public */

@@ -271,7 +271,7 @@ describe('Rendering utils', () => {
     it('should call barStyleAccessor with datum and seriesIdentifier', () => {
       getBarStyleOverrides(datum, seriesIdentifier, sampleSeriesStyle, mockAccessor);
 
-      expect(mockAccessor).toBeCalledWith(datum, seriesIdentifier);
+      expect(mockAccessor).toHaveBeenCalledWith(datum, seriesIdentifier);
     });
 
     it('should return seriesStyle with updated fill color', () => {
@@ -364,7 +364,7 @@ describe('Rendering utils', () => {
     it('should call pointStyleAccessor with datum and seriesIdentifier', () => {
       getPointStyleOverrides(datum, seriesIdentifier, mockAccessor);
 
-      expect(mockAccessor).toBeCalledWith(datum, seriesIdentifier);
+      expect(mockAccessor).toHaveBeenCalledWith(datum, seriesIdentifier);
     });
 
     it('should return seriesStyle with updated stroke color', () => {

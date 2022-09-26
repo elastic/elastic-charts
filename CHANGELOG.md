@@ -1,3 +1,76 @@
+# [50.0.0](https://github.com/elastic/elastic-charts/compare/v49.0.0...v50.0.0) (2022-09-21)
+
+
+### chore
+
+* **xy:** timeslip typescript and timezone verification ([#1826](https://github.com/elastic/elastic-charts/issues/1826)) ([1ee26a5](https://github.com/elastic/elastic-charts/commit/1ee26a5ab85178e07308cddb8fd14bbff38df7f1))
+
+
+### BREAKING CHANGES
+
+* **xy:** non-IANA timezones such as `"utc-3"` are no longer accepted. Use a standard IANA location code or test with a relative one such as `"Etc/GMT+3"`
+
+* chore: timeslip typescript and other typing improvements
+* test: more tightly ensure correct time zone for xy charts
+* refactor: timeslip extraction of small functions to remove some large functions
+
+# [49.0.0](https://github.com/elastic/elastic-charts/compare/v48.0.1...v49.0.0) (2022-09-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v67 ([#1815](https://github.com/elastic/elastic-charts/issues/1815)) ([a45b3d3](https://github.com/elastic/elastic-charts/commit/a45b3d34c47d05c1059cfb43cf507f7b74722a4c))
+* **metric:** improve multi-line wrapping ([#1816](https://github.com/elastic/elastic-charts/issues/1816)) ([f9c790e](https://github.com/elastic/elastic-charts/commit/f9c790ef2c4a8b97d278c9ee7e27f2c5081297ed))
+
+
+### Features
+
+* **metric:** add a textual value ([#1817](https://github.com/elastic/elastic-charts/issues/1817)) ([d7610ad](https://github.com/elastic/elastic-charts/commit/d7610ad548e26e34623fe97b4c3408b543be82ed))
+* **metric:** add empty cell marker ([#1819](https://github.com/elastic/elastic-charts/issues/1819)) ([58ca9c3](https://github.com/elastic/elastic-charts/commit/58ca9c3b3307bbda2100b932426b8b71779583e6))
+* **metric:** expose min metric height ([#1825](https://github.com/elastic/elastic-charts/issues/1825)) ([c9bd634](https://github.com/elastic/elastic-charts/commit/c9bd6344f37c90340c9e7fa7f0c4e05b5f130011))
+
+
+### BREAKING CHANGES
+
+* **metric:** the metric types have been changed: the `value: number` and `valueFormatter` are only available for a numerical, progress bar, or trend metric. For the textual metric, the `value` has a `string` type.
+The `progressBarDirection` and `trendShape` properties are now required.
+
+## [48.0.1](https://github.com/elastic/elastic-charts/compare/v48.0.0...v48.0.1) (2022-09-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v66 ([#1810](https://github.com/elastic/elastic-charts/issues/1810)) ([3f1db71](https://github.com/elastic/elastic-charts/commit/3f1db718ba2d957a14710aaa80faa38e633b6a4b))
+* **flame:** undo the conversion to uniform buffer objects ([#1808](https://github.com/elastic/elastic-charts/issues/1808)) ([2b49347](https://github.com/elastic/elastic-charts/commit/2b493476e65f4376b9f79147eeaadfeb491bc003))
+
+# [48.0.0](https://github.com/elastic/elastic-charts/compare/v47.2.1...v48.0.0) (2022-08-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v65 ([#1802](https://github.com/elastic/elastic-charts/issues/1802)) ([37a0ce7](https://github.com/elastic/elastic-charts/commit/37a0ce74067f8de5fea0704687ad0cc241a9b7a8))
+* **deps:** upgrade uuid to latest version ([#1794](https://github.com/elastic/elastic-charts/issues/1794)) ([35bb737](https://github.com/elastic/elastic-charts/commit/35bb737b7c5031a8b64b68eb85720bbe3f033df6))
+
+
+### Features
+
+* **xy:** collapsing time into a single hh:mm[:ss] layer ([#1791](https://github.com/elastic/elastic-charts/issues/1791)) ([577cfee](https://github.com/elastic/elastic-charts/commit/577cfee01bb8be6e362086bde53189169ef6e430))
+
+
+### BREAKING CHANGES
+
+* **xy:** show hh:mm in a single labeled axis layer and other grid related adjustments
+
+## [47.2.1](https://github.com/elastic/elastic-charts/compare/v47.2.0...v47.2.1) (2022-08-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v63 ([#1783](https://github.com/elastic/elastic-charts/issues/1783)) ([554f370](https://github.com/elastic/elastic-charts/commit/554f370ff7f780e9bed2772ed042eaed05927bd6))
+* **deps:** update dependency @elastic/eui to v64 ([#1798](https://github.com/elastic/elastic-charts/issues/1798)) ([bb028e9](https://github.com/elastic/elastic-charts/commit/bb028e91f45a5354b3642253bccaba6c26baad93))
+* **metric:** clip title at right length ([#1790](https://github.com/elastic/elastic-charts/issues/1790)) ([7d7ad55](https://github.com/elastic/elastic-charts/commit/7d7ad5506c5fb2c7b6596c3ab9bf255e658317ab))
+* **metric:** use a correct React key for each grid item ([#1789](https://github.com/elastic/elastic-charts/issues/1789)) ([076406e](https://github.com/elastic/elastic-charts/commit/076406e954bf27ecea0cbdde7e53eed3ae59d340))
+
 # [47.2.0](https://github.com/elastic/elastic-charts/compare/v47.1.1...v47.2.0) (2022-08-04)
 
 

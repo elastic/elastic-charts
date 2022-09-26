@@ -1020,7 +1020,7 @@ export interface BaseAnnotationSpec<
 export type AnnotationSpec<D extends BaseDatum = any> = LineAnnotationSpec<D> | RectAnnotationSpec;
 
 /** @internal */
-export function isLineAnnotation<D>(spec: AnnotationSpec<D>): spec is LineAnnotationSpec<D> {
+export function isLineAnnotation<D extends BaseDatum>(spec: AnnotationSpec<D>): spec is LineAnnotationSpec<D> {
   return spec.annotationType === AnnotationType.Line;
 }
 

@@ -16,7 +16,11 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => (
   <Chart>
     <Settings baseTheme={useBaseTheme()} />
-    <Axis id="time" position={Position.Bottom} tickFormat={(d) => DateTime.fromMillis(d, { zone: 'utc-6' }).toISO()} />
+    <Axis
+      id="time"
+      position={Position.Bottom}
+      tickFormat={(d) => DateTime.fromMillis(d, { zone: 'Etc/GMT+6' }).toISO()}
+    />
     <Axis id="y" position={Position.Left} />
     <LineSeries
       id="lines"
@@ -24,7 +28,7 @@ export const Example = () => (
       yScaleType={ScaleType.Linear}
       xAccessor={1}
       yAccessors={[2]}
-      timeZone="utc-6"
+      timeZone="Etc/GMT+6"
       data={[
         ['2014-01-01T00:00:00.000-06:00', 1388556000000, 6206],
         ['2015-01-01T00:00:00.000-06:00', 1420092000000, 5674],
@@ -38,6 +42,6 @@ export const Example = () => (
 
 Example.parameters = {
   markdown: `You can visualize data in a different timezone than your local or UTC zones.
-      Specify the \`timeZone={'utc-6'}\` property with the correct timezone and
+      Specify the \`timeZone={'Etc/GMT+6'}\` property with the correct timezone and
       remember to apply the same timezone also to each formatted tick in \`tickFormat\``,
 };

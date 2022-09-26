@@ -6,34 +6,138 @@
  * Side Public License, v 1.
  */
 
-// @ts-noCheck
-
+import { MAX_TIME_GRID_COUNT, notTooDense } from '../../../xy_chart/axes/timeslip/multilayer_ticks';
+import { NumberFormatter, TimeBin, TimeFormatter, TimeRaster } from '../../../xy_chart/axes/timeslip/rasters';
+import { DataState, NumericScale, TimeslipConfig } from '../timeslip_render';
 import { clamp } from '../utils/math';
-import { renderColumn } from './column';
+import { calcColumnBar, Layers, renderColumnBars, renderColumnTickLabels, renderVerticalGridLines } from './column';
+
+const TIMESLIP_MAX_TIME_GRID_COUNT = 100 || MAX_TIME_GRID_COUNT; // use either
+
+interface LoHi {
+  lo: TimeBin | null;
+  hi: TimeBin | null;
+  unitBarMaxWidthPixelsSum: number;
+  unitBarMaxWidthPixelsCount: number;
+}
+
+const renderHorizontalGridLines = (
+  ctx: CanvasRenderingContext2D,
+  config: TimeslipConfig,
+  niceTicks: number[],
+  yUnitScale: NumericScale,
+  cartesianHeight: number,
+  yTickNumberFormatter: NumberFormatter,
+  cartesianWidth: number,
+) => {
+  ctx.save();
+  const { r, g, b } = config.backgroundColor;
+  const lineStyle = config.implicit
+    ? `rgb(${r},${g},${b})`
+    : `rgba(128,128,128,${config.a11y.contrast === 'low' ? 0.5 : 1})`;
+  ctx.textBaseline = 'middle';
+  ctx.font = config.cssFontShorthand;
+  for (const gridDomainValueY of niceTicks) {
+    const yUnit = yUnitScale(gridDomainValueY);
+    if (yUnit !== clamp(yUnit, -0.01, 1.01)) {
+      // todo set it back to 0 and 1 if recurrence relation of transitioning can reach 1 in finite time
+      continue;
+    }
+    const y = -cartesianHeight * yUnit;
+    const text = yTickNumberFormatter(gridDomainValueY);
+    ctx.fillStyle = gridDomainValueY === 0 ? config.defaultFontColor : lineStyle;
+    ctx.fillRect(
+      -config.yTickOverhang,
+      y,
+      cartesianWidth + 2 * config.yTickOverhang,
+      gridDomainValueY === 0 ? 0.5 : config.implicit ? 0.2 : 0.1,
+    );
+    ctx.fillStyle = config.subduedFontColor;
+    ctx.textAlign = 'left';
+    ctx.fillText(text, cartesianWidth + config.yTickOverhang + config.yTickGap, y);
+    ctx.textAlign = 'right';
+    ctx.fillText(text, -config.yTickOverhang - config.yTickGap, y);
+  }
+  ctx.restore();
+};
+
+const binsToRender = (
+  binStarts: Generator<TimeBin, void> | TimeBin[],
+  config: TimeslipConfig,
+  halfLineThickness: number,
+  getPixelX: NumericScale,
+  loHi: LoHi,
+  domainFrom: number,
+  domainTo: number,
+  i: number,
+) => {
+  const binStartList: TimeBin[] = [];
+  for (const binStart of binStarts) {
+    const { timePointSec } = binStart;
+    if (timePointSec < domainFrom) {
+      binStartList[0] = binStart;
+      continue;
+    }
+    if (timePointSec > domainTo) {
+      break;
+    }
+
+    binStartList.push(binStart);
+
+    if (i === 0) {
+      loHi.lo = loHi.lo || binStart;
+      loHi.hi = binStart;
+    }
+
+    const { unitBarMaxWidthPixelsSum, unitBarMaxWidthPixelsCount } = calcColumnBar(
+      getPixelX,
+      loHi.unitBarMaxWidthPixelsSum,
+      loHi.unitBarMaxWidthPixelsCount,
+      i,
+      halfLineThickness,
+      config.implicit,
+      binStart,
+    );
+    loHi.unitBarMaxWidthPixelsSum = unitBarMaxWidthPixelsSum;
+    loHi.unitBarMaxWidthPixelsCount = unitBarMaxWidthPixelsCount;
+  }
+  return binStartList;
+};
 
 /** @internal */
 export const renderRaster =
-  ({
-    ctx,
-    config,
-    guiConfig,
-    dataState,
-    fadeOutPixelWidth,
-    emWidth,
-    defaultMinorTickLabelFormat,
-    defaultLabelFormat,
-    yTickNumberFormatter,
-    domainFrom,
-    domainTo,
-    getPixelX,
-    cartesianWidth,
-    cartesianHeight,
-    niceTicks,
-    yUnitScale,
-    yUnitScaleClamped,
-    layers,
-  }) =>
-  (loHi, { labeled, binStarts, minorTickLabelFormat, detailedLabelFormat }, i, a) => {
+  (
+    ctx: CanvasRenderingContext2D,
+    config: TimeslipConfig,
+    dataState: DataState,
+    fadeOutPixelWidth: number,
+    emWidth: number,
+    defaultMinorTickLabelFormat: TimeFormatter,
+    defaultLabelFormat: TimeFormatter,
+    yTickNumberFormatter: NumberFormatter,
+    domainFrom: number,
+    domainTo: number,
+    getPixelX: NumericScale,
+    cartesianWidth: number,
+    cartesianHeight: number,
+    niceTicks: number[],
+    yUnitScale: NumericScale,
+    yUnitScaleClamped: NumericScale,
+    layers: Layers,
+  ) =>
+  (
+    loHi: LoHi,
+    {
+      labeled,
+      binStarts,
+      minorTickLabelFormat,
+      detailedLabelFormat,
+      minimumPixelsPerSecond,
+      approxWidthInMs,
+    }: TimeRaster<TimeBin>,
+    i: number,
+    a: Layers,
+  ) => {
     const {
       valid,
       dataResponse: { rows },
@@ -43,130 +147,105 @@ export const renderRaster =
     const labelFormat = detailedLabelFormat ?? minorLabelFormat ?? defaultLabelFormat;
     const textNestLevel = a.slice(0, i + 1).filter((layer) => layer.labeled).length;
     const lineNestLevel = a[i] === a[0] ? 0 : textNestLevel;
-    const textNestLevelRowLimited = Math.min(guiConfig.maxLabelRowCount, textNestLevel); // max. N rows
-    const lineNestLevelRowLimited = Math.min(guiConfig.maxLabelRowCount, lineNestLevel);
+    const textNestLevelRowLimited = Math.min(config.maxLabelRowCount, textNestLevel); // max. N rows
+    const lineNestLevelRowLimited = Math.min(config.maxLabelRowCount, lineNestLevel);
     const lineThickness = config.lineThicknessSteps[i];
     const luma =
       config.lumaSteps[i] *
-      (guiConfig.darkMode
-        ? guiConfig.a11y.contrast === 'low'
-          ? 0.5
-          : 1
-        : guiConfig.a11y.contrast === 'low'
-        ? 1.5
-        : 1);
+      (config.darkMode ? (config.a11y.contrast === 'low' ? 0.5 : 1) : config.a11y.contrast === 'low' ? 1.5 : 1);
     const halfLineThickness = lineThickness / 2;
+    const notTooDenseGridLayer = notTooDense(domainFrom, domainTo, 0, cartesianWidth, TIMESLIP_MAX_TIME_GRID_COUNT);
 
-    // render all bins that start in the visible domain
-    let firstInsideBinStart;
-    let precedingBinStart;
-
-    const columnProps = {
-      ctx,
+    const binStartList = binsToRender(
+      binStarts(domainFrom, domainTo),
       config,
-      guiConfig,
-      dataState,
-      fadeOutPixelWidth,
-      emWidth,
-      getPixelX,
-      labelFormat,
-      minorLabelFormat,
-      unitBarMaxWidthPixelsSum: loHi.unitBarMaxWidthPixelsSum,
-      unitBarMaxWidthPixelsCount: loHi.unitBarMaxWidthPixelsCount,
-      labeled,
-      textNestLevel,
-      textNestLevelRowLimited,
-      cartesianWidth,
-      cartesianHeight,
-      i,
-      valid,
-      luma,
-      lineThickness,
       halfLineThickness,
-      lineNestLevelRowLimited,
+      getPixelX,
+      loHi,
       domainFrom,
-      layers,
-      rows,
-      yUnitScale,
-      yUnitScaleClamped,
-    };
+      domainTo,
+      i,
+    );
 
-    for (const binStart of binStarts(domainFrom, domainTo)) {
-      const { timePointSec } = binStart;
-      if (domainFrom > timePointSec) {
-        precedingBinStart = binStart;
-        continue;
-      }
-      if (timePointSec > domainTo) {
-        break;
-      }
+    const finestRaster = i === 0;
+    const renderBar =
+      finestRaster &&
+      valid &&
+      dataState.binUnit === layers[0].unit &&
+      dataState.binUnitCount === layers[0].unitMultiplier;
 
-      if (i === 0) {
-        loHi.lo = loHi.lo || binStart;
-        loHi.hi = binStart;
-      }
+    if (labeled && textNestLevel <= config.maxLabelRowCount)
+      renderColumnTickLabels(
+        ctx,
+        config,
+        fadeOutPixelWidth,
+        emWidth,
+        getPixelX,
+        labelFormat,
+        minorLabelFormat,
+        textNestLevelRowLimited,
+        cartesianWidth,
+        binStartList,
+      );
 
-      if (!firstInsideBinStart) {
-        firstInsideBinStart = binStart;
-      }
-      const { unitBarMaxWidthPixelsSum, unitBarMaxWidthPixelsCount } = renderColumn(columnProps, binStart);
-      loHi.unitBarMaxWidthPixelsSum = unitBarMaxWidthPixelsSum;
-      loHi.unitBarMaxWidthPixelsCount = unitBarMaxWidthPixelsCount;
-    }
+    if (renderBar)
+      renderColumnBars(
+        ctx,
+        getPixelX,
+        cartesianWidth,
+        cartesianHeight,
+        config.implicit ? halfLineThickness : 0,
+        rows,
+        yUnitScale,
+        yUnitScaleClamped,
+        config.barChroma,
+        config.barFillAlpha,
+        binStartList,
+      );
+    if (notTooDenseGridLayer({ minimumPixelsPerSecond, approxWidthInMs }))
+      renderVerticalGridLines(
+        ctx,
+        config.rowPixelPitch,
+        cartesianHeight,
+        `rgb(${luma},${luma},${luma})`,
+        lineThickness,
+        halfLineThickness,
+        lineNestLevelRowLimited,
+        domainFrom,
+        getPixelX,
+        binStartList,
+      );
 
     // render specially the tick that just precedes the domain, therefore may insert into it (eg. intentionally, via needing to see tick texts)
-    if (precedingBinStart) {
-      if (i === 0) {
+    if (binStartList.length > 0 && binStartList[0].timePointSec < domainFrom) {
+      const precedingBinStart = binStartList[0];
+      if (finestRaster) {
         // condition necessary, otherwise it'll be the binStart of some temporally coarser bin
         loHi.lo = precedingBinStart; // partial bin on the left
       }
-      const { unitBarMaxWidthPixelsSum, unitBarMaxWidthPixelsCount } = renderColumn(
-        columnProps,
+      const { unitBarMaxWidthPixelsSum, unitBarMaxWidthPixelsCount } = calcColumnBar(
+        getPixelX,
+        loHi.unitBarMaxWidthPixelsSum,
+        loHi.unitBarMaxWidthPixelsCount,
+        i,
+        halfLineThickness,
+        config.implicit,
         precedingBinStart,
-        0,
-        firstInsideBinStart
-          ? Math.max(0, getPixelX(firstInsideBinStart.timePointSec) - config.horizontalPixelOffset)
-          : Infinity,
       );
+
       loHi.unitBarMaxWidthPixelsSum = unitBarMaxWidthPixelsSum;
       loHi.unitBarMaxWidthPixelsCount = unitBarMaxWidthPixelsCount;
     }
 
-    // render horizontal grids
-    const horizontalGrids = true;
-    if (horizontalGrids) {
-      ctx.save();
-      const { r, g, b } = config.backgroundColor;
-      const lineStyle = guiConfig.implicit
-        ? `rgb(${r},${g},${b})`
-        : `rgba(128,128,128,${guiConfig.a11y.contrast === 'low' ? 0.5 : 1})`;
-      ctx.textBaseline = 'middle';
-      ctx.font = config.cssFontShorthand;
-      const overhang = 8; // todo put it in config
-      const gap = 8; // todo put it in config
-      for (const gridDomainValueY of niceTicks) {
-        const yUnit = yUnitScale(gridDomainValueY);
-        if (yUnit !== clamp(yUnit, -0.01, 1.01)) {
-          // todo set it back to 0 and 1 if recurrence relation of transitioning can reach 1 in finite time
-          continue;
-        }
-        const y = -cartesianHeight * yUnit;
-        const text = yTickNumberFormatter.format(gridDomainValueY);
-        ctx.fillStyle = gridDomainValueY === 0 ? config.defaultFontColor : lineStyle;
-        ctx.fillRect(
-          -overhang,
-          y,
-          cartesianWidth + 2 * overhang,
-          gridDomainValueY === 0 ? 0.5 : guiConfig.implicit ? 0.2 : 0.1,
-        );
-        ctx.fillStyle = config.subduedFontColor;
-        ctx.textAlign = 'left';
-        ctx.fillText(text, cartesianWidth + overhang + gap, y);
-        ctx.textAlign = 'right';
-        ctx.fillText(text, -overhang - gap, y);
-      }
-      ctx.restore();
-    }
+    renderHorizontalGridLines(
+      ctx,
+      config,
+      niceTicks,
+      yUnitScale,
+      cartesianHeight,
+      yTickNumberFormatter,
+      cartesianWidth,
+    );
 
     return loHi;
   };
