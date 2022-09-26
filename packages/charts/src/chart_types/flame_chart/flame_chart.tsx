@@ -141,6 +141,7 @@ interface StateProps {
   chartDimensions: Size;
   a11ySettings: ReturnType<typeof getA11ySettingsSelector>;
   tooltipRequired: boolean;
+  pinnableTooltip: boolean;
   onElementOver: NonNullable<SettingsSpec['onElementOver']>;
   onElementClick: NonNullable<SettingsSpec['onElementClick']>;
   onElementOut: NonNullable<SettingsSpec['onElementOut']>;
@@ -437,14 +438,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private handleMouseHoverMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (!this.isDragging(e)) {
       e.stopPropagation();
-
-      if (e.buttons === 2) {
-        // prevent context menu click + drag
-        window.removeEventListener('mouseup', this.handleMouseUp);
-      }
-
       this.updatePointerLocation(e);
-
       if (!this.tooltipPinned) {
         this.updateHoverIndex();
       }
@@ -558,8 +552,16 @@ class FlameComponent extends React.Component<FlameProps> {
     e.stopPropagation();
     e.preventDefault(); // prevent browser context menu
 
+    if (this.tooltipPinned) {
+      this.handleUnpinningTooltip();
+      return;
+    }
+
     window.addEventListener('mousemove', this.handleMouseDragMove, { passive: true });
-    window.addEventListener('mouseup', this.handleMouseUp, { passive: true });
+    window.addEventListener('keyup', this.handleKeyUp);
+    window.addEventListener('click', this.handleUnpinningTooltip);
+    window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
+    this.onTooltipPinned(true);
     this.setState({}); // updates cursor
   };
 
@@ -591,13 +593,6 @@ class FlameComponent extends React.Component<FlameProps> {
         this.navigator.add({ ...rect, index: datumIndex });
         this.focusOnNode(datumIndex);
         this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
-      }
-
-      if (mustFocus && isContextClick) {
-        window.addEventListener('keyup', this.handleKeyUp);
-        window.addEventListener('click', this.handleUnpinningTooltip);
-        window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
-        this.onTooltipPinned(!this.tooltipPinned);
       }
     }
     this.clearDrag();
@@ -883,7 +878,7 @@ class FlameComponent extends React.Component<FlameProps> {
             height={canvasHeight}
             onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
-            onContextMenu={this.handleContextMenu}
+            onContextMenu={this.props.pinnableTooltip ? this.handleContextMenu : undefined}
             onMouseLeave={this.handleMouseLeave}
             onKeyPress={this.handleEnterKey}
             onKeyUp={this.handleEscapeKey}
@@ -1287,6 +1282,7 @@ class FlameComponent extends React.Component<FlameProps> {
 const mapStateToProps = (state: GlobalChartState): StateProps => {
   const flameSpec = getSpecsFromStore<FlameSpec>(state.specs, ChartType.Flame, SpecType.Series)[0];
   const settingsSpec = getSettingsSpecSelector(state);
+  const tooltipSpec = getTooltipSpecSelector(state);
   return {
     debugHistory: settingsSpec.debug,
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
@@ -1294,7 +1290,8 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     animationDuration: flameSpec?.animation.duration ?? 0,
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
-    tooltipRequired: getTooltipSpecSelector(state).type !== TooltipType.None,
+    tooltipRequired: tooltipSpec.type !== TooltipType.None,
+    pinnableTooltip: tooltipSpec.actions.length > 0,
 
     // mandatory charts API protocol; todo extract these mappings once there are other charts like Flame
     onElementOver: settingsSpec.onElementOver ?? (() => {}),
