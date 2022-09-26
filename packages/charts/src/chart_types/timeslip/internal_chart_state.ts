@@ -35,6 +35,7 @@ export class TimeslipState implements InternalChartState {
     visible: false,
     isExternal: false,
     displayOnly: false,
+    isPinnable: false,
   });
 
   getTooltipInfo = () => ({ header: null, values: [] });

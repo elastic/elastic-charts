@@ -176,8 +176,9 @@ export function interactionsReducer(
         };
       }
 
-      const { visible, displayOnly } = getInternalIsTooltipVisibleSelector(globalState);
-      if (!visible || displayOnly) {
+      const { isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(globalState);
+
+      if (!isPinnable || displayOnly) {
         return state;
       }
 

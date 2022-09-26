@@ -51,6 +51,7 @@ export type BackwardRef = () => React.RefObject<HTMLDivElement>;
 export interface TooltipVisibility {
   visible: boolean;
   isExternal: boolean;
+  isPinnable: boolean;
   displayOnly: boolean;
 }
 

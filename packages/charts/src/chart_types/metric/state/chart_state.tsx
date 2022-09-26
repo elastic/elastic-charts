@@ -37,6 +37,7 @@ export class MetricState implements InternalChartState {
     visible: false,
     isExternal: false,
     displayOnly: false,
+    isPinnable: false,
   });
 
   getTooltipInfo = () => undefined;

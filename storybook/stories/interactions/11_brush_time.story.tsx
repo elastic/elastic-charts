@@ -27,7 +27,7 @@ import {
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob, getToggledNumber } from '../utils/knobs';
+import { getChartRotationKnob, getToggledNumber, getTooltipTypeKnob } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();
 const rng = getRandomNumberGenerator();
@@ -79,7 +79,8 @@ export const Example = () => {
       <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
       <Tooltip
-        // type="follow"
+        maxTooltipItems={number('maxTooltipItems', 5, { min: 1, step: 1 }, 'Tooltip styles')}
+        type={getTooltipTypeKnob('tooltip type', 'follow', 'Tooltip styles')}
         actions={
           disableActions
             ? []

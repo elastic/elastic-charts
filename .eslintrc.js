@@ -94,6 +94,7 @@ module.exports = {
     'react/require-default-props': 0,
     'react/display-name': 0,
     'react/require-render-return': 0, // rule is broken for certain types of function syntax
+    'react/prefer-stateless-function': 0, // annoying rule that could be used in the future
     'jsx-a11y/no-static-element-interactions': 1,
     'jsx-a11y/mouse-events-have-key-events': 1,
     'jsx-a11y/click-events-have-key-events': 1,

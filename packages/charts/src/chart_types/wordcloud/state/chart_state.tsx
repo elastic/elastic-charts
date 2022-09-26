@@ -69,6 +69,7 @@ export class WordcloudState implements InternalChartState {
       visible: false,
       isExternal: false,
       displayOnly: false,
+      isPinnable: false,
     };
   }
 

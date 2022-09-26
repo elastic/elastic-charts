@@ -7,14 +7,12 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, ReactNode, useEffect, useRef } from 'react';
+import React, { CSSProperties, ReactNode, useRef } from 'react';
 
-import { useRenderSkip } from '../../../common/hooks/use_render_skip';
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
 import { onTooltipItemSelected } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
-import { debounce } from '../../../utils/debounce';
 import { PropsOrChildrenWithProps } from '../types';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell } from './tooltip_table_cell';
@@ -47,20 +45,9 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   className,
   ...props
 }: TooltipTableBodyProps<D, SI>) => {
-  const ready = useRenderSkip();
-  const { theme } = useTooltipContext<D, SI>();
-  const maxHeight = props.maxHeight ?? theme.maxTableBodyHeight;
+  const { theme, pinned } = useTooltipContext<D, SI>();
+  const maxHeight = pinned ? props.maxHeight ?? theme.maxTableBodyHeight : undefined;
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null);
-  const targetRowIndex = 'items' in props ? (props?.items ?? []).findIndex(({ isHighlighted }) => isHighlighted) : -1;
-  const scrollToTarget = debounce((i) => {
-    const target = tableBodyRef.current?.querySelector(`#${getRowId(i)}`);
-    if (!target) return;
-    target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'start' });
-  }, 100);
-  useEffect(() => {
-    if (!ready || targetRowIndex === -1 || props.pinned) return;
-    scrollToTarget(targetRowIndex);
-  }, [scrollToTarget, ready, targetRowIndex, props.pinned]);
 
   if ('children' in props) {
     const classes = classNames('echTooltip__tableBody', className);

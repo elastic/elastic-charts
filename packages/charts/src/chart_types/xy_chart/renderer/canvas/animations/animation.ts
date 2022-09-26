@@ -77,7 +77,6 @@ export class Animation {
     if (!isFiniteNumber(this.initial) || !isFiniteNumber(this.target) || this.initial === this.target) {
       return false;
     }
-    // if (this.debug && count++ % 30 === 0) console.log(t, this.delay, this.duration, this.timeOffset);
 
     return t - this.delay + this.timeOffset < this.duration;
   }

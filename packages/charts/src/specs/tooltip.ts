@@ -205,6 +205,11 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    * Prompt to display when tooltip is pinned but all actions are hidden
    */
   selectionPrompt: string;
+
+  /**
+   * Max number of tooltip items before showing only highlighted values
+   */
+  maxTooltipItems: number;
 }
 
 /**
@@ -240,6 +245,7 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     actions: [],
     actionPrompt: 'Right click to pin tooltip',
     selectionPrompt: 'Please select a series',
+    maxTooltipItems: 5,
   },
 );
 
