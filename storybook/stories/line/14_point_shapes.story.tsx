@@ -55,7 +55,7 @@ export const Example = () => {
             : [
                 {
                   label: () => 'Log storybook action',
-                  onSelect: (s) => action('onTooltipAction')(s),
+                  onSelect: action('onTooltipAction'),
                 },
                 {
                   label: ({ length }) => (

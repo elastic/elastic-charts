@@ -33,7 +33,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   selectionPrompt,
   className,
 }: TooltipWrapperProps<D, SI>) => {
-  const { dir, pinned, selected, onTooltipPinned } = useTooltipContext<D, SI>();
+  const { dir, pinned, selected, onTooltipPinned, values } = useTooltipContext<D, SI>();
 
   const renderActions = () => {
     const visibleActions = actions.filter(({ hide }) => !hide || hide(selected));
@@ -54,7 +54,9 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
           onClick={() => {
             onTooltipPinned(false, true);
             // timeout used to close tooltip before calling action
-            setTimeout(onSelect, 0, selected);
+            setTimeout(() => {
+              onSelect(selected, values);
+            }, 0);
           }}
         >
           {label(selected)}

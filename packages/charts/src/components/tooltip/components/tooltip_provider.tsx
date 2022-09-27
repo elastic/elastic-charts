@@ -20,6 +20,7 @@ interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifie
   dir: 'rtl' | 'ltr';
   pinned: boolean;
   selected: Array<TooltipValue<D, SI>>;
+  values: TooltipValue<D, SI>[];
   onTooltipPinned: typeof onTooltipPinnedAction | ((...args: Parameters<typeof onTooltipPinnedAction>) => void);
   theme: TooltipStyle;
 }
@@ -29,6 +30,7 @@ const TooltipContext = React.createContext<TooltipContext>({
   dir: 'ltr',
   pinned: false,
   selected: [],
+  values: [],
   onTooltipPinned: onTooltipPinnedAction,
   theme: LIGHT_THEME.tooltip,
 });
@@ -48,6 +50,7 @@ export const TooltipProvider = <D extends BaseDatum = Datum, SI extends SeriesId
   dir,
   pinned,
   selected,
+  values,
   onTooltipPinned,
   children,
   theme,
@@ -59,6 +62,7 @@ export const TooltipProvider = <D extends BaseDatum = Datum, SI extends SeriesId
         dir,
         pinned,
         selected,
+        values,
         onTooltipPinned,
         theme,
       }}
