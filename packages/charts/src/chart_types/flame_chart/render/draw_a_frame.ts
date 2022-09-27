@@ -50,6 +50,7 @@ export const drawFrame =
     hoverIndex: number,
     unitRowHeight: number,
     currentColor: Float32Array,
+    theme: 'dark' | 'light',
   ) =>
   (currentFocus: [number, number, number, number], wobbleIndex: number, wobble: number) => {
     const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
@@ -68,6 +69,10 @@ export const drawFrame =
     const focusLayerCssHeight = cssHeight - PADDING_TOP - PADDING_BOTTOM;
 
     const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
+
+    // TODO move these colors to the theme
+    const barColor = theme === 'dark' ? 'rgb(223, 229, 239)' : 'rgb(52, 55, 65)';
+    const barBackgroundColor = theme === 'dark' ? 'rgb(52, 55, 65)' : 'rgb(211, 218, 230)';
 
     const drawFocusLayer = (pickLayer: boolean) =>
       drawWebgl(
@@ -160,7 +165,7 @@ export const drawFrame =
       dpr,
       fullFocus,
       '',
-      'lightgrey',
+      barBackgroundColor,
       FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
     );
 
@@ -174,7 +179,7 @@ export const drawFrame =
       dpr,
       fullFocus,
       '',
-      'black',
+      barColor,
       FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
     );
 
@@ -188,7 +193,7 @@ export const drawFrame =
       TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallLeft) / 2,
       dpr,
       fullFocus,
-      'black',
+      barColor,
       '',
       0,
     );
@@ -203,7 +208,7 @@ export const drawFrame =
       TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallRight) / 2,
       dpr,
       fullFocus,
-      'black',
+      barColor,
       '',
       0,
     );
@@ -218,7 +223,7 @@ export const drawFrame =
       dpr,
       fullFocus,
       '',
-      'lightgrey',
+      barBackgroundColor,
       FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
     );
 
@@ -232,11 +237,11 @@ export const drawFrame =
       dpr,
       fullFocus,
       '',
-      'black',
+      barColor,
       FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
     );
 
-    // focus chart horizontal focus terminal - start
+    // focus chart vertical focus terminal - start
     const atWallTop = Math.abs(currentFocus[2]) < EPSILON ? 4 : 1;
     drawRect(
       ctx,
@@ -246,12 +251,12 @@ export const drawFrame =
       focusLayerCssHeight * (1 - currentFocus[2]) + PADDING_TOP,
       dpr,
       fullFocus,
-      'black',
+      barColor,
       '',
       0,
     );
 
-    // focus chart horizontal focus terminal - end
+    // focus chart vertical focus terminal - end
     const atWallBottom = Math.abs(currentFocus[3] - 1) < EPSILON ? 4 : 1;
     drawRect(
       ctx,
@@ -261,7 +266,7 @@ export const drawFrame =
       focusLayerCssHeight * (1 - currentFocus[3]) + PADDING_TOP,
       dpr,
       fullFocus,
-      'black',
+      barColor,
       '',
       0,
     );
