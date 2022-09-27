@@ -22,7 +22,7 @@ export const Y0_ACCESSOR_POSTFIX = ' - lower';
 export const Y1_ACCESSOR_POSTFIX = ' - upper';
 
 /** @internal */
-export function getHighlightedValues(
+export function getLegendItemExtraValues(
   tooltipValues: TooltipValue[],
   defaultValue?: string,
 ): Map<SeriesKey, LegendItemExtraValues> {

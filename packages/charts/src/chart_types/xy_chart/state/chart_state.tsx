@@ -29,7 +29,7 @@ import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
-import { getHighlightedValuesSelector } from './selectors/get_highlighted_values';
+import { getLegendItemExtraValuesSelector } from './selectors/get_legend_item_extra_values';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
 import { getSeriesSpecsSelector } from './selectors/get_specs';
 import { getTooltipAnchorPositionSelector } from './selectors/get_tooltip_anchor_position';
@@ -111,7 +111,7 @@ export class XYAxisChartState implements InternalChartState {
   }
 
   getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues> {
-    return getHighlightedValuesSelector(globalState);
+    return getLegendItemExtraValuesSelector(globalState);
   }
 
   chartRenderer(containerRef: BackwardRef, forwardCanvasRef: RefObject<HTMLCanvasElement>) {

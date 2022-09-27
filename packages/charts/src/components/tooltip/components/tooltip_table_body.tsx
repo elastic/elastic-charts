@@ -45,8 +45,8 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   className,
   ...props
 }: TooltipTableBodyProps<D, SI>) => {
-  const { theme, pinned } = useTooltipContext<D, SI>();
-  const maxHeight = pinned ? props.maxHeight ?? theme.maxTableBodyHeight : undefined;
+  const { theme } = useTooltipContext<D, SI>();
+  const maxHeight = props.maxHeight ?? theme.maxTableBodyHeight;
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null);
 
   if ('children' in props) {
@@ -59,6 +59,8 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   }
 
   const classes = classNames('echTooltip__tableBody');
+  // TODO: find a better way determine this from the data
+  const allHighlighted = props.items.every((i) => i.isHighlighted);
 
   return (
     <tbody className={classes} ref={tableBodyRef} style={{ maxHeight }}>
@@ -69,7 +71,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
           <TooltipTableRow
             key={`${item.seriesIdentifier.key}-${item.value}`}
             id={getRowId(i)}
-            isHighlighted={!props.pinned && isHighlighted}
+            isHighlighted={!props.pinned && !allHighlighted && isHighlighted}
             isSelected={props.pinned && props.selected.includes(item)}
             onSelect={displayOnly ? undefined : () => props.onSelect(item)}
           >

@@ -27,10 +27,6 @@ $rowColorStripAnimatedWidthDelta: 2px;
     .echTooltip__tableRow--selectable {
       cursor: pointer;
     }
-
-    .echTooltip__tableBody {
-      overflow-y: auto;
-    }
   }
 
   & > :not(:last-child) {
@@ -132,7 +128,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
 
   &__tableBody {
     pointer-events: auto;
-    overflow-y: hidden;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 
