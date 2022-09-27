@@ -26,9 +26,9 @@ type TooltipTableProps<
   {
     columns: TooltipTableColumn<D, SI>[];
     items: TooltipValue<D, SI>[];
-    pinned: boolean;
-    onSelect: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
-    selected: TooltipValue<D, SI>[];
+    pinned?: boolean;
+    onSelect?: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
+    selected?: TooltipValue<D, SI>[];
   },
   {},
   {
@@ -57,16 +57,11 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
     return !(typeof hidden === 'boolean' ? hidden : hidden?.(props.items) ?? false);
   });
 
+  const { items, pinned = false, onSelect, selected = [] } = props;
   return (
     <table className={classes} style={{ maxHeight }}>
       <TooltipTableHeader columns={columns} items={props.items} />
-      <TooltipTableBody
-        columns={columns}
-        items={props.items}
-        pinned={props.pinned}
-        onSelect={props.onSelect}
-        selected={props.selected}
-      />
+      <TooltipTableBody columns={columns} items={items} pinned={pinned} onSelect={onSelect} selected={selected} />
       <TooltipTableFooter columns={columns} items={props.items} />
     </table>
   );

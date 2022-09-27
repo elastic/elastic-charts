@@ -152,7 +152,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
       background-color: transparentize($euiColorLightShade, 0.5);
     }
 
-    &:hover:not(&--selected) :not(.echTooltip__colorCell--static) {
+    &--selectable:hover:not(&--selected) :not(.echTooltip__colorCell--static) {
       .echTooltip__colorStrip {
         width: $rowColorStripWidth + $rowColorStripAnimatedWidthDelta;
       }

@@ -40,6 +40,8 @@ const MAX_CYCLES = 0;
 let numCyclesDetected = 0;
 
 module.exports = ({ config }) => {
+  config.mode = 'development';
+
   if (process.env.CI) {
     config.plugins.push(
       new CircularDependencyPlugin({

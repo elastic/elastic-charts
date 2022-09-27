@@ -9,7 +9,15 @@
 import { boolean, color } from '@storybook/addon-knobs';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
-import { BaseDatum, Datum, SeriesIdentifier, TooltipProps } from '@elastic/charts';
+import {
+  BaseDatum,
+  Datum,
+  SeriesIdentifier,
+  TooltipProps,
+  LIGHT_THEME,
+  DEFAULT_TOOLTIP_SPEC,
+  TooltipSpec,
+} from '@elastic/charts';
 import { TooltipComponent, TooltipComponentProps } from '@elastic/charts/src/components/tooltip/tooltip';
 
 import { getPlacementKnob } from '../../utils/knobs';
@@ -41,6 +49,7 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
 
   const tooltipProps: BaseTooltipProps<D, SI> = {
     ...props,
+    tooltip: props.tooltip ? props.tooltip : (DEFAULT_TOOLTIP_SPEC as unknown as TooltipSpec<D, SI>),
     zIndex: 200,
     info: props.info,
     settings: {
@@ -54,6 +63,13 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
     getChartContainerRef: () => divRef,
     // @ts-ignore - overriding mouse logic
     onPointerMove: () => {},
+    onTooltipItemSelected: () => {},
+    onTooltipPinned: () => {},
+    canPinTooltip: false,
+    pinned: false,
+    selected: [],
+    maxTooltipItems: 5,
+    tooltipTheme: LIGHT_THEME.tooltip,
   };
 
   return (

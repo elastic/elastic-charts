@@ -29,8 +29,8 @@ type TooltipTableBodyProps<
   {
     items: TooltipValue<D, SI>[];
     columns: TooltipTableColumn<D, SI>[];
-    pinned: boolean;
-    onSelect: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
+    pinned?: boolean;
+    onSelect?: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
     selected: TooltipValue<D, SI>[];
   },
   {},
@@ -58,24 +58,25 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
     );
   }
 
+  const { items, pinned, selected, onSelect, columns } = props;
   const classes = classNames('echTooltip__tableBody');
   // TODO: find a better way determine this from the data
-  const allHighlighted = props.items.every((i) => i.isHighlighted);
+  const allHighlighted = items.every((i) => i.isHighlighted);
 
   return (
     <tbody className={classes} ref={tableBodyRef} style={{ maxHeight }}>
-      {props.items.map((item, i) => {
+      {items.map((item, i) => {
         const { isHighlighted, isVisible, displayOnly } = item;
         if (!isVisible) return null;
         return (
           <TooltipTableRow
             key={`${item.seriesIdentifier.key}-${item.value}`}
             id={getRowId(i)}
-            isHighlighted={!props.pinned && !allHighlighted && isHighlighted}
-            isSelected={props.pinned && props.selected.includes(item)}
-            onSelect={displayOnly ? undefined : () => props.onSelect(item)}
+            isHighlighted={!pinned && !allHighlighted && isHighlighted}
+            isSelected={pinned && selected.includes(item)}
+            onSelect={displayOnly || !onSelect ? undefined : () => onSelect(item)}
           >
-            {props.columns.map((column, j) => {
+            {columns.map((column, j) => {
               return renderCellContent(item, column, column.id ?? `${column.type}-${j}`);
             })}
           </TooltipTableRow>
