@@ -7,6 +7,7 @@
  */
 
 import { Render, Texture } from '../../../common/kingly';
+import { FlamegraphStyle } from '../../../utils/themes/theme';
 import { ColumnarViewModel } from '../flame_api';
 import { roundUpSize } from './common';
 import { drawCanvas2d, drawRect } from './draw_canvas';
@@ -50,7 +51,7 @@ export const drawFrame =
     hoverIndex: number,
     unitRowHeight: number,
     currentColor: Float32Array,
-    theme: 'dark' | 'light',
+    theme: FlamegraphStyle,
   ) =>
   (currentFocus: [number, number, number, number], wobbleIndex: number, wobble: number) => {
     const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
@@ -70,9 +71,7 @@ export const drawFrame =
 
     const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
 
-    // TODO move these colors to the theme
-    const barColor = theme === 'dark' ? 'rgb(223, 229, 239)' : 'rgb(52, 55, 65)';
-    const barBackgroundColor = theme === 'dark' ? 'rgb(52, 55, 65)' : 'rgb(211, 218, 230)';
+    const { scrollbarThumb, scrollbarTrack } = theme;
 
     const drawFocusLayer = (pickLayer: boolean) =>
       drawWebgl(
@@ -165,7 +164,7 @@ export const drawFrame =
       dpr,
       fullFocus,
       '',
-      barBackgroundColor,
+      scrollbarTrack,
       FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
     );
 
@@ -179,7 +178,7 @@ export const drawFrame =
       dpr,
       fullFocus,
       '',
-      barColor,
+      scrollbarThumb,
       FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
     );
 
@@ -193,7 +192,7 @@ export const drawFrame =
       TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallLeft) / 2,
       dpr,
       fullFocus,
-      barColor,
+      scrollbarThumb,
       '',
       0,
     );
@@ -208,7 +207,7 @@ export const drawFrame =
       TERMINAL_TICK_LINE_LENGTH + (FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH * atWallRight) / 2,
       dpr,
       fullFocus,
-      barColor,
+      scrollbarThumb,
       '',
       0,
     );
@@ -223,7 +222,7 @@ export const drawFrame =
       dpr,
       fullFocus,
       '',
-      barBackgroundColor,
+      scrollbarTrack,
       FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
     );
 
@@ -237,7 +236,7 @@ export const drawFrame =
       dpr,
       fullFocus,
       '',
-      barColor,
+      scrollbarThumb,
       FOCUS_INDICATOR_PLACEHOLDER_LINE_WIDTH,
     );
 
@@ -251,7 +250,7 @@ export const drawFrame =
       focusLayerCssHeight * (1 - currentFocus[2]) + PADDING_TOP,
       dpr,
       fullFocus,
-      barColor,
+      scrollbarThumb,
       '',
       0,
     );
@@ -266,7 +265,7 @@ export const drawFrame =
       focusLayerCssHeight * (1 - currentFocus[3]) + PADDING_TOP,
       dpr,
       fullFocus,
-      barColor,
+      scrollbarThumb,
       '',
       0,
     );

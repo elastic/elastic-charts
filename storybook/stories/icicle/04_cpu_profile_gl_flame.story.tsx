@@ -14,7 +14,7 @@ import { Chart, Datum, Flame, Settings, PartialTheme, FlameGlobalControl, FlameN
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { useBaseTheme, useBaseThemeId } from '../../use_base_theme';
+import { useBaseTheme } from '../../use_base_theme';
 
 const position = new Float32Array(columnarMock.position);
 const size = new Float32Array(columnarMock.size);
@@ -71,7 +71,6 @@ export const Example = () => {
     focusOnNodeControl(Math.floor(20 * Math.random()));
   });
   const debug = boolean('Debug history', false);
-  const themeId = useBaseThemeId();
   return (
     <Chart>
       <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
@@ -81,7 +80,6 @@ export const Example = () => {
         valueAccessor={(d: Datum) => d.value as number}
         valueFormatter={(value) => `${value}`}
         animation={{ duration: 500 }}
-        theme={themeId === 'eui-dark' || themeId === 'dark' ? 'dark' : 'light'}
         controlProviderCallback={{
           resetFocus: (control) => (resetFocusControl = control),
           focusOnNode: (control) => (focusOnNodeControl = control),

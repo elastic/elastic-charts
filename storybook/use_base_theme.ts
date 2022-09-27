@@ -61,7 +61,3 @@ export const useBaseTheme = (): Theme => {
     background: { color: backgroundColor },
   });
 };
-
-export const useBaseThemeId = (): ThemeId => {
-  return useContext(ThemeContext);
-};

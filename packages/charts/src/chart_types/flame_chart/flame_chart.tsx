@@ -20,11 +20,13 @@ import { onChartRendered } from '../../state/actions/chart';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
+import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils';
 import { clamp, isFiniteNumber } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
+import { FlamegraphStyle } from '../../utils/themes/theme';
 import { FlameSpec } from './flame_api';
 import { NavigationStrategy, NavButtonControlledZoomPanHistory } from './navigation';
 import { roundUpSize } from './render/common';
@@ -134,7 +136,7 @@ const isAttributeKey = (keyCandidate: string): keyCandidate is keyof typeof attr
   keyCandidate in attributeLocations;
 
 interface StateProps {
-  theme: 'dark' | 'light';
+  theme: FlamegraphStyle;
   debugHistory: boolean;
   columnarViewModel: FlameSpec['columnarData'];
   controlProviderCallback: FlameSpec['controlProviderCallback'];
@@ -736,12 +738,13 @@ class FlameComponent extends React.Component<FlameProps> {
     const columns = this.props.columnarViewModel;
     const hitCount = this.currentSearchHitCount;
 
-    // TODO move these colors to the theme
-    const textColor = theme === 'dark' ? 'rgb(223, 229, 239)' : 'rgb(52, 55, 65)';
-    const buttonBackgroundColor = theme === 'dark' ? '#36a2ef33' : 'rgb(204, 228, 245)';
-    const buttonDisabledBackgroundColor = theme === 'dark' ? 'rgba(52, 55, 65, 0.15)' : 'rgba(211, 218, 230, 0.15)';
-    const buttonColor = theme === 'dark' ? 'rgb(54, 162, 239)' : 'rgb(0, 97, 166)';
-    const buttonDisabledTextColor = theme === 'dark' ? 'rgb(81, 87, 97)' : 'rgb(162, 171, 186)';
+    const {
+      textColor,
+      buttonDisabledTextColor,
+      buttonBackgroundColor,
+      buttonDisabledBackgroundColor,
+      buttonTextColor,
+    } = theme.navigation;
 
     return (
       <>
@@ -781,7 +784,7 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Navigate back"
             style={{
-              color: this.navigator.canNavBackward() ? buttonColor : buttonDisabledTextColor,
+              color: this.navigator.canNavBackward() ? buttonTextColor : buttonDisabledTextColor,
               fontWeight: 500,
               marginLeft: 16,
               marginRight: 4,
@@ -806,7 +809,7 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Reset"
             style={{
-              color: buttonColor,
+              color: buttonTextColor,
               fontWeight: 500,
               paddingInline: 4,
               borderRadius: 4,
@@ -820,7 +823,7 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Navigate forward"
             style={{
-              color: this.navigator.canNavForward() ? buttonColor : buttonDisabledTextColor,
+              color: this.navigator.canNavForward() ? buttonTextColor : buttonDisabledTextColor,
               fontWeight: 500,
               marginLeft: 4,
               marginRight: 16,
@@ -858,7 +861,7 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Clear text"
             style={{
-              color: buttonColor,
+              color: buttonTextColor,
               background: buttonBackgroundColor,
               fontWeight: 500,
               paddingInline: 4,
@@ -886,7 +889,7 @@ class FlameComponent extends React.Component<FlameProps> {
             style={{
               backgroundColor:
                 this.caseSensitive && !this.useRegex ? buttonBackgroundColor : buttonDisabledBackgroundColor,
-              color: this.caseSensitive && !this.useRegex ? buttonColor : buttonDisabledTextColor,
+              color: this.caseSensitive && !this.useRegex ? buttonTextColor : buttonDisabledTextColor,
               fontWeight: 500,
               paddingInline: 4,
               marginInline: 4,
@@ -910,7 +913,7 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Regex matching (highlighted: use regex)"
             style={{
-              color: this.useRegex ? buttonColor : buttonDisabledTextColor,
+              color: this.useRegex ? buttonTextColor : buttonDisabledTextColor,
               backgroundColor: this.useRegex ? buttonBackgroundColor : buttonDisabledBackgroundColor,
               fontWeight: 500,
               paddingInline: 4,
@@ -936,7 +939,7 @@ class FlameComponent extends React.Component<FlameProps> {
             title="Previous hit"
             style={{
               backgroundColor: hitCount ? buttonBackgroundColor : buttonDisabledBackgroundColor,
-              color: hitCount ? buttonColor : buttonDisabledTextColor,
+              color: hitCount ? buttonTextColor : buttonDisabledTextColor,
               fontWeight: 500,
               marginLeft: 16,
               marginRight: 4,
@@ -954,7 +957,7 @@ class FlameComponent extends React.Component<FlameProps> {
             title="Next hit"
             style={{
               backgroundColor: hitCount ? buttonBackgroundColor : buttonDisabledBackgroundColor,
-              color: hitCount ? buttonColor : buttonDisabledTextColor,
+              color: hitCount ? buttonTextColor : buttonDisabledTextColor,
               fontWeight: 500,
               paddingInline: 4,
               borderRadius: 4,
@@ -1197,7 +1200,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const flameSpec = getSpecsFromStore<FlameSpec>(state.specs, ChartType.Flame, SpecType.Series)[0];
   const settingsSpec = getSettingsSpecSelector(state);
   return {
-    theme: flameSpec.theme,
+    theme: getChartThemeSelector(state).flamegraph,
     debugHistory: settingsSpec.debug,
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
     controlProviderCallback: flameSpec?.controlProviderCallback ?? {},
