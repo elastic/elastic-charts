@@ -309,6 +309,19 @@ export interface MetricStyle {
   minHeight: Pixels;
 }
 
+/** @alpha */
+export interface FlamegraphStyle {
+  navigation: {
+    textColor: Color;
+    buttonTextColor: Color;
+    buttonDisabledTextColor: Color;
+    buttonBackgroundColor: Color;
+    buttonDisabledBackgroundColor: Color;
+  };
+  scrollbarTrack: Color;
+  scrollbarThumb: Color;
+}
+
 /** @public */
 export interface ScalesConfig {
   /**
@@ -463,6 +476,9 @@ export interface Theme {
   heatmap: HeatmapStyle;
 
   metric: MetricStyle;
+
+  /** @alpha */
+  flamegraph: FlamegraphStyle;
 }
 
 /** @public */
