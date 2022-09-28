@@ -1,3 +1,11 @@
+## [50.0.1](https://github.com/elastic/elastic-charts/compare/v50.0.0...v50.0.1) (2022-09-28)
+
+
+### Bug Fixes
+
+* **flamegraph:** dark theme ([#1830](https://github.com/elastic/elastic-charts/issues/1830)) ([c997f54](https://github.com/elastic/elastic-charts/commit/c997f54af4e23ce3e4a338c0d389969217aebee0))
+* **style:** import the legacy reset css ([#1828](https://github.com/elastic/elastic-charts/issues/1828)) ([e59bc22](https://github.com/elastic/elastic-charts/commit/e59bc2262506e9a4866914f83e40625e3c85c94f))
+
 # [50.0.0](https://github.com/elastic/elastic-charts/compare/v49.0.0...v50.0.0) (2022-09-21)
 
 
