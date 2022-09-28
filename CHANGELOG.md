@@ -1,3 +1,10 @@
+## [49.0.1](https://github.com/elastic/elastic-charts/compare/v49.0.0...v49.0.1) (2022-09-28)
+
+
+### Bug Fixes
+
+* **flamegraph:** dark theme ([#1830](https://github.com/elastic/elastic-charts/issues/1830)) [49.x] ([#1831](https://github.com/elastic/elastic-charts/issues/1831)) ([91ef964](https://github.com/elastic/elastic-charts/commit/91ef96400c02506819405615ff405a5320291f4e))
+
 # [49.0.0](https://github.com/elastic/elastic-charts/compare/v48.0.1...v49.0.0) (2022-09-17)
 
 
