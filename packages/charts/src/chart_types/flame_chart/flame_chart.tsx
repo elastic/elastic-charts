@@ -20,11 +20,13 @@ import { onChartRendered } from '../../state/actions/chart';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
+import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils';
 import { clamp, isFiniteNumber } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
+import { FlamegraphStyle } from '../../utils/themes/theme';
 import { FlameSpec } from './flame_api';
 import { NavigationStrategy, NavButtonControlledZoomPanHistory } from './navigation';
 import { roundUpSize } from './render/common';
@@ -134,6 +136,7 @@ const isAttributeKey = (keyCandidate: string): keyCandidate is keyof typeof attr
   keyCandidate in attributeLocations;
 
 interface StateProps {
+  theme: FlamegraphStyle;
   debugHistory: boolean;
   columnarViewModel: FlameSpec['columnarData'];
   controlProviderCallback: FlameSpec['controlProviderCallback'];
@@ -714,6 +717,7 @@ class FlameComponent extends React.Component<FlameProps> {
       chartDimensions: { width: requestedWidth, height: requestedHeight },
       a11ySettings,
       debugHistory,
+      theme,
     } = this.props;
     const width = roundUpSize(requestedWidth);
     const height = roundUpSize(requestedHeight);
@@ -733,6 +737,15 @@ class FlameComponent extends React.Component<FlameProps> {
     const canvasHeight = height * dpr;
     const columns = this.props.columnarViewModel;
     const hitCount = this.currentSearchHitCount;
+
+    const {
+      textColor,
+      buttonDisabledTextColor,
+      buttonBackgroundColor,
+      buttonDisabledBackgroundColor,
+      buttonTextColor,
+    } = theme.navigation;
+
     return (
       <>
         <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
@@ -771,10 +784,18 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Navigate back"
             style={{
-              color: this.navigator.canNavBackward() ? 'black' : 'darkgrey',
-              fontWeight: 'bolder',
-              paddingLeft: 16,
-              paddingRight: 4,
+              color: this.navigator.canNavBackward() ? buttonTextColor : buttonDisabledTextColor,
+              fontWeight: 500,
+              marginLeft: 16,
+              marginRight: 4,
+              borderRadius: 4,
+              paddingInline: 4,
+              width: 18,
+              display: 'inline-block',
+              height: 16,
+              verticalAlign: 'middle',
+              textAlign: 'center',
+              backgroundColor: this.navigator.canNavBackward() ? buttonBackgroundColor : buttonDisabledBackgroundColor,
             }}
           >
             ᐸ
@@ -788,9 +809,12 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Reset"
             style={{
-              color: 'black',
-              fontWeight: 'bolder',
+              color: buttonTextColor,
+              fontWeight: 500,
               paddingInline: 4,
+              borderRadius: 4,
+              verticalAlign: 'middle',
+              backgroundColor: buttonBackgroundColor,
             }}
           >
             ▲
@@ -799,10 +823,14 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Navigate forward"
             style={{
-              color: this.navigator.canNavForward() ? 'black' : 'darkgray',
-              fontWeight: 'bolder',
-              paddingLeft: 4,
-              paddingRight: 16,
+              color: this.navigator.canNavForward() ? buttonTextColor : buttonDisabledTextColor,
+              fontWeight: 500,
+              marginLeft: 4,
+              marginRight: 16,
+              borderRadius: 4,
+              paddingInline: 4,
+              verticalAlign: 'middle',
+              backgroundColor: this.navigator.canNavForward() ? buttonBackgroundColor : buttonDisabledBackgroundColor,
             }}
           >
             ᐳ
@@ -823,17 +851,19 @@ class FlameComponent extends React.Component<FlameProps> {
             onKeyPress={this.handleSearchFieldKeyPress}
             onKeyUp={this.handleEscapeKey}
             style={{
-              border: '0px solid lightgray',
+              border: 'none',
               padding: 3,
               outline: 'none',
-              background: 'rgba(255,0,255,0)',
+              color: textColor,
+              background: 'transparent',
             }}
           />
           <label
             title="Clear text"
             style={{
-              backgroundColor: 'rgb(228, 228, 228)',
-              fontWeight: 'bolder',
+              color: buttonTextColor,
+              background: buttonBackgroundColor,
+              fontWeight: 500,
               paddingInline: 4,
               marginInline: 4,
               borderRadius: 4,
@@ -857,9 +887,10 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Case sensitivity (highlighted: case sensitive)"
             style={{
-              color: this.caseSensitive && !this.useRegex ? 'black' : 'darkgrey',
-              backgroundColor: 'rgb(228, 228, 228)',
-              fontWeight: 'bolder',
+              backgroundColor:
+                this.caseSensitive && !this.useRegex ? buttonBackgroundColor : buttonDisabledBackgroundColor,
+              color: this.caseSensitive && !this.useRegex ? buttonTextColor : buttonDisabledTextColor,
+              fontWeight: 500,
               paddingInline: 4,
               marginInline: 4,
               borderRadius: 4,
@@ -882,9 +913,9 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Regex matching (highlighted: use regex)"
             style={{
-              color: this.useRegex ? 'black' : 'darkgrey',
-              backgroundColor: 'rgb(228, 228, 228)',
-              fontWeight: 'bolder',
+              color: this.useRegex ? buttonTextColor : buttonDisabledTextColor,
+              backgroundColor: this.useRegex ? buttonBackgroundColor : buttonDisabledBackgroundColor,
+              fontWeight: 500,
               paddingInline: 4,
               marginInline: 4,
               borderRadius: 4,
@@ -907,12 +938,16 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Previous hit"
             style={{
-              color: hitCount ? 'black' : 'darkgrey',
-              fontWeight: 'bolder',
-              paddingLeft: 16,
-              paddingRight: 4,
+              backgroundColor: hitCount ? buttonBackgroundColor : buttonDisabledBackgroundColor,
+              color: hitCount ? buttonTextColor : buttonDisabledTextColor,
+              fontWeight: 500,
+              marginLeft: 16,
+              marginRight: 4,
+              paddingInline: 4,
+              borderRadius: 4,
               opacity: this.currentSearchString ? 1 : 0,
               transition: 'opacity 250ms ease-in-out',
+              verticalAlign: 'middle',
             }}
           >
             ◀
@@ -921,11 +956,14 @@ class FlameComponent extends React.Component<FlameProps> {
           <label
             title="Next hit"
             style={{
-              color: hitCount ? 'black' : 'darkgrey',
-              fontWeight: 'bolder',
+              backgroundColor: hitCount ? buttonBackgroundColor : buttonDisabledBackgroundColor,
+              color: hitCount ? buttonTextColor : buttonDisabledTextColor,
+              fontWeight: 500,
               paddingInline: 4,
+              borderRadius: 4,
               opacity: this.currentSearchString ? 1 : 0,
               transition: 'opacity 250ms ease-in-out',
+              verticalAlign: 'middle',
             }}
           >
             ▶
@@ -938,6 +976,7 @@ class FlameComponent extends React.Component<FlameProps> {
               padding: 3,
               opacity: this.currentSearchString ? 1 : 0,
               transition: 'opacity 250ms ease-in-out',
+              color: textColor,
             }}
           >
             {`Match${Number.isNaN(this.focusedMatchIndex) ? 'es:' : `: ${this.focusedMatchIndex + 1} /`} ${hitCount}`}
@@ -1022,6 +1061,7 @@ class FlameComponent extends React.Component<FlameProps> {
       this.hoverIndex,
       unitRowPitch(this.props.columnarViewModel.position1),
       this.currentColor,
+      this.props.theme,
     );
 
     const anim = (t: DOMHighResTimeStamp) => {
@@ -1160,6 +1200,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   const flameSpec = getSpecsFromStore<FlameSpec>(state.specs, ChartType.Flame, SpecType.Series)[0];
   const settingsSpec = getSettingsSpecSelector(state);
   return {
+    theme: getChartThemeSelector(state).flamegraph,
     debugHistory: settingsSpec.debug,
     columnarViewModel: flameSpec?.columnarData ?? nullColumnarViewModel,
     controlProviderCallback: flameSpec?.controlProviderCallback ?? {},

@@ -71,7 +71,6 @@ export const Example = () => {
     focusOnNodeControl(Math.floor(20 * Math.random()));
   });
   const debug = boolean('Debug history', false);
-
   return (
     <Chart>
       <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
@@ -91,5 +90,5 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  background: { default: 'white' },
+  // background: { default: 'transparent' },
 };
