@@ -110,16 +110,38 @@ $rowColorStripAnimatedWidthDelta: 2px;
     }
   }
 
+  &__tableWrapper {
+    overflow: auto;
+    pointer-events: auto;
+  }
+
   &__table {
     width: 100%;
-    display: block;
+  }
+
+  &__tableHeader,
+  &__tableFooter {
+    cursor: default;
+    font-weight: $euiFontWeightBold;
+    background-color: $euiColorEmptyShade;
+    position: sticky;
+    z-index: 1;
+
+    .echTooltip__divider {
+      width: 100%;
+      position: absolute;
+    }
   }
 
   &__tableHeader {
-    cursor: default;
-    font-weight: $euiFontWeightBold;
     margin-bottom: 0;
-    border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
+    top: 0;
+  }
+
+  &__tableFooter {
+    margin-top: 0;
+    bottom: 0;
+
   }
 
   &__tableCell:not(.echTooltip__colorCell) {
@@ -127,26 +149,15 @@ $rowColorStripAnimatedWidthDelta: 2px;
   }
 
   &__tableBody {
-    pointer-events: auto;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+    // @include euiYScrollWithShadows;
 
     td:not(.echTooltip__colorCell) {
       padding: 2px 4px;
     }
   }
 
-  &__tableFooter {
-    border-top: solid $tooltipBorderWidth $tooltipBorderColor;
-    font-weight: $euiFontWeightBold;
-    margin-top: 0;
-  }
-
   &__tableRow {
     position: relative;
-    display: table;
-    overflow: hidden; // to avoid extra height from color strip styles
 
     &--highlighted {
       background-color: transparentize($euiColorLightShade, 0.5);
@@ -173,6 +184,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
     padding: 0;
     height: 100%;
     position: relative;
+    overflow: hidden; // to avoid extra height from color strip styles
     width: $maxRowColorStripWidth;
 
     &--empty {

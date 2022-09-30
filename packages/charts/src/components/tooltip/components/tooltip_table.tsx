@@ -47,9 +47,11 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
 
   if ('children' in props) {
     return (
-      <table className={classes} style={{ maxHeight }}>
-        {props.children}
-      </table>
+      <div className="echTooltip__tableWrapper">
+        <table className={classes} style={{ maxHeight }}>
+          {props.children}
+        </table>
+      </div>
     );
   }
 
@@ -59,10 +61,12 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
 
   const { items, pinned = false, onSelect, selected = [] } = props;
   return (
-    <table className={classes} style={{ maxHeight }}>
-      <TooltipTableHeader columns={columns} items={props.items} />
-      <TooltipTableBody columns={columns} items={items} pinned={pinned} onSelect={onSelect} selected={selected} />
-      <TooltipTableFooter columns={columns} items={props.items} />
-    </table>
+    <div className="echTooltip__tableWrapper">
+      <table className={classes} style={{ maxHeight }}>
+        <TooltipTableHeader columns={columns} items={props.items} />
+        <TooltipTableBody columns={columns} items={items} pinned={pinned} onSelect={onSelect} selected={selected} />
+        <TooltipTableFooter columns={columns} items={props.items} />
+      </table>
+    </div>
   );
 };

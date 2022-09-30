@@ -13,6 +13,7 @@ import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
 import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
+import { TooltipDivider } from './tooltip_divider';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
@@ -43,6 +44,7 @@ export const TooltipTableFooter = <D extends BaseDatum = Datum, SI extends Serie
   if ('children' in props) {
     return (
       <tfoot className={classes} style={{ maxHeight }}>
+        <TooltipDivider />
         {props.children}
       </tfoot>
     );
@@ -52,6 +54,7 @@ export const TooltipTableFooter = <D extends BaseDatum = Datum, SI extends Serie
 
   return (
     <tfoot className={classes}>
+      <TooltipDivider />
       <TooltipTableRow maxHeight={maxHeight}>
         {props.columns.map(({ style, id, className: cn, type, footer }, i) => {
           const key = id ?? `${type}-${i}`;
