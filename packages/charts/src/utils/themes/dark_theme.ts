@@ -408,5 +408,6 @@ export const DARK_THEME: Theme = {
   },
   tooltip: {
     maxTableHeight: 120,
+    defaultDotColor: Colors.White.keyword,
   },
 };

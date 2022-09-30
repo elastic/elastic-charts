@@ -50,7 +50,6 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
             value: `${shape.datum.x}`,
             formattedValue: spec.xAxisLabelFormatter(shape.datum.x),
             datum: shape.datum,
-            displayOnly: true,
           });
 
           // Y-axis value
@@ -66,7 +65,6 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
             value: `${shape.datum.y}`,
             formattedValue: spec.yAxisLabelFormatter(shape.datum.y),
             datum: shape.datum,
-            displayOnly: true,
           });
 
           // Cell value
@@ -82,6 +80,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
             value: `${shape.value}`,
             formattedValue: `${shape.formatted}`,
             datum: shape.datum,
+            displayOnly: true,
           });
         });
     } else {

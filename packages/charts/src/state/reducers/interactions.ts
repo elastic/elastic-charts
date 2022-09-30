@@ -184,14 +184,17 @@ export function interactionsReducer(
       }
 
       const tooltipSpec = getTooltipSpecSelector(globalState);
+      const getSelectedValues = () => {
+        const values = getInternalTooltipInfoSelector(globalState)?.values ?? [];
+        if (globalState.chartType === ChartType.Heatmap) return values.slice(0, 1); // just use the x value
+        return values.filter((v) =>
+          // TODO find a better way to distinguish these two
+          globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
+        );
+      };
       const selected =
         // don't pre-populate selection when values are not actionable
-        tooltipSpec.actions.length === 0
-          ? []
-          : (getInternalTooltipInfoSelector(globalState)?.values ?? []).filter((v) =>
-              // TODO find a better way to distinguish these two
-              globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
-            );
+        tooltipSpec.actions.length === 0 ? [] : getSelectedValues();
 
       return {
         ...state,

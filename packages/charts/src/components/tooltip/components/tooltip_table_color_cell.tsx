@@ -11,7 +11,7 @@ import React from 'react';
 
 import { combineColors, highContrastColor } from '../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../common/color_library_wrappers';
-import { Colors } from '../../../common/colors';
+import { Color, Colors } from '../../../common/colors';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
 
@@ -31,13 +31,22 @@ export function TooltipTableColorCell({
   displayOnly,
   ...cellProps
 }: ColorStripCellProps): JSX.Element | null {
-  const { backgroundColor } = useTooltipContext();
+  const { backgroundColor, theme } = useTooltipContext();
 
-  const renderColorStrip = (stripColor: string) => {
-    const foregroundRGBA = colorToRgba(stripColor);
+  const getDotColor = (stripColor: string): Color => {
+    if (color === Colors.Transparent.keyword) {
+      return theme.defaultDotColor;
+    }
+    const foregroundRGBA = colorToRgba(stripColor === Colors.Transparent.keyword ? backgroundColor : stripColor);
     const backgroundRGBA = colorToRgba(backgroundColor);
     const blendedFgBg = combineColors(foregroundRGBA, backgroundRGBA);
-    const dotColor = RGBATupleToString(highContrastColor(blendedFgBg, 'WCAG3'));
+    return RGBATupleToString(highContrastColor(blendedFgBg, 'WCAG3'));
+  };
+
+  const renderColorStrip = () => {
+    if (!color) return null;
+    const dotColor = getDotColor(color);
+
     return (
       <>
         <div className="echTooltip__colorStrip" style={{ backgroundColor }} />
@@ -55,7 +64,7 @@ export function TooltipTableColorCell({
         'echTooltip__colorCell--static': displayOnly,
       })}
     >
-      {color && color !== Colors.Transparent.keyword ? renderColorStrip(color) : null}
+      {renderColorStrip()}
     </TooltipTableCell>
   );
 }

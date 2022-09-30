@@ -71,6 +71,10 @@ export interface TooltipStyle {
    * Sets max height of scrolling tooltip table body
    */
   maxTableHeight: CSSProperties['maxHeight'];
+  /**
+   * Color used as fallback when contrast logic fails
+   */
+  defaultDotColor: Color;
 }
 
 /**
