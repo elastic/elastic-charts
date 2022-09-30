@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
 
 import { isNil } from '../../../utils/common';
+import { useTooltipContext } from './tooltip_provider';
 
 type TooltipTableRowProps = PropsWithChildren<{
   id?: string;
@@ -28,14 +29,16 @@ export const TooltipTableRow = ({
   onSelect,
   className,
 }: TooltipTableRowProps) => {
+  const { actionable } = useTooltipContext();
+  const isSelectable = actionable && !isNil(onSelect);
   const classes = classNames('echTooltip__tableRow', className, {
     'echTooltip__tableRow--highlighted': isHighlighted,
     'echTooltip__tableRow--selected': isSelected,
-    'echTooltip__tableRow--selectable': !isNil(onSelect),
+    'echTooltip__tableRow--selectable': isSelectable,
   });
 
   return (
-    <tr id={id} className={classes} onClick={onSelect}>
+    <tr id={id} className={classes} onClick={isSelectable ? onSelect : undefined}>
       {children}
     </tr>
   );

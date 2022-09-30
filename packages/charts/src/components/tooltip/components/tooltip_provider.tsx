@@ -19,6 +19,8 @@ interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifie
   backgroundColor: string;
   dir: 'rtl' | 'ltr';
   pinned: boolean;
+  actionable: boolean;
+  canPinTooltip: boolean;
   selected: Array<TooltipValue<D, SI>>;
   values: TooltipValue<D, SI>[];
   onTooltipPinned: typeof onTooltipPinnedAction | ((...args: Parameters<typeof onTooltipPinnedAction>) => void);
@@ -29,6 +31,8 @@ const TooltipContext = React.createContext<TooltipContext>({
   backgroundColor: '#fff',
   dir: 'ltr',
   pinned: false,
+  actionable: false,
+  canPinTooltip: false,
   selected: [],
   values: [],
   onTooltipPinned: onTooltipPinnedAction,
@@ -49,6 +53,8 @@ export const TooltipProvider = <D extends BaseDatum = Datum, SI extends SeriesId
   backgroundColor,
   dir,
   pinned,
+  actionable,
+  canPinTooltip,
   selected,
   values,
   onTooltipPinned,
@@ -61,6 +67,8 @@ export const TooltipProvider = <D extends BaseDatum = Datum, SI extends SeriesId
         backgroundColor,
         dir,
         pinned,
+        actionable,
+        canPinTooltip,
         selected,
         values,
         onTooltipPinned,

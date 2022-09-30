@@ -98,6 +98,7 @@ module.exports = {
     'jsx-a11y/no-static-element-interactions': 1,
     'jsx-a11y/mouse-events-have-key-events': 1,
     'jsx-a11y/click-events-have-key-events': 1,
+    'jsx-a11y/no-static-element-interactions': 0,
     '@typescript-eslint/member-ordering': 0,
     eqeqeq: 2,
 

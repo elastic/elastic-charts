@@ -214,7 +214,6 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     }
 
     const { pointerCursor, internalChartRenderer, getChartContainerRef, forwardStageRef } = this.props;
-    const pinnableTooltip = this.props.canPinTooltip && this.props.tooltip.actions.length > 0;
 
     return (
       <div
@@ -226,7 +225,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
         onMouseLeave={this.handleMouseLeave}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
-        onContextMenu={pinnableTooltip ? this.handleContextMenu : undefined}
+        onContextMenu={this.props.canPinTooltip ? this.handleContextMenu : undefined}
       >
         {internalChartRenderer(getChartContainerRef, forwardStageRef)}
       </div>

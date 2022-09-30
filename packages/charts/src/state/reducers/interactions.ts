@@ -27,6 +27,7 @@ import { GlobalChartState, InteractionsState } from '../chart_state';
 import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
 import { getInitialPointerState, getInitialTooltipState } from '../utils';
+import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 
 /**
  * The minimum number of pixel between two pointer positions to consider for dragging purposes
@@ -182,9 +183,15 @@ export function interactionsReducer(
         return state;
       }
 
-      const selected = (getInternalTooltipInfoSelector(globalState)?.values ?? []).filter((v) =>
-        globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
-      );
+      const tooltipSpec = getTooltipSpecSelector(globalState);
+      const selected =
+        // don't pre-populate selection when values are not actionable
+        tooltipSpec.actions.length === 0
+          ? []
+          : (getInternalTooltipInfoSelector(globalState)?.values ?? []).filter((v) =>
+              // TODO find a better way to distinguish these two
+              globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
+            );
 
       return {
         ...state,

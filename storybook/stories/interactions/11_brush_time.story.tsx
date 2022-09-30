@@ -9,7 +9,7 @@
 import { action } from '@storybook/addon-actions';
 import { boolean, number } from '@storybook/addon-knobs';
 import moment from 'moment-timezone';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import {
   Axis,
@@ -44,23 +44,33 @@ export const Example = () => {
   };
   const disableActions = boolean('disable actions', false);
   const seriesCount = number('series count', 5, { step: 1, min: 1 });
-  const groupData = dg.generateGroupedSeries(days, seriesCount).map(({ y, g }, i) => ({
-    y,
-    x: now
-      .clone()
-      .add(i % days, 'days')
-      .valueOf(),
-    g: `Group ${g.toUpperCase()}`,
-  }));
+  const groupData = useMemo(
+    () =>
+      dg.generateGroupedSeries(days, seriesCount).map(({ y, g }, i) => ({
+        y,
+        x: now
+          .clone()
+          .add(i % days, 'days')
+          .valueOf(),
+        g: `Group ${g.toUpperCase()}`,
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [seriesCount],
+  );
+  const lineData = useMemo(
+    () =>
+      groupData
+        .filter(({ g }) => g === 'Group A')
+        .map(({ x }) => {
+          const scaleFactor = seriesCount === 1 ? 0 : seriesCount * 5;
+          return { x, y: rng(3, scaleFactor + 10) };
+        }),
+    [groupData, seriesCount],
+  );
 
   const partialTheme: PartialTheme = {
     tooltip: {
-      maxTableBodyHeight: getToggledNumber(true, undefined)(
-        'max table body height',
-        100,
-        { min: 0, step: 1 },
-        'Tooltip styles',
-      ),
+      maxTableHeight: getToggledNumber(true, undefined)('max table height', 100, { min: 0, step: 1 }, 'Tooltip styles'),
     },
   };
 
@@ -68,6 +78,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
+        showLegendExtra
         theme={partialTheme}
         baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
@@ -122,12 +133,7 @@ export const Example = () => {
         xAccessor="x"
         yAccessors={['y']}
         timeZone="Europe/Rome"
-        data={groupData
-          .filter(({ g }) => g === 'Group A')
-          .map(({ x }) => {
-            const scaleFactor = seriesCount === 1 ? 0 : seriesCount * 5;
-            return { x, y: rng(3, scaleFactor + 10) };
-          })}
+        data={lineData}
       />
     </Chart>
   );

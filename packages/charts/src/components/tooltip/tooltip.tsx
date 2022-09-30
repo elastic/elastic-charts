@@ -200,6 +200,8 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         backgroundColor={backgroundColor}
         dir={isMostlyRTL ? 'rtl' : 'ltr'}
         pinned={pinned}
+        actionable={actions.length > 0}
+        canPinTooltip={canPinTooltip}
         selected={selected}
         values={info?.values ?? []}
         onTooltipPinned={onTooltipPinned}

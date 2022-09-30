@@ -33,7 +33,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   selectionPrompt,
   className,
 }: TooltipWrapperProps<D, SI>) => {
-  const { dir, pinned, selected, onTooltipPinned, values } = useTooltipContext<D, SI>();
+  const { dir, pinned, canPinTooltip, selected, onTooltipPinned, values } = useTooltipContext<D, SI>();
 
   const renderActions = () => {
     const visibleActions = actions.filter(({ hide }) => !hide || hide(selected));
@@ -76,7 +76,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
       }}
     >
       {renderComplexChildren(children)}
-      {actions.length > 0 && (
+      {canPinTooltip && pinned && actions.length === 0 ? null : (
         <div className="echTooltip__actions">
           {pinned ? renderActions() : <div className="echTooltip__prompt">{actionPrompt}</div>}
         </div>
