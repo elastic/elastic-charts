@@ -14,6 +14,7 @@ import { BaseDatum, TooltipValue } from '../../../specs';
 import { onTooltipItemSelected } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
+import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableBody } from './tooltip_table_body';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
@@ -40,17 +41,16 @@ type TooltipTableProps<
 /** @public */
 export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   className,
-  maxHeight,
   ...props
 }: TooltipTableProps<D, SI>) => {
+  const { theme } = useTooltipContext<D, SI>();
+  const maxHeight = props.maxHeight ?? theme.maxTableHeight;
   const classes = classNames('echTooltip__table', className);
 
   if ('children' in props) {
     return (
-      <div className="echTooltip__tableWrapper">
-        <table className={classes} style={{ maxHeight }}>
-          {props.children}
-        </table>
+      <div className="echTooltip__tableWrapper" style={{ maxHeight }}>
+        <table className={classes}>{props.children}</table>
       </div>
     );
   }
@@ -61,8 +61,8 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
 
   const { items, pinned = false, onSelect, selected = [] } = props;
   return (
-    <div className="echTooltip__tableWrapper">
-      <table className={classes} style={{ maxHeight }}>
+    <div className="echTooltip__tableWrapper" style={{ maxHeight }}>
+      <table className={classes}>
         <TooltipTableHeader columns={columns} items={props.items} />
         <TooltipTableBody columns={columns} items={items} pinned={pinned} onSelect={onSelect} selected={selected} />
         <TooltipTableFooter columns={columns} items={props.items} />

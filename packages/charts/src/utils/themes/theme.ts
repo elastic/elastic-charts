@@ -70,7 +70,7 @@ export interface TooltipStyle {
   /**
    * Sets max height of scrolling tooltip table body
    */
-  maxTableBodyHeight: CSSProperties['maxHeight'];
+  maxTableHeight: CSSProperties['maxHeight'];
 }
 
 /**

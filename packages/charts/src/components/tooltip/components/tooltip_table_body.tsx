@@ -7,14 +7,13 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, ReactNode, useRef } from 'react';
+import React, { ReactNode, useRef } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
 import { onTooltipItemSelected } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
-import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
@@ -36,7 +35,6 @@ type TooltipTableBodyProps<
   {},
   {
     className?: string;
-    maxHeight?: CSSProperties['maxHeight'];
   }
 >;
 
@@ -45,17 +43,11 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   className,
   ...props
 }: TooltipTableBodyProps<D, SI>) => {
-  const { theme } = useTooltipContext<D, SI>();
-  const maxHeight = props.maxHeight ?? theme.maxTableBodyHeight;
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null);
 
   if ('children' in props) {
     const classes = classNames('echTooltip__tableBody', className);
-    return (
-      <tbody className={classes} style={{ maxHeight }}>
-        {props.children}
-      </tbody>
-    );
+    return <tbody className={classes}>{props.children}</tbody>;
   }
 
   const { items, pinned, selected, onSelect, columns } = props;
@@ -64,7 +56,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   const allHighlighted = items.every((i) => i.isHighlighted);
 
   return (
-    <tbody className={classes} ref={tableBodyRef} style={{ maxHeight }}>
+    <tbody className={classes} ref={tableBodyRef}>
       {items.map((item, i) => {
         const { isHighlighted, isVisible, displayOnly } = item;
         if (!isVisible) return null;

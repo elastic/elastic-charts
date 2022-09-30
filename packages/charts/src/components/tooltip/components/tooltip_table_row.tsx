@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { isNil } from '../../../utils/common';
 
@@ -16,14 +16,12 @@ type TooltipTableRowProps = PropsWithChildren<{
   className?: string;
   isHighlighted?: boolean;
   isSelected?: boolean;
-  maxHeight?: CSSProperties['maxHeight'];
   onSelect?: () => void;
 }>;
 
 /** @public */
 export const TooltipTableRow = ({
   id,
-  maxHeight,
   isHighlighted = false,
   isSelected = false,
   children,
@@ -37,7 +35,7 @@ export const TooltipTableRow = ({
   });
 
   return (
-    <tr id={id} className={classes} style={{ maxHeight }} onClick={onSelect}>
+    <tr id={id} className={classes} onClick={onSelect}>
       {children}
     </tr>
   );

@@ -406,6 +406,6 @@ export const LIGHT_THEME: Theme = {
     minHeight: 64,
   },
   tooltip: {
-    maxTableBodyHeight: 120,
+    maxTableHeight: 120,
   },
 };
