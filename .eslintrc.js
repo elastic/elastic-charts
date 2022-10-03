@@ -299,6 +299,7 @@ module.exports = {
     'unicorn/prefer-object-from-entries': 0,
     'unicorn/no-useless-switch-case': 0,
     'unicorn/prefer-dom-node-dataset': 0,
+    'unicorn/switch-case-braces': 0,
 
     /*
      * file-header plugin
