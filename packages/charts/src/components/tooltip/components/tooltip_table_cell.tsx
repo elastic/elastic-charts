@@ -7,20 +7,41 @@
  */
 
 import classNames from 'classnames';
-import React, { PropsWithChildren } from 'react';
+import React, { CSSProperties, PropsWithChildren, useEffect } from 'react';
 
+import { useTableColumnWidthContext } from './table_column_width_provider';
 import { TooltipCellStyle } from './types';
 
 /** @public */
 export type TooltipTableCellProps = PropsWithChildren<{
   tagName?: 'td' | 'th';
+  truncate?: boolean;
+  width?: CSSProperties['gridTemplateColumns'];
   className?: string;
   style?: TooltipCellStyle;
 }>;
 
 /** @public */
-export const TooltipTableCell = ({ style, tagName = 'td', className, children }: TooltipTableCellProps) => {
-  const classes = classNames('echTooltip__tableCell', className);
+export const TooltipTableCell = ({
+  style,
+  width = 'auto',
+  truncate = false,
+  tagName = 'td',
+  className,
+  children,
+}: TooltipTableCellProps) => {
+  const { rowCount, setGridTemplateColumns } = useTableColumnWidthContext();
+
+  useEffect(() => {
+    if (rowCount.current === 0) {
+      setGridTemplateColumns((acc) => `${acc} ${typeof width === 'number' ? `${width}px` : width}`);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const classes = classNames('echTooltip__tableCell', className, {
+    'echTooltip__tableCell--truncate': truncate,
+  });
+
   if (tagName === 'th') {
     return (
       <th className={classes} style={style}>

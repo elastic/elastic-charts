@@ -30,9 +30,8 @@ type BaseTooltipProps<
 > = TooltipComponentProps<D, SI>;
 
 type TooltipShowcaseProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = Partial<
-  Omit<TooltipComponentProps<D, SI>, 'settings' | 'visible'>
-> &
-  Partial<TooltipProps<D, SI>>;
+  Omit<TooltipComponentProps<D, SI>, 'settings' | 'visible' | 'tooltip'>
+> & { tooltip?: Partial<TooltipComponentProps<D, SI>['tooltip']> } & Partial<TooltipProps<D, SI>>;
 
 const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
   props: TooltipShowcaseProps<D, SI>,
@@ -48,8 +47,6 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
   }, []);
 
   const tooltipProps: BaseTooltipProps<D, SI> = {
-    ...props,
-    tooltip: props.tooltip ? props.tooltip : (DEFAULT_TOOLTIP_SPEC as unknown as TooltipSpec<D, SI>),
     zIndex: 200,
     info: props.info,
     settings: {
@@ -70,6 +67,11 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
     selected: [],
     maxTooltipItems: 5,
     tooltipTheme: LIGHT_THEME.tooltip,
+    ...props,
+    tooltip: {
+      ...(DEFAULT_TOOLTIP_SPEC as unknown as TooltipSpec<D, SI>),
+      ...props.tooltip,
+    },
   };
 
   return (

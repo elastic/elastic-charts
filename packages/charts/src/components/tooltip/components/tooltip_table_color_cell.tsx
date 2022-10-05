@@ -16,7 +16,7 @@ import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
 
 /** @public */
-export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children'> & {
+export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children' | 'width'> & {
   color?: string;
   displayOnly?: boolean;
 };
@@ -58,6 +58,7 @@ export function TooltipTableColorCell({
 
   return (
     <TooltipTableCell
+      width={10}
       {...cellProps}
       className={classNames('echTooltip__colorCell', className, {
         'echTooltip__colorCell--empty': !color,

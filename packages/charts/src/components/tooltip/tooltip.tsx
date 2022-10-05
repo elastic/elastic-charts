@@ -148,6 +148,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     {
       id: 'label',
       type: 'custom',
+      truncate: true,
       cell: ({ label }) => <span className="echTooltip__label">{label}</span>,
       hidden: (items) => items.every(({ label }) => !label),
       style: {

@@ -27,6 +27,22 @@ $rowColorStripAnimatedWidthDelta: 2px;
     .echTooltip__tableRow--selectable {
       cursor: pointer;
     }
+
+    .echTooltip__tableRow {
+      &--selectable:hover:not(&--selected):not(.echTooltip__colorCell--static) {
+        .echTooltip__colorStrip {
+          // hover width of color strip
+          width: $rowColorStripWidth + $rowColorStripAnimatedWidthDelta;
+        }
+      }
+    }
+  }
+
+  &:not(&--pinned) {
+    .echTooltip__tableCell--truncate {
+      @include euiTextTruncate;
+      // max-width: 1px;
+    }
   }
 
   & > :not(:last-child) {
@@ -116,7 +132,13 @@ $rowColorStripAnimatedWidthDelta: 2px;
   }
 
   &__table {
+    display: grid;
+    border-collapse: collapse;
     width: 100%;
+
+    &--noGrid {
+      display: table;
+    }
   }
 
   &__tableHeader,
@@ -133,6 +155,13 @@ $rowColorStripAnimatedWidthDelta: 2px;
     }
   }
 
+  &__tableHeader,
+  &__tableBody,
+  &__tableFooter,
+  &__tableRow {
+    display: contents; // This ignores all above elements for positioning
+  }
+
   &__tableHeader {
     margin-bottom: 0;
     top: 0;
@@ -141,7 +170,6 @@ $rowColorStripAnimatedWidthDelta: 2px;
   &__tableFooter {
     margin-top: 0;
     bottom: 0;
-
   }
 
   &__tableCell:not(.echTooltip__colorCell) {
@@ -163,14 +191,9 @@ $rowColorStripAnimatedWidthDelta: 2px;
       background-color: transparentize($euiColorLightShade, 0.5);
     }
 
-    &--selectable:hover:not(&--selected) :not(.echTooltip__colorCell--static) {
-      .echTooltip__colorStrip {
-        width: $rowColorStripWidth + $rowColorStripAnimatedWidthDelta;
-      }
-    }
-
     &--selected {
       :not(.echTooltip__colorCell--static) .echTooltip__colorStrip {
+        // selected width of color strip
         width: $rowColorStripWidth + $maxRowColorStripWidth;
 
         &::before {

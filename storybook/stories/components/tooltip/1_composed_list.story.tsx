@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { action } from '@storybook/addon-actions';
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
@@ -34,6 +35,7 @@ export const Example = () => {
     {
       id: 'label',
       type: 'custom',
+      truncate: true,
       cell: ({ label }) => <span className="echTooltip__label">{label}</span>,
       style: {
         textAlign: 'left',
@@ -60,6 +62,7 @@ export const Example = () => {
     },
   ];
   const showColor = boolean('show color', true);
+  const pinned = boolean('pinned', false);
 
   if (showColor) {
     columns.unshift({
@@ -72,12 +75,27 @@ export const Example = () => {
     return (
       <>
         <TooltipHeader header={header} />
-        <TooltipTable columns={columns} items={values} />
+        <TooltipTable columns={columns} items={values} onSelect={(s) => action('onTooltipAction')(s)} />
       </>
     );
   };
 
-  return <TooltipShowcase info={dataSets[dataSet]} customTooltip={MyTooltip} />;
+  return (
+    <TooltipShowcase
+      info={dataSets[dataSet]}
+      customTooltip={MyTooltip}
+      pinned={pinned}
+      canPinTooltip
+      tooltip={{
+        actions: [
+          {
+            label: () => 'Log storybook action',
+            onSelect: (s) => action('onTooltipAction')(s),
+          },
+        ],
+      }}
+    />
+  );
 };
 
 Example.parameters = {

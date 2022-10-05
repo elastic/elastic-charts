@@ -100,7 +100,7 @@ function renderCellContent<D extends BaseDatum = Datum, SI extends SeriesIdentif
   }
 
   return (
-    <TooltipTableCell style={getCellStyles(column)} key={key}>
+    <TooltipTableCell truncate={column.truncate} style={getCellStyles(column)} key={key}>
       {column.cell(item)}
     </TooltipTableCell>
   );

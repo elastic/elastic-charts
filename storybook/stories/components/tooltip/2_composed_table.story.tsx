@@ -25,6 +25,7 @@ import { tableSimple } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
+  const pinned = boolean('pinned', false);
   const MyTooltip: CustomTooltip = ({ values, header }) => {
     const showColor = boolean('show color', true);
     return (
@@ -61,7 +62,7 @@ export const Example = () => {
       </>
     );
   };
-  return <TooltipShowcase info={tableSimple} customTooltip={MyTooltip} />;
+  return <TooltipShowcase info={tableSimple} customTooltip={MyTooltip} pinned={pinned} />;
 };
 
 Example.parameters = {
