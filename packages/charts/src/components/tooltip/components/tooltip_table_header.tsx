@@ -13,7 +13,6 @@ import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
 import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
-import { TooltipDivider } from './tooltip_divider';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
@@ -40,12 +39,7 @@ export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends Serie
 }: TooltipTableHeaderProps<D, SI>) => {
   const classes = classNames('echTooltip__tableHeader', className);
   if ('children' in props) {
-    return (
-      <thead className={classes}>
-        {props.children}
-        <TooltipDivider />
-      </thead>
-    );
+    return <thead className={classes}>{props.children}</thead>;
   }
 
   if (props.columns.every((c) => !c.header)) return null;
@@ -63,7 +57,6 @@ export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends Serie
           );
         })}
       </TooltipTableRow>
-      <TooltipDivider />
     </thead>
   );
 };

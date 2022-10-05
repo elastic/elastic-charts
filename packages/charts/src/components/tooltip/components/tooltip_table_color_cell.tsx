@@ -61,7 +61,6 @@ export function TooltipTableColorCell({
       width={10}
       {...cellProps}
       className={classNames('echTooltip__colorCell', className, {
-        'echTooltip__colorCell--empty': !color,
         'echTooltip__colorCell--static': displayOnly,
       })}
     >

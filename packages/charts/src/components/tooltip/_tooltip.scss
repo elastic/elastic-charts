@@ -6,6 +6,8 @@ $rowColorStripWidth: 5px;
 $maxRowColorStripWidth: 10px;
 $rowColorStripAnimatedWidthDelta: 2px;
 
+$tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
+
 .echTooltip {
   @include euiToolTipStyle;
   @include euiFontSizeXS;
@@ -41,12 +43,11 @@ $rowColorStripAnimatedWidthDelta: 2px;
   &:not(&--pinned) {
     .echTooltip__tableCell--truncate {
       @include euiTextTruncate;
-      // max-width: 1px;
     }
   }
 
   & > :not(:last-child) {
-    border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
+    border-bottom: $tableBorder;
   }
 
   .euiTable {
@@ -60,7 +61,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
   }
 
   &__divider {
-    border-bottom: solid $tooltipBorderWidth $tooltipBorderColor;
+    border-bottom: $tableBorder;
   }
 
   &__metricRow {
@@ -77,7 +78,7 @@ $rowColorStripAnimatedWidthDelta: 2px;
 
   &__footer {
     font-weight: $euiFontWeightBold;
-    border-top: solid $tooltipBorderWidth $tooltipBorderColor;
+    border-top: $tableBorder;
     margin-top: 0;
     padding: $euiSizeXS ($euiSizeXS * 2);
   }
@@ -143,15 +144,12 @@ $rowColorStripAnimatedWidthDelta: 2px;
 
   &__tableHeader,
   &__tableFooter {
-    cursor: default;
-    font-weight: $euiFontWeightBold;
-    background-color: $euiColorEmptyShade;
-    position: sticky;
-    z-index: 1;
-
-    .echTooltip__divider {
-      width: 100%;
-      position: absolute;
+    .echTooltip__tableCell {
+      cursor: default;
+      font-weight: $euiFontWeightBold;
+      background-color: $euiColorEmptyShade;
+      position: sticky;
+      z-index: 1;
     }
   }
 
@@ -159,17 +157,29 @@ $rowColorStripAnimatedWidthDelta: 2px;
   &__tableBody,
   &__tableFooter,
   &__tableRow {
-    display: contents; // This ignores all above elements for positioning
+    // This ignores all above elements for positioning
+    // effectively spreading all children in its place
+    display: contents;
   }
 
   &__tableHeader {
     margin-bottom: 0;
     top: 0;
+
+    .echTooltip__tableCell {
+      border-bottom: $tableBorder;
+      top: 0;
+    }
   }
 
   &__tableFooter {
     margin-top: 0;
     bottom: 0;
+
+    .echTooltip__tableCell {
+      border-top: $tableBorder;
+      bottom: 0;
+    }
   }
 
   &__tableCell:not(.echTooltip__colorCell) {
@@ -209,10 +219,6 @@ $rowColorStripAnimatedWidthDelta: 2px;
     position: relative;
     overflow: hidden; // to avoid extra height from color strip styles
     width: $maxRowColorStripWidth;
-
-    &--empty {
-      width: 0;
-    }
 
     &--static {
       width: $rowColorStripWidth;
