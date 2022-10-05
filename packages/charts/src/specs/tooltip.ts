@@ -210,6 +210,11 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    * Max number of tooltip items before showing only highlighted values
    */
   maxTooltipItems: number;
+
+  /**
+   * Max number of visible tooltip items before scrolling. Does not apply to custom tooltips
+   */
+  maxVisibleTooltipItems: number;
 }
 
 /**
@@ -246,6 +251,7 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     actionPrompt: 'Right click to pin tooltip',
     selectionPrompt: 'Please select a series',
     maxTooltipItems: 5,
+    maxVisibleTooltipItems: 5,
   },
 );
 

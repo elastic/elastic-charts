@@ -75,7 +75,7 @@ export type TooltipComponentProps<
 
 /** @internal */
 export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
-  tooltip: { header, footer, actions, headerFormatter, actionPrompt, selectionPrompt },
+  tooltip: { header, footer, actions, headerFormatter, actionPrompt, selectionPrompt, maxVisibleTooltipItems },
   anchorRef,
   info,
   zIndex,
@@ -207,6 +207,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         values={info?.values ?? []}
         onTooltipPinned={onTooltipPinned}
         theme={tooltipTheme}
+        maxItems={maxVisibleTooltipItems}
       >
         <TooltipBody
           info={info}

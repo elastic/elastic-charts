@@ -18,6 +18,7 @@ import { TooltipStyle } from '../../../utils/themes/theme';
 interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
   backgroundColor: string;
   dir: 'rtl' | 'ltr';
+  maxItems: number;
   pinned: boolean;
   actionable: boolean;
   canPinTooltip: boolean;
@@ -30,6 +31,7 @@ interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifie
 const TooltipContext = React.createContext<TooltipContext>({
   backgroundColor: '#fff',
   dir: 'ltr',
+  maxItems: 5,
   pinned: false,
   actionable: false,
   canPinTooltip: false,
@@ -52,6 +54,7 @@ type TooltipProviderProps<
 export const TooltipProvider = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   backgroundColor,
   dir,
+  maxItems,
   pinned,
   actionable,
   canPinTooltip,
@@ -66,6 +69,7 @@ export const TooltipProvider = <D extends BaseDatum = Datum, SI extends SeriesId
       value={{
         backgroundColor,
         dir,
+        maxItems,
         pinned,
         actionable,
         canPinTooltip,

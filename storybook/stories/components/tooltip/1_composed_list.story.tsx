@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, select } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { CustomTooltip, TooltipHeader, TooltipTable, TooltipTableColumn } from '@elastic/charts';
@@ -17,6 +17,7 @@ import { tableSimple, simple, long } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
+  const maxVisibleTooltipItems = number('max visible tooltip items', 5);
   const dataSet = select(
     'dataSet',
     {
@@ -87,6 +88,7 @@ export const Example = () => {
       pinned={pinned}
       canPinTooltip
       tooltip={{
+        maxVisibleTooltipItems,
         actions: [
           {
             label: () => 'Log storybook action',

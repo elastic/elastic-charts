@@ -21,6 +21,10 @@ import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
 import { TooltipTableColumn } from './types';
 
+const TOOLTIP_ITEM_HEIGHT = 20;
+const TOOLTIP_HEADER_HEIGHT = 25;
+const TOOLTIP_FOOTER_HEIGHT = 25;
+
 type TooltipTableProps<
   D extends BaseDatum = Datum,
   SI extends SeriesIdentifier = SeriesIdentifier,
@@ -49,8 +53,8 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
   className,
   ...props
 }: TooltipTableProps<D, SI>) => {
-  const { theme } = useTooltipContext<D, SI>();
-  const maxHeight = props.maxHeight ?? theme.maxTableHeight;
+  const { theme, maxItems, ...rest } = useTooltipContext<D, SI>();
+
   const [autoGridTemplateColumns, setGridTemplateColumns] = useState<CSSProperties['gridTemplateColumns']>('');
 
   if ('children' in props) {
@@ -58,6 +62,7 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
     const classes = classNames('echTooltip__table', className, {
       'echTooltip__table--noGrid': !gridTemplateColumns,
     });
+    const maxHeight = props.maxHeight ?? theme.maxTableHeight;
     return (
       <TableColumnWidthProvider
         disabled={!isNil(props.gridTemplateColumns)}
@@ -77,8 +82,7 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
     return !(typeof hidden === 'boolean' ? hidden : hidden?.(props.items) ?? false);
   });
 
-  const { items, pinned = false, onSelect, selected = [] } = props;
-  // const gridTemplateColumns = `repeat(${columns.length}, auto)`;
+  const { items, pinned = false, onSelect, selected = [] } = { ...rest, ...props };
   const gridTemplateColumns = columns
     .map(({ type, width }) => (width ?? type === 'color' ? 10 : 'auto'))
     .map((width) => `${typeof width === 'number' ? `${width}px` : width}`)
@@ -86,7 +90,10 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
 
   return (
     <TableColumnWidthProvider disabled>
-      <div className="echTooltip__tableWrapper" style={{ maxHeight }}>
+      <div
+        className="echTooltip__tableWrapper"
+        style={{ maxHeight: getMaxHeight(pinned, columns, theme.maxTableHeight, props.maxHeight, maxItems) }}
+      >
         <table className={classNames('echTooltip__table', className)} style={{ gridTemplateColumns }}>
           <TooltipTableHeader columns={columns} items={props.items} />
           <TooltipTableBody columns={columns} items={items} pinned={pinned} onSelect={onSelect} selected={selected} />
@@ -96,3 +103,17 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
     </TableColumnWidthProvider>
   );
 };
+
+function getMaxHeight<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
+  pinned: boolean,
+  columns: TooltipTableColumn<D, SI>[],
+  maxHeightFallback: CSSProperties['maxHeight'],
+  maxHeight?: CSSProperties['maxHeight'],
+  maxItems?: number,
+): CSSProperties['maxHeight'] {
+  if (pinned || maxHeight || isNil(maxItems)) return maxHeight ?? maxHeightFallback;
+  const headerHeight = +columns.some((c) => c.header) * TOOLTIP_HEADER_HEIGHT;
+  const bodyHeight = (maxItems + 0.5) * TOOLTIP_ITEM_HEIGHT;
+  const footerHeight = +columns.some((c) => c.footer) * TOOLTIP_FOOTER_HEIGHT;
+  return headerHeight + bodyHeight + footerHeight;
+}
