@@ -24,6 +24,10 @@ import { TooltipTableColumn } from './types';
 const TOOLTIP_ITEM_HEIGHT = 20;
 const TOOLTIP_HEADER_HEIGHT = 25;
 const TOOLTIP_FOOTER_HEIGHT = 25;
+/**
+ * Manually synced with `$maxRowColorStripWidth` scss var in [`_tooltip.scss`](packages/charts/src/components/tooltip/_tooltip.scss)
+ */
+const MAX_ROW_COLOR_STRIP_WIDTH = 14;
 
 type TooltipTableProps<
   D extends BaseDatum = Datum,
@@ -84,7 +88,7 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
 
   const { items, pinned = false, onSelect, selected = [] } = { ...rest, ...props };
   const gridTemplateColumns = columns
-    .map(({ type, width }) => (width ?? type === 'color' ? 10 : 'auto'))
+    .map(({ type, width }) => (width ?? type === 'color' ? MAX_ROW_COLOR_STRIP_WIDTH : 'auto'))
     .map((width) => `${typeof width === 'number' ? `${width}px` : width}`)
     .join(' ');
 

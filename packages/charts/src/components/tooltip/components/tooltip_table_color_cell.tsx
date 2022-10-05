@@ -49,16 +49,14 @@ export function TooltipTableColorCell({
 
     return (
       <>
-        <div className="echTooltip__colorStrip" style={{ backgroundColor }} />
+        <div className="echTooltip__colorStrip echTooltip__colorStrip--bg" style={{ backgroundColor }} />
         <div className="echTooltip__colorStrip" style={{ backgroundColor: color, color: dotColor }} />
-        <div className="echTooltip__colorStripSpacer" />
       </>
     );
   };
 
   return (
     <TooltipTableCell
-      width={10}
       {...cellProps}
       className={classNames('echTooltip__colorCell', className, {
         'echTooltip__colorCell--static': displayOnly,
