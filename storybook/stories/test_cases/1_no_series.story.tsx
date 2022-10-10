@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { EuiFlexGroup, EuiFlexItem, EuiIcon, EuiSpacer } from '@elastic/eui';
+import { EuiFlexGroup, EuiFlexItem, EuiIcon } from '@elastic/eui';
 import { boolean, text } from '@storybook/addon-knobs';
 import React, { FC } from 'react';
 
@@ -16,9 +16,8 @@ import { useBaseTheme } from '../../use_base_theme';
 
 const NoResults: FC<{ msg: string }> = ({ msg }) => (
   <EuiFlexItem>
-    <EuiFlexGroup direction="column" alignItems="center" justifyContent="center">
+    <EuiFlexGroup gutterSize="s" direction="column" alignItems="center" justifyContent="center">
       <EuiIcon type="visualizeApp" />
-      <EuiSpacer size="s" />
       <p>{msg}</p>
     </EuiFlexGroup>
   </EuiFlexItem>
