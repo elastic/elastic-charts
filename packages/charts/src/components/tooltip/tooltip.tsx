@@ -75,7 +75,17 @@ export type TooltipComponentProps<
 
 /** @internal */
 export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
-  tooltip: { header, footer, actions, headerFormatter, actionPrompt, selectionPrompt, maxVisibleTooltipItems },
+  tooltip: {
+    header,
+    footer,
+    actions,
+    headerFormatter,
+    actionPrompt,
+    selectionPrompt,
+    actionsLoading,
+    noActionsLoaded,
+    maxVisibleTooltipItems,
+  },
   anchorRef,
   info,
   zIndex,
@@ -179,8 +189,8 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     },
   ];
 
-  const hideActions =
-    (info?.disableActions ?? false) || actions.length === 0 || info?.values.every((v) => v.displayOnly);
+  const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
+  const actionable = actions.length > 0 || !Array.isArray(actions);
 
   return (
     <TooltipPortal
@@ -201,7 +211,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         backgroundColor={backgroundColor}
         dir={isMostlyRTL ? 'rtl' : 'ltr'}
         pinned={pinned}
-        actionable={actions.length > 0}
+        actionable={actionable}
         canPinTooltip={canPinTooltip}
         selected={selected}
         values={info?.values ?? []}
@@ -221,6 +231,8 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           actions={hideActions || !canPinTooltip ? [] : actions}
           actionPrompt={actionPrompt}
           selectionPrompt={selectionPrompt}
+          actionsLoading={actionsLoading}
+          noActionsLoaded={noActionsLoaded}
         />
       </TooltipProvider>
     </TooltipPortal>

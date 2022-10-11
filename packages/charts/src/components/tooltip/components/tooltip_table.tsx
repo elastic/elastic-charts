@@ -117,7 +117,7 @@ function getMaxHeight<D extends BaseDatum = Datum, SI extends SeriesIdentifier =
 ): CSSProperties['maxHeight'] {
   if (pinned || maxHeight || isNil(maxItems)) return maxHeight ?? maxHeightFallback;
   const headerHeight = +columns.some((c) => c.header) * TOOLTIP_HEADER_HEIGHT;
-  const bodyHeight = (maxItems + 0.5) * TOOLTIP_ITEM_HEIGHT;
+  const bodyHeight = (Math.max(maxItems, 1) + 0.5) * TOOLTIP_ITEM_HEIGHT;
   const footerHeight = +columns.some((c) => c.footer) * TOOLTIP_FOOTER_HEIGHT;
   return headerHeight + bodyHeight + footerHeight;
 }

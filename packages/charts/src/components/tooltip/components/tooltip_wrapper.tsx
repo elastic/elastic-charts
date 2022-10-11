@@ -7,36 +7,67 @@
  */
 
 import classNames from 'classnames';
-import React, { PropsWithChildren } from 'react';
+import React, { ComponentType, PropsWithChildren, useEffect, useState } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum } from '../../../specs';
-import { TooltipAction } from '../../../specs/tooltip';
-import { Datum, renderComplexChildren } from '../../../utils/common';
+import { TooltipAction, TooltipSpec, TooltipValue } from '../../../specs/tooltip';
+import { Datum, renderComplexChildren, renderWithProps } from '../../../utils/common';
 import { useTooltipContext } from './tooltip_provider';
 
 type TooltipWrapperProps<
   D extends BaseDatum = Datum,
   SI extends SeriesIdentifier = SeriesIdentifier,
-> = PropsWithChildren<{
-  className?: string;
-  actions?: TooltipAction<D, SI>[];
-  actionPrompt?: string;
-  selectionPrompt?: string;
-}>;
+> = PropsWithChildren<
+  {
+    className?: string;
+  } & Pick<TooltipSpec<D, SI>, 'actions' | 'actionPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'>
+>;
 
 /** @internal */
 export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   children,
-  actions = [],
+  className,
+  actions,
   actionPrompt,
   selectionPrompt,
-  className,
+  actionsLoading,
+  noActionsLoaded,
 }: TooltipWrapperProps<D, SI>) => {
   const { dir, pinned, canPinTooltip, selected, onTooltipPinned, values } = useTooltipContext<D, SI>();
 
+  const syncActions = Array.isArray(actions);
+  const [loading, setLoading] = useState(true);
+  const [loadedActions, setLoadedActions] = useState<TooltipAction<D, SI>[]>(syncActions ? actions : []);
+
+  useEffect(() => {
+    if (pinned && !syncActions) {
+      const fetchActions = async (
+        asyncActions: (selected: TooltipValue<D, SI>[]) => Promise<TooltipAction<D, SI>[]>,
+      ) => {
+        setLoading(true);
+        setLoadedActions(await asyncActions(selected));
+        setLoading(false);
+      };
+      void fetchActions(actions);
+      return () => {
+        setLoading(true);
+        setLoadedActions([]);
+      };
+    }
+  }, [syncActions, actions, selected, pinned]);
+
+  const renderPromptContent = (content: string | ComponentType<{ selected: TooltipValue<D, SI>[] }>) => (
+    <TooltipPrompt>{renderWithProps(content, { selected })}</TooltipPrompt>
+  );
+
   const renderActions = () => {
-    const visibleActions = actions.filter(({ hide }) => !hide || hide(selected));
+    if (!syncActions) {
+      if (loading) return renderPromptContent(actionsLoading);
+      if (loadedActions.length === 0) return renderPromptContent(noActionsLoaded);
+    }
+
+    const visibleActions = loadedActions.filter(({ hide }) => !hide || hide(selected));
 
     if (visibleActions.length === 0) {
       return <div className="echTooltip__prompt">{selectionPrompt}</div>;
@@ -76,11 +107,13 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
       }}
     >
       {renderComplexChildren(children)}
-      {canPinTooltip && pinned && actions.length === 0 ? null : (
+      {canPinTooltip && pinned && syncActions && loadedActions.length === 0 ? null : (
         <div className="echTooltip__actions">
-          {pinned ? renderActions() : <div className="echTooltip__prompt">{actionPrompt}</div>}
+          {pinned ? renderActions() : <TooltipPrompt>{actionPrompt}</TooltipPrompt>}
         </div>
       )}
     </div>
   );
 };
+
+const TooltipPrompt = ({ children }: PropsWithChildren<{}>) => <div className="echTooltip__prompt">{children}</div>;

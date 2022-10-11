@@ -23,11 +23,14 @@ import {
   ScaleType,
   Settings,
   Tooltip,
+  TooltipAction,
+  XYChartSeriesIdentifier,
 } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getChartRotationKnob, getToggledNumber, getTooltipTypeKnob } from '../utils/knobs';
+import { wait } from '../utils/utils';
 
 const dg = new SeededDataGenerator();
 const rng = getRandomNumberGenerator();
@@ -43,6 +46,8 @@ export const Example = () => {
     action('onBrushEnd')(formatter(x[0]), formatter(x[1]));
   };
   const disableActions = boolean('disable actions', false);
+  const asyncActions = boolean('async actions', true);
+  const asyncDelay = number('async delay (ms)', 1500, { step: 500, min: 0 });
   const seriesCount = number('series count', 5, { step: 1, min: 1 });
   const groupData = useMemo(
     () =>
@@ -74,6 +79,23 @@ export const Example = () => {
     },
   };
 
+  const actions: TooltipAction<any, XYChartSeriesIdentifier>[] = [
+    {
+      label: () => 'Log storybook action',
+      onSelect: (s) => action('onTooltipAction')(s),
+    },
+    {
+      label: ({ length }) => (
+        <span>
+          Alert keys of all <b>{1 ?? length}</b> selected series
+        </span>
+      ),
+      disabled: ({ length }) => (length < 1 ? 'Select at least one series' : false),
+      onSelect: (series) =>
+        alert(`Selected the following: \n - ${series.map((s) => s.seriesIdentifier.key).join('\n - ')}`),
+    },
+  ];
+
   return (
     <Chart>
       <Settings
@@ -92,26 +114,7 @@ export const Example = () => {
       <Tooltip
         maxTooltipItems={number('maxTooltipItems', 5, { min: 1, step: 1 }, 'Tooltip styles')}
         type={getTooltipTypeKnob('tooltip type', 'vertical', 'Tooltip styles')}
-        actions={
-          disableActions
-            ? []
-            : [
-                {
-                  label: () => 'Log storybook action',
-                  onSelect: (s) => action('onTooltipAction')(s),
-                },
-                {
-                  label: ({ length }) => (
-                    <span>
-                      Alert keys of all <b>{length}</b> selected series
-                    </span>
-                  ),
-                  disabled: ({ length }) => (length < 1 ? 'Select at least one series' : false),
-                  onSelect: (series) =>
-                    alert(`Selected the following: \n - ${series.map((s) => s.seriesIdentifier.key).join('\n - ')}`),
-                },
-              ]
-        }
+        actions={disableActions ? [] : asyncActions ? () => wait(asyncDelay, () => actions) : actions}
       />
 
       <BarSeries

@@ -84,9 +84,10 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
   }
 
   &__actions {
-    margin-left: $rowColorStripWidth;
-    margin-top: $euiSizeS;
-    margin-bottom: $euiSizeS;
+    width: 100%;
+    padding-left: $rowColorStripWidth;
+    padding-top: $euiSizeS;
+    padding-bottom: $euiSizeS;
     display: flex;
     align-items: flex-start;
     flex-direction: column;

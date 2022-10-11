@@ -19,8 +19,6 @@ import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
 import { TooltipCellStyle, TooltipTableColumn } from './types';
 
-const getRowId = (i: number) => `table-scroll-to-row-${i}`;
-
 type TooltipTableBodyProps<
   D extends BaseDatum = Datum,
   SI extends SeriesIdentifier = SeriesIdentifier,
@@ -57,13 +55,12 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
 
   return (
     <tbody className={classes} ref={tableBodyRef}>
-      {items.map((item, i) => {
+      {items.map((item) => {
         const { isHighlighted, isVisible, displayOnly } = item;
         if (!isVisible) return null;
         return (
           <TooltipTableRow
             key={`${item.seriesIdentifier.key}-${item.value}`}
-            id={getRowId(i)}
             isHighlighted={!pinned && !allHighlighted && isHighlighted}
             isSelected={pinned && selected.includes(item)}
             onSelect={displayOnly || !onSelect ? undefined : () => onSelect(item)}

@@ -194,7 +194,7 @@ export function interactionsReducer(
       };
       const selected =
         // don't pre-populate selection when values are not actionable
-        tooltipSpec.actions.length === 0 ? [] : getSelectedValues();
+        Array.isArray(tooltipSpec.actions) && tooltipSpec.actions.length === 0 ? [] : getSelectedValues();
 
       return {
         ...state,

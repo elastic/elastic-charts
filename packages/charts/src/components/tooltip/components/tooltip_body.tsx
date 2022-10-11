@@ -9,7 +9,7 @@
 import React from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
-import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps, TooltipAction } from '../../../specs';
+import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps } from '../../../specs';
 import { onTooltipItemSelected } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { TooltipInfo } from '../types';
@@ -21,13 +21,16 @@ import { TooltipWrapper } from './tooltip_wrapper';
 import { TooltipTableColumn } from './types';
 
 interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
-  extends Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer' | 'actionPrompt' | 'selectionPrompt'> {
+  extends Pick<
+      TooltipSpec<D, SI>,
+      'actions' | 'actionPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'
+    >,
+    Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer' | 'actionPrompt' | 'selectionPrompt'> {
   visible: boolean;
   info?: TooltipInfo<D, SI>;
   columns: TooltipTableColumn<D, SI>[];
   headerFormatter?: TooltipValueFormatter<D, SI>;
   settings?: TooltipProps<D, SI>;
-  actions: TooltipAction<D, SI>[];
   onSelect: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
 }
 
@@ -40,10 +43,12 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   columns,
   header,
   footer,
-  actions,
+  actions = [],
   onSelect,
   actionPrompt,
   selectionPrompt,
+  actionsLoading,
+  noActionsLoaded,
 }: TooltipBodyProps<D, SI>) => {
   const { backgroundColor, dir, pinned, selected } = useTooltipContext<D, SI>();
   if (!info || !visible) {
@@ -53,14 +58,26 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   if (typeof settings !== 'string' && settings?.customTooltip) {
     const CustomTooltip = settings.customTooltip;
     return (
-      <TooltipWrapper actions={actions} actionPrompt={actionPrompt} selectionPrompt={selectionPrompt}>
+      <TooltipWrapper
+        actions={actions}
+        actionPrompt={actionPrompt}
+        selectionPrompt={selectionPrompt}
+        actionsLoading={actionsLoading}
+        noActionsLoaded={noActionsLoaded}
+      >
         <CustomTooltip {...info} headerFormatter={headerFormatter} backgroundColor={backgroundColor} dir={dir} />
       </TooltipWrapper>
     );
   }
 
   return (
-    <TooltipWrapper actions={actions} actionPrompt={actionPrompt} selectionPrompt={selectionPrompt}>
+    <TooltipWrapper
+      actions={actions}
+      actionPrompt={actionPrompt}
+      selectionPrompt={selectionPrompt}
+      actionsLoading={actionsLoading}
+      noActionsLoaded={noActionsLoaded}
+    >
       {header ? (
         <TooltipHeader>{typeof header === 'string' ? header : header(info.values)}</TooltipHeader>
       ) : (

@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { ReactNode } from 'react';
+import { ComponentType, ReactNode } from 'react';
 
-import { BaseDatum, SettingsSpec, Spec } from '.';
 import { ChartType } from '../chart_types';
+import { BaseDatum } from '../chart_types/specs';
 import { Color } from '../common/colors';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components/portal';
@@ -18,6 +18,8 @@ import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import { Datum, stripUndefined } from '../utils/common';
 import { SpecType, TooltipStickTo, TooltipType } from './constants';
+import { Spec } from './index';
+import { SettingsSpec } from './settings';
 
 /**
  * This interface describe the properties of single value shown in the tooltip
@@ -194,15 +196,25 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
   /**
    * Actions to enable tooltip selection
    */
-  actions: TooltipAction<D, SI>[];
+  actions: TooltipAction<D, SI>[] | ((selected: TooltipValue<D, SI>[]) => Promise<TooltipAction<D, SI>[]>);
 
   /**
-   * Prompt to display to indicate user can right-click for contextual menu
+   * Shown in place of actions UI while loading async actions
+   */
+  actionsLoading: string | ComponentType<{ selected: TooltipValue<D, SI>[] }>;
+
+  /**
+   * Shown in place of actions UI after loading async actions and finding none
+   */
+  noActionsLoaded: string | ComponentType<{ selected: TooltipValue<D, SI>[] }>;
+
+  /**
+   * Prompt displayed to indicate user can right-click for contextual menu
    */
   actionPrompt: string;
 
   /**
-   * Prompt to display when tooltip is pinned but all actions are hidden
+   * Prompt displayed when tooltip is pinned but all actions are hidden
    */
   selectionPrompt: string;
 
@@ -250,6 +262,8 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     actions: [],
     actionPrompt: 'Right click to pin tooltip',
     selectionPrompt: 'Please select a series',
+    actionsLoading: 'Loading Actions...',
+    noActionsLoaded: 'No actions available',
     maxTooltipItems: 5,
     maxVisibleTooltipItems: 5,
   },
@@ -275,7 +289,12 @@ export const Tooltip = function <D extends BaseDatum = Datum, SI extends SeriesI
   >,
 ) {
   const { defaults, overrides } = tooltipBuildProps;
-  useSpecFactory<TooltipSpec<D, SI>>({ ...defaults, ...stripUndefined(props), ...overrides });
+  // @ts-ignore - default generic value
+  useSpecFactory<TooltipSpec<D, SI>>({
+    ...defaults,
+    ...stripUndefined(props),
+    ...overrides,
+  });
   return null;
 };
 
