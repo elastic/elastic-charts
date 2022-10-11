@@ -7,7 +7,7 @@
  */
 
 import { Rect } from '../../../../geoms/types';
-import { isPointerOverEvent, PointerEvent, SettingsSpec } from '../../../../specs';
+import { isPointerOverEvent, PointerEvent } from '../../../../specs';
 import { GlobalChartState, PointerState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
@@ -29,10 +29,9 @@ function getCursorBand(
   geoms: ShapeViewModel,
   externalPointerEvent: PointerEvent | null,
   currentPointer: PointerState,
-  settings: SettingsSpec,
 ): (Rect & { fromExternalEvent: boolean }) | undefined {
   // external pointer events takes precedence over the current mouse pointer
-  if (settings.externalPointerEvents.tooltip.visible && isPointerOverEvent(externalPointerEvent)) {
+  if (isPointerOverEvent(externalPointerEvent)) {
     const { x } = externalPointerEvent;
     if (!isNil(x)) {
       const band = geoms.pickCursorBand(x);
