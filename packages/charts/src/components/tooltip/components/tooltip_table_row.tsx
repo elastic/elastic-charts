@@ -7,10 +7,9 @@
  */
 
 import classNames from 'classnames';
-import React, { PropsWithChildren, useEffect } from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { isNil } from '../../../utils/common';
-import { useTableColumnWidthContext } from './table_column_width_provider';
 import { useTooltipContext } from './tooltip_provider';
 
 type TooltipTableRowProps = PropsWithChildren<{
@@ -31,7 +30,6 @@ export const TooltipTableRow = ({
   className,
 }: TooltipTableRowProps) => {
   const { actionable } = useTooltipContext();
-  const { incrementRowCount } = useTableColumnWidthContext();
 
   const isSelectable = actionable && !isNil(onSelect);
   const classes = classNames('echTooltip__tableRow', className, {
@@ -39,8 +37,6 @@ export const TooltipTableRow = ({
     'echTooltip__tableRow--selected': isSelected,
     'echTooltip__tableRow--selectable': isSelectable,
   });
-
-  useEffect(incrementRowCount, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <tr id={id} className={classes} onClick={isSelectable ? onSelect : undefined}>

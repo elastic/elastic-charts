@@ -116,7 +116,7 @@ export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifi
   /**
    * Clickable label to display action
    */
-  label: (items: TooltipValue<D, SI>[]) => ReactNode;
+  label: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
   /**
    * Hides action from list
    */

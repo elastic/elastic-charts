@@ -90,7 +90,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
             }, 0);
           }}
         >
-          {label(selected)}
+          {typeof label === 'string' ? label : label(selected)}
         </button>
       );
     });

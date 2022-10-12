@@ -173,6 +173,8 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           {formattedValue}
         </span>
       ),
+      width: 'minmax(30%, 1fr)',
+      truncate: true,
       style: {
         textAlign: 'right',
       },
