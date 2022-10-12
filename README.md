@@ -60,9 +60,9 @@ As a single source of truth, the framework allows our designers to make changes 
 
 ## Contributing
 
-You can find documentation around creating and submitting new features in [CONTRIBUTING.md][contributing].
+You can find documentation around creating and submitting new features in [contributing][contributing].
 
-## Wiki
+## [Wiki](https://github.com/elastic/elastic-charts/wiki)
 
 ### Consumption
 
@@ -78,9 +78,9 @@ You can find documentation around creating and submitting new features in [CONTR
 [Dual-licensed under Elastic v2 and Server Side Public License, v 1][license] Read the [FAQ][faq] for details.
 
 [license]: LICENSE.txt
-[faq]: FAQ.md
+[faq]: https://github.com/elastic/elastic-charts/wiki/FAQ
 [docs]: https://elastic.github.io/elastic-charts/
-[consuming]: wiki/consuming.md
-[overview]: wiki/overview.md
-[theming]: wiki/theming.md
-[contributing]: CONTRIBUTING.md
+[consuming]: https://github.com/elastic/elastic-charts/wiki/Consuming-Elastic-Charts
+[overview]: https://github.com/elastic/elastic-charts/wiki/Overview
+[theming]: https://github.com/elastic/elastic-charts/wiki/Theming
+[contributing]: https://github.com/elastic/elastic-charts/wiki/Contributing-to-Elastic-Charts
