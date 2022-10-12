@@ -1,3 +1,20 @@
+## [50.0.2](https://github.com/elastic/elastic-charts/compare/v50.0.1...v50.0.2) (2022-10-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v68 ([#1836](https://github.com/elastic/elastic-charts/issues/1836)) ([086a09d](https://github.com/elastic/elastic-charts/commit/086a09d88aa24f560c2d578ac9e9719e2ac05b23))
+* **deps:** update dependency @elastic/eui to v69 ([#1841](https://github.com/elastic/elastic-charts/issues/1841)) ([575aa3a](https://github.com/elastic/elastic-charts/commit/575aa3a1d992639e2b6fdab06d80ae016836c726))
+* **tooltip:** heatmap visible tooltip option ([#1842](https://github.com/elastic/elastic-charts/issues/1842)) ([db3de18](https://github.com/elastic/elastic-charts/commit/db3de182382247735fd11a3938d9235c0fa395ff))
+
+## [50.0.1](https://github.com/elastic/elastic-charts/compare/v50.0.0...v50.0.1) (2022-09-28)
+
+
+### Bug Fixes
+
+* **flamegraph:** dark theme ([#1830](https://github.com/elastic/elastic-charts/issues/1830)) ([c997f54](https://github.com/elastic/elastic-charts/commit/c997f54af4e23ce3e4a338c0d389969217aebee0))
+* **style:** import the legacy reset css ([#1828](https://github.com/elastic/elastic-charts/issues/1828)) ([e59bc22](https://github.com/elastic/elastic-charts/commit/e59bc2262506e9a4866914f83e40625e3c85c94f))
+
 # [50.0.0](https://github.com/elastic/elastic-charts/compare/v49.0.0...v50.0.0) (2022-09-21)
 
 

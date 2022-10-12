@@ -7,11 +7,10 @@
  */
 
 import { Rect } from '../../../../geoms/types';
-import { isPointerOverEvent, PointerEvent, SettingsSpec } from '../../../../specs';
+import { isPointerOverEvent, PointerEvent } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
@@ -21,7 +20,7 @@ const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.
 
 /** @internal */
 export const getCursorBandPositionSelector = createCustomCachedSelector(
-  [getHeatmapGeometries, getExternalPointerEventStateSelector, getActivePointerPosition, getSettingsSpecSelector],
+  [getHeatmapGeometries, getExternalPointerEventStateSelector, getActivePointerPosition],
   getCursorBand,
 );
 
@@ -29,10 +28,9 @@ function getCursorBand(
   geoms: ShapeViewModel,
   externalPointerEvent: PointerEvent | null,
   currentPointerPosition: Point,
-  settings: SettingsSpec,
 ): (Rect & { fromExternalEvent: boolean }) | undefined {
   // external pointer events takes precedence over the current mouse pointer
-  if (settings.externalPointerEvents.tooltip.visible && isPointerOverEvent(externalPointerEvent)) {
+  if (isPointerOverEvent(externalPointerEvent)) {
     const { x } = externalPointerEvent;
     if (!isNil(x)) {
       const band = geoms.pickCursorBand(x);

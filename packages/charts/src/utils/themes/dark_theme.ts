@@ -410,4 +410,15 @@ export const DARK_THEME: Theme = {
     maxTableHeight: 120,
     defaultDotColor: Colors.White.keyword,
   },
+  flamegraph: {
+    navigation: {
+      textColor: 'rgb(223, 229, 239)',
+      buttonTextColor: 'rgb(54, 162, 239)',
+      buttonDisabledTextColor: 'rgb(81, 87, 97)',
+      buttonBackgroundColor: '#36a2ef33',
+      buttonDisabledBackgroundColor: 'rgba(52, 55, 65, 0.15)',
+    },
+    scrollbarThumb: 'rgb(223, 229, 239)',
+    scrollbarTrack: 'rgb(52, 55, 65)',
+  },
 };
