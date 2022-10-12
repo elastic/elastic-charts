@@ -8,18 +8,21 @@
 
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { EMPTY_TOOLTIP, getTooltipInfo } from '../../layout/viewmodel/tooltip_info';
+import { pickShapesTooltipValues } from '../../layout/viewmodel/picked_shapes';
+import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpec } from './partition_spec';
 import { getPickedShapes } from './picked_shapes';
 
+const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
+
 /** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(
-  [getPartitionSpec, getPickedShapes],
-  (spec, pickedShapes): TooltipInfo => {
+  [getPartitionSpec, getPickedShapes, partitionMultiGeometries],
+  (spec, pickedShapes, shapeViewModel): TooltipInfo => {
     return spec
-      ? getTooltipInfo(
+      ? pickShapesTooltipValues(
           pickedShapes,
-          spec.layers.map((l) => l.nodeLabel),
+          shapeViewModel,
           spec.valueGetter,
           spec.valueFormatter,
           spec.percentFormatter,
