@@ -142,7 +142,7 @@ function getTooltipValueFromNode(
       key: id,
     },
     value: node[AGGREGATE_KEY],
-    formattedValue: `${valueFormatter(value)} (${percentFormatter(percentValueGetter(node))})`,
+    formattedValue: `${valueFormatter(value)}\u00A0(${percentFormatter(percentValueGetter(node))})`,
     valueAccessor: node[DEPTH_KEY],
   };
 }
