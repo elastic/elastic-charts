@@ -47,7 +47,14 @@ export function sumValueGetter(node: ShapeTreeNode): number {
 export const MODEL_KEY = 'parent';
 
 /** @public */
-export function percentValueGetter(node: ShapeTreeNode): number {
+export function percentValueGetter(node: {
+  [AGGREGATE_KEY]: number;
+  [MODEL_KEY]: {
+    [STATISTICS_KEY]: {
+      globalAggregate: number;
+    };
+  };
+}): number {
   return (100 * node[AGGREGATE_KEY]) / node[MODEL_KEY][STATISTICS_KEY].globalAggregate;
 }
 

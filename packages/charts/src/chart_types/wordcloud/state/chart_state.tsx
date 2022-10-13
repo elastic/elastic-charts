@@ -16,13 +16,13 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
-import { EMPTY_TOOLTIP } from '../../partition_chart/layout/viewmodel/tooltip_info';
 import { Wordcloud } from '../renderer/svg/connected_component';
 import { getSpecOrNull } from './selectors/wordcloud_spec';
 
 const EMPTY_MAP = new Map();
 const EMPTY_LEGEND_LIST: LegendItem[] = [];
 const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
+const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
 
 /** @internal */
 export class WordcloudState implements InternalChartState {
