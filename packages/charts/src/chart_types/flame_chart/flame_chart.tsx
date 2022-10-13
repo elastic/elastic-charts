@@ -560,7 +560,6 @@ class FlameComponent extends React.Component<FlameProps> {
       return;
     }
 
-    window.addEventListener('mousemove', this.handleMouseDragMove, { passive: true });
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('click', this.handleUnpinningTooltip);
     window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
