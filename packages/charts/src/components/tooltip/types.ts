@@ -43,7 +43,39 @@ export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends Seri
   extends TooltipInfo<D, SI> {
   headerFormatter?: TooltipValueFormatter<D, SI>;
   dir: 'ltr' | 'rtl';
+
+  /**
+   * Background color for use with contrast ratios
+   */
   backgroundColor: string;
+
+  /**
+   * Tooltip is pinned
+   */
+  pinned: boolean;
+
+  /**
+   * Selected items - For use with actions
+   *
+   *
+   * TODO: permit other values than TooltipValue types
+   */
+  selected: TooltipValue<D, SI>[];
+
+  /**
+   * Toggles selected items - For use with actions
+   *
+   *
+   * TODO: permit other values than TooltipValue types
+   */
+  toggleSelected: (item: TooltipValue<D, SI>) => void;
+
+  /**
+   * Allows setting the selected items - For use with actions
+   *
+   * TODO: permit other values than TooltipValue types
+   */
+  setSelection: (items: TooltipValue<D, SI>[]) => void;
 }
 
 /**

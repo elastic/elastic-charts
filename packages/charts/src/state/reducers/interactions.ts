@@ -22,7 +22,12 @@ import {
   ToggleDeselectSeriesAction,
 } from '../actions/legend';
 import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../actions/mouse';
-import { ON_TOOLTIP_ITEM_SELECTED, ON_TOOLTIP_PINNED, TooltipActions } from '../actions/tooltip';
+import {
+  TOGGLE_SELECTED_TOOLTIP_ITEM,
+  PIN_TOOLTIP,
+  TooltipActions,
+  SET_SELECTED_TOOLTIP_ITEMS,
+} from '../actions/tooltip';
 import { GlobalChartState, InteractionsState } from '../chart_state';
 import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
@@ -77,6 +82,7 @@ export function interactionsReducer(
           },
         },
       };
+
     case ON_MOUSE_DOWN:
       return {
         ...state,
@@ -94,6 +100,7 @@ export function interactionsReducer(
           },
         },
       };
+
     case ON_MOUSE_UP: {
       return {
         ...state,
@@ -136,17 +143,20 @@ export function interactionsReducer(
         },
       };
     }
+
     case ON_LEGEND_ITEM_OUT:
       return {
         ...state,
         highlightedLegendPath: [],
       };
+
     case ON_LEGEND_ITEM_OVER:
       const { legendPath: highlightedLegendPath } = action;
       return {
         ...state,
         highlightedLegendPath,
       };
+
     case ON_TOGGLE_DESELECT_SERIES:
       return {
         ...state,
@@ -158,12 +168,14 @@ export function interactionsReducer(
         ...state,
         hoveredDOMElement: action.element,
       };
+
     case ON_DOM_ELEMENT_LEAVE:
       return {
         ...state,
         hoveredDOMElement: null,
       };
-    case ON_TOOLTIP_PINNED: {
+
+    case PIN_TOOLTIP: {
       if (!action.pinned) {
         return {
           ...state,
@@ -209,13 +221,14 @@ export function interactionsReducer(
         },
       };
     }
-    case ON_TOOLTIP_ITEM_SELECTED: {
+
+    case TOGGLE_SELECTED_TOOLTIP_ITEM: {
       if (!state.tooltip.pinned) return state;
       let updatedItems = [...state.tooltip.selected];
-      if (updatedItems.includes(action.selected)) {
-        updatedItems = updatedItems.filter((item) => item !== action.selected);
+      if (updatedItems.includes(action.item)) {
+        updatedItems = updatedItems.filter((item) => item !== action.item);
       } else {
-        updatedItems.push(action.selected);
+        updatedItems.push(action.item);
       }
 
       return {
@@ -226,6 +239,19 @@ export function interactionsReducer(
         },
       };
     }
+
+    case SET_SELECTED_TOOLTIP_ITEMS: {
+      if (!state.tooltip.pinned) return state;
+
+      return {
+        ...state,
+        tooltip: {
+          ...state.tooltip,
+          selected: action.items,
+        },
+      };
+    }
+
     default:
       return state;
   }

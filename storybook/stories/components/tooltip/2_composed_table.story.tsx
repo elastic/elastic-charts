@@ -33,7 +33,7 @@ export const Example = () => {
     return (
       <>
         <TooltipHeader header={header} />
-        <TooltipTable maxHeight={maxHeight}>
+        <TooltipTable gridTemplateColumns={`repeat(${showColor ? 4 : 3}, auto)`} maxHeight={maxHeight}>
           <TooltipTableHeader>
             <TooltipTableRow>
               {showColor && <TooltipTableColorCell />}

@@ -259,7 +259,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.currentColor = columns.color;
   }
 
-  private onTooltipPinned = (pinned: boolean): void => {
+  private pinTooltip = (pinned: boolean): void => {
     if (!pinned) {
       this.unpinTooltip(true);
       return;
@@ -270,10 +270,15 @@ class FlameComponent extends React.Component<FlameProps> {
     // this.setState({});
   };
 
-  private onTooltipItemSelected = (tooltipValue: TooltipValue): void => {
+  private toggleSelectedTooltipItem = (tooltipValue: TooltipValue): void => {
     // selection is arbitrary for flame elements - just toggle single selection
     if (!this.tooltipPinned) return;
     this.tooltipSelectedSeries = this.tooltipSelectedSeries.length === 0 ? [tooltipValue] : [];
+    this.setState({});
+  };
+
+  private setSelectedTooltipItems = (tooltipValues: TooltipValue[]): void => {
+    this.tooltipSelectedSeries = tooltipValues;
     this.setState({});
   };
 
@@ -564,7 +569,7 @@ class FlameComponent extends React.Component<FlameProps> {
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('click', this.handleUnpinningTooltip);
     window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
-    this.onTooltipPinned(true);
+    this.pinTooltip(true);
     this.setState({}); // updates cursor
   };
 
@@ -606,7 +611,7 @@ class FlameComponent extends React.Component<FlameProps> {
     window.removeEventListener('keyup', this.handleKeyUp);
     window.removeEventListener('click', this.handleUnpinningTooltip);
     window.removeEventListener('visibilitychange', this.handleUnpinningTooltip);
-    this.onTooltipPinned(false);
+    this.pinTooltip(false);
   };
 
   static watchedKeys: KeyboardEvent['key'][] = ['Escape'];
@@ -1118,8 +1123,9 @@ class FlameComponent extends React.Component<FlameProps> {
           }
           pinned={this.tooltipPinned}
           selected={this.tooltipSelectedSeries}
-          onTooltipPinned={this.onTooltipPinned}
-          onTooltipItemSelected={this.onTooltipItemSelected}
+          pinTooltip={this.pinTooltip}
+          toggleSelectedTooltipItem={this.toggleSelectedTooltipItem}
+          setSelectedTooltipItems={this.setSelectedTooltipItems}
           visible={
             this.tooltipPinned || (this.props.tooltipRequired && this.hoverIndex >= 0 && !(this.wobbleTimeLeft > 0))
           }

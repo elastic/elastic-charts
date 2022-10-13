@@ -34,7 +34,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   actionsLoading,
   noActionsLoaded,
 }: TooltipWrapperProps<D, SI>) => {
-  const { dir, pinned, canPinTooltip, selected, onTooltipPinned, values } = useTooltipContext<D, SI>();
+  const { dir, pinned, canPinTooltip, selected, pinTooltip, values } = useTooltipContext<D, SI>();
 
   const syncActions = Array.isArray(actions);
   const [loading, setLoading] = useState(true);
@@ -83,7 +83,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
           title={typeof reason === 'string' ? reason : undefined}
           disabled={Boolean(reason)}
           onClick={() => {
-            onTooltipPinned(false, true);
+            pinTooltip(false, true);
             // timeout used to close tooltip before calling action
             setTimeout(() => {
               onSelect(selected, values);

@@ -9,33 +9,47 @@
 import { TooltipValue } from '../../specs';
 
 /** @internal */
-export const ON_TOOLTIP_PINNED = 'ON_TOOLTIP_PINNED';
+export const PIN_TOOLTIP = 'PIN_TOOLTIP';
 
 /** @internal */
-export const ON_TOOLTIP_ITEM_SELECTED = 'ON_TOOLTIP_ITEM_SELECTED';
+export const TOGGLE_SELECTED_TOOLTIP_ITEM = 'TOGGLE_SELECTED_TOOLTIP_ITEM';
 
 /** @internal */
-export interface ToggleTooltipStickAction {
-  type: typeof ON_TOOLTIP_PINNED;
+export const SET_SELECTED_TOOLTIP_ITEMS = 'SET_SELECTED_TOOLTIP_ITEMS';
+
+/** @internal */
+export interface PinTooltipAction {
+  type: typeof PIN_TOOLTIP;
   pinned: boolean;
   resetPointer: boolean;
 }
 
 /** @internal */
 export interface ToggleSelectedTooltipItemAction {
-  type: typeof ON_TOOLTIP_ITEM_SELECTED;
-  selected: TooltipValue;
+  type: typeof TOGGLE_SELECTED_TOOLTIP_ITEM;
+  item: TooltipValue;
 }
 
 /** @internal */
-export function onTooltipPinned(pinned: boolean, resetPointer: boolean = false): ToggleTooltipStickAction {
-  return { type: ON_TOOLTIP_PINNED, pinned, resetPointer };
+export interface SetSelectedTooltipItemsAction {
+  type: typeof SET_SELECTED_TOOLTIP_ITEMS;
+  items: TooltipValue[];
 }
 
 /** @internal */
-export function onTooltipItemSelected(selected: TooltipValue): ToggleSelectedTooltipItemAction {
-  return { type: ON_TOOLTIP_ITEM_SELECTED, selected };
+export function pinTooltip(pinned: boolean, resetPointer: boolean = false): PinTooltipAction {
+  return { type: PIN_TOOLTIP, pinned, resetPointer };
 }
 
 /** @internal */
-export type TooltipActions = ToggleTooltipStickAction | ToggleSelectedTooltipItemAction;
+export function toggleSelectedTooltipItem(item: TooltipValue): ToggleSelectedTooltipItemAction {
+  return { type: TOGGLE_SELECTED_TOOLTIP_ITEM, item };
+}
+
+/** @internal */
+export function setSelectedTooltipItems(items: TooltipValue[]): SetSelectedTooltipItemsAction {
+  return { type: SET_SELECTED_TOOLTIP_ITEMS, items };
+}
+
+/** @internal */
+export type TooltipActions = PinTooltipAction | ToggleSelectedTooltipItemAction | SetSelectedTooltipItemsAction;

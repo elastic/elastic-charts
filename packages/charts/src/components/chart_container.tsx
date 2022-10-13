@@ -19,10 +19,7 @@ import {
   onMouseDown as onMouseDownAction,
   onPointerMove as onPointerMoveAction,
 } from '../state/actions/mouse';
-import {
-  onTooltipPinned as onTooltipPinnedAction,
-  onTooltipItemSelected as onTooltipItemSelectedAction,
-} from '../state/actions/tooltip';
+import { pinTooltip as pinTooltipAction } from '../state/actions/tooltip';
 import { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
 import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
@@ -58,8 +55,7 @@ interface ChartContainerComponentDispatchProps {
   onMouseUp: typeof onMouseUpAction;
   onMouseDown: typeof onMouseDownAction;
   onKeyPress: typeof onKeyPressAction;
-  onTooltipPinned: typeof onTooltipPinnedAction;
-  onTooltipItemSelected: typeof onTooltipItemSelectedAction;
+  pinTooltip: typeof pinTooltipAction;
 }
 
 interface ChartContainerComponentOwnProps {
@@ -135,7 +131,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     window.removeEventListener('click', this.handleUnpinningTooltip);
     window.removeEventListener('scroll', this.handleUnpinningTooltip);
     window.removeEventListener('visibilitychange', this.handleUnpinningTooltip);
-    this.props.onTooltipPinned(false, true);
+    this.props.pinTooltip(false, true);
   };
 
   handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -156,7 +152,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     window.addEventListener('scroll', this.handleUnpinningTooltip);
     window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
 
-    this.props.onTooltipPinned(true);
+    this.props.pinTooltip(true);
   };
 
   handleMouseUp = ({ nativeEvent: { offsetX, offsetY, timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -240,8 +236,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ChartContainerComponentDispatch
       onMouseUp: onMouseUpAction,
       onMouseDown: onMouseDownAction,
       onKeyPress: onKeyPressAction,
-      onTooltipPinned: onTooltipPinnedAction,
-      onTooltipItemSelected: onTooltipItemSelectedAction,
+      pinTooltip: pinTooltipAction,
     },
     dispatch,
   );

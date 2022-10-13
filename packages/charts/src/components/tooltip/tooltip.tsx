@@ -15,8 +15,9 @@ import { SeriesIdentifier } from '../../common/series_id';
 import { BaseDatum, DEFAULT_TOOLTIP_SPEC, SettingsSpec, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import {
-  onTooltipItemSelected as onTooltipItemSelectedAction,
-  onTooltipPinned as onTooltipPinnedAction,
+  toggleSelectedTooltipItem as toggleSelectedTooltipItemAction,
+  setSelectedTooltipItems as setSelectedTooltipItemsAction,
+  pinTooltip as pinTooltipAction,
 } from '../../state/actions/tooltip';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
@@ -35,15 +36,14 @@ import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
 import { TooltipBody } from './components/tooltip_body';
 import { TooltipProvider } from './components/tooltip_provider';
-import { TooltipTableColumn } from './components/types';
+import { ActionOrFunction, TooltipTableColumn } from './components/types';
 import { TooltipInfo } from './types';
 
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
-  onTooltipItemSelected:
-    | typeof onTooltipItemSelectedAction
-    | ((...args: Parameters<typeof onTooltipItemSelectedAction>) => void);
-  onTooltipPinned: typeof onTooltipPinnedAction | ((...args: Parameters<typeof onTooltipPinnedAction>) => void);
+  toggleSelectedTooltipItem: ActionOrFunction<typeof toggleSelectedTooltipItemAction>;
+  setSelectedTooltipItems: ActionOrFunction<typeof setSelectedTooltipItemsAction>;
+  pinTooltip: ActionOrFunction<typeof pinTooltipAction>;
 }
 
 interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
@@ -100,8 +100,9 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   backgroundColor,
   pinned,
   selected,
-  onTooltipItemSelected,
-  onTooltipPinned,
+  toggleSelectedTooltipItem,
+  setSelectedTooltipItems,
+  pinTooltip,
   canPinTooltip,
 }: TooltipComponentProps<D, SI>) => {
   const chartRef = getChartContainerRef();
@@ -217,7 +218,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         canPinTooltip={canPinTooltip}
         selected={selected}
         values={info?.values ?? []}
-        onTooltipPinned={onTooltipPinned}
+        pinTooltip={pinTooltip}
         theme={tooltipTheme}
         maxItems={maxVisibleTooltipItems}
       >
@@ -229,7 +230,8 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           visible={visible}
           header={header}
           footer={footer}
-          onSelect={onTooltipItemSelected}
+          toggleSelected={toggleSelectedTooltipItem}
+          setSelection={setSelectedTooltipItems}
           actions={hideActions || !canPinTooltip ? [] : actions}
           actionPrompt={actionPrompt}
           selectionPrompt={selectionPrompt}
@@ -276,8 +278,9 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
   bindActionCreators(
     {
       onPointerMove: onPointerMoveAction,
-      onTooltipItemSelected: onTooltipItemSelectedAction,
-      onTooltipPinned: onTooltipPinnedAction,
+      toggleSelectedTooltipItem: toggleSelectedTooltipItemAction,
+      setSelectedTooltipItems: setSelectedTooltipItemsAction,
+      pinTooltip: pinTooltipAction,
     },
     dispatch,
   );

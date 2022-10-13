@@ -11,13 +11,13 @@ import React, { ReactNode, useRef } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
-import { onTooltipItemSelected } from '../../../state/actions/tooltip';
+import { toggleSelectedTooltipItem } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
-import { TooltipCellStyle, TooltipTableColumn } from './types';
+import { ActionOrFunction, TooltipCellStyle, TooltipTableColumn } from './types';
 
 type TooltipTableBodyProps<
   D extends BaseDatum = Datum,
@@ -27,7 +27,7 @@ type TooltipTableBodyProps<
     items: TooltipValue<D, SI>[];
     columns: TooltipTableColumn<D, SI>[];
     pinned?: boolean;
-    onSelect?: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
+    onSelect?: ActionOrFunction<typeof toggleSelectedTooltipItem>;
     selected: TooltipValue<D, SI>[];
   },
   {},

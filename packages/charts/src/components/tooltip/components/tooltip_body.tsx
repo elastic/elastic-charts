@@ -10,7 +10,7 @@ import React from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps } from '../../../specs';
-import { onTooltipItemSelected } from '../../../state/actions/tooltip';
+import { toggleSelectedTooltipItem, setSelectedTooltipItems } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { TooltipInfo } from '../types';
 import { TooltipFooter } from './tooltip_footer';
@@ -18,7 +18,7 @@ import { TooltipHeader } from './tooltip_header';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTable } from './tooltip_table';
 import { TooltipWrapper } from './tooltip_wrapper';
-import { TooltipTableColumn } from './types';
+import { ActionOrFunction, TooltipTableColumn } from './types';
 
 interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends Pick<
@@ -31,7 +31,8 @@ interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentif
   columns: TooltipTableColumn<D, SI>[];
   headerFormatter?: TooltipValueFormatter<D, SI>;
   settings?: TooltipProps<D, SI>;
-  onSelect: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
+  toggleSelected: ActionOrFunction<typeof toggleSelectedTooltipItem>;
+  setSelection: ActionOrFunction<typeof setSelectedTooltipItems>;
 }
 
 /** @internal */
@@ -44,7 +45,8 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   header,
   footer,
   actions = [],
-  onSelect,
+  toggleSelected,
+  setSelection,
   actionPrompt,
   selectionPrompt,
   actionsLoading,
@@ -65,7 +67,16 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
         actionsLoading={actionsLoading}
         noActionsLoaded={noActionsLoaded}
       >
-        <CustomTooltip {...info} headerFormatter={headerFormatter} backgroundColor={backgroundColor} dir={dir} />
+        <CustomTooltip
+          {...info}
+          dir={dir}
+          pinned={pinned}
+          selected={selected}
+          setSelection={setSelection}
+          toggleSelected={toggleSelected}
+          headerFormatter={headerFormatter}
+          backgroundColor={backgroundColor}
+        />
       </TooltipWrapper>
     );
   }
@@ -83,7 +94,13 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
       ) : (
         <TooltipHeader header={info.header} formatter={headerFormatter} />
       )}
-      <TooltipTable columns={columns} items={info.values} pinned={pinned} onSelect={onSelect} selected={selected} />
+      <TooltipTable
+        columns={columns}
+        items={info.values}
+        pinned={pinned}
+        onSelect={toggleSelected}
+        selected={selected}
+      />
       {footer && <TooltipFooter>{typeof footer === 'string' ? footer : footer(info.values)}</TooltipFooter>}
     </TooltipWrapper>
   );

@@ -11,14 +11,14 @@ import React, { CSSProperties } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
-import { onTooltipItemSelected } from '../../../state/actions/tooltip';
+import { toggleSelectedTooltipItem } from '../../../state/actions/tooltip';
 import { Datum, isNil } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableBody } from './tooltip_table_body';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
-import { TooltipTableColumn } from './types';
+import { ActionOrFunction, TooltipTableColumn } from './types';
 
 const TOOLTIP_ITEM_HEIGHT = 20;
 const TOOLTIP_HEADER_HEIGHT = 25;
@@ -36,7 +36,7 @@ type TooltipTableProps<
     columns: TooltipTableColumn<D, SI>[];
     items: TooltipValue<D, SI>[];
     pinned?: boolean;
-    onSelect?: typeof onTooltipItemSelected | ((...args: Parameters<typeof onTooltipItemSelected>) => void);
+    onSelect?: ActionOrFunction<typeof toggleSelectedTooltipItem>;
     selected?: TooltipValue<D, SI>[];
   },
   {

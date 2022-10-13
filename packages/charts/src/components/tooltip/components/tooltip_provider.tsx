@@ -10,10 +10,11 @@ import React, { PropsWithChildren, Context, useContext } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
-import { onTooltipPinned as onTooltipPinnedAction } from '../../../state/actions/tooltip';
+import { pinTooltip as pinTooltipAction } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { TooltipStyle } from '../../../utils/themes/theme';
+import { ActionOrFunction } from './types';
 
 interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
   backgroundColor: string;
@@ -24,7 +25,7 @@ interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifie
   canPinTooltip: boolean;
   selected: Array<TooltipValue<D, SI>>;
   values: TooltipValue<D, SI>[];
-  onTooltipPinned: typeof onTooltipPinnedAction | ((...args: Parameters<typeof onTooltipPinnedAction>) => void);
+  pinTooltip: ActionOrFunction<typeof pinTooltipAction>;
   theme: TooltipStyle;
 }
 
@@ -37,7 +38,7 @@ const TooltipContext = React.createContext<TooltipContext>({
   canPinTooltip: false,
   selected: [],
   values: [],
-  onTooltipPinned: onTooltipPinnedAction,
+  pinTooltip: pinTooltipAction,
   theme: LIGHT_THEME.tooltip,
 });
 
@@ -60,7 +61,7 @@ export const TooltipProvider = <D extends BaseDatum = Datum, SI extends SeriesId
   canPinTooltip,
   selected,
   values,
-  onTooltipPinned,
+  pinTooltip,
   children,
   theme,
 }: TooltipProviderProps<D, SI>) => {
@@ -75,7 +76,7 @@ export const TooltipProvider = <D extends BaseDatum = Datum, SI extends SeriesId
         canPinTooltip,
         selected,
         values,
-        onTooltipPinned,
+        pinTooltip,
         theme,
       }}
     >
