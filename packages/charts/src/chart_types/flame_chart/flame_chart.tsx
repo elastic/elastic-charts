@@ -429,9 +429,7 @@ class FlameComponent extends React.Component<FlameProps> {
     const pr = window.devicePixelRatio * this.pinchZoomScale;
     const x = this.tooltipPinned ? this.pinnedPointerX : this.pointerX;
     const y = this.tooltipPinned ? this.pinnedPointerY : this.pointerY;
-    return {
-      datumIndex: this.datumAtXY(pr * x, pr * (this.props.chartDimensions.height - y)),
-    };
+    return this.datumAtXY(pr * x, pr * (this.props.chartDimensions.height - y));
   };
 
   private getDragDistanceX = () => this.pointerX - this.startOfDragX;
@@ -449,39 +447,37 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private updateHoverIndex() {
-    const hovered = this.getHoveredDatumIndex();
+    const hoveredDatumIndex = this.getHoveredDatumIndex();
     const prevHoverIndex = this.hoverIndex >= 0 ? this.hoverIndex : NaN;
-    if (hovered) {
-      this.hoverIndex = hovered.datumIndex;
-      if (!Object.is(this.hoverIndex, prevHoverIndex)) {
-        if (Number.isFinite(hovered.datumIndex)) {
-          this.props.onElementOver([{ vmIndex: hovered.datumIndex }]); // userland callback
-        } else {
-          this.hoverIndex = NaN;
-          this.props.onElementOut(); // userland callback
-        }
+    this.hoverIndex = hoveredDatumIndex;
+    if (!Object.is(this.hoverIndex, prevHoverIndex)) {
+      if (Number.isFinite(hoveredDatumIndex)) {
+        this.props.onElementOver([{ vmIndex: hoveredDatumIndex }]); // userland callback
+      } else {
+        this.hoverIndex = NaN;
+        this.props.onElementOut(); // userland callback
       }
-
-      if (prevHoverIndex !== this.hoverIndex) {
-        const columns = this.props.columnarViewModel;
-        this.tooltipValues =
-          this.hoverIndex >= 0
-            ? [
-                {
-                  label: columns.label[this.hoverIndex],
-                  color: getColor(columns.color, this.hoverIndex),
-                  isHighlighted: false,
-                  isVisible: true,
-                  seriesIdentifier: { specId: '', key: '' },
-                  value: columns.value[this.hoverIndex],
-                  formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
-                  valueAccessor: this.hoverIndex,
-                },
-              ]
-            : [];
-      }
-      this.setState({}); // exact tooltip location needs an update
     }
+
+    if (prevHoverIndex !== this.hoverIndex) {
+      const columns = this.props.columnarViewModel;
+      this.tooltipValues =
+        this.hoverIndex >= 0
+          ? [
+              {
+                label: columns.label[this.hoverIndex],
+                color: getColor(columns.color, this.hoverIndex),
+                isHighlighted: false,
+                isVisible: true,
+                seriesIdentifier: { specId: '', key: '' },
+                value: columns.value[this.hoverIndex],
+                formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
+                valueAccessor: this.hoverIndex,
+              },
+            ]
+          : [];
+    }
+    this.setState({}); // exact tooltip location needs an update
   }
 
   private handleMouseDragMove = (e: MouseEvent) => {
@@ -559,7 +555,10 @@ class FlameComponent extends React.Component<FlameProps> {
       this.handleUnpinningTooltip();
       return;
     }
-
+    if (!Number.isFinite(this.getHoveredDatumIndex())) {
+      // NOP if not hover a node
+      return;
+    }
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('click', this.handleUnpinningTooltip);
     window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
@@ -583,18 +582,17 @@ class FlameComponent extends React.Component<FlameProps> {
     const dragDistanceX = this.getDragDistanceX(); // zero or NaN means that a non-zero drag didn't happen
     const dragDistanceY = this.getDragDistanceY(); // zero or NaN means that a non-zero drag didn't happen
     if (!dragDistanceX && !dragDistanceY) {
-      const hovered = this.getHoveredDatumIndex();
+      const hoveredDatumIndex = this.getHoveredDatumIndex();
       const isDoubleClick = e.detail > 1;
-      const hasClickedOnRectangle = Number.isFinite(hovered?.datumIndex);
+      const hasClickedOnRectangle = Number.isFinite(hoveredDatumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
       const isContextClick = e.button === 2;
 
       if (mustFocus && !isContextClick && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
-        const { datumIndex } = hovered;
-        const rect = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
-        this.navigator.add({ ...rect, index: datumIndex });
-        this.focusOnNode(datumIndex);
-        this.props.onElementClick([{ vmIndex: datumIndex }]); // userland callback
+        const rect = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, hoveredDatumIndex);
+        this.navigator.add({ ...rect, index: hoveredDatumIndex });
+        this.focusOnNode(hoveredDatumIndex);
+        this.props.onElementClick([{ vmIndex: hoveredDatumIndex }]); // userland callback
       }
     }
     this.clearDrag();
