@@ -17,6 +17,7 @@ import {
   LIGHT_THEME,
   DEFAULT_TOOLTIP_SPEC,
   TooltipSpec,
+  TooltipValue,
 } from '@elastic/charts';
 import { TooltipComponent, TooltipComponentProps } from '@elastic/charts/src/components/tooltip/tooltip';
 
@@ -37,6 +38,7 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
   props: TooltipShowcaseProps<D, SI>,
 ) => {
   const [, setVisible] = useState(false);
+  const [selected, setSelected] = useState<TooltipValue<D, SI>[]>([]);
   const divRef = useRef<HTMLDivElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
 
@@ -60,11 +62,23 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
     getChartContainerRef: () => divRef,
     // @ts-ignore - overriding mouse logic
     onPointerMove: () => {},
-    onTooltipItemSelected: () => {},
-    onTooltipPinned: () => {},
+    toggleSelectedTooltipItem: (rawitem) => {
+      const item = rawitem as TooltipValue<D, SI>;
+      const index = selected.indexOf(item);
+      setSelected((prev) => {
+        if (index === -1) return [...prev, item];
+        return prev.filter((i) => i !== item);
+      });
+    },
+    setSelectedTooltipItems: (items) => {
+      setSelected(items as TooltipValue<D, SI>[]);
+    },
+    pinTooltip() {
+      setSelected([]);
+    },
     canPinTooltip: false,
     pinned: false,
-    selected: [],
+    selected,
     maxTooltipItems: 5,
     tooltipTheme: LIGHT_THEME.tooltip,
     ...props,
@@ -86,4 +100,11 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
   );
 };
 
+/**
+ * This component is used to render the internal `TooltipComponent` as a standalone element.
+ *
+ * - No connection to redux
+ * - Everything is overridable
+ * - Limited defaults, logic must be manually implemented above or when used
+ */
 export const TooltipShowcase = memo(TooltipShowcaseInner) as typeof TooltipShowcaseInner;

@@ -24,6 +24,12 @@ import {
   Settings,
   Tooltip,
   TooltipAction,
+  TooltipTable,
+  TooltipTableBody,
+  TooltipTableCell,
+  TooltipTableColorCell,
+  TooltipTableHeader,
+  TooltipTableRow,
   XYChartSeriesIdentifier,
 } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
@@ -81,13 +87,13 @@ export const Example = () => {
 
   const actions: TooltipAction<any, XYChartSeriesIdentifier>[] = [
     {
-      label: () => 'Log storybook action',
+      label: 'Log storybook action',
       onSelect: (s) => action('onTooltipAction')(s),
     },
     {
       label: ({ length }) => (
         <span>
-          Alert keys of all <b>{1 ?? length}</b> selected series
+          Alert keys of all <b>{length}</b> selected series
         </span>
       ),
       disabled: ({ length }) => (length < 1 ? 'Select at least one series' : false),
@@ -115,6 +121,39 @@ export const Example = () => {
         maxTooltipItems={number('maxTooltipItems', 5, { min: 1, step: 1 }, 'Tooltip styles')}
         type={getTooltipTypeKnob('tooltip type', 'vertical', 'Tooltip styles')}
         actions={disableActions ? [] : asyncActions ? () => wait(asyncDelay, () => actions) : actions}
+        customTooltip={({ values, pinned, selected, toggleSelected }) => (
+          <TooltipTable gridTemplateColumns="14px auto">
+            <TooltipTableHeader>
+              <TooltipTableRow>
+                <TooltipTableColorCell />
+                <TooltipTableCell>X Value</TooltipTableCell>
+              </TooltipTableRow>
+            </TooltipTableHeader>
+            <TooltipTableBody>
+              {values.map((value) => {
+                const {
+                  datum,
+                  seriesIdentifier: { key },
+                  color,
+                } = value;
+                const onSelect = () => {
+                  action('Table row selected')();
+                  toggleSelected(value);
+                };
+                return (
+                  <TooltipTableRow
+                    isSelected={pinned && selected.includes(value)}
+                    onSelect={onSelect}
+                    key={`${key}-${datum.x}`}
+                  >
+                    <TooltipTableColorCell color={color} />
+                    <TooltipTableCell>{datum.x}</TooltipTableCell>
+                  </TooltipTableRow>
+                );
+              })}
+            </TooltipTableBody>
+          </TooltipTable>
+        )}
       />
 
       <BarSeries

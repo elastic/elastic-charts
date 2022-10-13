@@ -2897,9 +2897,9 @@
   integrity sha512-HyYEUDeIj5rRQU2Hk5HTB2uHsbRQpF70nvMhVzi+VJR0X+xNEhjPui4/kBf3VeH/wqD28PT4sVOm8qqLjBrSZg==
 
 "@elastic/charts@*":
-  version "50.0.1"
-  resolved "https://registry.yarnpkg.com/@elastic/charts/-/charts-50.0.1.tgz#a0ee66668c857be7cfea2e134e0b84930d1564c5"
-  integrity sha512-O1L8rot0dycTQo/0eW7aD2P4K3Bh1LtzMgRBXYZAtIpbzdxveRkl8fOlIkGxeeHE4YNvntUJaJWeyT+ngGg7QA==
+  version "50.0.2"
+  resolved "https://registry.yarnpkg.com/@elastic/charts/-/charts-50.0.2.tgz#45d37544d57af8d67a1033bbd78ebe3f58d9f662"
+  integrity sha512-Q2fPS/bwKCYfTE7/dFO9OdlFtQQ7NMhflbl4WnHjpBcDeqUsqE/6cHd8XyvY/+WFhH9fkyCzBlO/eRBA3KatmA==
   dependencies:
     "@popperjs/core" "^2.4.0"
     bezier-easing "^2.1.0"
@@ -10757,7 +10757,8 @@ eslint-module-utils@^2.7.3:
     find-up "^2.1.0"
 
 "eslint-plugin-elastic-charts@link:./packages/eslint-plugin-elastic-charts":
-  version "1.0.0"
+  version "0.0.0"
+  uid ""
 
 eslint-plugin-eslint-comments@^3.2.0:
   version "3.2.0"
