@@ -38,6 +38,12 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
         }
       }
     }
+    .echTooltip__actions {
+      pointer-events: auto;
+    }
+    .echTooltip__tableWrapper {
+      pointer-events: auto;
+    }
   }
 
   &:not(&--pinned) {
@@ -91,7 +97,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-    pointer-events: auto;
   }
 
   &__action,
@@ -130,7 +135,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
   &__tableWrapper {
     overflow: auto;
-    pointer-events: auto;
   }
 
   &__table {
