@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '../chart_types';
-import { DEFAULT_CSS_CURSOR } from '../common/constants';
+import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
 import { SettingsSpec, TooltipSpec } from '../specs';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';
 import {
@@ -109,7 +109,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     const { isChartEmpty, disableInteractions, onMouseDown, isBrushingAvailable, tooltipState } = this.props;
 
     // button 2 to block brushing on right click
-    if (tooltipState.pinned || button === 2 || isChartEmpty || disableInteractions) return;
+    if (tooltipState.pinned || button === SECONDARY_BUTTON || isChartEmpty || disableInteractions) return;
 
     if (isBrushingAvailable) {
       window.addEventListener('mouseup', this.handleBrushEnd);

@@ -27,3 +27,8 @@ export const RIGHT = 'right' as const;
 export const MIDDLE = 'middle' as const;
 /** @public */
 export const CENTER = 'center' as const;
+
+/** @internal
+ * Value used to describe the secondary button (usually the right button) on a `MouseEvent.button`
+ */
+export const SECONDARY_BUTTON = 2;
