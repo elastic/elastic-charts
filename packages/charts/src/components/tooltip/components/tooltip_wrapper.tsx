@@ -107,7 +107,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
       }}
     >
       {renderComplexChildren(children)}
-      {canPinTooltip && pinned && syncActions && loadedActions.length === 0 ? null : (
+      {(pinned && syncActions && loadedActions.length === 0) || !canPinTooltip ? null : (
         <div className="echTooltip__actions">
           {pinned ? renderActions() : <TooltipPrompt>{actionPrompt}</TooltipPrompt>}
         </div>

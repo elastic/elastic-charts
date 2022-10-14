@@ -50,6 +50,7 @@ interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdenti
   tooltip: TooltipSpec<D, SI>;
   zIndex: number;
   visible: boolean;
+  isExternal: boolean;
   position: AnchorPosition | null;
   info?: TooltipInfo<D, SI>;
   settings?: TooltipProps<D, SI>;
@@ -94,6 +95,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   settings,
   tooltipTheme,
   visible,
+  isExternal,
   rotation,
   chartId,
   onPointerMove,
@@ -215,7 +217,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         dir={isMostlyRTL ? 'rtl' : 'ltr'}
         pinned={pinned}
         actionable={actionable}
-        canPinTooltip={canPinTooltip}
+        canPinTooltip={canPinTooltip && !isExternal}
         selected={selected}
         values={info?.values ?? []}
         pinTooltip={pinTooltip}
@@ -262,6 +264,7 @@ const HIDDEN_TOOLTIP_PROPS: TooltipStateProps = {
   tooltip: DEFAULT_TOOLTIP_SPEC,
   zIndex: 0,
   visible: false,
+  isExternal: false,
   info: undefined,
   position: null,
   settings: {},
@@ -295,16 +298,14 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
     background: { color: backgroundColor },
     tooltip: tooltipTheme,
   } = getChartThemeSelector(state);
+  const { isExternal } = getInternalIsTooltipVisibleSelector(state);
   return getInternalIsInitializedSelector(state) !== InitStatus.Initialized
     ? HIDDEN_TOOLTIP_PROPS
     : {
         tooltip,
+        isExternal,
         zIndex: state.zIndex,
-        settings: getTooltipSettings(
-          tooltip,
-          getSettingsSpecSelector(state),
-          getInternalIsTooltipVisibleSelector(state).isExternal,
-        ),
+        settings: getTooltipSettings(tooltip, getSettingsSpecSelector(state), isExternal),
         tooltipTheme,
         rotation: getChartRotationSelector(state),
         chartId: state.chartId,

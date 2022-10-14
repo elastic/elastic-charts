@@ -389,6 +389,14 @@ export const chartStoreReducer = (chartId: string) => {
             ...state.externalEvents,
             pointer: action.event.chartId === chartId ? null : action.event,
           },
+          // clear pinned states when syncing external cursors
+          ...(action.event.chartId !== chartId && {
+            interactions: {
+              ...state.interactions,
+              pointer: getInitialPointerState(),
+              tooltip: getInitialTooltipState(),
+            },
+          }),
         };
       case CLEAR_TEMPORARY_COLORS:
         return {
