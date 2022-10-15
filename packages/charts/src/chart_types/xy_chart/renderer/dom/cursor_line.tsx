@@ -27,6 +27,7 @@ import { getCursorBandPositionSelector } from '../../state/selectors/get_cursor_
 
 interface CursorLineProps {
   theme: Theme;
+  isBrushing: boolean;
   chartRotation: Rotation;
   cursorPosition?: Rect;
   tooltipType: TooltipType;
@@ -49,6 +50,7 @@ class CursorLineComponent extends React.Component<CursorLineProps> {
       theme: {
         crosshair: { band, line },
       },
+      isBrushing,
       cursorPosition,
       tooltipType,
       fromExternalEvent,
@@ -56,7 +58,12 @@ class CursorLineComponent extends React.Component<CursorLineProps> {
       tooltipState: { pinned },
     } = this.props;
 
-    if (!cursorPosition || !canRenderBand(tooltipType, pinned, band.visible, fromExternalEvent) || !isLine) {
+    if (
+      isBrushing ||
+      !cursorPosition ||
+      !canRenderBand(tooltipType, pinned, band.visible, fromExternalEvent) ||
+      !isLine
+    ) {
       return null;
     }
     const { x, y, width, height } = cursorPosition;
@@ -73,6 +80,7 @@ class CursorLineComponent extends React.Component<CursorLineProps> {
 const mapStateToProps = (state: GlobalChartState): CursorLineProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return {
+      isBrushing: false,
       theme: LIGHT_THEME,
       chartRotation: 0,
       tooltipType: TooltipType.None,
@@ -88,6 +96,7 @@ const mapStateToProps = (state: GlobalChartState): CursorLineProps => {
   const isLine = cursorBandPosition?.width === 0 || cursorBandPosition?.height === 0;
 
   return {
+    isBrushing: state.interactions.pointer.dragging,
     theme: getChartThemeSelector(state),
     chartRotation: getChartRotationSelector(state),
     cursorPosition: cursorBandPosition,

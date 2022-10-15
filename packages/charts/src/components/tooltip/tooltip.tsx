@@ -61,6 +61,7 @@ interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdenti
   pinned: boolean;
   selected: TooltipValue<D, SI>[];
   tooltipTheme: TooltipStyle;
+  isBrushing: boolean;
 }
 
 interface TooltipOwnProps {
@@ -106,6 +107,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   setSelectedTooltipItems,
   pinTooltip,
   canPinTooltip,
+  isBrushing,
 }: TooltipComponentProps<D, SI>) => {
   const chartRef = getChartContainerRef();
 
@@ -144,7 +146,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     };
   }, [settings, chartRef, rotation]);
 
-  if (!visible) {
+  if (!visible || isBrushing) {
     return null;
   }
 
@@ -275,6 +277,7 @@ const HIDDEN_TOOLTIP_PROPS: TooltipStateProps = {
   pinned: false,
   selected: [],
   tooltipTheme: LIGHT_THEME.tooltip,
+  isBrushing: false,
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
@@ -290,7 +293,7 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
 
 type BasicTooltipProps = Omit<
   TooltipStateProps,
-  'visible' | 'position' | 'info' | 'pinned' | 'selected' | 'canPinTooltip'
+  'visible' | 'position' | 'info' | 'pinned' | 'selected' | 'canPinTooltip' | 'isBrushing'
 >;
 const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
   const tooltip = getTooltipSpecSelector(state);
@@ -324,6 +327,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
         pinned: state.interactions.tooltip.pinned,
         selected: getTooltipSelectedItems(state),
         canPinTooltip: isPinnableTooltip(state),
+        isBrushing: state.interactions.pointer.dragging,
       };
 
 /** @internal */

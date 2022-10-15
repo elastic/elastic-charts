@@ -28,6 +28,7 @@ interface HighlighterProps {
   initialized: boolean;
   chartId: string;
   zIndex: number;
+  isBrushing: boolean;
   highlightedGeometries: IndexedGeometry[];
   chartTransform: Transform;
   chartDimensions: Dimensions;
@@ -54,7 +55,8 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
 
   render() {
-    const { highlightedGeometries, chartDimensions, chartRotation, chartId, zIndex } = this.props;
+    const { highlightedGeometries, chartDimensions, chartRotation, chartId, zIndex, isBrushing } = this.props;
+    if (isBrushing) return null;
     const clipWidth = [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width;
     const clipHeight = [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height;
     const clipPathId = `echHighlighterClipPath__${chartId}`;
@@ -116,6 +118,7 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
       initialized: false,
       chartId,
       zIndex,
+      isBrushing: false,
       highlightedGeometries: [],
       chartTransform: {
         x: 0,
@@ -131,6 +134,7 @@ const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
     initialized: true,
     chartId,
     zIndex,
+    isBrushing: state.interactions.pointer.dragging,
     highlightedGeometries: getHighlightedGeomsSelector(state),
     chartTransform: computeChartTransformSelector(state),
     chartDimensions: computeChartDimensionsSelector(state).chartDimensions,

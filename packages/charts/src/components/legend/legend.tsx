@@ -39,6 +39,7 @@ import { getLegendStyle, getLegendListStyle } from './style_utils';
 
 interface LegendStateProps {
   debug: boolean;
+  isBrushing: boolean;
   chartDimensions: Dimensions;
   containerDimensions: Dimensions;
   chartTheme: Theme;
@@ -62,6 +63,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     items,
     size,
     debug,
+    isBrushing,
     chartTheme: { chartMargins, legend },
     chartDimensions,
     containerDimensions,
@@ -79,6 +81,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
 
   const legendClasses = classNames('echLegend', {
     'echLegend--debug': debug,
+    'echLegend--inert': isBrushing,
     'echLegend--horizontal': positionConfig.direction === LayoutDirection.Horizontal,
     'echLegend--vertical': positionConfig.direction === LayoutDirection.Vertical,
     'echLegend--left': positionConfig.hAlign === HorizontalAlignment.Left,
@@ -137,6 +140,7 @@ const EMPTY_DEFAULT_STATE: LegendStateProps = {
   items: [],
   extraValues: new Map(),
   debug: false,
+  isBrushing: false,
   chartTheme: LIGHT_THEME,
   size: { width: 0, height: 0 },
   config: DEFAULT_LEGEND_CONFIG,
@@ -153,6 +157,7 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
   const { debug } = getSettingsSpecSelector(state);
   return {
     debug,
+    isBrushing: state.interactions.pointer.dragging,
     chartDimensions: getInternalMainProjectionAreaSelector(state),
     containerDimensions: getInternalProjectionContainerAreaSelector(state),
     chartTheme: getChartThemeSelector(state),

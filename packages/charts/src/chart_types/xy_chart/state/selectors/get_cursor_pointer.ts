@@ -20,6 +20,7 @@ import { isBrushAvailableSelector } from './is_brush_available';
 
 const getCurrentPointerPositionSelector = (state: GlobalChartState) => state.interactions.pointer.current.position;
 const getTooltipInteractionStateSelector = (state: GlobalChartState) => state.interactions.tooltip;
+const getIsDragging = (state: GlobalChartState) => state.interactions.pointer.dragging;
 
 /** @internal */
 export const getPointerCursorSelector = createCustomCachedSelector(
@@ -32,6 +33,7 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     isBrushAvailableSelector,
     getAnnotationTooltipStateSelector,
     getTooltipInteractionStateSelector,
+    getIsDragging,
   ],
   (
     highlightedGeometries,
@@ -42,12 +44,15 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     isBrushAvailable,
     annotationTooltipState,
     tooltipState,
+    isDragging,
   ): CSSProperties['cursor'] => {
     if (tooltipState.pinned) return;
     const { x, y } = currentPointerPosition;
     // get positions relative to chart
     const xPos = x - chartDimensions.left;
     const yPos = y - chartDimensions.top;
+
+    if (isDragging) return 'crosshair';
 
     // limit cursorPosition to chartDimensions
     if (xPos < 0 || xPos >= chartDimensions.width || yPos < 0 || yPos >= chartDimensions.height) {
