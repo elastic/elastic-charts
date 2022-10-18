@@ -162,7 +162,11 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       id: 'label',
       type: 'custom',
       truncate: true,
-      cell: ({ label }) => <span className="echTooltip__label">{label}</span>,
+      cell: ({ label }) => (
+        <span className="echTooltip__label" title={label}>
+          {label}
+        </span>
+      ),
       hidden: (items) => items.every(({ label }) => !label),
       style: {
         textAlign: 'left',
@@ -176,7 +180,9 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           {formattedValue}
         </span>
       ),
-      width: 'minmax(30%, 1fr)',
+      // truncation is fine for values  due to the grid configuration: label-value  as auto-auto.
+      // The value will be truncated at 50% of the max tooltip width (at ~125px) only if both exceed the 50% of the available space.
+      // It got a plenty of space to render correctly any number even with no formatting
       truncate: true,
       style: {
         textAlign: 'right',

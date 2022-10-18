@@ -46,10 +46,8 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
     }
   }
 
-  &:not(&--pinned) {
-    .echTooltip__tableCell--truncate {
-      @include euiTextTruncate;
-    }
+  .echTooltip__tableCell--truncate {
+    @include euiTextTruncate;
   }
 
   & > :not(:last-child) {
@@ -251,7 +249,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
   }
 
   &__label {
-    @include wrapText;
     min-width: 1px;
     flex: 1 1 auto;
     text-align: left;
