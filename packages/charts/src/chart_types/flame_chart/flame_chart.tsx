@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { ChartType } from '..';
-import { DEFAULT_CSS_CURSOR } from '../../common/constants';
+import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../../common/constants';
 import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
 import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
@@ -542,7 +542,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   private handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    if (e.button === 2) return; // context menu click
+    if (e.button === SECONDARY_BUTTON) return; // context menu click
     if (Number.isNaN(this.pointerX + this.pointerY)) return; // don't reset from minimap
     if (this.tooltipPinned) return; // prevent dragging while tooltip is pinned
 
@@ -591,7 +591,7 @@ class FlameComponent extends React.Component<FlameProps> {
       const isDoubleClick = e.detail > 1;
       const hasClickedOnRectangle = Number.isFinite(hoveredDatumIndex);
       const mustFocus = SINGLE_CLICK_EMPTY_FOCUS || isDoubleClick !== hasClickedOnRectangle; // xor: either double-click on empty space, or single-click on a node
-      const isContextClick = e.button === 2;
+      const isContextClick = e.button === SECONDARY_BUTTON;
 
       if (mustFocus && !isContextClick && !this.pointerInMinimap(this.pointerX, this.pointerY)) {
         const rect = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, hoveredDatumIndex);

@@ -38,12 +38,16 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
         }
       }
     }
+    .echTooltip__actions {
+      pointer-events: auto;
+    }
+    .echTooltip__tableWrapper {
+      pointer-events: auto;
+    }
   }
 
-  &:not(&--pinned) {
-    .echTooltip__tableCell--truncate {
-      @include euiTextTruncate;
-    }
+  .echTooltip__tableCell--truncate {
+    @include euiTextTruncate;
   }
 
   & > :not(:last-child) {
@@ -91,7 +95,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-    pointer-events: auto;
   }
 
   &__action,
@@ -130,7 +133,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
   &__tableWrapper {
     overflow: auto;
-    pointer-events: auto;
   }
 
   &__table {
@@ -247,7 +249,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
   }
 
   &__label {
-    @include wrapText;
     min-width: 1px;
     flex: 1 1 auto;
     text-align: left;
