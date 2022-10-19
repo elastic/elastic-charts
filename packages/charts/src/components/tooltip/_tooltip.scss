@@ -188,7 +188,7 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
     }
 
     .echTooltip__tableRow--selected,
-    .echTooltip__tableRow:hover {
+    .echTooltip__tableRow--selectable:hover {
       .echTooltip__tableCell:not(.echTooltip__colorCell),
       .echTooltip__colorCell .echTooltip__colorStrip--spacer  {
         background-color: #e6f1fb;
