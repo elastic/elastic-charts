@@ -39,8 +39,16 @@ export const TooltipTableRow = ({
   });
 
   return (
-    <tr id={id} className={classes} onClick={isSelectable ? onSelect : undefined}>
+    // cannot focus row using display: contents to structure grid
+    // eslint-disable-next-line jsx-a11y/interactive-supports-focus
+    <div
+      role="row"
+      id={id}
+      className={classes}
+      onClick={isSelectable ? onSelect : undefined}
+      onKeyPress={isSelectable ? onSelect : undefined}
+    >
       {children}
-    </tr>
+    </div>
   );
 };

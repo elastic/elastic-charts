@@ -39,13 +39,17 @@ export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends Serie
 }: TooltipTableHeaderProps<D, SI>) => {
   const classes = classNames('echTooltip__tableHeader', className);
   if ('children' in props) {
-    return <thead className={classes}>{props.children}</thead>;
+    return (
+      <div role="rowgroup" className={classes}>
+        {props.children}
+      </div>
+    );
   }
 
   if (props.columns.every((c) => !c.header)) return null;
 
   return (
-    <thead className={classes}>
+    <div role="rowgroup" className={classes}>
       <TooltipTableRow>
         {props.columns.map(({ header, style, id, className: cn, type }, i) => {
           const key = id ?? `${type}-${i}`;
@@ -57,6 +61,6 @@ export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends Serie
           );
         })}
       </TooltipTableRow>
-    </thead>
+    </div>
   );
 };

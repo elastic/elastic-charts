@@ -66,9 +66,9 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
     const maxHeight = props.maxHeight ?? theme.maxTableHeight;
     return (
       <div className="echTooltip__tableWrapper" style={{ maxHeight }}>
-        <table className={classes} style={{ gridTemplateColumns }}>
+        <div role="table" className={classes} style={{ gridTemplateColumns }}>
           {props.children}
-        </table>
+        </div>
       </div>
     );
   }
@@ -88,11 +88,11 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
       className="echTooltip__tableWrapper"
       style={{ maxHeight: getMaxHeight(pinned, columns, theme.maxTableHeight, props.maxHeight, maxItems) }}
     >
-      <table className={classNames('echTooltip__table', className)} style={{ gridTemplateColumns }}>
+      <div role="table" className={classNames('echTooltip__table', className)} style={{ gridTemplateColumns }}>
         <TooltipTableHeader columns={columns} items={props.items} />
         <TooltipTableBody columns={columns} items={items} pinned={pinned} onSelect={onSelect} selected={selected} />
         <TooltipTableFooter columns={columns} items={props.items} />
-      </table>
+      </div>
     </div>
   );
 };

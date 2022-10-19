@@ -2,10 +2,8 @@
 
 $tooltipBorderColor: $euiColorLightShade;
 $tooltipBorderWidth: 1px;
-$rowColorStripWidth: 6px;
+$rowColorStripWidth: 10px;
 $maxRowColorStripWidth: 14px;
-$rowColorStripAnimatedWidthDelta: 4px;
-$colorStripHoverWidth: $rowColorStripWidth + $rowColorStripAnimatedWidthDelta;
 
 $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
@@ -15,7 +13,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
   padding: 0;
   pointer-events: none;
   user-select: none;
-  max-width: 260px;
   background-color: $euiColorEmptyShade;
   color: $euiTextColor;
   overflow: hidden;
@@ -31,13 +28,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
       cursor: pointer;
     }
 
-    .echTooltip__tableRow {
-      &--selectable:hover:not(&--selected):not(.echTooltip__colorCell--static) {
-        .echTooltip__colorStrip {
-          width: $colorStripHoverWidth;
-        }
-      }
-    }
     .echTooltip__actions {
       pointer-events: auto;
     }
@@ -107,19 +97,17 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
     }
   }
 
-  &__action {
-    color: $euiTextColor;
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-  }
-
   &__prompt {
     color: $euiTextSubduedColor;
   }
 
   &__action {
     cursor: pointer;
+    color: #005EC4;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
 
     &:not([disabled]):hover {
       text-decoration: underline;
@@ -137,8 +125,8 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
   &__table {
     display: grid;
-    border-collapse: collapse;
     width: 100%;
+    border-left: 1px solid $euiColorEmptyShade;
 
     &--noGrid {
       display: table;
@@ -190,8 +178,16 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
   }
 
   &__tableBody {
-    td:not(.echTooltip__colorCell) {
+    .echTooltip__tableCell:not(.echTooltip__colorCell) {
       padding: 2px 4px;
+    }
+
+    .echTooltip__tableRow--selected,
+    .echTooltip__tableRow:hover {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer  {
+        background-color: #e6f1fb;
+      }
     }
   }
 
@@ -205,6 +201,11 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
     &--selected {
       :not(.echTooltip__colorCell--static) .echTooltip__colorStrip {
         width: $maxRowColorStripWidth;
+
+        &--spacer {
+          width: 0;
+          min-width: 0;
+        }
 
         &:not(&--bg)::before {
           opacity: 1;
@@ -225,17 +226,19 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
     }
   }
 
-  &__colorStrip {
+  &__colorStrip,
+  &__colorStrip--bg,
+  &__colorStrip--spacer {
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
     width: $rowColorStripWidth;
-    min-width: $rowColorStripWidth;
-    max-width: $maxRowColorStripWidth;
     transition: width 200ms;
+  }
 
-    &:not(&--bg)::before {
+  &__colorStrip {
+    &::before {
       opacity: 0;
       content: "✓";
       display: flex;
@@ -245,6 +248,13 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
       font-size: 90%;
       font-weight: bold;
       transition: opacity 200ms;
+    }
+
+    &--spacer {
+      left: auto;
+      right: 0;
+      width: $maxRowColorStripWidth - $rowColorStripWidth;
+      min-width: $maxRowColorStripWidth - $rowColorStripWidth;
     }
   }
 

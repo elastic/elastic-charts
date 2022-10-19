@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { ComponentType, PropsWithChildren, useEffect, useState } from 'react';
+import React, { ComponentType, PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum } from '../../../specs';
@@ -34,16 +34,36 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   actionsLoading,
   noActionsLoaded,
 }: TooltipWrapperProps<D, SI>) => {
-  const { dir, pinned, canPinTooltip, selected, pinTooltip, values } = useTooltipContext<D, SI>();
+  const { dir, pinned, canPinTooltip, selected, pinTooltip, values, theme } = useTooltipContext<D, SI>();
 
   const syncActions = Array.isArray(actions);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(true);
+  const [minWidth, setMinWidth] = useState(0);
   const [loadedActions, setLoadedActions] = useState<TooltipAction<D, SI>[]>(syncActions ? actions : []);
+
+  useEffect(() => {
+    // Capture initial unpinned tooltip width
+    window.requestAnimationFrame(() => {
+      if (tooltipRef.current) {
+        const { width } = tooltipRef.current.getBoundingClientRect();
+        setMinWidth(width);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    // Capture pinned tooltip with on change
+    if (pinned && tooltipRef.current && minWidth < theme.maxWidth) {
+      const { width } = tooltipRef.current.getBoundingClientRect();
+      if (width > minWidth) setMinWidth(width);
+    }
+  }, [selected, pinned, minWidth, theme.maxWidth]);
 
   useEffect(() => {
     if (pinned && !syncActions) {
       const fetchActions = async (
-        asyncActions: (selected: TooltipValue<D, SI>[]) => Promise<TooltipAction<D, SI>[]>,
+        asyncActions: (selected: TooltipValue<D, SI>[]) => Promise<TooltipAction<D, SI>[]> | TooltipAction<D, SI>[],
       ) => {
         setLoading(true);
         setLoadedActions(await asyncActions(selected));
@@ -102,9 +122,10 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
         'echTooltip--pinned': pinned,
       })}
       dir={dir}
-      onClick={(e) => {
-        e.stopPropagation(); // block propagation of tooltip click
-      }}
+      ref={tooltipRef}
+      style={{ minWidth }}
+      onClick={(e) => e.stopPropagation()} // block propagation of tooltip click
+      onKeyPress={(e) => e.stopPropagation()} // block propagation of tooltip click
     >
       {renderComplexChildren(children)}
       {(pinned && syncActions && loadedActions.length === 0) || !canPinTooltip ? null : (

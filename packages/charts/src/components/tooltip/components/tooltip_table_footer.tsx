@@ -39,13 +39,17 @@ export const TooltipTableFooter = <D extends BaseDatum = Datum, SI extends Serie
 }: TooltipTableFooterProps<D, SI>) => {
   const classes = classNames('echTooltip__tableFooter', className);
   if ('children' in props) {
-    return <tfoot className={classes}>{props.children}</tfoot>;
+    return (
+      <div role="rowgroup" className={classes}>
+        {props.children}
+      </div>
+    );
   }
 
   if (props.columns.every((c) => !c.footer)) return null;
 
   return (
-    <tfoot className={classes}>
+    <div role="rowgroup" className={classes}>
       <TooltipTableRow>
         {props.columns.map(({ style, id, className: cn, type, footer }, i) => {
           const key = id ?? `${type}-${i}`;
@@ -57,6 +61,6 @@ export const TooltipTableFooter = <D extends BaseDatum = Datum, SI extends Serie
           );
         })}
       </TooltipTableRow>
-    </tfoot>
+    </div>
   );
 };

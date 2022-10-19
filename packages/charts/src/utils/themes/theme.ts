@@ -68,6 +68,10 @@ export interface TextAlignment {
  */
 export interface TooltipStyle {
   /**
+   * Sets max width of tooltip
+   */
+  maxWidth: NonNullable<CSSProperties['maxWidth']>;
+  /**
    * Sets max height of scrolling tooltip table body
    */
   maxTableHeight: CSSProperties['maxHeight'];

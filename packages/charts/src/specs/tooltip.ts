@@ -196,7 +196,9 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
   /**
    * Actions to enable tooltip selection
    */
-  actions: TooltipAction<D, SI>[] | ((selected: TooltipValue<D, SI>[]) => Promise<TooltipAction<D, SI>[]>);
+  actions:
+    | TooltipAction<D, SI>[]
+    | ((selected: TooltipValue<D, SI>[]) => Promise<TooltipAction<D, SI>[]> | TooltipAction<D, SI>[]);
 
   /**
    * Shown in place of actions UI while loading async actions

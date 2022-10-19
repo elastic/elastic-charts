@@ -45,7 +45,11 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
 
   if ('children' in props) {
     const classes = classNames('echTooltip__tableBody', className);
-    return <tbody className={classes}>{props.children}</tbody>;
+    return (
+      <div role="rowgroup" className={classes}>
+        {props.children}
+      </div>
+    );
   }
 
   const { items, pinned, selected, onSelect, columns } = props;
@@ -54,7 +58,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   const allHighlighted = items.every((i) => i.isHighlighted);
 
   return (
-    <tbody className={classes} ref={tableBodyRef}>
+    <div role="rowgroup" className={classes} ref={tableBodyRef}>
       {items.map((item) => {
         const { isHighlighted, isVisible, displayOnly } = item;
         if (!isVisible) return null;
@@ -71,7 +75,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
           </TooltipTableRow>
         );
       })}
-    </tbody>
+    </div>
   );
 };
 
