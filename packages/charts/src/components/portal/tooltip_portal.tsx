@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { createPopper, Instance } from '@popperjs/core';
+import { createPopper, Instance, Placement as PopperPlacement } from '@popperjs/core';
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -44,6 +44,11 @@ type PortalTooltipProps = {
    * Chart Id to add new anchor for each chart on the page
    */
   chartId: string;
+
+  /**
+   * Called when computed placement changes
+   */
+  onPlacementChange?: (placement: PopperPlacement) => void;
 };
 
 function addToPadding(padding: Partial<Padding> | number = 0, extra: number = 0): Padding | number | undefined {
@@ -67,7 +72,9 @@ const TooltipPortalComponent = ({
   visible,
   chartId,
   zIndex,
+  onPlacementChange,
 }: PortalTooltipProps) => {
+  const finalPlacement = useRef<PopperPlacement>('auto');
   const skipPositioning = isHTMLElement((anchor as PortalAnchorRef).current);
   const { position } = anchor as PositionedPortalAnchorRef;
 
@@ -145,6 +152,17 @@ const TooltipPortalComponent = ({
             // checks main axis overflow before trying to flip
             altAxis: false,
             padding: addToPadding(boundaryPadding, offset),
+          },
+        },
+        {
+          name: 'reportPlacement',
+          phase: 'afterWrite',
+          enabled: Boolean(onPlacementChange),
+          fn: ({ state }) => {
+            if (finalPlacement.current !== state.placement) {
+              finalPlacement.current = state.placement;
+              onPlacementChange?.(state.placement);
+            }
           },
         },
       ],

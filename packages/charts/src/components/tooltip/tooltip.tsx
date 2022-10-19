@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React, { useEffect, useMemo, memo, RefObject } from 'react';
+import { Placement as PopperPlacement } from '@popperjs/core';
+import React, { useEffect, useMemo, memo, RefObject, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -109,6 +110,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   canPinTooltip,
   isBrushing,
 }: TooltipComponentProps<D, SI>) => {
+  const [computedPlacement, setComputedPlacement] = useState<PopperPlacement | undefined>(settings?.placement);
   const chartRef = getChartContainerRef();
 
   const handleScroll = (e: Event) => {
@@ -219,6 +221,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       settings={popperSettings}
       chartId={chartId}
       visible={visible}
+      onPlacementChange={setComputedPlacement}
     >
       <TooltipProvider
         backgroundColor={backgroundColor}
@@ -240,6 +243,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           visible={visible}
           header={header}
           footer={footer}
+          placement={computedPlacement}
           toggleSelected={toggleSelectedTooltipItem}
           setSelection={setSelectedTooltipItems}
           actions={hideActions || !canPinTooltip ? [] : actions}
