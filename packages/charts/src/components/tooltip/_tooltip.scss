@@ -19,7 +19,7 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
   overflow: hidden;
   cursor: default;
   transition: box-shadow 400ms, opacity $euiAnimSpeedNormal;
-
+  border: 1px solid $euiColorEmptyShade;
   &__outerWrapper {
     display: flex;
   }
@@ -131,7 +131,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
   &__table {
     display: grid;
     width: 100%;
-    border-left: 1px solid $euiColorEmptyShade;
 
     &--noGrid {
       display: table;
