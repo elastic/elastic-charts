@@ -31,7 +31,7 @@ import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
 import { getProjectedPointerPositionSelector } from './selectors/get_projected_pointer_position';
 import {
   getHighlightedGeomsSelector,
-  getTooltipInfoAndGeometriesSelector,
+  getHighlightedTooltipTooltipValuesSelector,
 } from './selectors/get_tooltip_values_highlighted_geoms';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
@@ -171,7 +171,7 @@ describe('Chart state pointer interactions', () => {
     };
     MockStore.addSpecs([ordinalBarSeries, updatedSettings], store);
     store.dispatch(onPointerMove({ x: 10, y: 10 + 70 }, 0));
-    const tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+    const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
     // no tooltip values exist if we have a TooltipType === None
     expect(tooltipInfo.tooltip.values.length).toBe(0);
     let isTooltipVisible = isTooltipVisibleSelector(store.getState());
@@ -222,7 +222,7 @@ describe('Chart state pointer interactions', () => {
         onElementOverCaller(state);
         onPointerMoveCaller(state);
       });
-      const tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.tooltip.values).toEqual([]);
     });
 
@@ -238,14 +238,14 @@ describe('Chart state pointer interactions', () => {
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
-      const tooltipInfo1 = getTooltipInfoAndGeometriesSelector(store.getState());
+      const tooltipInfo1 = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo1.tooltip.values.length).toBe(1);
       // avoid calls
       store.dispatch(onPointerMove({ x: chartLeft + 12, y: chartTop + 12 }, 1));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
-      const tooltipInfo2 = getTooltipInfoAndGeometriesSelector(store.getState());
+      const tooltipInfo2 = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo2.tooltip.values.length).toBe(1);
       expect(tooltipInfo1).toEqual(tooltipInfo2);
     });
@@ -256,14 +256,14 @@ describe('Chart state pointer interactions', () => {
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
-      const tooltipInfo1 = getTooltipInfoAndGeometriesSelector(store.getState());
+      const tooltipInfo1 = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo1.tooltip.values.length).toBe(1);
       // avoid calls
       store.dispatch(onPointerMove({ x: chartLeft + 12, y: chartTop + 10 }, 1));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
-      const tooltipInfo2 = getTooltipInfoAndGeometriesSelector(store.getState());
+      const tooltipInfo2 = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo2.tooltip.values.length).toBe(1);
       expect(tooltipInfo1).toEqual(tooltipInfo2);
     });
@@ -396,7 +396,7 @@ describe('Chart state pointer interactions', () => {
     });
 
     test('can hover top-left corner of the first bar', () => {
-      let tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      let tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.tooltip.values).toEqual([]);
       store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 0 }, 0));
       let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
@@ -407,7 +407,7 @@ describe('Chart state pointer interactions', () => {
       expect((cursorBandPosition as Rect).width).toBe(45);
       let isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(true);
-      tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(onOverListener).toHaveBeenCalledTimes(1);
@@ -437,7 +437,7 @@ describe('Chart state pointer interactions', () => {
       expect(projectedPointerPosition).toMatchObject({ x: -1, y: -1 });
       isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(false);
-      tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.tooltip.values.length).toBe(0);
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
       expect(onOverListener).toHaveBeenCalledTimes(1);
@@ -454,7 +454,7 @@ describe('Chart state pointer interactions', () => {
       expect((cursorBandPosition as Rect).width).toBe(45);
       let isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(true);
-      let tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      let tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(onOverListener).toHaveBeenCalledTimes(1);
@@ -483,7 +483,7 @@ describe('Chart state pointer interactions', () => {
       expect(projectedPointerPosition).toMatchObject({ x: -1, y: 89 });
       isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(false);
-      tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.tooltip.values.length).toBe(0);
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
       expect(onOverListener).toHaveBeenCalledTimes(1);
@@ -504,7 +504,7 @@ describe('Chart state pointer interactions', () => {
       expect((cursorBandPosition as Rect).width).toBe(45);
       let isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(true);
-      let tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      let tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(onOverListener).toHaveBeenCalledTimes(1);
@@ -538,7 +538,7 @@ describe('Chart state pointer interactions', () => {
       expect((cursorBandPosition as Rect).width).toBe(45);
       isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(true);
-      tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
       expect(onOverListener).toHaveBeenCalledTimes(1);
@@ -559,7 +559,7 @@ describe('Chart state pointer interactions', () => {
       expect((cursorBandPosition as Rect).width).toBe(45);
       let isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(true);
-      let tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      let tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(onOverListener).toHaveBeenCalledTimes(1);
@@ -593,7 +593,7 @@ describe('Chart state pointer interactions', () => {
       expect((cursorBandPosition as Rect).width).toBe(45);
       isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(true);
-      tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       // we are over the second bar here
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
@@ -626,7 +626,7 @@ describe('Chart state pointer interactions', () => {
     test('can hover top-right corner of the chart', () => {
       expect(onOverListener).toHaveBeenCalledTimes(0);
       expect(onOutListener).toHaveBeenCalledTimes(0);
-      let tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      let tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
       expect(tooltipInfo.tooltip.values.length).toBe(0);
 
@@ -640,7 +640,7 @@ describe('Chart state pointer interactions', () => {
 
       const isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(true);
-      tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(onOverListener).toHaveBeenCalledTimes(0);
@@ -692,7 +692,7 @@ describe('Chart state pointer interactions', () => {
       expect((cursorBandPosition as Rect).width).toBe(45);
       const isTooltipVisible = isTooltipVisibleSelector(store.getState());
       expect(isTooltipVisible.visible).toBe(true);
-      const tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+      const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.highlightedGeometries.length).toBe(1);
       expect(tooltipInfo.tooltip.values.length).toBe(1);
       expect(onOverListener).toHaveBeenCalledTimes(1);
@@ -782,7 +782,7 @@ describe('Chart state pointer interactions', () => {
       test('chart 0 rotation', () => {
         MockStore.addSpecs([spec, leftAxis, bottomAxis, currentSettingSpec], store);
         store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 89 }, 0));
-        const tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+        const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
         expect(tooltipInfo.tooltip.header?.value).toBe(0);
         expect(tooltipInfo.tooltip.header?.formattedValue).toBe('bottom 0');
         expect(tooltipInfo.tooltip.values[0].value).toBe(10);
@@ -797,7 +797,7 @@ describe('Chart state pointer interactions', () => {
         MockStore.addSpecs([spec, leftAxis, bottomAxis, updatedSettings], store);
 
         store.dispatch(onPointerMove({ x: chartLeft + 0, y: chartTop + 89 }, 0));
-        const tooltipInfo = getTooltipInfoAndGeometriesSelector(store.getState());
+        const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
         expect(tooltipInfo.tooltip.header?.value).toBe(1);
         expect(tooltipInfo.tooltip.header?.formattedValue).toBe('left 1');
         expect(tooltipInfo.tooltip.values[0].value).toBe(5);
@@ -1380,7 +1380,7 @@ describe('Clickable annotations', () => {
     });
 
     const tooltipValues = (s: Store) =>
-      getTooltipInfoAndGeometriesSelector(s.getState()).tooltip.values.map((d) => [d.label, d.value]);
+      getHighlightedTooltipTooltipValuesSelector(s.getState()).tooltip.values.map((d) => [d.label, d.value]);
 
     it.each`
       type               | stackMode               | first                   | second        | third

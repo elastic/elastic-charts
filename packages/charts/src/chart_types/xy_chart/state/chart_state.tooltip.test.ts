@@ -14,7 +14,7 @@ import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { GlobalChartState, chartStoreReducer } from '../../../state/chart_state';
-import { getTooltipInfoAndGeometriesSelector } from './selectors/get_tooltip_values_highlighted_geoms';
+import { getHighlightedTooltipTooltipValuesSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 
 describe('XYChart - State tooltips', () => {
   let store: Store<GlobalChartState>;
@@ -65,7 +65,7 @@ describe('XYChart - State tooltips', () => {
       );
       store.dispatch(specParsed());
       const state = store.getState();
-      const tooltipValues = getTooltipInfoAndGeometriesSelector(state);
+      const tooltipValues = getHighlightedTooltipTooltipValuesSelector(state);
       expect(tooltipValues.tooltip.values).toHaveLength(expectedTooltipValuesLength);
       expect(tooltipValues.tooltip.header === null).toBe(expectHeader);
       expect(tooltipValues.highlightedGeometries).toHaveLength(expectedHgeomsLength);

@@ -80,7 +80,8 @@ export const Example = () => {
                     </span>
                   ),
                   hide: ({ length }) => length > 0,
-                  onSelect: (series) => alert(`Selected the following: \n - ${series.map((s) => s.key).join('\n - ')}`),
+                  onSelect: (values) =>
+                    alert(`Selected the following: \n - ${values.map((v) => v.seriesIdentifier.key).join('\n - ')}`),
                 },
               ]
         }

@@ -303,7 +303,7 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
 
 type BasicTooltipProps = Omit<
   TooltipStateProps,
-  'visible' | 'position' | 'info' | 'pinned' | 'selected' | 'canPinTooltip' | 'isBrushing'
+  'visible' | 'position' | 'info' | 'pinned' | 'selected' | 'canPinTooltip'
 >;
 const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
   const tooltip = getTooltipSpecSelector(state);
@@ -317,6 +317,7 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
     : {
         tooltip,
         isExternal,
+        isBrushing: false,
         zIndex: state.zIndex,
         settings: getTooltipSettings(tooltip, getSettingsSpecSelector(state), isExternal),
         tooltipTheme,
