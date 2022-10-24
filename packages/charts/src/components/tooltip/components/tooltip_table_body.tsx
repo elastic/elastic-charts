@@ -63,7 +63,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
         if (!isVisible) return null;
         return (
           <TooltipTableRow
-            key={`${item.seriesIdentifier.key}-${item.value}`}
+            key={`${item.seriesIdentifier.key}-${item.label}-${item.value}`}
             isHighlighted={!pinned && !allHighlighted && isHighlighted}
             isSelected={pinned && selected.includes(item)}
             onSelect={displayOnly || !onSelect ? undefined : () => onSelect(item)}
