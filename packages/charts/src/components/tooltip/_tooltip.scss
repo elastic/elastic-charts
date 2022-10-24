@@ -108,7 +108,7 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
   &__action {
     cursor: pointer;
-    color: #005EC4;
+    color: #005ec4;
     width: 100%;
     display: flex;
     align-items: flex-start;
@@ -189,7 +189,7 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
     .echTooltip__tableRow--selected,
     .echTooltip__tableRow--selectable:hover {
       .echTooltip__tableCell:not(.echTooltip__colorCell),
-      .echTooltip__colorCell .echTooltip__colorStrip--spacer  {
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
         background-color: #e6f1fb;
       }
     }
@@ -244,7 +244,7 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
   &__colorStrip {
     &::before {
       opacity: 0;
-      content: "✓";
+      content: '✓';
       display: flex;
       justify-content: center;
       align-items: center;
