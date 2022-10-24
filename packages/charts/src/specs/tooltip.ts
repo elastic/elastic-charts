@@ -111,7 +111,10 @@ export function getTooltipType(tooltip: TooltipSpec, settings: SettingsSpec, ext
   return visible ? TooltipType.VerticalCursor : TooltipType.None;
 }
 
-/** @internal */
+/**
+ * Tooltip action parameters
+ * @public
+ */
 export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
   /**
    * Clickable label to display action

@@ -131,3 +131,10 @@ export type PropsOrChildrenWithProps<
 export type Neverify<T extends Record<string, unknown>> = {
   [Key in keyof T]?: never;
 };
+
+/** @public */
+export type ToggleSelectedTooltipItemCallback = (item: TooltipValue<any, SeriesIdentifier>) => any;
+/** @public */
+export type SetSelectedTooltipItemsCallback = (items: TooltipValue<any, SeriesIdentifier>[]) => any;
+/** @public */
+export type PinTooltipCallback = (pinned: boolean, resetPointer?: boolean) => any;

@@ -121,6 +121,3 @@ export type TooltipTableColumn<D extends BaseDatum = Datum, SI extends SeriesIde
   | TooltipTableColumnColor<D, SI>
   | TooltipTableColumnNumber<D, SI>
   | TooltipTableColumnText<D, SI>;
-
-/** @internal */
-export type ActionOrFunction<T extends (...args: any[]) => any> = T | ((...args: Parameters<T>) => void);

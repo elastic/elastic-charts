@@ -37,14 +37,19 @@ import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
 import { TooltipBody } from './components/tooltip_body';
 import { TooltipProvider } from './components/tooltip_provider';
-import { ActionOrFunction, TooltipTableColumn } from './components/types';
-import { TooltipInfo } from './types';
+import { TooltipTableColumn } from './components/types';
+import {
+  PinTooltipCallback,
+  SetSelectedTooltipItemsCallback,
+  ToggleSelectedTooltipItemCallback,
+  TooltipInfo,
+} from './types';
 
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
-  toggleSelectedTooltipItem: ActionOrFunction<typeof toggleSelectedTooltipItemAction>;
-  setSelectedTooltipItems: ActionOrFunction<typeof setSelectedTooltipItemsAction>;
-  pinTooltip: ActionOrFunction<typeof pinTooltipAction>;
+  toggleSelectedTooltipItem: ToggleSelectedTooltipItemCallback;
+  setSelectedTooltipItems: SetSelectedTooltipItemsCallback;
+  pinTooltip: PinTooltipCallback;
 }
 
 interface TooltipStateProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {

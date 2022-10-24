@@ -11,15 +11,14 @@ import React, { CSSProperties } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps } from '../../../specs';
-import { toggleSelectedTooltipItem, setSelectedTooltipItems } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
-import { TooltipInfo } from '../types';
+import { SetSelectedTooltipItemsCallback, ToggleSelectedTooltipItemCallback, TooltipInfo } from '../types';
 import { TooltipFooter } from './tooltip_footer';
 import { TooltipHeader } from './tooltip_header';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTable } from './tooltip_table';
 import { TooltipWrapper } from './tooltip_wrapper';
-import { ActionOrFunction, TooltipTableColumn } from './types';
+import { TooltipTableColumn } from './types';
 
 interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends Pick<
@@ -33,8 +32,8 @@ interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentif
   columns: TooltipTableColumn<D, SI>[];
   headerFormatter?: TooltipValueFormatter<D, SI>;
   settings?: TooltipProps<D, SI>;
-  toggleSelected: ActionOrFunction<typeof toggleSelectedTooltipItem>;
-  setSelection: ActionOrFunction<typeof setSelectedTooltipItems>;
+  toggleSelected: ToggleSelectedTooltipItemCallback;
+  setSelection: SetSelectedTooltipItemsCallback;
 }
 
 /** @internal */
