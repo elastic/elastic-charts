@@ -23,6 +23,14 @@ jest.mock('../../../utils/logger', () => ({
   },
 }));
 
+// Mock default timezone for local development environment
+jest.spyOn(Intl, 'DateTimeFormat');
+(Intl.DateTimeFormat as unknown as jest.Mock).mockReturnValue({
+  resolvedOptions: jest.fn(() => ({
+    timeZone: 'UTC',
+  })),
+});
+
 describe('X Domain', () => {
   test('Should return a default scale when missing specs or specs types', () => {
     const seriesSpecs: BasicSeriesSpec[] = [];
