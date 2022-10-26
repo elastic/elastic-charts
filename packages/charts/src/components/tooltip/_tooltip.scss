@@ -140,6 +140,7 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
 
   &__tableWrapper {
     overflow: auto;
+    @include euiScrollBar;
   }
 
   &__table {
