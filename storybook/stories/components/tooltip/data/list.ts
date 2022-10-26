@@ -21,7 +21,7 @@ export const simple: TooltipInfo<any, XYChartSeriesIdentifier> = {
     valueAccessor: 'y1',
     label: 'a - y1',
     value: 0,
-    formattedValue: '0',
+    formattedValue: '2022-10-31 00:00:00.666',
     markValue: null,
     color: '#54B399',
     isHighlighted: false,

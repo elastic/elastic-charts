@@ -25,7 +25,7 @@ const TOOLTIP_FOOTER_HEIGHT = 25;
 /**
  * Manually synced with `$maxRowColorStripWidth` scss var in [`_tooltip.scss`](packages/charts/src/components/tooltip/_tooltip.scss)
  */
-const MAX_ROW_COLOR_STRIP_WIDTH = 14;
+const MAX_ROW_COLOR_STRIP_WIDTH = 11;
 
 type TooltipTableProps<
   D extends BaseDatum = Datum,

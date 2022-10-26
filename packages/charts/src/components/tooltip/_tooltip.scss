@@ -2,8 +2,11 @@
 
 $tooltipBorderColor: $euiColorLightShade;
 $tooltipBorderWidth: 1px;
-$rowColorStripWidth: 10px;
-$maxRowColorStripWidth: 14px;
+$rowColorStripWidth: 5px;
+/**
+ * Manually synced with `MAX_ROW_COLOR_STRIP_WIDTH` const in [`tooltip_table.tsx`](packages/charts/src/components/tooltip/components/tooltip_table.tsx)
+ */
+$maxRowColorStripWidth: 11px;
 
 $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
@@ -84,7 +87,6 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
   &__actions {
     width: 100%;
-    padding-left: $rowColorStripWidth;
     padding-top: $euiSizeS;
     padding-bottom: $euiSizeS;
     display: flex;
