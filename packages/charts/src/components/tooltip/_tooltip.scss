@@ -114,19 +114,24 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
 
   &__action {
     cursor: pointer;
-    color: #005ec4;
+    color: $euiTextColor;
     width: 100%;
     display: flex;
     align-items: flex-start;
     text-align: left;
 
-    &:not([disabled]):hover {
+    &:hover,
+    &:focus {
       text-decoration: underline;
     }
 
     &[disabled] {
-      cursor: not-allowed;
-      color: $euiTextSubduedColor;
+      cursor: default;
+      color: $euiButtonColorDisabledText;
+      &:hover,
+      &:focus {
+        text-decoration: none;
+      }
     }
   }
 

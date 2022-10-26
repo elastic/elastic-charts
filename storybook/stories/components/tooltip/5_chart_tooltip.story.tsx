@@ -41,22 +41,22 @@ export const Example = () => {
         maxVisibleTooltipItems,
         actions: [
           {
-            disabled: (d) => d.length < 1,
-            label: (d) => `Filter categor${d.length > 1 ? 'ies' : 'y'}`,
+            label: () => 'Drilldown to dashboard X',
             onSelect: (s) => action('onTooltipAction')(s),
           },
           {
             disabled: (d) => d.length < 1,
-            label: (d) => `Copy value${d.length > 1 ? 's' : ''}`,
+            label: (d) =>
+              d.length < 1 ? 'Select to filter categories' : `Filter categor${d.length > 1 ? 'ies' : 'y'}`,
             onSelect: (s) => action('onTooltipAction')(s),
           },
           {
             disabled: (d) => d.length < 1,
-            label: (d) => (
-              <span title={d.length < 1 ? 'Select at least 1 category to search' : 'Search the selected category'}>
-                Search for term{d.length > 1 ? 's' : ''}
-              </span>
-            ),
+            label: (d) => (d.length < 1 ? 'Select to copy values' : `Copy value${d.length > 1 ? 's' : ''}`),
+            onSelect: (s) => action('onTooltipAction')(s),
+          },
+          {
+            label: () => 'A very long action label that will be truncated',
             onSelect: (s) => action('onTooltipAction')(s),
           },
         ],
