@@ -10,6 +10,10 @@ $maxRowColorStripWidth: 11px;
 
 $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
+$tableRowHoverColor: transparentize($euiColorPrimary, .95);
+$tableRowSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
+$tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
+
 .echTooltip {
   @include euiToolTipStyle;
   @include euiFontSizeXS;
@@ -188,13 +192,35 @@ $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
       padding: 2px 4px;
     }
 
-    .echTooltip__tableRow--selected,
+    .echTooltip__tableRow--selected {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color:$tableRowSelectedColor;
+      }
+    }
+
+    .echTooltip__tableRow--selected:hover {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color: $tableRowHoverSelectedColor;
+      }
+    }
     .echTooltip__tableRow--selectable:hover {
       .echTooltip__tableCell:not(.echTooltip__colorCell),
       .echTooltip__colorCell .echTooltip__colorStrip--spacer {
-        background-color: #e6f1fb;
+        background-color: $tableRowHoverColor;
       }
     }
+
+
+
+    //.echTooltip__tableRow--selected,
+    //.echTooltip__tableRow--selectable:hover {
+    //  .echTooltip__tableCell:not(.echTooltip__colorCell),
+    //  .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+    //    background-color: #e6f1fb;
+    //  }
+    //}
   }
 
   &__tableRow {
