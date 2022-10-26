@@ -216,16 +216,6 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
         background-color: $tableRowHoverColor;
       }
     }
-
-
-
-    //.echTooltip__tableRow--selected,
-    //.echTooltip__tableRow--selectable:hover {
-    //  .echTooltip__tableCell:not(.echTooltip__colorCell),
-    //  .echTooltip__colorCell .echTooltip__colorStrip--spacer {
-    //    background-color: #e6f1fb;
-    //  }
-    //}
   }
 
   &__tableRow {
