@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { tableSimple, simple, long } from './data';
+import { tableSimple, simple, long, partition } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
@@ -18,9 +18,10 @@ export const Example = () => {
   const dataSet = select(
     'dataSet',
     {
+      '4 elements': 'simple',
+      '8 elements': 'long',
       'Simple - table': 'tableSimple',
-      'Simple - list': 'simple',
-      'Long - list': 'long',
+      partition: 'partition',
     },
     'simple',
   );
@@ -28,6 +29,7 @@ export const Example = () => {
     tableSimple,
     simple,
     long,
+    partition,
   };
 
   const pinned = boolean('pinned', true);
@@ -56,7 +58,7 @@ export const Example = () => {
             onSelect: (s) => action('onTooltipAction')(s),
           },
           {
-            label: () => 'A very long action label that will be truncated',
+            label: () => 'A long action label is truncated at max tooltip width',
             onSelect: (s) => action('onTooltipAction')(s),
           },
         ],

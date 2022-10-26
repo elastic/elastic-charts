@@ -107,19 +107,22 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
       padding-top: 0;
     }
   }
+  &__action {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   &__prompt {
     color: $euiTextSubduedColor;
   }
 
   &__action {
+    display: block;
+    text-align: left;
+    width: 100%;
     cursor: pointer;
     color: $euiTextColor;
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    text-align: left;
-
     &:hover,
     &:focus {
       text-decoration: underline;
