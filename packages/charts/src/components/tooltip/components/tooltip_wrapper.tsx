@@ -13,6 +13,7 @@ import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum } from '../../../specs';
 import { TooltipAction, TooltipSpec, TooltipValue } from '../../../specs/tooltip';
 import { Datum, renderComplexChildren, renderWithProps } from '../../../utils/common';
+import { TooltipDivider } from './tooltip_divider';
 import { useTooltipContext } from './tooltip_provider';
 
 type TooltipWrapperProps<
@@ -130,6 +131,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
       {renderComplexChildren(children)}
       {(pinned && syncActions && loadedActions.length === 0) || !canPinTooltip ? null : (
         <div className="echTooltip__actions">
+          <TooltipDivider />
           {pinned ? renderActions() : <TooltipPrompt>{actionPrompt}</TooltipPrompt>}
         </div>
       )}

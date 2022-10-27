@@ -12,6 +12,7 @@ import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue, TooltipValueFormatter } from '../../../specs';
 import { Datum, renderComplexChildren } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
+import { TooltipDivider } from './tooltip_divider';
 
 type TooltipHeaderProps<
   D extends BaseDatum = Datum,
@@ -25,14 +26,24 @@ const TooltipHeaderInner = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   props: TooltipHeaderProps<D, SI>,
 ) => {
   if ('children' in props) {
-    return <div className="echTooltip__header">{renderComplexChildren(props.children)}</div>;
+    return (
+      <>
+        <div className="echTooltip__header">{renderComplexChildren(props.children)}</div>
+        <TooltipDivider />
+      </>
+    );
   }
   const { header, formatter } = props;
   if (!header || !header.isVisible) return null;
 
   const formattedValue = formatter ? formatter(header) : header.formattedValue;
   if (!formattedValue) return null;
-  return <div className="echTooltip__header">{formattedValue}</div>;
+  return (
+    <>
+      <div className="echTooltip__header">{formattedValue}</div>
+      <TooltipDivider />
+    </>
+  );
 };
 
 /** @public */

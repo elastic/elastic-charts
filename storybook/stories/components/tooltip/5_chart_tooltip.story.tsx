@@ -32,7 +32,7 @@ export const Example = () => {
     partition,
   };
 
-  const pinned = boolean('pinned', true);
+  const pinned = boolean('pinned', false);
 
   return (
     <TooltipShowcase

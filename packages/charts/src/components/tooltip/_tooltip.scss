@@ -52,10 +52,6 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
     @include euiTextTruncate;
   }
 
-  & > :not(:last-child) {
-    border-bottom: $tableBorder;
-  }
-
   .euiTable {
     background-color: transparent;
   }
@@ -67,6 +63,7 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
   }
 
   &__divider {
+    width:100%;
     border-bottom: $tableBorder;
   }
 
@@ -77,22 +74,19 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
   }
 
   &__header {
-    font-weight: $euiFontWeightBold;
+    font-weight: $euiFontWeightSemiBold;
     margin-bottom: 0;
     padding: $euiSizeXS ($euiSizeXS * 2);
   }
 
   &__footer {
     font-weight: $euiFontWeightBold;
-    border-top: $tableBorder;
     margin-top: 0;
     padding: $euiSizeXS ($euiSizeXS * 2);
   }
 
   &__actions {
     width: 100%;
-    padding-top: $euiSizeS;
-    padding-bottom: $euiSizeS;
     display: flex;
     align-items: flex-start;
     flex-direction: column;
@@ -100,21 +94,24 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
 
   &__action,
   &__prompt {
-    padding: $euiSizeS;
-    padding-bottom: 0;
+    padding: 0 $euiSizeS;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 21px;
+
 
     &:first-child {
       padding-top: 0;
     }
   }
+  &__prompt {
+    color: $euiTextSubduedColor;
+  }
+
   &__action {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  &__prompt {
-    color: $euiTextSubduedColor;
   }
 
   &__action {

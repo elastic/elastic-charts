@@ -45,7 +45,7 @@ export const Example = () => {
 
   const MyTooltip: CustomTooltip<any, XYChartSeriesIdentifier> = ({ values, selected, pinned, toggleSelected }) => {
     return (
-      <TooltipTable maxHeight={300} gridTemplateColumns="14px auto auto">
+      <TooltipTable maxHeight={300} gridTemplateColumns="11px auto auto">
         <TooltipTableHeader>
           <TooltipTableRow>
             <TooltipTableColorCell />
