@@ -53,16 +53,6 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
     @include euiTextTruncate;
   }
 
-  .euiTable {
-    background-color: transparent;
-  }
-
-  .euiTableFooterCell,
-  .euiTableHeaderCell,
-  .euiTableRowCell {
-    color: white;
-  }
-
   &__divider {
     width: 100%;
     border-bottom: $tableBorder;
