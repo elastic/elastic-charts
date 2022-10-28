@@ -28,7 +28,7 @@ const TooltipHeaderInner = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   if ('children' in props) {
     return (
       <>
-        <div className="echTooltip__header">{renderComplexChildren(props.children)}</div>
+        <div className="echTooltipHeader">{renderComplexChildren(props.children)}</div>
         <TooltipDivider />
       </>
     );
@@ -40,7 +40,7 @@ const TooltipHeaderInner = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   if (!formattedValue) return null;
   return (
     <>
-      <div className="echTooltip__header">{formattedValue}</div>
+      <div className="echTooltipHeader">{formattedValue}</div>
       <TooltipDivider />
     </>
   );

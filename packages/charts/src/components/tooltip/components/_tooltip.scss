@@ -10,7 +10,7 @@ $maxRowColorStripWidth: 11px;
 
 $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
-$tableRowHoverColor: transparentize($euiColorPrimary, 0.95);
+$tableRowHoverColor: transparentize($euiColorPrimary, .95);
 $tableRowSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
 $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
 
@@ -54,7 +54,7 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
   }
 
   &__divider {
-    width: 100%;
+    width:100%;
     border-bottom: $tableBorder;
   }
 
@@ -191,7 +191,7 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
     .echTooltip__tableRow--selected {
       .echTooltip__tableCell:not(.echTooltip__colorCell),
       .echTooltip__colorCell .echTooltip__colorStrip--spacer {
-        background-color: $tableRowSelectedColor;
+        background-color:$tableRowSelectedColor;
       }
     }
 
@@ -213,10 +213,7 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
     position: relative;
 
     &--highlighted {
-      .echTooltip__tableCell:not(.echTooltip__colorCell),
-      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
-        background-color: transparentize($euiColorLightShade, 0.5);
-      }
+      background-color: transparentize($euiColorLightShade, 0.5);
     }
 
     &--selected {

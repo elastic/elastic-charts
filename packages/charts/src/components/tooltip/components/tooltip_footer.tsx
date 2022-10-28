@@ -14,5 +14,5 @@ type TooltipFooterProps = PropsWithChildren<{}>;
 
 /** @public */
 export const TooltipFooter = ({ children }: TooltipFooterProps) => {
-  return <div className="echTooltip__footer">{renderComplexChildren(children)}</div>;
+  return <div className="echTooltipFooter">{renderComplexChildren(children)}</div>;
 };
