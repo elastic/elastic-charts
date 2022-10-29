@@ -16,10 +16,11 @@ const numericalLayerCount = 2;
 
 /** @internal */
 export const numericalRasters = ({ minimumTickPixelDistance, locale }: RasterConfig) => {
-  const formatter = new Intl.NumberFormat(locale, {
+  const numberFormat = new Intl.NumberFormat(locale, {
     notation: 'standard',
     maximumFractionDigits: 0,
-  }).format.bind(Intl.NumberFormat);
+  });
+  const formatter = numberFormat.format.bind(numberFormat);
   const allRasters: AxisLayer<Interval>[] = [...new Array(numericalLayerCount)]
     .map(
       (_, i): AxisLayer<Interval> => ({

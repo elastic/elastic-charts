@@ -117,7 +117,7 @@ const getNullInteractionState = (): InteractionState => ({
 const rasterSelector =
   HORIZONTAL_AXIS === 'continuousTime' ? continuousTimeRasters(rasterConfig, timeZone) : numericalRasters(rasterConfig);
 
-const yTickNumberFormatter = new Intl.NumberFormat(
+const yTickNumberFormat = new Intl.NumberFormat(
   config.locale,
   config.numUnit === 'none'
     ? {}
@@ -125,7 +125,9 @@ const yTickNumberFormatter = new Intl.NumberFormat(
         notation: 'compact',
         compactDisplay: config.numUnit,
       },
-).format.bind(Intl.NumberFormat);
+);
+
+const yTickNumberFormatter = yTickNumberFormat.format.bind(yTickNumberFormat);
 
 const touchUpdate = (interactionState: InteractionState, newMultitouch: Multitouch) => {
   const { multitouch, horizontalZoomPan: zoomPan, horizontalScreenDimensions } = interactionState;
