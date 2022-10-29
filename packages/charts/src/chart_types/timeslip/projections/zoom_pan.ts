@@ -14,7 +14,7 @@ const INITIAL_ZOOM = 5.248;
 const INITIAL_PAN = 0.961; // doesn't matter if INITIAL_ZOOM is 0, this is just a ratio
 
 interface Focus {
-  zoom: number; // Exponential: 1: full domain is in view; 2: half, 3: quarter, ie. the visible view is a 1 / 2^zoom multiple of the full domain
+  zoom: number; // Exponential: 0: full domain is in view; 1: half, 2: quarter, ie. the visible view is a 1 / 2^zoom multiple of the full domain
   pan: number; // 0: left side of focus is flush with the left side of the full domain, given zoom level, 1: right side of focus is flush with the right side of the full domain
 }
 
