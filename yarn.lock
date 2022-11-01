@@ -2896,32 +2896,6 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.2.tgz#8f03a22a04de437254e8ce8cc84ba39689288752"
   integrity sha512-HyYEUDeIj5rRQU2Hk5HTB2uHsbRQpF70nvMhVzi+VJR0X+xNEhjPui4/kBf3VeH/wqD28PT4sVOm8qqLjBrSZg==
 
-"@elastic/charts@*":
-  version "50.0.2"
-  resolved "https://registry.yarnpkg.com/@elastic/charts/-/charts-50.0.2.tgz#45d37544d57af8d67a1033bbd78ebe3f58d9f662"
-  integrity sha512-Q2fPS/bwKCYfTE7/dFO9OdlFtQQ7NMhflbl4WnHjpBcDeqUsqE/6cHd8XyvY/+WFhH9fkyCzBlO/eRBA3KatmA==
-  dependencies:
-    "@popperjs/core" "^2.4.0"
-    bezier-easing "^2.1.0"
-    chroma-js "^2.1.0"
-    classnames "^2.2.6"
-    d3-array "^1.2.4"
-    d3-cloud "^1.2.5"
-    d3-collection "^1.0.7"
-    d3-interpolate "^3.0.1"
-    d3-scale "^3.3.0"
-    d3-shape "^2.0.0"
-    luxon "^1.25.0"
-    prop-types "^15.7.2"
-    re-reselect "^3.4.0"
-    react-redux "^7.1.0"
-    redux "^4.0.4"
-    reselect "^4.0.0"
-    resize-observer-polyfill "^1.5.1"
-    ts-debounce "^4.0.0"
-    utility-types "^3.10.0"
-    uuid "^8.3.2"
-
 "@elastic/datemath@^5.0.3":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/@elastic/datemath/-/datemath-5.0.3.tgz#7baccdab672b9a3ecb7fe8387580670936b58573"
