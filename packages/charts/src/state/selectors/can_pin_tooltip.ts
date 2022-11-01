@@ -6,19 +6,42 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 're-reselect';
-
 import { ChartType } from '../../chart_types';
+import { getTooltipInfoAndGeomsSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
 import { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
+import { getTooltipSpecSelector } from './get_tooltip_spec';
+import { isExternalTooltipVisibleSelector } from './is_external_tooltip_visible';
 
 /**
  * Enables tooltip pinning only for certain chart types
  */
 const pinnableTooltipCharts = new Set<ChartType>([ChartType.XYAxis, ChartType.Heatmap, ChartType.Partition]);
 
+const getChartType = ({ chartType }: GlobalChartState) => chartType;
+
 /**
  * @internal
  */
-export const isPinnableTooltip: Selector<GlobalChartState, boolean> = ({ chartType }) => {
-  return Boolean(chartType && pinnableTooltipCharts.has(chartType));
-};
+export const isPinnableTooltip = createCustomCachedSelector(
+  [getChartType, isExternalTooltipVisibleSelector, getTooltipSpecSelector, getTooltipInfoAndGeomsSelector],
+  (
+    chartType,
+    isExternal,
+    { maxVisibleTooltipItems, maxTooltipItems, actions },
+    { tooltip, highlightedGeometries },
+  ): boolean => {
+    const isPinnableChartType = Boolean(chartType && pinnableTooltipCharts.has(chartType));
+    const actionable = actions.length > 0 || !Array.isArray(actions);
+    let hasHiddenSeries = false;
+
+    if (chartType === ChartType.XYAxis) {
+      const infoCount = tooltip.values.length;
+      const highlightCount = highlightedGeometries.length;
+      hasHiddenSeries =
+        (infoCount > highlightCount && infoCount > maxTooltipItems) || infoCount > maxVisibleTooltipItems;
+    }
+
+    return isPinnableChartType && !isExternal && (hasHiddenSeries || actionable);
+  },
+);

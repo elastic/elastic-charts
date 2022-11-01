@@ -102,7 +102,6 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   settings,
   tooltipTheme,
   visible,
-  isExternal,
   rotation,
   chartId,
   onPointerMove,
@@ -210,7 +209,6 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   ];
 
   const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
-  const actionable = actions.length > 0 || !Array.isArray(actions);
 
   return (
     <TooltipPortal
@@ -232,8 +230,8 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         backgroundColor={backgroundColor}
         dir={isMostlyRTL ? 'rtl' : 'ltr'}
         pinned={pinned}
-        actionable={actionable}
-        canPinTooltip={canPinTooltip && !isExternal}
+        actionable={actions.length > 0 || !Array.isArray(actions)}
+        canPinTooltip={canPinTooltip}
         selected={selected}
         values={info?.values ?? []}
         pinTooltip={pinTooltip}

@@ -114,6 +114,7 @@ export const Example = () => {
       <Tooltip
         placement={getPlacementKnob()}
         maxTooltipItems={number('maxTooltipItems', 5, { min: 1, step: 1 }, 'Tooltip styles')}
+        maxVisibleTooltipItems={number('maxVisibleTooltipItems', 5, { min: 1, step: 1 }, 'Tooltip styles')}
         type={getTooltipTypeKnob('tooltip type', 'vertical', 'Tooltip styles')}
         actions={disableActions ? [] : asyncActions ? () => wait(asyncDelay, () => actions) : actions}
       />
