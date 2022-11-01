@@ -12,6 +12,7 @@ import React, { CSSProperties } from 'react';
 import { SeriesIdentifier } from '../../../common/series_id';
 import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps } from '../../../specs';
 import { Datum } from '../../../utils/common';
+import { TooltipStyle } from '../../../utils/themes/theme';
 import { SetSelectedTooltipItemsCallback, ToggleSelectedTooltipItemCallback, TooltipInfo } from '../types';
 import { TooltipFooter } from './tooltip_footer';
 import { TooltipHeader } from './tooltip_header';
@@ -54,17 +55,17 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   actionsLoading,
   noActionsLoaded,
 }: TooltipBodyProps<D, SI>) => {
-  const { backgroundColor, dir, pinned, selected, theme } = useTooltipContext<D, SI>();
+  const { backgroundColor, dir, pinned, selected, theme, actionable } = useTooltipContext<D, SI>();
   if (!info || !visible) {
     return null;
   }
 
-  const wrapperStyles = getStylesFromPlacement(placement);
+  const wrapperStyles = getStylesFromPlacement(actionable, theme, placement);
 
   if (typeof settings !== 'string' && settings?.customTooltip) {
     const CustomTooltip = settings.customTooltip;
     return (
-      <div className="echTooltip__outerWrapper" style={{ ...wrapperStyles, width: theme.maxWidth }}>
+      <div className="echTooltip__outerWrapper" style={wrapperStyles}>
         <TooltipWrapper
           actions={actions}
           actionPrompt={actionPrompt}
@@ -88,7 +89,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   }
 
   return (
-    <div className="echTooltip__outerWrapper" style={{ ...wrapperStyles, width: theme.maxWidth }}>
+    <div className="echTooltip__outerWrapper" style={wrapperStyles}>
       <TooltipWrapper
         actions={actions}
         actionPrompt={actionPrompt}
@@ -114,7 +115,12 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   );
 };
 
-function getStylesFromPlacement(placement?: PopperPlacement): CSSProperties | undefined {
+function getStylesFromPlacement(
+  actionable: boolean,
+  { maxWidth }: TooltipStyle,
+  placement?: PopperPlacement,
+): CSSProperties | undefined {
+  if (!actionable) return { maxWidth };
   switch (placement) {
     case 'left':
     case 'left-start':
@@ -122,6 +128,7 @@ function getStylesFromPlacement(placement?: PopperPlacement): CSSProperties | un
     case 'top-end':
     case 'bottom-end':
       return {
+        width: maxWidth,
         justifyContent: 'flex-end',
       };
     case 'right':
@@ -130,17 +137,21 @@ function getStylesFromPlacement(placement?: PopperPlacement): CSSProperties | un
     case 'top-start':
     case 'bottom-start':
       return {
+        width: maxWidth,
         justifyContent: 'flex-start',
       };
     case 'top':
     case 'bottom':
       return {
+        width: maxWidth,
         justifyContent: 'center',
       };
     case 'auto':
     case 'auto-start':
     case 'auto-end':
     default:
-      return undefined;
+      return {
+        width: maxWidth,
+      };
   }
 }
