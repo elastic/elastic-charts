@@ -148,7 +148,10 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
     position: relative;
 
     &--highlighted {
-      background-color: transparentize($euiColorLightShade, 0.5);
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {	
+        background-color: transparentize($euiColorLightShade, 0.5);	
+      }
     }
 
     &--selected {
