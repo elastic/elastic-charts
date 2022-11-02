@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
@@ -19,7 +18,6 @@ import {
   Settings,
   PartialTheme,
   defaultPartitionValueFormatter,
-  Tooltip,
 } from '@elastic/charts';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -58,71 +56,45 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => {
-  const disableActions = boolean('disable actions', false);
-
-  return (
-    <Chart>
-      <Settings showLegend legendStrategy="pathWithDescendants" theme={theme} baseTheme={useBaseTheme()} />
-      <Tooltip
-        actions={
-          disableActions
-            ? []
-            : [
-                {
-                  label: () => 'Log storybook action',
-                  onSelect: (s) => action('onTooltipAction')(s),
-                },
-                {
-                  label: ({ length }) => (
-                    <span>
-                      Alert keys of all <b>{length}</b> selected series
-                    </span>
-                  ),
-                  hide: ({ length }) => length > 0,
-                  onSelect: (values) =>
-                    alert(`Selected the following: \n - ${values.map((v) => v.seriesIdentifier.key).join('\n - ')}`),
-                },
-              ]
-        }
-      />
-      <Partition
-        id="spec_1"
-        data={mocks.miniSunburst}
-        layout={PartitionLayout.sunburst}
-        valueAccessor={(d: Datum) => d.exportVal as number}
-        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-        layers={[
-          {
-            groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: any) => productLookup[d].name,
-            fillLabel: { maximizeFontSize: boolean('Maximize font size layer 1', true) },
-            shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex),
-            },
+export const Example = () => (
+  <Chart>
+    <Settings showLegend legendStrategy="pathWithDescendants" theme={theme} baseTheme={useBaseTheme()} />
+    <Partition
+      id="spec_1"
+      data={mocks.miniSunburst}
+      layout={PartitionLayout.sunburst}
+      valueAccessor={(d: Datum) => d.exportVal as number}
+      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      layers={[
+        {
+          groupByRollup: (d: Datum) => d.sitc1,
+          nodeLabel: (d: any) => productLookup[d].name,
+          fillLabel: { maximizeFontSize: boolean('Maximize font size layer 1', true) },
+          shape: {
+            fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex),
           },
-          {
-            groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
-            nodeLabel: (d: any) => regionLookup[d].regionName,
-            fillLabel: { maximizeFontSize: boolean('Maximize font size layer 2', true) },
-            shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
-            },
+        },
+        {
+          groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
+          nodeLabel: (d: any) => regionLookup[d].regionName,
+          fillLabel: { maximizeFontSize: boolean('Maximize font size layer 2', true) },
+          shape: {
+            fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
           },
-          {
-            groupByRollup: (d: Datum) => d.dest,
-            nodeLabel: (d: any) => countryLookup[d].name,
-            fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', true) },
-            shape: {
-              fillColor: (d: ShapeTreeNode) =>
-                discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
-            },
+        },
+        {
+          groupByRollup: (d: Datum) => d.dest,
+          nodeLabel: (d: any) => countryLookup[d].name,
+          fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', true) },
+          shape: {
+            fillColor: (d: ShapeTreeNode) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
           },
-        ]}
-      />
-    </Chart>
-  );
-};
+        },
+      ]}
+    />
+  </Chart>
+);
 
 Example.parameters = {
   background: { default: 'white' },

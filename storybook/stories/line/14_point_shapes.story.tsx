@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { action } from '@storybook/addon-actions';
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -21,13 +20,11 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
-  Tooltip,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
-import { getTooltipTypeKnob } from '../utils/knobs';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20);
@@ -35,7 +32,6 @@ const shapes = Object.values(PointShape);
 
 export const Example = () => {
   const showColorPicker = boolean('Show color picker', false);
-  const disableActions = boolean('disable actions', false);
 
   return (
     <Chart>
@@ -46,31 +42,6 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         legendColorPicker={showColorPicker ? getColorPicker('leftCenter') : undefined}
       />
-      <Tooltip
-        maxTooltipItems={number('maxTooltipItems', 5, { min: 1, step: 1 })}
-        type={getTooltipTypeKnob('tooltip type', 'vertical')}
-        actions={
-          disableActions
-            ? []
-            : [
-                {
-                  label: () => 'Log storybook action',
-                  onSelect: action('onTooltipAction'),
-                },
-                {
-                  label: ({ length }) => (
-                    <span>
-                      Alert keys of all <b>{length}</b> selected series
-                    </span>
-                  ),
-                  disabled: ({ length }) => (length < 1 ? 'Select at least one series' : false),
-                  onSelect: (series) =>
-                    alert(`Selected the following: \n - ${series.map((s) => s.seriesIdentifier.key).join('\n - ')}`),
-                },
-              ]
-        }
-      />
-
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis
         id="left"
