@@ -8,7 +8,7 @@
 
 import { getValidatedTimeZone, getZoneFromSpecs } from '../../../utils/time_zone';
 import { cachedZonedDateTimeFrom, timeProp } from '../../xy_chart/axes/timeslip/chrono/cached_chrono';
-import { RasterConfig } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
+import { RasterConfig, TimeFormatter } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { DEFAULT_LOCALE, MINIMUM_TICK_PIXEL_DISTANCE } from '../../xy_chart/axes/timeslip/multilayer_ticks';
 import { LocaleOptions } from './render/annotations/time_extent';
 
@@ -141,27 +141,30 @@ export const localeOptions: LocaleOptions = {
   second: '2-digit',
 };
 
-/**
- * todo this may need an update with locale change
- * @internal
- */
-export const defaultLabelFormat = new Intl.DateTimeFormat(config.locale, {
+const defaultLabelFormatter = new Intl.DateTimeFormat(config.locale, {
   weekday: 'short',
   hour: 'numeric',
   minute: 'numeric',
   timeZone,
-}).format.bind(Intl.DateTimeFormat);
+});
+/**
+ * todo this may need an update with locale change
+ * @internal
+ */
+export const defaultLabelFormat = (value: Parameters<TimeFormatter>[0]) => defaultLabelFormatter.format(value);
 
-/**
- * todo this may need an update with locale change
- * @internal
- */
-export const defaultMinorTickLabelFormat = new Intl.DateTimeFormat(config.locale, {
+const defaultMinorTickLabelFormatter = new Intl.DateTimeFormat(config.locale, {
   weekday: 'short',
   hour: 'numeric',
   minute: 'numeric',
   timeZone,
-}).format.bind(Intl.DateTimeFormat);
+});
+/**
+ * todo this may need an update with locale change
+ * @internal
+ */
+export const defaultMinorTickLabelFormat = (value: Parameters<TimeFormatter>[0]) =>
+  defaultMinorTickLabelFormatter.format(value);
 
 /** @internal */
 export const fadeOutPixelWidth = 12; // todo add to config

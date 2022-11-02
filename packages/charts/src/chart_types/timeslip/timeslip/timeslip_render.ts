@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { continuousTimeRasters } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
+import { continuousTimeRasters, NumberFormatter } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { numericalRasters } from '../../xy_chart/axes/timeslip/numerical_rasters';
 import { axisModel } from '../projections/axis_model';
 import { domainTween } from '../projections/domain_tween';
@@ -117,7 +117,7 @@ const getNullInteractionState = (): InteractionState => ({
 const rasterSelector =
   HORIZONTAL_AXIS === 'continuousTime' ? continuousTimeRasters(rasterConfig, timeZone) : numericalRasters(rasterConfig);
 
-const yTickNumberFormat = new Intl.NumberFormat(
+const yTickNumberFormatter = new Intl.NumberFormat(
   config.locale,
   config.numUnit === 'none'
     ? {}
@@ -127,7 +127,7 @@ const yTickNumberFormat = new Intl.NumberFormat(
       },
 );
 
-const yTickNumberFormatter = yTickNumberFormat.format.bind(yTickNumberFormat);
+const yTickNumberFormat = (value: Parameters<NumberFormatter>[0]) => yTickNumberFormatter.format(value);
 
 const touchUpdate = (interactionState: InteractionState, newMultitouch: Multitouch) => {
   const { multitouch, horizontalZoomPan: zoomPan, horizontalScreenDimensions } = interactionState;
@@ -220,7 +220,7 @@ const doCartesian = (
     emWidth,
     fadeOutPixelWidth,
     defaultLabelFormat,
-    yTickNumberFormatter,
+    yTickNumberFormat,
     rasterSelector,
     cartesianWidth,
     cartesianHeight,

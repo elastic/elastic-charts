@@ -10,17 +10,17 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import { getDecimalTicks, oneFive } from '../../../timeslip/projections/axis_model';
-import { AxisLayer, Interval, RasterConfig } from './continuous_time_rasters';
+import { AxisLayer, Interval, NumberFormatter, RasterConfig } from './continuous_time_rasters';
 
 const numericalLayerCount = 2;
 
 /** @internal */
 export const numericalRasters = ({ minimumTickPixelDistance, locale }: RasterConfig) => {
-  const numberFormat = new Intl.NumberFormat(locale, {
+  const numberFormatter = new Intl.NumberFormat(locale, {
     notation: 'standard',
     maximumFractionDigits: 0,
   });
-  const formatter = numberFormat.format.bind(numberFormat);
+  const format = (value: Parameters<NumberFormatter>[0]) => numberFormatter.format(value);
   const allRasters: AxisLayer<Interval>[] = [...new Array(numericalLayerCount)]
     .map(
       (_, i): AxisLayer<Interval> => ({
@@ -33,8 +33,8 @@ export const numericalRasters = ({ minimumTickPixelDistance, locale }: RasterCon
             minimum: d,
             supremum: i < a.length - 1 ? a[i + 1] : d + (d - a[i - 1]),
           })),
-        detailedLabelFormat: (n: number) => formatter((n - 1300000000000) / 1e6),
-        minorTickLabelFormat: (n: number) => formatter((n - 1300000000000) / 1e6),
+        detailedLabelFormat: (n: number) => format((n - 1300000000000) / 1e6),
+        minorTickLabelFormat: (n: number) => format((n - 1300000000000) / 1e6),
       }),
     )
     .reverse();
