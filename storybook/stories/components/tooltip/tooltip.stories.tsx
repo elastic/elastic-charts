@@ -11,6 +11,7 @@ export { Example as ComposedTable } from './2_composed_table.story';
 export { Example as TabularData } from './3_tabular_data.story';
 export { Example as ActionsWithCustomTooltip } from './4_actions_with_custom_tooltip.story';
 export { Example as DefaultChartsTooltip } from './5_chart_tooltip.story';
+export { Example as AsyncActions } from './6_async_actions.story';
 
 export default {
   title: 'Components/Tooltip',
