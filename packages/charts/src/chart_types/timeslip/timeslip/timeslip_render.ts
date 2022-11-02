@@ -127,7 +127,7 @@ const yTickNumberFormatter = new Intl.NumberFormat(
       },
 );
 
-const yTickNumberFormat = (value: Parameters<NumberFormatter>[0]) => yTickNumberFormatter.format(value);
+const yTickNumberFormat: NumberFormatter = (value) => yTickNumberFormatter.format(value);
 
 const touchUpdate = (interactionState: InteractionState, newMultitouch: Multitouch) => {
   const { multitouch, horizontalZoomPan: zoomPan, horizontalScreenDimensions } = interactionState;

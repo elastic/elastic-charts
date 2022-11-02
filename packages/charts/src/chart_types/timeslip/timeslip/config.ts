@@ -151,7 +151,7 @@ const defaultLabelFormatter = new Intl.DateTimeFormat(config.locale, {
  * todo this may need an update with locale change
  * @internal
  */
-export const defaultLabelFormat = (value: Parameters<TimeFormatter>[0]) => defaultLabelFormatter.format(value);
+export const defaultLabelFormat: TimeFormatter = (value) => defaultLabelFormatter.format(value);
 
 const defaultMinorTickLabelFormatter = new Intl.DateTimeFormat(config.locale, {
   weekday: 'short',
@@ -163,8 +163,7 @@ const defaultMinorTickLabelFormatter = new Intl.DateTimeFormat(config.locale, {
  * todo this may need an update with locale change
  * @internal
  */
-export const defaultMinorTickLabelFormat = (value: Parameters<TimeFormatter>[0]) =>
-  defaultMinorTickLabelFormatter.format(value);
+export const defaultMinorTickLabelFormat: TimeFormatter = (value) => defaultMinorTickLabelFormatter.format(value);
 
 /** @internal */
 export const fadeOutPixelWidth = 12; // todo add to config

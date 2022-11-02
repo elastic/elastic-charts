@@ -20,7 +20,7 @@ export const numericalRasters = ({ minimumTickPixelDistance, locale }: RasterCon
     notation: 'standard',
     maximumFractionDigits: 0,
   });
-  const format = (value: Parameters<NumberFormatter>[0]) => numberFormatter.format(value);
+  const format: NumberFormatter = (value) => numberFormatter.format(value);
   const allRasters: AxisLayer<Interval>[] = [...new Array(numericalLayerCount)]
     .map(
       (_, i): AxisLayer<Interval> => ({
