@@ -14,6 +14,7 @@ import { BaseDatum } from '../../../specs';
 import { TooltipAction, TooltipSpec, TooltipValue } from '../../../specs/tooltip';
 import { Datum, renderComplexChildren, renderWithProps } from '../../../utils/common';
 import { TooltipDivider } from './tooltip_divider';
+import { TooltipPrompt } from './tooltip_prompt';
 import { useTooltipContext } from './tooltip_provider';
 
 type TooltipWrapperProps<
@@ -79,7 +80,10 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   }, [syncActions, actions, selected, pinned]);
 
   const renderPromptContent = (content: string | ComponentType<{ selected: TooltipValue<D, SI>[] }>) => (
-    <TooltipPrompt>{renderWithProps(content, { selected })}</TooltipPrompt>
+    <div className="echTooltipActions">
+      <TooltipDivider />
+      <div className="echTooltipActions__prompt">{renderWithProps(content, { selected })}</div>
+    </div>
   );
 
   const renderActions = () => {
@@ -91,31 +95,36 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
     const visibleActions = loadedActions.filter(({ hide }) => !hide || hide(selected));
 
     if (visibleActions.length === 0) {
-      return <div className="echTooltip__prompt">{selectionPrompt}</div>;
+      return <div className="echTooltipPrompt">{selectionPrompt}</div>;
     }
 
-    return visibleActions.map(({ onSelect, label, disabled }, i) => {
-      const reason = disabled && disabled(selected);
+    return [
+      <TooltipDivider />,
+      ...visibleActions.map(({ onSelect, label, disabled }, i) => {
+        const reason = disabled && disabled(selected);
 
-      return (
-        <button
-          className="echTooltip__action"
-          key={i}
-          title={typeof reason === 'string' ? reason : undefined}
-          disabled={Boolean(reason)}
-          onClick={() => {
-            pinTooltip(false, true);
-            // timeout used to close tooltip before calling action
-            setTimeout(() => {
-              onSelect(selected, values);
-            }, 0);
-          }}
-        >
-          {typeof label === 'string' ? label : label(selected)}
-        </button>
-      );
-    });
+        return (
+          <button
+            className="echTooltipActions__action"
+            key={i}
+            title={typeof reason === 'string' ? reason : undefined}
+            disabled={Boolean(reason)}
+            onClick={() => {
+              pinTooltip(false, true);
+              // timeout used to close tooltip before calling action
+              setTimeout(() => {
+                onSelect(selected, values);
+              }, 0);
+            }}
+          >
+            {typeof label === 'string' ? label : label(selected)}
+          </button>
+        );
+      }),
+    ];
   };
+
+  const key = values.map((d) => `${d.label}`).join('#');
 
   return (
     <div
@@ -129,14 +138,11 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
       onKeyPress={(e) => e.stopPropagation()} // block propagation of tooltip click
     >
       {renderComplexChildren(children)}
-      {(pinned && syncActions && loadedActions.length === 0) || !canPinTooltip ? null : (
-        <div className="echTooltip__actions">
-          <TooltipDivider />
-          {pinned ? renderActions() : <TooltipPrompt>{actionPrompt}</TooltipPrompt>}
-        </div>
+      {(pinned && syncActions && loadedActions.length === 0) || !canPinTooltip ? null : pinned ? (
+        <div className="echTooltipActions">{renderActions()}</div>
+      ) : (
+        <TooltipPrompt key={key}>{actionPrompt}</TooltipPrompt>
       )}
     </div>
   );
 };
-
-const TooltipPrompt = ({ children }: PropsWithChildren<{}>) => <div className="echTooltip__prompt">{children}</div>;

@@ -41,7 +41,7 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
       cursor: pointer;
     }
 
-    .echTooltip__actions {
+    .echTooltipActions {
       pointer-events: auto;
     }
     .echTooltip__tableWrapper {
@@ -53,81 +53,16 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
     @include euiTextTruncate;
   }
 
-  &__divider {
-    width:100%;
-    border-bottom: $tableBorder;
-  }
-
   &__metricRow {
     padding: $euiSizeXS ($euiSizeXS * 2);
     display: flex;
     justify-content: space-between;
   }
 
-  &__header {
-    font-weight: $euiFontWeightSemiBold;
-    margin-bottom: 0;
-    padding: $euiSizeXS ($euiSizeXS * 2);
-  }
-
-  &__footer {
-    font-weight: $euiFontWeightBold;
-    margin-top: 0;
-    padding: $euiSizeXS ($euiSizeXS * 2);
-  }
-
-  &__actions {
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  &__action,
-  &__prompt {
-    padding: 0 $euiSizeS;
-    font-style: normal;
-    font-size: 12px;
-    line-height: 21px;
-
-    &:first-child {
-      padding-top: 0;
-    }
-  }
-  &__prompt {
-    color: $euiTextSubduedColor;
-  }
-
-  &__action {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__action {
-    display: block;
-    text-align: left;
-    width: 100%;
-    cursor: pointer;
-    color: $euiTextColor;
-    &:hover,
-    &:focus {
-      text-decoration: underline;
-    }
-
-    &[disabled] {
-      cursor: default;
-      color: $euiButtonColorDisabledText;
-      &:hover,
-      &:focus {
-        text-decoration: none;
-      }
-    }
-  }
-
   &__tableWrapper {
     overflow: auto;
     @include euiScrollBar;
+    background-color: $euiColorEmptyShade;
   }
 
   &__table {
