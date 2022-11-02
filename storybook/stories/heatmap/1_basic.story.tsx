@@ -22,7 +22,6 @@ import {
   RecursivePartial,
   ScaleType,
   Settings,
-  Tooltip,
 } from '@elastic/charts';
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
@@ -87,7 +86,6 @@ export const Example = () => {
   }, []);
 
   const onBrushEnd = action('onBrushEnd');
-  const disableActions = boolean('disable actions', false);
 
   return (
     <Chart>
@@ -107,28 +105,6 @@ export const Example = () => {
           const { x, y } = e as HeatmapBrushEvent;
           setSelection({ x, y });
         }}
-      />
-      <Tooltip
-        actions={
-          disableActions
-            ? []
-            : [
-                {
-                  label: () => 'Log storybook action',
-                  onSelect: (s) => action('onTooltipAction')(s),
-                },
-                {
-                  label: ({ length }) => (
-                    <span>
-                      Alert keys of all <b>{length}</b> selected series
-                    </span>
-                  ),
-                  hide: ({ length }) => length > 0,
-                  onSelect: (series) =>
-                    alert(`Selected the following: \n - ${series.map((s) => s.seriesIdentifier.key).join('\n - ')}`),
-                },
-              ]
-        }
       />
       <Heatmap
         id="heatmap1"
