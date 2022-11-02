@@ -11,31 +11,40 @@
 
 import { cachedTimeDelta, cachedZonedDateTimeFrom, timeProp } from './chrono/cached_chrono';
 import { epochInSecondsToYear } from './chrono/chrono';
-import { TIME_UNIT_TRANSLATIONS } from './time_unit_translations';
+import { LOCALE_TRANSLATIONS } from './locale_translations';
+
+/** @public */
+export type BinUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond' | 'one';
 
 // utils
-const approxWidthsInSeconds: Record<string, number> = {
+/** @public */
+export const unitIntervalWidth: Record<BinUnit, number> = {
   year: 365.25 * 24 * 60 * 60,
   month: (365.25 * 24 * 60 * 60) / 12,
   week: 7 * 24 * 60 * 60,
   day: 24 * 60 * 60,
   hour: 60 * 60,
   minute: 60,
-  second: 1,
+  second: 1, // for time, one second is the unit
   millisecond: 0.001,
+  one: 1,
 };
 
-/** @public */
-export interface TimeBin {
-  timePointSec: number;
-  nextTimePointSec: number;
+/**
+ * Left closed, right open interval on (connected subset of) on a partially ordered set
+ * Poset covers real numbers, integers, time, ordinals incl. ordered categories, trees, DAGs
+ * Valid but useless for fully unordered categorical (nominal) values.
+ * It's simply called Interval because we don't currently model other interval types eg. closed.
+ * @public
+ */
+export interface Interval {
+  minimum: number;
+  supremum: number;
 }
 
-/** @internal */
-export type TimeBinGenerator<T extends TimeBin> = (domainFrom: number, domainTo: number) => Generator<T, void> | T[];
+type IntervalIterableMaker<T extends Interval> = (domainFrom: number, domainTo: number) => Iterable<T>;
 
-/** @public */
-export type BinUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond';
+type YearsAxisLayer = AxisLayer<Interval & { year: number }>;
 
 /** @internal */
 export type NumberFormatter = (n: number) => string;
@@ -43,33 +52,57 @@ export type NumberFormatter = (n: number) => string;
 /** @internal */
 export type TimeFormatter = NumberFormatter & ReturnType<typeof Intl.DateTimeFormat>['format']; // numeric input to Intl.DateTimeFormat only
 
-/** @internal */
-export interface TimeRaster<T extends TimeBin> {
+/**
+ * Partition of a connected subset of a totally ordered set into sub-intervals (ie. the sub-intervals are
+ * gapless and overlap-free, covering a totally ordered set)
+ * @internal
+ */
+
+export interface AxisLayer<T extends Interval> {
   unit: BinUnit;
   unitMultiplier: number;
   labeled: boolean;
   minimumTickPixelDistance: number;
-  binStarts: TimeBinGenerator<T>;
+  intervals: IntervalIterableMaker<T>;
   detailedLabelFormat: TimeFormatter;
   minorTickLabelFormat: TimeFormatter;
-  minimumPixelsPerSecond: number;
-  approxWidthInMs: number;
 }
 
 /** @internal */
 export interface RasterConfig {
   minimumTickPixelDistance: number;
-  locale: keyof typeof TIME_UNIT_TRANSLATIONS;
+  locale: keyof typeof LOCALE_TRANSLATIONS;
 }
 
-const millisecondBinStarts = (rasterMs: number): TimeBinGenerator<TimeBin> =>
+const millisecondIntervals = (rasterMs: number): IntervalIterableMaker<Interval> =>
   function* (domainFrom, domainTo) {
     for (let t = Math.floor((domainFrom * 1000) / rasterMs); t < Math.ceil((domainTo * 1000) / rasterMs); t++) {
-      const timePointSec = (t * rasterMs) / 1000;
+      const minimum = (t * rasterMs) / 1000;
       yield {
-        timePointSec,
-        nextTimePointSec: timePointSec + rasterMs / 1000,
+        minimum,
+        supremum: minimum + rasterMs / 1000,
       };
+    }
+  };
+
+const monthBasedIntervals = (
+  years: YearsAxisLayer,
+  timeZone: string,
+  unitMultiplier: number,
+): IntervalIterableMaker<Interval & { year: number; month: number }> =>
+  function* (domainFrom, domainTo) {
+    for (const { year } of years.intervals(domainFrom, domainTo)) {
+      for (let month = 1; month <= 12; month += unitMultiplier) {
+        const timePoint = cachedZonedDateTimeFrom({ timeZone, year, month, day: 1 });
+        const binStart = timePoint[timeProp.epochSeconds];
+        const binEnd = cachedZonedDateTimeFrom({
+          timeZone,
+          year: month <= 12 - unitMultiplier ? year : year + 1,
+          month: ((month + unitMultiplier - 1) % 12) + 1,
+          day: 1,
+        })[timeProp.epochSeconds];
+        yield { year, month, minimum: binStart, supremum: binEnd };
+      }
     }
   };
 
@@ -106,7 +139,7 @@ const englishPluralRules = new Intl.PluralRules('en-US', { type: 'ordinal' });
 const englishOrdinalEnding = (signedNumber: number) => englishOrdinalEndings[englishPluralRules.select(signedNumber)];
 
 /** @internal */
-export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, timeZone: string) => {
+export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: RasterConfig, timeZone: string) => {
   const minorDayBaseFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
   const minorDayFormat = (d: number) => {
     const numberString = minorDayBaseFormat(d);
@@ -129,109 +162,94 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
   }).format;
   const detailedHourFormat = (d: number) => `${detailedHourFormatBase(d)}h`;
 
-  const years: TimeRaster<TimeBin & { year: number }> = {
+  const years: YearsAxisLayer = {
     unit: 'year',
     unitMultiplier: 1,
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
-    binStarts: function* (domainFrom, domainTo) {
+    intervals: function* (domainFrom, domainTo) {
       const fromYear = epochInSecondsToYear(timeZone, domainFrom);
       const toYear = epochInSecondsToYear(timeZone, domainTo);
       for (let year = fromYear; year <= toYear; year++) {
         const timePoint = cachedZonedDateTimeFrom({ timeZone, year, month: 1, day: 1 });
-        const timePointSec = timePoint[timeProp.epochSeconds];
-        const nextTimePointSec = cachedZonedDateTimeFrom({
+        const binStart = timePoint[timeProp.epochSeconds];
+        const binEnd = cachedZonedDateTimeFrom({
           timeZone,
           year: year + 1,
           month: 1,
           day: 1,
         })[timeProp.epochSeconds];
-        yield { year, timePointSec, nextTimePointSec };
+        yield { year, minimum: binStart, supremum: binEnd };
       }
     },
     detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
   const unlabeledGridMinimumPixelDistance = minimumTickPixelDistance / 1.618;
-  const yearsUnlabelled: TimeRaster<TimeBin & { year: number }> = {
+  const yearsUnlabelled: YearsAxisLayer = {
     ...years,
     labeled: false,
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
-  const decades: TimeRaster<TimeBin & { year: number }> = {
+  const decades: YearsAxisLayer = {
     unit: 'year',
     unitMultiplier: 10,
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
-    binStarts: function* (domainFrom, domainTo) {
+    intervals: function* (domainFrom, domainTo) {
       const fromYear = epochInSecondsToYear(timeZone, domainFrom);
       const toYear = epochInSecondsToYear(timeZone, domainTo);
       for (let year = Math.floor(fromYear / 10) * 10; year <= Math.ceil(toYear / 10) * 10; year += 10) {
         const timePoint = cachedZonedDateTimeFrom({ timeZone, year, month: 1, day: 1 });
-        const timePointSec = timePoint[timeProp.epochSeconds];
-        const nextTimePointSec = cachedZonedDateTimeFrom({
+        const binStart = timePoint[timeProp.epochSeconds];
+        const binEnd = cachedZonedDateTimeFrom({
           timeZone,
           year: year + 10,
           month: 1,
           day: 1,
         })[timeProp.epochSeconds];
-        yield { year, timePointSec, nextTimePointSec };
+        yield { year, minimum: binStart, supremum: binEnd };
       }
     },
     detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
-  const decadesUnlabelled: TimeRaster<TimeBin & { year: number }> = {
+  const decadesUnlabelled: YearsAxisLayer = {
     ...decades,
     labeled: false,
     minimumTickPixelDistance: 1, // it should change if we ever add centuries and millennia
   };
-  const months: TimeRaster<TimeBin & { year: number; month: number }> = {
+  const months: AxisLayer<Interval & { year: number; month: number }> = {
     unit: 'month',
     unitMultiplier: 1,
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * 3.6, // wow some Greek names are long
-    binStarts: function* (domainFrom, domainTo) {
-      for (const { year } of years.binStarts(domainFrom, domainTo)) {
-        for (let month = 1; month <= 12; month++) {
-          const timePoint = cachedZonedDateTimeFrom({ timeZone, year, month, day: 1 });
-          const timePointSec = timePoint[timeProp.epochSeconds];
-          const nextTimePointSec = cachedZonedDateTimeFrom({
-            timeZone,
-            year: month < 12 ? year : year + 1,
-            month: (month % 12) + 1,
-            day: 1,
-          })[timeProp.epochSeconds];
-          yield { year, month, timePointSec, nextTimePointSec };
-        }
-      }
-    },
+    intervals: monthBasedIntervals(years, timeZone, 1),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', timeZone }).format,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, { month: 'long', timeZone }).format,
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
   const shortMonths = {
     ...months,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, { month: 'short', timeZone }).format,
     minimumTickPixelDistance: minimumTickPixelDistance * 2,
   };
-  const narrowMonths = {
-    ...months,
-    minorTickLabelFormat: new Intl.DateTimeFormat(locale, { month: 'narrow', timeZone }).format,
-    minimumTickPixelDistance,
+  const quarters: AxisLayer<Interval & { year: number; month: number }> = {
+    ...shortMonths,
+    unitMultiplier: 3,
+    intervals: monthBasedIntervals(years, timeZone, 3),
   };
-  const days: TimeRaster<TimeBin & YearToDay> = {
+  const quartersUnlabelled = {
+    ...quarters,
+    minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
+    labeled: false,
+  };
+  const days: AxisLayer<Interval & YearToDay> = {
     unit: 'day',
     unitMultiplier: 1,
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
-    binStarts: function* (domainFrom, domainTo) {
-      for (const { year, month } of months.binStarts(domainFrom, domainTo)) {
+    intervals: function* (domainFrom, domainTo) {
+      for (const { year, month } of months.intervals(domainFrom, domainTo)) {
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
           const temporalArgs = {
             timeZone,
@@ -241,56 +259,51 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
           };
           const timePoint = cachedZonedDateTimeFrom(temporalArgs);
           const dayOfWeek: number = timePoint[timeProp.dayOfWeek];
-          const timePointSec = timePoint[timeProp.epochSeconds];
-          const nextTimePointSec = cachedTimeDelta(temporalArgs, 'days', 1);
-          if (Number.isFinite(timePointSec) && Number.isFinite(nextTimePointSec))
+          const binStart = timePoint[timeProp.epochSeconds];
+          const binEnd = cachedTimeDelta(temporalArgs, 'days', 1);
+          if (Number.isFinite(binStart) && Number.isFinite(binEnd))
             yield {
               year,
               month,
               dayOfMonth,
               dayOfWeek,
-              // fontColor: weekendFontColor && dayOfWeek > 5 ? weekendFontColor : undefined,
-              timePointSec,
-              nextTimePointSec,
+              minimum: binStart,
+              supremum: binEnd,
             };
         }
       }
     },
     detailedLabelFormat: detailedDayFormat,
     minorTickLabelFormat: minorDayFormat,
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
-  const weekStartDays: TimeRaster<TimeBin & { dayOfMonth: number }> = {
+  const weekStartDays: AxisLayer<Interval & { dayOfMonth: number }> = {
     unit: 'week',
     unitMultiplier: 1,
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
-    binStarts: function* (domainFrom, domainTo) {
-      for (const { year, month } of months.binStarts(domainFrom, domainTo)) {
+    intervals: function* (domainFrom, domainTo) {
+      for (const { year, month } of months.intervals(domainFrom, domainTo)) {
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
           const temporalArgs = { timeZone, year, month, day: dayOfMonth };
           const timePoint = cachedZonedDateTimeFrom(temporalArgs);
           const dayOfWeek = timePoint[timeProp.dayOfWeek];
           if (dayOfWeek !== 1) continue;
-          const timePointSec = timePoint[timeProp.epochSeconds];
-          if (Number.isFinite(timePointSec)) {
-            yield { dayOfMonth, timePointSec, nextTimePointSec: cachedTimeDelta(temporalArgs, 'days', 7) };
+          const binStart = timePoint[timeProp.epochSeconds];
+          if (Number.isFinite(binStart)) {
+            yield { dayOfMonth, minimum: binStart, supremum: cachedTimeDelta(temporalArgs, 'days', 7) };
           }
         }
       }
     },
     minorTickLabelFormat: minorDayFormat,
     detailedLabelFormat: detailedDayFormat,
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
-  const daysUnlabelled: TimeRaster<TimeBin & YearToDay> = {
+  const daysUnlabelled: AxisLayer<Interval & YearToDay> = {
     ...days,
     labeled: false,
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
-  const weeksUnlabelled: TimeRaster<TimeBin & { dayOfMonth: number }> = {
+  const weeksUnlabelled: AxisLayer<Interval & { dayOfMonth: number }> = {
     ...weekStartDays,
     labeled: false,
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
@@ -302,33 +315,31 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
   };
   const hhMmDistanceMultiplier = 1.8;
   const hhMmSsDistanceMultiplier = 2.5;
-  const hours: TimeRaster<TimeBin> = {
+  const hours: AxisLayer<Interval> = {
     unit: 'hour',
     unitMultiplier: 1,
     labeled: true,
     minimumTickPixelDistance: hhMmDistanceMultiplier * minimumTickPixelDistance,
-    binStarts: millisecondBinStarts(60 * 60 * 1000),
+    intervals: millisecondIntervals(60 * 60 * 1000),
     detailedLabelFormat: detailedHourFormat,
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, {
       ...hourFormat,
       timeZone,
     }).format,
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
   const hoursUnlabelled = {
     ...hours,
     labeled: false,
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
-  const sixHours: TimeRaster<TimeBin & YearToHour> = {
+  const sixHours: AxisLayer<Interval & YearToHour> = {
     unit: 'hour',
     unitMultiplier: 6,
     labeled: true,
     minimumTickPixelDistance: 2 * minimumTickPixelDistance,
-    binStarts: (domainFrom, domainTo) =>
+    intervals: (domainFrom, domainTo) =>
       (
-        [...days.binStarts(domainFrom, domainTo)].flatMap(({ year, month, dayOfMonth, dayOfWeek }) =>
+        [...days.intervals(domainFrom, domainTo)].flatMap(({ year, month, dayOfMonth, dayOfWeek }) =>
           [0, 6, 12, 18].map((hour) => {
             const temporalArgs = {
               timeZone,
@@ -338,8 +349,8 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
               hour,
             };
             const timePoint = cachedZonedDateTimeFrom(temporalArgs);
-            const timePointSec = timePoint[timeProp.epochSeconds];
-            return Number.isNaN(timePointSec)
+            const binStart = timePoint[timeProp.epochSeconds];
+            return Number.isNaN(binStart)
               ? []
               : {
                   dayOfMonth,
@@ -348,21 +359,19 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
                   hour,
                   year,
                   month,
-                  timePointSec,
-                  nextTimePointSec: timePointSec + 6 * 60 * 60, // fixme this is not correct in case the day is 23hrs long due to winter->summer time switch
+                  minimum: binStart,
+                  supremum: binStart + 6 * 60 * 60, // fixme this is not correct in case the day is 23hrs long due to winter->summer time switch
                 };
           }),
-        ) as Array<TimeBin & YearToHour>
-      ).map((b: TimeBin & YearToHour, i, a) =>
-        Object.assign(b, { nextTimePointSec: i === a.length - 1 ? b.nextTimePointSec : a[i + 1].timePointSec }),
+        ) as Array<Interval & YearToHour>
+      ).map((b: Interval & YearToHour, i, a) =>
+        Object.assign(b, { supremum: i === a.length - 1 ? b.supremum : a[i + 1].minimum }),
       ),
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, {
       ...hourFormat,
       timeZone,
     }).format,
     detailedLabelFormat: detailedHourFormat,
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
   const sixHoursUnlabelled = {
     ...sixHours,
@@ -377,12 +386,12 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     timeZone,
     hourCycle,
   });
-  const minutes: TimeRaster<TimeBin> = {
+  const minutes: AxisLayer<Interval> = {
     unit: 'minute',
     unitMultiplier: 1,
     labeled: true,
     minimumTickPixelDistance: hhMmDistanceMultiplier * minimumTickPixelDistance,
-    binStarts: millisecondBinStarts(60 * 1000),
+    intervals: millisecondIntervals(60 * 1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
       month: 'long',
@@ -392,14 +401,12 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       timeZone,
     }).format,
     minorTickLabelFormat: (d) => `${minutesFormatter.format(d)}`,
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
   const quarterHours = {
     ...minutes,
     unitMultiplier: 15,
     labeled: true,
-    binStarts: millisecondBinStarts(15 * 60 * 1000),
+    intervals: millisecondIntervals(15 * 60 * 1000),
   };
   const quarterHoursUnlabelled = {
     ...quarterHours,
@@ -410,7 +417,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...minutes,
     unitMultiplier: 5,
     labeled: true,
-    binStarts: millisecondBinStarts(5 * 60 * 1000),
+    intervals: millisecondIntervals(5 * 60 * 1000),
   };
   const fiveMinutesUnlabelled = {
     ...fiveMinutes,
@@ -422,12 +429,12 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     labeled: false,
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
-  const seconds: TimeRaster<TimeBin> = {
+  const seconds: AxisLayer<Interval> = {
     unit: 'second',
     unitMultiplier: 1,
     labeled: true,
     minimumTickPixelDistance: hhMmSsDistanceMultiplier * minimumTickPixelDistance,
-    binStarts: millisecondBinStarts(1000),
+    intervals: millisecondIntervals(1000),
     detailedLabelFormat: new Intl.DateTimeFormat(locale, {
       year: 'numeric',
       month: 'long',
@@ -438,14 +445,12 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
       timeZone,
     }).format,
     minorTickLabelFormat: (d) => `${secondsFormatter.format(d).padStart(2, '0')}`, // what DateTimeFormat doing?
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
   const quarterMinutes = {
     ...seconds,
     unitMultiplier: 15,
     labeled: true,
-    binStarts: millisecondBinStarts(15 * 1000),
+    intervals: millisecondIntervals(15 * 1000),
   };
   const quarterMinutesUnlabelled = {
     ...quarterMinutes,
@@ -456,7 +461,7 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ...seconds,
     unitMultiplier: 5,
     labeled: true,
-    binStarts: millisecondBinStarts(5 * 1000),
+    intervals: millisecondIntervals(5 * 1000),
   };
   const fiveSecondsUnlabelled = {
     ...fiveSeconds,
@@ -469,30 +474,28 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
   const millisecondDistanceMultiplier = 1.8;
-  const milliseconds: TimeRaster<TimeBin> = {
+  const milliseconds: AxisLayer<Interval> = {
     unit: 'millisecond',
     unitMultiplier: 1,
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
-    binStarts: millisecondBinStarts(1),
+    intervals: millisecondIntervals(1),
     minorTickLabelFormat: (d: number) => `${d % 1000}ms`,
     detailedLabelFormat: (d: number) => `${d % 1000}ms`,
-    minimumPixelsPerSecond: NaN,
-    approxWidthInMs: NaN,
   };
   const tenMilliseconds = {
     ...milliseconds,
     unitMultiplier: 10,
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
-    binStarts: millisecondBinStarts(10),
+    intervals: millisecondIntervals(10),
   };
   const hundredMilliseconds = {
     ...milliseconds,
     unitMultiplier: 100,
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * millisecondDistanceMultiplier,
-    binStarts: millisecondBinStarts(100),
+    intervals: millisecondIntervals(100),
   };
   const millisecondsUnlabelled = {
     ...milliseconds,
@@ -514,8 +517,9 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     decades,
     yearsUnlabelled,
     years,
+    quartersUnlabelled,
+    quarters,
     monthsUnlabelled,
-    narrowMonths,
     shortMonths,
     months,
     weeksUnlabelled,
@@ -544,16 +548,9 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     tenMilliseconds,
     millisecondsUnlabelled,
     milliseconds,
-  ]
-    // enrich with derived data; Object.assign preserves object identity
-    .map((r) =>
-      Object.assign(r, {
-        approxWidthInMs: approxWidthsInSeconds[r.unit] * r.unitMultiplier * 1000,
-        minimumPixelsPerSecond: r.minimumTickPixelDistance / (approxWidthsInSeconds[r.unit] * r.unitMultiplier),
-      }),
-    );
+  ];
 
-  const replacements: Array<[TimeRaster<TimeBin>, Map<TimeRaster<TimeBin>, Array<TimeRaster<TimeBin>>>]> = [
+  const replacements: Array<[AxisLayer<Interval>, Map<AxisLayer<Interval>, Array<AxisLayer<Interval>>>]> = [
     [decadesUnlabelled, new Map([])],
     [decades, new Map([[decadesUnlabelled, []]])],
     [
@@ -563,23 +560,29 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
         [yearsUnlabelled, []],
       ]),
     ],
-    [narrowMonths, new Map([[monthsUnlabelled, []]])],
+    [
+      quarters,
+      new Map([
+        [quartersUnlabelled, []],
+        [decadesUnlabelled, []],
+      ]),
+    ],
     [
       shortMonths,
       new Map([
         [monthsUnlabelled, []],
-        [narrowMonths, []],
+        [quarters, [quartersUnlabelled]],
       ]),
     ],
     [
       months,
       new Map([
         [monthsUnlabelled, []],
-        [narrowMonths, []],
         [shortMonths, []],
       ]),
     ],
     [weekStartDays, new Map([[weeksUnlabelled, []]])],
+    [weeksUnlabelled, new Map([[quartersUnlabelled, []]])],
     [
       days,
       new Map([
@@ -664,9 +667,9 @@ export const rasters = ({ minimumTickPixelDistance, locale }: RasterConfig, time
     ],
   ];
 
-  return (filter: (layer: TimeRaster<TimeBin>) => boolean) => {
+  return (filter: (layer: AxisLayer<Interval>) => boolean) => {
     // keep increasingly finer granularities, but only until there's enough pixel width for them to fit
-    let layers: Set<TimeRaster<TimeBin>> = new Set();
+    let layers: Set<AxisLayer<Interval>> = new Set();
     for (const layer of allRasters) {
       if (filter(layer)) layers.add(layer);
       else break; // `rasters` is ordered, so we exit the loop here, it's already too dense, remaining ones are ignored

@@ -93,7 +93,9 @@ class TimeslipComponent extends React.Component<TimeslipProps> {
       border: 0,
       position: 'absolute',
       cursor: DEFAULT_CSS_CURSOR,
+      touchAction: 'none',
     };
+
     const dpr = window.devicePixelRatio; /* * this.pinchZoomScale */
     const canvasWidth = width * dpr;
     const canvasHeight = height * dpr;

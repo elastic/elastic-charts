@@ -11,8 +11,8 @@ import { Spec } from '../../specs';
 import { SpecType } from '../../specs/constants'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
+import { TimeslipDataRows } from './timeslip/data_fetch';
 import { DataDemand } from './timeslip/render/cartesian';
-import { TimeslipDataRows } from './timeslip/timeslip_render';
 
 /**
  * data getter function

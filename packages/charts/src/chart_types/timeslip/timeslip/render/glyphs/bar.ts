@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { NumericScale } from '../../timeslip_render';
+import { NumericScale } from '../../../projections/scale';
 
 /** @internal */
 export type BarRow = { value: number };
@@ -19,7 +19,6 @@ export function renderBarGlyph(
   maxBarHeight: number,
   yUnitScale: NumericScale,
   foundRow: BarRow,
-  yUnitScaleClamped: NumericScale,
   r: number,
   g: number,
   b: number,
@@ -29,14 +28,13 @@ export function renderBarGlyph(
 ) {
   const renderedBarWidth = Math.max(0, barWidthPixels - leftShortfall);
   const barEnd = -maxBarHeight * yUnitScale(foundRow.value);
-  const clampedBarEnd = -maxBarHeight * yUnitScaleClamped(foundRow.value);
-  const clampedBarStart = -maxBarHeight * yUnitScaleClamped(0);
-  const barHeight = Math.abs(clampedBarStart - clampedBarEnd);
-  const barY = Math.min(clampedBarStart, clampedBarEnd);
+  const barStart = -maxBarHeight * yUnitScale(0);
+  const barHeight = Math.abs(barStart - barEnd);
+  const barY = Math.min(barStart, barEnd);
   ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
   ctx.fillRect(barX, barY, renderedBarWidth, barHeight);
-  if (clampedBarEnd === barEnd) {
+  if (barEnd === barEnd) {
     ctx.fillStyle = `rgba(${r},${g},${b},1)`;
-    ctx.fillRect(barX, clampedBarEnd, renderedBarWidth, opacityDependentLineThickness); // avoid Math.sqrt
+    ctx.fillRect(barX, barEnd, renderedBarWidth, opacityDependentLineThickness); // avoid Math.sqrt
   }
 }

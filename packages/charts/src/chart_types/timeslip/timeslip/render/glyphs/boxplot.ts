@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { NumericScale } from '../../timeslip_render';
+import { NumericScale } from '../../../projections/scale';
 
 const goldenRatio = 1.618; // todo move it into constants
 
@@ -21,7 +21,7 @@ export function renderBoxplotGlyph(
   leftShortfall: number,
   foundRow: BoxplotRow,
   maxBarHeight: number,
-  yUnitScaleClamped: NumericScale,
+  yUnitScale: NumericScale,
   opacityMultiplier: number,
   r: number,
   g: number,
@@ -33,11 +33,11 @@ export function renderBoxplotGlyph(
   const boxplotLeftX = barX + (barMaxWidthPixels - boxplotWidth) / 2 - leftShortfall;
   const boxplotCenterX = boxplotLeftX + boxplotWidth / 2;
   const { /*min, */ lower, q1, q2, q3, upper /*max */ } = foundRow.boxplot;
-  const lowerY = maxBarHeight * yUnitScaleClamped(lower);
-  const q1Y = maxBarHeight * yUnitScaleClamped(q1);
-  const q2Y = maxBarHeight * yUnitScaleClamped(q2);
-  const q3Y = maxBarHeight * yUnitScaleClamped(q3);
-  const upperY = maxBarHeight * yUnitScaleClamped(upper);
+  const lowerY = maxBarHeight * yUnitScale(lower);
+  const q1Y = maxBarHeight * yUnitScale(q1);
+  const q2Y = maxBarHeight * yUnitScale(q2);
+  const q3Y = maxBarHeight * yUnitScale(q3);
+  const upperY = maxBarHeight * yUnitScale(upper);
   // boxplot rectangle body with border
   if (lowerY !== upperY && q1Y !== q2Y && q2Y !== q3Y) {
     const unitVisibility = opacityMultiplier ** 5;

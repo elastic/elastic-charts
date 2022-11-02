@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Example } from '../storybook/stories/goal/22_horizontal_plusminus.story';
+import { Example } from '../storybook/stories/timeslip/01_timeslip.story';
 
 export function Playground() {
   return <Example />;
