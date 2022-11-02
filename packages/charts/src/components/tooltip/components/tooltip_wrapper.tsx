@@ -7,13 +7,13 @@
  */
 
 import classNames from 'classnames';
-import React, { ComponentType, PropsWithChildren, useEffect, useRef, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum } from '../../../specs';
-import { TooltipAction, TooltipSpec, TooltipValue } from '../../../specs/tooltip';
-import { Datum, renderComplexChildren, renderWithProps } from '../../../utils/common';
-import { TooltipDivider } from './tooltip_divider';
+import { TooltipSpec } from '../../../specs/tooltip';
+import { Datum, renderComplexChildren } from '../../../utils/common';
+import { TooltipActions } from './tooltip_actions';
 import { TooltipPrompt } from './tooltip_prompt';
 import { useTooltipContext } from './tooltip_provider';
 
@@ -36,13 +36,10 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   actionsLoading,
   noActionsLoaded,
 }: TooltipWrapperProps<D, SI>) => {
-  const { dir, pinned, canPinTooltip, selected, pinTooltip, values, theme } = useTooltipContext<D, SI>();
+  const { dir, pinned, canPinTooltip, selected, theme } = useTooltipContext<D, SI>();
 
-  const syncActions = Array.isArray(actions);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const [loading, setLoading] = useState(true);
   const [minWidth, setMinWidth] = useState(0);
-  const [loadedActions, setLoadedActions] = useState<TooltipAction<D, SI>[]>(syncActions ? actions : []);
 
   useEffect(() => {
     // Capture initial unpinned tooltip width
@@ -62,75 +59,9 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
     }
   }, [selected, pinned, minWidth, theme.maxWidth]);
 
-  useEffect(() => {
-    if (pinned && !syncActions) {
-      const fetchActions = async (
-        asyncActions: (selected: TooltipValue<D, SI>[]) => Promise<TooltipAction<D, SI>[]> | TooltipAction<D, SI>[],
-      ) => {
-        setLoading(true);
-        setLoadedActions(await asyncActions(selected));
-        setLoading(false);
-      };
-      void fetchActions(actions);
-      return () => {
-        setLoading(true);
-        setLoadedActions([]);
-      };
-    }
-  }, [syncActions, actions, selected, pinned]);
-
-  const renderPromptContent = (content: string | ComponentType<{ selected: TooltipValue<D, SI>[] }>) => (
-    <div className="echTooltipActions">
-      <TooltipDivider />
-      <div className="echTooltipActions__prompt">{renderWithProps(content, { selected })}</div>
-    </div>
-  );
-
-  const renderActions = () => {
-    if (!syncActions) {
-      if (loading) return renderPromptContent(actionsLoading);
-      if (loadedActions.length === 0) return renderPromptContent(noActionsLoaded);
-    }
-
-    const visibleActions = loadedActions.filter(({ hide }) => !hide || hide(selected));
-
-    if (visibleActions.length === 0) {
-      return <div className="echTooltipPrompt">{selectionPrompt}</div>;
-    }
-
-    return [
-      <TooltipDivider />,
-      ...visibleActions.map(({ onSelect, label, disabled }, i) => {
-        const reason = disabled && disabled(selected);
-
-        return (
-          <button
-            className="echTooltipActions__action"
-            key={i}
-            title={typeof reason === 'string' ? reason : undefined}
-            disabled={Boolean(reason)}
-            onClick={() => {
-              pinTooltip(false, true);
-              // timeout used to close tooltip before calling action
-              setTimeout(() => {
-                onSelect(selected, values);
-              }, 0);
-            }}
-          >
-            {typeof label === 'string' ? label : label(selected)}
-          </button>
-        );
-      }),
-    ];
-  };
-
-  const key = values.map((d) => `${d.label}`).join('#');
-
   return (
     <div
-      className={classNames('echTooltip', className, {
-        'echTooltip--pinned': pinned,
-      })}
+      className={classNames('echTooltip', className, { 'echTooltip--pinned': pinned })}
       dir={dir}
       ref={tooltipRef}
       style={{ minWidth }}
@@ -138,10 +69,15 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
       onKeyPress={(e) => e.stopPropagation()} // block propagation of tooltip click
     >
       {renderComplexChildren(children)}
-      {(pinned && syncActions && loadedActions.length === 0) || !canPinTooltip ? null : pinned ? (
-        <div className="echTooltipActions">{renderActions()}</div>
+      {!canPinTooltip ? null : pinned ? (
+        <TooltipActions
+          actions={actions}
+          actionsLoading={actionsLoading}
+          noActionsLoaded={noActionsLoaded}
+          selectionPrompt={selectionPrompt}
+        />
       ) : (
-        <TooltipPrompt key={key}>{actionPrompt}</TooltipPrompt>
+        <TooltipPrompt>{actionPrompt}</TooltipPrompt>
       )}
     </div>
   );

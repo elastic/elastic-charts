@@ -11,9 +11,9 @@ import React, { PropsWithChildren } from 'react';
 import { TooltipDivider } from './tooltip_divider';
 
 /** @internal */
-export function TooltipPrompt({ children, key }: PropsWithChildren<{ key: string }>) {
+export function TooltipPrompt({ children }: PropsWithChildren<{}>) {
   return (
-    <div className="echTooltipPrompt" key={key}>
+    <div className="echTooltipPrompt">
       <TooltipDivider />
       <div className="echTooltipPrompt__content">{children}</div>
     </div>
