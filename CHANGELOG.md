@@ -1,3 +1,16 @@
+# [50.1.0](https://github.com/elastic/elastic-charts/compare/v50.0.2...v50.1.0) (2022-11-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v70 ([#1850](https://github.com/elastic/elastic-charts/issues/1850)) ([d05994e](https://github.com/elastic/elastic-charts/commit/d05994e5c4ff02121e33b4d54d915994eca35d21))
+
+
+### Features
+
+* **partition:** show hierarchical information in the tooltip ([#1843](https://github.com/elastic/elastic-charts/issues/1843)) ([136b7ae](https://github.com/elastic/elastic-charts/commit/136b7ae5825a24bff483a700111af19d600de960))
+* **xy:** quarterly time and zoom pan numerical raster as well as other improvs ([#1856](https://github.com/elastic/elastic-charts/issues/1856)) ([75d826a](https://github.com/elastic/elastic-charts/commit/75d826ac1b444888a95188279c82055856d533f1))
+
 ## [50.0.2](https://github.com/elastic/elastic-charts/compare/v50.0.1...v50.0.2) (2022-10-11)
 
 
