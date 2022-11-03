@@ -59,12 +59,12 @@ describe('Annotation tooltips', () => {
       expect(annotation).toHaveLength(1);
       expect(wrapper.find('.echAnnotation')).toHaveLength(0);
       annotation.simulate('mouseenter');
-      const header = wrapper.find('.echTooltip__header');
+      const header = wrapper.find('.echTooltipHeader');
       expect(header).toHaveLength(1);
       expect(header.text()).toEqual('2');
       expect(wrapper.find('.echAnnotation__details').text()).toEqual('foo');
       annotation.simulate('mouseleave');
-      expect(annotation.find('.echTooltip__header')).toHaveLength(0);
+      expect(annotation.find('.echTooltipHeader')).toHaveLength(0);
     });
 
     test('should now show tooltip if hidden', () => {
