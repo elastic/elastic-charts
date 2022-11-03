@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mix } from './utils/math';
+import { mix } from '../utils/math';
 
 const REFERENCE_AF_LENGTH = 16.67; // ms
 const REFERENCE_Y_RECURRENCE_ALPHA = 0.1;

@@ -13,14 +13,14 @@ import { Chart, Timeslip, Settings, PartialTheme, GetData } from '@elastic/chart
 import { useBaseTheme } from '../../use_base_theme';
 
 const getData = (dataDemand: Parameters<GetData>[0]) => {
-  const from = dataDemand.lo?.timePointSec ?? NaN;
-  const to = dataDemand.hi?.nextTimePointSec ?? NaN;
-  const binWidth = (dataDemand.lo?.nextTimePointSec ?? NaN) - from;
+  const from = dataDemand.lo?.minimum ?? NaN;
+  const to = dataDemand.hi?.supremum ?? NaN;
+  const binWidthMs = (dataDemand.lo?.supremum ?? NaN) - from;
   const result = [];
   let time = from;
   while (time < to) {
     result.push({
-      epochMs: (time + 0.5 * binWidth) * 1000,
+      epochMs: (time + 0.5 * binWidthMs) * 1000,
       value:
         8 * Math.sin(time / 100000000) +
         4 * Math.sin(time / 1000000) +
@@ -30,7 +30,7 @@ const getData = (dataDemand: Parameters<GetData>[0]) => {
         0.25 * Math.sin(time * 100) +
         0.125 * Math.sin(time * 10000),
     });
-    time += binWidth;
+    time += binWidthMs;
   }
   return result;
 };

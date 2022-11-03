@@ -10,7 +10,7 @@ import { ScaleContinuous } from '../../../../scales';
 import { XDomain } from '../../domains/types';
 import { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
 import { GetMeasuredTicks, Projection } from '../../state/selectors/visible_ticks';
-import { rasters, TimeBin, TimeRaster } from './rasters';
+import { unitIntervalWidth, AxisLayer, Interval, continuousTimeRasters } from './continuous_time_rasters';
 
 const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but there's no raster that's just 5% denser/sparser, so it's safe
 
@@ -28,18 +28,18 @@ export const MINIMUM_TICK_PIXEL_DISTANCE = 24;
 
 /** @internal */
 export const notTooDense =
-  (domainFrom: number, domainTo: number, binWidth: number, cartesianWidth: number, maxTickCount: number) =>
+  (domainFrom: number, domainTo: number, intervalWidth: number, cartesianWidth: number, maxTickCount: number) =>
   ({
-    minimumPixelsPerSecond,
-    approxWidthInMs,
-  }: Pick<TimeRaster<TimeBin>, 'minimumPixelsPerSecond' | 'approxWidthInMs'>) => {
-    const domainInSeconds = domainTo - domainFrom;
-    const pixelsPerSecond = cartesianWidth / domainInSeconds;
-    return (
-      pixelsPerSecond > minimumPixelsPerSecond &&
-      approxWidthInMs * WIDTH_FUDGE >= binWidth &&
-      (domainInSeconds * 1000) / maxTickCount <= approxWidthInMs
-    );
+    unit,
+    unitMultiplier,
+    minimumTickPixelDistance,
+  }: Pick<AxisLayer<Interval>, 'unit' | 'unitMultiplier' | 'minimumTickPixelDistance'>) => {
+    const domainSize = domainTo - domainFrom;
+    const partitionIntervalWidth = unitIntervalWidth[unit] * unitMultiplier;
+    const maximumTickCount = Math.min(maxTickCount, cartesianWidth / minimumTickPixelDistance);
+    const tickCountConstraint = domainSize / maximumTickCount;
+    const spacingConstraint = intervalWidth / WIDTH_FUDGE;
+    return partitionIntervalWidth >= Math.max(tickCountConstraint, spacingConstraint); // heed both constraints
   };
 
 /** @internal */
@@ -51,14 +51,15 @@ export function multilayerAxisEntry(
   scale: ScaleContinuous,
   getMeasuredTicks: GetMeasuredTicks,
 ): Projection {
-  const rasterSelector = rasters(
+  const rasterSelector = continuousTimeRasters(
     { minimumTickPixelDistance: MINIMUM_TICK_PIXEL_DISTANCE, locale: DEFAULT_LOCALE },
     xDomain.timeZone,
   );
   const domainValues = xDomain.domain; // todo consider a property or object type rename
   const domainFromS = Number(domainValues[0]) / 1000; // todo rely on a type guard or check rather than conversion
-  const binWidth = xDomain.minInterval;
-  const domainExtension = extendByOneBin ? binWidth : 0;
+  const binWidthMs = xDomain.minInterval;
+  const binWidth = binWidthMs / 1000; // seconds to milliseconds
+  const domainExtension = extendByOneBin ? binWidthMs : 0;
   const domainToS = ((Number(domainValues[domainValues.length - 1]) || NaN) + domainExtension) / 1000;
   const cartesianWidth = Math.abs(range[1] - range[0]);
   const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, cartesianWidth, MAX_TIME_TICK_COUNT));
@@ -76,17 +77,16 @@ export function multilayerAxisEntry(
     };
   };
 
-  const binWidthS = binWidth / 1000; // seconds to milliseconds
-  const binStartsFrom = domainFromS - binWidthS;
-  const binStartsTo = domainToS + binWidthS;
+  const binStartsFrom = domainFromS - binWidth;
+  const binStartsTo = domainToS + binWidth;
 
   return layers.reduce<Projection>(
     (combinedEntry, l, detailedLayerIndex) => {
       if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
       if (layerIndex >= timeAxisLayerCount) return combinedEntry;
-      const timeTicks = [...l.binStarts(binStartsFrom, binStartsTo)]
-        .filter((b) => b.nextTimePointSec > domainFromS && b.timePointSec <= domainToS)
-        .map((b) => 1000 * b.timePointSec);
+      const timeTicks = [...l.intervals(binStartsFrom, binStartsTo)]
+        .filter((b) => b.supremum > domainFromS && b.minimum <= domainToS)
+        .map((b) => 1000 * b.minimum);
       const { entry } = fillLayerTimeslip(
         layerIndex,
         detailedLayerIndex,

@@ -44,7 +44,7 @@ export function getLegendItems(
   quadViewModel: QuadViewModel[],
   partitionLayout: PartitionLayout | undefined,
 ): LegendItem[] {
-  const uniqueNames = new Set(map(({ dataName, fillColor }) => makeKey(dataName, fillColor), quadViewModel));
+  const uniqueNames = new Set(map(quadViewModel, ({ dataName, fillColor }) => makeKey(dataName, fillColor)));
   const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
 
   const formattedLabel = ({ dataName, depth }: QuadViewModel) => {

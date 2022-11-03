@@ -7,9 +7,9 @@
  */
 
 import { hasKey } from '../../../../../common/predicate';
+import { BinUnit } from '../../../../xy_chart/axes/timeslip/continuous_time_rasters';
+import { LOCALE_TRANSLATIONS } from '../../../../xy_chart/axes/timeslip/locale_translations';
 import { DEFAULT_LOCALE } from '../../../../xy_chart/axes/timeslip/multilayer_ticks';
-import { BinUnit } from '../../../../xy_chart/axes/timeslip/rasters';
-import { TIME_UNIT_TRANSLATIONS } from '../../../../xy_chart/axes/timeslip/time_unit_translations';
 
 /** @internal */
 export function renderTimeUnitAnnotation(
@@ -24,12 +24,13 @@ export function renderTimeUnitAnnotation(
   binUnitCount: number,
   binUnit: BinUnit,
   chartTopFontSize: number,
+  yOffset: number,
   unitBarMaxWidthPixels: number,
 ) {
-  const locale: keyof typeof TIME_UNIT_TRANSLATIONS = hasKey(TIME_UNIT_TRANSLATIONS, config.locale)
+  const locale: keyof typeof LOCALE_TRANSLATIONS = hasKey(LOCALE_TRANSLATIONS, config.locale)
     ? config.locale
     : DEFAULT_LOCALE;
-  const unitBarY = -chartTopFontSize * 2.2;
+  const unitBarY = yOffset - chartTopFontSize * 1.7;
 
   ctx.save();
   ctx.textBaseline = 'bottom';
@@ -37,11 +38,11 @@ export function renderTimeUnitAnnotation(
   ctx.font = config.monospacedFontShorthand;
   ctx.fillStyle = config.a11y.contrast === 'low' ? config.subduedFontColor : config.defaultFontColor;
   ctx.fillText(
-    `1 ${TIME_UNIT_TRANSLATIONS[locale].bar} = ${binUnitCount} ${
-      TIME_UNIT_TRANSLATIONS[locale][binUnit][binUnitCount === 1 ? 0 : 1]
+    `1 ${LOCALE_TRANSLATIONS[locale].bar} = ${binUnitCount} ${
+      LOCALE_TRANSLATIONS[locale][binUnit][binUnitCount === 1 ? 0 : 1]
     }`,
     0,
-    -chartTopFontSize * 0.5,
+    yOffset,
   );
   ctx.fillRect(0, unitBarY, unitBarMaxWidthPixels, 1);
   ctx.fillRect(0, unitBarY - 3, 1, 7);

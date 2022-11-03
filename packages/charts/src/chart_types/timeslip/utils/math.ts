@@ -11,4 +11,4 @@ export const mix = (start: number, end: number, a: number) => start * (1 - a) + 
 /** @internal */
 export const clamp = (n: number, lo: number, hi: number) => (n < lo ? lo : n > hi ? hi : n);
 /** @internal */
-export const unitClamp = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
+export const unitClamp = (n: number) => (n <= 0 ? 0 : n >= 1 ? 1 : n);

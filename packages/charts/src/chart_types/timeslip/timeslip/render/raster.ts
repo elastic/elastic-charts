@@ -6,17 +6,25 @@
  * Side Public License, v 1.
  */
 
+import { doing, executing, filtering, mapping, pipeline } from '../../../../common/iterables';
+import {
+  NumberFormatter,
+  Interval,
+  TimeFormatter,
+  AxisLayer,
+} from '../../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { MAX_TIME_GRID_COUNT, notTooDense } from '../../../xy_chart/axes/timeslip/multilayer_ticks';
-import { NumberFormatter, TimeBin, TimeFormatter, TimeRaster } from '../../../xy_chart/axes/timeslip/rasters';
-import { DataState, NumericScale, TimeslipConfig } from '../timeslip_render';
-import { clamp } from '../utils/math';
-import { calcColumnBar, Layers, renderColumnBars, renderColumnTickLabels, renderVerticalGridLines } from './column';
+import { NumericScale } from '../../projections/scale';
+import { clamp } from '../../utils/math';
+import { TimeslipConfig } from '../config';
+import { DataState } from '../data_fetch';
+import { Layers, renderColumnBars, renderColumnTickLabels } from './column';
 
 const TIMESLIP_MAX_TIME_GRID_COUNT = 100 || MAX_TIME_GRID_COUNT; // use either
 
 interface LoHi {
-  lo: TimeBin | null;
-  hi: TimeBin | null;
+  lo: Interval | null;
+  hi: Interval | null;
   unitBarMaxWidthPixelsSum: number;
   unitBarMaxWidthPixelsCount: number;
 }
@@ -61,47 +69,66 @@ const renderHorizontalGridLines = (
   ctx.restore();
 };
 
-const binsToRender = (
-  binStarts: Generator<TimeBin, void> | TimeBin[],
-  config: TimeslipConfig,
+const binsToRender = (binStarts: Iterable<Interval>, domainFrom: number, domainTo: number) => {
+  const binStartList: Interval[] = [];
+  for (const binStart of binStarts) {
+    if (binStart.minimum > domainTo) break;
+    if (binStart.minimum < domainFrom) {
+      binStartList[0] = binStart;
+    } else {
+      binStartList.push(binStart);
+    }
+  }
+  return binStartList;
+};
+
+/** @internal */
+export const calcColumnBar = (
+  getPixelX: NumericScale,
+  unitBarMaxWidthPixelsSum: number,
+  unitBarMaxWidthPixelsCount: number,
+  i: number,
+  halfLineThickness: number,
+  implicit: boolean,
+  { minimum, supremum }: Interval,
+) => {
+  if (i !== 0) return { unitBarMaxWidthPixelsSum, unitBarMaxWidthPixelsCount };
+  const barPad = implicit ? halfLineThickness : 0;
+  const fullBarPixelX = getPixelX(minimum);
+  const barMaxWidthPixels = getPixelX(supremum) - fullBarPixelX - 2 * barPad;
+  return {
+    unitBarMaxWidthPixelsSum: unitBarMaxWidthPixelsSum + barMaxWidthPixels,
+    unitBarMaxWidthPixelsCount: unitBarMaxWidthPixelsCount + 1,
+  };
+};
+
+const updateLoHi = (
+  binStarts: Iterable<Interval>,
+  implicit: boolean,
   halfLineThickness: number,
   getPixelX: NumericScale,
   loHi: LoHi,
-  domainFrom: number,
-  domainTo: number,
   i: number,
 ) => {
-  const binStartList: TimeBin[] = [];
   for (const binStart of binStarts) {
-    const { timePointSec } = binStart;
-    if (timePointSec < domainFrom) {
-      binStartList[0] = binStart;
-      continue;
-    }
-    if (timePointSec > domainTo) {
-      break;
-    }
-
-    binStartList.push(binStart);
-
     if (i === 0) {
       loHi.lo = loHi.lo || binStart;
       loHi.hi = binStart;
     }
 
+    // update loHi
     const { unitBarMaxWidthPixelsSum, unitBarMaxWidthPixelsCount } = calcColumnBar(
       getPixelX,
       loHi.unitBarMaxWidthPixelsSum,
       loHi.unitBarMaxWidthPixelsCount,
       i,
       halfLineThickness,
-      config.implicit,
+      implicit,
       binStart,
     );
     loHi.unitBarMaxWidthPixelsSum = unitBarMaxWidthPixelsSum;
     loHi.unitBarMaxWidthPixelsCount = unitBarMaxWidthPixelsCount;
   }
-  return binStartList;
 };
 
 /** @internal */
@@ -122,19 +149,19 @@ export const renderRaster =
     cartesianHeight: number,
     niceTicks: number[],
     yUnitScale: NumericScale,
-    yUnitScaleClamped: NumericScale,
     layers: Layers,
   ) =>
   (
     loHi: LoHi,
     {
       labeled,
-      binStarts,
+      intervals,
       minorTickLabelFormat,
       detailedLabelFormat,
-      minimumPixelsPerSecond,
-      approxWidthInMs,
-    }: TimeRaster<TimeBin>,
+      minimumTickPixelDistance,
+      unit,
+      unitMultiplier,
+    }: AxisLayer<Interval>,
     i: number,
     a: Layers,
   ) => {
@@ -156,16 +183,9 @@ export const renderRaster =
     const halfLineThickness = lineThickness / 2;
     const notTooDenseGridLayer = notTooDense(domainFrom, domainTo, 0, cartesianWidth, TIMESLIP_MAX_TIME_GRID_COUNT);
 
-    const binStartList = binsToRender(
-      binStarts(domainFrom, domainTo),
-      config,
-      halfLineThickness,
-      getPixelX,
-      loHi,
-      domainFrom,
-      domainTo,
-      i,
-    );
+    const binStartList = binsToRender(intervals(domainFrom, domainTo), domainFrom, domainTo);
+
+    updateLoHi(binStartList, config.implicit, halfLineThickness, getPixelX, loHi, i);
 
     const finestRaster = i === 0;
     const renderBar =
@@ -197,27 +217,30 @@ export const renderRaster =
         config.implicit ? halfLineThickness : 0,
         rows,
         yUnitScale,
-        yUnitScaleClamped,
         config.barChroma,
         config.barFillAlpha,
         binStartList,
       );
-    if (notTooDenseGridLayer({ minimumPixelsPerSecond, approxWidthInMs }))
-      renderVerticalGridLines(
-        ctx,
-        config.rowPixelPitch,
-        cartesianHeight,
-        `rgb(${luma},${luma},${luma})`,
-        lineThickness,
-        halfLineThickness,
-        lineNestLevelRowLimited,
-        domainFrom,
-        getPixelX,
-        binStartList,
+    if (notTooDenseGridLayer({ minimumTickPixelDistance, unit, unitMultiplier })) {
+      const { rowPixelPitch } = config;
+      ctx.fillStyle = `rgb(${luma},${luma},${luma})`;
+      const lastBinForClosingGridline = binStartList.slice(-1).map((bin) => ({ ...bin, binStart: bin.supremum }));
+      pipeline(
+        [...binStartList, ...lastBinForClosingGridline],
+        mapping(({ minimum }) => minimum),
+        filtering((binStart) => binStart >= domainFrom),
+        mapping(getPixelX),
+        doing((pixelX: number) => {
+          const left = pixelX - 0.5 * lineThickness;
+          const height = cartesianHeight + lineNestLevelRowLimited * rowPixelPitch;
+          ctx.fillRect(left, -cartesianHeight, lineThickness, height);
+        }),
+        executing,
       );
+    }
 
     // render specially the tick that just precedes the domain, therefore may insert into it (eg. intentionally, via needing to see tick texts)
-    if (binStartList.length > 0 && binStartList[0].timePointSec < domainFrom) {
+    if (binStartList.length > 0 && binStartList[0].minimum < domainFrom) {
       const precedingBinStart = binStartList[0];
       if (finestRaster) {
         // condition necessary, otherwise it'll be the binStart of some temporally coarser bin

@@ -32,12 +32,12 @@ export const Example = () => {
 
   const formatter = timeFormatter(niceTimeFormatByDay(1));
 
-  const binWidth = 60000;
+  const binWidthMs = 60000;
 
   const xDomain = {
     min: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] - (oddDomain ? 217839 : 0),
-    max: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] + (oddDomain ? 200000 : 0 ?? binWidth - 1),
-    minInterval: binWidth,
+    max: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] + (oddDomain ? 200000 : 0 ?? binWidthMs - 1),
+    minInterval: binWidthMs,
   };
 
   const Series = useLine ? LineSeries : HistogramBarSeries;
