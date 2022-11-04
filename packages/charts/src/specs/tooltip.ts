@@ -119,16 +119,16 @@ export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifi
   /**
    * Clickable label to display action
    */
-  label: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+  label: string | ((selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => ReactNode);
   /**
    * Hides action from list
    */
-  hide?: (items: TooltipValue<D, SI>[]) => boolean;
+  hide?: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => boolean;
   /**
    * Disables action when true or string description is passed
    * If a string is passed, it will be used as the title to display reason for disablement
    */
-  disabled?: (items: TooltipValue<D, SI>[]) => boolean | string;
+  disabled?: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => boolean | string;
   /**
    * Callback trigger when action is selected
    */

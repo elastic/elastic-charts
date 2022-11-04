@@ -2795,9 +2795,9 @@ export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = 
 
 // @public
 export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
-    label: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
-    hide?: (items: TooltipValue<D, SI>[]) => boolean;
-    disabled?: (items: TooltipValue<D, SI>[]) => boolean | string;
+    label: string | ((selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => ReactNode);
+    hide?: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => boolean;
+    disabled?: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => boolean | string;
     onSelect: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => void;
 };
 

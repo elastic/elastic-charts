@@ -52,7 +52,7 @@ export const TooltipActions = <D extends BaseDatum = Datum, SI extends SeriesIde
     return null;
   }
 
-  const visibleActions = loadedActions.filter(({ hide }) => !hide || hide(selected));
+  const visibleActions = loadedActions.filter(({ hide }) => !hide || hide(selected, values));
 
   if (visibleActions.length === 0) {
     return renderPromptContent(selectionPrompt, selected);
@@ -62,7 +62,7 @@ export const TooltipActions = <D extends BaseDatum = Datum, SI extends SeriesIde
     <div className="echTooltipActions">
       <TooltipDivider />
       {...visibleActions.map(({ onSelect, label, disabled }, i) => {
-        const reason = disabled && disabled(selected);
+        const reason = disabled && disabled(selected, values);
 
         return (
           <button
@@ -78,7 +78,7 @@ export const TooltipActions = <D extends BaseDatum = Datum, SI extends SeriesIde
               }, 0);
             }}
           >
-            {typeof label === 'string' ? label : label(selected)}
+            {typeof label === 'string' ? label : label(selected, values)}
           </button>
         );
       })}
