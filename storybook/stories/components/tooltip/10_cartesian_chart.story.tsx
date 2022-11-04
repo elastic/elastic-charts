@@ -42,6 +42,7 @@ export const Example = () => {
   const chartType = select('chart type', { bar: 'bar', line: 'line' }, 'line');
   const reduceData = boolean('reduce data', false);
   const asyncDelay = number('async actions delay', 0, { step: 100, min: 0 });
+  const disableActions = boolean('disable actions', false);
 
   const actions: TooltipAction[] = [
     {
@@ -84,7 +85,7 @@ export const Example = () => {
       <Tooltip
         type={getTooltipTypeKnob()}
         maxVisibleTooltipItems={4}
-        actions={asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}
+        actions={disableActions ? [] : asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}
       />
       <Axis
         id="x"

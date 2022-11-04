@@ -15,6 +15,8 @@ import { tableMultipleX } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
+  const pinned = boolean('pinned', false);
+
   const MyTooltip: CustomTooltip<any, XYChartSeriesIdentifier> = ({ values }) => {
     const showColor = boolean('show color', true);
     const columns: TooltipTableColumn<any, XYChartSeriesIdentifier>[] = [
@@ -29,7 +31,7 @@ export const Example = () => {
 
     return <TooltipTable items={values} columns={columns} />;
   };
-  return <TooltipShowcase info={tableMultipleX} customTooltip={MyTooltip} />;
+  return <TooltipShowcase info={tableMultipleX} customTooltip={MyTooltip} pinned={pinned} />;
 };
 
 Example.parameters = {

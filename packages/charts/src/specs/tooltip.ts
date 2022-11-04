@@ -219,6 +219,11 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
   actionPrompt: string;
 
   /**
+   * Prompt displayed to indicate user can right-click for contextual menu
+   */
+  pinningPrompt: string;
+
+  /**
    * Prompt displayed when tooltip is pinned but all actions are hidden
    */
   selectionPrompt: string;
@@ -265,7 +270,8 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     snap: true,
     showNullValues: false,
     actions: [],
-    actionPrompt: 'Right click to pin tooltip',
+    actionPrompt: 'Right click to show actions',
+    pinningPrompt: 'Right click to pin tooltip',
     selectionPrompt: 'Please select a series',
     actionsLoading: 'Loading Actions...',
     noActionsLoaded: 'No actions available',

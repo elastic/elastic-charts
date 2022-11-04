@@ -33,6 +33,7 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
         // actions not used on annotations yet
         actions={[]}
         actionPrompt=""
+        pinningPrompt=""
         selectionPrompt=""
         actionsLoading=""
         noActionsLoaded=""

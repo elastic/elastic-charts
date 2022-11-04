@@ -89,6 +89,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     actions,
     headerFormatter,
     actionPrompt,
+    pinningPrompt,
     selectionPrompt,
     actionsLoading,
     noActionsLoaded,
@@ -251,6 +252,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           setSelection={setSelectedTooltipItems}
           actions={hideActions || !canPinTooltip ? [] : actions}
           actionPrompt={actionPrompt}
+          pinningPrompt={pinningPrompt}
           selectionPrompt={selectionPrompt}
           actionsLoading={actionsLoading}
           noActionsLoaded={noActionsLoaded}

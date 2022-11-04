@@ -24,7 +24,7 @@ import { TooltipTableColumn } from './types';
 interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends Pick<
       TooltipSpec<D, SI>,
-      'actions' | 'actionPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'
+      'actions' | 'actionPrompt' | 'pinningPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'
     >,
     Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer' | 'actionPrompt' | 'selectionPrompt'> {
   visible: boolean;
@@ -51,6 +51,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   toggleSelected,
   setSelection,
   actionPrompt,
+  pinningPrompt,
   selectionPrompt,
   actionsLoading,
   noActionsLoaded,
@@ -69,6 +70,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
         <TooltipWrapper
           actions={actions}
           actionPrompt={actionPrompt}
+          pinningPrompt={pinningPrompt}
           selectionPrompt={selectionPrompt}
           actionsLoading={actionsLoading}
           noActionsLoaded={noActionsLoaded}
@@ -93,6 +95,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
       <TooltipWrapper
         actions={actions}
         actionPrompt={actionPrompt}
+        pinningPrompt={pinningPrompt}
         selectionPrompt={selectionPrompt}
         actionsLoading={actionsLoading}
         noActionsLoaded={noActionsLoaded}

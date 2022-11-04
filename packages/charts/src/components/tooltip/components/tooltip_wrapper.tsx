@@ -23,7 +23,10 @@ type TooltipWrapperProps<
 > = PropsWithChildren<
   {
     className?: string;
-  } & Pick<TooltipSpec<D, SI>, 'actions' | 'actionPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'>
+  } & Pick<
+    TooltipSpec<D, SI>,
+    'actions' | 'actionPrompt' | 'pinningPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'
+  >
 >;
 
 /** @internal */
@@ -32,11 +35,12 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   className,
   actions,
   actionPrompt,
+  pinningPrompt,
   selectionPrompt,
   actionsLoading,
   noActionsLoaded,
 }: TooltipWrapperProps<D, SI>) => {
-  const { dir, pinned, canPinTooltip, selected, theme } = useTooltipContext<D, SI>();
+  const { dir, pinned, canPinTooltip, selected, theme, actionable } = useTooltipContext<D, SI>();
 
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [minWidth, setMinWidth] = useState(0);
@@ -77,7 +81,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
           selectionPrompt={selectionPrompt}
         />
       ) : (
-        <TooltipPrompt>{actionPrompt}</TooltipPrompt>
+        <TooltipPrompt>{actionable ? actionPrompt : pinningPrompt}</TooltipPrompt>
       )}
     </div>
   );
