@@ -55,7 +55,7 @@ test.describe('Tooltip', () => {
         );
       });
 
-      test('selecting series on pinned tooltip', async ({ page }) => {
+      test('selecting series on pinned tooltip async', async ({ page }) => {
         const delay = 100;
         await common.expectChartAtUrlToMatchScreenshot(page)(
           `http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=bar&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=${delay}`,

@@ -23,6 +23,7 @@ import {
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../../use_base_theme';
+import { getTooltipTypeKnob } from '../../utils/knobs';
 import { SB_SOURCE_PANEL } from '../../utils/storybook';
 import { wait } from '../../utils/utils';
 import { DATA_SERIES } from './data/series';
@@ -80,7 +81,11 @@ export const Example = () => {
           },
         }}
       />
-      <Tooltip maxVisibleTooltipItems={4} actions={asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions} />
+      <Tooltip
+        type={getTooltipTypeKnob()}
+        maxVisibleTooltipItems={4}
+        actions={asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}
+      />
       <Axis
         id="x"
         position={Position.Bottom}
