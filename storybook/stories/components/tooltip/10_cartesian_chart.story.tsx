@@ -7,13 +7,24 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { select, boolean } from '@storybook/addon-knobs';
+import { select, boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, HistogramBarSeries, LineSeries, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
+import {
+  Axis,
+  Chart,
+  HistogramBarSeries,
+  LineSeries,
+  Position,
+  ScaleType,
+  Settings,
+  Tooltip,
+  TooltipAction,
+} from '@elastic/charts';
 
 import { useBaseTheme } from '../../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../../utils/storybook';
+import { wait } from '../../utils/utils';
 import { DATA_SERIES } from './data/series';
 
 const formatter = new Intl.DateTimeFormat('en-US', {
@@ -29,6 +40,29 @@ const stringPluralize = (d: unknown[]) => (d.length > 1 ? 's' : '');
 export const Example = () => {
   const chartType = select('chart type', { bar: 'bar', line: 'line' }, 'line');
   const reduceData = boolean('reduce data', false);
+  const asyncDelay = number('async actions delay', 0, { step: 100, min: 0 });
+
+  const actions: TooltipAction[] = [
+    {
+      disabled: (d) => d.length !== 1,
+      label: (d) => (d.length !== 1 ? 'Select to drilldown' : `Drilldown to ${d[0].label}`),
+      onSelect: (s) => action('drilldown to')(s[0].label),
+    },
+    {
+      label: () => `Filter this 30s time bucket`,
+      onSelect: (s) => action('filter time bucket')(s[0].datum.timestamp),
+    },
+    {
+      disabled: (d) => d.length < 1,
+      label: (d) => (d.length < 1 ? 'Select to filter host IDs' : `Filter by ${d.length} host ID${stringPluralize(d)}`),
+      onSelect: (s) => action('filter')(s.map((d) => d.label)),
+    },
+    {
+      disabled: (d) => d.length < 1,
+      label: (d) => (d.length < 1 ? 'Select to copy host IDs' : `Copy ${d.length} host ID${stringPluralize(d)}`),
+      onSelect: (s) => action('copy')(s.map((d) => d.label)),
+    },
+  ];
 
   return (
     <Chart>
@@ -46,31 +80,7 @@ export const Example = () => {
           },
         }}
       />
-      <Tooltip
-        maxVisibleTooltipItems={4}
-        actions={[
-          {
-            disabled: (d) => d.length !== 1,
-            label: (d) => (d.length !== 1 ? 'Select to drilldown' : `Drilldown to ${d[0].label}`),
-            onSelect: (s) => action('drilldown to')(s[0].label),
-          },
-          {
-            label: () => `Filter this 30s time bucket`,
-            onSelect: (s) => action('filter time bucket')(s[0].datum.timestamp),
-          },
-          {
-            disabled: (d) => d.length < 1,
-            label: (d) =>
-              d.length < 1 ? 'Select to filter host IDs' : `Filter by ${d.length} host ID${stringPluralize(d)}`,
-            onSelect: (s) => action('filter')(s.map((d) => d.label)),
-          },
-          {
-            disabled: (d) => d.length < 1,
-            label: (d) => (d.length < 1 ? 'Select to copy host IDs' : `Copy ${d.length} host ID${stringPluralize(d)}`),
-            onSelect: (s) => action('copy')(s.map((d) => d.label)),
-          },
-        ]}
-      />
+      <Tooltip maxVisibleTooltipItems={4} actions={asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions} />
       <Axis
         id="x"
         position={Position.Bottom}

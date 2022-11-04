@@ -14,7 +14,7 @@ import { simple } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
-  const pinned = boolean('pinned', false);
+  const pinned = boolean('pinned', true);
 
   return (
     <TooltipShowcase
@@ -54,4 +54,5 @@ export const Example = () => {
 
 Example.parameters = {
   background: { disable: true },
+  markdown: 'Select a series to load async actions',
 };
