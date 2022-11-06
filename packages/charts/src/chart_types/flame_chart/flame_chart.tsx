@@ -1092,10 +1092,13 @@ class FlameComponent extends React.Component<FlameProps> {
       const wobbleAnimationInProgress = this.wobbleTimeLeft > 0;
       const timeFromWobbleStart = clamp(WOBBLE_DURATION - this.wobbleTimeLeft, 0, WOBBLE_DURATION);
 
+      const nodeTweenTime = 1; // let's assume we already tweened the nodes to their final position
+
       renderFrame(
         [this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1],
         this.wobbleIndex,
         wobbleAnimationInProgress ? 0.01 + 0.99 * (0.5 - 0.5 * Math.cos(timeFromWobbleStart * WOBBLE_FREQUENCY)) : 0, // positive if it must wobble
+        nodeTweenTime,
       );
 
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
