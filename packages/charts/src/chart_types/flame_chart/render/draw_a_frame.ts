@@ -128,7 +128,7 @@ export const drawFrame =
     // focus layer text
     drawCanvas2d(
       ctx,
-      1,
+      nodeTweenTime,
       focusLayerCssWidth,
       focusLayerCssHeight,
       PADDING_LEFT,
