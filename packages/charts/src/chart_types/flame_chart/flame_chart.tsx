@@ -187,7 +187,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // drilldown animation
   private animationRafId: number = NaN;
-  private prevT: number = NaN;
+  private prevFocusTime: number = NaN;
   private currentFocus: FocusRect;
   private targetFocus: FocusRect;
 
@@ -293,7 +293,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private wobble(nodeIndex: number) {
     this.wobbleTimeLeft = WOBBLE_DURATION;
     this.wobbleIndex = nodeIndex;
-    this.prevT = NaN;
+    this.prevFocusTime = NaN;
     this.hoverIndex = NaN; // no highlight
     this.setState({});
   }
@@ -679,7 +679,7 @@ class FlameComponent extends React.Component<FlameProps> {
         this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
         // disable until we consider that part of the navigation
         // this.navigator.add({ ...this.targetFocus, index: NaN });
-        this.prevT = NaN;
+        this.prevFocusTime = NaN;
         this.hoverIndex = NaN; // no highlight
         this.wobbleTimeLeft = WOBBLE_DURATION;
         this.wobbleIndex = datumIndex;
@@ -1065,8 +1065,8 @@ class FlameComponent extends React.Component<FlameProps> {
     );
 
     const anim = (t: DOMHighResTimeStamp) => {
-      const msDeltaT = Number.isNaN(this.prevT) ? 0 : t - this.prevT;
-      this.prevT = t;
+      const msDeltaT = Number.isNaN(this.prevFocusTime) ? 0 : t - this.prevFocusTime;
+      this.prevFocusTime = t;
 
       const dx0 = this.targetFocus.x0 - this.currentFocus.x0;
       const dx1 = this.targetFocus.x1 - this.currentFocus.x1;
@@ -1106,7 +1106,7 @@ class FlameComponent extends React.Component<FlameProps> {
       if (focusAnimationInProgress || wobbleAnimationInProgress) {
         this.animationRafId = window.requestAnimationFrame(anim);
       } else {
-        this.prevT = NaN;
+        this.prevFocusTime = NaN;
         this.currentFocus.x0 = this.targetFocus.x0;
         this.currentFocus.x1 = this.targetFocus.x1;
         this.currentFocus.y0 = this.targetFocus.y0;
