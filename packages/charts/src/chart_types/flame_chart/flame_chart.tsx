@@ -1089,17 +1089,18 @@ class FlameComponent extends React.Component<FlameProps> {
       this.currentFocus.y1 += convergenceRateY * dy1;
 
       this.wobbleTimeLeft -= msDeltaT;
-      const shouldWobble = this.wobbleTimeLeft > 0;
+      const wobbleAnimationInProgress = this.wobbleTimeLeft > 0;
       const timeFromWobbleStart = clamp(WOBBLE_DURATION - this.wobbleTimeLeft, 0, WOBBLE_DURATION);
 
       renderFrame(
         [this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1],
         this.wobbleIndex,
-        shouldWobble ? 0.01 + 0.99 * (0.5 - 0.5 * Math.cos(timeFromWobbleStart * WOBBLE_FREQUENCY)) : 0, // positive if it must wobble
+        wobbleAnimationInProgress ? 0.01 + 0.99 * (0.5 - 0.5 * Math.cos(timeFromWobbleStart * WOBBLE_FREQUENCY)) : 0, // positive if it must wobble
       );
 
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
-      if (maxDiff > 1e-12 || shouldWobble) {
+      const focusAnimationInProgress = maxDiff > 1e-12;
+      if (focusAnimationInProgress || wobbleAnimationInProgress) {
         this.animationRafId = window.requestAnimationFrame(anim);
       } else {
         this.prevT = NaN;
