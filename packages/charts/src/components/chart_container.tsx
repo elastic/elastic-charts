@@ -104,12 +104,12 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   };
 
   handleMouseDown = ({
-    nativeEvent: { offsetX, offsetY, timeStamp, button },
+    nativeEvent: { offsetX, offsetY, timeStamp, button, ctrlKey },
   }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { isChartEmpty, disableInteractions, onMouseDown, isBrushingAvailable, tooltipState } = this.props;
 
     // button 2 to block brushing on right click
-    if (tooltipState.pinned || button === SECONDARY_BUTTON || isChartEmpty || disableInteractions) return;
+    if (tooltipState.pinned || button === SECONDARY_BUTTON || ctrlKey || isChartEmpty || disableInteractions) return;
 
     if (isBrushingAvailable) {
       window.addEventListener('mouseup', this.handleBrushEnd);
