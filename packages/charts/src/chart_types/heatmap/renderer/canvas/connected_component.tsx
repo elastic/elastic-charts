@@ -23,16 +23,21 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Dimensions } from '../../../../utils/dimensions';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { Theme } from '../../../../utils/themes/theme';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { ChartElementSizes, computeChartElementSizesSelector } from '../../state/selectors/compute_chart_dimensions';
 import { getHeatmapGeometries } from '../../state/selectors/geometries';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
+import { getHighlightedLegendBandsSelector } from '../../state/selectors/get_highlighted_legend_bands';
 import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
+  highlightedLegendBands: Array<[start: number, end: number]>;
+  theme: Theme;
   a11ySettings: A11ySettings;
   background: Color;
   elementSizes: ChartElementSizes;
@@ -99,9 +104,11 @@ class Component extends React.Component<Props> {
           ...this.props.geometries,
           theme: this.props.geometries.theme,
         },
+        this.props.theme.sharedStyle,
         this.props.background,
         this.props.elementSizes,
         this.props.debug,
+        this.props.highlightedLegendBands,
       );
     }
   }
@@ -155,6 +162,8 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     left: 0,
     top: 0,
   },
+  theme: LIGHT_THEME,
+  highlightedLegendBands: [],
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   background: Colors.Transparent.keyword,
   elementSizes: {
@@ -169,6 +178,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   },
   debug: false,
 };
+
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
@@ -177,6 +187,8 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     initialized: true,
     geometries: getHeatmapGeometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
+    highlightedLegendBands: getHighlightedLegendBandsSelector(state),
+    theme: getChartThemeSelector(state),
     a11ySettings: getA11ySettingsSelector(state),
     background: getChartThemeSelector(state).background.color,
     elementSizes: computeChartElementSizesSelector(state),

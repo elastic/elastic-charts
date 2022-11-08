@@ -98,7 +98,6 @@ export function getGeometryStateStyle(
   seriesIdentifier: XYChartSeriesIdentifier,
   sharedGeometryStyle: SharedGeometryStateStyle,
   highlightedLegendItem?: LegendItem,
-  individualHighlight?: { [key: string]: boolean },
 ): GeometryStateStyle {
   const { default: defaultStyles, highlighted, unhighlighted } = sharedGeometryStyle;
 
@@ -108,14 +107,6 @@ export function getGeometryStateStyle(
     );
 
     return isPartOfHighlightedSeries ? highlighted : unhighlighted;
-  }
-
-  if (individualHighlight) {
-    const { hasHighlight, hasGeometryHover } = individualHighlight;
-    if (!hasGeometryHover) {
-      return highlighted;
-    }
-    return hasHighlight ? highlighted : unhighlighted;
   }
 
   return defaultStyles;

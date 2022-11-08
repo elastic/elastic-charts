@@ -32,16 +32,9 @@ export const getHeatmapGeometries = createCustomCachedSelector(
   ],
   (heatmapSpec, dims, heatmapTable, { bands, scale: colorScale }, deselectedSeries, theme, empty): ShapeViewModel => {
     // instead of using the specId, each legend item is associated with an unique band label
-    const disabledBandLabels = new Set(
-      deselectedSeries.map(({ specId }) => {
-        return specId;
-      }),
-    );
-
+    const disabledBandLabels = new Set(deselectedSeries.map(({ specId }) => specId));
     const bandsToHide: Array<[number, number]> = bands
-      .filter(({ label }) => {
-        return disabledBandLabels.has(label);
-      })
+      .filter(({ label }) => disabledBandLabels.has(label))
       .map(({ start, end }) => [start, end]);
 
     return heatmapSpec && !empty
