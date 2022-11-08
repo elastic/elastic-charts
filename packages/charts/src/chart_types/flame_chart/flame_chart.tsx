@@ -57,6 +57,7 @@ const SHOULD_DISABLE_WOBBLE = (typeof process === 'object' && process.env && pro
 const WOBBLE_DURATION = SHOULD_DISABLE_WOBBLE ? 0 : 1000;
 const WOBBLE_REPEAT_COUNT = 2;
 const WOBBLE_FREQUENCY = SHOULD_DISABLE_WOBBLE ? 0 : 2 * Math.PI * (WOBBLE_REPEAT_COUNT / WOBBLE_DURATION); // e.g. 1/30 means a cycle of every 30ms
+const NODE_TWEEN_DURATION_MS = 500;
 
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
 const initialPixelRowPitch = () => 16;
@@ -197,7 +198,8 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // drilldown animation
   private animationRafId: number = NaN;
-  private prevT: number = NaN;
+  private prevFocusTime: number = NaN;
+  private prevNodeTweenTime: number = NaN;
   private currentFocus: FocusRect;
   private targetFocus: FocusRect;
 
@@ -257,6 +259,10 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // search
     this.currentColor = columns.color;
+
+    // node size/position tween time
+    this.prevNodeTweenTime =
+      columns.position0 === columns.position1 && columns.size0 === columns.size1 ? -Infinity : Infinity; // if nothing to tween, then skip it
   }
 
   private pinTooltip = (pinned: boolean): void => {
@@ -326,7 +332,7 @@ class FlameComponent extends React.Component<FlameProps> {
   private wobble(nodeIndex: number) {
     this.wobbleTimeLeft = WOBBLE_DURATION;
     this.wobbleIndex = nodeIndex;
-    this.prevT = NaN;
+    this.prevFocusTime = NaN;
     this.hoverIndex = NaN; // no highlight
     this.setState({});
   }
@@ -799,7 +805,7 @@ class FlameComponent extends React.Component<FlameProps> {
         this.targetFocus = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, datumIndex);
         // disable until we consider that part of the navigation
         // this.navigator.add({ ...this.targetFocus, index: NaN });
-        this.prevT = NaN;
+        this.prevFocusTime = NaN;
         this.hoverIndex = NaN; // no highlight
         this.wobbleTimeLeft = WOBBLE_DURATION;
         this.wobbleIndex = datumIndex;
@@ -1191,8 +1197,12 @@ class FlameComponent extends React.Component<FlameProps> {
     );
 
     const anim = (t: DOMHighResTimeStamp) => {
-      const msDeltaT = Number.isNaN(this.prevT) ? 0 : t - this.prevT;
-      this.prevT = t;
+      const focusTimeDeltaMs = Number.isNaN(this.prevFocusTime) ? 0 : t - this.prevFocusTime;
+      this.prevFocusTime = t;
+
+      if (this.prevNodeTweenTime === Infinity) this.prevNodeTweenTime = t;
+      const nodeTweenTime = clamp((t - this.prevNodeTweenTime) / NODE_TWEEN_DURATION_MS, 0, 1);
+      const nodeTweenInProgress = nodeTweenTime < 1;
 
       const dx0 = this.targetFocus.x0 - this.currentFocus.x0;
       const dx1 = this.targetFocus.x1 - this.currentFocus.x1;
@@ -1206,29 +1216,31 @@ class FlameComponent extends React.Component<FlameProps> {
       const relativeExpansionY = Math.max(1, (currentExtentX + dy1 - dy0) / currentExtentY);
       const jointRelativeExpansion = (relativeExpansionX + relativeExpansionY) / 2;
 
-      const convergenceRateX = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_X) / jointRelativeExpansion;
-      const convergenceRateY = Math.min(1, msDeltaT * RECURRENCE_ALPHA_PER_MS_Y) / jointRelativeExpansion;
+      const convergenceRateX = Math.min(1, focusTimeDeltaMs * RECURRENCE_ALPHA_PER_MS_X) / jointRelativeExpansion;
+      const convergenceRateY = Math.min(1, focusTimeDeltaMs * RECURRENCE_ALPHA_PER_MS_Y) / jointRelativeExpansion;
 
       this.currentFocus.x0 += convergenceRateX * dx0;
       this.currentFocus.x1 += convergenceRateX * dx1;
       this.currentFocus.y0 += convergenceRateY * dy0;
       this.currentFocus.y1 += convergenceRateY * dy1;
 
-      this.wobbleTimeLeft -= msDeltaT;
-      const shouldWobble = this.wobbleTimeLeft > 0;
+      this.wobbleTimeLeft -= focusTimeDeltaMs;
+      const wobbleAnimationInProgress = this.wobbleTimeLeft > 0;
       const timeFromWobbleStart = clamp(WOBBLE_DURATION - this.wobbleTimeLeft, 0, WOBBLE_DURATION);
 
       renderFrame(
         [this.currentFocus.x0, this.currentFocus.x1, this.currentFocus.y0, this.currentFocus.y1],
         this.wobbleIndex,
-        shouldWobble ? 0.01 + 0.99 * (0.5 - 0.5 * Math.cos(timeFromWobbleStart * WOBBLE_FREQUENCY)) : 0, // positive if it must wobble
+        wobbleAnimationInProgress ? 0.01 + 0.99 * (0.5 - 0.5 * Math.cos(timeFromWobbleStart * WOBBLE_FREQUENCY)) : 0, // positive if it must wobble
+        nodeTweenTime,
       );
 
       const maxDiff = Math.max(Math.abs(dx0), Math.abs(dx1), Math.abs(dy0), Math.abs(dy1));
-      if (maxDiff > 1e-12 || shouldWobble) {
+      const focusAnimationInProgress = maxDiff > 1e-12;
+      if (focusAnimationInProgress || wobbleAnimationInProgress || nodeTweenInProgress) {
         this.animationRafId = window.requestAnimationFrame(anim);
       } else {
-        this.prevT = NaN;
+        this.prevFocusTime = NaN;
         this.currentFocus.x0 = this.targetFocus.x0;
         this.currentFocus.x1 = this.targetFocus.x1;
         this.currentFocus.y0 = this.targetFocus.y0;

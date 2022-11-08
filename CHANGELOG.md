@@ -1,3 +1,10 @@
+# [50.2.0](https://github.com/elastic/elastic-charts/compare/v50.1.0...v50.2.0) (2022-11-08)
+
+
+### Features
+
+* **flame:** node size and position tweening ([#1860](https://github.com/elastic/elastic-charts/issues/1860)) ([603f47e](https://github.com/elastic/elastic-charts/commit/603f47e92bdc44c0fa31693b667db594c80fad99))
+
 # [50.1.0](https://github.com/elastic/elastic-charts/compare/v50.0.2...v50.1.0) (2022-11-03)
 
 

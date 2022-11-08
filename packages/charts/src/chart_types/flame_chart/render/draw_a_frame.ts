@@ -53,7 +53,7 @@ export const drawFrame =
     currentColor: Float32Array,
     theme: FlamegraphStyle,
   ) =>
-  (currentFocus: [number, number, number, number], wobbleIndex: number, wobble: number) => {
+  (currentFocus: [number, number, number, number], wobbleIndex: number, wobble: number, nodeTweenTime: number) => {
     const canvasHeightExcess = (roundUpSize(cssHeight) - cssHeight) * dpr;
 
     const minimapBottom = minimapTop + minimapHeight;
@@ -76,7 +76,7 @@ export const drawFrame =
     const drawFocusLayer = (pickLayer: boolean) =>
       drawWebgl(
         gl,
-        1,
+        nodeTweenTime,
         focusLayerCanvasWidth,
         focusLayerCssHeight * dpr,
         focusLayerCanvasOffsetX,
@@ -96,7 +96,7 @@ export const drawFrame =
     const drawContextLayer = (pickLayer: boolean) =>
       drawWebgl(
         gl,
-        1,
+        nodeTweenTime,
         minimapCanvasWidth,
         minimapCanvasHeight,
         minimapCanvasX,
@@ -128,7 +128,7 @@ export const drawFrame =
     // focus layer text
     drawCanvas2d(
       ctx,
-      1,
+      nodeTweenTime,
       focusLayerCssWidth,
       focusLayerCssHeight,
       PADDING_LEFT,
