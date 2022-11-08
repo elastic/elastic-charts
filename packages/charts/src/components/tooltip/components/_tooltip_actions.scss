@@ -1,0 +1,53 @@
+.echTooltipActions {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  font-style: normal;
+  font-size: 12px;
+  line-height: 21px;
+
+  &__prompt {
+    position: relative;
+    height: 26px;
+    padding: 0 $euiSizeS;
+    line-height: 26px;
+    width: 100%;
+    color: $euiTextSubduedColor;
+    font-style: normal;
+    font-size: 12px;
+  }
+
+  &__action {
+    &:nth-child(2) {
+      padding-top: 4px;
+    }
+    &:last-child {
+      padding-bottom: 2px;
+    }
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    text-align: left;
+    width: 100%;
+    padding: 0 $euiSizeS;
+    line-height: 21px;
+    cursor: pointer;
+    color: $euiTextColor;
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+
+    &[disabled] {
+      cursor: default;
+      color: $euiButtonColorDisabledText;
+      &:hover,
+      &:focus {
+        text-decoration: none;
+      }
+    }
+  }
+}

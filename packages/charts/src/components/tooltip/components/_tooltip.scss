@@ -1,0 +1,236 @@
+@import '../../mixins';
+
+$tooltipBorderColor: $euiColorLightShade;
+$tooltipBorderWidth: 1px;
+$rowColorStripWidth: 5px;
+/**
+ * Manually synced with `MAX_ROW_COLOR_STRIP_WIDTH` const in [`tooltip_table.tsx`](packages/charts/src/components/tooltip/components/tooltip_table.tsx)
+ */
+$maxRowColorStripWidth: 11px;
+
+$tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
+
+$tableRowHoverColor: transparentize($euiColorPrimary, 0.95);
+$tableRowSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
+$tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
+
+.echTooltip {
+  @include euiToolTipStyle;
+  @include euiFontSizeXS;
+  padding: 0;
+  max-width: 100%;
+  pointer-events: none;
+  user-select: none;
+  background-color: $euiColorEmptyShade;
+  color: $euiTextColor;
+  overflow: hidden;
+  cursor: default;
+  transition: box-shadow 400ms, opacity $euiAnimSpeedNormal;
+  border: 1px solid $euiColorEmptyShade;
+
+  &__outerWrapper {
+    display: flex;
+  }
+
+  &--pinned {
+    @include euiBottomShadowSmall;
+    pointer-events: auto;
+    user-select: auto;
+
+    .echTooltip__tableRow--selectable {
+      cursor: pointer;
+    }
+
+    .echTooltipActions {
+      pointer-events: auto;
+    }
+    .echTooltip__tableWrapper {
+      pointer-events: auto;
+    }
+  }
+
+  .echTooltip__tableCell--truncate {
+    @include euiTextTruncate;
+  }
+
+  &__metricRow {
+    padding: $euiSizeXS ($euiSizeXS * 2);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__tableWrapper {
+    overflow: auto;
+    @include euiScrollBar;
+    background-color: $euiColorEmptyShade;
+  }
+
+  &__table {
+    display: grid;
+    width: 100%;
+
+    &--noGrid {
+      display: table;
+    }
+  }
+
+  &__tableHeader,
+  &__tableFooter {
+    .echTooltip__tableCell {
+      cursor: default;
+      font-weight: $euiFontWeightBold;
+      background-color: $euiColorEmptyShade;
+      position: sticky;
+      z-index: 1;
+    }
+  }
+
+  &__tableHeader,
+  &__tableBody,
+  &__tableFooter,
+  &__tableRow {
+    // This ignores all above elements for positioning
+    // effectively spreading all children in its place
+    display: contents;
+  }
+
+  &__tableHeader {
+    margin-bottom: 0;
+    top: 0;
+
+    .echTooltip__tableCell {
+      border-bottom: $tableBorder;
+      top: 0;
+    }
+  }
+
+  &__tableFooter {
+    margin-top: 0;
+    bottom: 0;
+
+    .echTooltip__tableCell {
+      border-top: $tableBorder;
+      bottom: 0;
+    }
+  }
+
+  &__tableCell:not(.echTooltip__colorCell) {
+    padding: 4px;
+  }
+
+  &__tableBody {
+    .echTooltip__tableCell:not(.echTooltip__colorCell) {
+      padding: 2px 4px;
+    }
+
+    .echTooltip__tableRow--selected {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color: $tableRowSelectedColor;
+      }
+    }
+
+    .echTooltip__tableRow--selected:hover {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color: $tableRowHoverSelectedColor;
+      }
+    }
+    .echTooltip__tableRow--selectable:hover {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color: $tableRowHoverColor;
+      }
+    }
+  }
+
+  &__tableRow {
+    position: relative;
+
+    &--highlighted {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color: transparentize($euiColorLightShade, 0.5);
+      }
+    }
+
+    &--selected {
+      :not(.echTooltip__colorCell--static) .echTooltip__colorStrip {
+        width: $maxRowColorStripWidth;
+
+        &--spacer {
+          width: 0;
+          min-width: 0;
+        }
+
+        &:not(&--bg)::before {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &__colorCell {
+    padding: 0;
+    height: 100%;
+    position: relative;
+    overflow: hidden; // to avoid extra height from color strip styles
+    width: $maxRowColorStripWidth;
+
+    &--static {
+      width: $rowColorStripWidth;
+    }
+  }
+
+  &__colorStrip,
+  &__colorStrip--bg,
+  &__colorStrip--spacer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: $rowColorStripWidth;
+    transition: width 200ms;
+  }
+
+  &__colorStrip {
+    &::before {
+      opacity: 0;
+      content: '✓';
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 95%; // to center dot better
+      font-size: 90%;
+      font-weight: bold;
+      transition: opacity 200ms;
+    }
+
+    &--spacer {
+      left: auto;
+      right: 0;
+      width: $maxRowColorStripWidth - $rowColorStripWidth;
+      min-width: $maxRowColorStripWidth - $rowColorStripWidth;
+    }
+  }
+
+  &__label {
+    min-width: 1px;
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  &__value {
+    text-align: right;
+    font-feature-settings: 'tnum';
+  }
+
+  &[dir='rtl'] {
+    .echTooltip {
+      &__colorStrip {
+        left: auto;
+        right: 0;
+      }
+    }
+  }
+}

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -25,12 +25,15 @@ import { tableSimple } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
+  const pinned = boolean('pinned', false);
+
   const MyTooltip: CustomTooltip = ({ values, header }) => {
     const showColor = boolean('show color', true);
+    const maxHeight = number('max table height', 120);
     return (
       <>
         <TooltipHeader header={header} />
-        <TooltipTable>
+        <TooltipTable gridTemplateColumns={`repeat(${showColor ? 4 : 3}, auto)`} maxHeight={maxHeight}>
           <TooltipTableHeader>
             <TooltipTableRow>
               {showColor && <TooltipTableColorCell />}
@@ -61,7 +64,7 @@ export const Example = () => {
       </>
     );
   };
-  return <TooltipShowcase info={tableSimple} customTooltip={MyTooltip} />;
+  return <TooltipShowcase info={tableSimple} customTooltip={MyTooltip} pinned={pinned} />;
 };
 
 Example.parameters = {

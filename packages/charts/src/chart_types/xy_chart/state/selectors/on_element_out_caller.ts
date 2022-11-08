@@ -15,7 +15,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import {
-  getTooltipInfoAndGeometriesSelector,
+  getHighlightedTooltipTooltipValuesSelector,
   TooltipAndHighlightedGeoms,
 } from './get_tooltip_values_highlighted_geoms';
 
@@ -44,7 +44,7 @@ export function createOnElementOutCaller(): (state: GlobalChartState) => void {
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.XYAxis) {
       selector = createCustomCachedSelector(
-        [getTooltipInfoAndGeometriesSelector, getSettingsSpecSelector],
+        [getHighlightedTooltipTooltipValuesSelector, getSettingsSpecSelector],
         ({ highlightedGeometries }: TooltipAndHighlightedGeoms, settings: SettingsSpec): void => {
           const nextProps = {
             settings,

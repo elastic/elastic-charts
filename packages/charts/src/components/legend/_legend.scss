@@ -31,6 +31,10 @@
     position: relative;
   }
 
+  &--inert {
+    pointer-events: none;
+  }
+
   .echLegendListContainer {
     @include euiYScrollWithShadows;
     width: 100%;

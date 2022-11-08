@@ -22,8 +22,17 @@ import {
   ToggleDeselectSeriesAction,
 } from '../actions/legend';
 import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../actions/mouse';
+import {
+  TOGGLE_SELECTED_TOOLTIP_ITEM,
+  PIN_TOOLTIP,
+  TooltipActions,
+  SET_SELECTED_TOOLTIP_ITEMS,
+} from '../actions/tooltip';
 import { GlobalChartState, InteractionsState } from '../chart_state';
-import { getInitialPointerState } from '../utils';
+import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
+import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
+import { getInitialPointerState, getInitialTooltipState } from '../utils';
+import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 
 /**
  * The minimum number of pixel between two pointer positions to consider for dragging purposes
@@ -33,13 +42,21 @@ const DRAG_DETECTION_PIXEL_DELTA = 4;
 /** @internal */
 export function interactionsReducer(
   globalState: GlobalChartState,
-  action: LegendActions | MouseActions | KeyActions | DOMElementActions,
+  action: LegendActions | MouseActions | KeyActions | DOMElementActions | TooltipActions,
   legendItems: LegendItem[],
 ): InteractionsState {
   const { interactions: state } = globalState;
   switch (action.type) {
     case ON_KEY_UP:
       if (action.key === 'Escape') {
+        if (state.tooltip.pinned) {
+          return {
+            ...state,
+            pointer: getInitialPointerState(),
+            tooltip: getInitialTooltipState(),
+          };
+        }
+
         return {
           ...state,
           pointer: getInitialPointerState(),
@@ -65,6 +82,7 @@ export function interactionsReducer(
           },
         },
       };
+
     case ON_MOUSE_DOWN:
       return {
         ...state,
@@ -82,6 +100,7 @@ export function interactionsReducer(
           },
         },
       };
+
     case ON_MOUSE_UP: {
       return {
         ...state,
@@ -124,17 +143,20 @@ export function interactionsReducer(
         },
       };
     }
+
     case ON_LEGEND_ITEM_OUT:
       return {
         ...state,
         highlightedLegendPath: [],
       };
+
     case ON_LEGEND_ITEM_OVER:
       const { legendPath: highlightedLegendPath } = action;
       return {
         ...state,
         highlightedLegendPath,
       };
+
     case ON_TOGGLE_DESELECT_SERIES:
       return {
         ...state,
@@ -146,11 +168,90 @@ export function interactionsReducer(
         ...state,
         hoveredDOMElement: action.element,
       };
+
     case ON_DOM_ELEMENT_LEAVE:
       return {
         ...state,
         hoveredDOMElement: null,
       };
+
+    case PIN_TOOLTIP: {
+      if (!action.pinned) {
+        return {
+          ...state,
+          pointer: action.resetPointer
+            ? getInitialPointerState()
+            : {
+                ...state.pointer,
+                pinned: null,
+              },
+          tooltip: getInitialTooltipState(),
+        };
+      }
+
+      const { isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(globalState);
+
+      if (!isPinnable || displayOnly) {
+        return state;
+      }
+
+      const tooltipSpec = getTooltipSpecSelector(globalState);
+      const getSelectedValues = () => {
+        const values = getInternalTooltipInfoSelector(globalState)?.values ?? [];
+        if (globalState.chartType === ChartType.Heatmap) return values.slice(0, 1); // just use the x value
+        return values.filter((v) =>
+          // TODO find a better way to distinguish these two
+          globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
+        );
+      };
+      const selected =
+        // don't pre-populate selection when values are not actionable
+        Array.isArray(tooltipSpec.actions) && tooltipSpec.actions.length === 0 ? [] : getSelectedValues();
+
+      return {
+        ...state,
+        tooltip: {
+          ...state.tooltip,
+          pinned: true,
+          selected,
+        },
+        pointer: {
+          ...state.pointer,
+          pinned: state.pointer.current,
+        },
+      };
+    }
+
+    case TOGGLE_SELECTED_TOOLTIP_ITEM: {
+      if (!state.tooltip.pinned) return state;
+      let updatedItems = [...state.tooltip.selected];
+      if (updatedItems.includes(action.item)) {
+        updatedItems = updatedItems.filter((item) => item !== action.item);
+      } else {
+        updatedItems.push(action.item);
+      }
+
+      return {
+        ...state,
+        tooltip: {
+          ...state.tooltip,
+          selected: updatedItems,
+        },
+      };
+    }
+
+    case SET_SELECTED_TOOLTIP_ITEMS: {
+      if (!state.tooltip.pinned) return state;
+
+      return {
+        ...state,
+        tooltip: {
+          ...state.tooltip,
+          selected: action.items,
+        },
+      };
+    }
+
     default:
       return state;
   }

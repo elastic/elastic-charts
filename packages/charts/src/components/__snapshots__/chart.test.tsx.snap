@@ -20,7 +20,7 @@ exports[`Chart should render the legend name test 1`] = `
         </Resizer>
       </Connect(Resizer)>
       <Connect(LegendComponent)>
-        <LegendComponent debug={true} chartDimensions={{...}} containerDimensions={{...}} chartTheme={{...}} size={{...}} items={{...}} extraValues={{...}} config={{...}} onToggleDeselectSeriesAction={[Function (anonymous)]} onItemOutAction={[Function (anonymous)]} onItemOverAction={[Function (anonymous)]} clearTemporaryColors={[Function (anonymous)]} setTemporaryColor={[Function (anonymous)]} setPersistedColor={[Function (anonymous)]}>
+        <LegendComponent debug={true} isBrushing={false} chartDimensions={{...}} containerDimensions={{...}} chartTheme={{...}} size={{...}} items={{...}} extraValues={{...}} config={{...}} onToggleDeselectSeriesAction={[Function (anonymous)]} onItemOutAction={[Function (anonymous)]} onItemOverAction={[Function (anonymous)]} clearTemporaryColors={[Function (anonymous)]} setTemporaryColor={[Function (anonymous)]} setPersistedColor={[Function (anonymous)]}>
           <div className="echLegend echLegend--debug echLegend--vertical echLegend--right echLegend--top" style={{...}} dir="ltr">
             <div style={{...}} className="echLegendListContainer">
               <ul style={{...}} className="echLegendList">
@@ -61,10 +61,10 @@ exports[`Chart should render the legend name test 1`] = `
         </Connect(SpecsParserComponent)>
         <div className="echContainer">
           <Connect(ChartContainer) getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}}>
-            <ChartContainer getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}} status="Initialized" initialized={true} isChartEmpty={false} pointerCursor="default" isBrushingAvailable={false} isBrushing={false} internalChartRenderer={[Function (anonymous)]} settings={{...}} onPointerMove={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onKeyPress={[Function (anonymous)]}>
-              <div className="echChartPointerContainer" style={{...}} onMouseMove={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onMouseUp={[Function (anonymous)]}>
+            <ChartContainer getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}} status="Initialized" initialized={true} tooltipState={{...}} isChartEmpty={false} canPinTooltip={false} pointerCursor={[undefined]} isBrushingAvailable={false} isBrushing={false} internalChartRenderer={[Function (anonymous)]} settings={{...}} tooltip={{...}} disableInteractions={false} onPointerMove={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onKeyPress={[Function (anonymous)]} pinTooltip={[Function (anonymous)]}>
+              <div className="echChartPointerContainer" style={{...}} onMouseMove={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onContextMenu={[undefined]}>
                 <Connect(CursorBand)>
-                  <CursorBand theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType="vertical" fromExternalEvent={[undefined]} dispatch={[Function: dispatch]} />
+                  <CursorBand isBrushing={false} theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType="vertical" fromExternalEvent={[undefined]} tooltipState={{...}} dispatch={[Function: dispatch]} />
                 </Connect(CursorBand)>
                 <Connect(XYChart) forwardCanvasRef={{...}}>
                   <XYChart forwardCanvasRef={{...}} isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} hoveredAnnotationIds={{...}} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
@@ -92,13 +92,13 @@ exports[`Chart should render the legend name test 1`] = `
                   </XYChart>
                 </Connect(XYChart)>
                 <Connect(CursorLine)>
-                  <CursorLine theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType="vertical" fromExternalEvent={[undefined]} isLine={false} dispatch={[Function: dispatch]} />
+                  <CursorLine isBrushing={false} theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType="vertical" fromExternalEvent={[undefined]} isLine={false} tooltipState={{...}} dispatch={[Function: dispatch]} />
                 </Connect(CursorLine)>
                 <Connect(CursorCrossLine)>
                   <CursorCrossLine theme={{...}} chartRotation={0} cursorCrossLinePosition={[undefined]} tooltipType="vertical" dispatch={[Function: dispatch]} />
                 </Connect(CursorCrossLine)>
                 <Connect(Tooltip) getChartContainerRef={[Function (anonymous)]}>
-                  <Tooltip getChartContainerRef={[Function (anonymous)]} zIndex={0} headerFormatter={[undefined]} settings={{...}} header={[undefined]} footer={[undefined]} rotation={0} chartId="chart1" backgroundColor="transparent" visible={false} position={{...}} info={{...}} onPointerMove={[Function (anonymous)]} />
+                  <Tooltip getChartContainerRef={[Function (anonymous)]} tooltip={{...}} isExternal={false} isBrushing={false} zIndex={0} settings={{...}} tooltipTheme={{...}} rotation={0} chartId="chart1" backgroundColor="transparent" visible={false} position={{...}} info={{...}} pinned={false} selected={{...}} canPinTooltip={false} onPointerMove={[Function (anonymous)]} toggleSelectedTooltipItem={[Function (anonymous)]} setSelectedTooltipItems={[Function (anonymous)]} pinTooltip={[Function (anonymous)]} />
                 </Connect(Tooltip)>
                 <Connect(Annotations) getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}}>
                   <Annotations getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}} isChartEmpty={false} chartDimensions={{...}} sharedStyle={{...}} annotationDimensions={{...}} annotationSpecs={{...}} tooltipState={{...}} chartId="chart1" zIndex={0} hoveredAnnotationIds={{...}} clickable={false} onPointerMove={[Function (anonymous)]} onDOMElementLeave={[Function (anonymous)]} onDOMElementEnter={[Function (anonymous)]} onDOMElementClick={[Function (anonymous)]}>
@@ -106,7 +106,7 @@ exports[`Chart should render the legend name test 1`] = `
                   </Annotations>
                 </Connect(Annotations)>
                 <Connect(Highlighter)>
-                  <Highlighter initialized={true} chartId="chart1" zIndex={0} highlightedGeometries={{...}} chartTransform={{...}} chartDimensions={{...}} chartRotation={0} dispatch={[Function: dispatch]}>
+                  <Highlighter initialized={true} chartId="chart1" zIndex={0} isBrushing={false} highlightedGeometries={{...}} chartTransform={{...}} chartDimensions={{...}} chartRotation={0} dispatch={[Function: dispatch]}>
                     <svg className="echHighlighter" style={{...}}>
                       <defs>
                         <clipPath id="echHighlighterClipPath__chart1">

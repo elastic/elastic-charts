@@ -282,11 +282,12 @@ export class CommonPage {
    * @param mousePosition
    * @param selector
    */
-  clickMouseRelativeToDOMElement = (page: Page) => async (mousePosition: MousePosition, selector: string) => {
-    const element = await this.getBoundingClientRect(page)(selector);
-    const { x, y } = getCursorPosition(mousePosition, element);
-    await page.mouse.click(x, y);
-  };
+  clickMouseRelativeToDOMElement =
+    (page: Page) => async (mousePosition: MousePosition, selector: string, button?: 'left' | 'right' | 'middle') => {
+      const element = await this.getBoundingClientRect(page)(selector);
+      const { x, y } = getCursorPosition(mousePosition, element);
+      await page.mouse.click(x, y, { button });
+    };
 
   /**
    * Drag mouse relative to element
@@ -428,6 +429,33 @@ export class CommonPage {
       const action = async () => {
         await options?.action?.();
         await this.moveMouseRelativeToDOMElement(page)(mousePosition, this.chartSelector);
+      };
+      await this.expectChartAtUrlToMatchScreenshot(page)(url, {
+        ...options,
+        action,
+      });
+    };
+
+  /**
+   * Expect a chart given a url from storybook with mouse click
+   *
+   * TODO - Find why this always creates a 2px diff
+   *
+   * @param url Storybook url from knobs section
+   * @param mousePosition - position of mouse relative to chart
+   * @param options
+   */
+  expectChartWithClickAtUrlToMatchScreenshot =
+    (page: Page) =>
+    async (
+      url: string,
+      mousePosition: MousePosition,
+      button?: 'left' | 'right' | 'middle',
+      options?: ScreenshotElementAtUrlOptions,
+    ) => {
+      const action = async () => {
+        await options?.action?.();
+        await this.clickMouseRelativeToDOMElement(page)(mousePosition, this.chartSelector, button);
       };
       await this.expectChartAtUrlToMatchScreenshot(page)(url, {
         ...options,

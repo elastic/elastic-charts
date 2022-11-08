@@ -7,15 +7,30 @@
  */
 
 import { TooltipType } from '../../../../specs/constants';
+import { TooltipVisibility } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { getTooltipInfoSelector } from './tooltip';
 
 /** @internal */
 export const isTooltipVisibleSelector = createCustomCachedSelector(
-  [getTooltipSpecSelector, getTooltipInfoSelector],
-  ({ type }, tooltipInfo): boolean => {
-    if (type === TooltipType.None) return false;
-    return tooltipInfo.values.length > 0;
+  [getTooltipSpecSelector, getTooltipInfoSelector, getTooltipInteractionState],
+  ({ type }, tooltipInfo, { pinned }): TooltipVisibility => {
+    if (type === TooltipType.None) {
+      return {
+        visible: false,
+        isExternal: false,
+        displayOnly: false,
+        isPinnable: false,
+      };
+    }
+
+    return {
+      visible: tooltipInfo.values.length > 0 || pinned,
+      displayOnly: tooltipInfo.values.every(({ displayOnly }) => displayOnly),
+      isExternal: false,
+      isPinnable: tooltipInfo.values.length > 0,
+    };
   },
 );

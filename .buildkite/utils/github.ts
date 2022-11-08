@@ -32,7 +32,7 @@ const auth = JSON.parse(process.env.GITHUB_AUTH);
 const MyOctokit = Octokit.plugin(retry);
 export const octokit = new MyOctokit({
   authStrategy: createAppAuth,
-  auth: auth,
+  auth,
 });
 
 export const defaultGHOptions = {
@@ -237,7 +237,7 @@ export const updateCheckStatus = async (
     const output =
       title && typeof title === 'string'
         ? {
-            title: title,
+            title,
             summary: title,
             ...options.output,
           }

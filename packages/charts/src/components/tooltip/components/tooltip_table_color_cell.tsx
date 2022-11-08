@@ -9,34 +9,61 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import { combineColors, highContrastColor } from '../../../common/color_calcs';
+import { colorToRgba, RGBATupleToString } from '../../../common/color_library_wrappers';
+import { Color, Colors } from '../../../common/colors';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
 
 /** @public */
-export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children'> & {
+export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children' | 'width'> & {
   color?: string;
+  displayOnly?: boolean;
 };
 
 /**
  * Renders color strip column cell
  * @public
  */
-export function TooltipTableColorCell({ color, className, ...cellProps }: ColorStripCellProps): JSX.Element | null {
-  const { backgroundColor } = useTooltipContext();
+export function TooltipTableColorCell({
+  color,
+  className,
+  displayOnly,
+  ...cellProps
+}: ColorStripCellProps): JSX.Element | null {
+  const { backgroundColor, theme } = useTooltipContext();
+
+  const getDotColor = (stripColor: string): Color => {
+    if (color === Colors.Transparent.keyword) {
+      return theme.defaultDotColor;
+    }
+    const foregroundRGBA = colorToRgba(stripColor === Colors.Transparent.keyword ? backgroundColor : stripColor);
+    const backgroundRGBA = colorToRgba(backgroundColor);
+    const blendedFgBg = combineColors(foregroundRGBA, backgroundRGBA);
+    return RGBATupleToString(highContrastColor(blendedFgBg, 'WCAG3'));
+  };
+
+  const renderColorStrip = () => {
+    if (!color) return null;
+    const dotColor = getDotColor(color);
+
+    return (
+      <>
+        <div className="echTooltip__colorStrip--bg" style={{ backgroundColor }} />
+        <div className="echTooltip__colorStrip" style={{ backgroundColor: color, color: dotColor }} />
+        <div className="echTooltip__colorStrip--spacer" />
+      </>
+    );
+  };
+
   return (
     <TooltipTableCell
       {...cellProps}
       className={classNames('echTooltip__colorCell', className, {
-        'echTooltip__colorCell--empty': !color,
+        'echTooltip__colorCell--static': displayOnly,
       })}
     >
-      {color ? (
-        <>
-          <div className="echTooltip__colorStrip" style={{ backgroundColor }} />
-          <div className="echTooltip__colorStrip" style={{ backgroundColor: color }} />
-          <div className="echTooltip__colorStripSpacer" />
-        </>
-      ) : null}
+      {renderColorStrip()}
     </TooltipTableCell>
   );
 }

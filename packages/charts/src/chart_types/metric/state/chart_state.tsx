@@ -33,7 +33,13 @@ export class MetricState implements InternalChartState {
   getLegendItemsLabels = () => EMPTY_LEGEND_ITEM_LIST;
   getLegendExtraValues = () => EMPTY_MAP;
   getPointerCursor = () => DEFAULT_CSS_CURSOR;
-  isTooltipVisible = () => ({ visible: false, isExternal: false });
+  isTooltipVisible = () => ({
+    visible: false,
+    isExternal: false,
+    displayOnly: false,
+    isPinnable: false,
+  });
+
   getTooltipInfo = () => undefined;
   getTooltipAnchor = () => null;
   eventCallbacks = () => {};

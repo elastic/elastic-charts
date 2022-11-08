@@ -13,7 +13,7 @@ import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { onPointerMove } from '../../../../state/actions/mouse';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { getTooltipInfoAndGeometriesSelector } from './get_tooltip_values_highlighted_geoms';
+import { getHighlightedTooltipTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 
 describe('Highlight points', () => {
   describe('On Ordinal area chart', () => {
@@ -37,12 +37,12 @@ describe('Highlight points', () => {
     });
     it('On ordinal area chart, it should correctly highlight points', () => {
       store.dispatch(onPointerMove({ x: 50, y: 100 }, 0));
-      const { highlightedGeometries } = getTooltipInfoAndGeometriesSelector(store.getState());
+      const { highlightedGeometries } = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(highlightedGeometries).toHaveLength(1);
     });
     it('On ordinal area chart, it should not highlight points if not within the buffer', () => {
       store.dispatch(onPointerMove({ x: 5, y: 100 }, 0));
-      const { highlightedGeometries } = getTooltipInfoAndGeometriesSelector(store.getState());
+      const { highlightedGeometries } = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(highlightedGeometries).toHaveLength(0);
     });
   });

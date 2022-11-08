@@ -9,11 +9,11 @@
 import { LegendItemExtraValues } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getHighlightedValues } from '../../tooltip/tooltip';
-import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
+import { getLegendItemExtraValues } from '../../tooltip/tooltip';
+import { getTooltipInfoAndGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 
 /** @internal */
-export const getHighlightedValuesSelector = createCustomCachedSelector(
-  [getTooltipInfoSelector],
-  ({ values }): Map<SeriesKey, LegendItemExtraValues> => getHighlightedValues(values),
+export const getLegendItemExtraValuesSelector = createCustomCachedSelector(
+  [getTooltipInfoAndGeomsSelector],
+  ({ tooltip: { values } }): Map<SeriesKey, LegendItemExtraValues> => getLegendItemExtraValues(values),
 );

@@ -29,7 +29,16 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
     }
 
     return (
-      <TooltipWrapper className="echAnnotation">
+      <TooltipWrapper
+        // actions not used on annotations yet
+        actions={[]}
+        actionPrompt=""
+        pinningPrompt=""
+        selectionPrompt=""
+        actionsLoading=""
+        noActionsLoaded=""
+        className="echAnnotation"
+      >
         <TooltipContent {...state} />
       </TooltipWrapper>
     );

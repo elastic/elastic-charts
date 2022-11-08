@@ -7,26 +7,48 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, PropsWithChildren } from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { isNil } from '../../../utils/common';
+import { useTooltipContext } from './tooltip_provider';
 
 type TooltipTableRowProps = PropsWithChildren<{
+  id?: string;
   className?: string;
   isHighlighted?: boolean;
-  maxHeight?: CSSProperties['maxHeight'];
+  isSelected?: boolean;
+  onSelect?: () => void;
 }>;
 
 /** @public */
-export const TooltipTableRow = ({ maxHeight, isHighlighted = false, children, className }: TooltipTableRowProps) => {
+export const TooltipTableRow = ({
+  id,
+  isHighlighted = false,
+  isSelected = false,
+  children,
+  onSelect,
+  className,
+}: TooltipTableRowProps) => {
+  const { actionable } = useTooltipContext();
+
+  const isSelectable = actionable && !isNil(onSelect);
   const classes = classNames('echTooltip__tableRow', className, {
-    'echTooltip__tableRow--scrollable': !isNil(maxHeight),
     'echTooltip__tableRow--highlighted': isHighlighted,
+    'echTooltip__tableRow--selected': isSelected,
+    'echTooltip__tableRow--selectable': isSelectable,
   });
 
   return (
-    <tr className={classes} style={{ maxHeight }}>
+    // cannot focus row using display: contents to structure grid
+    // eslint-disable-next-line jsx-a11y/interactive-supports-focus
+    <div
+      role="row"
+      id={id}
+      className={classes}
+      onClick={isSelectable ? onSelect : undefined}
+      onKeyPress={isSelectable ? onSelect : undefined}
+    >
       {children}
-    </tr>
+    </div>
   );
 };

@@ -8,27 +8,26 @@
 
 import { Rect } from '../../../../geoms/types';
 import { isPointerOverEvent, PointerEvent } from '../../../../specs';
-import { GlobalChartState, PointerState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { isNil } from '../../../../utils/common';
+import { Point } from '../../../../utils/point';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { getHeatmapGeometries } from './geometries';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
-const getPointerEventStateSelector = (state: GlobalChartState) => state.interactions.pointer.current;
-
 /** @internal */
 export const getCursorBandPositionSelector = createCustomCachedSelector(
-  [getHeatmapGeometries, getExternalPointerEventStateSelector, getPointerEventStateSelector, getSettingsSpecSelector],
+  [getHeatmapGeometries, getExternalPointerEventStateSelector, getActivePointerPosition],
   getCursorBand,
 );
 
 function getCursorBand(
   geoms: ShapeViewModel,
   externalPointerEvent: PointerEvent | null,
-  currentPointer: PointerState,
+  currentPointerPosition: Point,
 ): (Rect & { fromExternalEvent: boolean }) | undefined {
   // external pointer events takes precedence over the current mouse pointer
   if (isPointerOverEvent(externalPointerEvent)) {
@@ -44,8 +43,8 @@ function getCursorBand(
     }
   }
   // display the current hovered cell
-  if (currentPointer.position.x > -1) {
-    const point = currentPointer.position;
+  if (currentPointerPosition.x > -1) {
+    const point = currentPointerPosition;
     const end = { x: point.x + Number.EPSILON, y: point.y + Number.EPSILON };
     const band = geoms.pickDragShape([point, end]);
     if (band) {

@@ -26,6 +26,13 @@ export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdent
    * On XYAxis chart correspond to the set of y values for each series
    */
   values: TooltipValue<D, SI>[];
+  /**
+   * Internal flag to disable tooltip actions. Needed for heatmap to hide actions.
+   *
+   * TODO: replace this flag with better internal tooltip info structures
+   * @internal
+   */
+  disableActions?: boolean;
 }
 
 /**
@@ -36,7 +43,39 @@ export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends Seri
   extends TooltipInfo<D, SI> {
   headerFormatter?: TooltipValueFormatter<D, SI>;
   dir: 'ltr' | 'rtl';
+
+  /**
+   * Background color for use with contrast ratios
+   */
   backgroundColor: string;
+
+  /**
+   * Tooltip is pinned
+   */
+  pinned: boolean;
+
+  /**
+   * Selected items - For use with actions
+   *
+   *
+   * TODO: permit other values than TooltipValue types
+   */
+  selected: TooltipValue<D, SI>[];
+
+  /**
+   * Toggles selected items - For use with actions
+   *
+   *
+   * TODO: permit other values than TooltipValue types
+   */
+  toggleSelected: (item: TooltipValue<D, SI>) => void;
+
+  /**
+   * Allows setting the selected items - For use with actions
+   *
+   * TODO: permit other values than TooltipValue types
+   */
+  setSelection: (items: TooltipValue<D, SI>[]) => void;
 }
 
 /**
@@ -92,3 +131,10 @@ export type PropsOrChildrenWithProps<
 export type Neverify<T extends Record<string, unknown>> = {
   [Key in keyof T]?: never;
 };
+
+/** @public */
+export type ToggleSelectedTooltipItemCallback = (item: TooltipValue<any, SeriesIdentifier>) => any;
+/** @public */
+export type SetSelectedTooltipItemsCallback = (items: TooltipValue<any, SeriesIdentifier>[]) => any;
+/** @public */
+export type PinTooltipCallback = (pinned: boolean, resetPointer?: boolean) => any;

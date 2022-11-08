@@ -38,6 +38,10 @@ const hexStringToTuple = (s: string) => [
   String(parseInt(s.slice(5, 7), 16)),
 ];
 
+export const wait = <T extends () => any>(n: number, cb: T): Promise<ReturnType<T>> => {
+  return new Promise<ReturnType<T>>((resolve) => setTimeout(resolve, n)).then(cb);
+};
+
 export const plasma18 = [
   '#0d0887',
   '#2f0596',

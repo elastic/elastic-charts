@@ -6,14 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../chart_state';
+import { GlobalChartState, TooltipVisibility } from '../chart_state';
 
 /** @internal */
-export const getInternalIsTooltipVisibleSelector = (
-  state: GlobalChartState,
-): { visible: boolean; isExternal: boolean } => {
+export const getInternalIsTooltipVisibleSelector = (state: GlobalChartState): TooltipVisibility => {
   if (state.internalChartState) {
     return state.internalChartState.isTooltipVisible(state);
   }
-  return { visible: false, isExternal: false };
+  return { visible: false, isExternal: false, displayOnly: false, isPinnable: false };
 };

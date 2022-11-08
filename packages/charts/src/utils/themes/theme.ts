@@ -63,6 +63,25 @@ export interface TextAlignment {
 }
 
 /**
+ * Tooltip styles
+ * @public
+ */
+export interface TooltipStyle {
+  /**
+   * Sets max width of tooltip
+   */
+  maxWidth: NonNullable<CSSProperties['maxWidth']>;
+  /**
+   * Sets max height of scrolling tooltip table body
+   */
+  maxTableHeight: CSSProperties['maxHeight'];
+  /**
+   * Color used as fallback when contrast logic fails
+   */
+  defaultDotColor: Color;
+}
+
+/**
  * Shared style properties for varies geometries
  * @public
  */
@@ -474,8 +493,14 @@ export interface Theme {
    * Theme styles for heatmap chart types
    */
   heatmap: HeatmapStyle;
-
+  /**
+   * Theme styles for metric chart types
+   */
   metric: MetricStyle;
+  /**
+   * Theme styles for tooltip
+   */
+  tooltip: TooltipStyle;
 
   /** @alpha */
   flamegraph: FlamegraphStyle;

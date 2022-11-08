@@ -14,5 +14,5 @@ interface TooltipDividerProps {
 
 /** @public */
 export const TooltipDivider = ({ margin }: TooltipDividerProps) => {
-  return <div style={{ margin }} className="echTooltip__divider"></div>;
+  return <div style={{ margin }} className="echTooltipDivider"></div>;
 };

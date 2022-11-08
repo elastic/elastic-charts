@@ -65,7 +65,12 @@ export class WordcloudState implements InternalChartState {
   }
 
   isTooltipVisible() {
-    return { visible: false, isExternal: false };
+    return {
+      visible: false,
+      isExternal: false,
+      displayOnly: false,
+      isPinnable: false,
+    };
   }
 
   getTooltipInfo() {
