@@ -16,6 +16,7 @@ import { getPickedShapes } from './picked_shapes';
 const EMPTY_TOOLTIP = Object.freeze({
   header: null,
   values: [],
+  disableActions: false,
 });
 
 /** @internal */
@@ -29,6 +30,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
     const tooltipInfo: TooltipInfo = {
       header: null,
       values: [],
+      disableActions: false,
     };
 
     if (Array.isArray(pickedShapes)) {
@@ -78,6 +80,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
             value: `${shape.value}`,
             formattedValue: `${shape.formatted}`,
             datum: shape.datum,
+            displayOnly: true,
           });
         });
     } else {
@@ -93,7 +96,9 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
         value: `${pickedShapes.value}`,
         formattedValue: `${pickedShapes.value}`,
         datum: pickedShapes.value,
+        displayOnly: true,
       });
+      tooltipInfo.disableActions = true;
     }
 
     return tooltipInfo;

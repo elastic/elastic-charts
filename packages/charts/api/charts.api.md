@@ -229,7 +229,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "groupId" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "integersOnly" | "ticks" | "tickFormat" | "gridLine" | "showGridLines" | "labelFormat" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "groupId" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "integersOnly" | "tickFormat" | "ticks" | "gridLine" | "showGridLines" | "labelFormat" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -560,8 +560,9 @@ export interface ColorConfig {
 }
 
 // @public (undocumented)
-export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children'> & {
+export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children' | 'width'> & {
     color?: string;
+    displayOnly?: boolean;
 };
 
 // @public
@@ -648,12 +649,15 @@ export type CustomTooltip<D extends BaseDatum = Datum, SI extends SeriesIdentifi
 
 // @public
 export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends TooltipInfo<D, SI> {
-    // (undocumented)
     backgroundColor: string;
     // (undocumented)
     dir: 'ltr' | 'rtl';
     // (undocumented)
     headerFormatter?: TooltipValueFormatter<D, SI>;
+    pinned: boolean;
+    selected: TooltipValue<D, SI>[];
+    setSelection: (items: TooltipValue<D, SI>[]) => void;
+    toggleSelected: (item: TooltipValue<D, SI>) => void;
 }
 
 // @public (undocumented)
@@ -1262,7 +1266,7 @@ export type GroupId = string;
 export type GroupKeysOrKeyFn<T> = Array<keyof T> | GroupByKeyFn<T>;
 
 // @alpha
-export const Heatmap: <D extends BaseDatum = any>(props: SFProps<HeatmapSpec<D>, "chartType" | "specType", "data" | "timeZone" | "valueAccessor" | "valueFormatter" | "xAccessor" | "yAccessor" | "xSortPredicate" | "ySortPredicate" | "xScale" | "xAxisTitle" | "yAxisTitle" | "xAxisLabelFormatter" | "yAxisLabelFormatter" | "xAxisLabelName" | "yAxisLabelName", "name" | "onBrushEnd" | "highlightedData", "id" | "colorScale">) => null;
+export const Heatmap: <D extends BaseDatum = any>(props: SFProps<HeatmapSpec<D>, "chartType" | "specType", "data" | "timeZone" | "valueAccessor" | "xAccessor" | "yAccessor" | "valueFormatter" | "xScale" | "xSortPredicate" | "ySortPredicate" | "xAxisTitle" | "yAxisTitle" | "xAxisLabelFormatter" | "yAxisLabelFormatter" | "xAxisLabelName" | "yAxisLabelName", "name" | "onBrushEnd" | "highlightedData", "id" | "colorScale">) => null;
 
 // @alpha (undocumented)
 export interface HeatmapBandsColorScale {
@@ -1896,7 +1900,7 @@ export type PartialTheme = RecursivePartial<Theme>;
 // Warning: (ae-forgotten-export) The symbol "PartitionSpec" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, "chartType" | "specType", "animation" | "layout" | "valueAccessor" | "valueFormatter" | "valueGetter" | "clockwiseSectors" | "specialFirstInnermostSector" | "drilldown" | "maxRowCount" | "fillOutside" | "radiusOutside" | "fillRectangleWidth" | "fillRectangleHeight" | "percentFormatter" | "topGroove" | "smallMultiples" | "layers", never, "data" | "id">) => null;
+export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, "chartType" | "specType", "animation" | "layout" | "valueAccessor" | "smallMultiples" | "valueFormatter" | "valueGetter" | "clockwiseSectors" | "specialFirstInnermostSector" | "drilldown" | "maxRowCount" | "fillOutside" | "radiusOutside" | "fillRectangleWidth" | "fillRectangleHeight" | "percentFormatter" | "topGroove" | "layers", never, "data" | "id">) => null;
 
 // Warning: (ae-forgotten-export) The symbol "StaticConfig" needs to be exported by the entry point index.d.ts
 //
@@ -2010,6 +2014,9 @@ export interface PerSideDistance {
     // (undocumented)
     top: number;
 }
+
+// @public (undocumented)
+export type PinTooltipCallback = (pinned: boolean, resetPointer?: boolean) => any;
 
 // @public (undocumented)
 export type Pixels = number;
@@ -2417,13 +2424,16 @@ export const SeriesType: Readonly<{
 // @public
 export type SeriesType = $Values<typeof SeriesType>;
 
+// @public (undocumented)
+export type SetSelectedTooltipItemsCallback = (items: TooltipValue<any, SeriesIdentifier>[]) => any;
+
 // @public
 export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuildProps)['overrides'], keyof (typeof settingsBuildProps)['defaults'], keyof (typeof settingsBuildProps)['optionals'], keyof (typeof settingsBuildProps)['requires']>) => null;
 
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "externalPointerEvents" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "tooltip" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "onElementOver" | "onElementClick" | "onElementOut" | "onRenderChange" | "theme" | "xDomain" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "pointBuffer" | "onBrushEnd" | "onPointerUpdate" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary", "ariaLabel" | "tooltip" | "theme" | "onBrushEnd" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "xDomain" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "pointBuffer" | "onPointerUpdate" | "onRenderChange" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendSort", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -2712,13 +2722,13 @@ export interface Theme {
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;
     markSizeRatio?: number;
-    // (undocumented)
     metric: MetricStyle;
     partition: PartitionStyle;
     // (undocumented)
     scales: ScalesConfig;
     // (undocumented)
     sharedStyle: SharedGeometryStateStyle;
+    tooltip: TooltipStyle;
 }
 
 // @public (undocumented)
@@ -2777,11 +2787,22 @@ export interface TimeslipSpec extends Spec {
 // @public
 export function toEntries<T extends Record<string, string>, S>(array: T[], accessor: keyof T, staticValue: S): Record<string, S>;
 
-// @public
-export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "footer" | "header" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>) => null;
+// @public (undocumented)
+export type ToggleSelectedTooltipItemCallback = (item: TooltipValue<any, SeriesIdentifier>) => any;
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "snap" | "showNullValues", "footer" | "header" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
+export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, "id" | "chartType" | "specType", "type" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "footer" | "header" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>) => null;
+
+// @public
+export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
+    label: string | ((selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => ReactNode);
+    hide?: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => boolean;
+    disabled?: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => boolean | string;
+    onSelect: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => void;
+};
+
+// @public
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "footer" | "header" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
 
 // @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
@@ -2829,10 +2850,22 @@ export type TooltipSettings = TooltipType | TooltipProps;
 
 // @public
 export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends Spec, TooltipPortalSettings<'chart'> {
+    actionPrompt: string;
+    actions: TooltipAction<D, SI>[] | ((selected: TooltipValue<D, SI>[]) => Promise<TooltipAction<D, SI>[]> | TooltipAction<D, SI>[]);
+    actionsLoading: string | ComponentType<{
+        selected: TooltipValue<D, SI>[];
+    }>;
     customTooltip?: CustomTooltip<D, SI>;
     footer?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
     header?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
     headerFormatter?: TooltipValueFormatter<D, SI>;
+    maxTooltipItems: number;
+    maxVisibleTooltipItems: number;
+    noActionsLoaded: string | ComponentType<{
+        selected: TooltipValue<D, SI>[];
+    }>;
+    pinningPrompt: string;
+    selectionPrompt: string;
     showNullValues: boolean;
     snap: boolean;
     stickTo?: TooltipStickTo;
@@ -2855,10 +2888,17 @@ export const TooltipStickTo: Readonly<{
 // @public (undocumented)
 export type TooltipStickTo = $Values<typeof TooltipStickTo>;
 
+// @public
+export interface TooltipStyle {
+    defaultDotColor: Color;
+    maxTableHeight: CSSProperties['maxHeight'];
+    maxWidth: NonNullable<CSSProperties['maxWidth']>;
+}
+
 // Warning: (ae-forgotten-export) The symbol "TooltipTableProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTable: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ maxHeight, className, ...props }: TooltipTableProps<D, SI>) => JSX.Element;
+export const TooltipTable: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableProps<D, SI>) => JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableBodyProps" needs to be exported by the entry point index.d.ts
 //
@@ -2866,17 +2906,19 @@ export const TooltipTable: <D extends BaseDatum = any, SI extends SeriesIdentifi
 export const TooltipTableBody: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableBodyProps<D, SI>) => JSX.Element;
 
 // @public (undocumented)
-export const TooltipTableCell: ({ style, tagName, className, children }: TooltipTableCellProps) => JSX.Element;
+export const TooltipTableCell: ({ style, truncate, tagName, className, children, title: manualTitle, }: TooltipTableCellProps) => JSX.Element;
 
 // @public (undocumented)
 export type TooltipTableCellProps = PropsWithChildren_2<{
     tagName?: 'td' | 'th';
+    truncate?: boolean;
     className?: string;
+    title?: string;
     style?: TooltipCellStyle;
 }>;
 
 // @public
-export function TooltipTableColorCell({ color, className, ...cellProps }: ColorStripCellProps): JSX.Element | null;
+export function TooltipTableColorCell({ color, className, displayOnly, ...cellProps }: ColorStripCellProps): JSX.Element | null;
 
 // @alpha
 export type TooltipTableColumn<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = TooltipTableColumnCustom<D, SI> | TooltipTableColumnColor<D, SI> | TooltipTableColumnNumber<D, SI> | TooltipTableColumnText<D, SI>;
@@ -2889,6 +2931,8 @@ export type TooltipTableColumnBase<D extends BaseDatum = Datum, SI extends Serie
     footer?: string | ((items: TooltipValue<D, SI>[]) => string);
     hidden?: boolean | ((items: TooltipValue<D, SI>[]) => boolean);
     style?: TooltipCellStyle;
+    truncate?: boolean;
+    width?: CSSProperties['gridTemplateColumns'];
 };
 
 // @alpha
@@ -2925,17 +2969,17 @@ export interface TooltipTableColumnText<D extends BaseDatum = Datum, SI extends 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableFooterProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableFooter: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ maxHeight, className, ...props }: TooltipTableFooterProps<D, SI>) => JSX.Element | null;
+export const TooltipTableFooter: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableFooterProps<D, SI>) => JSX.Element | null;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableHeaderProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableHeader: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ maxHeight, className, ...props }: TooltipTableHeaderProps<D, SI>) => JSX.Element | null;
+export const TooltipTableHeader: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableHeaderProps<D, SI>) => JSX.Element | null;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableRowProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableRow: ({ maxHeight, isHighlighted, children, className }: TooltipTableRowProps) => JSX.Element;
+export const TooltipTableRow: ({ id, isHighlighted, isSelected, children, onSelect, className, }: TooltipTableRowProps) => JSX.Element;
 
 // @public
 export const TooltipType: Readonly<{

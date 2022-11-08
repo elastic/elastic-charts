@@ -7,18 +7,14 @@
  */
 
 import { AnchorPosition } from '../../../../components/portal/types';
-import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getPickedShapes } from './picked_shapes';
 
-function getCurrentPointerPosition(state: GlobalChartState) {
-  return state.interactions.pointer.current.position;
-}
-
 /** @internal */
 export const getTooltipAnchorSelector = createCustomCachedSelector(
-  [getPickedShapes, computeChartElementSizesSelector, getCurrentPointerPosition],
+  [getPickedShapes, computeChartElementSizesSelector, getActivePointerPosition],
   (shapes, { grid }, position): AnchorPosition => {
     if (Array.isArray(shapes) && shapes.length > 0) {
       const firstShape = shapes[0];

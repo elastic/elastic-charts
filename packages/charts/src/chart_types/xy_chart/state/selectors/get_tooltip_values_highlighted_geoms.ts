@@ -21,6 +21,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { isNil, Rotation } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
@@ -59,7 +60,7 @@ export interface TooltipAndHighlightedGeoms {
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
 /** @internal */
-export const getTooltipInfoAndGeometriesSelector = createCustomCachedSelector(
+export const getTooltipInfoAndGeomsSelector = createCustomCachedSelector(
   [
     getSeriesSpecsSelector,
     getAxisSpecsSelector,
@@ -158,12 +159,6 @@ function getTooltipAndHighlightFromValue(
       highlightedGeometries.push(indexedGeometry);
     }
 
-    // if it's a follow tooltip, and no element is highlighted
-    // do _not_ add element into tooltip list
-    if (!isHighlighted && isFollowTooltipType(tooltipType)) {
-      return acc;
-    }
-
     // format the tooltip values
     const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, hasSingleSeries, yAxis);
 
@@ -204,13 +199,34 @@ function getTooltipAndHighlightFromValue(
 }
 
 /** @internal */
+export const getHighlightedTooltipTooltipValuesSelector = createCustomCachedSelector(
+  [getTooltipInteractionState, getTooltipInfoAndGeomsSelector, getTooltipSpecSelector, getSettingsSpecSelector],
+  ({ pinned }, values, tooltip, settings): TooltipAndHighlightedGeoms => {
+    const tooltipType = getTooltipType(tooltip, settings);
+    const highlightedValues = values.tooltip.values.filter((v) => v.isHighlighted);
+    const hasTooltipContent = values.tooltip.values.length > tooltip.maxTooltipItems && highlightedValues.length > 0;
+
+    if (!pinned && (isFollowTooltipType(tooltipType) || hasTooltipContent)) {
+      return {
+        ...values,
+        tooltip: {
+          ...values.tooltip,
+          values: highlightedValues,
+        },
+      };
+    }
+    return values;
+  },
+);
+
+/** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(
-  [getTooltipInfoAndGeometriesSelector],
+  [getHighlightedTooltipTooltipValuesSelector],
   ({ tooltip }): TooltipInfo => tooltip,
 );
 
 /** @internal */
 export const getHighlightedGeomsSelector = createCustomCachedSelector(
-  [getTooltipInfoAndGeometriesSelector],
+  [getHighlightedTooltipTooltipValuesSelector],
   ({ highlightedGeometries }): IndexedGeometry[] => highlightedGeometries,
 );

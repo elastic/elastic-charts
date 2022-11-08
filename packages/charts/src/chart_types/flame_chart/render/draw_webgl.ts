@@ -20,7 +20,7 @@ const DUMMY_INDEX = -1; // GLSL doesn't guarantee a NaN, and it's a shader integ
 /** @internal */
 export const drawWebgl = (
   gl: WebGL2RenderingContext,
-  logicalTime: number,
+  nodeTweenTime: number,
   canvasWidth: number,
   canvasHeight: number,
   xOffset: number,
@@ -40,7 +40,7 @@ export const drawWebgl = (
     target: pickLayer ? pickTexture.target() : null,
     uniformValues: {
       pickLayer,
-      t: Math.max(0.001, logicalTime), // for some reason, an exact zero will lead to `mix` as if it were 1 (glitch)
+      nodeTweenTime: Math.max(0.001, nodeTweenTime), // for some reason, an exact zero will lead to `mix` as if it were 1 (glitch)
       resolution: [canvasWidth, canvasHeight],
       gapPx: pickLayer || !focusLayer ? [0, 0] : [BOX_GAP_HORIZONTAL, BOX_GAP_VERTICAL], // in CSS pixels (but let's not leave a gap for shape picking)
       minFillRatio: MIN_FILL_RATIO,

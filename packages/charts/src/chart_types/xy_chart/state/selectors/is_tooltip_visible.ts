@@ -6,27 +6,25 @@
  * Side Public License, v 1.
  */
 
-import { TooltipInfo } from '../../../../components/tooltip/types';
 import { TooltipType } from '../../../../specs/constants';
-import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
+import { InteractionsState, TooltipVisibility } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { isExternalTooltipVisibleSelector } from '../../../../state/selectors/is_external_tooltip_visible';
 import { Point } from '../../../../utils/point';
-import { TooltipSpec } from './../../../../specs/tooltip';
+import { isFollowTooltipType, TooltipSpec } from './../../../../specs/tooltip';
 import { getTooltipSpecSelector } from './../../../../state/selectors/get_tooltip_spec';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
-import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
+import { getTooltipInfoAndGeomsSelector, TooltipAndHighlightedGeoms } from './get_tooltip_values_highlighted_geoms';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';
-
-const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
 
 /** @internal */
 export const isTooltipVisibleSelector = createCustomCachedSelector(
   [
     getTooltipSpecSelector,
-    getPointerSelector,
+    getTooltipInteractionState,
     getProjectedPointerPositionSelector,
-    getTooltipInfoSelector,
+    getTooltipInfoAndGeomsSelector,
     isAnnotationTooltipVisibleSelector,
     isExternalTooltipVisibleSelector,
   ],
@@ -34,23 +32,30 @@ export const isTooltipVisibleSelector = createCustomCachedSelector(
 );
 
 function isTooltipVisible(
-  { type: tooltipType }: TooltipSpec,
-  pointer: PointerStates,
+  { type: tooltipType, maxTooltipItems }: TooltipSpec,
+  { pinned }: InteractionsState['tooltip'],
   projectedPointerPosition: Point,
-  tooltip: TooltipInfo,
+  { tooltip, highlightedGeometries }: TooltipAndHighlightedGeoms,
   isAnnotationTooltipVisible: boolean,
   externalTooltipVisible: boolean,
-) {
+): TooltipVisibility {
+  const visibleTooltip = isFollowTooltipType(tooltipType)
+    ? highlightedGeometries
+    : tooltip.values.length > maxTooltipItems && highlightedGeometries.length > 0
+    ? highlightedGeometries
+    : tooltip.values;
   const isLocalTooltip =
     tooltipType !== TooltipType.None &&
-    pointer.down === null &&
     projectedPointerPosition.x > -1 &&
     projectedPointerPosition.y > -1 &&
-    tooltip.values.length > 0 &&
+    visibleTooltip.length > 0 &&
     !isAnnotationTooltipVisible;
-  const isExternalTooltip = externalTooltipVisible && tooltip.values.length > 0;
+  const isExternalTooltip = externalTooltipVisible && visibleTooltip.length > 0;
+
   return {
-    visible: isLocalTooltip || isExternalTooltip,
+    visible: isLocalTooltip || isExternalTooltip || pinned,
     isExternal: externalTooltipVisible,
+    displayOnly: false,
+    isPinnable: tooltip.values.length > 0,
   };
 }

@@ -10,6 +10,7 @@ import { RefObject } from 'react';
 
 import { ChartType } from '../..';
 import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
+import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
@@ -86,6 +87,8 @@ export class PartitionState implements InternalChartState {
     return {
       visible: isTooltipVisibleSelector(globalState),
       isExternal: false,
+      displayOnly: false,
+      isPinnable: true,
     };
   }
 
@@ -94,7 +97,7 @@ export class PartitionState implements InternalChartState {
   }
 
   getTooltipAnchor(state: GlobalChartState) {
-    const { position } = state.interactions.pointer.current;
+    const position = getActivePointerPosition(state);
     return {
       isRotated: false,
       x: position.x,

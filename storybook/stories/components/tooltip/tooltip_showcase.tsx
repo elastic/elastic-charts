@@ -9,7 +9,16 @@
 import { boolean, color } from '@storybook/addon-knobs';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
-import { BaseDatum, Datum, SeriesIdentifier, TooltipProps } from '@elastic/charts';
+import {
+  BaseDatum,
+  Datum,
+  SeriesIdentifier,
+  TooltipProps,
+  LIGHT_THEME,
+  DEFAULT_TOOLTIP_SPEC,
+  TooltipSpec,
+  TooltipValue,
+} from '@elastic/charts';
 import { TooltipComponent, TooltipComponentProps } from '@elastic/charts/src/components/tooltip/tooltip';
 
 import { getPlacementKnob } from '../../utils/knobs';
@@ -22,14 +31,14 @@ type BaseTooltipProps<
 > = TooltipComponentProps<D, SI>;
 
 type TooltipShowcaseProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = Partial<
-  Omit<TooltipComponentProps<D, SI>, 'settings' | 'visible'>
-> &
-  Partial<TooltipProps<D, SI>>;
+  Omit<TooltipComponentProps<D, SI>, 'settings' | 'visible' | 'tooltip'>
+> & { tooltip?: Partial<TooltipComponentProps<D, SI>['tooltip']> } & Partial<TooltipProps<D, SI>>;
 
 const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
   props: TooltipShowcaseProps<D, SI>,
 ) => {
   const [, setVisible] = useState(false);
+  const [selected, setSelected] = useState<TooltipValue<D, SI>[]>([]);
   const divRef = useRef<HTMLDivElement | null>(null);
   const anchorRef = useRef<HTMLDivElement | null>(null);
 
@@ -40,7 +49,6 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
   }, []);
 
   const tooltipProps: BaseTooltipProps<D, SI> = {
-    ...props,
     zIndex: 200,
     info: props.info,
     settings: {
@@ -54,6 +62,30 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
     getChartContainerRef: () => divRef,
     // @ts-ignore - overriding mouse logic
     onPointerMove: () => {},
+    toggleSelectedTooltipItem: (rawitem) => {
+      const item = rawitem as TooltipValue<D, SI>;
+      const index = selected.indexOf(item);
+      setSelected((prev) => {
+        if (index === -1) return [...prev, item];
+        return prev.filter((i) => i !== item);
+      });
+    },
+    setSelectedTooltipItems: (items) => {
+      setSelected(items as TooltipValue<D, SI>[]);
+    },
+    pinTooltip() {
+      setSelected([]);
+    },
+    canPinTooltip: false,
+    pinned: false,
+    selected,
+    maxTooltipItems: 5,
+    tooltipTheme: LIGHT_THEME.tooltip,
+    ...props,
+    tooltip: {
+      ...(DEFAULT_TOOLTIP_SPEC as unknown as TooltipSpec<D, SI>),
+      ...props.tooltip,
+    },
   };
 
   return (
@@ -68,4 +100,11 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
   );
 };
 
+/**
+ * This component is used to render the internal `TooltipComponent` as a standalone element.
+ *
+ * - No connection to redux
+ * - Everything is overridable
+ * - Limited defaults, logic must be manually implemented above or when used
+ */
 export const TooltipShowcase = memo(TooltipShowcaseInner) as typeof TooltipShowcaseInner;

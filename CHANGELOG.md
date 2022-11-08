@@ -1,3 +1,25 @@
+# [51.0.0](https://github.com/elastic/elastic-charts/compare/v50.2.0...v51.0.0) (2022-11-08)
+
+
+### Features
+
+* **tooltip:** pinned tooltip with actions ([#1782](https://github.com/elastic/elastic-charts/issues/1782)) ([7a054f7](https://github.com/elastic/elastic-charts/commit/7a054f7e13d723c1f8435cfb8513d788d5cbfb6d))
+
+
+### BREAKING CHANGES
+
+* **tooltip:** tooltip actions, interaction behavior and styles
+
+Co-authored-by: Marco Vettorello <vettorello.marco@gmail.com>
+Co-authored-by: elastic-datavis[bot] <98618603+elastic-datavis[bot]@users.noreply.github.com>
+
+# [50.2.0](https://github.com/elastic/elastic-charts/compare/v50.1.0...v50.2.0) (2022-11-08)
+
+
+### Features
+
+* **flame:** node size and position tweening ([#1860](https://github.com/elastic/elastic-charts/issues/1860)) ([603f47e](https://github.com/elastic/elastic-charts/commit/603f47e92bdc44c0fa31693b667db594c80fad99))
+
 # [50.1.0](https://github.com/elastic/elastic-charts/compare/v50.0.2...v50.1.0) (2022-11-03)
 
 

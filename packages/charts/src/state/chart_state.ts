@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import React, { CSSProperties, RefObject } from 'react';
 
 import { ChartType } from '../chart_types';
 import { FlameState } from '../chart_types/flame_chart/internal_chart_state';
@@ -23,7 +23,7 @@ import { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { SeriesIdentifier, SeriesKey } from '../common/series_id';
 import { AnchorPosition } from '../components/portal/types';
 import { TooltipInfo } from '../components/tooltip/types';
-import { DEFAULT_SETTINGS_SPEC, PointerEvent, Spec } from '../specs';
+import { DEFAULT_SETTINGS_SPEC, PointerEvent, Spec, TooltipValue } from '../specs';
 import { keepDistinct } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 import { Logger } from '../utils/logger';
@@ -42,10 +42,18 @@ import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_in
 import { getLegendItemsSelector } from './selectors/get_legend_items';
 import { LegendItemLabel } from './selectors/get_legend_items_labels';
 import { DebugState } from './types';
-import { getInitialPointerState } from './utils';
+import { getInitialPointerState, getInitialTooltipState } from './utils';
 
 /** @internal */
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;
+
+/** @internal */
+export interface TooltipVisibility {
+  visible: boolean;
+  isExternal: boolean;
+  isPinnable: boolean;
+  displayOnly: boolean;
+}
 
 /**
  * A set of chart-type-dependant functions that required by all chart type
@@ -100,12 +108,12 @@ export interface InternalChartState {
    * Returns the CSS pointer cursor depending on the internal chart state
    * @param globalState
    */
-  getPointerCursor(globalState: GlobalChartState): string;
+  getPointerCursor(globalState: GlobalChartState): CSSProperties['cursor'];
   /**
    * Describe if the tooltip is visible and comes from an external source
    * @param globalState
    */
-  isTooltipVisible(globalState: GlobalChartState): { visible: boolean; isExternal: boolean };
+  isTooltipVisible(globalState: GlobalChartState): TooltipVisibility;
   /**
    * Get the tooltip information to display
    * @param globalState the GlobalChartState
@@ -176,6 +184,7 @@ export interface PointerStates {
   dragging: boolean;
   current: PointerState;
   down: PointerState | null;
+  pinned: PointerState | null;
   up: PointerState | null;
   lastDrag: DragState | null;
   lastClick: PointerState | null;
@@ -189,6 +198,13 @@ export interface InteractionsState {
   hoveredDOMElement: DOMElement | null;
   drilldown: CategoryKey[];
   prevDrilldown: CategoryKey[];
+  tooltip: TooltipInteractionState;
+}
+
+/** @internal */
+export interface TooltipInteractionState {
+  pinned: boolean;
+  selected: TooltipValue[];
 }
 
 /** @internal */
@@ -282,6 +298,7 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
     hoveredDOMElement: null,
     drilldown: [],
     prevDrilldown: [],
+    tooltip: getInitialTooltipState(),
   },
   externalEvents: {
     pointer: null,
@@ -351,7 +368,15 @@ export const chartStoreReducer = (chartId: string) => {
       case UPDATE_PARENT_DIMENSION:
         return {
           ...state,
-          interactions: { ...state.interactions, prevDrilldown: state.interactions.drilldown },
+          interactions: {
+            ...state.interactions,
+            prevDrilldown: state.interactions.drilldown,
+            tooltip: getInitialTooltipState(),
+            pointer: {
+              ...state.interactions.pointer,
+              pinned: null,
+            },
+          },
           parentDimensions: {
             ...action.dimensions,
           },
@@ -364,6 +389,14 @@ export const chartStoreReducer = (chartId: string) => {
             ...state.externalEvents,
             pointer: action.event.chartId === chartId ? null : action.event,
           },
+          // clear pinned states when syncing external cursors
+          ...(action.event.chartId !== chartId && {
+            interactions: {
+              ...state.interactions,
+              pointer: getInitialPointerState(),
+              tooltip: getInitialTooltipState(),
+            },
+          }),
         };
       case CLEAR_TEMPORARY_COLORS:
         return {

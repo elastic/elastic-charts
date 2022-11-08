@@ -405,6 +405,11 @@ export const LIGHT_THEME: Theme = {
     nonFiniteText: 'N/A',
     minHeight: 64,
   },
+  tooltip: {
+    maxWidth: 260,
+    maxTableHeight: 120,
+    defaultDotColor: Colors.Black.keyword,
+  },
   flamegraph: {
     navigation: {
       textColor: 'rgb(52, 55, 65)',

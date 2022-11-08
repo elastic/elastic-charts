@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { ReactNode } from 'react';
+import { ComponentType, ReactNode } from 'react';
 
-import { BaseDatum, SettingsSpec, Spec } from '.';
 import { ChartType } from '../chart_types';
+import { BaseDatum } from '../chart_types/specs';
 import { Color } from '../common/colors';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components/portal';
@@ -18,6 +18,8 @@ import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
 import { Accessor } from '../utils/accessor';
 import { Datum, stripUndefined } from '../utils/common';
 import { SpecType, TooltipStickTo, TooltipType } from './constants';
+import { Spec } from './index';
+import { SettingsSpec } from './settings';
 
 /**
  * This interface describe the properties of single value shown in the tooltip
@@ -64,12 +66,17 @@ export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIden
    * The accessor linked to the current tooltip value
    */
   valueAccessor?: Accessor<D>;
-
   /**
    * The datum associated with the current tooltip value
    * Maybe not available
    */
   datum?: D;
+  /**
+   * Internal flag used to simplify interactions for heatmap tooltip
+   * TODO: replace this flag with better internal tooltip info structures
+   * @internal
+   */
+  displayOnly?: boolean;
 }
 
 /**
@@ -103,6 +110,30 @@ export function getTooltipType(tooltip: TooltipSpec, settings: SettingsSpec, ext
   const { visible } = settings.externalPointerEvents.tooltip;
   return visible ? TooltipType.VerticalCursor : TooltipType.None;
 }
+
+/**
+ * Tooltip action parameters
+ * @public
+ */
+export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
+  /**
+   * Clickable label to display action
+   */
+  label: string | ((selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => ReactNode);
+  /**
+   * Hides action from list
+   */
+  hide?: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => boolean;
+  /**
+   * Disables action when true or string description is passed
+   * If a string is passed, it will be used as the title to display reason for disablement
+   */
+  disabled?: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => boolean | string;
+  /**
+   * Callback trigger when action is selected
+   */
+  onSelect: (selected: TooltipValue<D, SI>[], allItems: TooltipValue<D, SI>[]) => void;
+};
 
 /**
  * Spec used to configure tooltip for chart
@@ -164,6 +195,48 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    * \> Note: This is not the table footers but spans the entire tooltip.
    */
   footer?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+
+  /**
+   * Actions to enable tooltip selection
+   */
+  actions:
+    | TooltipAction<D, SI>[]
+    | ((selected: TooltipValue<D, SI>[]) => Promise<TooltipAction<D, SI>[]> | TooltipAction<D, SI>[]);
+
+  /**
+   * Shown in place of actions UI while loading async actions
+   */
+  actionsLoading: string | ComponentType<{ selected: TooltipValue<D, SI>[] }>;
+
+  /**
+   * Shown in place of actions UI after loading async actions and finding none
+   */
+  noActionsLoaded: string | ComponentType<{ selected: TooltipValue<D, SI>[] }>;
+
+  /**
+   * Prompt displayed to indicate user can right-click for contextual menu
+   */
+  actionPrompt: string;
+
+  /**
+   * Prompt displayed to indicate user can right-click for contextual menu
+   */
+  pinningPrompt: string;
+
+  /**
+   * Prompt displayed when tooltip is pinned but all actions are hidden
+   */
+  selectionPrompt: string;
+
+  /**
+   * Max number of tooltip items before showing only highlighted values
+   */
+  maxTooltipItems: number;
+
+  /**
+   * Max number of visible tooltip items before scrolling. Does not apply to custom tooltips
+   */
+  maxVisibleTooltipItems: number;
 }
 
 /**
@@ -196,6 +269,14 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     type: TooltipType.VerticalCursor,
     snap: true,
     showNullValues: false,
+    actions: [],
+    actionPrompt: 'Right click to show actions',
+    pinningPrompt: 'Right click to pin tooltip',
+    selectionPrompt: 'Please select a series',
+    actionsLoading: 'Loading Actions...',
+    noActionsLoaded: 'No actions available',
+    maxTooltipItems: 5,
+    maxVisibleTooltipItems: 5,
   },
 );
 
@@ -219,7 +300,12 @@ export const Tooltip = function <D extends BaseDatum = Datum, SI extends SeriesI
   >,
 ) {
   const { defaults, overrides } = tooltipBuildProps;
-  useSpecFactory<TooltipSpec<D, SI>>({ ...defaults, ...stripUndefined(props), ...overrides });
+  // @ts-ignore - default generic value
+  useSpecFactory<TooltipSpec<D, SI>>({
+    ...defaults,
+    ...stripUndefined(props),
+    ...overrides,
+  });
   return null;
 };
 

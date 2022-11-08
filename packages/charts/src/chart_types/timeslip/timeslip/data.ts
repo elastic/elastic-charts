@@ -24,6 +24,5 @@ export const getEnrichedData = (rows: { epochMs: number; value?: number }[]) => 
       maxValue: -Infinity,
     },
   );
-  // console.log({ from: new Date(stats.minEpochMs), to: new Date(stats.maxEpochMs), count: rows.length })
   return { rows, stats };
 };

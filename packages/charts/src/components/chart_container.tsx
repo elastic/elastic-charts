@@ -6,25 +6,29 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { DEFAULT_CSS_CURSOR } from '../common/constants';
-import { SettingsSpec } from '../specs';
+import { ChartType } from '../chart_types';
+import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
+import { SettingsSpec, TooltipSpec } from '../specs';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';
 import {
   onMouseUp as onMouseUpAction,
   onMouseDown as onMouseDownAction,
   onPointerMove as onPointerMoveAction,
 } from '../state/actions/mouse';
-import { GlobalChartState, BackwardRef } from '../state/chart_state';
+import { pinTooltip as pinTooltipAction } from '../state/actions/tooltip';
+import { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
+import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';
 import { getInternalIsBrushingSelector } from '../state/selectors/get_internal_is_brushing';
 import { getInternalIsBrushingAvailableSelector } from '../state/selectors/get_internal_is_brushing_available';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
+import { getTooltipSpecSelector } from '../state/selectors/get_tooltip_spec';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 import { deepEqual } from '../utils/fast_deep_equal';
 import { NoResults } from './no_results';
@@ -32,11 +36,15 @@ import { NoResults } from './no_results';
 interface ChartContainerComponentStateProps {
   status: InitStatus;
   isChartEmpty?: boolean;
-  pointerCursor: string;
+  pointerCursor: CSSProperties['cursor'];
   isBrushing: boolean;
+  tooltipState: TooltipInteractionState;
   initialized?: boolean;
+  canPinTooltip: boolean;
   isBrushingAvailable: boolean;
   settings?: SettingsSpec;
+  tooltip: TooltipSpec;
+  disableInteractions: boolean;
   internalChartRenderer: (
     containerRef: BackwardRef,
     forwardStageRef: React.RefObject<HTMLCanvasElement>,
@@ -47,6 +55,7 @@ interface ChartContainerComponentDispatchProps {
   onMouseUp: typeof onMouseUpAction;
   onMouseDown: typeof onMouseDownAction;
   onKeyPress: typeof onKeyPressAction;
+  pinTooltip: typeof pinTooltipAction;
 }
 
 interface ChartContainerComponentOwnProps {
@@ -60,6 +69,7 @@ type ReactiveChartProps = ChartContainerComponentStateProps &
 
 class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   static displayName = 'ChartContainer';
+  static watchedKeys: KeyboardEvent['key'][] = ['Escape'];
 
   shouldComponentUpdate(nextProps: ReactiveChartProps) {
     return !deepEqual(this.props, nextProps);
@@ -68,8 +78,8 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   handleMouseMove = ({
     nativeEvent: { offsetX, offsetY, timeStamp },
   }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { isChartEmpty, onPointerMove, internalChartRenderer } = this.props;
-    if (isChartEmpty || internalChartRenderer.name === 'FlameWithTooltip') {
+    const { isChartEmpty, disableInteractions, onPointerMove, internalChartRenderer } = this.props;
+    if (isChartEmpty || disableInteractions || internalChartRenderer.name === 'FlameWithTooltip') {
       // Flame chart does its own event handling, and panning temporarily attaches
       // an event handler onto `window`. So this `chart_container.handleMouseMove`
       // can not be avoided with `e.stopPropagation()`. So we should avoid emission
@@ -86,23 +96,20 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   };
 
   handleMouseLeave = ({ nativeEvent: { timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { isChartEmpty, onPointerMove, isBrushing } = this.props;
-    if (isChartEmpty) {
-      return;
-    }
-    if (isBrushing) {
+    const { isChartEmpty, disableInteractions, onPointerMove, isBrushing } = this.props;
+    if (isChartEmpty || disableInteractions || isBrushing) {
       return;
     }
     onPointerMove({ x: -1, y: -1 }, timeStamp);
   };
 
   handleMouseDown = ({
-    nativeEvent: { offsetX, offsetY, timeStamp },
+    nativeEvent: { offsetX, offsetY, timeStamp, button, ctrlKey },
   }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { isChartEmpty, onMouseDown, isBrushingAvailable } = this.props;
-    if (isChartEmpty) {
-      return;
-    }
+    const { isChartEmpty, disableInteractions, onMouseDown, isBrushingAvailable, tooltipState } = this.props;
+
+    // button 2 to block brushing on right click
+    if (tooltipState.pinned || button === SECONDARY_BUTTON || ctrlKey || isChartEmpty || disableInteractions) return;
 
     if (isBrushingAvailable) {
       window.addEventListener('mouseup', this.handleBrushEnd);
@@ -119,9 +126,38 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     );
   };
 
+  handleUnpinningTooltip = () => {
+    window.removeEventListener('keyup', this.handleKeyUp);
+    window.removeEventListener('click', this.handleUnpinningTooltip);
+    window.removeEventListener('scroll', this.handleUnpinningTooltip);
+    window.removeEventListener('visibilitychange', this.handleUnpinningTooltip);
+    this.props.pinTooltip(false, true);
+  };
+
+  handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const { isChartEmpty, disableInteractions, tooltipState } = this.props;
+    if (isChartEmpty || disableInteractions) {
+      return;
+    }
+
+    e.preventDefault(); // prevent browser context menu
+
+    if (tooltipState.pinned) {
+      this.handleUnpinningTooltip();
+      return;
+    }
+
+    window.addEventListener('keyup', this.handleKeyUp);
+    window.addEventListener('click', this.handleUnpinningTooltip);
+    window.addEventListener('scroll', this.handleUnpinningTooltip);
+    window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
+
+    this.props.pinTooltip(true);
+  };
+
   handleMouseUp = ({ nativeEvent: { offsetX, offsetY, timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const { isChartEmpty, onMouseUp } = this.props;
-    if (isChartEmpty) {
+    const { isChartEmpty, disableInteractions, onMouseUp, tooltipState } = this.props;
+    if (tooltipState.pinned || isChartEmpty || disableInteractions) {
       return;
     }
 
@@ -137,10 +173,12 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   };
 
   handleKeyUp = ({ key }: KeyboardEvent) => {
+    if (!ChartContainerComponent.watchedKeys.includes(key)) return;
+
     window.removeEventListener('keyup', this.handleKeyUp);
 
-    const { isChartEmpty, onKeyPress } = this.props;
-    if (isChartEmpty) {
+    const { isChartEmpty, disableInteractions, onKeyPress } = this.props;
+    if (isChartEmpty || disableInteractions) {
       return;
     }
 
@@ -172,6 +210,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     }
 
     const { pointerCursor, internalChartRenderer, getChartContainerRef, forwardStageRef } = this.props;
+
     return (
       <div
         className="echChartPointerContainer"
@@ -182,6 +221,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
         onMouseLeave={this.handleMouseLeave}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
+        onContextMenu={this.props.canPinTooltip ? this.handleContextMenu : undefined}
       >
         {internalChartRenderer(getChartContainerRef, forwardStageRef)}
       </div>
@@ -196,35 +236,46 @@ const mapDispatchToProps = (dispatch: Dispatch): ChartContainerComponentDispatch
       onMouseUp: onMouseUpAction,
       onMouseDown: onMouseDownAction,
       onKeyPress: onKeyPressAction,
+      pinTooltip: pinTooltipAction,
     },
     dispatch,
   );
 const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateProps => {
   const status = getInternalIsInitializedSelector(state);
   const settings = getSettingsSpecSelector(state);
+  const tooltip = getTooltipSpecSelector(state);
   const initialized = !state.specParsing && state.specsInitialized;
+  const tooltipState = state.interactions.tooltip;
 
   if (status !== InitStatus.Initialized) {
     return {
       status,
       initialized,
+      tooltipState,
+      canPinTooltip: false,
       pointerCursor: DEFAULT_CSS_CURSOR,
       isBrushingAvailable: false,
       isBrushing: false,
       internalChartRenderer: () => null,
       settings,
+      tooltip,
+      disableInteractions: false,
     };
   }
 
   return {
     status,
     initialized,
+    tooltipState,
     isChartEmpty: isInternalChartEmptySelector(state),
+    canPinTooltip: isPinnableTooltip(state),
     pointerCursor: getInternalPointerCursor(state),
     isBrushingAvailable: getInternalIsBrushingAvailableSelector(state),
     isBrushing: getInternalIsBrushingSelector(state),
     internalChartRenderer: getInternalChartRendererSelector(state),
     settings,
+    tooltip,
+    disableInteractions: state.chartType === ChartType.Flame,
   };
 };
 

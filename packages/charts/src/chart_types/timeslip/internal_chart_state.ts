@@ -31,7 +31,13 @@ export class TimeslipState implements InternalChartState {
   getLegendExtraValues = () => new Map<SeriesKey, LegendItemExtraValues>();
   getPointerCursor = () => DEFAULT_CSS_CURSOR;
   getTooltipAnchor = () => ({ x: 0, y: 0, width: 0, height: 0 });
-  isTooltipVisible = () => ({ visible: false, isExternal: false });
+  isTooltipVisible = () => ({
+    visible: false,
+    isExternal: false,
+    displayOnly: false,
+    isPinnable: false,
+  });
+
   getTooltipInfo = () => ({ header: null, values: [] });
   getProjectionContainerArea = () => ({ width: 0, height: 0, top: 0, left: 0 });
   getMainProjectionArea = () => ({ width: 0, height: 0, top: 0, left: 0 });

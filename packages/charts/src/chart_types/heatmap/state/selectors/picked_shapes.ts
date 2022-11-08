@@ -6,20 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { Cell, GridCell, TextBox } from '../../layout/types/viewmodel_types';
 import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getHeatmapGeometries } from './geometries';
 
 /** @internal */
-export function getCurrentPointerPosition(state: GlobalChartState) {
-  return state.interactions.pointer.current.position;
-}
-
-/** @internal */
 export const getPickedShapes = createCustomCachedSelector(
-  [getHeatmapGeometries, getCurrentPointerPosition, computeChartElementSizesSelector],
+  [getHeatmapGeometries, getActivePointerPosition, computeChartElementSizesSelector],
   (geoms, pointerPosition, dims): Cell[] | TextBox => {
     const picker = geoms.pickQuads;
     const { x, y } = pointerPosition;
@@ -32,7 +27,7 @@ export const getPickedShapes = createCustomCachedSelector(
 
 /** @internal */
 export const getPickedGridCell = createCustomCachedSelector(
-  [getHeatmapGeometries, getCurrentPointerPosition, computeChartElementSizesSelector],
+  [getHeatmapGeometries, getActivePointerPosition, computeChartElementSizesSelector],
   (geoms, pointerPosition): GridCell | undefined => {
     return geoms.pickGridCell(pointerPosition.x, pointerPosition.y);
   },

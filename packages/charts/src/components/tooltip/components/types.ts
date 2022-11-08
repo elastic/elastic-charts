@@ -50,6 +50,15 @@ export type TooltipTableColumnBase<D extends BaseDatum = Datum, SI extends Serie
    * Limited styles to apply to table cells within column (i.e. `td` or `th`)
    */
   style?: TooltipCellStyle;
+  /**
+   * truncates cell content sharing the available width with other columns.
+   * Set width to control column width for truncating.
+   */
+  truncate?: boolean;
+  /**
+   * Width of column used to generate [gridTemplateColumns](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns).
+   */
+  width?: CSSProperties['gridTemplateColumns'];
 };
 
 /**

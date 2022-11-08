@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties } from 'react';
+import React from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
@@ -29,30 +29,28 @@ type TooltipTableFooterProps<
   {},
   {
     className?: string;
-    maxHeight?: CSSProperties['maxHeight'];
   }
 >;
 
 /** @public */
 export const TooltipTableFooter = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
-  maxHeight,
   className,
   ...props
 }: TooltipTableFooterProps<D, SI>) => {
   const classes = classNames('echTooltip__tableFooter', className);
   if ('children' in props) {
     return (
-      <tfoot className={classes} style={{ maxHeight }}>
+      <div role="rowgroup" className={classes}>
         {props.children}
-      </tfoot>
+      </div>
     );
   }
 
   if (props.columns.every((c) => !c.footer)) return null;
 
   return (
-    <tfoot className={classes}>
-      <TooltipTableRow maxHeight={maxHeight}>
+    <div role="rowgroup" className={classes}>
+      <TooltipTableRow>
         {props.columns.map(({ style, id, className: cn, type, footer }, i) => {
           const key = id ?? `${type}-${i}`;
           if (type === 'color') return <TooltipTableColorCell className={cn} style={style} key={key} />;
@@ -63,6 +61,6 @@ export const TooltipTableFooter = <D extends BaseDatum = Datum, SI extends Serie
           );
         })}
       </TooltipTableRow>
-    </tfoot>
+    </div>
   );
 };

@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties } from 'react';
+import React from 'react';
 
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue } from '../../../specs';
@@ -29,29 +29,27 @@ type TooltipTableHeaderProps<
   {},
   {
     className?: string;
-    maxHeight?: CSSProperties['maxHeight'];
   }
 >;
 
 /** @public */
 export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
-  maxHeight,
   className,
   ...props
 }: TooltipTableHeaderProps<D, SI>) => {
   const classes = classNames('echTooltip__tableHeader', className);
   if ('children' in props) {
     return (
-      <thead className={classes} style={{ maxHeight }}>
+      <div role="rowgroup" className={classes}>
         {props.children}
-      </thead>
+      </div>
     );
   }
 
   if (props.columns.every((c) => !c.header)) return null;
 
   return (
-    <thead className={classes} style={{ maxHeight }}>
+    <div role="rowgroup" className={classes}>
       <TooltipTableRow>
         {props.columns.map(({ header, style, id, className: cn, type }, i) => {
           const key = id ?? `${type}-${i}`;
@@ -63,6 +61,6 @@ export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends Serie
           );
         })}
       </TooltipTableRow>
-    </thead>
+    </div>
   );
 };

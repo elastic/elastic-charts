@@ -19,6 +19,7 @@ interface LabelProps {
   onToggle?: (negate: boolean) => void;
   options: LegendLabelOptions;
 }
+
 /**
  * Label component used to display text in legend item
  * @internal
