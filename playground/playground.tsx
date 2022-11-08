@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Example } from '../storybook/stories/timeslip/01_timeslip.story';
+import { Example } from '../storybook/stories/icicle/04_cpu_profile_gl_flame.story';
 
 export function Playground() {
   return <Example />;

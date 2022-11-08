@@ -44,7 +44,7 @@ const uniformDefs = /* language=GLSL */ `
   uniform vec2 minFillRatio; // at least this ratio of the rectangle's full width/height must be filled
   uniform float rowHeight0;
   uniform float rowHeight1;
-  uniform float t; // 0: start position; 1: end position
+  uniform float nodeTweenTime; // 0: start position; 1: end position
   uniform float cornerRadiusPx;
   uniform float hoverIndex;
   uniform float wobbleIndex;
@@ -82,8 +82,8 @@ const getGeom = /* language=GLSL */ `
     int x = gl_VertexID & 1;        // x yields 0, 1, 0, 1 for gl_VertexID 0, 1, 2, 3
     int y = (gl_VertexID >> 1) & 1; // y yields 0, 0, 1, 1 for gl_VertexID 0, 1, 2, 3
     vec2 unitSquareCoord = vec2(x, y);
-    vec2 position = mix(position0, position1, t);
-    vec2 size = mix(vec2(size0, rowHeight0), vec2(size1, rowHeight1), t);
+    vec2 position = mix(position0, position1, nodeTweenTime);
+    vec2 size = mix(vec2(size0, rowHeight0), vec2(size1, rowHeight1), nodeTweenTime);
     vec2 fullSizeXY = size * unitSquareCoord;
 
     // determine what we're zooming/panning into
