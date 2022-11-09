@@ -13,14 +13,15 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { isNil } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
-import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { Cell, ShapeViewModel, TextBox } from '../../layout/types/viewmodel_types';
 import { getHeatmapGeometries } from './geometries';
+import { getPickedShapes, hasPickedShapes } from './picked_shapes';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
 /** @internal */
 export const getCursorBandPositionSelector = createCustomCachedSelector(
-  [getHeatmapGeometries, getExternalPointerEventStateSelector, getActivePointerPosition],
+  [getHeatmapGeometries, getExternalPointerEventStateSelector, getActivePointerPosition, getPickedShapes],
   getCursorBand,
 );
 
@@ -28,6 +29,7 @@ function getCursorBand(
   geoms: ShapeViewModel,
   externalPointerEvent: PointerEvent | null,
   currentPointerPosition: Point,
+  pickedShapes: Cell[] | TextBox,
 ): (Rect & { fromExternalEvent: boolean }) | undefined {
   // external pointer events takes precedence over the current mouse pointer
   if (isPointerOverEvent(externalPointerEvent)) {
@@ -42,8 +44,8 @@ function getCursorBand(
       }
     }
   }
-  // display the current hovered cell
-  if (currentPointerPosition.x > -1) {
+
+  if (hasPickedShapes(pickedShapes)) {
     const point = currentPointerPosition;
     const end = { x: point.x + Number.EPSILON, y: point.y + Number.EPSILON };
     const band = geoms.pickDragShape([point, end]);

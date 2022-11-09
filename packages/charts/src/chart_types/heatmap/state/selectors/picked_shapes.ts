@@ -32,3 +32,7 @@ export const getPickedGridCell = createCustomCachedSelector(
     return geoms.pickGridCell(pointerPosition.x, pointerPosition.y);
   },
 );
+
+/** @internal */
+export const hasPickedShapes = (pickedShapes: Cell[] | TextBox) =>
+  Array.isArray(pickedShapes) && pickedShapes.some(({ visible }) => visible);
