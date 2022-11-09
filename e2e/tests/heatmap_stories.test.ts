@@ -83,4 +83,13 @@ test.describe('Heatmap stories', () => {
       'http://localhost:9001/?path=/story/heatmap-alpha--sorting&globals=theme:light&knob-Fill gaps with nulls=true&knob-Fill everything with nulls=true&knob-X sorting predicate=dataIndex&knob-Y sorting predicate=dataIndex',
     );
   });
+
+  eachTheme.describe(({ theme, urlParam }) => {
+    test(`should highlight band on legend hover - ${theme}`, async ({ page }) => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/heatmap-alpha--time&knob-Chart type=treemap&knob-SeriesType=bar&knob-X-Axis label fontSize=12&knob-X-Axis label padding=6&knob-X-Axis label rotation=0&knob-X-Axis visible=true&knob-Y-axis auto width=true&knob-Y-axis width=50&knob-async actions delay=0&knob-async delay=1000&knob-async delay (ms)=1500&knob-chart type=bar&knob-disable actions=true&knob-reduce data=true&knob-tooltip type=vertical&knob-start time offset=0&knob-end time offset=0&${urlParam}`,
+        { right: 35, top: 111 },
+      );
+    });
+  });
 });
