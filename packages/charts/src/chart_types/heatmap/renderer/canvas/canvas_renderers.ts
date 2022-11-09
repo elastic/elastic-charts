@@ -10,20 +10,24 @@ import { Color } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
+import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, TextFont, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
+import { getColorBandStyle, getGeometryStateStyle } from './utils';
 
 /** @internal */
 export function renderCanvas2d(
   ctx: CanvasRenderingContext2D,
   dpr: number,
   { theme, heatmapViewModel }: ShapeViewModel,
+  sharedGeometryStyle: SharedGeometryStateStyle,
   background: Color,
   elementSizes: ChartElementSizes,
   debug: boolean,
+  highlightedLegendBands: Array<[start: number, end: number]>,
 ) {
   withContext(ctx, () => {
     // set some defaults for the overall rendering
@@ -92,7 +96,11 @@ export function renderCanvas2d(
           const { x, y } = heatmapViewModel.gridOrigin;
           ctx.translate(x, y);
           filteredCells.forEach((cell) => {
-            if (cell.visible) renderRect(ctx, cell, cell.fill, cell.stroke);
+            if (cell.visible) {
+              const geometryStateStyle = getGeometryStateStyle(cell, sharedGeometryStyle, highlightedLegendBands);
+              const style = getColorBandStyle(cell, geometryStateStyle);
+              renderRect(ctx, cell, style.fill, style.stroke);
+            }
           });
         }),
 

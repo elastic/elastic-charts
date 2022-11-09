@@ -171,7 +171,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         width: heatmapTheme.cell.border.strokeWidth,
       },
       value: d.value,
-      visible: !isValueHidden(d.value, bandsToHide),
+      visible: !isValueInRanges(d.value, bandsToHide),
       formatted: formattedValue,
       fontSize,
       textColor: fillTextColor(background.fallbackColor, cellBackgroundColor, background.color),
@@ -443,8 +443,9 @@ function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValu
   return [String(x), String(y)].join('&_&');
 }
 
-function isValueHidden(value: number, rangesToHide: Array<[number, number]>) {
-  return rangesToHide.some(([min, max]) => min <= value && value < max);
+/** @internal */
+export function isValueInRanges(value: number, ranges: Array<[number, number]>) {
+  return ranges.some(([min, max]) => min <= value && value < max);
 }
 
 /** @internal */

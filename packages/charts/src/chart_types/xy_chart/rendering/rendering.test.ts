@@ -187,30 +187,6 @@ describe('Rendering utils', () => {
       );
       expect(customUnhighlightedStyle).toBe(sharedThemeStyle.unhighlighted);
     });
-
-    it('has individual highlight', () => {
-      const hasIndividualHighlight = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, undefined, {
-        hasHighlight: true,
-        hasGeometryHover: true,
-      });
-      expect(hasIndividualHighlight).toBe(sharedThemeStyle.highlighted);
-    });
-
-    it('no highlight', () => {
-      const noHighlight = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, undefined, {
-        hasHighlight: false,
-        hasGeometryHover: true,
-      });
-      expect(noHighlight).toBe(sharedThemeStyle.unhighlighted);
-    });
-
-    it('no geometry hover', () => {
-      const noHover = getGeometryStateStyle(seriesIdentifier, sharedThemeStyle, undefined, {
-        hasHighlight: true,
-        hasGeometryHover: false,
-      });
-      expect(noHover).toBe(sharedThemeStyle.highlighted);
-    });
   });
 
   describe('getBarStyleOverrides', () => {
