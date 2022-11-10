@@ -15,7 +15,7 @@ import { isNil } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { Cell, ShapeViewModel, TextBox } from '../../layout/types/viewmodel_types';
 import { getHeatmapGeometries } from './geometries';
-import { getPickedShapes, hasPickedShapes } from './picked_shapes';
+import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
@@ -45,7 +45,7 @@ function getCursorBand(
     }
   }
 
-  if (hasPickedShapes(pickedShapes)) {
+  if (hasPicketVisibleCells(pickedShapes)) {
     const point = currentPointerPosition;
     const end = { x: point.x + Number.EPSILON, y: point.y + Number.EPSILON };
     const band = geoms.pickDragShape([point, end]);

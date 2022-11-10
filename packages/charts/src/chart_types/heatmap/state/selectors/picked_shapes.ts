@@ -34,5 +34,5 @@ export const getPickedGridCell = createCustomCachedSelector(
 );
 
 /** @internal */
-export const hasPickedShapes = (pickedShapes: Cell[] | TextBox) =>
+export const hasPicketVisibleCells = (pickedShapes: Cell[] | TextBox) =>
   Array.isArray(pickedShapes) && pickedShapes.some(({ visible }) => visible);
