@@ -171,12 +171,12 @@ export const createCompiledShader = (
   source: string,
 ): WebGLShader => {
   const shader = gl.createShader(shaderType);
-  if (!shader) throw new Error(`Whoa, shader could not be created`); // just appeasing the TS linter
+  if (!shader) throw new Error(`kinGLy exception: shader could not be created`); // just appeasing the TS linter
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   if (GL_DEBUG && !gl.getShaderParameter(shader, GL.COMPILE_STATUS) && !gl.isContextLost()) {
     const shaderTypeName = shaderType === GL.VERTEX_SHADER ? 'vertex' : 'fragment';
-    Logger.warn(`Whoa, compilation error in a ${shaderTypeName} shader: ${gl.getShaderInfoLog(shader)}`);
+    Logger.warn(`kinGLy exception: compilation error in a ${shaderTypeName} shader: ${gl.getShaderInfoLog(shader)}`);
   }
   return shader;
 };
@@ -189,11 +189,11 @@ export const createLinkedProgram = (
   attributeLocations: Record<string, number>,
 ): WebGLProgram => {
   const program = gl.createProgram();
-  if (!program) throw new Error(`Whoa, shader program could not be created`); // just appeasing the TS linter https://www.khronos.org/webgl/wiki/HandlingContextLost
+  if (!program) throw new Error(`kinGLy exception: shader program could not be created`); // just appeasing the TS linter https://www.khronos.org/webgl/wiki/HandlingContextLost
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   if (GL_DEBUG && gl.getProgramParameter(program, GL.ATTACHED_SHADERS) !== 2)
-    Logger.warn('Whoa, did not manage to attach the two shaders');
+    Logger.warn('kinGLy exception: did not manage to attach the two shaders');
 
   Object.entries(attributeLocations).forEach(([name, i]) => gl.bindAttribLocation(program, i, name));
 
@@ -201,10 +201,10 @@ export const createLinkedProgram = (
 
   if (GL_DEBUG) {
     if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
-      Logger.warn(`Whoa, shader program failed to link: ${gl.getProgramInfoLog(program)}`);
+      Logger.warn(`kinGLy exception: shader program failed to link: ${gl.getProgramInfoLog(program)}`);
     gl.validateProgram(program);
     if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
-      Logger.warn(`Whoa, could not validate the shader program: ${gl.getProgramInfoLog(program)}`);
+      Logger.warn(`kinGLy exception: could not validate the shader program: ${gl.getProgramInfoLog(program)}`);
   } else {
     // no rush with the deletion; avoid adding workload to the synchronous preparation
     window.setTimeout(() => {
@@ -292,18 +292,18 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): Uniform
     [...new Array(gl.getProgramParameter(program, GL.ACTIVE_UNIFORMS /* uniform count */))].flatMap((_, index) => {
       const activeUniform = gl.getActiveUniform(program, index);
       if (!activeUniform) {
-        Logger.warn(`Whoa, active uniform not found`);
+        Logger.warn(`kinGLy exception: active uniform not found`);
         return [];
       }
       const { name, type } = activeUniform;
       const location = gl.getUniformLocation(program, name);
       if (location === null) {
-        Logger.warn(`Whoa, uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
+        Logger.warn(`kinGLy exception: uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
         return [];
       }
       const setValue = location ? uniformSetterLookup[type](gl, location) : () => {};
       if (GL_DEBUG && !setValue) {
-        Logger.warn(`Whoa, no setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
+        Logger.warn(`kinGLy exception: no setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
         return [];
       }
       return [[name, setValue]];
@@ -403,7 +403,9 @@ export const createTexture = (
   { textureIndex, internalFormat, width, height, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
 ): Texture => {
   if (GL_DEBUG && !(0 <= textureIndex && textureIndex <= gl.getParameter(GL.MAX_COMBINED_TEXTURE_IMAGE_UNITS)))
-    Logger.warn('Whoa, WebGL2 is guaranteed to support at least 32 textures but not necessarily more than that');
+    Logger.warn(
+      'kinGLy exception: WebGL2 is guaranteed to support at least 32 textures but not necessarily more than that',
+    );
 
   const srcFormat = textureSrcFormatLookup[internalFormat];
   const type = textureTypeLookup[internalFormat];
@@ -427,7 +429,7 @@ export const createTexture = (
   if (GL_DEBUG) {
     const error = gl.getError(); // todo add getErrors to more places
     if (error !== gl.NO_ERROR && error !== gl.CONTEXT_LOST_WEBGL)
-      Logger.warn(`Whoa, failed to set the texture with texImage2D, code ${error}`);
+      Logger.warn(`kinGLy exception: failed to set the texture with texImage2D, code ${error}`);
   }
 
   let frameBuffer: WebGLFramebuffer | null = null; // caching the target framebuffer
@@ -440,7 +442,7 @@ export const createTexture = (
       if (GL_DEBUG) {
         const framebufferStatus = gl.checkFramebufferStatus(GL.DRAW_FRAMEBUFFER);
         if (framebufferStatus !== GL.FRAMEBUFFER_COMPLETE) {
-          Logger.warn(`Whoa, target framebuffer is not complete`);
+          Logger.warn(`kinGLy exception: target framebuffer is not complete`);
         }
       }
     }
@@ -504,7 +506,7 @@ export const getAttributes = (
       const offset = 0; // start at the beginning of the buffer
 
       const activeAttribInfo = gl.getActiveAttrib(program, index);
-      if (!activeAttribInfo) throw new Error(`Whoa, active attribute info could not be read`); // just appeasing the TS linter
+      if (!activeAttribInfo) throw new Error(`kinGLy exception: active attribute info could not be read`); // just appeasing the TS linter
       const { name, type } = activeAttribInfo;
       if (name.startsWith('gl_')) return [name, () => {}]; // only populate expressly supplied attributes, NOT gl_VertexID or gl_InstanceID
 
