@@ -1,3 +1,10 @@
+## [50.2.1](https://github.com/elastic/elastic-charts/compare/v50.2.0...v50.2.1) (2022-11-10)
+
+
+### Bug Fixes
+
+* workaround firefox amd macbook regression webgl_gl_VertexID_Offset ([#1869](https://github.com/elastic/elastic-charts/issues/1869)) [50.2.x] ([#1870](https://github.com/elastic/elastic-charts/issues/1870)) ([a8a15ed](https://github.com/elastic/elastic-charts/commit/a8a15edd6ba58162b306aa9778b7b568cb376cf5))
+
 # [50.2.0](https://github.com/elastic/elastic-charts/compare/v50.1.0...v50.2.0) (2022-11-08)
 
 
