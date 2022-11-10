@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Logger } from '../utils/logger';
 import { GL } from './webgl_constants';
 
 const GL_DEBUG = true; // to be set to false once GL charts are in non-alpha and broad use for 6-12 months or earlier if perf constrained
@@ -175,7 +176,7 @@ export const createCompiledShader = (
   gl.compileShader(shader);
   if (GL_DEBUG && !gl.getShaderParameter(shader, GL.COMPILE_STATUS) && !gl.isContextLost()) {
     const shaderTypeName = shaderType === GL.VERTEX_SHADER ? 'vertex' : 'fragment';
-    throw new Error(`Whoa, compilation error in a ${shaderTypeName} shader: ${gl.getShaderInfoLog(shader)}`);
+    Logger.warn(`Whoa, compilation error in a ${shaderTypeName} shader: ${gl.getShaderInfoLog(shader)}`);
   }
   return shader;
 };
@@ -192,7 +193,7 @@ export const createLinkedProgram = (
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   if (GL_DEBUG && gl.getProgramParameter(program, GL.ATTACHED_SHADERS) !== 2)
-    throw new Error('Did not manage to attach the two shaders');
+    Logger.warn('Whoa, did not manage to attach the two shaders');
 
   Object.entries(attributeLocations).forEach(([name, i]) => gl.bindAttribLocation(program, i, name));
 
@@ -200,10 +201,10 @@ export const createLinkedProgram = (
 
   if (GL_DEBUG) {
     if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
-      throw new Error(`Whoa, shader program failed to link: ${gl.getProgramInfoLog(program)}`);
+      Logger.warn(`Whoa, shader program failed to link: ${gl.getProgramInfoLog(program)}`);
     gl.validateProgram(program);
     if (!gl.getProgramParameter(program, GL.LINK_STATUS) && !gl.isContextLost())
-      throw new Error(`Whoa, could not validate the shader program: ${gl.getProgramInfoLog(program)}`);
+      Logger.warn(`Whoa, could not validate the shader program: ${gl.getProgramInfoLog(program)}`);
   } else {
     // no rush with the deletion; avoid adding workload to the synchronous preparation
     window.setTimeout(() => {
@@ -288,16 +289,24 @@ const uniformSetterLookup = {
 const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): UniformsMap => {
   if (programUniforms.has(program)) return programUniforms.get(program);
   const uniforms = new Map(
-    [...new Array(gl.getProgramParameter(program, GL.ACTIVE_UNIFORMS /* uniform count */))].map((_, index) => {
+    [...new Array(gl.getProgramParameter(program, GL.ACTIVE_UNIFORMS /* uniform count */))].flatMap((_, index) => {
       const activeUniform = gl.getActiveUniform(program, index);
-      if (!activeUniform) throw new Error(`Whoa, active uniform not found`); // just appeasing the TS linter
+      if (!activeUniform) {
+        Logger.warn(`Whoa, active uniform not found`);
+        return [];
+      }
       const { name, type } = activeUniform;
       const location = gl.getUniformLocation(program, name);
-      if (location === null)
-        throw new Error(`Whoa, uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
+      if (location === null) {
+        Logger.warn(`Whoa, uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
+        return [];
+      }
       const setValue = location ? uniformSetterLookup[type](gl, location) : () => {};
-      if (GL_DEBUG && !setValue) throw new Error(`No setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
-      return [name, setValue];
+      if (GL_DEBUG && !setValue) {
+        Logger.warn(`Whoa, no setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
+        return [];
+      }
+      return [[name, setValue]];
     }),
   );
   programUniforms.set(program, uniforms);
@@ -394,7 +403,7 @@ export const createTexture = (
   { textureIndex, internalFormat, width, height, data, min = GL.NEAREST, mag = GL.NEAREST }: TextureSpecification,
 ): Texture => {
   if (GL_DEBUG && !(0 <= textureIndex && textureIndex <= gl.getParameter(GL.MAX_COMBINED_TEXTURE_IMAGE_UNITS)))
-    throw new Error('WebGL2 is guaranteed to support at least 32 textures but not necessarily more than that');
+    Logger.warn('Whoa, WebGL2 is guaranteed to support at least 32 textures but not necessarily more than that');
 
   const srcFormat = textureSrcFormatLookup[internalFormat];
   const type = textureTypeLookup[internalFormat];
@@ -418,7 +427,7 @@ export const createTexture = (
   if (GL_DEBUG) {
     const error = gl.getError(); // todo add getErrors to more places
     if (error !== gl.NO_ERROR && error !== gl.CONTEXT_LOST_WEBGL)
-      throw new Error(`Failed to set the texture with texImage2D, code ${error}`);
+      Logger.warn(`Whoa, failed to set the texture with texImage2D, code ${error}`);
   }
 
   let frameBuffer: WebGLFramebuffer | null = null; // caching the target framebuffer
@@ -431,7 +440,7 @@ export const createTexture = (
       if (GL_DEBUG) {
         const framebufferStatus = gl.checkFramebufferStatus(GL.DRAW_FRAMEBUFFER);
         if (framebufferStatus !== GL.FRAMEBUFFER_COMPLETE) {
-          throw new Error(`Target framebuffer is not complete`);
+          Logger.warn(`Whoa, target framebuffer is not complete`);
         }
       }
     }
