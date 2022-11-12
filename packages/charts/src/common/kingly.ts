@@ -442,7 +442,8 @@ export const createTexture = (
       if (GL_DEBUG) {
         const framebufferStatus = gl.checkFramebufferStatus(GL.DRAW_FRAMEBUFFER);
         if (framebufferStatus !== GL.FRAMEBUFFER_COMPLETE) {
-          Logger.warn(`kinGLy exception: target framebuffer is not complete`);
+          debugger;
+          Logger.warn(`kinGLy exception: target framebuffer is not complete: ${framebufferStatus}`);
         }
       }
     }
@@ -506,7 +507,10 @@ export const getAttributes = (
       const offset = 0; // start at the beginning of the buffer
 
       const activeAttribInfo = gl.getActiveAttrib(program, index);
-      if (!activeAttribInfo) throw new Error(`kinGLy exception: active attribute info could not be read`); // just appeasing the TS linter
+      if (!activeAttribInfo) {
+        debugger;
+        throw new Error(`kinGLy exception: active attribute info could not be read`);
+      }
       const { name, type } = activeAttribInfo;
       if (name.startsWith('gl_')) return [name, () => {}]; // only populate expressly supplied attributes, NOT gl_VertexID or gl_InstanceID
 

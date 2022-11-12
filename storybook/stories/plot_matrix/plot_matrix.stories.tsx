@@ -6,10 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+export default {
+  title: 'Plot matrix (@alpha)',
+};
 
-import { Example } from '../storybook/stories/plot_matrix/01_gl_plot_matrix.story';
-
-export function Playground() {
-  return <Example />;
-}
+export { Example as plotMatrix } from './01_gl_plot_matrix.story';
