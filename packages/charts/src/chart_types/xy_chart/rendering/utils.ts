@@ -135,10 +135,6 @@ export function isPointOnGeometry(
 
     const radiusBuffer = typeof buffer === 'number' ? buffer : buffer(radius);
 
-    if (radiusBuffer === Infinity) {
-      return distance <= radius + DEFAULT_HIGHLIGHT_PADDING;
-    }
-
     return distance <= radius + radiusBuffer;
   }
   const { width, height } = indexedGeometry;
