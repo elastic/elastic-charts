@@ -52,7 +52,7 @@ export const getPointerCursorSelector = createCustomCachedSelector(
     const xPos = x - chartDimensions.left;
     const yPos = y - chartDimensions.top;
 
-    if (isDragging) return 'crosshair';
+    if (isBrushAvailable && isDragging) return 'crosshair';
 
     // limit cursorPosition to chartDimensions
     if (xPos < 0 || xPos >= chartDimensions.width || yPos < 0 || yPos >= chartDimensions.height) {
