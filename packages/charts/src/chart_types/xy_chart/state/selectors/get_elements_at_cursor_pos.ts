@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { PointerEvent } from '../../../../specs';
+import { PointerEvent, SettingsSpec } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
@@ -34,6 +35,7 @@ export const getElementAtCursorPositionSelector = createCustomCachedSelector(
     getGeometriesIndexSelector,
     getExternalPointerEventStateSelector,
     computeChartDimensionsSelector,
+    getSettingsSpecSelector,
   ],
   getElementAtCursorPosition,
 );
@@ -45,6 +47,7 @@ function getElementAtCursorPosition(
   geometriesIndex: IndexedGeometryMap,
   externalPointerEvent: PointerEvent | null,
   { chartDimensions }: ChartDimensions,
+  { pointBuffer }: SettingsSpec,
 ): IndexedGeometry[] {
   if (isValidPointerOverEvent(scales.xScale, externalPointerEvent)) {
     if (isNil(externalPointerEvent.x)) {
@@ -57,7 +60,7 @@ function getElementAtCursorPosition(
       return [];
     }
     // TODO: Handle external event with spatial points
-    return geometriesIndex.find(externalPointerEvent.x, { x: -1, y: -1 });
+    return geometriesIndex.find(externalPointerEvent.x, pointBuffer, { x: -1, y: -1 });
   }
   const xValue = scales.xScale.invertWithStep(
     orientedProjectedPointerPosition.x,
@@ -70,6 +73,7 @@ function getElementAtCursorPosition(
   return geometriesIndex
     .find(
       xValue,
+      pointBuffer,
       orientedProjectedPointerPosition,
       orientedProjectedPointerPosition.horizontalPanelValue,
       orientedProjectedPointerPosition.verticalPanelValue,

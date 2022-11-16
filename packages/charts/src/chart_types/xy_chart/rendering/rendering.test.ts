@@ -17,6 +17,7 @@ import { getPointStyleOverrides, getRadiusFn } from './points';
 import { getGeometryStateStyle, isPointOnGeometry, getClippedRanges } from './utils';
 
 describe('Rendering utils', () => {
+  const MIN_DISTANCE_BUFFER = 10;
   test('check if point is on geometry', () => {
     const seriesStyle = {
       rect: {
@@ -59,13 +60,13 @@ describe('Rendering utils', () => {
       height: 10,
       seriesStyle,
     });
-    expect(isPointOnGeometry(0, 0, geometry)).toBe(true);
-    expect(isPointOnGeometry(10, 10, geometry)).toBe(true);
-    expect(isPointOnGeometry(0, 10, geometry)).toBe(true);
-    expect(isPointOnGeometry(10, 0, geometry)).toBe(true);
-    expect(isPointOnGeometry(-10, 0, geometry)).toBe(false);
-    expect(isPointOnGeometry(-11, 0, geometry)).toBe(false);
-    expect(isPointOnGeometry(11, 11, geometry)).toBe(false);
+    expect(isPointOnGeometry(0, 0, geometry, MIN_DISTANCE_BUFFER)).toBe(true);
+    expect(isPointOnGeometry(10, 10, geometry, MIN_DISTANCE_BUFFER)).toBe(true);
+    expect(isPointOnGeometry(0, 10, geometry, MIN_DISTANCE_BUFFER)).toBe(true);
+    expect(isPointOnGeometry(10, 0, geometry, MIN_DISTANCE_BUFFER)).toBe(true);
+    expect(isPointOnGeometry(-10, 0, geometry, MIN_DISTANCE_BUFFER)).toBe(false);
+    expect(isPointOnGeometry(-11, 0, geometry, MIN_DISTANCE_BUFFER)).toBe(false);
+    expect(isPointOnGeometry(11, 11, geometry, MIN_DISTANCE_BUFFER)).toBe(false);
   });
   test('check if point is on point geometry', () => {
     const geometry = MockPointGeometry.default({

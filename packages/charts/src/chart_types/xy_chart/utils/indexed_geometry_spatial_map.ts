@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { MarkBuffer } from '../../../specs';
 import { getDistance, isFiniteNumber } from '../../../utils/common';
 import { Delaunay, Bounds } from '../../../utils/d3-delaunay';
 import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
-import { DEFAULT_HIGHLIGHT_PADDING } from '../rendering/constants';
 
 /** @internal */
 export type IndexedGeometrySpatialMapPoint = [number, number];
@@ -76,7 +76,7 @@ export class IndexedGeometrySpatialMap {
     return this.pointGeometries.map(({ value: { x } }) => x);
   }
 
-  find(point: Point): IndexedGeometry[] {
+  find(point: Point, pointBuffer: MarkBuffer): IndexedGeometry[] {
     const elements = [];
     if (this.map !== null) {
       const index = this.map.find(point.x, point.y, this.searchStartIndex);
@@ -86,7 +86,7 @@ export class IndexedGeometrySpatialMap {
         // Set next starting search index for faster lookup
         this.searchStartIndex = index;
         elements.push(geometry);
-        this.getRadialNeighbors(index, point, new Set([index])).forEach((g) => elements.push(g));
+        this.getRadialNeighbors(index, point, new Set([index]), pointBuffer).forEach((g) => elements.push(g));
       }
     }
 
@@ -96,11 +96,13 @@ export class IndexedGeometrySpatialMap {
   /**
    * Gets surrounding points whose radius could be within the active cursor position
    *
-   * @param selectedIndex
-   * @param point
-   * @param visitedIndices
    */
-  private getRadialNeighbors(selectedIndex: number, point: Point, visitedIndices: Set<number>): IndexedGeometry[] {
+  private getRadialNeighbors(
+    selectedIndex: number,
+    point: Point,
+    visitedIndices: Set<number>,
+    pointBuffer: MarkBuffer,
+  ): IndexedGeometry[] {
     if (this.map === null) {
       return [];
     }
@@ -116,10 +118,10 @@ export class IndexedGeometrySpatialMap {
 
       if (geometry) {
         acc.push(geometry);
-
-        if (getDistance(geometry, point) < Math.min(this.maxRadius, DEFAULT_HIGHLIGHT_PADDING)) {
+        const radiusBuffer = typeof pointBuffer === 'number' ? pointBuffer : pointBuffer(geometry.radius);
+        if (getDistance(geometry, point) < Math.min(this.maxRadius, radiusBuffer)) {
           // Gets neighbors based on relation to maxRadius
-          this.getRadialNeighbors(i, point, visitedIndices).forEach((g) => acc.push(g));
+          this.getRadialNeighbors(i, point, visitedIndices, pointBuffer).forEach((g) => acc.push(g));
         }
       }
 
