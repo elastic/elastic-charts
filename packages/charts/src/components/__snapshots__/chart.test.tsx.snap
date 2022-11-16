@@ -106,7 +106,7 @@ exports[`Chart should render the legend name test 1`] = `
                   </Annotations>
                 </Connect(Annotations)>
                 <Connect(Highlighter)>
-                  <Highlighter initialized={true} chartId="chart1" zIndex={0} isBrushing={false} highlightedGeometries={{...}} chartTransform={{...}} chartDimensions={{...}} chartRotation={0} dispatch={[Function: dispatch]}>
+                  <Highlighter initialized={true} chartId="chart1" zIndex={0} isBrushing={false} highlightedGeometries={{...}} chartTransform={{...}} chartDimensions={{...}} chartRotation={0} style={{...}} dispatch={[Function: dispatch]}>
                     <svg className="echHighlighter" style={{...}}>
                       <defs>
                         <clipPath id="echHighlighterClipPath__chart1">
