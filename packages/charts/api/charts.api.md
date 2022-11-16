@@ -524,6 +524,7 @@ export const ChartType: Readonly<{
     Goal: "goal";
     Partition: "partition";
     Flame: "flame";
+    PlotMatrix: "plot_matrix";
     Timeslip: "timeslip";
     XYAxis: "xy_axis";
     Heatmap: "heatmap";
@@ -2043,6 +2044,55 @@ export const Placement: Readonly<{
 // @public
 export type Placement = $Values<typeof Placement>;
 
+// Warning: (ae-forgotten-export) The symbol "buildProps_2" needs to be exported by the entry point index.d.ts
+//
+// @public
+export const PlotMatrix: (props: SFProps<PlotMatrixSpec, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
+
+// @public
+export interface PlotMatrixSpec extends Spec {
+    // (undocumented)
+    chartType: typeof ChartType.PlotMatrix;
+    // (undocumented)
+    columnarData: PlotMatrixViewModel;
+    // (undocumented)
+    specType: typeof SpecType.Series;
+}
+
+// @alpha (undocumented)
+export interface PlotMatrixStyle {
+    // (undocumented)
+    navigation: {
+        textColor: Color;
+        buttonTextColor: Color;
+        buttonDisabledTextColor: Color;
+        buttonBackgroundColor: Color;
+        buttonDisabledBackgroundColor: Color;
+    };
+    // (undocumented)
+    scrollbarThumb: Color;
+    // (undocumented)
+    scrollbarTrack: Color;
+}
+
+// @public
+export interface PlotMatrixViewModel {
+    // (undocumented)
+    color: Float32Array;
+    // (undocumented)
+    label: string[];
+    // (undocumented)
+    position0: Float32Array;
+    // (undocumented)
+    position1: Float32Array;
+    // (undocumented)
+    size0: Float32Array;
+    // (undocumented)
+    size1: Float32Array;
+    // (undocumented)
+    value: Float64Array;
+}
+
 // @public (undocumented)
 type PointerEvent_2 = PointerOverEvent | PointerOutEvent;
 export { PointerEvent_2 as PointerEvent }
@@ -2724,6 +2774,8 @@ export interface Theme {
     markSizeRatio?: number;
     metric: MetricStyle;
     partition: PartitionStyle;
+    // @alpha (undocumented)
+    plotMatrix: PlotMatrixStyle;
     // (undocumented)
     scales: ScalesConfig;
     // (undocumented)
@@ -2769,10 +2821,10 @@ export interface TimeScale {
     type: typeof ScaleType.Time;
 }
 
-// Warning: (ae-forgotten-export) The symbol "buildProps_2" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps_3" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const Timeslip: (props: SFProps<TimeslipSpec, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
+export const Timeslip: (props: SFProps<TimeslipSpec, keyof (typeof buildProps_3)['overrides'], keyof (typeof buildProps_3)['defaults'], keyof (typeof buildProps_3)['optionals'], keyof (typeof buildProps_3)['requires']>) => null;
 
 // @public
 export interface TimeslipSpec extends Spec {

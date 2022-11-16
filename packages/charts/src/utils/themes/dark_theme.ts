@@ -422,4 +422,15 @@ export const DARK_THEME: Theme = {
     scrollbarThumb: 'rgb(223, 229, 239)',
     scrollbarTrack: 'rgb(52, 55, 65)',
   },
+  plotMatrix: {
+    navigation: {
+      textColor: 'rgb(223, 229, 239)',
+      buttonTextColor: 'rgb(54, 162, 239)',
+      buttonDisabledTextColor: 'rgb(81, 87, 97)',
+      buttonBackgroundColor: '#36a2ef33',
+      buttonDisabledBackgroundColor: 'rgba(52, 55, 65, 0.15)',
+    },
+    scrollbarThumb: 'rgb(223, 229, 239)',
+    scrollbarTrack: 'rgb(52, 55, 65)',
+  },
 };

@@ -341,6 +341,19 @@ export interface FlamegraphStyle {
   scrollbarThumb: Color;
 }
 
+/** @alpha */
+export interface PlotMatrixStyle {
+  navigation: {
+    textColor: Color;
+    buttonTextColor: Color;
+    buttonDisabledTextColor: Color;
+    buttonBackgroundColor: Color;
+    buttonDisabledBackgroundColor: Color;
+  };
+  scrollbarTrack: Color;
+  scrollbarThumb: Color;
+}
+
 /** @public */
 export interface ScalesConfig {
   /**
@@ -504,6 +517,9 @@ export interface Theme {
 
   /** @alpha */
   flamegraph: FlamegraphStyle;
+
+  /** @alpha */
+  plotMatrix: PlotMatrixStyle;
 }
 
 /** @public */

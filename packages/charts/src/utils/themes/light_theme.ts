@@ -421,4 +421,15 @@ export const LIGHT_THEME: Theme = {
     scrollbarThumb: 'rgb(52, 55, 65)',
     scrollbarTrack: 'rgb(211, 218, 230)',
   },
+  plotMatrix: {
+    navigation: {
+      textColor: 'rgb(52, 55, 65)',
+      buttonTextColor: 'rgb(0, 97, 166)',
+      buttonDisabledTextColor: 'rgb(162, 171, 186)',
+      buttonBackgroundColor: 'rgb(204, 228, 245)',
+      buttonDisabledBackgroundColor: 'rgba(211, 218, 230, 0.15)',
+    },
+    scrollbarThumb: 'rgb(52, 55, 65)',
+    scrollbarTrack: 'rgb(211, 218, 230)',
+  },
 };

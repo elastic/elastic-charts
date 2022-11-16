@@ -17,6 +17,7 @@ export const ChartType = Object.freeze({
   Goal: 'goal' as const,
   Partition: 'partition' as const,
   Flame: 'flame' as const,
+  PlotMatrix: 'plot_matrix' as const,
   Timeslip: 'timeslip' as const,
   XYAxis: 'xy_axis' as const,
   Heatmap: 'heatmap' as const,

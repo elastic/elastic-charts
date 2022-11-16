@@ -137,5 +137,6 @@ export { GroupKeysOrKeyFn, GroupByKeyFn } from './chart_types/xy_chart/utils/gro
 export { computeRatioByGroups } from './utils/data/data_processing';
 export { TimeFunction } from './utils/time_functions';
 export * from './chart_types/flame_chart/flame_api';
+export * from './chart_types/plot_matrix/plot_matrix_api';
 export * from './chart_types/timeslip/timeslip_api';
 export { LegacyAnimationConfig } from './common/animation';
