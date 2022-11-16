@@ -1423,6 +1423,18 @@ export const HIERARCHY_ROOT_KEY: Key;
 // @public (undocumented)
 export type HierarchyOfArrays = Array<ArrayEntry>;
 
+// @public (undocumented)
+export interface HighlighterStyle {
+    // (undocumented)
+    point: {
+        fill: Color | ColorVariant;
+        stroke: Color | ColorVariant;
+        strokeWidth: Pixels;
+        opacity: Ratio;
+        radius: Pixels;
+    };
+}
+
 // @public
 export const HistogramBarSeries: <D extends BaseDatum = any>(props: SFProps<HistogramBarSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "xScaleType" | "yScaleType" | "hideInLegend" | "enableHistogramMode", "sortIndex" | "timeZone" | "name" | "color" | "barSeriesStyle" | "xNice" | "yNice" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "markSizeAccessor" | "stackMode" | "styleAccessor" | "minBarHeight", "data" | "id" | "xAccessor" | "yAccessors">) => null;
 
@@ -2718,6 +2730,8 @@ export interface Theme {
     flamegraph: FlamegraphStyle;
     goal: GoalStyles;
     heatmap: HeatmapStyle;
+    // (undocumented)
+    highlighter: HighlighterStyle;
     // (undocumented)
     legend: LegendStyle;
     lineSeriesStyle: LineSeriesStyle;

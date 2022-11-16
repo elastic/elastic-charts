@@ -776,7 +776,7 @@ export interface LineAnnotationStyle {
 /** @public */
 export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;
 
-/** @internal */
+/** @public */
 export interface HighlighterStyle {
   point: {
     fill: Color | ColorVariant;
