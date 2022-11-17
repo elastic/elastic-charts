@@ -82,4 +82,11 @@ test.describe('Stylings stories', () => {
       );
     });
   });
+
+  test(`highlight style and pointBuffer`, async ({ page }) => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/stylings--highlighter-style`,
+      { top: 150, right: 150 },
+    );
+  });
 });
