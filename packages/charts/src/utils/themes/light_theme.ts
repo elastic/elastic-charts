@@ -421,4 +421,13 @@ export const LIGHT_THEME: Theme = {
     scrollbarThumb: 'rgb(52, 55, 65)',
     scrollbarTrack: 'rgb(211, 218, 230)',
   },
+  highlighter: {
+    point: {
+      opacity: 1,
+      fill: ColorVariant.None,
+      stroke: ColorVariant.Series,
+      strokeWidth: 4,
+      radius: 10,
+    },
+  },
 };

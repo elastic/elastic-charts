@@ -504,6 +504,8 @@ export interface Theme {
 
   /** @alpha */
   flamegraph: FlamegraphStyle;
+
+  highlighter: HighlighterStyle;
 }
 
 /** @public */
@@ -773,3 +775,14 @@ export interface LineAnnotationStyle {
 
 /** @public */
 export type RectAnnotationStyle = StrokeStyle & FillStyle & Opacity & Partial<StrokeDashArray>;
+
+/** @public */
+export interface HighlighterStyle {
+  point: {
+    fill: Color | ColorVariant;
+    stroke: Color | ColorVariant;
+    strokeWidth: Pixels;
+    opacity: Ratio;
+    radius: Pixels;
+  };
+}

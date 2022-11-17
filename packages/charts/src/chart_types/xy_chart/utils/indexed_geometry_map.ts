@@ -8,6 +8,7 @@
 
 import { $Values } from 'utility-types';
 
+import { MarkBuffer } from '../../../specs';
 import { isNil } from '../../../utils/common';
 import { Bounds } from '../../../utils/d3-delaunay';
 import { IndexedGeometry, isPointGeometry } from '../../../utils/geometry';
@@ -58,6 +59,7 @@ export class IndexedGeometryMap {
 
   find(
     x: number | string | null,
+    pointBuffer: MarkBuffer,
     point?: Point,
     smHorizontalValue?: PrimitiveValue,
     smVerticalValue?: PrimitiveValue,
@@ -66,7 +68,7 @@ export class IndexedGeometryMap {
       return [];
     }
 
-    const spatialValues = point === undefined ? [] : this.spatialMap.find(point);
+    const spatialValues = point === undefined ? [] : this.spatialMap.find(point, pointBuffer);
     return [...this.linearMap.find(x), ...spatialValues].filter(
       ({ seriesIdentifier: { smHorizontalAccessorValue, smVerticalAccessorValue } }) =>
         (isNil(smVerticalValue) || smVerticalAccessorValue === smVerticalValue) &&

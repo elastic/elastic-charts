@@ -14,7 +14,6 @@ import { getDistance } from '../../../utils/common';
 import { BarGeometry, ClippedRanges, isPointGeometry, PointGeometry } from '../../../utils/geometry';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
-import { DEFAULT_HIGHLIGHT_PADDING } from './constants';
 
 /** @internal */
 export interface MarkSizeOptions {
@@ -117,7 +116,7 @@ export function isPointOnGeometry(
   xCoordinate: number,
   yCoordinate: number,
   indexedGeometry: BarGeometry | PointGeometry,
-  buffer: MarkBuffer = DEFAULT_HIGHLIGHT_PADDING,
+  buffer: MarkBuffer,
 ) {
   const { x, y, transform } = indexedGeometry;
   if (isPointGeometry(indexedGeometry)) {
@@ -134,10 +133,6 @@ export function isPointOnGeometry(
     );
 
     const radiusBuffer = typeof buffer === 'number' ? buffer : buffer(radius);
-
-    if (radiusBuffer === Infinity) {
-      return distance <= radius + DEFAULT_HIGHLIGHT_PADDING;
-    }
 
     return distance <= radius + radiusBuffer;
   }

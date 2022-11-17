@@ -164,6 +164,7 @@ export const settingsBuildProps = buildSFProps<SettingsSpec>()(
     ariaUseDefaultSummary: true,
     ariaLabelHeadingLevel: 'p',
     allowBrushingLastHistogramBin: true,
+    pointBuffer: 10,
     ...DEFAULT_LEGEND_CONFIG,
   },
 );

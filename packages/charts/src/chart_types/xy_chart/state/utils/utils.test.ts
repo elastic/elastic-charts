@@ -342,10 +342,10 @@ describe('Chart State utils', () => {
       const geometries = getGeometriesFromSpecs([line1, line2]);
 
       expect(geometries.geometriesIndex.size).toBe(4);
-      expect(geometries.geometriesIndex.find(0)?.length).toBe(2);
-      expect(geometries.geometriesIndex.find(1)?.length).toBe(2);
-      expect(geometries.geometriesIndex.find(2)?.length).toBe(2);
-      expect(geometries.geometriesIndex.find(3)?.length).toBe(2);
+      expect(geometries.geometriesIndex.find(0, 10)?.length).toBe(2);
+      expect(geometries.geometriesIndex.find(1, 10)?.length).toBe(2);
+      expect(geometries.geometriesIndex.find(2, 10)?.length).toBe(2);
+      expect(geometries.geometriesIndex.find(3, 10)?.length).toBe(2);
     });
 
     test('can compute stacked geometries indexes', () => {
@@ -373,10 +373,10 @@ describe('Chart State utils', () => {
       const geometries = getGeometriesFromSpecs([line1, line2]);
 
       expect(geometries.geometriesIndex.size).toBe(4);
-      expect(geometries.geometriesIndex.find(0)?.length).toBe(2);
-      expect(geometries.geometriesIndex.find(1)?.length).toBe(2);
-      expect(geometries.geometriesIndex.find(2)?.length).toBe(2);
-      expect(geometries.geometriesIndex.find(3)?.length).toBe(2);
+      expect(geometries.geometriesIndex.find(0, 10)?.length).toBe(2);
+      expect(geometries.geometriesIndex.find(1, 10)?.length).toBe(2);
+      expect(geometries.geometriesIndex.find(2, 10)?.length).toBe(2);
+      expect(geometries.geometriesIndex.find(3, 10)?.length).toBe(2);
     });
 
     test('can compute non stacked geometries counts', () => {

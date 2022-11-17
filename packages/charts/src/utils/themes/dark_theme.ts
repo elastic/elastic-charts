@@ -422,4 +422,13 @@ export const DARK_THEME: Theme = {
     scrollbarThumb: 'rgb(223, 229, 239)',
     scrollbarTrack: 'rgb(52, 55, 65)',
   },
+  highlighter: {
+    point: {
+      opacity: 1,
+      fill: ColorVariant.None,
+      stroke: ColorVariant.Series,
+      strokeWidth: 4,
+      radius: 10,
+    },
+  },
 };

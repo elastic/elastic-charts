@@ -474,11 +474,15 @@ export interface SettingsSpec extends Spec, LegendSpec {
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
   onElementOut?: BasicListener;
-  pointBuffer?: MarkBuffer;
   onBrushEnd?: BrushEndListener;
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
   onProjectionAreaChange?: ProjectionAreaChangeListener;
+
+  /**
+   * The min distance from the rendered point circumference to highlight a cartesian data point in line/area/bubble charts.
+   */
+  pointBuffer: MarkBuffer;
   xDomain?: CustomXDomain;
   /**
    * allows user to set a click handler to the annotations
