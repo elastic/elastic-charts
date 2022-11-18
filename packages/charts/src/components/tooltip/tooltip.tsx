@@ -119,8 +119,11 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   const chartRef = getChartContainerRef();
 
   const handleScroll = (e: Event) => {
-    const target = e.target as Element;
-    if (target.classList.contains('echTooltip__tableBody')) {
+    if (
+      e.target &&
+      e.target.hasOwnProperty('classList') &&
+      (e.target as Element).classList.contains('echTooltip__tableBody')
+    ) {
       // catch scroll when scrolling on tableBody
       e.stopImmediatePropagation();
       return;
