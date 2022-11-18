@@ -1,3 +1,20 @@
+# [51.1.0](https://github.com/elastic/elastic-charts/compare/v51.0.0...v51.1.0) (2022-11-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^70.2.0 ([#1876](https://github.com/elastic/elastic-charts/issues/1876)) ([716ff48](https://github.com/elastic/elastic-charts/commit/716ff48a5ad2d2708a77f195339b87f3dfd6b34f))
+* **flamegraph:** search on change ([#1885](https://github.com/elastic/elastic-charts/issues/1885)) ([80f2fe3](https://github.com/elastic/elastic-charts/commit/80f2fe3f945118c89dc516380888e7202b81e2ef))
+* **heatmap:** cursor visible out of cell bounds ([#1866](https://github.com/elastic/elastic-charts/issues/1866)) ([0a814c8](https://github.com/elastic/elastic-charts/commit/0a814c855d1bb14e6df7bc6f31db9a2791c53ade))
+* workaround firefox amd macbook regression webgl_gl_VertexID_Offset ([#1869](https://github.com/elastic/elastic-charts/issues/1869)) ([02181aa](https://github.com/elastic/elastic-charts/commit/02181aab1f90dbc480877c8adbae6aa70976a941))
+* **xy:** cursor while dragging with no brushing ([#1883](https://github.com/elastic/elastic-charts/issues/1883)) ([f41ce98](https://github.com/elastic/elastic-charts/commit/f41ce98b27b1ea3c17e258cff1b5ddc9643081f2))
+
+
+### Features
+
+* **heatmap:** highlight selected range from legend hover  ([#1864](https://github.com/elastic/elastic-charts/issues/1864)) ([a3fbe86](https://github.com/elastic/elastic-charts/commit/a3fbe86996f61e6eb148794fa8bc694d7316b6fa))
+* **theme:** expose point highlighter style ([#1881](https://github.com/elastic/elastic-charts/issues/1881)) ([3722851](https://github.com/elastic/elastic-charts/commit/37228515dd2b28b616942527f8b3c4d517f91e4d))
+
 # [51.0.0](https://github.com/elastic/elastic-charts/compare/v50.2.0...v51.0.0) (2022-11-08)
 
 
