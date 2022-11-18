@@ -775,9 +775,8 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private handleSearchFieldKeyPress = (e: React.KeyboardEvent<HTMLCanvasElement | HTMLInputElement>) => {
-    e.stopPropagation();
-    if (!this.handleEnterKey(e)) {
-      this.searchForText(false);
+    if (this.handleEnterKey(e)) {
+      e.stopPropagation();
     }
   };
 
@@ -984,6 +983,7 @@ class FlameComponent extends React.Component<FlameProps> {
             placeholder="Search string"
             onKeyPress={this.handleSearchFieldKeyPress}
             onKeyUp={this.handleEscapeKey}
+            onChange={() => this.searchForText(false)}
             style={{
               border: 'none',
               padding: 3,
