@@ -13,7 +13,7 @@ import { TooltipDivider } from './tooltip_divider';
 /** @internal */
 export function TooltipPrompt({ children }: PropsWithChildren<{}>) {
   return (
-    <div className="echTooltipPrompt">
+    <div className="echTooltipPrompt slideDown" key={Math.random()}>
       <TooltipDivider />
       <div className="echTooltipPrompt__content">{children}</div>
     </div>

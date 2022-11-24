@@ -1,6 +1,6 @@
-$tooltipPromptAnimDelay: 0.5s;
+$tooltipPromptAnimDelay: 1.5s;
 
-@keyframes promptFadeInDown {
+@keyframes promptSlideDown {
   100% {
     opacity: 1;
     top: 0;
@@ -11,11 +11,6 @@ $tooltipPromptAnimDelay: 0.5s;
 .echTooltipPrompt {
   position: relative;
   width: 100%;
-  //opacity: 0;
-  //top: -26px;
-  //height: 0;
-  //animation: promptFadeInDown 0.5s forwards;
-  //animation-delay: $tooltipPromptAnimDelay;
   z-index: -1;
 
   &__content {
@@ -24,5 +19,12 @@ $tooltipPromptAnimDelay: 0.5s;
     font-size: 12px;
     line-height: 26px;
     padding: 0 $euiSizeS;
+  }
+  &.slideDown {
+    opacity: 0;
+    top: -26px;
+    height: 0;
+    animation: promptSlideDown 0.5s forwards;
+    animation-delay: $tooltipPromptAnimDelay;
   }
 }
