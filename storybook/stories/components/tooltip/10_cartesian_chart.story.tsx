@@ -113,6 +113,7 @@ export const Example = () => {
         const data = d.timeseries.rows.slice(0, reduceData ? 20 : undefined);
         return chartType === 'bar' ? (
           <HistogramBarSeries
+            key={d.name}
             id={d.name}
             xScaleType={ScaleType.Time}
             yScaleType={ScaleType.Linear}
@@ -123,6 +124,7 @@ export const Example = () => {
           />
         ) : (
           <LineSeries
+            key={d.name}
             id={d.name}
             xScaleType={ScaleType.Time}
             yScaleType={ScaleType.Linear}
