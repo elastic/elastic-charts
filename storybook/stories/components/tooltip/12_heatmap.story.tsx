@@ -63,6 +63,7 @@ export const Example = () => {
       />
       <Tooltip
         maxVisibleTooltipItems={4}
+        maxTooltipItems={4}
         actions={[
           {
             disabled: (d) => d.length !== 1,

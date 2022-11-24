@@ -85,6 +85,7 @@ export const Example = () => {
       <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
       <Tooltip
         maxVisibleTooltipItems={4}
+        maxTooltipItems={4}
         actions={[
           {
             label: () => 'Open detail view',

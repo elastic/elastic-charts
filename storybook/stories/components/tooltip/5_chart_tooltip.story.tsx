@@ -15,6 +15,7 @@ import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
   const maxVisibleTooltipItems = number('max visible tooltip items', 3);
+  const maxTooltipItems = number('max tooltip items', 3);
   const dataSet = select(
     'dataSet',
     {
@@ -41,6 +42,7 @@ export const Example = () => {
       canPinTooltip
       tooltip={{
         maxVisibleTooltipItems,
+        maxTooltipItems,
         actions: [
           {
             label: () => 'Drilldown to dashboard X',

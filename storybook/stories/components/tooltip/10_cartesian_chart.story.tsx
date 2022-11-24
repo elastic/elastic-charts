@@ -85,6 +85,7 @@ export const Example = () => {
       <Tooltip
         type={getTooltipTypeKnob()}
         maxVisibleTooltipItems={4}
+        maxTooltipItems={4}
         actions={disableActions ? [] : asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}
       />
       <Axis
