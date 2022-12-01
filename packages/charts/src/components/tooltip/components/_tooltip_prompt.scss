@@ -1,4 +1,5 @@
 $tooltipPromptAnimDelay: 1.5s;
+$tooltipPromptAnimTime: 0.25s;
 
 @keyframes promptSlideDown {
   100% {
@@ -24,7 +25,7 @@ $tooltipPromptAnimDelay: 1.5s;
     opacity: 0;
     top: -26px;
     height: 0;
-    animation: promptSlideDown 0.5s forwards;
+    animation: promptSlideDown $tooltipPromptAnimTime forwards;
     animation-delay: $tooltipPromptAnimDelay;
   }
 }
