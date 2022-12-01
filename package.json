@@ -99,7 +99,7 @@
     "@types/react-redux": "^7.1.1",
     "@types/seedrandom": "^2.4.28",
     "@types/url-parse": "^1.4.3",
-    "@types/uuid": "^8.3.2",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
     "autoprefixer": "^9.0.0",
