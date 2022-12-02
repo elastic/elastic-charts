@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
 import { LegendItem, LegendItemExtraValues } from '../../common/legend';
-import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
+import { DEFAULT_LEGEND_CONFIG, LegendSpec, TooltipValue } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 import {
   onToggleDeselectSeriesAction,
@@ -28,7 +28,9 @@ import { getLegendConfigSelector } from '../../state/selectors/get_legend_config
 import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
+import { getPointerValueSelector } from '../../state/selectors/get_pointer_value';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
+import { PointerValue } from '../../state/types';
 import { hasMostlyRTLItems, HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
 import { Dimensions, Size } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
@@ -47,6 +49,7 @@ interface LegendStateProps {
   config: LegendSpec;
   items: LegendItem[];
   extraValues: Map<string, LegendItemExtraValues>;
+  pointerValue?: PointerValue;
 }
 
 interface LegendDispatchProps {
@@ -67,6 +70,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     chartTheme: { chartMargins, legend },
     chartDimensions,
     containerDimensions,
+    pointerValue,
     config,
   } = props;
 
@@ -113,9 +117,13 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   return (
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
       <div style={containerStyle} className="echLegendListContainer">
-        <ul style={listStyle} className="echLegendList">
-          {items.map((item, index) => renderLegendItem(item, itemProps, index))}
-        </ul>
+        {config.customLegend ? (
+          <config.customLegend {...{ items, pointerValue, ...itemProps }} />
+        ) : (
+          <ul style={listStyle} className="echLegendList">
+            {items.map((item, index) => renderLegendItem(item, itemProps, index))}
+          </ul>
+        )}
       </div>
     </div>
   );
@@ -164,6 +172,7 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
     size: getLegendSizeSelector(state),
     items: getLegendItemsSelector(state),
     extraValues: getLegendExtraValuesSelector(state),
+    pointerValue: getPointerValueSelector(state),
     config,
   };
 };

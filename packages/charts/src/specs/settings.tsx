@@ -16,11 +16,14 @@ import { LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { Color } from '../common/colors';
+import { LegendItem } from '../common/legend';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
+import { LegendItemProps } from '../components/legend/legend_item';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { LegendPath } from '../state/actions/legend';
 import { SFProps, useSpecFactory } from '../state/spec_factory';
+import { PointerValue } from '../state/types';
 import {
   HorizontalAlignment,
   LayoutDirection,
@@ -36,7 +39,7 @@ import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
-import { TooltipSettings } from './tooltip';
+import { TooltipSettings, TooltipValue } from './tooltip';
 
 /** @public */
 export interface LayerValue {
@@ -365,6 +368,17 @@ export type LegendPositionConfig = {
   // TODO add grow factor: fill, shrink, fixed column size
 };
 
+export interface CustomLegendProps extends Omit<LegendItemProps, 'item'> {
+  items: LegendItem[];
+  pointerValue?: PointerValue;
+}
+
+/**
+ * The react component used to render a custom tooltip
+ * @public
+ */
+export type CustomLegend = ComponentType<CustomLegendProps>;
+
 /**
  * The legend configuration
  * @public
@@ -418,6 +432,10 @@ export interface LegendSpec {
    * A SeriesSortFn to sort the legend values (top-bottom)
    */
   legendSort?: SeriesCompareFn;
+  /**
+   * Override the legend with a custom component.
+   */
+  customLegend?: CustomLegend;
 }
 
 /**
