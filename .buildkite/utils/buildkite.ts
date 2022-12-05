@@ -115,7 +115,7 @@ function getEnvNumber(key: string) {
   }
 
   const value = parseInt(stringValue);
-  return value === NaN ? undefined : value;
+  return Number.isNaN(value) ? undefined : value;
 }
 
 function getEnvString(key: string) {

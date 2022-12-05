@@ -8,7 +8,8 @@
     "build:pipeline": "ts-node pipelines/pull_request/pipeline.ts",
     "print:pipeline": "yarn build:bk:types && TEST_BK_PIPELINE=true ts-node -r dotenv/config pipelines/pull_request/pipeline.ts",
     "run:script": "ts-node -r dotenv/config ",
-    "run:script:top": "cd ../ && DOTENV_CONFIG_PATH=.buildkite/.env ts-node -r dotenv/config "
+    "run:script:top": "cd ../ && DOTENV_CONFIG_PATH=.buildkite/.env ts-node -r dotenv/config ",
+    "typecheck": "tsc -p ./tsconfig.json --noEmit"
   },
   "dependencies": {
     "@octokit/auth-app": "^3.6.1",
@@ -25,7 +26,7 @@
     "targz": "^1.0.1",
     "tmp": "^0.2.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.4",
+    "typescript": "^4.9.3",
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
