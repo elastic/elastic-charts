@@ -279,6 +279,8 @@ module.exports = {
     'unicorn/no-zero-fractions': 0,
     'unicorn/prefer-node-remove': 0, // not IE11 compatible
     'unicorn/no-unreadable-array-destructuring': 0,
+    'unicorn/no-negated-condition': 0,
+    'unicorn/no-useless-spread': 0,
     'unicorn/filename-case': [
       'error',
       {
