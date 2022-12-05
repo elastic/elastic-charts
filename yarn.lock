@@ -2910,10 +2910,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^70.2.0":
-  version "70.2.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-70.2.0.tgz#69577096bdfa9ccc659e0185875201306d904f4d"
-  integrity sha512-ahFm00woxJIfmLyBp3cA46VB9Swl+kRczDhaH8bOpQhkfPimvHUwAPnPAJpZnYfcbqJh31NllHuDlRYnZ0IPng==
+"@elastic/eui@^70.4.0":
+  version "70.4.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-70.4.0.tgz#0ce7520ac96e137f05861224a6cd0a029c4dc0bc"
+  integrity sha512-w/pMxC0drBtzy3RQzHBLLbKRgy4EUTSetej0eg7m87copRZOwWXqlrIt52uuUj9txenxmpSonnnvSB+1a7fCfg==
   dependencies:
     "@types/chroma-js" "^2.0.0"
     "@types/lodash" "^4.14.160"
@@ -2934,7 +2934,7 @@
     react-beautiful-dnd "^13.1.0"
     react-dropzone "^11.5.3"
     react-element-to-jsx-string "^14.3.4"
-    react-focus-on "^3.5.4"
+    react-focus-on "^3.7.0"
     react-input-autosize "^3.0.0"
     react-is "^17.0.2"
     react-virtualized-auto-sizer "^1.0.6"
@@ -7291,12 +7291,12 @@ argv-formatter@~1.0.0:
   resolved "https://registry.yarnpkg.com/argv-formatter/-/argv-formatter-1.0.0.tgz#a0ca0cbc29a5b73e836eebe1cbf6c5e0e4eb82f9"
   integrity sha1-oMoMvCmltz6Dbuvhy/bF4OTrgvk=
 
-aria-hidden@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/aria-hidden/-/aria-hidden-1.1.3.tgz#bb48de18dc84787a3c6eee113709c473c64ec254"
-  integrity sha512-RhVWFtKH5BiGMycI72q2RAFMLQi8JP9bLuQXgR5a8Znp7P5KOIADSJeyfI8PCVxLEp067B2HbP5JIiI/PXIZeA==
+aria-hidden@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/aria-hidden/-/aria-hidden-1.2.2.tgz#8c4f7cc88d73ca42114106fdf6f47e68d31475b8"
+  integrity sha512-6y/ogyDTk/7YAe91T3E2PR1ALVKyM2QbTio5HwM+N1Q6CMlCKhvClyIjkckBswa0f2xJhjsfzIGa1yVSe1UMVA==
   dependencies:
-    tslib "^1.0.0"
+    tslib "^2.0.0"
 
 aria-query@^4.2.2:
   version "4.2.2"
@@ -10010,11 +10010,6 @@ detect-newline@^3.0.0:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-3.1.0.tgz#576f5dfc63ae1a192ff192d8ad3af6308991b651"
   integrity sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==
 
-detect-node-es@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/detect-node-es/-/detect-node-es-1.0.0.tgz#c0318b9e539a5256ca780dd9575c9345af05b8ed"
-  integrity sha512-S4AHriUkTX9FoFvL4G8hXDcx6t3gp2HpfCza3Q0v6S78gul2hKWifLQbeW+ZF89+hSm2ZIc/uF3J97ZgytgTRg==
-
 detect-node-es@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/detect-node-es/-/detect-node-es-1.1.0.tgz#163acdf643330caa0b4cd7c21e7ee7755d6fa493"
@@ -10826,8 +10821,7 @@ eslint-module-utils@^2.7.3:
     find-up "^2.1.0"
 
 "eslint-plugin-elastic-charts@link:./packages/eslint-plugin-elastic-charts":
-  version "0.0.0"
-  uid ""
+  version "1.0.0"
 
 eslint-plugin-eslint-comments@^3.2.0:
   version "3.2.0"
@@ -11600,10 +11594,10 @@ fn.name@1.x.x:
   resolved "https://registry.yarnpkg.com/fn.name/-/fn.name-1.1.0.tgz#26cad8017967aea8731bc42961d04a3d5988accc"
   integrity sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==
 
-focus-lock@^0.10.2:
-  version "0.10.2"
-  resolved "https://registry.yarnpkg.com/focus-lock/-/focus-lock-0.10.2.tgz#561c62bae8387ecba1dd8e58a6df5ec29835c644"
-  integrity sha512-DSaI/UHZ/02sg1P616aIWgToQcrKKBmcCvomDZ1PZvcJFj350PnWhSJxJ76T3e5/GbtQEARIACtbrdlrF9C5kA==
+focus-lock@^0.11.2:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/focus-lock/-/focus-lock-0.11.4.tgz#fbf84894d7c384f25a2c7cf5d97c848131d97f6f"
+  integrity sha512-LzZWJcOBIcHslQ46N3SUu/760iLPSrUtp8omM4gh9du438V2CQdks8TcOu1yvmu2C68nVOBnl1WFiKGPbQ8L6g==
   dependencies:
     tslib "^2.0.3"
 
@@ -18230,10 +18224,10 @@ react-beautiful-dnd@^13.1.0:
     redux "^4.0.4"
     use-memo-one "^1.1.1"
 
-react-clientside-effect@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.5.tgz#e2c4dc3c9ee109f642fac4f5b6e9bf5bcd2219a3"
-  integrity sha512-2bL8qFW1TGBHozGGbVeyvnggRpMjibeZM2536AKNENLECutp2yfs44IL8Hmpn8qjFQ2K7A9PnYf3vc7aQq/cPA==
+react-clientside-effect@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.6.tgz#29f9b14e944a376b03fb650eed2a754dd128ea3a"
+  integrity sha512-XGGGRQAKY+q25Lz9a/4EPqom7WRjz3z9R2k4jhVKA/puQFH/5Nt27vFZYql4m4NVNdUvX8PS3O7r/Zzm7cjUlg==
   dependencies:
     "@babel/runtime" "^7.12.13"
 
@@ -18377,30 +18371,30 @@ react-fast-compare@^3.0.1, react-fast-compare@^3.2.0:
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
   integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
 
-react-focus-lock@^2.6.0:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/react-focus-lock/-/react-focus-lock-2.8.1.tgz#a28f06a4ef5eab7d4ef0d859512772ec1331d529"
-  integrity sha512-4kb9I7JIiBm0EJ+CsIBQ+T1t5qtmwPRbFGYFQ0t2q2qIpbFbYTHDjnjJVFB7oMBtXityEOQehblJPjqSIf3Amg==
+react-focus-lock@^2.9.2:
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/react-focus-lock/-/react-focus-lock-2.9.2.tgz#a57dfd7c493e5a030d87f161c96ffd082bd920f2"
+  integrity sha512-5JfrsOKyA5Zn3h958mk7bAcfphr24jPoMoznJ8vaJF6fUrPQ8zrtEd3ILLOK8P5jvGxdMd96OxWNjDzATfR2qw==
   dependencies:
     "@babel/runtime" "^7.0.0"
-    focus-lock "^0.10.2"
+    focus-lock "^0.11.2"
     prop-types "^15.6.2"
-    react-clientside-effect "^1.2.5"
-    use-callback-ref "^1.2.5"
-    use-sidecar "^1.0.5"
+    react-clientside-effect "^1.2.6"
+    use-callback-ref "^1.3.0"
+    use-sidecar "^1.1.2"
 
-react-focus-on@^3.5.4:
-  version "3.5.4"
-  resolved "https://registry.yarnpkg.com/react-focus-on/-/react-focus-on-3.5.4.tgz#be45a9d0495f3bb6f5249704c85362df94980ecf"
-  integrity sha512-HnU0YGKhNSUsC4k6K8L+2wk8mC/qdg+CsS7A1bWLMgK7UuBphdECs2esnS6cLmBoVNjsFnCm/vMypeezKOdK3A==
+react-focus-on@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/react-focus-on/-/react-focus-on-3.7.0.tgz#bf782b51483d52d1d336b7b09cb864897af26cdf"
+  integrity sha512-TsCnbJr4qjqFatJ4U1N8qGSZH+FUzxJ5mJ5ta7TY2YnDmUbGGmcvZMTZgGjQ1fl6vlztsMyg6YyZlPAeeIhEUg==
   dependencies:
-    aria-hidden "^1.1.3"
-    react-focus-lock "^2.6.0"
-    react-remove-scroll "^2.4.1"
-    react-style-singleton "^2.1.1"
+    aria-hidden "^1.2.2"
+    react-focus-lock "^2.9.2"
+    react-remove-scroll "^2.5.5"
+    react-style-singleton "^2.2.0"
     tslib "^2.3.1"
-    use-callback-ref "^1.2.5"
-    use-sidecar "^1.0.5"
+    use-callback-ref "^1.3.0"
+    use-sidecar "^1.1.2"
 
 react-helmet-async@^1.0.7:
   version "1.0.9"
@@ -18499,24 +18493,24 @@ react-refresh@^0.8.3:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
 
-react-remove-scroll-bar@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/react-remove-scroll-bar/-/react-remove-scroll-bar-2.2.0.tgz#d4d545a7df024f75d67e151499a6ab5ac97c8cdd"
-  integrity sha512-UU9ZBP1wdMR8qoUs7owiVcpaPwsQxUDC2lypP6mmixaGlARZa7ZIBx1jcuObLdhMOvCsnZcvetOho0wzPa9PYg==
+react-remove-scroll-bar@^2.3.3:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/react-remove-scroll-bar/-/react-remove-scroll-bar-2.3.4.tgz#53e272d7a5cb8242990c7f144c44d8bd8ab5afd9"
+  integrity sha512-63C4YQBUt0m6ALadE9XV56hV8BgJWDmmTPY758iIJjfQKt2nYwoUrPk0LXRXcB/yIj82T1/Ixfdpdk68LwIB0A==
   dependencies:
-    react-style-singleton "^2.1.0"
-    tslib "^1.0.0"
+    react-style-singleton "^2.2.1"
+    tslib "^2.0.0"
 
-react-remove-scroll@^2.4.1:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/react-remove-scroll/-/react-remove-scroll-2.4.4.tgz#2dfff377cf17efc00de39dad51c143fc7a1b9e3e"
-  integrity sha512-EyC5ohYhaeKbThMSQxuN2i+QC5HqV3AJvNZKEdiATITexu0gHm00+5ko0ltNS1ajYJVeDgVG2baRSCei0AUWlQ==
+react-remove-scroll@^2.5.5:
+  version "2.5.5"
+  resolved "https://registry.yarnpkg.com/react-remove-scroll/-/react-remove-scroll-2.5.5.tgz#1e31a1260df08887a8a0e46d09271b52b3a37e77"
+  integrity sha512-ImKhrzJJsyXJfBZ4bzu8Bwpka14c/fQt0k+cyFp/PBhTfyDnU5hjOtM4AG/0AMyy8oKzOTR0lDgJIM7pYXI0kw==
   dependencies:
-    react-remove-scroll-bar "^2.1.0"
-    react-style-singleton "^2.1.0"
-    tslib "^1.0.0"
-    use-callback-ref "^1.2.3"
-    use-sidecar "^1.0.1"
+    react-remove-scroll-bar "^2.3.3"
+    react-style-singleton "^2.2.1"
+    tslib "^2.1.0"
+    use-callback-ref "^1.3.0"
+    use-sidecar "^1.1.2"
 
 react-select@^3.2.0:
   version "3.2.0"
@@ -18542,14 +18536,14 @@ react-sizeme@^3.0.1:
     shallowequal "^1.1.0"
     throttle-debounce "^3.0.1"
 
-react-style-singleton@^2.1.0, react-style-singleton@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/react-style-singleton/-/react-style-singleton-2.1.1.tgz#ce7f90b67618be2b6b94902a30aaea152ce52e66"
-  integrity sha512-jNRp07Jza6CBqdRKNgGhT3u9umWvils1xsuMOjZlghBDH2MU0PL2WZor4PGYjXpnRCa9DQSlHMs/xnABWOwYbA==
+react-style-singleton@^2.2.0, react-style-singleton@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-style-singleton/-/react-style-singleton-2.2.1.tgz#f99e420492b2d8f34d38308ff660b60d0b1205b4"
+  integrity sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g==
   dependencies:
     get-nonce "^1.0.0"
     invariant "^2.2.4"
-    tslib "^1.0.0"
+    tslib "^2.0.0"
 
 react-syntax-highlighter@^13.5.3:
   version "13.5.3"
@@ -21117,15 +21111,15 @@ tsconfig-paths@^3.14.1, tsconfig-paths@^3.9.0:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@^1.0.0, tslib@^1.9.0:
-  version "1.14.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
-  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
-
 tslib@^1.8.1:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
+
+tslib@^1.9.0:
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
+  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
 tslib@^1.9.3:
   version "1.13.0"
@@ -21587,10 +21581,12 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
-use-callback-ref@^1.2.3, use-callback-ref@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.5.tgz#6115ed242cfbaed5915499c0a9842ca2912f38a5"
-  integrity sha512-gN3vgMISAgacF7sqsLPByqoePooY3n2emTH59Ur5d/M8eg4WTWu1xp8i8DHjohftIyEx0S08RiYxbffr4j8Peg==
+use-callback-ref@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.3.0.tgz#772199899b9c9a50526fedc4993fc7fa1f7e32d5"
+  integrity sha512-3FT9PRuRdbB9HfXhEq35u4oZkvpJ5kuYbpqhCfmiZyReuRgpnhDlbr2ZEnnuS0RrJAPn6l23xjFg9kpDM+Ms7w==
+  dependencies:
+    tslib "^2.0.0"
 
 use-composed-ref@^1.0.0:
   version "1.1.0"
@@ -21616,21 +21612,13 @@ use-memo-one@^1.1.1:
   resolved "https://registry.yarnpkg.com/use-memo-one/-/use-memo-one-1.1.1.tgz#39e6f08fe27e422a7d7b234b5f9056af313bd22c"
   integrity sha512-oFfsyun+bP7RX8X2AskHNTxu+R3QdE/RC5IefMbqptmACAA/gfol1KDD5KRzPsGMa62sWxGZw+Ui43u6x4ddoQ==
 
-use-sidecar@^1.0.1:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/use-sidecar/-/use-sidecar-1.0.3.tgz#17a4e567d4830c0c0ee100040e85a7fe68611e0f"
-  integrity sha512-ygJwGUBeQfWgDls7uTrlEDzJUUR67L8Rm14v/KfFtYCdHhtjHZx1Krb3DIQl3/Q5dJGfXLEQ02RY8BdNBv87SQ==
-  dependencies:
-    detect-node-es "^1.0.0"
-    tslib "^1.9.3"
-
-use-sidecar@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/use-sidecar/-/use-sidecar-1.0.5.tgz#ffff2a17c1df42e348624b699ba6e5c220527f2b"
-  integrity sha512-k9jnrjYNwN6xYLj1iaGhonDghfvmeTmYjAiGvOr7clwKfPjMXJf4/HOr7oT5tJwYafgp2tG2l3eZEOfoELiMcA==
+use-sidecar@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/use-sidecar/-/use-sidecar-1.1.2.tgz#2f43126ba2d7d7e117aa5855e5d8f0276dfe73c2"
+  integrity sha512-epTbsLuzZ7lPClpz2TyryBfztm7m+28DlEv2ZCQ3MDr5ssiwyOwGH/e5F9CkfWjJ1t4clvI58yF822/GUkjjhw==
   dependencies:
     detect-node-es "^1.1.0"
-    tslib "^1.9.3"
+    tslib "^2.0.0"
 
 use@^3.1.0:
   version "3.1.1"
