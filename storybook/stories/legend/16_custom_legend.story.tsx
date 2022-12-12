@@ -6,9 +6,20 @@
  * Side Public License, v 1.
  */
 
+import moment from 'moment';
 import React from 'react';
 
-import { Axis, AreaSeries, Chart, Position, ScaleType, Settings, timeFormatter, CustomLegend } from '@elastic/charts';
+import {
+  Axis,
+  AreaSeries,
+  Chart,
+  Position,
+  ScaleType,
+  Settings,
+  timeFormatter,
+  CustomLegend,
+  Tooltip,
+} from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -29,9 +40,9 @@ const data3 = KIBANA_METRICS.metrics.kibana_os_load[2].data.map((d) => [
 const allMetrics = [...data3, ...data2, ...data1];
 
 export const Example = () => {
-  const CustomLegend: CustomLegend = ({ items, extraValues, pointerValue, mouseOverAction, mouseOutAction }) => (
-    <>
-      <p style={{ height: '1.5em' }}>{pointerValue?.formattedValue}</p>
+  const customLegend: CustomLegend = ({ items, extraValues, pointerValue, mouseOverAction, mouseOutAction }) => (
+    <div style={{ width: '100%', position: 'relative' }}>
+      <p style={{ height: '1.5em' }}>{pointerValue ? moment(pointerValue?.value).format('HH:mm') : 'System Load'}</p>
       {items.map((i) => (
         <p
           key={i.seriesIdentifiers[0].key}
@@ -42,7 +53,7 @@ export const Example = () => {
           {i.label} {extraValues.get(i.seriesIdentifiers[0].key)?.get(i.childId || '')}
         </p>
       ))}
-    </>
+    </div>
   );
 
   return (
@@ -52,21 +63,12 @@ export const Example = () => {
         showLegendExtra
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
-        customLegend={CustomLegend}
+        customLegend={customLegend}
+        legendSize={100} // always specify a fixed size for a custom legend
       />
-      <Axis
-        id="bottom"
-        position={Position.Bottom}
-        title="timestamp per 1 minute"
-        showOverlappingTicks
-        tickFormat={dateFormatter}
-      />
-      <Axis
-        id="left"
-        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
-        position={Position.Left}
-        tickFormat={(d) => Number(d).toFixed(2)}
-      />
+      <Tooltip customTooltip={() => null} />
+      <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
+      <Axis id="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} ticks={5} />
       <AreaSeries
         id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
         xScaleType={ScaleType.Time}
@@ -79,4 +81,8 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  markdown: `When using a custom legend, please always specify a fixed \`legendSize\` in the \`Settings\` prop to avoid a wrongly computed default legend size.`,
 };

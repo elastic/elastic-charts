@@ -116,15 +116,17 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   return (
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
-      <div style={containerStyle} className="echLegendListContainer">
-        {config.customLegend ? (
+      {config.customLegend ? (
+        <div style={containerStyle}>
           <config.customLegend {...{ items, pointerValue, ...itemProps }} />
-        ) : (
+        </div>
+      ) : (
+        <div style={containerStyle} className="echLegendListContainer">
           <ul style={listStyle} className="echLegendList">
             {items.map((item, index) => renderLegendItem(item, itemProps, index))}
           </ul>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
