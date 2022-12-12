@@ -137,6 +137,7 @@ export interface DebugState {
 /**
  * Contains the value of the non-dependent variable at the point where the mouse
  * pointer is.
+ * @public
  */
 export interface PointerValue<D extends BaseDatum = Datum> {
   /**

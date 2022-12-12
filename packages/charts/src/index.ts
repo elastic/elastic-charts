@@ -27,6 +27,7 @@ export {
   DebugStateAxis,
   DebugStateBase,
   DebugStateLegendItem,
+  PointerValue,
 } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';

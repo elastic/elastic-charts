@@ -39,7 +39,7 @@ import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
-import { TooltipSettings, TooltipValue } from './tooltip';
+import { TooltipSettings } from './tooltip';
 
 /** @public */
 export interface LayerValue {
@@ -368,13 +368,17 @@ export type LegendPositionConfig = {
   // TODO add grow factor: fill, shrink, fixed column size
 };
 
+/**
+ * The props for {@link CustomLegend}
+ * @public
+ */
 export interface CustomLegendProps extends Omit<LegendItemProps, 'item'> {
   items: LegendItem[];
   pointerValue?: PointerValue;
 }
 
 /**
- * The react component used to render a custom tooltip
+ * The react component used to render a custom legend
  * @public
  */
 export type CustomLegend = ComponentType<CustomLegendProps>;

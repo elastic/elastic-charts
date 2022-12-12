@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
 import { LegendItem, LegendItemExtraValues } from '../../common/legend';
-import { DEFAULT_LEGEND_CONFIG, LegendSpec, TooltipValue } from '../../specs';
+import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 import {
   onToggleDeselectSeriesAction,
