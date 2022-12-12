@@ -12,14 +12,13 @@ import { CustomXDomain, GroupByAccessor, Spec } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
-import { LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
+import { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { CategoryLabel } from '../common/category';
 import { Color } from '../common/colors';
-import { LegendItem } from '../common/legend';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
-import { LegendItemProps } from '../components/legend/legend_item';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { LegendPath } from '../state/actions/legend';
 import { SFProps, useSpecFactory } from '../state/spec_factory';
@@ -37,7 +36,7 @@ import { Dimensions } from '../utils/dimensions';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
-import { PartialTheme, Theme } from '../utils/themes/theme';
+import { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
 import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
 import { TooltipSettings } from './tooltip';
 
@@ -372,9 +371,21 @@ export type LegendPositionConfig = {
  * The props for {@link CustomLegend}
  * @public
  */
-export interface CustomLegendProps extends Omit<LegendItemProps, 'item'> {
-  items: LegendItem[];
+export interface CustomLegendProps {
   pointerValue?: PointerValue;
+  items: {
+    seriesIdentifiers: SeriesIdentifier[];
+    path: LegendPath;
+    color: Color;
+    label: CategoryLabel;
+    seriesType?: SeriesType;
+    pointStyle?: PointStyle;
+    extraValue?: PrimitiveValue;
+    isSeriesHidden?: boolean;
+    onItemOverActon: () => void;
+    onItemOutAction: () => void;
+    onItemClickAction: (negate: boolean) => void;
+  }[];
 }
 
 /**

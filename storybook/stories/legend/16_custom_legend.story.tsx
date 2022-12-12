@@ -40,18 +40,19 @@ const data3 = KIBANA_METRICS.metrics.kibana_os_load[2].data.map((d) => [
 const allMetrics = [...data3, ...data2, ...data1];
 
 export const Example = () => {
-  const customLegend: CustomLegend = ({ items, extraValues, pointerValue, mouseOverAction, mouseOutAction }) => (
+  const customLegend: CustomLegend = ({ items, pointerValue }) => (
     <div style={{ width: '100%', position: 'relative' }}>
       <p style={{ height: '1.5em' }}>{pointerValue ? moment(pointerValue?.value).format('HH:mm') : 'System Load'}</p>
       {items.map((i) => (
-        <p
+        <button
           key={i.seriesIdentifiers[0].key}
-          style={{ color: i.color }}
-          onMouseOver={() => mouseOverAction(i.path)}
-          onMouseOut={() => mouseOutAction()}
+          onMouseOver={i.onItemOverActon}
+          onMouseOut={i.onItemOutAction}
+          onClick={() => i.onItemClickAction(false)}
+          style={{ display: 'block', color: i.isSeriesHidden ? 'gray' : i.color }}
         >
-          {i.label} {extraValues.get(i.seriesIdentifiers[0].key)?.get(i.childId || '')}
-        </p>
+          {i.label} {i.extraValue}
+        </button>
       ))}
     </div>
   );

@@ -118,7 +118,18 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
       {config.customLegend ? (
         <div style={containerStyle}>
-          <config.customLegend {...{ items, pointerValue, ...itemProps }} />
+          <config.customLegend
+            pointerValue={pointerValue}
+            items={items.map(({ seriesIdentifiers, childId, path, ...customProps }) => ({
+              ...customProps,
+              seriesIdentifiers,
+              path,
+              extraValue: itemProps.extraValues.get(seriesIdentifiers[0].key)?.get(childId || ''),
+              onItemOutAction: itemProps.mouseOutAction,
+              onItemOverActon: () => itemProps.mouseOverAction(path),
+              onItemClickAction: (negate: boolean) => itemProps.toggleDeselectSeriesAction(seriesIdentifiers, negate),
+            }))}
+          />
         </div>
       ) : (
         <div style={containerStyle} className="echLegendListContainer">
