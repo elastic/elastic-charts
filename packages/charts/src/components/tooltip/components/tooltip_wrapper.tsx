@@ -23,6 +23,7 @@ type TooltipWrapperProps<
 > = PropsWithChildren<
   {
     className?: string;
+    isCustom?: boolean;
   } & Pick<
     TooltipSpec<D, SI>,
     'actions' | 'actionPrompt' | 'pinningPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'
@@ -39,6 +40,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   selectionPrompt,
   actionsLoading,
   noActionsLoaded,
+  isCustom,
 }: TooltipWrapperProps<D, SI>) => {
   const { dir, pinned, canPinTooltip, selected, theme, actionable } = useTooltipContext<D, SI>();
 
@@ -65,7 +67,10 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
 
   return (
     <div
-      className={classNames('echTooltip', className, { 'echTooltip--pinned': pinned })}
+      className={classNames('echTooltip', className, {
+        'echTooltip--pinned': pinned,
+        'echTooltip--default': !isCustom,
+      })}
       dir={dir}
       ref={tooltipRef}
       style={{ minWidth }}

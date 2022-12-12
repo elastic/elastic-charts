@@ -74,6 +74,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
           selectionPrompt={selectionPrompt}
           actionsLoading={actionsLoading}
           noActionsLoaded={noActionsLoaded}
+          isCustom={true}
         >
           <CustomTooltip
             {...info}
