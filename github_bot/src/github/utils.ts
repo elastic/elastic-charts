@@ -204,7 +204,7 @@ export async function updateAllChecks(
 ): Promise<void> {
   const headSha = ctx.name === 'pull_request' ? ctx.payload.pull_request.head.sha : sha;
   if (!headSha) throw new Error('No sha provided to set check run');
-  const { main, jobs } = getBuildConfig(ctx.name === 'push' && ctx.payload.ref === 'refs/heads/master');
+  const { main, jobs } = getBuildConfig(ctx.name === 'push' && ctx.payload.ref === 'refs/heads/main');
   const updatedCheckIds = new Set<string>();
 
   if (!createNew) {
