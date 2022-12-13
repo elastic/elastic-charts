@@ -1,3 +1,10 @@
+## [51.1.1](https://github.com/elastic/elastic-charts/compare/v51.1.0...v51.1.1) (2022-12-01)
+
+
+### Bug Fixes
+
+* **tooltip:** check if scroll event target is null ([#1886](https://github.com/elastic/elastic-charts/issues/1886)) ([84a45be](https://github.com/elastic/elastic-charts/commit/84a45be6fc8844b3e4b8379f88881cab08dd001e))
+
 # [51.1.0](https://github.com/elastic/elastic-charts/compare/v51.0.0...v51.1.0) (2022-11-18)
 
 
