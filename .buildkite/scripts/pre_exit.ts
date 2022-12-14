@@ -20,7 +20,6 @@ void (async function () {
 
     if (jobStatus) {
       if (jobStatus.state === 'CANCELING') {
-        console.log('jobStatus', jobStatus);
         const user = getCancelledBy(jobStatus.events ?? []);
         await updateCheckStatus(
           {
@@ -34,10 +33,7 @@ void (async function () {
       } else {
         const isFailedJob = (await getJobMetadata('failed')) === 'true';
 
-        console.log('isFailedJob', isFailedJob);
-
         if (isFailedJob || !(await codeCheckIsCompleted())) {
-          console.log('jobStatus', jobStatus);
           await updateCheckStatus(
             {
               status: 'completed',

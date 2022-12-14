@@ -37,7 +37,7 @@ export interface BuildkiteTriggerBuildOptions<
 
   /**
    * Branch the commit belongs to. This allows you to take advantage of your pipeline and step-level branch filtering rules.
-   * @example "master"
+   * @example "main"
    */
   branch: string;
 
@@ -82,7 +82,7 @@ export interface BuildkiteTriggerBuildOptions<
 
   /**
    * For a pull request build, the base branch of the pull request.
-   * @example "master"
+   * @example "main"
    */
   pull_request_base_branch?: string;
 

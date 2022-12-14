@@ -3,7 +3,7 @@
   "extends": ["config:base", "schedule:weekends", ":disableDependencyDashboard"],
   "ignorePaths": ["./.github/**"],
   "enabledManagers": ["npm"],
-  "baseBranches": ["master"],
+  "baseBranches": ["main"],
   "separateMajorMinor": false,
   "rangeStrategy": "bump",
   "assignAutomerge": true,

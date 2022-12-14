@@ -33,6 +33,11 @@ export type CustomCommandStep = Omit<CommandStep, 'agents'> & {
    * Only applies to pull requests
    */
   skip?: CommandStep['skip'];
+  /**
+   * Ignores forced runs on non-pr branch runs, see below.
+   * TODO: fix this to be accounted for in main logic
+   */
+  ignoreForced?: boolean;
   agents?: {
     queue: AgentQueue;
   };
@@ -41,6 +46,11 @@ export type CustomCommandStep = Omit<CommandStep, 'agents'> & {
 export type CustomGroupStep = Omit<GroupStep, 'steps'> & {
   /** Whole group skip status */
   skip: boolean | string;
+  /**
+   * Ignores forced runs on non-pr branch runs, see below.
+   * TODO: fix this to be accounted for in main logic
+   */
+  ignoreForced?: boolean;
   steps: CustomCommandStep[];
 };
 
@@ -62,11 +72,12 @@ export const createStep =
   <S extends Step>(getStep: (ctx: ChangeContext) => S) =>
   (overrides?: Partial<S>) =>
   (ctx: ChangeContext) => {
-    const { skip, ...step } = getStep(ctx);
+    const { skip, ignoreForced = false, ...step } = getStep(ctx);
+    const forceRunStep = !ignoreForced && !bkEnv.isPullRequest;
+
     return {
       ...step,
       ...overrides,
-      // Never skip steps on pushes to base branches
-      skip: bkEnv.isPullRequest ? skip ?? commandStepDefaults.skip ?? false : false,
+      skip: forceRunStep ? false : skip ?? commandStepDefaults.skip ?? false,
     };
   };

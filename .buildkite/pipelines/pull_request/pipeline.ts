@@ -93,13 +93,8 @@ void (async () => {
     const skipDeployStep = (steps.find(({ key }) => key === 'deploy_fb') as CustomCommandStep)?.skip ?? false;
     await setMetadata(MetaDataKeys.skipDeployment, skipDeployStep ? 'true' : 'false');
     if (!skipDeployStep) {
-      console.log('DEPLOYYING');
-
       await createDeployment();
       await createDeploymentStatus({ state: 'queued' });
-    } else {
-      console.log('skipDeployStep', skipDeployStep);
-      console.log(steps);
     }
 
     pipeline.steps = steps;

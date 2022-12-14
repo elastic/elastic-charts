@@ -1,6 +1,6 @@
 # Deploying
 
-Current deployment is [manual](https://cloud.google.com/build/docs/running-builds/start-build-command-line-api), though if necessary we can build this into a [trigger](https://cloud.google.com/build/docs/automating-builds/create-manage-triggers) via pushes to `master`. As of now this is not essential and could not be tested in a PR before merging and deploying.
+Current deployment is [manual](https://cloud.google.com/build/docs/running-builds/start-build-command-line-api), though if necessary we can build this into a [trigger](https://cloud.google.com/build/docs/automating-builds/create-manage-triggers) via pushes to `main`. As of now this is not essential and could not be tested in a PR before merging and deploying.
 
 ## Setup to deploy
 
