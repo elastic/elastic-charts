@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ComponentType, ReactNode } from 'react';
+import { ComponentType, CSSProperties, ReactNode } from 'react';
 
 import { ChartType } from '../chart_types';
 import { BaseDatum } from '../chart_types/specs';
@@ -237,6 +237,11 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    * Max number of visible tooltip items before scrolling. Does not apply to custom tooltips
    */
   maxVisibleTooltipItems: number;
+
+  /**
+   * Permitted styles to be applied to tooltip wrapper component
+   */
+  style: Pick<CSSProperties, 'border'>;
 }
 
 /**
@@ -277,6 +282,7 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     noActionsLoaded: 'No actions available',
     maxTooltipItems: 5,
     maxVisibleTooltipItems: 5,
+    style: {},
   },
 );
 

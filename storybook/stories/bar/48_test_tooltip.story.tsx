@@ -45,6 +45,9 @@ export const Example = () => {
     boundary: getBoundaryKnob(),
     customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
     offset: number('Tooltip offset', 10, { min: 0, max: 20, range: true, step: 1 }),
+    style: {
+      border: 'none',
+    },
   };
   const showAxes = boolean('Show axes', false);
   const showLegend = boolean('Show Legend', false);

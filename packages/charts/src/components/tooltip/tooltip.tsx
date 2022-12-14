@@ -87,6 +87,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     header,
     footer,
     actions,
+    style: tooltipStyle,
     headerFormatter,
     actionPrompt,
     pinningPrompt,
@@ -250,6 +251,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           visible={visible}
           header={header}
           footer={footer}
+          style={tooltipStyle}
           placement={computedPlacement}
           toggleSelected={toggleSelectedTooltipItem}
           setSelection={setSelectedTooltipItems}

@@ -25,7 +25,7 @@ type TooltipWrapperProps<
     className?: string;
   } & Pick<
     TooltipSpec<D, SI>,
-    'actions' | 'actionPrompt' | 'pinningPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'
+    'actions' | 'actionPrompt' | 'pinningPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded' | 'style'
   >
 >;
 
@@ -34,6 +34,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
   children,
   className,
   actions,
+  style,
   actionPrompt,
   pinningPrompt,
   selectionPrompt,
@@ -68,7 +69,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
       className={classNames('echTooltip', className, { 'echTooltip--pinned': pinned })}
       dir={dir}
       ref={tooltipRef}
-      style={{ minWidth }}
+      style={{ ...style, minWidth }}
       onClick={(e) => e.stopPropagation()} // block propagation of tooltip click
       onKeyPress={(e) => e.stopPropagation()} // block propagation of tooltip click
     >

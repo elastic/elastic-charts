@@ -24,7 +24,7 @@ import { TooltipTableColumn } from './types';
 interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends Pick<
       TooltipSpec<D, SI>,
-      'actions' | 'actionPrompt' | 'pinningPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded'
+      'actions' | 'actionPrompt' | 'pinningPrompt' | 'selectionPrompt' | 'actionsLoading' | 'noActionsLoaded' | 'style'
     >,
     Pick<TooltipSpec<D, SI>, 'headerFormatter' | 'header' | 'footer' | 'actionPrompt' | 'selectionPrompt'> {
   visible: boolean;
@@ -48,6 +48,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   footer,
   placement,
   actions = [],
+  style,
   toggleSelected,
   setSelection,
   actionPrompt,
@@ -69,6 +70,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
       <div className="echTooltip__outerWrapper" style={wrapperStyles}>
         <TooltipWrapper
           actions={actions}
+          style={style}
           actionPrompt={actionPrompt}
           pinningPrompt={pinningPrompt}
           selectionPrompt={selectionPrompt}
@@ -94,6 +96,7 @@ export const TooltipBody = <D extends BaseDatum = Datum, SI extends SeriesIdenti
     <div className="echTooltip__outerWrapper" style={wrapperStyles}>
       <TooltipWrapper
         actions={actions}
+        style={style}
         actionPrompt={actionPrompt}
         pinningPrompt={pinningPrompt}
         selectionPrompt={selectionPrompt}

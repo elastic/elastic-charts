@@ -32,6 +32,7 @@ export const AnnotationTooltip = ({ state, chartRef, chartId, onScroll, zIndex }
       <TooltipWrapper
         // actions not used on annotations yet
         actions={[]}
+        style={{}}
         actionPrompt=""
         pinningPrompt=""
         selectionPrompt=""

@@ -62,7 +62,7 @@ export const Example = () => (
         },
       }}
     />
-    <Tooltip customTooltip={() => null} />
+    <Tooltip customTooltip={() => null} style={{ border: 'none' }} />
     <Axis
       id="left"
       position={Position.Left}
