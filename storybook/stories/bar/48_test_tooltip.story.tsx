@@ -37,17 +37,21 @@ const CustomTooltip = () => (
 
 export const Example = () => {
   const rotation = getChartRotationKnob();
+  const customTooltip = boolean('Custom Tooltip', false) ? CustomTooltip : undefined;
+
   const tooltipOptions: TooltipProps = {
     stickTo: getStickToKnob('stickTo'),
     placement: getPlacementKnob('Tooltip placement'),
     fallbackPlacements: getFallbackPlacementsKnob(),
     type: getTooltipTypeKnob(),
     boundary: getBoundaryKnob(),
-    customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
+    customTooltip,
     offset: number('Tooltip offset', 10, { min: 0, max: 20, range: true, step: 1 }),
-    style: {
-      border: 'none',
-    },
+    style: customTooltip
+      ? {
+          border: 'none',
+        }
+      : {},
   };
   const showAxes = boolean('Show axes', false);
   const showLegend = boolean('Show Legend', false);
