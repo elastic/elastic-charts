@@ -1,10 +1,10 @@
 <h1 align="center">
-  <img src="https://raw.githubusercontent.com/elastic/elastic-charts/master/public/logo.png" alt="elastic-charts logo" width="100" /><br />
+  <img src="https://raw.githubusercontent.com/elastic/elastic-charts/main/public/logo.png" alt="elastic-charts logo" width="100" /><br />
   Elastic Charts
 </h1>
 <p align="center">
-  <a href="https://buildkite.com/elastic/datavis-ci/builds?branch=master">
-    <img alt="Build Status - master branch" src="https://badge.buildkite.com/1b2f6369ef27e5b23a7fccf2545d7d6e31bff1957c7c941d31.svg?branch=master">
+  <a href="https://buildkite.com/elastic/datavis-ci/builds?branch=main">
+    <img alt="Build Status - main branch" src="https://badge.buildkite.com/1b2f6369ef27e5b23a7fccf2545d7d6e31bff1957c7c941d31.svg?branch=main">
   </a>
   <a href="https://www.npmjs.com/@elastic/charts"><img alt="NPM version" src="https://img.shields.io/npm/v/@elastic/charts.svg"></a>
   <a href="http://commitizen.github.io/cz-cli/"><img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"></a>

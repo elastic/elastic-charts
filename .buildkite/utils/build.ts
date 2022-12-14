@@ -34,7 +34,7 @@ export const getBuildConfig = (): BuildConfig => {
       { name: 'Eslint', id: 'eslint' },
       { name: 'Prettier', id: 'prettier' },
       { name: 'Deploy - firebase', id: 'deploy_fb' },
-      ...(bkEnv.isMaster ? [{ name: 'Deploy - GitHub Pages', id: 'deploy_ghp' }] : []),
+      ...(bkEnv.isMainBranch ? [{ name: 'Deploy - GitHub Pages', id: 'deploy_ghp' }] : []),
       { name: 'Jest', id: 'jest' },
       { name: 'Playwright e2e', id: 'playwright' },
     ],

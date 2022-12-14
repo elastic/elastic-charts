@@ -39,10 +39,6 @@ async function setGroupStatus() {
   }
 
   const e2eJobs = await getBuildJobs('playwright__parallel-step');
-
-  console.log('e2eJobs');
-  console.log(e2eJobs);
-
   const jobStateMap = new Map<string, number>();
   jobStateMap.set('Success', 0);
   jobStateMap.set('Failed', 0);

@@ -9,18 +9,19 @@
 import { createStep, CustomCommandStep, commandStepDefaults, bkEnv } from '../utils';
 
 export const ghpDeployStep = createStep<CustomCommandStep>(() => {
-  const isMaster = bkEnv.isMaster;
+  const isMainBranch = bkEnv.isMainBranch;
 
   return {
     ...commandStepDefaults,
     label: ':github: Deploy - GitHub Pages',
     key: 'deploy_ghp',
-    skip: isMaster ? false : 'Not target branch',
+    ignoreForced: true,
+    skip: isMainBranch ? false : 'Not target branch',
     depends_on: ['build_storybook'],
     commands: ['npx ts-node .buildkite/scripts/steps/ghp_deploy.ts'],
     env: {
-      // ignore check run reporting when not master
-      ECH_CHECK_ID: isMaster ? 'deploy_ghp' : undefined,
+      // ignore check run reporting when not main
+      ECH_CHECK_ID: isMainBranch ? 'deploy_ghp' : undefined,
     },
   };
 });

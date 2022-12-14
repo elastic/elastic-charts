@@ -7,7 +7,7 @@ This GitHub app is a containerized node express application deployed on [GCP Clo
 ### Install dependencies
 
 ```
-cd ./github_bot/CONTRIBUTING.md
+cd ./github_bot
 yarn install
 ```
 

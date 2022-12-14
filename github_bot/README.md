@@ -12,7 +12,7 @@ The code is split into two main sections as listed below, excluding shared `util
 
 API route: `/github`
 
-This sections uses [Probot](https://github.com/probot/probot) to easily handle webhooks for any github event. These events are organized into their own directory grouping under [`github_bot/src/github/events/`](https://github.com/elastic/elastic-charts/tree/master/github_bot/src/github/events).
+This sections uses [Probot](https://github.com/probot/probot) to easily handle webhooks for any github event. These events are organized into their own directory grouping under [`github_bot/src/github/events/`](https://github.com/elastic/elastic-charts/tree/main/github_bot/src/github/events).
 
 This currently handles:
 

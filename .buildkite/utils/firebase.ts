@@ -44,7 +44,7 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
 
   startGroup('Deploying to firebase');
 
-  const channelId = bkEnv.isPullRequest ? `pr-${bkEnv.pullRequestNumber!}` : bkEnv.isMaster ? null : bkEnv.branch;
+  const channelId = bkEnv.isPullRequest ? `pr-${bkEnv.pullRequestNumber!}` : bkEnv.isMainBranch ? null : bkEnv.branch;
 
   const gacFile = createGACFile();
   const command = channelId

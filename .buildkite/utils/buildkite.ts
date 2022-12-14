@@ -59,7 +59,7 @@ export const bkEnv = (() => {
     checkId,
     username,
     isPullRequest,
-    isMaster: branch === 'master',
+    isMainBranch: branch === 'main',
     pullRequestNumber,
     buildUrl: env.buildUrl,
     canModifyPR: process.env.GITHUB_PR_MAINTAINER_CAN_MODIFY === 'true',
@@ -84,9 +84,6 @@ export const downloadArtifacts = async (query: string, step?: string, destinatio
   const stepArg = step ? ` --step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
   const buildId = build ?? bkEnv.buildId;
-  console.log('downloadArtifacts command');
-  console.log(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
-
   await exec(`buildkite-agent artifact download ${q} ${dest}${stepArg} --build ${buildId}`);
 };
 
@@ -96,9 +93,6 @@ export const searchArtifacts = async (query: string, step?: string, destination 
   const stepArg = step ? ` --step ${step}` : '';
   const q = query.includes('*') ? `"${query}"` : query;
   const buildId = build ?? bkEnv.buildId;
-  console.log('downloadArtifacts command');
-  console.log(`buildkite-agent artifact search ${q} ${dest}${stepArg} --build ${buildId}`);
-
   await exec(`buildkite-agent artifact search ${q} ${dest}${stepArg} --build ${buildId}`);
 };
 

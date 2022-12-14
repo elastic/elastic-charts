@@ -17,7 +17,7 @@ void (async () => {
   await exec('yarn build', {
     cwd: 'storybook',
     env: {
-      NODE_ENV: bkEnv.isMaster ? 'production' : 'development',
+      NODE_ENV: bkEnv.isMainBranch ? 'production' : 'development',
     },
   });
 

@@ -21,7 +21,7 @@ interface BuildConfig {
  *
  * TODO update this to be have a single source of truth btw here and .buildkite/utils/build.ts
  */
-export const getBuildConfig = (isMaster: boolean): BuildConfig => ({
+export const getBuildConfig = (isMainBranch: boolean): BuildConfig => ({
   main: { name: '@elastic/datavis CI', id: 'main' },
   jobs: [
     { name: 'Types', id: 'types' },
@@ -31,7 +31,7 @@ export const getBuildConfig = (isMaster: boolean): BuildConfig => ({
     { name: 'Eslint', id: 'eslint' },
     { name: 'Prettier', id: 'prettier' },
     { name: 'Deploy - firebase', id: 'deploy_fb' },
-    ...(isMaster ? [{ name: 'Deploy - GitHub Pages', id: 'deploy_ghp' }] : []),
+    ...(isMainBranch ? [{ name: 'Deploy - GitHub Pages', id: 'deploy_ghp' }] : []),
     { name: 'Jest', id: 'jest' },
     { name: 'Playwright e2e', id: 'playwright' },
   ],
