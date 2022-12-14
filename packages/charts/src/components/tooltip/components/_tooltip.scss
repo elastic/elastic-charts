@@ -26,9 +26,8 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
   overflow: hidden;
   cursor: default;
   transition: box-shadow 400ms, opacity $euiAnimSpeedNormal;
-  &--default {
-    border: 1px solid $euiColorEmptyShade;
-  }
+  border: 1px solid $euiColorEmptyShade;
+
   &__outerWrapper {
     display: flex;
   }
