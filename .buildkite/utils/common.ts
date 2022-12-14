@@ -24,8 +24,6 @@ export const compress = (opts: targz.options) =>
   new Promise<void>((resolve, reject) => {
     console.log(`Compressing files in "${opts.src}"`);
     const destPath = path.dirname(opts.dest);
-    console.log(destPath);
-
     fs.mkdirSync(destPath, { recursive: true });
     targz.compress(opts, function (err) {
       if (err) {

@@ -155,6 +155,7 @@ export const codeCheckIsCompleted = async (id = bkEnv.checkId, userRef?: string)
 let cacheFilled = false;
 const checkRunCache = new Map<string, components['schemas']['check-run']>();
 const fillCheckRunCache = async () =>
+  // eslint-disable-next-line @typescript-eslint/return-await
   await octokit.checks
     .listForRef({
       ...defaultGHOptions,
@@ -195,8 +196,6 @@ export async function syncCheckRun({
 }: components['schemas']['check-run']) {
   const syncCommit = await getMetadata('syncCommit');
   if (syncCommit) {
-    console.log('syncCheckRun');
-
     const output = title && summary ? { title, summary } : undefined;
     // TODO find a better way to do this for commits by datavis bot
     // Syncs checks to newer skipped commit
@@ -503,7 +502,6 @@ export const comments = {
 type Comments = typeof comments;
 
 export function getComment<T extends keyof Comments>(key: T, ...args: Parameters<Comments[T]>): string {
-  console.log(key, args);
   // @ts-ignore - conditional args
   const comment = comments[key](...args);
   return generateMsg(key, comment);

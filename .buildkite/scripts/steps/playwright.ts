@@ -58,7 +58,6 @@ async function compressNewScreenshots() {
       .filter((f) => f.endsWith('.png'))
       .forEach((file) => {
         const dest = file.replace('e2e/screenshots', uploadDir);
-        console.log(dest);
         fs.mkdirSync(path.dirname(dest), { recursive: true });
 
         fs.copyFileSync(file, dest);
