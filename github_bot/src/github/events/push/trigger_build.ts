@@ -10,7 +10,7 @@ import { Probot } from 'probot';
 
 import { getConfig } from '../../../config';
 import { buildkiteClient } from '../../../utils/buildkite';
-import { isBaseRepo, testPatternString, updateAllChecks } from '../../utils';
+import { checkCommitFn, isBaseRepo, testPatternString, updateAllChecks } from '../../utils';
 
 /**
  * build trigger for pushes to select base branches not pull requests
@@ -20,6 +20,21 @@ export function setupBuildTrigger(app: Probot) {
     const [branch] = ctx.payload.ref.split('/').reverse();
 
     if (!isBaseRepo(ctx.payload.repository) || !getConfig().github.env.branch.base.some(testPatternString(branch))) {
+      return;
+    }
+
+    if (ctx.payload.head_commit?.message && checkCommitFn(ctx.payload.head_commit.message)('skip')) {
+      await updateAllChecks(
+        ctx,
+        {
+          status: 'completed',
+          conclusion: 'skipped',
+        },
+        undefined,
+        undefined,
+        ctx.payload.after,
+      );
+
       return;
     }
 
