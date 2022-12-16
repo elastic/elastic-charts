@@ -70,6 +70,7 @@ module.exports = {
     '@typescript-eslint/unbound-method': 1,
     '@typescript-eslint/no-redeclare': 0, // we use to declare enum type and object with the same name
     '@typescript-eslint/no-shadow': 0, // we use shadow mostly within the canvas renderer function when we need a new context
+    '@typescript-eslint/quotes': 0,
     '@typescript-eslint/no-unsafe-argument': 1,
     'unicorn/consistent-function-scoping': 1,
     'unicorn/explicit-length-check': 1,

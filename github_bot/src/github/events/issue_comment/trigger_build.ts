@@ -37,7 +37,7 @@ export function setupBuildTrigger(app: Probot) {
       });
     }
 
-    if (!(await isValidUser(ctx))) {
+    if (!labelCheck('ciApproved') && !(await isValidUser(ctx))) {
       await createIssueReaction(ctx, '-1');
       return;
     }
