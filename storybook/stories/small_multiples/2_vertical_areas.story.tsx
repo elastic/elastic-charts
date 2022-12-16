@@ -31,67 +31,98 @@ import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const numOfDays = 60;
-const data = dg.generateGroupedSeries(numOfDays, 6, 'metric ').map((d) => {
+const data = dg.generateGroupedSeries(numOfDays, 6, 'CPU ').map((d) => {
   return {
     ...d,
     x: DateTime.fromISO('2020-01-01T00:00:00Z').plus({ days: d.x }).toMillis(),
+    y: d.y * 10,
   };
 });
 const dataForLogScale = data.map((d) => ({ ...d, y: d.y - 3 }));
 
 export const Example = () => {
-  const showLegend = boolean('Show Legend', true);
+  const showLegend = boolean('Show Legend', false);
   const onElementClick = action('onElementClick');
   const tickTimeFormatter = timeFormatter(niceTimeFormatByDay(numOfDays));
   const useLogScale = boolean('Use log scale (different data)', false);
 
   return (
-    <Chart>
-      <Settings
-        baseTheme={useBaseTheme()}
-        onElementClick={onElementClick}
-        showLegend={showLegend}
-        onBrushEnd={(d) => {
-          if (d.x) {
-            action('brushEventX')(tickTimeFormatter(d.x[0] ?? 0), tickTimeFormatter(d.x[1] ?? 0), d.y);
-          }
-        }}
-        brushAxis={BrushAxis.X}
-      />
-      <Axis
-        id="time"
-        title="Timestamp"
-        position={Position.Bottom}
-        gridLine={{ visible: false }}
-        tickFormat={tickTimeFormatter}
-      />
-      <Axis
-        id="y"
-        title="Metric"
-        position={Position.Left}
-        gridLine={{ visible: false }}
-        tickFormat={(d) => d.toFixed(2)}
-      />
+    <>
+      <Chart size={['100%', 400]}>
+        <Settings
+          baseTheme={useBaseTheme()}
+          onElementClick={onElementClick}
+          showLegend={showLegend}
+          onBrushEnd={(d) => {
+            if (d.x) {
+              action('brushEventX')(tickTimeFormatter(d.x[0] ?? 0), tickTimeFormatter(d.x[1] ?? 0), d.y);
+            }
+          }}
+          brushAxis={BrushAxis.X}
+        />
+        <Axis
+          id="time"
+          position={Position.Bottom}
+          gridLine={{ visible: true }}
+          tickFormat={tickTimeFormatter}
+          timeAxisLayerCount={2}
+          style={{
+            tickLine: { size: 0.0001, padding: 4 },
+            tickLabel: { alignment: { horizontal: Position.Left, vertical: Position.Bottom }, padding: 0 },
+          }}
+        />
+        <Axis
+          id="axis"
+          position={Position.Right}
+          gridLine={{ visible: true }}
+          tickFormat={(d) => d.toFixed(0)}
+          ticks={2}
+          style={{
+            tickLine: { padding: 2, size: 3 },
+            axisTitle: { visible: false },
+            axisPanelTitle: { visible: false },
+          }}
+        />
+        <Axis
+          id="small multiple categories"
+          position={Position.Left}
+          gridLine={{ visible: false }}
+          tickFormat={(d) => d.toFixed(0)}
+          ticks={2}
+          style={{
+            axisLine: { visible: false },
+            tickLabel: {
+              visible: false,
+            },
+            tickLine: {
+              visible: false,
+            },
+          }}
+        />
 
-      <GroupBy
-        id="v_split"
-        by={(spec, { g }) => {
-          return g;
-        }}
-        sort="alphaDesc"
-      />
-      <SmallMultiples splitVertically="v_split" style={{ verticalPanelPadding: { outer: 0, inner: 0.3 } }} />
-      <AreaSeries
-        id="line"
-        xScaleType={ScaleType.Time}
-        yScaleType={useLogScale ? ScaleType.Log : ScaleType.Linear}
-        timeZone="local"
-        xAccessor="x"
-        yAccessors={['y']}
-        color={LIGHT_THEME.colors.vizColors[1]}
-        data={useLogScale ? dataForLogScale : data}
-      />
-    </Chart>
+        <GroupBy
+          id="v_split"
+          by={(spec, { g }) => {
+            return g;
+          }}
+          sort="alphaDesc"
+        />
+        <SmallMultiples splitVertically="v_split" style={{ verticalPanelPadding: { outer: 0, inner: 0.3 } }} />
+        <AreaSeries
+          id="CPU Temp"
+          name={(d, isTooltip) => (isTooltip ? `${d.smVerticalAccessorValue}` : 'CPU temp in ℃')}
+          xScaleType={ScaleType.Time}
+          yScaleType={useLogScale ? ScaleType.Log : ScaleType.Linear}
+          timeZone="local"
+          xAccessor="x"
+          yAccessors={['y']}
+          color={LIGHT_THEME.colors.vizColors[1]}
+          data={useLogScale ? dataForLogScale : data}
+          yNice
+          tickFormat={(d) => `${d.toFixed(2)}℃`}
+        />
+      </Chart>
+    </>
   );
 };
 Example.parameters = {
