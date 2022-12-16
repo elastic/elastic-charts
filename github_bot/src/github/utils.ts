@@ -234,8 +234,11 @@ export async function updateAllChecks(
           ...options,
         });
       }
-      // skip all already completed steps unless createNew explicitly set to true
-      updatedCheckIds.add(external_id!);
+
+      if (external_id) {
+        // skip all already completed steps unless createNew explicitly set to true
+        updatedCheckIds.add(external_id);
+      }
     }
   }
 
