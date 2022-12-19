@@ -28,13 +28,12 @@ import { getLegendConfigSelector } from '../../state/selectors/get_legend_config
 import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
-import { getPointerValueSelector } from '../../state/selectors/get_pointer_value';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
-import { PointerValue } from '../../state/types';
 import { hasMostlyRTLItems, HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
 import { Dimensions, Size } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { Theme } from '../../utils/themes/theme';
+import { CustomLegend } from './custom_legend';
 import { LegendItemProps, renderLegendItem } from './legend_item';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
@@ -49,7 +48,6 @@ interface LegendStateProps {
   config: LegendSpec;
   items: LegendItem[];
   extraValues: Map<string, LegendItemExtraValues>;
-  pointerValue?: PointerValue;
 }
 
 interface LegendDispatchProps {
@@ -70,7 +68,6 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     chartTheme: { chartMargins, legend },
     chartDimensions,
     containerDimensions,
-    pointerValue,
     config,
   } = props;
 
@@ -118,8 +115,8 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
       {config.customLegend ? (
         <div style={containerStyle}>
-          <config.customLegend
-            pointerValue={pointerValue}
+          <CustomLegend
+            component={config.customLegend}
             items={items.map(({ seriesIdentifiers, childId, path, ...customProps }) => ({
               ...customProps,
               seriesIdentifiers,
@@ -185,7 +182,6 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
     size: getLegendSizeSelector(state),
     items: getLegendItemsSelector(state),
     extraValues: getLegendExtraValuesSelector(state),
-    pointerValue: getPointerValueSelector(state),
     config,
   };
 };

@@ -20,7 +20,7 @@ exports[`Chart should render the legend name test 1`] = `
         </Resizer>
       </Connect(Resizer)>
       <Connect(LegendComponent)>
-        <LegendComponent debug={true} isBrushing={false} chartDimensions={{...}} containerDimensions={{...}} chartTheme={{...}} size={{...}} items={{...}} extraValues={{...}} pointerValue={[undefined]} config={{...}} onToggleDeselectSeriesAction={[Function (anonymous)]} onItemOutAction={[Function (anonymous)]} onItemOverAction={[Function (anonymous)]} clearTemporaryColors={[Function (anonymous)]} setTemporaryColor={[Function (anonymous)]} setPersistedColor={[Function (anonymous)]}>
+        <LegendComponent debug={true} isBrushing={false} chartDimensions={{...}} containerDimensions={{...}} chartTheme={{...}} size={{...}} items={{...}} extraValues={{...}} config={{...}} onToggleDeselectSeriesAction={[Function (anonymous)]} onItemOutAction={[Function (anonymous)]} onItemOverAction={[Function (anonymous)]} clearTemporaryColors={[Function (anonymous)]} setTemporaryColor={[Function (anonymous)]} setPersistedColor={[Function (anonymous)]}>
           <div className="echLegend echLegend--debug echLegend--vertical echLegend--right echLegend--top" style={{...}} dir="ltr">
             <div style={{...}} className="echLegendListContainer">
               <ul style={{...}} className="echLegendList">
