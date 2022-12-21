@@ -259,13 +259,13 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     snap: true,
     showNullValues: false,
     actions: [],
-    actionPrompt: 'Right click to show actions',
-    pinningPrompt: 'Right click to pin tooltip',
+    actionPrompt: 'Right-click to show actions',
+    pinningPrompt: 'Right-click to pin tooltip',
     selectionPrompt: 'Please select a series',
     actionsLoading: 'Loading Actions...',
     noActionsLoaded: 'No actions available',
-    maxTooltipItems: 5,
-    maxVisibleTooltipItems: 5,
+    maxTooltipItems: 10,
+    maxVisibleTooltipItems: 10,
   },
 );
 

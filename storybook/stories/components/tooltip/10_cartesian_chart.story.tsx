@@ -85,6 +85,7 @@ export const Example = () => {
       <Tooltip
         type={getTooltipTypeKnob()}
         maxVisibleTooltipItems={4}
+        maxTooltipItems={4}
         actions={disableActions ? [] : asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}
       />
       <Axis
@@ -113,6 +114,7 @@ export const Example = () => {
         const data = d.timeseries.rows.slice(0, reduceData ? 20 : undefined);
         return chartType === 'bar' ? (
           <HistogramBarSeries
+            key={d.name}
             id={d.name}
             xScaleType={ScaleType.Time}
             yScaleType={ScaleType.Linear}
@@ -123,6 +125,7 @@ export const Example = () => {
           />
         ) : (
           <LineSeries
+            key={d.name}
             id={d.name}
             xScaleType={ScaleType.Time}
             yScaleType={ScaleType.Linear}

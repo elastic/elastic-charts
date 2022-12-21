@@ -105,6 +105,7 @@ export const Example = () => {
       <Settings theme={theme} baseTheme={useBaseTheme()} />
       <Tooltip
         maxVisibleTooltipItems={4}
+        maxTooltipItems={4}
         actions={() => {
           return [
             {

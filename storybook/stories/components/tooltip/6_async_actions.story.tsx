@@ -24,6 +24,7 @@ export const Example = () => {
       tooltip={{
         actionsLoading: "I'm loading some actions...",
         maxVisibleTooltipItems: 3,
+        maxTooltipItems: 3,
         actions: (selected) => {
           return selected.length > 0
             ? new Promise((resolve) => {
