@@ -12,15 +12,17 @@ import { CustomXDomain, GroupByAccessor, Spec } from '.';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
-import { LineAnnotationDatum, RectAnnotationDatum } from '../chart_types/specs';
+import { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import { CategoryLabel } from '../common/category';
 import { Color } from '../common/colors';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
 import { LegendPath } from '../state/actions/legend';
 import { SFProps, useSpecFactory } from '../state/spec_factory';
+import { PointerValue } from '../state/types';
 import {
   HorizontalAlignment,
   LayoutDirection,
@@ -34,7 +36,7 @@ import { Dimensions } from '../utils/dimensions';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
-import { PartialTheme, Theme } from '../utils/themes/theme';
+import { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
 import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
 import { TooltipSettings } from './tooltip';
 
@@ -366,6 +368,33 @@ export type LegendPositionConfig = {
 };
 
 /**
+ * The props for {@link CustomLegend}
+ * @public
+ */
+export interface CustomLegendProps {
+  pointerValue?: PointerValue;
+  items: {
+    seriesIdentifiers: SeriesIdentifier[];
+    path: LegendPath;
+    color: Color;
+    label: CategoryLabel;
+    seriesType?: SeriesType;
+    pointStyle?: PointStyle;
+    extraValue?: PrimitiveValue;
+    isSeriesHidden?: boolean;
+    onItemOverActon: () => void;
+    onItemOutAction: () => void;
+    onItemClickAction: (negate: boolean) => void;
+  }[];
+}
+
+/**
+ * The react component used to render a custom legend
+ * @public
+ */
+export type CustomLegend = ComponentType<CustomLegendProps>;
+
+/**
  * The legend configuration
  * @public
  */
@@ -418,6 +447,10 @@ export interface LegendSpec {
    * A SeriesSortFn to sort the legend values (top-bottom)
    */
   legendSort?: SeriesCompareFn;
+  /**
+   * Override the legend with a custom component.
+   */
+  customLegend?: CustomLegend;
 }
 
 /**

@@ -26,3 +26,4 @@ export { Example as actions } from './11_legend_actions.story';
 export { Example as margins } from './12_legend_margins.story';
 export { Example as singleSeries } from './14_single_series.story';
 export { Example as sortItems } from './15_legend_sort.story';
+export { Example as customLegend } from './16_custom_legend.story';

@@ -442,6 +442,9 @@ export interface BubbleSeriesStyle {
 export type CategoryKey = string;
 
 // @public (undocumented)
+export type CategoryLabel = string;
+
+// @public (undocumented)
 export interface Cell {
     // Warning: (ae-forgotten-export) The symbol "HeatmapCellDatum" needs to be exported by the entry point index.d.ts
     //
@@ -643,6 +646,29 @@ export type CustomAnnotationTooltip = ComponentType<{
     details?: string;
     datum: LineAnnotationDatum | RectAnnotationDatum;
 }> | null;
+
+// @public
+export type CustomLegend = ComponentType<CustomLegendProps>;
+
+// @public
+export interface CustomLegendProps {
+    // (undocumented)
+    items: {
+        seriesIdentifiers: SeriesIdentifier[];
+        path: LegendPath;
+        color: Color;
+        label: CategoryLabel;
+        seriesType?: SeriesType;
+        pointStyle?: PointStyle;
+        extraValue?: PrimitiveValue;
+        isSeriesHidden?: boolean;
+        onItemOverActon: () => void;
+        onItemOutAction: () => void;
+        onItemClickAction: (negate: boolean) => void;
+    }[];
+    // (undocumented)
+    pointerValue?: PointerValue;
+}
 
 // @public
 export type CustomTooltip<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = ComponentType<CustomTooltipProps<D, SI>>;
@@ -1582,6 +1608,7 @@ export type LegendPositionConfig = {
 
 // @public
 export interface LegendSpec {
+    customLegend?: CustomLegend;
     flatLegend?: boolean;
     legendAction?: LegendAction;
     // (undocumented)
@@ -2097,6 +2124,13 @@ export const PointerUpdateTrigger: Readonly<{
 // @public (undocumented)
 export type PointerUpdateTrigger = $Values<typeof PointerUpdateTrigger>;
 
+// @public
+export interface PointerValue<D extends BaseDatum = Datum> {
+    formattedValue: string;
+    value: any;
+    valueAccessor?: Accessor<D>;
+}
+
 // @public (undocumented)
 export const PointShape: Readonly<{
     Circle: "circle";
@@ -2445,7 +2479,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuild
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary", "ariaLabel" | "tooltip" | "theme" | "onBrushEnd" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "xDomain" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onPointerUpdate" | "onRenderChange" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendSort", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "debug" | "legendPosition" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary", "ariaLabel" | "tooltip" | "theme" | "xDomain" | "onBrushEnd" | "flatLegend" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "customLegend" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onPointerUpdate" | "onRenderChange" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendSort", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -3006,18 +3040,15 @@ export const TooltipType: Readonly<{
 export type TooltipType = $Values<typeof TooltipType>;
 
 // @public
-export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
+export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> extends PointerValue<D> {
     color: Color;
     datum?: D;
     formattedMarkValue?: string | null;
-    formattedValue: string;
     isHighlighted: boolean;
     isVisible: boolean;
     label: string;
     markValue?: number | null;
     seriesIdentifier: SI;
-    value: any;
-    valueAccessor?: Accessor<D>;
 }
 
 // @public

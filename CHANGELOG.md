@@ -1,3 +1,17 @@
+# [51.2.0](https://github.com/elastic/elastic-charts/compare/v51.1.1...v51.2.0) (2022-12-19)
+
+
+### Bug Fixes
+
+* **axis:** truncate titles longer then the available space ([#1905](https://github.com/elastic/elastic-charts/issues/1905)) ([3526a69](https://github.com/elastic/elastic-charts/commit/3526a698ae9bce9363ded7251e7301586f2e57c5))
+* **deps:** update dependency @elastic/eui to ^70.4.0 ([#1893](https://github.com/elastic/elastic-charts/issues/1893)) ([6576041](https://github.com/elastic/elastic-charts/commit/65760410124d8fe63b3711b4f94272add98e2cf4))
+* **deps:** update dependency @elastic/eui to v71 ([#1898](https://github.com/elastic/elastic-charts/issues/1898)) ([da596a5](https://github.com/elastic/elastic-charts/commit/da596a516ec07e820eedf184d01ae279facacc0e))
+
+
+### Features
+
+* **legend:** add custom legend component ([#1889](https://github.com/elastic/elastic-charts/issues/1889)) ([2e1648d](https://github.com/elastic/elastic-charts/commit/2e1648d4c610c71acf6f4370205aa06a737d422f))
+
 ## [51.1.1](https://github.com/elastic/elastic-charts/compare/v51.1.0...v51.1.1) (2022-12-01)
 
 
