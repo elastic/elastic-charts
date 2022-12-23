@@ -1,3 +1,15 @@
+# [51.3.0](https://github.com/elastic/elastic-charts/compare/v51.2.0...v51.3.0) (2022-12-23)
+
+
+### Bug Fixes
+
+* **axis:** don't account for label overflow with multi-layer time axis ([#1906](https://github.com/elastic/elastic-charts/issues/1906)) ([5d2ac4b](https://github.com/elastic/elastic-charts/commit/5d2ac4b6591e25278738655fd7f6bfe86dfc7537))
+
+
+### Features
+
+* **tooltip:** animate context menu prompt ([#1887](https://github.com/elastic/elastic-charts/issues/1887)) ([9b7cca7](https://github.com/elastic/elastic-charts/commit/9b7cca78b476547ce08cb90d5b0468e21e3f74d1))
+
 # [51.2.0](https://github.com/elastic/elastic-charts/compare/v51.1.1...v51.2.0) (2022-12-19)
 
 
