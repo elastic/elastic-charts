@@ -82,7 +82,7 @@ function getCellStyles<D extends BaseDatum = Datum, SI extends SeriesIdentifier 
   style,
   type,
 }: TooltipTableColumn<D, SI>): TooltipCellStyle {
-  const textAlign: TooltipCellStyle['textAlign'] = type === 'number' ? 'left' : type === 'text' ? 'right' : undefined;
+  const textAlign: TooltipCellStyle['textAlign'] = type === 'number' ? 'right' : type === 'text' ? 'left' : undefined;
 
   return {
     textAlign,
