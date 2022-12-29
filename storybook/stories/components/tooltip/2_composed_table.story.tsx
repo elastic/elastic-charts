@@ -10,8 +10,6 @@ import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
-  CustomTooltip,
-  TooltipHeader,
   TooltipTable,
   TooltipTableBody,
   TooltipTableHeader,
@@ -19,7 +17,8 @@ import {
   TooltipTableRow,
   TooltipTableCell,
   TooltipTableColorCell,
-  TooltipContainer,
+  TooltipSpec,
+  TooltipCellStyle,
 } from '@elastic/charts';
 
 import { tableSimple } from './data';
@@ -27,45 +26,43 @@ import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
   const pinned = boolean('pinned', false);
+  const showColor = boolean('show color', true);
+  const maxHeight = number('max table height', 120);
+  const style: TooltipCellStyle = { textAlign: 'right' };
 
-  const MyTooltip: CustomTooltip = ({ values, header }) => {
-    const showColor = boolean('show color', true);
-    const maxHeight = number('max table height', 120);
+  const TooltipBody: TooltipSpec['body'] = (items) => {
     return (
-      <TooltipContainer>
-        <TooltipHeader header={header} />
-        <TooltipTable gridTemplateColumns={`repeat(${showColor ? 4 : 3}, auto)`} maxHeight={maxHeight}>
-          <TooltipTableHeader>
-            <TooltipTableRow>
-              {showColor && <TooltipTableColorCell />}
-              <TooltipTableCell>X Value</TooltipTableCell>
-              <TooltipTableCell>Y Value</TooltipTableCell>
-              <TooltipTableCell>Z Value</TooltipTableCell>
+      <TooltipTable gridTemplateColumns={`repeat(${showColor ? 4 : 3}, auto)`} maxHeight={maxHeight}>
+        <TooltipTableHeader>
+          <TooltipTableRow>
+            {showColor && <TooltipTableColorCell />}
+            <TooltipTableCell>X Value</TooltipTableCell>
+            <TooltipTableCell>Y Value</TooltipTableCell>
+            <TooltipTableCell>Z Value</TooltipTableCell>
+          </TooltipTableRow>
+        </TooltipTableHeader>
+        <TooltipTableBody>
+          {items.map(({ datum, seriesIdentifier: { key }, color }) => (
+            <TooltipTableRow key={`${key}-${datum.x}`}>
+              {showColor && <TooltipTableColorCell color={color} />}
+              <TooltipTableCell style={style}>{datum.x}</TooltipTableCell>
+              <TooltipTableCell style={style}>{datum.y}</TooltipTableCell>
+              <TooltipTableCell style={style}>{datum.z}</TooltipTableCell>
             </TooltipTableRow>
-          </TooltipTableHeader>
-          <TooltipTableBody>
-            {values.map(({ datum, seriesIdentifier: { key }, color }) => (
-              <TooltipTableRow key={`${key}-${datum.x}`}>
-                {showColor && <TooltipTableColorCell color={color} />}
-                <TooltipTableCell>{datum.x}</TooltipTableCell>
-                <TooltipTableCell>{datum.y}</TooltipTableCell>
-                <TooltipTableCell>{datum.z}</TooltipTableCell>
-              </TooltipTableRow>
-            ))}
-          </TooltipTableBody>
-          <TooltipTableFooter>
-            <TooltipTableRow>
-              {showColor && <TooltipTableColorCell />}
-              <TooltipTableCell>X Foot</TooltipTableCell>
-              <TooltipTableCell>Y Foot</TooltipTableCell>
-              <TooltipTableCell>Z Foot</TooltipTableCell>
-            </TooltipTableRow>
-          </TooltipTableFooter>
-        </TooltipTable>
-      </TooltipContainer>
+          ))}
+        </TooltipTableBody>
+        <TooltipTableFooter>
+          <TooltipTableRow>
+            {showColor && <TooltipTableColorCell />}
+            <TooltipTableCell style={style}>{items.reduce((s, { datum: { x } }) => s + x, 0)}</TooltipTableCell>
+            <TooltipTableCell style={style}>{items.reduce((s, { datum: { y } }) => s + y, 0)}</TooltipTableCell>
+            <TooltipTableCell style={style}>{items.reduce((s, { datum: { z } }) => s + z, 0)}</TooltipTableCell>
+          </TooltipTableRow>
+        </TooltipTableFooter>
+      </TooltipTable>
     );
   };
-  return <TooltipShowcase info={tableSimple} customTooltip={MyTooltip} pinned={pinned} />;
+  return <TooltipShowcase info={tableSimple} pinned={pinned} tooltip={{ body: TooltipBody }} />;
 };
 
 Example.parameters = {

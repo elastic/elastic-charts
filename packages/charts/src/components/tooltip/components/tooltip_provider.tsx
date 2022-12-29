@@ -42,7 +42,7 @@ const TooltipContext = React.createContext<TooltipContext>({
   theme: LIGHT_THEME.tooltip,
 });
 
-/** @internal */
+/** @public */
 export const useTooltipContext = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>() =>
   useContext<TooltipContext<D, SI>>(TooltipContext as unknown as Context<TooltipContext<D, SI>>);
 

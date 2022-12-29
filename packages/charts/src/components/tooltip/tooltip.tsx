@@ -35,7 +35,14 @@ import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/commo
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
-import { computeTableMaxHeight, TooltipFooter, TooltipHeader, TooltipTable, TooltipWrapper } from './components';
+import {
+  computeTableMaxHeight,
+  TooltipDivider,
+  TooltipFooter,
+  TooltipHeader,
+  TooltipTable,
+  TooltipWrapper,
+} from './components';
 import { TooltipProvider } from './components/tooltip_provider';
 import { TooltipTableColumn } from './components/types';
 import { getStylesFromPlacement } from './placement';
@@ -86,6 +93,7 @@ export type TooltipComponentProps<
 export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   tooltip: {
     header,
+    body,
     footer,
     actions,
     headerFormatter,
@@ -222,6 +230,14 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   }
   const actionable = actions.length > 0 || !Array.isArray(actions);
 
+  // divider visibility
+  const hasHeader = header !== 'none' && info.header;
+  const hasBody = body !== 'none' && info.values.length > 0;
+  // footer is empty by default, so default and none are the same at the moment
+  const hasFooter = footer !== 'default' && footer !== 'none';
+  const headerBottomDividerVisibility = hasHeader && (hasBody || hasFooter);
+  const bodyBottomDividerVisibility = hasBody && hasFooter;
+
   return (
     <TooltipPortal
       scope="MainTooltip"
@@ -269,20 +285,37 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
               actionsLoading={actionsLoading}
               noActionsLoaded={noActionsLoaded}
             >
-              {header ? (
-                <TooltipHeader>{typeof header === 'string' ? header : header(info.values)}</TooltipHeader>
-              ) : (
+              {header === 'none' ? null : header === 'default' ? (
                 <TooltipHeader header={info.header} formatter={headerFormatter} />
+              ) : (
+                <TooltipHeader>{header(info.values, info.header)}</TooltipHeader>
               )}
-              <TooltipTable
-                columns={columns}
-                items={info.values}
-                pinned={pinned}
-                onSelect={toggleSelectedTooltipItem}
-                selected={selected}
-                maxHeight={computeTableMaxHeight(pinned, columns, tooltipTheme.maxTableHeight, maxVisibleTooltipItems)}
-              />
-              {footer && <TooltipFooter>{typeof footer === 'string' ? footer : footer(info.values)}</TooltipFooter>}
+
+              {headerBottomDividerVisibility && <TooltipDivider />}
+
+              {body === 'none' ? null : body === 'default' ? (
+                <TooltipTable
+                  columns={columns}
+                  items={info.values}
+                  pinned={pinned}
+                  onSelect={toggleSelectedTooltipItem}
+                  selected={selected}
+                  maxHeight={computeTableMaxHeight(
+                    pinned,
+                    columns,
+                    tooltipTheme.maxTableHeight,
+                    maxVisibleTooltipItems,
+                  )}
+                />
+              ) : (
+                body(info.values, info.header)
+              )}
+
+              {bodyBottomDividerVisibility && <TooltipDivider />}
+
+              {footer === 'default' || footer === 'none' ? null : (
+                <TooltipFooter>{footer(info.values, info.header)}</TooltipFooter>
+              )}
             </TooltipWrapper>
           )}
         </div>

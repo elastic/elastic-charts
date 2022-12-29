@@ -23,3 +23,5 @@ export * from './tooltip_table_row';
 export * from './tooltip_table_footer';
 export * from './tooltip_table_cell';
 export * from './tooltip_table_color_cell';
+
+export * from './tooltip_provider';
