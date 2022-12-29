@@ -2838,7 +2838,7 @@ export function toEntries<T extends Record<string, string>, S>(array: T[], acces
 export type ToggleSelectedTooltipItemCallback = (item: TooltipValue<any, SeriesIdentifier>) => any;
 
 // @public
-export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, "id" | "chartType" | "specType", "type" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "footer" | "header" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>) => null;
+export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, "id" | "chartType" | "specType", "body" | "footer" | "header" | "type" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>) => null;
 
 // @public
 export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
@@ -2849,10 +2849,15 @@ export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifi
 };
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "footer" | "header" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "body" | "footer" | "header" | "type" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "unit" | "customTooltip" | "stickTo", never>;
 
 // @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
+
+// @public (undocumented)
+export const TooltipContainer: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: PropsWithChildren_2<{
+    className?: string;
+}>) => JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipDividerProps" needs to be exported by the entry point index.d.ts
 //
@@ -2902,9 +2907,19 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
     actionsLoading: string | ComponentType<{
         selected: TooltipValue<D, SI>[];
     }>;
+    body: 'default' | 'none' | ComponentType<{
+        items: TooltipValue<D, SI>[];
+        header: TooltipValue<D, SI> | null;
+    }>;
     customTooltip?: CustomTooltip<D, SI>;
-    footer?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
-    header?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+    footer: 'default' | 'none' | ComponentType<{
+        items: TooltipValue<D, SI>[];
+        header: TooltipValue<D, SI> | null;
+    }>;
+    header: 'default' | 'none' | ComponentType<{
+        items: TooltipValue<D, SI>[];
+        header: TooltipValue<D, SI> | null;
+    }>;
     headerFormatter?: TooltipValueFormatter<D, SI>;
     maxTooltipItems: number;
     maxVisibleTooltipItems: number;
@@ -3083,6 +3098,11 @@ export type UnixTimestamp = TimeMs;
 
 // @public
 export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, onClose: () => void];
+
+// Warning: (ae-forgotten-export) The symbol "TooltipContext" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export const useTooltipContext: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>() => TooltipContext<D, SI>;
 
 // @public (undocumented)
 export type ValueAccessor<D extends BaseDatum = Datum> = (d: D) => AdditiveNumber;
