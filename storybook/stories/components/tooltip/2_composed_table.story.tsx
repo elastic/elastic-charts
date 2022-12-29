@@ -19,6 +19,7 @@ import {
   TooltipTableRow,
   TooltipTableCell,
   TooltipTableColorCell,
+  TooltipContainer,
 } from '@elastic/charts';
 
 import { tableSimple } from './data';
@@ -31,7 +32,7 @@ export const Example = () => {
     const showColor = boolean('show color', true);
     const maxHeight = number('max table height', 120);
     return (
-      <>
+      <TooltipContainer>
         <TooltipHeader header={header} />
         <TooltipTable gridTemplateColumns={`repeat(${showColor ? 4 : 3}, auto)`} maxHeight={maxHeight}>
           <TooltipTableHeader>
@@ -61,7 +62,7 @@ export const Example = () => {
             </TooltipTableRow>
           </TooltipTableFooter>
         </TooltipTable>
-      </>
+      </TooltipContainer>
     );
   };
   return <TooltipShowcase info={tableSimple} customTooltip={MyTooltip} pinned={pinned} />;

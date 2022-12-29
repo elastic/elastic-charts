@@ -20,6 +20,7 @@ import {
   TooltipTableColorCell,
   TooltipAction,
   XYChartSeriesIdentifier,
+  TooltipContainer,
 } from '@elastic/charts';
 
 import { long } from './data';
@@ -45,39 +46,41 @@ export const Example = () => {
 
   const MyTooltip: CustomTooltip<any, XYChartSeriesIdentifier> = ({ values, selected, pinned, toggleSelected }) => {
     return (
-      <TooltipTable maxHeight={300} gridTemplateColumns="11px auto auto">
-        <TooltipTableHeader>
-          <TooltipTableRow>
-            <TooltipTableColorCell />
-            <TooltipTableCell>Series</TooltipTableCell>
-            <TooltipTableCell>Y Value</TooltipTableCell>
-          </TooltipTableRow>
-        </TooltipTableHeader>
-        <TooltipTableBody>
-          {values.map((value) => {
-            const {
-              datum,
-              seriesIdentifier: { key },
-              color,
-            } = value;
-            const onSelect = () => {
-              toggleSelected(value);
-            };
+      <TooltipContainer>
+        <TooltipTable maxHeight={300} gridTemplateColumns="11px auto auto">
+          <TooltipTableHeader>
+            <TooltipTableRow>
+              <TooltipTableColorCell />
+              <TooltipTableCell>Series</TooltipTableCell>
+              <TooltipTableCell>Y Value</TooltipTableCell>
+            </TooltipTableRow>
+          </TooltipTableHeader>
+          <TooltipTableBody>
+            {values.map((value) => {
+              const {
+                datum,
+                seriesIdentifier: { key },
+                color,
+              } = value;
+              const onSelect = () => {
+                toggleSelected(value);
+              };
 
-            return (
-              <TooltipTableRow
-                isSelected={pinned && selected.includes(value)}
-                onSelect={onSelect}
-                key={`${key}-${datum.x}`}
-              >
-                <TooltipTableColorCell color={color} />
-                <TooltipTableCell>{value.label}</TooltipTableCell>
-                <TooltipTableCell>{value.formattedValue}</TooltipTableCell>
-              </TooltipTableRow>
-            );
-          })}
-        </TooltipTableBody>
-      </TooltipTable>
+              return (
+                <TooltipTableRow
+                  isSelected={pinned && selected.includes(value)}
+                  onSelect={onSelect}
+                  key={`${key}-${datum.x}`}
+                >
+                  <TooltipTableColorCell color={color} />
+                  <TooltipTableCell>{value.label}</TooltipTableCell>
+                  <TooltipTableCell>{value.formattedValue}</TooltipTableCell>
+                </TooltipTableRow>
+              );
+            })}
+          </TooltipTableBody>
+        </TooltipTable>
+      </TooltipContainer>
     );
   };
   return (

@@ -9,7 +9,13 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { CustomTooltip, TooltipTable, TooltipTableColumn, XYChartSeriesIdentifier } from '@elastic/charts';
+import {
+  CustomTooltip,
+  TooltipContainer,
+  TooltipTable,
+  TooltipTableColumn,
+  XYChartSeriesIdentifier,
+} from '@elastic/charts';
 
 import { tableMultipleX } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
@@ -29,7 +35,11 @@ export const Example = () => {
       columns.unshift({ type: 'color' });
     }
 
-    return <TooltipTable items={values} columns={columns} />;
+    return (
+      <TooltipContainer>
+        <TooltipTable items={values} columns={columns} />
+      </TooltipContainer>
+    );
   };
   return <TooltipShowcase info={tableMultipleX} customTooltip={MyTooltip} pinned={pinned} />;
 };

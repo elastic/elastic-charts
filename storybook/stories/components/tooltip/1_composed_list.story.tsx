@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { CustomTooltip, TooltipHeader, TooltipTable, TooltipTableColumn } from '@elastic/charts';
+import { CustomTooltip, TooltipHeader, TooltipTable, TooltipTableColumn, TooltipContainer } from '@elastic/charts';
 import { isDefined } from '@elastic/charts/src/utils/common';
 
 import { tableSimple, simple, long } from './data';
@@ -74,10 +74,10 @@ export const Example = () => {
 
   const MyTooltip: CustomTooltip = ({ header, values }) => {
     return (
-      <>
+      <TooltipContainer>
         <TooltipHeader header={header} />
         <TooltipTable columns={columns} items={values} onSelect={(s) => action('onTooltipAction')(s)} />
-      </>
+      </TooltipContainer>
     );
   };
 

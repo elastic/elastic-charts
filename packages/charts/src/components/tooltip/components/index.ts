@@ -8,6 +8,7 @@
 
 // general components
 export * from './tooltip_wrapper';
+export * from './tooltip_container';
 export * from './tooltip_header';
 export * from './tooltip_footer';
 export * from './tooltip_divider';

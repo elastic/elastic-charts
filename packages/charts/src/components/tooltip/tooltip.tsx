@@ -38,6 +38,7 @@ import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from 
 import { TooltipBody } from './components/tooltip_body';
 import { TooltipProvider } from './components/tooltip_provider';
 import { TooltipTableColumn } from './components/types';
+import { getStylesFromPlacement } from './placement';
 import {
   PinTooltipCallback,
   SetSelectedTooltipItemsCallback,
@@ -214,17 +215,18 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
 
   const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
 
+  // don't show the tooltip if hidden or no TooltipInfo are available
+  if (!info || !visible) {
+    return null;
+  }
+  const actionable = actions.length > 0 || !Array.isArray(actions);
+
   return (
     <TooltipPortal
       scope="MainTooltip"
       // increasing by 100 the tooltip portal zIndex to avoid conflicts with highlighters and other elements in the DOM
       zIndex={zIndex + 100}
-      anchor={
-        anchorRef ?? {
-          position,
-          appendRef: chartRef,
-        }
-      }
+      anchor={anchorRef ?? { position, appendRef: chartRef }}
       settings={popperSettings}
       chartId={chartId}
       visible={visible}
@@ -234,7 +236,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         backgroundColor={backgroundColor}
         dir={isMostlyRTL ? 'rtl' : 'ltr'}
         pinned={pinned}
-        actionable={actions.length > 0 || !Array.isArray(actions)}
+        actionable={actionable}
         canPinTooltip={canPinTooltip}
         selected={selected}
         values={info?.values ?? []}
@@ -242,24 +244,28 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         theme={tooltipTheme}
         maxItems={maxVisibleTooltipItems}
       >
-        <TooltipBody
-          info={info}
-          columns={columns}
-          headerFormatter={headerFormatter}
-          settings={settings}
-          visible={visible}
-          header={header}
-          footer={footer}
-          placement={computedPlacement}
-          toggleSelected={toggleSelectedTooltipItem}
-          setSelection={setSelectedTooltipItems}
-          actions={hideActions || !canPinTooltip ? [] : actions}
-          actionPrompt={actionPrompt}
-          pinningPrompt={pinningPrompt}
-          selectionPrompt={selectionPrompt}
-          actionsLoading={actionsLoading}
-          noActionsLoaded={noActionsLoaded}
-        />
+        <div
+          className="echTooltip__outerWrapper"
+          style={getStylesFromPlacement(actionable, tooltipTheme, computedPlacement)}
+        >
+          <TooltipBody
+            info={info}
+            columns={columns}
+            headerFormatter={headerFormatter}
+            settings={settings}
+            header={header}
+            footer={footer}
+            placement={computedPlacement}
+            toggleSelected={toggleSelectedTooltipItem}
+            setSelection={setSelectedTooltipItems}
+            actions={hideActions || !canPinTooltip ? [] : actions}
+            actionPrompt={actionPrompt}
+            pinningPrompt={pinningPrompt}
+            selectionPrompt={selectionPrompt}
+            actionsLoading={actionsLoading}
+            noActionsLoaded={noActionsLoaded}
+          />
+        </div>
       </TooltipProvider>
     </TooltipPortal>
   );
