@@ -35,7 +35,7 @@ import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/commo
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
-import { TooltipBody } from './components/tooltip_body';
+import { computeTableMaxHeight, TooltipFooter, TooltipHeader, TooltipTable, TooltipWrapper } from './components';
 import { TooltipProvider } from './components/tooltip_provider';
 import { TooltipTableColumn } from './components/types';
 import { getStylesFromPlacement } from './placement';
@@ -165,6 +165,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     ...(info?.values?.map?.(({ label }) => label) ?? []),
     info?.header?.label ?? '',
   ]);
+  const textDirectionality = isMostlyRTL ? 'rtl' : 'ltr';
 
   const columns: TooltipTableColumn<D, SI>[] = [
     {
@@ -234,7 +235,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     >
       <TooltipProvider
         backgroundColor={backgroundColor}
-        dir={isMostlyRTL ? 'rtl' : 'ltr'}
+        dir={textDirectionality}
         pinned={pinned}
         actionable={actionable}
         canPinTooltip={canPinTooltip}
@@ -248,23 +249,42 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
           className="echTooltip__outerWrapper"
           style={getStylesFromPlacement(actionable, tooltipTheme, computedPlacement)}
         >
-          <TooltipBody
-            info={info}
-            columns={columns}
-            headerFormatter={headerFormatter}
-            settings={settings}
-            header={header}
-            footer={footer}
-            placement={computedPlacement}
-            toggleSelected={toggleSelectedTooltipItem}
-            setSelection={setSelectedTooltipItems}
-            actions={hideActions || !canPinTooltip ? [] : actions}
-            actionPrompt={actionPrompt}
-            pinningPrompt={pinningPrompt}
-            selectionPrompt={selectionPrompt}
-            actionsLoading={actionsLoading}
-            noActionsLoaded={noActionsLoaded}
-          />
+          {settings?.customTooltip ? (
+            <settings.customTooltip
+              {...info}
+              dir={textDirectionality}
+              pinned={pinned}
+              selected={selected}
+              setSelection={setSelectedTooltipItems}
+              toggleSelected={toggleSelectedTooltipItem}
+              headerFormatter={headerFormatter}
+              backgroundColor={backgroundColor}
+            />
+          ) : (
+            <TooltipWrapper
+              actions={hideActions || !canPinTooltip ? [] : actions}
+              actionPrompt={actionPrompt}
+              pinningPrompt={pinningPrompt}
+              selectionPrompt={selectionPrompt}
+              actionsLoading={actionsLoading}
+              noActionsLoaded={noActionsLoaded}
+            >
+              {header ? (
+                <TooltipHeader>{typeof header === 'string' ? header : header(info.values)}</TooltipHeader>
+              ) : (
+                <TooltipHeader header={info.header} formatter={headerFormatter} />
+              )}
+              <TooltipTable
+                columns={columns}
+                items={info.values}
+                pinned={pinned}
+                onSelect={toggleSelectedTooltipItem}
+                selected={selected}
+                maxHeight={computeTableMaxHeight(pinned, columns, tooltipTheme.maxTableHeight, maxVisibleTooltipItems)}
+              />
+              {footer && <TooltipFooter>{typeof footer === 'string' ? footer : footer(info.values)}</TooltipFooter>}
+            </TooltipWrapper>
+          )}
         </div>
       </TooltipProvider>
     </TooltipPortal>
