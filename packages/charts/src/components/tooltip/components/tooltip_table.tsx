@@ -59,6 +59,7 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
     const classes = classNames('echTooltip__table', className, {
       'echTooltip__table--noGrid': !gridTemplateColumns,
     });
+    console.log({ maxHeight });
     return (
       <div className="echTooltip__tableWrapper" style={{ maxHeight }}>
         <div role="table" className={classes} style={{ gridTemplateColumns }}>
@@ -67,7 +68,7 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
       </div>
     );
   }
-
+  console.log({ maxHeight: props.maxHeight });
   const columns = props.columns.filter(({ hidden }) => {
     return !(typeof hidden === 'boolean' ? hidden : hidden?.(props.items) ?? false);
   });
@@ -96,7 +97,7 @@ export function computeTableMaxHeight<D extends BaseDatum = Datum, SI extends Se
   maxHeight: CSSProperties['maxHeight'],
   maxItems?: number,
 ): CSSProperties['maxHeight'] {
-  if (pinned || maxHeight || isNil(maxItems)) return maxHeight;
+  if (pinned || isNil(maxItems)) return maxHeight;
   const headerHeight = +columns.some((c) => c.header) * TOOLTIP_HEADER_HEIGHT;
   const bodyHeight = (Math.max(maxItems, 1) + 0.5) * TOOLTIP_ITEM_HEIGHT;
   const footerHeight = +columns.some((c) => c.footer) * TOOLTIP_FOOTER_HEIGHT;

@@ -17,7 +17,7 @@ import { tableSimple, simple, long } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
-  const maxVisibleTooltipItems = number('max visible tooltip items', 5);
+  const maxVisibleTooltipItems = number('max visible tooltip items', 2);
   const dataSet = select(
     'dataSet',
     {
@@ -36,6 +36,7 @@ export const Example = () => {
     {
       id: 'label',
       type: 'custom',
+      header: 'label',
       truncate: true,
       cell: ({ label }) => <span className="echTooltip__label">{label}</span>,
       style: {
@@ -45,6 +46,7 @@ export const Example = () => {
     {
       id: 'value',
       type: 'custom',
+      header: 'value',
       cell: ({ formattedValue }) => (
         <span className="echTooltip__value" dir="ltr">
           {formattedValue}
@@ -79,10 +81,12 @@ export const Example = () => {
       canPinTooltip
       tooltip={{
         maxVisibleTooltipItems,
-        header: 'none',
-        body: (items) => (
-          <TooltipTable columns={columns} items={items} onSelect={(s) => action('onTooltipAction')(s)} />
-        ),
+        header: boolean('show default header', true) ? 'default' : 'none',
+        body: boolean('show default body', false)
+          ? 'default'
+          : ({ items }) => (
+              <TooltipTable columns={columns} items={items} onSelect={(s) => action('onTooltipAction')(s)} />
+            ),
         actions: [
           {
             label: () => 'Log storybook action',

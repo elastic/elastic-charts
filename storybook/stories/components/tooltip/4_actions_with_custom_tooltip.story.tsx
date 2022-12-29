@@ -18,16 +18,16 @@ import {
   TooltipTableCell,
   TooltipTableColorCell,
   TooltipAction,
-  XYChartSeriesIdentifier,
   TooltipSpec,
   useTooltipContext,
+  SeriesIdentifier,
 } from '@elastic/charts';
 
 import { long } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
-  const actions: TooltipAction<any, XYChartSeriesIdentifier>[] = [
+  const actions: TooltipAction<any, SeriesIdentifier>[] = [
     {
       label: () => 'Log storybook action',
       onSelect: (s) => action('onTooltipAction')(s),
@@ -44,8 +44,8 @@ export const Example = () => {
     },
   ];
 
-  const CustomBody: TooltipSpec['body'] = (items) => {
-    const { pinned, selected } = useTooltipContext();
+  const TooltipBody: TooltipSpec['body'] = ({ items }) => {
+    const { pinned, selected, toggleSelected } = useTooltipContext();
     return (
       <TooltipTable maxHeight={100} gridTemplateColumns="11px auto auto">
         <TooltipTableHeader>
@@ -57,12 +57,11 @@ export const Example = () => {
         </TooltipTableHeader>
         <TooltipTableBody>
           {items.map((value) => {
-            // const onSelect = () => toggleSelected(value);
-
+            const onSelect = () => toggleSelected(value);
             return (
               <TooltipTableRow
                 isSelected={pinned && selected.includes(value)}
-                // onSelect={onSelect}
+                onSelect={onSelect}
                 key={`${value.seriesIdentifier.key}-${value.datum.x}`}
               >
                 <TooltipTableColorCell color={value.color} />
@@ -81,9 +80,9 @@ export const Example = () => {
       pinned={boolean('pinned', false)}
       tooltip={{
         actions,
-        header: boolean('show header', true) ? (items, header) => `Time: ${header?.formattedValue}` : 'none',
-        body: boolean('show body', true) ? CustomBody : 'none',
-        footer: boolean('show footer', true) ? (items) => `Total of ${items.length} categories` : 'none',
+        body: TooltipBody,
+        header: boolean('show header', true) ? ({ header }) => <>Time: {header?.formattedValue}</> : ('none' as const),
+        footer: boolean('show footer', true) ? ({ items }) => <>Total of {items.length} categories</> : 'none',
       }}
       canPinTooltip
     />

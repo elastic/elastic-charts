@@ -29,7 +29,7 @@ export const Example = () => {
   return (
     <TooltipShowcase
       info={tableMultipleX}
-      tooltip={{ body: (items) => <TooltipTable items={items} columns={columns} /> }}
+      tooltip={{ body: ({ items }) => <TooltipTable items={items} columns={columns} /> }}
     />
   );
 };

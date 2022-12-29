@@ -92,9 +92,9 @@ export type TooltipComponentProps<
 /** @internal */
 export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   tooltip: {
-    header,
-    body,
-    footer,
+    header: TooltipCustomHeader,
+    body: TooltipCustomBody,
+    footer: TooltipCustomFooter,
     actions,
     headerFormatter,
     actionPrompt,
@@ -231,10 +231,10 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   const actionable = actions.length > 0 || !Array.isArray(actions);
 
   // divider visibility
-  const hasHeader = header !== 'none' && info.header;
-  const hasBody = body !== 'none' && info.values.length > 0;
+  const hasHeader = TooltipCustomHeader !== 'none' && info.header;
+  const hasBody = TooltipCustomBody !== 'none' && info.values.length > 0;
   // footer is empty by default, so default and none are the same at the moment
-  const hasFooter = footer !== 'default' && footer !== 'none';
+  const hasFooter = TooltipCustomFooter !== 'default' && TooltipCustomFooter !== 'none';
   const headerBottomDividerVisibility = hasHeader && (hasBody || hasFooter);
   const bodyBottomDividerVisibility = hasBody && hasFooter;
 
@@ -256,6 +256,8 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
         actionable={actionable}
         canPinTooltip={canPinTooltip}
         selected={selected}
+        setSelection={setSelectedTooltipItems}
+        toggleSelected={toggleSelectedTooltipItem}
         values={info?.values ?? []}
         pinTooltip={pinTooltip}
         theme={tooltipTheme}
@@ -285,15 +287,17 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
               actionsLoading={actionsLoading}
               noActionsLoaded={noActionsLoaded}
             >
-              {header === 'none' ? null : header === 'default' ? (
+              {TooltipCustomHeader === 'none' ? null : TooltipCustomHeader === 'default' ? (
                 <TooltipHeader header={info.header} formatter={headerFormatter} />
               ) : (
-                <TooltipHeader>{header(info.values, info.header)}</TooltipHeader>
+                <TooltipHeader>
+                  <TooltipCustomHeader items={info.values} header={info.header} />
+                </TooltipHeader>
               )}
 
               {headerBottomDividerVisibility && <TooltipDivider />}
 
-              {body === 'none' ? null : body === 'default' ? (
+              {TooltipCustomBody === 'none' ? null : TooltipCustomBody === 'default' ? (
                 <TooltipTable
                   columns={columns}
                   items={info.values}
@@ -308,13 +312,15 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
                   )}
                 />
               ) : (
-                body(info.values, info.header)
+                <TooltipCustomBody items={info.values} header={info.header} />
               )}
 
               {bodyBottomDividerVisibility && <TooltipDivider />}
 
-              {footer === 'default' || footer === 'none' ? null : (
-                <TooltipFooter>{footer(info.values, info.header)}</TooltipFooter>
+              {TooltipCustomFooter === 'default' || TooltipCustomFooter === 'none' ? null : (
+                <TooltipFooter>
+                  <TooltipCustomFooter items={info.values} header={info.header} />
+                </TooltipFooter>
               )}
             </TooltipWrapper>
           )}

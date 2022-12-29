@@ -30,7 +30,7 @@ export const Example = () => {
   const maxHeight = number('max table height', 120);
   const style: TooltipCellStyle = { textAlign: 'right' };
 
-  const TooltipBody: TooltipSpec['body'] = (items) => {
+  const TooltipBody: TooltipSpec['body'] = ({ items }) => {
     return (
       <TooltipTable gridTemplateColumns={`repeat(${showColor ? 4 : 3}, auto)`} maxHeight={maxHeight}>
         <TooltipTableHeader>
