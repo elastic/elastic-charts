@@ -8,7 +8,7 @@
 
 import React, { useCallback } from 'react';
 
-import { TooltipHeader } from '../../../../../components/tooltip';
+import { TooltipDivider, TooltipHeader } from '../../../../../components/tooltip';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../../../../specs';
 import { AnnotationTooltipState } from '../../../annotations/types';
 
@@ -24,6 +24,7 @@ export const TooltipContent = ({
     return (
       <>
         <TooltipHeader>{header}</TooltipHeader>
+        <TooltipDivider />
         <div className="echAnnotation__details">{customTooltipDetails ? customTooltipDetails(details) : details}</div>
       </>
     );
