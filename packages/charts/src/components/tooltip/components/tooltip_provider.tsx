@@ -39,9 +39,7 @@ const TooltipContext = React.createContext<TooltipContext>({
   actionable: false,
   canPinTooltip: false,
   selected: [],
-  toggleSelected: () => {
-    console.log('toggle');
-  },
+  toggleSelected: () => {},
   setSelection: () => {},
   values: [],
   pinTooltip: pinTooltipAction,

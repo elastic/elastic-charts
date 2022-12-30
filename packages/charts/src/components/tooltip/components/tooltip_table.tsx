@@ -59,7 +59,6 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
     const classes = classNames('echTooltip__table', className, {
       'echTooltip__table--noGrid': !gridTemplateColumns,
     });
-    console.log({ maxHeight });
     return (
       <div className="echTooltip__tableWrapper" style={{ maxHeight }}>
         <div role="table" className={classes} style={{ gridTemplateColumns }}>
@@ -68,7 +67,6 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
       </div>
     );
   }
-  console.log({ maxHeight: props.maxHeight });
   const columns = props.columns.filter(({ hidden }) => {
     return !(typeof hidden === 'boolean' ? hidden : hidden?.(props.items) ?? false);
   });
