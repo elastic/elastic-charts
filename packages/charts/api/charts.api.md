@@ -2859,6 +2859,34 @@ export const TooltipContainer: <D extends BaseDatum = any, SI extends SeriesIden
     className?: string;
 }>) => JSX.Element;
 
+// @public (undocumented)
+export interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
+    // (undocumented)
+    actionable: boolean;
+    // (undocumented)
+    backgroundColor: string;
+    // (undocumented)
+    canPinTooltip: boolean;
+    // (undocumented)
+    dir: 'rtl' | 'ltr';
+    // (undocumented)
+    maxItems: number;
+    // (undocumented)
+    pinned: boolean;
+    // (undocumented)
+    pinTooltip: PinTooltipCallback;
+    // (undocumented)
+    selected: Array<TooltipValue<D, SI>>;
+    // (undocumented)
+    setSelection: CustomTooltipProps['setSelection'];
+    // (undocumented)
+    theme: TooltipStyle;
+    // (undocumented)
+    toggleSelected: CustomTooltipProps['toggleSelected'];
+    // (undocumented)
+    values: TooltipValue<D, SI>[];
+}
+
 // Warning: (ae-forgotten-export) The symbol "TooltipDividerProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -3099,8 +3127,6 @@ export type UnixTimestamp = TimeMs;
 // @public
 export function useLegendAction<T extends HTMLElement>(): [ref: LegacyRef<T>, onClose: () => void];
 
-// Warning: (ae-forgotten-export) The symbol "TooltipContext" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const useTooltipContext: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>() => TooltipContext<D, SI>;
 

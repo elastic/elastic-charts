@@ -16,7 +16,8 @@ import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { TooltipStyle } from '../../../utils/themes/theme';
 import { CustomTooltipProps, PinTooltipCallback } from '../types';
 
-interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
+/** @public */
+export interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
   theme: TooltipStyle;
   backgroundColor: string;
   dir: 'rtl' | 'ltr';
