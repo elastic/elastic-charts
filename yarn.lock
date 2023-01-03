@@ -6192,10 +6192,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@^29.2.4":
-  version "29.2.4"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.2.4.tgz#9c155c4b81c9570dbd183eb8604aa0ae80ba5a5b"
-  integrity sha512-PipFB04k2qTRPePduVLTRiPzQfvMeLwUN3Z21hsAKaB/W9IIzgB2pizCL466ftJlcyZqnHoC9ZHpxLGl3fS86A==
+"@types/jest@^29.2.5":
+  version "29.2.5"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.2.5.tgz#c27f41a9d6253f288d1910d3c5f09484a56b73c0"
+  integrity sha512-H2cSxkKgVmqNHXP7TC2L/WUorrZu8ZigyRywfVzv6EyBlxj39n4C00hjXYQWsbwqgElaj/CiAeSRmk5GoaKTgw==
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
@@ -10897,10 +10897,10 @@ eslint-plugin-import@^2.26.0:
     resolve "^1.22.0"
     tsconfig-paths "^3.14.1"
 
-eslint-plugin-jest@^27.1.7:
-  version "27.1.7"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-27.1.7.tgz#0351e904afb8d66b7f70452929556dfdc8daba0d"
-  integrity sha512-0QVzf+og4YI1Qr3UoprkqqhezAZjFffdi62b0IurkCXMqPtRW84/UT4CKsYT80h/D82LA9avjO/80Ou1LdgbaQ==
+eslint-plugin-jest@^27.2.0:
+  version "27.2.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jest/-/eslint-plugin-jest-27.2.0.tgz#8e9976705642bea1981596c0ba5e3f46d449f3fc"
+  integrity sha512-KGIYtelk4rIhKocxRKUEeX+kJ0ZCab/CiSgS8BMcKD7AY7YxXhlg/d51oF5jq2rOrtuJEDYWRwXD95l6l2vtrA==
   dependencies:
     "@typescript-eslint/utils" "^5.10.0"
 
@@ -14043,10 +14043,10 @@ jest-environment-node@^29.3.1:
     jest-mock "^29.3.1"
     jest-util "^29.3.1"
 
-jest-extended@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/jest-extended/-/jest-extended-3.2.0.tgz#4333dbb47e40acef3abccb1d22b7769c5fa90a0b"
-  integrity sha512-jy+1nwlPLPPR6O8O9Mn+BWCBq/jL/9OgdKEG8ekOSQoLyVvAO5nND8ll3UxoajzBu4kYyn7zUKYWRdnTfQPcVw==
+jest-extended@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jest-extended/-/jest-extended-3.2.1.tgz#d1e7d7731cfa2174f48036822ee4ee5dfc09d44b"
+  integrity sha512-+c+jL/KI/3OsU+jTFa8HFtwBzWhFixFYfOEfFdPIACN97HdgEcjkzKnotQQPZidwU4B/VqgA7LTy0yhAxfSCIw==
   dependencies:
     jest-diff "^29.0.0"
     jest-get-type "^29.0.0"
