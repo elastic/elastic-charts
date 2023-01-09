@@ -15,7 +15,7 @@
     "@elastic/eui": "^72.0.0",
     "@emotion/react": "^11.10.5",
     "@emotion/css": "^11.10.5",
-    "luxon": "^1.27.0",
+    "luxon": "^2.5.2",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.32",
     "react": "^16.12.0",

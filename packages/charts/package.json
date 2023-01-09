@@ -51,7 +51,7 @@
     "ts-debounce": "^4.0.0",
     "utility-types": "^3.10.0",
     "uuid": "^9",
-    "luxon": "^1.25.0"
+    "luxon": "^2.5.2"
   },
   "peerDependencies": {
     "moment": "^2.29.1",

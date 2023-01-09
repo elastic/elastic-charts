@@ -134,7 +134,7 @@
     "lint-staged": "^10.5.3",
     "lodash": "^4.17.15",
     "lorem-ipsum": "^2.0.3",
-    "luxon": "^1.25.0",
+    "luxon": "^2.5.2",
     "mini-css-extract-plugin": "1.6.2",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.32",
