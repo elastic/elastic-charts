@@ -10,7 +10,7 @@
   "semanticCommits": "enabled",
   "labels": ["dependencies", "skip-newsletter"],
   "reviewers": ["team:datavis"],
-  "schedule": ["every 3 weeks on monday"],
+  "schedule": ["every 4 weeks on monday"],
   "vulnerabilityAlerts": {
     "enabled": false
   },
