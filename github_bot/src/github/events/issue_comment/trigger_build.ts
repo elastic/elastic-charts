@@ -8,10 +8,10 @@
 
 import { Probot } from 'probot';
 
+import { getPRFromComment, hasCommentAction } from './utils';
 import { buildkiteClient, getPRBuildParams } from '../../../utils/buildkite';
 import { PullRequestBuildEnv } from '../../../utils/types';
 import { checkUserFn, createIssueReaction, isValidUser, labelCheckFn, updateAllChecks } from '../../utils';
-import { getPRFromComment, hasCommentAction } from './utils';
 
 /**
  * build trigger for PR comment

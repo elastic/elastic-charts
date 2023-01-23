@@ -9,6 +9,17 @@
 import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 
+import {
+  TickLabelBounds,
+  computeRotatedLabelDimensions,
+  getPosition,
+  // getAxesGeometries,
+  getTickLabelPosition,
+  isXDomain,
+  getScaleForAxisSpec,
+} from './axis_utils';
+import { computeXScale } from './scales';
+import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
 import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs';
 // import { MockStore } from '../../../mocks/store/store';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
@@ -31,17 +42,6 @@ import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_
 // import { getGridLinesSelector } from '../state/selectors/get_grid_lines';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import { generateTicks } from '../state/selectors/visible_ticks';
-import {
-  TickLabelBounds,
-  computeRotatedLabelDimensions,
-  getPosition,
-  // getAxesGeometries,
-  getTickLabelPosition,
-  isXDomain,
-  getScaleForAxisSpec,
-} from './axis_utils';
-import { computeXScale } from './scales';
-import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
 
 const alignmentsDefault = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Middle };
 

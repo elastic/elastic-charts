@@ -9,10 +9,10 @@
 import { components } from '@octokit/openapi-types';
 import { Response } from 'express';
 
+import { BuildkiteWebhookPayload } from './types';
 import { getBuildConfig } from '../build';
 import { getConfig } from '../config';
 import { githubClient } from '../utils/github';
-import { BuildkiteWebhookPayload } from './types';
 
 interface MetaData {
   syncCommit?: string;

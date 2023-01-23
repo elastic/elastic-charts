@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Transform } from '../utils/types';
 import { computeChartTransform } from '../utils/utils';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 
 /** @internal */
 export const computeChartTransformSelector = createCustomCachedSelector(

@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { renderLineAnnotations } from './lines';
+import { renderRectAnnotations } from './rect';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { AnnotationId } from '../../../../../utils/ids';
@@ -21,8 +23,6 @@ import { getSpecsById } from '../../../state/utils/spec';
 import { AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../../utils/specs';
 import { getAnnotationHoverParamsFn } from '../../common/utils';
 import { AnimationContext } from '../animations';
-import { renderLineAnnotations } from './lines';
-import { renderRectAnnotations } from './rect';
 
 /** @internal */
 export function renderAnnotations(

@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { getOrientedXPosition, getOrientedYPosition } from './interactions';
 import { isCrosshairTooltipType, isFollowTooltipType } from '../../../specs';
 import { TooltipType } from '../../../specs/constants';
 import { Dimensions } from '../../../utils/dimensions';
-import { getOrientedXPosition, getOrientedYPosition } from './interactions';
 
 describe('Interaction utils', () => {
   const chartDimensions: Dimensions = {

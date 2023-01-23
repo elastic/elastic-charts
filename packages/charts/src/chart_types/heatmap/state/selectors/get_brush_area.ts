@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { computeChartElementSizesSelector } from './compute_chart_dimensions';
+import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_shapes';
 import { BrushAxis } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -13,8 +15,6 @@ import { getActivePointerPosition } from '../../../../state/selectors/get_active
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { computeChartElementSizesSelector } from './compute_chart_dimensions';
-import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_shapes';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
 const getIsDragging = (state: GlobalChartState) => state.interactions.pointer.dragging;

@@ -8,11 +8,11 @@
 
 import { CSSProperties } from 'react';
 
+import { isBrushingSelector } from './is_brushing';
+import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
-import { isBrushingSelector } from './is_brushing';
-import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
 
 /** @internal */
 export const getPointerCursorSelector = createCustomCachedSelector(

@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { ScaleType } from '../../../scales/constants';
-import { getSpecsById } from '../state/utils/spec';
 import { fitFunction } from './fit_function';
 import { DataSeries } from './series';
 import { isAreaSeriesSpec, isLineSeriesSpec, SeriesSpecs, BasicSeriesSpec } from './specs';
+import { ScaleType } from '../../../scales/constants';
+import { getSpecsById } from '../state/utils/spec';
 
 /** @internal */
 export const applyFitFunctionToDataSeries = (

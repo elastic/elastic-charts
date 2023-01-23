@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 import { ChartType } from '../../chart_types';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
@@ -32,7 +33,6 @@ import { GlobalChartState, InteractionsState } from '../chart_state';
 import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
 import { getInitialPointerState, getInitialTooltipState } from '../utils';
-import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 
 /**
  * The minimum number of pixel between two pointer positions to consider for dragging purposes

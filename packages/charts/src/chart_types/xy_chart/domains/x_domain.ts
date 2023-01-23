@@ -8,6 +8,7 @@
 
 import { Optional } from 'utility-types';
 
+import { XDomain } from './types';
 import { ScaleType } from '../../../scales/constants';
 import { compareByValueAsc } from '../../../utils/common';
 import { computeContinuousDataDomain, computeOrdinalDataDomain } from '../../../utils/domain';
@@ -16,7 +17,6 @@ import { getZoneFromSpecs, getValidatedTimeZone } from '../../../utils/time_zone
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
-import { XDomain } from './types';
 
 /**
  * Merge X domain value between a set of chart specification.

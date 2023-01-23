@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getColorScale } from './get_color_scale';
 import { getHighlightedLegendItemSelector } from './get_highlighted_legend_item';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
 export const getHighlightedLegendBandsSelector = createCustomCachedSelector(

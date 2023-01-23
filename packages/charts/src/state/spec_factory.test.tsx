@@ -9,11 +9,11 @@
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 
+import { DebugState } from './types';
 import { BarSeries } from '../chart_types/xy_chart/specs/bar_series';
 import { Chart } from '../components/chart';
 import { MockSeriesSpec } from '../mocks/specs/specs';
 import { Settings } from '../specs/settings';
-import { DebugState } from './types';
 
 function getDebugState(wrapper: ReactWrapper): DebugState {
   const statusComponent = wrapper.find('.echChartStatus');

@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Colors } from '../../../../common/colors';
-import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { AnimationContext, getAnimationPoolFn } from './animations';
 import { AnimationState } from './animations/animation';
 import { renderAnnotations } from './annotations';
@@ -20,6 +18,8 @@ import { renderGridPanels, renderPanelSubstrates } from './panels/panels';
 import { renderDebugRect } from './utils/debug';
 import { renderBarValues } from './values/bar';
 import { ReactiveChartStateProps } from './xy_chart';
+import { Colors } from '../../../../common/colors';
+import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 
 /** @internal */
 export function renderXYChartCanvas2d(

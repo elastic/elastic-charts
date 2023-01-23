@@ -8,12 +8,12 @@
 
 import { $Values } from 'utility-types';
 
+import { SettingsSpec } from './settings';
 import { ChartType } from '../chart_types';
 import { BOTTOM, CENTER, LEFT, MIDDLE, RIGHT, TOP } from '../common/constants';
 import { buildSFProps } from '../state/spec_factory';
 import { Position } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { SettingsSpec } from './settings';
 
 /** @public */
 export const SpecType = Object.freeze({

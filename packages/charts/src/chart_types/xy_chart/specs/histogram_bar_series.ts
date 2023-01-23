@@ -37,10 +37,10 @@ const buildProps = buildSFProps<HistogramBarSeriesSpec>()(
 export const HistogramBarSeries = function <D extends BaseDatum = Datum>(
   props: SFProps<
     HistogramBarSeriesSpec<D>,
-    keyof typeof buildProps['overrides'],
-    keyof typeof buildProps['defaults'],
-    keyof typeof buildProps['optionals'],
-    keyof typeof buildProps['requires']
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = buildProps;

@@ -10,6 +10,14 @@ import React, { createRef, CSSProperties, RefObject, WheelEventHandler } from 'r
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { FlameSpec } from './flame_api';
+import { NavigationStrategy, NavButtonControlledZoomPanHistory } from './navigation';
+import { roundUpSize } from './render/common';
+import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
+import { ensureWebgl } from './render/ensure_webgl';
+import { uploadToWebgl } from './render/upload_to_webgl';
+import { attributeLocations, GEOM_INDEX_OFFSET } from './shaders';
+import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../../common/constants';
 import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
@@ -27,14 +35,6 @@ import { getSpecsFromStore } from '../../state/utils';
 import { clamp, isFiniteNumber } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlamegraphStyle } from '../../utils/themes/theme';
-import { FlameSpec } from './flame_api';
-import { NavigationStrategy, NavButtonControlledZoomPanHistory } from './navigation';
-import { roundUpSize } from './render/common';
-import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
-import { ensureWebgl } from './render/ensure_webgl';
-import { uploadToWebgl } from './render/upload_to_webgl';
-import { attributeLocations, GEOM_INDEX_OFFSET } from './shaders';
-import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right

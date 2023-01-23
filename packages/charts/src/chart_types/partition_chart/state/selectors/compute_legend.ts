@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { partitionMultiGeometries } from './geometries';
+import { getPartitionSpecs } from './get_partition_specs';
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLegendConfigSelector } from '../../../../state/selectors/get_legend_config_selector';
 import { getLegendItems } from '../../layout/utils/legend';
-import { partitionMultiGeometries } from './geometries';
-import { getPartitionSpecs } from './get_partition_specs';
 
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(

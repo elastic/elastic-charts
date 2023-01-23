@@ -8,6 +8,7 @@
 
 import { ComponentProps } from 'react';
 
+import { X_SCALE_DEFAULT } from './scale_defaults';
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { Predicate } from '../../../common/predicate';
@@ -19,7 +20,6 @@ import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';
 import { Cell } from '../layout/types/viewmodel_types';
-import { X_SCALE_DEFAULT } from './scale_defaults';
 
 /** @public */
 export type HeatmapScaleType =
@@ -127,10 +127,10 @@ const buildProps = buildSFProps<HeatmapSpec>()(
 export const Heatmap = function <D extends BaseDatum = Datum>(
   props: SFProps<
     HeatmapSpec<D>,
-    keyof typeof buildProps['overrides'],
-    keyof typeof buildProps['defaults'],
-    keyof typeof buildProps['optionals'],
-    keyof typeof buildProps['requires']
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = buildProps;

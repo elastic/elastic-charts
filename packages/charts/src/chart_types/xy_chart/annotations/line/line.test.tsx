@@ -9,6 +9,7 @@
 import React from 'react';
 import { Store } from 'redux';
 
+import { AnnotationLineProps } from './types';
 import { MockAnnotationLineProps } from '../../../../mocks/annotations/annotations';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
@@ -18,7 +19,6 @@ import { Position } from '../../../../utils/common';
 import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../../utils/themes/merge_utils';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { AnnotationDomainType } from '../../utils/specs';
-import { AnnotationLineProps } from './types';
 
 describe('annotation marker', () => {
   const id = 'foo-line';

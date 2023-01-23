@@ -9,17 +9,17 @@
 import { Placement as PopperPlacement } from '@popperjs/core';
 import React, { CSSProperties } from 'react';
 
-import { SeriesIdentifier } from '../../../common/series_id';
-import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps } from '../../../specs';
-import { Datum } from '../../../utils/common';
-import { TooltipStyle } from '../../../utils/themes/theme';
-import { SetSelectedTooltipItemsCallback, ToggleSelectedTooltipItemCallback, TooltipInfo } from '../types';
 import { TooltipFooter } from './tooltip_footer';
 import { TooltipHeader } from './tooltip_header';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTable } from './tooltip_table';
 import { TooltipWrapper } from './tooltip_wrapper';
 import { TooltipTableColumn } from './types';
+import { SeriesIdentifier } from '../../../common/series_id';
+import { TooltipValueFormatter, BaseDatum, TooltipSpec, TooltipProps } from '../../../specs';
+import { Datum } from '../../../utils/common';
+import { TooltipStyle } from '../../../utils/themes/theme';
+import { SetSelectedTooltipItemsCallback, ToggleSelectedTooltipItemCallback, TooltipInfo } from '../types';
 
 interface TooltipBodyProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
   extends Pick<

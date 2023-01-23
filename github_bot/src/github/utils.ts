@@ -9,12 +9,12 @@
 import { components } from '@octokit/openapi-types';
 import { RestEndpointMethodTypes } from '@octokit/rest';
 
-import { getBuildConfig } from '../build';
-import { Env } from '../env';
-import { githubClient } from '../utils/github';
 import { getConfig } from './../config';
 import { chartsRepoId } from './constants';
 import { ProbotEventContext, ProbotEventPayload } from './types';
+import { getBuildConfig } from '../build';
+import { Env } from '../env';
+import { githubClient } from '../utils/github';
 
 type GetPullResponseData = RestEndpointMethodTypes['pulls']['get']['response']['data'];
 

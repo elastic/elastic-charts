@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { getSpecOrNull } from './goal_spec';
+import { getPickedShapes } from './picked_shapes';
 import { Colors } from '../../../../common/colors';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { BandViewModel } from '../../layout/types/viewmodel_types';
-import { getSpecOrNull } from './goal_spec';
-import { getPickedShapes } from './picked_shapes';
 
 const EMPTY_TOOLTIP = Object.freeze({
   header: null,

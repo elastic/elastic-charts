@@ -10,6 +10,8 @@ import React, { CSSProperties, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { timeslipRender } from './timeslip/timeslip_render';
+import { TimeslipSpec, GetData } from './timeslip_api';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { SettingsSpec, SpecType, TooltipType } from '../../specs';
@@ -22,8 +24,6 @@ import { getSpecsFromStore } from '../../state/utils';
 import { Size } from '../../utils/dimensions';
 import { roundUpSize } from '../flame_chart/render/common';
 // @ts-ignore until it becomes TS
-import { timeslipRender } from './timeslip/timeslip_render';
-import { TimeslipSpec, GetData } from './timeslip_api';
 
 interface StateProps {
   getData: GetData;

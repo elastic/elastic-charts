@@ -8,11 +8,11 @@
 
 import React, { memo } from 'react';
 
+import { TooltipDivider } from './tooltip_divider';
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue, TooltipValueFormatter } from '../../../specs';
 import { Datum, renderComplexChildren } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
-import { TooltipDivider } from './tooltip_divider';
 
 type TooltipHeaderProps<
   D extends BaseDatum = Datum,

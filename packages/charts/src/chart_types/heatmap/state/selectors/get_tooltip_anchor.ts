@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { computeChartElementSizesSelector } from './compute_chart_dimensions';
+import { getPickedShapes } from './picked_shapes';
 import { AnchorPosition } from '../../../../components/portal/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
-import { computeChartElementSizesSelector } from './compute_chart_dimensions';
-import { getPickedShapes } from './picked_shapes';
 
 /** @internal */
 export const getTooltipAnchorSelector = createCustomCachedSelector(

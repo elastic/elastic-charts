@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { AnimationConfig, AnnotationAnimationTrigger } from './../../utils/specs';
 import { mergePartial } from '../../../../utils/common';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { TimeFunction } from '../../../../utils/time_functions';
 import { AnimationOptions } from '../canvas/animations/animation';
-import { AnimationConfig, AnnotationAnimationTrigger } from './../../utils/specs';
 
 const DEFAULT_ANNOTATION_ANIMATION_OPTIONS: AnimationOptions = {
   enabled: true,

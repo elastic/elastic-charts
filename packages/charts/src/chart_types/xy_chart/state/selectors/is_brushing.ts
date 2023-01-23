@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { isBrushAvailableSelector } from './is_brush_available';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { isBrushAvailableSelector } from './is_brush_available';
 
 const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
 

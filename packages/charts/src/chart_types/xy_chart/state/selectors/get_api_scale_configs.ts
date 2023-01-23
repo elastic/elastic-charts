@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
+import { mergeYCustomDomainsByGroupId } from './merge_y_custom_domains';
 import { ScaleContinuousType } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { SettingsSpec } from '../../../../specs/settings';
@@ -19,8 +21,6 @@ import { isXDomain } from '../../utils/axis_utils';
 import { groupBy } from '../../utils/group_data_series';
 import { AxisSpec, BasicSeriesSpec, CustomXDomain, XScaleType, YDomainRange } from '../../utils/specs';
 import { getSpecDomainGroupId } from '../utils/spec';
-import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
-import { mergeYCustomDomainsByGroupId } from './merge_y_custom_domains';
 
 /** @internal */
 export type ScaleConfigBase<T extends ScaleType, D extends CustomXDomain | YDomainRange> = {

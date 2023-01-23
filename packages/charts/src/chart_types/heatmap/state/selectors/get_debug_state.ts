@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { RGBATupleToString } from '../../../../common/color_library_wrappers';
-import { LegendItem } from '../../../../common/legend';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { DebugState, DebugStateLegend } from '../../../../state/types';
-import { Position } from '../../../../utils/common';
 import { getChartThemeSelector } from './../../../../state/selectors/get_chart_theme';
 import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { computeLegendSelector } from './compute_legend';
 import { getHeatmapGeometries } from './geometries';
 import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
+import { RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { LegendItem } from '../../../../common/legend';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { DebugState, DebugStateLegend } from '../../../../state/types';
+import { Position } from '../../../../utils/common';
 
 /**
  * Returns a stringified version of the `debugState`

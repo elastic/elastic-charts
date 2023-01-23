@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { isWithinRectBounds } from './dimensions';
+import { AnnotationRectProps } from './types';
 import { Rect } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -14,8 +16,6 @@ import { Point } from '../../../../utils/point';
 import { isHorizontalRotation } from '../../state/utils/common';
 import { AnnotationType } from '../../utils/specs';
 import { AnnotationTooltipState, Bounds } from '../types';
-import { isWithinRectBounds } from './dimensions';
-import { AnnotationRectProps } from './types';
 
 /** @internal */
 export function getRectAnnotationTooltipState(

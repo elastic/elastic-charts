@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { renderMultiLine } from './line';
 import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { withClipRanges } from '../../../../../renderers/canvas';
 import { ClippedRanges } from '../../../../../utils/geometry';
 import { Point } from '../../../../../utils/point';
-import { renderMultiLine } from './line';
 
 /** @internal */
 export function renderLinePaths(

@@ -8,13 +8,13 @@
 
 import { Selector } from 'react-redux';
 
+import { getSpecOrNull } from './heatmap_spec';
+import { getPickedShapes } from './picked_shapes';
 import { ChartType } from '../../..';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isPickedCells } from '../../layout/types/viewmodel_types';
-import { getSpecOrNull } from './heatmap_spec';
-import { getPickedShapes } from './picked_shapes';
 
 /**
  * Will call the onElementOut listener every time the following preconditions are met:
