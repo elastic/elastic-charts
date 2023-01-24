@@ -15,7 +15,7 @@ import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components/portal';
 import { CustomTooltip } from '../components/tooltip';
 import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
-import { Accessor } from '../utils/accessor';
+import { PointerValue } from '../state/types';
 import { Datum, stripUndefined } from '../utils/common';
 import { SpecType, TooltipStickTo, TooltipType } from './constants';
 import { Spec } from './index';
@@ -25,19 +25,12 @@ import { SettingsSpec } from './settings';
  * This interface describe the properties of single value shown in the tooltip
  * @public
  */
-export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
+export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
+  extends PointerValue<D> {
   /**
    * The label of the tooltip value
    */
   label: string;
-  /**
-   * The value
-   */
-  value: any;
-  /**
-   * The formatted value to display
-   */
-  formattedValue: string;
   /**
    * The mark value
    */
@@ -62,10 +55,6 @@ export interface TooltipValue<D extends BaseDatum = Datum, SI extends SeriesIden
    * The identifier of the related series
    */
   seriesIdentifier: SI;
-  /**
-   * The accessor linked to the current tooltip value
-   */
-  valueAccessor?: Accessor<D>;
   /**
    * The datum associated with the current tooltip value
    * Maybe not available
@@ -270,13 +259,13 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     snap: true,
     showNullValues: false,
     actions: [],
-    actionPrompt: 'Right click to show actions',
-    pinningPrompt: 'Right click to pin tooltip',
+    actionPrompt: 'Right-click to show actions',
+    pinningPrompt: 'Right-click to pin tooltip',
     selectionPrompt: 'Please select a series',
     actionsLoading: 'Loading Actions...',
     noActionsLoaded: 'No actions available',
-    maxTooltipItems: 5,
-    maxVisibleTooltipItems: 5,
+    maxTooltipItems: 10,
+    maxVisibleTooltipItems: 10,
   },
 );
 

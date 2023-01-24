@@ -6,9 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
 import { innerPad, outerPad } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
+import { wrapText } from '../../../../../utils/text/wrap';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisProps } from '../axes';
@@ -65,7 +67,14 @@ export function renderTitle(
   const y = anchorPoint.y + (horizontal ? offset : height);
   const textX = horizontal ? width / 2 + (panel ? 0 : x) : font.fontSize / 2 + (panel ? offset : x);
   const textY = horizontal ? font.fontSize / 2 + (panel ? offset : y) : (panel ? height : -height + 2 * y) / 2;
-
+  const wrappedText = wrapText(
+    titleToRender ?? '',
+    font,
+    font.fontSize,
+    horizontal ? width : height,
+    1,
+    measureText(ctx),
+  );
   if (debug) renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, rotation);
-  renderText(ctx, { x: textX, y: textY }, titleToRender ?? '', font, rotation);
+  renderText(ctx, { x: textX, y: textY }, wrappedText[0], font, rotation);
 }

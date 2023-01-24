@@ -94,6 +94,8 @@ export const Example = () => {
   const debug = boolean('Debug', false);
   const showLegend = boolean('Show Legend', false);
   const onElementClick = action('onElementClick');
+  const metricPrefix = text('metric prefix', `Metric `).trim();
+  const hostPrefix = text('host prefix', `Host `).trim();
 
   return (
     <Chart>
@@ -121,8 +123,8 @@ export const Example = () => {
       <Axis {...getAxisOptions(Position.Top)} />
       <Axis {...getAxisOptions(Position.Right)} />
 
-      <GroupBy id="v_split" by={(_, { v }) => v} format={(v) => `Metric ${v}`} sort="numDesc" />
-      <GroupBy id="h_split" by={(_, { h }) => h} format={(v) => `Host ${v}`} sort="numAsc" />
+      <GroupBy id="v_split" by={(_, { v }) => v} format={(v) => `${metricPrefix} ${v}`} sort="numDesc" />
+      <GroupBy id="h_split" by={(_, { h }) => h} format={(v) => `${hostPrefix} ${v}`} sort="numAsc" />
       <SmallMultiples
         splitVertically="v_split"
         splitHorizontally="h_split"
