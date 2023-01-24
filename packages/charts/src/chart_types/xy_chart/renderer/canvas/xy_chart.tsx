@@ -16,10 +16,6 @@ import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { computePanelsSelectors, PanelGeoms } from '../../../../state/selectors/compute_panels';
 import {
-  computePerPanelAxesGeomsSelector,
-  PerPanelAxisGeoms,
-} from '../../../../state/selectors/compute_per_panel_axes_geoms';
-import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,
   getA11ySettingsSelector,
@@ -39,6 +35,10 @@ import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
+import {
+  computePerPanelAxesGeomsSelector,
+  PerPanelAxisGeoms,
+} from '../../state/selectors/compute_per_panel_axes_geoms';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getGridLinesSelector } from '../../state/selectors/get_grid_lines';

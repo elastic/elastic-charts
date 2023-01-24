@@ -12,6 +12,7 @@ import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
+import { getPanelSize, getPerPanelMap, SmallMultipleScales, SmallMultiplesDatum } from '../../../../common/panel_utils';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
@@ -22,9 +23,11 @@ import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
+import { ChartDimensions } from '../../../xy_chart/utils/dimensions';
 import { HeatmapSpec } from '../../specs';
-import { ChartElementSizes, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
+import { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import { ColorScale } from '../../state/selectors/get_color_scale';
+import { HeatmapTable } from '../../state/selectors/get_heatmap_table';
 import {
   Cell,
   GridCell,
@@ -38,7 +41,7 @@ import {
 import { BaseDatum } from './../../../xy_chart/utils/specs';
 
 /** @public */
-export interface HeatmapCellDatum {
+export interface HeatmapCellDatum extends SmallMultiplesDatum {
   x: NonNullable<PrimitiveValue>;
   y: NonNullable<PrimitiveValue>;
   value: number;
@@ -60,9 +63,11 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   textMeasure: TextMeasure,
   spec: HeatmapSpec<D>,
   { heatmap: heatmapTheme, axes: { axisTitle }, background }: Theme,
+  { chartDimensions }: ChartDimensions,
   elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
+  smScales: SmallMultipleScales,
   bandsToHide: Array<[number, number]>,
 ): ShapeViewModel {
   const gridStrokeWidth = heatmapTheme.grid.stroke.width ?? 1;
@@ -77,30 +82,31 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     ...heatmapTheme.yAxisLabel,
   }));
 
+  const panelSize = getPanelSize(smScales);
   // compute the scale for the rows positions
-  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, elementSizes.fullHeatmapHeight]);
+  // const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, elementSizes.fullHeatmapHeight]);
+  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, panelSize.height]);
 
   const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
-    .domain([0, elementSizes.fullHeatmapHeight])
+    // .domain([0, elementSizes.fullHeatmapHeight])
+    .domain([0, panelSize.height])
     .range(yValues);
 
   // compute the scale for the columns positions
-  const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, elementSizes.grid.width]);
+  // const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, chartDimensions.width]);
+  const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, panelSize.width]);
 
-  const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
-    .domain([0, elementSizes.grid.width])
-    .range(xValues);
+  // const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, chartDimensions.width]).range(xValues);
+  const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, panelSize.width]).range(xValues);
 
-  // compute the cell width (can be smaller then the available size depending on config
+  // compute the cell width, can be smaller then the available size depending on config
   const cellWidth =
     heatmapTheme.cell.maxWidth !== 'fill' && xScale.bandwidth() > heatmapTheme.cell.maxWidth
       ? heatmapTheme.cell.maxWidth
       : xScale.bandwidth();
 
-  // compute the cell height (we already computed the max size for that)
+  // compute the cell height, we already computed the max size for that
   const cellHeight = yScale.bandwidth();
-
-  const currentGridHeight = elementSizes.grid.height;
 
   // compute the position of each column label
   const textXValues = getXTicks(spec, heatmapTheme.xAxisLabel, xScale, heatmapTable.xValues);
@@ -185,11 +191,11 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    * @param y
    */
   const pickGridCell = (x: Pixels, y: Pixels): GridCell | undefined => {
-    if (x < elementSizes.grid.left || y < elementSizes.grid.top) return undefined;
-    if (x > elementSizes.grid.width + elementSizes.grid.left || y > elementSizes.grid.top + elementSizes.grid.height)
+    if (x < chartDimensions.left || y < chartDimensions.top) return undefined;
+    if (x > chartDimensions.width + chartDimensions.left || y > chartDimensions.top + chartDimensions.height)
       return undefined;
 
-    const xValue = xInvertedScale(x - elementSizes.grid.left);
+    const xValue = xInvertedScale(x - chartDimensions.left);
     const yValue = yInvertedScale(y);
 
     if (xValue === undefined || yValue === undefined) return undefined;
@@ -205,9 +211,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const pickQuads = (x: Pixels, y: Pixels): Array<Cell> | TextBox => {
     if (
       x > 0 &&
-      x < elementSizes.grid.left &&
-      y > elementSizes.grid.top &&
-      y < elementSizes.grid.top + elementSizes.grid.height
+      x < chartDimensions.left &&
+      y > chartDimensions.top &&
+      y < chartDimensions.top + chartDimensions.height
     ) {
       // look up for a Y axis elements
       const yLabelKey = yInvertedScale(y);
@@ -217,13 +223,13 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       }
     }
 
-    if (x < elementSizes.grid.left || y < elementSizes.grid.top) {
+    if (x < chartDimensions.left || y < chartDimensions.top) {
       return [];
     }
-    if (x > elementSizes.grid.width + elementSizes.grid.left || y > elementSizes.grid.top + elementSizes.grid.height) {
+    if (x > chartDimensions.width + chartDimensions.left || y > chartDimensions.top + chartDimensions.height) {
       return [];
     }
-    const xValue = xInvertedScale(x - elementSizes.grid.left);
+    const xValue = xInvertedScale(x - chartDimensions.left);
     const yValue = yInvertedScale(y);
     if (xValue === undefined || yValue === undefined) {
       return [];
@@ -242,14 +248,14 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const pickDragArea: PickDragFunction = (bound) => {
     const [start, end] = bound;
 
-    const { left, top, width } = elementSizes.grid;
+    const { left, top, width } = chartDimensions;
     const topLeft = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
     const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
 
     const startX = xInvertedScale(clamp(topLeft[0], 0, width));
     const endX = xInvertedScale(clamp(bottomRight[0], 0, width));
-    const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));
-    const endY = yInvertedScale(clamp(bottomRight[1], 0, currentGridHeight - 1));
+    const startY = yInvertedScale(clamp(topLeft[1], 0, panelSize.height - 1));
+    const endY = yInvertedScale(clamp(bottomRight[1], 0, panelSize.height - 1));
 
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
@@ -300,7 +306,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       return null;
     }
 
-    const xStart = elementSizes.grid.left + startFromScale;
+    const xStart = chartDimensions.left + startFromScale;
 
     // extend the range in case the right boundary has been selected
     const width = endFromScale - startFromScale + (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
@@ -346,9 +352,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       ? undefined
       : {
           width: cellWidth,
-          x: elementSizes.grid.left + (xScale(xValues[index]) ?? NaN),
-          y: elementSizes.grid.top,
-          height: elementSizes.grid.height,
+          x: chartDimensions.left + (xScale(xValues[index]) ?? NaN),
+          y: chartDimensions.top,
+          height: chartDimensions.height,
         };
   };
 
@@ -356,19 +362,19 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => {
     const xAxisExtension = i % elementSizes.xAxisTickCadence === 0 ? 5 : 0;
     return {
-      x1: elementSizes.grid.left + i * cellWidth,
-      x2: elementSizes.grid.left + i * cellWidth,
-      y1: elementSizes.grid.top,
-      y2: currentGridHeight + xAxisExtension,
+      x1: i * cellWidth,
+      x2: i * cellWidth,
+      y1: 0,
+      y2: panelSize.height + xAxisExtension,
     };
   });
 
   // horizontal lines
   const yLines = Array.from({ length: elementSizes.visibleNumberOfRows + 1 }, (d, i) => ({
-    x1: elementSizes.grid.left,
-    x2: elementSizes.grid.left + elementSizes.grid.width,
-    y1: elementSizes.grid.top + i * cellHeight,
-    y2: elementSizes.grid.top + i * cellHeight,
+    x1: 0,
+    x2: panelSize.width,
+    y1: i * cellHeight,
+    y2: i * cellHeight,
   }));
 
   const cells = Object.values(cellMap);
@@ -386,50 +392,59 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
   return {
     theme: heatmapTheme,
-    heatmapViewModel: {
-      gridOrigin: {
-        x: elementSizes.grid.left,
-        y: elementSizes.grid.top,
-      },
-      gridLines: {
-        x: xLines,
-        y: yLines,
-        stroke: {
-          color: colorToRgba(heatmapTheme.grid.stroke.color),
-          width: gridStrokeWidth,
+    heatmapViewModels: getPerPanelMap(smScales, (anchor, h, v) => {
+      const primaryColumn = smScales.vertical.domain[0] === v;
+      const primaryRow = smScales.horizontal.domain[0] === h;
+
+      return {
+        anchor,
+        panelSize,
+        gridOrigin: {
+          x: anchor.x + chartDimensions.left,
+          y: anchor.y + chartDimensions.top,
         },
-      },
-      pageSize: elementSizes.visibleNumberOfRows,
-      cells,
-      cellFontSize: (cell: Cell) => (heatmapTheme.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
-      xValues: textXValues,
-      yValues: textYValues,
-      titles: [
-        {
-          origin: {
-            x: elementSizes.grid.left + elementSizes.grid.width / 2,
-            y:
-              elementSizes.grid.top +
-              elementSizes.grid.height +
-              elementSizes.xAxis.height +
-              innerPad(axisTitle.padding) +
-              axisTitle.fontSize / 2,
+        gridLines: {
+          x: xLines,
+          y: yLines,
+          stroke: {
+            color: colorToRgba(heatmapTheme.grid.stroke.color),
+            width: gridStrokeWidth,
           },
-          ...axisTitleFont,
-          text: spec.xAxisTitle,
-          rotation: 0,
         },
-        {
-          origin: {
-            x: elementSizes.yAxis.left - innerPad(axisTitle.padding) - axisTitle.fontSize / 2,
-            y: elementSizes.grid.top + elementSizes.grid.height / 2,
+        pageSize: elementSizes.visibleNumberOfRows,
+        cells,
+        cellFontSize: (cell: Cell) => (heatmapTheme.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
+        xValues: textXValues,
+        yValues: textYValues,
+        primaryColumn,
+        primaryRow,
+        titles: [
+          primaryColumn && {
+            origin: {
+              x: panelSize.width / 2,
+              y:
+                chartDimensions.top +
+                chartDimensions.height +
+                elementSizes.xAxis.height +
+                innerPad(axisTitle.padding) +
+                axisTitle.fontSize / 2,
+            },
+            ...axisTitleFont,
+            text: spec.xAxisTitle,
+            rotation: 0,
           },
-          ...axisTitleFont,
-          text: spec.yAxisTitle,
-          rotation: -90,
-        },
-      ],
-    },
+          primaryRow && {
+            origin: {
+              x: -elementSizes.yAxis.left - innerPad(axisTitle.padding) - axisTitle.fontSize / 2,
+              y: chartDimensions.top + panelSize.height / 2,
+            },
+            ...axisTitleFont,
+            text: spec.yAxisTitle,
+            rotation: -90,
+          },
+        ].filter(Boolean),
+      };
+    }),
     pickGridCell,
     pickQuads,
     pickDragArea,

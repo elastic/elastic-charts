@@ -9,6 +9,7 @@
 import { ChartType } from '../../..';
 import { Color, Colors } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
+import { PerPanelMap } from '../../../../common/panel_utils';
 import { Box, Font, TextAlign } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { HeatmapBrushEvent } from '../../../../specs/settings';
@@ -47,7 +48,7 @@ export interface TextBox extends Box {
 }
 
 /** @internal */
-export interface HeatmapViewModel {
+export interface HeatmapViewModel extends PerPanelMap {
   gridOrigin: {
     x: number;
     y: number;
@@ -62,6 +63,8 @@ export interface HeatmapViewModel {
   xValues: Array<TextBox>;
   yValues: Array<TextBox>;
   pageSize: number;
+  primaryRow: boolean;
+  primaryColumn: boolean;
   titles: Array<
     Font &
       Visible & {
@@ -111,7 +114,7 @@ export type DragShape = ReturnType<PickDragShapeFunction>;
 /** @internal */
 export type ShapeViewModel = {
   theme: HeatmapStyle;
-  heatmapViewModel: HeatmapViewModel;
+  heatmapViewModels: HeatmapViewModel[];
   pickQuads: PickFunction;
   pickDragArea: PickDragFunction;
   pickDragShape: PickDragShapeFunction;
@@ -121,28 +124,9 @@ export type ShapeViewModel = {
 };
 
 /** @internal */
-export const nullHeatmapViewModel: HeatmapViewModel = {
-  gridOrigin: {
-    x: 0,
-    y: 0,
-  },
-  gridLines: {
-    x: [],
-    y: [],
-    stroke: { width: 0, color: Colors.Transparent.rgba },
-  },
-  cells: [],
-  xValues: [],
-  yValues: [],
-  pageSize: 0,
-  cellFontSize: () => 0,
-  titles: [],
-};
-
-/** @internal */
 export const nullShapeViewModel = (): ShapeViewModel => ({
   theme: LIGHT_THEME.heatmap,
-  heatmapViewModel: nullHeatmapViewModel,
+  heatmapViewModels: [],
   pickQuads: () => [],
   pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartType.Heatmap }),
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),

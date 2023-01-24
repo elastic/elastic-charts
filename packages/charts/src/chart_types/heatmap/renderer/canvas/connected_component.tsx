@@ -23,16 +23,18 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Dimensions } from '../../../../utils/dimensions';
+import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { ChartElementSizes, computeChartElementSizesSelector } from '../../state/selectors/compute_chart_dimensions';
-import { getHeatmapGeometries } from '../../state/selectors/geometries';
+import { ChartElementSizes, computeChartElementSizesSelector } from '../../state/selectors/compute_chart_element_sizes';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
 import { getHighlightedLegendBandsSelector } from '../../state/selectors/get_highlighted_legend_bands';
-import { renderCanvas2d } from './canvas_renderers';
+import { getPerPanelHeatmapGeometries } from '../../state/selectors/get_per_panel_heatmap_geometries';
+import { renderHeatmapCanvas2d } from './canvas_renderers';
 
-interface ReactiveChartStateProps {
+/** @internal */
+export interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
@@ -80,6 +82,10 @@ class Component extends React.Component<Props> {
     }
   }
 
+  shouldComponentUpdate(nextProps: ReactiveChartStateProps) {
+    return !deepEqual(this.props, nextProps);
+  }
+
   componentDidUpdate() {
     if (!this.ctx) {
       this.tryCanvasContext();
@@ -97,19 +103,7 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      renderCanvas2d(
-        this.ctx,
-        this.devicePixelRatio,
-        {
-          ...this.props.geometries,
-          theme: this.props.geometries.theme,
-        },
-        this.props.theme.sharedStyle,
-        this.props.background,
-        this.props.elementSizes,
-        this.props.debug,
-        this.props.highlightedLegendBands,
-      );
+      renderHeatmapCanvas2d(this.ctx, this.devicePixelRatio, this.props);
     }
   }
 
@@ -167,7 +161,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   background: Colors.Transparent.keyword,
   elementSizes: {
-    grid: { width: 0, height: 0, left: 0, top: 0 },
     xAxis: { width: 0, height: 0, left: 0, top: 0 },
     yAxis: { width: 0, height: 0, left: 0, top: 0 },
     fullHeatmapHeight: 0,
@@ -185,7 +178,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
   return {
     initialized: true,
-    geometries: getHeatmapGeometries(state),
+    geometries: getPerPanelHeatmapGeometries(state),
     chartContainerDimensions: getHeatmapContainerSizeSelector(state),
     highlightedLegendBands: getHighlightedLegendBandsSelector(state),
     theme: getChartThemeSelector(state),
