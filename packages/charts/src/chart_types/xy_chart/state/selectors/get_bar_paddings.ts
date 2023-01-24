@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
 export const getBarPaddingsSelector = createCustomCachedSelector(

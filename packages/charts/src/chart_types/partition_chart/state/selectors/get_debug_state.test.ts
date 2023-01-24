@@ -8,6 +8,8 @@
 
 import { Store } from 'redux';
 
+import { getDebugStateSelector } from './get_debug_state';
+import { createOnElementClickCaller } from './on_element_click_caller';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import {
@@ -22,8 +24,6 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { DebugState, PartitionDebugState, SinglePartitionDebugState } from '../../../../state/types';
 import { PartitionLayout } from '../../layout/types/config_types';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
-import { getDebugStateSelector } from './get_debug_state';
-import { createOnElementClickCaller } from './on_element_click_caller';
 
 describe.each([
   [PartitionLayout.sunburst, 9, 9],

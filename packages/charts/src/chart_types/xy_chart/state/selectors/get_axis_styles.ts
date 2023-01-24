@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getAxisSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { mergePartial } from '../../../../utils/common';
 import { AxisId } from '../../../../utils/ids';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
-import { getAxisSpecsSelector } from './get_specs';
 
 /** @internal */
 export const getAxesStylesSelector = createCustomCachedSelector(

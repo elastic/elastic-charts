@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
+import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Rotation } from '../../../../utils/common';
@@ -13,8 +15,6 @@ import { SpecId } from '../../../../utils/ids';
 import { defaultTickFormatter, isXDomain } from '../../utils/axis_utils';
 import { groupBy } from '../../utils/group_data_series';
 import { AxisSpec } from '../../utils/specs';
-import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
-import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 
 /** @internal */
 export type AxisLabelFormatter<V = unknown> = (value: V) => string;

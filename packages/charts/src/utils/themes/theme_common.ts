@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { SharedGeometryStateStyle } from './theme';
 import { Colors } from '../../common/colors';
 import { Margins } from '../dimensions';
-import { SharedGeometryStateStyle } from './theme';
 
 /** @internal */
 export const DEFAULT_MISSING_COLOR = Colors.Red.keyword;

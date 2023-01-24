@@ -8,6 +8,8 @@
 
 import { Selector } from 'reselect';
 
+import { getSpecOrNull } from './heatmap_spec';
+import { getPickedGridCell } from './picked_shapes';
 import { ChartType } from '../../..';
 import {
   PointerEvent,
@@ -22,8 +24,6 @@ import { getActivePointerPosition } from '../../../../state/selectors/get_active
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { getSpecOrNull } from './heatmap_spec';
-import { getPickedGridCell } from './picked_shapes';
 
 function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, changeTrigger: PointerUpdateTrigger) {
   const checkX = changeTrigger === PointerUpdateTrigger.X || changeTrigger === PointerUpdateTrigger.Both;

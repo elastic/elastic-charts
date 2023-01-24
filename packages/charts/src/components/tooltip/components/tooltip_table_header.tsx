@@ -9,14 +9,14 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
-import { Datum } from '../../../utils/common';
-import { PropsOrChildrenWithProps } from '../types';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
 import { TooltipTableColumn } from './types';
+import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum, TooltipValue } from '../../../specs';
+import { Datum } from '../../../utils/common';
+import { PropsOrChildrenWithProps } from '../types';
 
 type TooltipTableHeaderProps<
   D extends BaseDatum = Datum,

@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
+import * as fitFunctionModule from './fit_function';
+import * as testModule from './fit_function_utils';
+import { Fit } from './specs';
 import { MockDataSeries } from '../../../mocks';
 import { MockSeriesSpecs, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
-import * as fitFunctionModule from './fit_function';
-import * as testModule from './fit_function_utils';
-import { Fit } from './specs';
 
 const EMPTY_DATA_SET = MockSeriesSpec.area({
   xScaleType: ScaleType.Linear,

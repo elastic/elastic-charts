@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getPartitionSpec } from './partition_spec';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
 export const getChartTypeDescriptionSelector = createCustomCachedSelector(

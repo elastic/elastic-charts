@@ -8,13 +8,13 @@
 
 import { Store } from 'redux';
 
+import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from './layout/utils/group_by_rollup';
+import { computeLegendSelector } from './state/selectors/compute_legend';
+import { getLegendItemsLabels } from './state/selectors/get_legend_items_labels';
 import { MockGlobalSpec, MockSeriesSpec } from '../../mocks/specs';
 import { MockStore } from '../../mocks/store';
 import { GlobalChartState } from '../../state/chart_state';
 import { LegendItemLabel } from '../../state/selectors/get_legend_items_labels';
-import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from './layout/utils/group_by_rollup';
-import { computeLegendSelector } from './state/selectors/compute_legend';
-import { getLegendItemsLabels } from './state/selectors/get_legend_items_labels';
 
 // sorting is useful to ensure tests pass even if order changes (where order doesn't matter)
 const ascByLabel = (a: LegendItemLabel, b: LegendItemLabel) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0);

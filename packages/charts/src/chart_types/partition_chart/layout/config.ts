@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { PartitionLayout } from './types/config_types';
+import { ShapeTreeNode } from './types/viewmodel_types';
+import { AGGREGATE_KEY, STATISTICS_KEY } from './utils/group_by_rollup';
 import { Colors } from '../../../common/colors';
 import { ConfigItem, Numeric } from '../../../common/config_objects';
 import { GOLDEN_RATIO, TAU } from '../../../common/constants';
 import { FONT_STYLES, FONT_VARIANTS } from '../../../common/text_utils';
 import { ColorVariant } from '../../../utils/common';
-import { PartitionLayout } from './types/config_types';
-import { ShapeTreeNode } from './types/viewmodel_types';
-import { AGGREGATE_KEY, STATISTICS_KEY } from './utils/group_by_rollup';
 
 function significantDigitCount(d: number): number {
   let n = Math.abs(parseFloat(String(d).replace('.', '')));

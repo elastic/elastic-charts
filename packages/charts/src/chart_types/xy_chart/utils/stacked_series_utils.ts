@@ -8,10 +8,6 @@
 
 import { stack as D3Stack, stackOffsetWiggle, stackOrderNone } from 'd3-shape';
 
-import { SeriesKey } from '../../../common/series_id';
-import { ScaleType } from '../../../scales/constants';
-import { clamp, isDefined } from '../../../utils/common';
-import { Logger } from '../../../utils/logger';
 import {
   diverging,
   divergingPercentage,
@@ -22,6 +18,10 @@ import {
 } from './diverging_offsets';
 import { DataSeries, DataSeriesDatum } from './series';
 import { SeriesType, StackMode } from './specs';
+import { SeriesKey } from '../../../common/series_id';
+import { ScaleType } from '../../../scales/constants';
+import { clamp, isDefined } from '../../../utils/common';
+import { Logger } from '../../../utils/logger';
 
 /** @internal */
 export interface StackedValues {

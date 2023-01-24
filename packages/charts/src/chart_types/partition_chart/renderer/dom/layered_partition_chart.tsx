@@ -8,11 +8,11 @@
 
 import React, { RefObject } from 'react';
 
+import { HighlighterFromHover } from './highlighter_hover';
+import { HighlighterFromLegend } from './highlighter_legend';
 import { Tooltip } from '../../../../components/tooltip/tooltip';
 import { BackwardRef } from '../../../../state/chart_state';
 import { Partition } from '../canvas/partition';
-import { HighlighterFromHover } from './highlighter_hover';
-import { HighlighterFromLegend } from './highlighter_legend';
 
 /** @internal */
 export function render(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {

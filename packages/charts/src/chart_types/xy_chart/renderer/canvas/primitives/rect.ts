@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { MIN_STROKE_WIDTH } from './line';
 import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
-import { MIN_STROKE_WIDTH } from './line';
 
 /** @internal */
 export function renderRect(

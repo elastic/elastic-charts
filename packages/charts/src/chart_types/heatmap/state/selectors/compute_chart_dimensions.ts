@@ -8,6 +8,8 @@
 
 import { scaleBand } from 'd3-scale';
 
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { getHeatmapTableSelector } from './get_heatmap_table';
 import { Radian } from '../../../../common/geometry';
 import { extent } from '../../../../common/math';
 import { rotate2, sub2, Vec2 } from '../../../../common/vectors';
@@ -24,8 +26,6 @@ import { AxisStyle, HeatmapStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapCellDatum, isRasterTimeScale } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs/heatmap';
-import { getHeatmapSpecSelector } from './get_heatmap_spec';
-import { getHeatmapTableSelector } from './get_heatmap_table';
 
 /** @internal */
 export interface HeatmapTable {

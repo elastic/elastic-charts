@@ -9,10 +9,10 @@
 import { ComponentProps } from 'react';
 
 import { Spec } from '.';
+import { SpecType } from './constants';
 import { ChartType } from '../chart_types';
 import { Ratio } from '../common/geometry';
 import { specComponentFactory } from '../state/spec_factory';
-import { SpecType } from './constants';
 
 /**
  * Can be used for margin or padding start/end (eg. left/right or top/bottom)

@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
 export const hasSingleSeriesSelector = createCustomCachedSelector(

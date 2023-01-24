@@ -6,6 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getComputedScalesSelector } from './get_computed_scales';
+import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
+import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
+import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
+import { getSiDataSeriesMapSelector } from './get_si_dataseries_map';
+import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
+import { hasSingleSeriesSelector } from './has_single_series';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import {
   PointerEvent,
@@ -35,13 +42,6 @@ import { DataSeries } from '../../utils/series';
 import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
 import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from '../utils/spec';
 import { ComputedScales } from '../utils/types';
-import { getComputedScalesSelector } from './get_computed_scales';
-import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
-import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
-import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
-import { getSiDataSeriesMapSelector } from './get_si_dataseries_map';
-import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
-import { hasSingleSeriesSelector } from './has_single_series';
 
 const EMPTY_VALUES = Object.freeze({
   tooltip: {

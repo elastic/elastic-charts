@@ -9,11 +9,11 @@
 import { ComponentProps } from 'react';
 
 import { BaseDatum, Spec } from '.';
+import { SpecType } from './constants';
 import { ChartType } from '../chart_types';
 import { Predicate } from '../common/predicate';
 import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
 import { Datum, stripUndefined } from '../utils/common';
-import { SpecType } from './constants';
 
 /** @public */
 export type GroupByAccessor<D extends BaseDatum = any> = (spec: Spec, datum: D) => string | number;
@@ -59,10 +59,10 @@ const buildProps = buildSFProps<GroupBySpec>()(
 export const GroupBy = function <D extends BaseDatum = Datum>(
   props: SFProps<
     GroupBySpec<D>,
-    keyof typeof buildProps['overrides'],
-    keyof typeof buildProps['defaults'],
-    keyof typeof buildProps['optionals'],
-    keyof typeof buildProps['requires']
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = buildProps;

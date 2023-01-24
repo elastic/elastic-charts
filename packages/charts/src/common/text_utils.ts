@@ -8,12 +8,12 @@
 
 import { $Values as Values } from 'utility-types';
 
+import { Color } from './colors';
+import { Pixels, Rectangle } from './geometry';
 import { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
 import { Datum } from '../utils/common';
-import { Color } from './colors';
-import { Pixels, Rectangle } from './geometry';
 
 const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'];
@@ -29,21 +29,21 @@ export const FONT_WEIGHTS = Object.freeze([...FONT_WEIGHTS_NUMERIC, ...FONT_WEIG
 /** @public */
 export const FONT_VARIANTS = Object.freeze(['normal', 'small-caps'] as const);
 /** @public */
-export type FontVariant = typeof FONT_VARIANTS[number];
+export type FontVariant = (typeof FONT_VARIANTS)[number];
 /** @public */
-export type FontWeight = typeof FONT_WEIGHTS[number];
+export type FontWeight = (typeof FONT_WEIGHTS)[number];
 /** @public */
 export const FONT_STYLES = Object.freeze(['normal', 'italic', 'oblique', 'inherit', 'initial', 'unset'] as const);
 /** @public */
-export type FontStyle = typeof FONT_STYLES[number];
+export type FontStyle = (typeof FONT_STYLES)[number];
 /** @public */
 export type PartialFont = Partial<Font>;
 /** @public */
 export const TEXT_ALIGNS = Object.freeze(['start', 'end', 'left', 'right', 'center'] as const);
 /** @public */
-export type TextAlign = typeof TEXT_ALIGNS[number];
+export type TextAlign = (typeof TEXT_ALIGNS)[number];
 /** @public */
-export type TextBaseline = typeof TEXT_BASELINE[number];
+export type TextBaseline = (typeof TEXT_BASELINE)[number];
 
 /** @internal */
 export type VerticalAlignments = Values<typeof VerticalAlignments>;

@@ -10,6 +10,8 @@ import React, { RefObject, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { AnnotationTooltip } from './annotation_tooltip';
+import { LineMarker } from './line_marker';
 import {
   onDOMElementEnter as onDOMElementEnterAction,
   onDOMElementLeave as onDOMElementLeaveAction,
@@ -39,8 +41,6 @@ import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { getSpecsById } from '../../../state/utils/spec';
 import { isLineAnnotation, AnnotationSpec, AnnotationAnimationConfig } from '../../../utils/specs';
 import { getAnnotationHoverParamsFn } from '../../common/utils';
-import { AnnotationTooltip } from './annotation_tooltip';
-import { LineMarker } from './line_marker';
 
 interface AnnotationsDispatchProps {
   onPointerMove: typeof onPointerMoveAction;

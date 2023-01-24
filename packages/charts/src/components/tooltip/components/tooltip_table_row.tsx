@@ -9,8 +9,8 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
 
-import { isNil } from '../../../utils/common';
 import { useTooltipContext } from './tooltip_provider';
+import { isNil } from '../../../utils/common';
 
 type TooltipTableRowProps = PropsWithChildren<{
   id?: string;

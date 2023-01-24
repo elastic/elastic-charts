@@ -8,11 +8,11 @@
 
 import { Store } from 'redux';
 
+import { getLegendItemsLabels } from './get_legend_items_labels';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
-import { getLegendItemsLabels } from './get_legend_items_labels';
 
 describe('Partition - Legend items labels', () => {
   type TestDatum = [string, string, string, number];

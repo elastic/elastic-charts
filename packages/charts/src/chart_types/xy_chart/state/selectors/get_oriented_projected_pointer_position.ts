@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
+import { getProjectedPointerPositionSelector, PointerPosition } from './get_projected_pointer_position';
 import { SettingsSpec } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getOrientedXPosition, getOrientedYPosition } from '../../utils/interactions';
 import { getPanelSize } from '../../utils/panel';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
-import { getProjectedPointerPositionSelector, PointerPosition } from './get_projected_pointer_position';
 
 /** @internal */
 export const getOrientedProjectedPointerPositionSelector = createCustomCachedSelector(

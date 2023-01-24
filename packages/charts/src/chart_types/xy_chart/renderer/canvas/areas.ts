@@ -6,6 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { getPanelClipping } from './panel_clipping';
+import { renderPoints } from './points';
+import { renderLinePaths, renderAreaPath } from './primitives/path';
+import { buildAreaStyles } from './styles/area';
+import { buildLineStyles } from './styles/line';
+import { withPanelTransform } from './utils/panel_transform';
 import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
 import { Fill, Rect, Stroke } from '../../../../geoms/types';
@@ -16,12 +22,6 @@ import { AreaGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
 import { getTextureStyles } from '../../utils/texture';
-import { getPanelClipping } from './panel_clipping';
-import { renderPoints } from './points';
-import { renderLinePaths, renderAreaPath } from './primitives/path';
-import { buildAreaStyles } from './styles/area';
-import { buildLineStyles } from './styles/line';
-import { withPanelTransform } from './utils/panel_transform';
 
 /** @internal */
 export function renderAreas(

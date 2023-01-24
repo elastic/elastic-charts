@@ -21,14 +21,14 @@ import {
 import { Required } from 'utility-types';
 
 import { ScaleContinuousType } from '.';
+import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
+import { LogScaleOptions } from './types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
 import { clamp, isFiniteNumber, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
-import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
-import { LogScaleOptions } from './types';
 
 type ContinuousScaleType =
   | typeof ScaleType.Time

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getSnapPosition } from './crosshair_utils';
 import { ChartType } from '../..';
 import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { ScaleType } from '../../../scales/constants';
@@ -14,7 +15,6 @@ import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_confi
 import { computeSeriesDomains } from '../state/utils/utils';
 import { computeXScale } from '../utils/scales';
 import { BasicSeriesSpec, SeriesType } from '../utils/specs';
-import { getSnapPosition } from './crosshair_utils';
 
 describe('Crosshair utils ordinal scales', () => {
   const barSeries1SpecId = 'barSeries1';

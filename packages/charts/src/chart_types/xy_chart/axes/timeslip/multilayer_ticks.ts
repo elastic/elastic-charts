@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { unitIntervalWidth, AxisLayer, Interval, continuousTimeRasters } from './continuous_time_rasters';
 import { ScaleContinuous } from '../../../../scales';
 import { XDomain } from '../../domains/types';
 import { AxisLabelFormatter } from '../../state/selectors/axis_tick_formatter';
 import { GetMeasuredTicks, Projection } from '../../state/selectors/visible_ticks';
-import { unitIntervalWidth, AxisLayer, Interval, continuousTimeRasters } from './continuous_time_rasters';
 
 const WIDTH_FUDGE = 1.05; // raster bin widths are sometimes approximate, but there's no raster that's just 5% denser/sparser, so it's safe
 

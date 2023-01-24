@@ -8,9 +8,9 @@
 
 import { Router } from 'express';
 
-import { getConfig } from '../config';
 import { handleFinishedBuild } from './finished_build';
 import { BuildkiteWebhookPayload } from './types';
+import { getConfig } from '../config';
 interface RouteParams {
   nonce?: string;
 }

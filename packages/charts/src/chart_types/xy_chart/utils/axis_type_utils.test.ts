@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Position } from '../../../utils/common';
 import { isVerticalAxis, isHorizontalAxis, isVerticalGrid, isHorizontalGrid } from './axis_type_utils';
+import { Position } from '../../../utils/common';
 
 describe('Axis type utils', () => {
   test('should determine orientation of axis position', () => {

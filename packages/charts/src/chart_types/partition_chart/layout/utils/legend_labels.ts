@@ -6,9 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
-import { ValueFormatter } from '../../../../utils/common';
-import { Layer } from '../../specs';
 import {
   CHILDREN_KEY,
   HIERARCHY_ROOT_KEY,
@@ -18,6 +15,9 @@ import {
   NULL_SMALL_MULTIPLES_KEY,
   AGGREGATE_KEY,
 } from './group_by_rollup';
+import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
+import { ValueFormatter } from '../../../../utils/common';
+import { Layer } from '../../specs';
 
 /** @internal */
 export function getLegendLabelsAndValue(

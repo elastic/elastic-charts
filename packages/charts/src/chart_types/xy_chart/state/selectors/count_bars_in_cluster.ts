@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { SeriesType } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { groupBy } from '../../utils/group_data_series';
 import { SeriesDomainsAndData } from '../utils/types';
 import { getBarIndexKey } from '../utils/utils';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
 export const countBarsInClusterSelector = createCustomCachedSelector(

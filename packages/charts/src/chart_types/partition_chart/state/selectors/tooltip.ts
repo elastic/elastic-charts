@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { TooltipInfo } from '../../../../components/tooltip/types';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { pickShapesTooltipValues } from '../../layout/viewmodel/picked_shapes';
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpec } from './partition_spec';
 import { getPickedShapes } from './picked_shapes';
+import { TooltipInfo } from '../../../../components/tooltip/types';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { pickShapesTooltipValues } from '../../layout/viewmodel/picked_shapes';
 
 const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
 

@@ -9,6 +9,9 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
+import { ScreenReaderDescription } from './description';
+import { ScreenReaderLabel } from './label';
+import { ScreenReaderTypes } from './types';
 import {
   getGoalChartDataSelector,
   getGoalChartLabelsSelector,
@@ -23,9 +26,6 @@ import {
 } from '../../state/selectors/get_accessibility_config';
 import { getChartTypeDescriptionSelector } from '../../state/selectors/get_chart_type_description';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
-import { ScreenReaderDescription } from './description';
-import { ScreenReaderLabel } from './label';
-import { ScreenReaderTypes } from './types';
 
 interface ScreenReaderSummaryStateProps {
   a11ySettings: A11ySettings;

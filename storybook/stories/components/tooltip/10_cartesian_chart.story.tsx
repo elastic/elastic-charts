@@ -22,11 +22,11 @@ import {
   TooltipAction,
 } from '@elastic/charts';
 
+import { DATA_SERIES } from './data/series';
 import { useBaseTheme } from '../../../use_base_theme';
 import { getTooltipTypeKnob } from '../../utils/knobs';
 import { SB_SOURCE_PANEL } from '../../utils/storybook';
 import { wait } from '../../utils/utils';
-import { DATA_SERIES } from './data/series';
 
 const formatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',

@@ -9,12 +9,12 @@
 import { DateTime } from 'luxon';
 import { Store } from 'redux';
 
+import { createOnBrushEndCaller } from './on_brush_end_caller';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { createOnBrushEndCaller } from './on_brush_end_caller';
 
 describe('Categorical heatmap brush', () => {
   let store: Store<GlobalChartState>;

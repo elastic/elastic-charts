@@ -9,6 +9,9 @@
 import { DateTime } from 'luxon';
 import { createStore, Store } from 'redux';
 
+import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
+import { getComputedScalesSelector } from './selectors/get_computed_scales';
+import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { ChartType } from '../..';
 import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
@@ -21,9 +24,6 @@ import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state'
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { mergeWithDefaultTheme } from '../../../utils/themes/merge_utils';
 import { LineSeriesSpec, SeriesType } from '../utils/specs';
-import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
-import { getComputedScalesSelector } from './selectors/get_computed_scales';
-import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 
 describe('Render chart', () => {
   describe('line, utc-time, day interval', () => {
