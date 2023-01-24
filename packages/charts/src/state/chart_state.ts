@@ -20,6 +20,7 @@ import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { CategoryKey } from '../common/category';
 import { Color } from '../common/colors';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
+import { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import { SeriesIdentifier, SeriesKey } from '../common/series_id';
 import { AnchorPosition } from '../components/portal/types';
 import { TooltipInfo } from '../components/tooltip/types';
@@ -160,6 +161,11 @@ export interface InternalChartState {
    * Get the series types for the screen reader summary component
    */
   getChartTypeDescription(globalState: GlobalChartState): string;
+
+  /**
+   * Get the domain of the vertical and horizontal small multiple grids
+   */
+  getSmallMultiplesDomains(globalState: GlobalChartState): SmallMultiplesSeriesDomains;
 }
 
 /** @internal */

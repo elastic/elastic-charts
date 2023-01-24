@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getSmallMultiplesIndexOrderSelector } from '../../../../common/panel_utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { computeSeriesDomains } from '../utils/utils';
 import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
-import { getAnnotationSpecsSelector, getSeriesSpecsSelector, getSmallMultiplesIndexOrderSelector } from './get_specs';
+import { getAnnotationSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 

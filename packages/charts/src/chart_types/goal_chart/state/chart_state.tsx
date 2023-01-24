@@ -141,4 +141,11 @@ export class GoalState implements InternalChartState {
   getDebugState(): DebugState {
     return {};
   }
+
+  getSmallMultiplesDomains() {
+    return {
+      smHDomain: [],
+      smVDomain: [],
+    };
+  }
 }

@@ -7,6 +7,7 @@
  */
 
 import { Color } from '../../../common/colors';
+import { SmallMultiplesDatum, SmallMultiplesGroupBy } from '../../../common/panel_utils';
 import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { BinAgg, Direction, XScaleType } from '../../../specs';
@@ -19,7 +20,6 @@ import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
-import { SmallMultiplesGroupBy } from '../state/selectors/get_specs';
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
 import { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
@@ -59,12 +59,10 @@ export interface DataSeriesDatum<T = any> {
 }
 
 /** @public */
-export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier {
+export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier, SmallMultiplesDatum {
   xAccessor: Accessor<D>;
   yAccessor: Accessor<D>;
   splitAccessors: Map<string | number, string | number>; // does the map have a size vs making it optional
-  smVerticalAccessorValue?: string | number;
-  smHorizontalAccessorValue?: string | number;
   seriesKeys: (string | number)[];
 }
 

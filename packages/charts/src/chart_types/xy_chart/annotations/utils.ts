@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { SmallMultipleScales } from '../../../common/panel_utils';
 import { SettingsSpec } from '../../../specs';
 import { Rotation, Position } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle } from '../../../utils/themes/theme';
-import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { getAxesSpecForSpecId } from '../state/utils/spec';
 import { ComputedGeometries } from '../state/utils/types';
 import { AnnotationDomainType, AnnotationSpec, AxisSpec, isLineAnnotation } from '../utils/specs';

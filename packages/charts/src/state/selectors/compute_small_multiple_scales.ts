@@ -6,27 +6,22 @@
  * Side Public License, v 1.
  */
 
-import { ScaleBand } from '../../../../scales';
-import { DEFAULT_SM_PANEL_PADDING, RelativeBandsPadding } from '../../../../specs/small_multiples';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
-import { OrdinalDomain } from '../../../../utils/domain';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
-
-/** @internal */
-export interface SmallMultipleScales {
-  horizontal: ScaleBand;
-  vertical: ScaleBand;
-}
+import { SmallMultipleScales } from '../../common/panel_utils';
+import { ScaleBand } from '../../scales';
+import { RelativeBandsPadding, DEFAULT_SM_PANEL_PADDING } from '../../specs';
+import { OrdinalDomain } from '../../utils/domain';
+import { createCustomCachedSelector } from '../create_selector';
+import { getInternalMainProjectionAreaSelector } from './get_internal_main_projection_area';
+import { getInternalSmallMultiplesDomains } from './get_internal_sm_domains';
+import { getSmallMultiplesSpec } from './get_small_multiples_spec';
 
 /**
  * Return the small multiple scales for horizontal and vertical grids
  * @internal
  */
 export const computeSmallMultipleScalesSelector = createCustomCachedSelector(
-  [computeSeriesDomainsSelector, computeChartDimensionsSelector, getSmallMultiplesSpec],
-  ({ smHDomain, smVDomain }, { chartDimensions: { width, height } }, smSpec): SmallMultipleScales => {
+  [getInternalSmallMultiplesDomains, getInternalMainProjectionAreaSelector, getSmallMultiplesSpec],
+  ({ smHDomain, smVDomain }, { width, height }, smSpec): SmallMultipleScales => {
     return {
       horizontal: getScale(smHDomain, width, smSpec && smSpec[0].style?.horizontalPanelPadding),
       vertical: getScale(smVDomain, height, smSpec && smSpec[0].style?.verticalPanelPadding),

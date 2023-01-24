@@ -9,12 +9,14 @@
 import { Selector } from 'reselect';
 
 import { ChartType } from '../../..';
+import { SmallMultipleScales } from '../../../../common/panel_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { isContinuousScale } from '../../../../scales/types';
 import { GroupBrushExtent, SeriesSpecs, XYBrushEvent } from '../../../../specs';
 import { BrushAxis } from '../../../../specs/constants';
 import { DragState, GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { clamp, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -23,7 +25,6 @@ import { GroupId } from '../../../../utils/ids';
 import { isHistogramEnabled } from '../../domains/y_domain';
 import { isVerticalRotation } from '../utils/common';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { getPlotAreaRestrictedPoint, getPointsConstraintToSinglePanel, PanelPoints } from './get_brush_area';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getSeriesSpecsSelector } from './get_specs';

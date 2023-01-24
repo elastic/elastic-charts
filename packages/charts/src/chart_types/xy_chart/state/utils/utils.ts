@@ -7,6 +7,7 @@
  */
 
 import { Color } from '../../../../common/colors';
+import { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../common/panel_utils';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
@@ -60,9 +61,7 @@ import {
   isLineAnnotation,
   isLineSeriesSpec,
 } from '../../utils/specs';
-import { SmallMultipleScales } from '../selectors/compute_small_multiple_scales';
 import { ScaleConfigs } from '../selectors/get_api_scale_configs';
-import { SmallMultiplesGroupBy } from '../selectors/get_specs';
 import { isHorizontalRotation } from './common';
 import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
 import { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';

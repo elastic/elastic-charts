@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { computeChartDimensionsSelector } from '../../chart_types/xy_chart/state/selectors/compute_chart_dimensions';
 import { getComputedScalesSelector } from '../../chart_types/xy_chart/state/selectors/get_computed_scales';
 import { PointerEventType } from '../../specs';
 import { isNil } from '../../utils/common';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
+import { getInternalMainProjectionAreaSelector } from './get_internal_main_projection_area';
 import { getSettingsSpecSelector } from './get_settings_spec';
 import { hasExternalEventSelector } from './has_external_pointer_event';
 
@@ -24,9 +24,9 @@ export const isExternalTooltipVisibleSelector = createCustomCachedSelector(
     hasExternalEventSelector,
     getExternalEventPointer,
     getComputedScalesSelector,
-    computeChartDimensionsSelector,
+    getInternalMainProjectionAreaSelector,
   ],
-  ({ externalPointerEvents }, hasExternalEvent, pointer, { xScale }, { chartDimensions }): boolean => {
+  ({ externalPointerEvents }, hasExternalEvent, pointer, { xScale }, chartDimensions): boolean => {
     if (
       !pointer ||
       pointer.type !== PointerEventType.Over ||

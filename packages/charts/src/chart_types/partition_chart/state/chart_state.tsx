@@ -135,4 +135,11 @@ export class PartitionState implements InternalChartState {
   getChartTypeDescription(state: GlobalChartState): string {
     return getChartTypeDescriptionSelector(state);
   }
+
+  getSmallMultiplesDomains() {
+    return {
+      smHDomain: [],
+      smVDomain: [],
+    };
+  }
 }

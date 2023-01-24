@@ -8,10 +8,10 @@
 
 import { Colors } from '../../../../../common/colors';
 import { withContext } from '../../../../../renderers/canvas';
+import { PanelGeoms } from '../../../../../state/selectors/compute_panels';
 import { Position } from '../../../../../utils/common';
 import { AxisId } from '../../../../../utils/ids';
 import { Point } from '../../../../../utils/point';
-import { PanelGeoms } from '../../../state/selectors/compute_panels';
 import { getSpecsById } from '../../../state/utils/spec';
 import { AxisSpec } from '../../../utils/specs';
 import { AxesProps, AxisProps, renderAxis } from '../axes';

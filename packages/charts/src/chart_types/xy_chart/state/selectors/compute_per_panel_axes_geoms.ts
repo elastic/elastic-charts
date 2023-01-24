@@ -6,32 +6,25 @@
  * Side Public License, v 1.
  */
 
+import {
+  getPanelTitle,
+  getPerPanelMap,
+  getSmallMultiplesIndexOrderSelector,
+  hasSMDomain,
+  PerPanelMap,
+  SmallMultipleScales,
+} from '../../../../common/panel_utils';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { Position, safeFormat } from '../../../../utils/common';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
+import { Position } from '../../../../utils/common';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
-import { hasSMDomain } from '../../utils/panel';
-import { PerPanelMap, getPerPanelMap } from '../../utils/panel_utils';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
-import { getSmallMultiplesIndexOrderSelector, SmallMultiplesGroupBy } from './get_specs';
 
 /** @internal */
 export type PerPanelAxisGeoms = {
   axesGeoms: AxisGeometry[];
 } & PerPanelMap;
-
-const getPanelTitle = (
-  isVertical: boolean,
-  verticalValue: any,
-  horizontalValue: any,
-  groupBy?: SmallMultiplesGroupBy,
-): string => {
-  const formatter = isVertical ? groupBy?.vertical?.format : groupBy?.horizontal?.format;
-  const value = isVertical ? `${verticalValue}` : `${horizontalValue}`;
-
-  return safeFormat(value, formatter);
-};
 
 const isPrimaryColumnFn =
   ({ horizontal: { domain } }: SmallMultipleScales) =>

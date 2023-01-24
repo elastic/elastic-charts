@@ -6,10 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { Size } from '../../../../utils/dimensions';
-import { getPanelSize } from '../../utils/panel';
-import { PerPanelMap, getPerPanelMap } from '../../utils/panel_utils';
+import { getPanelSize, getPerPanelMap, PerPanelMap } from '../../common/panel_utils';
+import { Size } from '../../utils/dimensions';
+import { createCustomCachedSelector } from '../create_selector';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 
 /** @internal */

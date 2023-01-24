@@ -6,11 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_utils';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { isContinuousScale } from '../../../../scales/types';
 import { AxisSpec, SettingsSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isRTLString, Position, Rotation } from '../../../../utils/common';
@@ -19,13 +21,11 @@ import { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisTick, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
-import { getPanelSize } from '../../utils/panel';
 import { computeXScale } from '../../utils/scales';
 import { SeriesDomainsAndData } from '../utils/types';
 import { AxisLabelFormatter } from './axis_tick_formatter';
 import { getJoinedVisibleAxesData, getLabelBox, JoinedAxisData } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';

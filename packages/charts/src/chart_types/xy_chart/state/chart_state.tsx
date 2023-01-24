@@ -25,6 +25,7 @@ import { CursorLine } from '../renderer/dom/cursor_line';
 import { Highlighter } from '../renderer/dom/highlighter';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
+import { computeSeriesDomainsSelector } from './selectors/compute_series_domains';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
@@ -143,6 +144,10 @@ export class XYAxisChartState implements InternalChartState {
 
   getTooltipAnchor(globalState: GlobalChartState) {
     return getTooltipAnchorPositionSelector(globalState);
+  }
+
+  getSmallMultiplesDomains(globalState: GlobalChartState) {
+    return computeSeriesDomainsSelector(globalState);
   }
 
   eventCallbacks(globalState: GlobalChartState) {

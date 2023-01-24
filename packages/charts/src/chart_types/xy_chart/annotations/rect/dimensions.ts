@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_utils';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import { isDefined, isNil, Position, Rotation } from '../../../../utils/common';
@@ -13,10 +14,8 @@ import { AxisId, GroupId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { SmallMultipleScales } from '../../state/selectors/compute_small_multiple_scales';
 import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
 import { getAxesSpecForSpecId } from '../../state/utils/spec';
-import { getPanelSize } from '../../utils/panel';
 import { AxisSpec, RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
 import { Bounds } from '../types';
 import { AnnotationRectProps } from './types';

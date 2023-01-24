@@ -6,10 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { SmallMultipleScales } from '../../../../common/panel_utils';
 import { Rect } from '../../../../geoms/types';
 import { SettingsSpec, PointerEvent } from '../../../../specs/settings';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
@@ -20,7 +22,6 @@ import { isLineAreaOnlyChart } from '../utils/common';
 import { ComputedGeometries } from '../utils/types';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
