@@ -9,25 +9,25 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { Cell, GridCell, TextBox } from '../../layout/types/viewmodel_types';
-import { computeChartElementSizesSelector } from './compute_chart_dimensions';
-import { getHeatmapGeometries } from './geometries';
+import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
+import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 
 /** @internal */
 export const getPickedShapes = createCustomCachedSelector(
-  [getHeatmapGeometries, getActivePointerPosition, computeChartElementSizesSelector],
-  (geoms, pointerPosition, dims): Cell[] | TextBox => {
+  [getPerPanelHeatmapGeometries, getActivePointerPosition, computeChartElementSizesSelector],
+  (geoms, pointerPosition, elementSizes): Cell[] | TextBox => {
     const picker = geoms.pickQuads;
     const { x, y } = pointerPosition;
     const pickedData = picker(x, y);
     return Array.isArray(pickedData)
-      ? pickedData.filter(({ y }) => y < dims.rowHeight * dims.visibleNumberOfRows)
+      ? pickedData.filter(({ y }) => y < elementSizes.rowHeight * elementSizes.visibleNumberOfRows)
       : pickedData;
   },
 );
 
 /** @internal */
 export const getPickedGridCell = createCustomCachedSelector(
-  [getHeatmapGeometries, getActivePointerPosition, computeChartElementSizesSelector],
+  [getPerPanelHeatmapGeometries, getActivePointerPosition, computeChartElementSizesSelector],
   (geoms, pointerPosition): GridCell | undefined => {
     return geoms.pickGridCell(pointerPosition.x, pointerPosition.y);
   },

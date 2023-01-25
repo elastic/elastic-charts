@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { PerPanelAxisGeoms } from '../../../../../state/selectors/compute_per_panel_axes_geoms';
 import { hasMostlyRTLItems } from '../../../../../utils/common';
+import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
 
 /** @internal */
 export function hasMostlyRTL(geoms: PerPanelAxisGeoms[]): boolean {

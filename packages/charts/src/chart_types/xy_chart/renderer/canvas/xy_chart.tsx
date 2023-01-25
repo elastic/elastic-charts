@@ -228,7 +228,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     y: 0,
     rotate: 0,
   },
-
   axesSpecs: [],
   perPanelAxisGeoms: [],
   perPanelGridLines: [],

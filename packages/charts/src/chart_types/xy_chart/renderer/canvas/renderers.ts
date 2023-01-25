@@ -52,7 +52,9 @@ export function renderXYChartCanvas2d(
         panelGeoms,
         hoveredAnnotationIds,
       } = props;
+
       const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
+
       renderLayers(ctx, [
         () => clearCanvas(ctx, 'transparent'),
 

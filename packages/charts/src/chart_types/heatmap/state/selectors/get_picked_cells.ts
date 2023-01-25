@@ -9,27 +9,27 @@
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { PickDragFunction } from '../../layout/types/viewmodel_types';
-import { computeChartElementSizesSelector } from './compute_chart_dimensions';
-import { getHeatmapGeometries } from './geometries';
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 
 /** @internal */
 export const getPickedCells = createCustomCachedSelector(
-  [getHeatmapGeometries, getLastDragSelector, computeChartElementSizesSelector],
-  (geoms, dragState, dims): ReturnType<PickDragFunction> | null => {
+  [getPerPanelHeatmapGeometries, getLastDragSelector, computeChartDimensionsSelector],
+  (geoms, dragState, { chartDimensions }): ReturnType<PickDragFunction> | null => {
     if (!dragState) {
       return null;
     }
 
     // the pointer is not on the cells but over the y- axis and does not cross the y-axis
-    if (dragState.start.position.x < dims.grid.left && dragState.end.position.x < dims.grid.left) {
-      const fittedDragStateStart = { x: dims.grid.left, y: dragState.start.position.y };
+    if (dragState.start.position.x < chartDimensions.left && dragState.end.position.x < chartDimensions.left) {
+      const fittedDragStateStart = { x: chartDimensions.left, y: dragState.start.position.y };
       const { y, cells } = geoms.pickDragArea([fittedDragStateStart, dragState.end.position]);
       return { x: [], y, cells };
     }
 
     // the pointer is not on the cells by over the x-axis and does not cross the x-axis
-    if (dragState.start.position.y > dims.grid.height && dragState.end.position.y > dims.grid.height) {
-      const fittedDragStateStart = { x: dragState.start.position.x, y: dims.grid.height };
+    if (dragState.start.position.y > chartDimensions.height && dragState.end.position.y > chartDimensions.height) {
+      const fittedDragStateStart = { x: dragState.start.position.x, y: chartDimensions.height };
       const { x, cells } = geoms.pickDragArea([fittedDragStateStart, dragState.end.position]);
       return { x, y: [], cells };
     }

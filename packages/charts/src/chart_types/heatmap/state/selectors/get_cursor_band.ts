@@ -14,14 +14,14 @@ import { getActivePointerPosition } from '../../../../state/selectors/get_active
 import { isNil } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { Cell, ShapeViewModel, TextBox } from '../../layout/types/viewmodel_types';
-import { getHeatmapGeometries } from './geometries';
+import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 
 /** @internal */
 export const getCursorBandPositionSelector = createCustomCachedSelector(
-  [getHeatmapGeometries, getExternalPointerEventStateSelector, getActivePointerPosition, getPickedShapes],
+  [getPerPanelHeatmapGeometries, getExternalPointerEventStateSelector, getActivePointerPosition, getPickedShapes],
   getCursorBand,
 );
 
