@@ -8,8 +8,11 @@
 
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getScale } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getInternalSmallMultiplesDomains } from '../../../../state/selectors/get_internal_sm_domains';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
+import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { isRasterTimeScale } from '../../layout/viewmodel/viewmodel';
@@ -24,14 +27,27 @@ const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
  * @internal
  */
 export const computeAxesSizesSelector = createCustomCachedSelector(
-  [getParentDimension, getLegendSizeSelector, getHeatmapTableSelector, getChartThemeSelector, getHeatmapSpecSelector],
+  [
+    getParentDimension,
+    getLegendSizeSelector,
+    getHeatmapTableSelector,
+    getChartThemeSelector,
+    getHeatmapSpecSelector,
+    getSmallMultiplesSpec,
+    getInternalSmallMultiplesDomains,
+  ],
   (
     container,
     legendSize,
     { yValues, xValues },
     { heatmap, axes: { axisTitle: axisTitleStyle } },
     { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale },
+    [smSpec],
+    { smHDomain },
   ) => {
+    // TODO find a cleaner way without circular dependencies
+    const panelWidth = getScale(smHDomain, container.width, smSpec.style?.horizontalPanelPadding).bandwidth;
+
     return withTextMeasure((textMeasure) => {
       const isLegendHorizontal = isHorizontalLegend(legendSize.position);
       const legendWidth = !isLegendHorizontal ? legendSize.width + legendSize.margin * 2 : 0;
@@ -51,18 +67,33 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         xAxisLabelFormatter,
         xValues,
         textMeasure,
-        container.width - legendWidth - heatmap.grid.stroke.width / 2, // we should consider also the grid width
+        panelWidth - legendWidth - heatmap.grid.stroke.width / 2, // we should consider also the grid width
         [
           yAxisTitleHorizontalSize + yAxis.width,
           0, // this can be used if we have a right Y axis
         ],
       );
 
+      // TODO simplify this width calculation
+      const chartWidth = getXAxisSize(
+        !isRasterTimeScale(xScale),
+        heatmap.xAxisLabel,
+        xAxisLabelFormatter,
+        xValues,
+        textMeasure,
+        container.width - legendWidth - heatmap.grid.stroke.width / 2, // we should consider also the grid width
+        [
+          yAxisTitleHorizontalSize + yAxis.width,
+          0, // this can be used if we have a right Y axis
+        ],
+      ).width;
+
       return {
         yAxis,
         xAxis,
         legendHeight,
         xAxisTitleVerticalSize,
+        chartWidth,
       };
     });
   },

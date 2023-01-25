@@ -26,5 +26,5 @@ export const getSmallMultiplesSpecs = createCustomCachedSelector([getSpecs], (sp
  * @internal
  */
 export const getSmallMultiplesSpec = createCustomCachedSelector([getSmallMultiplesSpecs], (smallMultiples) =>
-  smallMultiples.length === 1 ? smallMultiples : undefined,
+  smallMultiples.length === 1 ? smallMultiples : [],
 );

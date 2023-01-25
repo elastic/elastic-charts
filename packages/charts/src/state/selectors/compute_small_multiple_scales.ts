@@ -21,10 +21,10 @@ import { getSmallMultiplesSpec } from './get_small_multiples_spec';
  */
 export const computeSmallMultipleScalesSelector = createCustomCachedSelector(
   [getInternalSmallMultiplesDomains, getInternalMainProjectionAreaSelector, getSmallMultiplesSpec],
-  ({ smHDomain, smVDomain }, { width, height }, smSpec): SmallMultipleScales => {
+  ({ smHDomain, smVDomain }, { width, height }, [smSpec]): SmallMultipleScales => {
     return {
-      horizontal: getScale(smHDomain, width, smSpec && smSpec[0].style?.horizontalPanelPadding),
-      vertical: getScale(smVDomain, height, smSpec && smSpec[0].style?.verticalPanelPadding),
+      horizontal: getScale(smHDomain, width, smSpec.style?.horizontalPanelPadding),
+      vertical: getScale(smVDomain, height, smSpec.style?.verticalPanelPadding),
     };
   },
 );

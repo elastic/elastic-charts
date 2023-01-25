@@ -34,7 +34,6 @@ export const getPerPanelHeatmapGeometries = createCustomCachedSelector(
     getChartThemeSelector,
     isEmptySelector,
     computeSmallMultipleScalesSelector,
-    getSmallMultiplesIndexOrderSelector,
   ],
   (
     heatmapSpec,

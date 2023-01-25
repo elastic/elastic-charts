@@ -37,7 +37,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
         ? Math.floor(availableHeightForGrid / rowHeight)
         : yValues.length;
 
-    const chartWidth = axesSizes.xAxis.width;
+    const { chartWidth } = axesSizes;
     const chartHeight = visibleNumberOfRows * rowHeight - heatmap.grid.stroke.width / 2;
     return {
       leftMargin: 0, // not yet used

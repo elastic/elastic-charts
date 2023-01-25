@@ -97,7 +97,7 @@ export const getPanelTitle = (
 /** @internal */
 export const getSmallMultiplesIndexOrderSelector = createCustomCachedSelector(
   [getSpecs],
-  (specs): SmallMultiplesGroupBy | undefined => {
+  (specs): SmallMultiplesGroupBy => {
     const [smallMultiples] = getSpecsFromStore<SmallMultiplesSpec>(specs, ChartType.Global, SpecType.SmallMultiples);
     const groupBySpecs = getSpecsFromStore<GroupBySpec>(specs, ChartType.Global, SpecType.IndexOrder);
     return {
