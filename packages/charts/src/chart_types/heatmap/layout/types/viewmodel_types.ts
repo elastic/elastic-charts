@@ -48,6 +48,15 @@ export interface TextBox extends Box {
 }
 
 /** @internal */
+export type HeatmapTitleConfig = Font &
+  Visible & {
+    fontSize: number;
+    text: string;
+    origin: Point;
+    rotation: 0 | -90;
+  };
+
+/** @internal */
 export interface HeatmapViewModel extends PerPanelMap {
   gridOrigin: {
     x: number;
@@ -65,15 +74,7 @@ export interface HeatmapViewModel extends PerPanelMap {
   pageSize: number;
   primaryRow: boolean;
   primaryColumn: boolean;
-  titles: Array<
-    Font &
-      Visible & {
-        fontSize: number;
-        text: string;
-        origin: Point;
-        rotation: 0 | -90;
-      }
-  >;
+  titles: HeatmapTitleConfig[];
 }
 
 /** @internal */

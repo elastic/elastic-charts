@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../chart_types';
 import { ScaleBand } from '../scales';
-import { SmallMultiplesSpec, SpecType } from '../specs';
 import { GroupBySpec } from '../specs/group_by';
-import { createCustomCachedSelector } from '../state/create_selector';
-import { getSpecs } from '../state/selectors/get_specs';
-import { getSpecsFromStore } from '../state/utils';
 import { safeFormat } from '../utils/common';
 import { Size } from '../utils/dimensions';
 import { OrdinalDomain } from '../utils/domain';
@@ -93,16 +88,3 @@ export const getPanelTitle = (
 
   return safeFormat(value, formatter);
 };
-
-/** @internal */
-export const getSmallMultiplesIndexOrderSelector = createCustomCachedSelector(
-  [getSpecs],
-  (specs): SmallMultiplesGroupBy => {
-    const [smallMultiples] = getSpecsFromStore<SmallMultiplesSpec>(specs, ChartType.Global, SpecType.SmallMultiples);
-    const groupBySpecs = getSpecsFromStore<GroupBySpec>(specs, ChartType.Global, SpecType.IndexOrder);
-    return {
-      horizontal: groupBySpecs.find((s) => s.id === smallMultiples?.splitHorizontally),
-      vertical: groupBySpecs.find((s) => s.id === smallMultiples?.splitVertically),
-    };
-  },
-);

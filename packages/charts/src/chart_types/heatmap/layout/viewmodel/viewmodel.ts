@@ -12,7 +12,14 @@ import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
-import { getPanelSize, getPerPanelMap, SmallMultipleScales, SmallMultiplesDatum } from '../../../../common/panel_utils';
+import {
+  getPanelSize,
+  getPanelTitle,
+  getPerPanelMap,
+  SmallMultipleScales,
+  SmallMultiplesDatum,
+  SmallMultiplesGroupBy,
+} from '../../../../common/panel_utils';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
@@ -31,6 +38,7 @@ import { HeatmapTable } from '../../state/selectors/get_heatmap_table';
 import {
   Cell,
   GridCell,
+  HeatmapTitleConfig,
   PickCursorBand,
   PickDragFunction,
   PickDragShapeFunction,
@@ -62,12 +70,13 @@ function getValuesInRange(
 export function shapeViewModel<D extends BaseDatum = Datum>(
   textMeasure: TextMeasure,
   spec: HeatmapSpec<D>,
-  { heatmap: heatmapTheme, axes: { axisTitle }, background }: Theme,
+  { heatmap: heatmapTheme, axes: { axisTitle, axisPanelTitle }, background }: Theme,
   { chartDimensions }: ChartDimensions,
   elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
   smScales: SmallMultipleScales,
+  groupBySpec: SmallMultiplesGroupBy,
   bandsToHide: Array<[number, number]>,
 ): ShapeViewModel {
   const gridStrokeWidth = heatmapTheme.grid.stroke.width ?? 1;
@@ -379,6 +388,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
   const cells = Object.values(cellMap);
   const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
+
   // TODO introduce missing styles into axes.axisTitle
   const axisTitleFont: Visible & Font & { fontSize: Pixels } = {
     visible: axisTitle.visible,
@@ -390,11 +400,91 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     fontSize: axisTitle.fontSize,
   };
 
+  const axisPanelTitleFont: Visible & Font & { fontSize: Pixels } = {
+    visible: axisPanelTitle.visible,
+    fontFamily: axisPanelTitle.fontFamily,
+    fontStyle: axisPanelTitle.fontStyle ?? 'normal',
+    fontVariant: 'normal',
+    fontWeight: 'bold',
+    textColor: axisPanelTitle.fill,
+    fontSize: axisPanelTitle.fontSize,
+  };
+
   return {
     theme: heatmapTheme,
     heatmapViewModels: getPerPanelMap(smScales, (anchor, h, v) => {
       const primaryColumn = smScales.vertical.domain[0] === v;
       const primaryRow = smScales.horizontal.domain[0] === h;
+      const titles: HeatmapTitleConfig[] = [];
+
+      if (primaryColumn && primaryRow) {
+        if (spec.xAxisTitle) {
+          const axisPanelTitleHeight = groupBySpec.horizontal
+            ? axisPanelTitle.fontSize + innerPad(axisPanelTitle.padding)
+            : 0;
+          titles.push({
+            origin: {
+              x: chartDimensions.width / 2,
+              y:
+                chartDimensions.top +
+                chartDimensions.height +
+                elementSizes.xAxis.height +
+                axisPanelTitleHeight +
+                innerPad(axisTitle.padding) +
+                axisTitle.fontSize / 2,
+            },
+            ...axisTitleFont,
+            text: spec.xAxisTitle,
+            rotation: 0,
+          });
+        }
+
+        if (spec.yAxisTitle) {
+          titles.push({
+            origin: {
+              x: -elementSizes.yAxis.left - innerPad(axisTitle.padding) - axisTitle.fontSize / 2,
+              y: chartDimensions.top + chartDimensions.height / 2,
+            },
+            ...axisTitleFont,
+            text: spec.yAxisTitle,
+            rotation: -90,
+          });
+        }
+      }
+
+      if (primaryColumn && groupBySpec.horizontal) {
+        titles.push({
+          origin: {
+            x: panelSize.width / 2,
+            y:
+              chartDimensions.top +
+              chartDimensions.height +
+              elementSizes.xAxis.height +
+              innerPad(axisPanelTitle.padding) +
+              axisPanelTitle.fontSize / 2,
+          },
+          ...axisPanelTitleFont,
+          text: getPanelTitle(false, v, h, groupBySpec),
+          rotation: 0,
+        });
+      }
+
+      if (primaryRow && groupBySpec.vertical) {
+        const axisPanelTitleWidth = axisPanelTitle.fontSize + innerPad(axisPanelTitle.padding);
+        titles.push({
+          origin: {
+            x:
+              -elementSizes.yAxis.left +
+              axisPanelTitleWidth -
+              innerPad(axisPanelTitle.padding) -
+              axisPanelTitle.fontSize / 2,
+            y: chartDimensions.top + panelSize.height / 2,
+          },
+          ...axisPanelTitleFont,
+          text: getPanelTitle(true, v, h, groupBySpec),
+          rotation: -90,
+        });
+      }
 
       return {
         anchor,
@@ -418,31 +508,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         yValues: textYValues,
         primaryColumn,
         primaryRow,
-        titles: [
-          primaryColumn && {
-            origin: {
-              x: panelSize.width / 2,
-              y:
-                chartDimensions.top +
-                chartDimensions.height +
-                elementSizes.xAxis.height +
-                innerPad(axisTitle.padding) +
-                axisTitle.fontSize / 2,
-            },
-            ...axisTitleFont,
-            text: spec.xAxisTitle,
-            rotation: 0,
-          },
-          primaryRow && {
-            origin: {
-              x: -elementSizes.yAxis.left - innerPad(axisTitle.padding) - axisTitle.fontSize / 2,
-              y: chartDimensions.top + panelSize.height / 2,
-            },
-            ...axisTitleFont,
-            text: spec.yAxisTitle,
-            rotation: -90,
-          },
-        ].filter(Boolean),
+        titles,
       };
     }),
     pickGridCell,

@@ -10,7 +10,7 @@ import { ChartType } from '../../chart_types';
 import { SpecType } from '../../specs/constants';
 import { SmallMultiplesSpec } from '../../specs/small_multiples';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSpecsFromStore } from '../utils';
+import { getSpecsFromStore, getSpecFromStore } from '../utils';
 import { getSpecs } from './get_specs';
 
 /**
@@ -25,6 +25,6 @@ export const getSmallMultiplesSpecs = createCustomCachedSelector([getSpecs], (sp
  * Return the small multiple spec
  * @internal
  */
-export const getSmallMultiplesSpec = createCustomCachedSelector([getSmallMultiplesSpecs], (smallMultiples) =>
-  smallMultiples.length === 1 ? smallMultiples : [],
+export const getSmallMultiplesSpec = createCustomCachedSelector([getSpecs], (specs) =>
+  getSpecFromStore<SmallMultiplesSpec>(specs, ChartType.Global, SpecType.SmallMultiples),
 );

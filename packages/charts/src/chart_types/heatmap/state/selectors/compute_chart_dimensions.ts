@@ -26,6 +26,7 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     const availableHeightForGrid =
       parentDimensions.height -
       axesSizes.xAxisTitleVerticalSize -
+      axesSizes.xAxisPanelTitleVerticalSize -
       axesSizes.xAxis.height -
       axesSizes.legendHeight -
       heatmap.grid.stroke.width / 2;

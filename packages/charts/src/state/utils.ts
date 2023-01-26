@@ -10,9 +10,20 @@ import { ChartType } from '../chart_types';
 import { Spec } from '../specs';
 import { PointerState, PointerStates, SpecList, TooltipInteractionState } from './chart_state';
 
-/** @internal */
+/**
+ * Returns all matching specs
+ * @internal
+ */
 export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: ChartType, specType: string): U[] {
   return Object.values(specs).filter((spec) => spec.chartType === chartType && spec.specType === specType) as U[];
+}
+
+/**
+ * Returns first matching spec
+ * @internal
+ */
+export function getSpecFromStore<U extends Spec>(specs: SpecList, chartType: ChartType, specType: string): U | null {
+  return (Object.values(specs).find((spec) => spec.chartType === chartType && spec.specType === specType) as U) ?? null;
 }
 
 /** @internal */

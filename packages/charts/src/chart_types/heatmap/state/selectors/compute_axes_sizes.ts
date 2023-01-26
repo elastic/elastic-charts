@@ -40,13 +40,13 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
     container,
     legendSize,
     { yValues, xValues },
-    { heatmap, axes: { axisTitle: axisTitleStyle } },
+    { heatmap, axes: { axisTitle: axisTitleStyle, axisPanelTitle: axisPanelTitleStyle } },
     { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale },
-    [smSpec],
+    smSpec,
     { smHDomain },
   ) => {
     // TODO find a cleaner way without circular dependencies
-    const panelWidth = getScale(smHDomain, container.width, smSpec.style?.horizontalPanelPadding).bandwidth;
+    const panelWidth = getScale(smHDomain, container.width, smSpec?.style?.horizontalPanelPadding).bandwidth;
 
     return withTextMeasure((textMeasure) => {
       const isLegendHorizontal = isHorizontalLegend(legendSize.position);
@@ -56,11 +56,18 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         : 0;
 
       const yAxisTitleHorizontalSize = getTextSizeDimension(yAxisTitle, axisTitleStyle, textMeasure, 'height');
+      const yAxisPanelTitleHorizontalSize = getTextSizeDimension(
+        yAxisTitle,
+        axisPanelTitleStyle,
+        textMeasure,
+        'height',
+      );
       const yAxis = {
         width: getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, yAxisLabelFormatter, textMeasure),
       };
 
       const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
+      const xAxisPanelTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisPanelTitleStyle, textMeasure, 'height');
       const xAxis = getXAxisSize(
         !isRasterTimeScale(xScale),
         heatmap.xAxisLabel,
@@ -69,7 +76,7 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         textMeasure,
         panelWidth - legendWidth - heatmap.grid.stroke.width / 2, // we should consider also the grid width
         [
-          yAxisTitleHorizontalSize + yAxis.width,
+          yAxisTitleHorizontalSize + yAxisPanelTitleHorizontalSize + yAxis.width,
           0, // this can be used if we have a right Y axis
         ],
       );
@@ -93,6 +100,7 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         xAxis,
         legendHeight,
         xAxisTitleVerticalSize,
+        xAxisPanelTitleVerticalSize,
         chartWidth,
       };
     });

@@ -90,8 +90,8 @@ export const Example = () => {
       <GroupBy id="v_split" by={(_, { v }) => v} format={(v) => `Metric ${v}`} sort="numDesc" />
       <GroupBy id="h_split" by={(_, { h }) => h} format={(v) => `Host ${v}`} sort="numAsc" />
       <SmallMultiples
-        splitVertically={ySplitCount > 1 ? 'v_split' : undefined}
-        splitHorizontally={xSplitCount > 1 ? 'h_split' : undefined}
+        splitVertically="v_split"
+        splitHorizontally="h_split"
         style={{
           horizontalPanelPadding: {
             outer: number(
@@ -188,11 +188,4 @@ export const Example = () => {
       />
     </Chart>
   );
-};
-Example.parameters = {
-  markdown: `It is possible to add either a vertical and horizontal \`<GroupBy/>\` operations to create a grid of
-small multiples.
-The assignment of the series colors can be handled by defining an accessor in the \`color\` prop of the series that
-consider the \`smHorizontalAccessorValue\` or \`smVerticalAccessorValue\` values when returning the assigned color.
-`,
 };

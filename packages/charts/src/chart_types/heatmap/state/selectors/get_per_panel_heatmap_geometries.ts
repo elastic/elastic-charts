@@ -1,3 +1,4 @@
+import { SmallMultiplesGroupBy } from './../../../../common/panel_utils';
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -6,7 +7,6 @@
  * Side Public License, v 1.
  */
 
-import { getSmallMultiplesIndexOrderSelector } from '../../../../common/panel_utils';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
@@ -19,6 +19,7 @@ import { getColorScale } from './get_color_scale';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { isEmptySelector } from './is_empty';
+import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
@@ -34,6 +35,7 @@ export const getPerPanelHeatmapGeometries = createCustomCachedSelector(
     getChartThemeSelector,
     isEmptySelector,
     computeSmallMultipleScalesSelector,
+    getSmallMultiplesIndexOrderSelector
   ],
   (
     heatmapSpec,
@@ -45,6 +47,7 @@ export const getPerPanelHeatmapGeometries = createCustomCachedSelector(
     theme,
     empty,
     smScales,
+    groupBySpec,
   ): ShapeViewModel => {
     // instead of using the specId, each legend item is associated with an unique band label
     const disabledBandLabels = new Set(deselectedSeries.map(({ specId }) => specId));
@@ -58,6 +61,7 @@ export const getPerPanelHeatmapGeometries = createCustomCachedSelector(
           chartDimensions,
           elementSizes,
           smScales,
+          groupBySpec,
           heatmapTable,
           colorScale,
           bandsToHide,

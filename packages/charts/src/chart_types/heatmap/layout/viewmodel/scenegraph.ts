@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { SmallMultipleScales } from '../../../../common/panel_utils';
+import { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../common/panel_utils';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Theme } from '../../../../utils/themes/theme';
 import { ChartDimensions } from '../../../xy_chart/utils/dimensions';
@@ -23,6 +23,7 @@ export function computeScenegraph(
   chartDimensions: ChartDimensions,
   elementSizes: ChartElementSizes,
   smScales: SmallMultipleScales,
+  groupBySpec: SmallMultiplesGroupBy,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
   bandsToHide: Array<[number, number]>,
@@ -38,6 +39,7 @@ export function computeScenegraph(
       heatmapTable,
       colorScale,
       smScales,
+      groupBySpec,
       bandsToHide,
     );
   });

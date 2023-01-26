@@ -8,11 +8,12 @@
 
 import { extent } from 'd3-array';
 
-import { getSmallMultiplesIndexOrderSelector, SmallMultiplesSeriesDomains } from '../../../../common/panel_utils';
+import { SmallMultiplesSeriesDomains } from '../../../../common/panel_utils';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 import { getAccessorValue } from '../../../../utils/accessor';
 import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { isFiniteNumber, isNil, isNonNullablePrimitiveValue } from '../../../../utils/common';
