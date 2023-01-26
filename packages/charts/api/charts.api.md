@@ -139,7 +139,9 @@ export type AnnotationPortalSettings = TooltipPortalSettings<'chart'> & {
 export type AnnotationSpec<D extends BaseDatum = any> = LineAnnotationSpec<D> | RectAnnotationSpec;
 
 // @public (undocumented)
-export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
+export type AnnotationTooltipFormatter = ComponentType<{
+    details?: string;
+}>;
 
 // @public (undocumented)
 export const AnnotationType: Readonly<{
