@@ -8,6 +8,8 @@
 
 import { extent } from 'd3-array';
 
+import { HeatmapTable } from './compute_chart_dimensions';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPredicateFn } from '../../../../common/predicate';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -15,8 +17,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { getAccessorValue } from '../../../../utils/accessor';
 import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { isFiniteNumber, isNonNullablePrimitiveValue } from '../../../../utils/common';
-import { HeatmapTable } from './compute_chart_dimensions';
-import { getHeatmapSpecSelector } from './get_heatmap_spec';
 
 /**
  * Extracts axis and cell values from the input data.

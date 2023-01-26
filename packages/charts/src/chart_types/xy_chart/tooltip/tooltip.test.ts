@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { formatTooltip } from './tooltip';
 import { ChartType } from '../..';
 import { MockBarGeometry } from '../../../mocks';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
@@ -15,7 +16,6 @@ import { Position, RecursivePartial } from '../../../utils/common';
 import { BarGeometry } from '../../../utils/geometry';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { AxisSpec, BarSeriesSpec, TickFormatter } from '../utils/specs';
-import { formatTooltip } from './tooltip';
 
 const style: RecursivePartial<AxisStyle> = {
   tickLine: {

@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getGridLines } from '../../utils/grid_lines';
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getAxisSpecsSelector } from './get_specs';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getGridLines } from '../../utils/grid_lines';
 
 /** @internal */
 export const getGridLinesSelector = createCustomCachedSelector(

@@ -10,6 +10,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { renderCanvas2d } from './canvas_renderers';
 import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -30,7 +31,6 @@ import { ChartElementSizes, computeChartElementSizesSelector } from '../../state
 import { getHeatmapGeometries } from '../../state/selectors/geometries';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
 import { getHighlightedLegendBandsSelector } from '../../state/selectors/get_highlighted_legend_bands';
-import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;

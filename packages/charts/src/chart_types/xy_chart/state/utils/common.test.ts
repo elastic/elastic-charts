@@ -6,13 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../..';
-import { LegendItem } from '../../../../common/legend';
-import { ScaleType } from '../../../../scales/constants';
-import { SpecType } from '../../../../specs';
-import { BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
-import { Point } from '../../../../utils/point';
-import { AreaSeriesSpec, SeriesType, LineSeriesSpec, BarSeriesSpec } from '../../utils/specs';
 import {
   isHorizontalRotation,
   isVerticalRotation,
@@ -21,6 +14,13 @@ import {
   isAllSeriesDeselected,
   sortClosestToPoint,
 } from './common';
+import { ChartType } from '../../..';
+import { LegendItem } from '../../../../common/legend';
+import { ScaleType } from '../../../../scales/constants';
+import { SpecType } from '../../../../specs';
+import { BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
+import { Point } from '../../../../utils/point';
+import { AreaSeriesSpec, SeriesType, LineSeriesSpec, BarSeriesSpec } from '../../utils/specs';
 
 describe('Type Checks', () => {
   it('is horizontal chart rotation', () => {

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getColorBandStyle, getGeometryStateStyle } from './utils';
 import { Color } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { radToDeg } from '../../../../utils/common';
@@ -16,7 +17,6 @@ import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, TextFont, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
-import { getColorBandStyle, getGeometryStateStyle } from './utils';
 
 /** @internal */
 export function renderCanvas2d(

@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { isWithinRectBounds } from './dimensions';
+import { AnnotationRectProps } from './types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
-import { isWithinRectBounds } from './dimensions';
-import { AnnotationRectProps } from './types';
 
 describe('Rect Annotation Dimensions', () => {
   const continuousBarChart = MockSeriesSpec.area({

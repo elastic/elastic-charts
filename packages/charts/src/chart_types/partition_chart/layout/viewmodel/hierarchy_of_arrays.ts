@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { isMosaic, isSunburst, isTreemap, isWaffle } from './viewmodel';
 import { LegendItemExtraValues } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { Relation } from '../../../../common/text_utils';
@@ -25,7 +26,6 @@ import {
   NodeSorter,
   Sorter,
 } from '../utils/group_by_rollup';
-import { isMosaic, isSunburst, isTreemap, isWaffle } from './viewmodel';
 
 function aggregateComparator(accessor: (v: any) => any, sorter: Sorter): NodeSorter {
   return (a, b) => sorter(accessor(a), accessor(b));

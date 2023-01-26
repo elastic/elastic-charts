@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { TimeslipDataRows } from './timeslip/data_fetch';
+import { DataDemand } from './timeslip/render/cartesian';
 import { ChartType } from '..';
 import { Spec } from '../../specs';
 import { SpecType } from '../../specs/constants'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
-import { TimeslipDataRows } from './timeslip/data_fetch';
-import { DataDemand } from './timeslip/render/cartesian';
 
 /**
  * data getter function
@@ -45,10 +45,10 @@ const buildProps = buildSFProps<TimeslipSpec>()(
 export const Timeslip = (
   props: SFProps<
     TimeslipSpec,
-    keyof typeof buildProps['overrides'],
-    keyof typeof buildProps['defaults'],
-    keyof typeof buildProps['optionals'],
-    keyof typeof buildProps['requires']
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
   >,
 ) => {
   const { defaults, overrides } = buildProps;

@@ -8,8 +8,9 @@
 
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
-import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
-import type { Position } from '../utils/common';
+import { AnnotationType, BaseDatum, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
+import { Accessor } from '../utils/accessor';
+import type { Datum, Position } from '../utils/common';
 import type { GeometryValue } from '../utils/geometry';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
 
@@ -131,4 +132,24 @@ export interface DebugState {
   /** Heatmap chart debug state */
   heatmap?: HeatmapDebugState;
   partition?: PartitionDebugState[];
+}
+
+/**
+ * Contains the value of the non-dependent variable at the point where the mouse
+ * pointer is.
+ * @public
+ */
+export interface PointerValue<D extends BaseDatum = Datum> {
+  /**
+   * The value
+   */
+  value: any;
+  /**
+   * The formatted value to display
+   */
+  formattedValue: string;
+  /**
+   * The accessor linked to the current tooltip value
+   */
+  valueAccessor?: Accessor<D>;
 }

@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { LocaleOptions } from './render/annotations/time_extent';
 import { getValidatedTimeZone, getZoneFromSpecs } from '../../../utils/time_zone';
 import { cachedZonedDateTimeFrom, timeProp } from '../../xy_chart/axes/timeslip/chrono/cached_chrono';
 import { RasterConfig, TimeFormatter } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { DEFAULT_LOCALE, MINIMUM_TICK_PIXEL_DISTANCE } from '../../xy_chart/axes/timeslip/multilayer_ticks';
-import { LocaleOptions } from './render/annotations/time_extent';
 
 /** @internal */
 export type AxisType = 'continuousTime' | 'continuousNumeric';

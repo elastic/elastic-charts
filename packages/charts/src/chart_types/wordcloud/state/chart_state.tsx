@@ -8,6 +8,7 @@
 
 import React from 'react';
 
+import { getSpecOrNull } from './selectors/wordcloud_spec';
 import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
@@ -17,7 +18,6 @@ import { LegendItemLabel } from '../../../state/selectors/get_legend_items_label
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { Wordcloud } from '../renderer/svg/connected_component';
-import { getSpecOrNull } from './selectors/wordcloud_spec';
 
 const EMPTY_MAP = new Map();
 const EMPTY_LEGEND_LIST: LegendItem[] = [];

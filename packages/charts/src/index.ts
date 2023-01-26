@@ -27,6 +27,7 @@ export {
   DebugStateAxis,
   DebugStateBase,
   DebugStateLegendItem,
+  PointerValue,
 } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
@@ -43,7 +44,7 @@ export {
 } from './chart_types/xy_chart/annotations/types';
 export { GeometryValue, BandedAccessorType } from './utils/geometry';
 export { LegendPath, LegendPathElement } from './state/actions/legend';
-export { CategoryKey } from './common/category';
+export { CategoryKey, CategoryLabel } from './common/category';
 export { Layer as PartitionLayer, PartitionProps } from './chart_types/partition_chart/specs/index';
 export { FillLabelConfig as PartitionFillLabel, PartitionStyle } from './utils/themes/partition';
 export { PartitionLayout } from './chart_types/partition_chart/layout/types/config_types';

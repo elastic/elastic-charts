@@ -8,11 +8,11 @@
 
 import { Store } from 'redux';
 
+import { getScreenReaderDataSelector } from './get_screen_reader_data';
 import { MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
-import { getScreenReaderDataSelector } from './get_screen_reader_data';
 
 describe('Get screen reader data', () => {
   type TestDatum = [string, string, string, number];

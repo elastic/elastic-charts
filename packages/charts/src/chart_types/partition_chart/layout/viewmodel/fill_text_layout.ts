@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { RectangleConstruction } from './viewmodel';
 import { TAU } from '../../../../common/constants';
 import {
   Coordinate,
@@ -35,7 +36,6 @@ import {
   ValueGetterFunction,
 } from '../types/viewmodel_types';
 import { conjunctiveConstraint, INFINITY_RADIUS, makeRowCircline } from '../utils/circline_geometry';
-import { RectangleConstruction } from './viewmodel';
 
 /**
  * todo pick a better unique key for the slices (D3 doesn't keep track of an index)

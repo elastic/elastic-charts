@@ -11,6 +11,7 @@ import path from 'path';
 
 import { getMetadata, setMetadata } from 'buildkite-agent-node';
 
+import { updateCheckStatus } from './../../utils/github';
 import {
   exec,
   downloadArtifacts,
@@ -23,7 +24,6 @@ import {
   ScreenshotMeta,
 } from '../../utils';
 import { ENV_URL } from '../../utils/constants';
-import { updateCheckStatus } from './../../utils/github';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);
 const shardIndex = jobIndex ? jobIndex + 1 : 1;

@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { getComputedScalesSelector } from './get_computed_scales';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { getComputedScalesSelector } from './get_computed_scales';
 
 /**
  * The brush is available only for Ordinal xScales charts and

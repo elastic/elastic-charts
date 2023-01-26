@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
+import { getHeatmapGeometries } from './geometries';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { DragShape } from '../../layout/types/viewmodel_types';
-import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
-import { getHeatmapGeometries } from './geometries';
 
 function getCurrentPointerStates(state: GlobalChartState) {
   return state.interactions.pointer;

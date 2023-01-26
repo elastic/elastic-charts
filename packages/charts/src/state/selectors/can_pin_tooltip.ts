@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { getTooltipSpecSelector } from './get_tooltip_spec';
+import { isExternalTooltipVisibleSelector } from './is_external_tooltip_visible';
 import { ChartType } from '../../chart_types';
 import { getTooltipInfoAndGeomsSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
-import { getTooltipSpecSelector } from './get_tooltip_spec';
-import { isExternalTooltipVisibleSelector } from './is_external_tooltip_visible';
 
 /**
  * Enables tooltip pinning only for certain chart types

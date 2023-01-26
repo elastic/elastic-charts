@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { computeXScale } from './scales';
 import { MockXDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
-import { computeXScale } from './scales';
 
 describe('Series scales', () => {
   const xDomainLinear = MockXDomain.fromScaleType(ScaleType.Linear, {

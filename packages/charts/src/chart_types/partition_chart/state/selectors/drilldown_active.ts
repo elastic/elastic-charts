@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { getPartitionSpecs } from './partition_spec';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { isSimpleLinear } from '../../layout/viewmodel/viewmodel';
-import { getPartitionSpecs } from './partition_spec';
 
 /** @internal */
 export const drilldownActive = createCustomCachedSelector(

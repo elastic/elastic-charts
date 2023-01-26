@@ -8,6 +8,13 @@
 
 import { Selector } from 'reselect';
 
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
+import { getPlotAreaRestrictedPoint, getPointsConstraintToSinglePanel, PanelPoints } from './get_brush_area';
+import { getComputedScalesSelector } from './get_computed_scales';
+import { getSeriesSpecsSelector } from './get_specs';
+import { isBrushAvailableSelector } from './is_brush_available';
+import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { ChartType } from '../../..';
 import { ScaleContinuous } from '../../../../scales';
 import { isContinuousScale } from '../../../../scales/types';
@@ -22,13 +29,6 @@ import { hasDragged, DragCheckProps } from '../../../../utils/events';
 import { GroupId } from '../../../../utils/ids';
 import { isHistogramEnabled } from '../../domains/y_domain';
 import { isVerticalRotation } from '../utils/common';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
-import { getPlotAreaRestrictedPoint, getPointsConstraintToSinglePanel, PanelPoints } from './get_brush_area';
-import { getComputedScalesSelector } from './get_computed_scales';
-import { getSeriesSpecsSelector } from './get_specs';
-import { isBrushAvailableSelector } from './is_brush_available';
-import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 const getLastDragSelector = (state: GlobalChartState) => state.interactions.pointer.lastDrag;
 

@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { AnnotationRectProps } from './types';
 import { Rect } from '../../../../geoms/types';
 import { MockSeriesSpec, MockAnnotationSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
 import { ScaleType } from '../../../../scales/constants';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { RectAnnotationDatum } from '../../utils/specs';
-import { AnnotationRectProps } from './types';
 
 function expectAnnotationAtPosition(
   data: Array<{ x: number; y: number }>,

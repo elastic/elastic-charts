@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { computeLegendSelector } from './compute_legend';
 import { LegendItem } from '../../../../common/legend';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { computeLegendSelector } from './compute_legend';
 
 const getHighlightedLegendPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;
 

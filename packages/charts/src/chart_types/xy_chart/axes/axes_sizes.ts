@@ -35,7 +35,13 @@ const getAxisSizeForLabel = (
   const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
   const axisDimension = labelPaddingSum + tickDimension + titleDimension + panelTitleDimension;
   const maxAxisGirth = axisDimension + (tickLabel.visible ? allLayersGirth : 0);
-  const maxLabelBoxHalfLength = (isVerticalAxis(axisSpec.position) ? maxLabelBboxHeight : maxLabelBboxWidth) / 2;
+  // gives space to longer labels: if vertical use half of the label height, if horizontal, use half of the max label (not ideal)
+  // don't overflow when the multiTimeAxis layer is used.
+  const maxLabelBoxHalfLength = isVerticalAxis(axisSpec.position)
+    ? maxLabelBboxHeight / 2
+    : axisSpec.timeAxisLayerCount > 0
+    ? 0
+    : maxLabelBboxWidth / 2;
   return horizontal
     ? {
         top: axisSpec.position === Position.Top ? maxAxisGirth + chartMargins.top : 0,

@@ -8,12 +8,12 @@
 
 import { $Values } from 'utility-types';
 
+import { Dimensions } from './dimensions';
+import { BarSeriesStyle, PointStyle, PointShape, LineSeriesStyle, AreaSeriesStyle } from './themes/theme';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
 import { Color } from '../common/colors';
 import { Fill, Stroke } from '../geoms/types';
-import { Dimensions } from './dimensions';
-import { BarSeriesStyle, PointStyle, PointShape, LineSeriesStyle, AreaSeriesStyle } from './themes/theme';
 
 /**
  * The accessor type

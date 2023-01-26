@@ -22,11 +22,11 @@ import {
   TooltipAction,
 } from '@elastic/charts';
 
+import { DATA_SERIES } from './data/series';
 import { useBaseTheme } from '../../../use_base_theme';
 import { getTooltipTypeKnob } from '../../utils/knobs';
 import { SB_SOURCE_PANEL } from '../../utils/storybook';
 import { wait } from '../../utils/utils';
-import { DATA_SERIES } from './data/series';
 
 const formatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -85,6 +85,7 @@ export const Example = () => {
       <Tooltip
         type={getTooltipTypeKnob()}
         maxVisibleTooltipItems={4}
+        maxTooltipItems={4}
         actions={disableActions ? [] : asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}
       />
       <Axis
@@ -113,6 +114,7 @@ export const Example = () => {
         const data = d.timeseries.rows.slice(0, reduceData ? 20 : undefined);
         return chartType === 'bar' ? (
           <HistogramBarSeries
+            key={d.name}
             id={d.name}
             xScaleType={ScaleType.Time}
             yScaleType={ScaleType.Linear}
@@ -123,6 +125,7 @@ export const Example = () => {
           />
         ) : (
           <LineSeries
+            key={d.name}
             id={d.name}
             xScaleType={ScaleType.Time}
             yScaleType={ScaleType.Linear}

@@ -6,6 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { TickLabelBounds } from './axis_utils';
+import { computeChartDimensions } from './dimensions';
+import { AxisSpec } from './specs';
 import { ChartType } from '../..';
 import { SpecType } from '../../../specs/constants';
 import { Position } from '../../../utils/common';
@@ -14,9 +17,6 @@ import { AxisId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LegendStyle } from '../../../utils/themes/theme';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
-import { TickLabelBounds } from './axis_utils';
-import { computeChartDimensions } from './dimensions';
-import { AxisSpec } from './specs';
 
 describe('Computed chart dimensions', () => {
   const parentDim = {

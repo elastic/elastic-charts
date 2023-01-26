@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { getPanelClipping } from './panel_clipping';
+import { renderRect } from './primitives/rect';
+import { buildBarStyle } from './styles/bar';
+import { withPanelTransform } from './utils/panel_transform';
 import { LegendItem } from '../../../../common/legend';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { BarGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
-import { getPanelClipping } from './panel_clipping';
-import { renderRect } from './primitives/rect';
-import { buildBarStyle } from './styles/bar';
-import { withPanelTransform } from './utils/panel_transform';
 
 /** @internal */
 export function renderBars(

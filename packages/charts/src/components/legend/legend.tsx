@@ -11,6 +11,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
+import { CustomLegend } from './custom_legend';
+import { LegendItemProps, renderLegendItem } from './legend_item';
+import { getLegendPositionConfig, legendPositionStyle } from './position_style';
+import { getLegendStyle, getLegendListStyle } from './style_utils';
 import { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
@@ -33,9 +37,6 @@ import { hasMostlyRTLItems, HorizontalAlignment, LayoutDirection, VerticalAlignm
 import { Dimensions, Size } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { Theme } from '../../utils/themes/theme';
-import { LegendItemProps, renderLegendItem } from './legend_item';
-import { getLegendPositionConfig, legendPositionStyle } from './position_style';
-import { getLegendStyle, getLegendListStyle } from './style_utils';
 
 interface LegendStateProps {
   debug: boolean;
@@ -112,11 +113,28 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   return (
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
-      <div style={containerStyle} className="echLegendListContainer">
-        <ul style={listStyle} className="echLegendList">
-          {items.map((item, index) => renderLegendItem(item, itemProps, index))}
-        </ul>
-      </div>
+      {config.customLegend ? (
+        <div style={containerStyle}>
+          <CustomLegend
+            component={config.customLegend}
+            items={items.map(({ seriesIdentifiers, childId, path, ...customProps }) => ({
+              ...customProps,
+              seriesIdentifiers,
+              path,
+              extraValue: itemProps.extraValues.get(seriesIdentifiers[0].key)?.get(childId || ''),
+              onItemOutAction: itemProps.mouseOutAction,
+              onItemOverActon: () => itemProps.mouseOverAction(path),
+              onItemClickAction: (negate: boolean) => itemProps.toggleDeselectSeriesAction(seriesIdentifiers, negate),
+            }))}
+          />
+        </div>
+      ) : (
+        <div style={containerStyle} className="echLegendListContainer">
+          <ul style={listStyle} className="echLegendList">
+            {items.map((item, index) => renderLegendItem(item, itemProps, index))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

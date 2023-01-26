@@ -11,9 +11,9 @@ import { useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { OptionalKeys, RequiredKeys } from 'utility-types';
 
+import { upsertSpec as upsertSpecAction, removeSpec as removeSpecAction } from './actions/specs';
 import { Spec as Spec } from '../specs';
 import { stripUndefined } from '../utils/common';
-import { upsertSpec as upsertSpecAction, removeSpec as removeSpecAction } from './actions/specs';
 
 /** @internal */
 export interface DispatchProps {

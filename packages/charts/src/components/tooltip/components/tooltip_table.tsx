@@ -9,15 +9,15 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
-import { Datum, isNil } from '../../../utils/common';
-import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableBody } from './tooltip_table_body';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
 import { TooltipTableColumn } from './types';
+import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum, TooltipValue } from '../../../specs';
+import { Datum, isNil } from '../../../utils/common';
+import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
 
 const TOOLTIP_ITEM_HEIGHT = 20;
 const TOOLTIP_HEADER_HEIGHT = 25;

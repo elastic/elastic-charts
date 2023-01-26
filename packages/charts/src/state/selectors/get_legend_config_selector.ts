@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { getSettingsSpecSelector } from './get_settings_spec';
 import { getLegendPositionConfig } from '../../components/legend/position_style';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSettingsSpecSelector } from './get_settings_spec';
 
 /** @internal */
 export const getLegendConfigSelector = createCustomCachedSelector(
@@ -22,6 +22,7 @@ export const getLegendConfigSelector = createCustomCachedSelector(
     legendPosition,
     legendStrategy,
     onLegendItemClick,
+    customLegend,
     showLegend,
     onLegendItemMinusClick,
     onLegendItemOut,
@@ -38,6 +39,7 @@ export const getLegendConfigSelector = createCustomCachedSelector(
       legendPosition: getLegendPositionConfig(legendPosition),
       legendStrategy,
       onLegendItemClick,
+      customLegend,
       showLegend,
       onLegendItemMinusClick,
       onLegendItemOut,

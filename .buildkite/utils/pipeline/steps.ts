@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { Plugins } from './plugins';
 import { CommandStep, GroupStep } from '../../buildkite';
 import { bkEnv } from '../buildkite';
 import { ChangeContext } from '../github';
-import { Plugins } from './plugins';
 
 /**
  * Available agents from kibana buildkite instance

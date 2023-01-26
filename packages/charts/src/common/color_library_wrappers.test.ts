@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { Logger } from '../utils/logger';
 import { colorToRgba, overrideOpacity } from './color_library_wrappers';
 import { Colors } from './colors';
+import { Logger } from '../utils/logger';
 
 jest.mock('../utils/logger', () => ({
   Logger: {

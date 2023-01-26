@@ -8,9 +8,9 @@
 
 import React, { MouseEventHandler, forwardRef, memo } from 'react';
 
+import { LegendIcon } from './legend_icon';
 import { PointStyle } from '../../utils/themes/theme';
 import { Icon } from '../icons/icon';
-import { LegendIcon } from './legend_icon';
 
 interface ColorProps {
   color: string;

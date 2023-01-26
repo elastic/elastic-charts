@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { getAnnotationAxis, getTransformedCursor, invertTransformedCursor } from './utils';
 import { MockGlobalSpec } from '../../../mocks/specs';
 import { Position, Rotation } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationDomainType } from '../utils/specs';
-import { getAnnotationAxis, getTransformedCursor, invertTransformedCursor } from './utils';
 
 describe('Annotation utils', () => {
   const groupId = 'foo-group';
