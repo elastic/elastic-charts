@@ -17,7 +17,7 @@ import { AnnotationId, SpecId } from '../../../utils/ids';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../utils/specs';
 
 /** @public */
-export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
+export type AnnotationTooltipFormatter = ComponentType<{ details?: string }>;
 
 /** @public */
 export type CustomAnnotationTooltip = ComponentType<{
