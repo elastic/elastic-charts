@@ -90,7 +90,7 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         textMeasure,
         container.width - legendWidth - heatmap.grid.stroke.width / 2, // we should consider also the grid width
         [
-          yAxisTitleHorizontalSize + yAxis.width,
+          yAxisTitleHorizontalSize + yAxisPanelTitleHorizontalSize + yAxis.width,
           0, // this can be used if we have a right Y axis
         ],
       ).width;
