@@ -19,22 +19,25 @@ import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWNumber, isMetricWProgress, MetricDatum } from '../../specs';
 
-type BreakPoint = 's' | 'm' | 'l';
+type BreakPoint = 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl';
 
 const WIDTH_BP: [number, number, BreakPoint][] = [
   [0, 180, 's'],
   [180, 300, 'm'],
-  [300, Infinity, 'l'],
+  [300, 600, 'l'],
+  [600, 1000, 'xl'],
+  [1000, 2000, 'xxl'],
+  [2000, Infinity, 'xxxl'],
 ];
 
 const PADDING = 8;
 const LINE_HEIGHT = 1.2; // aligned with our CSS
-const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 16, l: 24 };
-const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16 };
-const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
-const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14 };
-const VALUE_FONT_SIZE: Record<BreakPoint, number> = { s: 22, m: 27, l: 34 };
-const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { s: 16, m: 20, l: 24 };
+const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 16, l: 24, xl: 36, xxl: 44, xxxl: 64 };
+const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16, xl: 24, xxl: 32, xxxl: 48 };
+const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14, xl: 20, xxl: 26, xxxl: 26 };
+const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14, xl: 20, xxl: 26, xxxl: 26 };
+const VALUE_FONT_SIZE: Record<BreakPoint, number> = { s: 22, m: 27, l: 34, xl: 56, xxl: 88, xxxl: 160 };
+const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { s: 16, m: 20, l: 24, xl: 40, xxl: 68, xxxl: 120 };
 
 function findRange(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
   const range = ranges.find(([min, max]) => min <= value && value < max);
