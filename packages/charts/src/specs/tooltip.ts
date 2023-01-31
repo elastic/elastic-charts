@@ -8,6 +8,9 @@
 
 import { ComponentType, ReactNode } from 'react';
 
+import { SpecType, TooltipStickTo, TooltipType } from './constants';
+import { Spec } from './index';
+import { SettingsSpec } from './settings';
 import { ChartType } from '../chart_types';
 import { BaseDatum } from '../chart_types/specs';
 import { Color } from '../common/colors';
@@ -17,9 +20,6 @@ import { CustomTooltip } from '../components/tooltip';
 import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
 import { PointerValue } from '../state/types';
 import { Datum, stripUndefined } from '../utils/common';
-import { SpecType, TooltipStickTo, TooltipType } from './constants';
-import { Spec } from './index';
-import { SettingsSpec } from './settings';
 
 /**
  * This interface describe the properties of single value shown in the tooltip
@@ -282,10 +282,10 @@ export const DEFAULT_TOOLTIP_SPEC: TooltipSpec = {
 export const Tooltip = function <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
   props: SFProps<
     TooltipSpec<D, SI>,
-    keyof typeof tooltipBuildProps['overrides'],
-    keyof typeof tooltipBuildProps['defaults'],
-    keyof typeof tooltipBuildProps['optionals'],
-    keyof typeof tooltipBuildProps['requires']
+    keyof (typeof tooltipBuildProps)['overrides'],
+    keyof (typeof tooltipBuildProps)['defaults'],
+    keyof (typeof tooltipBuildProps)['optionals'],
+    keyof (typeof tooltipBuildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = tooltipBuildProps;
@@ -304,8 +304,8 @@ export const Tooltip = function <D extends BaseDatum = Datum, SI extends SeriesI
  */
 export type TooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = SFProps<
   TooltipSpec<D, SI>,
-  keyof typeof tooltipBuildProps['overrides'],
-  keyof typeof tooltipBuildProps['defaults'],
-  keyof typeof tooltipBuildProps['optionals'],
-  keyof typeof tooltipBuildProps['requires']
+  keyof (typeof tooltipBuildProps)['overrides'],
+  keyof (typeof tooltipBuildProps)['defaults'],
+  keyof (typeof tooltipBuildProps)['optionals'],
+  keyof (typeof tooltipBuildProps)['requires']
 >;

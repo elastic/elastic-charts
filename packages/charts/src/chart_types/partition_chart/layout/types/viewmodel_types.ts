@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { PartitionLayout } from './config_types';
 import { LegacyAnimationConfig } from '../../../../common/animation';
 import { CategoryKey } from '../../../../common/category';
 import { Color, Colors } from '../../../../common/colors';
@@ -30,7 +31,6 @@ import { Layer } from '../../specs';
 import { MODEL_KEY, ValueGetterName } from '../config';
 import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
-import { PartitionLayout } from './config_types';
 
 /** @internal */
 export type LinkLabelVM = {

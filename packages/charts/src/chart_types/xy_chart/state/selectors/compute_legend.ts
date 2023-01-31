@@ -6,6 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { getSeriesColorsSelector } from './get_series_color_map';
+import { getSiDataSeriesMapSelector } from './get_si_dataseries_map';
+import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -14,10 +18,6 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { computeLegend } from '../../legend/legend';
 import { DataSeries } from '../../utils/series';
 import { getLastValues } from '../utils/get_last_value';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { getSeriesColorsSelector } from './get_series_color_map';
-import { getSiDataSeriesMapSelector } from './get_si_dataseries_map';
-import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
 
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(

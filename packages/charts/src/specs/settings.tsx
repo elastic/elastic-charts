@@ -9,6 +9,8 @@
 import { ComponentProps, ComponentType, ReactChild } from 'react';
 
 import { CustomXDomain, GroupByAccessor, Spec } from '.';
+import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
+import { TooltipSettings } from './tooltip';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
@@ -37,8 +39,6 @@ import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
-import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
-import { TooltipSettings } from './tooltip';
 
 /** @public */
 export interface LayerValue {
@@ -664,10 +664,10 @@ export interface OrderBy {
 export const Settings = function (
   props: SFProps<
     SettingsSpec,
-    keyof typeof settingsBuildProps['overrides'],
-    keyof typeof settingsBuildProps['defaults'],
-    keyof typeof settingsBuildProps['optionals'],
-    keyof typeof settingsBuildProps['requires']
+    keyof (typeof settingsBuildProps)['overrides'],
+    keyof (typeof settingsBuildProps)['defaults'],
+    keyof (typeof settingsBuildProps)['optionals'],
+    keyof (typeof settingsBuildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = settingsBuildProps;

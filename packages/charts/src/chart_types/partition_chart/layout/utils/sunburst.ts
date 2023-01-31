@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { ArrayEntry, childrenAccessor, HierarchyOfArrays } from './group_by_rollup';
 import { Origin } from '../../../../common/geometry';
 import { Part } from '../../../../common/text_utils';
-import { ArrayEntry, childrenAccessor, HierarchyOfArrays } from './group_by_rollup';
 
 /** @internal */
 export function sunburst(

@@ -8,6 +8,7 @@
 
 import { connect } from 'react-redux';
 
+import { DEFAULT_PROPS, HighlighterCellsComponent, HighlighterCellsProps } from './highlighter';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
@@ -15,7 +16,6 @@ import { computeChartElementSizesSelector } from '../../state/selectors/compute_
 import { getHeatmapGeometries } from '../../state/selectors/geometries';
 import { getBrushedHighlightedShapesSelector } from '../../state/selectors/get_brushed_highlighted_shapes';
 import { getHighlightedAreaSelector } from '../../state/selectors/get_highlighted_area';
-import { DEFAULT_PROPS, HighlighterCellsComponent, HighlighterCellsProps } from './highlighter';
 
 const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {

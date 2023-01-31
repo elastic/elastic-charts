@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getHeatmapTableSelector } from './get_heatmap_table';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
 export const isEmptySelector = createCustomCachedSelector([getHeatmapTableSelector], (heatmap): boolean => {

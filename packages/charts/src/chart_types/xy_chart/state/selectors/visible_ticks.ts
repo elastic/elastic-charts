@@ -6,6 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { AxisLabelFormatter } from './axis_tick_formatter';
+import { getJoinedVisibleAxesData, getLabelBox, JoinedAxisData } from './compute_axis_ticks_dimensions';
+import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
+import { countBarsInClusterSelector } from './count_bars_in_cluster';
+import { getBarPaddingsSelector } from './get_bar_paddings';
+import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { isContinuousScale } from '../../../../scales/types';
@@ -22,13 +29,6 @@ import { AxisTick, TextDirection, TickLabelBounds } from '../../utils/axis_utils
 import { getPanelSize } from '../../utils/panel';
 import { computeXScale } from '../../utils/scales';
 import { SeriesDomainsAndData } from '../utils/types';
-import { AxisLabelFormatter } from './axis_tick_formatter';
-import { getJoinedVisibleAxesData, getLabelBox, JoinedAxisData } from './compute_axis_ticks_dimensions';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
-import { countBarsInClusterSelector } from './count_bars_in_cluster';
-import { getBarPaddingsSelector } from './get_bar_paddings';
-import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
 export type Projection = { ticks: AxisTick[]; labelBox: TickLabelBounds; scale: ScaleBand | ScaleContinuous };

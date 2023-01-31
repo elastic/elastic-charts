@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { isLinear } from './viewmodel';
 import { TooltipInfo } from '../../../../components/tooltip';
 import { LayerValue, TooltipValue } from '../../../../specs';
 import { LabelAccessor, ValueFormatter } from '../../../../utils/common';
@@ -25,7 +26,6 @@ import {
   PATH_KEY,
   SORT_INDEX_KEY,
 } from '../utils/group_by_rollup';
-import { isLinear } from './viewmodel';
 
 /** @internal */
 export const pickedShapes = (

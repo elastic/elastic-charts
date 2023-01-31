@@ -9,10 +9,10 @@
 import { mount } from 'enzyme';
 import React from 'react';
 
+import { LegendIcon } from './legend_icon';
 import { ScaleType } from '../../scales/constants';
 import { Settings, LineSeries, AreaSeries } from '../../specs';
 import { Chart } from '../chart';
-import { LegendIcon } from './legend_icon';
 
 describe('Legend icons', () => {
   it('should test default dot icons', () => {

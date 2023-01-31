@@ -11,6 +11,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
+import { CustomLegend } from './custom_legend';
+import { LegendItemProps, renderLegendItem } from './legend_item';
+import { getLegendPositionConfig, legendPositionStyle } from './position_style';
+import { getLegendStyle, getLegendListStyle } from './style_utils';
 import { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
@@ -33,10 +37,6 @@ import { hasMostlyRTLItems, HorizontalAlignment, LayoutDirection, VerticalAlignm
 import { Dimensions, Size } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { Theme } from '../../utils/themes/theme';
-import { CustomLegend } from './custom_legend';
-import { LegendItemProps, renderLegendItem } from './legend_item';
-import { getLegendPositionConfig, legendPositionStyle } from './position_style';
-import { getLegendStyle, getLegendListStyle } from './style_utils';
 
 interface LegendStateProps {
   debug: boolean;

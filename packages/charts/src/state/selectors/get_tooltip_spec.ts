@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { getSettingsSpecSelector } from './get_settings_spec';
+import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
 import { SpecType } from '../../specs/constants';
 import { DEFAULT_TOOLTIP_SPEC, TooltipProps, TooltipSettings, TooltipSpec } from '../../specs/tooltip';
 import { mergePartial } from '../../utils/common';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecsFromStore } from '../utils';
-import { getSettingsSpecSelector } from './get_settings_spec';
-import { getSpecs } from './get_specs';
 
 /**
  * @internal

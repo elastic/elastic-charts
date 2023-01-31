@@ -8,6 +8,7 @@
 
 import { Store } from 'redux';
 
+import { getLegendExtra } from './legend';
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
@@ -21,7 +22,6 @@ import { computeLegendSelector } from '../state/selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 import { getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesType } from '../utils/specs';
-import { getLegendExtra } from './legend';
 
 const nullDisplayValue = {
   formatted: null,

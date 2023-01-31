@@ -6,6 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { buildPointGeometryStyles } from './point_style';
+import {
+  getY0ScaledValueFn,
+  getY1ScaledValueFn,
+  getYDatumValueFn,
+  isDatumFilled,
+  isYValueDefinedFn,
+  MarkSizeOptions,
+  YDefinedFn,
+} from './utils';
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isFiniteNumber, isNil } from '../../../utils/common';
@@ -21,16 +31,6 @@ import {
   XYChartSeriesIdentifier,
 } from '../utils/series';
 import { PointStyleAccessor, StackMode } from '../utils/specs';
-import { buildPointGeometryStyles } from './point_style';
-import {
-  getY0ScaledValueFn,
-  getY1ScaledValueFn,
-  getYDatumValueFn,
-  isDatumFilled,
-  isYValueDefinedFn,
-  MarkSizeOptions,
-  YDefinedFn,
-} from './utils';
 
 /** @internal */
 export function renderPoints(

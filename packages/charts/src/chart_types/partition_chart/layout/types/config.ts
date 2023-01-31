@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { AnimKeyframe, PartitionLayout } from './config_types';
 import { Color } from '../../../../common/colors';
 import { SizeRatio, Distance, Radian, Radius, Ratio, Pixels, TimeMs } from '../../../../common/geometry';
 import { FontFamily } from '../../../../common/text_utils';
 import { StrokeStyle } from '../../../../utils/common';
 import { FillFontSizeRange, FillLabelConfig, LinkLabelConfig } from '../../../../utils/themes/partition';
-import { AnimKeyframe, PartitionLayout } from './config_types';
 
 /** @public */
 export interface RelativeMargins {

@@ -6,6 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { computeAnnotationDimensionsSelector } from './compute_annotations';
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeSeriesGeometriesSelector } from './compute_series_geometries';
+import { getAnnotationSpecsSelector } from './get_specs';
+import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { TooltipPortalSettings } from '../../../../components/portal/types';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { DOMElement } from '../../../../state/actions/dom_element';
@@ -22,11 +27,6 @@ import { computeRectAnnotationTooltipState } from '../../annotations/tooltip';
 import { AnnotationTooltipState, AnnotationDimensions } from '../../annotations/types';
 import { AnnotationSpec, AnnotationType } from '../../utils/specs';
 import { ComputedGeometries } from '../utils/types';
-import { computeAnnotationDimensionsSelector } from './compute_annotations';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { getAnnotationSpecsSelector } from './get_specs';
-import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 
 const getCurrentPointerPosition = (state: GlobalChartState) => state.interactions.pointer.current.position;
 const getHoveredDOMElement = (state: GlobalChartState) => state.interactions.hoveredDOMElement;

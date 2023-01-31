@@ -11,6 +11,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store } from 'redux';
 
+import { TooltipType } from './constants';
+import { Settings, SettingsSpec } from './settings';
+import { SpecsParser } from './specs_parser';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
@@ -18,9 +21,6 @@ import { Position, Rendering, Rotation } from '../utils/common';
 import { DARK_THEME } from '../utils/themes/dark_theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { PartialTheme } from '../utils/themes/theme';
-import { TooltipType } from './constants';
-import { Settings, SettingsSpec } from './settings';
-import { SpecsParser } from './specs_parser';
 
 const getProxy = (chartStore: Store<GlobalChartState>) =>
   function SettingsProxy({ settings }: { settings?: Partial<SettingsSpec> }) {

@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { FlameWithTooltip } from './flame_chart';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { LegendItemExtraValues } from '../../common/legend';
 import { SeriesKey } from '../../common/series_id';
 import { InternalChartState } from '../../state/chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
-import { FlameWithTooltip } from './flame_chart';
 
 /** @internal */
 export class FlameState implements InternalChartState {

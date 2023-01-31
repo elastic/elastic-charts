@@ -9,10 +9,10 @@
 import { components } from '@octokit/openapi-types';
 import axios, { AxiosInstance } from 'axios';
 
-import { getConfig } from '../config';
-import { checkCommitFn } from '../github/utils';
 import { ProbotEventPayload } from './../github/types';
 import { BuildkiteBuild, BuildkiteTriggerBuildOptions, PullRequestBuildEnv } from './types';
+import { getConfig } from '../config';
+import { checkCommitFn } from '../github/utils';
 
 export type PRBuildkiteBuild = BuildkiteBuild;
 

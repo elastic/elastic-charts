@@ -10,6 +10,7 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { renderCanvas2d } from './canvas_renderers';
 import { Color, Colors } from '../../../../common/colors';
 import { Rectangle } from '../../../../common/geometry';
 import { GoalSemanticDescription, ScreenReaderSummary } from '../../../../components/accessibility';
@@ -28,7 +29,6 @@ import { initialBoundingBox, Mark } from '../../layout/viewmodel/geoms';
 import { geometries, getPrimitiveGeoms } from '../../state/selectors/geometries';
 import { getFirstTickValueSelector, getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
 import { getCaptureBoundingBox } from '../../state/selectors/picked_shapes';
-import { renderCanvas2d } from './canvas_renderers';
 
 interface ReactiveChartStateProps {
   initialized: boolean;

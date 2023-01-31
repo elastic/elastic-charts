@@ -14,6 +14,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { Metric as MetricComponent } from './metric';
 import { highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
@@ -33,7 +34,6 @@ import { MetricStyle } from '../../../../utils/themes/theme';
 import { MetricSpec } from '../../specs';
 import { chartSize } from '../../state/selectors/chart_size';
 import { getMetricSpecs } from '../../state/selectors/data';
-import { Metric as MetricComponent } from './metric';
 
 interface StateProps {
   initialized: boolean;

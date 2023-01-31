@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { Render, Texture } from '../../../common/kingly';
-import { FlamegraphStyle } from '../../../utils/themes/theme';
-import { ColumnarViewModel } from '../flame_api';
 import { roundUpSize } from './common';
 import { drawCanvas2d, drawRect } from './draw_canvas';
 import { drawWebgl } from './draw_webgl';
+import { Render, Texture } from '../../../common/kingly';
+import { FlamegraphStyle } from '../../../utils/themes/theme';
+import { ColumnarViewModel } from '../flame_api';
 
 const CHART_BOX_LINE_WIDTH = 0.5;
 const MINIMAP_FOCUS_BOX_LINE_WIDTH = 1;

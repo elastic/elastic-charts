@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { DataSeries, getSeriesKey } from '../../utils/series';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 /** @internal */
 export const getSiDataSeriesMapSelector = createCustomCachedSelector(

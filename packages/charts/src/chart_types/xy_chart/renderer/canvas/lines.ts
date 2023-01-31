@@ -6,6 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { getPanelClipping } from './panel_clipping';
+import { renderPoints } from './points';
+import { renderLinePaths } from './primitives/path';
+import { buildLineStyles } from './styles/line';
+import { withPanelTransform } from './utils/panel_transform';
 import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
 import { Rect, Stroke } from '../../../../geoms/types';
@@ -15,11 +20,6 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { LineGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
-import { getPanelClipping } from './panel_clipping';
-import { renderPoints } from './points';
-import { renderLinePaths } from './primitives/path';
-import { buildLineStyles } from './styles/line';
-import { withPanelTransform } from './utils/panel_transform';
 
 /** @internal */
 export function renderLines(

@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { getSpecsFromStore } from './utils';
 import { ChartType } from '../chart_types';
 import { SpecType } from '../specs/constants';
-import { getSpecsFromStore } from './utils';
 
 describe('State utils', () => {
   it('getSpecsFromStore shall return always the same object reference excluding the array', () => {

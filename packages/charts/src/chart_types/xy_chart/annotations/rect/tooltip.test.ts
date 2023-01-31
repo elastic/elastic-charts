@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { getRectAnnotationTooltipState } from './tooltip';
+import { AnnotationRectProps } from './types';
 import { MockAnnotationRectProps } from '../../../../mocks/annotations/annotations';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationType } from '../../utils/specs';
 import { AnnotationTooltipState } from '../types';
-import { getRectAnnotationTooltipState } from './tooltip';
-import { AnnotationRectProps } from './types';
 
 describe('Rect annotation tooltip', () => {
   test('should compute tooltip state for rect annotation', () => {

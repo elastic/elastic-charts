@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
+import { computeAxesGeometriesSelector } from './compute_axes_geometries';
+import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
+import { getSmallMultiplesIndexOrderSelector, SmallMultiplesGroupBy } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { Position, safeFormat } from '../../../../utils/common';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
 import { hasSMDomain } from '../../utils/panel';
 import { PerPanelMap, getPerPanelMap } from '../../utils/panel_utils';
-import { computeAxesGeometriesSelector } from './compute_axes_geometries';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
-import { getSmallMultiplesIndexOrderSelector, SmallMultiplesGroupBy } from './get_specs';
 
 /** @internal */
 export type PerPanelAxisGeoms = {

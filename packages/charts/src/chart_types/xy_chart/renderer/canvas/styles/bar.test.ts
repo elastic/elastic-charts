@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { buildBarStyle } from './bar';
 import * as commonColors from '../../../../../common/color_library_wrappers';
 import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
 import { getTextureStyles } from '../../../utils/texture';
-import { buildBarStyle } from './bar';
 
 jest.mock('../../../utils/texture');
 jest.spyOn(common, 'getColorFromVariant');

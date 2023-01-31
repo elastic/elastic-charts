@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
+import { getAnnotationSpecsSelector } from './get_specs';
+import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { DOMElementType } from '../../../../state/actions/dom_element';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { AnnotationType } from '../../utils/specs';
-import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
-import { getAnnotationSpecsSelector } from './get_specs';
-import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 
 const getHoveredDOMElement = (state: GlobalChartState) => state.interactions.hoveredDOMElement;
 

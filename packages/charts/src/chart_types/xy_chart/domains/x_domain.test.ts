@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec, MockSeriesSpecs } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
@@ -15,7 +16,6 @@ import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scale
 import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';
 import { getDataSeriesFromSpecs } from '../utils/series';
 import { BasicSeriesSpec, SeriesType } from '../utils/specs';
-import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
 
 jest.mock('../../../utils/logger', () => ({
   Logger: {

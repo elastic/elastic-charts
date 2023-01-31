@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { AnnotationLineProps } from './types';
 import { Colors } from '../../../../common/colors';
 import { Line } from '../../../../geoms/types';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
@@ -19,7 +20,6 @@ import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/comm
 import { computeXScaleOffset } from '../../state/utils/utils';
 import { getPanelSize } from '../../utils/panel';
 import { AnnotationDomainType, LineAnnotationDatum, LineAnnotationSpec } from '../../utils/specs';
-import { AnnotationLineProps } from './types';
 
 function computeYDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,

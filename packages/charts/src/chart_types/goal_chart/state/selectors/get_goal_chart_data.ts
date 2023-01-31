@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { geometries } from './geometries';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
 export type GoalChartData = {
