@@ -6,6 +6,15 @@
  * Side Public License, v 1.
  */
 
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeSeriesGeometriesSelector } from './compute_series_geometries';
+import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
+import { countBarsInClusterSelector } from './count_bars_in_cluster';
+import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
+import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
+import { PointerPosition } from './get_projected_pointer_position';
+import { getSeriesSpecsSelector } from './get_specs';
+import { isTooltipSnapEnableSelector } from './is_tooltip_snap_enabled';
 import { Rect } from '../../../../geoms/types';
 import { SettingsSpec, PointerEvent } from '../../../../specs/settings';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -18,15 +27,6 @@ import { ChartDimensions } from '../../utils/dimensions';
 import { BasicSeriesSpec } from '../../utils/specs';
 import { isLineAreaOnlyChart } from '../utils/common';
 import { ComputedGeometries } from '../utils/types';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
-import { countBarsInClusterSelector } from './count_bars_in_cluster';
-import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
-import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
-import { PointerPosition } from './get_projected_pointer_position';
-import { getSeriesSpecsSelector } from './get_specs';
-import { isTooltipSnapEnableSelector } from './is_tooltip_snap_enabled';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 

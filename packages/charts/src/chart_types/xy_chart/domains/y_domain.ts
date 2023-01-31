@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { YDomain } from './types';
 import { ScaleType } from '../../../scales/constants';
 import { computeContinuousDataDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
@@ -16,7 +17,6 @@ import { getSpecDomainGroupId } from '../state/utils/spec';
 import { groupBy } from '../utils/group_data_series';
 import { DataSeries } from '../utils/series';
 import { BasicSeriesSpec, DomainPaddingUnit, SeriesScales, SeriesType, StackMode, YDomainRange } from '../utils/specs';
-import { YDomain } from './types';
 
 /** @internal */
 export type YBasicSeriesSpec = Pick<

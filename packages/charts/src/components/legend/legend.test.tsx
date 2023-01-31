@@ -9,12 +9,12 @@
 import { mount, ReactWrapper } from 'enzyme';
 import React, { Component } from 'react';
 
+import { Legend } from './legend';
+import { LegendListItem } from './legend_item';
 import { SeededDataGenerator } from '../../mocks/utils';
 import { ScaleType } from '../../scales/constants';
 import { Settings, BarSeries, LegendColorPicker } from '../../specs';
 import { Chart } from '../chart';
-import { Legend } from './legend';
-import { LegendListItem } from './legend_item';
 
 const dg = new SeededDataGenerator();
 

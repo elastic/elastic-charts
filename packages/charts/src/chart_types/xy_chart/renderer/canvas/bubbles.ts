@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { renderPointGroup } from './points';
 import { LegendItem } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { withContext } from '../../../../renderers/canvas';
@@ -14,7 +15,6 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { BubbleGeometry, PerPanel } from '../../../../utils/geometry';
 import { SharedGeometryStateStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
-import { renderPointGroup } from './points';
 
 /** @internal */
 export function renderBubbles(

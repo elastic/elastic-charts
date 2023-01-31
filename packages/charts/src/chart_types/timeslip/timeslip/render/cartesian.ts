@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { renderRaster } from './raster';
 import {
   BinUnit,
   NumberFormatter,
@@ -17,7 +18,6 @@ import { MAX_TIME_TICK_COUNT, notTooDense } from '../../../xy_chart/axes/timesli
 import { makeLinearScale, NumericScale } from '../../projections/scale';
 import { TimeslipConfig } from '../config';
 import { DataState } from '../data_fetch';
-import { renderRaster } from './raster';
 
 /** @public */
 export type DataDemand = {

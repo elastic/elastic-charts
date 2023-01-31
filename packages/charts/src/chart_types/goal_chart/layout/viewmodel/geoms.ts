@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getSagitta, getMinSagitta, getTranformDirection } from './utils';
 import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
 import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
@@ -15,7 +16,6 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel } from '../types/viewmodel_types';
-import { getSagitta, getMinSagitta, getTranformDirection } from './utils';
 
 /** @internal */
 export interface Mark {

@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
-import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 
 /** @internal */
 export const isTooltipSnapEnableSelector = createCustomCachedSelector(

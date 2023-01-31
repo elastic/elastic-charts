@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { Color } from '../../../../common/colors';
 import { SeriesKey } from '../../../../common/series_id';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -13,7 +14,6 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSeriesColors } from '../../utils/series';
 import { getCustomSeriesColors } from '../utils/utils';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 function getColorOverrides({ colors }: GlobalChartState) {
   return colors;

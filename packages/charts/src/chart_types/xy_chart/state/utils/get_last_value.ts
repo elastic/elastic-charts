@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { LastValues } from './types';
 import { SeriesKey } from '../../../../common/series_id';
 import { XDomain } from '../../domains/types';
 import { isDatumFilled } from '../../rendering/utils';
 import { DataSeries, getSeriesKey, XYChartSeriesIdentifier } from '../../utils/series';
 import { StackMode } from '../../utils/specs';
-import { LastValues } from './types';
 
 /**
  * @internal

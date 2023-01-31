@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getHeatmapGeometries } from './geometries';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { isBrushingSelector } from './is_brushing';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /**
  * @internal

@@ -11,6 +11,15 @@ import React, { useEffect, useMemo, memo, RefObject, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { TooltipBody } from './components/tooltip_body';
+import { TooltipProvider } from './components/tooltip_provider';
+import { TooltipTableColumn } from './components/types';
+import {
+  PinTooltipCallback,
+  SetSelectedTooltipItemsCallback,
+  ToggleSelectedTooltipItemCallback,
+  TooltipInfo,
+} from './types';
 import { Colors } from '../../common/colors';
 import { SeriesIdentifier } from '../../common/series_id';
 import { BaseDatum, DEFAULT_TOOLTIP_SPEC, SettingsSpec, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
@@ -35,15 +44,6 @@ import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/commo
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
-import { TooltipBody } from './components/tooltip_body';
-import { TooltipProvider } from './components/tooltip_provider';
-import { TooltipTableColumn } from './components/types';
-import {
-  PinTooltipCallback,
-  SetSelectedTooltipItemsCallback,
-  ToggleSelectedTooltipItemCallback,
-  TooltipInfo,
-} from './types';
 
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;

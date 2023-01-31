@@ -9,6 +9,9 @@
 import classNames from 'classnames';
 import React, { CSSProperties, useState } from 'react';
 
+import { ProgressBar } from './progress';
+import { SparkLine } from './sparkline';
+import { MetricText } from './text';
 import { highContrastColor } from '../../../../common/color_calcs';
 import { changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
@@ -24,9 +27,6 @@ import { LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWProgress, isMetricWTrend } from '../../specs';
-import { ProgressBar } from './progress';
-import { SparkLine } from './sparkline';
-import { MetricText } from './text';
 
 /** @internal */
 export const Metric: React.FunctionComponent<{

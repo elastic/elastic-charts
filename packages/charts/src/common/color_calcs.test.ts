@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 import { highContrastColor, combineColors } from './color_calcs';
 import { RgbaTuple } from './color_library_wrappers';
 import { Colors } from './colors';
+import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 
 describe('Color calcs', () => {
   describe('test highContrastColor', () => {

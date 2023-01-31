@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { computeSeriesGeometriesSelector } from './compute_series_geometries';
+import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { DEFAULT_GLOBAL_ID } from '../../utils/specs';
-import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 
 describe('GroupIds and useDefaultGroupId', () => {
   it('use the specified useDefaultGroupId to compute scale configs', () => {

@@ -10,6 +10,7 @@ import React, { CSSProperties } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { NoResults } from './no_results';
 import { ChartType } from '../chart_types';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
 import { SettingsSpec, TooltipSpec } from '../specs';
@@ -31,7 +32,6 @@ import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../state/selectors/get_tooltip_spec';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 import { deepEqual } from '../utils/fast_deep_equal';
-import { NoResults } from './no_results';
 
 interface ChartContainerComponentStateProps {
   status: InitStatus;

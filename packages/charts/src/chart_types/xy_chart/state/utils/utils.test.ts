@@ -9,6 +9,13 @@
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable jest/no-conditional-expect */
 
+import {
+  computeSeriesDomains,
+  computeXScaleOffset,
+  isHistogramModeEnabled,
+  setBarSeriesAccessors,
+  getCustomSeriesColors,
+} from './utils';
 import { MockDataSeries } from '../../../../mocks/series/series';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
@@ -25,13 +32,6 @@ import { BasicSeriesSpec, HistogramModeAlignments, SeriesColorAccessorFn } from 
 import { computeSeriesDomainsSelector } from '../selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../selectors/compute_series_geometries';
 import { getScaleConfigsFromSpecs } from '../selectors/get_api_scale_configs';
-import {
-  computeSeriesDomains,
-  computeXScaleOffset,
-  isHistogramModeEnabled,
-  setBarSeriesAccessors,
-  getCustomSeriesColors,
-} from './utils';
 
 function getGeometriesFromSpecs(specs: Spec[]) {
   const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });

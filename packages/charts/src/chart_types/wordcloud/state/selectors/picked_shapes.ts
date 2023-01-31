@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { geometries } from './geometries';
 import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { WordcloudViewModel } from '../../layout/types/viewmodel_types';
-import { geometries } from './geometries';
 
 function getCurrentPointerPosition(state: GlobalChartState) {
   return state.interactions.pointer.current.position;

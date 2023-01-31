@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { TimeMs } from '../../common/geometry';
 import { addTime, endOf, getUnixTimestamp, getUTCOffset, startOf } from './chrono';
 import { CalendarIntervalUnit, FixedIntervalUnit, UnixTimestamp } from './types';
+import { TimeMs } from '../../common/geometry';
 
 /**
  * An [Elasticsearch Calendar interval unit](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html#calendar_intervals)

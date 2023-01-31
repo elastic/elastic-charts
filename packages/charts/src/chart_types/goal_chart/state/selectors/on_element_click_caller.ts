@@ -8,14 +8,14 @@
 
 import { Selector } from 'reselect';
 
+import { getSpecOrNull } from './goal_spec';
+import { getPickedShapesLayerValues } from './picked_shapes';
 import { ChartType } from '../../..';
 import { getOnElementClickSelector } from '../../../../common/event_handler_selectors';
 import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { getSpecOrNull } from './goal_spec';
-import { getPickedShapesLayerValues } from './picked_shapes';
 
 /**
  * Will call the onElementClick listener every time the following preconditions are met:

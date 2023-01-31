@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { AnnotationLineProps } from './types';
 import { MockAnnotationLineProps, MockAnnotationRectProps } from '../../../../mocks/annotations/annotations';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
@@ -15,7 +16,6 @@ import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../../utils/themes/merge_ut
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { AnnotationDomainType } from '../../utils/specs';
 import { AnnotationDimensions } from '../types';
-import { AnnotationLineProps } from './types';
 
 describe('Annotation utils', () => {
   const groupId = 'foo-group';

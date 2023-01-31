@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getDatumYValue } from './points';
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
@@ -22,7 +23,6 @@ import {
   XYChartSeriesIdentifier,
 } from '../utils/series';
 import { BarStyleAccessor, DisplayValueSpec, LabelOverflowConstraint, StackMode } from '../utils/specs';
-import { getDatumYValue } from './points';
 
 const PADDING = 1; // default padding for now
 const FONT_SIZE_FACTOR = 0.7; // Take 70% of space for the label text

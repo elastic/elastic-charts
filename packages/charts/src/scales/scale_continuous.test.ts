@@ -9,12 +9,12 @@
 import { DateTime, Settings } from 'luxon';
 
 import { ScaleContinuous } from '.';
-import { computeXScale } from '../chart_types/xy_chart/utils/scales';
-import { MockXDomain } from '../mocks/xy/domains';
-import { ContinuousDomain, Range } from '../utils/domain';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
 import { limitLogScaleDomain } from './scale_continuous';
 import { isContinuousScale, isLogarithmicScale } from './types';
+import { computeXScale } from '../chart_types/xy_chart/utils/scales';
+import { MockXDomain } from '../mocks/xy/domains';
+import { ContinuousDomain, Range } from '../utils/domain';
 
 describe('Scale Continuous', () => {
   test('shall invert on continuous scale linear', () => {

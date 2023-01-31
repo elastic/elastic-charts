@@ -8,16 +8,16 @@
 
 import { ComponentType, ReactNode } from 'react';
 
+import { AnnotationLineProps } from './line/types';
+import { AnnotationRectProps } from './rect/types';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal';
 import { Position } from '../../../utils/common';
 import { AnnotationId, SpecId } from '../../../utils/ids';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../utils/specs';
-import { AnnotationLineProps } from './line/types';
-import { AnnotationRectProps } from './rect/types';
 
 /** @public */
-export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
+export type AnnotationTooltipFormatter = ComponentType<{ details?: string }>;
 
 /** @public */
 export type CustomAnnotationTooltip = ComponentType<{

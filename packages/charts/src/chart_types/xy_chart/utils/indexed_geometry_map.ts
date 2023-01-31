@@ -8,14 +8,14 @@
 
 import { $Values } from 'utility-types';
 
+import { IndexedGeometryLinearMap } from './indexed_geometry_linear_map';
+import { IndexedGeometrySpatialMap } from './indexed_geometry_spatial_map';
 import { MarkBuffer } from '../../../specs';
 import { isNil } from '../../../utils/common';
 import { Bounds } from '../../../utils/d3-delaunay';
 import { IndexedGeometry, isPointGeometry } from '../../../utils/geometry';
 import { Point } from '../../../utils/point';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
-import { IndexedGeometryLinearMap } from './indexed_geometry_linear_map';
-import { IndexedGeometrySpatialMap } from './indexed_geometry_spatial_map';
 
 /** @internal */
 export const GeometryType = Object.freeze({

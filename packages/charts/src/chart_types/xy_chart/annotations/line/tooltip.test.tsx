@@ -9,6 +9,7 @@
 import { mount } from 'enzyme';
 import React from 'react';
 
+import { AnnotationLineProps } from './types';
 import { ChartType } from '../../..';
 import { Chart } from '../../../../components/chart';
 import { MockAnnotationLineProps, MockAnnotationRectProps } from '../../../../mocks/annotations/annotations';
@@ -23,7 +24,6 @@ import { LineSeries } from '../../specs/line_series';
 import { AnnotationDomainType, AnnotationType, RectAnnotationSpec } from '../../utils/specs';
 import { computeRectAnnotationTooltipState } from '../tooltip';
 import { AnnotationDimensions } from '../types';
-import { AnnotationLineProps } from './types';
 
 describe('Annotation tooltips', () => {
   describe('Line annotation tooltips', () => {

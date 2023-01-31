@@ -6,6 +6,10 @@
  * Side Public License, v 1.
  */
 
+import * as testModule from './fit_function';
+import { DataSeries } from './series';
+import { Fit } from './specs';
+import * as seriesUtils from './stacked_series_utils';
 import {
   MockDataSeries,
   getFilledNullData,
@@ -14,10 +18,6 @@ import {
   MockDataSeriesDatum,
 } from '../../../mocks';
 import { ScaleType } from '../../../scales/constants';
-import * as testModule from './fit_function';
-import { DataSeries } from './series';
-import { Fit } from './specs';
-import * as seriesUtils from './stacked_series_utils';
 
 describe('Fit Function', () => {
   describe('getValue', () => {

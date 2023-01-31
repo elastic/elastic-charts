@@ -8,6 +8,13 @@
 
 import React, { RefObject } from 'react';
 
+import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
+import { getSpecOrNull } from './selectors/goal_spec';
+import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
+import { createOnElementClickCaller } from './selectors/on_element_click_caller';
+import { createOnElementOutCaller } from './selectors/on_element_out_caller';
+import { createOnElementOverCaller } from './selectors/on_element_over_caller';
+import { getTooltipInfoSelector } from './selectors/tooltip';
 import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
@@ -19,13 +26,6 @@ import { LegendItemLabel } from '../../../state/selectors/get_legend_items_label
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { Goal } from '../renderer/canvas/connected_component';
-import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
-import { getSpecOrNull } from './selectors/goal_spec';
-import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
-import { createOnElementClickCaller } from './selectors/on_element_click_caller';
-import { createOnElementOutCaller } from './selectors/on_element_out_caller';
-import { createOnElementOverCaller } from './selectors/on_element_over_caller';
-import { getTooltipInfoSelector } from './selectors/tooltip';
 
 const EMPTY_MAP = new Map();
 const EMPTY_LEGEND_LIST: LegendItem[] = [];

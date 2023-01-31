@@ -10,6 +10,9 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { AnimationState } from './animations/animation';
+import { renderXYChartCanvas2d } from './renderers';
+import { hasMostlyRTL } from './utils/has_mostly_rtl';
 import { LegendItem } from '../../../../common/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -50,9 +53,6 @@ import { Geometries, Transform } from '../../state/utils/types';
 import { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { AxisSpec, AnnotationSpec } from '../../utils/specs';
-import { AnimationState } from './animations/animation';
-import { renderXYChartCanvas2d } from './renderers';
-import { hasMostlyRTL } from './utils/has_mostly_rtl';
 
 /** @internal */
 export interface ReactiveChartStateProps {

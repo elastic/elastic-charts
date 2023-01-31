@@ -36,10 +36,10 @@ const buildProps = buildSFProps<BubbleSeriesSpec>()(
 export const BubbleSeries = function <D extends BaseDatum = Datum>(
   props: SFProps<
     BubbleSeriesSpec<D>,
-    keyof typeof buildProps['overrides'],
-    keyof typeof buildProps['defaults'],
-    keyof typeof buildProps['optionals'],
-    keyof typeof buildProps['requires']
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = buildProps;

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getCursorBandPosition, getSnapPosition } from './crosshair_utils';
 import { ChartType } from '../..';
 import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { MockXDomain } from '../../../mocks/xy/domains';
@@ -17,7 +18,6 @@ import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_confi
 import { computeSeriesDomains } from '../state/utils/utils';
 import { computeXScale } from '../utils/scales';
 import { BasicSeriesSpec, SeriesType } from '../utils/specs';
-import { getCursorBandPosition, getSnapPosition } from './crosshair_utils';
 
 describe('Crosshair utils linear scale', () => {
   const barSeries1SpecId = 'barSeries1';

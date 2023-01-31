@@ -6,6 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { AxisLabelFormatter, getAxisTickLabelFormatter } from './axis_tick_formatter';
+import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { countBarsInClusterSelector } from './count_bars_in_cluster';
+import { getAxesStylesSelector } from './get_axis_styles';
+import { getBarPaddingsSelector } from './get_bar_paddings';
+import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
+import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
@@ -23,13 +30,6 @@ import {
   TickLabelBounds,
 } from '../../utils/axis_utils';
 import { AxisSpec, TickFormatter } from '../../utils/specs';
-import { AxisLabelFormatter, getAxisTickLabelFormatter } from './axis_tick_formatter';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { countBarsInClusterSelector } from './count_bars_in_cluster';
-import { getAxesStylesSelector } from './get_axis_styles';
-import { getBarPaddingsSelector } from './get_bar_paddings';
-import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
-import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 
 /** @internal */
 export type AxesTicksDimensions = Map<AxisId, TickLabelBounds>;

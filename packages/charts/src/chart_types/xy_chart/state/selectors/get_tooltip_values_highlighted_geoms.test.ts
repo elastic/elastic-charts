@@ -8,12 +8,12 @@
 
 import { Store } from 'redux';
 
+import { getHighlightedTooltipTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { onPointerMove } from '../../../../state/actions/mouse';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { getHighlightedTooltipTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 
 describe('Highlight points', () => {
   describe('On Ordinal area chart', () => {
