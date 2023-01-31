@@ -9,8 +9,8 @@
 /* eslint-disable-next-line eslint-comments/disable-enable-pair */
 /* eslint-disable @typescript-eslint/unbound-method */
 
-import { getDecimalTicks, oneFive } from '../../../timeslip/projections/axis_model';
 import { AxisLayer, Interval, NumberFormatter, RasterConfig } from './continuous_time_rasters';
+import { getDecimalTicks, oneFive } from '../../../timeslip/projections/axis_model';
 
 const numericalLayerCount = 2;
 

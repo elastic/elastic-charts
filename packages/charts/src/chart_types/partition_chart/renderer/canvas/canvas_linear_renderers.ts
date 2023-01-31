@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { AnimationState, ContinuousDomainFocus } from './partition';
 import { Colors } from '../../../../common/colors';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { AnimationState, ContinuousDomainFocus } from './partition';
 
 const linear = (x: number) => x;
 const easeInOut = (alpha: number) => (x: number) => x ** alpha / (x ** alpha + (1 - x) ** alpha);

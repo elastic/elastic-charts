@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { AxisId } from '../../../../utils/ids';
-import { computeAnnotationDimensions } from '../../annotations/utils';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { AxisId } from '../../../../utils/ids';
+import { computeAnnotationDimensions } from '../../annotations/utils';
 
 const getAxisStyleGetter = createCustomCachedSelector(
   [getAxesStylesSelector, getChartThemeSelector],

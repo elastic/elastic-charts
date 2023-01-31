@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from './scale_defaults';
 import { ScaleContinuousType } from '../../../scales';
 import { BasicSeriesSpec, XScaleType } from '../utils/specs';
-import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from './scale_defaults';
 
 /** @internal */
 export function getXScaleTypeFromSpec(type?: BasicSeriesSpec['xScaleType']): XScaleType {

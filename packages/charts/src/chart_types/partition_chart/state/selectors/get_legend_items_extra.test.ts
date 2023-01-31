@@ -8,11 +8,11 @@
 
 import { Store } from 'redux';
 
+import { getLegendItemsExtra } from './get_legend_items_extra';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
-import { getLegendItemsExtra } from './get_legend_items_extra';
 
 describe('Partition - Legend item extra values', () => {
   type TestDatum = [string, string, string, number];

@@ -8,6 +8,8 @@
 
 import { createStore, Store } from 'redux';
 
+import { partitionMultiGeometries } from './geometries';
+import { createOnElementClickCaller } from './on_element_click_caller';
 import { Predicate } from '../../../../common/predicate';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
 import { SettingsSpec, GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
@@ -18,8 +20,6 @@ import { chartStoreReducer, GlobalChartState } from '../../../../state/chart_sta
 import { Datum } from '../../../../utils/common';
 import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs';
-import { partitionMultiGeometries } from './geometries';
-import { createOnElementClickCaller } from './on_element_click_caller';
 
 function initStore() {
   const storeReducer = chartStoreReducer('chartId');

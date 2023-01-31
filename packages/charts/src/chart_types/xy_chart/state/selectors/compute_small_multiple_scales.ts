@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { ScaleBand } from '../../../../scales';
 import { DEFAULT_SM_PANEL_PADDING, RelativeBandsPadding } from '../../../../specs/small_multiples';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
 import { OrdinalDomain } from '../../../../utils/domain';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSeriesDomainsSelector } from './compute_series_domains';
 
 /** @internal */
 export interface SmallMultipleScales {

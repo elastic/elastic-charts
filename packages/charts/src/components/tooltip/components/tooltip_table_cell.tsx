@@ -9,8 +9,8 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
 
-import { isNonNullablePrimitiveValue } from '../../../utils/common';
 import { TooltipCellStyle } from './types';
+import { isNonNullablePrimitiveValue } from '../../../utils/common';
 
 /** @public */
 export type TooltipTableCellProps = PropsWithChildren<{

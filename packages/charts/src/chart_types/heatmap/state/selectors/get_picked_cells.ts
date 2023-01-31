@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { computeChartElementSizesSelector } from './compute_chart_dimensions';
+import { getHeatmapGeometries } from './geometries';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { PickDragFunction } from '../../layout/types/viewmodel_types';
-import { computeChartElementSizesSelector } from './compute_chart_dimensions';
-import { getHeatmapGeometries } from './geometries';
 
 /** @internal */
 export const getPickedCells = createCustomCachedSelector(

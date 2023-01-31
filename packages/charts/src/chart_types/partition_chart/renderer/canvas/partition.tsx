@@ -10,6 +10,9 @@ import React, { MouseEvent, RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { renderLinearPartitionCanvas2d } from './canvas_linear_renderers';
+import { renderPartitionCanvas2d } from './canvas_renderers';
+import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
 import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary, ScreenReaderPartitionTable } from '../../../../components/accessibility';
 import { clearCanvas } from '../../../../renderers/canvas';
@@ -37,9 +40,6 @@ import {
 import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
 import { isSimpleLinear, isWaffle } from '../../layout/viewmodel/viewmodel';
 import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';
-import { renderLinearPartitionCanvas2d } from './canvas_linear_renderers';
-import { renderPartitionCanvas2d } from './canvas_renderers';
-import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
 
 /** @internal */
 export interface ContinuousDomainFocus {

@@ -8,6 +8,8 @@
 
 import { Selector } from 'reselect';
 
+import { getSpecOrNull } from './heatmap_spec';
+import { getPickedShapes } from './picked_shapes';
 import { ChartType } from '../../..';
 import { SeriesIdentifier } from '../../../../common/series_id';
 import { SettingsSpec } from '../../../../specs';
@@ -17,8 +19,6 @@ import { getLastClickSelector } from '../../../../state/selectors/get_last_click
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isClicking } from '../../../../state/utils';
 import { Cell, isPickedCells } from '../../layout/types/viewmodel_types';
-import { getSpecOrNull } from './heatmap_spec';
-import { getPickedShapes } from './picked_shapes';
 
 /**
  * Will call the onElementClick listener every time the following preconditions are met:

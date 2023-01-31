@@ -6,6 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getComputedScalesSelector } from './get_computed_scales';
+import { getGeometriesIndexSelector } from './get_geometries_index';
+import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
+import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
+import { PointerPosition } from './get_projected_pointer_position';
 import { PointerEvent, SettingsSpec } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -17,12 +23,6 @@ import { ChartDimensions } from '../../utils/dimensions';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { sortClosestToPoint } from '../utils/common';
 import { ComputedScales } from '../utils/types';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { getComputedScalesSelector } from './get_computed_scales';
-import { getGeometriesIndexSelector } from './get_geometries_index';
-import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
-import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
-import { PointerPosition } from './get_projected_pointer_position';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 

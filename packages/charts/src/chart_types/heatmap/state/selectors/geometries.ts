@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../../../../state/chart_state';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { render } from '../../layout/viewmodel/scenegraph';
 import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { getColorScale } from './get_color_scale';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { isEmptySelector } from './is_empty';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { render } from '../../layout/viewmodel/scenegraph';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 

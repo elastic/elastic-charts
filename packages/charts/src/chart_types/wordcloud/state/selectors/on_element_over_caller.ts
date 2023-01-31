@@ -8,14 +8,14 @@
 
 import { Selector } from 'react-redux';
 
+import { getPickedShapesLayerValues } from './picked_shapes';
+import { getSpecOrNull } from './wordcloud_spec';
 import { ChartType } from '../../..';
 import { getOnElementOverSelector } from '../../../../common/event_handler_selectors';
 import { LayerValue } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { getPickedShapesLayerValues } from './picked_shapes';
-import { getSpecOrNull } from './wordcloud_spec';
 
 /**
  * Will call the onElementOver listener every time the following preconditions are met:

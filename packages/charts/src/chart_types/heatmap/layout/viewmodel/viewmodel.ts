@@ -9,6 +9,7 @@
 import { bisectLeft } from 'd3-array';
 import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
+import { BaseDatum } from './../../../xy_chart/utils/specs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
@@ -35,7 +36,6 @@ import {
   ShapeViewModel,
   TextBox,
 } from '../types/viewmodel_types';
-import { BaseDatum } from './../../../xy_chart/utils/specs';
 
 /** @public */
 export interface HeatmapCellDatum {

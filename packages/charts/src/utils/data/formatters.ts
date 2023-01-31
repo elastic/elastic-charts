@@ -8,8 +8,8 @@
 
 import moment from 'moment-timezone';
 
-import { TickFormatter, TickFormatterOptions } from '../../chart_types/xy_chart/utils/specs';
 import { getMomentWithTz } from './date_time';
+import { TickFormatter, TickFormatterOptions } from '../../chart_types/xy_chart/utils/specs';
 
 /** @public */
 export function timeFormatter(format: string): TickFormatter {

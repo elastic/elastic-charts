@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { render } from './scenegraph';
 import { ChartType } from '../../..';
 import { SpecType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -16,7 +17,6 @@ import { getSpecsFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geoms, Mark } from '../../layout/viewmodel/geoms';
 import { GoalSpec } from '../../specs';
-import { render } from './scenegraph';
 
 const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
 

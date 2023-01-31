@@ -1,3 +1,17 @@
+# [52.0.0](https://github.com/elastic/elastic-charts/compare/v51.3.0...v52.0.0) (2023-01-27)
+
+
+### Bug Fixes
+
+* annotation details tooltip throwing with hooks ([#1949](https://github.com/elastic/elastic-charts/issues/1949)) ([779b7f3](https://github.com/elastic/elastic-charts/commit/779b7f3499f34fb4471ee5f1fac390a7499fe6ee))
+* **deps:** update dependency @elastic/eui to v72 ([#1914](https://github.com/elastic/elastic-charts/issues/1914)) ([8814c80](https://github.com/elastic/elastic-charts/commit/8814c80f71ff6cbd39187064abda131077f3ca68))
+* **deps:** update dependency @elastic/eui to v73 ([#1941](https://github.com/elastic/elastic-charts/issues/1941)) ([4eeafa7](https://github.com/elastic/elastic-charts/commit/4eeafa7864f756685ae23ced54dd34f9fede330a))
+
+
+### BREAKING CHANGES
+
+* The `customTooltipDetails` type is now passing `details` as `props` using a `ComponentType`.
+
 # [51.3.0](https://github.com/elastic/elastic-charts/compare/v51.2.0...v51.3.0) (2022-12-23)
 
 

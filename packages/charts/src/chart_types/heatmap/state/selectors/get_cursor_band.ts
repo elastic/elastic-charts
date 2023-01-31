@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { getHeatmapGeometries } from './geometries';
+import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
 import { Rect } from '../../../../geoms/types';
 import { isPointerOverEvent, PointerEvent } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -14,8 +16,6 @@ import { getActivePointerPosition } from '../../../../state/selectors/get_active
 import { isNil } from '../../../../utils/common';
 import { Point } from '../../../../utils/point';
 import { Cell, ShapeViewModel, TextBox } from '../../layout/types/viewmodel_types';
-import { getHeatmapGeometries } from './geometries';
-import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
 
 const getExternalPointerEventStateSelector = (state: GlobalChartState) => state.externalEvents.pointer;
 

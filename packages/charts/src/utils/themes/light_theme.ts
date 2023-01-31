@@ -6,9 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Colors } from '../../common/colors';
-import { GOLDEN_RATIO, TAU } from '../../common/constants';
-import { ColorVariant } from '../common';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import {
@@ -17,6 +14,9 @@ import {
   DEFAULT_GEOMETRY_STYLES,
   DEFAULT_MISSING_COLOR,
 } from './theme_common';
+import { Colors } from '../../common/colors';
+import { GOLDEN_RATIO, TAU } from '../../common/constants';
+import { ColorVariant } from '../common';
 
 /** @public */
 export const LIGHT_THEME: Theme = {

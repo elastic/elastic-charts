@@ -6,6 +6,14 @@
  * Side Public License, v 1.
  */
 
+import {
+  fillTextLayout,
+  getRectangleRowGeometry,
+  getSectorRowGeometry,
+  inSectorRotation,
+  nodeId,
+} from './fill_text_layout';
+import { linkTextLayout } from './link_text_layout';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
@@ -57,14 +65,6 @@ import {
 import { sunburst } from '../utils/sunburst';
 import { getTopPadding, LayerLayout, treemap } from '../utils/treemap';
 import { waffle } from '../utils/waffle';
-import {
-  fillTextLayout,
-  getRectangleRowGeometry,
-  getSectorRowGeometry,
-  inSectorRotation,
-  nodeId,
-} from './fill_text_layout';
-import { linkTextLayout } from './link_text_layout';
 
 /** @internal */
 export const isMosaic = (p: PartitionLayout | undefined) => p === PartitionLayout.mosaic;

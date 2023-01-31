@@ -9,13 +9,13 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
+import { TooltipActions } from './tooltip_actions';
+import { TooltipPrompt } from './tooltip_prompt';
+import { useTooltipContext } from './tooltip_provider';
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum } from '../../../specs';
 import { TooltipSpec } from '../../../specs/tooltip';
 import { Datum } from '../../../utils/common';
-import { TooltipActions } from './tooltip_actions';
-import { TooltipPrompt } from './tooltip_prompt';
-import { useTooltipContext } from './tooltip_provider';
 
 type TooltipWrapperProps<
   D extends BaseDatum = Datum,

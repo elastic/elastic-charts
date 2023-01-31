@@ -9,6 +9,7 @@
 import React, { useCallback } from 'react';
 
 import { TooltipDivider, TooltipHeader } from '../../../../../components/tooltip';
+import { renderWithProps } from '../../../../../utils/common';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../../../../specs';
 import { AnnotationTooltipState } from '../../../annotations/types';
 
@@ -25,14 +26,16 @@ export const TooltipContent = ({
       <>
         <TooltipHeader>{header}</TooltipHeader>
         <TooltipDivider />
-        <div className="echAnnotation__details">{customTooltipDetails ? customTooltipDetails(details) : details}</div>
+        <div className="echAnnotation__details">
+          {customTooltipDetails ? renderWithProps(customTooltipDetails, { details }) : details}
+        </div>
       </>
     );
   }, [datum, customTooltipDetails]);
 
   const renderRect = useCallback(() => {
     const { details } = datum as RectAnnotationDatum;
-    const tooltipContent = customTooltipDetails ? customTooltipDetails(details) : details;
+    const tooltipContent = customTooltipDetails ? renderWithProps(customTooltipDetails, { details }) : details;
     if (!tooltipContent) {
       return null;
     }

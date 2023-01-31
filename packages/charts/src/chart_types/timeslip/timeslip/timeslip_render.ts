@@ -6,6 +6,33 @@
  * Side Public License, v 1.
  */
 
+import {
+  backgroundFillStyle,
+  chartTopFontSize,
+  config,
+  defaultLabelFormat,
+  defaultMinorTickLabelFormat,
+  drawCartesianBox,
+  fadeOutPixelWidth,
+  horizontalCartesianAreaPad,
+  keyPanVelocityDivisor,
+  keyZoomVelocityDivisor,
+  localeOptions,
+  rasterConfig,
+  timeZone,
+  verticalCartesianAreaPad,
+  wheelPanVelocity,
+  wheelZoomVelocity,
+  HORIZONTAL_AXIS,
+  ZERO_Y_BASE,
+} from './config';
+import { getEnrichedData } from './data';
+import { DataState, getNullDataState, invalid, updateDataState } from './data_fetch';
+import { renderChartTitle } from './render/annotations/chart_title';
+import { renderTimeExtentAnnotation } from './render/annotations/time_extent';
+import { renderTimeUnitAnnotation } from './render/annotations/time_unit';
+import { renderCartesian } from './render/cartesian';
+import { renderDebugBox } from './render/glyphs/debug_box';
 import { continuousTimeRasters, NumberFormatter } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { numericalRasters } from '../../xy_chart/axes/timeslip/numerical_rasters';
 import { axisModel } from '../projections/axis_model';
@@ -43,33 +70,6 @@ import {
   twoTouchPinch,
   zeroTouch,
 } from '../utils/multitouch';
-import {
-  backgroundFillStyle,
-  chartTopFontSize,
-  config,
-  defaultLabelFormat,
-  defaultMinorTickLabelFormat,
-  drawCartesianBox,
-  fadeOutPixelWidth,
-  horizontalCartesianAreaPad,
-  keyPanVelocityDivisor,
-  keyZoomVelocityDivisor,
-  localeOptions,
-  rasterConfig,
-  timeZone,
-  verticalCartesianAreaPad,
-  wheelPanVelocity,
-  wheelZoomVelocity,
-  HORIZONTAL_AXIS,
-  ZERO_Y_BASE,
-} from './config';
-import { getEnrichedData } from './data';
-import { DataState, getNullDataState, invalid, updateDataState } from './data_fetch';
-import { renderChartTitle } from './render/annotations/chart_title';
-import { renderTimeExtentAnnotation } from './render/annotations/time_extent';
-import { renderTimeUnitAnnotation } from './render/annotations/time_unit';
-import { renderCartesian } from './render/cartesian';
-import { renderDebugBox } from './render/glyphs/debug_box';
 
 const HEADER_ROW_Y_OFFSET = 3; // 3 normal text height gap between unit/range annotation on top and the Cartesian area
 

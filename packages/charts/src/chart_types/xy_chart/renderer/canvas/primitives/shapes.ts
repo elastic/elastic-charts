@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { MIN_STROKE_WIDTH } from './line';
 import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import { Circle, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 import { degToRad } from '../../../../../utils/common';
 import { PointShape } from '../../../../../utils/themes/theme';
 import { ShapeRendererFn } from '../../shapes_paths';
-import { MIN_STROKE_WIDTH } from './line';
 
 /** @internal */
 export function renderShape(

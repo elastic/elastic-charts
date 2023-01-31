@@ -9,6 +9,10 @@
 import classNames from 'classnames';
 import React, { Component, createRef, MouseEventHandler } from 'react';
 
+import { Color as ItemColor } from './color';
+import { renderExtra } from './extra';
+import { Label as ItemLabel } from './label';
+import { getExtra } from './utils';
 import { Color } from '../../common/colors';
 import { LegendItem, LegendItemExtraValues } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
@@ -32,10 +36,6 @@ import {
 import { LayoutDirection } from '../../utils/common';
 import { deepEqual } from '../../utils/fast_deep_equal';
 import { LegendLabelOptions } from '../../utils/themes/theme';
-import { Color as ItemColor } from './color';
-import { renderExtra } from './extra';
-import { Label as ItemLabel } from './label';
-import { getExtra } from './utils';
 
 /** @internal */
 export const LEGEND_HIERARCHY_MARGIN = 10;

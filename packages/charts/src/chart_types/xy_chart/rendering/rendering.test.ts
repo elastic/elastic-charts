@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
+import { getBarStyleOverrides } from './bars';
+import { getPointStyleOverrides, getRadiusFn } from './points';
+import { getGeometryStateStyle, isPointOnGeometry, getClippedRanges } from './utils';
 import { LegendItem } from '../../../common/legend';
 import { MockBarGeometry, MockDataSeries, MockPointGeometry } from '../../../mocks';
 import { MockScale } from '../../../mocks/scale';
 import { mergePartial, RecursivePartial } from '../../../utils/common';
 import { BarSeriesStyle, SharedGeometryStateStyle, PointStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
-import { getBarStyleOverrides } from './bars';
-import { getPointStyleOverrides, getRadiusFn } from './points';
-import { getGeometryStateStyle, isPointOnGeometry, getClippedRanges } from './utils';
 
 describe('Rendering utils', () => {
   const MIN_DISTANCE_BUFFER = 10;

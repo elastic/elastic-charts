@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { bkEnv, buildkiteGQLQuery, codeCheckIsCompleted, getJobMetadata, updateCheckStatus } from '../utils';
 import { yarnInstall } from './../utils/exec';
+import { bkEnv, buildkiteGQLQuery, codeCheckIsCompleted, getJobMetadata, updateCheckStatus } from '../utils';
 
 const skipChecks = new Set(['playwright']);
 

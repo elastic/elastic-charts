@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { buildLineStyles } from './line';
 import * as commonColors from '../../../../../common/color_library_wrappers';
 import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Stroke } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
-import { buildLineStyles } from './line';
 
 jest.spyOn(common, 'getColorFromVariant');
 jest.spyOn(commonColors, 'colorToRgba');

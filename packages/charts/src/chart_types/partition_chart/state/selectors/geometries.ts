@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { getPartitionSpecs } from './get_partition_specs';
+import { getTrees, StyledTree } from './tree';
 import { ChartType } from '../../..';
 import { CategoryKey } from '../../../../common/category';
 import { Pixels } from '../../../../common/geometry';
@@ -20,8 +22,6 @@ import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { getShapeViewModel } from '../../layout/viewmodel/scenegraph';
 import { IndexedContinuousDomainFocus } from '../../renderer/canvas/partition';
-import { getPartitionSpecs } from './get_partition_specs';
-import { getTrees, StyledTree } from './tree';
 
 const horizontalSplit = (s?: SmallMultiplesSpec) => s?.splitHorizontally;
 const verticalSplit = (s?: SmallMultiplesSpec) => s?.splitVertically;
