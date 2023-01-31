@@ -9,14 +9,14 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
-import { Datum, isNil } from '../../../utils/common';
-import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
 import { TooltipTableBody } from './tooltip_table_body';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
 import { TooltipTableColumn } from './types';
+import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum, TooltipValue } from '../../../specs';
+import { Datum, isNil } from '../../../utils/common';
+import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
 
 const TOOLTIP_ITEM_HEIGHT = 20;
 const TOOLTIP_HEADER_HEIGHT = 25;
@@ -54,31 +54,32 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
   className,
   ...props
 }: TooltipTableProps<D, SI>) => {
+  const wrapperClasses = classNames('echTooltip__tableWrapper', { 'echTooltip__tableWrapper--pinned': props.pinned });
   if ('children' in props) {
     const { gridTemplateColumns, maxHeight } = props;
     const classes = classNames('echTooltip__table', className, {
       'echTooltip__table--noGrid': !gridTemplateColumns,
     });
     return (
-      <div className="echTooltip__tableWrapper" style={{ maxHeight }}>
+      <div className={wrapperClasses} style={{ maxHeight }}>
         <div role="table" className={classes} style={{ gridTemplateColumns }}>
           {props.children}
         </div>
       </div>
     );
   }
+  const { items, pinned = false, onSelect, selected = [] } = { ...props };
   const columns = props.columns.filter(({ hidden }) => {
     return !(typeof hidden === 'boolean' ? hidden : hidden?.(props.items) ?? false);
   });
 
-  const { items, pinned = false, onSelect, selected = [] } = { ...props };
   const gridTemplateColumns = columns
     .map(({ type, width }) => width ?? (type === 'color' ? MAX_ROW_COLOR_STRIP_WIDTH : 'auto'))
     .map((width) => (typeof width === 'number' ? `${width}px` : width))
     .join(' ');
 
   return (
-    <div className="echTooltip__tableWrapper" style={{ maxHeight: props.maxHeight }}>
+    <div className={wrapperClasses} style={{ maxHeight: props.maxHeight }}>
       <div role="table" className={classNames('echTooltip__table', className)} style={{ gridTemplateColumns }}>
         <TooltipTableHeader columns={columns} items={props.items} />
         <TooltipTableBody columns={columns} items={items} pinned={pinned} onSelect={onSelect} selected={selected} />
