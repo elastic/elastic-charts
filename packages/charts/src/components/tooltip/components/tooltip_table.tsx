@@ -9,6 +9,7 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
+import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableBody } from './tooltip_table_body';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
@@ -54,7 +55,9 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
   className,
   ...props
 }: TooltipTableProps<D, SI>) => {
-  const wrapperClasses = classNames('echTooltip__tableWrapper', { 'echTooltip__tableWrapper--pinned': props.pinned });
+  const tooltipContext = useTooltipContext<D, SI>();
+  const pinned = props.pinned ?? tooltipContext.pinned;
+  const wrapperClasses = classNames('echTooltip__tableWrapper', { 'echTooltip__tableWrapper--pinned': pinned });
   if ('children' in props) {
     const { gridTemplateColumns, maxHeight } = props;
     const classes = classNames('echTooltip__table', className, {
@@ -68,7 +71,7 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
       </div>
     );
   }
-  const { items, pinned = false, onSelect, selected = [] } = { ...props };
+  const { items, onSelect, selected = [] } = { selected: tooltipContext.selected, ...props };
   const columns = props.columns.filter(({ hidden }) => {
     return !(typeof hidden === 'boolean' ? hidden : hidden?.(props.items) ?? false);
   });
