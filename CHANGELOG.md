@@ -1,3 +1,20 @@
+# [53.0.0](https://github.com/elastic/elastic-charts/compare/v52.0.0...v53.0.0) (2023-02-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v74 ([#1950](https://github.com/elastic/elastic-charts/issues/1950)) ([a030ca9](https://github.com/elastic/elastic-charts/commit/a030ca9cc7cf5f5025c23744c667d60bed096584))
+
+
+### Features
+
+* **tooltip:** expose tooltip container ([#1915](https://github.com/elastic/elastic-charts/issues/1915)) ([40ba99b](https://github.com/elastic/elastic-charts/commit/40ba99b54d6802874ab9ae5ba1da42ff9d6e9fbf))
+
+
+### BREAKING CHANGES
+
+* **tooltip:** You must wrap your `customTooltip` components with a `TooltipContainer` if you are using our `Tooltip` components.
+
 # [52.0.0](https://github.com/elastic/elastic-charts/compare/v51.3.0...v52.0.0) (2023-01-27)
 
 
