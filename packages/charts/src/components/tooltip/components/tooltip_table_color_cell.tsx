@@ -31,6 +31,8 @@ export function TooltipTableColorCell({
   displayOnly,
   ...cellProps
 }: ColorStripCellProps): JSX.Element | null {
+  // the backgroundColor is the chart background color, used here to correctly add a background to the stripe
+  // to match the same, optionally semi-transparent, color rendered on the chart
   const { backgroundColor, theme } = useTooltipContext();
 
   const getDotColor = (stripColor: string): Color => {

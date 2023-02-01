@@ -60,9 +60,12 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
   }
 
   &__tableWrapper {
-    overflow: auto;
+    overflow: hidden;
     @include euiScrollBar;
     background-color: $euiColorEmptyShade;
+    &--pinned {
+      overflow: auto;
+    }
   }
 
   &__table {
@@ -78,7 +81,7 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
   &__tableFooter {
     .echTooltip__tableCell {
       cursor: default;
-      font-weight: $euiFontWeightBold;
+      font-weight: $euiFontWeightSemiBold;
       background-color: $euiColorEmptyShade;
       position: sticky;
       z-index: 1;

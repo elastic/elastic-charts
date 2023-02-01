@@ -175,15 +175,20 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
 
   /**
    * Custom header for tooltip. Ignored when used with `customTooltip`.
-   * \> Note: This is not the table headers but spans the entire tooltip.
+   * Note: This is not the table headers but spans the entire tooltip.
    */
-  header?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+  header: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: TooltipValue<D, SI> | null }>;
 
   /**
-   * Custom footer for tooltip. Ignored when used with `customTooltip`.
-   * \> Note: This is not the table footers but spans the entire tooltip.
+   * Custom body for tooltip. Ignored when used with `customTooltip`.
+   * Note: This is not the table body but spans the entire tooltip.
    */
-  footer?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+  body: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: TooltipValue<D, SI> | null }>;
+  /**
+   * Custom footer for tooltip. Ignored when used with `customTooltip`.
+   * Note: This is not the table footers but spans the entire tooltip.
+   */
+  footer: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: TooltipValue<D, SI> | null }>;
 
   /**
    * Actions to enable tooltip selection
@@ -266,6 +271,9 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     noActionsLoaded: 'No actions available',
     maxTooltipItems: 10,
     maxVisibleTooltipItems: 10,
+    header: 'default',
+    body: 'default',
+    footer: 'default',
   },
 );
 

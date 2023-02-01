@@ -11,9 +11,17 @@ import React, { useEffect, useMemo, memo, RefObject, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { TooltipBody } from './components/tooltip_body';
+import {
+  computeTableMaxHeight,
+  TooltipDivider,
+  TooltipFooter,
+  TooltipHeader,
+  TooltipTable,
+  TooltipWrapper,
+} from './components';
 import { TooltipProvider } from './components/tooltip_provider';
 import { TooltipTableColumn } from './components/types';
+import { getStylesFromPlacement } from './placement';
 import {
   PinTooltipCallback,
   SetSelectedTooltipItemsCallback,
@@ -84,8 +92,9 @@ export type TooltipComponentProps<
 /** @internal */
 export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   tooltip: {
-    header,
-    footer,
+    header: TooltipCustomHeader,
+    body: TooltipCustomBody,
+    footer: TooltipCustomFooter,
     actions,
     headerFormatter,
     actionPrompt,
@@ -164,6 +173,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     ...(info?.values?.map?.(({ label }) => label) ?? []),
     info?.header?.label ?? '',
   ]);
+  const textDirectionality = isMostlyRTL ? 'rtl' : 'ltr';
 
   const columns: TooltipTableColumn<D, SI>[] = [
     {
@@ -214,17 +224,26 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
 
   const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
 
+  // don't show the tooltip if hidden or no TooltipInfo are available
+  if (!info || !visible) {
+    return null;
+  }
+  const actionable = actions.length > 0 || !Array.isArray(actions);
+
+  // divider visibility
+  const hasHeader = TooltipCustomHeader !== 'none' && info.header;
+  const hasBody = TooltipCustomBody !== 'none' && info.values.length > 0;
+  // footer is empty by default, so default and none are the same at the moment
+  const hasFooter = TooltipCustomFooter !== 'default' && TooltipCustomFooter !== 'none';
+  const headerBottomDividerVisibility = hasHeader && (hasBody || hasFooter);
+  const bodyBottomDividerVisibility = hasBody && hasFooter;
+
   return (
     <TooltipPortal
       scope="MainTooltip"
       // increasing by 100 the tooltip portal zIndex to avoid conflicts with highlighters and other elements in the DOM
       zIndex={zIndex + 100}
-      anchor={
-        anchorRef ?? {
-          position,
-          appendRef: chartRef,
-        }
-      }
+      anchor={anchorRef ?? { position, appendRef: chartRef }}
       settings={popperSettings}
       chartId={chartId}
       visible={visible}
@@ -232,34 +251,80 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     >
       <TooltipProvider
         backgroundColor={backgroundColor}
-        dir={isMostlyRTL ? 'rtl' : 'ltr'}
+        dir={textDirectionality}
         pinned={pinned}
-        actionable={actions.length > 0 || !Array.isArray(actions)}
+        actionable={actionable}
         canPinTooltip={canPinTooltip}
         selected={selected}
+        setSelection={setSelectedTooltipItems}
+        toggleSelected={toggleSelectedTooltipItem}
         values={info?.values ?? []}
         pinTooltip={pinTooltip}
         theme={tooltipTheme}
         maxItems={maxVisibleTooltipItems}
       >
-        <TooltipBody
-          info={info}
-          columns={columns}
-          headerFormatter={headerFormatter}
-          settings={settings}
-          visible={visible}
-          header={header}
-          footer={footer}
-          placement={computedPlacement}
-          toggleSelected={toggleSelectedTooltipItem}
-          setSelection={setSelectedTooltipItems}
-          actions={hideActions || !canPinTooltip ? [] : actions}
-          actionPrompt={actionPrompt}
-          pinningPrompt={pinningPrompt}
-          selectionPrompt={selectionPrompt}
-          actionsLoading={actionsLoading}
-          noActionsLoaded={noActionsLoaded}
-        />
+        <div
+          className="echTooltip__outerWrapper"
+          style={getStylesFromPlacement(actionable, tooltipTheme, computedPlacement)}
+        >
+          {settings?.customTooltip ? (
+            <settings.customTooltip
+              {...info}
+              dir={textDirectionality}
+              pinned={pinned}
+              selected={selected}
+              setSelection={setSelectedTooltipItems}
+              toggleSelected={toggleSelectedTooltipItem}
+              headerFormatter={headerFormatter}
+              backgroundColor={backgroundColor}
+            />
+          ) : (
+            <TooltipWrapper
+              actions={hideActions || !canPinTooltip ? [] : actions}
+              actionPrompt={actionPrompt}
+              pinningPrompt={pinningPrompt}
+              selectionPrompt={selectionPrompt}
+              actionsLoading={actionsLoading}
+              noActionsLoaded={noActionsLoaded}
+            >
+              {TooltipCustomHeader === 'none' ? null : TooltipCustomHeader === 'default' ? (
+                <TooltipHeader header={info.header} formatter={headerFormatter} />
+              ) : (
+                <TooltipHeader>
+                  <TooltipCustomHeader items={info.values} header={info.header} />
+                </TooltipHeader>
+              )}
+
+              {headerBottomDividerVisibility && <TooltipDivider />}
+
+              {TooltipCustomBody === 'none' ? null : TooltipCustomBody === 'default' ? (
+                <TooltipTable
+                  columns={columns}
+                  items={info.values}
+                  pinned={pinned}
+                  onSelect={toggleSelectedTooltipItem}
+                  selected={selected}
+                  maxHeight={computeTableMaxHeight(
+                    pinned,
+                    columns,
+                    tooltipTheme.maxTableHeight,
+                    maxVisibleTooltipItems,
+                  )}
+                />
+              ) : (
+                <TooltipCustomBody items={info.values} header={info.header} />
+              )}
+
+              {bodyBottomDividerVisibility && <TooltipDivider />}
+
+              {TooltipCustomFooter === 'default' || TooltipCustomFooter === 'none' ? null : (
+                <TooltipFooter>
+                  <TooltipCustomFooter items={info.values} header={info.header} />
+                </TooltipFooter>
+              )}
+            </TooltipWrapper>
+          )}
+        </div>
       </TooltipProvider>
     </TooltipPortal>
   );

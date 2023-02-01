@@ -8,7 +8,6 @@
 
 import React, { memo } from 'react';
 
-import { TooltipDivider } from './tooltip_divider';
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipValue, TooltipValueFormatter } from '../../../specs';
 import { Datum, renderComplexChildren } from '../../../utils/common';
@@ -26,24 +25,14 @@ const TooltipHeaderInner = <D extends BaseDatum = Datum, SI extends SeriesIdenti
   props: TooltipHeaderProps<D, SI>,
 ) => {
   if ('children' in props) {
-    return (
-      <>
-        <div className="echTooltipHeader">{renderComplexChildren(props.children)}</div>
-        <TooltipDivider />
-      </>
-    );
+    return <div className="echTooltipHeader">{renderComplexChildren(props.children)}</div>;
   }
   const { header, formatter } = props;
   if (!header || !header.isVisible) return null;
 
   const formattedValue = formatter ? formatter(header) : header.formattedValue;
   if (!formattedValue) return null;
-  return (
-    <>
-      <div className="echTooltipHeader">{formattedValue}</div>
-      <TooltipDivider />
-    </>
-  );
+  return <div className="echTooltipHeader">{formattedValue}</div>;
 };
 
 /** @public */
