@@ -9,10 +9,10 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
 
+import { useTooltipContext } from './tooltip_provider';
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum } from '../../../specs';
 import { Datum, renderComplexChildren } from '../../../utils/common';
-import { useTooltipContext } from './tooltip_provider';
 
 /** @public */
 export const TooltipContainer = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(

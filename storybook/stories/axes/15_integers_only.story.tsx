@@ -6,22 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  AreaSeries,
-  Axis,
-  Chart,
-  Position,
-  ScaleType,
-  Settings,
-  niceTimeFormatter,
-  RecursivePartial,
-  AxisStyle,
-  BarSeries,
-} from '@elastic/charts';
-import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+import { Axis, Chart, Position, ScaleType, Settings, BarSeries } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 
