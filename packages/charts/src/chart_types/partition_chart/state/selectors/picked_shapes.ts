@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { pickedShapes, pickShapesLayerValues } from '../../layout/viewmodel/picked_shapes';
 import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
 import { partitionDrilldownFocus, partitionMultiGeometries } from './geometries';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { pickedShapes, pickShapesLayerValues } from '../../layout/viewmodel/picked_shapes';
 
 /** @internal */
 export const getPickedShapes = createCustomCachedSelector(

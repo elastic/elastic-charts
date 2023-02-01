@@ -8,9 +8,9 @@
 
 import React, { Component, ReactNode } from 'react';
 
+import { isGracefulError } from './errors';
 import { SettingsSpec } from '../../specs/settings';
 import { NoResults } from '../no_results';
-import { isGracefulError } from './errors';
 
 type ErrorBoundaryProps = {
   children: ReactNode;

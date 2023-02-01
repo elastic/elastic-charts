@@ -9,13 +9,13 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum } from '../../../specs';
-import { TooltipSpec } from '../../../specs/tooltip';
-import { Datum, renderComplexChildren } from '../../../utils/common';
 import { TooltipActions } from './tooltip_actions';
 import { TooltipPrompt } from './tooltip_prompt';
 import { useTooltipContext } from './tooltip_provider';
+import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum } from '../../../specs';
+import { TooltipSpec } from '../../../specs/tooltip';
+import { Datum } from '../../../utils/common';
 
 type TooltipWrapperProps<
   D extends BaseDatum = Datum,
@@ -72,7 +72,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
       onClick={(e) => e.stopPropagation()} // block propagation of tooltip click
       onKeyPress={(e) => e.stopPropagation()} // block propagation of tooltip click
     >
-      {renderComplexChildren(children)}
+      {children}
       {!canPinTooltip ? null : pinned ? (
         <TooltipActions
           actions={actions}

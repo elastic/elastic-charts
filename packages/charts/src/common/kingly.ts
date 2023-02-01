@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Logger } from '../utils/logger';
 import { GL } from './webgl_constants';
+import { Logger } from '../utils/logger';
 
 const GL_DEBUG = true; // to be set to false once GL charts are in non-alpha and broad use for 6-12 months or earlier if perf constrained
 

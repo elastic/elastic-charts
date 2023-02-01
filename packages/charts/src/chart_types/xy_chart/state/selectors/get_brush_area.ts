@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 import { BrushAxis } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -15,8 +17,6 @@ import { clamp, isNil, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
 import { isVerticalRotation } from '../utils/common';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
 
 const MIN_AREA_SIZE = 1;
 

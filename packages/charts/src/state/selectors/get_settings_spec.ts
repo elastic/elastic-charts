@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
 import { SpecType, DEFAULT_SETTINGS_SPEC } from '../../specs/constants';
 import { SettingsSpec } from '../../specs/settings';
@@ -13,7 +14,6 @@ import { debounce } from '../../utils/debounce';
 import { SpecList } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecsFromStore } from '../utils';
-import { getSpecs } from './get_specs';
 
 const DEFAULT_POINTER_UPDATE_DEBOUNCE = 16;
 

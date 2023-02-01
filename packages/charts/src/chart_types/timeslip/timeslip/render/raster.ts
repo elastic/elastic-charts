@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Layers, renderColumnBars, renderColumnTickLabels } from './column';
 import { doing, executing, filtering, mapping, pipeline } from '../../../../common/iterables';
 import {
   NumberFormatter,
@@ -18,7 +19,6 @@ import { NumericScale } from '../../projections/scale';
 import { clamp } from '../../utils/math';
 import { TimeslipConfig } from '../config';
 import { DataState } from '../data_fetch';
-import { Layers, renderColumnBars, renderColumnTickLabels } from './column';
 
 const TIMESLIP_MAX_TIME_GRID_COUNT = 100 || MAX_TIME_GRID_COUNT; // use either
 

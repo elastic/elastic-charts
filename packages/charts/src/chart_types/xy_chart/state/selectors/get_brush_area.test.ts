@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { getBrushAreaSelector } from './get_brush_area';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { BrushAxis } from '../../../../specs/constants';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
-import { getBrushAreaSelector } from './get_brush_area';
 
 describe('getBrushArea selector', () => {
   describe('compute brush', () => {

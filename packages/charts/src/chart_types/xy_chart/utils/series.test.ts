@@ -8,6 +8,18 @@
 
 import { flatten } from 'lodash';
 
+import {
+  getFormattedDataSeries,
+  getSeriesColors,
+  getDataSeriesFromSpecs,
+  XYChartSeriesIdentifier,
+  getSeriesName,
+  DataSeries,
+  splitSeriesDataByAccessors,
+  extractYAndMarkFromDatum,
+} from './series';
+import { BasicSeriesSpec, LineSeriesSpec, SeriesType, AreaSeriesSpec } from './specs';
+import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ChartType } from '../..';
 import { MockDataSeries } from '../../../mocks/series';
 import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
@@ -21,18 +33,6 @@ import * as TestDataset from '../../../utils/data_samples/test_dataset';
 import { KIBANA_METRICS } from '../../../utils/data_samples/test_dataset_kibana';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
-import {
-  getFormattedDataSeries,
-  getSeriesColors,
-  getDataSeriesFromSpecs,
-  XYChartSeriesIdentifier,
-  getSeriesName,
-  DataSeries,
-  splitSeriesDataByAccessors,
-  extractYAndMarkFromDatum,
-} from './series';
-import { BasicSeriesSpec, LineSeriesSpec, SeriesType, AreaSeriesSpec } from './specs';
-import { formatStackedDataSeriesValues } from './stacked_series_utils';
 
 const dg = new SeededDataGenerator();
 const getRandomNumber = getRandomNumberGenerator();

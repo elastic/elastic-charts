@@ -14,19 +14,22 @@ import { pinTooltip as pinTooltipAction } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { TooltipStyle } from '../../../utils/themes/theme';
-import { PinTooltipCallback } from '../types';
+import { CustomTooltipProps, PinTooltipCallback } from '../types';
 
-interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
+/** @public */
+export interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
+  theme: TooltipStyle;
   backgroundColor: string;
   dir: 'rtl' | 'ltr';
   maxItems: number;
-  pinned: boolean;
   actionable: boolean;
+  pinned: boolean;
   canPinTooltip: boolean;
-  selected: Array<TooltipValue<D, SI>>;
-  values: TooltipValue<D, SI>[];
   pinTooltip: PinTooltipCallback;
-  theme: TooltipStyle;
+  values: TooltipValue<D, SI>[];
+  selected: Array<TooltipValue<D, SI>>;
+  toggleSelected: CustomTooltipProps['toggleSelected'];
+  setSelection: CustomTooltipProps['setSelection'];
 }
 
 const TooltipContext = React.createContext<TooltipContext>({
@@ -37,12 +40,14 @@ const TooltipContext = React.createContext<TooltipContext>({
   actionable: false,
   canPinTooltip: false,
   selected: [],
+  toggleSelected: () => {},
+  setSelection: () => {},
   values: [],
   pinTooltip: pinTooltipAction,
   theme: LIGHT_THEME.tooltip,
 });
 
-/** @internal */
+/** @public */
 export const useTooltipContext = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>() =>
   useContext<TooltipContext<D, SI>>(TooltipContext as unknown as Context<TooltipContext<D, SI>>);
 
@@ -53,34 +58,8 @@ type TooltipProviderProps<
 
 /** @internal */
 export const TooltipProvider = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
-  backgroundColor,
-  dir,
-  maxItems,
-  pinned,
-  actionable,
-  canPinTooltip,
-  selected,
-  values,
-  pinTooltip,
   children,
-  theme,
+  ...rest
 }: TooltipProviderProps<D, SI>) => {
-  return (
-    <TooltipContext.Provider
-      value={{
-        backgroundColor,
-        dir,
-        maxItems,
-        pinned,
-        actionable,
-        canPinTooltip,
-        selected,
-        values,
-        pinTooltip,
-        theme,
-      }}
-    >
-      {children}
-    </TooltipContext.Provider>
-  );
+  return <TooltipContext.Provider value={rest}>{children}</TooltipContext.Provider>;
 };

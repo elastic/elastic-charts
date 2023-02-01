@@ -11,11 +11,11 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
+import { DEFAULT_SETTINGS_SPEC } from './constants';
+import { SpecsParser } from './specs_parser';
 import { BarSeries } from '../chart_types/specs';
 import { BarSeriesSpec } from '../chart_types/xy_chart/utils/specs';
 import { chartStoreReducer } from '../state/chart_state';
-import { DEFAULT_SETTINGS_SPEC } from './constants';
-import { SpecsParser } from './specs_parser';
 
 describe('Specs parser', () => {
   test('can mount the spec parser', () => {

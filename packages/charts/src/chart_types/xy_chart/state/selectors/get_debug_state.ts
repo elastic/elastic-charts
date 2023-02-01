@@ -6,6 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { computeAxesGeometriesSelector } from './compute_axes_geometries';
+import { computeLegendSelector } from './compute_legend';
+import { computeSeriesGeometriesSelector } from './compute_series_geometries';
+import { getGridLinesSelector } from './get_grid_lines';
+import { getAnnotationSpecsSelector, getAxisSpecsSelector } from './get_specs';
 import { LegendItem } from '../../../../common/legend';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { AnnotationSpec, AnnotationType, AxisSpec } from '../../../../specs';
@@ -29,11 +34,6 @@ import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
 import { LinesGrid } from '../../utils/grid_lines';
 import { isHorizontalRotation, isVerticalRotation } from '../utils/common';
-import { computeAxesGeometriesSelector } from './compute_axes_geometries';
-import { computeLegendSelector } from './compute_legend';
-import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { getGridLinesSelector } from './get_grid_lines';
-import { getAnnotationSpecsSelector, getAxisSpecsSelector } from './get_specs';
 
 /**
  * Returns a stringified version of the `debugState`

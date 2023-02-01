@@ -6,6 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { getPanelClipping } from './panel_clipping';
+import { renderShape } from './primitives/shapes';
+import { withPanelTransform } from './utils/panel_transform';
 import { overrideOpacity } from '../../../../common/color_library_wrappers';
 import { SeriesKey } from '../../../../common/series_id';
 import { Circle, Fill, Stroke } from '../../../../geoms/types';
@@ -13,9 +16,6 @@ import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PointGeometry } from '../../../../utils/geometry';
 import { GeometryStateStyle } from '../../../../utils/themes/theme';
-import { getPanelClipping } from './panel_clipping';
-import { renderShape } from './primitives/shapes';
-import { withPanelTransform } from './utils/panel_transform';
 
 /**
  * Renders points from single series

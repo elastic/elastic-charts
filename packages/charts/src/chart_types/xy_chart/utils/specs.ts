@@ -9,6 +9,8 @@
 import { ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
+import { AnimationOptions } from './../renderer/canvas/animations/animation';
+import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 import { ChartType } from '../../../chart_types';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal/types';
@@ -38,8 +40,6 @@ import {
   ComponentWithAnnotationDatum,
   CustomAnnotationTooltip,
 } from '../annotations/types';
-import { AnimationOptions } from './../renderer/canvas/animations/animation';
-import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 
 /** @public */
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;

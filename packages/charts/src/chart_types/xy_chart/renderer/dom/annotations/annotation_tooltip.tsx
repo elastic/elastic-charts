@@ -8,10 +8,10 @@
 
 import React, { useCallback, useMemo, useEffect, RefObject } from 'react';
 
+import { TooltipContent } from './tooltip_content';
 import { TooltipPortal, Placement, TooltipPortalSettings } from '../../../../../components/portal';
 import { TooltipWrapper } from '../../../../../components/tooltip';
 import { AnnotationTooltipState } from '../../../annotations/types';
-import { TooltipContent } from './tooltip_content';
 
 interface AnnotationTooltipProps {
   state: AnnotationTooltipState | null;

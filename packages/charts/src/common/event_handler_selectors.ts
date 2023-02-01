@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { SeriesIdentifier } from './series_id';
 import { LayerValue, SettingsSpec, Spec } from '../specs';
 import { PointerStates } from '../state/chart_state';
 import { isClicking } from '../state/utils';
-import { SeriesIdentifier } from './series_id';
 
 // todo revise all the complex branching in this file, replace some `if`s and multiple return points with ternaries
 

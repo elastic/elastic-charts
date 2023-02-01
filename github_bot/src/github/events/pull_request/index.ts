@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { EventSetupFn } from '../../types';
 import { cleanup } from './cleanup';
 import { setupBuildTrigger } from './trigger_build';
+import { EventSetupFn } from '../../types';
 
 export const setupFns: EventSetupFn[] = [setupBuildTrigger, cleanup];

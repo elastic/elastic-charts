@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { clamp, clampAll, isBetween, isFiniteNumber, isNil } from './../../../../utils/common';
 import { Radian } from '../../../../common/geometry';
 import { ScaleContinuous } from '../../../../scales';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -13,7 +14,6 @@ import { Theme } from '../../../../utils/themes/theme';
 import { GoalSpec } from '../../specs';
 import { GoalSubtype } from '../../specs/constants';
 import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
-import { clamp, clampAll, isBetween, isFiniteNumber, isNil } from './../../../../utils/common';
 
 /** @internal */
 export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Dimensions): ShapeViewModel {

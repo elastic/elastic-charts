@@ -12,6 +12,13 @@ import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe, StoreEnhancer, applyMiddleware, Middleware } from 'redux';
 import { v4 as uuidv4 } from 'uuid';
 
+import { ChartBackground } from './chart_background';
+import { ChartContainer } from './chart_container';
+import { ChartResizer } from './chart_resizer';
+import { ChartStatus } from './chart_status';
+import { ErrorBoundary } from './error_boundary';
+import { Legend } from './legend/legend';
+import { getElementZIndex } from './portal/utils';
 import { Colors } from '../common/colors';
 import { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
@@ -22,13 +29,6 @@ import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors
 import { getLegendConfigSelector } from '../state/selectors/get_legend_config_selector';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
-import { ChartBackground } from './chart_background';
-import { ChartContainer } from './chart_container';
-import { ChartResizer } from './chart_resizer';
-import { ChartStatus } from './chart_status';
-import { ErrorBoundary } from './error_boundary';
-import { Legend } from './legend/legend';
-import { getElementZIndex } from './portal/utils';
 
 interface ChartProps {
   /**

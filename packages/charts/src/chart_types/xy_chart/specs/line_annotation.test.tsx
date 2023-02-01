@@ -11,10 +11,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store } from 'redux';
 
+import { LineSeries } from './line_series';
 import { LineAnnotation, AnnotationDomainType } from '../../../specs';
 import { SpecsParser } from '../../../specs/specs_parser';
 import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
-import { LineSeries } from './line_series';
 
 function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
   return (

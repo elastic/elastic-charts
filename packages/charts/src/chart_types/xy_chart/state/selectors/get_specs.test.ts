@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { getSeriesSpecsSelector } from './get_specs';
 import { MockSeriesSpec } from '../../../../mocks/specs';
 import { getInitialState } from '../../../../state/chart_state';
-import { getSeriesSpecsSelector } from './get_specs';
 
 describe('selector - get_specs', () => {
   const state = getInitialState('chartId1');

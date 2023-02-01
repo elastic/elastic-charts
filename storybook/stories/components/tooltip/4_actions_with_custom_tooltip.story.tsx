@@ -11,7 +11,6 @@ import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
-  CustomTooltip,
   TooltipTable,
   TooltipTableBody,
   TooltipTableHeader,
@@ -19,14 +18,16 @@ import {
   TooltipTableCell,
   TooltipTableColorCell,
   TooltipAction,
-  XYChartSeriesIdentifier,
+  TooltipSpec,
+  useTooltipContext,
+  SeriesIdentifier,
 } from '@elastic/charts';
 
 import { long } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
-  const actions: TooltipAction<any, XYChartSeriesIdentifier>[] = [
+  const actions: TooltipAction<any, SeriesIdentifier>[] = [
     {
       label: () => 'Log storybook action',
       onSelect: (s) => action('onTooltipAction')(s),
@@ -43,36 +44,29 @@ export const Example = () => {
     },
   ];
 
-  const MyTooltip: CustomTooltip<any, XYChartSeriesIdentifier> = ({ values, selected, pinned, toggleSelected }) => {
+  const TooltipBody: TooltipSpec['body'] = ({ items }) => {
+    const { pinned, selected, toggleSelected } = useTooltipContext();
     return (
-      <TooltipTable maxHeight={300} gridTemplateColumns="11px auto auto">
+      <TooltipTable maxHeight={100} gridTemplateColumns="11px auto auto">
         <TooltipTableHeader>
           <TooltipTableRow>
             <TooltipTableColorCell />
-            <TooltipTableCell>Series</TooltipTableCell>
-            <TooltipTableCell>Y Value</TooltipTableCell>
+            <TooltipTableCell style={{ textAlign: 'left' }}>Category</TooltipTableCell>
+            <TooltipTableCell style={{ textAlign: 'right' }}>Value</TooltipTableCell>
           </TooltipTableRow>
         </TooltipTableHeader>
         <TooltipTableBody>
-          {values.map((value) => {
-            const {
-              datum,
-              seriesIdentifier: { key },
-              color,
-            } = value;
-            const onSelect = () => {
-              toggleSelected(value);
-            };
-
+          {items.map((value) => {
+            const onSelect = () => toggleSelected(value);
             return (
               <TooltipTableRow
                 isSelected={pinned && selected.includes(value)}
                 onSelect={onSelect}
-                key={`${key}-${datum.x}`}
+                key={`${value.seriesIdentifier.key}-${value.datum.x}`}
               >
-                <TooltipTableColorCell color={color} />
-                <TooltipTableCell>{value.label}</TooltipTableCell>
-                <TooltipTableCell>{value.formattedValue}</TooltipTableCell>
+                <TooltipTableColorCell color={value.color} />
+                <TooltipTableCell style={{ textAlign: 'left' }}>{value.label}</TooltipTableCell>
+                <TooltipTableCell style={{ textAlign: 'right' }}>{value.formattedValue}</TooltipTableCell>
               </TooltipTableRow>
             );
           })}
@@ -83,9 +77,13 @@ export const Example = () => {
   return (
     <TooltipShowcase
       info={long}
-      customTooltip={MyTooltip}
       pinned={boolean('pinned', false)}
-      tooltip={{ actions }}
+      tooltip={{
+        actions,
+        body: TooltipBody,
+        header: boolean('show header', true) ? ({ header }) => <>Time: {header?.formattedValue}</> : ('none' as const),
+        footer: boolean('show footer', true) ? ({ items }) => <>Total of {items.length} categories</> : 'none',
+      }}
       canPinTooltip
     />
   );

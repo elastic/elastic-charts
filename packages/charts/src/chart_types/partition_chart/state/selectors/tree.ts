@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getPartitionSpecs } from './get_partition_specs';
 import { ChartType } from '../../..';
 import { getPredicateFn } from '../../../../common/predicate';
 import {
@@ -24,7 +25,6 @@ import { Datum } from '../../../../utils/common';
 import { HierarchyOfArrays, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { PartitionSpec } from '../../specs';
-import { getPartitionSpecs } from './get_partition_specs';
 
 const getGroupBySpecs = createCustomCachedSelector([getSpecs], (specs) =>
   getSpecsFromStore<GroupBySpec>(specs, ChartType.Global, SpecType.IndexOrder),

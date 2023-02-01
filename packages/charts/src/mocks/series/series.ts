@@ -8,13 +8,13 @@
 
 import { shuffle } from 'lodash';
 
+import { fitFunctionData } from './data';
 import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 import { SeriesType } from '../../specs';
 import { mergePartial } from '../../utils/common';
 import { MockSeriesSpec } from '../specs';
 import { getRandomNumberGenerator } from '../utils';
-import { fitFunctionData } from './data';
 
 const rng = getRandomNumberGenerator();
 

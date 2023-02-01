@@ -62,7 +62,7 @@ As a single source of truth, the framework allows our designers to make changes 
 
 You can find documentation around creating and submitting new features in [contributing][contributing].
 
-## [Wiki](https://github.com/elastic/elastic-charts/wiki)
+## [Wiki][wikiroot]
 
 ### Consumption
 
@@ -78,9 +78,10 @@ You can find documentation around creating and submitting new features in [contr
 [Dual-licensed under Elastic v2 and Server Side Public License, v 1][license] Read the [FAQ][faq] for details.
 
 [license]: LICENSE.txt
+[wikiroot]: https://github.com/elastic/elastic-charts/wiki
 [faq]: https://github.com/elastic/elastic-charts/wiki/FAQ
 [docs]: https://elastic.github.io/elastic-charts/
-[consuming]: https://github.com/elastic/elastic-charts/wiki/Consuming-Elastic-Charts
+[consuming]: https://github.com/elastic/elastic-charts/wiki/Consuming-@elastic-charts
 [overview]: https://github.com/elastic/elastic-charts/wiki/Overview
 [theming]: https://github.com/elastic/elastic-charts/wiki/Theming
 [contributing]: https://github.com/elastic/elastic-charts/wiki/Contributing-to-Elastic-Charts

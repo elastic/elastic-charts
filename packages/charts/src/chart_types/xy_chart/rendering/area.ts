@@ -8,15 +8,6 @@
 
 import { area } from 'd3-shape';
 
-import { Color } from '../../../common/colors';
-import { ScaleBand, ScaleContinuous } from '../../../scales';
-import { CurveType, getCurveFactory } from '../../../utils/curves';
-import { Dimensions } from '../../../utils/dimensions';
-import { AreaGeometry } from '../../../utils/geometry';
-import { AreaSeriesStyle } from '../../../utils/themes/theme';
-import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { DataSeries, DataSeriesDatum, getSeriesIdentifierFromDataSeries } from '../utils/series';
-import { PointStyleAccessor } from '../utils/specs';
 import { renderPoints } from './points';
 import {
   getClippedRanges,
@@ -26,6 +17,15 @@ import {
   isYValueDefinedFn,
   MarkSizeOptions,
 } from './utils';
+import { Color } from '../../../common/colors';
+import { ScaleBand, ScaleContinuous } from '../../../scales';
+import { CurveType, getCurveFactory } from '../../../utils/curves';
+import { Dimensions } from '../../../utils/dimensions';
+import { AreaGeometry } from '../../../utils/geometry';
+import { AreaSeriesStyle } from '../../../utils/themes/theme';
+import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
+import { DataSeries, DataSeriesDatum, getSeriesIdentifierFromDataSeries } from '../utils/series';
+import { PointStyleAccessor } from '../utils/specs';
 
 /** @internal */
 export function renderArea(

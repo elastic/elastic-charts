@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { mergePartial, RecursivePartial } from '../common';
 import { LIGHT_THEME } from './light_theme';
 import { LineAnnotationStyle, PartialTheme, RectAnnotationStyle, Theme } from './theme';
+import { mergePartial, RecursivePartial } from '../common';
 
 /** @public */
 export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {

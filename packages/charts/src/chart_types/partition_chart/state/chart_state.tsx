@@ -8,13 +8,6 @@
 
 import { RefObject } from 'react';
 
-import { ChartType } from '../..';
-import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
-import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
-import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { DebugState } from '../../../state/types';
-import { Dimensions } from '../../../utils/dimensions';
-import { render } from '../renderer/dom/layered_partition_chart';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
@@ -27,6 +20,13 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
+import { ChartType } from '../..';
+import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
+import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
+import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
+import { DebugState } from '../../../state/types';
+import { Dimensions } from '../../../utils/dimensions';
+import { render } from '../renderer/dom/layered_partition_chart';
 
 /** @internal */
 export class PartitionState implements InternalChartState {
