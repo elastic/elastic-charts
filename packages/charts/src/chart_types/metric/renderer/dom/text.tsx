@@ -33,11 +33,11 @@ const WIDTH_BP: [number, number, BreakPoint][] = [
 const PADDING = 8;
 const LINE_HEIGHT = 1.2; // aligned with our CSS
 const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 16, l: 24, xl: 36, xxl: 44, xxxl: 64 };
-const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16, xl: 24, xxl: 32, xxxl: 48 };
+const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16, xl: 24, xxl: 32, xxxl: 42 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14, xl: 20, xxl: 26, xxxl: 26 };
 const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14, xl: 20, xxl: 26, xxxl: 26 };
-const VALUE_FONT_SIZE: Record<BreakPoint, number> = { s: 22, m: 27, l: 34, xl: 56, xxl: 88, xxxl: 160 };
-const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { s: 16, m: 20, l: 24, xl: 40, xxl: 68, xxxl: 120 };
+const VALUE_FONT_SIZE: Record<BreakPoint, number> = { s: 22, m: 27, l: 34, xl: 56, xxl: 88, xxxl: 140 };
+const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { s: 16, m: 20, l: 24, xl: 40, xxl: 68, xxxl: 110 };
 
 function findRange(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
   const range = ranges.find(([min, max]) => min <= value && value < max);
