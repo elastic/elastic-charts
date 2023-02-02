@@ -1,3 +1,10 @@
+# [53.1.0](https://github.com/elastic/elastic-charts/compare/v53.0.0...v53.1.0) (2023-02-02)
+
+
+### Features
+
+* **metric:** new set of size breakpoints ([#1951](https://github.com/elastic/elastic-charts/issues/1951)) ([fc6a32b](https://github.com/elastic/elastic-charts/commit/fc6a32b47f29af93e8ae6e1e1676cddbc8f9e020))
+
 # [53.0.0](https://github.com/elastic/elastic-charts/compare/v52.0.0...v53.0.0) (2023-02-01)
 
 
