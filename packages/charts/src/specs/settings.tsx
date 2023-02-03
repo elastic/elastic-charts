@@ -195,6 +195,8 @@ export type HeatmapBrushEvent = {
   cells: Cell[];
   x: (string | number)[];
   y: (string | number)[];
+  h: string | number | null;
+  v: string | number | null;
 };
 
 /** @public */

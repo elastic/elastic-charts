@@ -56,6 +56,9 @@ export interface HeatmapCellDatum extends SmallMultiplesDatum {
   originalIndex: number;
 }
 
+type CellMap = Map<string, Cell>;
+type PanelCellMap = Map<string, CellMap>;
+
 function getValuesInRange(
   values: NonNullable<PrimitiveValue>[],
   startValue: NonNullable<PrimitiveValue>,
@@ -144,8 +147,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     );
   }
 
+  let tableMinFontSize = Infinity;
+
   // compute each available cell position, color and value
-  const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
+  const panelCellMap = table.reduce<PanelCellMap>((acc, d) => {
     const x = xScale(String(d.x));
     const y = yScale(String(d.y));
     const yIndex = yValues.indexOf(d.y);
@@ -154,6 +159,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       return acc;
     }
     const cellBackgroundColor = colorScale(d.value);
+    const panelKey = getPanelKey(d.smHorizontalAccessorValue, d.smVerticalAccessorValue);
     const cellKey = getCellKey(d.x, d.y);
 
     const formattedValue = spec.valueFormatter(d.value);
@@ -168,12 +174,19 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       cellWidthInner - 6,
       cellHeightInner - 6,
     );
+    tableMinFontSize = Math.min(tableMinFontSize, fontSize);
 
-    acc[cellKey] = {
+    const cellMap = acc.get(panelKey) ?? new Map<string, Cell>();
+
+    if (!acc.has(panelKey)) acc.set(panelKey, cellMap);
+
+    cellMap.set(cellKey, {
       x:
         (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
         gridStrokeWidth / 2,
       y: y + gridStrokeWidth / 2,
+      h: d.smHorizontalAccessorValue,
+      v: d.smVerticalAccessorValue,
       yIndex,
       width: cellWidthInner,
       height: cellHeightInner,
@@ -190,9 +203,40 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       formatted: formattedValue,
       fontSize,
       textColor: fillTextColor(background.fallbackColor, cellBackgroundColor, background.color),
-    };
+    });
     return acc;
-  }, {});
+  }, new Map());
+
+  const getScaledSMValue = (value: number | string, scale: 'horizontal' | 'vertical') => {
+    return smScales[scale].isNullDomain() ? 0 : smScales[scale].scale(value);
+  };
+
+  const getPanelPointCoordinate = (value: Pixels, scale: 'horizontal' | 'vertical') => {
+    const category = smScales[scale].invert(value) ?? '';
+    const panelOffset = getScaledSMValue(category, scale);
+    const invertedScale = scale === 'horizontal' ? xInvertedScale : yInvertedScale;
+
+    return {
+      category,
+      panelOffset,
+      panelPixelValue: value - panelOffset,
+      panelValue: invertedScale(value - panelOffset),
+    };
+  };
+
+  const getPanelPointCoordinates = (x: Pixels, y: Pixels) => {
+    const { category: v, panelValue: panelY, panelOffset: panelOffsetY } = getPanelPointCoordinate(y, 'vertical');
+    const { category: h, panelValue: panelX, panelOffset: panelOffsetX } = getPanelPointCoordinate(x, 'horizontal');
+
+    return {
+      x: panelX,
+      y: panelY,
+      v,
+      h,
+      panelOffsetY,
+      panelOffsetX,
+    };
+  };
 
   /**
    * Returns the corresponding x & y values of grid cell from the x & y positions
@@ -238,16 +282,18 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     if (x > chartDimensions.width + chartDimensions.left || y > chartDimensions.top + chartDimensions.height) {
       return [];
     }
-    const xValue = xInvertedScale(x - chartDimensions.left);
-    const yValue = yInvertedScale(y);
+
+    const { x: xValue, y: yValue, h, v } = getPanelPointCoordinates(x - chartDimensions.left, y);
+
     if (xValue === undefined || yValue === undefined) {
       return [];
     }
+
+    const panelKey = getPanelKey(h, v);
     const cellKey = getCellKey(xValue, yValue);
-    const cell = cellMap[cellKey];
-    if (cell) {
-      return [cell];
-    }
+    const cell = panelCellMap.get(panelKey)?.get(cellKey);
+
+    if (cell) return [cell];
     return [];
   };
 
@@ -257,14 +303,21 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const pickDragArea: PickDragFunction = (bound) => {
     const [start, end] = bound;
 
-    const { left, top, width } = chartDimensions;
+    const { left, top } = chartDimensions;
     const topLeft = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
     const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
 
-    const startX = xInvertedScale(clamp(topLeft[0], 0, width));
-    const endX = xInvertedScale(clamp(bottomRight[0], 0, width));
-    const startY = yInvertedScale(clamp(topLeft[1], 0, panelSize.height - 1));
-    const endY = yInvertedScale(clamp(bottomRight[1], 0, panelSize.height - 1));
+    const { panelPixelValue: panelPixelStartXValue, category: h } = getPanelPointCoordinate(topLeft[0], 'horizontal');
+    const { panelPixelValue: panelPixelStartYValue, category: v } = getPanelPointCoordinate(topLeft[1], 'vertical');
+    const panelStartX = clamp(panelPixelStartXValue, 0, panelSize.width);
+    const panelEndX = clamp(getPanelPointCoordinate(bottomRight[0], 'horizontal').panelPixelValue, 0, panelSize.width);
+    const panelStartY = clamp(panelPixelStartYValue, 0, panelSize.width);
+    const panelEndY = clamp(getPanelPointCoordinate(bottomRight[1], 'vertical').panelPixelValue, 0, panelSize.width);
+
+    const startX = xInvertedScale(panelStartX);
+    const endX = xInvertedScale(panelEndX);
+    const startY = yInvertedScale(panelStartY);
+    const endY = yInvertedScale(panelEndY);
 
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
@@ -276,8 +329,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
     allXValuesInRange.forEach((x) => {
       allYValuesInRange.forEach((y) => {
+        const panelKey = getPanelKey(h, v);
         const cellKey = getCellKey(x, y);
-        cells.push(cellMap[cellKey]);
+        const cellValue = panelCellMap.get(panelKey)?.get(cellKey);
+        if (cellValue) cells.push(cellValue);
       });
     });
 
@@ -285,6 +340,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       cells: cells.filter(Boolean),
       x: invertedXValues,
       y: allYValuesInRange,
+      h,
+      v,
     };
   };
 
@@ -296,6 +353,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const pickHighlightedArea: PickHighlightedArea = (
     x: Array<NonNullable<PrimitiveValue>>,
     y: Array<NonNullable<PrimitiveValue>>,
+    h: string | number | null,
+    v: string | number | null,
   ) => {
     const startValue = x[0];
     const endValue = x[x.length - 1];
@@ -315,7 +374,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       return null;
     }
 
-    const xStart = chartDimensions.left + startFromScale;
+    const panelXOffset = h === null ? 0 : getScaledSMValue(h, 'horizontal');
+    const panelYOffset = v === null ? 0 : getScaledSMValue(v, 'vertical');
+
+    const xStart = chartDimensions.left + startFromScale + panelXOffset;
 
     // extend the range in case the right boundary has been selected
     const width = endFromScale - startFromScale + (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
@@ -326,7 +388,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       .reduce(
         (acc, current, i) => {
           if (i === 0) {
-            acc.y = yScale(current) || 0;
+            acc.y = (yScale(current) || 0) + panelYOffset;
           }
           acc.totalHeight += cellHeight;
           return acc;
@@ -346,7 +408,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    */
   const pickDragShape: PickDragShapeFunction = (bound) => {
     const area = pickDragArea(bound);
-    return pickHighlightedArea(area.x, area.y);
+    return pickHighlightedArea(area.x, area.y, area.h, area.v);
   };
 
   const pickCursorBand: PickCursorBand = (x) => {
@@ -386,9 +448,6 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     y2: i * cellHeight,
   }));
 
-  const cells = Object.values(cellMap);
-  const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
-
   // TODO introduce missing styles into axes.axisTitle
   const axisTitleFont: Visible & Font & { fontSize: Pixels } = {
     visible: axisTitle.visible,
@@ -416,11 +475,13 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       const primaryColumn = smScales.vertical.domain[0] === v;
       const primaryRow = smScales.horizontal.domain[0] === h;
       const titles: HeatmapTitleConfig[] = [];
+      // TODO this should be filtered by the pageSize AND the pageNumber
+      const cells = [...(panelCellMap.get(getPanelKey(h, v))?.values() ?? [])];
 
       if (primaryColumn && primaryRow) {
         if (spec.xAxisTitle) {
           const axisPanelTitleHeight = groupBySpec.horizontal
-            ? axisPanelTitle.fontSize + innerPad(axisPanelTitle.padding)
+            ? axisPanelTitle.fontSize + innerPad(axisPanelTitle.padding) / 2
             : 0;
           titles.push({
             origin: {
@@ -430,7 +491,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
                 chartDimensions.height +
                 elementSizes.xAxis.height +
                 axisPanelTitleHeight +
-                innerPad(axisTitle.padding) +
+                innerPad(axisTitle.padding) / 2 +
                 axisTitle.fontSize / 2,
             },
             ...axisTitleFont,
@@ -522,6 +583,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
 function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValue>) {
   return [String(x), String(y)].join('&_&');
+}
+
+function getPanelKey(h: NonNullable<PrimitiveValue> = '', v: NonNullable<PrimitiveValue> = '') {
+  return [String(h), String(v)].join('&_&');
 }
 
 /** @internal */

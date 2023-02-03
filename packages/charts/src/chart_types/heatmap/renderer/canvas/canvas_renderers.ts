@@ -50,9 +50,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
     // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
     // ctx.scale(1, -1);
 
-    // TODO this should be filtered by the pageSize AND the pageNumber
-    const filteredCells = heatmapViewModel.cells.filter((cell) => cell.yIndex < heatmapViewModel.pageSize);
-    const filteredYValues = heatmapViewModel.yValues.filter((value, yIndex) => yIndex < heatmapViewModel.pageSize);
+    const filteredYValues = heatmapViewModel.yValues.filter((_, yIndex) => yIndex < heatmapViewModel.pageSize);
 
     renderLayers(ctx, [
       () => clearCanvas(ctx, background),
@@ -70,10 +68,10 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
 
       () =>
         // Cells
-        heatmapViewModels.forEach(({ gridOrigin: { x, y } }) => {
+        heatmapViewModels.forEach(({ gridOrigin: { x, y }, cells }) => {
           withContext(ctx, () => {
             ctx.translate(x, y);
-            filteredCells.forEach((cell) => {
+            cells.forEach((cell) => {
               if (cell.visible) {
                 const geometryStateStyle = getGeometryStateStyle(cell, sharedGeometryStyle, highlightedLegendBands);
                 const style = getColorBandStyle(cell, geometryStateStyle);
@@ -87,10 +85,10 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
       () => {
         if (!theme.cell.label.visible) return;
 
-        heatmapViewModels.forEach(({ cellFontSize, gridOrigin: { x, y } }) => {
+        heatmapViewModels.forEach(({ cellFontSize, gridOrigin: { x, y }, cells }) => {
           withContext(ctx, () => {
             ctx.translate(x, y);
-            filteredCells.forEach((cell) => {
+            cells.forEach((cell) => {
               const fontSize = cellFontSize(cell);
               if (cell.visible && Number.isFinite(fontSize))
                 renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
@@ -173,6 +171,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
         });
       },
 
+      // render axes and panel titles
       () =>
         heatmapViewModels
           .filter(({ titles }) => titles.length > 0)

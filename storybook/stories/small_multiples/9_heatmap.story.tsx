@@ -7,26 +7,21 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, number, text } from '@storybook/addon-knobs';
-import { startCase } from 'lodash';
+import { boolean, number } from '@storybook/addon-knobs';
+import { sampleSize, range } from 'lodash';
 import { DateTime } from 'luxon';
-import moment from 'moment';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import {
   ScaleType,
-  Position,
   Chart,
   GroupBy,
   SmallMultiples,
   Settings,
   niceTimeFormatByDay,
   timeFormatter,
-  AxisSpec,
-  XYBrushEvent,
   Heatmap,
 } from '@elastic/charts';
-import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 const rng = getRandomNumberGenerator();
 
@@ -42,21 +37,31 @@ export const Example = () => {
   const timeBasedData = boolean('Time data', false);
   const showLegend = boolean('Show Legend', false);
   const onElementClick = action('onElementClick');
-  const ySplitCount = number('y - split count', 2, { min: 1 }, 'Data');
-  const xSplitCount = number('x - split count', 2, { min: 1 }, 'Data');
+  const vSplit = boolean('v - split', true, 'Data');
+  const hSplit = boolean('h - split', true, 'Data');
+  const vSplitCount = number('v - split count', 2, { min: 1 }, 'Data');
+  const hSplitCount = number('h - split count', 2, { min: 1 }, 'Data');
+  const categories = number('categories', 4, { min: 1, step: 1, range: true }, 'Data');
+  const density = number('cell density(%)', 20, { min: 5, max: 100, step: 5, range: true }, 'Data') / 100;
 
-  const groupNames = new Array(ySplitCount * xSplitCount).fill(0).map((_, i) => String.fromCharCode(97 + i));
-  const data = dg.generateGroupedSeries(timeBasedData ? numOfDays : 10, ySplitCount * xSplitCount).map((d) => {
-    return {
-      y: d.y,
-      x: d.x,
-      value: rng(0, 1000),
-      t: DateTime.fromISO('2020-01-01T00:00:00Z').plus({ days: d.x }).toMillis(),
-      g: d.g,
-      h: groupNames.indexOf(d.g) % xSplitCount,
-      v: groupNames.indexOf(d.g) % ySplitCount,
-    };
-  });
+  const dataCount = timeBasedData ? numOfDays : 10;
+  const fullData = useMemo(
+    () =>
+      dg.generateSMGroupedSeries(vSplit ? vSplitCount : 1, hSplit ? hSplitCount : 1, () => {
+        return dg.generateSimpleSeries(dataCount).flatMap((d) =>
+          range(0, categories, 1).map((y) => {
+            return {
+              y,
+              x: d.x,
+              value: rng(0, 1000),
+              t: DateTime.fromISO('2020-01-01T00:00:00Z').plus({ days: d.x }).toMillis(),
+            };
+          }),
+        );
+      }),
+    [vSplit, vSplitCount, hSplit, hSplitCount, dataCount, categories],
+  );
+  const data = sampleSize(fullData, vSplitCount * hSplitCount * dataCount * categories * density);
 
   return (
     <Chart>
@@ -90,8 +95,8 @@ export const Example = () => {
       <GroupBy id="v_split" by={(_, { v }) => v} format={(v) => `Metric ${v}`} sort="numDesc" />
       <GroupBy id="h_split" by={(_, { h }) => h} format={(v) => `Host ${v}`} sort="numAsc" />
       <SmallMultiples
-        splitVertically="v_split"
-        splitHorizontally="h_split"
+        splitVertically={vSplit ? 'v_split' : undefined}
+        splitHorizontally={hSplit ? 'h_split' : undefined}
         style={{
           horizontalPanelPadding: {
             outer: number(

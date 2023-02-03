@@ -26,6 +26,8 @@ function defaultRNG(min = 0, max = 1, fractionDigits = 0, inclusive = true) {
   return num / precision;
 }
 
+const fillGroups = (n: number) => new Array(n).fill(0).map((_, i) => String.fromCharCode(97 + i));
+
 /** @public */
 export class DataGenerator {
   private randomNumberGenerator: RandomNumberGenerator;
@@ -59,9 +61,7 @@ export class DataGenerator {
   }
 
   generateGroupedSeries(totalPoints = 50, totalGroups = 2, groupPrefix = '') {
-    const groups = new Array(totalGroups)
-      .fill(0)
-      .map((group, i) => this.generateSimpleSeries(totalPoints, i, groupPrefix));
+    const groups = new Array(totalGroups).fill(0).map((_, i) => this.generateSimpleSeries(totalPoints, i, groupPrefix));
     return groups.reduce((acc, curr) => [...acc, ...curr]);
   }
 
@@ -77,9 +77,29 @@ export class DataGenerator {
   }
 
   generateRandomGroupedSeries(totalPoints = 50, totalGroups = 2, groupPrefix = '') {
-    const groups = new Array(totalGroups)
-      .fill(0)
-      .map((group, i) => this.generateRandomSeries(totalPoints, i, groupPrefix));
+    const groups = new Array(totalGroups).fill(0).map((_, i) => this.generateRandomSeries(totalPoints, i, groupPrefix));
     return groups.reduce((acc, curr) => [...acc, ...curr]);
+  }
+
+  /**
+   * Generate data given a list or number of vertical and/or horizontal panels
+   */
+  generateSMGroupedSeries<T extends Record<string, any>>(
+    verticalGroups: Array<number | string> | number,
+    horizontalGroups: Array<number | string> | number,
+    seriesGenerator: (h: string | number, v: string | number) => T[],
+  ) {
+    const vGroups = typeof verticalGroups === 'number' ? fillGroups(verticalGroups) : verticalGroups;
+    const hGroups = typeof horizontalGroups === 'number' ? fillGroups(horizontalGroups) : horizontalGroups;
+
+    return vGroups.flatMap((v) => {
+      return hGroups.flatMap((h) => {
+        return seriesGenerator(h, v).map((row) => ({
+          h,
+          v,
+          ...row,
+        }));
+      });
+    });
   }
 }

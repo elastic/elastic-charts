@@ -49,6 +49,7 @@ function getCursorBand(
     const point = currentPointerPosition;
     const end = { x: point.x + Number.EPSILON, y: point.y + Number.EPSILON };
     const band = geoms.pickDragShape([point, end]);
+
     if (band) {
       return {
         ...band,

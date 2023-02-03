@@ -40,7 +40,7 @@ const data = dg.generateGroupedSeries(numOfDays, 16).map((d) => {
     x: DateTime.fromISO('2020-01-01T00:00:00Z').plus({ days: d.x }).toMillis(),
     g: d.g,
     h: groupNames.indexOf(d.g) % 4,
-    v: groupNames.indexOf(d.g) % 4,
+    v: Math.floor(groupNames.indexOf(d.g) / 4),
   };
 });
 

@@ -8,21 +8,24 @@
 
 import { AnchorPosition } from '../../../../components/portal/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getPickedShapes } from './picked_shapes';
 
 /** @internal */
 export const getTooltipAnchorSelector = createCustomCachedSelector(
-  [getPickedShapes, computeChartDimensionsSelector, getActivePointerPosition],
-  (shapes, { chartDimensions }, position): AnchorPosition => {
+  [getPickedShapes, computeChartDimensionsSelector, getActivePointerPosition, computeSmallMultipleScalesSelector],
+  (shapes, { chartDimensions }, position, smScales): AnchorPosition => {
     if (Array.isArray(shapes) && shapes.length > 0) {
-      const firstShape = shapes[0];
+      const [{ x, y, width, height, h, v }] = shapes;
+      const panelXOffset = smScales.horizontal.scale(h ?? '') ?? 0;
+      const panelYOffset = smScales.vertical.scale(v ?? '') ?? 0;
       return {
-        x: firstShape.x + chartDimensions.left,
-        width: firstShape.width,
-        y: firstShape.y - chartDimensions.top,
-        height: firstShape.height,
+        x: x + chartDimensions.left + panelXOffset,
+        width,
+        y: y - chartDimensions.top + panelYOffset,
+        height,
       };
     }
     return {

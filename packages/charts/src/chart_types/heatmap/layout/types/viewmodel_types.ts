@@ -7,7 +7,7 @@
  */
 
 import { ChartType } from '../../..';
-import { Color, Colors } from '../../../../common/colors';
+import { Color } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
 import { PerPanelMap } from '../../../../common/panel_utils';
 import { Box, Font, TextAlign } from '../../../../common/text_utils';
@@ -23,6 +23,8 @@ import { HeatmapCellDatum } from '../viewmodel/viewmodel';
 export interface Cell {
   x: number;
   y: number;
+  h?: string | number;
+  v?: string | number;
   width: number;
   height: number;
   yIndex: number;
@@ -86,10 +88,10 @@ export function isPickedCells(v: unknown): v is Cell[] {
 export type PickFunction = (x: Pixels, y: Pixels) => Cell[] | TextBox;
 
 /** @internal */
-export type PickDragFunction = (points: [Point, Point]) => HeatmapBrushEvent;
+export type PickDragFunction = (points: [start: Point, end: Point]) => HeatmapBrushEvent;
 
 /** @internal */
-export type PickDragShapeFunction = (points: [Point, Point]) => Rect | null;
+export type PickDragShapeFunction = (points: [start: Point, end: Point]) => Rect | null;
 
 /**
  * From x and y coordinates in the data domain space to a canvas projected rectangle
@@ -101,6 +103,8 @@ export type PickDragShapeFunction = (points: [Point, Point]) => Rect | null;
 export type PickHighlightedArea = (
   x: Array<NonNullable<PrimitiveValue>>,
   y: Array<NonNullable<PrimitiveValue>>,
+  h: string | number | null,
+  v: string | number | null,
 ) => Rect | null;
 
 /** @internal */
