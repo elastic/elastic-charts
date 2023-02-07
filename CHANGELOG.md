@@ -1,3 +1,41 @@
+# [53.1.0](https://github.com/elastic/elastic-charts/compare/v53.0.0...v53.1.0) (2023-02-02)
+
+
+### Features
+
+* **metric:** new set of size breakpoints ([#1951](https://github.com/elastic/elastic-charts/issues/1951)) ([fc6a32b](https://github.com/elastic/elastic-charts/commit/fc6a32b47f29af93e8ae6e1e1676cddbc8f9e020))
+
+# [53.0.0](https://github.com/elastic/elastic-charts/compare/v52.0.0...v53.0.0) (2023-02-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v74 ([#1950](https://github.com/elastic/elastic-charts/issues/1950)) ([a030ca9](https://github.com/elastic/elastic-charts/commit/a030ca9cc7cf5f5025c23744c667d60bed096584))
+
+
+### Features
+
+* **tooltip:** expose tooltip container ([#1915](https://github.com/elastic/elastic-charts/issues/1915)) ([40ba99b](https://github.com/elastic/elastic-charts/commit/40ba99b54d6802874ab9ae5ba1da42ff9d6e9fbf))
+
+
+### BREAKING CHANGES
+
+* **tooltip:** You must wrap your `customTooltip` components with a `TooltipContainer` if you are using our `Tooltip` components.
+
+# [52.0.0](https://github.com/elastic/elastic-charts/compare/v51.3.0...v52.0.0) (2023-01-27)
+
+
+### Bug Fixes
+
+* annotation details tooltip throwing with hooks ([#1949](https://github.com/elastic/elastic-charts/issues/1949)) ([779b7f3](https://github.com/elastic/elastic-charts/commit/779b7f3499f34fb4471ee5f1fac390a7499fe6ee))
+* **deps:** update dependency @elastic/eui to v72 ([#1914](https://github.com/elastic/elastic-charts/issues/1914)) ([8814c80](https://github.com/elastic/elastic-charts/commit/8814c80f71ff6cbd39187064abda131077f3ca68))
+* **deps:** update dependency @elastic/eui to v73 ([#1941](https://github.com/elastic/elastic-charts/issues/1941)) ([4eeafa7](https://github.com/elastic/elastic-charts/commit/4eeafa7864f756685ae23ced54dd34f9fede330a))
+
+
+### BREAKING CHANGES
+
+* The `customTooltipDetails` type is now passing `details` as `props` using a `ComponentType`.
+
 # [51.3.0](https://github.com/elastic/elastic-charts/compare/v51.2.0...v51.3.0) (2022-12-23)
 
 

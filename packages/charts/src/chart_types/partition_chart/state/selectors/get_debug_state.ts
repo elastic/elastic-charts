@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { partitionMultiGeometries } from './geometries';
 import { TAU } from '../../../../common/constants';
 import { Pixels, PointObject } from '../../../../common/geometry';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { DebugState, PartitionDebugState } from '../../../../state/types';
 import { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
-import { partitionMultiGeometries } from './geometries';
 
 /** @internal */
 export const getDebugStateSelector = createCustomCachedSelector([partitionMultiGeometries], (geoms): DebugState => {

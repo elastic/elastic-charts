@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { getTooltipInfoSelector } from './tooltip';
 import { TooltipType } from '../../../../specs/constants';
 import { TooltipVisibility } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
-import { getTooltipInfoSelector } from './tooltip';
 
 /** @internal */
 export const isTooltipVisibleSelector = createCustomCachedSelector(

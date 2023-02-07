@@ -8,12 +8,12 @@
 
 import { Store } from 'redux';
 
+import { createOnBrushEndCaller } from './on_brush_end_caller';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../../state/actions/mouse';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { createOnBrushEndCaller } from './on_brush_end_caller';
 
 describe('Heatmap picked cells', () => {
   let store: Store<GlobalChartState>;

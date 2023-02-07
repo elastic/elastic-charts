@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { StackMode } from './specs';
 import { MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
-import { StackMode } from './specs';
 
 describe('Stacked Series Utils', () => {
   const EMPTY_DATA_SET = MockSeriesSpec.area({

@@ -8,6 +8,8 @@
 
 import { line } from 'd3-shape';
 
+import { renderPoints } from './points';
+import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn, MarkSizeOptions } from './utils';
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
@@ -17,8 +19,6 @@ import { LineSeriesStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import { DataSeries, DataSeriesDatum, getSeriesIdentifierFromDataSeries } from '../utils/series';
 import { PointStyleAccessor } from '../utils/specs';
-import { renderPoints } from './points';
-import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn, MarkSizeOptions } from './utils';
 
 /** @internal */
 export function renderLine(

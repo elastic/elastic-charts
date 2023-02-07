@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getSettingsSpecSelector } from './get_settings_spec';
 import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../common/color_library_wrappers';
 import { clamp, mergePartial } from '../../utils/common';
 import { Logger } from '../../utils/logger';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { PartialTheme, Theme } from '../../utils/themes/theme';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSettingsSpecSelector } from './get_settings_spec';
 
 /** @internal */
 export const getChartThemeSelector = createCustomCachedSelector(

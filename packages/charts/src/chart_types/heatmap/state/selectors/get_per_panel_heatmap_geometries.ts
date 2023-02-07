@@ -1,4 +1,3 @@
-import { SmallMultiplesGroupBy } from './../../../../common/panel_utils';
 /*
  * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
  * or more contributor license agreements. Licensed under the Elastic License
@@ -11,6 +10,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { computeScenegraph } from '../../layout/viewmodel/scenegraph';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
@@ -19,7 +19,6 @@ import { getColorScale } from './get_color_scale';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { isEmptySelector } from './is_empty';
-import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
@@ -35,7 +34,7 @@ export const getPerPanelHeatmapGeometries = createCustomCachedSelector(
     getChartThemeSelector,
     isEmptySelector,
     computeSmallMultipleScalesSelector,
-    getSmallMultiplesIndexOrderSelector
+    getSmallMultiplesIndexOrderSelector,
   ],
   (
     heatmapSpec,

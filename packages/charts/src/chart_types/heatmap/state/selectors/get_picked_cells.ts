@@ -24,6 +24,7 @@ export const getPickedCells = createCustomCachedSelector(
     if (dragState.start.position.x < chartDimensions.left && dragState.end.position.x < chartDimensions.left) {
       const fittedDragStateStart = { x: chartDimensions.left, y: dragState.start.position.y };
       const { y, cells } = geoms.pickDragArea([fittedDragStateStart, dragState.end.position]);
+      // TODO: fix with small multiples
       return { x: [], y, cells };
     }
 
@@ -31,6 +32,7 @@ export const getPickedCells = createCustomCachedSelector(
     if (dragState.start.position.y > chartDimensions.height && dragState.end.position.y > chartDimensions.height) {
       const fittedDragStateStart = { x: dragState.start.position.x, y: chartDimensions.height };
       const { x, cells } = geoms.pickDragArea([fittedDragStateStart, dragState.end.position]);
+      // TODO: fix with small multiples
       return { x, y: [], cells };
     }
     return geoms.pickDragArea([dragState.start.position, dragState.end.position]);

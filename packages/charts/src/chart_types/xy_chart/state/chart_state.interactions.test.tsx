@@ -11,6 +11,19 @@
 import React from 'react';
 import { Store } from 'redux';
 
+import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
+import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
+import { getProjectedPointerPositionSelector } from './selectors/get_projected_pointer_position';
+import {
+  getHighlightedGeomsSelector,
+  getHighlightedTooltipTooltipValuesSelector,
+} from './selectors/get_tooltip_values_highlighted_geoms';
+import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
+import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
+import { createOnClickCaller } from './selectors/on_click_caller';
+import { createOnElementOutCaller } from './selectors/on_element_out_caller';
+import { createOnElementOverCaller } from './selectors/on_element_over_caller';
+import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 import { ChartType } from '../..';
 import { Icon } from '../../../components/icons/icon';
 import { Rect } from '../../../geoms/types';
@@ -26,19 +39,6 @@ import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_s
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesType, AnnotationDomainType } from '../utils/specs';
-import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
-import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
-import { getProjectedPointerPositionSelector } from './selectors/get_projected_pointer_position';
-import {
-  getHighlightedGeomsSelector,
-  getHighlightedTooltipTooltipValuesSelector,
-} from './selectors/get_tooltip_values_highlighted_geoms';
-import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
-import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
-import { createOnClickCaller } from './selectors/on_click_caller';
-import { createOnElementOutCaller } from './selectors/on_element_out_caller';
-import { createOnElementOverCaller } from './selectors/on_element_over_caller';
-import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';

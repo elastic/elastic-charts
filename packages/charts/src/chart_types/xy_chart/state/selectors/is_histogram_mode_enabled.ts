@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { getSeriesSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { isHistogramModeEnabled } from '../utils/utils';
-import { getSeriesSpecsSelector } from './get_specs';
 
 /** @internal */
 export const isHistogramModeEnabledSelector = createCustomCachedSelector(

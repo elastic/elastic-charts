@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { getSettingsSpecSelector } from './get_settings_spec';
 import { Rotation } from '../../utils/common';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSettingsSpecSelector } from './get_settings_spec';
 
 /** @internal */
 export const getChartRotationSelector = createCustomCachedSelector(

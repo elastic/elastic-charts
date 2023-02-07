@@ -8,21 +8,6 @@
 
 import React, { RefObject } from 'react';
 
-import { ChartType } from '../..';
-import { LegendItemExtraValues } from '../../../common/legend';
-import { SeriesKey } from '../../../common/series_id';
-import { BrushTool } from '../../../components/brush/brush';
-import { Tooltip } from '../../../components/tooltip/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
-import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
-import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { htmlIdGenerator } from '../../../utils/common';
-import { XYChart } from '../renderer/canvas/xy_chart';
-import { Annotations } from '../renderer/dom/annotations';
-import { CursorBand } from '../renderer/dom/cursor_band';
-import { CursorCrossLine } from '../renderer/dom/cursor_crossline';
-import { CursorLine } from '../renderer/dom/cursor_line';
-import { Highlighter } from '../renderer/dom/highlighter';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { computeSeriesDomainsSelector } from './selectors/compute_series_domains';
@@ -45,6 +30,21 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 import { createOnProjectionAreaCaller } from './selectors/on_projection_area_caller';
+import { ChartType } from '../..';
+import { LegendItemExtraValues } from '../../../common/legend';
+import { SeriesKey } from '../../../common/series_id';
+import { BrushTool } from '../../../components/brush/brush';
+import { Tooltip } from '../../../components/tooltip/tooltip';
+import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
+import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
+import { htmlIdGenerator } from '../../../utils/common';
+import { XYChart } from '../renderer/canvas/xy_chart';
+import { Annotations } from '../renderer/dom/annotations';
+import { CursorBand } from '../renderer/dom/cursor_band';
+import { CursorCrossLine } from '../renderer/dom/cursor_crossline';
+import { CursorLine } from '../renderer/dom/cursor_line';
+import { Highlighter } from '../renderer/dom/highlighter';
 
 /** @internal */
 export class XYAxisChartState implements InternalChartState {

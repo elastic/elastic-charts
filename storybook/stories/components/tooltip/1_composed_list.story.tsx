@@ -10,14 +10,14 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { CustomTooltip, TooltipHeader, TooltipTable, TooltipTableColumn } from '@elastic/charts';
+import { TooltipTable, TooltipTableColumn } from '@elastic/charts';
 import { isDefined } from '@elastic/charts/src/utils/common';
 
 import { tableSimple, simple, long } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
-  const maxVisibleTooltipItems = number('max visible tooltip items', 5);
+  const maxVisibleTooltipItems = number('max visible tooltip items', 2);
   const dataSet = select(
     'dataSet',
     {
@@ -36,6 +36,7 @@ export const Example = () => {
     {
       id: 'label',
       type: 'custom',
+      header: 'label',
       truncate: true,
       cell: ({ label }) => <span className="echTooltip__label">{label}</span>,
       style: {
@@ -45,6 +46,7 @@ export const Example = () => {
     {
       id: 'value',
       type: 'custom',
+      header: 'value',
       cell: ({ formattedValue }) => (
         <span className="echTooltip__value" dir="ltr">
           {formattedValue}
@@ -72,23 +74,19 @@ export const Example = () => {
     });
   }
 
-  const MyTooltip: CustomTooltip = ({ header, values }) => {
-    return (
-      <>
-        <TooltipHeader header={header} />
-        <TooltipTable columns={columns} items={values} onSelect={(s) => action('onTooltipAction')(s)} />
-      </>
-    );
-  };
-
   return (
     <TooltipShowcase
       info={dataSets[dataSet]}
-      customTooltip={MyTooltip}
       pinned={pinned}
       canPinTooltip
       tooltip={{
         maxVisibleTooltipItems,
+        header: boolean('show default header', true) ? 'default' : 'none',
+        body: boolean('show default body', false)
+          ? 'default'
+          : ({ items }) => (
+              <TooltipTable columns={columns} items={items} onSelect={(s) => action('onTooltipAction')(s)} />
+            ),
         actions: [
           {
             label: () => 'Log storybook action',

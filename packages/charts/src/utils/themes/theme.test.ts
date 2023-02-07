@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { Margins } from '../dimensions';
 import { DARK_THEME } from './dark_theme';
 import { LIGHT_THEME } from './light_theme';
 import {
@@ -17,6 +16,7 @@ import {
   mergeWithDefaultTheme,
 } from './merge_utils';
 import { AreaSeriesStyle, LineAnnotationStyle, LineSeriesStyle, PartialTheme, TextStyle, Theme } from './theme';
+import { Margins } from '../dimensions';
 
 describe('Theme', () => {
   let CLONED_LIGHT_THEME: Theme;

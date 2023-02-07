@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
+import { geometries, getPrimitiveGeoms } from './geometries';
 import { Rectangle } from '../../../../common/geometry';
 import { LayerValue } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { BulletViewModel } from '../../layout/types/viewmodel_types';
 import { initialBoundingBox, Mark } from '../../layout/viewmodel/geoms';
-import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
-import { geometries, getPrimitiveGeoms } from './geometries';
 
 function fullBoundingBox(ctx: CanvasRenderingContext2D | null, geoms: Mark[]) {
   const box = initialBoundingBox();

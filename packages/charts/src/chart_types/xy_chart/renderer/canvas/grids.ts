@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { renderMultiLine } from './primitives/line';
 import { withContext } from '../../../../renderers/canvas';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { LinesGrid } from '../../utils/grid_lines';
 import { AxisSpec } from '../../utils/specs';
-import { renderMultiLine } from './primitives/line';
 
 interface GridProps {
   sharedAxesStyle: AxisStyle;

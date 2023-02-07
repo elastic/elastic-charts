@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { getPickedShapes } from './picked_shapes';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
-import { getPickedShapes } from './picked_shapes';
 
 /** @internal */
 export const getPointerCursorSelector = createCustomCachedSelector(

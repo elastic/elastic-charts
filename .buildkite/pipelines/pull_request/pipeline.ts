@@ -9,6 +9,7 @@
 import { setMetadata } from 'buildkite-agent-node';
 import { Required } from 'utility-types';
 
+import { updateCheckStatus } from './../../utils/github';
 import type { JSONSchemaForBuildkitePipelineConfigurationFiles as BuildkitePipeline } from '../../buildkite.d';
 import {
   apiCheckStep,
@@ -33,7 +34,6 @@ import {
 } from '../../utils';
 import { getBuildConfig } from '../../utils/build';
 import { MetaDataKeys } from '../../utils/constants';
-import { updateCheckStatus } from './../../utils/github';
 
 void (async () => {
   try {

@@ -23,8 +23,8 @@
 
 import { Series, SeriesPoint } from 'd3-shape';
 
-import { SeriesKey } from '../../../common/series_id';
 import { DataSeriesDatum } from './series';
+import { SeriesKey } from '../../../common/series_id';
 
 type XValue = string | number;
 type SeriesValueMap = Map<SeriesKey, DataSeriesDatum>;

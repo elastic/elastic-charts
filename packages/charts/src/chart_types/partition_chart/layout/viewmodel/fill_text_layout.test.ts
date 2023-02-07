@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { fillTextColor } from '../../../../common/fill_text_color';
 import { getRectangleRowGeometry } from './fill_text_layout';
+import { fillTextColor } from '../../../../common/fill_text_color';
 
 describe('Test that getRectangleRowGeometry works with:', () => {
   const container = { x0: 0, y0: 0, x1: 200, y1: 100 };

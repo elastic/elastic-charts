@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { ScaleType } from '../scales/constants';
-import { DomainPaddingUnit } from '../specs';
 import { AccessorFn } from './accessor';
 import { computeContinuousDataDomain, computeDomainExtent, computeOrdinalDataDomain } from './domain';
+import { ScaleType } from '../scales/constants';
+import { DomainPaddingUnit } from '../specs';
 
 describe('utils/domain', () => {
   test('should return [] domain if no data', () => {

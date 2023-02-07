@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { getTooltipInfoAndGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { LegendItemExtraValues } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLegendItemExtraValues } from '../../tooltip/tooltip';
-import { getTooltipInfoAndGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 
 /** @internal */
 export const getLegendItemExtraValuesSelector = createCustomCachedSelector(

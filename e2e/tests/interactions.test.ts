@@ -420,4 +420,11 @@ test.describe('Interactions', () => {
       },
     );
   });
+  // currently wrong due to https://github.com/elastic/elastic-charts/issues/1921
+  test('highlighter zIndex should respect geometry zIndex', async ({ page }) => {
+    await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/test-cases--highlighter-z-index',
+      { left: 247, top: 76 }, // mouse over the second point
+    );
+  });
 });

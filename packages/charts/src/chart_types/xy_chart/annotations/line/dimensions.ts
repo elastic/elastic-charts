@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { AnnotationLineProps } from './types';
 import { Colors } from '../../../../common/colors';
 import { SmallMultipleScales, getPanelSize } from '../../../../common/panel_utils';
 import { Line } from '../../../../geoms/types';
@@ -18,7 +19,6 @@ import { mergeWithDefaultAnnotationLine } from '../../../../utils/themes/merge_u
 import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
 import { computeXScaleOffset } from '../../state/utils/utils';
 import { AnnotationDomainType, LineAnnotationDatum, LineAnnotationSpec } from '../../utils/specs';
-import { AnnotationLineProps } from './types';
 
 function computeYDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,

@@ -8,6 +8,7 @@
 
 import { ComponentProps } from 'react';
 
+import { GoalSubtype } from './constants';
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { TAU } from '../../../common/constants';
@@ -17,7 +18,6 @@ import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_facto
 import { LabelAccessor, round, stripUndefined, ValueFormatter } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
-import { GoalSubtype } from './constants';
 
 /** @alpha */
 export interface BandFillColorAccessorInput {
@@ -98,10 +98,10 @@ const buildProps = buildSFProps<GoalSpec>()(
 export const Goal = function (
   props: SFProps<
     GoalSpec,
-    keyof typeof buildProps['overrides'],
-    keyof typeof buildProps['defaults'],
-    keyof typeof buildProps['optionals'],
-    keyof typeof buildProps['requires']
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = buildProps;

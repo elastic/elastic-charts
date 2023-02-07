@@ -6,6 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { getChartThemeSelector } from './get_chart_theme';
+import { getLegendConfigSelector } from './get_legend_config_selector';
+import { getLegendItemsLabelsSelector } from './get_legend_items_labels';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
@@ -15,9 +18,6 @@ import { isDefined, LayoutDirection, Position } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
-import { getChartThemeSelector } from './get_chart_theme';
-import { getLegendConfigSelector } from './get_legend_config_selector';
-import { getLegendItemsLabelsSelector } from './get_legend_items_labels';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;
 

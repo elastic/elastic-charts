@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { compareByValueAsc } from '../../../../utils/common';
-import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 
 /** @internal */
 export const getGeometriesIndexKeysSelector = createCustomCachedSelector(

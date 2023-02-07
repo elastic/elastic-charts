@@ -37,10 +37,10 @@ const buildProps = buildSFProps<LineSeriesSpec>()(
 export const LineSeries = function <D extends BaseDatum = Datum>(
   props: SFProps<
     LineSeriesSpec<D>,
-    keyof typeof buildProps['overrides'],
-    keyof typeof buildProps['defaults'],
-    keyof typeof buildProps['optionals'],
-    keyof typeof buildProps['requires']
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = buildProps;

@@ -9,11 +9,11 @@
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
 import { ScaleBandType } from '.';
+import { ScaleType } from './constants';
 import { Ratio } from '../common/geometry';
 import { RelativeBandsPadding } from '../specs';
 import { clamp } from '../utils/common';
 import { Range } from '../utils/domain';
-import { ScaleType } from './constants';
 
 /**
  * Categorical scale

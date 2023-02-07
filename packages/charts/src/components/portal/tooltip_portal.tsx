@@ -10,10 +10,10 @@ import { createPopper, Instance, Placement as PopperPlacement } from '@popperjs/
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { isDefined, mergePartial } from '../../utils/common';
-import { Padding } from '../../utils/dimensions';
 import { PortalAnchorRef, PositionedPortalAnchorRef, TooltipPortalSettings } from './types';
 import { DEFAULT_POPPER_SETTINGS, getOrCreateNode, isHTMLElement } from './utils';
+import { isDefined, mergePartial } from '../../utils/common';
+import { Padding } from '../../utils/dimensions';
 
 /**
  * @todo make this type conditional to use PortalAnchorProps or PortalAnchorRefProps

@@ -38,10 +38,10 @@ const buildProps = buildSFProps<LineAnnotationSpec>()(
 export const LineAnnotation = function <D = any>(
   props: SFProps<
     LineAnnotationSpec<D>,
-    keyof typeof buildProps['overrides'],
-    keyof typeof buildProps['defaults'],
-    keyof typeof buildProps['optionals'],
-    keyof typeof buildProps['requires']
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = buildProps;

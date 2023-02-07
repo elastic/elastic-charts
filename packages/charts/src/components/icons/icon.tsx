@@ -9,7 +9,6 @@
 import classNames from 'classnames';
 import React, { SVGAttributes, memo } from 'react';
 
-import { deepEqual } from '../../utils/fast_deep_equal';
 import { AlertIcon } from './assets/alert';
 import { DotIcon } from './assets/dot';
 import { EmptyIcon } from './assets/empty';
@@ -17,6 +16,7 @@ import { EyeIcon } from './assets/eye';
 import { EyeClosedIcon } from './assets/eye_closed';
 import { ListIcon } from './assets/list';
 import { QuestionInCircle } from './assets/question_in_circle';
+import { deepEqual } from '../../utils/fast_deep_equal';
 
 const typeToIconMap = {
   alert: AlertIcon,

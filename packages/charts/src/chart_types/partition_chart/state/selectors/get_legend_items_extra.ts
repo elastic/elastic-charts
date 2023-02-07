@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getPartitionSpec } from './partition_spec';
+import { getTrees } from './tree';
 import { LegendItemExtraValues } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getExtraValueMap } from '../../layout/viewmodel/hierarchy_of_arrays';
-import { getPartitionSpec } from './partition_spec';
-import { getTrees } from './tree';
 
 /** @internal */
 export const getLegendItemsExtra = createCustomCachedSelector(

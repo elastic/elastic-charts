@@ -11,8 +11,8 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { useBaseTheme } from '../../use_base_theme';
 import { getLegendSizeKnob } from './legend_size_knob';
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => (
   <Chart>

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { render } from './scenegraph';
 import { ChartType } from '../../..';
 import { SpecType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -15,7 +16,6 @@ import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { WordcloudSpec } from '../../specs';
-import { render } from './scenegraph';
 
 const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
 

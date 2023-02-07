@@ -8,6 +8,9 @@
 
 import { ComponentType, ReactNode } from 'react';
 
+import { SpecType, TooltipStickTo, TooltipType } from './constants';
+import { Spec } from './index';
+import { SettingsSpec } from './settings';
 import { ChartType } from '../chart_types';
 import { BaseDatum } from '../chart_types/specs';
 import { Color } from '../common/colors';
@@ -17,9 +20,6 @@ import { CustomTooltip } from '../components/tooltip';
 import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
 import { PointerValue } from '../state/types';
 import { Datum, stripUndefined } from '../utils/common';
-import { SpecType, TooltipStickTo, TooltipType } from './constants';
-import { Spec } from './index';
-import { SettingsSpec } from './settings';
 
 /**
  * This interface describe the properties of single value shown in the tooltip
@@ -175,15 +175,20 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
 
   /**
    * Custom header for tooltip. Ignored when used with `customTooltip`.
-   * \> Note: This is not the table headers but spans the entire tooltip.
+   * Note: This is not the table headers but spans the entire tooltip.
    */
-  header?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+  header: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: TooltipValue<D, SI> | null }>;
 
   /**
-   * Custom footer for tooltip. Ignored when used with `customTooltip`.
-   * \> Note: This is not the table footers but spans the entire tooltip.
+   * Custom body for tooltip. Ignored when used with `customTooltip`.
+   * Note: This is not the table body but spans the entire tooltip.
    */
-  footer?: string | ((items: TooltipValue<D, SI>[]) => ReactNode);
+  body: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: TooltipValue<D, SI> | null }>;
+  /**
+   * Custom footer for tooltip. Ignored when used with `customTooltip`.
+   * Note: This is not the table footers but spans the entire tooltip.
+   */
+  footer: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: TooltipValue<D, SI> | null }>;
 
   /**
    * Actions to enable tooltip selection
@@ -266,6 +271,9 @@ export const tooltipBuildProps = buildSFProps<TooltipSpec>()(
     noActionsLoaded: 'No actions available',
     maxTooltipItems: 10,
     maxVisibleTooltipItems: 10,
+    header: 'default',
+    body: 'default',
+    footer: 'default',
   },
 );
 
@@ -282,10 +290,10 @@ export const DEFAULT_TOOLTIP_SPEC: TooltipSpec = {
 export const Tooltip = function <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
   props: SFProps<
     TooltipSpec<D, SI>,
-    keyof typeof tooltipBuildProps['overrides'],
-    keyof typeof tooltipBuildProps['defaults'],
-    keyof typeof tooltipBuildProps['optionals'],
-    keyof typeof tooltipBuildProps['requires']
+    keyof (typeof tooltipBuildProps)['overrides'],
+    keyof (typeof tooltipBuildProps)['defaults'],
+    keyof (typeof tooltipBuildProps)['optionals'],
+    keyof (typeof tooltipBuildProps)['requires']
   >,
 ) {
   const { defaults, overrides } = tooltipBuildProps;
@@ -304,8 +312,8 @@ export const Tooltip = function <D extends BaseDatum = Datum, SI extends SeriesI
  */
 export type TooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = SFProps<
   TooltipSpec<D, SI>,
-  keyof typeof tooltipBuildProps['overrides'],
-  keyof typeof tooltipBuildProps['defaults'],
-  keyof typeof tooltipBuildProps['optionals'],
-  keyof typeof tooltipBuildProps['requires']
+  keyof (typeof tooltipBuildProps)['overrides'],
+  keyof (typeof tooltipBuildProps)['defaults'],
+  keyof (typeof tooltipBuildProps)['optionals'],
+  keyof (typeof tooltipBuildProps)['requires']
 >;

@@ -8,11 +8,11 @@
 
 import React, { ComponentType, useEffect, useState } from 'react';
 
+import { TooltipDivider } from './tooltip_divider';
+import { useTooltipContext } from './tooltip_provider';
 import { SeriesIdentifier } from '../../../common/series_id';
 import { BaseDatum, TooltipAction, TooltipSpec, TooltipValue } from '../../../specs';
 import { Datum, renderWithProps } from '../../../utils/common';
-import { TooltipDivider } from './tooltip_divider';
-import { useTooltipContext } from './tooltip_provider';
 
 /** @internal */
 export const TooltipActions = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({

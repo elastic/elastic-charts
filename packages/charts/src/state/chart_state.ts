@@ -8,6 +8,21 @@
 
 import React, { CSSProperties, RefObject } from 'react';
 
+import { StateActions } from './actions';
+import { CHART_RENDERED } from './actions/chart';
+import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
+import { CLEAR_TEMPORARY_COLORS, SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR } from './actions/colors';
+import { DOMElement } from './actions/dom_element';
+import { EXTERNAL_POINTER_EVENT } from './actions/events';
+import { LegendPath } from './actions/legend';
+import { REMOVE_SPEC, SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC } from './actions/specs';
+import { Z_INDEX_EVENT } from './actions/z_index';
+import { interactionsReducer } from './reducers/interactions';
+import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
+import { getLegendItemsSelector } from './selectors/get_legend_items';
+import { LegendItemLabel } from './selectors/get_legend_items_labels';
+import { DebugState } from './types';
+import { getInitialPointerState, getInitialTooltipState } from './utils';
 import { ChartType } from '../chart_types';
 import { FlameState } from '../chart_types/flame_chart/internal_chart_state';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
@@ -29,21 +44,6 @@ import { keepDistinct } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 import { Logger } from '../utils/logger';
 import { Point } from '../utils/point';
-import { StateActions } from './actions';
-import { CHART_RENDERED } from './actions/chart';
-import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
-import { CLEAR_TEMPORARY_COLORS, SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR } from './actions/colors';
-import { DOMElement } from './actions/dom_element';
-import { EXTERNAL_POINTER_EVENT } from './actions/events';
-import { LegendPath } from './actions/legend';
-import { REMOVE_SPEC, SPEC_PARSED, SPEC_UNMOUNTED, UPSERT_SPEC } from './actions/specs';
-import { Z_INDEX_EVENT } from './actions/z_index';
-import { interactionsReducer } from './reducers/interactions';
-import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
-import { getLegendItemsSelector } from './selectors/get_legend_items';
-import { LegendItemLabel } from './selectors/get_legend_items_labels';
-import { DebugState } from './types';
-import { getInitialPointerState, getInitialTooltipState } from './utils';
 
 /** @internal */
 export type BackwardRef = () => React.RefObject<HTMLDivElement>;

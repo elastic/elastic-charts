@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { computeLegendSelector } from './compute_legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { isAllSeriesDeselected } from '../utils/common';
-import { computeLegendSelector } from './compute_legend';
 
 /** @internal */
 export const isChartEmptySelector = createCustomCachedSelector([computeLegendSelector], (legendItems): boolean =>

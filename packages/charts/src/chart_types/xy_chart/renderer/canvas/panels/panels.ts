@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { renderTitle } from './title';
 import { Colors } from '../../../../../common/colors';
 import { withContext } from '../../../../../renderers/canvas';
 import { PanelGeoms } from '../../../../../state/selectors/compute_panels';
@@ -17,7 +18,6 @@ import { AxisSpec } from '../../../utils/specs';
 import { AxesProps, AxisProps, renderAxis } from '../axes';
 import { renderRect } from '../primitives/rect';
 import { renderDebugRect } from '../utils/debug';
-import { renderTitle } from './title';
 
 /** @internal */
 export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: chartY }: Point, panels: PanelGeoms) {

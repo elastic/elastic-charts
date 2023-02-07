@@ -8,15 +8,15 @@
 
 import { CSSProperties } from 'react';
 
-import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getAnnotationTooltipStateSelector } from './get_annotation_tooltip_state';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { isBrushAvailableSelector } from './is_brush_available';
+import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
+import { GlobalChartState } from '../../../../state/chart_state';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 
 const getCurrentPointerPositionSelector = (state: GlobalChartState) => state.interactions.pointer.current.position;
 const getTooltipInteractionStateSelector = (state: GlobalChartState) => state.interactions.tooltip;

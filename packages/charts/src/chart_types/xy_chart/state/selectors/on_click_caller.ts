@@ -8,6 +8,9 @@
 
 import { Selector } from 'reselect';
 
+import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
+import { getProjectedScaledValues } from './get_projected_scaled_values';
+import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { ChartType } from '../../..';
 import {
   AnnotationType,
@@ -24,9 +27,6 @@ import { isClicking } from '../../../../state/utils';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { AnnotationTooltipState } from '../../annotations/types';
 import { XYChartSeriesIdentifier } from '../../utils/series';
-import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
-import { getProjectedScaledValues } from './get_projected_scaled_values';
-import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 
 /**
  * Will call the onElementClick listener every time the following preconditions are met:

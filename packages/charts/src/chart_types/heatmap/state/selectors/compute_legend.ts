@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { LegendItem } from '../../../../common/legend';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_deselected_data_series';
 import { getColorScale } from './get_color_scale';
 import { getSpecOrNull } from './heatmap_spec';
 import { isEmptySelector } from './is_empty';
+import { LegendItem } from '../../../../common/legend';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_deselected_data_series';
 
 const EMPTY_LEGEND: LegendItem[] = [];
 /** @internal */

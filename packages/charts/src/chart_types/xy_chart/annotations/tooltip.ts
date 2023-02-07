@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
+import { getRectAnnotationTooltipState } from './rect/tooltip';
+import { AnnotationRectProps } from './rect/types';
+import { AnnotationDimensions, AnnotationTooltipState } from './types';
 import { TooltipPortalSettings } from '../../../components/portal';
 import { Rotation } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AnnotationSpec, isRectAnnotation } from '../utils/specs';
-import { getRectAnnotationTooltipState } from './rect/tooltip';
-import { AnnotationRectProps } from './rect/types';
-import { AnnotationDimensions, AnnotationTooltipState } from './types';
 
 /** @internal */
 export function computeRectAnnotationTooltipState(
