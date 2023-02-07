@@ -26,6 +26,8 @@ export const Example = () => (
   <Chart>
     <Settings
       baseTheme={useBaseTheme()}
+      showLegend
+      showLegendExtra
       theme={{
         chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
       }}
@@ -35,13 +37,16 @@ export const Example = () => (
       data={mocks.pie.map((d: any, i: number) => (i ? d : { ...d, exportVal: 0 }))}
       layout={PartitionLayout.treemap}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+      valueFormatter={(d: number) =>
+        `$${d === 0 ? 0 : defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`
+      }
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: {
-            valueFormatter: (d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
+            valueFormatter: (d: number) =>
+              `${d === 0 ? 0 : defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
           },
           shape: {
             fillColor: defaultFillColor(interpolatorCET2s),
