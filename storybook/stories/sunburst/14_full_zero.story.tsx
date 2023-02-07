@@ -17,6 +17,8 @@ export const Example = () => (
   <Chart>
     <Settings
       baseTheme={useBaseTheme()}
+      showLegend
+      showLegendExtra
       theme={{
         chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
       }}
@@ -29,7 +31,7 @@ export const Example = () => (
       ]}
       layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d))}`}
+      valueFormatter={(d: number) => `$${d === 0 ? 0 : defaultPartitionValueFormatter(Math.round(d))}`}
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,

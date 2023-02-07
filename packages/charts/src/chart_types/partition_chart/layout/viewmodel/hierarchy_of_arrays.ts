@@ -56,10 +56,10 @@ export function getHierarchyOfArrays(
 
   const facts = rawFacts.filter((n) => {
     const value = valueAccessor(n);
-    return Number.isFinite(value) && value > 0;
+    return Number.isFinite(value) && value >= 0;
   });
 
-  // don't render anything if the total, the width or height is not positive
+  // don't render anything if the total, the width or height is not positive or zero
   if (facts.reduce((p: number, n) => aggregator.reducer(p, valueAccessor(n)), aggregator.identity()) <= 0) {
     return [];
   }
