@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { PointerState, PointerStates, SpecList, TooltipInteractionState } from './chart_state';
 import { ChartType } from '../chart_types';
 import { Spec } from '../specs';
+import { PointerState, PointerStates, SpecList, TooltipInteractionState } from './chart_state';
 
 /**
  * Returns all matching specs
@@ -22,8 +22,14 @@ export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: Ch
  * Returns first matching spec
  * @internal
  */
-export function getSpecFromStore<U extends Spec>(specs: SpecList, chartType: ChartType, specType: string): U | null {
-  return (Object.values(specs).find((spec) => spec.chartType === chartType && spec.specType === specType) as U) ?? null;
+export function getSpecFromStore<U extends Spec>(
+  specs: SpecList,
+  chartType: ChartType,
+  specType: string,
+): U | undefined {
+  return (
+    (Object.values(specs).find((spec) => spec.chartType === chartType && spec.specType === specType) as U) ?? undefined
+  );
 }
 
 /** @internal */

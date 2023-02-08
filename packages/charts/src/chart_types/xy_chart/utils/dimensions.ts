@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { AxisSpec } from './specs';
 import { SmallMultiplesSpec } from '../../../specs';
 import { Dimensions } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Theme, AxisStyle } from '../../../utils/themes/theme';
 import { getAxesDimensions } from '../axes/axes_sizes';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
+import { AxisSpec } from './specs';
 
 /**
  * @internal
@@ -38,7 +38,7 @@ export interface ChartDimensions {
   axisTickDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
-  [smSpec]: SmallMultiplesSpec[] = [],
+  smSpec?: SmallMultiplesSpec,
 ): ChartDimensions {
   const axesDimensions = getAxesDimensions(theme, axisTickDimensions, axesStyles, axisSpecs, smSpec);
   const chartWidth = parentDimensions.width - axesDimensions.left - axesDimensions.right;
