@@ -10,12 +10,12 @@ import React, { ComponentType, isValidElement, ReactNode } from 'react';
 import { $Values, isPrimitive } from 'utility-types';
 import { v1 as uuidv1 } from 'uuid';
 
-import { AdditiveNumber } from './accessor';
-import { Point } from './point';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { Color, Colors } from '../common/colors';
 import { Degrees, Radian } from '../common/geometry';
 import { BaseDatum } from '../specs';
+import { AdditiveNumber } from './accessor';
+import { Point } from './point';
 
 /** @public */
 export const Position = Object.freeze({
@@ -135,7 +135,8 @@ export function compareByValueAsc(a: number | string, b: number | string): numbe
 }
 
 /** @internal */
-export function clamp(value: number, lowerBound: number, upperBound: number) {
+export function clamp(value: number, lowerBound: number, upperBound: number, offset?: number): number {
+  if (offset) return clamp(value, lowerBound + offset, upperBound + offset) - offset;
   return Math.min(Math.max(value, lowerBound), upperBound);
 }
 

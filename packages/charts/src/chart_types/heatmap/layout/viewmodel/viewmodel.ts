@@ -9,7 +9,6 @@
 import { bisectLeft } from 'd3-array';
 import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
-import { BaseDatum } from './../../../xy_chart/utils/specs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
@@ -47,6 +46,7 @@ import {
   ShapeViewModel,
   TextBox,
 } from '../types/viewmodel_types';
+import { BaseDatum } from './../../../xy_chart/utils/specs';
 
 /** @public */
 export interface HeatmapCellDatum extends SmallMultiplesDatum {
@@ -307,16 +307,23 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const topLeft = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
     const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
 
-    const { panelPixelValue: panelPixelStartXValue, category: h } = getPanelPointCoordinate(topLeft[0], 'horizontal');
-    const { panelPixelValue: panelPixelStartYValue, category: v } = getPanelPointCoordinate(topLeft[1], 'vertical');
-    const panelStartX = clamp(panelPixelStartXValue, 0, panelSize.width);
-    const panelEndX = clamp(getPanelPointCoordinate(bottomRight[0], 'horizontal').panelPixelValue, 0, panelSize.width);
-    const panelStartY = clamp(panelPixelStartYValue, 0, panelSize.width);
-    const panelEndY = clamp(getPanelPointCoordinate(bottomRight[1], 'vertical').panelPixelValue, 0, panelSize.width);
+    // Find panel based on start pointer
+    const { category: h, panelOffset: hOffset } = getPanelPointCoordinate(start.x, 'horizontal');
+    const { category: v, panelOffset: vOffset } = getPanelPointCoordinate(start.y, 'vertical');
+
+    // confine selection to start panel
+    const panelStartX = clamp(topLeft[0], 0, panelSize.width, hOffset);
+    const panelStartY = clamp(topLeft[1], 0, panelSize.height, vOffset);
+    const panelEndX = clamp(bottomRight[0], 0, panelSize.width, hOffset);
+    const panelEndY = clamp(bottomRight[1], 0, panelSize.height, vOffset);
+
+    // TODO figure out this current grid height thing
+    // const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));
+    // const endY = yInvertedScale(clamp(bottomRight[1], 0, currentGridHeight - 1));
 
     const startX = xInvertedScale(panelStartX);
-    const endX = xInvertedScale(panelEndX);
     const startY = yInvertedScale(panelStartY);
+    const endX = xInvertedScale(panelEndX);
     const endY = yInvertedScale(panelEndY);
 
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
