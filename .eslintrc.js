@@ -234,7 +234,8 @@ module.exports = {
           },
         ],
         pathGroupsExcludedImportTypes: ['builtin'],
-        alphabetize: { order: 'asc', caseInsensitive: true }, // todo replace with directory gradient ordering
+        // TODO this caused inconsistencies between CLI and IDE
+        // alphabetize: { order: 'asc', caseInsensitive: true }, // todo replace with directory gradient ordering
       },
     ],
     'import/no-unresolved': ['error', { ignore: ['theme_dark.scss', 'theme_light.scss'] }],
