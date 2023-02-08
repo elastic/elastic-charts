@@ -7,10 +7,10 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, button, number } from '@storybook/addon-knobs';
 import { sampleSize, range } from 'lodash';
 import { DateTime } from 'luxon';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import {
   ScaleType,
@@ -21,6 +21,10 @@ import {
   niceTimeFormatByDay,
   timeFormatter,
   Heatmap,
+  ElementClickListener,
+  HeatmapElementEvent,
+  HeatmapBrushEvent,
+  HeatmapHighlightedData,
 } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 const rng = getRandomNumberGenerator();
@@ -36,13 +40,13 @@ export const Example = () => {
   const debug = boolean('Debug', false);
   const timeBasedData = boolean('Time data', false);
   const showLegend = boolean('Show Legend', false);
-  const onElementClick = action('onElementClick');
   const vSplit = boolean('v - split', true, 'Data');
   const hSplit = boolean('h - split', true, 'Data');
   const vSplitCount = number('v - split count', 2, { min: 1 }, 'Data');
   const hSplitCount = number('h - split count', 2, { min: 1 }, 'Data');
   const categories = number('categories', 4, { min: 1, step: 1, range: true }, 'Data');
   const density = number('cell density(%)', 20, { min: 5, max: 100, step: 5, range: true }, 'Data') / 100;
+  const persistCellsSelection = boolean('Persist cells selection', true);
 
   const dataCount = timeBasedData ? numOfDays : 10;
   const fullData = useMemo(
@@ -61,7 +65,25 @@ export const Example = () => {
       }),
     [vSplit, vSplitCount, hSplit, hSplitCount, dataCount, categories],
   );
-  const data = sampleSize(fullData, vSplitCount * hSplitCount * dataCount * categories * density);
+  const data = useMemo(
+    () => sampleSize(fullData, vSplitCount * hSplitCount * dataCount * categories * density),
+    [categories, dataCount, density, fullData, hSplitCount, vSplitCount],
+  );
+  const [selection, setSelection] = useState<HeatmapHighlightedData | undefined>();
+
+  const handler = useCallback(() => setSelection(undefined), []);
+  const onElementClick: ElementClickListener = useCallback((e) => {
+    action('onElementClick')(e);
+    const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = (e as HeatmapElementEvent[])[0][0].datum;
+    setSelection({
+      x: [x],
+      y: [y],
+      smHorizontalAccessorValue,
+      smVerticalAccessorValue,
+    });
+  }, []);
+
+  button('Clear cells selection', handler);
 
   return (
     <Chart>
@@ -84,12 +106,10 @@ export const Example = () => {
             },
           },
         }}
-        // onBrushEnd={(e) => {
-        //   const { x } = e as XYBrushEvent;
-        //   if (x) {
-        //     action('brushEvent')(tickTimeFormatter(x[0] ?? 0), tickTimeFormatter(x[1] ?? 0));
-        //   }
-        // }}
+        onBrushEnd={(e) => {
+          action('brushEvent')(e);
+          setSelection(e as HeatmapBrushEvent);
+        }}
       />
 
       <GroupBy id="v_split" by={(_, { v }) => v} format={(v) => `Metric ${v}`} sort="numDesc" />
@@ -184,10 +204,7 @@ export const Example = () => {
         xAxisLabelFormatter={timeBasedData ? tickTimeFormatter : (v) => `C${v}`}
         yAxisLabelFormatter={(v) => `R${v}`}
         timeZone="UTC"
-        // onBrushEnd={(e) => {
-        //   setSelection({ x: e.x, y: e.y });
-        // }}
-        // highlightedData={persistCellsSelection ? selection : undefined}
+        highlightedData={persistCellsSelection ? selection : undefined}
         xAxisTitle="Bottom axis"
         yAxisTitle="Left axis"
       />

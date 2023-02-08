@@ -20,6 +20,7 @@ import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';
 import { Cell } from '../layout/types/viewmodel_types';
+import { SmallMultiplesDatum } from '../../../common/panel_utils';
 
 /** @public */
 export type HeatmapScaleType =
@@ -45,10 +46,8 @@ export interface HeatmapBandsColorScale {
 }
 
 /** @public */
-export type HeatmapBrushEvent = {
+export type HeatmapBrushEvent = HeatmapHighlightedData & {
   cells: Cell[];
-  x: (string | number)[];
-  y: (string | number)[];
 };
 /** @public */
 export interface TimeScale {
@@ -70,6 +69,14 @@ export interface OrdinalScale {
   type: typeof ScaleType.Ordinal;
 }
 
+/**
+ * @public
+ */
+export interface HeatmapHighlightedData extends SmallMultiplesDatum {
+  x: Array<string | number>;
+  y: Array<string | number>;
+}
+
 /** @alpha */
 export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   specType: typeof SpecType.Series;
@@ -83,7 +90,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   xSortPredicate: Predicate;
   ySortPredicate: Predicate;
   xScale: RasterTimeScale | OrdinalScale | LinearScale;
-  highlightedData?: { x: Array<string | number>; y: Array<string | number> };
+  highlightedData?: HeatmapHighlightedData;
   name?: string;
   timeZone: string;
   onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;

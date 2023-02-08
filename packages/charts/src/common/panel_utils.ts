@@ -42,8 +42,8 @@ export interface SmallMultiplesSeriesDomains {
 
 /** @internal */
 export interface SmallMultiplesDatum {
-  smVerticalAccessorValue?: string | number;
   smHorizontalAccessorValue?: string | number;
+  smVerticalAccessorValue?: string | number;
 }
 
 /** @internal */

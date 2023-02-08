@@ -103,8 +103,8 @@ export type PickDragShapeFunction = (points: [start: Point, end: Point]) => Rect
 export type PickHighlightedArea = (
   x: Array<NonNullable<PrimitiveValue>>,
   y: Array<NonNullable<PrimitiveValue>>,
-  h: string | number | null,
-  v: string | number | null,
+  smHorizontalAccessorValue?: string | number,
+  smVerticalAccessorValue?: string | number,
 ) => Rect | null;
 
 /** @internal */
@@ -133,7 +133,6 @@ export const nullShapeViewModel = (): ShapeViewModel => ({
   theme: LIGHT_THEME.heatmap,
   heatmapViewModels: [],
   pickQuads: () => [],
-  // TODO fix with area interactions
   pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartType.Heatmap }),
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),
   pickHighlightedArea: () => ({ x: 0, y: 0, width: 0, height: 0 }),

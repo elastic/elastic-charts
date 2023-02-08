@@ -39,6 +39,7 @@ import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
+import { SmallMultiplesDatum } from '../common/panel_utils';
 
 /** @public */
 export interface LayerValue {
@@ -191,13 +192,11 @@ export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
 export type ProjectionAreaChangeListener = (areas: { projection: Dimensions; parent: Dimensions }) => void;
 
 /** @public */
-export type HeatmapBrushEvent = {
+export interface HeatmapBrushEvent extends SmallMultiplesDatum {
   cells: Cell[];
   x: (string | number)[];
   y: (string | number)[];
-  h: string | number | null;
-  v: string | number | null;
-};
+}
 
 /** @public */
 export type LegendItemListener = (series: SeriesIdentifier[]) => void;

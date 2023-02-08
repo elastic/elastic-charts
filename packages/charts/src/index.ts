@@ -91,7 +91,12 @@ export { AnimKeyframe } from './chart_types/partition_chart/layout/types/config_
 
 // heatmap
 export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
-export { ColorBand, HeatmapBandsColorScale, HeatmapProps } from './chart_types/heatmap/specs/heatmap';
+export {
+  ColorBand,
+  HeatmapBandsColorScale,
+  HeatmapProps,
+  HeatmapHighlightedData,
+} from './chart_types/heatmap/specs/heatmap';
 
 // utilities
 export {

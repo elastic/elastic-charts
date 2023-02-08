@@ -102,8 +102,7 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         onBrushEnd={(e) => {
           onBrushEnd(e);
-          const { x, y } = e as HeatmapBrushEvent;
-          setSelection({ x, y });
+          setSelection(e as HeatmapBrushEvent);
         }}
       />
       <Heatmap

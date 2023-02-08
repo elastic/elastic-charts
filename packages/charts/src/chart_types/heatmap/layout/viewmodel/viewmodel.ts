@@ -25,7 +25,7 @@ import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
-import { clamp, Datum, isFiniteNumber } from '../../../../utils/common';
+import { clamp, Datum, isFiniteNumber, isNil } from '../../../../utils/common';
 import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
@@ -308,8 +308,11 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
 
     // Find panel based on start pointer
-    const { category: h, panelOffset: hOffset } = getPanelPointCoordinate(start.x, 'horizontal');
-    const { category: v, panelOffset: vOffset } = getPanelPointCoordinate(start.y, 'vertical');
+    const { category: smHorizontalAccessorValue, panelOffset: hOffset } = getPanelPointCoordinate(
+      start.x,
+      'horizontal',
+    );
+    const { category: smVerticalAccessorValue, panelOffset: vOffset } = getPanelPointCoordinate(start.y, 'vertical');
 
     // confine selection to start panel
     const panelStartX = clamp(topLeft[0], 0, panelSize.width, hOffset);
@@ -336,7 +339,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
     allXValuesInRange.forEach((x) => {
       allYValuesInRange.forEach((y) => {
-        const panelKey = getPanelKey(h, v);
+        const panelKey = getPanelKey(smHorizontalAccessorValue, smVerticalAccessorValue);
         const cellKey = getCellKey(x, y);
         const cellValue = panelCellMap.get(panelKey)?.get(cellKey);
         if (cellValue) cells.push(cellValue);
@@ -347,8 +350,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       cells: cells.filter(Boolean),
       x: invertedXValues,
       y: allYValuesInRange,
-      h,
-      v,
+      smHorizontalAccessorValue,
+      smVerticalAccessorValue,
     };
   };
 
@@ -360,8 +363,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const pickHighlightedArea: PickHighlightedArea = (
     x: Array<NonNullable<PrimitiveValue>>,
     y: Array<NonNullable<PrimitiveValue>>,
-    h: string | number | null,
-    v: string | number | null,
+    smHorizontalAccessorValue?: string | number,
+    smVerticalAccessorValue?: string | number,
   ) => {
     const startValue = x[0];
     const endValue = x[x.length - 1];
@@ -381,8 +384,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       return null;
     }
 
-    const panelXOffset = h === null ? 0 : getScaledSMValue(h, 'horizontal');
-    const panelYOffset = v === null ? 0 : getScaledSMValue(v, 'vertical');
+    const panelXOffset = isNil(smHorizontalAccessorValue)
+      ? 0
+      : getScaledSMValue(smHorizontalAccessorValue, 'horizontal');
+    const panelYOffset = isNil(smVerticalAccessorValue) ? 0 : getScaledSMValue(smVerticalAccessorValue, 'vertical');
 
     const xStart = chartDimensions.left + startFromScale + panelXOffset;
 
@@ -414,8 +419,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    * Resolves coordinates and metrics of the selected rect area.
    */
   const pickDragShape: PickDragShapeFunction = (bound) => {
-    const area = pickDragArea(bound);
-    return pickHighlightedArea(area.x, area.y, area.h, area.v);
+    const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = pickDragArea(bound);
+    return pickHighlightedArea(x, y, smHorizontalAccessorValue, smVerticalAccessorValue);
   };
 
   const pickCursorBand: PickCursorBand = (x) => {

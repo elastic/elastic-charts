@@ -34,7 +34,7 @@ export const getHighlightedAreaSelector = createCustomCachedSelector(
     if (!spec.highlightedData || isBrushing) {
       return null;
     }
-    // TODO: fix this call
-    return geoms.pickHighlightedArea(spec.highlightedData.x, spec.highlightedData.y, null, null);
+    const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = spec.highlightedData;
+    return geoms.pickHighlightedArea(x, y, smHorizontalAccessorValue, smVerticalAccessorValue);
   },
 );
