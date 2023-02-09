@@ -180,9 +180,10 @@ export class ScaleContinuous {
                   scaleOptions.desiredTickCount,
                   this.linearBase,
                   scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
-            scaleOptions.integersOnly,
-          )
-        : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount);
+                  scaleOptions.integersOnly,
+                )
+              : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount),
+          );
 
     this.domain = nicePaddedDomain;
     // Returning NaN means that the value is projectable/invertible within the domain or range
