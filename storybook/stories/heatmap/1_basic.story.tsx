@@ -82,7 +82,10 @@ export const Example = () => {
 
   const onElementClick: ElementClickListener = useCallback((e) => {
     const cell = (e as HeatmapElementEvent[])[0][0];
-    setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
+    setSelection({
+      x: [cell.datum.x],
+      y: [cell.datum.y],
+    });
   }, []);
 
   const onBrushEnd = action('onBrushEnd');

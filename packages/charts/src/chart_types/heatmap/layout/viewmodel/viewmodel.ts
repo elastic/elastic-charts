@@ -367,8 +367,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     smVerticalAccessorValue?: string | number,
   ) => {
     const startValue = x[0];
-    const endValue = x[x.length - 1];
-
+    // if single x array use next x value as end
+    const endValue = x.length > 1 ? x[x.length - 1] : xValues[xValues.indexOf(startValue) + 1] ?? startValue;
     const leftIndex =
       typeof startValue === 'number' ? bisectLeft(xValues as number[], startValue) : xValues.indexOf(startValue);
     const rightIndex =
