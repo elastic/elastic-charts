@@ -172,6 +172,7 @@ export class ScaleContinuous {
             scaleOptions.desiredTickCount,
             this.linearBase,
             scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
+            scaleOptions.integersOnly,
           )
         : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount);
 
@@ -281,6 +282,7 @@ function getLinearNonDenserTicks(
   desiredTickCount: number,
   base: number,
   minInterval: number,
+  integersOnly: boolean,
 ): number[] {
   const start = domain[0];
   const stop = domain[domain.length - 1];
@@ -290,7 +292,7 @@ function getLinearNonDenserTicks(
     currentCount--;
     ticks = getLinearTicks(start, stop, currentCount, base);
   }
-  return ticks;
+  return integersOnly ? [...ticks.filter((v) => v % 1 === 0)] : ticks;
 }
 
 function isDegenerateDomain(domain: unknown[]): boolean {
