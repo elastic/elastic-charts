@@ -98,7 +98,7 @@ interface HeatmapSpecInternal<D extends BaseDatum = Datum> extends Spec {
   yAxisLabelFormatter: LabelAccessor<string | number>;
 }
 /** @public */
-export type HeatmapSpec = Prettify<HeatmapSpecInternal>;
+export type HeatmapSpec<D extends BaseDatum = Datum> = Prettify<HeatmapSpecInternal<D>>;
 
 /** @internal */
 export const buildProps = buildSFProps<HeatmapSpecInternal>()(
