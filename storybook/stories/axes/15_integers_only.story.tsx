@@ -14,8 +14,9 @@ import { Axis, Chart, Position, ScaleType, Settings, BarSeries } from '@elastic/
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
+  const integersOnly = boolean('Integers values', true);
   const scaleType = select<typeof ScaleType.Linear | typeof ScaleType.Log | typeof ScaleType.Sqrt>(
-    'scaleType',
+    'Scale Type',
     {
       Linear: ScaleType.Linear,
       Log: ScaleType.Log,
@@ -28,7 +29,7 @@ export const Example = () => {
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} />
-      <Axis id="left" position={Position.Left} integersOnly />
+      <Axis id="left" position={Position.Left} integersOnly={integersOnly} />
 
       <BarSeries
         id="Thermal changes"
@@ -37,10 +38,10 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         data={[
-          ['Sensor 1', 120.2],
-          ['Sensor 2', 50.8],
-          ['Sensor 3', 300.76],
-          ['Sensor 4', 10.12],
+          ['Sensor 1', 1.2],
+          ['Sensor 2', 0.8],
+          ['Sensor 3', 0.76],
+          ['Sensor 4', 2.12],
           ['Sensor 5', 0.92],
         ]}
         yNice={niceValues}
