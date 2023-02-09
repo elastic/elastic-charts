@@ -93,7 +93,6 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   highlightedData?: HeatmapHighlightedData;
   name?: string;
   timeZone: string;
-  onBrushEnd?: (brushArea: HeatmapBrushEvent) => void;
   xAxisTitle: string;
   xAxisLabelName: string;
   xAxisLabelFormatter: LabelAccessor<string | number>;

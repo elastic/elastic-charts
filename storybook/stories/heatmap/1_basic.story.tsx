@@ -131,9 +131,6 @@ export const Example = () => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         }}
         timeZone={DATA_6.timeZone}
-        onBrushEnd={(e) => {
-          setSelection({ x: e.x, y: e.y });
-        }}
         highlightedData={persistCellsSelection ? selection : undefined}
         xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
         yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
