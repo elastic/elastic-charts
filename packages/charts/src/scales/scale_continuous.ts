@@ -63,6 +63,12 @@ const defaultScaleOptions: ScaleOptions = {
 };
 
 const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
+const filterValues = ({ integersOnly }: Pick<ScaleOptions, 'integersOnly'>, values: number[]) => {
+  if (!integersOnly) {
+    return values;
+  }
+  return values.filter((v) => Number.isInteger(v));
+};
 
 /** @internal */
 export class ScaleContinuous {
@@ -166,12 +172,14 @@ export class ScaleContinuous {
             scaleOptions.timeZone,
             scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
           )
-        : type === ScaleType.Linear
-        ? getLinearNonDenserTicks(
-            nicePaddedDomain,
-            scaleOptions.desiredTickCount,
-            this.linearBase,
-            scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
+        : filterValues(
+            scaleOptions,
+            type === ScaleType.Linear
+              ? getLinearNonDenserTicks(
+                  nicePaddedDomain,
+                  scaleOptions.desiredTickCount,
+                  this.linearBase,
+                  scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
             scaleOptions.integersOnly,
           )
         : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount);
