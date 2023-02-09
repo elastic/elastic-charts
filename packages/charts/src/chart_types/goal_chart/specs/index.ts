@@ -17,6 +17,7 @@ import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { LabelAccessor, round, stripUndefined, ValueFormatter } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';
+import { Prettify } from '../../../utils/types';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 
 /** @alpha */
@@ -130,4 +131,4 @@ To prevent overlapping, the value of \`angleEnd\` will be replaced.
 };
 
 /** @public */
-export type GoalProps = ComponentProps<typeof Goal>;
+export type GoalProps = Prettify<ComponentProps<typeof Goal>>;

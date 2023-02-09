@@ -19,6 +19,7 @@ import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_facto
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';
+import { Prettify } from '../../../utils/types';
 import { Cell } from '../layout/types/viewmodel_types';
 
 /** @public */
@@ -55,10 +56,12 @@ export interface TimeScale {
   type: typeof ScaleType.Time;
 }
 
-/** @public */
-export interface RasterTimeScale extends TimeScale {
+interface RasterTimeScaleInt extends TimeScale {
   interval: ESCalendarInterval | ESFixedInterval;
 }
+
+/** @public */
+export type RasterTimeScale = Prettify<RasterTimeScaleInt>;
 
 /** @public */
 export interface LinearScale {
@@ -70,8 +73,8 @@ export interface OrdinalScale {
   type: typeof ScaleType.Ordinal;
 }
 
-/** @alpha */
-export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
+/** @internal */
+interface HeatmapSpecInternal<D extends BaseDatum = Datum> extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Heatmap;
   data: D[];
@@ -94,8 +97,11 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   yAxisLabelName: string;
   yAxisLabelFormatter: LabelAccessor<string | number>;
 }
+/** @public */
+export type HeatmapSpec = Prettify<HeatmapSpecInternal>;
 
-const buildProps = buildSFProps<HeatmapSpec>()(
+/** @internal */
+export const buildProps = buildSFProps<HeatmapSpecInternal>()(
   {
     chartType: ChartType.Heatmap,
     specType: SpecType.Series,
@@ -126,7 +132,7 @@ const buildProps = buildSFProps<HeatmapSpec>()(
  */
 export const Heatmap = function <D extends BaseDatum = Datum>(
   props: SFProps<
-    HeatmapSpec<D>,
+    HeatmapSpecInternal<D>,
     keyof (typeof buildProps)['overrides'],
     keyof (typeof buildProps)['defaults'],
     keyof (typeof buildProps)['optionals'],
@@ -134,9 +140,9 @@ export const Heatmap = function <D extends BaseDatum = Datum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  useSpecFactory<HeatmapSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
+  useSpecFactory<HeatmapSpecInternal<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 
 /** @public */
-export type HeatmapProps = ComponentProps<typeof Heatmap>;
+export type HeatmapProps = Prettify<ComponentProps<typeof Heatmap>>;

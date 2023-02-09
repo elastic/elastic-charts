@@ -26,6 +26,7 @@ import { LegendPath } from '../../../../state/actions/legend';
 import { Size } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
+import { Prettify } from '../../../../utils/types';
 import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { Layer } from '../../specs';
 import { MODEL_KEY, ValueGetterName } from '../config';
@@ -235,16 +236,18 @@ export interface LayerFromTo {
   y1: TreeLevel;
 }
 
-/**
- * @public
- */
-export interface TreeNode extends AngleFromTo {
+interface TreeNodeInternal extends AngleFromTo {
   x0: Radian;
   x1: Radian;
   y0: TreeLevel;
   y1: TreeLevel;
   fill?: Color;
 }
+
+/**
+ * @public
+ */
+export type TreeNode = Prettify<TreeNodeInternal>;
 
 /**
  * @public
@@ -257,8 +260,7 @@ export interface SectorGeomSpecY {
 /** @public */
 export type DataName = CategoryKey; // todo consider narrowing it to eg. primitives
 
-/** @public */
-export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
+interface ShapeTreeNodeInternal extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
   sortIndex: number;
@@ -267,6 +269,9 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   value: number;
   [MODEL_KEY]: ArrayNode;
 }
+
+/** @public */
+export type ShapeTreeNode = Prettify<ShapeTreeNodeInternal>;
 
 /** @public */
 export type RawTextGetter = (node: ShapeTreeNode) => string;
