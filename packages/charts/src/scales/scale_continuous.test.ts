@@ -86,6 +86,16 @@ describe('Scale Continuous', () => {
 
     expect(scaleLinear.invertWithStep(0.8 + (2 - 0.8) / 2 + 0.01, data)).toEqual({ value: 2, withinBandwidth: true });
   });
+
+  test('get filtered ticks when integersOnly flag is passed', () => {
+    const domain: ContinuousDomain = [0, 2];
+    const range: Range = [0, 2];
+    for (const scaleType of [ScaleType.Linear, ScaleType.Log, ScaleType.Sqrt]) {
+      const scaleInstance = new ScaleContinuous({ type: scaleType, domain, range }, { integersOnly: true });
+      expect(scaleInstance.ticks()).toEqual(scaleType === ScaleType.Log ? [1, 2] : [0, 1, 2]);
+    }
+  });
+
   test('invert with step x value on linear band scale', () => {
     const data = [0, 1, 2];
     const xDomain = MockXDomain.fromScaleType(ScaleType.Linear, {
@@ -201,6 +211,18 @@ describe('Scale Continuous', () => {
         { minInterval: 0, bandwidth: 0 },
       );
       expect(scale.ticks()).toEqual([100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]);
+    });
+
+    it('should return integers ticks only when requested', () => {
+      const scale = new ScaleContinuous(
+        {
+          type: ScaleType.Linear,
+          domain: [0, 2],
+          range: [0, 3],
+        },
+        { integersOnly: true },
+      );
+      expect(scale.ticks()).toEqual([0, 1, 2]);
     });
   });
 
