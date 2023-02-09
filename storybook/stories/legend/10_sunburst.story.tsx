@@ -19,6 +19,7 @@ import {
   PartitionLayout,
   Settings,
   defaultPartitionValueFormatter,
+  SeriesIdentifier,
 } from '@elastic/charts';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -50,6 +51,26 @@ export const Example = () => {
   });
   const legendStrategy = select('legendStrategy', LegendStrategy, LegendStrategy.Key as LegendStrategy);
   const maxLines = number('max legend label lines', 1, { min: 0, step: 1 });
+
+  const legendSortStrategy = select(
+    'Custom legend sorting',
+    { RegionsFirst: 'regionsFirst', ProductsFirst: 'productsFirst', DefaultSort: 'default' },
+    'default',
+  );
+
+  const customLegendSort = (a: SeriesIdentifier, b: SeriesIdentifier) => {
+    if (legendSortStrategy === 'regionsFirst') {
+      if (a.key in regionLookup && b.key in regionLookup) {
+        return a.key.localeCompare(b.key);
+      }
+      return a.key in regionLookup ? -1 : b.key in regionLookup ? 1 : a.key.localeCompare(b.key);
+    }
+    if (a.key in productLookup && b.key in productLookup) {
+      return a.key.localeCompare(b.key);
+    }
+    return a.key in productLookup ? -1 : b.key in productLookup ? 1 : a.key.localeCompare(b.key);
+  };
+
   const partitionTheme: PartialTheme['partition'] = {
     linkLabel: {
       maxCount: 0,
@@ -80,6 +101,7 @@ export const Example = () => {
         flatLegend={flatLegend}
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}
+        legendSort={legendSortStrategy !== 'default' ? customLegendSort : undefined}
         baseTheme={useBaseTheme()}
         theme={{
           partition: partitionTheme,
