@@ -6,11 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { action } from '@storybook/addon-actions';
-import { boolean, button, number } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import { sampleSize, range } from 'lodash';
 import { DateTime } from 'luxon';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import {
   ScaleType,
@@ -21,15 +20,12 @@ import {
   niceTimeFormatByDay,
   timeFormatter,
   Heatmap,
-  ElementClickListener,
-  HeatmapElementEvent,
-  HeatmapBrushEvent,
-  HeatmapHighlightedData,
 } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 const rng = getRandomNumberGenerator();
 
 import { useBaseTheme } from '../../use_base_theme';
+import { useHeatmapSelection } from '../utils/use_heatmap_selection';
 
 const dg = new SeededDataGenerator(500, 'test');
 const numOfDays = 90;
@@ -46,7 +42,6 @@ export const Example = () => {
   const hSplitCount = number('h - split count', 2, { min: 1 }, 'Data');
   const categories = number('categories', 4, { min: 1, step: 1, range: true }, 'Data');
   const density = number('cell density(%)', 20, { min: 5, max: 100, step: 5, range: true }, 'Data') / 100;
-  const persistCellsSelection = boolean('Persist cells selection', true);
 
   const dataCount = timeBasedData ? numOfDays : 10;
   const fullData = useMemo(
@@ -69,21 +64,7 @@ export const Example = () => {
     () => sampleSize(fullData, vSplitCount * hSplitCount * dataCount * categories * density),
     [categories, dataCount, density, fullData, hSplitCount, vSplitCount],
   );
-  const [selection, setSelection] = useState<HeatmapHighlightedData | undefined>();
-
-  const handler = useCallback(() => setSelection(undefined), []);
-  const onElementClick: ElementClickListener = useCallback((e) => {
-    action('onElementClick')(e);
-    const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = (e as HeatmapElementEvent[])[0][0].datum;
-    setSelection({
-      x: [x],
-      y: [y],
-      smHorizontalAccessorValue,
-      smVerticalAccessorValue,
-    });
-  }, []);
-
-  button('Clear cells selection', handler);
+  const { highlightedData, onElementClick, onBrushEnd } = useHeatmapSelection();
 
   return (
     <Chart>
@@ -106,10 +87,7 @@ export const Example = () => {
             },
           },
         }}
-        onBrushEnd={(e) => {
-          action('brushEvent')(e);
-          setSelection(e as HeatmapBrushEvent);
-        }}
+        onBrushEnd={onBrushEnd}
       />
 
       <GroupBy id="v_split" by={(_, { v }) => v} format={(v) => `Metric ${v}`} sort="numDesc" />
@@ -204,7 +182,7 @@ export const Example = () => {
         xAxisLabelFormatter={timeBasedData ? tickTimeFormatter : (v) => `C${v}`}
         yAxisLabelFormatter={(v) => `R${v}`}
         timeZone="UTC"
-        highlightedData={persistCellsSelection ? selection : undefined}
+        highlightedData={highlightedData}
         xAxisTitle="Bottom axis"
         yAxisTitle="Left axis"
       />
