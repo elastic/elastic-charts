@@ -185,8 +185,6 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
         gridStrokeWidth / 2,
       y: y + gridStrokeWidth / 2,
-      h: d.smHorizontalAccessorValue,
-      v: d.smVerticalAccessorValue,
       yIndex,
       width: cellWidthInner,
       height: cellHeightInner,

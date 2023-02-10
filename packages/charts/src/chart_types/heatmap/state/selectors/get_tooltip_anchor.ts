@@ -18,10 +18,18 @@ export const getTooltipAnchorSelector = createCustomCachedSelector(
   [getPickedShapes, computeChartDimensionsSelector, getActivePointerPosition, computeSmallMultipleScalesSelector],
   (shapes, { chartDimensions }, position, smScales): AnchorPosition => {
     if (Array.isArray(shapes) && shapes.length > 0) {
-      const [{ x, y, width, height, h, v }] = shapes;
+      const [
+        {
+          x,
+          y,
+          width,
+          height,
+          datum: { smHorizontalAccessorValue = '', smVerticalAccessorValue = '' },
+        },
+      ] = shapes;
 
-      const scaledPanelXOffset = smScales.horizontal.scale(h ?? '');
-      const scaledPanelYOffset = smScales.vertical.scale(v ?? '');
+      const scaledPanelXOffset = smScales.horizontal.scale(smHorizontalAccessorValue);
+      const scaledPanelYOffset = smScales.vertical.scale(smVerticalAccessorValue);
 
       const panelXOffset = isNaN(scaledPanelXOffset) ? 0 : scaledPanelXOffset;
       const panelYOffset = isNaN(scaledPanelYOffset) ? 0 : scaledPanelYOffset;

@@ -23,8 +23,6 @@ import { HeatmapCellDatum } from '../viewmodel/viewmodel';
 export interface Cell {
   x: number;
   y: number;
-  h?: string | number;
-  v?: string | number;
   width: number;
   height: number;
   yIndex: number;
