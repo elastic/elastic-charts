@@ -12,7 +12,7 @@
   "dependencies": {
     "@elastic/charts": "*",
     "@elastic/datemath": "^5.0.3",
-    "@elastic/eui": "^74.0.1",
+    "@elastic/eui": "^75.0.0",
     "@emotion/react": "^11.10.5",
     "@emotion/css": "^11.10.5",
     "luxon": "^1.27.0",
