@@ -91,7 +91,10 @@ describe('Scale Continuous', () => {
     const domain: ContinuousDomain = [0, 2];
     const range: Range = [0, 2];
     for (const scaleType of [ScaleType.Linear, ScaleType.Log, ScaleType.Sqrt]) {
-      const scaleInstance = new ScaleContinuous({ type: scaleType, domain, range }, { integersOnly: true });
+      const scaleInstance = new ScaleContinuous(
+        { type: scaleType, domain, range },
+        { integersOnly: true, desiredTickCount: 10 },
+      );
       expect(scaleInstance.ticks()).toEqual(scaleType === ScaleType.Log ? [1, 2] : [0, 1, 2]);
     }
   });
@@ -220,7 +223,7 @@ describe('Scale Continuous', () => {
           domain: [0, 2],
           range: [0, 3],
         },
-        { integersOnly: true },
+        { integersOnly: true, desiredTickCount: 10 },
       );
       expect(scale.ticks()).toEqual([0, 1, 2]);
     });
