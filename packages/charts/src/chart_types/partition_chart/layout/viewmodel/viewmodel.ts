@@ -29,7 +29,7 @@ import {
 import { Part } from '../../../../common/text_utils';
 import { GroupByAccessor } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { StrokeStyle, ColorVariant } from '../../../../utils/common';
+import { ColorVariant, StrokeStyle } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { FillLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
@@ -53,14 +53,16 @@ import { ringSectorConstruction } from '../utils/circline_geometry';
 import {
   aggregateAccessor,
   ArrayEntry,
+  CHILDREN_KEY,
   depthAccessor,
   entryKey,
   entryValue,
+  HierarchyOfArrays,
   mapEntryValue,
   parentAccessor,
-  sortIndexAccessor,
-  HierarchyOfArrays,
   pathAccessor,
+  SORT_INDEX_KEY,
+  sortIndexAccessor,
 } from '../utils/group_by_rollup';
 import { sunburst } from '../utils/sunburst';
 import { getTopPadding, LayerLayout, treemap } from '../utils/treemap';
@@ -156,7 +158,11 @@ export function makeQuadViewModel(
   return childNodes.map((node) => {
     const layer = layers[node.depth - 1];
     const fill = layer?.shape?.fillColor ?? 'rgba(128, 0, 0, 0.5)';
-    const fillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node[MODEL_KEY].children) : fill;
+
+    const fillColor =
+      typeof fill === 'function'
+        ? fill(node[MODEL_KEY][CHILDREN_KEY][node[SORT_INDEX_KEY]], node[MODEL_KEY].children)
+        : fill;
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;
@@ -261,12 +267,14 @@ const rawChildNodes = (
       );
 
     case PartitionLayout.waffle:
-      return waffle(tree, totalValue, {
+      const t = waffle(tree, totalValue, {
         x0: 0,
         y0: 0,
         width,
         height,
       });
+      console.log(t);
+      return t;
 
     case PartitionLayout.icicle:
     case PartitionLayout.flame:
