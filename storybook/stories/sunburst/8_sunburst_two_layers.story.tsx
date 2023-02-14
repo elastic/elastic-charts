@@ -12,12 +12,13 @@ import React from 'react';
 import {
   Chart,
   Datum,
+  defaultPartitionValueFormatter,
+  PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
-  PartialTheme,
-  defaultPartitionValueFormatter,
 } from '@elastic/charts';
+import { CHILDREN_KEY, entryKey, entryValue, PARENT_KEY, SORT_INDEX_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -63,18 +64,27 @@ export const Example = () => {
                 `$${defaultPartitionValueFormatter(Math.round(d / 1000000000000))}\u00A0Tn`,
             },
             shape: {
-              fillColor: (d) =>
-                // pick color from color palette based on mean angle - rather distinct colors in the inner ring
-                indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []),
+              fillColor: (entry) => {
+                const node = entryValue(entry);
+                // concat all leaf and define the color based on the index of the fist children
+                const rootTree = node[PARENT_KEY][CHILDREN_KEY].flatMap((d) => entryValue(d)[CHILDREN_KEY]);
+                const index = rootTree.findIndex((d) => entryValue(d) === entryValue(node[CHILDREN_KEY][0]));
+                return indexInterpolatedFillColor(interpolatorCET2s)(null, index, rootTree);
+              },
             },
           },
           {
             groupByRollup: (d: Datum) => d.dest,
             nodeLabel: (d: any) => countryLookup[d].name,
             shape: {
-              fillColor: (d) =>
-                // pick color from color palette based on mean angle - related yet distinct colors in the outer ring
-                indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []),
+              fillColor: (entry) => {
+                const node = entryValue(entry);
+                // concat all leaf and define the color based on their index
+                const rootTree = node[PARENT_KEY][PARENT_KEY][CHILDREN_KEY].flatMap((d) => entryValue(d)[CHILDREN_KEY]);
+                const index = rootTree.findIndex((d) => entryValue(d) === node);
+
+                return indexInterpolatedFillColor(interpolatorCET2s)(null, index, rootTree);
+              },
             },
           },
         ]}

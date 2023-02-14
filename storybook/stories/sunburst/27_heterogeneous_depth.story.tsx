@@ -19,7 +19,10 @@ import {
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { PrimitiveValue } from '@elastic/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
+import {
+  entryValue,
+  PrimitiveValue,
+} from '@elastic/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -70,14 +73,14 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: PrimitiveValue) => d !== null && productLookup[d].name,
           shape: {
-            fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex),
+            fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.7)(entryValue(d).sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
           nodeLabel: (d: PrimitiveValue) => d !== null && regionLookup[d].regionName,
           shape: {
-            fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
+            fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.5)(entryValue(d)[MODEL_KEY].sortIndex),
           },
         },
         {
@@ -85,8 +88,8 @@ export const Example = () => (
           nodeLabel: (d: PrimitiveValue) => d !== null && countryLookup[d].name,
           showAccessor: (d: PrimitiveValue) => !(['chn', 'hkg', 'jpn', 'kor'] as PrimitiveValue[]).includes(d),
           shape: {
-            fillColor: (d: ShapeTreeNode) =>
-              discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
+            fillColor: (d) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.3)(entryValue(d)[MODEL_KEY].parent.sortIndex),
           },
         },
       ]}

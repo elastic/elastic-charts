@@ -11,10 +11,11 @@ import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, Settings, PartialTheme, defaultPartitionValueFormatter } from '@elastic/charts';
+import { entryValue, SORT_INDEX_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { indexInterpolatedFillColor, interpolatorTurbo, productLookup } from '../utils/utils';
+import { indexInterpolatedFillColor, interpolatorCET2s, interpolatorTurbo, productLookup } from '../utils/utils';
 
 export const Example = () => {
   const onElementClick = boolean('onElementClick listener', true);
@@ -58,7 +59,8 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: indexInterpolatedFillColor(interpolatorTurbo),
+              fillColor: (entry, tree) =>
+                indexInterpolatedFillColor(interpolatorCET2s)(null, entryValue(entry)[SORT_INDEX_KEY], tree),
             },
           },
         ]}

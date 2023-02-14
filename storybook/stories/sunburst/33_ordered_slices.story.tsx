@@ -20,6 +20,7 @@ import {
   ShapeTreeNode,
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
+import { entryValue } from '@elastic/charts/src';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
@@ -83,7 +84,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(categoricalColors)(d.sortIndex),
+              fillColor: (d) => discreteColor(categoricalColors)(entryValue(d).sortIndex),
             },
           },
           {
@@ -101,7 +102,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(categoricalColors, 0.5)(d[MODEL_KEY].sortIndex),
+              fillColor: (d) => discreteColor(categoricalColors, 0.5)(entryValue(d)[MODEL_KEY].sortIndex),
             },
           },
         ]}

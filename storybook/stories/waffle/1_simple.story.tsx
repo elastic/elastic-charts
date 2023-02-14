@@ -15,7 +15,8 @@ import {
   Partition,
   PartitionLayout,
   Settings,
-  ShapeTreeNode,
+  entryValue,
+  SORT_INDEX_KEY,
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -54,7 +55,8 @@ export const Example = () => {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => names[d],
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
+              fillColor: (entry) =>
+                discreteColor(colorBrewerCategoricalStark9.slice(1))(entryValue(entry)[SORT_INDEX_KEY]),
             },
             sortPredicate: ascendingSort
               ? ([, node1]: ArrayEntry, [, node2]: ArrayEntry) => {
