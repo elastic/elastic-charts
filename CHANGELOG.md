@@ -1,3 +1,10 @@
+## [52.0.1](https://github.com/elastic/elastic-charts/compare/v52.0.0...v52.0.1) (2023-02-14)
+
+
+### Bug Fixes
+
+* **flamegraph:** show tooltip prompt only if pinnable ([#1967](https://github.com/elastic/elastic-charts/issues/1967)) [52.x] ([#1968](https://github.com/elastic/elastic-charts/issues/1968)) ([6d3f6fa](https://github.com/elastic/elastic-charts/commit/6d3f6fa3e3c2b542cdf5491873f994f74c92eda8))
+
 # [52.0.0](https://github.com/elastic/elastic-charts/compare/v51.3.0...v52.0.0) (2023-01-27)
 
 
