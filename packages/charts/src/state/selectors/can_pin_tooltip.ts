@@ -16,7 +16,12 @@ import { createCustomCachedSelector } from '../create_selector';
 /**
  * Enables tooltip pinning only for certain chart types
  */
-const pinnableTooltipCharts = new Set<ChartType>([ChartType.XYAxis, ChartType.Heatmap, ChartType.Partition]);
+const pinnableTooltipCharts = new Set<ChartType>([
+  ChartType.XYAxis,
+  ChartType.Heatmap,
+  ChartType.Partition,
+  ChartType.Flame,
+]);
 
 const getChartType = ({ chartType }: GlobalChartState) => chartType;
 
