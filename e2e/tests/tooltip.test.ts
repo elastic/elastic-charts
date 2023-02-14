@@ -100,6 +100,18 @@ test.describe('Tooltip', () => {
           'right',
         );
       });
+      test('show prompt with actions ', async ({ page }) => {
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:light&knob-Use tooltip actions=true&knob-Debug history=',
+          { left: 220, bottom: 220 },
+        );
+      });
+      test('hide prompt with no actions ', async ({ page }) => {
+        await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:light&knob-Use tooltip actions=&knob-Debug history=',
+          { left: 220, bottom: 220 },
+        );
+      });
     });
   });
 });
