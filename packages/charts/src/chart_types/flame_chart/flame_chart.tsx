@@ -27,6 +27,7 @@ import { SettingsSpec, SpecType, TooltipType, TooltipValue } from '../../specs';
 import { onChartRendered } from '../../state/actions/chart';
 import { ON_POINTER_MOVE } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
+import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
@@ -145,7 +146,7 @@ interface StateProps {
   chartDimensions: Size;
   a11ySettings: ReturnType<typeof getA11ySettingsSelector>;
   tooltipRequired: boolean;
-  pinnableTooltip: boolean;
+  canPinTooltip: boolean;
   onElementOver: NonNullable<SettingsSpec['onElementOver']>;
   onElementClick: NonNullable<SettingsSpec['onElementClick']>;
   onElementOut: NonNullable<SettingsSpec['onElementOut']>;
@@ -850,6 +851,7 @@ class FlameComponent extends React.Component<FlameProps> {
       a11ySettings,
       debugHistory,
       theme,
+      canPinTooltip,
     } = this.props;
     const width = roundUpSize(requestedWidth);
     const height = roundUpSize(requestedHeight);
@@ -898,7 +900,7 @@ class FlameComponent extends React.Component<FlameProps> {
             height={canvasHeight}
             onMouseMove={this.handleMouseHoverMove}
             onMouseDown={this.handleMouseDown}
-            onContextMenu={this.props.pinnableTooltip ? this.handleContextMenu : undefined}
+            onContextMenu={canPinTooltip ? this.handleContextMenu : undefined}
             onMouseLeave={this.handleMouseLeave}
             onKeyPress={this.handleEnterKey}
             onKeyUp={this.handleEscapeKey}
@@ -1117,7 +1119,7 @@ class FlameComponent extends React.Component<FlameProps> {
           </p>
         </div>
         <BasicTooltip
-          canPinTooltip
+          canPinTooltip={canPinTooltip}
           onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
           position={
             this.tooltipPinned
@@ -1347,8 +1349,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     chartDimensions: state.parentDimensions,
     a11ySettings: getA11ySettingsSelector(state),
     tooltipRequired: tooltipSpec.type !== TooltipType.None,
-    pinnableTooltip: tooltipSpec.actions.length > 0,
-
+    canPinTooltip: isPinnableTooltip(state),
     // mandatory charts API protocol; todo extract these mappings once there are other charts like Flame
     onElementOver: settingsSpec.onElementOver ?? (() => {}),
     onElementClick: settingsSpec.onElementClick ?? (() => {}),
