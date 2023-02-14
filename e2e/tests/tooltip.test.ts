@@ -102,13 +102,13 @@ test.describe('Tooltip', () => {
       });
       test('show prompt with actions ', async ({ page }) => {
         await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:light&knob-Use tooltip actions=true&knob-Debug history=',
+          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:light&knob-Use%20tooltip%20actions=true',
           { left: 220, bottom: 220 },
         );
       });
       test('hide prompt with no actions ', async ({ page }) => {
         await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:light&knob-Use tooltip actions=&knob-Debug history=',
+          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:light&knob-Use%20tooltip%20actions=false',
           { left: 220, bottom: 220 },
         );
       });
