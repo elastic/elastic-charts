@@ -80,24 +80,29 @@ export const Example = () => {
     focusOnNodeControl(Math.floor(20 * Math.random()));
   });
   const debug = boolean('Debug history', false);
+  const showTooltipActions = boolean('Use tooltip actions', true);
   return (
     <Chart>
       <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
       <Tooltip
         maxVisibleTooltipItems={4}
         maxTooltipItems={4}
-        actions={[
-          {
-            label: () => 'Open detail view',
-            onSelect: (s) => action('open detail view')(s[0].datum),
-          },
-          {
-            label: () => 'Zoom to',
-            onSelect: (s) => {
-              focusOnNodeControl(s[0]?.valueAccessor as number);
-            },
-          },
-        ]}
+        actions={
+          showTooltipActions
+            ? [
+                {
+                  label: () => 'Open detail view',
+                  onSelect: (s) => action('open detail view')(s[0].datum),
+                },
+                {
+                  label: () => 'Zoom to',
+                  onSelect: (s) => {
+                    focusOnNodeControl(s[0]?.valueAccessor as number);
+                  },
+                },
+              ]
+            : undefined
+        }
       />
       <Flame
         id="spec_1"
