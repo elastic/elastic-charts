@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 
 import {
@@ -27,22 +27,28 @@ import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { useHeatmapSelection } from '../utils/use_heatmap_selection';
 
 export const Example = () => {
+  const { highlightedData, onElementClick, onBrushEnd } = useHeatmapSelection();
+
   const debugState = boolean('Enable debug state', true);
   const showXAxisTitle = boolean('Show x axis title', false);
   const showYAxisTitle = boolean('Show y axis title', false);
+  const showBrushTool = boolean('Show pointer brush area', true);
+  const minCellHeight = number('enable cell min height', 20, { min: 5, max: 50, step: 5 });
+  const maxCellHeight = number('grid cell max height', 50, { min: 5, max: 50, step: 5 });
+
   const pointerUpdate = (event: PointerEvent) => {
     action('onPointerUpdate')(event);
   };
-  const { highlightedData, onElementClick, onBrushEnd } = useHeatmapSelection();
 
   const heatmap = useMemo(() => {
     const styles: RecursivePartial<HeatmapStyle> = {
       brushTool: {
-        visible: true,
+        visible: showBrushTool,
       },
       grid: {
         cellHeight: {
-          min: 20,
+          min: minCellHeight,
+          max: maxCellHeight,
         },
         stroke: {
           width: 0.5,
@@ -68,7 +74,7 @@ export const Example = () => {
     };
 
     return styles;
-  }, []);
+  }, [showBrushTool, minCellHeight, maxCellHeight]);
 
   return (
     <Chart>

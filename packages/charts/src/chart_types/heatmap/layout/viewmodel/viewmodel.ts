@@ -95,20 +95,16 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   }));
 
   const panelSize = getPanelSize(smScales);
+
   // compute the scale for the rows positions
-  // const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, elementSizes.fullHeatmapHeight]);
-  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, panelSize.height]);
+  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, elementSizes.fullHeatmapHeight]);
 
   const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
-    // .domain([0, elementSizes.fullHeatmapHeight])
-    .domain([0, panelSize.height])
+    .domain([0, elementSizes.fullHeatmapHeight])
     .range(yValues);
 
   // compute the scale for the columns positions
-  // const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, chartDimensions.width]);
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, panelSize.width]);
-
-  // const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, chartDimensions.width]).range(xValues);
   const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, panelSize.width]).range(xValues);
 
   // compute the cell width, can be smaller then the available size depending on config
@@ -126,15 +122,17 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const { padding } = heatmapTheme.yAxisLabel;
 
   // compute the position of each row label
-  const textYValues = boxedYValues.map<TextBox>((d) => {
-    return {
-      ...d,
-      // position of the Y labels
-      x: -pad(padding, 'right'),
-      y: cellHeight / 2 + (yScale(d.value) || 0),
-      align: 'right',
-    };
-  });
+  const textYValues = boxedYValues
+    .filter((_, yIndex) => yIndex < elementSizes.visibleNumberOfRows)
+    .map<TextBox>((d) => {
+      return {
+        ...d,
+        // position of the Y labels
+        x: -pad(padding, 'right'),
+        y: cellHeight / 2 + (yScale(d.value) || 0),
+        align: 'right',
+      };
+    });
 
   const cellWidthInner = cellWidth - gridStrokeWidth;
   const cellHeightInner = cellHeight - gridStrokeWidth;
@@ -155,7 +153,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const y = yScale(String(d.y));
     const yIndex = yValues.indexOf(d.y);
 
-    if (!isFiniteNumber(x) || !isFiniteNumber(y) || yIndex === -1) {
+    if (!isFiniteNumber(x) || !isFiniteNumber(y) || yIndex === -1 || yIndex > elementSizes.visibleNumberOfRows - 1) {
       return acc;
     }
     const cellBackgroundColor = colorScale(d.value);
@@ -446,7 +444,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       x1: i * cellWidth,
       x2: i * cellWidth,
       y1: 0,
-      y2: panelSize.height + xAxisExtension,
+      y2: elementSizes.visibleNumberOfRows * elementSizes.rowHeight + xAxisExtension,
     };
   });
 
@@ -484,15 +482,19 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     heatmapViewModels: getPerPanelMap(smScales, (anchor, h, v) => {
       const primaryColumn = smScales.vertical.domain[0] === v;
       const primaryRow = smScales.horizontal.domain[0] === h;
+      const lastColumn = smScales.vertical.domain[smScales.vertical.domain.length - 1] === v;
+
       const titles: HeatmapTitleConfig[] = [];
       // TODO this should be filtered by the pageSize AND the pageNumber
       const cells = [...(panelCellMap.get(getPanelKey(h, v))?.values() ?? [])];
 
       if (primaryColumn && primaryRow) {
         if (spec.xAxisTitle) {
-          const axisPanelTitleHeight = groupBySpec.horizontal
-            ? axisPanelTitle.fontSize + innerPad(axisPanelTitle.padding) / 2
-            : 0;
+          const axisPanelTitleHeight =
+            groupBySpec.horizontal && axisPanelTitle.visible
+              ? axisPanelTitle.fontSize + innerPad(axisPanelTitle.padding) / 2
+              : 0;
+
           titles.push({
             origin: {
               x: chartDimensions.width / 2,
@@ -513,7 +515,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         if (spec.yAxisTitle) {
           titles.push({
             origin: {
-              x: -elementSizes.yAxis.left - innerPad(axisTitle.padding) - axisTitle.fontSize / 2,
+              x: -chartDimensions.left + axisTitle.fontSize / 2,
               y: chartDimensions.top + chartDimensions.height / 2,
             },
             ...axisTitleFont,
@@ -541,14 +543,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       }
 
       if (primaryRow && groupBySpec.vertical) {
-        const axisPanelTitleWidth = axisPanelTitle.fontSize + innerPad(axisPanelTitle.padding);
+        const axisTitleWidth = axisTitle.visible ? axisTitle.fontSize + innerPad(axisTitle.padding) : 0;
         titles.push({
           origin: {
-            x:
-              -elementSizes.yAxis.left +
-              axisPanelTitleWidth -
-              innerPad(axisPanelTitle.padding) -
-              axisPanelTitle.fontSize / 2,
+            x: -chartDimensions.left + axisTitleWidth + axisPanelTitle.fontSize / 2,
             y: chartDimensions.top + panelSize.height / 2,
           },
           ...axisPanelTitleFont,
@@ -575,10 +573,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         pageSize: elementSizes.visibleNumberOfRows,
         cells,
         cellFontSize: (cell: Cell) => (heatmapTheme.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
-        xValues: textXValues,
-        yValues: textYValues,
-        primaryColumn,
-        primaryRow,
+        xValues: lastColumn ? textXValues : [],
+        yValues: primaryRow ? textYValues : [],
         titles,
       };
     }),

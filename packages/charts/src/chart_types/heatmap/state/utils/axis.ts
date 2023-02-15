@@ -48,8 +48,9 @@ export function getTextSizeDimension(
   style: AxisStyle['axisTitle'],
   textMeasure: TextMeasure,
   param: 'height' | 'width',
+  hidden = false,
 ): number {
-  if (!style.visible || text === '') {
+  if (!style.visible || text === '' || hidden) {
     return 0;
   }
   const textPadding = innerPad(style.padding) + outerPad(style.padding);
@@ -71,11 +72,18 @@ export function getTextSizeDimension(
 }
 
 /** @internal */
-export function getGridCellHeight(rows: number, grid: HeatmapStyle['grid'], height: number): number {
+export function getGridCellHeight(
+  rows: number,
+  grid: HeatmapStyle['grid'],
+  height: number,
+  hasVerticalSM: boolean,
+): number {
   if (rows === 0) {
     return height; // TODO check if this can be just 0
   }
   const stretchedHeight = height / rows;
+
+  if (hasVerticalSM) return stretchedHeight;
 
   if (stretchedHeight < grid.cellHeight.min) {
     return grid.cellHeight.min;

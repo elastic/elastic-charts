@@ -27,9 +27,6 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
   } = props;
   if (heatmapViewModels.length === 0) return;
 
-  // temporary for PR wip
-  const [heatmapViewModel] = heatmapViewModels;
-
   withContext(ctx, () => {
     // set some defaults for the overall rendering
 
@@ -49,8 +46,6 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
     // functions - also, all renderers have flexibility (eg. SVG scale) and WebGL NDC is also +y up
     // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
     // ctx.scale(1, -1);
-
-    const filteredYValues = heatmapViewModel.yValues.filter((_, yIndex) => yIndex < heatmapViewModel.pageSize);
 
     renderLayers(ctx, [
       () => clearCanvas(ctx, background),
@@ -107,9 +102,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
       () => {
         if (!theme.yAxisLabel.visible) return;
 
-        heatmapViewModels.forEach(({ primaryRow, gridOrigin: { x, y } }) => {
-          if (!primaryRow) return;
-
+        heatmapViewModels.forEach(({ yValues, gridOrigin: { x, y } }) => {
           withContext(ctx, () => {
             // the text is right aligned so the canvas needs to be aligned to the right of the Y axis box
             ctx.translate(x, y);
@@ -120,7 +113,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
             };
             const { padding } = theme.yAxisLabel;
             const horizontalPadding = horizontalPad(padding);
-            filteredYValues.forEach(({ x, y, text }) => {
+            yValues.forEach(({ x, y, text }) => {
               const textLines = wrapLines(
                 ctx,
                 text,
@@ -141,9 +134,8 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
       () => {
         if (!theme.xAxisLabel.visible) return;
 
-        heatmapViewModels.forEach(({ xValues, primaryColumn, gridOrigin: { x, y } }) => {
+        heatmapViewModels.forEach(({ xValues, gridOrigin: { x, y } }) => {
           withContext(ctx, () => {
-            if (!primaryColumn) return;
             ctx.translate(x, y + elementSizes.xAxis.top);
             xValues
               .filter((_, i) => i % elementSizes.xAxisTickCadence === 0)

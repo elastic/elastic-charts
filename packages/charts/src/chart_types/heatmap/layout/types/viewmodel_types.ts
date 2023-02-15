@@ -72,8 +72,6 @@ export interface HeatmapViewModel extends PerPanelMap {
   xValues: Array<TextBox>;
   yValues: Array<TextBox>;
   pageSize: number;
-  primaryRow: boolean;
-  primaryColumn: boolean;
   titles: HeatmapTitleConfig[];
 }
 

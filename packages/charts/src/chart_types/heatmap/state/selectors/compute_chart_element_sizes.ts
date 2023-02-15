@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../../../../state/chart_state';
+import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_utils';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { Dimensions } from '../../../../utils/dimensions';
+import { HeatmapStyle } from '../../../../utils/themes/theme';
 import { getGridCellHeight } from '../utils/axis';
 import { computeAxesSizesSelector } from './compute_axes_sizes';
-import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { computeChartDimensionsSelector, HeatmapPaginationParams } from './compute_chart_dimensions';
 import { getHeatmapTableSelector } from './get_heatmap_table';
-
-const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
 /** @internal */
 export type ChartElementSizes = {
@@ -34,34 +34,22 @@ export type ChartElementSizes = {
  */
 export const computeChartElementSizesSelector = createCustomCachedSelector(
   [
-    getParentDimension,
+    computeChartDimensionsSelector,
     computeAxesSizesSelector,
     getHeatmapTableSelector,
     getChartThemeSelector,
-    getHeatmapSpecSelector,
+    computeSmallMultipleScalesSelector,
   ],
-  (parentDimensions, axesSizes, { yValues }, { heatmap }): ChartElementSizes => {
-    const availableHeightForGrid =
-      parentDimensions.height -
-      axesSizes.xAxisTitleVerticalSize -
-      axesSizes.xAxisPanelTitleVerticalSize -
-      axesSizes.xAxis.height -
-      axesSizes.legendHeight -
-      heatmap.grid.stroke.width / 2;
-
-    const rowHeight = getGridCellHeight(yValues.length, heatmap.grid, availableHeightForGrid);
-    const fullHeatmapHeight = rowHeight * yValues.length;
-
-    const visibleNumberOfRows =
-      rowHeight > 0 && fullHeatmapHeight > availableHeightForGrid
-        ? Math.floor(availableHeightForGrid / rowHeight)
-        : yValues.length;
+  ({ chartDimensions, pagination }, axesSizes, { yValues }, { heatmap }, smScales): ChartElementSizes => {
+    const { rowHeight, fullHeatmapHeight, visibleNumberOfRows } = pagination.paginated
+      ? pagination
+      : getPanelPaginationParams(smScales, yValues.length, heatmap.grid);
 
     const grid: Dimensions = {
       width: axesSizes.xAxis.width,
       height: visibleNumberOfRows * rowHeight - heatmap.grid.stroke.width / 2,
-      left: parentDimensions.left + axesSizes.xAxis.left,
-      top: parentDimensions.top + heatmap.grid.stroke.width / 2,
+      left: chartDimensions.left + axesSizes.xAxis.left,
+      top: chartDimensions.top + heatmap.grid.stroke.width / 2,
     };
 
     const yAxis: Dimensions = {
@@ -89,3 +77,25 @@ export const computeChartElementSizesSelector = createCustomCachedSelector(
     };
   },
 );
+
+function getPanelPaginationParams(
+  smScales: SmallMultipleScales,
+  yValueCount: number,
+  heatmapGridStyles: HeatmapStyle['grid'],
+): HeatmapPaginationParams {
+  const availableHeightForGrid = getPanelSize(smScales).height;
+  const rowHeight = getGridCellHeight(yValueCount, heatmapGridStyles, availableHeightForGrid, true);
+  const fullHeatmapHeight = rowHeight * yValueCount;
+
+  const visibleNumberOfRows =
+    rowHeight > 0 && fullHeatmapHeight > availableHeightForGrid
+      ? Math.floor(availableHeightForGrid / rowHeight)
+      : yValueCount;
+
+  return {
+    paginated: false,
+    rowHeight,
+    fullHeatmapHeight,
+    visibleNumberOfRows,
+  };
+}

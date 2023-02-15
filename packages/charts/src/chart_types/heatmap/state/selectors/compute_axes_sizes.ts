@@ -61,13 +61,20 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         axisPanelTitleStyle,
         textMeasure,
         'height',
+        !smSpec?.splitVertically,
       );
       const yAxis = {
         width: getYAxisHorizontalUsedSpace(yValues, heatmap.yAxisLabel, yAxisLabelFormatter, textMeasure),
       };
 
       const xAxisTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisTitleStyle, textMeasure, 'height');
-      const xAxisPanelTitleVerticalSize = getTextSizeDimension(xAxisTitle, axisPanelTitleStyle, textMeasure, 'height');
+      const xAxisPanelTitleVerticalSize = getTextSizeDimension(
+        xAxisTitle,
+        axisPanelTitleStyle,
+        textMeasure,
+        'height',
+        !smSpec?.splitHorizontally,
+      );
       const xAxis = getXAxisSize(
         !isRasterTimeScale(xScale),
         heatmap.xAxisLabel,

@@ -42,6 +42,58 @@ export const Example = () => {
   const hSplitCount = number('h - split count', 2, { min: 1 }, 'Data');
   const categories = number('categories', 4, { min: 1, step: 1, range: true }, 'Data');
   const density = number('cell density(%)', 20, { min: 5, max: 100, step: 5, range: true }, 'Data') / 100;
+  const smStyles = {
+    horizontalPanelPadding: {
+      outer: number(
+        'Horizontal outer pad',
+        0,
+        {
+          range: true,
+          min: 0,
+          max: 0.5,
+          step: 0.05,
+        },
+        'SmallMultiples Styles',
+      ),
+      inner: number(
+        'Horizontal inner pad',
+        0.05,
+        {
+          range: true,
+          min: 0,
+          max: 0.5,
+          step: 0.05,
+        },
+        'SmallMultiples Styles',
+      ),
+    },
+    verticalPanelPadding: {
+      outer: number(
+        'Vertical outer pad',
+        0,
+        {
+          range: true,
+          min: 0,
+          max: 0.5,
+          step: 0.05,
+        },
+        'SmallMultiples Styles',
+      ),
+      inner: number(
+        'Vertical inner pad',
+        0.1,
+        {
+          range: true,
+          min: 0,
+          max: 0.5,
+          step: 0.05,
+        },
+        'SmallMultiples Styles',
+      ),
+    },
+  };
+  const showAxesTitles = boolean('Show axes title', true, 'SmallMultiples Styles');
+  const showAxesPanelTitles = boolean('Show axis panel titles', true, 'SmallMultiples Styles');
 
   const dataCount = timeBasedData ? numOfDays : 10;
   const fullData = useMemo(
@@ -74,6 +126,14 @@ export const Example = () => {
         showLegend={showLegend}
         baseTheme={useBaseTheme()}
         theme={{
+          axes: {
+            axisTitle: {
+              visible: showAxesTitles,
+            },
+            axisPanelTitle: {
+              visible: showAxesPanelTitles,
+            },
+          },
           heatmap: {
             grid: {
               cellHeight: {
@@ -95,56 +155,7 @@ export const Example = () => {
       <SmallMultiples
         splitVertically={vSplit ? 'v_split' : undefined}
         splitHorizontally={hSplit ? 'h_split' : undefined}
-        style={{
-          horizontalPanelPadding: {
-            outer: number(
-              'Horizontal outer pad',
-              0,
-              {
-                range: true,
-                min: 0,
-                max: 0.5,
-                step: 0.05,
-              },
-              'SmallMultiples Styles',
-            ),
-            inner: number(
-              'Horizontal inner pad',
-              0.05,
-              {
-                range: true,
-                min: 0,
-                max: 0.5,
-                step: 0.05,
-              },
-              'SmallMultiples Styles',
-            ),
-          },
-          verticalPanelPadding: {
-            outer: number(
-              'Vertical outer pad',
-              0,
-              {
-                range: true,
-                min: 0,
-                max: 0.5,
-                step: 0.05,
-              },
-              'SmallMultiples Styles',
-            ),
-            inner: number(
-              'Vertical inner pad',
-              0.1,
-              {
-                range: true,
-                min: 0,
-                max: 0.5,
-                step: 0.05,
-              },
-              'SmallMultiples Styles',
-            ),
-          },
-        }}
+        style={smStyles}
       />
 
       <Heatmap
