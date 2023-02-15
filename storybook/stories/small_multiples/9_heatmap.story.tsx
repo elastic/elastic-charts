@@ -93,7 +93,7 @@ export const Example = () => {
     },
   };
   const showAxesTitles = boolean('Show axes title', true, 'SmallMultiples Styles');
-  const showAxesPanelTitles = boolean('Show axis panel titles', true, 'SmallMultiples Styles');
+  const showAxesPanelTitles = boolean('Show axes panel titles', true, 'SmallMultiples Styles');
 
   const dataCount = timeBasedData ? numOfDays : 10;
   const fullData = useMemo(
