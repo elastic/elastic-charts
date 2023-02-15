@@ -1,7 +1,7 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "53.1.0",
+  "version": "53.1.1",
   "author": "Elastic DataVis",
   "license": "SEE LICENSE IN LICENSE.txt",
   "main": "dist/index.js",
