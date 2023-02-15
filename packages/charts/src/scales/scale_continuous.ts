@@ -63,12 +63,6 @@ const defaultScaleOptions: ScaleOptions = {
 };
 
 const isUnitRange = ([r1, r2]: Range) => r1 === 0 && r2 === 1;
-const filterValues = ({ integersOnly }: Pick<ScaleOptions, 'integersOnly'>, values: number[]) => {
-  if (!integersOnly) {
-    return values;
-  }
-  return values.filter(Number.isInteger);
-};
 
 /** @internal */
 export class ScaleContinuous {
@@ -172,17 +166,15 @@ export class ScaleContinuous {
             scaleOptions.timeZone,
             scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
           )
-        : filterValues(
-            scaleOptions,
-            type === ScaleType.Linear
-              ? getLinearNonDenserTicks(
-                  nicePaddedDomain,
-                  scaleOptions.desiredTickCount,
-                  this.linearBase,
-                  scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
-                )
-              : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount),
-          );
+        : (type === ScaleType.Linear
+            ? getLinearNonDenserTicks(
+                nicePaddedDomain,
+                scaleOptions.desiredTickCount,
+                this.linearBase,
+                scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
+              )
+            : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount)
+          ).filter(scaleOptions.integersOnly ? Number.isInteger : (v: number) => v);
 
     this.domain = nicePaddedDomain;
     // Returning NaN means that the value is projectable/invertible within the domain or range
