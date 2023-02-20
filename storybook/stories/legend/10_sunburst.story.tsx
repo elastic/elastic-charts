@@ -39,6 +39,8 @@ export const Example = () => {
     {
       treemap: PartitionLayout.treemap,
       sunburst: PartitionLayout.sunburst,
+      mosaic: PartitionLayout.mosaic,
+      waffle: PartitionLayout.waffle,
     },
     PartitionLayout.sunburst,
   );
@@ -93,12 +95,15 @@ export const Example = () => {
     circlePadding: 4,
   };
 
+  const isFlatLegendSupported =
+    partitionLayout === PartitionLayout.treemap || partitionLayout === PartitionLayout.sunburst;
+
   return (
     <Chart>
       <Settings
         showLegend
         showLegendExtra={showLegendExtra}
-        flatLegend={flatLegend}
+        flatLegend={isFlatLegendSupported ? flatLegend : true}
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}
         legendSort={legendSortStrategy !== 'default' ? customLegendSort : undefined}
