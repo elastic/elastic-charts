@@ -1,3 +1,10 @@
+## [53.1.1](https://github.com/elastic/elastic-charts/compare/v53.1.0...v53.1.1) (2023-02-10)
+
+
+### Bug Fixes
+
+* **partition:** tooltip item series identifier ([#1957](https://github.com/elastic/elastic-charts/issues/1957)) ([06d8b5d](https://github.com/elastic/elastic-charts/commit/06d8b5dc0cbca3aaafb202c6415904c2de00c8a7))
+
 # [53.1.0](https://github.com/elastic/elastic-charts/compare/v53.0.0...v53.1.0) (2023-02-02)
 
 

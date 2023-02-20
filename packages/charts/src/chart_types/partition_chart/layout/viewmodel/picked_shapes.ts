@@ -139,7 +139,7 @@ function getTooltipValueFromNode(
     isVisible: true,
     seriesIdentifier: {
       specId: id,
-      key: id,
+      key: model?.dataName ?? '',
     },
     value: node[AGGREGATE_KEY],
     formattedValue: `${valueFormatter(value)}\u00A0(${percentFormatter(percentValueGetter(node))})`,
