@@ -45,44 +45,62 @@ export const Example = () => {
   const data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[] = [
     {
       color: '#3c3c3c',
-      title: 'Uptime',
-      value: 1087.6,
-      valueFormatter: (d) => `${d} days`,
-    },
-    {
-      color: '#3c3c3c',
-      title: 'CPUs',
+      title: 'CPU Usage',
       subtitle: 'Overall percentage',
-      value: 2,
-      valueFormatter: (d) => `${d}`,
+      icon: getIcon('compute'),
+      value: NaN,
+      valueFormatter: defaultValueFormatter,
+      trend: KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trendShape: 'area',
+      trendA11yTitle: 'Last hour CPU percentage trend',
+      trendA11yDescription:
+        'The trend shows the CPU Usage in percentage in the last hour. The trend shows a general flat behaviour with peaks every 10 minutes',
     },
     {
-      color: '#5e5e5e',
-      title: 'Processes',
-      subtitle: 'Max',
-      value: 0,
-      valueFormatter: (d) => `${d} Mb/s`,
-      domainMax: 126,
-      progressBarDirection,
-      extra: (
-        <span>
-          Total <b>126</b>
-        </span>
-      ),
-    },
-    {
-      color: '#5e5e5e',
-      title: 'Memory',
-      subtitle: 'Memory usage',
-      value: 11.3,
+      color: '#FF7E62',
+      title: 'Memory Usage',
+      subtitle: 'Overall percentage',
+      value: 33.57,
       valueFormatter: (d) => `${d} %`,
-      domainMax: 100,
-      progressBarDirection,
-      extra: (
-        <span>
-          Total Memory <b>7.3GB</b>
-        </span>
-      ),
+      trend: KIBANA_METRICS.metrics.kibana_memory[0].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trendShape: 'area',
+      trendA11yTitle: 'Last hour Memory usage trend',
+      trendA11yDescription:
+        'The trend shows the memory usage in the last hour. The trend shows a general flat behaviour across the entire time window',
+    },
+    {
+      color: '#5e5e5e',
+      title: 'Disk I/O',
+      subtitle: 'Read',
+      icon: getIcon('sortUp'),
+      value: 12.57,
+      valueFormatter: (d) => `${d} Mb/s`,
+      ...(useProgressBar && {
+        domainMax: 100,
+        progressBarDirection,
+        extra: (
+          <span>
+            max <b>100Mb/s</b>
+          </span>
+        ),
+      }),
+    },
+    {
+      color: '#5e5e5e',
+      title: 'Disk I/O',
+      subtitle: 'Write',
+      icon: getIcon('sortDown'),
+      value: 41.12,
+      valueFormatter: (d) => `${d} Mb/s`,
+      ...(useProgressBar && {
+        domainMax: 100,
+        progressBarDirection,
+        extra: (
+          <span>
+            max <b>100Mb/s</b>
+          </span>
+        ),
+      }),
     },
     {
       color: '#6DCCB1',
@@ -154,8 +172,8 @@ export const Example = () => {
         resize: 'both',
         padding: '0px',
         overflow: 'auto',
-        height: '230px',
-        width: '400px',
+        height: layout === 'vertical' ? '720px' : layout === 'horizontal' ? '150px' : '300px',
+        width: layout === 'vertical' ? '180px' : '720px',
         ...(showGridBorder && {
           boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
           borderRadius: '6px',
@@ -190,100 +208,8 @@ export const Example = () => {
           }}
           onElementOut={() => onEventOutAction('out')}
         />
-        <Metric
-          id="metric"
-          data={[
-            [
-              {
-                title: 'CPU user',
-                color: '#1F8A70',
-                subtitle: 'percentage',
-                value: 5.1,
-                valueFormatter: (d) => `${d}%`,
-                domainMax: 100,
-              },
-              {
-                color: '#3c3c3c',
-                title: '',
-                subtitle: 'CPU over time',
-                value: 5.1,
-                valueFormatter: (d) => ``,
-                trend: KIBANA_METRICS.metrics.kibana_os_load[2].data
-                  .slice(0, maxDataPoints)
-                  .map(([x, y]) => ({ x, y })),
-              },
-            ],
-            [
-              {
-                title: 'Load 5m',
-                color: '#1F8A70',
-                subtitle: 'percentage',
-                value: 0.725,
-                valueFormatter: (d) => `${d}%`,
-                domainMax: 100,
-              },
-              {
-                color: '#3c3c3c',
-                title: '',
-                subtitle: 'Load over time',
-                value: 5.1,
-                valueFormatter: (d) => ``,
-                trend: KIBANA_METRICS.metrics.kibana_os_load[2].data
-                  .slice(0, maxDataPoints)
-                  .map(([x, y]) => ({ x, y })),
-              },
-            ],
-          ]}
-        />
+        <Metric id="metric" data={chartData} />
       </Chart>
     </div>
   );
 };
-
-const other = [
-  [
-    {
-      color: 'white',
-      title: 'Uptime',
-      value: 1087.6,
-      valueFormatter: (d) => `${d} days`,
-    },
-    {
-      color: '#1F8A70',
-      title: 'Processes',
-      subtitle: 'Max',
-      value: 0,
-      valueFormatter: (d) => `${d}`,
-      // domainMax: 126,
-      // progressBarDirection: 'vertical',
-      extra: (
-        <span>
-          Total <b>126</b>
-        </span>
-      ),
-    },
-  ],
-  [
-    {
-      color: 'white',
-      title: 'CPUs',
-      value: 2,
-      valueFormatter: (d) => `${d}`,
-    },
-
-    {
-      color: '#1F8A70',
-      title: 'Memory usage',
-
-      value: 11.3,
-      valueFormatter: (d) => `${d} %`,
-      domainMax: 100,
-
-      extra: (
-        <span>
-          Total Memory <b>7.3GB</b>
-        </span>
-      ),
-    },
-  ],
-];
