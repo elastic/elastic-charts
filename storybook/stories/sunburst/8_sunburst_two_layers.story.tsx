@@ -18,7 +18,7 @@ import {
   PartitionLayout,
   Settings,
 } from '@elastic/charts';
-import { CHILDREN_KEY, entryKey, entryValue, PARENT_KEY, SORT_INDEX_KEY } from '@elastic/charts/src';
+import { CHILDREN_KEY, entryValue, PARENT_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
