@@ -73,14 +73,17 @@ export const getDebugStateSelector = createCustomCachedSelector(
       },
       // Heatmap debug state
       heatmap: {
-        cells: heatmapViewModel.cells.map((cell) => ({
-          x: cell.x,
-          y: cell.y,
-          fill: RGBATupleToString(cell.fill.color),
-          formatted: cell.formatted,
-          value: cell.value,
-          valueShown: heatmap.cell.label.visible && Number.isFinite(heatmapViewModel.cellFontSize(cell)),
-        })),
+        cells: geoms.heatmapViewModels.flatMap(({ cells }) =>
+          cells.map((cell) => ({
+            x: cell.x,
+            y: cell.y,
+            datum: cell.datum,
+            fill: RGBATupleToString(cell.fill.color),
+            formatted: cell.formatted,
+            value: cell.value,
+            valueShown: heatmap.cell.label.visible && Number.isFinite(heatmapViewModel.cellFontSize(cell)),
+          })),
+        ),
         selection: {
           area: pickedArea,
           data: highlightedData,

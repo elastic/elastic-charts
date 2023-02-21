@@ -26,6 +26,7 @@ const rng = getRandomNumberGenerator();
 
 import { useBaseTheme } from '../../use_base_theme';
 import { useHeatmapSelection } from '../utils/use_heatmap_selection';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 
 const dg = new SeededDataGenerator(500, 'test');
 const numOfDays = 90;
@@ -34,6 +35,7 @@ const tickTimeFormatter = timeFormatter(niceTimeFormatByDay(numOfDays));
 
 export const Example = () => {
   const debug = boolean('Debug', false);
+  const debugState = boolean('Enable debug state', true);
   const timeBasedData = boolean('Time data', false);
   const showLegend = boolean('Show Legend', false);
   const vSplit = boolean('v - split', true, 'Data');
@@ -122,6 +124,8 @@ export const Example = () => {
     <Chart>
       <Settings
         debug={debug}
+        debugState={debugState}
+        onRenderChange={getDebugStateLogger(debugState)}
         onElementClick={onElementClick}
         showLegend={showLegend}
         baseTheme={useBaseTheme()}
