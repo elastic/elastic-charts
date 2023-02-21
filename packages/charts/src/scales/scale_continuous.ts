@@ -166,14 +166,15 @@ export class ScaleContinuous {
             scaleOptions.timeZone,
             scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
           )
-        : type === ScaleType.Linear
-        ? getLinearNonDenserTicks(
-            nicePaddedDomain,
-            scaleOptions.desiredTickCount,
-            this.linearBase,
-            scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
-          )
-        : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount);
+        : (type === ScaleType.Linear
+            ? getLinearNonDenserTicks(
+                nicePaddedDomain,
+                scaleOptions.desiredTickCount,
+                this.linearBase,
+                scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
+              )
+            : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount)
+          ).filter(scaleOptions.integersOnly ? Number.isInteger : () => true);
 
     this.domain = nicePaddedDomain;
     // Returning NaN means that the value is projectable/invertible within the domain or range

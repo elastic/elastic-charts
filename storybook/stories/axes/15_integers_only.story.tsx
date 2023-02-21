@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, Chart, Position, ScaleType, Settings, BarSeries } from '@elastic/charts';
@@ -13,28 +14,38 @@ import { Axis, Chart, Position, ScaleType, Settings, BarSeries } from '@elastic/
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
+  const integersOnly = boolean('Integers values', true);
+  const scaleType = select<typeof ScaleType.Linear | typeof ScaleType.Log | typeof ScaleType.Sqrt>(
+    'Scale Type',
+    {
+      Linear: ScaleType.Linear,
+      Log: ScaleType.Log,
+      Sqrt: ScaleType.Sqrt,
+    },
+    'linear',
+  );
+  const niceValues = boolean('yNice', false);
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} />
-      <Axis id="left" position={Position.Left} integersOnly />
+      <Axis id="left" position={Position.Left} integersOnly={integersOnly} />
 
       <BarSeries
         id="Thermal changes"
         xScaleType={ScaleType.Ordinal}
-        yScaleType={ScaleType.Linear}
+        yScaleType={scaleType}
         xAccessor={0}
         yAccessors={[1]}
         data={[
-          ['Sensor 1', 0.2],
+          ['Sensor 1', 1.2],
           ['Sensor 2', 0.8],
           ['Sensor 3', 0.76],
-          ['Sensor 4', 0.12],
+          ['Sensor 4', 2.12],
+          ['Sensor 5', 0.92],
         ]}
+        yNice={niceValues}
       />
     </Chart>
   );
-};
-Example.parameters = {
-  markdown: 'Currently not correctly rendered due to [#1920](https://github.com/elastic/elastic-charts/issues/1920)',
 };
