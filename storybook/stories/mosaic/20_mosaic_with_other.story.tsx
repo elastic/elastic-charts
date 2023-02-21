@@ -14,12 +14,11 @@ import {
   ArrayEntry,
   Chart,
   Datum,
-  MODEL_KEY,
   Partition,
   PartitionLayout,
   Settings,
-  ShapeTreeNode,
   defaultPartitionValueFormatter,
+  entryValue,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -100,7 +99,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d: ShapeTreeNode) => categoricalColors.slice(0)[d[MODEL_KEY].sortIndex],
+              fillColor: (d) => categoricalColors.slice(0)[entryValue(d).parent.sortIndex],
             },
           },
         ]}

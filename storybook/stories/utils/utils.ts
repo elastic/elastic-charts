@@ -23,8 +23,8 @@ export const productPriceLookup = arrayToLookup((d: any) => d.products_price, pr
 type ColorMaker = (x: number) => string;
 
 // interpolation based, cyclical color example
-export const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.8]));
-export const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.8]));
+export const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.7]));
+export const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
 export const indexInterpolatedFillColor = (colorMaker: ColorMaker) => (d: any, i: number, a: any[]) =>
   colorMaker(i / (a.length + 1));
 

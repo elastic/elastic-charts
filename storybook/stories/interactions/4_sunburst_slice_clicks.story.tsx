@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Position, Settings, Partition, PartitionLayout } from '@elastic/charts';
+import { Chart, Position, Settings, Partition, PartitionLayout, entryValue, SORT_INDEX_KEY } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import {
@@ -18,6 +18,7 @@ import {
   interpolatorCET2s,
   discreteColor,
   colorBrewerCategoricalPastel12,
+  colorBrewerCategoricalStark9,
 } from '../utils/utils';
 
 const onElementListeners = {
@@ -71,26 +72,14 @@ export const Example = () => {
             groupByRollup: (d: PieDatum) => d[0],
             nodeLabel: (d) => `dest: ${d}`,
             shape: {
-              fillColor: (d) => {
-                if (layout === 'sunburst') {
-                  // pick color from color palette based on mean angle - rather distinct colors in the inner ring
-                  return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
-                }
-                return discreteColor(colorBrewerCategoricalPastel12)(d.sortIndex);
-              },
+              fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.7)(entryValue(d).sortIndex),
             },
           },
           {
             groupByRollup: (d: PieDatum) => d[2],
             nodeLabel: (d) => `source: ${d}`,
             shape: {
-              fillColor: (d) => {
-                if (layout === 'sunburst') {
-                  // pick color from color palette based on mean angle - rather distinct colors in the inner ring
-                  return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
-                }
-                return discreteColor(colorBrewerCategoricalPastel12)(d.sortIndex);
-              },
+              fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.5)(entryValue(d).parent.sortIndex),
             },
           },
         ]}

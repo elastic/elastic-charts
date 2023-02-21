@@ -17,8 +17,8 @@ import {
   Partition,
   PartitionLayout,
   Settings,
-  ShapeTreeNode,
   defaultPartitionValueFormatter,
+  entryKey,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
@@ -86,7 +86,7 @@ export const Example = () => {
         layers={[
           {
             groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
-            nodeLabel: (name: any) => regionLookup[name].regionName,
+            nodeLabel: (name) => (name !== null ? regionLookup[name].regionName : ''),
             fillLabel: {
               fontWeight: 400,
             },
@@ -96,9 +96,9 @@ export const Example = () => {
           },
           {
             groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: any) => String(productLookup[d]?.label),
+            nodeLabel: (d) => (d !== null ? `${productLookup[d]?.label}` : ''),
             shape: {
-              fillColor: (d: ShapeTreeNode) => productToColor.get(d.dataName)!,
+              fillColor: (d) => productToColor.get(entryKey(d))!,
             },
             sortPredicate: ([name1]: ArrayEntry, [name2]: ArrayEntry) => {
               const position1 = Number(productLookup[name1]?.position);

@@ -9,16 +9,20 @@
 import { boolean, color, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
-import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { arrayToLookup } from '@elastic/charts/src/common/color_calcs';
+import {
+  Chart,
+  Datum,
+  defaultPartitionValueFormatter,
+  entryValue,
+  Partition,
+  PartitionLayout,
+  Settings,
+  SORT_INDEX_KEY,
+} from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { discreteColor, colorBrewerCategoricalPastel12 } from '../utils/utils';
-
-const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
+import { colorBrewerCategoricalPastel12, discreteColor, productLookup } from '../utils/utils';
 
 export const Example = () => {
   const layout = select(
@@ -61,7 +65,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalPastel12)(d.sortIndex),
+              fillColor: (d) => discreteColor(colorBrewerCategoricalPastel12)(entryValue(d)[SORT_INDEX_KEY]),
             },
           },
         ]}

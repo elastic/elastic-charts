@@ -8,19 +8,23 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
+import {
+  Chart,
+  Datum,
+  Partition,
+  PartitionLayout,
+  Settings,
+  defaultPartitionValueFormatter,
+  entryValue,
+  SORT_INDEX_KEY,
+} from '@elastic/charts';
 import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
-
-const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
-
-const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.7]));
-
-const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
+import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 export const Example = () => (
   <Chart>
@@ -45,7 +49,8 @@ export const Example = () => (
             valueFormatter: (d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
           },
           shape: {
-            fillColor: defaultFillColor(interpolatorCET2s),
+            fillColor: (d, tree) =>
+              indexInterpolatedFillColor(interpolatorCET2s)(null, entryValue(d)[SORT_INDEX_KEY], tree),
           },
         },
       ]}

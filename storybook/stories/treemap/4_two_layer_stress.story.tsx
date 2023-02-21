@@ -17,17 +17,14 @@ import {
   PartitionLayout,
   Settings,
   defaultPartitionValueFormatter,
+  entryValue,
 } from '@elastic/charts';
-import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
+import { hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { countryDimension, productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
-
-const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
-const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
+import { countryLookup, productLookup } from '../utils/utils';
 
 const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
 
@@ -78,12 +75,14 @@ export const Example = () => (
             },
           },
           shape: {
-            fillColor: (d: ShapeTreeNode) =>
+            fillColor: (d) => {
+              const value = entryValue(d);
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
-              interpolatorTurbo(
-                (d[MODEL_KEY].sortIndex + d.sortIndex / d[MODEL_KEY].children.length) /
-                  (d[MODEL_KEY].parent.children.length + 1),
-              ),
+              return interpolatorTurbo(
+                (value.parent.sortIndex + value.sortIndex / value.parent.children.length) /
+                  (value.parent.parent.children.length + 1),
+              );
+            },
           },
         },
       ]}
