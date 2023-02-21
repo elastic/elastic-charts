@@ -22,6 +22,7 @@ import {
   Goal,
   ChartType,
   defaultPartitionValueFormatter,
+  entryValue,
 } from '@elastic/charts';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
@@ -88,7 +89,8 @@ function renderPartitionChart() {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
           shape: {
-            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+            fillColor: (d, tree) =>
+              indexInterpolatedFillColor(interpolatorCET2s())(null, entryValue(d).sortIndex, tree),
           },
         },
       ]}

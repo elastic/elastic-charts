@@ -11,22 +11,18 @@ import React from 'react';
 import {
   Chart,
   Datum,
-  MODEL_KEY,
+  defaultPartitionValueFormatter,
+  entryValue,
   PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
-  defaultPartitionValueFormatter,
-  entryValue,
+  SORT_INDEX_KEY,
 } from '@elastic/charts';
-import { hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { countryLookup, productLookup } from '../utils/utils';
-
-const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
+import { countryLookup, indexInterpolatedFillColor, interpolatorTurbo, productLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
   chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
@@ -78,9 +74,10 @@ export const Example = () => (
             fillColor: (d) => {
               const value = entryValue(d);
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
-              return interpolatorTurbo(
-                (value.parent.sortIndex + value.sortIndex / value.parent.children.length) /
-                  (value.parent.parent.children.length + 1),
+              return indexInterpolatedFillColor(interpolatorTurbo())(
+                null,
+                value.parent.sortIndex,
+                value.parent.parent.children,
               );
             },
           },

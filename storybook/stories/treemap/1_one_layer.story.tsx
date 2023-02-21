@@ -18,10 +18,7 @@ import {
   entryValue,
   SORT_INDEX_KEY,
 } from '@elastic/charts';
-import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
-import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
@@ -50,7 +47,7 @@ export const Example = () => (
           },
           shape: {
             fillColor: (d, tree) =>
-              indexInterpolatedFillColor(interpolatorCET2s)(null, entryValue(d)[SORT_INDEX_KEY], tree),
+              indexInterpolatedFillColor(interpolatorCET2s())(null, entryValue(d)[SORT_INDEX_KEY], tree),
           },
         },
       ]}

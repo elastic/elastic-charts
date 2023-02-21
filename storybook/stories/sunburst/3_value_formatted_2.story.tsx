@@ -51,7 +51,7 @@ export const Example = () => (
           },
           shape: {
             fillColor: (entry, tree) =>
-              indexInterpolatedFillColor(interpolatorCET2s)(null, entryValue(entry)[SORT_INDEX_KEY], tree),
+              indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, entryValue(entry)[SORT_INDEX_KEY], tree),
           },
         },
       ]}

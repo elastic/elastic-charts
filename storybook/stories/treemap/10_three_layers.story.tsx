@@ -17,25 +17,25 @@ import {
   Settings,
   PartialTheme,
   defaultPartitionValueFormatter,
+  entryKey,
 } from '@elastic/charts';
-import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { countryLookup, productLookup, regionLookup } from '../utils/utils';
-
-const interpolator = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.5]));
+import {
+  countryLookup,
+  indexInterpolatedFillColor,
+  interpolatorCET2s,
+  productLookup,
+  regionLookup,
+} from '../utils/utils';
 
 const countries = mocks.sunburst
   .map((d: any) => d.dest)
   .filter(keepDistinct)
   .sort()
   .reverse();
-
-const countryCount = countries.length;
 
 const theme: PartialTheme = {
   chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
@@ -95,9 +95,9 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           shape: {
-            fillColor: (d: ShapeTreeNode) =>
+            fillColor: (d) =>
               // pick color by country
-              interpolator(countries.indexOf(d.dataName) / countryCount),
+              indexInterpolatedFillColor(interpolatorCET2s(0.5))(null, countries.indexOf(entryKey(d)), countries),
           },
           fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', true) },
         },

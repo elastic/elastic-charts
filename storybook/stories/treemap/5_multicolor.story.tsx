@@ -69,7 +69,7 @@ export const Example = () => (
           },
           shape: {
             fillColor: (d) =>
-              indexInterpolatedFillColor(interpolatorCET2s)(
+              indexInterpolatedFillColor(interpolatorCET2s())(
                 null,
                 entryValue(d).parent.sortIndex,
                 entryValue(d).parent.parent[CHILDREN_KEY],

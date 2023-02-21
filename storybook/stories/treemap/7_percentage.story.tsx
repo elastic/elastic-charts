@@ -8,23 +8,25 @@
 
 import React from 'react';
 
-import { Chart, Datum, MODEL_KEY, Partition, PartitionLayout, Settings, PartialTheme } from '@elastic/charts';
+import {
+  Chart,
+  CHILDREN_KEY,
+  Datum,
+  entryValue,
+  MODEL_KEY,
+  PartialTheme,
+  Partition,
+  PartitionLayout,
+  Settings,
+} from '@elastic/charts';
 import {
   defaultPartitionValueFormatter,
   percentValueGetter,
 } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
-import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { countryDimension, regionDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
-import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
-
-const regionLookup = arrayToLookup((d: Datum) => d.region, regionDimension);
-const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
-
-const interpolatorTurbo = hueInterpolator(palettes.turbo.map(([r, g, b]) => [r, g, b, 0.7]));
+import { countryLookup, indexInterpolatedFillColor, interpolatorTurbo, regionLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
   chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
@@ -69,11 +71,12 @@ export const Example = () => (
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
           },
           shape: {
-            fillColor: (d: ShapeTreeNode) =>
+            fillColor: (d) =>
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
-              interpolatorTurbo(
-                (d[MODEL_KEY].sortIndex + d.sortIndex / d[MODEL_KEY].children.length) /
-                  (d[MODEL_KEY].parent.children.length + 1),
+              indexInterpolatedFillColor(interpolatorTurbo())(
+                null,
+                entryValue(d).parent.sortIndex,
+                entryValue(d).parent.parent.children,
               ),
           },
         },
