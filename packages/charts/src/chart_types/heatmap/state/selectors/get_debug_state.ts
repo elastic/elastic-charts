@@ -10,6 +10,7 @@ import { getChartThemeSelector } from './../../../../state/selectors/get_chart_t
 import { computeChartElementSizesSelector } from './compute_chart_dimensions';
 import { computeLegendSelector } from './compute_legend';
 import { getHeatmapGeometries } from './geometries';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
@@ -29,8 +30,17 @@ export const getDebugStateSelector = createCustomCachedSelector(
     getHighlightedDataSelector,
     getChartThemeSelector,
     computeChartElementSizesSelector,
+    getHeatmapSpecSelector,
   ],
-  (geoms, legend, pickedArea, highlightedData, { heatmap }, { xAxisTickCadence }): DebugState => {
+  (
+    geoms,
+    legend,
+    pickedArea,
+    highlightedData,
+    { heatmap },
+    { xAxisTickCadence },
+    { xAxisTitle, yAxisTitle },
+  ): DebugState => {
     const xAxisValues = geoms.heatmapViewModel.xValues.filter((_, i) => i % xAxisTickCadence === 0);
     return {
       // Common debug state
@@ -44,6 +54,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
             values: xAxisValues.map(({ value }) => value),
             // vertical lines
             gridlines: geoms.heatmapViewModel.gridLines.x.map((line) => ({ x: line.x1, y: line.y2 })),
+            ...(xAxisTitle ? { title: xAxisTitle } : {}),
           },
         ],
         y: [
@@ -54,6 +65,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
             values: geoms.heatmapViewModel.yValues.map(({ value }) => value),
             // horizontal lines
             gridlines: geoms.heatmapViewModel.gridLines.y.map((line) => ({ x: line.x2, y: line.y1 })),
+            ...(yAxisTitle ? { title: yAxisTitle } : {}),
           },
         ],
       },
