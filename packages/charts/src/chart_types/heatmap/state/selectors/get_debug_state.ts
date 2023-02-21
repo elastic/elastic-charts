@@ -9,11 +9,12 @@
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { DebugState, DebugStateLegend } from '../../../../state/types';
 import { Position } from '../../../../utils/common';
-import { getChartThemeSelector } from './../../../../state/selectors/get_chart_theme';
 import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
 import { computeLegendSelector } from './compute_legend';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
 import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 
@@ -29,9 +30,20 @@ export const getDebugStateSelector = createCustomCachedSelector(
     getHighlightedDataSelector,
     getChartThemeSelector,
     computeChartElementSizesSelector,
+    getHeatmapSpecSelector,
   ],
-  (geoms, legend, pickedArea, highlightedData, { heatmap }, { xAxisTickCadence }): DebugState => {
-    const xAxisValues = geoms.heatmapViewModels[0].xValues.filter((_, i) => i % xAxisTickCadence === 0);
+  (
+    geoms,
+    legend,
+    pickedArea,
+    highlightedData,
+    { heatmap },
+    { xAxisTickCadence },
+    { xAxisTitle, yAxisTitle },
+  ): DebugState => {
+    const [heatmapViewModel] = geoms.heatmapViewModels;
+
+    const xAxisValues = heatmapViewModel.xValues.filter((_, i) => i % xAxisTickCadence === 0);
     return {
       // Common debug state
       legend: getLegendState(legend),
@@ -43,29 +55,31 @@ export const getDebugStateSelector = createCustomCachedSelector(
             labels: xAxisValues.map(({ text }) => text),
             values: xAxisValues.map(({ value }) => value),
             // vertical lines
-            gridlines: geoms.heatmapViewModels[0].gridLines.x.map((line) => ({ x: line.x1, y: line.y2 })),
+            gridlines: heatmapViewModel.gridLines.x.map((line) => ({ x: line.x1, y: line.y2 })),
+            ...(xAxisTitle ? { title: xAxisTitle } : {}),
           },
         ],
         y: [
           {
             id: 'y',
             position: Position.Bottom,
-            labels: geoms.heatmapViewModels[0].yValues.map(({ text }) => text),
-            values: geoms.heatmapViewModels[0].yValues.map(({ value }) => value),
+            labels: heatmapViewModel.yValues.map(({ text }) => text),
+            values: heatmapViewModel.yValues.map(({ value }) => value),
             // horizontal lines
-            gridlines: geoms.heatmapViewModels[0].gridLines.y.map((line) => ({ x: line.x2, y: line.y1 })),
+            gridlines: heatmapViewModel.gridLines.y.map((line) => ({ x: line.x2, y: line.y1 })),
+            ...(yAxisTitle ? { title: yAxisTitle } : {}),
           },
         ],
       },
       // Heatmap debug state
       heatmap: {
-        cells: geoms.heatmapViewModels[0].cells.map((cell) => ({
+        cells: heatmapViewModel.cells.map((cell) => ({
           x: cell.x,
           y: cell.y,
           fill: RGBATupleToString(cell.fill.color),
           formatted: cell.formatted,
           value: cell.value,
-          valueShown: heatmap.cell.label.visible && Number.isFinite(geoms.heatmapViewModels[0].cellFontSize(cell)),
+          valueShown: heatmap.cell.label.visible && Number.isFinite(heatmapViewModel.cellFontSize(cell)),
         })),
         selection: {
           area: pickedArea,
