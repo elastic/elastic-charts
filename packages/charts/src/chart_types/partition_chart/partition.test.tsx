@@ -129,131 +129,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
         ],
         store,
       );
-      expect(computeLegendSelector(store.getState())).toEqual([
-        {
-          childId: 'A',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            { index: 0, value: HIERARCHY_ROOT_KEY },
-            { index: 0, value: 'A' },
-          ],
-          depth: 0,
-          label: 'A',
-          seriesIdentifiers: [{ key: 'A', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'A',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            { index: 0, value: HIERARCHY_ROOT_KEY },
-            { index: 0, value: 'A' },
-            { index: 0, value: 'A' },
-          ],
-          depth: 1,
-          label: 'A',
-          seriesIdentifiers: [{ key: 'A', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'B',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            { index: 0, value: HIERARCHY_ROOT_KEY },
-            { index: 0, value: 'A' },
-            { index: 1, value: 'B' },
-          ],
-          depth: 1,
-          label: 'B',
-          seriesIdentifiers: [{ key: 'B', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'B',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            { index: 0, value: HIERARCHY_ROOT_KEY },
-            { index: 1, value: 'B' },
-          ],
-          depth: 0,
-          label: 'B',
-          seriesIdentifiers: [{ key: 'B', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'A',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            { index: 0, value: HIERARCHY_ROOT_KEY },
-            { index: 1, value: 'B' },
-            { index: 0, value: 'A' },
-          ],
-          depth: 1,
-          label: 'A',
-          seriesIdentifiers: [{ key: 'A', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'B',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            { index: 0, value: HIERARCHY_ROOT_KEY },
-            { index: 1, value: 'B' },
-            { index: 1, value: 'B' },
-          ],
-          depth: 1,
-          label: 'B',
-          seriesIdentifiers: [{ key: 'B', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'C',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            { index: 0, value: HIERARCHY_ROOT_KEY },
-            { index: 2, value: 'C' },
-          ],
-          depth: 0,
-          label: 'C',
-          seriesIdentifiers: [{ key: 'C', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'A',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            { index: 0, value: HIERARCHY_ROOT_KEY },
-            { index: 2, value: 'C' },
-            { index: 0, value: 'A' },
-          ],
-          depth: 1,
-          label: 'A',
-          seriesIdentifiers: [{ key: 'A', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'B',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            { index: 0, value: HIERARCHY_ROOT_KEY },
-            { index: 2, value: 'C' },
-            { index: 1, value: 'B' },
-          ],
-          depth: 1,
-          label: 'B',
-          seriesIdentifiers: [{ key: 'B', specId: 'spec1' }],
-          keys: [],
-        },
-      ]);
+      expect(computeLegendSelector(store.getState())).toMatchSnapshot();
     });
 
     it('special case: one input, one label', () => {
@@ -264,51 +140,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
         ],
         store,
       );
-      expect(computeLegendSelector(store.getState())).toEqual([
-        {
-          childId: 'A',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            {
-              index: 0,
-              value: HIERARCHY_ROOT_KEY,
-            },
-            {
-              index: 0,
-              value: 'A',
-            },
-          ],
-          depth: 0,
-          label: 'A',
-          seriesIdentifiers: [{ key: 'A', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'A',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            {
-              index: 0,
-              value: HIERARCHY_ROOT_KEY,
-            },
-            {
-              index: 0,
-              value: 'A',
-            },
-            {
-              index: 0,
-              value: 'A',
-            },
-          ],
-
-          depth: 1,
-          label: 'A',
-          seriesIdentifiers: [{ key: 'A', specId: 'spec1' }],
-          keys: [],
-        },
-      ]);
+      expect(computeLegendSelector(store.getState())).toMatchSnapshot();
     });
 
     it('special case: one input, two labels', () => {
@@ -319,50 +151,7 @@ describe('Retain hierarchy even with arbitrary names', () => {
         ],
         store,
       );
-      expect(computeLegendSelector(store.getState())).toEqual([
-        {
-          childId: 'C',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            {
-              index: 0,
-              value: HIERARCHY_ROOT_KEY,
-            },
-            {
-              index: 0,
-              value: 'C',
-            },
-          ],
-          depth: 0,
-          label: 'C',
-          seriesIdentifiers: [{ key: 'C', specId: 'spec1' }],
-          keys: [],
-        },
-        {
-          childId: 'B',
-          color: 'rgba(128, 0, 0, 0.5)',
-          path: [
-            { index: 0, value: NULL_SMALL_MULTIPLES_KEY },
-            {
-              index: 0,
-              value: HIERARCHY_ROOT_KEY,
-            },
-            {
-              index: 0,
-              value: 'C',
-            },
-            {
-              index: 0,
-              value: 'B',
-            },
-          ],
-          depth: 1,
-          label: 'B',
-          seriesIdentifiers: [{ key: 'B', specId: 'spec1' }],
-          keys: [],
-        },
-      ]);
+      expect(computeLegendSelector(store.getState())).toMatchSnapshot();
     });
 
     it('special case: no labels', () => {

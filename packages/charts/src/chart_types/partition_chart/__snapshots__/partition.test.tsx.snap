@@ -1,0 +1,464 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct labels are present 1`] = `
+[
+  {
+    "childId": "A",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "2",
+      "legendSizingLabel": "2",
+      "raw": 2,
+    },
+    "depth": 0,
+    "keys": [],
+    "label": "A",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 0,
+        "value": "A",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "A",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "A",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 1,
+    "keys": [],
+    "label": "A",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 0,
+        "value": "A",
+      },
+      {
+        "index": 0,
+        "value": "A",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "A",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "B",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 1,
+    "keys": [],
+    "label": "B",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 0,
+        "value": "A",
+      },
+      {
+        "index": 1,
+        "value": "B",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "B",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "B",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "2",
+      "legendSizingLabel": "2",
+      "raw": 2,
+    },
+    "depth": 0,
+    "keys": [],
+    "label": "B",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 1,
+        "value": "B",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "B",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "A",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 1,
+    "keys": [],
+    "label": "A",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 1,
+        "value": "B",
+      },
+      {
+        "index": 0,
+        "value": "A",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "A",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "B",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 1,
+    "keys": [],
+    "label": "B",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 1,
+        "value": "B",
+      },
+      {
+        "index": 1,
+        "value": "B",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "B",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "C",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "2",
+      "legendSizingLabel": "2",
+      "raw": 2,
+    },
+    "depth": 0,
+    "keys": [],
+    "label": "C",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 2,
+        "value": "C",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "C",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "A",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 1,
+    "keys": [],
+    "label": "A",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 2,
+        "value": "C",
+      },
+      {
+        "index": 0,
+        "value": "A",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "A",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "B",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 1,
+    "keys": [],
+    "label": "B",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 2,
+        "value": "C",
+      },
+      {
+        "index": 1,
+        "value": "B",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "B",
+        "specId": "spec1",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Retain hierarchy even with arbitrary names getLegendItems special case: one input, one label 1`] = `
+[
+  {
+    "childId": "A",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 0,
+    "keys": [],
+    "label": "A",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 0,
+        "value": "A",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "A",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "A",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 1,
+    "keys": [],
+    "label": "A",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 0,
+        "value": "A",
+      },
+      {
+        "index": 0,
+        "value": "A",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "A",
+        "specId": "spec1",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Retain hierarchy even with arbitrary names getLegendItems special case: one input, two labels 1`] = `
+[
+  {
+    "childId": "C",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 0,
+    "keys": [],
+    "label": "C",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 0,
+        "value": "C",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "C",
+        "specId": "spec1",
+      },
+    ],
+  },
+  {
+    "childId": "B",
+    "color": "rgba(128, 0, 0, 0.5)",
+    "defaultExtra": {
+      "formatted": "1",
+      "legendSizingLabel": "1",
+      "raw": 1,
+    },
+    "depth": 1,
+    "keys": [],
+    "label": "B",
+    "path": [
+      {
+        "index": 0,
+        "value": "__null_small_multiples_key__",
+      },
+      {
+        "index": 0,
+        "value": "__root_key__",
+      },
+      {
+        "index": 0,
+        "value": "C",
+      },
+      {
+        "index": 0,
+        "value": "B",
+      },
+    ],
+    "seriesIdentifiers": [
+      {
+        "key": "B",
+        "specId": "spec1",
+      },
+    ],
+  },
+]
+`;

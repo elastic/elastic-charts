@@ -12,6 +12,7 @@ import { getTrees } from './tree';
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLegendConfigSelector } from '../../../../state/selectors/get_legend_config_selector';
+import { isNil } from '../../../../utils/common';
 import { SpecId } from '../../../../utils/ids';
 import { isHierarchicalLegend } from '../../../../utils/legend';
 import { PartitionLayout } from '../../layout/types/config_types';
@@ -45,7 +46,7 @@ export const computeLegendSelector = createCustomCachedSelector(
       const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
       const { valueFormatter } = specs[0];
       const items = walkTree(specs[0].id, useHierarchicalLegend, valueFormatter, tree.tree, specs[0].layers, 0);
-
+      console.log(items);
       return [...items.values()]
         .filter((d) => {
           const depth = d.item.depth ?? -1;
@@ -53,7 +54,7 @@ export const computeLegendSelector = createCustomCachedSelector(
           if (d.item.childId === HIERARCHY_ROOT_KEY) {
             return false;
           }
-          return depth <= legendMaxDepth;
+          return depth < legendMaxDepth;
         })
         .sort(
           specs[0].layout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
@@ -91,14 +92,14 @@ function walkTree(
     const label = formatter(key);
     const joinedPath = node[PATH_KEY].map((d) => d.value).join('##');
     const uniqueKey = `${depth}--${joinedPath}--${label}--${fillColor}--${node[AGGREGATE_KEY]}`;
-    if (key && !uniqueNames.has(uniqueKey)) {
+    if (!isNil(key) && !uniqueNames.has(uniqueKey)) {
       legendItems.push({
         item: {
           color: fillColor,
           childId: key,
           label,
           path: node[PATH_KEY],
-          depth: node[DEPTH_KEY],
+          depth: node[DEPTH_KEY] - 1,
           seriesIdentifiers: [{ key, specId }],
           keys: [],
           defaultExtra: {

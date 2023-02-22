@@ -193,7 +193,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     const extra = showExtra && getExtra(extraValues, item, totalItems);
     const style = !flatLegend
       ? {
-          [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * ((item.depth ?? 1) - 1),
+          [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
         }
       : undefined;
     return (

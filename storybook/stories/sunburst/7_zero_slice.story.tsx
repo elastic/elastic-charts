@@ -26,10 +26,7 @@ export const Example = () => (
     />
     <Partition
       id="spec_1"
-      data={mocks.pie
-        .slice(0, 2)
-        .concat(mocks.pie.slice(2, 4).map((s) => ({ ...s, exportVal: 0 })))
-        .concat(mocks.pie.slice(4))}
+      data={mocks.pie.map((d, i) => ({ ...d, exportVal: i === 2 || i === 3 ? 0 : d.exportVal }))}
       layout={PartitionLayout.sunburst}
       valueAccessor={(d: Datum) => d.exportVal as number}
       valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}

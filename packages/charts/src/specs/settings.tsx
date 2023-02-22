@@ -432,7 +432,7 @@ export interface LegendSpec {
   flatLegend?: boolean;
   /**
    * Choose a partition highlighting strategy for hovering over legend items.
-   * @defaultValue: `LegendStrategy.Path`
+   * @defaultValue `LegendStrategy.Path`
    */
   legendStrategy?: LegendStrategy;
   onLegendItemOver?: LegendItemListener;

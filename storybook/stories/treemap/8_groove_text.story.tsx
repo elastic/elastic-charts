@@ -86,12 +86,13 @@ export const Example = () => (
             idealFontSizeJump: 1.01,
           },
           shape: {
-            fillColor: (d) =>
-              indexInterpolatedFillColor(interpolatorTurbo())(
-                null,
-                entryValue(d).parent.sortIndex,
-                entryValue(d).parent.parent[CHILDREN_KEY],
-              ),
+            fillColor: (entry) => {
+              const d = entryValue(entry);
+              // primarily, pick color based on parent's index, but then perturb by the index within the parent
+              return interpolatorTurbo()(
+                (d.parent.sortIndex + d.sortIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
+              );
+            },
           },
         },
       ]}
