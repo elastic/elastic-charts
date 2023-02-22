@@ -13,6 +13,7 @@ import {
   Datum,
   defaultPartitionValueFormatter,
   entryValue,
+  MODEL_KEY,
   PartialTheme,
   Partition,
   PartitionLayout,
@@ -71,13 +72,12 @@ export const Example = () => (
             },
           },
           shape: {
-            fillColor: (d) => {
-              const value = entryValue(d);
+            fillColor: (entry) => {
+              const d = entryValue(entry);
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
-              return indexInterpolatedFillColor(interpolatorTurbo())(
-                null,
-                value.parent.sortIndex,
-                value.parent.parent.children,
+              return interpolatorTurbo()(
+                (d[MODEL_KEY].sortIndex + d.sortIndex / d[MODEL_KEY].children.length) /
+                  (d[MODEL_KEY].parent.children.length + 1),
               );
             },
           },

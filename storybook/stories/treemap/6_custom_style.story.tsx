@@ -70,7 +70,7 @@ export const Example = () => (
           },
           shape: {
             fillColor: (d) => {
-              const model = entryValue(d);
+              const model = entryValue(d).parent;
               const root = model.parent;
               const siblingCountLayer1 = root.children.length;
               const i = model.sortIndex;
