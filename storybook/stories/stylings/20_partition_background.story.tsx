@@ -18,6 +18,7 @@ import {
   Settings,
   MODEL_KEY,
   defaultPartitionValueFormatter,
+  entryValue,
 } from '@elastic/charts';
 import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -76,22 +77,21 @@ export const Example = () => {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: any) => productLookup[d].name,
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex),
+              fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.7)(entryValue(d).sortIndex),
             },
           },
           {
             groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
             nodeLabel: (d: any) => regionLookup[d].regionName,
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
+              fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.5)(entryValue(d).parent.sortIndex),
             },
           },
           {
             groupByRollup: (d: Datum) => d.dest,
             nodeLabel: (d: any) => countryLookup[d].name,
             shape: {
-              fillColor: (d: ShapeTreeNode) =>
-                discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
+              fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.3)(entryValue(d).parent.parent.sortIndex),
             },
           },
         ]}

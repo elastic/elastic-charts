@@ -12,7 +12,6 @@ import React from 'react';
 
 import {
   Chart,
-  Datum,
   MODEL_KEY,
   Partition,
   PartitionLayout,
@@ -23,8 +22,8 @@ import {
   Tooltip,
   TooltipAction,
   TooltipValue,
+  entryValue,
 } from '@elastic/charts';
-import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { combineColors } from '@elastic/charts/src/common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '@elastic/charts/src/common/color_library_wrappers';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -127,38 +126,44 @@ export const Example = () => {
           ];
         }}
       />
-      <Partition
+      <Partition<{ sitc1: string; dest: string; exportVal: number }>
         id="spec_1"
         data={mocks.miniSunburst}
         layout={layout}
-        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueAccessor={(d) => d.exportVal}
         valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
         layers={[
           {
-            groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: any) => productLookup[d].name,
+            groupByRollup: (d) => d.sitc1,
+            nodeLabel: (d) => productLookup[d].name,
             fillLabel: { maximizeFontSize: false },
             shape: {
-              fillColor: (d: ShapeTreeNode) =>
-                plainColor(discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex), background),
+              fillColor: (d) =>
+                plainColor(discreteColor(colorBrewerCategoricalStark9, 0.7)(entryValue(d).sortIndex), background),
             },
           },
           {
-            groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
-            nodeLabel: (d: any) => regionLookup[d].regionName,
+            groupByRollup: (d) => countryLookup[d.dest].continentCountry.slice(0, 2),
+            nodeLabel: (d) => regionLookup[d].regionName,
             fillLabel: { maximizeFontSize: false },
             shape: {
-              fillColor: (d: ShapeTreeNode) =>
-                plainColor(discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex), background),
+              fillColor: (d) =>
+                plainColor(
+                  discreteColor(colorBrewerCategoricalStark9, 0.5)(entryValue(d)[MODEL_KEY].sortIndex),
+                  background,
+                ),
             },
           },
           {
-            groupByRollup: (d: Datum) => d.dest,
-            nodeLabel: (d: any) => countryLookup[d].name,
+            groupByRollup: (d) => d.dest,
+            nodeLabel: (d) => countryLookup[d].name,
             fillLabel: { maximizeFontSize: false },
             shape: {
-              fillColor: (d: ShapeTreeNode) =>
-                plainColor(discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex), background),
+              fillColor: (d) =>
+                plainColor(
+                  discreteColor(colorBrewerCategoricalStark9, 0.3)(entryValue(d)[MODEL_KEY].parent.sortIndex),
+                  background,
+                ),
             },
           },
         ].filter((d, i) => (layout === 'waffle' ? i === 0 : true))}

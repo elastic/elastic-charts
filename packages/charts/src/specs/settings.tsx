@@ -426,11 +426,13 @@ export interface LegendSpec {
    */
   legendSize: number;
   /**
-   * Display the legend as a flat list. If true, legendStrategy is always `LegendStrategy.Key`.
+   * Display the legend as a flat list.
+   * @defaultValue `false`
    */
   flatLegend?: boolean;
   /**
-   * Choose a partition highlighting strategy for hovering over legend items. It's obligate `LegendStrategy.Key` if `flatLegend` is true.
+   * Choose a partition highlighting strategy for hovering over legend items.
+   * @defaultValue: `LegendStrategy.Path`
    */
   legendStrategy?: LegendStrategy;
   onLegendItemOver?: LegendItemListener;

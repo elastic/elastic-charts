@@ -85,7 +85,7 @@ export const LegendStrategy = Object.freeze({
 /** @public */
 export type LegendStrategy = Values<typeof LegendStrategy>;
 
-const defaultStrategy: LegendStrategy = LegendStrategy.Key;
+const defaultStrategy: LegendStrategy = LegendStrategy.Path;
 
 /** @internal */
 export function highlightedGeoms(
@@ -94,6 +94,5 @@ export function highlightedGeoms(
   quadViewModel: QuadViewModel[],
   highlightedLegendItemPath: LegendPath,
 ) {
-  const pickedLogic: LegendStrategy = flatLegend ? LegendStrategy.Key : legendStrategy ?? defaultStrategy;
-  return quadViewModel.filter(legendStrategies[pickedLogic](highlightedLegendItemPath));
+  return quadViewModel.filter(legendStrategies[legendStrategy ?? defaultStrategy](highlightedLegendItemPath));
 }

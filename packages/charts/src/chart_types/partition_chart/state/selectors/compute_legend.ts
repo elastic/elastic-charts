@@ -25,7 +25,7 @@ import {
   PATH_KEY,
 } from '../../layout/utils/group_by_rollup';
 import { isLinear } from '../../layout/viewmodel/viewmodel';
-import { Layer } from '../../specs';
+import { Layer, PartitionSpec } from '../../specs';
 
 function compareLegendItemNames(aItem: LegendNode, bItem: LegendNode): number {
   const a = aItem.item.label;
@@ -43,7 +43,9 @@ export const computeLegendSelector = createCustomCachedSelector(
   (specs, { flatLegend, legendMaxDepth, legendPosition }, geometries, trees): LegendItem[] =>
     trees.flatMap((tree) => {
       const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
-      const items = walkTree(specs[0].id, useHierarchicalLegend, tree.tree, specs[0].layers, 0);
+      const { valueFormatter } = specs[0];
+      const items = walkTree(specs[0].id, useHierarchicalLegend, valueFormatter, tree.tree, specs[0].layers, 0);
+
       return [...items.values()]
         .filter((d) => {
           const depth = d.item.depth ?? -1;
@@ -69,6 +71,7 @@ type LegendNode = { item: LegendItem; node: ArrayNode };
 function walkTree(
   specId: SpecId,
   useHierarchicalLegend: boolean,
+  valueFormatter: PartitionSpec['valueFormatter'],
   tree: HierarchyOfArrays,
   layers: Layer[],
   depth: number,
@@ -86,8 +89,8 @@ function walkTree(
     const fill = layer?.shape?.fillColor ?? 'rgba(128, 0, 0, 0.5)';
     const fillColor = typeof fill === 'function' ? fill([key, node], tree) : fill;
     const label = formatter(key);
-    const uniqueKey = `${label}${fillColor}`;
-
+    const joinedPath = node[PATH_KEY].map((d) => d.value).join('##');
+    const uniqueKey = `${depth}--${joinedPath}--${label}--${fillColor}--${node[AGGREGATE_KEY]}`;
     if (key && !uniqueNames.has(uniqueKey)) {
       legendItems.push({
         item: {
@@ -95,12 +98,12 @@ function walkTree(
           childId: key,
           label,
           path: node[PATH_KEY],
-          depth: useHierarchicalLegend ? node[DEPTH_KEY] - 1 : 0,
+          depth: node[DEPTH_KEY],
           seriesIdentifiers: [{ key, specId }],
           keys: [],
           defaultExtra: {
             raw: node[AGGREGATE_KEY],
-            formatted: `${node[AGGREGATE_KEY]}`,
+            formatted: valueFormatter(node[AGGREGATE_KEY]),
             legendSizingLabel: `${node[AGGREGATE_KEY]}`,
           },
         },
@@ -109,7 +112,7 @@ function walkTree(
       uniqueNames.add(uniqueKey);
     }
     const children = node[CHILDREN_KEY];
-    walkTree(specId, useHierarchicalLegend, children, layers, depth + 1, uniqueNames, legendItems);
+    walkTree(specId, useHierarchicalLegend, valueFormatter, children, layers, depth + 1, uniqueNames, legendItems);
   }
   return legendItems;
 }

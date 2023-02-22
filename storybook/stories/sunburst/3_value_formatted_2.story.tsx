@@ -8,19 +8,11 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
-import { entryValue, SORT_INDEX_KEY } from '@elastic/charts/src';
-import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
+import { Chart, Datum, Partition, Settings, defaultPartitionValueFormatter, entryValue } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
-import {
-  discreteColor,
-  colorBrewerCategoricalPastel12,
-  productLookup,
-  indexInterpolatedFillColor,
-  interpolatorCET2s,
-} from '../utils/utils';
+import { discreteColor, colorBrewerCategoricalPastel12, productLookup } from '../utils/utils';
 
 export const Example = () => (
   <Chart>
@@ -50,8 +42,7 @@ export const Example = () => (
             },
           },
           shape: {
-            fillColor: (entry, tree) =>
-              indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, entryValue(entry)[SORT_INDEX_KEY], tree),
+            fillColor: (d) => discreteColor(colorBrewerCategoricalPastel12)(entryValue(d).sortIndex),
           },
         },
       ]}
