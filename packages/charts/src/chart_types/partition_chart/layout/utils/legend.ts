@@ -9,7 +9,7 @@
 import { CategoryKey } from '../../../../common/category';
 import { map } from '../../../../common/iterables';
 import { LegendItem } from '../../../../common/legend';
-import { LegendPositionConfig } from '../../../../specs/settings';
+import { LegendPositionConfig, SettingsSpec } from '../../../../specs/settings';
 import { isHierarchicalLegend } from '../../../../utils/legend';
 import { Layer } from '../../specs';
 import { PartitionLayout } from '../types/config_types';
@@ -34,6 +34,10 @@ function compareTreePaths(
   return a.length - b.length; // if one path is fully contained in the other, then parent (shorter) goes first
 }
 
+function createPartitionIdentifier(id: string, item: QuadViewModel) {
+  return { specId: id, key: item.dataName, smAccessorValue: item.smAccessorValue };
+}
+
 /** @internal */
 export function getLegendItems(
   id: string,
@@ -43,9 +47,16 @@ export function getLegendItems(
   legendPosition: LegendPositionConfig,
   quadViewModel: QuadViewModel[],
   partitionLayout: PartitionLayout | undefined,
+  settingsSpec: SettingsSpec,
 ): LegendItem[] {
   const uniqueNames = new Set(map(quadViewModel, ({ dataName, fillColor }) => makeKey(dataName, fillColor)));
   const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
+  const sortingFn = flatLegend && settingsSpec.legendSort;
+
+  const customSortingFn = sortingFn
+    ? (aItem: QuadViewModel, bItem: QuadViewModel) =>
+        sortingFn(createPartitionIdentifier(id, aItem), createPartitionIdentifier(id, bItem))
+    : null;
 
   const formattedLabel = ({ dataName, depth }: QuadViewModel) => {
     const formatter = layers[depth - 1]?.nodeLabel;
@@ -77,11 +88,14 @@ export function getLegendItems(
     return true;
   });
 
+  const waffleSortingFn = customSortingFn ?? descendingValues;
+  const flatLegendSortingFn = customSortingFn ?? compareNames;
+
   items.sort(
     partitionLayout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
-      ? descendingValues
+      ? waffleSortingFn
       : flatLegend
-      ? compareNames
+      ? flatLegendSortingFn
       : compareTreePaths,
   );
 
