@@ -119,7 +119,7 @@ export function LineMarker({
   void popper?.current?.update?.();
 
   // want it to be tabbable if interactive if there is a click handler
-  return onDOMElementClick ? (
+  return clickable && onDOMElementClick ? (
     <button
       className="echAnnotation__marker"
       onMouseEnter={() => {
