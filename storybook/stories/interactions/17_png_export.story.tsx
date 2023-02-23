@@ -21,15 +21,14 @@ import {
   Datum,
   Goal,
   ChartType,
+  Color,
   defaultPartitionValueFormatter,
-  entryValue,
+  BandFillColorAccessorInput,
 } from '@elastic/charts';
-import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { Color } from '../../../packages/charts/src/common/colors';
 import { useBaseTheme } from '../../use_base_theme';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
 
@@ -89,8 +88,8 @@ function renderPartitionChart() {
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
           shape: {
-            fillColor: (d, tree) =>
-              indexInterpolatedFillColor(interpolatorCET2s())(null, entryValue(d).sortIndex, tree),
+            fillColor: (key, sortIndex, node, tree) =>
+              indexInterpolatedFillColor(interpolatorCET2s())(null, sortIndex, tree),
           },
         },
       ]}

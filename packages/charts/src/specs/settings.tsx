@@ -417,6 +417,7 @@ export interface LegendSpec {
   /**
    * Limit the legend to the specified maximal depth when showing a hierarchical legend
    */
+  //TODO this is not the max depth, but the number of level shown: 0 none, 1 first, 2 up to the second etc
   legendMaxDepth: number;
   /**
    * Sets the exact legend width (vertical) or height (horizontal)

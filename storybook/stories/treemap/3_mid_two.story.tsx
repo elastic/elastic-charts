@@ -12,8 +12,6 @@ import {
   Chart,
   Datum,
   defaultPartitionValueFormatter,
-  entryValue,
-  MODEL_KEY,
   PartialTheme,
   Partition,
   PartitionLayout,
@@ -22,7 +20,7 @@ import {
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { countryLookup, indexInterpolatedFillColor, interpolatorTurbo, regionLookup } from '../utils/utils';
+import { countryLookup, interpolatorTurbo, regionLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
   chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
@@ -67,12 +65,11 @@ export const Example = () => (
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
           },
           shape: {
-            fillColor: (entry) => {
-              const d = entryValue(entry);
+            fillColor: (key, sortIndex, node) => {
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
               return interpolatorTurbo()(
-                (d[MODEL_KEY].sortIndex + d.sortIndex / d[MODEL_KEY].children.length) /
-                  (d[MODEL_KEY].parent.children.length + 1),
+                (node.parent.sortIndex + node.sortIndex / node.parent.children.length) /
+                  (node.parent.parent.children.length + 1),
               );
             },
           },

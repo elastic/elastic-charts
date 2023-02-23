@@ -18,7 +18,6 @@ import {
   PartitionLayout,
   Settings,
   defaultPartitionValueFormatter,
-  entryKey,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
@@ -98,7 +97,7 @@ export const Example = () => {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d) => (d !== null ? `${productLookup[d]?.label}` : ''),
             shape: {
-              fillColor: (d) => productToColor.get(entryKey(d))!,
+              fillColor: (nodeKey) => productToColor.get(nodeKey)!,
             },
             sortPredicate: ([name1]: ArrayEntry, [name2]: ArrayEntry) => {
               const position1 = Number(productLookup[name1]?.position);

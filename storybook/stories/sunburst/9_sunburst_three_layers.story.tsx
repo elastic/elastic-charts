@@ -13,13 +13,11 @@ import {
   Chart,
   Datum,
   defaultPartitionValueFormatter,
-  MODEL_KEY,
   PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
 } from '@elastic/charts';
-import { entryValue, SORT_INDEX_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -68,26 +66,28 @@ export const Example = () => (
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
-          nodeLabel: (d: any) => productLookup[d].name,
+          nodeLabel: (d) => (d !== null ? productLookup[d].name : ''),
           fillLabel: { maximizeFontSize: boolean('Maximize font size layer 1', true) },
           shape: {
-            fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.7)(entryValue(d).sortIndex),
+            fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalStark9, 0.7)(sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
-          nodeLabel: (d: any) => regionLookup[d].regionName,
+          nodeLabel: (d) => (d !== null ? regionLookup[d].regionName : ''),
           fillLabel: { maximizeFontSize: boolean('Maximize font size layer 2', true) },
           shape: {
-            fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.5)(entryValue(d).parent.sortIndex),
+            fillColor: (key, sortIndex, node) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.5)(node.parent.sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
-          nodeLabel: (d: any) => countryLookup[d].name,
+          nodeLabel: (d) => (d !== null ? countryLookup[d].name : ''),
           fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', true) },
           shape: {
-            fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.3)(entryValue(d).parent.parent.sortIndex),
+            fillColor: (key, sortIndex, node) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.3)(node.parent.parent.sortIndex),
           },
         },
       ]}

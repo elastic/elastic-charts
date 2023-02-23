@@ -21,12 +21,8 @@ import {
   Axis,
   Position,
   ScaleType,
-  entryValue,
 } from '@elastic/charts';
-import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
-import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
@@ -107,8 +103,8 @@ export const Example = () => {
               valueFormatter: formatter,
             },
             shape: {
-              fillColor: (d, tree) =>
-                indexInterpolatedFillColor(interpolatorCET2s())(null, entryValue(d).sortIndex, tree),
+              fillColor: (key, sortIndex, node, tree) =>
+                indexInterpolatedFillColor(interpolatorCET2s())(null, sortIndex, tree),
             },
           },
         ]}

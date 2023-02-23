@@ -12,7 +12,6 @@ import React from 'react';
 
 import {
   Chart,
-  MODEL_KEY,
   Partition,
   PartitionLayout,
   Settings,
@@ -22,8 +21,8 @@ import {
   Tooltip,
   TooltipAction,
   TooltipValue,
-  entryValue,
 } from '@elastic/charts';
+import { Layer } from '@elastic/charts/src/chart_types/partition_chart/specs';
 import { combineColors } from '@elastic/charts/src/common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '@elastic/charts/src/common/color_library_wrappers';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -38,7 +37,12 @@ import {
 } from '../../utils/utils';
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+  chartMargins: {
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
   partition: {
     linkLabel: {
       maxCount: 0,
@@ -66,6 +70,7 @@ const theme: PartialTheme = {
 function plainColor(foreground: Color, bg: Color): Color {
   return RGBATupleToString(combineColors(colorToRgba(foreground), colorToRgba(bg)));
 }
+
 const stringPluralize = (d: unknown[], one: string, many: string) => (d.length > 1 ? many : one);
 
 const actionByDepth = (depth: number): TooltipAction => {
@@ -98,7 +103,36 @@ export const Example = () => {
     },
     PartitionLayout.sunburst,
   );
-  const background = 'white';
+  type PartitionDatum = (typeof mocks.miniSunburst)[0];
+  const layers: Layer[] = [
+    {
+      groupByRollup: (d: PartitionDatum) => d.sitc1,
+      nodeLabel: (d) => (d !== null ? productLookup[d].name : ''),
+      fillLabel: { maximizeFontSize: false },
+      shape: {
+        fillColor: (key, sortIndex) => plainColor(discreteColor(colorBrewerCategoricalStark9, 0.7)(sortIndex), 'white'),
+      },
+    },
+    {
+      groupByRollup: (d: PartitionDatum) => countryLookup[d.dest].continentCountry.slice(0, 2),
+      nodeLabel: (d) => (d !== null ? regionLookup[d].regionName : ''),
+      fillLabel: { maximizeFontSize: false },
+      shape: {
+        fillColor: (key, sortIndex, node) =>
+          plainColor(discreteColor(colorBrewerCategoricalStark9, 0.5)(node.parent.sortIndex), 'white'),
+      },
+    },
+    {
+      groupByRollup: (d: PartitionDatum) => d.dest,
+      nodeLabel: (d) => (d !== null ? countryLookup[d].name : ''),
+      fillLabel: { maximizeFontSize: false },
+      shape: {
+        fillColor: (key, sortIndex, node) =>
+          plainColor(discreteColor(colorBrewerCategoricalStark9, 0.3)(node.parent.parent.sortIndex), 'white'),
+      },
+    },
+  ];
+
   return (
     <Chart>
       <Settings theme={theme} baseTheme={useBaseTheme()} />
@@ -126,47 +160,13 @@ export const Example = () => {
           ];
         }}
       />
-      <Partition<{ sitc1: string; dest: string; exportVal: number }>
+      <Partition
         id="spec_1"
         data={mocks.miniSunburst}
         layout={layout}
         valueAccessor={(d) => d.exportVal}
         valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-        layers={[
-          {
-            groupByRollup: (d) => d.sitc1,
-            nodeLabel: (d) => productLookup[d].name,
-            fillLabel: { maximizeFontSize: false },
-            shape: {
-              fillColor: (d) =>
-                plainColor(discreteColor(colorBrewerCategoricalStark9, 0.7)(entryValue(d).sortIndex), background),
-            },
-          },
-          {
-            groupByRollup: (d) => countryLookup[d.dest].continentCountry.slice(0, 2),
-            nodeLabel: (d) => regionLookup[d].regionName,
-            fillLabel: { maximizeFontSize: false },
-            shape: {
-              fillColor: (d) =>
-                plainColor(
-                  discreteColor(colorBrewerCategoricalStark9, 0.5)(entryValue(d)[MODEL_KEY].sortIndex),
-                  background,
-                ),
-            },
-          },
-          {
-            groupByRollup: (d) => d.dest,
-            nodeLabel: (d) => countryLookup[d].name,
-            fillLabel: { maximizeFontSize: false },
-            shape: {
-              fillColor: (d) =>
-                plainColor(
-                  discreteColor(colorBrewerCategoricalStark9, 0.3)(entryValue(d)[MODEL_KEY].parent.sortIndex),
-                  background,
-                ),
-            },
-          },
-        ].filter((d, i) => (layout === 'waffle' ? i === 0 : true))}
+        layers={layers.filter((d, i) => (layout === 'waffle' ? i === 0 : true))}
       />
     </Chart>
   );

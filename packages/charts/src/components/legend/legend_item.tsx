@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { Component, createRef, MouseEventHandler } from 'react';
+import React, { Component, createRef, MouseEventHandler, CSSProperties } from 'react';
 
 import { Color as ItemColor } from './color';
 import { renderExtra } from './extra';
@@ -191,11 +191,11 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     });
     const hasColorPicker = Boolean(colorPicker);
     const extra = showExtra && getExtra(extraValues, item, totalItems);
-    const style = !flatLegend
-      ? {
+    const style: CSSProperties = flatLegend
+      ? {}
+      : {
           [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
-        }
-      : undefined;
+        };
     return (
       <>
         <li

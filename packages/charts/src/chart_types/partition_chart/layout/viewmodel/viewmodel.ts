@@ -161,7 +161,12 @@ export function makeQuadViewModel(
 
     const fillColor =
       typeof fill === 'function'
-        ? fill(node[MODEL_KEY][CHILDREN_KEY][node[SORT_INDEX_KEY]], node[MODEL_KEY].children)
+        ? fill(
+            node.dataName,
+            node.sortIndex,
+            entryValue(node[MODEL_KEY][CHILDREN_KEY][node[SORT_INDEX_KEY]]),
+            node[MODEL_KEY].children,
+          )
         : fill;
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
@@ -267,14 +272,12 @@ const rawChildNodes = (
       );
 
     case PartitionLayout.waffle:
-      const t = waffle(tree, totalValue, {
+      return waffle(tree, totalValue, {
         x0: 0,
         y0: 0,
         width,
         height,
       });
-      console.log(t);
-      return t;
 
     case PartitionLayout.icicle:
     case PartitionLayout.flame:

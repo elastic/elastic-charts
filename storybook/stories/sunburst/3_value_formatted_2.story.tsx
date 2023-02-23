@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, Settings, defaultPartitionValueFormatter, entryValue } from '@elastic/charts';
+import { Chart, Datum, Partition, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -42,7 +42,7 @@ export const Example = () => (
             },
           },
           shape: {
-            fillColor: (d) => discreteColor(colorBrewerCategoricalPastel12)(entryValue(d).sortIndex),
+            fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalPastel12)(sortIndex),
           },
         },
       ]}

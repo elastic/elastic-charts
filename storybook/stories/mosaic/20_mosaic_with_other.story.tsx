@@ -99,7 +99,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d) => categoricalColors.slice(0)[entryValue(d).parent.sortIndex],
+              fillColor: (nodeKey, sortIndex, node) => categoricalColors.slice(0)[node.parent.sortIndex],
             },
           },
         ]}

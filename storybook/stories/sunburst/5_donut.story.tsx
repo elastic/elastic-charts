@@ -17,7 +17,6 @@ import {
   PartialTheme,
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
-import { entryValue, SORT_INDEX_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -57,8 +56,8 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => productLookup[d].name,
           shape: {
-            fillColor: (entry, tree) =>
-              indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, entryValue(entry)[SORT_INDEX_KEY], tree),
+            fillColor: (key, sortIndex, node, tree) =>
+              indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, sortIndex, tree),
           },
         },
       ]}

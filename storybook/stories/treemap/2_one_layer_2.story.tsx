@@ -65,7 +65,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d) => discreteColor(colorBrewerCategoricalPastel12)(entryValue(d)[SORT_INDEX_KEY]),
+              fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalPastel12)(sortIndex),
             },
           },
         ]}

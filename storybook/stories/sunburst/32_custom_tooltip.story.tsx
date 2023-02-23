@@ -87,8 +87,7 @@ export const Example = () => {
                 `$${defaultPartitionValueFormatter(Math.round(d / 1000000000000))}\u00A0Tn`,
             },
             shape: {
-              fillColor: (entry) => {
-                const node = entryValue(entry);
+              fillColor: (key, sortIndex, node) => {
                 // concat all leaf and define the color based on the index of the fist children
                 const rootTree = node[PARENT_KEY][CHILDREN_KEY].flatMap((d) => entryValue(d)[CHILDREN_KEY]);
                 const index = rootTree.findIndex((d) => entryValue(d) === entryValue(node[CHILDREN_KEY][0]));
@@ -100,8 +99,7 @@ export const Example = () => {
             groupByRollup: (d: Datum) => d.dest,
             nodeLabel: (d: any) => countryLookup[d].name,
             shape: {
-              fillColor: (entry) => {
-                const node = entryValue(entry);
+              fillColor: (key, sortIndex, node) => {
                 // concat all leaf and define the color based on their index
                 const rootTree = node[PARENT_KEY][PARENT_KEY][CHILDREN_KEY].flatMap((d) => entryValue(d)[CHILDREN_KEY]);
                 const index = rootTree.findIndex((d) => entryValue(d) === node);

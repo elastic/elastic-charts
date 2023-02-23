@@ -14,13 +14,10 @@ import {
   ArrayEntry,
   Chart,
   Datum,
-  MODEL_KEY,
   Partition,
   Settings,
-  ShapeTreeNode,
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
-import { entryValue } from '@elastic/charts/src';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
@@ -84,7 +81,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d) => discreteColor(categoricalColors)(entryValue(d).sortIndex),
+              fillColor: (key, sortIndex) => discreteColor(categoricalColors)(sortIndex),
             },
           },
           {
@@ -102,7 +99,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d) => discreteColor(categoricalColors, 0.5)(entryValue(d)[MODEL_KEY].sortIndex),
+              fillColor: (key, sortIndex, node) => discreteColor(categoricalColors, 0.5)(node.parent.sortIndex),
             },
           },
         ]}

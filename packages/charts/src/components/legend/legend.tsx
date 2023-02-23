@@ -176,7 +176,6 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
     return EMPTY_DEFAULT_STATE;
   }
   const { debug } = getSettingsSpecSelector(state);
-
   return {
     debug,
     isBrushing: state.interactions.pointer.dragging,

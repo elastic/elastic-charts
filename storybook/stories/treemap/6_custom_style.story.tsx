@@ -11,17 +11,13 @@ import React from 'react';
 import {
   Chart,
   Datum,
-  MODEL_KEY,
   PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
   defaultPartitionValueFormatter,
-  entryValue,
 } from '@elastic/charts';
-import { arrayToLookup } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { countryDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, regionLookup } from '../utils/utils';
@@ -69,8 +65,8 @@ export const Example = () => (
             fontVariant: 'normal',
           },
           shape: {
-            fillColor: (d) => {
-              const model = entryValue(d).parent;
+            fillColor: (key, sortIndex, node) => {
+              const model = node.parent;
               const root = model.parent;
               const siblingCountLayer1 = root.children.length;
               const i = model.sortIndex;

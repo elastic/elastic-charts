@@ -13,7 +13,6 @@ import {
   CHILDREN_KEY,
   Datum,
   defaultPartitionValueFormatter,
-  entryValue,
   PartialTheme,
   Partition,
   PartitionLayout,
@@ -68,11 +67,11 @@ export const Example = () => (
             fontVariant: 'normal',
           },
           shape: {
-            fillColor: (d) =>
+            fillColor: (key, sortIndex, node) =>
               indexInterpolatedFillColor(interpolatorCET2s())(
                 null,
-                entryValue(d).parent.sortIndex,
-                entryValue(d).parent.parent[CHILDREN_KEY],
+                node.parent.sortIndex,
+                node.parent.parent[CHILDREN_KEY],
               ),
           },
         },

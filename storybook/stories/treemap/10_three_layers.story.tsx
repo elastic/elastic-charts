@@ -95,9 +95,9 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           shape: {
-            fillColor: (d) =>
+            fillColor: (key) =>
               // pick color by country
-              indexInterpolatedFillColor(interpolatorCET2s(0.5))(null, countries.indexOf(entryKey(d)), countries),
+              indexInterpolatedFillColor(interpolatorCET2s(0.5))(null, countries.indexOf(key), countries),
           },
           fillLabel: { maximizeFontSize: boolean('Maximize font size layer 3', true) },
         },

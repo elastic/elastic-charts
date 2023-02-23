@@ -8,20 +8,8 @@
 
 import React from 'react';
 
-import {
-  Chart,
-  Datum,
-  Partition,
-  PartitionLayout,
-  Settings,
-  defaultPartitionValueFormatter,
-  entryValue,
-  CHILDREN_KEY,
-} from '@elastic/charts';
-import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
+import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
-import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
@@ -53,12 +41,8 @@ export const Example = () => (
               `${d === 0 ? 0 : defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
           },
           shape: {
-            fillColor: (d) =>
-              indexInterpolatedFillColor(interpolatorCET2s())(
-                null,
-                entryValue(d).sortIndex,
-                entryValue(d).parent[CHILDREN_KEY],
-              ),
+            fillColor: (key, sortIndex, node) =>
+              indexInterpolatedFillColor(interpolatorCET2s())(null, node.sortIndex, node.parent.children),
           },
         },
       ]}

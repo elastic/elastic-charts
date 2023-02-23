@@ -70,22 +70,23 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name,
           shape: {
-            fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.7)(entryValue(d)[SORT_INDEX_KEY]),
+            fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalStark9, 0.7)(sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName.replace(/\s/g, '\u00A0'),
           shape: {
-            fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.5)(entryValue(d)[MODEL_KEY].sortIndex),
+            fillColor: (key, sortIndex, node) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.5)(node.parent.sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name.replace(/\s/g, '\u00A0'),
           shape: {
-            fillColor: (d) =>
-              discreteColor(colorBrewerCategoricalStark9, 0.3)(entryValue(d)[MODEL_KEY].parent.sortIndex),
+            fillColor: (key, sortIndex, node) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.3)(node.parent.parent.sortIndex),
           },
         },
       ]}

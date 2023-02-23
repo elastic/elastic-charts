@@ -10,16 +10,10 @@ import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Position, Settings, Partition, PartitionLayout, entryValue, SORT_INDEX_KEY } from '@elastic/charts';
+import { Chart, Position, Settings, Partition, PartitionLayout } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import {
-  indexInterpolatedFillColor,
-  interpolatorCET2s,
-  discreteColor,
-  colorBrewerCategoricalPastel12,
-  colorBrewerCategoricalStark9,
-} from '../utils/utils';
+import { discreteColor, colorBrewerCategoricalPastel12 } from '../utils/utils';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -72,14 +66,15 @@ export const Example = () => {
             groupByRollup: (d: PieDatum) => d[0],
             nodeLabel: (d) => `dest: ${d}`,
             shape: {
-              fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.7)(entryValue(d).sortIndex),
+              fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalPastel12, 0.7)(sortIndex),
             },
           },
           {
             groupByRollup: (d: PieDatum) => d[2],
             nodeLabel: (d) => `source: ${d}`,
             shape: {
-              fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.5)(entryValue(d).parent.sortIndex),
+              fillColor: (key, sortIndex, node) =>
+                discreteColor(colorBrewerCategoricalPastel12, 0.5)(node.parent.sortIndex),
             },
           },
         ]}

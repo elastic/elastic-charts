@@ -1878,7 +1878,7 @@ export function niceTimeFormatByDay(days: number): "YYYY-MM-DD" | "MMMM DD" | "M
 export function niceTimeFormatter(domain: [number, number]): TickFormatter;
 
 // @public (undocumented)
-export type NodeColorAccessor = (d: ArrayEntry, array: HierarchyOfArrays) => string;
+export type NodeColorAccessor = (key: Key, sortIndex: number, node: ArrayNode, tree: HierarchyOfArrays) => string;
 
 // @public (undocumented)
 export interface NodeDescriptor {

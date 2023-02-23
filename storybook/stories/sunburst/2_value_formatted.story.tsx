@@ -11,7 +11,6 @@ import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, Settings, PartialTheme, defaultPartitionValueFormatter } from '@elastic/charts';
-import { entryValue, SORT_INDEX_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -59,8 +58,8 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (entry, tree) =>
-                indexInterpolatedFillColor(interpolatorTurbo(0.8))(null, entryValue(entry)[SORT_INDEX_KEY], tree),
+              fillColor: (key, sortIndex, node, tree) =>
+                indexInterpolatedFillColor(interpolatorTurbo(0.8))(null, sortIndex, tree),
             },
           },
         ]}

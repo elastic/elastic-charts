@@ -21,7 +21,6 @@ import {
   Settings,
   SmallMultiples,
   defaultPartitionValueFormatter,
-  entryKey,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
@@ -157,7 +156,7 @@ export const Example = () => {
             nodeLabel: (d: any) => productLookup[d].name,
             fillLabel: { maximizeFontSize: true },
             shape: {
-              fillColor: (d) => productToColor.get(entryKey(d))!,
+              fillColor: (key) => productToColor.get(key)!,
             },
           },
           {
@@ -165,7 +164,7 @@ export const Example = () => {
             nodeLabel: (d: any) => countryLookup[d].name,
             fillLabel: { maximizeFontSize: true },
             shape: {
-              fillColor: (d) => countryToColor.get(entryKey(d))!,
+              fillColor: (key) => countryToColor.get(key)!,
             },
           },
         ]}

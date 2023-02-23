@@ -46,7 +46,6 @@ export const computeLegendSelector = createCustomCachedSelector(
       const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
       const { valueFormatter } = specs[0];
       const items = walkTree(specs[0].id, useHierarchicalLegend, valueFormatter, tree.tree, specs[0].layers, 0);
-      console.log(items);
       return [...items.values()]
         .filter((d) => {
           const depth = d.item.depth ?? -1;
@@ -88,7 +87,7 @@ function walkTree(
     const formatter = layer?.nodeLabel ?? ((d) => `${d}`);
 
     const fill = layer?.shape?.fillColor ?? 'rgba(128, 0, 0, 0.5)';
-    const fillColor = typeof fill === 'function' ? fill([key, node], tree) : fill;
+    const fillColor = typeof fill === 'function' ? fill(key, node.sortIndex, node, tree) : fill;
     const label = formatter(key);
     const joinedPath = node[PATH_KEY].map((d) => d.value).join('##');
     const uniqueKey = `${depth}--${joinedPath}--${label}--${fillColor}--${node[AGGREGATE_KEY]}`;

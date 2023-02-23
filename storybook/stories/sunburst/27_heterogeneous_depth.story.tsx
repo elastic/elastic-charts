@@ -11,18 +11,13 @@ import React from 'react';
 import {
   Chart,
   Datum,
-  MODEL_KEY,
   Partition,
   PartitionLayout,
   Settings,
   PartialTheme,
   defaultPartitionValueFormatter,
-} from '@elastic/charts';
-import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
-import {
-  entryValue,
   PrimitiveValue,
-} from '@elastic/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
+} from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -71,25 +66,26 @@ export const Example = () => (
       layers={[
         {
           groupByRollup: (d: Datum) => d.sitc1,
-          nodeLabel: (d: PrimitiveValue) => d !== null && productLookup[d].name,
+          nodeLabel: (d: PrimitiveValue) => (d !== null ? productLookup[d].name : ''),
           shape: {
-            fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.7)(entryValue(d).sortIndex),
+            fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalStark9, 0.7)(sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
-          nodeLabel: (d: PrimitiveValue) => d !== null && regionLookup[d].regionName,
+          nodeLabel: (d: PrimitiveValue) => (d !== null ? regionLookup[d].regionName : ''),
           shape: {
-            fillColor: (d) => discreteColor(colorBrewerCategoricalStark9, 0.5)(entryValue(d)[MODEL_KEY].sortIndex),
+            fillColor: (key, sortIndex, node) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.5)(node.parent.sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
-          nodeLabel: (d: PrimitiveValue) => d !== null && countryLookup[d].name,
+          nodeLabel: (d: PrimitiveValue) => (d !== null ? countryLookup[d].name : ''),
           showAccessor: (d: PrimitiveValue) => !(['chn', 'hkg', 'jpn', 'kor'] as PrimitiveValue[]).includes(d),
           shape: {
-            fillColor: (d) =>
-              discreteColor(colorBrewerCategoricalStark9, 0.3)(entryValue(d)[MODEL_KEY].parent.sortIndex),
+            fillColor: (key, sortIndex, node) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.3)(node.parent.parent.sortIndex),
           },
         },
       ]}

@@ -9,7 +9,6 @@
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
-import { entryValue, SORT_INDEX_KEY } from '@elastic/charts/src';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
@@ -36,8 +35,8 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: Datum) => d,
           shape: {
-            fillColor: (entry, tree) =>
-              indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, entryValue(entry)[SORT_INDEX_KEY], tree),
+            fillColor: (key, sortIndex, node, tree) =>
+              indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, sortIndex, tree),
           },
         },
       ]}

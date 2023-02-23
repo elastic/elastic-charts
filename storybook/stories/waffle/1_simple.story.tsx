@@ -9,16 +9,7 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Chart,
-  Datum,
-  Partition,
-  PartitionLayout,
-  Settings,
-  entryValue,
-  SORT_INDEX_KEY,
-  defaultPartitionValueFormatter,
-} from '@elastic/charts';
+import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { ArrayEntry } from '../../../packages/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
@@ -55,8 +46,7 @@ export const Example = () => {
             groupByRollup: (d: Datum) => d.sitc1,
             nodeLabel: (d: Datum) => names[d],
             shape: {
-              fillColor: (entry) =>
-                discreteColor(colorBrewerCategoricalStark9.slice(1))(entryValue(entry)[SORT_INDEX_KEY]),
+              fillColor: (nodeKey, sortIndex) => discreteColor(colorBrewerCategoricalStark9.slice(1))(sortIndex),
             },
             sortPredicate: ascendingSort
               ? ([, node1]: ArrayEntry, [, node2]: ArrayEntry) => {

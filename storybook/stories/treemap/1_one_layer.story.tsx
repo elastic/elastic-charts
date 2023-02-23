@@ -46,8 +46,8 @@ export const Example = () => (
             valueFormatter: (d: number) => `${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`,
           },
           shape: {
-            fillColor: (d, tree) =>
-              indexInterpolatedFillColor(interpolatorCET2s())(null, entryValue(d)[SORT_INDEX_KEY], tree),
+            fillColor: (key, sortIndex, node, tree) =>
+              indexInterpolatedFillColor(interpolatorCET2s())(null, sortIndex, tree),
           },
         },
       ]}
