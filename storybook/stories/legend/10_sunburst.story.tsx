@@ -57,7 +57,7 @@ export const Example = () => {
   const legendSortStrategy = select(
     'Custom legend sorting',
     { RegionsFirst: 'regionsFirst', ProductsFirst: 'productsFirst', DefaultSort: 'default' },
-    'default',
+    'regionsFirst',
   );
 
   const customLegendSort = (a: SeriesIdentifier, b: SeriesIdentifier) => {
