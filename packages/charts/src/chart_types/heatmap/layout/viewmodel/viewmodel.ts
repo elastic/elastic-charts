@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { bisectLeft } from 'd3-array';
 import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
@@ -363,12 +362,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     smVerticalAccessorValue?: string | number,
   ) => {
     const startValue = x[0];
-    // if single x array use next x value as end
-    const endValue = x.length > 1 ? x[x.length - 1] : xValues[xValues.indexOf(startValue) + 1] ?? startValue;
-    const leftIndex =
-      typeof startValue === 'number' ? bisectLeft(xValues as number[], startValue) : xValues.indexOf(startValue);
-    const rightIndex =
-      typeof endValue === 'number' ? bisectLeft(xValues as number[], endValue) : xValues.indexOf(endValue) + 1;
+    const endValue = x[x.length - 1];
+    const leftIndex = xValues.indexOf(startValue);
+    const rightIndex = xValues.indexOf(endValue) + 1;
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;

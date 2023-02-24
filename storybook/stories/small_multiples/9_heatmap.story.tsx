@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import { sampleSize, range } from 'lodash';
 import { DateTime } from 'luxon';
 import React, { useMemo } from 'react';
@@ -43,7 +43,17 @@ export const Example = () => {
   const vSplitCount = number('v - split count', 2, { min: 1 }, 'Data');
   const hSplitCount = number('h - split count', 2, { min: 1 }, 'Data');
   const categories = number('categories', 4, { min: 1, step: 1, range: true }, 'Data');
-  const density = number('cell density(%)', 20, { min: 5, max: 100, step: 5, range: true }, 'Data') / 100;
+  const density = number('cell density(%)', 75, { min: 5, max: 100, step: 5, range: true }, 'Data') / 100;
+  const xScaleType = select(
+    'xScaleType',
+    {
+      [ScaleType.Linear]: ScaleType.Linear,
+      [ScaleType.Ordinal]: ScaleType.Ordinal,
+    },
+    ScaleType.Linear,
+    'Data',
+  );
+
   const smStyles = {
     horizontalPanelPadding: {
       outer: number(
@@ -191,7 +201,7 @@ export const Example = () => {
                 },
               }
             : {
-                type: ScaleType.Linear,
+                type: xScaleType,
               }
         }
         xAxisLabelFormatter={timeBasedData ? tickTimeFormatter : (v) => `C${v}`}
@@ -203,4 +213,8 @@ export const Example = () => {
       />
     </Chart>
   );
+};
+
+Example.parameters = {
+  background: { default: 'white' },
 };

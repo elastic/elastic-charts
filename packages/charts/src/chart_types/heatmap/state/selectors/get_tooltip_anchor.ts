@@ -10,13 +10,20 @@ import { AnchorPosition } from '../../../../components/portal/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getPickedShapes } from './picked_shapes';
 
 /** @internal */
 export const getTooltipAnchorSelector = createCustomCachedSelector(
-  [getPickedShapes, computeChartDimensionsSelector, getActivePointerPosition, computeSmallMultipleScalesSelector],
-  (shapes, { chartDimensions }, position, smScales): AnchorPosition => {
+  [
+    getPickedShapes,
+    computeChartDimensionsSelector,
+    getActivePointerPosition,
+    computeSmallMultipleScalesSelector,
+    getChartThemeSelector,
+  ],
+  (shapes, { chartDimensions }, position, smScales, { heatmap }): AnchorPosition => {
     if (Array.isArray(shapes) && shapes.length > 0) {
       const [
         {
@@ -37,7 +44,7 @@ export const getTooltipAnchorSelector = createCustomCachedSelector(
       return {
         x: x + chartDimensions.left + panelXOffset,
         width,
-        y: y - chartDimensions.top + panelYOffset,
+        y: y - chartDimensions.top + panelYOffset + heatmap.grid.stroke.width,
         height,
       };
     }
