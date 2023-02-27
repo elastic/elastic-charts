@@ -62,7 +62,6 @@ export const computeLegendSelector = createCustomCachedSelector(
               } as SeriesIdentifier,
             )
         : undefined;
-
       const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
       const { valueFormatter } = specs[0];
       const items = walkTree(specs[0].id, useHierarchicalLegend, valueFormatter, tree.tree, specs[0].layers, 0);
@@ -76,11 +75,12 @@ export const computeLegendSelector = createCustomCachedSelector(
           return depth < legendMaxDepth;
         })
         .sort(
-          customSortingFn ?? specs[0].layout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
-            ? compareDescendingLegendItemValues
-            : isLinear(specs[0].layout) // icicle/flame are sorted by name
-            ? compareLegendItemNames
-            : () => 0, // all others are sorted by hierarchy
+          customSortingFn ??
+            (specs[0].layout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
+              ? compareDescendingLegendItemValues
+              : isLinear(specs[0].layout) // icicle/flame are sorted by name
+              ? compareLegendItemNames
+              : () => 0), // all others are sorted by hierarchy
         )
         .map(({ item }) => item);
     });
