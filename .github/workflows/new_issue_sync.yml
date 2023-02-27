@@ -1,0 +1,47 @@
+name: Sync new issues to Vis Team project
+
+on:
+  issues:
+    types: [opened]
+    
+jobs:
+  add_new_issue_to_project:
+    runs-on: ubuntu-latest
+    name: Add new issue to project
+    if: github.event.action == 'opened'
+    steps:
+      - name: Add issue
+        uses: octokit/graphql-action@v2.x
+        id: add_issue
+        with:
+          query: |
+            mutation addProjectItem($project_id: ID!, $content_id: ID!) {
+              addProjectV2ItemById(input: { projectId: $project_id, contentId: $content_id }) {
+                item {
+                  id
+                }
+              }
+            }
+          project_id: ${{ vars.VIS_TEAM_PROJECT_ID }}
+          content_id: ${{ github.event.issue.node_id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
+          
+      - name: Set issue status to New
+        uses: octokit/graphql-action@v2.x
+        id: update_issue
+        with:
+          query: |
+            mutation updateProjectItem($project_id: ID!, $item_id: ID!, $field_id: ID!, $option_id: String!) {
+              updateProjectV2ItemFieldValue(
+                input: { projectId: $project_id, itemId: $item_id, fieldId: $field_id, value: { singleSelectOptionId: $option_id } }
+              ) {
+                clientMutationId
+              }
+            }
+          item_id: ${{ fromJSON(steps.add_issue.outputs.data).addProjectV2ItemById.item.id }}
+          project_id: ${{ vars.VIS_TEAM_PROJECT_ID }}
+          field_id: ${{ vars.STATUS_PROJECT_FIELD_ID }}
+          option_id: ${{ vars.NEW_PROJECT_ITEM_OPTION_ID }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
