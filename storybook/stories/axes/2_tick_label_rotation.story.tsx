@@ -23,14 +23,14 @@ import {
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getVerticalTextAlignmentKnob, getHorizontalTextAlignmentKnob, getPositiveNumberKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const getAxisKnobs = (group?: string, gridLines = false): RecursivePartial<AxisStyle> => ({
   axisTitle: {
     visible: !boolean('Hide axis title', false, group),
     padding: {
-      outer: getPositiveNumberKnob('Axis title padding - outer', 6, group),
-      inner: getPositiveNumberKnob('Axis title padding - inner', 6, group),
+      outer: customKnobs.positiveNumber('Axis title padding - outer', 6, group),
+      inner: customKnobs.positiveNumber('Axis title padding - inner', 6, group),
     },
   },
   axisLine: {
@@ -38,8 +38,8 @@ const getAxisKnobs = (group?: string, gridLines = false): RecursivePartial<AxisS
   },
   tickLine: {
     visible: !boolean('Hide tick lines', false, group),
-    padding: getPositiveNumberKnob('Tick line padding', 10, group),
-    size: getPositiveNumberKnob('Tick line size', 10, group),
+    padding: customKnobs.positiveNumber('Tick line padding', 10, group),
+    size: customKnobs.positiveNumber('Tick line size', 10, group),
   },
   tickLabel: {
     visible: !boolean('Hide tick labels', false, group),
@@ -55,8 +55,8 @@ const getAxisKnobs = (group?: string, gridLines = false): RecursivePartial<AxisS
       group,
     ),
     padding: {
-      outer: getPositiveNumberKnob('Tick label padding - outer', 0, group),
-      inner: getPositiveNumberKnob('Tick label padding - inner', 0, group),
+      outer: customKnobs.positiveNumber('Tick label padding - outer', 0, group),
+      inner: customKnobs.positiveNumber('Tick label padding - inner', 0, group),
     },
     offset: {
       y: number(
@@ -92,8 +92,8 @@ const getAxisKnobs = (group?: string, gridLines = false): RecursivePartial<AxisS
       ),
     },
     alignment: {
-      vertical: getVerticalTextAlignmentKnob(group),
-      horizontal: getHorizontalTextAlignmentKnob(group),
+      vertical: customKnobs.enum.verticalTextAlignment(group),
+      horizontal: customKnobs.enum.horizontalTextAlignment(group),
     },
   },
   ...(gridLines && {
@@ -112,16 +112,16 @@ export const Example = () => {
   const debug = boolean('debug', false, 'general');
   const onlyGlobal = !boolean('disable axis overrides', false, 'general');
   const chartMargins = {
-    left: getPositiveNumberKnob('margin left', DEFAULT_CHART_MARGINS.left, 'general'),
-    right: getPositiveNumberKnob('margin right', DEFAULT_CHART_MARGINS.right, 'general'),
-    top: getPositiveNumberKnob('margin top', DEFAULT_CHART_MARGINS.top, 'general'),
-    bottom: getPositiveNumberKnob('margin bottom', DEFAULT_CHART_MARGINS.bottom, 'general'),
+    left: customKnobs.positiveNumber('margin left', DEFAULT_CHART_MARGINS.left, 'general'),
+    right: customKnobs.positiveNumber('margin right', DEFAULT_CHART_MARGINS.right, 'general'),
+    top: customKnobs.positiveNumber('margin top', DEFAULT_CHART_MARGINS.top, 'general'),
+    bottom: customKnobs.positiveNumber('margin bottom', DEFAULT_CHART_MARGINS.bottom, 'general'),
   };
   const chartPaddings = {
-    left: getPositiveNumberKnob('padding left', DEFAULT_CHART_PADDING.left, 'general'),
-    right: getPositiveNumberKnob('padding right', DEFAULT_CHART_PADDING.right, 'general'),
-    top: getPositiveNumberKnob('padding top', DEFAULT_CHART_PADDING.top, 'general'),
-    bottom: getPositiveNumberKnob('padding bottom', DEFAULT_CHART_PADDING.bottom, 'general'),
+    left: customKnobs.positiveNumber('padding left', DEFAULT_CHART_PADDING.left, 'general'),
+    right: customKnobs.positiveNumber('padding right', DEFAULT_CHART_PADDING.right, 'general'),
+    top: customKnobs.positiveNumber('padding top', DEFAULT_CHART_PADDING.top, 'general'),
+    bottom: customKnobs.positiveNumber('padding bottom', DEFAULT_CHART_PADDING.bottom, 'general'),
   };
   const bottomAxisStyles = getAxisKnobs(Position.Bottom);
   const leftAxisStyles = getAxisKnobs(Position.Left);

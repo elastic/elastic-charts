@@ -24,17 +24,17 @@ import { isDefined } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob, getPlacementKnob, getStickToKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} rotation={getChartRotationKnob()} />
+    <Settings baseTheme={useBaseTheme()} rotation={customKnobs.enum.rotation()} />
     <Tooltip
-      stickTo={getStickToKnob('stickTo')}
-      placement={getPlacementKnob('placement', undefined)}
-      fallbackPlacements={[getPlacementKnob('fallback placement', Placement.LeftStart)].filter(isDefined)}
+      stickTo={customKnobs.enum.stickTo('stickTo')}
+      placement={customKnobs.enum.placement('placement', undefined)}
+      fallbackPlacements={[customKnobs.enum.placement('fallback placement', Placement.LeftStart)].filter(isDefined)}
       offset={number('placement offset', 5)}
     />
     <Axis

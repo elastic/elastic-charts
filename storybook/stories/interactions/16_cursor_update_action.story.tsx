@@ -29,7 +29,7 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getTooltipTypeKnob, getPlacementKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const chartTypes: Record<string, any> = {
   bar: BarSeries,
@@ -73,12 +73,12 @@ export const Example = () => {
 
   const TopSeries = getSeriesKnob(group1);
   const BottomSeries = getSeriesKnob(group2);
-  const topType = getTooltipTypeKnob('local tooltip type', TooltipType.VerticalCursor, group1);
-  const bottomType = getTooltipTypeKnob('local tooltip type', TooltipType.VerticalCursor, group2);
+  const topType = customKnobs.enum.tooltipType('local tooltip type', TooltipType.VerticalCursor, { group: group1 });
+  const bottomType = customKnobs.enum.tooltipType('local tooltip type', TooltipType.VerticalCursor, { group: group2 });
   const topVisible = boolean('enable external tooltip', true, group1);
   const bottomVisible = boolean('enable external tooltip', true, group2);
-  const topPlacement = getPlacementKnob('external tooltip placement', Placement.Left, group1);
-  const bottomPlacement = getPlacementKnob('external tooltip placement', Placement.Left, group2);
+  const topPlacement = customKnobs.enum.placement('external tooltip placement', Placement.Left, { group: group1 });
+  const bottomPlacement = customKnobs.enum.placement('external tooltip placement', Placement.Left, { group: group2 });
 
   const debounceDelay = number('pointer update debounce', 20, { min: 0, max: 200, step: 10 });
   const trigger =

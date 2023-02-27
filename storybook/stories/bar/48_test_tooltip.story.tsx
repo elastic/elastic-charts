@@ -13,14 +13,7 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip, Tooltip
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { useBaseTheme } from '../../use_base_theme';
-import {
-  getBoundaryKnob,
-  getChartRotationKnob,
-  getFallbackPlacementsKnob,
-  getPlacementKnob,
-  getStickToKnob,
-  getTooltipTypeKnob,
-} from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const CustomTooltip = () => (
   <div
@@ -36,13 +29,13 @@ const CustomTooltip = () => (
 );
 
 export const Example = () => {
-  const rotation = getChartRotationKnob();
+  const rotation = customKnobs.enum.rotation();
   const tooltipOptions: TooltipProps = {
-    stickTo: getStickToKnob('stickTo'),
-    placement: getPlacementKnob('Tooltip placement'),
-    fallbackPlacements: getFallbackPlacementsKnob(),
-    type: getTooltipTypeKnob(),
-    boundary: getBoundaryKnob(),
+    stickTo: customKnobs.enum.stickTo('stickTo'),
+    placement: customKnobs.enum.placement('Tooltip placement'),
+    fallbackPlacements: customKnobs.enum.fallbackPlacements(),
+    type: customKnobs.enum.tooltipType(),
+    boundary: customKnobs.enum.boundary(),
     customTooltip: boolean('Custom Tooltip', false) ? CustomTooltip : undefined,
     offset: number('Tooltip offset', 10, { min: 0, max: 20, range: true, step: 1 }),
   };

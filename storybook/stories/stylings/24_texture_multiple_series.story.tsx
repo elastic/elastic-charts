@@ -9,11 +9,11 @@
 import { boolean, color, number, button } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
-import { Axis, Chart, CurveType, Position, TexturedStyles, Settings, TextureShape } from '@elastic/charts';
+import { Axis, Chart, CurveType, Position, TexturedStyles, Settings, TextureShape, SeriesType } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator, getRandomEntryFn } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const group = {
   random: 'Randomized parameters',
@@ -39,10 +39,9 @@ interface Random {
 }
 
 const getDefaultTextureKnobs = (): TexturedStyles => ({
-  shape:
-    getKnobsFromEnum('Shape', TextureShape, TextureShape.Circle as TextureShape, {
-      group: group.default,
-    }) ?? TextureShape.Circle,
+  shape: customKnobs.fromEnum('Shape', TextureShape, TextureShape.Circle, {
+    group: group.default,
+  }),
   strokeWidth: number('Stroke width', 1, { min: 0, max: 10, step: 0.5 }, group.default),
   rotation: number('Rotation (degrees)', 45, { min: -365, max: 365 }, group.default),
   shapeRotation: number('Shape rotation (degrees)', 0, { min: -365, max: 365 }, group.default),
@@ -99,7 +98,9 @@ export const Example = () => {
   const showFill = boolean('Show series fill', false);
   const chartColor = color('Chart color', 'rgba(0,0,0,1)');
   const random = getRandomKnobs();
-  const [SeriesType] = getXYSeriesKnob('Series type', 'area', undefined, { ignore: ['bubble', 'line'] });
+  const [Series] = customKnobs.enum.xySeries('Series type', 'area', {
+    exclude: [SeriesType.Bubble, SeriesType.Line],
+  });
   const texture = getDefaultTextureKnobs();
 
   return (
@@ -131,7 +132,7 @@ export const Example = () => {
       <Axis id="left" position={Position.Left} />
 
       {new Array(n).fill(0).map((v, i) => (
-        <SeriesType
+        <Series
           key={i}
           id={`series-${i}`}
           areaSeriesStyle={{

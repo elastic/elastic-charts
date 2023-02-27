@@ -6,24 +6,19 @@
  * Side Public License, v 1.
  */
 
-import { boolean, select } from '@storybook/addon-knobs';
+import { boolean } from '@storybook/addon-knobs';
 import moment from 'moment';
 import React from 'react';
 
 import { LineSeries, Chart, ScaleType, Settings, Position, Axis } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const negative = boolean('use negative values', true);
-  const yScaleType = select(
-    'Y scale type',
-    {
-      [ScaleType.Linear]: ScaleType.Linear,
-      [ScaleType.Log]: ScaleType.Log,
-    },
-    ScaleType.Linear,
-  );
+  const yScaleType = customKnobs.enum.scaleType('Y scale type', ScaleType.Linear, { include: ['Linear', 'Log'] });
+
   const start = moment(1628547917775);
   const data = new Array(12).fill(0).map((_, i) => {
     // https://github.com/storybookjs/storybook/issues/12208#issuecomment-697044557

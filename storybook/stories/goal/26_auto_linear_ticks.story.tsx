@@ -14,11 +14,10 @@ import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getKnobsFromEnum } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
-  const subtype =
-    getKnobsFromEnum('subtype', GoalSubtype, GoalSubtype.VerticalBullet as GoalSubtype) ?? GoalSubtype.VerticalBullet;
+  const subtype = customKnobs.fromEnum('subtype', GoalSubtype, GoalSubtype.VerticalBullet);
   const reverse = boolean('reverse', false);
   const start = number('angleStart (π)', 5 / 4, { min: -2, max: 2, step: 1 / 8 });
   const end = number('angleEnd (π)', -1 / 4, { min: -2, max: 2, step: 1 / 8 });

@@ -21,7 +21,7 @@ import {
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
@@ -38,7 +38,7 @@ export const Example = () => {
     [Position.Top, Position.Left, Position.Bottom, Position.Right, 'undefined'],
     'undefined',
   );
-  const chartRotation = getChartRotationKnob();
+  const chartRotation = customKnobs.enum.rotation();
   return (
     <Chart>
       <Settings rotation={chartRotation} baseTheme={useBaseTheme()} />

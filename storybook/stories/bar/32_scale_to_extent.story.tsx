@@ -13,7 +13,7 @@ import { Axis, Chart, DomainPaddingUnit, Position, ScaleType, Settings } from '@
 import { computeContinuousDataDomain } from '@elastic/charts/src/utils/domain';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const logDomains = (data: any[], customDomain: any) => {
   const dataY = data.map((d) => d.y);
@@ -29,11 +29,7 @@ export const Example = () => {
   const constrainPadding = boolean('constrain padding', true);
   const nice = boolean('nice ticks', false);
   const padding = number('domain padding', 0);
-  const paddingUnit = getKnobsFromEnum(
-    'Domain padding unit',
-    DomainPaddingUnit,
-    DomainPaddingUnit.Domain as DomainPaddingUnit,
-  );
+  const paddingUnit = customKnobs.fromEnum('Domain padding unit', DomainPaddingUnit, DomainPaddingUnit.Domain);
   const mixed = [
     { x: 0, y: -4 },
     { x: 1, y: -3 },
@@ -53,7 +49,7 @@ export const Example = () => {
     },
     'all negative',
   );
-  const [SeriesType] = getXYSeriesKnob();
+  const [SeriesType] = customKnobs.enum.xySeries();
   const shouldLogDomains = boolean('console log domains', true);
 
   let data;

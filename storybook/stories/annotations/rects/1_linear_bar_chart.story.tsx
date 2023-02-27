@@ -12,11 +12,11 @@ import React from 'react';
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings, Position } from '@elastic/charts';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 export const Example = () => {
   const debug = boolean('debug', false);
-  const rotation = getChartRotationKnob();
+  const rotation = customKnobs.enum.rotation();
   const x0 = select(
     'x0 coordinate',
     {

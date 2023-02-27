@@ -12,7 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { arrayKnobs } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const leftDomain = {
@@ -25,7 +25,7 @@ export const Example = () => {
     max: number('right1 max', 10),
   };
 
-  const xDomain = arrayKnobs('xDomain', ['a', 'b', 'c', 'd', 0, 1, 2, 3]);
+  const xDomain = customKnobs.array('xDomain', ['a', 'b', 'c', 'd', 0, 1, 2, 3]);
 
   return (
     <Chart>

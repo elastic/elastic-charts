@@ -13,7 +13,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, BrushAxis } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const brushAxisSelect = select(
@@ -28,7 +28,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings
-        rotation={getChartRotationKnob()}
+        rotation={customKnobs.enum.rotation()}
         brushAxis={brushAxisSelect}
         onBrushEnd={action('brush')}
         baseTheme={useBaseTheme()}
