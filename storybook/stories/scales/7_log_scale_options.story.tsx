@@ -18,7 +18,6 @@ import {
   ScaleType,
   Settings,
   AreaSeries,
-  CurveType,
   YDomainBase,
   LogScaleOptions,
 } from '@elastic/charts';
@@ -119,7 +118,7 @@ export const Example = () => {
   const xLogKnobs = getLogKnobs(true);
   const data = getData(rows, yLogKnobs, xLogKnobs);
   const type = getSeriesType();
-  const curve = customKnobs.fromEnum('Curve type', CurveType, CurveType.CURVE_CARDINAL);
+  const curve = customKnobs.enum.curve('Curve type');
   const Series = seriesMap[type];
 
   return (

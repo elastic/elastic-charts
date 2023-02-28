@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Position, Placement, ScaleType, TooltipStickTo } from '@elastic/charts';
+import { Position, Placement, ScaleType, TooltipStickTo, CurveType, Fit } from '@elastic/charts';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 import { VerticalAlignment, HorizontalAlignment } from '@elastic/charts/src/utils/common';
 
@@ -60,6 +60,10 @@ const getEuiPopoverPositionKnob = getKnobsFnFromEnum(
 
 const getScaleTypeKnob = getKnobsFnFromEnum(ScaleType, 'scaleType', ScaleType.Linear);
 
+const getCurveTypeKnob = getKnobsFnFromEnum(CurveType, 'Curve', CurveType.CURVE_CARDINAL);
+
+const getFitKnob = getKnobsFnFromEnum(Fit, 'fitting function', Fit.Average);
+
 export const enumKnobs = {
   tooltipType: getTooltipTypeKnob,
   position: getPositionKnob,
@@ -69,4 +73,6 @@ export const enumKnobs = {
   verticalTextAlignment: getVerticalTextAlignmentKnob,
   horizontalTextAlignment: getHorizontalTextAlignmentKnob,
   scaleType: getScaleTypeKnob,
+  curve: getCurveTypeKnob,
+  fit: getFitKnob,
 };

@@ -12,6 +12,8 @@ import { kebabCase, startCase } from 'lodash';
 
 import { ExtendsNever } from '@elastic/charts/src/utils/common';
 
+import { getNumberSelectKnob } from './custom';
+
 export type KnobFromEnumBaseOptions<AU extends boolean> = {
   group?: string;
   allowUndefined?: AU;
@@ -38,6 +40,9 @@ export type KnobFromEnumOptions<
 /**
  * Generates storybook knobs from const enum
  * must be an enum type, types are not inferable from object literals
+ *
+ * There are a few ts ignores inside the function to force type alignment
+ * All exterior input and output types are correctly aligned
  */
 export const getKnobFromEnum = <
   O extends Record<keyof O, SelectTypeKnobValue>,
@@ -53,28 +58,33 @@ export const getKnobFromEnum = <
   defaultValue: D,
   { group, allowUndefined, undefinedLabel, ...rest }: KnobFromEnumOptions<O, AU, I, E> = {},
 ): ExtendsNever<I, O[Exclude<keyof O, E>] | AUR, O[Extract<keyof O, I>] | AUR> => {
-  const value =
-    select<T>(
-      name,
-      // @ts-ignore - force complex typings
-      (Object.entries<T>(enumObject) as [keyof O, T][])
-        // @ts-ignore - skip key type checks
-        .filter('include' in rest ? ([k]) => rest.include!.includes(k) : () => true)
-        // @ts-ignore - skip key type checks
-        .filter('exclude' in rest ? ([k]) => !rest.exclude!.includes(k) : () => true)
-        .reduce<O>((acc, [key, value]) => {
-          // @ts-ignore - override key casing
-          acc[startCase(kebabCase(key))] = value;
-          return acc;
-        }, (allowUndefined ? { [undefinedLabel || 'Undefined']: undefined } : ({} as unknown)) as O),
-      defaultValue,
-      group,
-    ) || undefined;
+  // @ts-ignore - force complex typings
+  const options = (Object.entries<T>(enumObject) as [keyof O, T][])
+    .filter(
+      'include' in rest
+        ? ([k]) => {
+            // @ts-ignore - skip key type checks
+            return rest.include!.includes(k);
+          }
+        : () => true,
+    )
+    // @ts-ignore - skip key type checks
+    .filter('exclude' in rest ? ([k]) => !rest.exclude!.includes(k) : () => true)
+    .reduce<O>((acc, [key, value]) => {
+      // @ts-ignore - override key casing
+      acc[startCase(kebabCase(key))] = value;
+      return acc;
+    }, (allowUndefined ? { [undefinedLabel || 'Undefined']: undefined } : ({} as unknown)) as O);
+
+  const hasOnlyNumbers = Object.values(options).every((v) => typeof v === 'number');
+  const selectFunction = hasOnlyNumbers ? getNumberSelectKnob : select;
+  // @ts-ignore - force complex typings
+  const value = selectFunction<T>(name, options, defaultValue, group) || undefined;
 
   if (value === '' || value === undefined || value === null) {
     // @ts-ignore - optional undefined return
     if (allowUndefined) return undefined;
-    throw new Error('Unable to get knob value');
+    return defaultValue; // likely due to bad or old url param
   }
 
   // @ts-ignore - force type alignment
