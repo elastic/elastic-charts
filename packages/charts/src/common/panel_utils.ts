@@ -40,7 +40,7 @@ export interface SmallMultiplesSeriesDomains {
   smHDomain: OrdinalDomain;
 }
 
-/** @internal */
+/** @public */
 export interface SmallMultiplesDatum {
   smHorizontalAccessorValue?: string | number;
   smVerticalAccessorValue?: string | number;
