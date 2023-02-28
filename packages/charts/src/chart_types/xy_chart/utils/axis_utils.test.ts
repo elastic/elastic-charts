@@ -37,11 +37,12 @@ import {
   computeAxisTicksDimensionsSelector,
 } from '../state/selectors/compute_axis_ticks_dimensions';
 */
-import { getScale, SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 // import { getAxesStylesSelector } from '../state/selectors/get_axis_styles';
 // import { getGridLinesSelector } from '../state/selectors/get_grid_lines';
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import { generateTicks } from '../state/selectors/visible_ticks';
+import { getScale } from '../../../state/selectors/compute_small_multiple_scales';
+import { SmallMultipleScales } from '../../../common/panel_utils';
 
 const alignmentsDefault = { horizontal: HorizontalAlignment.Near, vertical: VerticalAlignment.Middle };
 
