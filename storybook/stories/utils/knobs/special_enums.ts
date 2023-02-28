@@ -23,11 +23,11 @@ import {
 import { getMultiSelectKnob, getNumberSelectKnob } from './custom';
 
 /**
- * Negative numbers do not behave well with storybook
+ * Negative numbers do not behave well with vrt slugified naming
  */
-const getRotationKnob = () =>
+const getRotationKnob = (name = 'chartRotation') =>
   getNumberSelectKnob<Rotation>(
-    'chartRotation',
+    name,
     {
       '0 deg': 0,
       '90 deg': 90,
