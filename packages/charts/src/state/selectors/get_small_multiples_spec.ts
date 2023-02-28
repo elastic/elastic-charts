@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
 import { SpecType } from '../../specs/constants';
 import { SmallMultiplesSpec } from '../../specs/small_multiples';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecsFromStore, getSpecFromStore } from '../utils';
-import { getSpecs } from './get_specs';
 
 /**
  * Return the small multiple specs

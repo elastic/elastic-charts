@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { useEffect, useCallback, useState } from 'react';
 import { action } from '@storybook/addon-actions';
 import { boolean, button } from '@storybook/addon-knobs';
+import { useEffect, useCallback, useState } from 'react';
 
 import { ElementClickListener, HeatmapBrushEvent, HeatmapElementEvent, HeatmapHighlightedData } from '@elastic/charts';
 

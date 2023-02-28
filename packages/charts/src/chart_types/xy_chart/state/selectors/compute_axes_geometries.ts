@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
-import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getAxesGeometries } from '../../utils/axis_utils';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { axisSpecsLookupSelector } from './get_specs';
 import { getVisibleTickSetsSelector } from './visible_ticks';
+import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getAxesGeometries } from '../../utils/axis_utils';
 
 /** @internal */
 export const computeAxesGeometriesSelector = createCustomCachedSelector(

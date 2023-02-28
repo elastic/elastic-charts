@@ -6,6 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
+import { getColorScale } from './get_color_scale';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { getHeatmapTableSelector } from './get_heatmap_table';
+import { isEmptySelector } from './is_empty';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
@@ -13,12 +19,6 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { computeScenegraph } from '../../layout/viewmodel/scenegraph';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
-import { getColorScale } from './get_color_scale';
-import { getHeatmapSpecSelector } from './get_heatmap_spec';
-import { getHeatmapTableSelector } from './get_heatmap_table';
-import { isEmptySelector } from './is_empty';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 

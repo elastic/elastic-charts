@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { PointerState, PointerStates, SpecList, TooltipInteractionState } from './chart_state';
 import { ChartType } from '../chart_types';
 import { Spec } from '../specs';
-import { PointerState, PointerStates, SpecList, TooltipInteractionState } from './chart_state';
 
 /**
  * Returns all matching specs

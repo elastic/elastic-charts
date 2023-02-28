@@ -6,6 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { isHorizontalRotation } from './common';
+import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
+import { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';
 import { Color } from '../../../../common/colors';
 import { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../common/panel_utils';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
@@ -62,9 +65,6 @@ import {
   isLineSeriesSpec,
 } from '../../utils/specs';
 import { ScaleConfigs } from '../selectors/get_api_scale_configs';
-import { isHorizontalRotation } from './common';
-import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
-import { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';
 
 /**
  * Return map association between `seriesKey` and only the custom colors string

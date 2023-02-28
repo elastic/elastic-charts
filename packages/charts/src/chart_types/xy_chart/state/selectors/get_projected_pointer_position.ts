@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { SmallMultipleScales } from '../../../../common/panel_utils';
 import { ScaleBand } from '../../../../scales/scale_band';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -14,7 +15,6 @@ import { getActivePointerPosition } from '../../../../state/selectors/get_active
 import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 
 /** @internal */
 export type PointerPosition = Point & { horizontalPanelValue: PrimitiveValue; verticalPanelValue: PrimitiveValue };

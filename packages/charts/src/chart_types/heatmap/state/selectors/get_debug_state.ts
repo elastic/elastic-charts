@@ -6,17 +6,17 @@
  * Side Public License, v 1.
  */
 
+import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
+import { computeLegendSelector } from './compute_legend';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
+import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { DebugState, DebugStateLegend } from '../../../../state/types';
 import { Position } from '../../../../utils/common';
-import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
-import { computeLegendSelector } from './compute_legend';
-import { getHeatmapSpecSelector } from './get_heatmap_spec';
-import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
-import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 
 /**
  * Returns a stringified version of the `debugState`

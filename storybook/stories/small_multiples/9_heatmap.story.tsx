@@ -25,8 +25,8 @@ import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/s
 const rng = getRandomNumberGenerator();
 
 import { useBaseTheme } from '../../use_base_theme';
-import { useHeatmapSelection } from '../utils/use_heatmap_selection';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
+import { useHeatmapSelection } from '../utils/use_heatmap_selection';
 
 const dg = new SeededDataGenerator(500, 'test');
 const numOfDays = 90;

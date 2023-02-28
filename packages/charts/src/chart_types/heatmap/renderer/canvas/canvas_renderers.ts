@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { ReactiveChartStateProps } from './connected_component';
+import { getColorBandStyle, getGeometryStateStyle } from './utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, TextFont, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
-import { ReactiveChartStateProps } from './connected_component';
-import { getColorBandStyle, getGeometryStateStyle } from './utils';
 
 /** @internal */
 export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, props: ReactiveChartStateProps) {

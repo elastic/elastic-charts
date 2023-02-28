@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
+import { computeXScale, computeYScales } from './scales';
 import { SmallMultipleScales, hasSMDomain, getPanelSize } from '../../../common/panel_utils';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { AxisSpec, SettingsSpec } from '../../../specs';
@@ -25,8 +27,6 @@ import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/them
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { Projection } from '../state/selectors/visible_ticks';
 import { SeriesDomainsAndData } from '../state/utils/types';
-import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
-import { computeXScale, computeYScales } from './scales';
 
 type TickValue = number | string;
 

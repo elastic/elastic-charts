@@ -8,16 +8,6 @@
 
 import React, { RefObject } from 'react';
 
-import { ChartType } from '../..';
-import { SmallMultiplesSeriesDomains } from '../../../common/panel_utils';
-import { BrushTool } from '../../../components/brush/brush';
-import { Tooltip } from '../../../components/tooltip/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
-import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
-import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { Dimensions } from '../../../utils/dimensions';
-import { Heatmap } from '../renderer/canvas/connected_component';
-import { CursorBand } from '../renderer/dom/cursor_band';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
@@ -38,6 +28,16 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerUpdateCaller } from './selectors/on_pointer_update_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
+import { ChartType } from '../..';
+import { SmallMultiplesSeriesDomains } from '../../../common/panel_utils';
+import { BrushTool } from '../../../components/brush/brush';
+import { Tooltip } from '../../../components/tooltip/tooltip';
+import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
+import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
+import { Dimensions } from '../../../utils/dimensions';
+import { Heatmap } from '../renderer/canvas/connected_component';
+import { CursorBand } from '../renderer/dom/cursor_band';
 
 const EMPTY_MAP = new Map();
 

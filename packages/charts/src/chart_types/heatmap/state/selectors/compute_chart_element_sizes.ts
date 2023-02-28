@@ -6,6 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { computeAxesSizesSelector } from './compute_axes_sizes';
+import { computeChartDimensionsSelector, HeatmapPaginationParams } from './compute_chart_dimensions';
+import { getHeatmapTableSelector } from './get_heatmap_table';
 import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_utils';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
@@ -13,9 +16,6 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { Dimensions } from '../../../../utils/dimensions';
 import { HeatmapStyle } from '../../../../utils/themes/theme';
 import { getGridCellHeight } from '../utils/axis';
-import { computeAxesSizesSelector } from './compute_axes_sizes';
-import { computeChartDimensionsSelector, HeatmapPaginationParams } from './compute_chart_dimensions';
-import { getHeatmapTableSelector } from './get_heatmap_table';
 
 /** @internal */
 export type ChartElementSizes = {

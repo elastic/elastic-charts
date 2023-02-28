@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { AnnotationRectProps } from './types';
 import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_utils';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
@@ -18,7 +19,6 @@ import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/comm
 import { getAxesSpecForSpecId } from '../../state/utils/spec';
 import { AxisSpec, RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
 import { Bounds } from '../types';
-import { AnnotationRectProps } from './types';
 
 /** @internal */
 export function isWithinRectBounds({ x, y }: Point, { startX, endX, startY, endY }: Bounds): boolean {

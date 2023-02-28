@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 import {
   getPanelTitle,
   getPerPanelMap,
@@ -19,7 +20,6 @@ import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors
 import { Position } from '../../../../utils/common';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
-import { computeAxesGeometriesSelector } from './compute_axes_geometries';
 
 /** @internal */
 export type PerPanelAxisGeoms = {

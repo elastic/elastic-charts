@@ -6,6 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { computeLineAnnotationDimensions } from './line/dimensions';
+import { computeRectAnnotationDimensions } from './rect/dimensions';
+import { AnnotationDimensions } from './types';
 import { SmallMultipleScales } from '../../../common/panel_utils';
 import { SettingsSpec } from '../../../specs';
 import { Rotation, Position } from '../../../utils/common';
@@ -16,9 +19,6 @@ import { AxisStyle } from '../../../utils/themes/theme';
 import { getAxesSpecForSpecId } from '../state/utils/spec';
 import { ComputedGeometries } from '../state/utils/types';
 import { AnnotationDomainType, AnnotationSpec, AxisSpec, isLineAnnotation } from '../utils/specs';
-import { computeLineAnnotationDimensions } from './line/dimensions';
-import { computeRectAnnotationDimensions } from './rect/dimensions';
-import { AnnotationDimensions } from './types';
 
 /** @internal */
 export function getAnnotationAxis(

@@ -11,6 +11,7 @@ import { ComponentProps } from 'react';
 import { X_SCALE_DEFAULT } from './scale_defaults';
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
+import { SmallMultiplesDatum } from '../../../common/panel_utils';
 import { Predicate } from '../../../common/predicate';
 import { ScaleType } from '../../../scales/constants';
 import { BaseDatum, Spec } from '../../../specs';
@@ -20,7 +21,6 @@ import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';
 import { Cell } from '../layout/types/viewmodel_types';
-import { SmallMultiplesDatum } from '../../../common/panel_utils';
 
 /** @public */
 export type HeatmapScaleType =

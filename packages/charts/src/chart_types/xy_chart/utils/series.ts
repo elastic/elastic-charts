@@ -6,6 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { applyFitFunctionToDataSeries } from './fit_function_utils';
+import { groupBy } from './group_data_series';
+import { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
+import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 import { Color } from '../../../common/colors';
 import { SmallMultiplesDatum, SmallMultiplesGroupBy } from '../../../common/panel_utils';
 import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
@@ -20,10 +24,6 @@ import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
-import { applyFitFunctionToDataSeries } from './fit_function_utils';
-import { groupBy } from './group_data_series';
-import { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
-import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
 
 /** @internal */
 export const SERIES_DELIMITER = ' - ';

@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
 import { SmallMultiplesGroupBy } from '../../common/panel_utils';
 import { SmallMultiplesSpec, SpecType, GroupBySpec } from '../../specs';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecsFromStore } from '../utils';
-import { getSpecs } from './get_specs';
 
 /** @internal */
 export const getSmallMultiplesIndexOrderSelector = createCustomCachedSelector(

@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getPanelSize, getPerPanelMap, PerPanelMap } from '../../common/panel_utils';
 import { Size } from '../../utils/dimensions';
 import { createCustomCachedSelector } from '../create_selector';
-import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 
 /** @internal */
 export type PanelGeoms = Array<Size & PerPanelMap>;

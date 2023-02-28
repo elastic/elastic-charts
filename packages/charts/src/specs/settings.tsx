@@ -19,6 +19,7 @@ import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { CategoryLabel } from '../common/category';
 import { Color } from '../common/colors';
+import { SmallMultiplesDatum } from '../common/panel_utils';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
@@ -39,7 +40,6 @@ import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
 import { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
-import { SmallMultiplesDatum } from '../common/panel_utils';
 
 /** @public */
 export interface LayerValue {

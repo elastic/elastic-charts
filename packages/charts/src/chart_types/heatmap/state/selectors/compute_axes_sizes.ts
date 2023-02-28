@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
+import { getHeatmapTableSelector } from './get_heatmap_table';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getScale } from '../../../../state/selectors/compute_small_multiple_scales';
@@ -17,8 +19,6 @@ import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calcula
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { isRasterTimeScale } from '../../layout/viewmodel/viewmodel';
 import { getTextSizeDimension, getYAxisHorizontalUsedSpace, getXAxisSize } from '../utils/axis';
-import { getHeatmapSpecSelector } from './get_heatmap_spec';
-import { getHeatmapTableSelector } from './get_heatmap_table';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 

@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { computeAxesSizesSelector } from './compute_axes_sizes';
+import { getHeatmapTableSelector } from './get_heatmap_table';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 import { ChartDimensions } from '../../../xy_chart/utils/dimensions';
 import { getGridCellHeight } from '../utils/axis';
-import { computeAxesSizesSelector } from './compute_axes_sizes';
-import { getHeatmapTableSelector } from './get_heatmap_table';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
