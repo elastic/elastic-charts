@@ -14,7 +14,7 @@ import {
   nodeId,
 } from './fill_text_layout';
 import { linkTextLayout } from './link_text_layout';
-import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
@@ -157,7 +157,7 @@ export function makeQuadViewModel(
   }
   return childNodes.map((node) => {
     const layer = layers[node.depth - 1];
-    const fill = layer?.shape?.fillColor ?? 'rgba(128, 0, 0, 0.5)';
+    const fill = layer?.shape?.fillColor ?? RGBATupleToString(Colors.DarkOpaqueRed.rgba);
 
     const fillColor =
       typeof fill === 'function'

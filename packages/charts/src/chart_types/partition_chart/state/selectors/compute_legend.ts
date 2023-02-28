@@ -9,6 +9,8 @@
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
+import { RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { Colors } from '../../../../common/colors';
 import { LegendItem } from '../../../../common/legend';
 import { SeriesIdentifier } from '../../../../common/series_id';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -31,9 +33,7 @@ import { isLinear } from '../../layout/viewmodel/viewmodel';
 import { Layer, PartitionSpec } from '../../specs';
 
 function compareLegendItemNames(aItem: LegendNode, bItem: LegendNode): number {
-  const a = aItem.item.label;
-  const b = bItem.item.label;
-  return a < b ? -1 : a > b ? 1 : 0;
+  return aItem.item.label.localeCompare(bItem.item.label);
 }
 
 function compareDescendingLegendItemValues(aItem: LegendNode, bItem: LegendNode): number {
@@ -65,7 +65,7 @@ export const computeLegendSelector = createCustomCachedSelector(
       const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
       const { valueFormatter } = specs[0];
       const items = walkTree(specs[0].id, useHierarchicalLegend, valueFormatter, tree.tree, specs[0].layers, 0);
-      return [...items.values()]
+      return items
         .filter((d) => {
           const depth = d.item.depth ?? -1;
           // remove hierarchy root
@@ -107,7 +107,7 @@ function walkTree(
     const layer = layers[depth - 1];
     const formatter = layer?.nodeLabel ?? ((d) => `${d}`);
 
-    const fill = layer?.shape?.fillColor ?? 'rgba(128, 0, 0, 0.5)';
+    const fill = layer?.shape?.fillColor ?? RGBATupleToString(Colors.DarkOpaqueRed.rgba);
     const fillColor = typeof fill === 'function' ? fill(key, node.sortIndex, node, tree) : fill;
     const label = formatter(key);
     const joinedPath = node[PATH_KEY].map((d) => d.value).join('##');
