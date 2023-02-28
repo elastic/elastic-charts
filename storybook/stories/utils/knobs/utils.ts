@@ -60,14 +60,8 @@ export const getKnobFromEnum = <
 ): ExtendsNever<I, O[Exclude<keyof O, E>] | AUR, O[Extract<keyof O, I>] | AUR> => {
   // @ts-ignore - force complex typings
   const options = (Object.entries<T>(enumObject) as [keyof O, T][])
-    .filter(
-      'include' in rest
-        ? ([k]) => {
-            // @ts-ignore - skip key type checks
-            return rest.include!.includes(k);
-          }
-        : () => true,
-    )
+    // @ts-ignore - skip key type checks
+    .filter('include' in rest ? ([k]) => rest.include!.includes(k) : () => true)
     // @ts-ignore - skip key type checks
     .filter('exclude' in rest ? ([k]) => !rest.exclude!.includes(k) : () => true)
     .reduce<O>((acc, [key, value]) => {
@@ -79,12 +73,13 @@ export const getKnobFromEnum = <
   const hasOnlyNumbers = Object.values(options).every((v) => typeof v === 'number');
   const selectFunction = hasOnlyNumbers ? getNumberSelectKnob : select;
   // @ts-ignore - force complex typings
-  const value = selectFunction<T>(name, options, defaultValue, group) || undefined;
+  const value = selectFunction<T>(name, options, defaultValue, group);
 
-  if (value === '' || value === undefined || value === null) {
+  if (value === '' || value === undefined) {
     // @ts-ignore - optional undefined return
     if (allowUndefined) return undefined;
-    return defaultValue; // likely due to bad or old url param
+
+    throw new Error(`Unable to get determine knob value [${name}]`); // likely due to bad or old url params
   }
 
   // @ts-ignore - force type alignment

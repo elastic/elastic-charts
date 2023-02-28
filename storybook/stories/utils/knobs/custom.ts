@@ -35,12 +35,18 @@ export function getToggledNumberKnob<T>(initEnabled: boolean, fallbackValue: T) 
   };
 }
 
+/**
+ * Treats select option values as numbers
+ */
 export const getNumberSelectKnob = <T extends number>(
   name: string,
   options: { [s: string]: T },
-  value: T,
+  defaultValue: T,
   group?: string,
-): T => (parseInt(select<T | string>(name, options, value, group) as string, 10) as T) || value;
+): T => {
+  const value = select(name, options, defaultValue, group);
+  return parseInt(String(value), 10) as T;
+};
 
 /**
  * Fix default storybook behavior which,
