@@ -15,7 +15,7 @@ import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_datas
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
 import { getLegendAction } from '../utils/components/get_legend_action';
-import { getPositionKnob, getEuiPopoverPositionKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const getLabelOptionKnobs = (): LegendLabelOptions => {
   const group = 'Label options';
@@ -29,8 +29,8 @@ export const Example = () => {
   const hideActions = boolean('Hide legend action', false, 'Legend');
   const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
   const showColorPicker = !boolean('Hide color picker', true, 'Legend');
-  const legendPosition = getPositionKnob('Legend position', undefined, 'Legend');
-  const euiPopoverPosition = getEuiPopoverPositionKnob(undefined, undefined, 'Legend');
+  const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
+  const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
   const labelOptions = getLabelOptionKnobs();
 
   return (

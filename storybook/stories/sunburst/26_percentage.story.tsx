@@ -11,14 +11,12 @@ import React from 'react';
 import {
   Chart,
   Datum,
-  MODEL_KEY,
   Partition,
   PartitionLayout,
   Settings,
   PartialTheme,
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
-import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -71,22 +69,23 @@ export const Example = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name,
           shape: {
-            fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex),
+            fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalStark9, 0.7)(sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
           shape: {
-            fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9, 0.5)(d[MODEL_KEY].sortIndex),
+            fillColor: (key, sortIndex, node) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.5)(node.parent.sortIndex),
           },
         },
         {
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           shape: {
-            fillColor: (d: ShapeTreeNode) =>
-              discreteColor(colorBrewerCategoricalStark9, 0.3)(d[MODEL_KEY].parent.sortIndex),
+            fillColor: (key, sortIndex, node) =>
+              discreteColor(colorBrewerCategoricalStark9, 0.3)(node.parent.parent.sortIndex),
           },
         },
       ]}

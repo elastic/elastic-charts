@@ -23,7 +23,7 @@ import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob, arrayKnobs } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
@@ -31,13 +31,13 @@ function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
 
 export const Example = () => {
   const debug = boolean('debug', false);
-  const rotation = getChartRotationKnob();
+  const rotation = customKnobs.enum.rotation();
   const markerPosition = select(
     'marker position',
     [Position.Top, Position.Left, Position.Bottom, Position.Right, 'undefined'],
     'undefined',
   );
-  const data = arrayKnobs('data values', [1.5, 7.2]);
+  const data = customKnobs.array('data values', [1.5, 7.2]);
   const dataValues = generateAnnotationData(data);
 
   const isLeft = boolean('y-domain axis is Position.Left', true);

@@ -13,13 +13,13 @@ import React from 'react';
 import { Chart, Heatmap, Predicate, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getKnobsFromEnum } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const keepNull = boolean('Fill gaps with nulls', true);
   const onlyNulls = boolean('Fill everything with nulls', false);
-  const xSort = getKnobsFromEnum('X sorting predicate', Predicate, Predicate.DataIndex as Predicate);
-  const ySort = getKnobsFromEnum('Y sorting predicate', Predicate, Predicate.DataIndex as Predicate);
+  const xSort = customKnobs.fromEnum('X sorting predicate', Predicate, Predicate.DataIndex);
+  const ySort = customKnobs.fromEnum('Y sorting predicate', Predicate, Predicate.DataIndex);
   return (
     <Chart size={[200, 200]}>
       <Settings

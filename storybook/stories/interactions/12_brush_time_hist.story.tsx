@@ -24,10 +24,10 @@ import {
 import { isVerticalRotation } from '@elastic/charts/src/chart_types/xy_chart/state/utils/common';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
-  const rotation = getChartRotationKnob();
+  const rotation = customKnobs.enum.rotation();
   const isVertical = isVerticalRotation(rotation);
   const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
   const oneDay = 1000 * 60 * 60 * 24;
@@ -46,7 +46,7 @@ export const Example = () => {
         debug={boolean('debug', false)}
         onBrushEnd={brushEndListener}
         onElementClick={action('onElementClick')}
-        rotation={getChartRotationKnob()}
+        rotation={customKnobs.enum.rotation()}
         roundHistogramBrushValues={boolean('roundHistogramBrushValues', false)}
         allowBrushingLastHistogramBin={boolean('allowBrushingLastHistogramBin', true)}
       />

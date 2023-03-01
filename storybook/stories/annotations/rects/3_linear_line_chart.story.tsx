@@ -14,11 +14,11 @@ import { Position } from '@elastic/charts/src/utils/common';
 import { BandedAccessorType } from '@elastic/charts/src/utils/geometry';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 export const Example = () => {
   const debug = boolean('debug', false);
-  const rotation = getChartRotationKnob();
+  const rotation = customKnobs.enum.rotation();
 
   const definedCoordinate = select(
     'green annotation defined coordinate',

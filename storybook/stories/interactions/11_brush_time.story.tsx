@@ -25,7 +25,7 @@ import {
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
@@ -47,7 +47,7 @@ export const Example = () => {
         debug={boolean('debug', false)}
         onBrushEnd={brushEndListener}
         onElementClick={action('onElementClick')}
-        rotation={getChartRotationKnob()}
+        rotation={customKnobs.enum.rotation()}
       />
       <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks tickFormat={formatter} />
       <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

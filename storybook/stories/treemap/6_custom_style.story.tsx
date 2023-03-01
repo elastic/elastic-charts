@@ -11,29 +11,16 @@ import React from 'react';
 import {
   Chart,
   Datum,
-  MODEL_KEY,
   PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
-import { arrayToLookup } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { countryDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { regionLookup } from '../utils/utils';
-
-const countryLookup = arrayToLookup((d: Datum) => d.country, countryDimension);
-
-const fillColor = ({ [MODEL_KEY]: model }: any) => {
-  const root = model.parent;
-  const siblingCountLayer1 = root.children.length;
-  const i = model.sortIndex;
-  const shade = Math.pow(0.3 + 0.5 * (i / (siblingCountLayer1 - 1)), 1 / 3);
-  return `rgb(${Math.round(255 * shade)},${Math.round(255 * shade)},${Math.round(255 * shade)})`;
-};
+import { countryLookup, regionLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
   chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
@@ -78,7 +65,14 @@ export const Example = () => (
             fontVariant: 'normal',
           },
           shape: {
-            fillColor,
+            fillColor: (key, sortIndex, node) => {
+              const model = node.parent;
+              const root = model.parent;
+              const siblingCountLayer1 = root.children.length;
+              const i = model.sortIndex;
+              const shade = Math.pow(0.3 + 0.5 * (i / (siblingCountLayer1 - 1)), 1 / 3);
+              return `rgb(${Math.round(255 * shade)},${Math.round(255 * shade)},${Math.round(255 * shade)})`;
+            },
           },
         },
       ]}

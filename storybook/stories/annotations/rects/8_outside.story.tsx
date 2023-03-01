@@ -12,7 +12,7 @@ import React from 'react';
 import { Axis, Chart, LineSeries, Position, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 const vGroups = {
   Primary: 'primary',
@@ -21,7 +21,7 @@ const vGroups = {
 
 export const Example = () => {
   const debug = boolean('debug', false);
-  const rotation = getChartRotationKnob();
+  const rotation = customKnobs.enum.rotation();
   const tickSize = number('Tick size', 10, { min: 0, max: 20, step: 1 });
   const hideAxes = boolean('Hide all axes', false);
 

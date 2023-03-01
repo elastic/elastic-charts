@@ -25,12 +25,12 @@ import {
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const hideBars = boolean('hideBars', false);
   const formatter = timeFormatter(niceTimeFormatByDay(1));
-  const chartRotation = getChartRotationKnob();
+  const chartRotation = customKnobs.enum.rotation();
   const numberFormatter = (d: any) => Number(d).toFixed(2);
 
   const tooltipType = select(

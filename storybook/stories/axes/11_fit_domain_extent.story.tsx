@@ -23,7 +23,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getKnobsFromEnum, getMultiSelectKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();
 const base = dg.generateBasicSeries(100, 0, 50);
@@ -50,7 +50,7 @@ export const Example = () => {
 
   const dataset = dataTypes[dataKey];
   const fit = boolean('fit Y domain to data', true);
-  const includeDataFromIds = getMultiSelectKnob<string>(
+  const includeDataFromIds = customKnobs.multiSelect<string>(
     'Specs to fit (yDomain)',
     {
       Lines: 'theshold',
@@ -61,11 +61,7 @@ export const Example = () => {
   );
   const constrainPadding = boolean('constrain padding', true);
   const padding = number('domain padding', 0.1);
-  const paddingUnit = getKnobsFromEnum(
-    'Domain padding unit',
-    DomainPaddingUnit,
-    DomainPaddingUnit.DomainRatio as DomainPaddingUnit,
-  );
+  const paddingUnit = customKnobs.fromEnum('Domain padding unit', DomainPaddingUnit, DomainPaddingUnit.DomainRatio);
   const thesholds = array('thesholds - line', ['200']).filter(Boolean).map(Number);
   const rectTheshold = object('theshold - rect', { y0: 100, y1: null });
 

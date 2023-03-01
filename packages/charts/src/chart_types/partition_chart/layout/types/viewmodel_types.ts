@@ -29,7 +29,7 @@ import { Theme } from '../../../../utils/themes/theme';
 import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { Layer } from '../../specs';
 import { MODEL_KEY, ValueGetterName } from '../config';
-import { ArrayNode, HierarchyOfArrays } from '../utils/group_by_rollup';
+import { ArrayNode, HierarchyOfArrays, Key } from '../utils/group_by_rollup';
 import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 
 /** @internal */
@@ -275,4 +275,4 @@ export type ValueGetterFunction = (node: ShapeTreeNode) => number;
 /** @public */
 export type ValueGetter = ValueGetterFunction | ValueGetterName;
 /** @public */
-export type NodeColorAccessor = (d: ShapeTreeNode, index: number, array: HierarchyOfArrays) => string;
+export type NodeColorAccessor = (key: Key, sortIndex: number, node: ArrayNode, tree: HierarchyOfArrays) => string;

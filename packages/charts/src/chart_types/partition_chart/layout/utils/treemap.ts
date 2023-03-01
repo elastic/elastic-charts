@@ -43,6 +43,9 @@ function layVector(
 
 /** @internal */
 export function leastSquarishAspectRatio({ sectionSizes, dependentSize }: LayoutElement) {
+  if (dependentSize === 0) {
+    return 1;
+  }
   return sectionSizes.reduce((p, n) => Math.min(p, n / dependentSize, dependentSize / n), 1);
 }
 
@@ -81,7 +84,6 @@ function bestVector(
   let previousVectorLayout: LayoutElement = NullLayoutElement;
   let currentVectorLayout: LayoutElement = NullLayoutElement;
   let currentCount = 1;
-
   do {
     previousVectorLayout = currentVectorLayout;
     previousWorstAspectRatio = currentWorstAspectRatio;

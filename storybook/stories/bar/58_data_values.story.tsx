@@ -13,7 +13,7 @@ import { Axis, BarSeries, Chart, ScaleType, Settings, PartialTheme } from '@elas
 
 import { BARCHART_1Y0G_LINEAR } from '../../../packages/charts/src/utils/data_samples/test_dataset';
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const theme: PartialTheme = {
@@ -49,7 +49,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings theme={theme} baseTheme={useBaseTheme()} rotation={getChartRotationKnob()} />
+      <Settings theme={theme} baseTheme={useBaseTheme()} rotation={customKnobs.enum.rotation()} />
       <BarSeries
         id="bars"
         data={BARCHART_1Y0G_LINEAR}

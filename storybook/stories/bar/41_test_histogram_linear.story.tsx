@@ -28,7 +28,7 @@ import {
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 // for testing purposes only
 export const Example = () => {
@@ -98,7 +98,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings
-        rotation={getChartRotationKnob()}
+        rotation={customKnobs.enum.rotation()}
         theme={theme}
         debug={boolean('debug', true)}
         baseTheme={useBaseTheme()}

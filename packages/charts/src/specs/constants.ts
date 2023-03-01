@@ -137,6 +137,7 @@ export const DEFAULT_LEGEND_CONFIG = {
   showLegendExtra: false,
   legendMaxDepth: Infinity,
   legendPosition: Position.Right,
+  flatLegend: false,
 };
 
 /** @public */

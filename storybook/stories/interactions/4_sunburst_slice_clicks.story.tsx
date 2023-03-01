@@ -13,12 +13,7 @@ import React from 'react';
 import { Chart, Position, Settings, Partition, PartitionLayout } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import {
-  indexInterpolatedFillColor,
-  interpolatorCET2s,
-  discreteColor,
-  colorBrewerCategoricalPastel12,
-} from '../utils/utils';
+import { discreteColor, colorBrewerCategoricalPastel12 } from '../utils/utils';
 
 const onElementListeners = {
   onElementClick: action('onElementClick'),
@@ -71,26 +66,15 @@ export const Example = () => {
             groupByRollup: (d: PieDatum) => d[0],
             nodeLabel: (d) => `dest: ${d}`,
             shape: {
-              fillColor: (d) => {
-                if (layout === 'sunburst') {
-                  // pick color from color palette based on mean angle - rather distinct colors in the inner ring
-                  return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
-                }
-                return discreteColor(colorBrewerCategoricalPastel12)(d.sortIndex);
-              },
+              fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalPastel12, 0.7)(sortIndex),
             },
           },
           {
             groupByRollup: (d: PieDatum) => d[2],
             nodeLabel: (d) => `source: ${d}`,
             shape: {
-              fillColor: (d) => {
-                if (layout === 'sunburst') {
-                  // pick color from color palette based on mean angle - rather distinct colors in the inner ring
-                  return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
-                }
-                return discreteColor(colorBrewerCategoricalPastel12)(d.sortIndex);
-              },
+              fillColor: (key, sortIndex, node) =>
+                discreteColor(colorBrewerCategoricalPastel12, 0.5)(node.parent.sortIndex),
             },
           },
         ]}

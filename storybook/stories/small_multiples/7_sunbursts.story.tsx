@@ -19,7 +19,6 @@ import {
   Partition,
   PartitionLayout,
   Settings,
-  ShapeTreeNode,
   SmallMultiples,
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
@@ -157,7 +156,7 @@ export const Example = () => {
             nodeLabel: (d: any) => productLookup[d].name,
             fillLabel: { maximizeFontSize: true },
             shape: {
-              fillColor: (d: ShapeTreeNode) => productToColor.get(d.dataName)!,
+              fillColor: (key) => productToColor.get(key)!,
             },
           },
           {
@@ -165,7 +164,7 @@ export const Example = () => {
             nodeLabel: (d: any) => countryLookup[d].name,
             fillLabel: { maximizeFontSize: true },
             shape: {
-              fillColor: (d: ShapeTreeNode) => countryToColor.get(d.dataName)!,
+              fillColor: (key) => countryToColor.get(key)!,
             },
           },
         ]}

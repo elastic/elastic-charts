@@ -20,10 +20,11 @@ import {
   defaultPartitionValueFormatter,
   Tooltip,
 } from '@elastic/charts';
+import { CHILDREN_KEY, entryValue, PARENT_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getPlacementKnob, getFallbackPlacementsKnob, getBoundaryKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
 const CustomTooltip: CT = ({ values }) => (
@@ -65,9 +66,9 @@ export const Example = () => {
     <Chart>
       <Settings showLegend legendMaxDepth={1} theme={theme} baseTheme={useBaseTheme()} />
       <Tooltip
-        placement={getPlacementKnob('Tooltip placement')}
-        fallbackPlacements={getFallbackPlacementsKnob()}
-        boundary={getBoundaryKnob()}
+        placement={customKnobs.enum.placement('Tooltip placement')}
+        fallbackPlacements={customKnobs.enum.fallbackPlacements()}
+        boundary={customKnobs.enum.boundary()}
         customTooltip={boolean('Custom Tooltip', false) ? CustomTooltip : undefined}
       />
       <Partition
@@ -86,18 +87,25 @@ export const Example = () => {
                 `$${defaultPartitionValueFormatter(Math.round(d / 1000000000000))}\u00A0Tn`,
             },
             shape: {
-              fillColor: (d) =>
-                // pick color from color palette based on mean angle - rather distinct colors in the inner ring
-                indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []),
+              fillColor: (key, sortIndex, node) => {
+                // concat all leaf and define the color based on the index of the fist children
+                const rootTree = node[PARENT_KEY][CHILDREN_KEY].flatMap((d) => entryValue(d)[CHILDREN_KEY]);
+                const index = rootTree.findIndex((d) => entryValue(d) === entryValue(node[CHILDREN_KEY][0]));
+                return indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, index, rootTree);
+              },
             },
           },
           {
             groupByRollup: (d: Datum) => d.dest,
             nodeLabel: (d: any) => countryLookup[d].name,
             shape: {
-              fillColor: (d) =>
-                // pick color from color palette based on mean angle - related yet distinct colors in the outer ring
-                indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []),
+              fillColor: (key, sortIndex, node) => {
+                // concat all leaf and define the color based on their index
+                const rootTree = node[PARENT_KEY][PARENT_KEY][CHILDREN_KEY].flatMap((d) => entryValue(d)[CHILDREN_KEY]);
+                const index = rootTree.findIndex((d) => entryValue(d) === node);
+
+                return indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, index, rootTree);
+              },
             },
           },
         ]}

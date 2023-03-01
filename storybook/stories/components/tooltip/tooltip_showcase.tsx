@@ -21,7 +21,7 @@ import {
 } from '@elastic/charts';
 import { TooltipComponent, TooltipComponentProps } from '@elastic/charts/src/components/tooltip/tooltip';
 
-import { getPlacementKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 import './tooltip_showcase.scss';
 
@@ -53,7 +53,7 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
     info: props.info,
     settings: {
       ...props,
-      placement: getPlacementKnob(),
+      placement: customKnobs.enum.placement(),
       boundary: divRef.current ?? undefined,
     },
     rotation: 0,

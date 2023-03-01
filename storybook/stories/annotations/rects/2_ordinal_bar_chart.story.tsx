@@ -13,11 +13,11 @@ import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '@el
 import { Position } from '@elastic/charts/src/utils/common';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 export const Example = () => {
   const debug = boolean('debug', false);
-  const rotation = getChartRotationKnob();
+  const rotation = customKnobs.enum.rotation();
 
   return (
     <Chart>

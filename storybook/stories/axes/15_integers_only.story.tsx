@@ -6,24 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { boolean, select } from '@storybook/addon-knobs';
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, Chart, Position, ScaleType, Settings, BarSeries } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const integersOnly = boolean('Integers values', true);
-  const scaleType = select<typeof ScaleType.Linear | typeof ScaleType.Log | typeof ScaleType.Sqrt>(
-    'Scale Type',
-    {
-      Linear: ScaleType.Linear,
-      Log: ScaleType.Log,
-      Sqrt: ScaleType.Sqrt,
-    },
-    'linear',
-  );
+  const scaleType = customKnobs.enum.scaleType('Scale type', ScaleType.Linear, { include: ['Linear', 'Log', 'Sqrt'] });
   const niceValues = boolean('yNice', false);
   return (
     <Chart>

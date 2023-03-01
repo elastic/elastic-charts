@@ -26,7 +26,7 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 
 import { useBaseTheme } from '../../../use_base_theme';
 import { getDebugStateLogger } from '../../utils/debug_state_logger';
-import { getChartRotationKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
@@ -46,7 +46,7 @@ export const Example = () => {
     [Position.Top, Position.Left, Position.Bottom, Position.Right, 'undefined'],
     'undefined',
   );
-  const rotation = getChartRotationKnob();
+  const rotation = customKnobs.enum.rotation();
 
   const dataValues = generateTimeAnnotationData([
     1551438150000, 1551438180000, 1551438390000, 1551438450000, 1551438480000,

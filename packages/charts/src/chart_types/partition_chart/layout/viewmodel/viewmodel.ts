@@ -14,7 +14,7 @@ import {
   nodeId,
 } from './fill_text_layout';
 import { linkTextLayout } from './link_text_layout';
-import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
@@ -29,7 +29,7 @@ import {
 import { Part } from '../../../../common/text_utils';
 import { GroupByAccessor } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { StrokeStyle, ColorVariant } from '../../../../utils/common';
+import { ColorVariant, StrokeStyle } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { FillLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
@@ -53,14 +53,16 @@ import { ringSectorConstruction } from '../utils/circline_geometry';
 import {
   aggregateAccessor,
   ArrayEntry,
+  CHILDREN_KEY,
   depthAccessor,
   entryKey,
   entryValue,
+  HierarchyOfArrays,
   mapEntryValue,
   parentAccessor,
-  sortIndexAccessor,
-  HierarchyOfArrays,
   pathAccessor,
+  SORT_INDEX_KEY,
+  sortIndexAccessor,
 } from '../utils/group_by_rollup';
 import { sunburst } from '../utils/sunburst';
 import { getTopPadding, LayerLayout, treemap } from '../utils/treemap';
@@ -155,8 +157,17 @@ export function makeQuadViewModel(
   }
   return childNodes.map((node) => {
     const layer = layers[node.depth - 1];
-    const fill = layer?.shape?.fillColor ?? 'rgba(128, 0, 0, 0.5)';
-    const fillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node[MODEL_KEY].children) : fill;
+    const fill = layer?.shape?.fillColor ?? RGBATupleToString(Colors.DarkOpaqueRed.rgba);
+
+    const fillColor =
+      typeof fill === 'function'
+        ? fill(
+            node.dataName,
+            node.sortIndex,
+            entryValue(node[MODEL_KEY][CHILDREN_KEY][node[SORT_INDEX_KEY]]),
+            node[MODEL_KEY].children,
+          )
+        : fill;
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;

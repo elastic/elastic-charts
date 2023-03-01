@@ -13,10 +13,10 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/
 import { isVerticalRotation } from '@elastic/charts/src/chart_types/xy_chart/state/utils/common';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
-  const rotation = getChartRotationKnob();
+  const rotation = customKnobs.enum.rotation();
   const isVertical = isVerticalRotation(rotation);
 
   return (

@@ -14,10 +14,8 @@ import {
   ArrayEntry,
   Chart,
   Datum,
-  MODEL_KEY,
   Partition,
   Settings,
-  ShapeTreeNode,
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
 
@@ -87,7 +85,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(categoricalColors)(d.sortIndex),
+              fillColor: (key, sortIndex) => discreteColor(categoricalColors)(sortIndex),
             },
           },
           {
@@ -105,7 +103,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(categoricalColors, 0.5)(d[MODEL_KEY].sortIndex),
+              fillColor: (key, sortIndex, node) => discreteColor(categoricalColors, 0.5)(node.parent.sortIndex),
             },
           },
         ]}
