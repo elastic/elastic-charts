@@ -416,8 +416,11 @@ export interface LegendSpec {
   showLegendExtra: boolean;
   /**
    * Limit the legend to the specified maximal depth when showing a hierarchical legend
+   *
+   * @remarks
+   * This is not the max depth, but the number of level shown: 0 none, 1 first, 2 up to the second etc.
+   * See https://github.com/elastic/elastic-charts/issues/1981 for details
    */
-  //TODO this is not the max depth, but the number of level shown: 0 none, 1 first, 2 up to the second etc
   legendMaxDepth: number;
   /**
    * Sets the exact legend width (vertical) or height (horizontal)
@@ -619,36 +622,6 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * User can provide a table description of the data
    */
   ariaTableCaption?: string;
-}
-
-/**
- * An object of compare functions to sort
- * series in different part of the chart like tooltip, legend and rendering order.
- * @public
- */
-export interface SortSeriesByConfig {
-  /**
-   * A SeriesSortFn to sort the legend values (top-bottom)
-   * It has precedence over the general one
-   */
-  legend?: SeriesCompareFn;
-  /**
-   * A SeriesSortFn to sort tooltip values (top-bottom)
-   * It has precedence over the general one
-   */
-  tooltip?: SeriesCompareFn;
-  /**
-   * A SeriesSortFn to sort the rendering order of series.
-   * Left/right for cluster, bottom-up for stacked.
-   * It has precedence over the general one
-   * Currently available only on XY charts
-   */
-  rendering?: SeriesCompareFn;
-  /**
-   * The default SeriesSortFn in case no other specific sorting fn are used.
-   * The rendering sorting is applied only to XY charts at the moment
-   */
-  default?: SeriesCompareFn;
 }
 
 /**

@@ -2610,14 +2610,6 @@ export type Sorter = (a: number, b: number) => number;
 // @public (undocumented)
 export function sortIndexAccessor(n: ArrayEntry): number;
 
-// @public
-export interface SortSeriesByConfig {
-    default?: SeriesCompareFn;
-    legend?: SeriesCompareFn;
-    rendering?: SeriesCompareFn;
-    tooltip?: SeriesCompareFn;
-}
-
 // @public (undocumented)
 export interface Spec {
     chartType: ChartType;
