@@ -23,7 +23,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob, getPositionKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const dataGen = new SeededDataGenerator();
 function generateDataWithAdditional(num: number) {
@@ -98,10 +98,10 @@ export const Example = () => {
         theme={theme}
         baseTheme={useBaseTheme()}
         debug={debug}
-        rotation={getChartRotationKnob()}
+        rotation={customKnobs.enum.rotation()}
         showLegend
         showLegendExtra
-        legendPosition={getPositionKnob('legend')}
+        legendPosition={customKnobs.enum.position('legend')}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />

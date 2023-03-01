@@ -10,11 +10,12 @@ import { select, number, boolean } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings, Fit, StackMode } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, Fit, StackMode } from '@elastic/charts';
 import { getRandomNumberGenerator, getRNGSeed } from '@elastic/charts/src/mocks/utils';
 
 import { TextureShape } from '../../../packages/charts/src/utils/themes/theme';
 import { useBaseTheme } from '../../use_base_theme';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const randomizeBoundingData = getRNGSeed() ? false : boolean('randomize bounding data', false);
@@ -107,36 +108,8 @@ export const Example = () => {
   );
 
   const dataset = dataTypes[dataKey];
-  const fit = select(
-    'fitting function',
-    {
-      None: Fit.None,
-      Carry: Fit.Carry,
-      Lookahead: Fit.Lookahead,
-      Nearest: Fit.Nearest,
-      Average: Fit.Average,
-      Linear: Fit.Linear,
-      Zero: Fit.Zero,
-      Explicit: Fit.Explicit,
-    },
-    Fit.Average,
-  );
-  const curve = select<CurveType>(
-    'Curve',
-    {
-      'Curve cardinal': CurveType.CURVE_CARDINAL,
-      'Curve natural': CurveType.CURVE_NATURAL,
-      'Curve monotone x': CurveType.CURVE_MONOTONE_X,
-      'Curve monotone y': CurveType.CURVE_MONOTONE_Y,
-      'Curve basis': CurveType.CURVE_BASIS,
-      'Curve catmull rom': CurveType.CURVE_CATMULL_ROM,
-      'Curve step': CurveType.CURVE_STEP,
-      'Curve step after': CurveType.CURVE_STEP_AFTER,
-      'Curve step before': CurveType.CURVE_STEP_BEFORE,
-      Linear: CurveType.LINEAR,
-    },
-    0,
-  );
+  const fit = customKnobs.enum.fit();
+  const curve = customKnobs.enum.curve();
   const endValue = select<number | 'none' | 'nearest'>(
     'End value',
     {

@@ -22,13 +22,13 @@ import { CustomAnnotationTooltip } from '@elastic/charts/src/chart_types/xy_char
 import { Position } from '@elastic/charts/src/utils/common';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getBoundaryKnob, getChartRotationKnob, getFallbackPlacementsKnob, getPlacementKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 export const Example = () => {
-  const boundary = getBoundaryKnob();
-  const placement = getPlacementKnob('Tooltip placement');
-  const fallbackPlacements = getFallbackPlacementsKnob();
-  const rotation = getChartRotationKnob();
+  const boundary = customKnobs.enum.boundary();
+  const placement = customKnobs.enum.placement('Tooltip placement');
+  const fallbackPlacements = customKnobs.enum.fallbackPlacements();
+  const rotation = customKnobs.enum.rotation();
   const showCustomTooltip = boolean('custom tooltip', false);
   const showCustomDetails = boolean('custom tooltip details', false);
   const details = select(

@@ -25,28 +25,22 @@ import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import {
-  arrayKnobs,
-  getBoundaryKnob,
-  getChartRotationKnob,
-  getFallbackPlacementsKnob,
-  getPlacementKnob,
-} from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
 export const Example = () => {
-  const rotation = getChartRotationKnob();
-  const boundary = getBoundaryKnob();
-  const placement = getPlacementKnob('Tooltip placement');
-  const fallbackPlacements = getFallbackPlacementsKnob();
+  const rotation = customKnobs.enum.rotation();
+  const boundary = customKnobs.enum.boundary();
+  const placement = customKnobs.enum.placement('Tooltip placement');
+  const fallbackPlacements = customKnobs.enum.fallbackPlacements();
   const offset = number('tooltip offset', 10);
   const showCustomTooltip = boolean('custom tooltip', false);
   const showCustomDetails = boolean('custom tooltip details', false);
 
-  const dataValues = generateAnnotationData(arrayKnobs('annotation values', ['a', 'c']));
+  const dataValues = generateAnnotationData(customKnobs.array('annotation values', ['a', 'c']));
 
   const customTooltip: CustomAnnotationTooltip | undefined = showCustomTooltip
     ? ({ header, details }) => (

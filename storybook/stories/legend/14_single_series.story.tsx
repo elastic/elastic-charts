@@ -13,7 +13,7 @@ import { BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getPositionKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const rng = getRandomNumberGenerator();
@@ -49,7 +49,7 @@ export const Example = () => {
       <Settings
         showLegend
         showLegendExtra
-        legendPosition={getPositionKnob('legend position', 'top')}
+        legendPosition={customKnobs.enum.position('legend position', 'top')}
         theme={{
           legend: { labelOptions: { maxLines } },
         }}

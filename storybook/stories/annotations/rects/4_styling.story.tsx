@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { array, boolean, color, number, select } from '@storybook/addon-knobs';
+import { array, boolean, color, number } from '@storybook/addon-knobs';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -28,23 +28,16 @@ import { Position, RecursivePartial } from '@elastic/charts/src/utils/common';
 import { TimeFunction } from '@elastic/charts/src/utils/time_functions';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob, getKnobsFromEnum, getXYSeriesKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 const rng = getRandomNumberGenerator();
 const randomArray = new Array(100).fill(0).map(() => rng(0, 10, 2));
 
 const ExampleChart = memo(({ animationOptions }: { animationOptions: AnnotationAnimationConfig['options'] }) => {
   const debug = boolean('debug', false);
-  const [SeriesType] = getXYSeriesKnob(undefined, 'line');
-  const xScaleType = select(
-    'Scale type',
-    {
-      Linear: ScaleType.Linear,
-      Ordinal: ScaleType.Ordinal,
-    },
-    ScaleType.Linear,
-  );
-  const rotation = getChartRotationKnob();
+  const [SeriesType] = customKnobs.enum.xySeries(undefined, 'line');
+  const xScaleType = customKnobs.enum.scaleType('Scale type', ScaleType.Linear, { include: ['Linear', 'Ordinal'] });
+  const rotation = customKnobs.enum.rotation();
   const dataValues = [
     {
       coordinates: {
@@ -176,7 +169,7 @@ export const Example = () => {
     enabled: boolean('enabled', true, 'Animations'),
     delay: number('delay (ms)', 50, { min: 0, max: 10000, step: 50 }, 'Animations'),
     duration: number('duration (ms)', 250, { min: 0, max: 10000, step: 50 }, 'Animations'),
-    timeFunction: getKnobsFromEnum('time function', TimeFunction, TimeFunction.easeInOut as TimeFunction, {
+    timeFunction: customKnobs.fromEnum('time function', TimeFunction, TimeFunction.easeInOut, {
       group: 'Animations',
     }),
     snapValues: array('snap values', [], undefined, 'Animations').map(Number),

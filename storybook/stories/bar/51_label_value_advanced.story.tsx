@@ -23,7 +23,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const dataGen = new SeededDataGenerator();
 function generateDataWithAdditional(num: number) {
@@ -129,7 +129,7 @@ export const Example = () => {
         theme={theme}
         baseTheme={useBaseTheme()}
         debug={debug}
-        rotation={getChartRotationKnob()}
+        rotation={customKnobs.enum.rotation()}
         showLegend
         showLegendExtra
       />

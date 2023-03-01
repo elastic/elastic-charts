@@ -6,22 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { AreaSeries, Axis, Chart, Fit, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
-  const scaleType = select(
-    'Y scale',
-    {
-      [ScaleType.Linear]: ScaleType.Linear,
-      [ScaleType.Log]: ScaleType.Log,
-    },
-    ScaleType.Linear,
-  );
+  const yScaleType = customKnobs.enum.scaleType('Y scale', ScaleType.Linear, { include: ['Linear', 'Log'] });
 
   const data = [
     [0, -5, -2],
@@ -50,7 +43,7 @@ export const Example = () => {
       <AreaSeries
         id="band"
         xScaleType={ScaleType.Linear}
-        yScaleType={scaleType}
+        yScaleType={yScaleType}
         xAccessor={0}
         yAccessors={[1]}
         y0Accessors={[2]}
@@ -60,7 +53,7 @@ export const Example = () => {
       <LineSeries
         id="metric"
         xScaleType={ScaleType.Linear}
-        yScaleType={scaleType}
+        yScaleType={yScaleType}
         xAccessor={0}
         yAccessors={[1]}
         fit={Fit.Carry}

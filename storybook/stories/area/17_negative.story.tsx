@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { select, number } from '@storybook/addon-knobs';
+import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { customKnobs } from '../utils/knobs';
 
 const dateFormatter = timeFormatter('HH:mm');
 
@@ -20,14 +21,8 @@ const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map(([x, y]) => {
   return [x, -y];
 });
 export const Example = () => {
-  const scaleType = select(
-    'Y scale',
-    {
-      [ScaleType.Linear]: ScaleType.Linear,
-      [ScaleType.Log]: ScaleType.Log,
-    },
-    ScaleType.Linear,
-  );
+  const yScaleType = customKnobs.enum.scaleType('Y scale', ScaleType.Linear, { include: ['Linear', 'Log'] });
+
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />
@@ -47,7 +42,7 @@ export const Example = () => {
       <AreaSeries
         id="area"
         xScaleType={ScaleType.Time}
-        yScaleType={scaleType}
+        yScaleType={yScaleType}
         xAccessor={0}
         yAccessors={[1]}
         data={data}

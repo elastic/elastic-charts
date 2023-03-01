@@ -24,7 +24,7 @@ import {
 
 import { useBaseTheme } from '../../use_base_theme';
 import { data } from '../utils/datasets/product_profits';
-import { getXYSeriesKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const baseTheme = useBaseTheme();
@@ -42,8 +42,8 @@ export const Example = () => {
       },
       undefined,
     ) ?? undefined;
-  const [Series] = getXYSeriesKnob('SeriesType', SeriesType.Bar, undefined, {
-    ignore: [SeriesType.Bubble, SeriesType.Line],
+  const [Series] = customKnobs.enum.xySeries('SeriesType', SeriesType.Bar, {
+    exclude: [SeriesType.Bubble, SeriesType.Line],
   });
   return (
     <Chart>

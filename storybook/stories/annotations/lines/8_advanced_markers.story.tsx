@@ -25,7 +25,7 @@ import {
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob, getPositionKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 const annotationStyle = {
   line: {
@@ -86,8 +86,8 @@ export const Example = () => {
   const maxMetric = 30;
   const debug = boolean('Debug', true);
   const showLegend = boolean('show legend', true);
-  const rotation = getChartRotationKnob();
-  const side = getPositionKnob('Side', Position.Bottom);
+  const rotation = customKnobs.enum.rotation();
+  const side = customKnobs.enum.position('Side', Position.Bottom);
   const padding = number('TickLine padding for markerBody', 30, { step: 5, min: 0, max: 100 });
   const start = moment('4/1/2020').startOf('d');
   const metric = number('Annotation metric', maxMetric, { step: 1, min: 0, max: maxMetric, range: true });

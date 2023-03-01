@@ -176,6 +176,13 @@ export function htmlIdGenerator(idPrefix?: string) {
 }
 
 /**
+ * Helper function to identify never type for conditionals
+ * See https://github.com/microsoft/TypeScript/issues/31751#issuecomment-498526919
+ * @internal
+ */
+export type ExtendsNever<T, Y, N> = [T] extends [never] ? Y : N;
+
+/**
  * Replaces all properties on any type as optional, includes nested types
  *
  * example:

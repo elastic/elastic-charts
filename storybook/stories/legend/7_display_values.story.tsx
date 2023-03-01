@@ -13,7 +13,7 @@ import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } fro
 import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_tsvb';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { arrayKnobs } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const showLegendDisplayValue = boolean('show display value in legend', true);
@@ -30,7 +30,7 @@ export const Example = () => {
 
   const tsvbSeries = TSVB_DATASET.series;
 
-  const namesArray = arrayKnobs('series names (in sort order)', ['jpg', 'php', 'png', 'css', 'gif']);
+  const namesArray = customKnobs.array('series names (in sort order)', ['jpg', 'php', 'png', 'css', 'gif']);
 
   const seriesComponents = tsvbSeries.map((series) => {
     const nameIndex = namesArray.indexOf(series.label);

@@ -12,7 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 export const Example = () => {
   const theme: PartialTheme = {
@@ -39,7 +39,7 @@ export const Example = () => {
         legendPosition={Position.Right}
         theme={theme}
         baseTheme={useBaseTheme()}
-        rotation={getChartRotationKnob()}
+        rotation={customKnobs.enum.rotation()}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />

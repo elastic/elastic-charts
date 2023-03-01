@@ -18,14 +18,13 @@ import {
   ScaleType,
   Settings,
   AreaSeries,
-  CurveType,
   YDomainBase,
   LogScaleOptions,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { logFormatter } from '../utils/formatters';
-import { getKnobsFromEnum } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 type LogKnobs = LogScaleOptions &
   Pick<YDomainBase, 'fit' | 'padding'> & {
@@ -47,18 +46,12 @@ const getDataType = (group: string, defaultType = 'increasing') =>
     group,
   );
 
-const getScaleType = (type: ScaleType, group: string) =>
-  getKnobsFromEnum('Scale Type', ScaleType, type, { group, include: ['linear', 'log'] }) as Extract<
-    ScaleType,
-    'log' | 'linear'
-  >;
-
 const getLogKnobs = (isXAxis = false) => {
   const group = isXAxis ? 'X - Axis' : 'Y - Axis';
   const useDefaultLimit = boolean('Use default limit', isXAxis, group);
   const limit = number('Log min limit', 1, { min: 0 }, group);
   const logNames = { Common: 'common', Binary: 'binary', Natural: 'natural' };
-  const logBaseName = getKnobsFromEnum('Log base', logNames, 'common' as any, {
+  const logBaseName = customKnobs.fromEnum('Log base', logNames, 'common' as any, {
     group,
     allowUndefined: true,
   }) as 'common' | 'binary' | 'natural';
@@ -70,7 +63,7 @@ const getLogKnobs = (isXAxis = false) => {
     negative: boolean('Use negative values', false, group),
     ...(!isXAxis && { logMinLimit: useDefaultLimit ? undefined : limit }),
     logBase: { common: 10, binary: 2, natural: Math.E }[logBaseName] ?? 10,
-    scaleType: getScaleType(ScaleType.Log, group),
+    scaleType: customKnobs.enum.scaleType('Scale Type', ScaleType.Log, { include: ['Linear', 'Log'], group }),
     ...(!isXAxis && { padding: number('Padding', 0, { min: 0 }, group) }),
   };
 };
@@ -125,7 +118,7 @@ export const Example = () => {
   const xLogKnobs = getLogKnobs(true);
   const data = getData(rows, yLogKnobs, xLogKnobs);
   const type = getSeriesType();
-  const curve = getKnobsFromEnum('Curve type', CurveType, CurveType.CURVE_CARDINAL as CurveType);
+  const curve = customKnobs.enum.curve('Curve type');
   const Series = seriesMap[type];
 
   return (

@@ -26,7 +26,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getTooltipTypeKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();
 const data = dg.generateBasicSeries(20);
@@ -77,7 +77,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings debug={boolean('debug', false)} theme={theme} baseTheme={useBaseTheme()} />
-      <Tooltip type={getTooltipTypeKnob('Tooltip type', TooltipType.Crosshairs)} />
+      <Tooltip type={customKnobs.enum.tooltipType('Tooltip type', TooltipType.Crosshairs)} />
       <Axis {...getAxisKnobs(Position.Left)} />
       <Axis {...getAxisKnobs(Position.Bottom)} />
       <LineSeries

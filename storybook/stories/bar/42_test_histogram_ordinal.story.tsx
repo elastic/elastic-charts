@@ -21,7 +21,7 @@ import {
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getChartRotationKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 // for testing purposes only
 export const Example = () => {
@@ -46,7 +46,7 @@ export const Example = () => {
   return (
     <Chart>
       <Settings
-        rotation={getChartRotationKnob()}
+        rotation={customKnobs.enum.rotation()}
         theme={theme}
         baseTheme={useBaseTheme()}
         debug={boolean('debug', true)}

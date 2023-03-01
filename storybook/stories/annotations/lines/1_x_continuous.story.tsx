@@ -24,7 +24,7 @@ import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
 import { useBaseTheme } from '../../../use_base_theme';
-import { getChartRotationKnob, arrayKnobs } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 
 function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
@@ -37,8 +37,8 @@ export const Example = () => {
     [Position.Top, Position.Left, Position.Bottom, Position.Right, 'undefined'],
     'undefined',
   );
-  const rotation = getChartRotationKnob();
-  const data = arrayKnobs('data values', [2.5, 7.2]);
+  const rotation = customKnobs.enum.rotation();
+  const data = customKnobs.array('data values', [2.5, 7.2]);
   const dataValues = generateAnnotationData(data);
 
   const style: Partial<LineAnnotationStyle> = {

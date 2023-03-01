@@ -24,7 +24,7 @@ import { CHILDREN_KEY, entryValue, PARENT_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getPlacementKnob, getFallbackPlacementsKnob, getBoundaryKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
 const CustomTooltip: CT = ({ values }) => (
@@ -66,9 +66,9 @@ export const Example = () => {
     <Chart>
       <Settings showLegend legendMaxDepth={1} theme={theme} baseTheme={useBaseTheme()} />
       <Tooltip
-        placement={getPlacementKnob('Tooltip placement')}
-        fallbackPlacements={getFallbackPlacementsKnob()}
-        boundary={getBoundaryKnob()}
+        placement={customKnobs.enum.placement('Tooltip placement')}
+        fallbackPlacements={customKnobs.enum.fallbackPlacements()}
+        boundary={customKnobs.enum.boundary()}
         customTooltip={boolean('Custom Tooltip', false) ? CustomTooltip : undefined}
       />
       <Partition

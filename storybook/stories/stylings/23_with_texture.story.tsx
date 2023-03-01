@@ -19,11 +19,12 @@ import {
   Settings,
   TextureShape,
   LIGHT_THEME,
+  SeriesType,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { getKnobsFromEnum, getXYSeriesKnob } from '../utils/knobs';
+import { customKnobs } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();
 const barData = dg.generateBasicSeries(4);
@@ -42,10 +43,9 @@ const getTextureKnobs = (useCustomPath: boolean): TexturedStyles => ({
   ...(useCustomPath
     ? { path: text('Custom path', STAR, group.texture) }
     : {
-        shape:
-          getKnobsFromEnum('Shape', TextureShape, TextureShape.Line as TextureShape, {
-            group: group.texture,
-          }) ?? TextureShape.Line,
+        shape: customKnobs.fromEnum('Shape', TextureShape, TextureShape.Line, {
+          group: group.texture,
+        }),
       }),
   stroke: boolean('Use stroke color', true, group.texture)
     ? color('Stoke color', DEFAULT_COLOR, group.texture)
@@ -76,7 +76,10 @@ export const Example = () => {
   const opacity = number('Series opacity', 1, { min: 0, max: 1, step: 0.1 }, group.series);
   const showFill = boolean('Show series fill', false, group.series);
   const seriesColor = color('Series color', DEFAULT_COLOR, group.series);
-  const [SeriesType, seriesType] = getXYSeriesKnob('Series type', 'area', group.series, { ignore: ['bubble', 'line'] });
+  const [Series, seriesType] = customKnobs.enum.xySeries('Series type', 'area', {
+    group: group.series,
+    exclude: [SeriesType.Bubble, SeriesType.Line],
+  });
 
   return (
     <Chart>
@@ -107,7 +110,7 @@ export const Example = () => {
       <Axis id="bottom" position={Position.Bottom} />
       <Axis id="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
-      <SeriesType
+      <Series
         id="series"
         color={seriesColor}
         xScaleType={ScaleType.Linear}

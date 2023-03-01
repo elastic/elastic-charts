@@ -24,7 +24,7 @@ import {
 
 import { DATA_SERIES } from './data/series';
 import { useBaseTheme } from '../../../use_base_theme';
-import { getTooltipTypeKnob } from '../../utils/knobs';
+import { customKnobs } from '../../utils/knobs';
 import { SB_SOURCE_PANEL } from '../../utils/storybook';
 import { wait } from '../../utils/utils';
 
@@ -83,7 +83,7 @@ export const Example = () => {
         }}
       />
       <Tooltip
-        type={getTooltipTypeKnob()}
+        type={customKnobs.enum.tooltipType()}
         maxVisibleTooltipItems={4}
         maxTooltipItems={4}
         actions={disableActions ? [] : asyncDelay > 0 ? () => wait(asyncDelay, () => actions) : actions}
