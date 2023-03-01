@@ -9,7 +9,6 @@
 import React from 'react';
 
 import { Chart, Datum, Partition, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
-import { ShapeTreeNode } from '@elastic/charts/src/chart_types/partition_chart/layout/types/viewmodel_types';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -43,7 +42,7 @@ export const Example = () => (
             },
           },
           shape: {
-            fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalPastel12)(d.sortIndex),
+            fillColor: (key, sortIndex) => discreteColor(colorBrewerCategoricalPastel12)(sortIndex),
           },
         },
       ]}

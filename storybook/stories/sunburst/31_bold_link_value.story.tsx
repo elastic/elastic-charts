@@ -35,7 +35,8 @@ export const Example = () => (
           nodeLabel: (d: Datum) => productLookup[d].name,
           fillLabel: { valueFont: { fontWeight: 900, fontStyle: 'italic' } },
           shape: {
-            fillColor: indexInterpolatedFillColor(interpolatorCET2s),
+            fillColor: (key, sortIndex, node, tree) =>
+              indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, sortIndex, tree),
           },
         },
       ]}

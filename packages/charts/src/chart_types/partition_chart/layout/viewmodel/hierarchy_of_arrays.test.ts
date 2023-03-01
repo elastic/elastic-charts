@@ -7,6 +7,7 @@
  */
 
 import { getHierarchyOfArrays } from './hierarchy_of_arrays';
+import { CHILDREN_KEY, entryValue } from '../../layout/utils/group_by_rollup';
 
 const rawFacts = [
   { sitc1: '7', exportVal: 0 },
@@ -20,17 +21,10 @@ const valueAccessor = (d: any) => d.exportVal;
 const groupByRollupAccessors = [() => null, (d: any) => d.sitc1];
 
 describe('Test', () => {
-  test('getHierarchyOfArrays should omit zero and negative values', () => {
+  test('getHierarchyOfArrays should omit negative values', () => {
     const outerResult = getHierarchyOfArrays(rawFacts, valueAccessor, groupByRollupAccessors, [], []);
     expect(outerResult.length).toBe(1);
-
-    const results = outerResult[0];
-    expect(results.length).toBe(2);
-    expect(results[0]).toBeNull();
-
-    const result = results[1];
-    const expectedLength = rawFacts.filter((d: any) => valueAccessor(d) > 0).length;
-    expect(expectedLength).toBe(2);
-    expect(result.children.length).toBe(expectedLength);
+    const results = entryValue(outerResult[0]);
+    expect(results[CHILDREN_KEY].length).toBe(rawFacts.filter((d: any) => valueAccessor(d) >= 0).length);
   });
 });

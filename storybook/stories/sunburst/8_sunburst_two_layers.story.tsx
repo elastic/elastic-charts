@@ -12,11 +12,12 @@ import React from 'react';
 import {
   Chart,
   Datum,
+  defaultPartitionValueFormatter,
+  PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
-  PartialTheme,
-  defaultPartitionValueFormatter,
+  entryValue,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
@@ -63,18 +64,24 @@ export const Example = () => {
                 `$${defaultPartitionValueFormatter(Math.round(d / 1000000000000))}\u00A0Tn`,
             },
             shape: {
-              fillColor: (d) =>
-                // pick color from color palette based on mean angle - rather distinct colors in the inner ring
-                indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []),
+              fillColor: (key, sortIndex, node) => {
+                // concat all leaf and define the color based on the index of the fist children
+                const rootTree = node.parent.children.flatMap((d) => entryValue(d).children);
+                const index = rootTree.findIndex((d) => entryValue(d) === entryValue(node.children[0]));
+                return indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, index, rootTree);
+              },
             },
           },
           {
             groupByRollup: (d: Datum) => d.dest,
             nodeLabel: (d: any) => countryLookup[d].name,
             shape: {
-              fillColor: (d) =>
-                // pick color from color palette based on mean angle - related yet distinct colors in the outer ring
-                indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []),
+              fillColor: (key, sortIndex, node) => {
+                // concat all leaf and define the color based on their index
+                const rootTree = node.parent.parent.children.flatMap((d) => entryValue(d).children);
+                const index = rootTree.findIndex((d) => entryValue(d) === node);
+                return indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, index, rootTree);
+              },
             },
           },
         ]}

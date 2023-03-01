@@ -22,20 +22,11 @@ import {
   Position,
   ScaleType,
 } from '@elastic/charts';
-import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { productDimension } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
-import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
-
-const productLookup = arrayToLookup((d: Datum) => d.sitc1, productDimension);
-
-// style calcs
-const interpolatorCET2s = hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, 0.7]));
-
-const defaultFillColor = (colorMaker: any) => (d: any, i: number, a: any[]) => colorMaker(i / (a.length + 1));
+import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 export const Example = () => {
   const lang = select(
@@ -112,7 +103,8 @@ export const Example = () => {
               valueFormatter: formatter,
             },
             shape: {
-              fillColor: defaultFillColor(interpolatorCET2s),
+              fillColor: (key, sortIndex, node, tree) =>
+                indexInterpolatedFillColor(interpolatorCET2s())(null, sortIndex, tree),
             },
           },
         ]}

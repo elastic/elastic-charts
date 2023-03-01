@@ -61,7 +61,10 @@ export const Example = () => {
             groupByRollup: (d: Datum) => d.origin,
             nodeLabel: (d: Datum) => countryLookup[d].name,
             shape: {
-              fillColor: fillColor ?? indexInterpolatedFillColor(interpolatorCET2s),
+              fillColor:
+                fillColor ??
+                ((key, sortIndex, node, tree) =>
+                  indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, sortIndex, tree)),
             },
           },
         ]}

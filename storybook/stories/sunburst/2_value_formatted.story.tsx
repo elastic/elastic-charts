@@ -14,7 +14,7 @@ import { Chart, Datum, Partition, Settings, PartialTheme, defaultPartitionValueF
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { indexInterpolatedFillColor, interpolatorTurbo, productLookup } from '../utils/utils';
+import { indexInterpolatedFillColor, interpolatorCET2s, interpolatorTurbo, productLookup } from '../utils/utils';
 
 export const Example = () => {
   const onElementClick = boolean('onElementClick listener', true);
@@ -58,7 +58,8 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: indexInterpolatedFillColor(interpolatorTurbo),
+              fillColor: (key, sortIndex, node, tree) =>
+                indexInterpolatedFillColor(interpolatorTurbo(0.8))(null, sortIndex, tree),
             },
           },
         ]}

@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { Component, createRef, MouseEventHandler } from 'react';
+import React, { Component, createRef, MouseEventHandler, CSSProperties } from 'react';
 
 import { Color as ItemColor } from './color';
 import { renderExtra } from './extra';
@@ -43,6 +43,7 @@ export const LEGEND_HIERARCHY_MARGIN = 10;
 /** @internal */
 export interface LegendItemProps {
   item: LegendItem;
+  flatLegend: boolean;
   totalItems: number;
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
@@ -178,6 +179,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       positionConfig,
       labelOptions,
       isMostlyRTL,
+      flatLegend,
     } = this.props;
     const { color, isSeriesHidden, isItemHidden, seriesIdentifiers, label, pointStyle } = item;
 
@@ -189,11 +191,11 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     });
     const hasColorPicker = Boolean(colorPicker);
     const extra = showExtra && getExtra(extraValues, item, totalItems);
-    const style = item.depth
-      ? {
+    const style: CSSProperties = flatLegend
+      ? {}
+      : {
           [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
-        }
-      : undefined;
+        };
     return (
       <>
         <li
@@ -234,9 +236,4 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       </>
     );
   }
-}
-
-/** @internal */
-export function renderLegendItem(item: LegendItem, props: Omit<LegendItemProps, 'item'>, index: number) {
-  return <LegendListItem key={`${index}`} item={item} {...props} />;
 }

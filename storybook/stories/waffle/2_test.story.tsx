@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings, ShapeTreeNode } from '@elastic/charts';
+import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalStark9, discreteColor, productPriceLookup } from '../utils/utils';
@@ -45,7 +45,7 @@ export const Example = () => {
             groupByRollup: (d: Datum) => d.products_price,
             nodeLabel: (d: Datum) => productPriceLookup[d].name,
             shape: {
-              fillColor: (d: ShapeTreeNode) => discreteColor(colorBrewerCategoricalStark9.slice(1))(d.sortIndex),
+              fillColor: (nodeKey, sortIndex) => discreteColor(colorBrewerCategoricalStark9.slice(1))(sortIndex),
             },
           },
         ]}
