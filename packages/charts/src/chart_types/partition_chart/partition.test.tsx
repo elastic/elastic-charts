@@ -8,7 +8,6 @@
 
 import { Store } from 'redux';
 
-import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from './layout/utils/group_by_rollup';
 import { computeLegendSelector } from './state/selectors/compute_legend';
 import { getLegendItemsLabels } from './state/selectors/get_legend_items_labels';
 import { MockGlobalSpec, MockSeriesSpec } from '../../mocks/specs';

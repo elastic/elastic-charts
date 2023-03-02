@@ -11,14 +11,11 @@ import React from 'react';
 import {
   Chart,
   Datum,
-  MODEL_KEY,
   PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
   defaultPartitionValueFormatter,
-  entryValue,
-  SORT_INDEX_KEY,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 

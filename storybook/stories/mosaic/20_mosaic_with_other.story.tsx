@@ -18,7 +18,6 @@ import {
   PartitionLayout,
   Settings,
   defaultPartitionValueFormatter,
-  entryValue,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
