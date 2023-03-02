@@ -69,6 +69,11 @@ function getValuesInRange(
 }
 
 /** @internal */
+export function clampWithOffset(value: number, lowerBound: number, upperBound: number, offset: number): number {
+  return clamp(value, lowerBound + offset, upperBound + offset) - offset;
+}
+
+/** @internal */
 export function shapeViewModel<D extends BaseDatum = Datum>(
   textMeasure: TextMeasure,
   spec: HeatmapSpec<D>,
@@ -310,10 +315,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const { category: smVerticalAccessorValue, panelOffset: vOffset } = getPanelPointCoordinate(start.y, 'vertical');
 
     // confine selection to start panel
-    const panelStartX = clamp(topLeft[0], 0, panelSize.width, hOffset);
-    const panelStartY = clamp(topLeft[1], 0, panelSize.height, vOffset);
-    const panelEndX = clamp(bottomRight[0], 0, panelSize.width, hOffset);
-    const panelEndY = clamp(bottomRight[1], 0, panelSize.height, vOffset);
+    const panelStartX = clampWithOffset(topLeft[0], 0, panelSize.width, hOffset);
+    const panelStartY = clampWithOffset(topLeft[1], 0, panelSize.height, vOffset);
+    const panelEndX = clampWithOffset(bottomRight[0], 0, panelSize.width, hOffset);
+    const panelEndY = clampWithOffset(bottomRight[1], 0, panelSize.height, vOffset);
 
     // TODO figure out this current grid height thing
     // const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));

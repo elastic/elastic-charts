@@ -135,8 +135,7 @@ export function compareByValueAsc(a: number | string, b: number | string): numbe
 }
 
 /** @internal */
-export function clamp(value: number, lowerBound: number, upperBound: number, offset?: number): number {
-  if (offset) return clamp(value, lowerBound + offset, upperBound + offset) - offset;
+export function clamp(value: number, lowerBound: number, upperBound: number): number {
   return Math.min(Math.max(value, lowerBound), upperBound);
 }
 
