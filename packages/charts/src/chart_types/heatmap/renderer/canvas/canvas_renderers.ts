@@ -104,7 +104,6 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
 
         heatmapViewModels.forEach(({ yValues, gridOrigin: { x, y } }) => {
           withContext(ctx, () => {
-            // the text is right aligned so the canvas needs to be aligned to the right of the Y axis box
             ctx.translate(x, y);
             const font: TextFont = {
               ...theme.yAxisLabel,
