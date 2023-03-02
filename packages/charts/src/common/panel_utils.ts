@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { ScaleBand } from '../scales';
 import { GroupBySpec } from '../specs/group_by';
 import { safeFormat } from '../utils/common';
@@ -18,8 +19,8 @@ type Value = string | number;
 /** @internal */
 export interface PerPanelMap {
   panelAnchor: Point;
-  horizontalValue: Value;
-  verticalValue: Value;
+  horizontalValue: NonNullable<PrimitiveValue>;
+  verticalValue: NonNullable<PrimitiveValue>;
 }
 
 /** @internal */
@@ -42,8 +43,8 @@ export interface SmallMultiplesSeriesDomains {
 
 /** @public */
 export interface SmallMultiplesDatum {
-  smHorizontalAccessorValue?: string | number;
-  smVerticalAccessorValue?: string | number;
+  smHorizontalAccessorValue?: NonNullable<PrimitiveValue>;
+  smVerticalAccessorValue?: NonNullable<PrimitiveValue>;
 }
 
 /** @internal */
@@ -79,8 +80,8 @@ export const hasSMDomain = ({ domain }: SmallMultipleScales['horizontal'] | Smal
 /** @internal */
 export const getPanelTitle = (
   isVertical: boolean,
-  verticalValue: any,
-  horizontalValue: any,
+  verticalValue: NonNullable<PrimitiveValue>,
+  horizontalValue: NonNullable<PrimitiveValue>,
   groupBy?: SmallMultiplesGroupBy,
 ): string => {
   return isVertical

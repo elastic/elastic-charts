@@ -2603,9 +2603,9 @@ export const SmallMultiples: FC<SFProps<SmallMultiplesSpec, "chartType" | "specT
 // @public (undocumented)
 export interface SmallMultiplesDatum {
     // (undocumented)
-    smHorizontalAccessorValue?: string | number;
+    smHorizontalAccessorValue?: NonNullable<PrimitiveValue>;
     // (undocumented)
-    smVerticalAccessorValue?: string | number;
+    smVerticalAccessorValue?: NonNullable<PrimitiveValue>;
 }
 
 // Warning: (ae-incompatible-release-tags) The symbol "SmallMultiplesProps" is marked as @public, but its signature references "SmallMultiples" which is marked as @alpha
