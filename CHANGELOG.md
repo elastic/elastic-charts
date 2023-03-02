@@ -1,3 +1,10 @@
+## [40.3.2](https://github.com/elastic/elastic-charts/compare/v40.3.1...v40.3.2) (2023-03-02)
+
+
+### Bug Fixes
+
+* **xy:** dataIndex keeps original data order on small multiples ([#1985](https://github.com/elastic/elastic-charts/issues/1985)) ([2616991](https://github.com/elastic/elastic-charts/commit/261699157083d378f418396f82e915fede3bc259))
+
 ## [40.3.1](https://github.com/elastic/elastic-charts/compare/v40.3.0...v40.3.1) (2022-04-20)
 
 
