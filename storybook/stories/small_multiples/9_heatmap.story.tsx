@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number, select } from '@storybook/addon-knobs';
+import { boolean, number } from '@storybook/addon-knobs';
 import { sampleSize, range } from 'lodash';
 import { DateTime } from 'luxon';
 import React, { useMemo } from 'react';
@@ -26,6 +26,7 @@ const rng = getRandomNumberGenerator();
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
+import { customKnobs } from '../utils/knobs';
 import { useHeatmapSelection } from '../utils/use_heatmap_selection';
 
 const dg = new SeededDataGenerator(500, 'test');
@@ -44,15 +45,10 @@ export const Example = () => {
   const hSplitCount = number('h - split count', 2, { min: 1 }, 'Data');
   const categories = number('categories', 4, { min: 1, step: 1, range: true }, 'Data');
   const density = number('cell density(%)', 75, { min: 5, max: 100, step: 5, range: true }, 'Data') / 100;
-  const xScaleType = select(
-    'xScaleType',
-    {
-      [ScaleType.Linear]: ScaleType.Linear,
-      [ScaleType.Ordinal]: ScaleType.Ordinal,
-    },
-    ScaleType.Linear,
-    'Data',
-  );
+  const xScaleType = customKnobs.enum.scaleType('xScaleType', ScaleType.Linear, {
+    include: ['Linear', 'Ordinal'],
+    group: 'Data',
+  });
 
   const smStyles = {
     horizontalPanelPadding: {
