@@ -448,8 +448,6 @@ export type CategoryLabel = string;
 
 // @public (undocumented)
 export interface Cell {
-    // Warning: (ae-forgotten-export) The symbol "HeatmapCellDatum" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     datum: HeatmapCellDatum;
     // Warning: (ae-forgotten-export) The symbol "Fill" needs to be exported by the entry point index.d.ts
@@ -1309,8 +1307,6 @@ export interface HeatmapBandsColorScale {
     type: 'bands';
 }
 
-// Warning: (ae-forgotten-export) The symbol "SmallMultiplesDatum" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export interface HeatmapBrushEvent extends SmallMultiplesDatum {
     // (undocumented)
@@ -1319,6 +1315,18 @@ export interface HeatmapBrushEvent extends SmallMultiplesDatum {
     x: (string | number)[];
     // (undocumented)
     y: (string | number)[];
+}
+
+// @public (undocumented)
+export interface HeatmapCellDatum extends SmallMultiplesDatum {
+    // (undocumented)
+    originalIndex: number;
+    // (undocumented)
+    value: number;
+    // (undocumented)
+    x: NonNullable<PrimitiveValue>;
+    // (undocumented)
+    y: NonNullable<PrimitiveValue>;
 }
 
 // @public (undocumented)
@@ -2591,6 +2599,14 @@ export interface SimplePadding {
 
 // @alpha
 export const SmallMultiples: FC<SFProps<SmallMultiplesSpec, "chartType" | "specType", "id", "style" | "splitHorizontally" | "splitVertically" | "splitZigzag", never>>;
+
+// @public (undocumented)
+export interface SmallMultiplesDatum {
+    // (undocumented)
+    smHorizontalAccessorValue?: string | number;
+    // (undocumented)
+    smVerticalAccessorValue?: string | number;
+}
 
 // Warning: (ae-incompatible-release-tags) The symbol "SmallMultiplesProps" is marked as @public, but its signature references "SmallMultiples" which is marked as @alpha
 //
