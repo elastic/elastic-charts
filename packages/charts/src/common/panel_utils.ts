@@ -60,8 +60,8 @@ export function getPerPanelMap<T>(
           x: horizontal.scale(horizontalValue) || 0,
           y: vertical.scale(verticalValue) || 0,
         };
-        const fnObj = fn(panelAnchor, horizontalValue, verticalValue, scales);
-        return fnObj ? [...hAcc, { panelAnchor, horizontalValue, verticalValue, ...fnObj }] : hAcc;
+        const fnReturn = fn(panelAnchor, horizontalValue, verticalValue, scales);
+        return fnReturn ? [...hAcc, { panelAnchor, horizontalValue, verticalValue, ...fnReturn }] : hAcc;
       }, []),
     ];
   }, []);
@@ -83,8 +83,7 @@ export const getPanelTitle = (
   horizontalValue: any,
   groupBy?: SmallMultiplesGroupBy,
 ): string => {
-  const formatter = isVertical ? groupBy?.vertical?.format : groupBy?.horizontal?.format;
-  const value = isVertical ? `${verticalValue}` : `${horizontalValue}`;
-
-  return safeFormat(value, formatter);
+  return isVertical
+    ? safeFormat(`${verticalValue}`, groupBy?.vertical?.format)
+    : safeFormat(`${horizontalValue}`, groupBy?.horizontal?.format);
 };
