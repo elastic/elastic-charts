@@ -365,7 +365,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const startValue = x[0];
     const endValue = x[x.length - 1];
     const leftIndex = xValues.indexOf(startValue);
-    const rightIndex = xValues.indexOf(endValue) + 1;
+    const rightIndex = xValues.indexOf(endValue) + (isRasterTimeScale(spec.xScale) ? 0 : 1);
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
