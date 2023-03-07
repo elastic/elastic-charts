@@ -108,6 +108,10 @@ export class ScaleBand {
     return this.domain.includes(value);
   }
 
+  /**
+   * returns true for scales with empty input domains
+   * TODO: Cleanup See https://github.com/elastic/elastic-charts/issues/1990
+   */
   isNullDomain() {
     return this.domain.length === 1 && this.domain[0] === undefined;
   }
