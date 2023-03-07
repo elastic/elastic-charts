@@ -13,21 +13,36 @@ import {
   Axis,
   BarSeries,
   Chart,
+  CustomTooltip,
   niceTimeFormatByDay,
   Position,
   ScaleType,
   Settings,
   timeFormatter,
+  Tooltip,
+  TooltipContainer,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
 
+const CustomTooltipWithSubChart: CustomTooltip = (props) => {
+  return (
+    <TooltipContainer>
+      <div>Hovering: {props.header?.label}</div>
+    </TooltipContainer>
+  );
+};
+
 export const Example = () => {
+  const useCustomTooltip = boolean('Use custom tooltip', false);
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   return (
     <Chart>
       <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} />
+
+      {useCustomTooltip && <Tooltip customTooltip={CustomTooltipWithSubChart} type="follow" />}
+
       <Axis
         id="bottom"
         position={Position.Bottom}
