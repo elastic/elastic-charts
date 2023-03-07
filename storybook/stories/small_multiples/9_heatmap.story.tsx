@@ -148,6 +148,21 @@ export const Example = () => {
             },
           },
           heatmap: {
+            grid: {
+              stroke: {
+                width: number(
+                  'Grid stroke',
+                  1,
+                  {
+                    range: true,
+                    min: 1,
+                    max: 10,
+                    step: 1,
+                  },
+                  'SmallMultiples Styles',
+                ),
+              },
+            },
             cell: {
               border: {
                 strokeWidth: 0,

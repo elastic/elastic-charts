@@ -17,6 +17,7 @@ import {
   getPanelTitle,
   getPerPanelMap,
   hasSMDomain,
+  isPointerOverPanelFn,
   SmallMultipleScales,
   SmallMultiplesDatum,
   SmallMultiplesGroupBy,
@@ -87,9 +88,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   groupBySpec: SmallMultiplesGroupBy,
   bandsToHide: Array<[number, number]>,
 ): ShapeViewModel {
-  const gridStrokeWidth = heatmapTheme.grid.stroke.width ?? 1;
-
   const { table, yValues, xValues } = heatmapTable;
+  const gridStrokeWidth = heatmapTheme.grid.stroke.width;
+  const isPointerOverPanel = isPointerOverPanelFn(smScales, chartDimensions, gridStrokeWidth);
 
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => ({
@@ -273,10 +274,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       }
     }
 
-    if (x < chartDimensions.left || y < chartDimensions.top) {
-      return [];
-    }
-    if (x > chartDimensions.width + chartDimensions.left || y > chartDimensions.top + chartDimensions.height) {
+    if (!isPointerOverPanel({ x, y })) {
       return [];
     }
 

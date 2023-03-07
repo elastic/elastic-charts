@@ -10,7 +10,7 @@ import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/grou
 import { ScaleBand } from '../scales';
 import { GroupBySpec } from '../specs/group_by';
 import { safeFormat } from '../utils/common';
-import { Size } from '../utils/dimensions';
+import { Dimensions, Size } from '../utils/dimensions';
 import { OrdinalDomain } from '../utils/domain';
 import { Point } from '../utils/point';
 
@@ -92,3 +92,42 @@ export const getPanelTitle = (
     ? safeFormat(`${verticalValue}`, groupBy?.vertical?.format)
     : safeFormat(`${horizontalValue}`, groupBy?.horizontal?.format);
 };
+
+/**
+ * Returns true if pointer is within a panel inside the chart area, otherwise false
+ * Returns false when pointer is in the padding gutter and axes
+ * @internal
+ */
+export const isPointerOverPanelFn =
+  (smScales: SmallMultipleScales, chartDimensions: Dimensions, gridStroke: number) =>
+  (pointer: Point): boolean => {
+    return (
+      isPointerInsideChart(chartDimensions)(pointer) &&
+      isPointerInBandwidth(smScales.horizontal, pointer.x - chartDimensions.left, gridStroke) &&
+      isPointerInBandwidth(smScales.vertical, pointer.y - chartDimensions.top, gridStroke)
+    );
+  };
+
+function isPointerInBandwidth(
+  scale: SmallMultipleScales['horizontal'] | SmallMultipleScales['vertical'],
+  dimension: number,
+  gridStroke: number,
+): boolean {
+  const { bandwidth, innerPadding } = scale;
+  const padding = innerPadding * bandwidth;
+  const divisor = bandwidth + padding + gridStroke * 2;
+  const vDiv = Math.floor(dimension / divisor);
+  const lower = vDiv * divisor;
+  const upper = lower + bandwidth + gridStroke * 2;
+
+  return dimension > lower && dimension <= upper;
+}
+
+/**
+ * Returns true if the pointer is within the chart dimensions, false otherwise
+ * @internal
+ */
+export const isPointerInsideChart =
+  ({ left, top, height, width }: Dimensions) =>
+  ({ x, y }: Point): boolean =>
+    x > left && x < left + width && y > top && y < top + height;
