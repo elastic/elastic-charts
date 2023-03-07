@@ -1424,25 +1424,13 @@ export interface HeatmapStyle {
     };
     // (undocumented)
     grid: {
-        cellWidth: {
-            min: Pixels;
-            max: Pixels | 'fill';
-        };
-        cellHeight: {
-            min: Pixels;
-            max: Pixels | 'fill';
-        };
         stroke: {
             color: string;
             width: number;
         };
     };
     // (undocumented)
-    maxColumnWidth: Pixels;
-    // (undocumented)
     maxLegendHeight?: number;
-    // (undocumented)
-    maxRowHeight: Pixels;
     // Warning: (ae-forgotten-export) The symbol "Font" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
