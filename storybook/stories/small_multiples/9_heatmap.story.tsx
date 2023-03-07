@@ -20,6 +20,7 @@ import {
   niceTimeFormatByDay,
   timeFormatter,
   Heatmap,
+  SmallMultiplesStyle,
 } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 const rng = getRandomNumberGenerator();
@@ -50,8 +51,9 @@ export const Example = () => {
     group: 'Data',
   });
 
-  const smStyles = {
+  const smStyles: SmallMultiplesStyle = {
     horizontalPanelPadding: {
+      // Note: not fully supported, See https://github.com/elastic/elastic-charts/issues/1992
       outer: number(
         'Horizontal outer pad',
         0,
@@ -76,6 +78,7 @@ export const Example = () => {
       ),
     },
     verticalPanelPadding: {
+      // Note: not fully supported, See https://github.com/elastic/elastic-charts/issues/1992
       outer: number(
         'Vertical outer pad',
         0,
@@ -145,11 +148,6 @@ export const Example = () => {
             },
           },
           heatmap: {
-            grid: {
-              cellHeight: {
-                max: 'fill',
-              },
-            },
             cell: {
               border: {
                 strokeWidth: 0,
