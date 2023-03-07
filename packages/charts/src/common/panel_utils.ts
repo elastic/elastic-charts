@@ -73,7 +73,11 @@ export function getPanelSize({ horizontal, vertical }: SmallMultipleScales): Siz
   return { width: horizontal.bandwidth, height: vertical.bandwidth };
 }
 
-/** @internal */
+/**
+ * returns true for scales with empty input domains
+ * TODO: Cleanup See https://github.com/elastic/elastic-charts/issues/1990
+ * @internal
+ */
 export const hasSMDomain = ({ domain }: SmallMultipleScales['horizontal'] | SmallMultipleScales['vertical']) =>
   domain.length > 0 && domain[0] !== undefined;
 

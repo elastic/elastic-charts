@@ -8,7 +8,6 @@
 
 import React, { RefObject } from 'react';
 
-import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
@@ -38,6 +37,7 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { CursorBand } from '../renderer/dom/cursor_band';
+import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
 
 const EMPTY_MAP = new Map();
 

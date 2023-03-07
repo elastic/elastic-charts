@@ -16,6 +16,7 @@ import {
   getPanelSize,
   getPanelTitle,
   getPerPanelMap,
+  hasSMDomain,
   SmallMultipleScales,
   SmallMultiplesDatum,
   SmallMultiplesGroupBy,
@@ -204,7 +205,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   }, new Map());
 
   const getScaledSMValue = (value: number | string, scale: 'horizontal' | 'vertical') => {
-    return smScales[scale].isNullDomain() ? 0 : smScales[scale].scale(value);
+    return hasSMDomain(smScales[scale]) ? smScales[scale].scale(value) : 0;
   };
 
   const getPanelPointCoordinate = (value: Pixels, scale: 'horizontal' | 'vertical') => {
