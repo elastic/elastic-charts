@@ -33,8 +33,6 @@ export const Example = () => {
   const showXAxisTitle = boolean('Show x axis title', false);
   const showYAxisTitle = boolean('Show y axis title', false);
   const showBrushTool = boolean('Show pointer brush area', true);
-  const minCellHeight = number('enable cell min height', 20, { min: 5, max: 50, step: 5 });
-  const maxCellHeight = number('grid cell max height', 50, { min: 5, max: 50, step: 5 });
 
   const pointerUpdate = (event: PointerEvent) => {
     action('onPointerUpdate')(event);
@@ -46,10 +44,6 @@ export const Example = () => {
         visible: showBrushTool,
       },
       grid: {
-        cellHeight: {
-          min: minCellHeight,
-          max: maxCellHeight,
-        },
         stroke: {
           width: 0.5,
           color: '#bababa',
@@ -74,7 +68,7 @@ export const Example = () => {
     };
 
     return styles;
-  }, [showBrushTool, minCellHeight, maxCellHeight]);
+  }, [showBrushTool]);
 
   return (
     <Chart>

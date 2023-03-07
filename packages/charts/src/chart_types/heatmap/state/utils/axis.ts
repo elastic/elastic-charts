@@ -72,30 +72,6 @@ export function getTextSizeDimension(
 }
 
 /** @internal */
-export function getGridCellHeight(
-  rows: number,
-  grid: HeatmapStyle['grid'],
-  height: number,
-  hasVerticalSM: boolean,
-): number {
-  if (rows === 0) {
-    return height; // TODO check if this can be just 0
-  }
-  const stretchedHeight = height / rows;
-
-  if (hasVerticalSM) return stretchedHeight;
-
-  if (stretchedHeight < grid.cellHeight.min) {
-    return grid.cellHeight.min;
-  }
-  if (grid.cellHeight.max !== 'fill' && stretchedHeight > grid.cellHeight.max) {
-    return grid.cellHeight.max;
-  }
-
-  return stretchedHeight;
-}
-
-/** @internal */
 export function getXAxisSize(
   isCategoricalScale: boolean,
   style: HeatmapStyle['xAxisLabel'],

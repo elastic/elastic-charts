@@ -101,11 +101,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const panelSize = getPanelSize(smScales);
 
   // compute the scale for the rows positions
-  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, elementSizes.fullHeatmapHeight]);
+  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, panelSize.height]);
 
-  const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
-    .domain([0, elementSizes.fullHeatmapHeight])
-    .range(yValues);
+  const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, panelSize.height]).range(yValues);
 
   // compute the scale for the columns positions
   const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, panelSize.width]);
@@ -126,17 +124,15 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const { padding } = heatmapTheme.yAxisLabel;
 
   // compute the position of each row label
-  const textYValues = boxedYValues
-    .filter((_, yIndex) => yIndex < elementSizes.visibleNumberOfRows)
-    .map<TextBox>((d) => {
-      return {
-        ...d,
-        // position of the Y labels
-        x: -pad(padding, 'right'),
-        y: cellHeight / 2 + (yScale(d.value) || 0),
-        align: 'right',
-      };
-    });
+  const textYValues = boxedYValues.map<TextBox>((d) => {
+    return {
+      ...d,
+      // position of the Y labels
+      x: -pad(padding, 'right'),
+      y: cellHeight / 2 + (yScale(d.value) || 0),
+      align: 'right',
+    };
+  });
 
   const cellWidthInner = cellWidth - gridStrokeWidth;
   const cellHeightInner = cellHeight - gridStrokeWidth;
@@ -157,7 +153,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const y = yScale(String(d.y));
     const yIndex = yValues.indexOf(d.y);
 
-    if (!isFiniteNumber(x) || !isFiniteNumber(y) || yIndex === -1 || yIndex > elementSizes.visibleNumberOfRows - 1) {
+    if (!isFiniteNumber(x) || !isFiniteNumber(y) || yIndex === -1) {
       return acc;
     }
     const cellBackgroundColor = colorScale(d.value);
@@ -445,12 +441,12 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       x1: i * cellWidth,
       x2: i * cellWidth,
       y1: 0,
-      y2: elementSizes.visibleNumberOfRows * elementSizes.rowHeight + xAxisExtension,
+      y2: panelSize.height + xAxisExtension,
     };
   });
 
   // horizontal lines
-  const yLines = Array.from({ length: elementSizes.visibleNumberOfRows + 1 }, (d, i) => ({
+  const yLines = Array.from({ length: yValues.length + 1 }, (d, i) => ({
     x1: 0,
     x2: panelSize.width,
     y1: i * cellHeight,
@@ -571,7 +567,6 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
             width: gridStrokeWidth,
           },
         },
-        pageSize: elementSizes.visibleNumberOfRows,
         cells,
         cellFontSize: (cell: Cell) => (heatmapTheme.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
         xValues: lastColumn ? textXValues : [],

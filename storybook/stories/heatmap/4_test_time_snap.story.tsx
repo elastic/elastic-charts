@@ -32,9 +32,6 @@ const datasets = [DATA_1, DATA_2, DATA_3, DATA_4, DATA_5, DATA_6, DATA_7, DATA_8
 const theme: PartialTheme = {
   heatmap: {
     grid: {
-      cellHeight: {
-        min: 20,
-      },
       stroke: {
         width: 1,
         color: 'black',

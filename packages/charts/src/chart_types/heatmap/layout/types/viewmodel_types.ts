@@ -71,7 +71,6 @@ export interface HeatmapViewModel extends PerPanelMap {
   cellFontSize: (c: Cell) => Pixels;
   xValues: Array<TextBox>;
   yValues: Array<TextBox>;
-  pageSize: number;
   titles: HeatmapTitleConfig[];
 }
 

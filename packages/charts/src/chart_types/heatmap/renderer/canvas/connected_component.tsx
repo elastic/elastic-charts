@@ -163,9 +163,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   elementSizes: {
     xAxis: { width: 0, height: 0, left: 0, top: 0 },
     yAxis: { width: 0, height: 0, left: 0, top: 0 },
-    fullHeatmapHeight: 0,
-    rowHeight: 0,
-    visibleNumberOfRows: 0,
     xAxisTickCadence: 1,
     xLabelRotation: 0,
   },

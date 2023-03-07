@@ -321,8 +321,6 @@ export const LIGHT_THEME: Theme = {
     sectorLineStroke: 'white',
   },
   heatmap: {
-    maxRowHeight: 30,
-    maxColumnWidth: 30,
     brushArea: {
       visible: true,
       stroke: '#69707D', // euiColorDarkShade,
@@ -359,14 +357,6 @@ export const LIGHT_THEME: Theme = {
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
     },
     grid: {
-      cellWidth: {
-        min: 0,
-        max: 30,
-      },
-      cellHeight: {
-        min: 12,
-        max: 30,
-      },
       stroke: {
         width: 1,
         color: 'gray',

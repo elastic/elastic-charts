@@ -32,9 +32,6 @@ export const Example = () => {
   const heatmap = useMemo(() => {
     const styles: RecursivePartial<HeatmapStyle> = {
       grid: {
-        cellHeight: {
-          min: 20,
-        },
         stroke: {
           width: 0.5,
           color: 'transparent',
@@ -80,7 +77,7 @@ export const Example = () => {
         {DateTime.fromMillis(start.toMillis() + startTimeOffset).toISO()} to{' '}
         {DateTime.fromMillis(end.toMillis() + endTimeOffset).toISO()}
       </div>
-      <Chart className="story-chart">
+      <Chart size={['100%', 180]} className="story-chart">
         <Settings
           showLegend
           xDomain={{

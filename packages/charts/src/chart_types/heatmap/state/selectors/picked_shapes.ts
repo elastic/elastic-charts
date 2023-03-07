@@ -14,14 +14,11 @@ import { Cell, GridCell, TextBox } from '../../layout/types/viewmodel_types';
 
 /** @internal */
 export const getPickedShapes = createCustomCachedSelector(
-  [getPerPanelHeatmapGeometries, getActivePointerPosition, computeChartElementSizesSelector],
-  (geoms, pointerPosition, elementSizes): Cell[] | TextBox => {
+  [getPerPanelHeatmapGeometries, getActivePointerPosition],
+  (geoms, pointerPosition): Cell[] | TextBox => {
     const picker = geoms.pickQuads;
     const { x, y } = pointerPosition;
-    const pickedData = picker(x, y);
-    return Array.isArray(pickedData)
-      ? pickedData.filter(({ y }) => y < elementSizes.rowHeight * elementSizes.visibleNumberOfRows)
-      : pickedData;
+    return picker(x, y);
   },
 );
 
