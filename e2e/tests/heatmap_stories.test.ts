@@ -121,11 +121,16 @@ test.describe('Heatmap stories', () => {
         const showAxesTitles = hiddenTitles !== 'axes' && hiddenTitles !== 'both';
         const showPanelTitles = hiddenTitles !== 'panel' && hiddenTitles !== 'both';
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=background:white;theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes title_SmallMultiples Styles=${showAxesTitles}&knob-Show axes panel titles_SmallMultiples Styles=${showPanelTitles}&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=${timeData}&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=${density}&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=${hSplit}&knob-h - split_Data=${Number.isFinite(
-            hSplit,
-          )}&knob-number of groups_Data=4&knob-v - split count_Data=${vSplit}&knob-v - split_Data=${Number.isFinite(
+          `http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=background:white;theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes title_SmallMultiples Styles=${showAxesTitles}&knob-Show axes panel titles_SmallMultiples Styles=${showPanelTitles}&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=${timeData}&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=${density}&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=${
+            hSplit ?? 0
+          }&knob-h - split_Data=${Number.isFinite(hSplit)}&knob-number of groups_Data=4&knob-v - split count_Data=${
+            vSplit ?? 0
+          }&knob-v - split_Data=${Number.isFinite(
             vSplit,
           )}&knob-Debug=&knob-Enable debug state=true&knob-cell density(%)_Data=75&knob-xScaleType_Data=linear&knob-Grid stroke_SmallMultiples Styles=1`,
+          {
+            waitSelector: (vSplit ?? 1) * (hSplit ?? 1) === 0 ? '.echReactiveChart_noResults' : '',
+          },
         );
       },
     );
