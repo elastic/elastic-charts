@@ -86,9 +86,9 @@ test.describe('Heatmap stories', () => {
 
   test.describe('Small multiples', () => {
     const titleOptions = {
-      panel: 'without panel titles',
-      axes: 'without axes titles',
-      both: 'without any titles',
+      panel: ' without panel titles',
+      axes: ' without axes titles',
+      both: ' without any titles',
     };
 
     pwEach.test<{
@@ -112,9 +112,10 @@ test.describe('Heatmap stories', () => {
       { vSplit: 2, hSplit: 2, hiddenTitles: 'both' },
       { vSplit: 2, hSplit: 2, hiddenTitles: 'both', timeData: true },
     ])(
-      ({ vSplit, hSplit, hiddenTitles }) => {
+      ({ vSplit, hSplit, hiddenTitles, timeData }) => {
         const titleText = (hiddenTitles && titleOptions[hiddenTitles]) ?? '';
-        return `should render ${vSplit} x ${hSplit} trellis${titleText}`;
+        const timeDataText = timeData ? ' - time data' : '';
+        return `should render ${vSplit} x ${hSplit} trellis${titleText}${timeDataText}`;
       },
       async (page, { vSplit, hSplit, density = 30, hiddenTitles, timeData = false }) => {
         const showAxesTitles = hiddenTitles !== 'axes' && hiddenTitles !== 'both';
