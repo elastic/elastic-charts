@@ -41,9 +41,9 @@ export const getDebugStateSelector = createCustomCachedSelector(
     { xAxisTickCadence },
     { xAxisTitle, yAxisTitle },
   ): DebugState => {
-    const [heatmapViewModel] = geoms.heatmapViewModels;
+    const heatmapViewModel = geoms.heatmapViewModels[0];
+    const xAxisValues = heatmapViewModel?.xValues.filter((_, i) => i % xAxisTickCadence === 0) ?? [];
 
-    const xAxisValues = heatmapViewModel.xValues.filter((_, i) => i % xAxisTickCadence === 0);
     return {
       // Common debug state
       legend: getLegendState(legend),
@@ -55,7 +55,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
             labels: xAxisValues.map(({ text }) => text),
             values: xAxisValues.map(({ value }) => value),
             // vertical lines
-            gridlines: heatmapViewModel.gridLines.x.map((line) => ({ x: line.x1, y: line.y2 })),
+            gridlines: (heatmapViewModel?.gridLines?.x ?? []).map((line) => ({ x: line.x1, y: line.y2 })),
             ...(xAxisTitle ? { title: xAxisTitle } : {}),
           },
         ],
@@ -63,10 +63,10 @@ export const getDebugStateSelector = createCustomCachedSelector(
           {
             id: 'y',
             position: Position.Bottom,
-            labels: heatmapViewModel.yValues.map(({ text }) => text),
-            values: heatmapViewModel.yValues.map(({ value }) => value),
+            labels: (heatmapViewModel?.yValues ?? []).map(({ text }) => text),
+            values: (heatmapViewModel?.yValues ?? []).map(({ value }) => value),
             // horizontal lines
-            gridlines: heatmapViewModel.gridLines.y.map((line) => ({ x: line.x2, y: line.y1 })),
+            gridlines: (heatmapViewModel?.gridLines?.y ?? []).map((line) => ({ x: line.x2, y: line.y1 })),
             ...(yAxisTitle ? { title: yAxisTitle } : {}),
           },
         ],

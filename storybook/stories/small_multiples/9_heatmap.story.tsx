@@ -43,8 +43,10 @@ export const Example = () => {
   const showLegend = boolean('Show Legend', false);
   const vSplit = boolean('v - split', true, 'Data');
   const hSplit = boolean('h - split', true, 'Data');
-  const vSplitCount = number('v - split count', 2, { min: 1 }, 'Data');
-  const hSplitCount = number('h - split count', 2, { min: 1 }, 'Data');
+  const vSplitCount = number('v - split count', 2, { min: 0 }, 'Data');
+  const hSplitCount = number('h - split count', 2, { min: 0 }, 'Data');
+  const vSplitCountAbs = vSplit ? vSplitCount : 1;
+  const hSplitCountAbs = hSplit ? hSplitCount : 1;
   const categories = number('categories', 4, { min: 1, step: 1, range: true }, 'Data');
   const density = number('cell density(%)', 75, { min: 5, max: 100, step: 5, range: true }, 'Data') / 100;
   const xScaleType = customKnobs.enum.scaleType('xScaleType', ScaleType.Linear, {
@@ -110,7 +112,7 @@ export const Example = () => {
   const dataCount = timeBasedData ? numOfDays : 10;
   const fullData = useMemo(
     () =>
-      dg.generateSMGroupedSeries(vSplit ? vSplitCount : 1, hSplit ? hSplitCount : 1, () => {
+      dg.generateSMGroupedSeries(vSplitCountAbs, hSplitCountAbs, () => {
         return dg.generateSimpleSeries(dataCount).flatMap((d) =>
           range(0, categories, 1).map((y) => {
             return {
@@ -122,11 +124,11 @@ export const Example = () => {
           }),
         );
       }),
-    [vSplit, vSplitCount, hSplit, hSplitCount, dataCount, categories],
+    [vSplitCountAbs, hSplitCountAbs, dataCount, categories],
   );
   const data = useMemo(
-    () => sampleSize(fullData, vSplitCount * hSplitCount * dataCount * categories * density),
-    [categories, dataCount, density, fullData, hSplitCount, vSplitCount],
+    () => sampleSize(fullData, vSplitCountAbs * hSplitCountAbs * dataCount * categories * density),
+    [categories, dataCount, density, fullData, vSplitCountAbs, hSplitCountAbs],
   );
   const { highlightedData, onElementClick, onBrushEnd } = useHeatmapSelection();
 

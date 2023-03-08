@@ -26,7 +26,7 @@ function defaultRNG(min = 0, max = 1, fractionDigits = 0, inclusive = true) {
   return num / precision;
 }
 
-const fillGroups = (n: number) => new Array(n).fill(0).map((_, i) => String.fromCharCode(97 + i));
+const fillGroups = (n: number) => new Array(Math.max(n, 1)).fill(0).map((_, i) => String.fromCharCode(97 + i));
 
 /** @public */
 export class DataGenerator {
