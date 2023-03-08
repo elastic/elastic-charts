@@ -7,7 +7,7 @@
  */
 
 import { boolean, number } from '@storybook/addon-knobs';
-import { sampleSize, range } from 'lodash';
+import { range } from 'lodash';
 import { DateTime } from 'luxon';
 import React, { useMemo } from 'react';
 
@@ -23,13 +23,14 @@ import {
   SmallMultiplesStyle,
 } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
-const rng = getRandomNumberGenerator();
 
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { customKnobs } from '../utils/knobs';
 import { useHeatmapSelection } from '../utils/use_heatmap_selection';
+import { sampleSize } from '../utils/utils';
 
+const rng = getRandomNumberGenerator();
 const dg = new SeededDataGenerator(500, 'test');
 const numOfDays = 90;
 

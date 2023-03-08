@@ -85,46 +85,84 @@ test.describe('Heatmap stories', () => {
   });
 
   test.describe('Small multiples', () => {
-    test('should render 2x2 trellis', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data[0]=20&knob-cell%20density(%)_Data[1]=20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-x - split count_Data=2&knob-x - split_Data=true&knob-y - split count_Data=2&knob-y - split_Data=true&knob-Debug=&knob-cell density(%)_Data=40',
-      );
-    });
+    const titleOptions = {
+      panel: 'without panel titles',
+      axes: 'without axes titles',
+      both: 'without any titles',
+    };
 
-    test('should render 0x3 trellis', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=3&knob-number of groups_Data=4&knob-v - split count_Data=3&knob-v - split_Data=&knob-x - split count_Data=2&knob-x - split_Data=true&knob-y - split count_Data=2&knob-y - split_Data=true&knob-Debug=&knob-h - split_Data=false&knob-cell density(%)_Data=20',
-      );
-    });
-
-    test('should render 3x0 trellis', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=3&knob-number of groups_Data=4&knob-v - split count_Data=3&knob-v - split_Data=&knob-x - split count_Data=2&knob-x - split_Data=true&knob-y - split count_Data=2&knob-y - split_Data=false&knob-Debug=&knob-h - split_Data=true&knob-cell density(%)_Data=20',
-      );
-    });
-
-    test('should render 2x2 trellis without titles', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-x - split count_Data=2&knob-x - split_Data=true&knob-y - split count_Data=2&knob-y - split_Data=true&knob-Debug=&knob-cell density(%)_Data=20&knob-Show axes title_SmallMultiples Styles=false&knob-Show axes panel titles_SmallMultiples Styles=true',
-      );
-    });
-
-    test('should render 2x2 trellis without panel titles', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-x - split count_Data=2&knob-x - split_Data=true&knob-y - split count_Data=2&knob-y - split_Data=true&knob-Debug=&knob-cell density(%)_Data=20&knob-Show axes title_SmallMultiples Styles=true&knob-Show axes panel titles_SmallMultiples Styles=false',
-      );
-    });
-
-    test('should render 2x2 trellis without any titles', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-x - split count_Data=2&knob-x - split_Data=true&knob-y - split count_Data=2&knob-y - split_Data=true&knob-Debug=&knob-cell density(%)_Data=20&knob-Show axes title_SmallMultiples Styles=false&knob-Show axes panel titles_SmallMultiples Styles=false',
-      );
-    });
+    pwEach.test<{
+      vSplit: number | null;
+      hSplit: number | null;
+      density?: number;
+      timeData?: boolean;
+      hiddenTitles?: 'panel' | 'axes' | 'both';
+    }>([
+      { vSplit: 2, hSplit: 2 },
+      { vSplit: 2, hSplit: 2, timeData: true },
+      { vSplit: 3, hSplit: 3 },
+      { vSplit: 1, hSplit: 3 },
+      { vSplit: null, hSplit: 3 },
+      { vSplit: 0, hSplit: 3 },
+      { vSplit: 3, hSplit: 1 },
+      { vSplit: 3, hSplit: 0 },
+      { vSplit: 3, hSplit: null },
+      { vSplit: 2, hSplit: 2, hiddenTitles: 'axes' },
+      { vSplit: 2, hSplit: 2, hiddenTitles: 'panel' },
+      { vSplit: 2, hSplit: 2, hiddenTitles: 'both' },
+      { vSplit: 2, hSplit: 2, hiddenTitles: 'both', timeData: true },
+    ])(
+      ({ vSplit, hSplit, hiddenTitles }) => {
+        const titleText = (hiddenTitles && titleOptions[hiddenTitles]) ?? '';
+        return `should render ${vSplit} x ${hSplit} trellis${titleText}`;
+      },
+      async (page, { vSplit, hSplit, density = 30, hiddenTitles, timeData = false }) => {
+        const showAxesTitles = hiddenTitles !== 'axes' && hiddenTitles !== 'both';
+        const showPanelTitles = hiddenTitles !== 'panel' && hiddenTitles !== 'both';
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          `http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=background:white;theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes title_SmallMultiples Styles=${showAxesTitles}&knob-Show axes panel titles_SmallMultiples Styles=${showPanelTitles}&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=${timeData}&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=${density}&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=${hSplit}&knob-h - split_Data=${Number.isFinite(
+            hSplit,
+          )}&knob-number of groups_Data=4&knob-v - split count_Data=${vSplit}&knob-v - split_Data=${Number.isFinite(
+            vSplit,
+          )}&knob-Debug=&knob-Enable debug state=true&knob-cell density(%)_Data=75&knob-xScaleType_Data=linear&knob-Grid stroke_SmallMultiples Styles=1`,
+        );
+      },
+    );
 
     test('should render tooltip over correct panel', async ({ page }) => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data[0]=20&knob-cell%20density(%)_Data[1]=20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-x - split count_Data=2&knob-x - split_Data=true&knob-y - split count_Data=2&knob-y - split_Data=true&knob-Debug=&knob-cell density(%)_Data=100',
+        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data[0]=20&knob-cell%20density(%)_Data[1]=20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-Debug=&knob-cell density(%)_Data=100',
         { left: 464, top: 212 },
+      );
+    });
+
+    test('should constrain brush to active panel', async ({ page }) => {
+      await common.expectChartWithDragAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=background:white;theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal%20inner%20pad=0.1&knob-Horizontal%20inner%20pad_SmallMultiples%20Styles=0.05&knob-Horizontal%20outer%20pad=0&knob-Horizontal%20outer%20pad_SmallMultiples%20Styles=0&knob-Persist%20cells%20selection=true&knob-Show%20Legend=true&knob-Show%20axes%20title_SmallMultiples%20Styles=true&knob-Show%20axis%20panel%20titles=true&knob-Show%20axis%20panel%20titles_SmallMultiples%20Styles=true&knob-Show%20grid%20line_bottom=true&knob-Show%20grid%20line_left=true&knob-Show%20x%20axis%20title_SmallMultiples%20Styles=true&knob-Show%20y%20axis%20title_SmallMultiples%20Styles=true&knob-Time%20data=true&knob-Title_bottom=Hosts%20-%20Bottom&knob-Title_left=Metrics%20-%20Left&knob-Title_right=Metrics%20-%20Right&knob-Title_top=Hosts%20-%20Top&knob-Vertical%20inner%20pad=0.3&knob-Vertical%20inner%20pad_SmallMultiples%20Styles=0.1&knob-Vertical%20outer%20pad=0&knob-Vertical%20outer%20pad_SmallMultiples%20Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group%20count_Data=9&knob-h%20-%20split%20count_Data=3&knob-h%20-%20split_Data=true&knob-number%20of%20groups_Data=4&knob-v%20-%20split%20count_Data=3&knob-v%20-%20split_Data=false',
+        { left: 320, top: 100 },
+        { left: 630, top: 245 },
+      );
+    });
+
+    test('should brush panel with time data', async ({ page }) => {
+      await common.expectChartWithDragAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=background:white;theme:light&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20,20&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-Debug=&knob-Enable debug state=true&knob-cell density(%)_Data=75&knob-xScaleType_Data=linear&knob-Show axes panel titles_SmallMultiples Styles=true&knob-Grid stroke_SmallMultiples Styles=1',
+        { left: 520, top: 210 },
+        { left: 710, top: 280 },
+      );
+    });
+
+    test('should select single cell on click with time data', async ({ page }) => {
+      await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=background:white;theme:light&knob-Enable debug state=true&knob-Grid stroke_SmallMultiples Styles=1&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show axes panel titles_SmallMultiples Styles=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20,20,75&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-xScaleType_Data=linear&knob-Debug=&knob-Show Legend=&knob-cell density(%)_Data=75',
+        { left: 340, top: 250 },
+      );
+    });
+
+    test('should select single cell on click with categorical data', async ({ page }) => {
+      await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/small-multiples-alpha--heatmap&globals=background:white;theme:light&knob-Enable debug state=true&knob-Grid stroke_SmallMultiples Styles=1&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show axes panel titles_SmallMultiples Styles=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=false&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20,20,75&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-xScaleType_Data=linear&knob-Debug=&knob-Show Legend=&knob-cell density(%)_Data=75',
+        { left: 340, top: 250 },
       );
     });
   });
