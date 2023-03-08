@@ -8,16 +8,7 @@
 
 import React from 'react';
 
-import {
-  Chart,
-  Datum,
-  Partition,
-  PartitionLayout,
-  Settings,
-  defaultPartitionValueFormatter,
-  entryValue,
-  SORT_INDEX_KEY,
-} from '@elastic/charts';
+import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';

@@ -9,16 +9,7 @@
 import { boolean, color, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Chart,
-  Datum,
-  defaultPartitionValueFormatter,
-  entryValue,
-  Partition,
-  PartitionLayout,
-  Settings,
-  SORT_INDEX_KEY,
-} from '@elastic/charts';
+import { Chart, Datum, defaultPartitionValueFormatter, Partition, PartitionLayout, Settings } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { useBaseTheme } from '../../use_base_theme';
