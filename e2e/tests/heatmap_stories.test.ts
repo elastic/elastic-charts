@@ -129,7 +129,7 @@ test.describe('Heatmap stories', () => {
             vSplit,
           )}&knob-Debug=&knob-Enable debug state=true&knob-cell density(%)_Data=75&knob-xScaleType_Data=linear&knob-Grid stroke_SmallMultiples Styles=1`,
           {
-            waitSelector: (vSplit ?? 1) * (hSplit ?? 1) === 0 ? '.echReactiveChart_noResults' : '',
+            waitSelector: (vSplit ?? 1) * (hSplit ?? 1) === 0 ? '.echReactiveChart_noResults' : undefined,
           },
         );
       },
