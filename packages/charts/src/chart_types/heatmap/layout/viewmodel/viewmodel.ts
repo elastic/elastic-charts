@@ -315,10 +315,6 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const panelEndX = clampWithOffset(bottomRight[0], 0, panelSize.width, hOffset);
     const panelEndY = clampWithOffset(bottomRight[1], 0, panelSize.height, vOffset);
 
-    // TODO figure out this current grid height thing
-    // const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));
-    // const endY = yInvertedScale(clamp(bottomRight[1], 0, currentGridHeight - 1));
-
     const startX = xInvertedScale(panelStartX);
     const startY = yInvertedScale(panelStartY);
     const endX = xInvertedScale(panelEndX);
