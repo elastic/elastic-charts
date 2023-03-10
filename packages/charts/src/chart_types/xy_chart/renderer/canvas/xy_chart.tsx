@@ -17,6 +17,7 @@ import { LegendItem } from '../../../../common/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
+import { computePanelsSelectors, PanelGeoms } from '../../../../state/selectors/compute_panels';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,
@@ -37,7 +38,6 @@ import { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
-import { computePanelsSelectors, PanelGeoms } from '../../state/selectors/compute_panels';
 import {
   computePerPanelAxesGeomsSelector,
   PerPanelAxisGeoms,
@@ -228,7 +228,6 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     y: 0,
     rotate: 0,
   },
-
   axesSpecs: [],
   perPanelAxisGeoms: [],
   perPanelGridLines: [],

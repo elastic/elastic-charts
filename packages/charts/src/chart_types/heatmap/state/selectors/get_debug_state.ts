@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { getChartThemeSelector } from './../../../../state/selectors/get_chart_theme';
-import { computeChartElementSizesSelector } from './compute_chart_dimensions';
+import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
 import { computeLegendSelector } from './compute_legend';
-import { getHeatmapGeometries } from './geometries';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
+import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { DebugState, DebugStateLegend } from '../../../../state/types';
 import { Position } from '../../../../utils/common';
 
@@ -24,7 +24,7 @@ import { Position } from '../../../../utils/common';
  */
 export const getDebugStateSelector = createCustomCachedSelector(
   [
-    getHeatmapGeometries,
+    getPerPanelHeatmapGeometries,
     computeLegendSelector,
     getHighlightedAreaSelector,
     getHighlightedDataSelector,
@@ -41,7 +41,9 @@ export const getDebugStateSelector = createCustomCachedSelector(
     { xAxisTickCadence },
     { xAxisTitle, yAxisTitle },
   ): DebugState => {
-    const xAxisValues = geoms.heatmapViewModel.xValues.filter((_, i) => i % xAxisTickCadence === 0);
+    const heatmapViewModel = geoms.heatmapViewModels[0];
+    const xAxisValues = heatmapViewModel?.xValues.filter((_, i) => i % xAxisTickCadence === 0) ?? [];
+
     return {
       // Common debug state
       legend: getLegendState(legend),
@@ -53,7 +55,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
             labels: xAxisValues.map(({ text }) => text),
             values: xAxisValues.map(({ value }) => value),
             // vertical lines
-            gridlines: geoms.heatmapViewModel.gridLines.x.map((line) => ({ x: line.x1, y: line.y2 })),
+            gridlines: (heatmapViewModel?.gridLines?.x ?? []).map((line) => ({ x: line.x1, y: line.y2 })),
             ...(xAxisTitle ? { title: xAxisTitle } : {}),
           },
         ],
@@ -61,24 +63,27 @@ export const getDebugStateSelector = createCustomCachedSelector(
           {
             id: 'y',
             position: Position.Bottom,
-            labels: geoms.heatmapViewModel.yValues.map(({ text }) => text),
-            values: geoms.heatmapViewModel.yValues.map(({ value }) => value),
+            labels: (heatmapViewModel?.yValues ?? []).map(({ text }) => text),
+            values: (heatmapViewModel?.yValues ?? []).map(({ value }) => value),
             // horizontal lines
-            gridlines: geoms.heatmapViewModel.gridLines.y.map((line) => ({ x: line.x2, y: line.y1 })),
+            gridlines: (heatmapViewModel?.gridLines?.y ?? []).map((line) => ({ x: line.x2, y: line.y1 })),
             ...(yAxisTitle ? { title: yAxisTitle } : {}),
           },
         ],
       },
       // Heatmap debug state
       heatmap: {
-        cells: geoms.heatmapViewModel.cells.map((cell) => ({
-          x: cell.x,
-          y: cell.y,
-          fill: RGBATupleToString(cell.fill.color),
-          formatted: cell.formatted,
-          value: cell.value,
-          valueShown: heatmap.cell.label.visible && Number.isFinite(geoms.heatmapViewModel.cellFontSize(cell)),
-        })),
+        cells: geoms.heatmapViewModels.flatMap((vm) =>
+          vm.cells.map((cell) => ({
+            x: cell.x,
+            y: cell.y,
+            datum: cell.datum,
+            fill: RGBATupleToString(cell.fill.color),
+            formatted: cell.formatted,
+            value: cell.value,
+            valueShown: heatmap.cell.label.visible && Number.isFinite(vm.cellFontSize(cell)),
+          })),
+        ),
         selection: {
           area: pickedArea,
           data: highlightedData,

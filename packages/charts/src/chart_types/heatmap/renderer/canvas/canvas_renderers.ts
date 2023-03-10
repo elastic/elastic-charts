@@ -6,29 +6,27 @@
  * Side Public License, v 1.
  */
 
+import { ReactiveChartStateProps } from './connected_component';
 import { getColorBandStyle, getGeometryStateStyle } from './utils';
-import { Color } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
-import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
 import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
 import { renderText, TextFont, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
-import { ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { ChartElementSizes } from '../../state/selectors/compute_chart_dimensions';
 
 /** @internal */
-export function renderCanvas2d(
-  ctx: CanvasRenderingContext2D,
-  dpr: number,
-  { theme, heatmapViewModel }: ShapeViewModel,
-  sharedGeometryStyle: SharedGeometryStateStyle,
-  background: Color,
-  elementSizes: ChartElementSizes,
-  debug: boolean,
-  highlightedLegendBands: Array<[start: number, end: number]>,
-) {
+export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, props: ReactiveChartStateProps) {
+  const { theme } = props.geometries;
+  const { heatmapViewModels } = props.geometries;
+  const {
+    theme: { sharedStyle: sharedGeometryStyle },
+    background,
+    elementSizes,
+    highlightedLegendBands,
+  } = props;
+  if (heatmapViewModels.length === 0) return;
+
   withContext(ctx, () => {
     // set some defaults for the overall rendering
 
@@ -49,151 +47,145 @@ export function renderCanvas2d(
     // - in any case, it's possible to refactor for a -y = North convention if that's deemed preferable
     // ctx.scale(1, -1);
 
-    // TODO this should be filtered by the pageSize AND the pageNumber
-    const filteredCells = heatmapViewModel.cells.filter((cell) => cell.yIndex < heatmapViewModel.pageSize);
-    const filteredYValues = heatmapViewModel.yValues.filter((value, yIndex) => yIndex < heatmapViewModel.pageSize);
-
     renderLayers(ctx, [
       () => clearCanvas(ctx, background),
-      () =>
-        debug &&
-        withContext(ctx, () => {
-          ctx.strokeStyle = 'black';
-          ctx.strokeRect(
-            elementSizes.grid.left,
-            elementSizes.grid.top,
-            elementSizes.grid.width,
-            elementSizes.grid.height,
-          );
 
-          ctx.strokeStyle = 'red';
-          ctx.strokeRect(
-            elementSizes.xAxis.left,
-            elementSizes.xAxis.top,
-            elementSizes.xAxis.width,
-            elementSizes.xAxis.height,
-          );
-
-          ctx.strokeStyle = 'violet';
-          ctx.strokeRect(
-            elementSizes.yAxis.left,
-            elementSizes.yAxis.top,
-            elementSizes.yAxis.width,
-            elementSizes.yAxis.height,
-          );
-        }),
       () => {
         // Grid
-        withContext(ctx, () => {
-          renderMultiLine(ctx, heatmapViewModel.gridLines.x, heatmapViewModel.gridLines.stroke);
-          renderMultiLine(ctx, heatmapViewModel.gridLines.y, heatmapViewModel.gridLines.stroke);
+        heatmapViewModels.forEach(({ gridOrigin: { x, y }, gridLines }) => {
+          withContext(ctx, () => {
+            ctx.translate(x, y);
+            renderMultiLine(ctx, gridLines.x, gridLines.stroke);
+            renderMultiLine(ctx, gridLines.y, gridLines.stroke);
+          });
         });
       },
 
       () =>
         // Cells
-        withContext(ctx, () => {
-          const { x, y } = heatmapViewModel.gridOrigin;
-          ctx.translate(x, y);
-          filteredCells.forEach((cell) => {
-            if (cell.visible) {
-              const geometryStateStyle = getGeometryStateStyle(cell, sharedGeometryStyle, highlightedLegendBands);
-              const style = getColorBandStyle(cell, geometryStateStyle);
-              renderRect(ctx, cell, style.fill, style.stroke);
-            }
+        heatmapViewModels.forEach(({ gridOrigin: { x, y }, cells }) => {
+          withContext(ctx, () => {
+            ctx.translate(x, y);
+            cells.forEach((cell) => {
+              if (cell.visible) {
+                const geometryStateStyle = getGeometryStateStyle(cell, sharedGeometryStyle, highlightedLegendBands);
+                const style = getColorBandStyle(cell, geometryStateStyle);
+                renderRect(ctx, cell, style.fill, style.stroke);
+              }
+            });
           });
         }),
 
-      () =>
-        theme.cell.label.visible &&
-        withContext(ctx, () => {
-          // Text on cells
-          const { x, y } = heatmapViewModel.gridOrigin;
-          ctx.translate(x, y);
-          filteredCells.forEach((cell) => {
-            const fontSize = heatmapViewModel.cellFontSize(cell);
-            if (cell.visible && Number.isFinite(fontSize))
-              renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
-                ...theme.cell.label,
-                fontSize,
-                align: 'center',
-                baseline: 'middle',
-                textColor: cell.textColor,
-              });
-          });
-        }),
+      // Text on cells
+      () => {
+        if (!theme.cell.label.visible) return;
 
-      () =>
-        // render text on Y axis
-        theme.yAxisLabel.visible &&
-        withContext(ctx, () => {
-          // the text is right aligned so the canvas needs to be aligned to the right of the Y axis box
-          ctx.translate(elementSizes.yAxis.left + elementSizes.yAxis.width, elementSizes.yAxis.top);
-          const font: TextFont = { ...theme.yAxisLabel, baseline: 'middle' /* fixed */, align: 'right' /* fixed */ };
-          const { padding } = theme.yAxisLabel;
-          const horizontalPadding = horizontalPad(padding);
-          filteredYValues.forEach(({ x, y, text }) => {
-            const textLines = wrapLines(
-              ctx,
-              text,
-              font,
-              theme.yAxisLabel.fontSize,
-              Math.max(elementSizes.yAxis.width - horizontalPadding, 0),
-              theme.yAxisLabel.fontSize,
-              { shouldAddEllipsis: true, wrapAtWord: false },
-            ).lines;
-            // TODO improve the `wrapLines` code to handle results with short width
-            renderText(ctx, { x, y }, textLines.length > 0 ? textLines[0] : '…', font);
+        heatmapViewModels.forEach(({ cellFontSize, gridOrigin: { x, y }, cells }) => {
+          withContext(ctx, () => {
+            ctx.translate(x, y);
+            cells.forEach((cell) => {
+              const fontSize = cellFontSize(cell);
+              if (cell.visible && Number.isFinite(fontSize))
+                renderText(ctx, { x: cell.x + cell.width / 2, y: cell.y + cell.height / 2 }, cell.formatted, {
+                  ...theme.cell.label,
+                  fontSize,
+                  align: 'center',
+                  baseline: 'middle',
+                  textColor: cell.textColor,
+                });
+            });
           });
-        }),
+        });
+      },
 
-      () =>
-        // render text on X axis
-        theme.xAxisLabel.visible &&
-        withContext(ctx, () => {
-          ctx.translate(elementSizes.xAxis.left, elementSizes.xAxis.top);
-          heatmapViewModel.xValues
-            .filter((_, i) => i % elementSizes.xAxisTickCadence === 0)
-            .forEach(({ x, y, text, align }) => {
+      // render text on Y axis
+      () => {
+        if (!theme.yAxisLabel.visible) return;
+
+        heatmapViewModels.forEach(({ yValues, gridOrigin: { x, y } }) => {
+          withContext(ctx, () => {
+            ctx.translate(x, y);
+            const font: TextFont = {
+              ...theme.yAxisLabel,
+              baseline: 'middle' /* fixed */,
+              align: 'right' /* fixed */,
+            };
+            const { padding } = theme.yAxisLabel;
+            const horizontalPadding = horizontalPad(padding);
+            yValues.forEach(({ x, y, text }) => {
               const textLines = wrapLines(
                 ctx,
                 text,
-                theme.xAxisLabel,
-                theme.xAxisLabel.fontSize,
-                // TODO wrap into multilines
-                Infinity,
-                16,
+                font,
+                theme.yAxisLabel.fontSize,
+                Math.max(elementSizes.yAxis.width - horizontalPadding, 0),
+                theme.yAxisLabel.fontSize,
                 { shouldAddEllipsis: true, wrapAtWord: false },
               ).lines;
-              renderText(
-                ctx,
-                { x, y },
-                textLines.length > 0 ? textLines[0] : '…',
-                { ...theme.xAxisLabel, baseline: 'middle', align },
-                // negative rotation due to the canvas rotation direction
-                radToDeg(-elementSizes.xLabelRotation),
-              );
+              // TODO improve the `wrapLines` code to handle results with short width
+              renderText(ctx, { x, y }, textLines.length > 0 ? textLines[0] : '…', font);
             });
-        }),
+          });
+        });
+      },
 
+      // render text on X axis
+      () => {
+        if (!theme.xAxisLabel.visible) return;
+
+        heatmapViewModels.forEach(({ xValues, gridOrigin: { x, y } }) => {
+          withContext(ctx, () => {
+            ctx.translate(x, y + elementSizes.xAxis.top);
+            xValues
+              .filter((_, i) => i % elementSizes.xAxisTickCadence === 0)
+              .forEach(({ x, y, text, align }) => {
+                const textLines = wrapLines(
+                  ctx,
+                  text,
+                  theme.xAxisLabel,
+                  theme.xAxisLabel.fontSize,
+                  // TODO wrap into multilines
+                  Infinity,
+                  16,
+                  { shouldAddEllipsis: true, wrapAtWord: false },
+                ).lines;
+                renderText(
+                  ctx,
+                  { x, y },
+                  textLines.length > 0 ? textLines[0] : '…',
+                  { ...theme.xAxisLabel, baseline: 'middle', align },
+                  // negative rotation due to the canvas rotation direction
+                  radToDeg(-elementSizes.xLabelRotation),
+                );
+              });
+          });
+        });
+      },
+
+      // render axes and panel titles
       () =>
-        withContext(ctx, () => {
-          heatmapViewModel.titles
-            .filter((t) => t.visible && t.text !== '')
-            .forEach((title) => {
-              renderText(
-                ctx,
-                title.origin,
-                title.text,
-                {
-                  ...title,
-                  baseline: 'middle',
-                  align: 'center',
-                },
-                title.rotation,
-              );
+        heatmapViewModels
+          .filter(({ titles }) => titles.length > 0)
+          .forEach(({ titles, gridOrigin: { x, y } }) => {
+            withContext(ctx, () => {
+              ctx.translate(x, y);
+              titles
+                .filter((t) => t.visible && t.text !== '')
+                .forEach((title) => {
+                  renderText(
+                    ctx,
+                    title.origin,
+                    title.text,
+                    {
+                      ...title,
+                      baseline: 'middle',
+                      align: 'center',
+                    },
+                    title.rotation,
+                  );
+                });
             });
-        }),
+          }),
     ]);
   });
 }

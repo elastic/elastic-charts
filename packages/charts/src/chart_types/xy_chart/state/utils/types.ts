@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { SmallMultiplesSeriesDomains } from '../../../../common/panel_utils';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
-import { OrdinalDomain } from '../../../../utils/domain';
 import {
   PointGeometry,
   BarGeometry,
@@ -64,11 +64,9 @@ export interface ComputedGeometries {
 }
 
 /** @internal */
-export interface SeriesDomainsAndData {
+export interface SeriesDomainsAndData extends SmallMultiplesSeriesDomains {
   xDomain: XDomain;
   yDomains: YDomain[];
-  smVDomain: OrdinalDomain;
-  smHDomain: OrdinalDomain;
   formattedDataSeries: DataSeries[];
 }
 

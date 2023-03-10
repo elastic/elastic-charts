@@ -248,8 +248,6 @@ export interface GoalStyles {
  * @public
  */
 export interface HeatmapStyle {
-  maxRowHeight: Pixels;
-  maxColumnWidth: Pixels;
   /**
    * Config of the mask over the area outside of the selected cells
    */
@@ -283,14 +281,6 @@ export interface HeatmapStyle {
     padding: Pixels | Padding;
   };
   grid: {
-    cellWidth: {
-      min: Pixels;
-      max: Pixels | 'fill';
-    };
-    cellHeight: {
-      min: Pixels;
-      max: Pixels | 'fill';
-    };
     stroke: {
       color: string;
       width: number;

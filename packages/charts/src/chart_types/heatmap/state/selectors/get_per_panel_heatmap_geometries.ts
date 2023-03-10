@@ -6,31 +6,48 @@
  * Side Public License, v 1.
  */
 
-import { computeChartElementSizesSelector } from './compute_chart_dimensions';
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { computeChartElementSizesSelector } from './compute_chart_element_sizes';
 import { getColorScale } from './get_color_scale';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { isEmptySelector } from './is_empty';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { render } from '../../layout/viewmodel/scenegraph';
+import { computeScenegraph } from '../../layout/viewmodel/scenegraph';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;
 
 /** @internal */
-export const getHeatmapGeometries = createCustomCachedSelector(
+export const getPerPanelHeatmapGeometries = createCustomCachedSelector(
   [
     getHeatmapSpecSelector,
+    computeChartDimensionsSelector,
     computeChartElementSizesSelector,
     getHeatmapTableSelector,
     getColorScale,
     getDeselectedSeriesSelector,
     getChartThemeSelector,
     isEmptySelector,
+    computeSmallMultipleScalesSelector,
+    getSmallMultiplesIndexOrderSelector,
   ],
-  (heatmapSpec, dims, heatmapTable, { bands, scale: colorScale }, deselectedSeries, theme, empty): ShapeViewModel => {
+  (
+    heatmapSpec,
+    chartDimensions,
+    elementSizes,
+    heatmapTable,
+    { bands, scale: colorScale },
+    deselectedSeries,
+    theme,
+    empty,
+    smScales,
+    groupBySpec,
+  ): ShapeViewModel => {
     // instead of using the specId, each legend item is associated with an unique band label
     const disabledBandLabels = new Set(deselectedSeries.map(({ specId }) => specId));
     const bandsToHide: Array<[number, number]> = bands
@@ -38,7 +55,17 @@ export const getHeatmapGeometries = createCustomCachedSelector(
       .map(({ start, end }) => [start, end]);
 
     return heatmapSpec && !empty
-      ? render(heatmapSpec, dims, heatmapTable, colorScale, bandsToHide, theme)
+      ? computeScenegraph(
+          heatmapSpec,
+          chartDimensions,
+          elementSizes,
+          smScales,
+          groupBySpec,
+          heatmapTable,
+          colorScale,
+          bandsToHide,
+          theme,
+        )
       : nullShapeViewModel();
   },
 );
