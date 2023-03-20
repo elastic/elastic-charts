@@ -56,8 +56,8 @@ export const getRandomNumberGenerator = (seed = getRNGSeed()): RandomNumberGener
 
 /** @internal */
 export class SeededDataGenerator extends DataGenerator {
-  constructor(frequency = 500) {
-    super(frequency, getRandomNumberGenerator());
+  constructor(frequency = 500, seed?: string) {
+    super(frequency, getRandomNumberGenerator(seed));
   }
 }
 

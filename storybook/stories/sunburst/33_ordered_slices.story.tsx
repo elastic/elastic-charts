@@ -52,6 +52,10 @@ const sortPredicate = ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) =
 */
 
 export const Example = () => {
+  const sortPredicateEnabled = boolean('Move "Other" to end', true);
+  const clockwiseSectors = boolean('clockwiseSectors', true);
+  const specialFirstInnermostSector = boolean('specialFirstInnermostSector', false);
+
   return (
     <Chart>
       <Settings
@@ -87,7 +91,7 @@ export const Example = () => {
           {
             groupByRollup: (d: Datum) => d.dest,
             nodeLabel: (d: any) => countryLookup[d]?.name ?? d,
-            sortPredicate: boolean('Move "Other" to end', true) ? sortPredicate : null,
+            sortPredicate: sortPredicateEnabled ? sortPredicate : null,
             fillLabel: {
               fontWeight: 600,
               fontStyle: 'italic',
@@ -103,8 +107,8 @@ export const Example = () => {
             },
           },
         ]}
-        clockwiseSectors
-        specialFirstInnermostSector={false}
+        clockwiseSectors={clockwiseSectors}
+        specialFirstInnermostSector={specialFirstInnermostSector}
       />
     </Chart>
   );

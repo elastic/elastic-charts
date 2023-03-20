@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { computeChartElementSizesSelector } from './compute_chart_dimensions';
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_shapes';
 import { BrushAxis } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -26,33 +26,33 @@ export const getBrushAreaSelector = createCustomCachedSelector(
     getMouseDownPosition,
     getActivePointerPosition,
     getSettingsSpecSelector,
-    computeChartElementSizesSelector,
+    computeChartDimensionsSelector,
     getBrushedHighlightedShapesSelector,
   ],
-  (isDragging, mouseDownPosition, end, { brushAxis }, dims, dragShape): Dimensions | null => {
+  (isDragging, mouseDownPosition, end, { brushAxis }, { chartDimensions }, dragShape): Dimensions | null => {
     if (!isDragging || !mouseDownPosition || !dragShape) {
       return null;
     }
 
     const start = {
-      x: mouseDownPosition.position.x - dims.grid.left,
+      x: mouseDownPosition.position.x - chartDimensions.left,
       y: mouseDownPosition.position.y,
     };
 
-    const clampedEndY = clamp(end.y, 0, dims.grid.height);
+    const clampedEndY = clamp(end.y, 0, chartDimensions.height);
     switch (brushAxis) {
       case BrushAxis.Both:
         return {
           top: start.y,
           left: start.x,
-          width: end.x - start.x - dims.grid.left,
+          width: end.x - start.x - chartDimensions.left,
           height: clampedEndY - start.y,
         };
       default:
         return {
           top: start.y,
           left: start.x,
-          width: end.x - start.x - dims.grid.left,
+          width: end.x - start.x - chartDimensions.left,
           height: clampedEndY - start.y,
         };
     }

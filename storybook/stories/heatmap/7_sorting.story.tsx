@@ -28,10 +28,6 @@ export const Example = () => {
         pointerUpdateTrigger="both"
         theme={{
           heatmap: {
-            grid: {
-              cellHeight: { min: 50, max: 50 },
-              cellWidth: { min: 50, max: 50 },
-            },
             cell: {
               border: {
                 strokeWidth: 0.001,

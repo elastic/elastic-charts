@@ -37,4 +37,10 @@ export class FlameState implements InternalChartState {
   getMainProjectionArea = () => ({ width: 0, height: 0, top: 0, left: 0 });
   getBrushArea = () => null;
   getDebugState = () => ({});
+  getSmallMultiplesDomains() {
+    return {
+      smHDomain: [],
+      smVDomain: [],
+    };
+  }
 }

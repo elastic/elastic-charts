@@ -7,15 +7,12 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button } from '@storybook/addon-knobs';
-import React, { useCallback, useMemo, useState } from 'react';
+import { boolean } from '@storybook/addon-knobs';
+import React, { useMemo } from 'react';
 
 import {
   Chart,
-  ElementClickListener,
   Heatmap,
-  HeatmapBrushEvent,
-  HeatmapElementEvent,
   HeatmapStyle,
   niceTimeFormatter,
   PointerEvent,
@@ -27,33 +24,26 @@ import {
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
+import { useHeatmapSelection } from '../utils/use_heatmap_selection';
 
 export const Example = () => {
-  const [selection, setSelection] = useState<{ x: (string | number)[]; y: (string | number)[] } | undefined>();
+  const { highlightedData, onElementClick, onBrushEnd } = useHeatmapSelection();
 
-  const persistCellsSelection = boolean('Persist cells selection', true);
   const debugState = boolean('Enable debug state', true);
   const showXAxisTitle = boolean('Show x axis title', false);
   const showYAxisTitle = boolean('Show y axis title', false);
+  const showBrushTool = boolean('Show pointer brush area', true);
+
   const pointerUpdate = (event: PointerEvent) => {
     action('onPointerUpdate')(event);
   };
 
-  const handler = useCallback(() => {
-    setSelection(undefined);
-  }, []);
-
-  button('Clear cells selection', handler);
-
   const heatmap = useMemo(() => {
     const styles: RecursivePartial<HeatmapStyle> = {
       brushTool: {
-        visible: true,
+        visible: showBrushTool,
       },
       grid: {
-        cellHeight: {
-          min: 20,
-        },
         stroke: {
           width: 0.5,
           color: '#bababa',
@@ -78,14 +68,7 @@ export const Example = () => {
     };
 
     return styles;
-  }, []);
-
-  const onElementClick: ElementClickListener = useCallback((e) => {
-    const cell = (e as HeatmapElementEvent[])[0][0];
-    setSelection({ x: [cell.datum.x, cell.datum.x], y: [cell.datum.y] });
-  }, []);
-
-  const onBrushEnd = action('onBrushEnd');
+  }, [showBrushTool]);
 
   return (
     <Chart>
@@ -100,11 +83,7 @@ export const Example = () => {
         debugState={debugState}
         theme={{ heatmap }}
         baseTheme={useBaseTheme()}
-        onBrushEnd={(e) => {
-          onBrushEnd(e);
-          const { x, y } = e as HeatmapBrushEvent;
-          setSelection({ x, y });
-        }}
+        onBrushEnd={onBrushEnd}
       />
       <Heatmap
         id="heatmap1"
@@ -129,10 +108,7 @@ export const Example = () => {
           return niceTimeFormatter([1572825600000, 1572912000000])(value, { timeZone: 'UTC' });
         }}
         timeZone={DATA_6.timeZone}
-        onBrushEnd={(e) => {
-          setSelection({ x: e.x, y: e.y });
-        }}
-        highlightedData={persistCellsSelection ? selection : undefined}
+        highlightedData={highlightedData}
         xAxisTitle={showXAxisTitle ? 'Bottom axis' : undefined}
         yAxisTitle={showYAxisTitle ? 'Left axis' : undefined}
       />

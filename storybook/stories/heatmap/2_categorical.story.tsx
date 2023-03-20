@@ -25,14 +25,11 @@ export const Example = () => {
   const minFontSize = number('min fontSize', 6, { step: 1, min: 4, max: 10, range: true }, 'labels');
   const maxFontSize = number('max fontSize', 12, { step: 1, min: 10, max: 64, range: true }, 'labels');
 
-  const minCellHeight = number('min cell height', 10, { step: 1, min: 3, max: 8, range: true }, 'grid');
-  const maxCellHeight = number('max cell height', 30, { step: 1, min: 8, max: 45, range: true }, 'grid');
-
   const showXAxisTitle = boolean('Show x axis title', true);
   const showYAxisTitle = boolean('Show y axis title', true);
 
   return (
-    <Chart>
+    <Chart size={['100%', 320]}>
       <Settings
         onElementClick={action('onElementClick')}
         showLegend
@@ -44,10 +41,6 @@ export const Example = () => {
             grid: {
               stroke: {
                 width: 0,
-              },
-              cellHeight: {
-                min: minCellHeight,
-                max: maxCellHeight,
               },
             },
             cell: {

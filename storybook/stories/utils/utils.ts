@@ -6,6 +6,9 @@
  * Side Public License, v 1.
  */
 
+import _, { Dictionary, NumericDictionary } from 'lodash';
+import seedrandom from 'seedrandom';
+
 import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
 import {
   countryDimension,
@@ -14,6 +17,7 @@ import {
   productPriceNames,
 } from '@elastic/charts/src/mocks/hierarchical/dimension_codes';
 import { palettes } from '@elastic/charts/src/mocks/hierarchical/palettes';
+import { getRNGSeed } from '@elastic/charts/src/mocks/utils';
 
 export const productLookup = arrayToLookup((d: any) => d.sitc1, productDimension);
 export const regionLookup = arrayToLookup((d: any) => d.region, regionDimension);
@@ -230,3 +234,13 @@ export const discreteColor =
 
 export const decreasingOpacityCET2 = (opacity: number) => (d: any, i: number, a: any[]) =>
   hueInterpolator(palettes.CET2s.map(([r, g, b]) => [r, g, b, opacity]))(i / (a.length + 1));
+
+export function sampleSize<T>(
+  collection: Dictionary<T> | NumericDictionary<T> | null | undefined,
+  n?: number,
+  seed = getRNGSeed(),
+): T[] {
+  seedrandom(seed, { global: true });
+  const lodash = _.runInContext();
+  return lodash.sampleSize(collection, n);
+}

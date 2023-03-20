@@ -6,25 +6,49 @@
  * Side Public License, v 1.
  */
 
-import { computeChartElementSizesSelector } from './compute_chart_dimensions';
+import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getPickedShapes } from './picked_shapes';
 import { AnchorPosition } from '../../../../components/portal/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 
 /** @internal */
 export const getTooltipAnchorSelector = createCustomCachedSelector(
-  [getPickedShapes, computeChartElementSizesSelector, getActivePointerPosition],
-  (shapes, { grid }, position): AnchorPosition => {
+  [
+    getPickedShapes,
+    computeChartDimensionsSelector,
+    getActivePointerPosition,
+    computeSmallMultipleScalesSelector,
+    getChartThemeSelector,
+  ],
+  (shapes, { chartDimensions }, position, smScales, { heatmap }): AnchorPosition => {
     if (Array.isArray(shapes) && shapes.length > 0) {
-      const firstShape = shapes[0];
+      const [
+        {
+          x,
+          y,
+          width,
+          height,
+          datum: { smHorizontalAccessorValue = '', smVerticalAccessorValue = '' },
+        },
+      ] = shapes;
+
+      const scaledPanelXOffset = smScales.horizontal.scale(smHorizontalAccessorValue);
+      const scaledPanelYOffset = smScales.vertical.scale(smVerticalAccessorValue);
+
+      const panelXOffset = isNaN(scaledPanelXOffset) ? 0 : scaledPanelXOffset;
+      const panelYOffset = isNaN(scaledPanelYOffset) ? 0 : scaledPanelYOffset;
+
       return {
-        x: firstShape.x + grid.left,
-        width: firstShape.width,
-        y: firstShape.y - grid.top,
-        height: firstShape.height,
+        x: x + chartDimensions.left + panelXOffset,
+        width,
+        y: y - chartDimensions.top + panelYOffset + heatmap.grid.stroke.width,
+        height,
       };
     }
+
     return {
       x: position.x,
       width: 0,

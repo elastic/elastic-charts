@@ -91,7 +91,13 @@ export { AnimKeyframe } from './chart_types/partition_chart/layout/types/config_
 
 // heatmap
 export { Cell } from './chart_types/heatmap/layout/types/viewmodel_types';
-export { ColorBand, HeatmapBandsColorScale, HeatmapProps } from './chart_types/heatmap/specs/heatmap';
+export { HeatmapCellDatum } from './chart_types/heatmap/layout/viewmodel/viewmodel';
+export {
+  ColorBand,
+  HeatmapBandsColorScale,
+  HeatmapProps,
+  HeatmapHighlightedData,
+} from './chart_types/heatmap/specs/heatmap';
 
 // utilities
 export {
@@ -123,6 +129,7 @@ export { FontStyle, FONT_STYLES } from './common/text_utils';
 export { Color } from './common/colors';
 export { RGB, A, RgbaTuple } from './common/color_library_wrappers';
 export { Predicate } from './common/predicate';
+export { SmallMultiplesDatum } from './common/panel_utils';
 
 export type {
   ESCalendarInterval,

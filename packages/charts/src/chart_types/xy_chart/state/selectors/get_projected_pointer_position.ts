@@ -7,9 +7,10 @@
  */
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSmallMultipleScalesSelector, SmallMultipleScales } from './compute_small_multiple_scales';
+import { SmallMultipleScales } from '../../../../common/panel_utils';
 import { ScaleBand } from '../../../../scales/scale_band';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { Dimensions } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
