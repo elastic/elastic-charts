@@ -8,6 +8,7 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
+import { Story } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -40,7 +41,7 @@ const data = dg.generateGroupedSeries(numOfDays, 6, 'CPU ').map((d) => {
 });
 const dataForLogScale = data.map((d) => ({ ...d, y: d.y - 3 }));
 
-export const Example = () => {
+export const Example: Story = (_, { kind, name }) => {
   const showLegend = boolean('Show Legend', false);
   const onElementClick = action('onElementClick');
   const tickTimeFormatter = timeFormatter(niceTimeFormatByDay(numOfDays));
@@ -48,7 +49,7 @@ export const Example = () => {
 
   return (
     <>
-      <Chart size={['100%', 400]}>
+      <Chart size={['100%', 400]} title={kind} description={name}>
         <Settings
           baseTheme={useBaseTheme()}
           onElementClick={onElementClick}

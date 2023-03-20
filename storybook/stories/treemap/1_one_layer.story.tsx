@@ -15,7 +15,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 export const Example = () => (
-  <Chart>
+  <Chart title="This is a title" description="thuis is a description">
     <Settings
       debugState
       baseTheme={useBaseTheme()}

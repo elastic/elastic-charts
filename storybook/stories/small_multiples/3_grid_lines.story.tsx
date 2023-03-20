@@ -8,6 +8,7 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean, text } from '@storybook/addon-knobs';
+import { Story } from '@storybook/react';
 import { startCase } from 'lodash';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -90,7 +91,7 @@ const getAxisOptions = (
   };
 };
 
-export const Example = () => {
+export const Example: Story = (_, { kind, name }) => {
   const debug = boolean('Debug', false);
   const showLegend = boolean('Show Legend', false);
   const onElementClick = action('onElementClick');
@@ -98,7 +99,7 @@ export const Example = () => {
   const hostPrefix = text('host prefix', `Host `).trim();
 
   return (
-    <Chart>
+    <Chart title={kind} description={name}>
       <Settings
         debug={debug}
         onElementClick={onElementClick}

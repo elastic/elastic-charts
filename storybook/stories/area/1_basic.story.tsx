@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Story } from '@storybook/react';
 import React from 'react';
 
 import { AreaSeries, Chart, ScaleType, Settings } from '@elastic/charts';
@@ -13,10 +14,10 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: Story = (_, { kind, name }) => {
   const { data } = KIBANA_METRICS.metrics.kibana_os_load[0];
   return (
-    <Chart>
+    <Chart title={kind} description={name}>
       <Settings baseTheme={useBaseTheme()} />
       <AreaSeries
         id="area"

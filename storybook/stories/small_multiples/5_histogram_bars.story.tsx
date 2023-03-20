@@ -7,6 +7,7 @@
  */
 
 import { boolean, number } from '@storybook/addon-knobs';
+import { Story } from '@storybook/react';
 import React from 'react';
 
 import { ScaleType, Position, Chart, Axis, GroupBy, SmallMultiples, Settings, BarSeries } from '@elastic/charts';
@@ -51,13 +52,13 @@ const colorMap: Record<string, string> = {
   Default: 'red',
 };
 
-export const Example = () => {
+export const Example: Story = (_, { kind, name }) => {
   const enableHistogramMode = boolean('EnableHistogramMode', true);
   const barsPadding = number('barsPadding', 0, numberOptions);
   const histogramPadding = number('histogramPadding', 0, numberOptions);
 
   return (
-    <Chart>
+    <Chart title={kind} description={name}>
       <Settings theme={{ scales: { barsPadding, histogramPadding } }} showLegend baseTheme={useBaseTheme()} />
       <Axis id="x" position={Position.Bottom} />
       <Axis

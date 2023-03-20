@@ -185,7 +185,7 @@ export const Example = () => {
           .flat()
           .map((d) => `[${d?.value}]`)
           .join(' ')}
-      <Chart>
+      <Chart title="This is a title" description="This is a description">
         <Settings
           baseTheme={useBaseTheme()}
           onElementClick={

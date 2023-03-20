@@ -43,7 +43,7 @@ const theme: PartialTheme = {
 };
 
 export const Example = () => (
-  <Chart>
+  <Chart title="Top 10 world-wide markets by export value" description="Total overall export value 200B$">
     <Settings theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"

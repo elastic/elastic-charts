@@ -8,6 +8,7 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
+import { Story } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -54,7 +55,7 @@ const datal2 = generateData(2, { a: 'avg new user', b: 'avg existing user' }).ma
   site: 'website B',
 }));
 
-export const Example = () => {
+export const Example: Story = (_, { kind, name }) => {
   const marker = (
     <span
       style={{
@@ -74,7 +75,7 @@ export const Example = () => {
   const onElementClick = action('onElementClick');
 
   return (
-    <Chart>
+    <Chart title={kind} description={name}>
       <Settings onElementClick={onElementClick} showLegend={showLegend} baseTheme={useBaseTheme()} />
       <Axis id="time" title="Day of week" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Count of logins" position={Position.Left} gridLine={{ visible: false }} />

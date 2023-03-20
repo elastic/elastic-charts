@@ -8,6 +8,7 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean, select, number } from '@storybook/addon-knobs';
+import { Story } from '@storybook/react';
 import React from 'react';
 
 import {
@@ -80,7 +81,7 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => {
+export const Example: Story = (_, { kind, name }) => {
   const layout = select(
     'Inner breakdown layout',
     {
@@ -92,7 +93,7 @@ export const Example = () => {
   );
 
   return (
-    <Chart>
+    <Chart title={kind} description={name}>
       <Settings
         {...onElementListeners}
         showLegend={boolean('Show legend', true)}

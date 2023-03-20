@@ -47,7 +47,7 @@ const theme: PartialTheme = {
 };
 
 export const Example = () => (
-  <Chart>
+  <Chart title="This is a title" description="thuis is a description">
     <Settings showLegend theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
