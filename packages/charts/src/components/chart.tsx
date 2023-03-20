@@ -25,10 +25,12 @@ import { SpecsParser } from '../specs/specs_parser';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
+import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { getLegendConfigSelector } from '../state/selectors/get_legend_config_selector';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
+import { LIGHT_THEME } from '../utils/themes/light_theme';
 
 interface ChartProps {
   /**
@@ -39,10 +41,14 @@ interface ChartProps {
   size?: ChartSize;
   className?: string;
   id?: string;
+  title?: string;
+  description?: string;
 }
 
 interface ChartState {
   legendDirection: LegendPositionConfig['direction'];
+  paddingLeft: number;
+  paddingRight: number;
 }
 
 const getMiddlware = (id: string): StoreEnhancer => {
@@ -85,6 +91,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartStore = createStore(storeReducer, enhancer);
     this.state = {
       legendDirection: LayoutDirection.Vertical,
+      paddingLeft: LIGHT_THEME.chartMargins.left,
+      paddingRight: LIGHT_THEME.chartMargins.right,
     };
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
@@ -100,6 +108,11 @@ export class Chart extends React.Component<ChartProps, ChartState> {
           legendDirection: direction,
         });
       }
+      const theme = getChartThemeSelector(state);
+      this.setState({
+        paddingLeft: theme.chartMargins.left,
+        paddingRight: theme.chartMargins.right,
+      });
       if (state.internalChartState) {
         state.internalChartState.eventCallbacks(state);
       }
@@ -159,21 +172,37 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const chartClassNames = classNames('echChart', className, {
       'echChart--column': this.state.legendDirection === LayoutDirection.Horizontal,
     });
+    const titleDescStyle = {
+      paddingLeft: this.state.paddingLeft,
+      paddingRight: this.state.paddingRight,
+    };
 
     return (
       <Provider store={this.chartStore}>
         <div className={chartClassNames} style={containerSizeStyle}>
-          <ChartBackground />
-          <ChartStatus />
-          <ChartResizer />
-          <Legend />
-          {/* TODO: Add renderFn to error boundary */}
-          <ErrorBoundary>
-            <SpecsParser>{this.props.children}</SpecsParser>
-            <div className="echContainer" ref={this.chartContainerRef}>
-              <ChartContainer getChartContainerRef={this.getChartContainerRef} forwardStageRef={this.chartStageRef} />
+          {this.props.title && (
+            <div className="echChartTitle" style={titleDescStyle}>
+              {this.props.title}
             </div>
-          </ErrorBoundary>
+          )}
+          {this.props.description && (
+            <div className="echChartDescription" style={titleDescStyle}>
+              {this.props.description}
+            </div>
+          )}
+          <div className="echChartContent">
+            <ChartBackground />
+            <ChartStatus />
+            <ChartResizer />
+            <Legend />
+            {/* TODO: Add renderFn to error boundary */}
+            <ErrorBoundary>
+              <SpecsParser>{this.props.children}</SpecsParser>
+              <div className="echContainer" ref={this.chartContainerRef}>
+                <ChartContainer getChartContainerRef={this.getChartContainerRef} forwardStageRef={this.chartStageRef} />
+              </div>
+            </ErrorBoundary>
+          </div>
         </div>
       </Provider>
     );
