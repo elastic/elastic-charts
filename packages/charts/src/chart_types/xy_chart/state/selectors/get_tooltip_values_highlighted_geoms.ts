@@ -159,12 +159,6 @@ function getTooltipAndHighlightFromValue(
       highlightedGeometries.push(indexedGeometry);
     }
 
-    // if it's a follow tooltip, and no element is highlighted
-    // do _not_ add element into tooltip list
-    if (!isHighlighted && isFollowTooltipType(tooltipType)) {
-      return acc;
-    }
-
     // format the tooltip values
     const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, hasSingleSeries, yAxis);
 
