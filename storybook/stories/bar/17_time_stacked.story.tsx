@@ -26,10 +26,11 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 
 import { useBaseTheme } from '../../use_base_theme';
 
-const CustomTooltipWithSubChart: CustomTooltip = (props) => {
+const CustomTooltipWithSubChart: CustomTooltip = ({ values }) => {
+  const [value] = values.filter((v) => v.isHighlighted);
   return (
     <TooltipContainer>
-      <div>Hovering: {props.header?.label}</div>
+      <div style={{ padding: 10 }}>Hovering: {value.label}</div>
     </TooltipContainer>
   );
 };

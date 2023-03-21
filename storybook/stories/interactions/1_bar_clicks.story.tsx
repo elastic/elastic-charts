@@ -18,8 +18,7 @@ import {
   ScaleType,
   Settings,
   Tooltip,
-  TooltipValue,
-  TooltipValueFormatter,
+  TooltipHeaderFormatter,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -33,17 +32,17 @@ const onElementListeners = {
 
 export const Example = () => {
   const useObjectAsX = boolean('use object on x', false);
-  const headerFormatter: TooltipValueFormatter = (tooltip: TooltipValue) => {
-    if (tooltip.value % 2 === 0) {
+  const headerFormatter: TooltipHeaderFormatter = ({ value }) => {
+    if (value % 2 === 0) {
       return (
         <div>
           <p>special header for even x values</p>
-          <p>{tooltip.value}</p>
+          <p>{value}</p>
         </div>
       );
     }
 
-    return tooltip.value;
+    return value;
   };
 
   return (
