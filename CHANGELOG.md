@@ -1,3 +1,15 @@
+# [55.0.0](https://github.com/elastic/elastic-charts/compare/v54.0.0...v55.0.0) (2023-03-21)
+
+
+### Bug Fixes
+
+* **docs:** lint and fix EUI breaking changes ([0d14194](https://github.com/elastic/elastic-charts/commit/0d1419475f9f1a4ae5d83fdf247f35178e261d27))
+
+
+### Features
+
+* **heatmap:** small multiples ([#1933](https://github.com/elastic/elastic-charts/issues/1933)) ([690f568](https://github.com/elastic/elastic-charts/commit/690f5686c3de0da6714d649bc492a6c68e47b47f))
+
 # [54.0.0](https://github.com/elastic/elastic-charts/compare/v53.1.1...v54.0.0) (2023-03-09)
 
 
