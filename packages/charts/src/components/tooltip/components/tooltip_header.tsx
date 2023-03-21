@@ -13,7 +13,8 @@ import { PointerValue } from '../../../state/types';
 import { Datum, renderComplexChildren } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 
-type TooltipHeaderProps<D extends BaseDatum = Datum> = PropsOrChildrenWithProps<{
+/** @public */
+export type TooltipHeaderProps<D extends BaseDatum = Datum> = PropsOrChildrenWithProps<{
   header: PointerValue<D> | null;
   formatter?: TooltipHeaderFormatter<D>;
 }>;

@@ -2905,13 +2905,17 @@ export const TooltipDivider: ({ margin }: TooltipDividerProps) => JSX.Element;
 // @public (undocumented)
 export const TooltipFooter: ({ children }: TooltipFooterProps) => JSX.Element;
 
-// Warning: (ae-forgotten-export) The symbol "TooltipHeaderProps" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export const TooltipHeader: <D extends BaseDatum = any>(props: TooltipHeaderProps<D>) => JSX.Element | null;
 
 // @public
 export type TooltipHeaderFormatter<D extends BaseDatum = Datum> = (data: PointerValue<D>) => JSX.Element | string;
+
+// @public (undocumented)
+export type TooltipHeaderProps<D extends BaseDatum = Datum> = PropsOrChildrenWithProps<{
+    header: PointerValue<D> | null;
+    formatter?: TooltipHeaderFormatter<D>;
+}>;
 
 // @public
 export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
