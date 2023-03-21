@@ -8,30 +8,29 @@
 
 import React, { memo } from 'react';
 
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue, TooltipValueFormatter } from '../../../specs';
+import { BaseDatum, TooltipHeaderFormatter } from '../../../specs';
+import { PointerValue } from '../../../state/types';
 import { Datum, renderComplexChildren } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 
-type TooltipHeaderProps<
-  D extends BaseDatum = Datum,
-  SI extends SeriesIdentifier = SeriesIdentifier,
-> = PropsOrChildrenWithProps<{
-  header: TooltipValue<D, SI> | null;
-  formatter?: TooltipValueFormatter<D, SI>;
+type TooltipHeaderProps<D extends BaseDatum = Datum> = PropsOrChildrenWithProps<{
+  header: PointerValue<D> | null;
+  formatter?: TooltipHeaderFormatter<D>;
 }>;
 
-const TooltipHeaderInner = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
-  props: TooltipHeaderProps<D, SI>,
-) => {
+const TooltipHeaderInner = <D extends BaseDatum = Datum>(props: TooltipHeaderProps<D>) => {
   if ('children' in props) {
     return <div className="echTooltipHeader">{renderComplexChildren(props.children)}</div>;
   }
+
   const { header, formatter } = props;
-  if (!header || !header.isVisible) return null;
+
+  if (!header) return null;
 
   const formattedValue = formatter ? formatter(header) : header.formattedValue;
+
   if (!formattedValue) return null;
+
   return <div className="echTooltipHeader">{formattedValue}</div>;
 };
 

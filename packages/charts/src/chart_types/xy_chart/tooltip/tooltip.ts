@@ -9,6 +9,7 @@
 import { LegendItemExtraValues } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { TooltipValue } from '../../../specs';
+import { PointerValue } from '../../../state/types';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
 import { isDefined } from '../../../utils/common';
 import { BandedAccessorType, IndexedGeometry } from '../../../utils/geometry';
@@ -49,10 +50,9 @@ export function getLegendItemExtraValues(
 }
 
 /** @internal */
-export function formatTooltip(
-  { color, value: { x, y, mark, accessor, datum }, seriesIdentifier }: IndexedGeometry,
+export function formatTooltipValue(
+  { color, value: { y, mark, accessor, datum }, seriesIdentifier }: IndexedGeometry,
   spec: BasicSeriesSpec,
-  isHeader: boolean,
   isHighlighted: boolean,
   hasSingleSeries: boolean,
   axisSpec?: AxisSpec,
@@ -65,18 +65,16 @@ export function formatTooltip(
     label = getAccessorFormatLabel(formatter, label);
   }
   const isVisible = label.length > 0 && (!spec.filterSeriesInTooltip || spec.filterSeriesInTooltip(seriesIdentifier));
-  const value = isHeader ? x : y;
-  const markValue = isHeader || mark === null || Number.isNaN(mark) ? null : mark;
+  const markValue = mark === null || Number.isNaN(mark) ? null : mark;
   const tickFormatOptions: TickFormatterOptions | undefined = spec.timeZone ? { timeZone: spec.timeZone } : undefined;
-  const tickFormatter =
-    (isHeader ? axisSpec?.tickFormat : spec.tickFormat ?? axisSpec?.tickFormat) ?? defaultTickFormatter;
+  const tickFormatter = spec.tickFormat ?? axisSpec?.tickFormat ?? defaultTickFormatter;
 
   return {
     seriesIdentifier,
     valueAccessor: accessor,
     label,
-    value,
-    formattedValue: tickFormatter(value, tickFormatOptions),
+    value: y,
+    formattedValue: tickFormatter(y, tickFormatOptions),
     markValue,
     ...(isDefined(markValue) && {
       formattedMarkValue: spec.markFormat
@@ -84,8 +82,24 @@ export function formatTooltip(
         : defaultTickFormatter(markValue),
     }),
     color,
-    isHighlighted: isHighlighted && !isHeader,
+    isHighlighted,
     isVisible,
     datum,
+  };
+}
+
+/** @internal */
+export function formatTooltipHeader(
+  { value: { x, accessor } }: IndexedGeometry,
+  spec: BasicSeriesSpec,
+  axisSpec?: AxisSpec,
+): PointerValue {
+  const tickFormatOptions: TickFormatterOptions | undefined = spec.timeZone ? { timeZone: spec.timeZone } : undefined;
+  const tickFormatter = axisSpec?.tickFormat ?? defaultTickFormatter;
+
+  return {
+    valueAccessor: accessor,
+    value: x,
+    formattedValue: tickFormatter(x, tickFormatOptions),
   };
 }
