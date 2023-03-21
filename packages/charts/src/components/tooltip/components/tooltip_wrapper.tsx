@@ -57,7 +57,7 @@ export const TooltipWrapper = <D extends BaseDatum = Datum, SI extends SeriesIde
 
   useEffect(() => {
     // Capture pinned tooltip with on change
-    if (pinned && tooltipRef.current && minWidth < theme.maxWidth) {
+    if (pinned && tooltipRef.current && typeof theme.maxWidth === 'number' && minWidth < theme.maxWidth) {
       const { width } = tooltipRef.current.getBoundingClientRect();
       if (width > minWidth) setMinWidth(width);
     }
