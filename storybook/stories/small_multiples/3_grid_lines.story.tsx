@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, text } from '@storybook/addon-knobs';
+import { boolean, number, text } from '@storybook/addon-knobs';
 import { startCase } from 'lodash';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -128,7 +128,36 @@ export const Example = () => {
       <SmallMultiples
         splitVertically="v_split"
         splitHorizontally="h_split"
-        style={{ verticalPanelPadding: { outer: 0, inner: 0.3 } }}
+        style={{
+          horizontalPanelPadding: {
+            outer: number('Horizontal outer pad', 0, {
+              range: true,
+              min: 0,
+              max: 0.5,
+              step: 0.05,
+            }),
+            inner: number('Horizontal inner pad', 0.1, {
+              range: true,
+              min: 0,
+              max: 0.5,
+              step: 0.05,
+            }),
+          },
+          verticalPanelPadding: {
+            outer: number('Vertical outer pad', 0, {
+              range: true,
+              min: 0,
+              max: 0.5,
+              step: 0.05,
+            }),
+            inner: number('Vertical inner pad', 0.3, {
+              range: true,
+              min: 0,
+              max: 0.5,
+              step: 0.05,
+            }),
+          },
+        }}
       />
 
       <LineSeries

@@ -19,6 +19,7 @@ import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { CategoryLabel } from '../common/category';
 import { Color } from '../common/colors';
+import { SmallMultiplesDatum } from '../common/panel_utils';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
@@ -191,11 +192,11 @@ export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
 export type ProjectionAreaChangeListener = (areas: { projection: Dimensions; parent: Dimensions }) => void;
 
 /** @public */
-export type HeatmapBrushEvent = {
+export interface HeatmapBrushEvent extends SmallMultiplesDatum {
   cells: Cell[];
   x: (string | number)[];
   y: (string | number)[];
-};
+}
 
 /** @public */
 export type LegendItemListener = (series: SeriesIdentifier[]) => void;

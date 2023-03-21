@@ -8,11 +8,12 @@
 
 import React, { RefObject } from 'react';
 
-import { computeChartElementSizesSelector } from './selectors/compute_chart_dimensions';
+import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
+import { getHeatmapTableSelector } from './selectors/get_heatmap_table';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
 import { getTooltipAnchorSelector } from './selectors/get_tooltip_anchor';
 import { getSpecOrNull } from './selectors/heatmap_spec';
@@ -27,6 +28,7 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerUpdateCaller } from './selectors/on_pointer_update_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 import { ChartType } from '../..';
+import { SmallMultiplesSeriesDomains } from '../../../common/panel_utils';
 import { BrushTool } from '../../../components/brush/brush';
 import { Tooltip } from '../../../components/tooltip/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
@@ -114,7 +116,7 @@ export class HeatmapState implements InternalChartState {
   }
 
   getMainProjectionArea(globalState: GlobalChartState): Dimensions {
-    return computeChartElementSizesSelector(globalState).grid;
+    return computeChartDimensionsSelector(globalState).chartDimensions;
   }
 
   getBrushArea(globalState: GlobalChartState): Dimensions | null {
@@ -127,6 +129,10 @@ export class HeatmapState implements InternalChartState {
 
   getChartTypeDescription() {
     return 'Heatmap chart';
+  }
+
+  getSmallMultiplesDomains(globalState: GlobalChartState): SmallMultiplesSeriesDomains {
+    return getHeatmapTableSelector(globalState);
   }
 
   eventCallbacks(globalState: GlobalChartState) {

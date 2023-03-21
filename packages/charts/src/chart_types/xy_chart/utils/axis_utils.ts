@@ -7,8 +7,8 @@
  */
 
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
-import { getPanelSize, hasSMDomain } from './panel';
 import { computeXScale, computeYScales } from './scales';
+import { SmallMultipleScales, hasSMDomain, getPanelSize } from '../../../common/panel_utils';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { AxisSpec, SettingsSpec } from '../../../specs';
 import {
@@ -25,7 +25,6 @@ import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
-import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 import { Projection } from '../state/selectors/visible_ticks';
 import { SeriesDomainsAndData } from '../state/utils/types';
 
@@ -318,8 +317,6 @@ export function getAxesGeometries(
   axisSpecs: Map<AxisId, AxisSpec>,
   axesStyles: Map<AxisId, AxisStyle | null>,
   smScales: SmallMultipleScales,
-  totalGroupsCount: number,
-  enableHistogramMode: boolean,
   visibleTicksSet: Map<AxisId, Projection>,
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
@@ -329,8 +326,15 @@ export function getAxesGeometries(
       if (axisSpec) {
         const vertical = isVerticalAxis(axisSpec.position);
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
-        const axisPositionData = getPosition(chartDims, chartMargins, axisStyle, axisSpec, labelBox, smScales, acc);
-        const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = axisPositionData;
+        const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getPosition(
+          chartDims,
+          chartMargins,
+          axisStyle,
+          axisSpec,
+          labelBox,
+          smScales,
+          acc,
+        );
         acc.top += topIncrement;
         acc.bottom += bottomIncrement;
         acc.left += leftIncrement;

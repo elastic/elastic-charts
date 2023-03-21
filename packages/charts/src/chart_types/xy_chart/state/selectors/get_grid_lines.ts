@@ -7,9 +7,9 @@
  */
 
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
-import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getAxisSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getGridLines } from '../../utils/grid_lines';
 

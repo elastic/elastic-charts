@@ -29,14 +29,6 @@ describe('Heatmap picked cells', () => {
           theme: {
             heatmap: {
               brushTool: { visible: true },
-              grid: {
-                cellHeight: {
-                  max: 'fill',
-                },
-                cellWidth: {
-                  max: 'fill',
-                },
-              },
               xAxisLabel: {
                 visible: true,
               },

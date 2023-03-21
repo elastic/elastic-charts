@@ -17,6 +17,7 @@ import { checkUserFn, createIssueReaction, isValidUser, labelCheckFn, updateAllC
  * build trigger for PR comment
  */
 export function setupBuildTrigger(app: Probot) {
+  // @ts-ignore - TS complains here about ctx being too large of a union
   app.on('issue_comment.created', async (ctx) => {
     if (!hasCommentAction(ctx, ['test', 'updateVrt']) || checkUserFn(ctx.payload.sender)('bot')) return;
     console.log(`------- Triggered probot ${ctx.name} | ${ctx.payload.action}`);

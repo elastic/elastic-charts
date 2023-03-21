@@ -7,8 +7,9 @@
  */
 
 import { ChartType } from '../../..';
-import { Color, Colors } from '../../../../common/colors';
+import { Color } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
+import { PerPanelMap } from '../../../../common/panel_utils';
 import { Box, Font, TextAlign } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
 import { HeatmapBrushEvent } from '../../../../specs/settings';
@@ -47,7 +48,16 @@ export interface TextBox extends Box {
 }
 
 /** @internal */
-export interface HeatmapViewModel {
+export type HeatmapTitleConfig = Font &
+  Visible & {
+    fontSize: number;
+    text: string;
+    origin: Point;
+    rotation: 0 | -90;
+  };
+
+/** @internal */
+export interface HeatmapViewModel extends PerPanelMap {
   gridOrigin: {
     x: number;
     y: number;
@@ -61,16 +71,7 @@ export interface HeatmapViewModel {
   cellFontSize: (c: Cell) => Pixels;
   xValues: Array<TextBox>;
   yValues: Array<TextBox>;
-  pageSize: number;
-  titles: Array<
-    Font &
-      Visible & {
-        fontSize: number;
-        text: string;
-        origin: Point;
-        rotation: 0 | -90;
-      }
-  >;
+  titles: HeatmapTitleConfig[];
 }
 
 /** @internal */
@@ -82,10 +83,10 @@ export function isPickedCells(v: unknown): v is Cell[] {
 export type PickFunction = (x: Pixels, y: Pixels) => Cell[] | TextBox;
 
 /** @internal */
-export type PickDragFunction = (points: [Point, Point]) => HeatmapBrushEvent;
+export type PickDragFunction = (points: [start: Point, end: Point]) => HeatmapBrushEvent;
 
 /** @internal */
-export type PickDragShapeFunction = (points: [Point, Point]) => Rect | null;
+export type PickDragShapeFunction = (points: [start: Point, end: Point]) => Rect | null;
 
 /**
  * From x and y coordinates in the data domain space to a canvas projected rectangle
@@ -97,6 +98,8 @@ export type PickDragShapeFunction = (points: [Point, Point]) => Rect | null;
 export type PickHighlightedArea = (
   x: Array<NonNullable<PrimitiveValue>>,
   y: Array<NonNullable<PrimitiveValue>>,
+  smHorizontalAccessorValue?: string | number,
+  smVerticalAccessorValue?: string | number,
 ) => Rect | null;
 
 /** @internal */
@@ -111,7 +114,7 @@ export type DragShape = ReturnType<PickDragShapeFunction>;
 /** @internal */
 export type ShapeViewModel = {
   theme: HeatmapStyle;
-  heatmapViewModel: HeatmapViewModel;
+  heatmapViewModels: HeatmapViewModel[];
   pickQuads: PickFunction;
   pickDragArea: PickDragFunction;
   pickDragShape: PickDragShapeFunction;
@@ -121,28 +124,9 @@ export type ShapeViewModel = {
 };
 
 /** @internal */
-export const nullHeatmapViewModel: HeatmapViewModel = {
-  gridOrigin: {
-    x: 0,
-    y: 0,
-  },
-  gridLines: {
-    x: [],
-    y: [],
-    stroke: { width: 0, color: Colors.Transparent.rgba },
-  },
-  cells: [],
-  xValues: [],
-  yValues: [],
-  pageSize: 0,
-  cellFontSize: () => 0,
-  titles: [],
-};
-
-/** @internal */
 export const nullShapeViewModel = (): ShapeViewModel => ({
   theme: LIGHT_THEME.heatmap,
-  heatmapViewModel: nullHeatmapViewModel,
+  heatmapViewModels: [],
   pickQuads: () => [],
   pickDragArea: () => ({ cells: [], x: [], y: [], chartType: ChartType.Heatmap }),
   pickDragShape: () => ({ x: 0, y: 0, width: 0, height: 0 }),

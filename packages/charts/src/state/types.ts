@@ -82,7 +82,7 @@ export type DebugStateBar = DebugStateBase & {
   labels: any[];
 };
 
-type CellDebug = Pick<Cell, 'value' | 'formatted' | 'x' | 'y'> & { fill: string };
+type CellDebug = Pick<Cell, 'value' | 'formatted' | 'x' | 'y' | 'datum'> & { fill: string };
 
 type HeatmapDebugState = {
   cells: CellDebug[];

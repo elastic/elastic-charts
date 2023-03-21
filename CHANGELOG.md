@@ -1,3 +1,35 @@
+# [55.0.0](https://github.com/elastic/elastic-charts/compare/v54.0.0...v55.0.0) (2023-03-21)
+
+
+### Bug Fixes
+
+* **docs:** lint and fix EUI breaking changes ([0d14194](https://github.com/elastic/elastic-charts/commit/0d1419475f9f1a4ae5d83fdf247f35178e261d27))
+
+
+### Features
+
+* **heatmap:** small multiples ([#1933](https://github.com/elastic/elastic-charts/issues/1933)) ([690f568](https://github.com/elastic/elastic-charts/commit/690f5686c3de0da6714d649bc492a6c68e47b47f))
+
+# [54.0.0](https://github.com/elastic/elastic-charts/compare/v53.1.1...v54.0.0) (2023-03-09)
+
+
+### Bug Fixes
+
+* **annotation:** render annotations correctly based on passed handlers ([#1971](https://github.com/elastic/elastic-charts/issues/1971)) ([4bdedff](https://github.com/elastic/elastic-charts/commit/4bdedff5a9ed4f2b39cff5d97a57d6b92383f14d))
+* **deps:** update dependency @elastic/eui to v75 ([#1964](https://github.com/elastic/elastic-charts/issues/1964)) ([cf886f5](https://github.com/elastic/elastic-charts/commit/cf886f5278a53b68ee7f4eb38d984ad82292d0b5))
+* **deps:** update dependency @elastic/eui to v76 ([#1987](https://github.com/elastic/elastic-charts/issues/1987)) ([89dc8a1](https://github.com/elastic/elastic-charts/commit/89dc8a1cd9eaa47f14977b0fcb5b82aa51502cc4))
+* **flamegraph:** show tooltip prompt only if pinnable ([#1967](https://github.com/elastic/elastic-charts/issues/1967)) ([1a13d80](https://github.com/elastic/elastic-charts/commit/1a13d80af7522ab60f3b94b4c1b927a9569deb69))
+* **heatmap:** Expose axis title as debug data ([#1970](https://github.com/elastic/elastic-charts/issues/1970)) ([0a998a5](https://github.com/elastic/elastic-charts/commit/0a998a55fb11c6f8768db95397374bb7e61b014b))
+* **partition:** allow custom sorting for the legend items ([#1959](https://github.com/elastic/elastic-charts/issues/1959)) ([1afa2c4](https://github.com/elastic/elastic-charts/commit/1afa2c401fe7e0a85c239add03760a4511884472))
+* **partition:** render legend items with zero values  ([#1956](https://github.com/elastic/elastic-charts/issues/1956)) ([a85d1ae](https://github.com/elastic/elastic-charts/commit/a85d1ae4c000b526898967528fd372b03a8f8e88))
+* **xy:** respect `integersOnly` prop on axis component ([#1958](https://github.com/elastic/elastic-charts/issues/1958)) ([93f5497](https://github.com/elastic/elastic-charts/commit/93f549728edc3e781aaea08c50e7d4bec0d34b11))
+
+
+### BREAKING CHANGES
+
+* **partition:** The `Layer.fillColor` function now accepts the following signature: `(key: Key, sortIndex: number, node: ArrayNode, tree: HierarchyOfArrays) => string;` This exposes a similar set of information but allows us more control over the internals to define/generate the legend. The legend for pie/donut/mosaic/treemap charts is sorted in a hierarchical way even if the legend is flat.
+The default highlight strategy used to highlight partition elements when hovering over the legend item has been changed to `LegendStrategy.Path`.
+
 ## [53.1.1](https://github.com/elastic/elastic-charts/compare/v53.1.0...v53.1.1) (2023-02-10)
 
 

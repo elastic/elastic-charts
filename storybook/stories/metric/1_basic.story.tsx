@@ -62,7 +62,7 @@ export const Example = () => {
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
   const showIcon = boolean('show icon', false);
-  const iconType = text('EUI icon glyph name', 'alert');
+  const iconType = text('EUI icon glyph name', 'warning');
   const getIcon =
     (type: string) =>
     ({ width, height, color }: { width: number; height: number; color: string }) =>

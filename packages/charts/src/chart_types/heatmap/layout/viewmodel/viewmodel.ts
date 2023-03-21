@@ -6,29 +6,41 @@
  * Side Public License, v 1.
  */
 
-import { bisectLeft } from 'd3-array';
 import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
 import { BaseDatum } from './../../../xy_chart/utils/specs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
+import {
+  getPanelSize,
+  getPanelTitle,
+  getPerPanelMap,
+  hasSMDomain,
+  isPointerOverPanelFn,
+  SmallMultipleScales,
+  SmallMultiplesDatum,
+  SmallMultiplesGroupBy,
+} from '../../../../common/panel_utils';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
 import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
-import { clamp, Datum, isFiniteNumber } from '../../../../utils/common';
+import { clamp, Datum, isFiniteNumber, isNil } from '../../../../utils/common';
 import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
+import { ChartDimensions } from '../../../xy_chart/utils/dimensions';
 import { HeatmapSpec } from '../../specs';
-import { ChartElementSizes, HeatmapTable } from '../../state/selectors/compute_chart_dimensions';
+import { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import { ColorScale } from '../../state/selectors/get_color_scale';
+import { HeatmapTable } from '../../state/selectors/get_heatmap_table';
 import {
   Cell,
   GridCell,
+  HeatmapTitleConfig,
   PickCursorBand,
   PickDragFunction,
   PickDragShapeFunction,
@@ -38,12 +50,15 @@ import {
 } from '../types/viewmodel_types';
 
 /** @public */
-export interface HeatmapCellDatum {
+export interface HeatmapCellDatum extends SmallMultiplesDatum {
   x: NonNullable<PrimitiveValue>;
   y: NonNullable<PrimitiveValue>;
   value: number;
   originalIndex: number;
 }
+
+type CellMap = Map<string, Cell>;
+type PanelCellMap = Map<string, CellMap>;
 
 function getValuesInRange(
   values: NonNullable<PrimitiveValue>[],
@@ -56,18 +71,26 @@ function getValuesInRange(
 }
 
 /** @internal */
+export function clampWithOffset(value: number, lowerBound: number, upperBound: number, offset: number): number {
+  return clamp(value, lowerBound + offset, upperBound + offset) - offset;
+}
+
+/** @internal */
 export function shapeViewModel<D extends BaseDatum = Datum>(
   textMeasure: TextMeasure,
   spec: HeatmapSpec<D>,
-  { heatmap: heatmapTheme, axes: { axisTitle }, background }: Theme,
+  { heatmap: heatmapTheme, axes: { axisTitle, axisPanelTitle }, background }: Theme,
+  { chartDimensions }: ChartDimensions,
   elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,
   colorScale: ColorScale,
+  smScales: SmallMultipleScales,
+  groupBySpec: SmallMultiplesGroupBy,
   bandsToHide: Array<[number, number]>,
 ): ShapeViewModel {
-  const gridStrokeWidth = heatmapTheme.grid.stroke.width ?? 1;
-
   const { table, yValues, xValues } = heatmapTable;
+  const gridStrokeWidth = heatmapTheme.grid.stroke.width;
+  const isPointerOverPanel = isPointerOverPanelFn(smScales, chartDimensions, gridStrokeWidth);
 
   // measure the text width of all rows values to get the grid area width
   const boxedYValues = yValues.map<Box & { value: NonNullable<PrimitiveValue> }>((value) => ({
@@ -77,30 +100,25 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     ...heatmapTheme.yAxisLabel,
   }));
 
-  // compute the scale for the rows positions
-  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, elementSizes.fullHeatmapHeight]);
+  const panelSize = getPanelSize(smScales);
 
-  const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
-    .domain([0, elementSizes.fullHeatmapHeight])
-    .range(yValues);
+  // compute the scale for the rows positions
+  const yScale = scaleBand<NonNullable<PrimitiveValue>>().domain(yValues).range([0, panelSize.height]);
+
+  const yInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, panelSize.height]).range(yValues);
 
   // compute the scale for the columns positions
-  const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, elementSizes.grid.width]);
+  const xScale = scaleBand<NonNullable<PrimitiveValue>>().domain(xValues).range([0, panelSize.width]);
+  const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>().domain([0, panelSize.width]).range(xValues);
 
-  const xInvertedScale = scaleQuantize<NonNullable<PrimitiveValue>>()
-    .domain([0, elementSizes.grid.width])
-    .range(xValues);
-
-  // compute the cell width (can be smaller then the available size depending on config
+  // compute the cell width, can be smaller then the available size depending on config
   const cellWidth =
     heatmapTheme.cell.maxWidth !== 'fill' && xScale.bandwidth() > heatmapTheme.cell.maxWidth
       ? heatmapTheme.cell.maxWidth
       : xScale.bandwidth();
 
-  // compute the cell height (we already computed the max size for that)
+  // compute the cell height, we already computed the max size for that
   const cellHeight = yScale.bandwidth();
-
-  const currentGridHeight = elementSizes.grid.height;
 
   // compute the position of each column label
   const textXValues = getXTicks(spec, heatmapTheme.xAxisLabel, xScale, heatmapTable.xValues);
@@ -129,8 +147,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     );
   }
 
+  let tableMinFontSize = Infinity;
+
   // compute each available cell position, color and value
-  const cellMap = table.reduce<Record<string, Cell>>((acc, d) => {
+  const panelCellMap = table.reduce<PanelCellMap>((acc, d) => {
     const x = xScale(String(d.x));
     const y = yScale(String(d.y));
     const yIndex = yValues.indexOf(d.y);
@@ -139,6 +159,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       return acc;
     }
     const cellBackgroundColor = colorScale(d.value);
+    const panelKey = getPanelKey(d.smHorizontalAccessorValue, d.smVerticalAccessorValue);
     const cellKey = getCellKey(d.x, d.y);
 
     const formattedValue = spec.valueFormatter(d.value);
@@ -153,8 +174,13 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       cellWidthInner - 6,
       cellHeightInner - 6,
     );
+    tableMinFontSize = Math.min(tableMinFontSize, fontSize);
 
-    acc[cellKey] = {
+    const cellMap = acc.get(panelKey) ?? new Map<string, Cell>();
+
+    if (!acc.has(panelKey)) acc.set(panelKey, cellMap);
+
+    cellMap.set(cellKey, {
       x:
         (heatmapTheme.cell.maxWidth !== 'fill' ? x + xScale.bandwidth() / 2 - heatmapTheme.cell.maxWidth / 2 : x) +
         gridStrokeWidth / 2,
@@ -175,9 +201,40 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       formatted: formattedValue,
       fontSize,
       textColor: fillTextColor(background.fallbackColor, cellBackgroundColor, background.color),
-    };
+    });
     return acc;
-  }, {});
+  }, new Map());
+
+  const getScaledSMValue = (value: number | string, scale: 'horizontal' | 'vertical') => {
+    return hasSMDomain(smScales[scale]) ? smScales[scale].scale(value) : 0;
+  };
+
+  const getPanelPointCoordinate = (value: Pixels, scale: 'horizontal' | 'vertical') => {
+    const category = smScales[scale].invert(value) ?? '';
+    const panelOffset = getScaledSMValue(category, scale);
+    const invertedScale = scale === 'horizontal' ? xInvertedScale : yInvertedScale;
+
+    return {
+      category,
+      panelOffset,
+      panelPixelValue: value - panelOffset,
+      panelValue: invertedScale(value - panelOffset),
+    };
+  };
+
+  const getPanelPointCoordinates = (x: Pixels, y: Pixels) => {
+    const { category: v, panelValue: panelY, panelOffset: panelOffsetY } = getPanelPointCoordinate(y, 'vertical');
+    const { category: h, panelValue: panelX, panelOffset: panelOffsetX } = getPanelPointCoordinate(x, 'horizontal');
+
+    return {
+      x: panelX,
+      y: panelY,
+      v,
+      h,
+      panelOffsetY,
+      panelOffsetX,
+    };
+  };
 
   /**
    * Returns the corresponding x & y values of grid cell from the x & y positions
@@ -185,11 +242,11 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    * @param y
    */
   const pickGridCell = (x: Pixels, y: Pixels): GridCell | undefined => {
-    if (x < elementSizes.grid.left || y < elementSizes.grid.top) return undefined;
-    if (x > elementSizes.grid.width + elementSizes.grid.left || y > elementSizes.grid.top + elementSizes.grid.height)
+    if (x < chartDimensions.left || y < chartDimensions.top) return undefined;
+    if (x > chartDimensions.width + chartDimensions.left || y > chartDimensions.top + chartDimensions.height)
       return undefined;
 
-    const xValue = xInvertedScale(x - elementSizes.grid.left);
+    const xValue = xInvertedScale(x - chartDimensions.left);
     const yValue = yInvertedScale(y);
 
     if (xValue === undefined || yValue === undefined) return undefined;
@@ -205,9 +262,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const pickQuads = (x: Pixels, y: Pixels): Array<Cell> | TextBox => {
     if (
       x > 0 &&
-      x < elementSizes.grid.left &&
-      y > elementSizes.grid.top &&
-      y < elementSizes.grid.top + elementSizes.grid.height
+      x < chartDimensions.left &&
+      y > chartDimensions.top &&
+      y < chartDimensions.top + chartDimensions.height
     ) {
       // look up for a Y axis elements
       const yLabelKey = yInvertedScale(y);
@@ -217,22 +274,21 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       }
     }
 
-    if (x < elementSizes.grid.left || y < elementSizes.grid.top) {
+    if (!isPointerOverPanel({ x, y })) {
       return [];
     }
-    if (x > elementSizes.grid.width + elementSizes.grid.left || y > elementSizes.grid.top + elementSizes.grid.height) {
-      return [];
-    }
-    const xValue = xInvertedScale(x - elementSizes.grid.left);
-    const yValue = yInvertedScale(y);
+
+    const { x: xValue, y: yValue, h, v } = getPanelPointCoordinates(x - chartDimensions.left, y);
+
     if (xValue === undefined || yValue === undefined) {
       return [];
     }
+
+    const panelKey = getPanelKey(h, v);
     const cellKey = getCellKey(xValue, yValue);
-    const cell = cellMap[cellKey];
-    if (cell) {
-      return [cell];
-    }
+    const cell = panelCellMap.get(panelKey)?.get(cellKey);
+
+    if (cell) return [cell];
     return [];
   };
 
@@ -242,14 +298,27 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const pickDragArea: PickDragFunction = (bound) => {
     const [start, end] = bound;
 
-    const { left, top, width } = elementSizes.grid;
+    const { left, top } = chartDimensions;
     const topLeft = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
     const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
 
-    const startX = xInvertedScale(clamp(topLeft[0], 0, width));
-    const endX = xInvertedScale(clamp(bottomRight[0], 0, width));
-    const startY = yInvertedScale(clamp(topLeft[1], 0, currentGridHeight - 1));
-    const endY = yInvertedScale(clamp(bottomRight[1], 0, currentGridHeight - 1));
+    // Find panel based on start pointer
+    const { category: smHorizontalAccessorValue, panelOffset: hOffset } = getPanelPointCoordinate(
+      start.x,
+      'horizontal',
+    );
+    const { category: smVerticalAccessorValue, panelOffset: vOffset } = getPanelPointCoordinate(start.y, 'vertical');
+
+    // confine selection to start panel
+    const panelStartX = clampWithOffset(topLeft[0], 0, panelSize.width, hOffset);
+    const panelStartY = clampWithOffset(topLeft[1], 0, panelSize.height, vOffset);
+    const panelEndX = clampWithOffset(bottomRight[0], 0, panelSize.width, hOffset);
+    const panelEndY = clampWithOffset(bottomRight[1], 0, panelSize.height, vOffset);
+
+    const startX = xInvertedScale(panelStartX);
+    const startY = yInvertedScale(panelStartY);
+    const endX = xInvertedScale(panelEndX);
+    const endY = yInvertedScale(panelEndY);
 
     const allXValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(xValues, startX, endX);
     const allYValuesInRange: Array<NonNullable<PrimitiveValue>> = getValuesInRange(yValues, startY, endY);
@@ -261,8 +330,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
     allXValuesInRange.forEach((x) => {
       allYValuesInRange.forEach((y) => {
+        const panelKey = getPanelKey(smHorizontalAccessorValue, smVerticalAccessorValue);
         const cellKey = getCellKey(x, y);
-        cells.push(cellMap[cellKey]);
+        const cellValue = panelCellMap.get(panelKey)?.get(cellKey);
+        if (cellValue) cells.push(cellValue);
       });
     });
 
@@ -270,6 +341,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       cells: cells.filter(Boolean),
       x: invertedXValues,
       y: allYValuesInRange,
+      smHorizontalAccessorValue,
+      smVerticalAccessorValue,
     };
   };
 
@@ -281,14 +354,13 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const pickHighlightedArea: PickHighlightedArea = (
     x: Array<NonNullable<PrimitiveValue>>,
     y: Array<NonNullable<PrimitiveValue>>,
+    smHorizontalAccessorValue?: string | number,
+    smVerticalAccessorValue?: string | number,
   ) => {
     const startValue = x[0];
     const endValue = x[x.length - 1];
-
-    const leftIndex =
-      typeof startValue === 'number' ? bisectLeft(xValues as number[], startValue) : xValues.indexOf(startValue);
-    const rightIndex =
-      typeof endValue === 'number' ? bisectLeft(xValues as number[], endValue) : xValues.indexOf(endValue) + 1;
+    const leftIndex = xValues.indexOf(startValue);
+    const rightIndex = xValues.indexOf(endValue) + (isRasterTimeScale(spec.xScale) && x.length > 1 ? 0 : 1);
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
@@ -300,7 +372,12 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       return null;
     }
 
-    const xStart = elementSizes.grid.left + startFromScale;
+    const panelXOffset = isNil(smHorizontalAccessorValue)
+      ? 0
+      : getScaledSMValue(smHorizontalAccessorValue, 'horizontal');
+    const panelYOffset = isNil(smVerticalAccessorValue) ? 0 : getScaledSMValue(smVerticalAccessorValue, 'vertical');
+
+    const xStart = chartDimensions.left + startFromScale + panelXOffset;
 
     // extend the range in case the right boundary has been selected
     const width = endFromScale - startFromScale + (isRightOutOfRange || isLeftOutOfRange ? cellWidth : 0);
@@ -311,7 +388,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       .reduce(
         (acc, current, i) => {
           if (i === 0) {
-            acc.y = yScale(current) || 0;
+            acc.y = (yScale(current) || 0) + panelYOffset;
           }
           acc.totalHeight += cellHeight;
           return acc;
@@ -330,8 +407,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    * Resolves coordinates and metrics of the selected rect area.
    */
   const pickDragShape: PickDragShapeFunction = (bound) => {
-    const area = pickDragArea(bound);
-    return pickHighlightedArea(area.x, area.y);
+    const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = pickDragArea(bound);
+    return pickHighlightedArea(x, y, smHorizontalAccessorValue, smVerticalAccessorValue);
   };
 
   const pickCursorBand: PickCursorBand = (x) => {
@@ -346,9 +423,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       ? undefined
       : {
           width: cellWidth,
-          x: elementSizes.grid.left + (xScale(xValues[index]) ?? NaN),
-          y: elementSizes.grid.top,
-          height: elementSizes.grid.height,
+          x: chartDimensions.left + (xScale(xValues[index]) ?? NaN),
+          y: chartDimensions.top,
+          height: chartDimensions.height,
         };
   };
 
@@ -356,23 +433,21 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const xLines = Array.from({ length: xValues.length + 1 }, (d, i) => {
     const xAxisExtension = i % elementSizes.xAxisTickCadence === 0 ? 5 : 0;
     return {
-      x1: elementSizes.grid.left + i * cellWidth,
-      x2: elementSizes.grid.left + i * cellWidth,
-      y1: elementSizes.grid.top,
-      y2: currentGridHeight + xAxisExtension,
+      x1: i * cellWidth,
+      x2: i * cellWidth,
+      y1: 0,
+      y2: panelSize.height + xAxisExtension,
     };
   });
 
   // horizontal lines
-  const yLines = Array.from({ length: elementSizes.visibleNumberOfRows + 1 }, (d, i) => ({
-    x1: elementSizes.grid.left,
-    x2: elementSizes.grid.left + elementSizes.grid.width,
-    y1: elementSizes.grid.top + i * cellHeight,
-    y2: elementSizes.grid.top + i * cellHeight,
+  const yLines = Array.from({ length: yValues.length + 1 }, (d, i) => ({
+    x1: 0,
+    x2: panelSize.width,
+    y1: i * cellHeight,
+    y2: i * cellHeight,
   }));
 
-  const cells = Object.values(cellMap);
-  const tableMinFontSize = cells.reduce((acc, { fontSize }) => Math.min(acc, fontSize), Infinity);
   // TODO introduce missing styles into axes.axisTitle
   const axisTitleFont: Visible & Font & { fontSize: Pixels } = {
     visible: axisTitle.visible,
@@ -384,52 +459,116 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     fontSize: axisTitle.fontSize,
   };
 
+  const axisPanelTitleFont: Visible & Font & { fontSize: Pixels } = {
+    visible: axisPanelTitle.visible,
+    fontFamily: axisPanelTitle.fontFamily,
+    fontStyle: axisPanelTitle.fontStyle ?? 'normal',
+    fontVariant: 'normal',
+    fontWeight: 'bold',
+    textColor: axisPanelTitle.fill,
+    fontSize: axisPanelTitle.fontSize,
+  };
+
   return {
     theme: heatmapTheme,
-    heatmapViewModel: {
-      gridOrigin: {
-        x: elementSizes.grid.left,
-        y: elementSizes.grid.top,
-      },
-      gridLines: {
-        x: xLines,
-        y: yLines,
-        stroke: {
-          color: colorToRgba(heatmapTheme.grid.stroke.color),
-          width: gridStrokeWidth,
-        },
-      },
-      pageSize: elementSizes.visibleNumberOfRows,
-      cells,
-      cellFontSize: (cell: Cell) => (heatmapTheme.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
-      xValues: textXValues,
-      yValues: textYValues,
-      titles: [
-        {
+    heatmapViewModels: getPerPanelMap(smScales, (anchor, h, v) => {
+      const primaryColumn = smScales.vertical.domain[0] === v;
+      const primaryRow = smScales.horizontal.domain[0] === h;
+      const lastColumn = smScales.vertical.domain[smScales.vertical.domain.length - 1] === v;
+
+      const titles: HeatmapTitleConfig[] = [];
+      // TODO this should be filtered by the pageSize AND the pageNumber
+      const cells = [...(panelCellMap.get(getPanelKey(h, v))?.values() ?? [])];
+
+      if (primaryColumn && primaryRow) {
+        if (spec.xAxisTitle) {
+          const axisPanelTitleHeight =
+            groupBySpec.horizontal && axisPanelTitle.visible
+              ? axisPanelTitle.fontSize + innerPad(axisPanelTitle.padding) / 2
+              : 0;
+
+          titles.push({
+            origin: {
+              x: chartDimensions.width / 2,
+              y:
+                chartDimensions.top +
+                chartDimensions.height +
+                elementSizes.xAxis.height +
+                axisPanelTitleHeight +
+                innerPad(axisTitle.padding) / 2 +
+                axisTitle.fontSize / 2,
+            },
+            ...axisTitleFont,
+            text: spec.xAxisTitle,
+            rotation: 0,
+          });
+        }
+
+        if (spec.yAxisTitle) {
+          titles.push({
+            origin: {
+              x: -chartDimensions.left + axisTitle.fontSize / 2,
+              y: chartDimensions.top + chartDimensions.height / 2,
+            },
+            ...axisTitleFont,
+            text: spec.yAxisTitle,
+            rotation: -90,
+          });
+        }
+      }
+
+      if (primaryColumn && groupBySpec.horizontal) {
+        titles.push({
           origin: {
-            x: elementSizes.grid.left + elementSizes.grid.width / 2,
+            x: panelSize.width / 2,
             y:
-              elementSizes.grid.top +
-              elementSizes.grid.height +
+              chartDimensions.top +
+              chartDimensions.height +
               elementSizes.xAxis.height +
-              innerPad(axisTitle.padding) +
-              axisTitle.fontSize / 2,
+              innerPad(axisPanelTitle.padding) +
+              axisPanelTitle.fontSize / 2,
           },
-          ...axisTitleFont,
-          text: spec.xAxisTitle,
+          ...axisPanelTitleFont,
+          text: getPanelTitle(false, v, h, groupBySpec),
           rotation: 0,
-        },
-        {
+        });
+      }
+
+      if (primaryRow && groupBySpec.vertical) {
+        const axisTitleWidth = axisTitle.visible ? axisTitle.fontSize + innerPad(axisTitle.padding) : 0;
+        titles.push({
           origin: {
-            x: elementSizes.yAxis.left - innerPad(axisTitle.padding) - axisTitle.fontSize / 2,
-            y: elementSizes.grid.top + elementSizes.grid.height / 2,
+            x: -chartDimensions.left + axisTitleWidth + axisPanelTitle.fontSize / 2,
+            y: chartDimensions.top + panelSize.height / 2,
           },
-          ...axisTitleFont,
-          text: spec.yAxisTitle,
+          ...axisPanelTitleFont,
+          text: getPanelTitle(true, v, h, groupBySpec),
           rotation: -90,
+        });
+      }
+
+      return {
+        anchor,
+        panelSize,
+        gridOrigin: {
+          x: anchor.x + chartDimensions.left,
+          y: anchor.y + chartDimensions.top,
         },
-      ],
-    },
+        gridLines: {
+          x: xLines,
+          y: yLines,
+          stroke: {
+            color: colorToRgba(heatmapTheme.grid.stroke.color),
+            width: gridStrokeWidth,
+          },
+        },
+        cells,
+        cellFontSize: (cell: Cell) => (heatmapTheme.cell.label.useGlobalMinFontSize ? tableMinFontSize : cell.fontSize),
+        xValues: lastColumn ? textXValues : [],
+        yValues: primaryRow ? textYValues : [],
+        titles,
+      };
+    }),
     pickGridCell,
     pickQuads,
     pickDragArea,
@@ -441,6 +580,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
 function getCellKey(x: NonNullable<PrimitiveValue>, y: NonNullable<PrimitiveValue>) {
   return [String(x), String(y)].join('&_&');
+}
+
+function getPanelKey(h: NonNullable<PrimitiveValue> = '', v: NonNullable<PrimitiveValue> = '') {
+  return [String(h), String(v)].join('&_&');
 }
 
 /** @internal */

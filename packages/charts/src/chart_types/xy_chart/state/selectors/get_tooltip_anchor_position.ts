@@ -7,11 +7,11 @@
  */
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
 import { getCursorBandPositionSelector } from './get_cursor_band';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { AnchorPosition } from '../../../../components/portal/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { isNil } from '../../../../utils/common';

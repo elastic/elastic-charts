@@ -27,14 +27,6 @@ describe('Categorical heatmap brush', () => {
         MockGlobalSpec.settingsNoMargins({
           theme: {
             heatmap: {
-              grid: {
-                cellHeight: {
-                  max: 'fill',
-                },
-                cellWidth: {
-                  max: 'fill',
-                },
-              },
               xAxisLabel: {
                 visible: false,
               },
@@ -90,14 +82,6 @@ describe('Temporal heatmap brush', () => {
         MockGlobalSpec.settingsNoMargins({
           theme: {
             heatmap: {
-              grid: {
-                cellHeight: {
-                  max: 'fill',
-                },
-                cellWidth: {
-                  max: 'fill',
-                },
-              },
               xAxisLabel: {
                 visible: false,
               },

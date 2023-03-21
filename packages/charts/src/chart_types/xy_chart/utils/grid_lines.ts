@@ -8,10 +8,9 @@
 
 import { isVerticalAxis } from './axis_type_utils';
 import { AxisGeometry, AxisTick } from './axis_utils';
-import { getPanelSize } from './panel';
-import { getPerPanelMap } from './panel_utils';
 import { AxisSpec } from './specs';
 import { colorToRgba, overrideOpacity } from '../../../common/color_library_wrappers';
+import { SmallMultipleScales, getPanelSize, getPerPanelMap } from '../../../common/panel_utils';
 import { Line, Stroke } from '../../../geoms/types';
 import { mergePartial, RecursivePartial } from '../../../utils/common';
 import { Size } from '../../../utils/dimensions';
@@ -19,7 +18,6 @@ import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
-import { SmallMultipleScales } from '../state/selectors/compute_small_multiple_scales';
 
 /** @internal */
 export const HIERARCHICAL_GRID_WIDTH = 1; // constant 1 scales well and solves some render issues due to fixed 1px wide overpaints

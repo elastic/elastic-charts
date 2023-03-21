@@ -113,4 +113,11 @@ export class WordcloudState implements InternalChartState {
   getDebugState(): DebugState {
     return {};
   }
+
+  getSmallMultiplesDomains() {
+    return {
+      smHDomain: [],
+      smVDomain: [],
+    };
+  }
 }
