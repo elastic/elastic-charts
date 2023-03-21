@@ -10,7 +10,7 @@
  * data taken from https://www.data-to-viz.com/graph/streamgraph.html
  * @internal
  */
-export const BABYNAME_DATA = [
+export const BABYNAME_DATA: [year: number, sex: 'F' | 'M', name: string, n1: number, n2: number][] = [
   [1880, 'F', 'Helen', 636, 0.00651612638826278],
   [1880, 'F', 'Amanda', 241, 0.00246916109995492],
   [1880, 'F', 'Betty', 117, 0.00119872136387853],
