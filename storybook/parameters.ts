@@ -24,9 +24,6 @@ export const storybookParameters: Parameters = {
     selectedPanel: process.env.NODE_ENV === 'development' ? SB_KNOBS_PANEL : SB_SOURCE_PANEL,
   },
   previewTabs: {
-    'storybook/docs/panel': {
-      hidden: true,
-    },
     canvas: {
       title: 'Story',
       hidden: false,
