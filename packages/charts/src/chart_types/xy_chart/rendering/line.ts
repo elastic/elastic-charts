@@ -61,6 +61,7 @@ export function renderLine(
     markSizeOptions,
     false,
     pointStyleAccessor,
+    seriesStyle.line.visible ? seriesStyle.line.strokeWidth : undefined,
   );
 
   // TODO we can probably avoid computing the clipped ranges if no fit function is applied.

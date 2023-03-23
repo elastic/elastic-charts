@@ -82,6 +82,7 @@ export function renderArea(
     markSizeOptions,
     false,
     pointStyleAccessor,
+    style.line.visible ? style.line.strokeWidth : undefined,
   );
 
   const areaGeometry: AreaGeometry = {

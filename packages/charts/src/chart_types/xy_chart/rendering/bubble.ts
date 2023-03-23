@@ -47,6 +47,7 @@ export function renderBubble(
     markSizeOptions,
     !isMixedChart,
     pointStyleAccessor,
+    0,
   );
 
   const bubbleGeometry = {

@@ -16,12 +16,13 @@ import {
   MarkSizeOptions,
   YDefinedFn,
 } from './utils';
+import { colorToRgba } from '../../../common/color_library_wrappers';
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isFiniteNumber, isNil } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
-import { PointStyle } from '../../../utils/themes/theme';
+import { PointShape, PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
 import {
   DataSeries,
@@ -45,6 +46,7 @@ export function renderPoints(
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
   styleAccessor?: PointStyleAccessor,
+  lineWidth = 1,
 ): {
   pointGeometries: PointGeometry[];
   indexedGeometryMap: IndexedGeometryMap;
@@ -83,15 +85,26 @@ export function renderPoints(
       const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
       const orphan = isOrphanDataPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
-      const radius = markSizeOptions.enabled
-        ? Math.max(getRadius(mark), pointStyle.radius)
-        : styleOverrides?.radius ?? pointStyle.radius;
+      const radius =
+        orphan && !pointStyle.visible
+          ? lineWidth * 1.5
+          : markSizeOptions.enabled
+          ? Math.max(getRadius(mark), pointStyle.radius)
+          : styleOverrides?.radius ?? pointStyle.radius;
+
       const pointGeometry: PointGeometry = {
         x,
         y: y === null ? NaN : y,
         radius,
         color,
-        style,
+        style:
+          orphan && !pointStyle.visible
+            ? {
+                fill: { color: colorToRgba(color) },
+                stroke: { width: 0, color: colorToRgba(color) },
+                shape: PointShape.Circle,
+              }
+            : style,
         value: {
           x: xValue,
           y: originalY,
