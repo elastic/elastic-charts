@@ -14,7 +14,7 @@ import { SpecId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';
 import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { MODEL_KEY, percentValueGetter } from '../config';
-import { QuadViewModel, ShapeViewModel, ValueGetter } from '../types/viewmodel_types';
+import { QuadViewModel, ShapeViewModel } from '../types/viewmodel_types';
 import {
   AGGREGATE_KEY,
   ArrayNode,
@@ -31,9 +31,9 @@ import {
 export const pickedShapes = (
   models: ShapeViewModel[],
   { x, y }: Point,
-  foci: ContinuousDomainFocus[],
+  [focus]: ContinuousDomainFocus[],
 ): QuadViewModel[] =>
-  models.flatMap(({ diskCenter, pickQuads }) => pickQuads(x - diskCenter.x, y - diskCenter.y, foci[0]));
+  !focus ? [] : models.flatMap(({ diskCenter, pickQuads }) => pickQuads(x - diskCenter.x, y - diskCenter.y, focus));
 
 /** @internal */
 export function pickShapesLayerValues(shapes: QuadViewModel[]): LayerValue[][] {
@@ -74,7 +74,6 @@ export function pickShapesLayerValues(shapes: QuadViewModel[]): LayerValue[][] {
 export function pickShapesTooltipValues(
   shapes: QuadViewModel[],
   shapeViewModel: ShapeViewModel[],
-  valueGetter: ValueGetter,
   valueFormatter: ValueFormatter,
   percentFormatter: ValueFormatter,
   id: SpecId,
@@ -91,9 +90,11 @@ export function pickShapesTooltipValues(
     values: shapes
       .filter(({ depth }) => depth === maxDepth) // eg. lowest layer in a treemap, where layers overlap in screen space; doesn't apply to sunburst/flame
       .flatMap<TooltipValue>((viewModel) => {
+        const entryNode = viewModel[PARENT_KEY][CHILDREN_KEY][viewModel[SORT_INDEX_KEY]];
+        if (!entryNode) return [];
         const values: TooltipValue[] = [
           getTooltipValueFromNode(
-            entryValue(viewModel[PARENT_KEY][CHILDREN_KEY][viewModel[SORT_INDEX_KEY]]),
+            entryValue(entryNode),
             labelFormatters,
             valueFormatter,
             percentFormatter,
