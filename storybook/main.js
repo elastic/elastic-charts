@@ -10,6 +10,7 @@ module.exports = {
   stories: ['./stories/**/*.(stories|story).ts?(x)'],
   addons: [
     '@storybook/addon-actions',
+    '@storybook/addon-docs',
     '@storybook/addon-knobs',
     '@storybook/addon-postcss',
     '@storybook/addon-storysource',
