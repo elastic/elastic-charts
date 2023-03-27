@@ -8,8 +8,8 @@
 
 import { OutputSelector } from 'reselect';
 
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedCells } from './get_picked_cells';
-import { getSpecOrNull } from './heatmap_spec';
 import { isBrushEndProvided } from './is_brush_available';
 import { ChartType } from '../../..';
 import { HeatmapBrushEvent, SettingsSpec } from '../../../../specs/settings';
@@ -42,7 +42,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
         return;
       }
       selector = createCustomCachedSelector(
-        [getLastDragSelector, getSpecOrNull, getSettingsSpecSelector, getPickedCells],
+        [getLastDragSelector, getHeatmapSpecSelector, getSettingsSpecSelector, getPickedCells],
         (lastDrag, spec, { onBrushEnd }, pickedCells): void => {
           const nextProps: DragCheckProps = {
             lastDrag,

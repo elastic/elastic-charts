@@ -101,7 +101,8 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   yAxisLabelFormatter: LabelAccessor<string | number>;
 }
 
-const buildProps = buildSFProps<HeatmapSpec>()(
+/** @internal */
+export const heatmapBuildProps = buildSFProps<HeatmapSpec>()(
   {
     chartType: ChartType.Heatmap,
     specType: SpecType.Series,
@@ -133,13 +134,13 @@ const buildProps = buildSFProps<HeatmapSpec>()(
 export const Heatmap = function <D extends BaseDatum = Datum>(
   props: SFProps<
     HeatmapSpec<D>,
-    keyof (typeof buildProps)['overrides'],
-    keyof (typeof buildProps)['defaults'],
-    keyof (typeof buildProps)['optionals'],
-    keyof (typeof buildProps)['requires']
+    keyof (typeof heatmapBuildProps)['overrides'],
+    keyof (typeof heatmapBuildProps)['defaults'],
+    keyof (typeof heatmapBuildProps)['optionals'],
+    keyof (typeof heatmapBuildProps)['requires']
   >,
 ) {
-  const { defaults, overrides } = buildProps;
+  const { defaults, overrides } = heatmapBuildProps;
   useSpecFactory<HeatmapSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };

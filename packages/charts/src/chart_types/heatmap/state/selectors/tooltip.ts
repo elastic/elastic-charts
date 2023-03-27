@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { getSpecOrNull } from './heatmap_spec';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
@@ -21,7 +21,7 @@ const EMPTY_TOOLTIP = Object.freeze({
 
 /** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(
-  [getSpecOrNull, getPickedShapes],
+  [getHeatmapSpecSelector, getPickedShapes],
   (spec, pickedShapes): TooltipInfo => {
     if (!spec) {
       return EMPTY_TOOLTIP;

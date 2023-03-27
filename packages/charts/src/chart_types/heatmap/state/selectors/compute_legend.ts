@@ -7,7 +7,7 @@
  */
 
 import { getColorScale } from './get_color_scale';
-import { getSpecOrNull } from './heatmap_spec';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { isEmptySelector } from './is_empty';
 import { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -16,7 +16,7 @@ import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_des
 const EMPTY_LEGEND: LegendItem[] = [];
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(
-  [getSpecOrNull, getColorScale, getDeselectedSeriesSelector, isEmptySelector],
+  [getHeatmapSpecSelector, getColorScale, getDeselectedSeriesSelector, isEmptySelector],
   (spec, { bands }, deselectedDataSeries, empty): LegendItem[] => {
     if (spec === null || empty) {
       return EMPTY_LEGEND;

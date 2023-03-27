@@ -8,7 +8,7 @@
 
 import { Selector } from 'reselect';
 
-import { getSpecOrNull } from './goal_spec';
+import { getGoalSpecSelector } from './get_goal_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
 import { ChartType } from '../../..';
 import { getOnElementClickSelector } from '../../../../common/event_handler_selectors';
@@ -30,7 +30,7 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Goal) {
       selector = createCustomCachedSelector(
-        [getSpecOrNull, getLastClickSelector, getSettingsSpecSelector, getPickedShapesLayerValues],
+        [getGoalSpecSelector, getLastClickSelector, getSettingsSpecSelector, getPickedShapesLayerValues],
         getOnElementClickSelector(prev),
       );
     }

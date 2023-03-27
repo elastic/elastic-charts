@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { getSpecOrNull } from './goal_spec';
+import { getGoalSpecSelector } from './get_goal_spec';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
-export const getChartTypeDescriptionSelector = createCustomCachedSelector([getSpecOrNull], (spec) => {
+export const getChartTypeDescriptionSelector = createCustomCachedSelector([getGoalSpecSelector], (spec) => {
   return `${spec?.subtype ?? 'goal'} chart`;
 });
