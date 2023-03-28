@@ -291,5 +291,5 @@ function getDrilldownData(globalState: GlobalChartState) {
     return [];
   }
   const layerValues = getPickedShapesLayerValues(globalState)[0];
-  return layerValues ? layerValues[layerValues.length - 1].path.map((n) => n.value) : [];
+  return layerValues ? layerValues[layerValues.length - 1]?.path.map((n) => n.value) ?? [] : [];
 }

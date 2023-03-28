@@ -75,7 +75,8 @@ export function generateTicks(
   const getDirection = getDirectionFn(scale);
   const isContinuous = isContinuousScale(scale);
   return ticks.map<AxisTick>((value) => {
-    const domainClampedValue = isContinuous && typeof value === 'number' ? Math.max(value, scale.domain[0]) : value;
+    const domainClampedValue =
+      isContinuous && typeof value === 'number' ? Math.max(value, scale.domain[0] ?? Number.NEGATIVE_INFINITY) : value;
     const label = labelFormatter(value);
     return {
       value,
@@ -296,7 +297,7 @@ function getVisibleTickSets(
               const areAdjacentTimeLabelsUnique =
                 scale.type === ScaleType.Time &&
                 !axisSpec.showDuplicatedTicks &&
-                (areLabelsUnique || raster.ticks.every((d, i, a) => i === 0 || d.label !== a[i - 1].label));
+                (areLabelsUnique || raster.ticks.every((d, i, a) => i === 0 || d.label !== a[i - 1]?.label));
               const atLeastTwoTicks = uniqueLabels.size >= 2;
               const allTicksFit = !uniqueLabels.has('');
               const compliant =

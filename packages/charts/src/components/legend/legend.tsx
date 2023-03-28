@@ -122,7 +122,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
               ...customProps,
               seriesIdentifiers,
               path,
-              extraValue: itemProps.extraValues.get(seriesIdentifiers[0].key)?.get(childId || ''),
+              extraValue: itemProps.extraValues.get(seriesIdentifiers[0]?.key ?? '')?.get(childId ?? ''),
               onItemOutAction: itemProps.mouseOutAction,
               onItemOverActon: () => itemProps.mouseOverAction(path),
               onItemClickAction: (negate: boolean) => itemProps.toggleDeselectSeriesAction(seriesIdentifiers, negate),

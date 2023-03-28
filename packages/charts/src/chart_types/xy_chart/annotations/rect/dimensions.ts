@@ -175,13 +175,13 @@ function scaleXonBandScale(
   // extend the x1 scaled value to fully cover the last bar
   scaledX1 += xScale.originalBandwidth + padding;
   // give the x1 value a maximum of the chart range
-  if (scaledX1 > xScale.range[1]) {
-    [, scaledX1] = xScale.range;
+  if (!isNil(xScale.range[1]) && scaledX1 > xScale.range[1]) {
+    scaledX1 = xScale.range[1];
   }
 
   scaledX0 -= padding;
-  if (scaledX0 < xScale.range[0]) {
-    [scaledX0] = xScale.range;
+  if (!isNil(xScale.range[0]) && scaledX0 < xScale.range[0]) {
+    scaledX0 = xScale.range[0];
   }
   const width = Math.abs(scaledX1 - scaledX0);
   return {
@@ -223,7 +223,7 @@ function limitValueToDomainRange(
   isHistogram = false,
 ): [PrimitiveValue, PrimitiveValue] {
   if (isContinuousScale(scale)) {
-    const [domainStartValue, domainEndValue] = scale.domain;
+    const [domainStartValue = Number.NEGATIVE_INFINITY, domainEndValue = Number.NEGATIVE_INFINITY] = scale.domain;
     const min = maxOf(domainStartValue, minValue);
     const max = minOf(isHistogram ? domainEndValue + scale.minInterval : domainEndValue, maxValue);
     // extend to edge values if values are null/undefined
@@ -231,7 +231,7 @@ function limitValueToDomainRange(
   } else {
     const min = isNil(minValue) || !scale.domain.includes(minValue) ? scale.domain[0] : minValue;
     const max = isNil(maxValue) || !scale.domain.includes(maxValue) ? scale.domain[scale.domain.length - 1] : maxValue;
-    return [min, max];
+    return [min ?? null, max ?? null];
   }
 }
 

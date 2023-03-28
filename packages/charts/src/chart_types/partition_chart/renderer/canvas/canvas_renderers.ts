@@ -192,11 +192,16 @@ function renderFillOutsideLinks(
     ctx.lineWidth = linkLabelLineWidth;
     ctx.strokeStyle = linkLabelTextColor;
     outsideLinksViewModel.forEach(({ points }) => {
+      const origin = points[0];
+      if (!origin) return;
+
       ctx.beginPath();
-      ctx.moveTo(points[0][0], points[0][1]);
-      for (let i = 1; i < points.length; i++) {
-        ctx.lineTo(points[i][0], points[i][1]);
-      }
+      ctx.moveTo(origin[0], origin[1]);
+
+      points.forEach(([x, y]) => {
+        ctx.lineTo(x, y);
+      });
+
       ctx.stroke();
     });
   });

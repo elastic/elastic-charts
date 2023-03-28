@@ -123,7 +123,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
                 { shouldAddEllipsis: true, wrapAtWord: false },
               ).lines;
               // TODO improve the `wrapLines` code to handle results with short width
-              renderText(ctx, { x, y }, textLines.length > 0 ? textLines[0] : '…', font);
+              renderText(ctx, { x, y }, textLines[0] || '…', font);
             });
           });
         });
@@ -152,7 +152,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
                 renderText(
                   ctx,
                   { x, y },
-                  textLines.length > 0 ? textLines[0] : '…',
+                  textLines[0] || '…',
                   { ...theme.xAxisLabel, baseline: 'middle', align },
                   // negative rotation due to the canvas rotation direction
                   radToDeg(-elementSizes.xLabelRotation),

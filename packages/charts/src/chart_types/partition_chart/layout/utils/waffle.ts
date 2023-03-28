@@ -24,6 +24,9 @@ export function waffle(
     height: outerHeight,
   }: { x0: number; y0: number; width: number; height: number },
 ): Array<Part> {
+  const root = tree[0];
+  if (!root || !root[1]) return [];
+
   const size = Math.min(outerWidth, outerHeight);
   const widthOffset = Math.max(0, outerWidth - size) / 2;
   const heightOffset = Math.max(0, outerHeight - size) / 2;
@@ -33,7 +36,7 @@ export function waffle(
   const valuePerCell = totalValue / cellCount;
   let valueSoFar = 0;
   let lastIndex = 0;
-  const root = tree[0];
+
   return [
     { node: root, x0: 0, y0: 0, x1: size, y1: size },
     ...root[1][CHILDREN_KEY].flatMap((entry) => {

@@ -413,12 +413,12 @@ export function geoms(
   const pxRangeMid = (pxRangeFrom + pxRangeTo) / 2;
   const pxRange = pxRangeTo - pxRangeFrom;
 
-  const domainExtent = domain[1] - domain[0];
+  const domainExtent = (domain[1] ?? 0) - (domain[0] ?? 0);
 
-  const linearScale = (x: number) => pxRangeFrom + (pxRange * (x - domain[0])) / domainExtent;
+  const linearScale = (x: number) => pxRangeFrom + (pxRange * (x - (domain[0] ?? 0))) / domainExtent;
 
   const angleRange = angleEnd - angleStart;
-  const angleScale = (x: number) => angleStart + (angleRange * (x - domain[0])) / domainExtent;
+  const angleScale = (x: number) => angleStart + (angleRange * (x - (domain[0] ?? 0))) / domainExtent;
   const clockwise = angleStart > angleEnd; // todo refine this crude approach
 
   return [...abstractGeoms]

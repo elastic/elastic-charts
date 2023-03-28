@@ -69,7 +69,7 @@ function isNewPickedShapes(prevPickedShapes: LayerValue[][], nextPickedShapes: L
   }
   return !nextPickedShapes.every((nextPickedShapeValues, index) => {
     const prevPickedShapeValues = prevPickedShapes[index];
-    if (prevPickedShapeValues === null) {
+    if (!prevPickedShapeValues) {
       return false;
     }
     if (prevPickedShapeValues.length !== nextPickedShapeValues.length) {

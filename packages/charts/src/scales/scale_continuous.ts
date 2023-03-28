@@ -156,7 +156,7 @@ export class ScaleContinuous {
     if (isPixelPadded && isNice)
       (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
-    const nicePaddedDomain = isPixelPadded && isNice ? (d3Scale.domain() as number[]) : paddedDomain;
+    const nicePaddedDomain = isPixelPadded && isNice ? (d3Scale.domain() as [number, number]) : paddedDomain;
 
     this.tickValues =
       type === ScaleType.Time
@@ -218,17 +218,19 @@ export class ScaleContinuous {
     const leftIndex = bisectLeft(data, bisectValue);
 
     if (leftIndex === 0) {
-      const withinBandwidth = invertedValue >= data[0];
+      const [dataValue = NaN] = data;
+      const withinBandwidth = invertedValue >= dataValue;
       return {
         withinBandwidth,
         value:
-          data[0] + (withinBandwidth ? 0 : -this.minInterval * Math.ceil((data[0] - invertedValue) / this.minInterval)),
+          dataValue +
+          (withinBandwidth ? 0 : -this.minInterval * Math.ceil((dataValue - invertedValue) / this.minInterval)),
       };
     }
-    const currentValue = data[leftIndex - 1];
+    const currentValue = data[leftIndex - 1] ?? NaN;
     // pure linear scale
     if (this.bandwidth === 0) {
-      const nextValue = data[leftIndex];
+      const nextValue = data[leftIndex] ?? NaN;
       const nextDiff = Math.abs(nextValue - invertedValue);
       const prevDiff = Math.abs(invertedValue - currentValue);
       return {
@@ -250,20 +252,28 @@ export class ScaleContinuous {
   }
 
   isValueInDomain(value: unknown): boolean {
-    return isFiniteNumber(value) && this.domain[0] <= value && value <= this.domain[1];
+    const [start = NaN, end = NaN] = this.domain;
+    return isFiniteNumber(value) && start <= value && value <= end;
   }
 }
 
 function getTimeTicks(domain: number[], desiredTickCount: number, timeZone: string, minInterval: number) {
-  const startDomain = getMomentWithTz(domain[0], timeZone);
-  const endDomain = getMomentWithTz(domain[1], timeZone);
+  const [start = NaN, end = NaN] = domain;
+  const startDomain = getMomentWithTz(start, timeZone);
+  const endDomain = getMomentWithTz(end, timeZone);
   const offset = startDomain.utcOffset();
   const shiftedDomainMin = startDomain.add(offset, 'minutes').valueOf();
   const shiftedDomainMax = endDomain.add(offset, 'minutes').valueOf();
   const tzShiftedScale = scaleUtc().domain([shiftedDomainMin, shiftedDomainMax]);
   let currentCount = desiredTickCount;
   let rawTicks = tzShiftedScale.ticks(desiredTickCount);
-  while (rawTicks.length > 2 && currentCount > 0 && rawTicks[1].valueOf() - rawTicks[0].valueOf() < minInterval) {
+  while (
+    rawTicks.length > 2 &&
+    currentCount > 0 &&
+    rawTicks[0] &&
+    rawTicks[1] &&
+    rawTicks[1].valueOf() - rawTicks[0].valueOf() < minInterval
+  ) {
     currentCount--;
     rawTicks = tzShiftedScale.ticks(currentCount);
   }
@@ -283,11 +293,11 @@ function getLinearNonDenserTicks(
   base: number,
   minInterval: number,
 ): number[] {
-  const start = domain[0];
-  const stop = domain[domain.length - 1];
+  const [start = 0] = domain;
+  const stop = domain[domain.length - 1] ?? 0;
   let currentCount = desiredTickCount;
   let ticks = getLinearTicks(start, stop, desiredTickCount, base);
-  while (ticks.length > 2 && currentCount > 0 && ticks[1] - ticks[0] < minInterval) {
+  while (ticks.length > 2 && currentCount > 0 && ticks[0] && ticks[1] && ticks[1] - ticks[0] < minInterval) {
     currentCount--;
     ticks = getLinearTicks(start, stop, currentCount, base);
   }
@@ -299,7 +309,7 @@ function isDegenerateDomain(domain: unknown[]): boolean {
 }
 
 /** @internal */
-export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number) {
+export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number): [min: number, max: number] {
   // todo further simplify this
   const absLimit = Math.abs(logMinLimit);
   const fallback = absLimit || LOG_MIN_ABS_DOMAIN;
@@ -378,7 +388,7 @@ interface ScaleData {
   /** The Type of continuous scale */
   type: ScaleContinuousType;
   /** The data input domain */
-  domain: number[];
+  domain: [number, number];
   /** The data output range */
   range: Range;
   nice?: boolean;

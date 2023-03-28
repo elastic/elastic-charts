@@ -11,7 +11,7 @@ import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { SettingsSpec, TickFormatterOptions } from '../../../specs';
-import { mergePartial } from '../../../utils/common';
+import { isDefined, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
@@ -181,16 +181,21 @@ export function computeLegend(
   const sortFn: SeriesCompareFn = settingsSpec.legendSort ?? legendSortFn;
 
   return groupBy(
-    legendItems.sort((a, b) => sortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])),
+    legendItems.sort((a, b) =>
+      a.seriesIdentifiers[0] && b.seriesIdentifiers[0] ? sortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0]) : 0,
+    ),
     ({ keys, childId }) => {
       return [...keys, childId].join('__'); // childId is used for band charts
     },
     true,
-  ).map((d) => {
-    return {
-      ...d[0],
-      seriesIdentifiers: d.map(({ seriesIdentifiers: [s] }) => s),
-      path: d.map(({ path: [p] }) => p),
-    };
-  });
+  )
+    .map((d) => {
+      if (!d[0]) return;
+      return {
+        ...d[0],
+        seriesIdentifiers: d.map(({ seriesIdentifiers: [s] }) => s).filter(isDefined),
+        path: d.map(({ path: [p] }) => p).filter(isDefined),
+      };
+    })
+    .filter(isDefined);
 }

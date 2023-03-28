@@ -310,10 +310,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const { category: smVerticalAccessorValue, panelOffset: vOffset } = getPanelPointCoordinate(start.y, 'vertical');
 
     // confine selection to start panel
-    const panelStartX = clampWithOffset(topLeft[0], 0, panelSize.width, hOffset);
-    const panelStartY = clampWithOffset(topLeft[1], 0, panelSize.height, vOffset);
-    const panelEndX = clampWithOffset(bottomRight[0], 0, panelSize.width, hOffset);
-    const panelEndY = clampWithOffset(bottomRight[1], 0, panelSize.height, vOffset);
+    const panelStartX = clampWithOffset(topLeft[0] ?? 0, 0, panelSize.width, hOffset);
+    const panelStartY = clampWithOffset(topLeft[1] ?? 0, 0, panelSize.height, vOffset);
+    const panelEndX = clampWithOffset(bottomRight[0] ?? 0, 0, panelSize.width, hOffset);
+    const panelEndY = clampWithOffset(bottomRight[1] ?? 0, 0, panelSize.height, vOffset);
 
     const startX = xInvertedScale(panelStartX);
     const startY = yInvertedScale(panelStartY);
@@ -359,14 +359,14 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   ) => {
     const startValue = x[0];
     const endValue = x[x.length - 1];
-    const leftIndex = xValues.indexOf(startValue);
-    const rightIndex = xValues.indexOf(endValue) + (isRasterTimeScale(spec.xScale) && x.length > 1 ? 0 : 1);
+    const leftIndex = xValues.indexOf(startValue ?? NaN);
+    const rightIndex = xValues.indexOf(endValue ?? NaN) + (isRasterTimeScale(spec.xScale) && x.length > 1 ? 0 : 1);
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
 
-    const startFromScale = xScale(isLeftOutOfRange ? xValues[0] : xValues[leftIndex]);
-    const endFromScale = xScale(isRightOutOfRange ? xValues[xValues.length - 1] : xValues[rightIndex]);
+    const startFromScale = xScale((isLeftOutOfRange ? xValues[0] : xValues[leftIndex]) ?? NaN);
+    const endFromScale = xScale((isRightOutOfRange ? xValues[xValues.length - 1] : xValues[rightIndex]) ?? NaN);
 
     if (startFromScale === undefined || endFromScale === undefined) {
       return null;
@@ -423,7 +423,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       ? undefined
       : {
           width: cellWidth,
-          x: chartDimensions.left + (xScale(xValues[index]) ?? NaN),
+          x: chartDimensions.left + (xScale(xValues[index] ?? NaN) ?? NaN),
           y: chartDimensions.top,
           height: chartDimensions.height,
         };

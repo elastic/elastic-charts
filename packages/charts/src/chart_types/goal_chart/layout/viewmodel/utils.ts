@@ -20,7 +20,7 @@ const LIMITING_ANGLE = Math.PI / 2;
  * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const hasTopGap = (angleStart: Radian, angleEnd: Radian): boolean => {
-  const [a, b] = [angleStart, angleEnd].sort();
+  const [a = 0, b = 0] = [angleStart, angleEnd].sort();
   return a <= -Math.PI / 2 && a >= (-Math.PI * 3) / 2 && b >= -Math.PI / 2 && b <= Math.PI / 2;
 };
 
@@ -28,7 +28,7 @@ const hasTopGap = (angleStart: Radian, angleEnd: Radian): boolean => {
  * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const hasBottomGap = (angleStart: Radian, angleEnd: Radian): boolean => {
-  const [a, b] = [angleStart, angleEnd].sort();
+  const [a = 0, b = 0] = [angleStart, angleEnd].sort();
   return a >= -Math.PI / 2 && a <= Math.PI / 2 && b < (Math.PI * 3) / 2 && b >= Math.PI / 2;
 };
 
@@ -36,7 +36,7 @@ const hasBottomGap = (angleStart: Radian, angleEnd: Radian): boolean => {
  * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const isOnlyTopHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
-  const [a, b] = [angleStart, angleEnd].sort();
+  const [a = 0, b = 0] = [angleStart, angleEnd].sort();
   return a >= 0 && b <= Math.PI;
 };
 
@@ -44,7 +44,7 @@ const isOnlyTopHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
  * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const isOnlyBottomHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
-  const [a, b] = [angleStart, angleEnd].sort();
+  const [a = 0, b = 0] = [angleStart, angleEnd].sort();
   return (a >= Math.PI && b <= 2 * Math.PI) || (a >= -Math.PI && b <= 0);
 };
 
@@ -52,7 +52,7 @@ const isOnlyBottomHalf = (angleStart: Radian, angleEnd: Radian): boolean => {
  * Angles are relative to mathematical angles of a unit circle from -2π > θ > 2π
  */
 const isWithinLimitedDomain = (angleStart: Radian, angleEnd: Radian): boolean => {
-  const [a, b] = [angleStart, angleEnd].sort();
+  const [a = 0, b = 0] = [angleStart, angleEnd].sort();
   return a > -2 * Math.PI && b < 2 * Math.PI;
 };
 

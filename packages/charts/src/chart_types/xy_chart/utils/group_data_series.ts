@@ -26,7 +26,7 @@ export function groupBy<T>(data: T[], keysOrKeyFn: GroupKeysOrKeyFn<T>, asArray:
     if (!acc[key]) {
       acc[key] = [];
     }
-    acc[key].push(curr);
+    acc[key]!.push(curr);
     return acc;
   }, {});
   return asArray ? Object.values(grouped) : grouped;

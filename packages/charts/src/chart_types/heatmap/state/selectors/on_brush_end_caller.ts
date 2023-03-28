@@ -8,7 +8,6 @@
 
 import { OutputSelector } from 'reselect';
 
-import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedCells } from './get_picked_cells';
 import { isBrushEndProvided } from './is_brush_available';
 import { ChartType } from '../../..';
@@ -18,7 +17,6 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { DragCheckProps, hasDragged } from '../../../../utils/events';
-import { HeatmapSpec } from '../../specs';
 
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:
@@ -31,7 +29,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
   let selector: OutputSelector<
     GlobalChartState,
     void,
-    (res1: DragState | null, res2: HeatmapSpec | null, res3: SettingsSpec, res4: HeatmapBrushEvent | null) => void
+    (res1: DragState | null, res3: SettingsSpec, res4: HeatmapBrushEvent | null) => void
   > | null = null;
 
   return (state) => {
@@ -42,13 +40,13 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
         return;
       }
       selector = createCustomCachedSelector(
-        [getLastDragSelector, getHeatmapSpecSelector, getSettingsSpecSelector, getPickedCells],
-        (lastDrag, spec, { onBrushEnd }, pickedCells): void => {
+        [getLastDragSelector, getSettingsSpecSelector, getPickedCells],
+        (lastDrag, { onBrushEnd }, pickedCells): void => {
           const nextProps: DragCheckProps = {
             lastDrag,
             onBrushEnd,
           };
-          if (!spec || !onBrushEnd || pickedCells === null) {
+          if (!onBrushEnd || pickedCells === null) {
             return;
           }
           if (lastDrag !== null && hasDragged(prevProps, nextProps)) {

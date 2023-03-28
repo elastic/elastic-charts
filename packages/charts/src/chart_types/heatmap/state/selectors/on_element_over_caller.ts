@@ -15,6 +15,7 @@ import { SeriesIdentifier } from '../../../../common/series_id';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { isNil } from '../../../../utils/common';
 import { Cell, isPickedCells } from '../../layout/types/viewmodel_types';
 
 function isOverElement(prev: Cell[], next: Cell[]) {
@@ -26,7 +27,7 @@ function isOverElement(prev: Cell[], next: Cell[]) {
   }
   return !next.every((nextCell, index) => {
     const prevCell = prev[index];
-    if (prevCell === null) {
+    if (isNil(prevCell)) {
       return false;
     }
     return nextCell.value === prevCell.value && nextCell.x === prevCell.x && nextCell.y === prevCell.y;

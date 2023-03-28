@@ -60,7 +60,7 @@ const WOBBLE_REPEAT_COUNT = 2;
 const WOBBLE_FREQUENCY = SHOULD_DISABLE_WOBBLE ? 0 : 2 * Math.PI * (WOBBLE_REPEAT_COUNT / WOBBLE_DURATION); // e.g. 1/30 means a cycle of every 30ms
 const NODE_TWEEN_DURATION_MS = 500;
 
-const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? position[1] - position[3] : 1);
+const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? (position[1] ?? 0) - (position[3] ?? 0) : 1);
 const initialPixelRowPitch = () => 16;
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
 const browserRootWindow = () => {
@@ -70,10 +70,10 @@ const browserRootWindow = () => {
 };
 
 const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i: number) => ({
-  x0: position1[i * 2],
-  x1: position1[i * 2] + size1[i],
-  y0: position1[i * 2 + 1],
-  y1: position1[i * 2 + 1] + unitRowPitch(position1),
+  x0: position1[i * 2] ?? 0,
+  x1: (position1[i * 2] ?? 0) + (size1[i] ?? 0),
+  y0: position1[i * 2 + 1] ?? 0,
+  y1: (position1[i * 2 + 1] ?? 0) + unitRowPitch(position1),
 });
 
 /** @internal */
@@ -111,17 +111,18 @@ const focusRect = (
 ): FocusRect => focusForArea(chartHeight, columnToRowPositions(columnarViewModel, drilldownDatumIndex || 0));
 
 const getColor = (c: Float32Array, i: number) => {
-  const r = Math.round(255 * c[4 * i]);
-  const g = Math.round(255 * c[4 * i + 1]);
-  const b = Math.round(255 * c[4 * i + 2]);
+  const r = Math.round(255 * (c[4 * i] ?? 0));
+  const g = Math.round(255 * (c[4 * i + 1] ?? 0));
+  const b = Math.round(255 * (c[4 * i + 2] ?? 0));
   const a = c[4 * i + 3];
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
 const colorToDatumIndex = (pixel: Uint8Array) => {
   // this is the inverse of what's done via BIT_SHIFTERS in shader code (bijective color/index mapping)
-  const isEmptyArea = pixel[0] + pixel[1] + pixel[2] + pixel[3] < GEOM_INDEX_OFFSET; // ie. zero
-  return isEmptyArea ? NaN : pixel[3] + 256 * (pixel[2] + 256 * (pixel[1] + 256 * pixel[0])) - GEOM_INDEX_OFFSET;
+  const [p0 = 0, p1 = 0, p2 = 0, p3 = 0] = pixel;
+  const isEmptyArea = p0 + p1 + p2 + p3 < GEOM_INDEX_OFFSET; // ie. zero
+  return isEmptyArea ? NaN : p3 + 256 * (p2 + 256 * (p1 + 256 * p0)) - GEOM_INDEX_OFFSET;
 };
 
 const getRegExp = (searchString: string): RegExp => {
@@ -477,13 +478,13 @@ class FlameComponent extends React.Component<FlameProps> {
         this.hoverIndex >= 0
           ? [
               {
-                label: columns.label[this.hoverIndex],
+                label: columns.label[this.hoverIndex] ?? '',
                 color: getColor(columns.color, this.hoverIndex),
                 isHighlighted: false,
                 isVisible: true,
                 seriesIdentifier: { specId: '', key: '' },
                 value: columns.value[this.hoverIndex],
-                formattedValue: `${specValueFormatter(columns.value[this.hoverIndex])}`,
+                formattedValue: `${specValueFormatter(columns.value[this.hoverIndex] ?? NaN)}`,
                 valueAccessor: this.hoverIndex,
               },
             ]
@@ -707,13 +708,13 @@ class FlameComponent extends React.Component<FlameProps> {
     let y1 = -Infinity;
     // todo unify with matcher loop and setup in focusOnHit
     for (let i = 0; i < datumCount; i++) {
-      const label = this.caseSensitive ? labels[i] : labels[i].toLowerCase();
-      if (regex ? label.match(regex) : label.includes(customizedSearchString)) {
+      const label = this.caseSensitive ? labels[i] : labels[i]?.toLowerCase();
+      if (regex ? label?.match(regex) : label?.includes(customizedSearchString)) {
         this.currentSearchHitCount++;
-        x0 = Math.min(x0, position[2 * i]);
-        x1 = Math.max(x1, position[2 * i] + size[i]);
-        y0 = Math.min(y0, position[2 * i + 1]);
-        y1 = Math.max(y1, position[2 * i + 1] + rowHeight);
+        x0 = Math.min(x0, position[2 * i] ?? 0);
+        x1 = Math.max(x1, (position[2 * i] ?? 0) + (size[i] ?? 0));
+        y0 = Math.min(y0, position[2 * i + 1] ?? 0);
+        y1 = Math.max(y1, (position[2 * i + 1] ?? 0) + rowHeight);
       } else {
         this.currentColor[4 * i + 3] *= 0.25; // multiply alpha
       }
@@ -794,8 +795,8 @@ class FlameComponent extends React.Component<FlameProps> {
       const labels = this.props.columnarViewModel.label;
       // todo unify with matcher loop and setup in focusOnAllMatches
       for (let i = 0; i < labels.length; i++) {
-        const label = this.caseSensitive ? labels[i] : labels[i].toLowerCase();
-        if (regex ? label.match(regex) : label.includes(customizedSearchString)) {
+        const label = this.caseSensitive ? labels[i] : labels[i]?.toLowerCase();
+        if (regex ? label?.match(regex) : label?.includes(customizedSearchString)) {
           datumIndex = i;
           hitEnumerator++;
           if (hitEnumerator === this.focusedMatchIndex) break;

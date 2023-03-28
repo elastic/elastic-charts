@@ -113,6 +113,7 @@ export function getExtraValueMap(
 ): Map<SeriesKey, LegendItemExtraValues> {
   for (let i = 0; i < tree.length; i++) {
     const branch = tree[i];
+    if (!branch) continue;
     const [key, arrayNode] = branch;
     const { value, path, [CHILDREN_KEY]: children } = arrayNode;
     const values: LegendItemExtraValues = new Map();

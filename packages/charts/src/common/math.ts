@@ -20,7 +20,7 @@ export function extent(array: number[]): [min: number, max: number] {
   let min = Infinity;
   let max = -Infinity;
   for (let i = 0; i < len; i += 1) {
-    const value = array[i];
+    const value = array[i] ?? NaN;
     if (min > value) min = value;
     if (max < value) max = value;
   }

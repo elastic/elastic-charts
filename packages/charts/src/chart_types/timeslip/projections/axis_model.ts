@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { isDefined } from '../../../utils/common';
+
 /** @internal */
 export const oneTwoFive = (mantissa: number) => (mantissa > 5 ? 10 : mantissa > 2 ? 5 : mantissa > 1 ? 2 : 1);
 /** @internal */
@@ -50,7 +52,10 @@ export const getDecimalTicks = (
     }
   }
   return bestCandidate.length > maximumTickCount
-    ? [...(maximumTickCount > 1 ? [bestCandidate[0]] : []), bestCandidate[bestCandidate.length - 1]]
+    ? [
+        ...(maximumTickCount > 1 && isDefined(bestCandidate[0]) ? [bestCandidate[0]] : []),
+        bestCandidate[bestCandidate.length - 1] ?? NaN,
+      ]
     : [];
 };
 
@@ -62,7 +67,7 @@ export const axisModel = (
   const domainMin = Math.min(...domainLandmarks);
   const domainMax = Math.max(...domainLandmarks);
   const niceTicks = getDecimalTicks(domainMin, domainMax, desiredTickCount);
-  const niceDomainMin = niceTicks.length >= 2 ? niceTicks[0] : domainMin;
-  const niceDomainMax = niceTicks.length >= 2 ? niceTicks[niceTicks.length - 1] : domainMax;
+  const niceDomainMin = niceTicks.length >= 2 ? niceTicks[0]! : domainMin;
+  const niceDomainMax = niceTicks.length >= 2 ? niceTicks[niceTicks.length - 1]! : domainMax;
   return { niceDomainMin, niceDomainMax, niceTicks };
 };
