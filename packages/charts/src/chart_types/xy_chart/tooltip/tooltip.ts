@@ -90,7 +90,7 @@ export function formatTooltipValue(
 
 /** @internal */
 export function formatTooltipHeader(
-  { value: { x, accessor } }: IndexedGeometry,
+  { value: { x } }: IndexedGeometry,
   spec: BasicSeriesSpec,
   axisSpec?: AxisSpec,
 ): PointerValue {
@@ -98,7 +98,6 @@ export function formatTooltipHeader(
   const tickFormatter = axisSpec?.tickFormat ?? defaultTickFormatter;
 
   return {
-    valueAccessor: accessor,
     value: x,
     formattedValue: tickFormatter(x, tickFormatOptions),
   };
