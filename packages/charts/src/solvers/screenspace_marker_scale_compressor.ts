@@ -37,7 +37,7 @@ export const screenspaceMarkerScaleCompressor = (
   for (let left = 0; left < itemCount; left++) {
     for (let right = 0; right < itemCount; right++) {
       const domainLeft = domainPositions[left] ?? NaN;
-      const domainRight = domainPositions[left] ?? NaN;
+      const domainRight = domainPositions[right] ?? NaN;
       if (domainLeft > domainRight) continue; // must adhere to left <= right
 
       const range = outerWidth - (itemWidths[left]?.[0] ?? NaN) - (itemWidths[right]?.[1] ?? NaN); // negative if not enough room
