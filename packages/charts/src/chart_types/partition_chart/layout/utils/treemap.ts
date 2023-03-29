@@ -127,7 +127,7 @@ export function treemap(
 ): Array<Part> {
   if (nodes.length === 0) return [];
   // some bias toward horizontal rectangles with a golden ratio of width to height
-  const depth = nodes[0]?.[1][DEPTH_KEY] ?? 1 - 1;
+  const depth = (nodes[0]?.[1][DEPTH_KEY] ?? 1) - 1;
   const layerLayout = layouts[depth] ?? null;
   const vertical = layerLayout === LayerLayout.vertical || (!layerLayout && outerWidth / GOLDEN_RATIO <= outerHeight);
   const independentSize = vertical ? outerWidth : outerHeight;
