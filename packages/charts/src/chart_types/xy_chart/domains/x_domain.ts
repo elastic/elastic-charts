@@ -133,7 +133,7 @@ export function findMinInterval(xValues: number[]): number {
     ? xValues.length
     : [...xValues].sort(compareByValueAsc).reduce((minInterval, current, i, sortedValues) => {
         return i < xValues.length - 1
-          ? Math.min(minInterval, Math.abs(sortedValues[i + 1] ?? NaN - current))
+          ? Math.min(minInterval, Math.abs((sortedValues[i + 1] ?? 0) - current))
           : minInterval;
       }, Infinity);
 }
