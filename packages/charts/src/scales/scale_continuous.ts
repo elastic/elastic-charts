@@ -26,7 +26,7 @@ import { LogScaleOptions } from './types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
-import { clamp, isFiniteNumber, mergePartial } from '../utils/common';
+import { clamp, isDefined, isFiniteNumber, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 
@@ -270,8 +270,8 @@ function getTimeTicks(domain: number[], desiredTickCount: number, timeZone: stri
   while (
     rawTicks.length > 2 &&
     currentCount > 0 &&
-    rawTicks[0] &&
-    rawTicks[1] &&
+    isDefined(rawTicks[0]) &&
+    isDefined(rawTicks[1]) &&
     rawTicks[1].valueOf() - rawTicks[0].valueOf() < minInterval
   ) {
     currentCount--;
@@ -297,7 +297,13 @@ function getLinearNonDenserTicks(
   const stop = domain[domain.length - 1] ?? 0;
   let currentCount = desiredTickCount;
   let ticks = getLinearTicks(start, stop, desiredTickCount, base);
-  while (ticks.length > 2 && currentCount > 0 && ticks[0] && ticks[1] && ticks[1] - ticks[0] < minInterval) {
+  while (
+    ticks.length > 2 &&
+    currentCount > 0 &&
+    isDefined(ticks[0]) &&
+    isDefined(ticks[1]) &&
+    ticks[1] - ticks[0] < minInterval
+  ) {
     currentCount--;
     ticks = getLinearTicks(start, stop, currentCount, base);
   }
