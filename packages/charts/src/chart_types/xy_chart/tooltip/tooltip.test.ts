@@ -257,7 +257,7 @@ describe('Tooltip formatting', () => {
     };
     const tooltipHeader = formatTooltipHeader(geometry, SPEC_1, YAXIS_SPEC);
     expect(tooltipHeader).toBeDefined();
-    expect(tooltipHeader.valueAccessor).toBe('y0');
+    expect(tooltipHeader.valueAccessor).toBeUndefined();
     expect(tooltipHeader.value).toBe(1);
     expect(tooltipHeader.formattedValue).toBe('1');
   });
