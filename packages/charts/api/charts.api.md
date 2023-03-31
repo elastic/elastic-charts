@@ -2913,7 +2913,7 @@ export type TooltipHeaderFormatter<D extends BaseDatum = Datum> = (data: Pointer
 
 // @public (undocumented)
 export type TooltipHeaderProps<D extends BaseDatum = Datum> = PropsOrChildrenWithProps<{
-    header: PointerValue<D> | null;
+    header?: PointerValue<D> | null;
     formatter?: TooltipHeaderFormatter<D>;
 }>;
 

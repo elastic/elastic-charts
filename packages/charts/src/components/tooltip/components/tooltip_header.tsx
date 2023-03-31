@@ -15,7 +15,7 @@ import { PropsOrChildrenWithProps } from '../types';
 
 /** @public */
 export type TooltipHeaderProps<D extends BaseDatum = Datum> = PropsOrChildrenWithProps<{
-  header: PointerValue<D> | null;
+  header?: PointerValue<D> | null;
   formatter?: TooltipHeaderFormatter<D>;
 }>;
 
