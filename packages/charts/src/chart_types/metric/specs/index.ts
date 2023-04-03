@@ -52,7 +52,7 @@ export const MetricTrendShape = Object.freeze({
 export type MetricTrendShape = $Values<typeof MetricTrendShape>;
 
 /** @alpha */
-export type MetricWTrend = MetricWNumber & {
+export type MetricWTrend = (MetricWNumber | MetricWText) & {
   trend: { x: number; y: number }[];
   trendShape: MetricTrendShape;
   trendA11yTitle?: string;
@@ -87,6 +87,10 @@ export type MetricSpecProps = ComponentProps<typeof Metric>;
 export function isMetricWNumber(datum: MetricDatum): datum is MetricWNumber {
   return typeof datum.value === 'number' && datum.hasOwnProperty('valueFormatter');
 }
+/** @internal */
+export function isMetricWText(datum: MetricDatum): datum is MetricWNumber {
+  return typeof datum.value === 'string';
+}
 
 /** @internal */
 export function isMetricWProgress(datum: MetricDatum): datum is MetricWProgress {
@@ -95,5 +99,9 @@ export function isMetricWProgress(datum: MetricDatum): datum is MetricWProgress 
 
 /** @internal */
 export function isMetricWTrend(datum: MetricDatum): datum is MetricWTrend {
-  return isMetricWNumber(datum) && datum.hasOwnProperty('trend') && !datum.hasOwnProperty('domainMax');
+  return (
+    (isMetricWNumber(datum) || isMetricWText(datum)) &&
+    datum.hasOwnProperty('trend') &&
+    !datum.hasOwnProperty('domainMax')
+  );
 }
