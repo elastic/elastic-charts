@@ -87,7 +87,7 @@ export function renderPoints(
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
       const radius =
         orphan && !pointStyle.visible
-          ? lineWidth * 1.5
+          ? lineWidth * 0.8
           : markSizeOptions.enabled
           ? Math.max(getRadius(mark), pointStyle.radius)
           : styleOverrides?.radius ?? pointStyle.radius;
