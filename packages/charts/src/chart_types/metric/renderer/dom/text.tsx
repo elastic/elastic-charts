@@ -157,7 +157,7 @@ export const MetricText: React.FunctionComponent<{
   datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
-  onElementClick: () => void;
+  onElementClick?: () => void;
   highContrastTextColor: Color;
 }> = ({ id, datum, panel, style, onElementClick, highContrastTextColor }) => {
   const { extra, value } = datum;
@@ -182,32 +182,38 @@ export const MetricText: React.FunctionComponent<{
       ? splitNumericSuffixPrefix(datum.valueFormatter(value))
       : [{ emphasis: 'normal', text: style.nonFiniteText }]
     : [{ emphasis: 'normal', text: datum.value }];
-
+  const TitleElement = () => (
+    <span
+      style={{
+        fontSize: `${TITLE_FONT_SIZE[size]}px`,
+        whiteSpace: 'pre-wrap',
+        width: titlesWidth,
+        ...lineClamp(visibility.titleLines.length),
+      }}
+      title={datum.title}
+    >
+      {datum.title}
+    </span>
+  );
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
       <div>
         {visibility.title && (
           <h2 id={id} className="echMetricText__title">
-            <button
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-              onClick={(e) => {
-                e.stopPropagation();
-                onElementClick();
-              }}
-            >
-              <span
-                style={{
-                  fontSize: `${TITLE_FONT_SIZE[size]}px`,
-                  whiteSpace: 'pre-wrap',
-                  width: titlesWidth,
-                  ...lineClamp(visibility.titleLines.length),
+            {onElementClick ? (
+              <button
+                onMouseDown={(e) => e.stopPropagation()}
+                onMouseUp={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onElementClick();
                 }}
-                title={datum.title}
               >
-                {datum.title}
-              </span>
-            </button>
+                <TitleElement />
+              </button>
+            ) : (
+              <TitleElement />
+            )}
           </h2>
         )}
         {datum.icon && (
