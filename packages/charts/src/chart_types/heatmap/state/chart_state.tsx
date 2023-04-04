@@ -18,7 +18,6 @@ import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_label
 import { getTooltipAnchorSelector } from './selectors/get_tooltip_anchor';
 import { getSpecOrNull } from './selectors/heatmap_spec';
 import { isBrushAvailableSelector } from './selectors/is_brush_available';
-import { isBrushingSelector } from './selectors/is_brushing';
 import { isEmptySelector } from './selectors/is_empty';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
@@ -34,6 +33,7 @@ import { Tooltip } from '../../../components/tooltip/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
+import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 import { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { CursorBand } from '../renderer/dom/cursor_band';

@@ -48,6 +48,7 @@ import { getInternalTooltipInfoSelector } from '../../state/selectors/get_intern
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSelectedItems } from '../../state/selectors/get_tooltip_selected_items';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
+import { isBrushingSelector } from '../../state/selectors/is_brushing';
 import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { TooltipStyle } from '../../utils/themes/theme';
@@ -407,7 +408,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
         pinned: state.interactions.tooltip.pinned,
         selected: getTooltipSelectedItems(state),
         canPinTooltip: isPinnableTooltip(state),
-        isBrushing: state.interactions.pointer.dragging,
+        isBrushing: isBrushingSelector(state),
       };
 
 /** @internal */
