@@ -446,7 +446,6 @@ test.describe('Interactions', () => {
             common.chartSelector,
           );
           await common.moveMouseRelativeToDOMElement(page)(origin, common.chartSelector);
-          await common.dropMouse(page)();
         },
       },
     );
