@@ -1859,7 +1859,7 @@ export type MetricWText = MetricBase & {
 };
 
 // @alpha (undocumented)
-export type MetricWTrend = MetricWNumber & {
+export type MetricWTrend = (MetricWNumber | MetricWText) & {
     trend: {
         x: number;
         y: number;
