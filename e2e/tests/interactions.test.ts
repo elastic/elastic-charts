@@ -428,7 +428,8 @@ test.describe('Interactions', () => {
     );
   });
 
-  test('should not disable dragging when returning to origin', async ({ page }) => {
+  // should not disable dragging when returning to origin
+  test('should not show tooltip after brushing has been enabled', async ({ page }) => {
     const origin = {
       left: 200,
       top: 200,
