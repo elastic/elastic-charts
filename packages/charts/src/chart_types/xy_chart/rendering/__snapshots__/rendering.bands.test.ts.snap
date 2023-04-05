@@ -248,7 +248,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 0.8,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -263,8 +263,8 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -276,7 +276,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -306,7 +306,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 0.8,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -321,8 +321,8 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -334,7 +334,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
