@@ -169,10 +169,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     return null;
   }
 
-  const isMostlyRTL = hasMostlyRTLItems([
-    ...(info?.values?.map?.(({ label }) => label) ?? []),
-    info?.header?.label ?? '',
-  ]);
+  const isMostlyRTL = hasMostlyRTLItems(info?.values?.map?.(({ label }) => label) ?? []);
   const textDirectionality = isMostlyRTL ? 'rtl' : 'ltr';
 
   const columns: TooltipTableColumn<D, SI>[] = [
@@ -222,14 +219,13 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     },
   ];
 
-  const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
-
   // don't show the tooltip if hidden or no TooltipInfo are available
   if (!info || !visible) {
     return null;
   }
-  const actionable = actions.length > 0 || !Array.isArray(actions);
 
+  const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
+  const actionable = actions.length > 0 || !Array.isArray(actions);
   // divider visibility
   const hasHeader = TooltipCustomHeader !== 'none' && info.header;
   const hasBody = TooltipCustomBody !== 'none' && info.values.length > 0;

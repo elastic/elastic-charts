@@ -30,13 +30,14 @@ import { getChartRotationSelector } from '../../../../state/selectors/get_chart_
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
+import { PointerValue } from '../../../../state/types';
 import { isNil, Rotation } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
 import { getTooltipCompareFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
-import { formatTooltip } from '../../tooltip/tooltip';
+import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
 import { DataSeries } from '../../utils/series';
 import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
@@ -124,7 +125,7 @@ function getTooltipAndHighlightFromValue(
   }
 
   // build the tooltip value list
-  let header: TooltipValue | null = null;
+  let header: PointerValue | null = null;
   const highlightedGeometries: IndexedGeometry[] = [];
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
@@ -160,13 +161,13 @@ function getTooltipAndHighlightFromValue(
     }
 
     // format the tooltip values
-    const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, hasSingleSeries, yAxis);
+    const formattedTooltip = formatTooltipValue(indexedGeometry, spec, isHighlighted, hasSingleSeries, yAxis);
 
     // format only one time the x value
     if (!header) {
       // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
       const formatterAxis = tooltip.headerFormatter ? undefined : xAxis;
-      header = formatTooltip(indexedGeometry, spec, true, false, hasSingleSeries, formatterAxis);
+      header = formatTooltipHeader(indexedGeometry, spec, formatterAxis);
     }
 
     xValues.add(indexedGeometry.value.x);
@@ -188,6 +189,7 @@ function getTooltipAndHighlightFromValue(
   const sortedTooltipValues = values.sort((a, b) => {
     return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
   });
+
   return {
     tooltip: {
       header,
@@ -206,7 +208,7 @@ export const getHighlightedTooltipTooltipValuesSelector = createCustomCachedSele
     const highlightedValues = values.tooltip.values.filter((v) => v.isHighlighted);
     const hasTooltipContent = values.tooltip.values.length > tooltip.maxTooltipItems && highlightedValues.length > 0;
 
-    if (!pinned && (isFollowTooltipType(tooltipType) || hasTooltipContent)) {
+    if (!pinned && !tooltip.customTooltip && (isFollowTooltipType(tooltipType) || hasTooltipContent)) {
       return {
         ...values,
         tooltip: {
