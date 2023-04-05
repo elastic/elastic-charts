@@ -10,23 +10,9 @@ import { TooltipInfo, XYChartSeriesIdentifier } from '@elastic/charts';
 
 export const simple: TooltipInfo<any, XYChartSeriesIdentifier> = {
   header: {
-    seriesIdentifier: {
-      key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-a}',
-      specId: 'bars1',
-      xAccessor: 'x',
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      seriesKeys: ['a', 'y1'],
-    },
     valueAccessor: 'y1',
-    label: 'a - y1',
     value: 0,
     formattedValue: '2022-10-31 00:00:00.666',
-    markValue: null,
-    color: '#54B399',
-    isHighlighted: false,
-    isVisible: true,
-    datum: { x: 0, g: 'a', y1: 1, y2: 4 },
   },
   values: [
     {
@@ -110,23 +96,9 @@ export const simple: TooltipInfo<any, XYChartSeriesIdentifier> = {
 
 export const long: TooltipInfo<any, XYChartSeriesIdentifier> = {
   header: {
-    seriesIdentifier: {
-      key: 'groupId{__global__}spec{bars1}yAccessor{y1}splitAccessors{g-a}',
-      specId: 'bars1',
-      xAccessor: 'x',
-      yAccessor: 'y1',
-      splitAccessors: new Map(),
-      seriesKeys: ['a', 'y1'],
-    },
     valueAccessor: 'y1',
-    label: 'a - y1',
     value: 0,
     formattedValue: '2022-10-31 00:00:00.666',
-    markValue: null,
-    color: '#54B399',
-    isHighlighted: false,
-    isVisible: true,
-    datum: { x: 0, g: 'a', y1: 1, y2: 4 },
   },
   values: [
     {

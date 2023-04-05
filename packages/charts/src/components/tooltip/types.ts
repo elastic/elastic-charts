@@ -10,6 +10,7 @@ import { ComponentType, ReactNode } from 'react';
 
 import { SeriesIdentifier } from '../../common/series_id';
 import { BaseDatum, TooltipValue, TooltipValueFormatter } from '../../specs';
+import { PointerValue } from '../../state/types';
 import { Datum } from '../../utils/common';
 
 /**
@@ -20,7 +21,7 @@ export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdent
   /**
    * The TooltipValue for the header. On XYAxis chart the x value
    */
-  header: TooltipValue<D, SI> | null;
+  header: PointerValue<D> | null;
   /**
    * The array of {@link TooltipValue}s to show on the tooltip.
    * On XYAxis chart correspond to the set of y values for each series
