@@ -162,7 +162,7 @@ export const MetricText: React.FunctionComponent<{
 }> = ({ id, datum, panel, style, onElementClick, highContrastTextColor }) => {
   const { extra, value } = datum;
 
-  const size = findRange(WIDTH_BP, panel.width - 16);
+  const size = findRange(WIDTH_BP, panel.width);
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
   const containerClassName = classNames('echMetricText', {
@@ -192,7 +192,7 @@ export const MetricText: React.FunctionComponent<{
       }}
       title={datum.title}
     >
-      {datum.title}
+      {panel.width}px
     </span>
   );
   return (
