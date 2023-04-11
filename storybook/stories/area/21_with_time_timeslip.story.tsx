@@ -132,7 +132,7 @@ export const Example = () => {
         areaSeriesStyle={{ area: { opacity: 0.3 }, line: { opacity: 1 } }}
         data={data
           .slice(0, timeZoom)
-          .map(([t, v]) => [t0! + (t! - t0!) * 4 * 2 ** timeStretch - (t1! - t0!) * 2 ** timeStretch * timeShift, v])}
+          .map(([t, v]) => [t0 + (t - t0) * 4 * 2 ** timeStretch - (t1 - t0) * 2 ** timeStretch * timeShift, v])}
       />
     </Chart>
   );

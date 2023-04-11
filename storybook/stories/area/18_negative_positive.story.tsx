@@ -50,7 +50,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         data={dataset.data.map(([x, y], i) => {
-          return [x, i < dataset.data.length / 2 ? -y! : y];
+          return [x, i < dataset.data.length / 2 ? -y : y];
         })}
       />
       <AreaSeries
@@ -60,7 +60,7 @@ export const Example = () => {
         xAccessor={0}
         yAccessors={[1]}
         data={dataset.data.map(([x, y], i) => {
-          return [x, i >= dataset.data.length / 2 ? -y! : y];
+          return [x, i >= dataset.data.length / 2 ? -y : y];
         })}
       />
     </Chart>
