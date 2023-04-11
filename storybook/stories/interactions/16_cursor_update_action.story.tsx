@@ -64,9 +64,9 @@ export const Example = () => {
       ref2.current.dispatchExternalPointerEvent(event);
     }
   };
-  const { data } = KIBANA_METRICS.metrics.kibana_os_load[0];
-  const data1 = KIBANA_METRICS.metrics.kibana_os_load[0].data;
-  const data2 = KIBANA_METRICS.metrics.kibana_os_load[1].data;
+  const { data } = KIBANA_METRICS.metrics.kibana_os_load.v1;
+  const data1 = KIBANA_METRICS.metrics.kibana_os_load.v1.data;
+  const data2 = KIBANA_METRICS.metrics.kibana_os_load.v2.data;
 
   const group1 = 'Top Chart';
   const group2 = 'Bottom Chart';

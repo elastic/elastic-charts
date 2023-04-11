@@ -36,7 +36,7 @@ export const Example = () => (
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"
-      title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+      title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title}
       position={Position.Left}
       tickFormat={(d) => `${Number(d).toFixed(2)}%`}
     />
@@ -46,7 +46,7 @@ export const Example = () => (
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 5)}
+      data={KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 5)}
     />
   </Chart>
 );

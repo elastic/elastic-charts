@@ -98,7 +98,7 @@ function renderPartitionChart() {
 }
 
 function renderXYAxisChart() {
-  const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 100);
+  const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 100);
   return (
     <>
       <Axis

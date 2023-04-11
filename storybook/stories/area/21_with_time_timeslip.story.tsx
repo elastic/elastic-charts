@@ -31,7 +31,7 @@ const tooltipDateFormatter = (d: any) =>
     minute: 'numeric',
   }).format(d);
 
-const data = KIBANA_METRICS.metrics.kibana_os_load[0].data;
+const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data;
 const t0 = data[0][0];
 const t1 = data[data.length - 1][0];
 

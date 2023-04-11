@@ -50,7 +50,7 @@ export const Example = () => {
       icon: getIcon('compute'),
       value: NaN,
       valueFormatter: defaultValueFormatter,
-      trend: KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trend: KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
       trendShape: 'area',
       trendA11yTitle: 'Last hour CPU percentage trend',
       trendA11yDescription:
@@ -62,7 +62,7 @@ export const Example = () => {
       subtitle: 'Overall percentage',
       value: 33.57,
       valueFormatter: (d) => `${d} %`,
-      trend: KIBANA_METRICS.metrics.kibana_memory[0].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trend: KIBANA_METRICS.metrics.kibana_memory.v1.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
       trendShape: 'area',
       trendA11yTitle: 'Last hour Memory usage trend',
       trendA11yDescription:
@@ -108,7 +108,7 @@ export const Example = () => {
       subtitle: 'Cluster CPU Usage',
       value: 24.85,
       valueFormatter: (d) => `${d}%`,
-      trend: KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trend: KIBANA_METRICS.metrics.kibana_os_load.v2.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
       trendShape: 'area',
     },
     {
@@ -136,7 +136,7 @@ export const Example = () => {
       ),
       value: 323.57,
       valueFormatter: (d) => `$ ${d}k`,
-      trend: KIBANA_METRICS.metrics.kibana_os_load[2].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trend: KIBANA_METRICS.metrics.kibana_os_load.v3.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
       trendShape: 'area',
       trendA11yTitle: 'Last quarter, daily Cloud Revenue trend',
       trendA11yDescription:

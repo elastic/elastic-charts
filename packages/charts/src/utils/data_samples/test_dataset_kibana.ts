@@ -9,8 +9,11 @@
 /** @internal */
 export const KIBANA_METRICS = {
   metrics: {
-    kibana_os_load: [
-      {
+    kibana_os_load: {
+      /**
+       * Variant 1 - Load average over the last minute
+       */
+      v1: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -148,7 +151,10 @@ export const KIBANA_METRICS = {
           [1551441570000, 10.1953125],
         ],
       },
-      {
+      /**
+       * Variant 2 - Load average over the last 5 minutes
+       */
+      v2: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -286,7 +292,10 @@ export const KIBANA_METRICS = {
           [1551441570000, 10.84375],
         ],
       },
-      {
+      /**
+       * Variant 3 - Load average over the last 15 minutes
+       */
+      v3: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -424,9 +433,12 @@ export const KIBANA_METRICS = {
           [1551441570000, 10.625],
         ],
       },
-    ],
-    kibana_average_concurrent_connections: [
-      {
+    },
+    kibana_average_concurrent_connections: {
+      /**
+       * Variant 1 - Total number of open socket connections to the Kibana instance
+       */
+      v1: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -563,9 +575,12 @@ export const KIBANA_METRICS = {
           [1551441570000, 17],
         ],
       },
-    ],
-    kibana_process_delay: [
-      {
+    },
+    kibana_process_delay: {
+      /**
+       * Variant 1 - Delay in Kibana server event loops
+       */
+      v1: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -702,9 +717,12 @@ export const KIBANA_METRICS = {
           [1551441570000, 1.9149093627929688],
         ],
       },
-    ],
-    kibana_memory: [
-      {
+    },
+    kibana_memory: {
+      /**
+       * Variant 1 - Limit of memory usage before garbage collection
+       */
+      v1: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -842,7 +860,10 @@ export const KIBANA_METRICS = {
           [1551441570000, 1501560832],
         ],
       },
-      {
+      /**
+       * Variant 2 - Total heap used by Kibana running in Node.js
+       */
+      v2: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -980,9 +1001,12 @@ export const KIBANA_METRICS = {
           [1551441570000, 651341824],
         ],
       },
-    ],
-    kibana_response_times: [
-      {
+    },
+    kibana_response_times: {
+      /**
+       * Variant 1 - Maximum response time for client requests to the Kibana instance
+       */
+      v1: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -1120,7 +1144,10 @@ export const KIBANA_METRICS = {
           [1551441570000, 12051],
         ],
       },
-      {
+      /**
+       * Variant 2 - Average response time for client requests to the Kibana instance
+       */
+      v2: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -1258,9 +1285,12 @@ export const KIBANA_METRICS = {
           [1551441570000, 329.6833190917969],
         ],
       },
-    ],
-    kibana_requests: [
-      {
+    },
+    kibana_requests: {
+      /**
+       * Variant 1 - Total number of client requests received by the Kibana instance
+       */
+      v1: {
         bucket_size: '30 seconds',
         timeRange: { min: 1551438000000, max: 1551441600000 },
         metric: {
@@ -1397,7 +1427,7 @@ export const KIBANA_METRICS = {
           [1551441570000, 97],
         ],
       },
-    ],
+    },
   },
   kibanaSummary: {
     uuid: '38cd1f5c-fc29-492e-b5b6-34777df7bdf6',

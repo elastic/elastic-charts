@@ -17,7 +17,7 @@ import { customKnobs } from '../utils/knobs';
 
 const dateFormatter = timeFormatter('HH:mm');
 
-const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map(([x, y]) => {
+const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map(([x, y]) => {
   return [x, -y];
 });
 export const Example = () => {
