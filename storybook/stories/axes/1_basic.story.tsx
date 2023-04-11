@@ -57,7 +57,7 @@ export const Example = () => {
           },
           'Bottom Axis',
         )}
-        tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+        tickFormat={niceTimeFormatter([data[0]![0]!, data[data.length - 1]![0]!])}
       />
       <Axis
         id="left2"

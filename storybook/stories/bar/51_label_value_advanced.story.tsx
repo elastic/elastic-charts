@@ -116,7 +116,7 @@ export const Example = () => {
     },
     's',
   );
-  const data = frozenData[dataSize];
+  const data = frozenData[dataSize]!;
 
   const isSplitSeries = boolean('split series', false);
   const isStackedSeries = boolean('stacked series', false);

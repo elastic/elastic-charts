@@ -18,7 +18,7 @@ export const useHeatmapSelection = (disableActions = false) => {
   const onElementClick: ElementClickListener = useCallback(
     (e) => {
       if (!disableActions) action('onElementClick')(e);
-      const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = (e as HeatmapElementEvent[])[0][0].datum;
+      const { x, y, smHorizontalAccessorValue, smVerticalAccessorValue } = (e as HeatmapElementEvent[])[0]![0].datum;
       setSelection({
         x: [x],
         y: [y],

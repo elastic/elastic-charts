@@ -67,7 +67,7 @@ export const Example = () => {
               fillColor: (key, sortIndex, node) => {
                 // concat all leaf and define the color based on the index of the fist children
                 const rootTree = node.parent.children.flatMap((d) => entryValue(d).children);
-                const index = rootTree.findIndex((d) => entryValue(d) === entryValue(node.children[0]));
+                const index = rootTree.findIndex((d) => entryValue(d) === entryValue(node.children[0]!));
                 return indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, index, rootTree);
               },
             },

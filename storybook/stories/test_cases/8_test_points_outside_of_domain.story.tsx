@@ -59,7 +59,7 @@ export const Example = () => {
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          y0Accessors={showY0Accessor ? [([, y]) => y - 1] : undefined}
+          y0Accessors={showY0Accessor ? [([, y = 0]) => y - 1] : undefined}
           data={data}
         />
       )}

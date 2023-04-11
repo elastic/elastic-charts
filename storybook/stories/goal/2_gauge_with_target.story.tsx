@@ -38,7 +38,7 @@ export const Example = () => {
     return acc;
   }, {});
 
-  const bandFillColor = (x: number): Color => colorMap[x];
+  const bandFillColor = (x: number): Color => colorMap[x]!;
 
   const angleStart =
     number('angleStart (n * π/8)', 8, {

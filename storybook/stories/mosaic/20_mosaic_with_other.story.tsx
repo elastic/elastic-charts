@@ -98,7 +98,7 @@ export const Example = () => {
               },
             },
             shape: {
-              fillColor: (nodeKey, sortIndex, node) => categoricalColors.slice(0)[node.parent.sortIndex],
+              fillColor: (nodeKey, sortIndex, node) => categoricalColors.slice(0)[node.parent.sortIndex]!,
             },
           },
         ]}

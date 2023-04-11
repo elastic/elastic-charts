@@ -36,7 +36,7 @@ export const Example = () => {
         return (
           <AreaSeries
             key={dataNames[i]}
-            id={dataNames[i]}
+            id={dataNames[i]!}
             xScaleType={ScaleType.Time}
             yScaleType={ScaleType.Linear}
             xAccessor="key"

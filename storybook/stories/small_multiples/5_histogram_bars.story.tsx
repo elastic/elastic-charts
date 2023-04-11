@@ -82,7 +82,7 @@ export const Example = () => {
         yAccessors={['y']}
         splitSeriesAccessors={['split']}
         color={(seriesIdentifier) => {
-          return colorMap[seriesIdentifier.splitAccessors.get('split') ?? 'Default'];
+          return colorMap[seriesIdentifier.splitAccessors.get('split') ?? 'Default']!;
         }}
       />
     </Chart>

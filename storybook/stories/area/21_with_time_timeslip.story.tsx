@@ -32,8 +32,8 @@ const tooltipDateFormatter = (d: any) =>
   }).format(d);
 
 const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data;
-const t0 = data[0][0];
-const t1 = data[data.length - 1][0];
+const t0 = data[0]![0];
+const t1 = data[data.length - 1]![0];
 
 const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
@@ -132,7 +132,7 @@ export const Example = () => {
         areaSeriesStyle={{ area: { opacity: 0.3 }, line: { opacity: 1 } }}
         data={data
           .slice(0, timeZoom)
-          .map(([t, v]) => [t0 + (t - t0) * 4 * 2 ** timeStretch - (t1 - t0) * 2 ** timeStretch * timeShift, v])}
+          .map(([t, v]) => [t0! + (t! - t0!) * 4 * 2 ** timeStretch - (t1! - t0!) * 2 ** timeStretch * timeShift, v])}
       />
     </Chart>
   );

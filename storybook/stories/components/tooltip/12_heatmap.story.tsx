@@ -74,11 +74,11 @@ export const Example = () => {
                 <span>
                   Drilldown to{' '}
                   <b>
-                    {d[0].label}:{d[0].value}
+                    {d[0]!.label}:{d[0]!.value}
                   </b>
                 </span>
               ),
-            onSelect: (s) => action('drilldown to')(s[0].label),
+            onSelect: (s) => action('drilldown to')(s[0]!.label),
           },
           {
             label: (d) => (d.length < 1 ? 'Select to filter' : boldMap(d)),

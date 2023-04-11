@@ -61,14 +61,14 @@ const theme: PartialTheme = {
 
 export const Example = () => {
   const datasetIndex = select('dataset', [1, 2, 3, 4, 5, 6, 7, 8, 9], 1) - 1;
-  const dataset = datasets[datasetIndex];
+  const dataset = datasets[datasetIndex]!;
   const [min = 0, max = 0] = extent(dataset.data, (d) => d.value);
   const colors = ['#ca0020', '#f4a582', '#cecece', '#92c5de', '#0571b0'];
   const numOfColors = colors.length;
   const interval = (max - min) / numOfColors;
 
   const colorBands = Array.from<unknown, ColorBand>({ length: numOfColors }, (d, i) => ({
-    color: colors[i],
+    color: colors[i]!,
     start: Math.floor(min + i * interval),
     end: i === numOfColors - 1 ? Infinity : Math.ceil(min + (i + 1) * interval),
   }));

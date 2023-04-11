@@ -109,7 +109,7 @@ export const Example = () => {
         stackAccessors={['x']}
         splitSeriesAccessors={['g']}
         data={data1}
-        color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
+        color={[LIGHT_THEME.colors.vizColors[0]!, 'lightgray']}
       />
       <LineSeries
         id="website b"
@@ -121,7 +121,7 @@ export const Example = () => {
         stackAccessors={['x']}
         splitSeriesAccessors={['g']}
         data={data2}
-        color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
+        color={[LIGHT_THEME.colors.vizColors[0]!, 'lightgray']}
       />
       <AreaSeries
         id="website c"
@@ -133,7 +133,7 @@ export const Example = () => {
         stackAccessors={['x']}
         splitSeriesAccessors={['g']}
         data={data3}
-        color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
+        color={[LIGHT_THEME.colors.vizColors[0]!, 'lightgray']}
       />
     </Chart>
   );

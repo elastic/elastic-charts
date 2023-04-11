@@ -24,12 +24,12 @@ export const Example = () => {
   };
 
   const colorMap: { [k: number]: Color } = bands.reduce<{ [k: number]: Color }>((acc, band) => {
-    const defaultValue = opacityMap[band];
+    const defaultValue = opacityMap[band]!;
     acc[band] = `rgba(0, 0, 0, ${defaultValue.toFixed(2)})`;
     return acc;
   }, {});
 
-  const bandFillColor = (x: number): Color => colorMap[x];
+  const bandFillColor = (x: number): Color => colorMap[x]!;
 
   return (
     <Chart className="story-chart">

@@ -86,7 +86,7 @@ export const Example = () => {
         <Axis
           id="bottom"
           position={Position.Bottom}
-          tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+          tickFormat={niceTimeFormatter([data[0]![0], data[data.length - 1]![0]])}
         />
         <Axis
           id="left2"
@@ -97,7 +97,7 @@ export const Example = () => {
         <RectAnnotation
           dataValues={[
             {
-              coordinates: { x0: data2[10][0], x1: data2[29][0] },
+              coordinates: { x0: data2[10]![0], x1: data2[29]![0] },
             },
           ]}
           id="zoomed"
@@ -129,7 +129,7 @@ export const Example = () => {
         <Axis
           id="bottom"
           position={Position.Bottom}
-          tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+          tickFormat={niceTimeFormatter([data[0]![0], data[data.length - 1]![0]])}
         />
         <Axis
           id="left2"

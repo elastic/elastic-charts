@@ -45,7 +45,7 @@ export const Example = () => {
       <p style={{ height: '1.5em' }}>{pointerValue ? moment(pointerValue?.value).format('HH:mm') : 'System Load'}</p>
       {items.map((i) => (
         <button
-          key={i.seriesIdentifiers[0].key}
+          key={i.seriesIdentifiers[0]!.key}
           onMouseOver={i.onItemOverActon}
           onMouseOut={i.onItemOutAction}
           onClick={() => i.onItemClickAction(false)}

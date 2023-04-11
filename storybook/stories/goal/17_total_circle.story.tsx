@@ -21,7 +21,7 @@ const colorMap: { [k: number]: Color } = {
   300: '#66c2a5',
 };
 
-const bandFillColor = (x: number): Color => colorMap[x];
+const bandFillColor = (x: number): Color => colorMap[x]!;
 
 export const Example = () => {
   const start = number('startAngle (π)', 1.5, { min: -2, max: 2, step: 1 / 8 });

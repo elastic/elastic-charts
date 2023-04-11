@@ -77,7 +77,7 @@ const actionByDepth = (depth: number): TooltipAction => {
   const name = depth === 1 ? 'categor' : depth === 2 ? 'continent' : 'countr';
   const pluralize = depth === 1 ? ['y', 'ies'] : depth === 2 ? ['', 's'] : ['y', 'ies'];
   const filter = (d: TooltipValue) => d.valueAccessor === depth;
-  const actionName = (d: unknown[]) => `${name}${stringPluralize(d, pluralize[0], pluralize[1])}`;
+  const actionName = (d: unknown[]) => `${name}${stringPluralize(d, pluralize[0]!, pluralize[1]!)}`;
   return {
     hide: (d) => d.some(filter), //  TODO we should double check this as it seems to work the opposite way
     disabled: (d) => d.filter(filter).length < 1,
@@ -144,9 +144,9 @@ export const Example = () => {
             {
               disabled: (d) => d.length !== 1,
               label: (d) => {
-                return d.length !== 1 ? 'Select one to drilldown' : `Drilldown to ${d[0].label}`;
+                return d.length !== 1 ? 'Select one to drilldown' : `Drilldown to ${d[0]!.label}`;
               },
-              onSelect: (s) => action('drilldown to')(s[0].label),
+              onSelect: (s) => action('drilldown to')(s[0]!.label),
             },
             actionByDepth(1),
             actionByDepth(2),

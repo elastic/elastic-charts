@@ -44,7 +44,7 @@ export const Example = () => {
         layers={[
           {
             groupByRollup: (d: Datum) => d.sitc1,
-            nodeLabel: (d: Datum) => names[d],
+            nodeLabel: (d: Datum) => names[d] ?? '',
             shape: {
               fillColor: (nodeKey, sortIndex) => discreteColor(colorBrewerCategoricalStark9.slice(1))(sortIndex),
             },

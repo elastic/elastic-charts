@@ -37,7 +37,7 @@ const group = {
 };
 const STAR =
   'M -7.75 -2.5 l 5.9 0 l 1.85 -6.1 l 1.85 6.1 l 5.9 0 l -4.8 3.8 l 1.85 6.1 l -4.8 -3.8 l -4.8 3.8 l 1.85 -6.1 l -4.8 -3.8 z';
-const DEFAULT_COLOR = LIGHT_THEME.colors.vizColors[0];
+const DEFAULT_COLOR = LIGHT_THEME.colors.vizColors[0]!;
 
 const getTextureKnobs = (useCustomPath: boolean): TexturedStyles => ({
   ...(useCustomPath
