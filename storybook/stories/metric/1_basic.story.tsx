@@ -89,9 +89,18 @@ export const Example = () => {
         }
       : {}),
   };
-  const textualData: MetricWText = {
+  const textualData: MetricWText | MetricWTrend = {
     ...data,
     value,
+    ...(progressOrTrend === 'bar' ? { domainMax: progressMax, progressBarDirection } : {}),
+    ...(progressOrTrend === 'trend'
+      ? {
+          trend: KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+          trendShape,
+          trendA11yTitle,
+          trendA11yDescription,
+        }
+      : {}),
   };
 
   const onEventClickAction = action('click');
