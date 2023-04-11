@@ -96,10 +96,10 @@ describe('Stacked Series Utils', () => {
 
       // stacked series are reverse ordered
       const values = [
-        formattedDataSeries[0].data[0].y0,
-        formattedDataSeries[0].data[0].y1,
-        formattedDataSeries[1].data[0].y1,
-        formattedDataSeries[2].data[0].y1,
+        formattedDataSeries[0]?.data[0]?.y0,
+        formattedDataSeries[0]?.data[0]?.y1,
+        formattedDataSeries[1]?.data[0]?.y1,
+        formattedDataSeries[2]?.data[0]?.y1,
       ];
       expect(values).toEqual([0, 10, 30, 60]);
     });
@@ -116,10 +116,10 @@ describe('Stacked Series Utils', () => {
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
       const values = [
-        formattedDataSeries[0].data[0].y0,
-        formattedDataSeries[0].data[0].y1,
-        formattedDataSeries[1].data[0].y1,
-        formattedDataSeries[2].data[0].y1,
+        formattedDataSeries[0]?.data[0]?.y0,
+        formattedDataSeries[0]?.data[0]?.y1,
+        formattedDataSeries[1]?.data[0]?.y1,
+        formattedDataSeries[2]?.data[0]?.y1,
       ];
       expect(values).toEqual([0, 0.16666666666666666, 0.5, 1]);
     });
@@ -129,10 +129,10 @@ describe('Stacked Series Utils', () => {
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
       const values = [
-        formattedDataSeries[0].data[0].y0,
-        formattedDataSeries[0].data[0].y1,
-        formattedDataSeries[1].data[0].y1,
-        formattedDataSeries[2].data[0].y1,
+        formattedDataSeries[0]?.data[0]?.y0,
+        formattedDataSeries[0]?.data[0]?.y1,
+        formattedDataSeries[1]?.data[0]?.y1,
+        formattedDataSeries[2]?.data[0]?.y1,
       ];
       expect(values).toEqual([0, 10, 10, 40]);
     });
@@ -149,10 +149,10 @@ describe('Stacked Series Utils', () => {
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
       const values = [
-        formattedDataSeries[0].data[0].y0,
-        formattedDataSeries[0].data[0].y1,
-        formattedDataSeries[1].data[0].y1,
-        formattedDataSeries[2].data[0].y1,
+        formattedDataSeries[0]?.data[0]?.y0,
+        formattedDataSeries[0]?.data[0]?.y1,
+        formattedDataSeries[1]?.data[0]?.y1,
+        formattedDataSeries[2]?.data[0]?.y1,
       ];
       expect(values).toEqual([0, 0.25, 0.25, 1]);
     });
@@ -163,7 +163,7 @@ describe('Stacked Series Utils', () => {
       MockStore.addSpecs(STANDARD_DATA_SET, store);
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
+      expect(formattedDataSeries[0]?.data[0]).toMatchObject({
         initialY0: null,
         initialY1: 10,
         x: 0,
@@ -171,7 +171,7 @@ describe('Stacked Series Utils', () => {
         y1: 10,
         mark: null,
       });
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
+      expect(formattedDataSeries[1]?.data[0]).toMatchObject({
         initialY0: null,
         initialY1: 20,
         x: 0,
@@ -179,7 +179,7 @@ describe('Stacked Series Utils', () => {
         y1: 30,
         mark: null,
       });
-      expect(formattedDataSeries[2].data[0]).toMatchObject({
+      expect(formattedDataSeries[2]?.data[0]).toMatchObject({
         initialY0: null,
         initialY1: 30,
         x: 0,
@@ -193,7 +193,7 @@ describe('Stacked Series Utils', () => {
       MockStore.addSpecs(WITH_NULL_DATASET, store);
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
+      expect(formattedDataSeries[1]?.data[0]).toMatchObject({
         initialY0: null,
         initialY1: null,
         x: 0,
@@ -207,7 +207,7 @@ describe('Stacked Series Utils', () => {
       MockStore.addSpecs(STANDARD_DATA_SET_WY0, store);
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
+      expect(formattedDataSeries[0]?.data[0]).toMatchObject({
         initialY0: 2,
         initialY1: 10,
         x: 0,
@@ -215,7 +215,7 @@ describe('Stacked Series Utils', () => {
         y1: 10,
         mark: null,
       });
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
+      expect(formattedDataSeries[1]?.data[0]).toMatchObject({
         initialY0: 4,
         initialY1: 20,
         x: 0,
@@ -223,7 +223,7 @@ describe('Stacked Series Utils', () => {
         y1: 30,
         mark: null,
       });
-      expect(formattedDataSeries[2].data[0]).toMatchObject({
+      expect(formattedDataSeries[2]?.data[0]).toMatchObject({
         initialY0: 6,
         initialY1: 30,
         x: 0,
@@ -237,7 +237,7 @@ describe('Stacked Series Utils', () => {
       MockStore.addSpecs(WITH_NULL_DATASET_WY0, store);
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
+      expect(formattedDataSeries[0]?.data[0]).toMatchObject({
         initialY0: 2,
         initialY1: 10,
         x: 0,
@@ -245,7 +245,7 @@ describe('Stacked Series Utils', () => {
         y1: 10,
         mark: null,
       });
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
+      expect(formattedDataSeries[1]?.data[0]).toMatchObject({
         initialY0: null,
         initialY1: null,
         x: 0,
@@ -253,7 +253,7 @@ describe('Stacked Series Utils', () => {
         y1: 10,
         mark: null,
       });
-      expect(formattedDataSeries[2].data[0]).toMatchObject({
+      expect(formattedDataSeries[2]?.data[0]).toMatchObject({
         initialY0: 6,
         initialY1: 30,
         x: 0,
@@ -268,10 +268,10 @@ describe('Stacked Series Utils', () => {
       const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
       expect(formattedDataSeries).toHaveLength(2);
-      expect(formattedDataSeries[0].data).toHaveLength(4);
-      expect(formattedDataSeries[1].data).toHaveLength(4);
+      expect(formattedDataSeries[0]?.data).toHaveLength(4);
+      expect(formattedDataSeries[1]?.data).toHaveLength(4);
 
-      expect(formattedDataSeries[0].data[0]).toMatchObject({
+      expect(formattedDataSeries[0]?.data[0]).toMatchObject({
         initialY0: null,
         initialY1: 1,
         x: 1,
@@ -279,7 +279,7 @@ describe('Stacked Series Utils', () => {
         y1: 1,
         mark: null,
       });
-      expect(formattedDataSeries[0].data[1]).toMatchObject({
+      expect(formattedDataSeries[0]?.data[1]).toMatchObject({
         initialY0: null,
         initialY1: 2,
         x: 2,
@@ -287,7 +287,7 @@ describe('Stacked Series Utils', () => {
         y1: 2,
         mark: null,
       });
-      expect(formattedDataSeries[0].data[3]).toMatchObject({
+      expect(formattedDataSeries[0]?.data[3]).toMatchObject({
         initialY0: null,
         initialY1: 4,
         x: 4,
@@ -295,7 +295,7 @@ describe('Stacked Series Utils', () => {
         y1: 4,
         mark: null,
       });
-      expect(formattedDataSeries[1].data[0]).toMatchObject({
+      expect(formattedDataSeries[1]?.data[0]).toMatchObject({
         initialY0: null,
         initialY1: 21,
         x: 1,
@@ -303,7 +303,7 @@ describe('Stacked Series Utils', () => {
         y1: 22,
         mark: null,
       });
-      expect(formattedDataSeries[1].data[2]).toMatchObject({
+      expect(formattedDataSeries[1]?.data[2]).toMatchObject({
         initialY0: null,
         initialY1: 23,
         x: 3,
@@ -330,7 +330,7 @@ describe('Stacked Series Utils', () => {
     );
     const { formattedDataSeries } = computeSeriesDomainsSelector(store.getState());
 
-    expect(formattedDataSeries[1].data[0]).toMatchObject({
+    expect(formattedDataSeries[1]?.data[0]).toMatchObject({
       initialY0: null,
       initialY1: 0,
       x: 1,
@@ -338,7 +338,7 @@ describe('Stacked Series Utils', () => {
       y1: 0,
       mark: null,
     });
-    expect(formattedDataSeries[0].data[0]).toMatchObject({
+    expect(formattedDataSeries[0]?.data[0]).toMatchObject({
       initialY0: null,
       initialY1: 0,
       x: 1,

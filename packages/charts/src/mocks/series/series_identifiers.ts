@@ -34,6 +34,6 @@ export class MockSeriesIdentifier {
   }
 
   static fromSpec(specs: BasicSeriesSpec): XYChartSeriesIdentifier {
-    return MockSeriesIdentifier.fromSpecs([specs])[0];
+    return MockSeriesIdentifier.fromSpecs([specs])[0]!;
   }
 }

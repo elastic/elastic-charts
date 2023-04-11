@@ -10,7 +10,7 @@ import { DateTime, Settings } from 'luxon';
 
 import { ScaleContinuous } from '.';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
-import { limitLogScaleDomain } from './scale_continuous';
+import { ScaleData, limitLogScaleDomain } from './scale_continuous';
 import { isContinuousScale, isLogarithmicScale } from './types';
 import { computeXScale } from '../chart_types/xy_chart/utils/scales';
 import { MockXDomain } from '../mocks/xy/domains';
@@ -40,7 +40,7 @@ describe('Scale Continuous', () => {
     const startTime = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
     const midTime = DateTime.fromISO('2019-01-02T00:00:00.000', { zone: 'utc' });
     const endTime = DateTime.fromISO('2019-01-03T00:00:00.000', { zone: 'utc' });
-    const domain = [startTime.toMillis(), endTime.toMillis()];
+    const domain: [number, number] = [startTime.toMillis(), endTime.toMillis()];
     const minRange = 0;
     const maxRange = 100;
     const scale = new ScaleContinuous({ type: ScaleType.Time, domain, range: [minRange, maxRange] });
@@ -127,7 +127,7 @@ describe('Scale Continuous', () => {
     expect(scaleLinear.invertWithStep(120, data)).toEqual({ value: 3, withinBandwidth: false });
   });
   test('can get the right x value on linear scale with regular band 1', () => {
-    const domain = [0, 100];
+    const domain: [number, number] = [0, 100];
     const data = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90];
 
     // we tweak the maxRange removing the bandwidth to correctly compute
@@ -187,10 +187,6 @@ describe('Scale Continuous', () => {
   });
 
   describe('isSingleValue', () => {
-    test('should return true for domain with fewer than 2 values', () => {
-      const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [], range: [0, 100] });
-      expect(scale.isSingleValue()).toBe(true);
-    });
     test('should return true for domain with equal min and max values', () => {
       const scale = new ScaleContinuous({ type: ScaleType.Linear, domain: [1, 1], range: [0, 100] });
       expect(scale.isSingleValue()).toBe(true);
@@ -202,7 +198,7 @@ describe('Scale Continuous', () => {
   });
 
   describe('xScale values with minInterval and bandwidth', () => {
-    const domain = [7.053400039672852, 1070.1354763603908];
+    const domain: [number, number] = [7.053400039672852, 1070.1354763603908];
 
     it('should return nice ticks when minInterval & bandwidth are 0', () => {
       const scale = new ScaleContinuous(
@@ -457,54 +453,54 @@ describe('Scale Continuous', () => {
   });
 
   describe('Domain pixel padding', () => {
-    const scaleOptions = Object.freeze({
+    const scaleData = Object.freeze<ScaleData>({
       type: ScaleType.Linear,
       range: [0, 100] as Range,
       domain: [10, 60],
     });
 
     it('should add pixel padding to domain', () => {
-      const scale = new ScaleContinuous(scaleOptions, { domainPixelPadding: 10 });
+      const scale = new ScaleContinuous(scaleData, { domainPixelPadding: 10 });
       expect(scale.domain).toEqual([3.75, 66.25]);
     });
 
     it('should handle inverted domain pixel padding', () => {
-      const scale = new ScaleContinuous({ ...scaleOptions, domain: [60, 10] }, { domainPixelPadding: 10 });
+      const scale = new ScaleContinuous({ ...scaleData, domain: [60, 10] }, { domainPixelPadding: 10 });
       expect(scale.domain).toEqual([66.25, 3.75]);
     });
 
     it('should handle negative domain pixel padding', () => {
-      const scale = new ScaleContinuous({ ...scaleOptions, domain: [-60, -20] }, { domainPixelPadding: 10 });
+      const scale = new ScaleContinuous({ ...scaleData, domain: [-60, -20] }, { domainPixelPadding: 10 });
       expect(scale.domain).toEqual([-65, -15]);
     });
 
     it('should handle negative inverted domain pixel padding', () => {
-      const scale = new ScaleContinuous({ ...scaleOptions, domain: [-20, -60] }, { domainPixelPadding: 10 });
+      const scale = new ScaleContinuous({ ...scaleData, domain: [-20, -60] }, { domainPixelPadding: 10 });
       expect(scale.domain).toEqual([-15, -65]);
     });
 
     it('should constrain pixel padding to zero', () => {
-      const scale = new ScaleContinuous(scaleOptions, { domainPixelPadding: 20 });
+      const scale = new ScaleContinuous(scaleData, { domainPixelPadding: 20 });
       expect(scale.domain).toEqual([0, 75]);
     });
 
     it('should not constrain pixel padding to zero', () => {
-      const scale = new ScaleContinuous(scaleOptions, { domainPixelPadding: 18, constrainDomainPadding: false });
+      const scale = new ScaleContinuous(scaleData, { domainPixelPadding: 18, constrainDomainPadding: false });
       expect(scale.domain).toEqual([-4.0625, 74.0625]);
     });
 
     it('should nice domain after pixel padding is applied', () => {
       const scale = new ScaleContinuous(
-        { ...scaleOptions, nice: true },
+        { ...scaleData, nice: true },
         { domainPixelPadding: 18, constrainDomainPadding: false },
       );
       expect(scale.domain).toEqual([-10, 80]);
     });
 
     it('should not handle pixel padding when pixel is greater than half the total range', () => {
-      const criticalPadding = Math.abs(scaleOptions.range[0] - scaleOptions.range[1]) / 2;
-      const scale = new ScaleContinuous(scaleOptions, { domainPixelPadding: criticalPadding });
-      expect(scale.domain).toEqual(scaleOptions.domain);
+      const criticalPadding = Math.abs(scaleData.range[0] - scaleData.range[1]) / 2;
+      const scale = new ScaleContinuous(scaleData, { domainPixelPadding: criticalPadding });
+      expect(scale.domain).toEqual(scaleData.domain);
     });
   });
 

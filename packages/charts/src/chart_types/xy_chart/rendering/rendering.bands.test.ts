@@ -36,11 +36,9 @@ describe('Rendering bands - areas', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render upper and lower lines and area paths', () => {
-      const [
-        {
-          value: { lines, area, color, seriesIdentifier, transform },
-        },
-      ] = areas;
+      const {
+        value: { lines, area, color, seriesIdentifier, transform },
+      } = areas[0]!;
       expect(lines.length).toBe(2);
       expect(lines[0]).toBe('M0,0L50,50');
       expect(lines[1]).toBe('M0,80L50,70');
@@ -52,11 +50,9 @@ describe('Rendering bands - areas', () => {
     });
 
     test('Can render two points', () => {
-      const [
-        {
-          value: { points },
-        },
-      ] = areas;
+      const {
+        value: { points },
+      } = areas[0]!;
       expect(points).toMatchSnapshot();
     });
   });
@@ -84,11 +80,9 @@ describe('Rendering bands - areas', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('Can render upper and lower lines and area paths', () => {
-      const [
-        {
-          value: { lines, area, color, seriesIdentifier, transform },
-        },
-      ] = areas;
+      const {
+        value: { lines, area, color, seriesIdentifier, transform },
+      } = areas[0]!;
       expect(lines.length).toBe(2);
       expect(lines[0]).toBe('M0,0ZM50,50L75,50');
       expect(lines[1]).toBe('M0,80ZM50,70L75,70');
@@ -100,11 +94,9 @@ describe('Rendering bands - areas', () => {
     });
 
     test('Can render two points', () => {
-      const [
-        {
-          value: { points },
-        },
-      ] = areas;
+      const {
+        value: { points },
+      } = areas[0]!;
       expect(points).toMatchSnapshot();
     });
   });
@@ -127,11 +119,7 @@ describe('Rendering bands - areas', () => {
     const store = MockStore.default();
     const settings = MockGlobalSpec.settingsNoMargins({ theme: { colors: { vizColors: ['red', 'blue'] } } });
     MockStore.addSpecs([barSeriesSpec, settings], store);
-    const {
-      geometries: {
-        bars: [{ value: bars }],
-      },
-    } = computeSeriesGeometriesSelector(store.getState());
+    const { value: bars } = computeSeriesGeometriesSelector(store.getState()).geometries.bars[0]!;
 
     test('Can render two bars', () => {
       expect(bars).toMatchSnapshot();
