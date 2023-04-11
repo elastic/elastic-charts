@@ -149,7 +149,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 18.640625],
           [1551441540000, 13.1953125],
           [1551441570000, 10.1953125],
-        ],
+        ] as [number, number][],
       },
       /**
        * Variant 2 - Load average over the last 5 minutes
@@ -290,7 +290,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 12.0859375],
           [1551441540000, 11.375],
           [1551441570000, 10.84375],
-        ],
+        ] as [number, number][],
       },
       /**
        * Variant 3 - Load average over the last 15 minutes
@@ -431,7 +431,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 10.9921875],
           [1551441540000, 10.7890625],
           [1551441570000, 10.625],
-        ],
+        ] as [number, number][],
       },
     },
     kibana_average_concurrent_connections: {
@@ -573,7 +573,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 16],
           [1551441540000, 16],
           [1551441570000, 17],
-        ],
+        ] as [number, number][],
       },
     },
     kibana_process_delay: {
@@ -715,7 +715,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 1.8046932220458984],
           [1551441540000, 1.9574308395385742],
           [1551441570000, 1.9149093627929688],
-        ],
+        ] as [number, number][],
       },
     },
     kibana_memory: {
@@ -858,7 +858,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 1501560832],
           [1551441540000, 1501560832],
           [1551441570000, 1501560832],
-        ],
+        ] as [number, number][],
       },
       /**
        * Variant 2 - Total heap used by Kibana running in Node.js
@@ -999,7 +999,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 666820608],
           [1551441540000, 662138880],
           [1551441570000, 651341824],
-        ],
+        ] as [number, number][],
       },
     },
     kibana_response_times: {
@@ -1142,7 +1142,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 12139],
           [1551441540000, 11966],
           [1551441570000, 12051],
-        ],
+        ] as [number, number][],
       },
       /**
        * Variant 2 - Average response time for client requests to the Kibana instance
@@ -1283,7 +1283,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 564.4000244140625],
           [1551441540000, 561.0740966796875],
           [1551441570000, 329.6833190917969],
-        ],
+        ] as [number, number][],
       },
     },
     kibana_requests: {
@@ -1425,7 +1425,7 @@ export const KIBANA_METRICS = {
           [1551441510000, 81],
           [1551441540000, 58],
           [1551441570000, 97],
-        ],
+        ] as [number, number][],
       },
     },
   },
