@@ -247,8 +247,12 @@ export class ScaleContinuous {
     };
   }
 
+  private isDegenerateDomain(): boolean {
+    return this.domain.every((v) => v === this.domain[0]);
+  }
+
   isSingleValue(): boolean {
-    return this.isSingleValueHistogram || isDegenerateDomain(this.domain);
+    return this.isSingleValueHistogram || this.isDegenerateDomain();
   }
 
   isValueInDomain(value: unknown): boolean {
@@ -308,10 +312,6 @@ function getLinearNonDenserTicks(
     ticks = getLinearTicks(start, stop, currentCount, base);
   }
   return ticks;
-}
-
-function isDegenerateDomain(domain: unknown[]): boolean {
-  return domain.every((v) => v === domain[0]);
 }
 
 /** @internal */
@@ -388,9 +388,10 @@ type D3ScaleNonTime<R = PrimitiveValue, O = number> = ScaleLinear<R, O> | ScaleL
 
 /**
  * All possible d3 scales
+ * @internal
  */
 
-interface ScaleData {
+export interface ScaleData {
   /** The Type of continuous scale */
   type: ScaleContinuousType;
   /** The data input domain */
