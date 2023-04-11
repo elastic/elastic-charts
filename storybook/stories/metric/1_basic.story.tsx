@@ -95,7 +95,7 @@ export const Example = () => {
     ...(progressOrTrend === 'bar' ? { domainMax: progressMax, progressBarDirection } : {}),
     ...(progressOrTrend === 'trend'
       ? {
-          trend: KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+          trend: KIBANA_METRICS.metrics.kibana_os_load.v2.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
           trendShape,
           trendA11yTitle,
           trendA11yDescription,
