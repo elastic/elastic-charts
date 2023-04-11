@@ -192,7 +192,7 @@ export const MetricText: React.FunctionComponent<{
       }}
       title={datum.title}
     >
-      {panel.width}px
+      {datum.title}
     </span>
   );
   return (
