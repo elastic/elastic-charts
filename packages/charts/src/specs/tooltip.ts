@@ -77,6 +77,12 @@ export type TooltipValueFormatter<D extends BaseDatum = Datum, SI extends Series
 ) => JSX.Element | string;
 
 /**
+ * A header formatter of tooltip {@link PointerValue}
+ * @public
+ */
+export type TooltipHeaderFormatter<D extends BaseDatum = Datum> = (data: PointerValue<D>) => JSX.Element | string;
+
+/**
  * Either a {@link (TooltipProps:type)} or an {@link (TooltipProps:type)} configuration
  * @public
  * @deprecated use new Tooltip spec to set tooltip type and other options
@@ -144,9 +150,9 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
   snap: boolean;
 
   /**
-   * A {@link TooltipValueFormatter} to format the header value. Ignored when header is defined.
+   * A {@link TooltipHeaderFormatter} to format the header value. Ignored when header is defined.
    */
-  headerFormatter?: TooltipValueFormatter<D, SI>;
+  headerFormatter?: TooltipHeaderFormatter<D>;
 
   /**
    * Unit for event (i.e. `time`, `feet`, `count`, etc.).
@@ -177,18 +183,18 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    * Custom header for tooltip. Ignored when used with `customTooltip`.
    * Note: This is not the table headers but spans the entire tooltip.
    */
-  header: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: TooltipValue<D, SI> | null }>;
+  header: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: PointerValue<D> | null }>;
 
   /**
    * Custom body for tooltip. Ignored when used with `customTooltip`.
    * Note: This is not the table body but spans the entire tooltip.
    */
-  body: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: TooltipValue<D, SI> | null }>;
+  body: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: PointerValue<D> | null }>;
   /**
    * Custom footer for tooltip. Ignored when used with `customTooltip`.
    * Note: This is not the table footers but spans the entire tooltip.
    */
-  footer: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: TooltipValue<D, SI> | null }>;
+  footer: 'default' | 'none' | ComponentType<{ items: TooltipValue<D, SI>[]; header: PointerValue<D> | null }>;
 
   /**
    * Actions to enable tooltip selection

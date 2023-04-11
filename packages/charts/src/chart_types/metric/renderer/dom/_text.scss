@@ -18,9 +18,10 @@
   text-align: left;
   line-height: 1.2;
   &__title {
-    font-weight: 400;
+    font-weight: bold;
     word-wrap: break-word;
     button {
+      font-weight: bold;
       width: 100%;
       text-align: left;
     }
@@ -33,25 +34,25 @@
 
   &__subtitle {
     padding-top: 5px;
-    font-weight: 300;
+    font-weight: normal;
     text-align: left;
   }
 
   &__extra {
     text-align: right;
-    font-weight: 400;
+    font-weight: normal;
   }
 
   &__value {
     position: relative;
-    font-weight: 600;
+    font-weight: bold;
     text-align: right;
     white-space: nowrap;
     overflow: hidden;
   }
 
   &__part {
-    font-weight: 400;
+    font-weight: bold;
   }
 
   &__gap {

@@ -21,7 +21,6 @@ import { getSeriesSpecsSelector } from './selectors/get_specs';
 import { getTooltipAnchorPositionSelector } from './selectors/get_tooltip_anchor_position';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { isBrushAvailableSelector } from './selectors/is_brush_available';
-import { isBrushingSelector } from './selectors/is_brushing';
 import { isChartEmptySelector } from './selectors/is_chart_empty';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
@@ -38,6 +37,7 @@ import { Tooltip } from '../../../components/tooltip/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
+import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 import { htmlIdGenerator } from '../../../utils/common';
 import { XYChart } from '../renderer/canvas/xy_chart';
 import { Annotations } from '../renderer/dom/annotations';
@@ -84,7 +84,7 @@ export class XYAxisChartState implements InternalChartState {
   }
 
   isBrushing(globalState: GlobalChartState) {
-    return isBrushingSelector(globalState);
+    return this.isBrushAvailable(globalState) && isBrushingSelector(globalState);
   }
 
   isChartEmpty(globalState: GlobalChartState) {

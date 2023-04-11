@@ -106,28 +106,28 @@ export const Metric: React.FunctionComponent<{
       className={containerClassName}
       style={containerStyle}
       onMouseLeave={() => {
-        setMouseState('leave');
+        if (onElementOut || onElementOver || onElementClick) setMouseState('leave');
         if (onElementOut) onElementOut();
       }}
       onMouseEnter={() => {
-        setMouseState('enter');
+        if (onElementOut || onElementOver || onElementClick) setMouseState('enter');
         if (onElementOver) onElementOver([event]);
       }}
       onMouseDown={() => {
-        setMouseState('down');
+        if (onElementOut || onElementOver || onElementClick) setMouseState('down');
         setLastMouseDownTimestamp(Date.now());
       }}
       onMouseUp={() => {
-        setMouseState('enter');
+        if (onElementOut || onElementOver || onElementClick) setMouseState('enter');
         if (Date.now() - lastMouseDownTimestamp < 200 && onElementClick) {
           onElementClickHandler();
         }
       }}
       onFocus={() => {
-        setMouseState('enter');
+        if (onElementOut || onElementOver || onElementClick) setMouseState('enter');
       }}
       onBlur={() => {
-        setMouseState('leave');
+        if (onElementOut || onElementOver || onElementClick) setMouseState('leave');
       }}
       onClick={(e) => {
         e.stopPropagation();
@@ -138,7 +138,7 @@ export const Metric: React.FunctionComponent<{
         datum={datumWithInteractionColor}
         panel={panel}
         style={updatedStyle}
-        onElementClick={onElementClickHandler}
+        onElementClick={onElementClick ? onElementClickHandler : undefined}
         highContrastTextColor={highContrastTextColor}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}

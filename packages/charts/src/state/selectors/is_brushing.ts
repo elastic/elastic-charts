@@ -6,12 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../../../../state/chart_state';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-
-const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
+import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const isBrushingSelector = createCustomCachedSelector([getPointerSelector], (pointer): boolean => {
-  return pointer.dragging;
-});
+export const isBrushingSelector = (state: GlobalChartState): boolean => {
+  return state.interactions.pointer.dragging;
+};

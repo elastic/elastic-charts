@@ -48,6 +48,7 @@ import { getInternalTooltipInfoSelector } from '../../state/selectors/get_intern
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSelectedItems } from '../../state/selectors/get_tooltip_selected_items';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
+import { isBrushingSelector } from '../../state/selectors/is_brushing';
 import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { TooltipStyle } from '../../utils/themes/theme';
@@ -169,10 +170,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     return null;
   }
 
-  const isMostlyRTL = hasMostlyRTLItems([
-    ...(info?.values?.map?.(({ label }) => label) ?? []),
-    info?.header?.label ?? '',
-  ]);
+  const isMostlyRTL = hasMostlyRTLItems(info?.values?.map?.(({ label }) => label) ?? []);
   const textDirectionality = isMostlyRTL ? 'rtl' : 'ltr';
 
   const columns: TooltipTableColumn<D, SI>[] = [
@@ -222,14 +220,13 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
     },
   ];
 
-  const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
-
   // don't show the tooltip if hidden or no TooltipInfo are available
   if (!info || !visible) {
     return null;
   }
-  const actionable = actions.length > 0 || !Array.isArray(actions);
 
+  const hideActions = (info?.disableActions ?? false) || info?.values.every((v) => v.displayOnly);
+  const actionable = actions.length > 0 || !Array.isArray(actions);
   // divider visibility
   const hasHeader = TooltipCustomHeader !== 'none' && info.header;
   const hasBody = TooltipCustomBody !== 'none' && info.values.length > 0;
@@ -411,7 +408,7 @@ const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
         pinned: state.interactions.tooltip.pinned,
         selected: getTooltipSelectedItems(state),
         canPinTooltip: isPinnableTooltip(state),
-        isBrushing: state.interactions.pointer.dragging,
+        isBrushing: isBrushingSelector(state),
       };
 
 /** @internal */

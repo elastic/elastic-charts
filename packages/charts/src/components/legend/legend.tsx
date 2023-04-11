@@ -33,6 +33,7 @@ import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
+import { isBrushingSelector } from '../../state/selectors/is_brushing';
 import { hasMostlyRTLItems, HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
 import { Dimensions, Size } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
@@ -178,7 +179,7 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
   const { debug } = getSettingsSpecSelector(state);
   return {
     debug,
-    isBrushing: state.interactions.pointer.dragging,
+    isBrushing: isBrushingSelector(state),
     chartDimensions: getInternalMainProjectionAreaSelector(state),
     containerDimensions: getInternalProjectionContainerAreaSelector(state),
     chartTheme: getChartThemeSelector(state),

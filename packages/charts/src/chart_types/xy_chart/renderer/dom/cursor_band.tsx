@@ -19,6 +19,7 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
+import { isBrushingSelector } from '../../../../state/selectors/is_brushing';
 import { getInitialTooltipState } from '../../../../state/utils';
 import { Rotation } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
@@ -91,7 +92,7 @@ const mapStateToProps = (state: GlobalChartState): CursorBandProps => {
   const tooltipType = getTooltipType(tooltip, settings, fromExternalEvent);
 
   return {
-    isBrushing: state.interactions.pointer.dragging,
+    isBrushing: isBrushingSelector(state),
     theme: getChartThemeSelector(state),
     chartRotation: getChartRotationSelector(state),
     cursorPosition: cursorBandPosition,
