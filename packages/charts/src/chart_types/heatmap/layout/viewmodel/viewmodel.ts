@@ -299,8 +299,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const [start, end] = bound;
 
     const { left, top } = chartDimensions;
-    const topLeft = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
-    const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
+    const topLeft: [number, number] = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
+    const bottomRight: [number, number] = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
 
     // Find panel based on start pointer
     const { category: smHorizontalAccessorValue, panelOffset: hOffset } = getPanelPointCoordinate(
@@ -310,10 +310,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const { category: smVerticalAccessorValue, panelOffset: vOffset } = getPanelPointCoordinate(start.y, 'vertical');
 
     // confine selection to start panel
-    const panelStartX = clampWithOffset(topLeft[0] ?? 0, 0, panelSize.width, hOffset);
-    const panelStartY = clampWithOffset(topLeft[1] ?? 0, 0, panelSize.height, vOffset);
-    const panelEndX = clampWithOffset(bottomRight[0] ?? 0, 0, panelSize.width, hOffset);
-    const panelEndY = clampWithOffset(bottomRight[1] ?? 0, 0, panelSize.height, vOffset);
+    const panelStartX = clampWithOffset(topLeft[0], 0, panelSize.width, hOffset);
+    const panelStartY = clampWithOffset(topLeft[1], 0, panelSize.height, vOffset);
+    const panelEndX = clampWithOffset(bottomRight[0], 0, panelSize.width, hOffset);
+    const panelEndY = clampWithOffset(bottomRight[1], 0, panelSize.height, vOffset);
 
     const startX = xInvertedScale(panelStartX);
     const startY = yInvertedScale(panelStartY);
