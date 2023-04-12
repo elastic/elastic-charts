@@ -75,8 +75,7 @@ export function generateTicks(
   const getDirection = getDirectionFn(scale);
   const isContinuous = isContinuousScale(scale);
   return ticks.map<AxisTick>((value) => {
-    const domainClampedValue =
-      isContinuous && typeof value === 'number' ? Math.max(value, scale.domain[0] ?? Number.NEGATIVE_INFINITY) : value;
+    const domainClampedValue = isContinuous && typeof value === 'number' ? Math.max(value, scale.domain[0]) : value;
     const label = labelFormatter(value);
     return {
       value,

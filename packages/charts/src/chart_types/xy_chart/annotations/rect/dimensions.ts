@@ -223,7 +223,7 @@ function limitValueToDomainRange(
   isHistogram = false,
 ): [PrimitiveValue, PrimitiveValue] {
   if (isContinuousScale(scale)) {
-    const [domainStartValue = Number.NEGATIVE_INFINITY, domainEndValue = Number.NEGATIVE_INFINITY] = scale.domain;
+    const [domainStartValue, domainEndValue] = scale.domain;
     const min = maxOf(domainStartValue, minValue);
     const max = minOf(isHistogram ? domainEndValue + scale.minInterval : domainEndValue, maxValue);
     // extend to edge values if values are null/undefined

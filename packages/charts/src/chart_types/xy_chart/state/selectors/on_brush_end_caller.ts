@@ -162,7 +162,7 @@ function getXBrushExtent(
       : (value: number) => xScale.invert(value);
   const minPosScaled = invertValue(minPos + offset);
   const maxPosScaled = invertValue(maxPos + offset);
-  const [domainStart = NaN, domainEnd = NaN] = xScale.domain;
+  const [domainStart, domainEnd] = xScale.domain;
   const maxDomainValue = domainEnd + (histogramEnabled && allowBrushingLastHistogramBin ? xScale.minInterval : 0);
 
   const minValue = clamp(minPosScaled, domainStart, maxPosScaled);
@@ -214,7 +214,7 @@ function getYBrushExtents(
 
     const minPosScaled = yScale.invert(minPos);
     const maxPosScaled = yScale.invert(maxPos);
-    const [domainStart = NaN, domainEnd = NaN] = yScale.domain;
+    const [domainStart, domainEnd] = yScale.domain;
     const minValue = clamp(minPosScaled, domainStart, maxPosScaled);
     const maxValue = clamp(minPosScaled, maxPosScaled, domainEnd);
     yValues.push({ extent: [minValue, maxValue], groupId });
