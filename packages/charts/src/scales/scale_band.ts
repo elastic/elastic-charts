@@ -28,7 +28,7 @@ export class ScaleBand {
   readonly originalBandwidth: number;
   readonly type: ScaleBandType;
   readonly domain: (string | number)[];
-  readonly range: number[];
+  readonly range: [number, number];
   readonly barsPadding: number;
   readonly minInterval: number;
   readonly unit?: string;
@@ -62,7 +62,7 @@ export class ScaleBand {
     this.originalBandwidth = d3Scale.bandwidth() || 0;
     this.step = d3Scale.step();
     this.domain = (inputDomain.length > 0 ? [...new Set(inputDomain)] : [undefined]) as (string | number)[];
-    this.range = range.slice();
+    this.range = [range[0], range[1]];
     this.bandwidthPadding = this.bandwidth;
     const invertedScale = scaleQuantize<string | number, undefined>()
       .domain(range)
