@@ -22,7 +22,7 @@ const getAxisSizeForLabel = (
   { axes: sharedAxesStyles, chartMargins }: Theme,
   axesStyles: Map<AxisId, AxisStyle | null>,
   { maxLabelBboxWidth = 0, maxLabelBboxHeight = 0 }: TickLabelBounds,
-  smSpec?: SmallMultiplesSpec,
+  smSpec: SmallMultiplesSpec | null,
 ) => {
   const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(axisSpec.id) ?? sharedAxesStyles;
   const horizontal = isHorizontalAxis(axisSpec.position);
@@ -63,7 +63,7 @@ export function getAxesDimensions(
   axisDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
-  smSpec?: SmallMultiplesSpec,
+  smSpec: SmallMultiplesSpec | null,
 ): PerSideDistance & { margin: { left: number } } {
   const sizes = [...axisDimensions].reduce(
     (acc, [id, tickLabelBounds]) => {

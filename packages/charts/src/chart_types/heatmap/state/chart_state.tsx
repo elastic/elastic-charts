@@ -16,7 +16,6 @@ import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getHeatmapTableSelector } from './selectors/get_heatmap_table';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
 import { getTooltipAnchorSelector } from './selectors/get_tooltip_anchor';
-import { getSpecOrNull } from './selectors/heatmap_spec';
 import { isBrushAvailableSelector } from './selectors/is_brush_available';
 import { isEmptySelector } from './selectors/is_empty';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
@@ -55,8 +54,8 @@ export class HeatmapState implements InternalChartState {
 
   onPointerUpdate: (state: GlobalChartState) => void = createOnPointerUpdateCaller();
 
-  isInitialized(globalState: GlobalChartState) {
-    return getSpecOrNull(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
+  isInitialized() {
+    return InitStatus.Initialized;
   }
 
   isBrushAvailable(globalState: GlobalChartState) {

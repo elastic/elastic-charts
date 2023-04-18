@@ -35,7 +35,7 @@ export const Example = () => {
       }),
     },
   };
-  const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 60);
+  const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 60);
   return (
     <Chart>
       <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} />

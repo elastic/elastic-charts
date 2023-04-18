@@ -24,7 +24,7 @@ import { DEPTH_KEY, HierarchyOfArrays } from '../utils/group_by_rollup';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
   return (node: ShapeTreeNode) => {
-    const accessorFn = layers[node[DEPTH_KEY] - 1].nodeLabel || ((d) => d);
+    const accessorFn = layers[node[DEPTH_KEY] - 1]?.nodeLabel || ((d) => d);
     return `${accessorFn(node.dataName)}`;
   };
 }

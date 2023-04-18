@@ -31,7 +31,7 @@ export function countBarsInCluster({ formattedDataSeries }: SeriesDomainsAndData
   );
 
   const barIndexByPanel = Object.keys(dataSeriesGroupedByPanel).reduce<Record<string, string[]>>((acc, panelKey) => {
-    const panelBars = dataSeriesGroupedByPanel[panelKey];
+    const panelBars = dataSeriesGroupedByPanel[panelKey] ?? [];
     const barDataSeriesByBarIndex = groupBy(
       panelBars,
       (d) => {

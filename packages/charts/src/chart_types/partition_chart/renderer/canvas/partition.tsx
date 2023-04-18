@@ -122,11 +122,11 @@ class PartitionComponent extends React.Component<PartitionProps> {
       chartDimensions: { width, height },
       forwardStageRef,
     } = this.props;
-    if (!forwardStageRef.current || !this.ctx || !initialized || width === 0 || height === 0) {
+    const [focus] = this.props.geometriesFoci;
+    if (!forwardStageRef.current || !this.ctx || !initialized || width === 0 || height === 0 || !focus) {
       return;
     }
     const picker = this.props.geometries.pickQuads;
-    const focus = this.props.geometriesFoci[0];
     const box = forwardStageRef.current.getBoundingClientRect();
     const { diskCenter } = this.props.geometries;
     const x = e.clientX - box.left - diskCenter.x;
@@ -183,12 +183,15 @@ class PartitionComponent extends React.Component<PartitionProps> {
       const { ctx, devicePixelRatio, props } = this;
       clearCanvas(ctx, props.background);
       props.multiGeometries.forEach((geometries, geometryIndex) => {
+        const focus = props.geometriesFoci[geometryIndex];
+        if (!focus) return;
+
         const renderer = isSimpleLinear(geometries.layout, geometries.style.fillLabel, geometries.layers)
           ? renderLinearPartitionCanvas2d
           : isWaffle(geometries.layout)
           ? renderWrappedPartitionCanvas2d
           : renderPartitionCanvas2d;
-        renderer(ctx, devicePixelRatio, geometries, props.geometriesFoci[geometryIndex], this.animationState);
+        renderer(ctx, devicePixelRatio, geometries, focus, this.animationState);
       });
     }
   }
@@ -228,7 +231,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   return {
     isRTL: hasMostlyRTLLabels(multiGeometries),
     initialized: true,
-    geometries: multiGeometries.length > 0 ? multiGeometries[0] : nullShapeViewModel(),
+    geometries: multiGeometries[0] ?? nullShapeViewModel(),
     multiGeometries,
     chartDimensions: getChartContainerDimensionsSelector(state),
     geometriesFoci: partitionDrilldownFocus(state),

@@ -12,18 +12,16 @@ import { Chart, Goal, Settings } from '@elastic/charts';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
-import { Color } from '../../../packages/charts/src/common/colors';
 import { useBaseTheme } from '../../use_base_theme';
+import { getBandFillColorFn } from '../utils/utils';
 
 const subtype = GoalSubtype.Goal;
 
-const colorMap: { [k: number]: Color } = {
+const getBandFillColor = getBandFillColorFn({
   200: 'rgba(255,0,0,0.5)',
   250: 'yellow',
   300: 'rgba(0,255,0,0.5)',
-};
-
-const bandFillColor = (x: number): Color => colorMap[x];
+});
 
 export const Example = () => (
   <Chart>
@@ -38,7 +36,7 @@ export const Example = () => (
       bands={[200, 250, 300]}
       ticks={[0, 100, 200, 250, 260, 270, 280, 290, 300]}
       tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-      bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
+      bandFillColor={getBandFillColor}
       labelMajor="Revenue 2020 YTD  "
       labelMinor="(thousand USD)  "
       centralMajor="280"

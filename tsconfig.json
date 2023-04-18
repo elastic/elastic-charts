@@ -8,6 +8,7 @@
     "preserveConstEnums": true,
     "strict": true,
     "esModuleInterop": true,
+    "noUncheckedIndexedAccess": true,
     "module": "CommonJS",
     "target": "es5",
     "lib": ["esnext", "dom"],

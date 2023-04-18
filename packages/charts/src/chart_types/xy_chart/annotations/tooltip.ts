@@ -31,8 +31,8 @@ export function computeRectAnnotationTooltipState(
 
   for (let i = 0; i < sortedAnnotationSpecs.length; i++) {
     const spec = sortedAnnotationSpecs[i];
-    const annotationDimension = annotationDimensions.get(spec.id);
-    if (spec.hideTooltips || !annotationDimension) {
+    const annotationDimension = spec?.id && annotationDimensions.get(spec.id);
+    if (!spec || spec.hideTooltips || !annotationDimension) {
       continue;
     }
     const { customTooltip, customTooltipDetails } = spec;

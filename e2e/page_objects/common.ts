@@ -167,7 +167,7 @@ export class CommonPage {
 
   static validatePath(path: string | string[]): string | string[] {
     const fileName = Array.isArray(path) ? path[path.length - 1] : path;
-    if (/\.png$/.test(fileName)) return path;
+    if (fileName && /\.png$/.test(fileName)) return path;
     throw new Error(`Screenshot path or last path segment must contain the .png file extension.`);
   }
 

@@ -127,10 +127,10 @@ export function pathAccessor(n: ArrayEntry) {
 }
 
 /** @public */
-export function getNodeName(node: ArrayNode) {
+export function getNodeName(node: ArrayNode): string {
   const index = node[SORT_INDEX_KEY];
-  const arrayEntry: ArrayEntry = node[PARENT_KEY][CHILDREN_KEY][index];
-  return entryKey(arrayEntry);
+  const arrayEntry = node[PARENT_KEY][CHILDREN_KEY][index];
+  return arrayEntry ? entryKey(arrayEntry) : '';
 }
 
 /** @internal */
@@ -242,7 +242,7 @@ export function mapsToArrays(
     mapNode[PATH_KEY] = newPath; // in-place mutation, so disabled `no-param-reassign`
     mapNode.children.forEach((entry) => buildPaths(entry, newPath));
   };
-  buildPaths(tree[0], innerGroups);
+  if (tree[0]) buildPaths(tree[0], innerGroups);
   return tree;
 }
 

@@ -584,7 +584,7 @@ describe('Series', () => {
       {
         specId: id,
         xAccessor: 'x',
-        yAccessor: yAccessors[0],
+        yAccessor: yAccessors[0]!,
         splitAccessors: new Map(),
         seriesKeys: [],
         key: 'groupId{group}spec{splitSpec}yAccessor{y1}splitAccessors{}',
@@ -630,7 +630,7 @@ describe('Series', () => {
 
     it('should get series label from spec', () => {
       const [identifier] = indentifiers;
-      const actual = getSeriesName(identifier, false, false, spec);
+      const actual = getSeriesName(identifier!, false, false, spec);
       expect(actual).toBe('a - y');
     });
 
@@ -640,7 +640,7 @@ describe('Series', () => {
         yAccessors: ['y'],
       };
       const [identifier] = MockSeriesIdentifier.fromSpecs([spec]);
-      const actual = getSeriesName(identifier, false, false, specSingleY);
+      const actual = getSeriesName(identifier!, false, false, specSingleY);
 
       expect(actual).toBe('a');
     });
@@ -649,10 +649,10 @@ describe('Series', () => {
       it('should replace full label', () => {
         const label = 'My custom new label';
         const [identifier] = indentifiers;
-        const actual = getSeriesName(identifier, false, false, {
+        const actual = getSeriesName(identifier!, false, false, {
           ...spec,
           name: ({ yAccessor, splitAccessors }) =>
-            yAccessor === identifier.yAccessor && splitAccessors.get('g') === 'a' ? label : null,
+            yAccessor === identifier?.yAccessor && splitAccessors.get('g') === 'a' ? label : null,
         });
 
         expect(actual).toBe(label);
@@ -665,14 +665,14 @@ describe('Series', () => {
           name: ({ seriesKeys }) => seriesKeys.join(' - '),
         };
         const [identifier] = MockSeriesIdentifier.fromSpecs([spec]);
-        const actual = getSeriesName(identifier, false, false, specSingleY);
+        const actual = getSeriesName(identifier!, false, false, specSingleY);
 
         expect(actual).toBe('a - y');
       });
 
       it('should replace yAccessor sub label with map', () => {
         const [identifier] = indentifiers;
-        const actual = getSeriesName(identifier, false, false, {
+        const actual = getSeriesName(identifier!, false, false, {
           ...spec,
           name: {
             names: [
@@ -692,7 +692,7 @@ describe('Series', () => {
 
       it('should join with custom delimiter', () => {
         const [identifier] = indentifiers;
-        const actual = getSeriesName(identifier, false, false, {
+        const actual = getSeriesName(identifier!, false, false, {
           ...spec,
           name: {
             names: [
@@ -712,7 +712,7 @@ describe('Series', () => {
 
       it('should replace splitAccessor sub label with map', () => {
         const [identifier] = indentifiers;
-        const actual = getSeriesName(identifier, false, false, {
+        const actual = getSeriesName(identifier!, false, false, {
           ...spec,
           name: {
             names: [
@@ -732,7 +732,7 @@ describe('Series', () => {
 
       it('should mind order of names', () => {
         const [identifier] = indentifiers;
-        const actual = getSeriesName(identifier, false, false, {
+        const actual = getSeriesName(identifier!, false, false, {
           ...spec,
           name: {
             names: [
@@ -753,7 +753,7 @@ describe('Series', () => {
 
       it('should mind sortIndex of names', () => {
         const [identifier] = indentifiers;
-        const actual = getSeriesName(identifier, false, false, {
+        const actual = getSeriesName(identifier!, false, false, {
           ...spec,
           name: {
             names: [
@@ -776,7 +776,7 @@ describe('Series', () => {
 
       it('should allow undefined sortIndex', () => {
         const [identifier] = indentifiers;
-        const actual = getSeriesName(identifier, false, false, {
+        const actual = getSeriesName(identifier!, false, false, {
           ...spec,
           name: {
             names: [
@@ -798,7 +798,7 @@ describe('Series', () => {
 
       it('should ignore missing names', () => {
         const [identifier] = indentifiers;
-        const actual = getSeriesName(identifier, false, false, {
+        const actual = getSeriesName(identifier!, false, false, {
           ...spec,
           name: {
             names: [
@@ -824,7 +824,7 @@ describe('Series', () => {
 
       it('should return fallback label if empty string', () => {
         const [identifier] = indentifiers;
-        const actual = getSeriesName(identifier, false, false, {
+        const actual = getSeriesName(identifier!, false, false, {
           ...spec,
           name: {
             names: [],
@@ -938,7 +938,7 @@ describe('Series', () => {
     test('Can use functional y0Accessor', () => {
       const splitSeries = splitSeriesDataByAccessors(
         MockSeriesSpec.bar({
-          data: KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d: any) => ({
+          data: KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d: any) => ({
             x: d[0],
             max: d[1] + 4 + 4 * getRandomNumber(),
             min: d[1] - 4 - 4 * getRandomNumber(),

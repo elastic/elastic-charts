@@ -8,7 +8,7 @@
 
 import { Selector } from 'react-redux';
 
-import { getSpecOrNull } from './goal_spec';
+import { getGoalSpecSelector } from './get_goal_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
 import { ChartType } from '../../..';
 import { getOnElementOutSelector } from '../../../../common/event_handler_selectors';
@@ -28,7 +28,7 @@ export function createOnElementOutCaller(): (state: GlobalChartState) => void {
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Goal) {
       selector = createCustomCachedSelector(
-        [getSpecOrNull, getPickedShapesLayerValues, getSettingsSpecSelector],
+        [getGoalSpecSelector, getPickedShapesLayerValues, getSettingsSpecSelector],
         getOnElementOutSelector(prev),
       );
     }

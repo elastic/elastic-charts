@@ -74,7 +74,7 @@ export const Example = () => {
             xAccessor={0}
             yAccessors={[1]}
             stackAccessors={[0]}
-            data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
+            data={KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 20)}
           />
           <BarSeries
             id="data 2"
@@ -83,7 +83,7 @@ export const Example = () => {
             xAccessor={0}
             yAccessors={[1]}
             stackAccessors={[0]}
-            data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 20)}
+            data={KIBANA_METRICS.metrics.kibana_os_load.v2.data.slice(0, 20)}
           />
         </>
       )}
@@ -93,7 +93,7 @@ export const Example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
-        data={KIBANA_METRICS.metrics.kibana_os_load[2].data.slice(0, 20)}
+        data={KIBANA_METRICS.metrics.kibana_os_load.v3.data.slice(0, 20)}
       />
     </Chart>
   );

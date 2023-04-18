@@ -205,7 +205,7 @@ export function computeSeriesGeometries(
   );
 
   const barIndexByPanel = Object.keys(dataSeriesGroupedByPanel).reduce<Record<string, string[]>>((acc, panelKey) => {
-    const panelBars = dataSeriesGroupedByPanel[panelKey];
+    const panelBars = dataSeriesGroupedByPanel[panelKey] ?? [];
     const barDataSeriesByBarIndex = groupBy(panelBars, (d) => getBarIndexKey(d, enableHistogramMode), false);
     acc[panelKey] = Object.keys(barDataSeriesByBarIndex);
     return acc;
@@ -307,8 +307,6 @@ function renderGeometries(
   fallBackTickFormatter: TickFormatter,
   measureText: TextMeasure,
 ): Omit<ComputedGeometries, 'scales'> {
-  const len = dataSeries.length;
-  let i;
   const points: PointGeometry[] = [];
   const bars: Array<PerPanel<BarGeometry[]>> = [];
   const areas: Array<PerPanel<AreaGeometry>> = [];
@@ -328,20 +326,19 @@ function renderGeometries(
   };
   const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
 
-  for (i = 0; i < len; i++) {
-    const ds = dataSeries[i];
+  dataSeries.forEach((ds) => {
     const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, ds.specId);
     if (spec === undefined) {
-      continue;
+      return;
     }
     // compute the y scale
     const yScale = yScales.get(getSpecDomainGroupId(ds.spec));
     if (!yScale) {
-      continue;
+      return;
     }
     // compute the panel unique key
     const barPanelKey = [ds.smVerticalAccessorValue, ds.smHorizontalAccessorValue].join('|');
-    const barIndexOrder = barIndexOrderPerPanel[barPanelKey];
+    const barIndexOrder = barIndexOrderPerPanel[barPanelKey] ?? [];
     // compute x scale
     const xScale = computeXScale({
       xDomain,
@@ -375,7 +372,7 @@ function renderGeometries(
     if (isBarSeriesSpec(spec)) {
       const shift = barIndexOrder.indexOf(getBarIndexKey(ds, enableHistogramMode));
 
-      if (shift === -1) continue; // skip bar dataSeries if index is not available
+      if (shift === -1) return; // skip bar dataSeries if index is not available
 
       const barSeriesStyle = mergePartial(chartTheme.barSeriesStyle, spec.barSeriesStyle);
       const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
@@ -502,7 +499,7 @@ function renderGeometries(
       geometriesCounts.areasPoints += renderedAreas.areaGeometry.points.length;
       geometriesCounts.areas += 1;
     }
-  }
+  });
 
   return {
     geometries: {

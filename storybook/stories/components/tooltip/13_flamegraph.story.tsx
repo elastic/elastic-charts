@@ -19,6 +19,7 @@ import {
   PartialTheme,
   FlameGlobalControl,
   FlameNodeControl,
+  ColumnarViewModel,
 } from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
@@ -45,7 +46,7 @@ const paletteColorBrewerCat12 = [
   [255, 237, 111],
 ];
 
-const columnarData = {
+const columnarData: ColumnarViewModel = {
   label: columnarMock.label.map((index: number) => columnarMock.dictionary[index]), // reversing the dictionary encoding
   value: new Float64Array(columnarMock.value),
   // color: new Float32Array((columnarMock.color.match(/.{2}/g) ?? []).map((hex: string) => Number.parseInt(hex, 16) / 255)),

@@ -301,11 +301,13 @@ const getUniforms = (gl: WebGL2RenderingContext, program: WebGLProgram): Uniform
         Logger.warn(`kinGLy exception: uniform location ${location} (name: ${name}, type: ${type}) not found`); // just appeasing the TS linter
         return [];
       }
-      const setValue = location ? uniformSetterLookup[type](gl, location) : () => {};
-      if (GL_DEBUG && !setValue) {
+      const setValue = location ? uniformSetterLookup[type]?.(gl, location) : () => {};
+
+      if (!setValue) {
         Logger.warn(`kinGLy exception: no setValue for uniform GL[${type}] (name: ${name}) implemented yet`);
         return [];
       }
+
       return [[name, setValue]];
     }),
   );
@@ -407,8 +409,8 @@ export const createTexture = (
       'kinGLy exception: WebGL2 is guaranteed to support at least 32 textures but not necessarily more than that',
     );
 
-  const srcFormat = textureSrcFormatLookup[internalFormat];
-  const type = textureTypeLookup[internalFormat];
+  const srcFormat = textureSrcFormatLookup[internalFormat] ?? NaN;
+  const type = textureTypeLookup[internalFormat] ?? NaN;
   const texture = gl.createTexture();
 
   const setTextureContents = () => {
@@ -510,12 +512,12 @@ export const getAttributes = (
       const { name, type } = activeAttribInfo;
       if (name.startsWith('gl_')) return [name, () => {}]; // only populate expressly supplied attributes, NOT gl_VertexID or gl_InstanceID
 
-      const location = attributeLocations[name];
+      const location = attributeLocations[name] ?? NaN;
       const buffer = gl.createBuffer();
       gl.bindBuffer(GL.ARRAY_BUFFER, buffer);
       gl.enableVertexAttribArray(location);
-      const attribSize = attribSizeLookup[type];
-      const attribElementType = attribElementTypeLookup[type];
+      const attribSize = attribSizeLookup[type] ?? NaN;
+      const attribElementType = attribElementTypeLookup[type] ?? NaN;
       if (GL_DEBUG && (attribSize === undefined || attribElementType === undefined))
         throw new Error(`Attribute type ${type} is not yet properly covered`);
       if (integerTypes.has(attribElementType)) {

@@ -8,13 +8,14 @@
 
 import { Selector } from 'react-redux';
 
-import { getSpecOrNull } from './heatmap_spec';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 import { ChartType } from '../../..';
 import { SeriesIdentifier } from '../../../../common/series_id';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { isNil } from '../../../../utils/common';
 import { Cell, isPickedCells } from '../../layout/types/viewmodel_types';
 
 function isOverElement(prev: Cell[], next: Cell[]) {
@@ -26,7 +27,7 @@ function isOverElement(prev: Cell[], next: Cell[]) {
   }
   return !next.every((nextCell, index) => {
     const prevCell = prev[index];
-    if (prevCell === null) {
+    if (isNil(prevCell)) {
       return false;
     }
     return nextCell.value === prevCell.value && nextCell.x === prevCell.x && nextCell.y === prevCell.y;
@@ -45,7 +46,7 @@ export function createOnElementOverCaller(): (state: GlobalChartState) => void {
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Heatmap) {
       selector = createCustomCachedSelector(
-        [getSpecOrNull, getPickedShapes, getSettingsSpecSelector],
+        [getHeatmapSpecSelector, getPickedShapes, getSettingsSpecSelector],
         (spec, nextPickedShapes, settings): void => {
           if (!spec) {
             return;

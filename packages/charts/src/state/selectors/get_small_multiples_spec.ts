@@ -26,5 +26,5 @@ export const getSmallMultiplesSpecs = createCustomCachedSelector([getSpecs], (sp
  * @internal
  */
 export const getSmallMultiplesSpec = createCustomCachedSelector([getSpecs], (specs) =>
-  getSpecFromStore<SmallMultiplesSpec>(specs, ChartType.Global, SpecType.SmallMultiples),
+  getSpecFromStore<SmallMultiplesSpec, false>(specs, ChartType.Global, SpecType.SmallMultiples, false),
 );

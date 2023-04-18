@@ -27,7 +27,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
-const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20);
+const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 20);
 const shapes = Object.values(PointShape);
 
 export const Example = () => {
@@ -45,7 +45,7 @@ export const Example = () => {
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis
         id="left"
-        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+        title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title}
         position={Position.Left}
         tickFormat={(d) => `${Number(d).toFixed(0)}%`}
       />

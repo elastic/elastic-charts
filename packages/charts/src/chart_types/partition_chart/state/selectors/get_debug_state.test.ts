@@ -21,7 +21,7 @@ import {
 } from '../../../../specs/settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { DebugState, PartitionDebugState, SinglePartitionDebugState } from '../../../../state/types';
+import { DebugState, SinglePartitionDebugState } from '../../../../state/types';
 import { PartitionLayout } from '../../layout/types/config_types';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
@@ -83,14 +83,14 @@ describe.each([
     // small multiple panels
     expect(debugState.partition).toHaveLength(1);
     // partition sectors
-    expect(debugState.partition![0].partitions).toHaveLength(numberOfElements);
+    expect(debugState.partition?.[0]?.partitions).toHaveLength(numberOfElements);
   });
 
   it('can click on every sector', () => {
-    const [{ partitions }] = debugState.partition as PartitionDebugState[];
+    const { partitions } = debugState.partition![0]!;
     let counter = 0;
     for (let index = 0; index < partitions.length; index++) {
-      const partition = partitions[index];
+      const partition = partitions[index]!;
       if (!isSunburst(partitionLayout) && partition.depth < 2) {
         continue;
       }
@@ -122,7 +122,7 @@ function expectCorrectClickInfo(
   store.dispatch(onMouseUp({ x, y }, index * 3 + 2));
 
   expect(onClickListener).toHaveBeenCalledTimes(index + 1);
-  const obj = onClickListener.mock.calls[index][0][0][0] as LayerValue[];
+  const obj = onClickListener.mock.calls[index]![0]![0]![0] as LayerValue[];
   // pick the last element of the path
   expect(obj[obj.length - 1]).toMatchObject({
     depth,

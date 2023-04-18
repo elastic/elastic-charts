@@ -1,5 +1,8 @@
 {
   "extends": "../tsconfig",
   "include": ["../packages/charts/src/**/*", "./**/*"],
-  "exclude": ["../**/*.test.*"]
+  "exclude": ["../**/*.test.*"],
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": false
+  }
 }

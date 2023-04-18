@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
@@ -42,8 +41,10 @@ function compareDescendingLegendItemValues(aItem: LegendNode, bItem: LegendNode)
 
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(
-  [getSettingsSpecSelector, getPartitionSpecs, getLegendConfigSelector, partitionMultiGeometries, getTrees],
-  (settings, specs, { flatLegend, legendMaxDepth, legendPosition }, geometries, trees): LegendItem[] => {
+  [getSettingsSpecSelector, getPartitionSpecs, getLegendConfigSelector, getTrees],
+  (settings, [spec], { flatLegend, legendMaxDepth, legendPosition }, trees): LegendItem[] => {
+    if (!spec) return [];
+
     const sortingFn = flatLegend && settings.legendSort;
 
     return trees.flatMap((tree) => {
@@ -52,19 +53,19 @@ export const computeLegendSelector = createCustomCachedSelector(
             sortingFn(
               {
                 smAccessorValue: tree.smAccessorValue,
-                specId: aItem.item.seriesIdentifiers[0].specId,
-                key: aItem.item.seriesIdentifiers[0].key,
+                specId: aItem.item.seriesIdentifiers[0]?.specId,
+                key: aItem.item.seriesIdentifiers[0]?.key,
               } as SeriesIdentifier,
               {
                 smAccessorValue: tree.smAccessorValue,
-                specId: bItem.item.seriesIdentifiers[0].specId,
-                key: bItem.item.seriesIdentifiers[0].key,
+                specId: bItem.item.seriesIdentifiers[0]?.specId,
+                key: bItem.item.seriesIdentifiers[0]?.key,
               } as SeriesIdentifier,
             )
         : undefined;
       const useHierarchicalLegend = isHierarchicalLegend(flatLegend, legendPosition);
-      const { valueFormatter } = specs[0];
-      const items = walkTree(specs[0].id, useHierarchicalLegend, valueFormatter, tree.tree, specs[0].layers, 0);
+      const { valueFormatter } = spec;
+      const items = walkTree(spec.id, useHierarchicalLegend, valueFormatter, tree.tree, spec.layers, 0);
       return items
         .filter((d) => {
           const depth = d.item.depth ?? -1;
@@ -76,9 +77,9 @@ export const computeLegendSelector = createCustomCachedSelector(
         })
         .sort(
           customSortingFn ??
-            (specs[0].layout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
+            (spec.layout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
               ? compareDescendingLegendItemValues
-              : isLinear(specs[0].layout) // icicle/flame are sorted by name
+              : isLinear(spec.layout) // icicle/flame are sorted by name
               ? compareLegendItemNames
               : () => 0), // all others are sorted by hierarchy
         )

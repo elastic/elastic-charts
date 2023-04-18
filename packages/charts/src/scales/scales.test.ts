@@ -32,7 +32,7 @@ describe('Scale Test', () => {
     expect(scaledValue4).toBe(bandwidth * 3);
   });
   test('Create an linear scale', () => {
-    const data = [0, 10];
+    const data: [number, number] = [0, 10];
     const minRange = 0;
     const maxRange = 100;
     const linearScale = new ScaleContinuous({
@@ -57,7 +57,7 @@ describe('Scale Test', () => {
     const date1 = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' }).toMillis();
     const date2 = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' }).plus({ days: 90 }).toMillis();
     const date3 = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' }).plus({ days: 180 }).toMillis();
-    const data = [date1, date3];
+    const data: [number, number] = [date1, date3];
     const minRange = 0;
     const maxRange = 100;
     const timeScale = new ScaleContinuous({
@@ -77,7 +77,7 @@ describe('Scale Test', () => {
     expect(scaledValue3).toBe(100);
   });
   test('Create an log scale', () => {
-    const data = [1, 10];
+    const data: [number, number] = [1, 10];
     const minRange = 0;
     const maxRange = 100;
     const logScale = new ScaleContinuous({
@@ -95,7 +95,7 @@ describe('Scale Test', () => {
     expect(scaledValue3).toBe((Math.log(5) / Math.log(10)) * 100);
   });
   test('Create an log scale starting with 0 as min', () => {
-    const data = [0, 10];
+    const data: [number, number] = [0, 10];
     const minRange = 0;
     const maxRange = 100;
     const logScale = new ScaleContinuous({
@@ -113,7 +113,7 @@ describe('Scale Test', () => {
     expect(scaledValue3).toBe((Math.log(5) / Math.log(10)) * 100);
   });
   test('Create an sqrt scale', () => {
-    const data = [0, 10];
+    const data: [number, number] = [0, 10];
     const minRange = 0;
     const maxRange = 100;
     const sqrtScale = new ScaleContinuous({
@@ -173,7 +173,7 @@ describe('Scale Test', () => {
 
   test('compare ordinal scale and linear/band invertWithStep 3 bars', () => {
     const data = [0, 1, 2];
-    const domainLinear = [0, 2];
+    const domainLinear: [number, number] = [0, 2];
     const domainOrdinal = [0, 1, 2];
     const minRange = 0;
     const maxRange = 120;
@@ -192,7 +192,7 @@ describe('Scale Test', () => {
     expect(linearScale.invertWithStep(81, data)).toEqual({ value: 2, withinBandwidth: true });
   });
   test('compare ordinal scale and linear/band 2 bars', () => {
-    const dataLinear = [0, 1];
+    const dataLinear: [number, number] = [0, 1];
     const dataOrdinal = [0, 1];
     const minRange = 0;
     const maxRange = 100;
