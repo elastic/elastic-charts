@@ -8,20 +8,19 @@
 
 import React from 'react';
 
-import { Chart, Goal, Color, BandFillColorAccessorInput, Settings } from '@elastic/charts';
+import { Chart, Goal, BandFillColorAccessorInput, Settings } from '@elastic/charts';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { getBandFillColorFn } from '../utils/utils';
 
 const subtype = GoalSubtype.Goal;
 
-const colorMap: { [k: number]: Color } = {
+const getBandFillColor = getBandFillColorFn({
   200: '#fc8d62',
   250: 'lightgrey',
   300: '#66c2a5',
-};
-
-const bandFillColor = (x: number): Color => colorMap[x];
+});
 
 export const Example = () => (
   <Chart>
@@ -36,7 +35,7 @@ export const Example = () => (
       bands={[200, 250, 300]}
       ticks={[0, 50, 100, 150, 200, 250, 300]}
       tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-      bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
+      bandFillColor={getBandFillColor}
       labelMajor=""
       labelMinor=""
       centralMajor="280 MB/s"

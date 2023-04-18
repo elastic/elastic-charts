@@ -9,7 +9,9 @@
 import _, { Dictionary, NumericDictionary } from 'lodash';
 import seedrandom from 'seedrandom';
 
+import { BandFillColorAccessorInput } from '@elastic/charts';
 import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
+import { Color } from '@elastic/charts/src/common/colors';
 import {
   countryDimension,
   productDimension,
@@ -25,6 +27,11 @@ export const countryLookup = arrayToLookup((d: any) => d.country, countryDimensi
 export const productPriceLookup = arrayToLookup((d: any) => d.products_price, productPriceNames);
 
 type ColorMaker = (x: number) => string;
+
+export const getBandFillColorFn =
+  (colorMap: { [k: number]: Color }) =>
+  ({ value: x }: BandFillColorAccessorInput): Color =>
+    colorMap[x];
 
 // interpolation based, cyclical color example
 export const interpolatorCET2s = (opacity = 0.7) =>

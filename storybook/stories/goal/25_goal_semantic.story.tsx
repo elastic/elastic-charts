@@ -11,6 +11,8 @@ import React from 'react';
 import { Chart, Goal, Color, BandFillColorAccessorInput } from '@elastic/charts';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
+import { getBandFillColorFn } from '../utils/utils';
+
 const subtype = GoalSubtype.Goal;
 
 export const Example = () => {
@@ -29,7 +31,7 @@ export const Example = () => {
     return acc;
   }, {});
 
-  const bandFillColor = (x: number): Color => colorMap[x];
+  const getBandFillColor = getBandFillColorFn(colorMap);
 
   return (
     <Chart className="story-chart">
@@ -43,7 +45,7 @@ export const Example = () => {
         bands={bands}
         ticks={[0, 50, 100, 150, 200, 250, 300]}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-        bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
+        bandFillColor={getBandFillColor}
         labelMajor="Revenue 2020 YTD  "
         labelMinor="(thousand USD)  "
         centralMajor="170"
