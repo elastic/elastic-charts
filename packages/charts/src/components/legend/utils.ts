@@ -12,7 +12,7 @@ import { LegendItemExtraValues, LegendItem } from '../../common/legend';
 export function getExtra(extraValues: Map<string, LegendItemExtraValues>, item: LegendItem, totalItems: number) {
   const { seriesIdentifiers, defaultExtra, childId, path } = item;
   // don't show extra if the legend item is associated with multiple series
-  if (extraValues.size === 0 || seriesIdentifiers.length > 1) {
+  if (extraValues.size === 0 || seriesIdentifiers.length > 1 || !seriesIdentifiers[0]) {
     return defaultExtra?.formatted ?? '';
   }
   const [{ key }] = seriesIdentifiers;

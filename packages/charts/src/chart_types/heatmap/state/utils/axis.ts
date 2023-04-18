@@ -269,16 +269,19 @@ function computeCompressedScale(
     if (i >= itemsPerSideSize.length - 2) {
       return false;
     }
-    const currentItemRightSide = domainPositions[i] * scaleMultiplier + rightSide + pad(style.padding, 'right');
+
+    const currentItemRightSide = (domainPositions[i] ?? 0) * scaleMultiplier + rightSide + pad(style.padding, 'right');
     const nextItemLeftSize =
-      domainPositions[i + 1] * scaleMultiplier - itemsPerSideSize[i + 1][0] - pad(style.padding, 'left');
+      (domainPositions[i + 1] ?? 0) * scaleMultiplier -
+      (itemsPerSideSize[i + 1]?.[0] ?? 0) -
+      pad(style.padding, 'left');
     return currentItemRightSide > nextItemLeftSize;
   });
 
   const leftMargin = isFiniteNumber(bounds[0])
-    ? globalItemWidth[bounds[0]][0] - scaleMultiplier * globalDomainPositions[bounds[0]]
+    ? (globalItemWidth[bounds[0]]?.[0] ?? 0) - scaleMultiplier * (globalDomainPositions[bounds[0]] ?? 0)
     : 0;
-  const rightMargin = isFiniteNumber(bounds[1]) ? globalItemWidth[bounds[1]][1] : 0;
+  const rightMargin = isFiniteNumber(bounds[1]) ? globalItemWidth[bounds[1]]?.[1] ?? 0 : 0;
 
   return {
     // the horizontal space

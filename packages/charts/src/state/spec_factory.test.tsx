@@ -73,11 +73,11 @@ describe('Spec factory', () => {
     expect(debugState.bars).toHaveLength(2);
 
     // different id same y
-    expect(debugState.bars?.[0].name).toBe('spec2');
-    expect(debugState.bars?.[0].bars[0].y).toBe(1);
+    expect(debugState.bars?.[0]?.name).toBe('spec2');
+    expect(debugState.bars?.[0]?.bars[0]?.y).toBe(1);
 
     // different id same y
-    expect(debugState.bars?.[1].name).toBe('spec1');
-    expect(debugState.bars?.[1].bars[0].y).toBe(2);
+    expect(debugState.bars?.[1]?.name).toBe('spec1');
+    expect(debugState.bars?.[1]?.bars[0]?.y).toBe(2);
   });
 });

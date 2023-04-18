@@ -75,6 +75,7 @@ export function renderTitle(
     1,
     measureText(ctx),
   );
+  if (!wrappedText[0]) return;
   if (debug) renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, rotation);
   renderText(ctx, { x: textX, y: textY }, wrappedText[0], font, rotation);
 }

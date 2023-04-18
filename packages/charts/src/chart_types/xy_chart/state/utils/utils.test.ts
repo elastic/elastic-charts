@@ -553,13 +553,13 @@ describe('Chart State utils', () => {
 
       const geometries = getGeometriesFromSpecs([line1, line2, line3]);
 
-      expect(geometries.geometries.lines[0].value.color).toBe('violet');
-      expect(geometries.geometries.lines[0].value.style.line).toEqual({
+      expect(geometries.geometries.lines[0]?.value.color).toBe('violet');
+      expect(geometries.geometries.lines[0]?.value.style.line).toEqual({
         visible: true,
         strokeWidth: 100, // the override strokeWidth
         opacity: 1,
       });
-      expect(geometries.geometries.lines[0].value.style.point).toEqual({
+      expect(geometries.geometries.lines[0]?.value.style.point).toEqual({
         visible: true,
         fill: 'green', // the override strokeWidth
         opacity: 1,
@@ -613,18 +613,18 @@ describe('Chart State utils', () => {
 
       const geometries = getGeometriesFromSpecs([area1, area2, area3]);
 
-      expect(geometries.geometries.areas[0].value.color).toBe('violet');
-      expect(geometries.geometries.areas[0].value.style.area).toEqual({
+      expect(geometries.geometries.areas[0]?.value.color).toBe('violet');
+      expect(geometries.geometries.areas[0]?.value.style.area).toEqual({
         visible: true,
         fill: 'area-fill-custom-color',
         opacity: 0.2,
       });
-      expect(geometries.geometries.areas[0].value.style.line).toEqual({
+      expect(geometries.geometries.areas[0]?.value.style.line).toEqual({
         visible: true,
         strokeWidth: 100,
         opacity: 1,
       });
-      expect(geometries.geometries.areas[0].value.style.point).toEqual({
+      expect(geometries.geometries.areas[0]?.value.style.point).toEqual({
         visible: false,
         fill: 'point-fill-custom-color', // the override strokeWidth
         opacity: 1,
@@ -696,7 +696,7 @@ describe('Chart State utils', () => {
 
       const geometries = getGeometriesFromSpecs([line1, bar1]);
 
-      expect(geometries.geometries.bars[0].value[0].x).toBe(0);
+      expect(geometries.geometries.bars[0]?.value[0]?.x).toBe(0);
     });
   });
 

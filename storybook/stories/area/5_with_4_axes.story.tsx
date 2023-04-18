@@ -27,25 +27,25 @@ export const Example = () => (
     />
     <Axis
       id="left"
-      title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+      title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title}
       position={Position.Left}
       tickFormat={(d) => `${Number(d).toFixed(0)}%`}
     />
     <Axis id="top" position={Position.Top} showOverlappingTicks tickFormat={timeFormatter('HH:mm:ss')} />
     <Axis
       id="right"
-      title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+      title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title}
       position={Position.Right}
       tickFormat={(d) => `${Number(d).toFixed(0)} %`}
     />
 
     <AreaSeries
-      id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
+      id={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.label}
       xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+      data={KIBANA_METRICS.metrics.kibana_os_load.v1.data}
     />
   </Chart>
 );

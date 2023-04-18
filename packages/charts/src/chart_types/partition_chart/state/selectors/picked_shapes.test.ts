@@ -78,11 +78,11 @@ describe('Picked shapes selector', () => {
   test('check initial geoms', () => {
     addSeries(store, treemapSpec);
     const treemapGeometries = partitionMultiGeometries(store.getState())[0];
-    expect(treemapGeometries.quadViewModel).toHaveLength(6);
+    expect(treemapGeometries?.quadViewModel).toHaveLength(6);
 
     addSeries(store, sunburstSpec);
     const sunburstGeometries = partitionMultiGeometries(store.getState())[0];
-    expect(sunburstGeometries.quadViewModel).toHaveLength(6);
+    expect(sunburstGeometries?.quadViewModel).toHaveLength(6);
   });
   test('treemap check picked geometries', () => {
     const onClickListener = jest.fn();
@@ -90,7 +90,7 @@ describe('Picked shapes selector', () => {
       onElementClick: onClickListener,
     });
     const geometries = partitionMultiGeometries(store.getState())[0];
-    expect(geometries.quadViewModel).toHaveLength(6);
+    expect(geometries?.quadViewModel).toHaveLength(6);
 
     const onElementClickCaller = createOnElementClickCaller();
     store.subscribe(() => {
@@ -167,7 +167,7 @@ describe('Picked shapes selector', () => {
       },
     );
     const geometries = partitionMultiGeometries(store.getState())[0];
-    expect(geometries.quadViewModel).toHaveLength(2);
+    expect(geometries?.quadViewModel).toHaveLength(2);
 
     const onElementClickCaller = createOnElementClickCaller();
     store.subscribe(() => {
@@ -208,7 +208,7 @@ describe('Picked shapes selector', () => {
       onElementClick: onClickListener,
     });
     const geometries = partitionMultiGeometries(store.getState())[0];
-    expect(geometries.quadViewModel).toHaveLength(6);
+    expect(geometries?.quadViewModel).toHaveLength(6);
 
     const onElementClickCaller = createOnElementClickCaller();
     store.subscribe(() => {

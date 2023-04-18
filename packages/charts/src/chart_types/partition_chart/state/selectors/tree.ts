@@ -94,6 +94,6 @@ function getTreesForSpec(
 /** @internal */
 export const getTrees = createCustomCachedSelector(
   [getPartitionSpecs, getSmallMultiplesSpecs, getGroupBySpecs],
-  (partitionSpecs, smallMultiplesSpecs, groupBySpecs): StyledTree[] =>
-    partitionSpecs.length > 0 ? getTreesForSpec(partitionSpecs[0], smallMultiplesSpecs, groupBySpecs) : [], // singleton!
+  ([spec], smallMultiplesSpecs, groupBySpecs): StyledTree[] =>
+    spec ? getTreesForSpec(spec, smallMultiplesSpecs, groupBySpecs) : [],
 );

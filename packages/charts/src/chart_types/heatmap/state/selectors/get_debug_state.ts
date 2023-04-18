@@ -96,8 +96,8 @@ export const getDebugStateSelector = createCustomCachedSelector(
 function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
   const items = legendItems
     .filter(({ isSeriesHidden }) => !isSeriesHidden)
-    .map(({ label: name, color, seriesIdentifiers: [{ key }] }) => ({
-      key,
+    .map(({ label: name, color, seriesIdentifiers: [seriesIdentifier] }) => ({
+      key: seriesIdentifier?.key ?? '',
       name,
       color,
     }));

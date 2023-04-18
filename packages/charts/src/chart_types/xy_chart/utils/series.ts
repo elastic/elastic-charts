@@ -10,7 +10,7 @@ import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
 import { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
-import { Color } from '../../../common/colors';
+import { Color, Colors } from '../../../common/colors';
 import { SmallMultiplesDatum, SmallMultiplesGroupBy } from '../../../common/panel_utils';
 import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
@@ -336,6 +336,7 @@ export function getFormattedDataSeries(
   );
 
   const fittedAndStackedDataSeries = stackedGroups.reduce<DataSeries[]>((acc, dataSeries) => {
+    if (!dataSeries[0]) return acc;
     const [{ stackMode, seriesType }] = dataSeries;
     const formatted = formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMode);
     return [...acc, ...formatted];
@@ -586,17 +587,19 @@ export function getSeriesColors(
       return [ds.specId, ds.groupId, ds.yAccessor, ...ds.splitAccessors.values()].join('__');
     },
     true,
-  ).forEach((ds) => {
+  ).forEach(([ds]) => {
+    if (!ds) return;
     const seriesKey = getSeriesKey(
       {
-        specId: ds[0].specId,
-        yAccessor: ds[0].yAccessor,
-        splitAccessors: ds[0].splitAccessors,
+        specId: ds.specId,
+        yAccessor: ds.yAccessor,
+        splitAccessors: ds.splitAccessors,
       },
-      ds[0].groupId,
+      ds.groupId,
     );
     const colorOverride = getHighestOverride(seriesKey, customColors, overrides);
-    const color = colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length];
+    const color =
+      colorOverride || chartColors.vizColors[counter % chartColors.vizColors.length] || Colors.White.keyword;
 
     seriesColorMap.set(seriesKey, color);
     counter++;

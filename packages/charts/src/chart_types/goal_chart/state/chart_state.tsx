@@ -9,7 +9,7 @@
 import React, { RefObject } from 'react';
 
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
-import { getSpecOrNull } from './selectors/goal_spec';
+import { getGoalSpecSelector } from './selectors/get_goal_spec';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
@@ -48,7 +48,7 @@ export class GoalState implements InternalChartState {
   }
 
   isInitialized(globalState: GlobalChartState) {
-    return getSpecOrNull(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
+    return getGoalSpecSelector(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
   }
 
   isBrushAvailable() {

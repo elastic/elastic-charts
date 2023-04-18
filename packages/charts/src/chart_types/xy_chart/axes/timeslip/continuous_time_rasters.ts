@@ -9,7 +9,7 @@
 /* eslint-disable-next-line eslint-comments/disable-enable-pair */
 /* eslint-disable @typescript-eslint/unbound-method */
 
-import { cachedTimeDelta, cachedZonedDateTimeFrom, timeProp } from './chrono/cached_chrono';
+import { cachedTimeDelta, cachedZonedDateTimeFrom, TimeProp } from './chrono/cached_chrono';
 import { epochInSecondsToYear } from './chrono/chrono';
 import { LOCALE_TRANSLATIONS } from './locale_translations';
 
@@ -94,13 +94,13 @@ const monthBasedIntervals = (
     for (const { year } of years.intervals(domainFrom, domainTo)) {
       for (let month = 1; month <= 12; month += unitMultiplier) {
         const timePoint = cachedZonedDateTimeFrom({ timeZone, year, month, day: 1 });
-        const binStart = timePoint[timeProp.epochSeconds];
+        const binStart = timePoint[TimeProp.EpochSeconds];
         const binEnd = cachedZonedDateTimeFrom({
           timeZone,
           year: month <= 12 - unitMultiplier ? year : year + 1,
           month: ((month + unitMultiplier - 1) % 12) + 1,
           day: 1,
-        })[timeProp.epochSeconds];
+        })[TimeProp.EpochSeconds];
         yield { year, month, minimum: binStart, supremum: binEnd };
       }
     }
@@ -172,13 +172,13 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
       const toYear = epochInSecondsToYear(timeZone, domainTo);
       for (let year = fromYear; year <= toYear; year++) {
         const timePoint = cachedZonedDateTimeFrom({ timeZone, year, month: 1, day: 1 });
-        const binStart = timePoint[timeProp.epochSeconds];
+        const binStart = timePoint[TimeProp.EpochSeconds];
         const binEnd = cachedZonedDateTimeFrom({
           timeZone,
           year: year + 1,
           month: 1,
           day: 1,
-        })[timeProp.epochSeconds];
+        })[TimeProp.EpochSeconds];
         yield { year, minimum: binStart, supremum: binEnd };
       }
     },
@@ -201,13 +201,13 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
       const toYear = epochInSecondsToYear(timeZone, domainTo);
       for (let year = Math.floor(fromYear / 10) * 10; year <= Math.ceil(toYear / 10) * 10; year += 10) {
         const timePoint = cachedZonedDateTimeFrom({ timeZone, year, month: 1, day: 1 });
-        const binStart = timePoint[timeProp.epochSeconds];
+        const binStart = timePoint[TimeProp.EpochSeconds];
         const binEnd = cachedZonedDateTimeFrom({
           timeZone,
           year: year + 10,
           month: 1,
           day: 1,
-        })[timeProp.epochSeconds];
+        })[TimeProp.EpochSeconds];
         yield { year, minimum: binStart, supremum: binEnd };
       }
     },
@@ -258,8 +258,8 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
             day: dayOfMonth,
           };
           const timePoint = cachedZonedDateTimeFrom(temporalArgs);
-          const dayOfWeek: number = timePoint[timeProp.dayOfWeek];
-          const binStart = timePoint[timeProp.epochSeconds];
+          const dayOfWeek: number = timePoint[TimeProp.DayOfWeek];
+          const binStart = timePoint[TimeProp.EpochSeconds];
           const binEnd = cachedTimeDelta(temporalArgs, 'days', 1);
           if (Number.isFinite(binStart) && Number.isFinite(binEnd))
             yield {
@@ -286,9 +286,9 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
           const temporalArgs = { timeZone, year, month, day: dayOfMonth };
           const timePoint = cachedZonedDateTimeFrom(temporalArgs);
-          const dayOfWeek = timePoint[timeProp.dayOfWeek];
+          const dayOfWeek = timePoint[TimeProp.DayOfWeek];
           if (dayOfWeek !== 1) continue;
-          const binStart = timePoint[timeProp.epochSeconds];
+          const binStart = timePoint[TimeProp.EpochSeconds];
           if (Number.isFinite(binStart)) {
             yield { dayOfMonth, minimum: binStart, supremum: cachedTimeDelta(temporalArgs, 'days', 7) };
           }
@@ -349,7 +349,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
               hour,
             };
             const timePoint = cachedZonedDateTimeFrom(temporalArgs);
-            const binStart = timePoint[timeProp.epochSeconds];
+            const binStart = timePoint[TimeProp.EpochSeconds];
             return Number.isNaN(binStart)
               ? []
               : {
@@ -365,7 +365,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
           }),
         ) as Array<Interval & YearToHour>
       ).map((b: Interval & YearToHour, i, a) =>
-        Object.assign(b, { supremum: i === a.length - 1 ? b.supremum : a[i + 1].minimum }),
+        Object.assign(b, { supremum: i === a.length - 1 ? b.supremum : a[i + 1]?.minimum }),
       ),
     minorTickLabelFormat: new Intl.DateTimeFormat(locale, {
       ...hourFormat,

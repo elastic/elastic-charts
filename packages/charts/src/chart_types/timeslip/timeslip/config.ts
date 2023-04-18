@@ -8,7 +8,7 @@
 
 import { LocaleOptions } from './render/annotations/time_extent';
 import { getValidatedTimeZone, getZoneFromSpecs } from '../../../utils/time_zone';
-import { cachedZonedDateTimeFrom, timeProp } from '../../xy_chart/axes/timeslip/chrono/cached_chrono';
+import { cachedZonedDateTimeFrom, TimeProp } from '../../xy_chart/axes/timeslip/chrono/cached_chrono';
 import { RasterConfig, TimeFormatter } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { DEFAULT_LOCALE, MINIMUM_TICK_PIXEL_DISTANCE } from '../../xy_chart/axes/timeslip/multilayer_ticks';
 
@@ -107,8 +107,8 @@ export const config: TimeslipConfig = {
   barChroma: { r: 96, g: 146, b: 192 },
   barFillAlpha: 0.3,
   lineThicknessSteps,
-  domainFrom: cachedZonedDateTimeFrom({ timeZone, year: 2002, month: 1, day: 1 })[timeProp.epochSeconds],
-  domainTo: cachedZonedDateTimeFrom({ timeZone, year: 2022, month: 1, day: 1 })[timeProp.epochSeconds],
+  domainFrom: cachedZonedDateTimeFrom({ timeZone, year: 2002, month: 1, day: 1 })[TimeProp.EpochSeconds],
+  domainTo: cachedZonedDateTimeFrom({ timeZone, year: 2022, month: 1, day: 1 })[TimeProp.EpochSeconds],
   smallFontSize,
   cssFontShorthand: `normal normal 100 ${smallFontSize}px Inter, Helvetica, Arial, sans-serif`,
   monospacedFontShorthand: `normal normal 100 ${smallFontSize}px "Roboto Mono", Consolas, Menlo, Courier, monospace`,

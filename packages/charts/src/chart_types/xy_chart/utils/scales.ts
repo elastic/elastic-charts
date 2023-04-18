@@ -56,7 +56,7 @@ export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuo
   if (isBandScale) {
     const [domainMin, domainMax] = domain as ContinuousDomain;
     const isSingleValueHistogram = !!enableHistogramMode && domainMax - domainMin === 0;
-    const adjustedDomain = [domainMin, isSingleValueHistogram ? domainMin + minInterval : domainMax];
+    const adjustedDomain: [number, number] = [domainMin, isSingleValueHistogram ? domainMin + minInterval : domainMax];
     const intervalCount = (adjustedDomain[1] - adjustedDomain[0]) / minInterval;
     const intervalCountOffset = isSingleValueHistogram ? 0 : 1;
     const bandwidth = rangeDiff / (intervalCount + intervalCountOffset);
@@ -81,7 +81,7 @@ export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuo
     );
   } else {
     return new ScaleContinuous(
-      { type, domain: domain as number[], range, nice },
+      { type, domain: domain as [number, number], range, nice },
       {
         bandwidth: 0,
         minInterval,

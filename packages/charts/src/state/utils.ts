@@ -21,15 +21,19 @@ export function getSpecsFromStore<U extends Spec>(specs: SpecList, chartType: Ch
 /**
  * Returns first matching spec
  * @internal
+ * TODO: Make these generator types automatic
  */
-export function getSpecFromStore<U extends Spec>(
+export function getSpecFromStore<U extends Spec, R extends boolean, RR = R extends true ? never : null>(
   specs: SpecList,
   chartType: ChartType,
   specType: string,
-): U | undefined {
-  return (
-    (Object.values(specs).find((spec) => spec.chartType === chartType && spec.specType === specType) as U) ?? undefined
-  );
+  required: R,
+): U | RR {
+  const spec = Object.values(specs).find((spec) => spec.chartType === chartType && spec.specType === specType) as U;
+
+  if (!spec && required) throw new Error(`Unable to find spec [${chartType} = ${specType}]`);
+
+  return spec ?? null;
 }
 
 /** @internal */

@@ -31,15 +31,15 @@ export function fillSeries(
     }
     const filledData: typeof data = [];
     const missingValues = new Set(xValues);
-    for (let i = 0; i < data.length; i++) {
-      const { x } = data[i];
-      filledData.push(data[i]);
-      missingValues.delete(x);
-    }
+
+    data.forEach((datum) => {
+      filledData.push(datum);
+      missingValues.delete(datum.x);
+    });
 
     const missingValuesArray = [...missingValues.values()];
-    for (let i = 0; i < missingValuesArray.length; i++) {
-      const missingValue = missingValuesArray[i];
+
+    missingValuesArray.forEach((missingValue) => {
       const index = sortedXValues.indexOf(missingValue);
 
       filledData.splice(index, 0, {
@@ -54,7 +54,8 @@ export function fillSeries(
           x: missingValue,
         },
       });
-    }
+    });
+
     return {
       ...series,
       data: filledData,

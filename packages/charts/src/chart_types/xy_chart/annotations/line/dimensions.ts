@@ -142,8 +142,8 @@ function computeXDomainLineAnnotationDimensions(
       return;
     }
     if (isContinuousScale(xScale) && typeof dataValue === 'number') {
-      const [minDomain] = xScale.domain;
-      const maxDomain = isHistogramMode ? xScale.domain[1] + xScale.minInterval : xScale.domain[1];
+      const [minDomain, scaleMaxDomain] = xScale.domain;
+      const maxDomain = isHistogramMode ? scaleMaxDomain + xScale.minInterval : scaleMaxDomain;
       if (dataValue < minDomain || dataValue > maxDomain) {
         return;
       }

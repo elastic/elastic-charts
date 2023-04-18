@@ -36,7 +36,7 @@ export const Example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
-        data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+        data={KIBANA_METRICS.metrics.kibana_os_load.v1.data}
       />
     </Chart>
   );

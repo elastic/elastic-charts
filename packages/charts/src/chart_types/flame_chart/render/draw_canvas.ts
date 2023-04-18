@@ -22,7 +22,7 @@ const ROW_OFFSET_Y = 0.45; // approx. middle line (text is middle anchored so ta
 const MAX_FONT_HEIGHT_RATIO = 1; // relative to the row height
 const MAX_FONT_SIZE = 12;
 
-const mix = (a: number, b: number, x: number) => (1 - x) * a + x * b; // like the GLSL `mix`
+const mix = (a: number = 1, b: number = 1, x: number = 1) => (1 - x) * a + x * b; // like the GLSL `mix`
 
 /** @internal */
 export const drawCanvas2d = (
@@ -90,7 +90,7 @@ export const drawCanvas2d = (
         ctx.fillStyle = textColor;
         lastTextColor = textColor;
       }
-      const textAlpha = color[i * 4 + 3];
+      const textAlpha = color[i * 4 + 3] ?? 1;
       if (textAlpha !== lastTextAlpha) {
         // as we're sorting the iteration, the number of color changes (API calls) is minimized
         ctx.globalAlpha = textAlpha;

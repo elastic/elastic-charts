@@ -297,9 +297,7 @@ describe('Legends', () => {
       ],
       store,
     );
-    const {
-      formattedDataSeries: [{ key, specId }],
-    } = computeSeriesDomainsSelector(store.getState());
+    const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
 
     store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
     const legend = computeLegendSelector(store.getState());

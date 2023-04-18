@@ -36,12 +36,10 @@ export class Simple1DNoise {
     const t = scaledX - xFloor;
     const tRemapSmoothstep = t * t * (3 - 2 * t);
 
-    // tslint:disable-next-line:no-bitwise
     const xMin = xFloor & this.maxVerticesMask;
-    // tslint:disable-next-line:no-bitwise
     const xMax = (xMin + 1) & this.maxVerticesMask;
 
-    const y = this.lerp(r[xMin], r[xMax], tRemapSmoothstep);
+    const y = this.lerp(r[xMin] ?? 0, r[xMax] ?? 0, tRemapSmoothstep);
 
     return y * this.amplitude;
   }

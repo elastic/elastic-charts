@@ -104,6 +104,8 @@ export function getElementZIndex(element: HTMLElement, cousin: HTMLElement): num
   // reverse the nodes to walk from top -> element
   for (let i = nodesToInspect.length - 1; i >= 0; i--) {
     const node = nodesToInspect[i];
+    if (!node) continue;
+
     // get this node's z-index css value
     const zIndex = window.document.defaultView!.getComputedStyle(node).getPropertyValue('z-index');
 

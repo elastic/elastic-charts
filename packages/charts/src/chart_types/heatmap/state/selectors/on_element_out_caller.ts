@@ -8,7 +8,7 @@
 
 import { Selector } from 'react-redux';
 
-import { getSpecOrNull } from './heatmap_spec';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 import { ChartType } from '../../..';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -28,7 +28,7 @@ export function createOnElementOutCaller(): (state: GlobalChartState) => void {
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Heatmap) {
       selector = createCustomCachedSelector(
-        [getSpecOrNull, getPickedShapes, getSettingsSpecSelector],
+        [getHeatmapSpecSelector, getPickedShapes, getSettingsSpecSelector],
         (spec, pickedShapes, settings): void => {
           if (!spec) {
             return;

@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { getSpecOrNull } from './selectors/wordcloud_spec';
+import { getWordcloudSpecSelector } from './selectors/wordcloud_spec';
 import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
@@ -29,7 +29,7 @@ export class WordcloudState implements InternalChartState {
   chartType = ChartType.Wordcloud;
 
   isInitialized(globalState: GlobalChartState) {
-    return getSpecOrNull(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
+    return getWordcloudSpecSelector(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
   }
 
   isBrushAvailable() {

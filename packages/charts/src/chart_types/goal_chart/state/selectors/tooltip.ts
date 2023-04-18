@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { getSpecOrNull } from './goal_spec';
+import { getGoalSpecSelector } from './get_goal_spec';
 import { getPickedShapes } from './picked_shapes';
 import { Colors } from '../../../../common/colors';
 import { TooltipInfo } from '../../../../components/tooltip/types';
@@ -25,7 +25,7 @@ const getBandColor = (value: number, bands: BandViewModel[]) =>
 
 /** @internal */
 export const getTooltipInfoSelector = createCustomCachedSelector(
-  [getSpecOrNull, getPickedShapes],
+  [getGoalSpecSelector, getPickedShapes],
   (spec, pickedShapes): TooltipInfo => {
     if (!spec) {
       return EMPTY_TOOLTIP;
