@@ -33,7 +33,7 @@ import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils';
-import { clamp, isFiniteNumber } from '../../utils/common';
+import { clamp, isFiniteNumber, isNil } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlamegraphStyle } from '../../utils/themes/theme';
 
@@ -474,21 +474,21 @@ class FlameComponent extends React.Component<FlameProps> {
 
     if (prevHoverIndex !== this.hoverIndex) {
       const columns = this.props.columnarViewModel;
-      this.tooltipValues =
-        this.hoverIndex >= 0
-          ? [
-              {
-                label: columns.label[this.hoverIndex] ?? '',
-                color: getColor(columns.color, this.hoverIndex),
-                isHighlighted: false,
-                isVisible: true,
-                seriesIdentifier: { specId: '', key: '' },
-                value: columns.value[this.hoverIndex],
-                formattedValue: `${specValueFormatter(columns.value[this.hoverIndex] ?? NaN)}`,
-                valueAccessor: this.hoverIndex,
-              },
-            ]
-          : [];
+      const hoverValue = this.hoverIndex >= 0 ? columns.value[this.hoverIndex] : null;
+      this.tooltipValues = !isNil(hoverValue)
+        ? [
+            {
+              label: columns.label[this.hoverIndex] ?? '',
+              color: getColor(columns.color, this.hoverIndex),
+              isHighlighted: false,
+              isVisible: true,
+              seriesIdentifier: { specId: '', key: '' },
+              value: hoverValue,
+              formattedValue: `${specValueFormatter(hoverValue)}`,
+              valueAccessor: this.hoverIndex,
+            },
+          ]
+        : [];
     }
     this.setState({}); // exact tooltip location needs an update
   }
