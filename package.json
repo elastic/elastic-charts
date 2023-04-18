@@ -52,7 +52,7 @@
     "test:e2e:generate:page": "./e2e_server/scripts/compile_vrt_page.sh",
     "test:e2e:server": "sh ./e2e_server/scripts/start.sh",
     "test:e2e:server:build": "cd e2e_server/server && webpack build",
-    "typecheck:base": "tsc -p ./tsconfig.json --noEmit",
+    "typecheck:base": "tsc -p ./tsconfig.base.json --noEmit",
     "typecheck:src": "lerna run --loglevel=silent --scope @elastic/charts typecheck --stream --no-prefix",
     "typecheck:storybook": "lerna run --loglevel=silent --scope charts-storybook typecheck --stream --no-prefix",
     "typecheck:all": "yarn typecheck:base && yarn typecheck:src && yarn typecheck:storybook",

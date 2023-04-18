@@ -3,6 +3,5 @@
   "compilerOptions": {
     "allowJs": true
   },
-  "include": ["./**/*", "./.*.js", "./.*/**/*"],
-  "exclude": []
+  "include": ["./**/*", "./.*.js", "./.*/**/*"]
 }
