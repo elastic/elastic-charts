@@ -90,10 +90,11 @@ export function getScaleConfigsFromSpecs(
 
     if (!acc[groupId]) {
       acc[groupId] = {
-        nice: false,
-        type: ScaleType.Linear,
         customDomain: customDomainByGroupId.get(groupId),
-        ...scaleConfigsByGroupId[groupId],
+        ...(scaleConfigsByGroupId[groupId] || {
+          nice: false,
+          type: ScaleType.Linear,
+        }),
         desiredTickCount,
       };
     }
