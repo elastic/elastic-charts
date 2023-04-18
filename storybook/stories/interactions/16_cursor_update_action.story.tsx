@@ -112,7 +112,7 @@ export const Example = () => {
           id="bottom"
           position={Position.Bottom}
           title={`External tooltip visible: ${topVisible} - boundary: scroll parent`}
-          tickFormat={niceTimeFormatter([data[0]![0], data[data.length - 1]![0]])}
+          tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
         />
         <Axis id="left2" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
@@ -139,7 +139,7 @@ export const Example = () => {
           id="bottom"
           position={Position.Bottom}
           title={`External tooltip visible: ${bottomVisible} - boundary: chart`}
-          tickFormat={niceTimeFormatter([data[0]![0], data[data.length - 1]![0]])}
+          tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
         />
         <Axis
           id="left2"

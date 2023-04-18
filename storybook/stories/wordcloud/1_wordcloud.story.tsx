@@ -230,7 +230,7 @@ function sampleData(paletteName: keyof typeof palettes): WordModel[] {
   return rawData.map(function rawMapper(d, i) {
     return {
       ...d,
-      color: palettes[paletteName]?.(d, i) ?? '',
+      color: palettes[paletteName](d, i),
     };
   });
 }
@@ -249,12 +249,12 @@ export const Example = () => {
         theme={{ background: { color: backgroundColor } }}
         baseTheme={useBaseTheme()}
         onElementClick={(d) => {
-          const datum = (d as WordCloudElementEvent[])?.[0]?.[0];
-          action('onElementClick')(`${datum?.text}: ${datum?.weight}`);
+          const datum = (d as WordCloudElementEvent[])[0][0];
+          action('onElementClick')(`${datum.text}: ${datum.weight}`);
         }}
         onElementOver={(d) => {
-          const datum = (d as WordCloudElementEvent[])?.[0]?.[0];
-          action('onElementOver')(`${datum?.text}: ${datum?.weight}`);
+          const datum = (d as WordCloudElementEvent[])[0][0];
+          action('onElementOver')(`${datum.text}: ${datum.weight}`);
         }}
       />
       <Wordcloud

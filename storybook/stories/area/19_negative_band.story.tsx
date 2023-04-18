@@ -58,7 +58,7 @@ export const Example = () => {
         yAccessors={[1]}
         fit={Fit.Carry}
         data={data.map(([x, y1, y0]) => {
-          return [x, (y1! + y0!) / 2];
+          return [x, (y1 + y0) / 2];
         })}
       />
     </Chart>

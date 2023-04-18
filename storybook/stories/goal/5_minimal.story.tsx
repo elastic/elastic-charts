@@ -28,7 +28,7 @@ const colorMap: { [k: number]: Color } = {
   250: colorful ? 'yellow' : `rgb(${q2},${q2},${q2})`,
   300: colorful ? 'rgba(0,255,0,0.5)' : `rgb(${q3},${q3},${q3})`,
 };
-const bandFillColor = (x: number): Color => colorMap[x]!;
+const bandFillColor = (x: number): Color => colorMap[x];
 
 export const Example = () => (
   <Chart>

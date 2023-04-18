@@ -47,12 +47,12 @@ export const Example = () => {
   const actions: TooltipAction[] = [
     {
       disabled: (d) => d.length !== 1,
-      label: (d) => (d.length !== 1 ? 'Select to drilldown' : `Drilldown to ${d[0]!.label}`),
-      onSelect: (s) => action('drilldown to')(s[0]!.label),
+      label: (d) => (d.length !== 1 ? 'Select to drilldown' : `Drilldown to ${d[0].label}`),
+      onSelect: (s) => action('drilldown to')(s[0].label),
     },
     {
       label: () => `Filter this 30s time bucket`,
-      onSelect: (s) => action('filter time bucket')(s[0]!.datum.timestamp),
+      onSelect: (s) => action('filter time bucket')(s[0].datum.timestamp),
     },
     {
       disabled: (d) => d.length < 1,

@@ -35,7 +35,7 @@ const aggData = [
       if (i % 5 === 0) {
         acc.push({ x, y: '2fd4e', value: y });
       } else {
-        acc[acc.length - 1]!.value += y;
+        acc[acc.length - 1].value += y;
       }
 
       return acc;
@@ -46,7 +46,7 @@ const aggData = [
       if (i % 5 === 0) {
         acc.push({ x, y: '3afad', value: y });
       } else {
-        acc[acc.length - 1]!.value += y;
+        acc[acc.length - 1].value += y;
       }
 
       return acc;
@@ -57,7 +57,7 @@ const aggData = [
       if (i % 5 === 0) {
         acc.push({ x, y: 'f9560', value: y });
       } else {
-        acc[acc.length - 1]!.value += y;
+        acc[acc.length - 1].value += y;
       }
 
       return acc;
@@ -248,7 +248,7 @@ export const Example = () => {
             interval: {
               type: 'fixed',
               unit: 'ms',
-              value: aggData[1]!.x - aggData[0]!.x,
+              value: aggData[1].x - aggData[0].x,
             },
           }}
           xAxisLabelFormatter={(v) =>

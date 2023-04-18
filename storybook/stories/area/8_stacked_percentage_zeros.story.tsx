@@ -30,7 +30,7 @@ export const Example = () => (
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={DATA[0]!.data}
+      data={DATA[0].data}
       stackAccessors={[0]}
       stackMode={StackMode.Percentage}
     />
@@ -41,7 +41,7 @@ export const Example = () => (
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={DATA[1]!.data}
+      data={DATA[1].data}
       stackAccessors={[0]}
       stackMode={StackMode.Percentage}
     />
@@ -52,7 +52,7 @@ export const Example = () => (
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={DATA[2]!.data}
+      data={DATA[2].data}
       stackMode={StackMode.Percentage}
       stackAccessors={[0]}
     />

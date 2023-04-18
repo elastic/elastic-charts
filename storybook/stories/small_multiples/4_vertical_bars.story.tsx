@@ -116,7 +116,7 @@ export const Example = () => {
         stackAccessors={['x']}
         splitSeriesAccessors={['g']}
         data={[...data1, ...data2]}
-        color={[LIGHT_THEME.colors.vizColors[0]!, 'lightgray']}
+        color={[LIGHT_THEME.colors.vizColors[0], 'lightgray']}
       />
       <LineSeries
         id="avg"

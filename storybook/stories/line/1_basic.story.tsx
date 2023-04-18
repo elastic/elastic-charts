@@ -17,7 +17,7 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example = () => {
   const toggleSpec = boolean('toggle line spec', true);
   const data1 = KIBANA_METRICS.metrics.kibana_os_load.v1.data;
-  const data2 = data1.map((datum) => [datum[0]!, datum[1]! - 1]);
+  const data2 = data1.map((datum) => [datum[0], datum[1] - 1]);
   const data = toggleSpec ? data1 : data2;
   const specId = toggleSpec ? 'lines1' : 'lines2';
 

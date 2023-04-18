@@ -117,7 +117,7 @@ export const Example = () => {
     },
     'all',
   );
-  const dataset = dataTypes[dataKey]!;
+  const dataset = dataTypes[dataKey];
   const fit = customKnobs.enum.fit();
   const curve = customKnobs.enum.curve();
   const endValue = select<number | 'none' | 'nearest'>(

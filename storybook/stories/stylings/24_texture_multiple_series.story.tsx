@@ -149,7 +149,7 @@ export const Example = () => {
           yAccessors={['y']}
           color={chartColor}
           stackAccessors={['yes']}
-          data={data[i]!}
+          data={data[i]}
           curve={CurveType.CURVE_MONOTONE_X}
         />
       ))}

@@ -26,7 +26,7 @@ const colorMap: { [k: number]: Color } = {
   300: 'rgba(0,255,0,0.5)',
 };
 
-const bandFillColor = (x: number): Color => colorMap[x]!;
+const bandFillColor = (x: number): Color => colorMap[x];
 
 export const Example = () => {
   const showTarget = boolean('show target', true);

@@ -104,7 +104,7 @@ function renderXYAxisChart() {
       <Axis
         id="time"
         position={Position.Bottom}
-        tickFormat={niceTimeFormatter([data[0]![0], data[data.length - 1]![0]])}
+        tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
       />
       <Axis
         id="count"
@@ -137,7 +137,7 @@ function renderGoalchart() {
     300: '#66c2a5',
   };
 
-  const bandFillColor = (x: number): Color => colorMap[x]!;
+  const bandFillColor = (x: number): Color => colorMap[x];
 
   return (
     <Goal

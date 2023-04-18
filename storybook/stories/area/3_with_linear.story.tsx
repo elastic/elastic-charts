@@ -15,10 +15,10 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const start = KIBANA_METRICS.metrics.kibana_os_load.v1.data[0]![0];
+  const start = KIBANA_METRICS.metrics.kibana_os_load.v1.data[0][0];
   const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data
     .slice(0, 21)
-    .map((d) => [(d[0]! - start) / 30000, clamp(d[1]!, 0, 30)]);
+    .map((d) => [(d[0] - start) / 30000, clamp(d[1], 0, 30)]);
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />

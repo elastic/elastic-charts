@@ -35,8 +35,8 @@ export const Example = () => {
   const binWidthMs = 60000;
 
   const xDomain = {
-    min: KIBANA_METRICS.metrics.kibana_os_load.v1.data[0]![0]! - (oddDomain ? 217839 : 0),
-    max: KIBANA_METRICS.metrics.kibana_os_load.v1.data[0]![0]! + (oddDomain ? 200000 : 0 ?? binWidthMs - 1),
+    min: KIBANA_METRICS.metrics.kibana_os_load.v1.data[0][0] - (oddDomain ? 217839 : 0),
+    max: KIBANA_METRICS.metrics.kibana_os_load.v1.data[0][0] + (oddDomain ? 200000 : 0 ?? binWidthMs - 1),
     minInterval: binWidthMs,
   };
 

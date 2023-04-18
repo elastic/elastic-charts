@@ -35,7 +35,7 @@ const productToColor = new Map(
     .map((d) => d.sitc1)
     .filter(keepDistinct)
     .sort()
-    .map((sitc1, i) => [sitc1, `rgb(${colorBrewerCategoricalPastel12[i % 12]!.join(',')})`]),
+    .map((sitc1, i) => [sitc1, `rgb(${colorBrewerCategoricalPastel12[i % 12].join(',')})`]),
 );
 
 const countryToColor = new Map(

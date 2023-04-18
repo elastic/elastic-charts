@@ -20,8 +20,8 @@ export const Example = () => {
   const labelFormatBottom = text('labelFormat bottom', '0.0');
   const tickFormatLeft = text('tickFormat left', '$ 0,0[.]00');
   const labelFormatLeft = text('labelFormat left', '$ 0,0');
-  const start = KIBANA_METRICS.metrics.kibana_os_load.v1.data[0]![0];
-  const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 20).map((d) => [(d[0]! - start) / 30000, d[1]]);
+  const start = KIBANA_METRICS.metrics.kibana_os_load.v1.data[0][0];
+  const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 20).map((d) => [(d[0] - start) / 30000, d[1]]);
 
   return (
     <Chart>

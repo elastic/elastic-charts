@@ -31,8 +31,8 @@ export const Example = () => {
   const getRandomNumber = getRandomNumberGenerator();
   const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d) => ({
     x: d[0],
-    max: d[1]! + 4 + 4 * getRandomNumber(),
-    min: d[1]! - 4 - 4 * getRandomNumber(),
+    max: d[1] + 4 + 4 * getRandomNumber(),
+    min: d[1] - 4 - 4 * getRandomNumber(),
   }));
   const lineData = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d) => [d[0], d[1]]);
   const fit = boolean('fit Y domain', true);

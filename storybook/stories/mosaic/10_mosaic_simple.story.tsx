@@ -48,7 +48,7 @@ const productToColor = new Map(
     .map((d) => d.sitc1)
     .filter(keepDistinct)
     .sort()
-    .map((sitc1, i) => [sitc1, `rgba(${productPalette[i % productPalette.length]!.join(',')}, 0.7)`]),
+    .map((sitc1, i) => [sitc1, `rgba(${productPalette[i % productPalette.length].join(',')}, 0.7)`]),
 );
 
 export const Example = () => {

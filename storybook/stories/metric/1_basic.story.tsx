@@ -122,18 +122,18 @@ export const Example = () => {
         <Settings
           baseTheme={useBaseTheme()}
           onElementClick={([d]) => {
-            if (isMetricElementEvent(d!)) {
+            if (isMetricElementEvent(d)) {
               const { rowIndex, columnIndex } = d;
               onEventClickAction(
-                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex]![columnIndex]!.value}`,
+                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
               );
             }
           }}
           onElementOver={([d]) => {
-            if (isMetricElementEvent(d!)) {
+            if (isMetricElementEvent(d)) {
               const { rowIndex, columnIndex } = d;
               onEventOverAction(
-                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex]![columnIndex]!.value}`,
+                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
               );
             }
           }}

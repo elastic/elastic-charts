@@ -30,7 +30,7 @@ const CustomTooltipWithSubChart: CustomTooltip = ({ values }) => {
   const [value] = values.filter((v) => v.isHighlighted);
   return (
     <TooltipContainer>
-      <div style={{ padding: 10 }}>Hovering: {value!.label}</div>
+      <div style={{ padding: 10 }}>Hovering: {value.label}</div>
     </TooltipContainer>
   );
 };

@@ -32,7 +32,7 @@ export const Example = () => {
   const splitAccessorFn: AccessorFn = (d) => d.g2;
   splitAccessorFn.fieldName = text('split fn name', '') || undefined;
 
-  const onElementClick = ([e]: XYChartElementEvent[]) => action('clicked series key')(e?.[1]?.key);
+  const onElementClick = ([[, { key }]]: XYChartElementEvent[]) => action('clicked series key')(key);
 
   return (
     <Chart>

@@ -47,11 +47,11 @@ const paletteColorBrewerCat12 = [
 ];
 
 const columnarData: ColumnarViewModel = {
-  label: columnarMock.label.map((index: number) => columnarMock.dictionary[index]!), // reversing the dictionary encoding
+  label: columnarMock.label.map((index: number) => columnarMock.dictionary[index]), // reversing the dictionary encoding
   value: new Float64Array(columnarMock.value),
   // color: new Float32Array((columnarMock.color.match(/.{2}/g) ?? []).map((hex: string) => Number.parseInt(hex, 16) / 255)),
   color: new Float32Array(
-    columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[pseudoRandom(0, 11)]!.map((c) => c / 255), 1]),
+    columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[pseudoRandom(0, 11)].map((c) => c / 255), 1]),
   ),
   position0: position, // new Float32Array([...position].slice(1)), // try with the wrong array length
   position1: position,
@@ -93,7 +93,7 @@ export const Example = () => {
             ? [
                 {
                   label: () => 'Open detail view',
-                  onSelect: (s) => action('open detail view')(s[0]!.datum),
+                  onSelect: (s) => action('open detail view')(s[0].datum),
                 },
                 {
                   label: () => 'Zoom to',

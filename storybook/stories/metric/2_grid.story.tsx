@@ -191,19 +191,19 @@ export const Example = () => {
           onElementClick={
             addMetricClick
               ? ([d]) => {
-                  if (isMetricElementEvent(d!)) {
+                  if (isMetricElementEvent(d)) {
                     const { rowIndex, columnIndex } = d;
                     onEventClickAction(
-                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex]![columnIndex].value}`,
+                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`,
                     );
                   }
                 }
               : undefined
           }
           onElementOver={([d]) => {
-            if (isMetricElementEvent(d!)) {
+            if (isMetricElementEvent(d)) {
               const { rowIndex, columnIndex } = d;
-              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex]![columnIndex].value}`);
+              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`);
             }
           }}
           onElementOut={() => onEventOutAction('out')}
