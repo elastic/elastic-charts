@@ -72,7 +72,7 @@ export class ScaleContinuous {
   readonly minInterval: number;
   readonly step: number;
   readonly type: ScaleContinuousType;
-  readonly domain: number[];
+  readonly domain: [number, number];
   readonly range: Range;
   readonly isInverted: boolean;
   readonly linearBase: number;
@@ -141,12 +141,12 @@ export class ScaleContinuous {
       }
     }
 
-    const niceDomain = isNice ? (d3Scale.domain() as number[]) : dataDomain;
+    const niceDomain = isNice ? (d3Scale.domain() as [number, number]) : dataDomain;
 
     const paddedDomain = isPixelPadded
       ? getPixelPaddedDomain(
           totalRange,
-          niceDomain as [number, number],
+          niceDomain,
           scaleOptions.domainPixelPadding,
           scaleOptions.constrainDomainPadding,
         )
@@ -261,8 +261,8 @@ export class ScaleContinuous {
   }
 }
 
-function getTimeTicks(domain: number[], desiredTickCount: number, timeZone: string, minInterval: number) {
-  const [start = NaN, end = NaN] = domain;
+function getTimeTicks(domain: [number, number], desiredTickCount: number, timeZone: string, minInterval: number) {
+  const [start, end] = domain;
   const startDomain = getMomentWithTz(start, timeZone);
   const endDomain = getMomentWithTz(end, timeZone);
   const offset = startDomain.utcOffset();
@@ -292,13 +292,12 @@ function getTimeTicks(domain: number[], desiredTickCount: number, timeZone: stri
 }
 
 function getLinearNonDenserTicks(
-  domain: number[],
+  domain: [number, number],
   desiredTickCount: number,
   base: number,
   minInterval: number,
 ): number[] {
-  const [start = 0] = domain;
-  const stop = domain[domain.length - 1] ?? 0;
+  const [start, stop] = domain;
   let currentCount = desiredTickCount;
   let ticks = getLinearTicks(start, stop, desiredTickCount, base);
   while (
@@ -334,7 +333,7 @@ function getPixelPaddedDomain(
   desiredPixelPadding: number,
   constrainDomainPadding?: boolean,
   intercept = 0,
-) {
+): [number, number] {
   const inverted = domain[1] < domain[0];
   const orderedDomain: [number, number] = inverted ? [domain[1], domain[0]] : domain;
   const { scaleMultiplier } = screenspaceMarkerScaleCompressor(

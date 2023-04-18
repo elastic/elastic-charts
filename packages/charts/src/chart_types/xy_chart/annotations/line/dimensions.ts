@@ -43,7 +43,7 @@ function computeYDomainLineAnnotationDimensions(
   // but we are displaying a line annotation
 
   const lineProps: AnnotationLineProps[] = [];
-  const [domainStart = Number.POSITIVE_INFINITY, domainEnd = Number.NEGATIVE_INFINITY] = yScale.domain;
+  const [domainStart, domainEnd] = yScale.domain;
 
   const panelSize = getPanelSize({ vertical, horizontal });
 
@@ -142,8 +142,8 @@ function computeXDomainLineAnnotationDimensions(
       return;
     }
     if (isContinuousScale(xScale) && typeof dataValue === 'number') {
-      const [minDomain = Number.POSITIVE_INFINITY, rawMaxDomain = Number.NEGATIVE_INFINITY] = xScale.domain;
-      const maxDomain = isHistogramMode ? rawMaxDomain + xScale.minInterval : rawMaxDomain;
+      const [minDomain, scaleMaxDomain] = xScale.domain;
+      const maxDomain = isHistogramMode ? scaleMaxDomain + xScale.minInterval : scaleMaxDomain;
       if (dataValue < minDomain || dataValue > maxDomain) {
         return;
       }

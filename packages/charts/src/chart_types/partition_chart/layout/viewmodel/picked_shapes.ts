@@ -33,7 +33,7 @@ export const pickedShapes = (
   { x, y }: Point,
   [focus]: ContinuousDomainFocus[],
 ): QuadViewModel[] =>
-  !focus ? [] : models.flatMap(({ diskCenter, pickQuads }) => pickQuads(x - diskCenter.x, y - diskCenter.y, focus));
+  focus ? models.flatMap(({ diskCenter, pickQuads }) => pickQuads(x - diskCenter.x, y - diskCenter.y, focus)) : [];
 
 /** @internal */
 export function pickShapesLayerValues(shapes: QuadViewModel[]): LayerValue[][] {
