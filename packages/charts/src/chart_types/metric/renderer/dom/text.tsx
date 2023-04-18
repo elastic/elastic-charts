@@ -53,7 +53,7 @@ const SUBTITLE_FONT: Font = {
 
 function findRange(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
   const range = ranges.find(([min, max]) => min <= value && value < max);
-  return (range ? range[2] : ranges[0]?.[2]) ?? 's';
+  return range ? range[2] : ranges[0]?.[2] ?? 's';
 }
 
 type ElementVisibility = {
