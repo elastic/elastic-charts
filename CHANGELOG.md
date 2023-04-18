@@ -1,3 +1,23 @@
+# [56.0.0](https://github.com/elastic/elastic-charts/compare/v55.0.0...v56.0.0) (2023-04-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^76.4.0 ([#2008](https://github.com/elastic/elastic-charts/issues/2008)) ([95176e1](https://github.com/elastic/elastic-charts/commit/95176e14294b36fce983f53c6c5f278da24f50b1))
+* **deps:** update dependency @elastic/eui to v77 ([#2018](https://github.com/elastic/elastic-charts/issues/2018)) ([c079730](https://github.com/elastic/elastic-charts/commit/c079730dd849c34f71608df36938560566ba19d3))
+* **interactions:** brushing over origin coordinates ([#2013](https://github.com/elastic/elastic-charts/issues/2013)) ([937feb0](https://github.com/elastic/elastic-charts/commit/937feb0fcf1a11c473e45dfb0da36443660e98be))
+* **tooltip:** custom tooltip header context ([#1989](https://github.com/elastic/elastic-charts/issues/1989)) ([1e5b861](https://github.com/elastic/elastic-charts/commit/1e5b86106ff4c72e5a59b074e0472023ecc68164))
+
+
+### Features
+
+* **metric:** trend with string value ([#2011](https://github.com/elastic/elastic-charts/issues/2011)) ([91d7695](https://github.com/elastic/elastic-charts/commit/91d76957d88d25e93904f73b845c47d411f4ce32))
+
+
+### BREAKING CHANGES
+
+* **tooltip:** The `header` property of `TooltipInfo` type was simplified to `PointerValue` as to include only relevant properties. This change is propagated to all other types using `header` as a `TooltipValue`. The `TooltipInfo.values` used to conditionally pass only highlighted `TooltipValue`s when using a `customTooltip` and now _always_ passes all `values`.
+
 # [55.0.0](https://github.com/elastic/elastic-charts/compare/v54.0.0...v55.0.0) (2023-03-21)
 
 
