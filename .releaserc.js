@@ -23,6 +23,11 @@ module.exports = {
       '@semantic-release/commit-analyzer',
       {
         preset: 'angular',
+        releaseRules: [
+          { breaking: true, release: 'major' },
+          { type: 'perf', release: 'patch' },
+          { type: 'refactor', release: 'patch' },
+        ],
         parserOpts: {
           noteKeywords: ['BREAKING CHANGE', 'BREAKING CHANGES'],
         },
