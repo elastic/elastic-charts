@@ -1,3 +1,17 @@
+# [57.0.0](https://github.com/elastic/elastic-charts/compare/v56.0.0...v57.0.0) (2023-04-19)
+
+
+### Code Refactoring
+
+* enable `noUncheckedIndexedAccess` ([#2006](https://github.com/elastic/elastic-charts/issues/2006)) ([f446cca](https://github.com/elastic/elastic-charts/commit/f446cca1691bbe5d7608845b65ea555f74e0f6af))
+
+
+### BREAKING CHANGES
+
+* Enables stricter type option in src and could have
+unexpected changes. This release is meant to serve as a clean break
+in case any issues arise.
+
 # [56.0.0](https://github.com/elastic/elastic-charts/compare/v55.0.0...v56.0.0) (2023-04-18)
 
 
