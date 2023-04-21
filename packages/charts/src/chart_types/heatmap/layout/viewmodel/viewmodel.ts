@@ -224,7 +224,11 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
   const getPanelPointCoordinates = (x: Pixels, y: Pixels) => {
     const { category: v, panelValue: panelY, panelOffset: panelOffsetY } = getPanelPointCoordinate(y, 'vertical');
-    const { category: h, panelValue: panelX, panelOffset: panelOffsetX } = getPanelPointCoordinate(x, 'horizontal');
+    const {
+      category: h,
+      panelValue: panelX,
+      panelOffset: panelOffsetX,
+    } = getPanelPointCoordinate(x - chartDimensions.left, 'horizontal');
 
     return {
       x: panelX,
@@ -278,7 +282,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       return [];
     }
 
-    const { x: xValue, y: yValue, h, v } = getPanelPointCoordinates(x - chartDimensions.left, y);
+    const { x: xValue, y: yValue, h, v } = getPanelPointCoordinates(x, y);
 
     if (xValue === undefined || yValue === undefined) {
       return [];
@@ -304,7 +308,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
     // Find panel based on start pointer
     const { category: smHorizontalAccessorValue, panelOffset: hOffset } = getPanelPointCoordinate(
-      start.x,
+      start.x - chartDimensions.left,
       'horizontal',
     );
     const { category: smVerticalAccessorValue, panelOffset: vOffset } = getPanelPointCoordinate(start.y, 'vertical');
