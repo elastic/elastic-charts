@@ -267,7 +267,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       y < chartDimensions.top + chartDimensions.height
     ) {
       // look up for a Y axis elements
-      const yLabelKey = yInvertedScale(y);
+      const { y: yLabelKey } = getPanelPointCoordinates(x - chartDimensions.left, y);
       const yLabelValue = textYValues.find((v) => v.value === yLabelKey);
       if (yLabelValue) {
         return yLabelValue;
