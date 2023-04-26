@@ -94,7 +94,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
           key: spec.id,
         },
         value: `${pickedShapes.value}`,
-        formattedValue: `${pickedShapes.value}`,
+        formattedValue: `${pickedShapes.text}`,
         datum: pickedShapes.value,
         displayOnly: true,
       });
