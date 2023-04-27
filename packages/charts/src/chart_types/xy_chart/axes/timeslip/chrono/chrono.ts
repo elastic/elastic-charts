@@ -35,5 +35,9 @@ export const epochInSecondsToYear = (timeZone: string, seconds: number) =>
   timeObjToYear(timeObjFromEpochSeconds(timeZone, seconds));
 
 /** @internal */
+export const epochDaysInMonth = (timeZone: string, seconds: number) =>
+  timeObjFromEpochSeconds(timeZone, seconds).daysInMonth;
+
+/** @internal */
 export const addTime = (calendarObj: CalendarObject, timeZone: string, unit: CalendarUnit, count: number) =>
   timeObjToSeconds(addTimeToObj(timeObjFromCalendarObj(calendarObj, timeZone), unit, count));

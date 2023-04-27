@@ -32,17 +32,17 @@ export const renderColumnTickLabels = (
   cartesianWidth: number,
   binStartList: Iterable<Interval>,
 ) => {
-  for (const { minimum, supremum } of binStartList) {
+  for (const { minimum, supremum, textSupremum } of binStartList) {
     const text =
       textNestLevelRowLimited === config.maxLabelRowCount
         ? labelFormat(minimum * 1000)
         : minorLabelFormat(minimum * 1000);
-    if (text.length <= 0) continue;
+    if (text.length === 0) continue;
     const pixelX = Math.max(0, getPixelX(minimum));
     const textX = pixelX + config.horizontalPixelOffset;
     const y = config.verticalPixelOffset + (textNestLevelRowLimited - 1) * config.rowPixelPitch;
     // the measured text width, plus the `config.horizontalPixelOffset` on the left side must fit inside `maxWidth`
-    const maxWidth = getPixelX(supremum) - config.horizontalPixelOffset;
+    const maxWidth = getPixelX(textSupremum || supremum) - config.horizontalPixelOffset;
     const leftShortening =
       maxWidth >= cartesianWidth
         ? 0

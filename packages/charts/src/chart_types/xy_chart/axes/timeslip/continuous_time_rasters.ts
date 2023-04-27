@@ -10,7 +10,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import { cachedTimeDelta, cachedZonedDateTimeFrom, TimeProp } from './chrono/cached_chrono';
-import { epochInSecondsToYear } from './chrono/chrono';
+import { epochDaysInMonth, epochInSecondsToYear } from './chrono/chrono';
 import { LOCALE_TRANSLATIONS } from './locale_translations';
 
 /** @public */
@@ -38,8 +38,20 @@ export const unitIntervalWidth: Record<BinUnit, number> = {
  * @public
  */
 export interface Interval {
+  /**
+   * Lower bound of interval (included)
+   */
   minimum: number;
+  /**
+   * Upper bound of interval (excluded)
+   */
   supremum: number;
+  /**
+   * Upper bound of interval to stick text label
+   *
+   * A value of `0` defaults to the `supremum`
+   */
+  textSupremum: number;
 }
 
 type IntervalIterableMaker<T extends Interval> = (domainFrom: number, domainTo: number) => Iterable<T>;
@@ -81,6 +93,7 @@ const millisecondIntervals = (rasterMs: number): IntervalIterableMaker<Interval>
       yield {
         minimum,
         supremum: minimum + rasterMs / 1000,
+        textSupremum: 0,
       };
     }
   };
@@ -89,7 +102,7 @@ const monthBasedIntervals = (
   years: YearsAxisLayer,
   timeZone: string,
   unitMultiplier: number,
-): IntervalIterableMaker<Interval & { year: number; month: number }> =>
+): IntervalIterableMaker<Interval & { year: number; month: number; days: number }> =>
   function* (domainFrom, domainTo) {
     for (const { year } of years.intervals(domainFrom, domainTo)) {
       for (let month = 1; month <= 12; month += unitMultiplier) {
@@ -101,7 +114,15 @@ const monthBasedIntervals = (
           month: ((month + unitMultiplier - 1) % 12) + 1,
           day: 1,
         })[TimeProp.EpochSeconds];
-        yield { year, month, minimum: binStart, supremum: binEnd };
+        const days = epochDaysInMonth(timeZone, binStart);
+        yield {
+          year,
+          month,
+          days,
+          minimum: binStart,
+          supremum: binEnd,
+          textSupremum: 0,
+        };
       }
     }
   };
@@ -179,7 +200,12 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
           month: 1,
           day: 1,
         })[TimeProp.EpochSeconds];
-        yield { year, minimum: binStart, supremum: binEnd };
+        yield {
+          year,
+          minimum: binStart,
+          supremum: binEnd,
+          textSupremum: 0,
+        };
       }
     },
     detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
@@ -208,7 +234,12 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
           month: 1,
           day: 1,
         })[TimeProp.EpochSeconds];
-        yield { year, minimum: binStart, supremum: binEnd };
+        yield {
+          year,
+          minimum: binStart,
+          supremum: binEnd,
+          textSupremum: 0,
+        };
       }
     },
     detailedLabelFormat: new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone }).format,
@@ -219,7 +250,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
     labeled: false,
     minimumTickPixelDistance: 1, // it should change if we ever add centuries and millennia
   };
-  const months: AxisLayer<Interval & { year: number; month: number }> = {
+  const months: AxisLayer<Interval & { year: number; month: number; days: number }> = {
     unit: 'month',
     unitMultiplier: 1,
     labeled: true,
@@ -269,6 +300,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
               dayOfWeek,
               minimum: binStart,
               supremum: binEnd,
+              textSupremum: 0,
             };
         }
       }
@@ -282,7 +314,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
     intervals: function* (domainFrom, domainTo) {
-      for (const { year, month } of months.intervals(domainFrom, domainTo)) {
+      for (const { year, month, days: daysInMonth } of months.intervals(domainFrom, domainTo)) {
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
           const temporalArgs = { timeZone, year, month, day: dayOfMonth };
           const timePoint = cachedZonedDateTimeFrom(temporalArgs);
@@ -290,7 +322,13 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
           if (dayOfWeek !== 1) continue;
           const binStart = timePoint[TimeProp.EpochSeconds];
           if (Number.isFinite(binStart)) {
-            yield { dayOfMonth, minimum: binStart, supremum: cachedTimeDelta(temporalArgs, 'days', 7) };
+            const daysFromEnd = daysInMonth - dayOfMonth + 1;
+            yield {
+              dayOfMonth,
+              minimum: binStart,
+              supremum: cachedTimeDelta(temporalArgs, 'days', 7),
+              textSupremum: daysFromEnd < 7 ? cachedTimeDelta(temporalArgs, 'days', daysFromEnd) : 0,
+            };
           }
         }
       }
@@ -298,13 +336,13 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
     minorTickLabelFormat: minorDayFormat,
     detailedLabelFormat: detailedDayFormat,
   };
-  const daysUnlabelled: AxisLayer<Interval & YearToDay> = {
-    ...days,
+  const weeksUnlabelled: AxisLayer<Interval & { dayOfMonth: number }> = {
+    ...weekStartDays,
     labeled: false,
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
-  const weeksUnlabelled: AxisLayer<Interval & { dayOfMonth: number }> = {
-    ...weekStartDays,
+  const daysUnlabelled: AxisLayer<Interval & YearToDay> = {
+    ...days,
     labeled: false,
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
@@ -522,8 +560,8 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
     monthsUnlabelled,
     shortMonths,
     months,
-    weeksUnlabelled,
     weekStartDays,
+    weeksUnlabelled,
     daysUnlabelled,
     days,
     sixHoursUnlabelled,
@@ -676,7 +714,9 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
     }
 
     replacements.forEach(([key, ruleMap]) => {
-      if (layers.has(key)) layers = new Set([...layers].flatMap((l) => ruleMap.get(l) ?? l));
+      if (layers.has(key)) {
+        layers = new Set([...layers].flatMap((l) => ruleMap.get(l) ?? l));
+      }
     });
 
     return [...layers].reverse(); // while we iterated from coarse to dense, the result follows the axis layer order: finer toward coarser
