@@ -85,7 +85,7 @@ export function multilayerAxisEntry(
       if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
       if (layerIndex >= timeAxisLayerCount) return combinedEntry;
       const timeTicks = [...l.intervals(binStartsFrom, binStartsTo)]
-        .filter((b) => b.supremum > domainFromS && b.minimum <= domainToS)
+        .filter((b) => b.labelSupremum > domainFromS && b.minimum <= domainToS)
         .map((b) => 1000 * b.minimum);
       const { entry } = fillLayerTimeslip(
         layerIndex,
