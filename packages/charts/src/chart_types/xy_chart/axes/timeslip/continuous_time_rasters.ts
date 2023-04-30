@@ -51,7 +51,7 @@ export interface Interval {
    *
    * A value of `0` defaults to the `supremum`
    */
-  textSupremum: number;
+  labelSupremum: number;
 }
 
 type IntervalIterableMaker<T extends Interval> = (domainFrom: number, domainTo: number) => Iterable<T>;
@@ -90,10 +90,11 @@ const millisecondIntervals = (rasterMs: number): IntervalIterableMaker<Interval>
   function* (domainFrom, domainTo) {
     for (let t = Math.floor((domainFrom * 1000) / rasterMs); t < Math.ceil((domainTo * 1000) / rasterMs); t++) {
       const minimum = (t * rasterMs) / 1000;
+      const supremum = minimum + rasterMs / 1000;
       yield {
         minimum,
-        supremum: minimum + rasterMs / 1000,
-        textSupremum: 0,
+        supremum,
+        labelSupremum: supremum,
       };
     }
   };
@@ -121,7 +122,7 @@ const monthBasedIntervals = (
           days,
           minimum: binStart,
           supremum: binEnd,
-          textSupremum: 0,
+          labelSupremum: binEnd,
         };
       }
     }
@@ -204,7 +205,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
           year,
           minimum: binStart,
           supremum: binEnd,
-          textSupremum: 0,
+          labelSupremum: binEnd,
         };
       }
     },
@@ -238,7 +239,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
           year,
           minimum: binStart,
           supremum: binEnd,
-          textSupremum: 0,
+          labelSupremum: binEnd,
         };
       }
     },
@@ -300,7 +301,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
               dayOfWeek,
               minimum: binStart,
               supremum: binEnd,
-              textSupremum: 0,
+              labelSupremum: binEnd,
             };
         }
       }
@@ -323,11 +324,13 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
           const binStart = timePoint[TimeProp.EpochSeconds];
           if (Number.isFinite(binStart)) {
             const daysFromEnd = daysInMonth - dayOfMonth + 1;
+            const supremum = cachedTimeDelta(temporalArgs, 'days', 7);
+
             yield {
               dayOfMonth,
               minimum: binStart,
-              supremum: cachedTimeDelta(temporalArgs, 'days', 7),
-              textSupremum: daysFromEnd < 7 ? cachedTimeDelta(temporalArgs, 'days', daysFromEnd) : 0,
+              supremum,
+              labelSupremum: daysFromEnd < 7 ? cachedTimeDelta(temporalArgs, 'days', daysFromEnd) : supremum,
             };
           }
         }
@@ -388,6 +391,8 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
             };
             const timePoint = cachedZonedDateTimeFrom(temporalArgs);
             const binStart = timePoint[TimeProp.EpochSeconds];
+            const supremum = binStart + 6 * 60 * 60; // fixme this is not correct in case the day is 23hrs long due to winter->summer time switch
+
             return Number.isNaN(binStart)
               ? []
               : {
@@ -398,7 +403,8 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
                   year,
                   month,
                   minimum: binStart,
-                  supremum: binStart + 6 * 60 * 60, // fixme this is not correct in case the day is 23hrs long due to winter->summer time switch
+                  supremum,
+                  labelSupremum: supremum,
                 };
           }),
         ) as Array<Interval & YearToHour>
