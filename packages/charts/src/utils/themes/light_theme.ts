@@ -38,9 +38,9 @@ export const LIGHT_THEME: Theme = {
     isolatedPoint: {
       visible: true,
       stroke: ColorVariant.Series,
-      strokeWidth: 0,
-      fill: ColorVariant.Series,
-      radius: 0.8,
+      strokeWidth: 1,
+      fill: Colors.White.keyword,
+      radius: 2,
       opacity: 1,
     },
     fit: {
@@ -81,9 +81,9 @@ export const LIGHT_THEME: Theme = {
     isolatedPoint: {
       visible: true,
       stroke: ColorVariant.Series,
-      strokeWidth: 0,
-      fill: ColorVariant.Series,
-      radius: 2.8,
+      strokeWidth: 1,
+      fill: Colors.White.keyword,
+      radius: 2,
       opacity: 1,
     },
     fit: {

@@ -31,16 +31,16 @@ export const DARK_THEME: Theme = {
     point: {
       visible: true,
       strokeWidth: 1,
-      fill: 'black',
+      fill: Colors.Black.keyword,
       radius: 2,
       opacity: 1,
     },
     isolatedPoint: {
       visible: true,
       stroke: ColorVariant.Series,
-      strokeWidth: 0,
-      fill: ColorVariant.Series,
-      radius: 0.8,
+      strokeWidth: 1,
+      fill: Colors.Black.keyword,
+      radius: 2,
       opacity: 1,
     },
     fit: {
@@ -56,7 +56,7 @@ export const DARK_THEME: Theme = {
     point: {
       visible: true,
       strokeWidth: 1,
-      fill: 'black',
+      fill: Colors.Black.keyword,
       radius: 2,
       opacity: 1,
     },
@@ -73,17 +73,18 @@ export const DARK_THEME: Theme = {
     },
     point: {
       visible: false,
-      fill: 'black',
-      strokeWidth: 0.5,
-      radius: 1,
+      stroke: ColorVariant.Series,
+      strokeWidth: 1,
+      fill: Colors.Black.keyword,
+      radius: 2,
       opacity: 1,
     },
     isolatedPoint: {
       visible: true,
       stroke: ColorVariant.Series,
-      strokeWidth: 0,
-      fill: ColorVariant.Series,
-      radius: 0.8,
+      strokeWidth: 1,
+      fill: Colors.Black.keyword,
+      radius: 2,
       opacity: 1,
     },
     fit: {
@@ -334,7 +335,7 @@ export const DARK_THEME: Theme = {
       },
     },
     sectorLineWidth: 1,
-    sectorLineStroke: 'black',
+    sectorLineStroke: Colors.Black.keyword,
   },
   heatmap: {
     brushArea: {
