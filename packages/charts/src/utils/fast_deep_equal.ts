@@ -73,11 +73,11 @@ export function deepEqual(a: any, b: any, partial = false): boolean {
     length = keys.length;
     if (length !== Object.keys(b).length && !partial) return false;
 
-    for (i = length; i-- !== 0; ) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+    for (i = length; i-- !== 0; ) if (!Object.prototype.hasOwnProperty.call(b, keys[i] ?? '')) return false;
 
     for (i = length; i-- !== 0; ) {
       const key = keys[i];
-      if (key === '_owner' && a.$$typeof) {
+      if (!key || (key === '_owner' && a.$$typeof)) {
         // React-specific: avoid traversing React elements' _owner.
         //  _owner contains circular references
         // and is not needed when comparing the actual elements (and not their owners)

@@ -23,8 +23,8 @@ type BreakPoint = 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl';
 
 const WIDTH_BP: [number, number, BreakPoint][] = [
   [0, 180, 's'],
-  [180, 300, 'm'],
-  [300, 600, 'l'],
+  [180, 250, 'm'],
+  [250, 600, 'l'],
   [600, 1000, 'xl'],
   [1000, 2000, 'xxl'],
   [2000, Infinity, 'xxxl'],
@@ -39,9 +39,21 @@ const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14, xl: 2
 const VALUE_FONT_SIZE: Record<BreakPoint, number> = { s: 22, m: 27, l: 34, xl: 56, xxl: 88, xxxl: 140 };
 const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { s: 16, m: 20, l: 24, xl: 40, xxl: 68, xxxl: 110 };
 
+const TITLE_FONT: Font = {
+  fontStyle: 'normal',
+  fontFamily: DEFAULT_FONT_FAMILY,
+  fontVariant: 'normal',
+  fontWeight: 'bold',
+  textColor: 'black',
+};
+const SUBTITLE_FONT: Font = {
+  ...TITLE_FONT,
+  fontWeight: 'normal',
+};
+
 function findRange(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
   const range = ranges.find(([min, max]) => min <= value && value < max);
-  return range ? range[2] : ranges[0][2];
+  return range ? range[2] : ranges[0]?.[2] ?? 's';
 }
 
 type ElementVisibility = {
@@ -60,21 +72,10 @@ function elementVisibility(
   const LEFT_RIGHT_PADDING = 16;
   const maxTitlesWidth = (size === 's' ? 1 : 0.8) * panel.width - (datum.icon ? 24 : 0) - LEFT_RIGHT_PADDING;
 
-  const titleFont: Font = {
-    fontStyle: 'normal',
-    fontFamily: DEFAULT_FONT_FAMILY,
-    fontVariant: 'normal',
-    fontWeight: 400,
-    textColor: 'black',
-  };
-  const subtitleFont: Font = {
-    ...titleFont,
-    fontWeight: 300,
-  };
   const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
     return datum.title
       ? PADDING +
-          wrapText(datum.title, titleFont, TITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure).length *
+          wrapText(datum.title, TITLE_FONT, TITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure).length *
             TITLE_FONT_SIZE[size] *
             LINE_HEIGHT
       : 0;
@@ -83,7 +84,7 @@ function elementVisibility(
   const subtitleHeight = (maxLines: number, textMeasure: TextMeasure) => {
     return datum.subtitle
       ? PADDING +
-          wrapText(datum.subtitle, subtitleFont, SUBTITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure)
+          wrapText(datum.subtitle, SUBTITLE_FONT, SUBTITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure)
             .length *
             SUBTITLE_FONT_SIZE[size] *
             LINE_HEIGHT
@@ -116,12 +117,12 @@ function elementVisibility(
   return withTextMeasure((textMeasure) => {
     const visibilityBreakpoint =
       responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ??
-      responsiveBreakPoints[responsiveBreakPoints.length - 1];
+      responsiveBreakPoints[responsiveBreakPoints.length - 1]!;
     return {
       ...visibilityBreakpoint,
       titleLines: wrapText(
         datum.title ?? '',
-        titleFont,
+        TITLE_FONT,
         TITLE_FONT_SIZE[size],
         maxTitlesWidth,
         visibilityBreakpoint.titleMaxLines,
@@ -129,7 +130,7 @@ function elementVisibility(
       ),
       subtitleLines: wrapText(
         datum.subtitle ?? '',
-        subtitleFont,
+        SUBTITLE_FONT,
         SUBTITLE_FONT_SIZE[size],
         maxTitlesWidth,
         visibilityBreakpoint.subtitleMaxLines,
@@ -156,12 +157,12 @@ export const MetricText: React.FunctionComponent<{
   datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
-  onElementClick: () => void;
+  onElementClick?: () => void;
   highContrastTextColor: Color;
 }> = ({ id, datum, panel, style, onElementClick, highContrastTextColor }) => {
   const { extra, value } = datum;
 
-  const size = findRange(WIDTH_BP, panel.width - 16);
+  const size = findRange(WIDTH_BP, panel.width);
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
   const containerClassName = classNames('echMetricText', {
@@ -181,32 +182,38 @@ export const MetricText: React.FunctionComponent<{
       ? splitNumericSuffixPrefix(datum.valueFormatter(value))
       : [{ emphasis: 'normal', text: style.nonFiniteText }]
     : [{ emphasis: 'normal', text: datum.value }];
-
+  const TitleElement = () => (
+    <span
+      style={{
+        fontSize: `${TITLE_FONT_SIZE[size]}px`,
+        whiteSpace: 'pre-wrap',
+        width: titlesWidth,
+        ...lineClamp(visibility.titleLines.length),
+      }}
+      title={datum.title}
+    >
+      {datum.title}
+    </span>
+  );
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
       <div>
         {visibility.title && (
           <h2 id={id} className="echMetricText__title">
-            <button
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-              onClick={(e) => {
-                e.stopPropagation();
-                onElementClick();
-              }}
-            >
-              <span
-                style={{
-                  fontSize: `${TITLE_FONT_SIZE[size]}px`,
-                  whiteSpace: 'pre-wrap',
-                  width: titlesWidth,
-                  ...lineClamp(visibility.titleLines.length),
+            {onElementClick ? (
+              <button
+                onMouseDown={(e) => e.stopPropagation()}
+                onMouseUp={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onElementClick();
                 }}
-                title={datum.title}
               >
-                {datum.title}
-              </span>
-            </button>
+                <TitleElement />
+              </button>
+            ) : (
+              <TitleElement />
+            )}
           </h2>
         )}
         {datum.icon && (
@@ -276,8 +283,8 @@ function splitNumericSuffixPrefix(text: string): { emphasis: 'normal' | 'small';
     .split('')
     .reduce<{ emphasis: 'normal' | 'small'; textParts: string[] }[]>((acc, curr) => {
       const emphasis = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'normal' : 'small';
-      if (acc.length > 0 && acc[acc.length - 1].emphasis === emphasis) {
-        acc[acc.length - 1].textParts.push(curr);
+      if (acc.length > 0 && acc[acc.length - 1]?.emphasis === emphasis) {
+        acc[acc.length - 1]?.textParts.push(curr);
       } else {
         acc.push({ emphasis, textParts: [curr] });
       }

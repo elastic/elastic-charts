@@ -427,4 +427,28 @@ test.describe('Interactions', () => {
       { left: 247, top: 76 }, // mouse over the second point
     );
   });
+
+  // should not disable dragging when returning to origin
+  test('should not show tooltip after brushing has been enabled', async ({ page }) => {
+    const origin = {
+      left: 200,
+      top: 200,
+    };
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/interactions--brush-tool&globals=theme:light&knob-Debug=true&knob-Enable debug state=true&knob-Grid stroke_SmallMultiples Styles=1&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes panel titles_SmallMultiples Styles=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Use custom tooltip=true&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=75,75,75,75,20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20,20,75&knob-dataset=7&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-xScaleType_Data=linear&knob-brush axis=both&knob-chartRotation=0',
+      {
+        action: async () => {
+          await common.dragMouseRelativeToDOMElement(page)(
+            origin,
+            {
+              left: 400,
+              top: 250,
+            },
+            common.chartSelector,
+          );
+          await common.moveMouseRelativeToDOMElement(page)(origin, common.chartSelector);
+        },
+      },
+    );
+  });
 });

@@ -12,6 +12,7 @@ import { DataSeriesDatum } from './series';
 import { Fit, FitConfig } from './specs';
 import { datumXSortPredicate } from './stacked_series_utils';
 import { ScaleType } from '../../../scales/constants';
+import { isNil } from '../../../utils/common';
 
 /**
  * Fit type that requires previous and/or next `non-nullable` values
@@ -215,9 +216,8 @@ export const fitFunction = (
   let previousNonNullDatum: WithIndex<FullDataSeriesDatum> | null = null;
   let nextNonNullDatum: WithIndex<FullDataSeriesDatum> | null = null;
 
-  for (let i = 0; i < sortedData.length; i++) {
+  sortedData.forEach((currentValue, i) => {
     let j = i;
-    const currentValue = sortedData[i];
 
     if (
       currentValue.y1 === null &&
@@ -231,6 +231,7 @@ export const fitFunction = (
       // Forward lookahead to get next non-null value
       for (j = i + 1; j < sortedData.length; j++) {
         const nextValue = sortedData[j];
+        if (isNil(nextValue)) continue;
 
         if (nextValue.y1 !== null && nextValue.x !== null) {
           nextNonNullDatum = {
@@ -259,7 +260,7 @@ export const fitFunction = (
     if (nextNonNullDatum !== null && nextNonNullDatum.x <= currentValue.x) {
       nextNonNullDatum = null;
     }
-  }
+  });
 
   return newData;
 };

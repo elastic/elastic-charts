@@ -90,8 +90,7 @@ jobs:
 
       - name: Release
         env:
-          GH_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         run: yarn semantic-release

@@ -13,7 +13,7 @@ import { getWCAG2ContrastRatio } from './wcag2_color_contrast';
 
 /** @internal */
 export function hueInterpolator(colors: RgbTuple[]) {
-  return (d: number) => RGBATupleToString(colors[Math.round(d * 255)]);
+  return (d: number) => RGBATupleToString(colors[Math.round(d * 255)] ?? Colors.White.rgba);
 }
 
 /** @internal */

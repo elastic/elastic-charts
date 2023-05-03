@@ -33,7 +33,8 @@ export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
  * Stacked are sorted from from top to bottom to respect the rendering order
  * @internal
  */
-export function defaultXYLegendSeriesSort(a: DataSeries, b: DataSeries) {
+export function defaultXYLegendSeriesSort(a?: DataSeries, b?: DataSeries) {
+  if (!a || !b) return 0;
   if (a.groupId !== b.groupId) {
     return a.insertIndex - b.insertIndex;
   }

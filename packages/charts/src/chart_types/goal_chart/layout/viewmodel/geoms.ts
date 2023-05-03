@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { getSagitta, getMinSagitta, getTranformDirection } from './utils';
+import { getSagitta, getMinSagitta, getTransformDirection } from './utils';
 import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
 import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
 import { cssFontShorthand, Font } from '../../../../common/text_utils';
@@ -261,7 +261,7 @@ export function geoms(
   const circular = subtype === GoalSubtype.Goal;
   const vertical = subtype === GoalSubtype.VerticalBullet;
 
-  const domain = [lowestValue, highestValue];
+  const domain: [number, number] = [lowestValue, highestValue];
   const data = {
     base: { value: base },
     ...Object.fromEntries(bands.map(({ value }, index) => [`qualitative_${index}`, { value }])),
@@ -402,7 +402,7 @@ export function geoms(
   if (circular) {
     const sagitta = getMinSagitta(angleStart, angleEnd, r);
     const maxSagitta = getSagitta((3 / 2) * Math.PI, r);
-    const direction = getTranformDirection(angleStart, angleEnd);
+    const direction = getTransformDirection(angleStart, angleEnd);
     data.yOffset.value = Math.abs(sagitta) >= maxSagitta ? 0 : (direction * (maxSagitta - sagitta)) / 2;
   }
 

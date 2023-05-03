@@ -24,7 +24,7 @@ describe('Test', () => {
   test('getHierarchyOfArrays should omit negative values', () => {
     const outerResult = getHierarchyOfArrays(rawFacts, valueAccessor, groupByRollupAccessors, [], []);
     expect(outerResult.length).toBe(1);
-    const results = entryValue(outerResult[0]);
+    const results = entryValue(outerResult[0]!);
     expect(results[CHILDREN_KEY].length).toBe(rawFacts.filter((d: any) => valueAccessor(d) >= 0).length);
   });
 });

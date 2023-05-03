@@ -66,9 +66,11 @@ export function interactionsReducer(
       return state;
 
     case ON_POINTER_MOVE:
-      // enable the dragging flag only if the pixel delta between down and move is greater then 4 pixel
+      // The dragging is enabled when the delta between down and move positions is greater than a constant.
+      // After this initial threshold, the dragging still enabled until the mouse up event
       const dragging =
-        !!state.pointer.down && getDelta(state.pointer.down.position, action.position) > DRAG_DETECTION_PIXEL_DELTA;
+        state.pointer.dragging ||
+        (!!state.pointer.down && getDelta(state.pointer.down.position, action.position) > DRAG_DETECTION_PIXEL_DELTA);
       return {
         ...state,
         pointer: {
@@ -291,5 +293,5 @@ function getDrilldownData(globalState: GlobalChartState) {
     return [];
   }
   const layerValues = getPickedShapesLayerValues(globalState)[0];
-  return layerValues ? layerValues[layerValues.length - 1].path.map((n) => n.value) : [];
+  return layerValues ? layerValues[layerValues.length - 1]?.path.map((n) => n.value) ?? [] : [];
 }

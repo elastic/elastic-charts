@@ -31,7 +31,7 @@ export const numericalRasters = ({ minimumTickPixelDistance, locale }: RasterCon
         intervals: (domainFrom, domainTo) =>
           getDecimalTicks(domainFrom, domainTo, i === 0 ? 20 : 5, oneFive).map((d, i, a) => ({
             minimum: d,
-            supremum: i < a.length - 1 ? a[i + 1] : d + (d - a[i - 1]),
+            supremum: i < a.length - 1 ? a[i + 1] ?? NaN : d + (d - (a[i - 1] ?? NaN)),
           })),
         detailedLabelFormat: (n: number) => format((n - 1300000000000) / 1e6),
         minorTickLabelFormat: (n: number) => format((n - 1300000000000) / 1e6),

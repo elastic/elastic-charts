@@ -29,12 +29,12 @@ const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => {
   const getRandomNumber = getRandomNumberGenerator();
-  const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => ({
+  const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d) => ({
     x: d[0],
     max: d[1] + 4 + 4 * getRandomNumber(),
     min: d[1] - 4 - 4 * getRandomNumber(),
   }));
-  const lineData = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => [d[0], d[1]]);
+  const lineData = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d) => [d[0], d[1]]);
   const fit = boolean('fit Y domain', true);
   const y0AccessorFormat = text('y0AccessorFormat', '');
   const y1AccessorFormat = text('y1AccessorFormat', '');
@@ -55,7 +55,7 @@ export const Example = () => {
           max: NaN,
           fit,
         }}
-        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+        title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title}
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
       />

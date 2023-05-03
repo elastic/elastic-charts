@@ -162,10 +162,10 @@ function getXBrushExtent(
       : (value: number) => xScale.invert(value);
   const minPosScaled = invertValue(minPos + offset);
   const maxPosScaled = invertValue(maxPos + offset);
-  const maxDomainValue =
-    xScale.domain[1] + (histogramEnabled && allowBrushingLastHistogramBin ? xScale.minInterval : 0);
+  const [domainStart, domainEnd] = xScale.domain;
+  const maxDomainValue = domainEnd + (histogramEnabled && allowBrushingLastHistogramBin ? xScale.minInterval : 0);
 
-  const minValue = clamp(minPosScaled, xScale.domain[0], maxPosScaled);
+  const minValue = clamp(minPosScaled, domainStart, maxPosScaled);
   const maxValue = clamp(minPosScaled, maxPosScaled, maxDomainValue);
 
   return [minValue, maxValue];
@@ -214,8 +214,9 @@ function getYBrushExtents(
 
     const minPosScaled = yScale.invert(minPos);
     const maxPosScaled = yScale.invert(maxPos);
-    const minValue = clamp(minPosScaled, yScale.domain[0], maxPosScaled);
-    const maxValue = clamp(minPosScaled, maxPosScaled, yScale.domain[1]);
+    const [domainStart, domainEnd] = yScale.domain;
+    const minValue = clamp(minPosScaled, domainStart, maxPosScaled);
+    const maxValue = clamp(minPosScaled, maxPosScaled, domainEnd);
     yValues.push({ extent: [minValue, maxValue], groupId });
   });
   return yValues.length === 0 ? undefined : yValues;

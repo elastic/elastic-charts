@@ -46,7 +46,7 @@
 <!-- Delete any items that are not applicable to this PR. -->
 - [ ] The proper **chart type** label has been added (e.g. `:xy`, `:partition`)
 - [ ] The proper **feature** labels have been added (e.g. `:interactions`, `:axis`)
-- [ ] The `:theme` label has been added and the `@elastic/eui-design` team has been pinged when there are `Theme` API changes
+- [ ] The `:theme` label has been added and the `@elastic/eui-team` team has been pinged when there are `Theme` API changes
 - [ ] All related issues have been linked (i.e. `closes #123`, `fixes #123`)
 - [ ] New public API exports have been added to `packages/charts/src/index.ts`
 - [ ] Unit tests have been added or updated to match the most common scenarios

@@ -12,7 +12,7 @@
   "dependencies": {
     "@elastic/charts": "*",
     "@elastic/datemath": "^5.0.3",
-    "@elastic/eui": "^76.4.0",
+    "@elastic/eui": "^77.2.0",
     "@emotion/react": "^11.10.5",
     "@emotion/css": "^11.10.5",
     "luxon": "^1.27.0",
@@ -42,6 +42,6 @@
     "storybook-addon-background-toggle": "^0.0.1",
     "terser-webpack-plugin": "^4.2.3",
     "ts-loader": "8.4.0",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.4"
   }
 }

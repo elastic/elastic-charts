@@ -13,7 +13,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecs } from '../../../../state/selectors/get_specs';
-import { getSpecsFromStore } from '../../../../state/utils';
+import { getSpecFromStore } from '../../../../state/utils';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { WordcloudSpec } from '../../specs';
 
@@ -23,7 +23,7 @@ const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
 export const geometries = createCustomCachedSelector(
   [getSpecs, getChartThemeSelector, getParentDimensions],
   (specs, theme, parentDimensions): ShapeViewModel => {
-    const wordcloudSpecs = getSpecsFromStore<WordcloudSpec>(specs, ChartType.Wordcloud, SpecType.Series);
-    return wordcloudSpecs.length === 1 ? render(wordcloudSpecs[0], theme, parentDimensions) : nullShapeViewModel();
+    const wordcloudSpec = getSpecFromStore<WordcloudSpec, false>(specs, ChartType.Wordcloud, SpecType.Series, false);
+    return wordcloudSpec ? render(wordcloudSpec, theme, parentDimensions) : nullShapeViewModel();
   },
 );

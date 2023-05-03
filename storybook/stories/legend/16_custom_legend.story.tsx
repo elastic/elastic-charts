@@ -25,17 +25,17 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm');
-const data1 = KIBANA_METRICS.metrics.kibana_os_load[0].data.map((d) => [
+const data1 = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d) => [
   ...d,
-  KIBANA_METRICS.metrics.kibana_os_load[0].metric.label,
+  KIBANA_METRICS.metrics.kibana_os_load.v1.metric.label,
 ]);
-const data2 = KIBANA_METRICS.metrics.kibana_os_load[1].data.map((d) => [
+const data2 = KIBANA_METRICS.metrics.kibana_os_load.v2.data.map((d) => [
   ...d,
-  KIBANA_METRICS.metrics.kibana_os_load[1].metric.label,
+  KIBANA_METRICS.metrics.kibana_os_load.v2.metric.label,
 ]);
-const data3 = KIBANA_METRICS.metrics.kibana_os_load[2].data.map((d) => [
+const data3 = KIBANA_METRICS.metrics.kibana_os_load.v3.data.map((d) => [
   ...d,
-  KIBANA_METRICS.metrics.kibana_os_load[2].metric.label,
+  KIBANA_METRICS.metrics.kibana_os_load.v3.metric.label,
 ]);
 const allMetrics = [...data3, ...data2, ...data1];
 
@@ -71,7 +71,7 @@ export const Example = () => {
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis id="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} ticks={5} />
       <AreaSeries
-        id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
+        id={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.label}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}

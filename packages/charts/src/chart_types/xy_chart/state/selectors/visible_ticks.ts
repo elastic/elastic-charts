@@ -296,7 +296,7 @@ function getVisibleTickSets(
               const areAdjacentTimeLabelsUnique =
                 scale.type === ScaleType.Time &&
                 !axisSpec.showDuplicatedTicks &&
-                (areLabelsUnique || raster.ticks.every((d, i, a) => i === 0 || d.label !== a[i - 1].label));
+                (areLabelsUnique || raster.ticks.every((d, i, a) => i === 0 || d.label !== a[i - 1]?.label));
               const atLeastTwoTicks = uniqueLabels.size >= 2;
               const allTicksFit = !uniqueLabels.has('');
               const compliant =

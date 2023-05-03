@@ -15,6 +15,7 @@ import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/co
 
 import { Color } from '../../../packages/charts/src/common/colors';
 import { useBaseTheme } from '../../use_base_theme';
+import { getBandFillColorFn } from '../utils/utils';
 
 const subtype = GoalSubtype.Goal;
 
@@ -38,7 +39,7 @@ export const Example = () => {
     return acc;
   }, {});
 
-  const bandFillColor = (x: number): Color => colorMap[x];
+  const getBandFillColor = getBandFillColorFn(colorMap);
 
   const angleStart =
     number('angleStart (n * π/8)', 8, {
@@ -68,7 +69,7 @@ export const Example = () => {
         ticks={ticks}
         domain={{ min: 0, max: 300 }}
         tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-        bandFillColor={useColors ? ({ value }: BandFillColorAccessorInput) => bandFillColor(value) : undefined}
+        bandFillColor={useColors ? getBandFillColor : undefined}
         labelMajor="Revenue 2020 YTD  "
         labelMinor="(thousand USD)  "
         centralMajor={() => `$${actual}k USD`}

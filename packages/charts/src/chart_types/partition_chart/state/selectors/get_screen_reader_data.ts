@@ -35,15 +35,15 @@ export interface PartitionData {
  * @internal
  */
 const getScreenReaderDataForPartitions = (
-  [{ valueFormatter }]: PartitionSpec[],
+  [spec]: PartitionSpec[],
   shapeViewModels: ShapeViewModel[],
 ): PartitionSectionData[] => {
   return shapeViewModels.flatMap(({ quadViewModel, layers, panel }) =>
     quadViewModel.map(({ depth, value, dataName, parent, path }) => {
       const label = layers[depth - 1]?.nodeLabel?.(dataName) ?? dataName;
-      const parentValue = path.length > 1 ? path[path.length - 2].value : undefined;
+      const parentValue = path.length > 1 ? path[path.length - 2]?.value : undefined;
       const parentName =
-        depth > 1 && parentValue ? layers[depth - 2]?.nodeLabel?.(parentValue) ?? path[path.length - 1].value : 'none';
+        depth > 1 && parentValue ? layers[depth - 2]?.nodeLabel?.(parentValue) ?? path[path.length - 1]?.value : 'none';
 
       return {
         panelTitle: panel.title,
@@ -52,7 +52,7 @@ const getScreenReaderDataForPartitions = (
         parentName,
         percentage: `${Math.round((value / parent[STATISTICS_KEY].globalAggregate) * 100)}%`,
         value,
-        valueText: valueFormatter ? valueFormatter(value) : `${value}`,
+        valueText: spec?.valueFormatter ? spec.valueFormatter(value) : `${value}`,
       };
     }),
   );
@@ -70,7 +70,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
       };
     }
     return {
-      hasMultipleLayers: specs[0].layers.length > 1,
+      hasMultipleLayers: (specs[0]?.layers.length ?? NaN) > 1,
       isSmallMultiple: shapeViewModel.length > 1,
       data: getScreenReaderDataForPartitions(specs, shapeViewModel),
     };

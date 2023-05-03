@@ -46,7 +46,7 @@ export const Example = () => {
       <Axis id="bottom" position={Position.Bottom} tickFormat={formatter} showDuplicatedTicks={duplicateTicksInAxis} />
       <Axis
         id="left"
-        title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+        title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title}
         position={Position.Left}
         tickFormat={(d) => `${Number(d).toFixed(1)}`}
         labelFormat={(d) => `${Number(d).toFixed(0)}`}

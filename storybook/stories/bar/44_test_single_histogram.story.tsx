@@ -35,8 +35,8 @@ export const Example = () => {
   const binWidthMs = 60000;
 
   const xDomain = {
-    min: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] - (oddDomain ? 217839 : 0),
-    max: KIBANA_METRICS.metrics.kibana_os_load[0].data[0][0] + (oddDomain ? 200000 : 0 ?? binWidthMs - 1),
+    min: KIBANA_METRICS.metrics.kibana_os_load.v1.data[0][0] - (oddDomain ? 217839 : 0),
+    max: KIBANA_METRICS.metrics.kibana_os_load.v1.data[0][0] + (oddDomain ? 200000 : 0 ?? binWidthMs - 1),
     minInterval: binWidthMs,
   };
 
@@ -61,7 +61,7 @@ export const Example = () => {
             : {}
         }
       />
-      <Axis id="left" title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title} position={Position.Left} />
+      <Axis id="left" title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title} position={Position.Left} />
       <Series
         id="series"
         timeZone="local"
@@ -69,7 +69,7 @@ export const Example = () => {
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
-        data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 1)}
+        data={KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 1)}
       />
     </Chart>
   );

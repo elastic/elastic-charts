@@ -94,7 +94,7 @@ export const isSimpleLinear = (layout: PartitionLayout, fillLabel: FillLabelConf
   isLinear(layout) && layers.every((l) => l.fillLabel?.clipText ?? fillLabel?.clipText);
 
 function grooveAccessor(n: ArrayEntry) {
-  return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
+  return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth] ?? NaN;
 }
 
 function topGrooveAccessor(topGroovePx: Pixels) {
@@ -158,16 +158,12 @@ export function makeQuadViewModel(
   return childNodes.map((node) => {
     const layer = layers[node.depth - 1];
     const fill = layer?.shape?.fillColor ?? RGBATupleToString(Colors.DarkOpaqueRed.rgba);
-
-    const fillColor =
-      typeof fill === 'function'
-        ? fill(
-            node.dataName,
-            node.sortIndex,
-            entryValue(node[MODEL_KEY][CHILDREN_KEY][node[SORT_INDEX_KEY]]),
-            node[MODEL_KEY].children,
-          )
-        : fill;
+    const entry = node[MODEL_KEY][CHILDREN_KEY][node[SORT_INDEX_KEY]];
+    const fillColor = !entry
+      ? RGBATupleToString(Colors.DarkOpaqueRed.rgba)
+      : typeof fill === 'function'
+      ? fill(node.dataName, node.sortIndex, entryValue(entry), node[MODEL_KEY].children)
+      : fill;
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;
@@ -190,7 +186,7 @@ export function makeOutsideLinksViewModel(
   return outsideFillNodes
     .map<OutsideLinksViewModel>((node, i: number) => {
       const rowSet = rowSets[i];
-      if (!rowSet.rows.reduce((p, row) => p + row.rowWords.length, 0)) return { points: [] };
+      if (!rowSet?.rows.reduce((p, row) => p + row.rowWords.length, 0)) return { points: [] };
       const radius = ringSectorOuterRadius(node);
       const midAngle = trueBearingToStandardPositionAngle(meanAngle(node.x0, node.x1));
       const cos = Math.cos(midAngle);
@@ -350,8 +346,13 @@ export function shapeViewModel(
     return nullShapeViewModel(layout, style, diskCenter);
   }
 
-  const longestPath = ([, { children, path }]: ArrayEntry): number =>
-    children.length > 0 ? children.reduce((p, n) => Math.max(p, longestPath(n)), 0) : path.length;
+  const longestPath = (entry?: ArrayEntry): number => {
+    const [, node] = entry ?? [];
+    if (!node) return NaN; // should never happen
+    const { children, path } = node;
+    return children.length > 0 ? children.reduce((p, n) => Math.max(p, longestPath(n)), 0) : path.length;
+  };
+
   const maxDepth = longestPath(tree[0]) - 2; // don't include the root node
   const childNodes = rawChildNodes(
     layout,
