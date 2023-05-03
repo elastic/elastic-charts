@@ -83,10 +83,10 @@ test.describe('Area series stories', () => {
     });
   });
 
-  test.describe('Area with orphan data points', () => {
+  test.describe('Area with isolated data points', () => {
     test('render correctly fit function', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/line-chart--test-orphan-data-points&knob-enable fit function=&knob-switch to area=true',
+        'http://localhost:9001/?path=/story/line-chart--isolated-data-points&knob-enable fit function=&knob-switch to area=true',
       );
     });
   });
