@@ -35,6 +35,14 @@ export const LIGHT_THEME: Theme = {
       radius: 2,
       opacity: 1,
     },
+    orphanPoint: {
+      visible: true,
+      stroke: ColorVariant.Series,
+      strokeWidth: 0,
+      fill: ColorVariant.Series,
+      radius: 0.8,
+      opacity: 1,
+    },
     fit: {
       line: {
         opacity: 1,
@@ -68,6 +76,14 @@ export const LIGHT_THEME: Theme = {
       strokeWidth: 1,
       fill: Colors.White.keyword,
       radius: 2,
+      opacity: 1,
+    },
+    orphanPoint: {
+      visible: true,
+      stroke: ColorVariant.Series,
+      strokeWidth: 0,
+      fill: ColorVariant.Series,
+      radius: 2.8,
       opacity: 1,
     },
     fit: {

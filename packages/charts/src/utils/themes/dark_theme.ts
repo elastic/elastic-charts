@@ -35,6 +35,14 @@ export const DARK_THEME: Theme = {
       radius: 2,
       opacity: 1,
     },
+    orphanPoint: {
+      visible: true,
+      stroke: ColorVariant.Series,
+      strokeWidth: 0,
+      fill: ColorVariant.Series,
+      radius: 0.8,
+      opacity: 1,
+    },
     fit: {
       line: {
         visible: true,
@@ -68,6 +76,14 @@ export const DARK_THEME: Theme = {
       fill: 'black',
       strokeWidth: 0.5,
       radius: 1,
+      opacity: 1,
+    },
+    orphanPoint: {
+      visible: true,
+      stroke: ColorVariant.Series,
+      strokeWidth: 0,
+      fill: ColorVariant.Series,
+      radius: 0.8,
       opacity: 1,
     },
     fit: {

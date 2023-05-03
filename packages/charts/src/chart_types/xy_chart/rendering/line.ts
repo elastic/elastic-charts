@@ -57,11 +57,11 @@ export function renderLine(
     panel,
     color,
     seriesStyle.point,
+    seriesStyle.orphanPoint,
     hasY0Accessors,
     markSizeOptions,
     false,
     pointStyleAccessor,
-    seriesStyle.line.visible ? seriesStyle.line.strokeWidth : undefined,
   );
 
   // TODO we can probably avoid computing the clipped ranges if no fit function is applied.

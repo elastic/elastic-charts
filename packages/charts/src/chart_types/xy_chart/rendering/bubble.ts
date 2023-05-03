@@ -43,11 +43,12 @@ export function renderBubble(
     panel,
     color,
     seriesStyle.point,
+    // not used in bubble chart so it is safe to reuse the same point style
+    seriesStyle.point,
     hasY0Accessors,
     markSizeOptions,
     !isMixedChart,
     pointStyleAccessor,
-    0,
   );
 
   const bubbleGeometry = {

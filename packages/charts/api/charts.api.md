@@ -204,6 +204,8 @@ export interface AreaSeriesStyle {
     // (undocumented)
     line: LineStyle;
     // (undocumented)
+    orphanPoint: PointStyle;
+    // (undocumented)
     point: PointStyle;
 }
 
@@ -1741,6 +1743,8 @@ export interface LineSeriesStyle {
     // (undocumented)
     line: LineStyle;
     // (undocumented)
+    orphanPoint: PointStyle;
+    // (undocumented)
     point: PointStyle;
 }
 
@@ -2156,7 +2160,7 @@ export type PointShape = $Values<typeof PointShape>;
 export interface PointStyle {
     fill?: Color | ColorVariant;
     opacity: number;
-    radius: number;
+    radius: Pixels;
     shape?: PointShape;
     stroke?: Color | ColorVariant;
     strokeWidth: number;
