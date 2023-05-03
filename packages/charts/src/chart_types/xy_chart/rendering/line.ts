@@ -57,7 +57,7 @@ export function renderLine(
     panel,
     color,
     seriesStyle.point,
-    seriesStyle.orphanPoint,
+    seriesStyle.isolatedPoint,
     hasY0Accessors,
     markSizeOptions,
     false,

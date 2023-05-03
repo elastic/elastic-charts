@@ -704,7 +704,7 @@ export interface BubbleSeriesStyle {
 export interface LineSeriesStyle {
   line: LineStyle;
   point: PointStyle;
-  orphanPoint: PointStyle;
+  isolatedPoint: PointStyle;
   fit: {
     line: LineFitStyle;
   };
@@ -715,7 +715,7 @@ export interface AreaSeriesStyle {
   area: AreaStyle;
   line: LineStyle;
   point: PointStyle;
-  orphanPoint: PointStyle;
+  isolatedPoint: PointStyle;
   fit: {
     line: LineFitStyle;
     area: AreaFitStyle;

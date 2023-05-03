@@ -35,7 +35,7 @@ export const DARK_THEME: Theme = {
       radius: 2,
       opacity: 1,
     },
-    orphanPoint: {
+    isolatedPoint: {
       visible: true,
       stroke: ColorVariant.Series,
       strokeWidth: 0,
@@ -78,7 +78,7 @@ export const DARK_THEME: Theme = {
       radius: 1,
       opacity: 1,
     },
-    orphanPoint: {
+    isolatedPoint: {
       visible: true,
       stroke: ColorVariant.Series,
       strokeWidth: 0,

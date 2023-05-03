@@ -4,7 +4,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -62,7 +62,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -120,7 +120,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -178,7 +178,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -241,14 +241,14 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
 [
   {
     "color": "red",
-    "orphan": true,
+    "isolated": true,
     "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
-    "radius": 0.8,
+    "radius": 2.8,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -299,14 +299,14 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
   },
   {
     "color": "red",
-    "orphan": true,
+    "isolated": true,
     "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
-    "radius": 0.8,
+    "radius": 2.8,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -357,7 +357,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -415,7 +415,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -473,7 +473,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -531,7 +531,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,

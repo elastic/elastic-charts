@@ -41,7 +41,7 @@ export const Example = () => {
             point: {
               visible: false,
             },
-            orphanPoint: {
+            isolatedPoint: {
               radius,
               shape: customKnobs.enum.pointShape(),
             },
@@ -50,7 +50,7 @@ export const Example = () => {
             point: {
               visible: false,
             },
-            orphanPoint: {
+            isolatedPoint: {
               radius,
               shape: customKnobs.enum.pointShape(),
             },

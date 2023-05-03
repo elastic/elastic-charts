@@ -202,9 +202,9 @@ export interface AreaSeriesStyle {
         area: AreaFitStyle;
     };
     // (undocumented)
-    line: LineStyle;
+    isolatedPoint: PointStyle;
     // (undocumented)
-    orphanPoint: PointStyle;
+    line: LineStyle;
     // (undocumented)
     point: PointStyle;
 }
@@ -1741,9 +1741,9 @@ export interface LineSeriesStyle {
         line: LineFitStyle;
     };
     // (undocumented)
-    line: LineStyle;
+    isolatedPoint: PointStyle;
     // (undocumented)
-    orphanPoint: PointStyle;
+    line: LineStyle;
     // (undocumented)
     point: PointStyle;
 }
