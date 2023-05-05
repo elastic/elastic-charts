@@ -48,8 +48,6 @@ export interface Interval {
   supremum: number;
   /**
    * Upper bound of interval to stick text label
-   *
-   * A value of `0` defaults to the `supremum`
    */
   labelSupremum: number;
 }
