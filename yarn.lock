@@ -2976,10 +2976,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^77.2.0":
-  version "77.2.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-77.2.0.tgz#7f40e3c3b8ababfcf639000833dfa6d0db267e4a"
-  integrity sha512-6j3jqXdRmLGQ530GtdMrXyqi7rVd/XCMhymgO+FJiamf3dw5NF1LsXiOTn2+lTa/Tn3v2sJMVsr+SL+0h2Cd+A==
+"@elastic/eui@^78.0.0":
+  version "78.0.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-78.0.0.tgz#8baebdff833725f2750ec3d9f1d933748caad7eb"
+  integrity sha512-2OZVdLHpQPm8CWpOqnBI0XisohlTtsuDub1r90UTsIZCrwevK3aBrLb8DibpggRfaXXE4QtALYpN8+JoEu8dWw==
   dependencies:
     "@types/chroma-js" "^2.0.0"
     "@types/lodash" "^4.14.160"
@@ -3003,6 +3003,7 @@
     react-focus-on "^3.7.0"
     react-input-autosize "^3.0.0"
     react-is "^17.0.2"
+    react-remove-scroll-bar "^2.3.4"
     react-virtualized-auto-sizer "^1.0.6"
     react-window "^1.8.6"
     refractor "^3.5.0"
@@ -19062,7 +19063,7 @@ react-refresh@^0.8.3:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
 
-react-remove-scroll-bar@^2.3.3:
+react-remove-scroll-bar@^2.3.3, react-remove-scroll-bar@^2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/react-remove-scroll-bar/-/react-remove-scroll-bar-2.3.4.tgz#53e272d7a5cb8242990c7f144c44d8bd8ab5afd9"
   integrity sha512-63C4YQBUt0m6ALadE9XV56hV8BgJWDmmTPY758iIJjfQKt2nYwoUrPk0LXRXcB/yIj82T1/Ixfdpdk68LwIB0A==
