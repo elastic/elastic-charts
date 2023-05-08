@@ -21,7 +21,7 @@
     "axios": "^0.26.1",
     "buildkite-agent-node": "^0.0.11-pre.2",
     "gh-pages": "^3.2.3",
-    "json-schema-to-typescript": "11.0.3",
+    "json-schema-to-typescript": "13.0.1",
     "minimatch": "^5.0.1",
     "targz": "^1.0.1",
     "tmp": "^0.2.1",
