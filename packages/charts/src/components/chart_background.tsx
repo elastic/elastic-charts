@@ -23,8 +23,7 @@ export class ChartBackgroundComponent extends React.Component<ChartBackgroundPro
   static displayName = 'ChartBackground';
 
   render() {
-    const { backgroundColor } = this.props;
-    return <div className="echChartBackground" style={{ backgroundColor }} />;
+    return <div className="echChartBackground" />;
   }
 }
 
