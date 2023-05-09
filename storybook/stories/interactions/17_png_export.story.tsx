@@ -100,11 +100,7 @@ function renderXYAxisChart() {
   const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 100);
   return (
     <>
-      <Axis
-        id="time"
-        position={Position.Bottom}
-        tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
-      />
+      <Axis id="time" position={Position.Bottom} tickFormat={niceTimeFormatter([data[0][0], data.at(-1)[0]])} />
       <Axis
         id="count"
         domain={{

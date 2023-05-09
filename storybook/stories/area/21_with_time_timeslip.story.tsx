@@ -33,7 +33,7 @@ const tooltipDateFormatter = (d: any) =>
 
 const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data;
 const t0 = data[0][0];
-const t1 = data[data.length - 1][0];
+const t1 = data.at(-1)[0];
 
 const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;

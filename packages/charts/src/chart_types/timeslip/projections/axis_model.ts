@@ -52,10 +52,7 @@ export const getDecimalTicks = (
     }
   }
   return bestCandidate.length > maximumTickCount
-    ? [
-        ...(maximumTickCount > 1 && isDefined(bestCandidate[0]) ? [bestCandidate[0]] : []),
-        bestCandidate[bestCandidate.length - 1] ?? NaN,
-      ]
+    ? [...(maximumTickCount > 1 && isDefined(bestCandidate[0]) ? [bestCandidate[0]] : []), bestCandidate.at(-1) ?? NaN]
     : [];
 };
 
@@ -68,6 +65,6 @@ export const axisModel = (
   const domainMax = Math.max(...domainLandmarks);
   const niceTicks = getDecimalTicks(domainMin, domainMax, desiredTickCount);
   const niceDomainMin = niceTicks.length >= 2 ? niceTicks[0]! : domainMin;
-  const niceDomainMax = niceTicks.length >= 2 ? niceTicks[niceTicks.length - 1]! : domainMax;
+  const niceDomainMax = niceTicks.length >= 2 ? niceTicks.at(-1)! : domainMax;
   return { niceDomainMin, niceDomainMax, niceTicks };
 };
