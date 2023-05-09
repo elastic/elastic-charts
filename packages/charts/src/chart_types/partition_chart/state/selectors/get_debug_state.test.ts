@@ -124,7 +124,7 @@ function expectCorrectClickInfo(
   expect(onClickListener).toHaveBeenCalledTimes(index + 1);
   const obj = onClickListener.mock.calls[index]![0]![0]![0] as LayerValue[];
   // pick the last element of the path
-  expect(obj[obj.length - 1]).toMatchObject({
+  expect(obj.at(-1)).toMatchObject({
     depth,
     groupByRollup: name,
     value,
