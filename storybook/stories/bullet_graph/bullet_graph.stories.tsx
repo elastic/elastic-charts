@@ -10,4 +10,6 @@ export default {
   title: 'Bullet Graph',
 };
 
-export { Example as simple } from './1_simple.story';
+export { Example as grid } from './1_simple.story';
+export { Example as horizontalGrid } from './2_horizontal.story';
+export { Example as verticalGrid } from './3_vertical.story';
