@@ -7,6 +7,7 @@
  */
 
 import { grid } from 'charts-storybook/stories/metric/metric.stories';
+import classNames from 'classnames';
 import React, { ComponentType, CSSProperties, FC, PropsWithChildren } from 'react';
 
 import { Size } from '../../utils/dimensions';
@@ -52,20 +53,27 @@ export function AlignedGrid<D>({
             gridRow: rowIndex * 2 + 2,
             gridColumn: columnIndex + 1,
           };
+          const headerClassName = classNames('echAlignedGrid--header', {
+            echAlignedGrid__borderRight: columnIndex < columns - 1,
+          });
+          const contentClassName = classNames('echAlignedGrid--content', {
+            echAlignedGrid__borderRight: columnIndex < columns - 1,
+            echAlignedGrid__borderBottom: rowIndex < rows - 1,
+          });
           if (!cell) {
             return (
               <>
-                <div className="echAlignedGrid--header" style={headerStyle}></div>
-                <div className="echAlignedGrid--content" style={contentStyle}></div>
+                <div className={headerClassName} style={headerStyle}></div>
+                <div className={contentClassName} style={contentStyle}></div>
               </>
             );
           }
           return (
             <>
-              <div className="echAlignedGrid--header" style={headerStyle}>
+              <div className={headerClassName} style={headerStyle}>
                 <HeaderComponent datum={cell} stats={{ rowIndex, columnIndex, columns, rows }} />
               </div>
-              <div className="echAlignedGrid--content" style={contentStyle}>
+              <div className={contentClassName} style={contentStyle}>
                 <ContentComponent datum={cell} stats={{ rowIndex, columnIndex, columns, rows }} />
               </div>
             </>
