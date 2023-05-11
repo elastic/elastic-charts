@@ -26,8 +26,8 @@ export function measureText(ctx: CanvasRenderingContext2D): TextMeasure {
       // TODO this is a temporary fix to make the multilayer time axis work
       return { width: 0, height: fontSize * lineHeight };
     }
-    ctx.font = cssFontShorthand(font, fontSize);
+    ctx.font = cssFontShorthand(font, fontSize * 2);
     const { width } = ctx.measureText(text);
-    return { width, height: fontSize * lineHeight };
+    return { width: width / 2, height: fontSize * lineHeight };
   };
 }

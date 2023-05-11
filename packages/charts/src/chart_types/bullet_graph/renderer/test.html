@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    html,body {
+      font-family: 'Inter UI';
+
+    }
+    canvas {
+      image-rendering: pixelated;
+
+    }
+
+    td {
+      position:relative;
+      border: 1px solid black;
+      /*text-align: right;*/
+      height: 100px;
+      width: 200px;
+
+    }
+    td span {
+      position: absolute;
+      top: 0;
+      left: 0;
+      /*border: 1px solid black;*/
+      color: red;
+      /*-webkit-font-smoothing: none;*/
+      white-space: nowrap;
+    }
+    td canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+<svg id="chart" width="1500" height="100">
+
+</svg>
+<div id="stats"></div>
+<input id="textInput" type="text" value="test"/>
+<input id="testCount" type="range" min="10" max="150" value="100"/>
+<input id="fontFamilyInput" type="text" value="'Inter UI',BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'"/>
+<input id="canvasScaleFactor" type="range" min="1" max="6" value="1"/>
+<table >
+<thead>
+<tr>
+  <th>font size</th>
+<th>text</th>
+<th>html size</th>
+  <th>canvas text</th>
+<th>canvas size</th>
+  <th>diff</th>
+</tr>
+</thead>
+  <tbody id="table">
+
+  </tbody>
+</table>
+<canvas id="onscreenCanvas"></canvas>
+<script>
+
+  function getMinVisibleFontSize() {
+    var spanFS = document.createElement('span');
+    spanFS.setAttribute('style', 'font-size:1px!important;display:none!important;');
+    document.body.appendChild(spanFS);
+    var minFontSize = parseInt(getComputedStyle(spanFS).fontSize);
+    document.body.removeChild(spanFS);
+    return minFontSize;
+  }
+
+  const minFontSize = getMinVisibleFontSize();
+
+
+  const canvasScaleFactor = document.getElementById('canvasScaleFactor');
+  const textInput = document.getElementById('textInput');
+  const table = document.getElementById('table');
+  const canvas = document.createElement('canvas');
+  const chart = document.getElementById('chart');
+  const stats = document.getElementById('stats');
+  const testCountInput = document.getElementById('testCount');
+  const fontFamilyInput = document.getElementById('fontFamilyInput');
+  const ctx = canvas.getContext('2d');
+
+
+  let currentText = 'test';
+  let currentTestCount = 100;
+  let fontFamily = fontFamilyInput.value;
+  let canvasScale = canvasScaleFactor.value;
+  console.log(fontFamily)
+  textInput.addEventListener('input', (e) => {
+    currentText = e.target.value;
+    render(e.target.value, currentTestCount);
+  });
+
+  testCountInput.addEventListener('change', (e) => {
+    currentTestCount = +e.target.value;
+    render(currentText, +e.target.value);
+  })
+
+  fontFamilyInput.addEventListener('input', (e) => {
+    fontFamily = e.target.value;
+    render(currentText, currentTestCount);
+  });
+
+  canvasScaleFactor.addEventListener('change', (e) => {
+    canvasScale = e.target.value;
+    render(currentText, currentTestCount);
+  });
+
+  render(currentText, currentTestCount);
+
+
+
+  function measure(text, fontSize) {
+    const cleanedText = text.replace(/\n/g, ' ').replace(/ +(?= )/g, '');
+    ctx.font = `${fontSize*canvasScale}px ${fontFamily}`;//`${fontStyle} ${fontVariant} ${fontWeight} ${fontSize} ${fontFamily}`;
+    return ctx.measureText(cleanedText.trim()).width / canvasScale;
+  }
+
+
+
+
+  function render(textValue, testCount) {
+
+    table.innerHTML = '';
+    chart.innerHTML = '';
+    stats.innerHTML = '';
+
+    const tries = Array.from({length: testCount}).map((test, i) => {
+
+      const fontSize = i + minFontSize;
+      const tableRow = document.createElement('tr');
+
+      const sizeCell = document.createElement('td');
+      sizeCell.innerHTML = fontSize;
+
+      tableRow.appendChild(sizeCell);
+
+      const htmlText = document.createElement('td');
+
+      const textElement = document.createElement('span');
+      textElement.innerHTML = textValue;
+      textElement.style.fontFamily = fontFamily;
+      textElement.style.fontSize = `${fontSize}px`;
+      // textElement.style.lineHeight =`${i}px`;
+
+      htmlText.appendChild(textElement);
+
+      const canvasCell = document.createElement('canvas');
+
+      const canvasCtx = canvasCell.getContext('2d');
+      canvasCtx.font = `${fontSize}px ${fontFamily}`;
+      canvasCtx.textAlign = "start";
+      canvasCtx.textBaseline = 'hanging';
+      canvasCtx.fillText(textValue, 0, 0);
+      htmlText.appendChild(canvasCell)
+      tableRow.appendChild(htmlText);
+
+
+      table.appendChild(tableRow);
+
+      const htmlSizeCell = document.createElement('td');
+      const htmlSizeValue = textElement.getBoundingClientRect().width;
+      htmlSizeCell.innerHTML = `${htmlSizeValue.toFixed(2)}`;
+      tableRow.appendChild(htmlSizeCell);
+
+
+
+      // tableRow.appendChild(canvasCell);
+
+
+      const canvasWidth = measure(textValue,fontSize);
+
+      const canvasSizeCell = document.createElement('td');
+      canvasSizeCell.innerHTML = `${canvasWidth.toFixed(2)}`;
+      tableRow.appendChild(canvasSizeCell);
+
+
+
+      const diffCell = document.createElement('td');
+      const color = canvasWidth - htmlSizeValue < 0 ? 'background:blue' : 'background:red';
+      diffCell.innerHTML = `<div><div style="${color};height: 10px;width:${Math.abs(Math.ceil(canvasWidth - htmlSizeValue))* 10}px"></div>${Math.ceil(canvasWidth - htmlSizeValue)}</div>`;
+
+      tableRow.appendChild(diffCell);
+
+
+      return {fontSize, html: htmlSizeValue, canvas: canvasWidth, diff: Math.ceil(canvasWidth - htmlSizeValue)};
+    });
+
+    const statsInfo = tries.reduce((acc,t) => {
+      if(!t) {
+        return acc;
+      }
+      return {
+        min: Math.min(acc.min, t.diff),
+        max: Math.max(acc.max, t.diff),
+        sum: acc.sum +  t.diff,
+      }
+    }, {min: Infinity, max: -Infinity, sum: 0})
+    const info = document.createElement('p');
+
+    info.innerHTML = `<strong style="background:red;color:white;">MAX: ${statsInfo.max}px</strong><br/><strong style="background:blue;color:white;">MIN: ${statsInfo.min}px</strong><br/>MEAN:${Math.ceil(statsInfo.sum/tries.length)} <br/>FONT: ${ctx.font}<br/> CANVAS SCALE FACTOR: ${canvasScale}`;
+    stats.appendChild(info);
+
+    function scale(val) {
+      if(statsInfo.max > 0 && statsInfo.min < 0) {
+        return 100 / (Math.abs(statsInfo.max) + Math.abs(statsInfo.min)) * val
+      }
+      return 100 / Math.max(Math.abs(statsInfo.max), Math.abs(statsInfo.min)) * val
+    }
+
+    tries.forEach((text, i) => {
+      if(!text) {
+        return;
+      }
+
+      const line = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'line'
+      );
+      line.setAttribute('x1', `0`);
+      line.setAttribute('x2', `100%`);
+      line.setAttribute('y1', `50%`);
+      line.setAttribute('y2', `50%`);
+      line.setAttribute('stroke', `black`);
+      chart.appendChild(line);
+
+
+
+
+      const bar = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'rect'
+      );
+      bar.setAttribute('x', `${i*10}`);
+      bar.setAttribute('y', `${text.diff > 0 ? 50 - scale(Math.abs(text.diff)) : 50}`);
+      bar.setAttribute('height', `${scale(Math.abs(text.diff))}px`);
+      bar.setAttribute('width', `5px`);
+      bar.setAttribute('fill',text.diff < 0? 'blue' : 'red' );
+      chart.appendChild(bar);
+
+      const label = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'text'
+      );
+      label.setAttribute('x', `${i*10}`);
+      label.setAttribute('y', `5px`);
+      label.setAttribute('font-size', `5px`);
+      label.innerHTML = text.fontSize;
+      chart.appendChild(label);
+
+    })
+
+
+
+  }
+
+
+</script>
+</body>
+</html>

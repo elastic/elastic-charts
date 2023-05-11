@@ -47,3 +47,5 @@ export {
   MetricTrendShape,
   MetricDatum,
 } from './metric/specs';
+
+export { BulletGraph, BulletGraphSpec, BulletGraphSubtype } from './bullet_graph/spec';

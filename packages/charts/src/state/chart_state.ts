@@ -24,6 +24,7 @@ import { LegendItemLabel } from './selectors/get_legend_items_labels';
 import { DebugState } from './types';
 import { getInitialPointerState, getInitialTooltipState } from './utils';
 import { ChartType } from '../chart_types';
+import { BulletGraphState } from '../chart_types/bullet_graph/chart_state';
 import { FlameState } from '../chart_types/flame_chart/internal_chart_state';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
@@ -496,6 +497,7 @@ const constructors: Record<ChartType, () => InternalChartState | null> = {
   [ChartType.Heatmap]: () => new HeatmapState(),
   [ChartType.Wordcloud]: () => new WordcloudState(),
   [ChartType.Metric]: () => new MetricState(),
+  [ChartType.BulletGraph]: () => new BulletGraphState(),
   [ChartType.Global]: () => null,
 }; // with no default, TS signals if a new chart type isn't added here too
 

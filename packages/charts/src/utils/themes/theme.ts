@@ -17,6 +17,8 @@ import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment 
 import { Margins, Padding, SimplePadding } from '../dimensions';
 import { Point } from '../point';
 
+import { BulletGraphStyle } from '/@elastic/charts/src/chart_types/bullet_graph/theme';
+
 /** @public */
 export interface Visible {
   visible: boolean;
@@ -487,6 +489,11 @@ export interface Theme {
    * Theme styles for metric chart types
    */
   metric: MetricStyle;
+
+  /**
+   * Theme styles for bullet graph types
+   */
+  bulletGraph: BulletGraphStyle;
   /**
    * Theme styles for tooltip
    */
