@@ -6,8 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { useLatest } from '@elastic/eui/src/services/hooks/useLatest';
+import { grid } from 'charts-storybook/stories/metric/metric.stories';
 import { clamp } from 'lodash';
-import React, { memo } from 'react';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { Color } from '../../../common/colors';
 import { Ratio } from '../../../common/geometry';
@@ -215,9 +217,21 @@ function scaleToAngle(unit: number): number {
 
 /** @internal */
 export function AngularBulletComp(props: BulletProps) {
+  // const ref = useRef<SVGSVGElement>(null);
+  const [fontSize, setFontSize] = useState(10);
+
+  const onResize = useCallback((target, entry) => {
+    // Handle the resize event
+    const minSize = Math.min(entry.contentRect.width, entry.contentRect.height);
+    setFontSize(minSize / 100);
+    console.log(minSize);
+  }, []);
+
+  const ref = useResizeObserver<SVGSVGElement>(onResize);
+
   return (
     <div className="echBulletGraphSVG--container">
-      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" ref={ref}>
         <g className="echBulletGraph" style={{ transform: 'translate3d(0, calc(50%), 0)' }}>
           {props.colorBands.map((band, index) => (
             // eslint-disable-next-line react/no-array-index-key
@@ -261,6 +275,24 @@ export function AngularBulletComp(props: BulletProps) {
               vectorEffect="non-scaling-stroke"
             />
           )}
+          {props.labels.map((label) => {
+            const coord = polarToCartesian(50, 10, 35, 240 * label.position - 120);
+            return (
+              <text
+                className="echBullet--angularTickLabel"
+                key={label.text}
+                y={coord.y * fontSize}
+                x={coord.x * fontSize}
+                fontSize={10}
+                // textAnchor="center"
+                alignmentBaseline="middle"
+                transform={`scale(${1 / fontSize} ${1 / fontSize})`}
+                textAnchor={label.position > 0.5 ? 'end' : 'start'}
+              >
+                {label.text}
+              </text>
+            );
+          })}
         </g>
       </svg>
       {/* <svg */}
@@ -298,3 +330,28 @@ export function AngularBulletComp(props: BulletProps) {
 
 /** @internal */
 export const AngularBullet = memo(AngularBulletComp);
+
+function useResizeObserver<T extends SVGSVGElement>(callback: (target: T, entry: ResizeObserverEntry) => void) {
+  const ref = useRef<T>(null);
+
+  useLayoutEffect(() => {
+    const element = ref?.current;
+
+    if (!element) {
+      return;
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        callback(element, entry);
+      }
+    });
+
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+    };
+  }, [callback, ref]);
+
+  return ref;
+}

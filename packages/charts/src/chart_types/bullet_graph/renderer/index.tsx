@@ -207,7 +207,9 @@ function switchToMetric(size: Size, rows: number, columns: number, subtype: Bull
   switch (subtype) {
     case BulletGraphSubtype.horizontal:
       return size.width / columns < 200 || size.height / rows < 100;
-    default:
+    case BulletGraphSubtype.vertical:
       return size.width / columns < 150 || size.height / rows < 150;
+    case BulletGraphSubtype.angular:
+      return size.width / columns < 200 || size.height / rows < 200;
   }
 }

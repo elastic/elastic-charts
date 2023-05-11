@@ -11,13 +11,19 @@
   height: 100%;
   margin: 0;
   padding:0;
+
+}
+.echAlignedGrid__borderRight {
   border-right: 1px solid #EDF0F5;
 }
+.echAlignedGrid__borderBottom {
+  border-bottom: 1px solid #EDF0F5;
+}
+
 .echAlignedGrid--content {
   width: 100%;
   min-height: 0;
   margin: 0;
   padding:0;
-  border-right: 1px solid #EDF0F5;
-  border-bottom: 1px solid #EDF0F5;
+
 }
