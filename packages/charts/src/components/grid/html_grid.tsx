@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { memo, ComponentType, forwardRef } from 'react';
+import React, { memo, ComponentType } from 'react';
 
 import { highContrastColor } from '../../common/color_calcs';
 import { colorToRgba } from '../../common/color_library_wrappers';
@@ -88,7 +88,7 @@ export function HTMLGrid<D>({
             return !datum ? (
               <li key={`${columnIndex}-${rowIndex}`} role="presentation">
                 <div className={emptyMetricClassName} style={{ borderColor }}>
-                  {/* <EmptyComponent /> */}
+                  <EmptyComponent />
                 </div>
               </li>
             ) : (
@@ -114,7 +114,7 @@ export function HTMLGrid<D>({
             return (
               <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
                 <div className={emptyMetricClassName} style={{ borderColor }}>
-                  {/* <EmptyComponent /> */}
+                  <EmptyComponent />
                 </div>
               </li>
             );

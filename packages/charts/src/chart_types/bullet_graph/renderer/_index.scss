@@ -1,4 +1,4 @@
-@import "header";
+@import 'header';
 
 .echBulletGraphContainer {
   position: relative;
@@ -15,8 +15,8 @@
 }
 
 .echBulletGraphSVG--container {
-  flex:1;
-  padding:10px;
+  flex: 1;
+  padding: 10px;
   height: 100%;
   overflow: visible;
   position: relative;
@@ -25,8 +25,6 @@
   overflow: visible;
 }
 .echBulletGraph {
-
-
   .echBullet--tickLabel {
     font-size: 10px;
     fill: $euiTextColor;
@@ -58,8 +56,4 @@
   .echBullet--angularTickLabel {
     fill: $euiTextColor;
   }
-
 }
-
-
-

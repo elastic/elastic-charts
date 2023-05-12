@@ -6,11 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { grid } from 'charts-storybook/stories/metric/metric.stories';
 import classNames from 'classnames';
-import React, { ComponentType, CSSProperties, FC, PropsWithChildren } from 'react';
-
-import { Size } from '../../utils/dimensions';
+import React, { ComponentType, CSSProperties } from 'react';
 
 interface AlignedGridProps<D> {
   data: Array<Array<D | undefined>>;
@@ -34,7 +31,6 @@ export function AlignedGrid<D>({
   const columns = data.reduce((acc, row) => {
     return Math.max(acc, row.length);
   }, 0);
-  console.log({ columnCount: columns, rowCount: rows });
 
   const gridStyle: CSSProperties = {
     gridTemplateColumns: `repeat(${columns}, 1fr`,
@@ -54,11 +50,11 @@ export function AlignedGrid<D>({
             gridColumn: columnIndex + 1,
           };
           const headerClassName = classNames('echAlignedGrid--header', {
-            echAlignedGrid__borderRight: columnIndex < columns - 1,
+            // echAlignedGrid__borderRight: columnIndex < columns - 1,
           });
           const contentClassName = classNames('echAlignedGrid--content', {
-            echAlignedGrid__borderRight: columnIndex < columns - 1,
-            echAlignedGrid__borderBottom: rowIndex < rows - 1,
+            // echAlignedGrid__borderRight: columnIndex < columns - 1,
+            // echAlignedGrid__borderBottom: rowIndex < rows - 1,
           });
           if (!cell) {
             return (

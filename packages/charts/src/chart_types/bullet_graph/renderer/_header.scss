@@ -1,7 +1,6 @@
 .echBulletGraphHeader {
   position: relative;
-  padding: 8px;
-  border-bottom: 1px solid #D3DAE6;
+  padding: 8px 8px 0 8px;
 
   &__title {
     font-weight: bold;
@@ -18,7 +17,6 @@
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-
 }
 
 .echBulletGraphHeader--single {
@@ -32,7 +30,7 @@
   .echBulletGraphHeader__title {
     @include lineClamp(2);
   }
-  padding-bottom: 4px;
+  //padding-bottom: 4px;
 }
 
 .echBulletGraphHeader--multi {
@@ -50,15 +48,14 @@
     flex-grow: 1;
     flex-shrink: 1;
   }
-  padding-bottom: 4px;
+  //padding-bottom: 4px;
 }
-
 
 .echBulletHeader__valueContainer {
   white-space: nowrap;
   flex-grow: 0;
   flex-shrink: 0;
-  float:right;
+  float: right;
 }
 .echBulletHeader__value {
   font-weight: 700;
