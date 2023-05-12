@@ -1,117 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
 
-  <style>
+    <style>
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: min-content 1fr min-content 1fr;
+        width: 500px;
+        align-content: stretch;
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: min-content 1fr min-content 1fr;
-      width: 500px;
-      align-content: stretch;
+        resize: both;
+        overflow: hidden;
+        gap: 0;
+      }
 
-      resize: both;
-      overflow: hidden;
-      gap: 0;
-    }
+      .title {
+        display: block;
+        max-height: 100px;
+        border-right: 1px solid gray;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
 
-    .title {
-      display: block;
-      max-height: 100px;
-      border-right: 1px solid gray;
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding:0;
-    }
+      .chart {
+        display: block;
+        border-right: 1px solid gray;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .title[data-group='1'] {
+        grid-column: 1;
+        grid-row: 1;
+      }
 
+      .title[data-group='2'] {
+        grid-column: 2;
+        grid-row: 1;
+      }
 
-    .chart {
-      display: block;
-      border-right: 1px solid gray;
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding:0;
-    }
-    .title[data-group="1"] {
-      grid-column: 1;
-      grid-row: 1;
-    }
+      .title[data-group='3'] {
+        grid-column: 3;
+        grid-row: 1;
+      }
 
-    .title[data-group="2"] {
-      grid-column: 2;
-      grid-row: 1;
-    }
+      .title[data-group='4'] {
+        grid-column: 1;
+        grid-row: 3;
+      }
 
-    .title[data-group="3"] {
-      grid-column: 3;
-      grid-row: 1;
-    }
+      .title[data-group='5'] {
+        grid-column: 2;
+        grid-row: 3;
+      }
 
-    .title[data-group="4"] {
-      grid-column: 1;
-      grid-row: 3;
-    }
+      .chart[data-group='1'] {
+        grid-column: 1;
+        grid-row: 2;
+      }
 
-    .title[data-group="5"] {
-      grid-column: 2;
-      grid-row: 3;
-    }
+      .chart[data-group='2'] {
+        grid-column: 2;
+        grid-row: 2;
+      }
 
-    .chart[data-group="1"]{
-      grid-column: 1;
-      grid-row: 2;
-    }
+      .chart[data-group='3'] {
+        grid-column: 3;
+        grid-row: 2;
+      }
 
-    .chart[data-group="2"]{
-      grid-column: 2;
-      grid-row: 2;
-    }
+      .chart[data-group='4'] {
+        grid-column: 1;
+        grid-row: 4;
+      }
 
-    .chart[data-group="3"]{
-      grid-column: 3;
-      grid-row: 2;
-    }
+      .chart[data-group='5'] {
+        grid-column: 2;
+        grid-row: 4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid">
+      <div class="title" data-group="1" id="chart_1"><h1>CPU percentage</h1></div>
+      <div class="chart" data-group="1"></div>
 
-    .chart[data-group="4"]{
-      grid-column: 1;
-      grid-row: 4;
-    }
+      <div class="title" data-group="2">Title for 2 chart</div>
+      <figure class="chart" data-group="2">2 chart</figure>
 
-    .chart[data-group="5"]{
-      grid-column: 2;
-      grid-row: 4;
-    }
+      <div class="title" data-group="3">Title for 3 chart</div>
+      <figure class="chart" data-group="3">3 chart</figure>
 
+      <div class="title" data-group="4">Title for 4 chart</div>
+      <figure class="chart" data-group="4">4 chart</figure>
 
-
-  </style>
-
-</head>
-<body>
-
-<div class="grid">
-
-  <div class="title" data-group="1" id="chart_1"><h1>CPU percentage</h1></div>
-  <div class="chart" data-group="1" ></div>
-
-  <div class="title" data-group="2">Title for 2 chart</div>
-  <figure class="chart" data-group="2">2 chart</figure>
-
-  <div class="title" data-group="3">Title for 3 chart</div>
-  <figure class="chart" data-group="3">3 chart</figure>
-
-  <div class="title" data-group="4">Title for 4 chart</div>
-  <figure class="chart" data-group="4">4 chart</figure>
-
-  <div class="title" data-group="5">Title for 5 chart longer then chart 4</div>
-  <figure class="chart" data-group="5">5 chart</figure>
-
-</div>
-
-</body>
+      <div class="title" data-group="5">Title for 5 chart longer then chart 4</div>
+      <figure class="chart" data-group="5">5 chart</figure>
+    </div>
+  </body>
 </html>

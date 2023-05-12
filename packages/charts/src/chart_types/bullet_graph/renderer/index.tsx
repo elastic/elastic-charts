@@ -10,7 +10,6 @@
 /* eslint-disable react/no-array-index-key */
 
 import { scaleLinear } from 'd3-scale';
-import { size } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -51,7 +50,6 @@ interface DispatchProps {
 const Component: React.FC<StateProps & DispatchProps> = ({
   initialized,
   size,
-  a11y,
   specs: [spec], // ignoring other specs
 }) => {
   if (!initialized || !spec) {
@@ -77,8 +75,9 @@ const Component: React.FC<StateProps & DispatchProps> = ({
       }}
       contentComponent={({ datum, stats }) => {
         // TODO move to the bullet SVG
-        const base = datum.domain.min < 0 && datum.domain.max > 0 ? 0 : NaN;
+        // const base = datum.domain.min < 0 && datum.domain.max > 0 ? 0 : NaN;
         const scale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range([0, 1]);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const colorScale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range(['#D9C6EF', '#AA87D1']);
         const maxTicks =

@@ -6,10 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { useLatest } from '@elastic/eui/src/services/hooks/useLatest';
-import { grid } from 'charts-storybook/stories/metric/metric.stories';
 import { clamp } from 'lodash';
-import React, { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { Color } from '../../../common/colors';
 import { Ratio } from '../../../common/geometry';
@@ -119,7 +117,7 @@ export function HorizontalBulletComp(props: BulletProps) {
   return (
     <div className="echBulletGraphSVG--container">
       <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <g className="echBulletGraph" style={{ transform: 'translate3d(0, calc(50% - 16px), 0)' }}>
+        <g className="echBulletGraph" style={{ transform: 'translate3d(0, calc(0), 0)' }}>
           {props.colorBands.map((band, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <rect
@@ -209,10 +207,6 @@ function describeArc(x: number, y: number, radius: number, startAngle: number, e
   const arcSweep = endAngle - startAngle <= 180 ? '0' : '1';
 
   return ['M', start.x, start.y, 'A', radius, radius, 0, arcSweep, 0, end.x, end.y].join(' ');
-}
-
-function scaleToAngle(unit: number): number {
-  return 360 / unit;
 }
 
 /** @internal */
