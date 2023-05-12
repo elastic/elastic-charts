@@ -17,12 +17,15 @@
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
+  &--vertical {
+    border-bottom: 1px solid ;
+  }
 }
 
 .echBulletGraphHeader--single {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-end;
   width: 100%;
@@ -48,14 +51,14 @@
     flex-grow: 1;
     flex-shrink: 1;
   }
-  //padding-bottom: 4px;
+
 }
 
 .echBulletHeader__valueContainer {
   white-space: nowrap;
   flex-grow: 0;
   flex-shrink: 0;
-  float: right;
+  align-items: baseline;
 }
 .echBulletHeader__value {
   font-weight: 700;

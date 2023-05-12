@@ -10,16 +10,24 @@ import React from 'react';
 
 /** @internal */
 export function Header(props: { title: string; subtitle: string; value: string; target?: string }) {
-  return (
+  return props.subtitle.trim().length > 0 ? (
     <div className="echBulletGraphHeader echBulletGraphHeader--multi">
       <h2 className="echBulletGraphHeader__title">{props.title}</h2>
       <div className="echBulletGraphHeader--single">
         <p className="echBulletGraphHeader__subtitle">{props.subtitle}</p>
         <p className="echBulletHeader__valueContainer">
-          <span className="echBulletHeader__value">{props.value}</span>
-          {props.target ? <span className="echBulletHeader__target"> / {props.target}</span> : ''}
+          <span className="echBulletHeader__value">{props.value}K</span>
+          {props.target ? <span className="echBulletHeader__target"> / {props.target}M </span> : ''}
         </p>
       </div>
+    </div>
+  ) : (
+    <div className="echBulletGraphHeader echBulletGraphHeader--single">
+      <h2 className="echBulletGraphHeader__title">{props.title}</h2>
+      <p className="echBulletHeader__valueContainer">
+        <span className="echBulletHeader__value">{props.value}K</span>
+        {props.target ? <span className="echBulletHeader__target"> / {props.target}M </span> : ''}
+      </p>
     </div>
   );
 }

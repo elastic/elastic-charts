@@ -50,11 +50,12 @@ export function AlignedGrid<D>({
             gridColumn: columnIndex + 1,
           };
           const headerClassName = classNames('echAlignedGrid--header', {
-            // echAlignedGrid__borderRight: columnIndex < columns - 1,
+            echAlignedGrid__borderRight: columnIndex < columns - 1,
+            // echAlignedGrid__borderBottom: true,
           });
           const contentClassName = classNames('echAlignedGrid--content', {
-            // echAlignedGrid__borderRight: columnIndex < columns - 1,
-            // echAlignedGrid__borderBottom: rowIndex < rows - 1,
+            echAlignedGrid__borderRight: columnIndex < columns - 1,
+            echAlignedGrid__borderBottom: rowIndex < rows - 1,
           });
           if (!cell) {
             return (
