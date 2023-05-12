@@ -58,7 +58,8 @@ export const Example = () => {
                 ticks: 'auto',
                 target: 25,
                 value: 35.5,
-                title: 'Network In',
+                title: 'Network In with a longer title',
+                subtitle: ' longer title',
                 domain: { min: 0, max: 100, nice: false },
                 valueFormatter: (d) => `${d}%`,
                 tickFormatter: (d) => `${d}%`,
@@ -69,7 +70,7 @@ export const Example = () => {
                 ticks: 'auto',
                 target: 25,
                 value: 91,
-                title: 'Network out',
+                title: 'Network outtage',
 
                 domain: { min: 0, max: 100, nice: false },
                 valueFormatter: (d) => `${d}%`,
