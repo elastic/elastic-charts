@@ -337,13 +337,13 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
     minorTickLabelFormat: minorDayFormat,
     detailedLabelFormat: detailedDayFormat,
   };
-  const weeksUnlabelled: AxisLayer<Interval & { dayOfMonth: number }> = {
-    ...weekStartDays,
+  const daysUnlabelled: AxisLayer<Interval & YearToDay> = {
+    ...days,
     labeled: false,
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };
-  const daysUnlabelled: AxisLayer<Interval & YearToDay> = {
-    ...days,
+  const weeksUnlabelled: AxisLayer<Interval & { dayOfMonth: number }> = {
+    ...weekStartDays,
     labeled: false,
     minimumTickPixelDistance: unlabeledGridMinimumPixelDistance,
   };

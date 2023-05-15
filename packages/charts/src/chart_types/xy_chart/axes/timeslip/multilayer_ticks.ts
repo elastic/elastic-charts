@@ -87,6 +87,11 @@ export function multilayerAxisEntry(
       const timeTicks = [...l.intervals(binStartsFrom, binStartsTo)]
         .filter((b) => b.labelSupremum > domainFromS && b.minimum <= domainToS)
         .map((b) => 1000 * b.minimum);
+
+      if (timeTicks.length === 0) {
+        return combinedEntry;
+      }
+
       const { entry } = fillLayerTimeslip(
         layerIndex,
         detailedLayerIndex,
