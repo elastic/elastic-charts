@@ -7,5 +7,5 @@
  */
 
 /** @internal */
-export const DEFAULT_FONT_FAMILY =
-  '"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'; //'Inter UI, -apple-system, Segoe UI, Helvetica, Arial, sans-serif';
+export const DEFAULT_FONT_FAMILY = 'Inter UI, -apple-system, Segoe UI, Helvetica, Arial, sans-serif';
+//'"Inter UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';

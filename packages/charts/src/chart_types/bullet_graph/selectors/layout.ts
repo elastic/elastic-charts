@@ -7,17 +7,12 @@
  */
 
 import { chartSize, getBulletGraphSpec } from './chart_size';
-import { ChartType } from '../../../chart_types';
-import { BulletDatum, BulletGraphSpec } from '../../../chart_types/bullet_graph/spec';
-import { SpecType } from '../../../specs';
-import { GlobalChartState } from '../../../state/chart_state';
+import { BulletDatum } from '../../../chart_types/bullet_graph/spec';
 import { createCustomCachedSelector } from '../../../state/create_selector';
-import { getSpecsByType } from '../../../state/selectors/get_specs_by_type';
 import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { Dimensions, Size } from '../../../utils/dimensions';
+import { Size } from '../../../utils/dimensions';
 import { wrapText } from '../../../utils/text/wrap';
 import {
-  GRAPH_PADDING,
   HEADER_PADDING,
   SUBTITLE_FONT,
   SUBTITLE_FONT_SIZE,
@@ -75,8 +70,8 @@ export const layout = createCustomCachedSelector([getBulletGraphSpec, chartSize]
 
   const panel: Size = { width: size.width / columns, height: size.height / rows };
   const headerSize: Size = {
-    width: panel.width - HEADER_PADDING[1] - HEADER_PADDING[3],
-    height: panel.height - HEADER_PADDING[0] - HEADER_PADDING[2],
+    width: panel.width - HEADER_PADDING.left - HEADER_PADDING.right,
+    height: panel.height - HEADER_PADDING.top - HEADER_PADDING.bottom,
   };
 
   return withTextMeasure((textMeasurer) => {
@@ -103,15 +98,16 @@ export const layout = createCustomCachedSelector([getBulletGraphSpec, chartSize]
       }),
     );
 
-    const goesToMultiline = header.some((row) =>
-      row.some((cell) => {
+    const goesToMultiline = header.some((row) => {
+      const valueAlignedWithSubtitle = row.some((cell) => cell?.content.subtitle);
+      return row.some((cell) => {
         if (!cell) return false;
         const valuesWidth = cell.size.value + cell.size.target;
-        return cell.content.subtitle
+        return valueAlignedWithSubtitle
           ? cell.size.subtitle + valuesWidth > headerSize.width || cell.size.title > headerSize.width
           : cell.size.title + valuesWidth > headerSize.width;
-      }),
-    );
+      });
+    });
 
     const headerLayout = header.map((row) => {
       return row.map((cell) => {
@@ -163,8 +159,8 @@ export const layout = createCustomCachedSelector([getBulletGraphSpec, chartSize]
               maxTitleRows * TITLE_LINE_HEIGHT +
               maxSubtitleRows * SUBTITLE_LINE_HEIGHT +
               (cell?.multiline ? VALUE_LINE_HEIGHT : 0) +
-              HEADER_PADDING[0] +
-              HEADER_PADDING[2] +
+              HEADER_PADDING.top +
+              HEADER_PADDING.bottom +
               (spec.subtype === 'horizontal' ? 50 : 100), // chart height
             minWidth: spec.subtype === 'horizontal' ? 140 : 140,
           };

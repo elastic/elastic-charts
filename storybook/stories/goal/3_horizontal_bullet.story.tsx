@@ -28,23 +28,35 @@ const getBandFillColor = getBandFillColorFn({
 });
 
 export const Example = () => (
-  <Chart>
-    <Settings baseTheme={useBaseTheme()} />
-    <Goal
-      id="spec_1"
-      subtype={subtype}
-      base={0}
-      target={260}
-      actual={280}
-      domain={{ min: 0, max: 300 }}
-      bands={[200, 250, 300]}
-      ticks={[0, 50, 100, 150, 200, 250, 300]}
-      tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-      bandFillColor={getBandFillColor}
-      labelMajor="Revenue 2020 YTD  "
-      labelMinor="(thousand USD)  "
-      centralMajor="280"
-      centralMinor="target: 260"
-    />
-  </Chart>
+  <div
+    style={{
+      resize: 'both',
+      padding: '0px',
+      overflow: 'auto',
+      width: 500,
+      height: 590,
+      boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
+      borderRadius: '6px',
+    }}
+  >
+    <Chart>
+      <Settings baseTheme={useBaseTheme()} />
+      <Goal
+        id="spec_1"
+        subtype={subtype}
+        base={0}
+        target={260}
+        actual={280}
+        domain={{ min: 0, max: 300 }}
+        bands={[200, 250, 300]}
+        ticks={[0, 50, 100, 150, 200, 250, 300]}
+        tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
+        bandFillColor={getBandFillColor}
+        labelMajor="Revenue 2020 YTD  "
+        labelMinor="(thousand USD)  "
+        centralMajor="280"
+        centralMinor="target: 260"
+      />
+    </Chart>
+  </div>
 );
