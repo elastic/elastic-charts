@@ -14,15 +14,15 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example = () => {
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.angular);
+  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.vertical);
   return (
     <div
       style={{
         resize: 'both',
-        padding: '10px',
+        padding: '0px',
         overflow: 'auto',
-        width: 500,
-        height: 590,
+        width: 550,
+        height: 640,
         boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
         borderRadius: '6px',
       }}
@@ -38,7 +38,7 @@ export const Example = () => {
                 ticks: 'auto',
                 target: 10,
                 value: 23,
-                title: 'First row first column title',
+                title: 'Network inbound error rate',
                 // subtitle: 'First row first column subtitle',
                 domain: { min: 0, max: 100, nice: false },
                 valueFormatter: (d) => `${d}`,
@@ -48,7 +48,8 @@ export const Example = () => {
                 ticks: 'auto',
                 target: 67,
                 value: 123,
-                title: 'First row second column title',
+                title: 'Network outbound',
+                subtitle: 'error rate (%)',
                 domain: { min: 0, max: 100, nice: false },
                 valueFormatter: (d) => `${d}`,
                 tickFormatter: (d) => `${d}`,
@@ -59,8 +60,8 @@ export const Example = () => {
                 ticks: 'auto',
                 target: 50,
                 value: 11,
-                title: 'dsads',
-                subtitle: 'Second row first column subtitle',
+                title: 'Number of requests',
+                subtitle: 'Requests per second',
                 domain: { min: 0, max: 100, nice: false },
                 valueFormatter: (d) => `${d}`,
                 tickFormatter: (d) => `${d}`,

@@ -10,6 +10,7 @@ import { Color } from '../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { Pixels } from '../../common/geometry';
 import { Font } from '../../common/text_utils';
+import { Padding } from '../../utils/dimensions';
 
 /** @public */
 export interface BulletGraphStyle {
@@ -91,6 +92,16 @@ export const TICK_FONT: Font = {
 export const TICK_FONT_SIZE = 10;
 
 /** @internal */
-export const HEADER_PADDING: [number, number, number, number] = [8, 8, 8, 8];
+export const HEADER_PADDING: Padding = {
+  top: 8,
+  bottom: 8,
+  left: 8,
+  right: 8,
+};
 /** @internal */
-export const GRAPH_PADDING: [number, number, number, number] = [8, 8, 8, 8];
+export const GRAPH_PADDING: Padding = {
+  top: 8,
+  bottom: 8,
+  left: 8,
+  right: 8,
+};

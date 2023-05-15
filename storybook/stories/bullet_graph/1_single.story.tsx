@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { text, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
@@ -15,17 +16,25 @@ import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example = () => {
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
+  const title = text('title', 'Error rate');
+  const subtitle = text('subtitle', '');
+  const value = number('value', 56, { range: true, min: 0, max: 200 });
+  const target = number('target', 75, { range: true, min: 0, max: 200 });
+  const min = number('min', 0, { range: true, min: 0, max: 200 });
+  const max = number('max', 100, { range: true, min: 0, max: 200 });
 
+  const postfix = text('postfix', '');
   return (
     <div
       style={{
+        resize: 'both',
         padding: '0px',
-        width: 500,
-        height: 375,
+        overflow: 'auto',
+        width: 480,
+        height: 120,
         boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
         borderRadius: '6px',
       }}
-      className="resizable"
     >
       <Chart>
         <Settings baseTheme={useBaseTheme()} />
@@ -36,34 +45,13 @@ export const Example = () => {
             [
               {
                 ticks: 'auto',
-                value: 1320,
-                title: 'Total requests',
-                domain: { min: 0, max: 2000, nice: false },
-                valueFormatter: (d) => `${d}`,
-                tickFormatter: (d) => `${d}`,
-              },
-            ],
-            [
-              {
-                ticks: 'auto',
-                target: 150,
-                value: 483,
-                title: 'Erroring Request duration millis',
-                subtitle: '90th percentile',
-                domain: { min: 0, max: 500, nice: false },
-                valueFormatter: (d) => `${d}`,
-                tickFormatter: (d) => `${d}`,
-              },
-            ],
-            [
-              {
-                ticks: 'auto',
-                value: 12,
-                title: 'Error rate',
-                subtitle: 'percentage',
-                domain: { min: 0, max: 100, nice: false },
-                valueFormatter: (d) => `${d}%`,
-                tickFormatter: (d) => `${d}%`,
+                target,
+                value,
+                title,
+                subtitle,
+                domain: { min, max, nice: false },
+                valueFormatter: (d) => `${d}${postfix}`,
+                tickFormatter: (d) => `${d}${postfix}`,
               },
             ],
           ]}

@@ -8,9 +8,10 @@
 
 import React from 'react';
 
-import { Chart, BulletGraph, BulletGraphSubtype } from '@elastic/charts';
+import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
 
 import { getKnobFromEnum } from '../utils/knobs/utils';
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.vertical);
@@ -27,6 +28,7 @@ export const Example = () => {
       }}
     >
       <Chart>
+      <Settings baseTheme={useBaseTheme()} />
         <BulletGraph
           id="bubbles"
           subtype={subtype}
@@ -46,28 +48,30 @@ export const Example = () => {
                 target: 75,
                 value: 98,
                 title: 'Memory',
+                // subtitle: 'percent',
                 domain: { min: 0, max: 100, nice: false },
-                valueFormatter: (d) => `${d}%`,
-                tickFormatter: (d) => `${d}%`,
+                valueFormatter: (d) => `${d}`,
+                tickFormatter: (d) => `${d}`,
               },
               {
                 ticks: 'auto',
                 target: 25,
                 value: 35.5,
-                title: 'Network In verydss',
+                title: 'Network In',
+                subtitle: 'bandwidth',
                 domain: { min: 0, max: 100, nice: false },
-                valueFormatter: (d) => `${d}%`,
-                tickFormatter: (d) => `${d}%`,
+                valueFormatter: (d) => `${d}`,
+                tickFormatter: (d) => `${d}`,
               },
               {
                 ticks: 'auto',
                 target: 25,
                 value: 91,
                 title: 'Network out',
-
+                subtitle: 'available (percent)',
                 domain: { min: 0, max: 100, nice: false },
-                valueFormatter: (d) => `${d}%`,
-                tickFormatter: (d) => `${d}%`,
+                valueFormatter: (d) => `${d}`,
+                tickFormatter: (d) => `${d}`,
               },
             ],
           ]}

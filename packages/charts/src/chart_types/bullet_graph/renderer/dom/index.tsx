@@ -16,6 +16,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { VerticalBullet, HorizontalBullet, AngularBullet } from './bullet';
 import { Header } from './header';
+import { Color } from '../../../../common/colors';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
 import { ElementClickListener, BasicListener, ElementOverListener } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';

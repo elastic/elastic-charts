@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { renderBulletGraph } from './bullet_graph';
-import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
 import { ElementClickListener, BasicListener, ElementOverListener } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -43,6 +42,7 @@ interface StateProps {
   size: Size;
   layout: BulletGraphLayout;
   style: BulletGraphStyle;
+  bandColors: [string, string];
   onElementClick?: ElementClickListener;
   onElementOut?: BasicListener;
   onElementOver?: ElementOverListener;
@@ -104,8 +104,8 @@ class Component extends React.Component<Props> {
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   render() {
-    const { initialized, size, forwardStageRef, a11y, layout, spec } = this.props;
-    if (!initialized || size.width === 0 || size.height === 0) {
+    const { initialized, size, forwardStageRef, a11y, layout, spec, style } = this.props;
+    if (!initialized || size.width === 0 || size.height === 0 || !spec) {
       return null;
     }
 
@@ -134,29 +134,34 @@ class Component extends React.Component<Props> {
                 return null;
               }}
               contentComponent={({ datum, stats }) => {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 const colorScale = scaleLinear()
                   .domain([datum.domain.min, datum.domain.max])
-                  .range(['#D9C6EF', '#AA87D1']);
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  .range(this.props.bandColors);
                 return (
                   <Metric
                     chartId="XX"
                     datum={{
                       value: datum.value,
                       valueFormatter: datum.valueFormatter,
-                      color: 'black',
+                      color: style.barBackground,
                       progressBarDirection: spec.subtype === 'horizontal' ? 'horizontal' : 'vertical',
                       title: datum.title,
                       subtitle: datum.subtitle,
                       domainMax: datum.domain.max,
+                      extra: datum.target ? (
+                        <span>
+                          target: <strong>{datum.valueFormatter(datum.target)}</strong>
+                        </span>
+                      ) : undefined,
                     }}
                     totalRows={stats.rows}
                     totalColumns={stats.columns}
                     columnIndex={stats.columnIndex}
                     rowIndex={stats.rowIndex}
                     style={{
-                      background: 'white',
+                      background: style.background,
                       barBackground: `${colorScale(datum.value)}`,
                       border: 'gray',
                       minHeight: 0,
@@ -197,14 +202,21 @@ const DEFAULT_PROPS: StateProps = {
   },
   a11y: DEFAULT_A11Y_SETTINGS,
 
-  layout: {},
+  layout: {
+    headerLayout: [],
+    layoutAlignment: [],
+    shouldRenderMetric: false,
+  },
   style: LIGHT_THEME_BULLET_STYLE,
+  bandColors: ['#D9C6EF', '#AA87D1'],
 };
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
+  const theme = getChartThemeSelector(state);
+
   // const { onElementClick, onElementOut, onElementOver } = getSettingsSpecSelector(state);
   return {
     initialized: true,
@@ -213,7 +225,9 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     size: chartSize(state),
     a11y: getA11ySettingsSelector(state),
     layout: layout(state),
-    style: getChartThemeSelector(state).bulletGraph,
+    style: theme.bulletGraph,
+    bandColors: theme.background.fallbackColor === 'black' ? ['#6092C0', '#3F4E61'] : ['#D9C6EF', '#AA87D1'], //['#6092C0', '#3F4E61']
+    //.range(['#D9C6EF', '#AA87D1']);
     // onElementClick,
     // onElementOver,
     // onElementOut,
