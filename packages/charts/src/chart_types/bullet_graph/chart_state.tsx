@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
+import React, { RefObject } from 'react';
 
-import { BulletGraphRenderer } from './renderer';
+import { BulletGraphRenderer } from './renderer/canvas';
 import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { LegendItem } from '../../common/legend';
-import { InternalChartState } from '../../state/chart_state';
+import { BackwardRef, InternalChartState } from '../../state/chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../state/selectors/get_legend_items_labels';
 
@@ -24,7 +24,10 @@ const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 export class BulletGraphState implements InternalChartState {
   chartType = ChartType.BulletGraph;
   getChartTypeDescription = () => 'Bullet Graph';
-  chartRenderer = () => <BulletGraphRenderer />;
+  chartRenderer = (backwordRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
+    <BulletGraphRenderer forwardStageRef={forwardStageRef} />
+  );
+
   isInitialized = () => InitStatus.Initialized;
   isBrushAvailable = () => false;
   isBrushing = () => false;

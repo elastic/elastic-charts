@@ -172,3 +172,10 @@ body {
 .euiPopover__anchor {
   width: 100%;
 }
+
+.resizable {
+  resize: both;
+  overflow: auto;
+  width: 500px;
+  height: 600px;
+}

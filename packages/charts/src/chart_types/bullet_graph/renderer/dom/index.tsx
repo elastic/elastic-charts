@@ -16,21 +16,20 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { VerticalBullet, HorizontalBullet, AngularBullet } from './bullet';
 import { Header } from './header';
-import { Color } from '../../../common/colors';
-import { AlignedGrid } from '../../../components/grid/aligned_grid';
-import { BasicListener, ElementClickListener, ElementOverListener } from '../../../specs/settings';
-import { onChartRendered } from '../../../state/actions/chart';
-import { GlobalChartState } from '../../../state/chart_state';
+import { AlignedGrid } from '../../../../components/grid/aligned_grid';
+import { ElementClickListener, BasicListener, ElementOverListener } from '../../../../specs';
+import { onChartRendered } from '../../../../state/actions/chart';
+import { GlobalChartState } from '../../../../state/chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,
   getA11ySettingsSelector,
-} from '../../../state/selectors/get_accessibility_config';
-import { getInternalIsInitializedSelector, InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { Size } from '../../../utils/dimensions';
-import { Metric } from '../../metric/renderer/dom/metric';
-import { chartSize, getBulletGraphSpec } from '../selectors/chart_size';
-import { BulletDatum, BulletGraphSpec, BulletGraphSubtype } from '../spec';
+} from '../../../../state/selectors/get_accessibility_config';
+import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { Size } from '../../../../utils/dimensions';
+import { Metric } from '../../../metric/renderer/dom/metric';
+import { getBulletGraphSpec, chartSize } from '../../selectors/chart_size';
+import { BulletGraphSpec, BulletDatum, BulletGraphSubtype } from '../../spec';
 
 interface StateProps {
   initialized: boolean;
