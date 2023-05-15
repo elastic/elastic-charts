@@ -54,7 +54,7 @@ export const Example = () => {
                 ticks: 'auto',
                 target: 25,
                 value: 35.5,
-                title: 'Network In very long title two lines',
+                title: 'Network In verydss',
                 domain: { min: 0, max: 100, nice: false },
                 valueFormatter: (d) => `${d}%`,
                 tickFormatter: (d) => `${d}%`,

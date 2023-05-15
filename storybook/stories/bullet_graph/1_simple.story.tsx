@@ -8,8 +8,9 @@
 
 import React from 'react';
 
-import { Chart, BulletGraph, BulletGraphSubtype } from '@elastic/charts';
+import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
 
+import { useBaseTheme } from '../../use_base_theme';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example = () => {
@@ -18,7 +19,7 @@ export const Example = () => {
     <div
       style={{
         resize: 'both',
-        padding: '0px',
+        padding: '10px',
         overflow: 'auto',
         width: 500,
         height: 590,
@@ -27,6 +28,7 @@ export const Example = () => {
       }}
     >
       <Chart>
+        <Settings baseTheme={useBaseTheme()} />
         <BulletGraph
           id="bubbles"
           subtype={subtype}
@@ -42,38 +44,38 @@ export const Example = () => {
                 valueFormatter: (d) => `${d}`,
                 tickFormatter: (d) => `${d}`,
               },
-              // {
-              //   ticks: 'auto',
-              //   target: 67,
-              //   value: 123,
-              //   title: 'First row second column title',
-              //   domain: { min: 0, max: 100, nice: false },
-              //   valueFormatter: (d) => `${d}`,
-              //   tickFormatter: (d) => `${d}`,
-              // },
+              {
+                ticks: 'auto',
+                target: 67,
+                value: 123,
+                title: 'First row second column title',
+                domain: { min: 0, max: 100, nice: false },
+                valueFormatter: (d) => `${d}`,
+                tickFormatter: (d) => `${d}`,
+              },
             ],
-            // [
-            //   {
-            //     ticks: 'auto',
-            //     target: 50,
-            //     value: 11,
-            //     title: '',
-            //     subtitle: 'Second row first column subtitle',
-            //     domain: { min: 0, max: 100, nice: false },
-            //     valueFormatter: (d) => `${d}`,
-            //     tickFormatter: (d) => `${d}`,
-            //   },
-            //   {
-            //     ticks: 'auto',
-            //     target: 80,
-            //     value: 91,
-            //     title: 'Second row second column title',
-            //     subtitle: 'percentage',
-            //     domain: { min: 0, max: 100, nice: false },
-            //     valueFormatter: (d) => `${d}`,
-            //     tickFormatter: (d) => `${d}`,
-            //   },
-            // ],
+            [
+              {
+                ticks: 'auto',
+                target: 50,
+                value: 11,
+                title: 'dsads',
+                subtitle: 'Second row first column subtitle',
+                domain: { min: 0, max: 100, nice: false },
+                valueFormatter: (d) => `${d}`,
+                tickFormatter: (d) => `${d}`,
+              },
+              {
+                ticks: 'auto',
+                target: 80,
+                value: 92,
+                title: 'Second row second column title',
+                subtitle: 'percentage',
+                domain: { min: 0, max: 100, nice: false },
+                valueFormatter: (d) => `${d}`,
+                tickFormatter: (d) => `${d}`,
+              },
+            ],
           ]}
         />
       </Chart>

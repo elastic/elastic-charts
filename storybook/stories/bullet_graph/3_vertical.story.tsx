@@ -17,14 +17,13 @@ export const Example = () => {
   return (
     <div
       style={{
-        resize: 'both',
-        padding: '0px',
-        overflow: 'auto',
+        // padding: '10px',
         width: 500,
         height: 590,
         boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
         borderRadius: '6px',
       }}
+      className="resizable"
     >
       <Chart>
         <BulletGraph
@@ -68,10 +67,10 @@ export const Example = () => {
             [
               {
                 ticks: 'auto',
-                target: 25,
+                target: 80,
                 value: 91,
-                title: 'Network outtage',
-
+                title: '',
+                subtitle: ' longer title',
                 domain: { min: 0, max: 100, nice: false },
                 valueFormatter: (d) => `${d}%`,
                 tickFormatter: (d) => `${d}%`,

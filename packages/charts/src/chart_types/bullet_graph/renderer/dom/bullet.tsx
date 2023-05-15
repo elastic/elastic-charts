@@ -9,10 +9,10 @@
 import { clamp } from 'lodash';
 import React, { memo, useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import { Color } from '../../../common/colors';
-import { Ratio } from '../../../common/geometry';
-import { Size } from '../../../utils/dimensions';
-import { BulletDatum } from '../spec';
+import { Color } from '../../../../common/colors';
+import { Ratio } from '../../../../common/geometry';
+import { Size } from '../../../../utils/dimensions';
+import { BulletDatum } from '../../spec';
 
 /** @internal */
 export interface BulletProps {
