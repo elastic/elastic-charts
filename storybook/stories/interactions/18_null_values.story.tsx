@@ -83,7 +83,11 @@ export const Example = () => {
           }}
         />
         <Tooltip type={TooltipType.VerticalCursor} showNullValues={showNullValues} />
-        <Axis id="bottom" position={Position.Bottom} tickFormat={niceTimeFormatter([data[0][0], data.at(-1)[0]])} />
+        <Axis
+          id="bottom"
+          position={Position.Bottom}
+          tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+        />
         <Axis
           id="left2"
           ticks={3}
@@ -122,7 +126,11 @@ export const Example = () => {
           }}
         />
         <Tooltip type={TooltipType.VerticalCursor} showNullValues={showNullValues} />
-        <Axis id="bottom" position={Position.Bottom} tickFormat={niceTimeFormatter([data[0][0], data.at(-1)[0]])} />
+        <Axis
+          id="bottom"
+          position={Position.Bottom}
+          tickFormat={niceTimeFormatter([data[0][0], data[data.length - 1][0]])}
+        />
         <Axis
           id="left2"
           position={Position.Left}
