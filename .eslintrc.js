@@ -433,8 +433,9 @@ module.exports = {
       },
     },
     {
-      files: ['stories/**/*.ts?(x)', 'docs/**/*.ts?(x)'],
+      files: ['storybook/stories/**/*.ts?(x)'],
       rules: {
+        'unicorn/prefer-at': 0,
         '@typescript-eslint/no-unsafe-call': 0,
         '@typescript-eslint/no-unnecessary-type-assertion': 0,
       },
@@ -486,7 +487,7 @@ module.exports = {
       },
     },
     {
-      files: ['stories/**/*.ts?(x)', '*.test.ts?(x)'],
+      files: ['storybook/stories/**/*.ts?(x)', '*.test.ts?(x)'],
       rules: {
         'jsx-a11y/no-static-element-interactions': 0,
         'jsx-a11y/click-events-have-key-events': 0,

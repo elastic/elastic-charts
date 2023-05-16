@@ -358,7 +358,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     smVerticalAccessorValue?: string | number,
   ) => {
     const startValue = x[0];
-    const endValue = x[x.length - 1];
+    const endValue = x.at(-1);
     const leftIndex = xValues.indexOf(startValue ?? NaN);
     const rightIndex = xValues.indexOf(endValue ?? NaN) + (isRasterTimeScale(spec.xScale) && x.length > 1 ? 0 : 1);
 
@@ -366,7 +366,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
 
     const startFromScale = xScale((isLeftOutOfRange ? xValues[0] : xValues[leftIndex]) ?? NaN);
-    const endFromScale = xScale((isRightOutOfRange ? xValues[xValues.length - 1] : xValues[rightIndex]) ?? NaN);
+    const endFromScale = xScale((isRightOutOfRange ? xValues.at(-1) : xValues[rightIndex]) ?? NaN);
 
     if (startFromScale === undefined || endFromScale === undefined) {
       return null;
@@ -474,7 +474,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     heatmapViewModels: getPerPanelMap(smScales, (anchor, h, v) => {
       const primaryColumn = smScales.vertical.domain[0] === v;
       const primaryRow = smScales.horizontal.domain[0] === h;
-      const lastColumn = smScales.vertical.domain[smScales.vertical.domain.length - 1] === v;
+      const lastColumn = smScales.vertical.domain.at(-1) === v;
 
       const titles: HeatmapTitleConfig[] = [];
       // TODO this should be filtered by the pageSize AND the pageNumber

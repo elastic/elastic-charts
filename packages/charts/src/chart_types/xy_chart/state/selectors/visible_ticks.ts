@@ -107,8 +107,8 @@ function getVisibleTicks(
 ): AxisTick[] {
   const isSingleValueScale = scale.domain[0] === scale.domain[1];
   const makeRaster = enableHistogramMode && scale.bandwidth > 0 && !isMultilayerTimeAxis;
-  const ultimateTick = ticks[ticks.length - 1];
-  const penultimateTick = ticks[ticks.length - 2];
+  const ultimateTick = ticks.at(-1);
+  const penultimateTick = ticks.at(-2);
   if (makeRaster && !isSingleValueScale && typeof penultimateTick === 'number' && typeof ultimateTick === 'number') {
     const computedTickDistance = ultimateTick - penultimateTick;
     const numTicks = scale.minInterval / (computedTickDistance || scale.minInterval); // avoid infinite loop
