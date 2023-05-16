@@ -28,7 +28,7 @@ import { useBaseTheme } from '../../use_base_theme';
 const position = new Float32Array(columnarMock.position);
 const size = new Float32Array(columnarMock.size);
 
-const pseudoRandom = getRandomNumberGenerator('a_seed');
+const rng = getRandomNumberGenerator();
 
 const paletteColorBrewerCat12 = [
   [141, 211, 199],
@@ -50,7 +50,7 @@ const columnarData: ColumnarViewModel = {
   value: new Float64Array(columnarMock.value),
   // color: new Float32Array((columnarMock.color.match(/.{2}/g) ?? []).map((hex: string) => Number.parseInt(hex, 16) / 255)),
   color: new Float32Array(
-    columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[pseudoRandom(0, 11)].map((c) => c / 255), 1]),
+    columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[rng(0, 11)].map((c) => c / 255), 1]),
   ),
   position0: position.map((p, i) => (i % 2 === 0 ? 1 - p - size[i / 2] : p)), //.map((p, i) => (i % 2 === 0 ? 1 - p - size[i / 2] : p)), // new Float32Array([...position].slice(1)), // try with the wrong array length
   position1: position,
@@ -77,7 +77,7 @@ export const Example = () => {
     resetFocusControl();
   });
   button('Set focus on random node', () => {
-    focusOnNodeControl(Math.floor(20 * Math.random()));
+    focusOnNodeControl(rng(0, 19));
   });
   const debug = boolean('Debug history', false);
   return (
