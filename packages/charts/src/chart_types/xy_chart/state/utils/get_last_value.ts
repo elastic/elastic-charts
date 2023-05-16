@@ -27,7 +27,7 @@ export function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<S
       return;
     }
 
-    const last = series.data[series.data.length - 1];
+    const last = series.data.at(-1);
     if (!last) {
       return;
     }
@@ -35,7 +35,7 @@ export function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<S
       return;
     }
 
-    if (last.x !== xDomain.domain[xDomain.domain.length - 1]) {
+    if (last.x !== xDomain.domain.at(-1)) {
       // we have a dataset that is not filled with all x values
       // and the last value of the series is not the last value for every series
       // let's skip it
