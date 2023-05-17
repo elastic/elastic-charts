@@ -12,7 +12,7 @@ const utils = require('./utils');
 function isUndocumented({ value }) {
   const tag = utils.getReleaseTag(value);
   if (!tag || tag === INTERNAL_TAG) return false;
-  return value.replace(tag, '').replace(/\*/g, '').trim() === '';
+  return value.replace(tag, '').replaceAll('*', '').trim() === '';
 }
 
 module.exports = {

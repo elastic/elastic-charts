@@ -230,7 +230,7 @@ function limitValueToDomainRange(
     return min !== null && max !== null && min > max ? [null, null] : [min, max];
   } else {
     const min = isNil(minValue) || !scale.domain.includes(minValue) ? scale.domain[0] : minValue;
-    const max = isNil(maxValue) || !scale.domain.includes(maxValue) ? scale.domain[scale.domain.length - 1] : maxValue;
+    const max = isNil(maxValue) || !scale.domain.includes(maxValue) ? scale.domain.at(-1) : maxValue;
     return [min ?? null, max ?? null];
   }
 }
