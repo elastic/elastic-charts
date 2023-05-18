@@ -69,9 +69,3 @@ export interface SeriesDomainsAndData extends SmallMultiplesSeriesDomains {
   yDomains: YDomain[];
   formattedDataSeries: DataSeries[];
 }
-
-/** @internal */
-export interface LastValues {
-  y0: number | null;
-  y1: number | null;
-}

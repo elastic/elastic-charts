@@ -22,6 +22,7 @@ import {
   LegendColorPicker,
   LegendAction,
   LegendPositionConfig,
+  LegendSpec,
 } from '../../specs/settings';
 import {
   clearTemporaryColors as clearTemporaryColorsAction,
@@ -47,7 +48,7 @@ export interface LegendItemProps {
   totalItems: number;
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
-  showExtra: boolean;
+  legendExtra: LegendSpec['legendExtra'];
   isMostlyRTL: boolean;
   labelOptions: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
@@ -172,7 +173,6 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     const {
       extraValues,
       item,
-      showExtra,
       colorPicker,
       totalItems,
       action: Action,
@@ -190,12 +190,13 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     });
     const hasColorPicker = Boolean(colorPicker);
-    const extra = showExtra && getExtra(extraValues, item, totalItems);
-    const style: CSSProperties = flatLegend
-      ? {}
-      : {
-          [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
-        };
+
+    const extra = getExtra(extraValues, item, totalItems);
+    const style: CSSProperties = {
+      [isMostlyRTL ? 'marginRight' : 'marginLeft']: flatLegend
+        ? undefined
+        : LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
+    };
     return (
       <>
         <li

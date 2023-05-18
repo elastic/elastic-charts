@@ -100,7 +100,7 @@ export const Example = () => {
         debug={debug}
         rotation={customKnobs.enum.rotation()}
         showLegend
-        showLegendExtra
+        legendExtra="lastBucket"
         legendPosition={customKnobs.enum.position('legend')}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

@@ -60,7 +60,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings showLegend showLegendExtra debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendExtra="lastBucket" debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.XDomain}

@@ -65,7 +65,7 @@ export const Example = () => {
     <Chart className="story-chart">
       <Settings
         showLegend={boolean('Show legend', true)}
-        showLegendExtra={boolean('Show legend values', true)}
+        legendExtra={boolean('Show legend values', true) ? 'lastBucket' : 'none'}
         flatLegend={boolean('Flat legend', false)}
         theme={{
           chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },

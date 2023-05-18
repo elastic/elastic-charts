@@ -30,7 +30,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} showLegendExtra showLegend={showLegend} />
+      <Settings baseTheme={useBaseTheme()} legendExtra="lastBucket" showLegend={showLegend} />
       <Tooltip
         headerFormatter={
           disableHeaderFormat ? undefined : ({ value }) => `${value}${headerUnit ? ` ${headerUnit}` : ''}`

@@ -64,7 +64,7 @@ export const Example = () => {
       <Settings
         baseTheme={useBaseTheme()}
         showLegend={selectedChart === ChartType.XYAxis}
-        showLegendExtra={selectedChart === ChartType.XYAxis}
+        legendExtra={selectedChart === ChartType.XYAxis ? 'lastBucket' : 'none'}
       />
       {selectedChart === ChartType.Partition
         ? renderPartitionChart()

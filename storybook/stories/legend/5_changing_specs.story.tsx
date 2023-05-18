@@ -18,7 +18,7 @@ export const Example = () => {
   const splitSeries = boolean('split series', true) ? ['g1', 'g2'] : undefined;
   return (
     <Chart>
-      <Settings showLegend showLegendExtra legendPosition={Position.Top} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendExtra="lastBucket" legendPosition={Position.Top} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

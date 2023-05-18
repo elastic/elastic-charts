@@ -14,9 +14,9 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 /** @internal */
 export const getLegendItemsLabelsSelector = createCustomCachedSelector(
   [computeLegendSelector, getSettingsSpecSelector],
-  (legendItems, { showLegendExtra }): LegendItemLabel[] =>
-    legendItems.map(({ label, defaultExtra }) => ({
-      label: `${label}${showLegendExtra ? defaultExtra?.formatted ?? '' : ''}`,
+  (legendItems): LegendItemLabel[] =>
+    legendItems.map(({ label }) => ({
+      label: `${label}`,
       depth: 0,
     })),
 );

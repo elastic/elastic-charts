@@ -39,7 +39,7 @@ export const Example = () => {
         showLegend
         theme={{ legend: { labelOptions } }}
         baseTheme={useBaseTheme()}
-        showLegendExtra={showLegendExtra}
+        legendExtra={showLegendExtra ? 'lastBucket' : 'none'}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
         legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}

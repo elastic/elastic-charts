@@ -47,7 +47,7 @@ export const Example = () => {
   });
   return (
     <Chart>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={baseTheme} />
+      <Settings showLegend legendExtra="lastBucket" legendPosition={Position.Right} baseTheme={baseTheme} />
       <Axis id="bottom" position={Position.Bottom} title="Products" />
       <Axis
         id="left"

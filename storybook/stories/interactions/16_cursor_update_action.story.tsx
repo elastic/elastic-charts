@@ -97,7 +97,7 @@ export const Example = () => {
       <Chart ref={ref1} size={{ height: '50%' }} id="chart1">
         <Settings
           showLegend
-          showLegendExtra
+          legendExtra="lastBucket"
           baseTheme={useBaseTheme()}
           onPointerUpdate={pointerUpdate}
           pointerUpdateDebounce={debounceDelay}
@@ -128,7 +128,7 @@ export const Example = () => {
       <Chart ref={ref2} size={{ height: '50%' }} id="chart2">
         <Settings
           showLegend
-          showLegendExtra
+          legendExtra="lastBucket"
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{
             tooltip: { visible: bottomVisible, placement: bottomPlacement, boundary: 'chart' },

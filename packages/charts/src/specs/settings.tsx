@@ -414,7 +414,7 @@ export interface LegendSpec {
    * Show an extra parameter on each legend item defined by the chart type
    * @defaultValue `false`
    */
-  showLegendExtra: boolean;
+  legendExtra: 'none' | 'lastBucket' | 'lastInSeries' | 'avg' | 'min' | 'max' | 'sum';
   /**
    * Limit the legend to the specified maximal depth when showing a hierarchical legend
    *

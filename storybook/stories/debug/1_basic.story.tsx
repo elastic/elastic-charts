@@ -18,7 +18,13 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings debug={debug} showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        debug={debug}
+        showLegend
+        legendExtra="lastBucket"
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <Axis id="top" position={Position.Top} title="Top axis" showOverlappingTicks />

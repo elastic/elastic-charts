@@ -96,7 +96,7 @@ export const Example = () => {
       <Settings
         {...onElementListeners}
         showLegend={boolean('Show legend', true)}
-        showLegendExtra={boolean('Show legend extra', false)}
+        legendExtra={boolean('Show legend extra', false) ? 'lastBucket' : 'none'}
         legendStrategy={LegendStrategy.Key}
         flatLegend={boolean('Flat legend', true)}
         theme={theme}

@@ -44,11 +44,12 @@ export const Example = () => {
   const minorGridLines = true;
   const horizontalAxisTitle = true;
   const yAxisTitle = 'CPU utilization';
-
+  console.log(TIME_SERIES_DATASET[TIME_SERIES_DATASET.length - 1]);
   return (
     <Chart>
       <Settings
         showLegend={showLegend}
+        legendExtra="lastBucket"
         baseTheme={useBaseTheme()}
         theme={{ axes: { tickLine: { visible: true } } }}
         xDomain={{
@@ -93,7 +94,7 @@ export const Example = () => {
         }}
         tickFormat={(d) => `${Number(d).toFixed(0)}%`}
       />
-      <HistogramBarSeries
+      <AreaSeries
         id="CPU Utilization"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}

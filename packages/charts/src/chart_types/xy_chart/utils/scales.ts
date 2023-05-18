@@ -58,7 +58,7 @@ export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuo
     const isSingleValueHistogram = !!enableHistogramMode && domainMax - domainMin === 0;
     const adjustedDomain: [number, number] = [domainMin, isSingleValueHistogram ? domainMin + minInterval : domainMax];
     const intervalCount = (adjustedDomain[1] - adjustedDomain[0]) / minInterval;
-    const intervalCountOffset = isSingleValueHistogram ? 0 : 1;
+    const intervalCountOffset = isSingleValueHistogram ? 0 : 0;
     const bandwidth = rangeDiff / (intervalCount + intervalCountOffset);
     const { start, end } = getBandScaleRange(isInverse, isSingleValueHistogram, range[0], range[1], bandwidth);
     return new ScaleContinuous(

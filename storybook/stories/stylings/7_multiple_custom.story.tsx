@@ -52,7 +52,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        showLegendExtra
+        legendExtra="lastBucket"
         theme={[primaryTheme, secondaryTheme]}
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}

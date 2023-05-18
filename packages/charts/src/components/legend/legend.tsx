@@ -97,7 +97,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     isMostlyRTL,
     totalItems: items.length,
     extraValues: props.extraValues,
-    showExtra: config.showLegendExtra,
+    legendExtra: config.legendExtra,
     onMouseOut: config.onLegendItemOut,
     onMouseOver: config.onLegendItemOver,
     onClick: config.onLegendItemClick,

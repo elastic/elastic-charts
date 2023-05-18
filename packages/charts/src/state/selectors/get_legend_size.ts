@@ -58,13 +58,13 @@ export const getLegendSizeSelector = createCustomCachedSelector(
       ),
     );
 
-    const { showLegendExtra: showLegendDisplayValue, legendPosition, legendAction } = legendConfig;
+    const { legendExtra, legendPosition, legendAction } = legendConfig;
     const {
       legend: { verticalWidth, spacingBuffer, margin },
     } = theme;
 
     const actionDimension = isDefined(legendAction) ? 24 : 0; // max width plus margin
-    const legendItemWidth = MARKER_WIDTH + SHARED_MARGIN + bbox.width + (showLegendDisplayValue ? SHARED_MARGIN : 0);
+    const legendItemWidth = MARKER_WIDTH + SHARED_MARGIN + bbox.width + (legendExtra !== 'none' ? SHARED_MARGIN : 0);
 
     if (legendPosition.direction === LayoutDirection.Vertical) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;

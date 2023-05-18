@@ -29,7 +29,7 @@ export const Example = () => (
   <Chart>
     <Settings
       showLegend
-      showLegendExtra
+      legendExtra="lastBucket"
       legendSize={100}
       pointBuffer={Infinity}
       legendPosition={Position.Right}

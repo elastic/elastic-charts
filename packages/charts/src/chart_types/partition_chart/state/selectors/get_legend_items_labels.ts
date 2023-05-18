@@ -16,11 +16,16 @@ import { getLegendLabelsAndValue } from '../../layout/utils/legend_labels';
 /** @internal */
 export const getLegendItemsLabels = createCustomCachedSelector(
   [getPartitionSpecs, getSettingsSpecSelector, getTrees],
-  (specs, { legendMaxDepth, showLegend, showLegendExtra }, trees): LegendItemLabel[] =>
+  (specs, { legendMaxDepth, showLegend, legendExtra }, trees): LegendItemLabel[] =>
     specs.flatMap(({ layers, valueFormatter }) =>
       showLegend
         ? trees.flatMap(({ tree }) =>
-            getLegendLabelsAndValue(layers, tree, legendMaxDepth, showLegendExtra ? valueFormatter : () => ''),
+            getLegendLabelsAndValue(
+              layers,
+              tree,
+              legendMaxDepth,
+              legendExtra && legendExtra !== 'none' ? valueFormatter : () => '',
+            ),
           )
         : [],
     ),

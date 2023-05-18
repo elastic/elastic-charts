@@ -118,7 +118,7 @@ export const Example = () => {
     <Chart renderer="canvas">
       <Settings
         showLegend
-        showLegendExtra
+        legendExtra="lastBucket"
         legendPosition={Position.Right}
         theme={chartTheme}
         baseTheme={useBaseTheme()}

@@ -31,7 +31,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        showLegendExtra
+        legendExtra="lastBucket"
         theme={customPartialTheme}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}

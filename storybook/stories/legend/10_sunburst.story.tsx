@@ -100,7 +100,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        showLegendExtra={showLegendExtra}
+        legendExtra={showLegendExtra ? 'lastBucket' : 'none'}
         flatLegend={isFlatLegendSupported ? flatLegend : true}
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}

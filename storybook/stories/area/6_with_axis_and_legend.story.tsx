@@ -17,7 +17,7 @@ const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => (
   <Chart>
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+    <Settings showLegend legendExtra="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
     <Axis
       id="bottom"
       title="timestamp per 1 minute"

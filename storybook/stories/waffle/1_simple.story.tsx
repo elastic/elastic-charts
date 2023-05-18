@@ -36,7 +36,7 @@ export const Example = () => {
         debug={showDebug}
         showLegend
         flatLegend
-        showLegendExtra
+        legendExtra="lastBucket"
       />
       <Partition
         id="spec_1"

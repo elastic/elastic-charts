@@ -19,7 +19,7 @@ export const Example = () => (
     <Settings
       baseTheme={useBaseTheme()}
       showLegend
-      showLegendExtra
+      legendExtra="lastBucket"
       theme={{
         chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
       }}

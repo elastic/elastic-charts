@@ -6,17 +6,7 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
-
-/**
- * @internal
- * @param extra
- * @param isSeriesHidden
- */
-export function renderExtra(extra: string) {
-  return (
-    <div className="echLegendItem__extra" title={`${extra}`}>
-      {extra}
-    </div>
-  );
+/** @internal */
+export interface LegendExtra {
+  value: number | null;
 }

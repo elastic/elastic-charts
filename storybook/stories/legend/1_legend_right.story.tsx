@@ -19,7 +19,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        showLegendExtra
+        legendExtra="lastBucket"
         legendPosition={Position.Right}
         legendSize={getLegendSizeKnob()}
         baseTheme={useBaseTheme()}
