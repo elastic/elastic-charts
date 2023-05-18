@@ -47,7 +47,7 @@ export function renderTick(
         ...(axisPosition === Position.Left ? { x1: width, x2: width - tickSize } : { x1: 0, x2: tickSize }),
       };
   const layered = typeof layer === 'number';
-  const multilayerLuma = gridLine.lumaSteps[detailedLayer];
+  const multilayerLuma = gridLine.lumaSteps[detailedLayer] ?? NaN;
   const strokeWidth = layered ? HIERARCHICAL_GRID_WIDTH : tickLine.strokeWidth;
   const color: RgbaTuple = layered ? [multilayerLuma, multilayerLuma, multilayerLuma, 1] : colorToRgba(tickLine.stroke);
   renderMultiLine(ctx, [xy], { color, width: strokeWidth });

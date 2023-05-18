@@ -31,37 +31,37 @@ export const Example = () => (
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"
-      title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+      title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title}
       position={Position.Left}
       tickFormat={(d) => `${Number(d).toFixed(0)}%`}
     />
     <LineSeries
-      id={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
+      id={KIBANA_METRICS.metrics.kibana_os_load.v3.metric.label}
       xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
+      data={KIBANA_METRICS.metrics.kibana_os_load.v3.data}
       curve={CurveType.LINEAR}
       stackAccessors={[0]}
     />
     <LineSeries
-      id={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
+      id={KIBANA_METRICS.metrics.kibana_os_load.v2.metric.label}
       xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
+      data={KIBANA_METRICS.metrics.kibana_os_load.v2.data}
       curve={CurveType.LINEAR}
       stackAccessors={[0]}
     />
     <LineSeries
-      id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
+      id={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.label}
       xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+      data={KIBANA_METRICS.metrics.kibana_os_load.v1.data}
       curve={CurveType.LINEAR}
       stackAccessors={[0]}
     />

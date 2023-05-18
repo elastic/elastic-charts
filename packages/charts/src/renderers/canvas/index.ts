@@ -76,12 +76,14 @@ export function withClipRanges(
       if (negate) {
         clippedRanges.forEach(([x0, x1]) => ctx.rect(x0, y, x1 - x0, height));
       } else {
-        const firstX = clippedRanges[0][0];
-        const lastX = clippedRanges[clippedRanges.length - 1][1];
+        const firstX = clippedRanges[0]?.[0] ?? NaN;
+        const lastX = clippedRanges.at(-1)?.[1] ?? NaN;
         ctx.rect(0, -0.5, firstX, height);
         ctx.rect(lastX, y, width - lastX, height);
         clippedRanges.forEach(([, x0], i) => {
-          if (i < clippedRanges.length - 1) ctx.rect(x0, y, clippedRanges[i + 1][0] - x0, height);
+          if (i < clippedRanges.length - 1) {
+            ctx.rect(x0, y, (clippedRanges[i + 1]?.[0] ?? NaN) - x0, height);
+          }
         });
       }
       ctx.clip();

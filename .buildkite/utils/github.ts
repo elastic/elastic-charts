@@ -229,8 +229,8 @@ export const updateCheckStatus = async (
   // revert the completed check run is to create a new check run. This will not show as a duplicate run.
   const newCheckNeeded = options.status !== 'completed' && checkRun?.status === 'completed';
 
-  console.trace('updateCheckStatus', checkId, title);
-  console.log(JSON.stringify(options, null, 2));
+  // console.trace('updateCheckStatus', checkId, title);
+  // console.log(JSON.stringify(options, null, 2));
 
   try {
     const output =

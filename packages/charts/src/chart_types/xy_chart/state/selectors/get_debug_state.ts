@@ -190,7 +190,7 @@ function getAreaState(seriesNameMap: Map<string, string>) {
       style,
     },
   }: PerPanel<AreaGeometry>): DebugStateArea => {
-    const [y1Path, y0Path] = lines;
+    const [y1Path = '', y0Path] = lines;
     const linePoints = points.reduce<{
       y0: DebugStateValue[];
       y1: DebugStateValue[];

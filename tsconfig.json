@@ -8,6 +8,7 @@
     "preserveConstEnums": true,
     "strict": true,
     "esModuleInterop": true,
+    "noUncheckedIndexedAccess": true,
     "module": "CommonJS",
     "target": "es5",
     "lib": ["esnext", "dom"],
@@ -24,5 +25,5 @@
       "/@elastic/charts/src/*": ["./packages/charts/src/*"]
     }
   },
-  "exclude": ["**/tmp", "**/dist", "./docs"]
+  "exclude": ["**/tmp", "**/dist"]
 }

@@ -8,6 +8,7 @@
 
 import { Layers, renderColumnBars, renderColumnTickLabels } from './column';
 import { doing, executing, filtering, mapping, pipeline } from '../../../../common/iterables';
+import { isNil } from '../../../../utils/common';
 import {
   NumberFormatter,
   Interval,
@@ -176,9 +177,9 @@ export const renderRaster =
     const lineNestLevel = a[i] === a[0] ? 0 : textNestLevel;
     const textNestLevelRowLimited = Math.min(config.maxLabelRowCount, textNestLevel); // max. N rows
     const lineNestLevelRowLimited = Math.min(config.maxLabelRowCount, lineNestLevel);
-    const lineThickness = config.lineThicknessSteps[i];
+    const lineThickness = config.lineThicknessSteps[i] ?? NaN;
     const luma =
-      config.lumaSteps[i] *
+      (config.lumaSteps[i] ?? NaN) *
       (config.darkMode ? (config.a11y.contrast === 'low' ? 0.5 : 1) : config.a11y.contrast === 'low' ? 1.5 : 1);
     const halfLineThickness = lineThickness / 2;
     const notTooDenseGridLayer = notTooDense(domainFrom, domainTo, 0, cartesianWidth, TIMESLIP_MAX_TIME_GRID_COUNT);
@@ -191,7 +192,7 @@ export const renderRaster =
     const renderBar =
       finestRaster &&
       valid &&
-      dataState.binUnit === layers[0].unit &&
+      dataState.binUnit === layers[0]?.unit &&
       dataState.binUnitCount === layers[0].unitMultiplier;
 
     if (labeled && textNestLevel <= config.maxLabelRowCount)
@@ -240,7 +241,7 @@ export const renderRaster =
     }
 
     // render specially the tick that just precedes the domain, therefore may insert into it (eg. intentionally, via needing to see tick texts)
-    if (binStartList.length > 0 && binStartList[0].minimum < domainFrom) {
+    if (!isNil(binStartList[0]) && binStartList[0].minimum < domainFrom) {
       const precedingBinStart = binStartList[0];
       if (finestRaster) {
         // condition necessary, otherwise it'll be the binStart of some temporally coarser bin

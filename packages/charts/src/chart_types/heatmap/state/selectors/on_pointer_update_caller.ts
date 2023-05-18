@@ -8,7 +8,7 @@
 
 import { Selector } from 'reselect';
 
-import { getSpecOrNull } from './heatmap_spec';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedGridCell } from './picked_shapes';
 import { ChartType } from '../../..';
 import {
@@ -18,11 +18,10 @@ import {
   PointerUpdateTrigger,
   SettingsSpec,
 } from '../../../../specs';
-import { GlobalChartState, PointerState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
-import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 
 function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, changeTrigger: PointerUpdateTrigger) {
@@ -55,14 +54,13 @@ export function createOnPointerUpdateCaller(): (state: GlobalChartState) => void
     if (selector === null && state.chartType === ChartType.Heatmap) {
       selector = createCustomCachedSelector(
         [
-          getSpecOrNull,
-          getLastClickSelector,
+          getHeatmapSpecSelector,
           getSettingsSpecSelector,
           getActivePointerPosition,
           getPickedGridCell,
           getChartIdSelector,
         ],
-        (spec, lastClick: PointerState | null, settings: SettingsSpec, currentPointer, gridCell, chartId): void => {
+        (spec, settings: SettingsSpec, currentPointer, gridCell, chartId): void => {
           if (!spec) {
             return;
           }

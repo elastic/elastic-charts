@@ -76,8 +76,8 @@ describe('GroupIds and useDefaultGroupId', () => {
     const geoms = computeSeriesGeometriesSelector(store.getState());
     const { bars } = geoms.geometries;
     expect(bars).toHaveLength(3);
-    expect(bars[0].value[0].width).toBe(40);
-    expect(bars[1].value[0].width).toBe(40);
-    expect(bars[2].value[0].width).toBe(40);
+    expect(bars[0]?.value[0]?.width).toBe(40);
+    expect(bars[1]?.value[0]?.width).toBe(40);
+    expect(bars[2]?.value[0]?.width).toBe(40);
   });
 });

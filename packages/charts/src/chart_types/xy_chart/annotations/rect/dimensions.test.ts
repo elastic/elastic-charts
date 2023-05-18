@@ -61,25 +61,25 @@ describe('Rect Annotation Dimensions', () => {
       'rect',
     ) as AnnotationRectProps[];
 
-    expect(dims1.rect.x).toBe(10);
-    expect(dims1.rect.width).toBeCloseTo(90);
-    expect(dims1.rect.y).toBe(0);
-    expect(dims1.rect.height).toBe(100);
+    expect(dims1?.rect.x).toBe(10);
+    expect(dims1?.rect.width).toBeCloseTo(90);
+    expect(dims1?.rect.y).toBe(0);
+    expect(dims1?.rect.height).toBe(100);
 
-    expect(dims2.rect.x).toBe(0);
-    expect(dims2.rect.width).toBe(10);
-    expect(dims2.rect.y).toBe(0);
-    expect(dims2.rect.height).toBe(100);
+    expect(dims2?.rect.x).toBe(0);
+    expect(dims2?.rect.width).toBe(10);
+    expect(dims2?.rect.y).toBe(0);
+    expect(dims2?.rect.height).toBe(100);
 
-    expect(dims3.rect.x).toBe(0);
-    expect(dims3.rect.width).toBe(100);
-    expect(dims3.rect.y).toBe(0);
-    expect(dims3.rect.height).toBe(90);
+    expect(dims3?.rect.x).toBe(0);
+    expect(dims3?.rect.width).toBe(100);
+    expect(dims3?.rect.y).toBe(0);
+    expect(dims3?.rect.height).toBe(90);
 
-    expect(dims4.rect.x).toBe(0);
-    expect(dims4.rect.width).toBeCloseTo(100);
-    expect(dims4.rect.y).toBe(90);
-    expect(dims4.rect.height).toBe(10);
+    expect(dims4?.rect.x).toBe(0);
+    expect(dims4?.rect.width).toBeCloseTo(100);
+    expect(dims4?.rect.y).toBe(90);
+    expect(dims4?.rect.height).toBe(10);
   });
 
   test('should determine if a point is within a rectangle annotation', () => {

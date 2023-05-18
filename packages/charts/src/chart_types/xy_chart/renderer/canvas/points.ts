@@ -54,7 +54,7 @@ export function renderPointGroup(
     .slice()
     .sort(({ radius: a }, { radius: b }) => b - a)
     .forEach(({ x, y, radius, transform, style, seriesIdentifier: { key }, panel }) => {
-      const { opacity } = geometryStateStyles[key];
+      const opacity = geometryStateStyles[key]?.opacity ?? 1;
       const fill: Fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
       const stroke: Stroke = {
         ...style.stroke,

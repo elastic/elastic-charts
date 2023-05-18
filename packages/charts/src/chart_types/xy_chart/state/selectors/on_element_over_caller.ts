@@ -35,7 +35,7 @@ function isOverElement(prevProps: Props | null, nextProps: Props | null) {
     nextGeomValues.length > 0 &&
     (nextGeomValues.length !== prevGeomValues.length ||
       !nextGeomValues.every(({ value: next }, index) => {
-        const prev = prevGeomValues[index].value;
+        const prev = prevGeomValues[index]?.value;
         return prev && prev.x === next.x && prev.y === next.y && prev.accessor === next.accessor;
       }))
   );

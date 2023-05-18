@@ -652,7 +652,7 @@ describe('common utilities', () => {
         expect(newBase).toEqual({
           ...newBase,
           number: partial.number,
-          string: partials[0].string,
+          string: partials[0]?.string,
         });
       });
 
@@ -666,8 +666,8 @@ describe('common utilities', () => {
         expect(newBase).toEqual({
           ...newBase,
           number: partial.number,
-          string: partials[0].string,
-          boolean: partials[1].boolean,
+          string: partials[0]?.string,
+          boolean: partials[1]?.boolean,
         });
       });
 
@@ -687,7 +687,7 @@ describe('common utilities', () => {
         const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
-          array1: partials[1].array1,
+          array1: partials[1]?.array1,
         });
       });
 
@@ -707,7 +707,7 @@ describe('common utilities', () => {
         const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
-          array2: partials[0].array2,
+          array2: partials[0]?.array2,
         });
       });
 
@@ -717,7 +717,7 @@ describe('common utilities', () => {
         const newBase = mergePartial(base, partial, { mergeOptionalPartialValues: false }, partials);
         expect(newBase).toEqual({
           ...newBase,
-          array2: partials[1].array2,
+          array2: partials[1]?.array2,
         });
       });
 
@@ -742,7 +742,7 @@ describe('common utilities', () => {
           ...newBase,
           nested: {
             ...newBase.nested,
-            number: partials[0].nested!.number,
+            number: partials[0]?.nested!.number,
           },
         });
       });

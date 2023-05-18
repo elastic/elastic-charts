@@ -22,7 +22,8 @@ import { AnnotationLineProps } from '../../../annotations/line/types';
 import { AnimationOptions } from '../../canvas/animations/animation';
 import { GetAnnotationParamsFn } from '../../common/utils';
 
-type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'markers' | 'panel'> & {
+type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'panel'> & {
+  marker: AnnotationLineProps['markers'][number];
   chartAreaRef: RefObject<HTMLCanvasElement>;
   chartDimensions: Dimensions;
   onDOMElementEnter: typeof onDOMElementEnterAction;
@@ -52,7 +53,7 @@ export function LineMarker({
   specId,
   datum,
   panel,
-  markers: [{ icon, body, color, position, alignment, dimension }],
+  marker: { icon, body, color, position, alignment, dimension },
   chartAreaRef,
   chartDimensions,
   onDOMElementEnter,

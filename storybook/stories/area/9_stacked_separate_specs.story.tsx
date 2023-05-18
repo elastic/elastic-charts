@@ -27,39 +27,39 @@ export const Example = () => (
     />
     <Axis
       id="left"
-      title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
+      title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title}
       position={Position.Left}
       tickFormat={(d) => Number(d).toFixed(2)}
     />
     <AreaSeries
       id="1"
-      name={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
+      name={KIBANA_METRICS.metrics.kibana_os_load.v3.metric.label}
       xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
       stackAccessors={[0]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[2].data}
+      data={KIBANA_METRICS.metrics.kibana_os_load.v3.data}
     />
     <AreaSeries
       id="2"
-      name={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
+      name={KIBANA_METRICS.metrics.kibana_os_load.v2.metric.label}
       xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
       stackAccessors={[0]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[1].data}
+      data={KIBANA_METRICS.metrics.kibana_os_load.v2.data}
     />
     <AreaSeries
       id="3"
-      name={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
+      name={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.label}
       xScaleType={ScaleType.Time}
       yScaleType={ScaleType.Linear}
       xAccessor={0}
       yAccessors={[1]}
       stackAccessors={[0]}
-      data={KIBANA_METRICS.metrics.kibana_os_load[0].data}
+      data={KIBANA_METRICS.metrics.kibana_os_load.v1.data}
     />
   </Chart>
 );

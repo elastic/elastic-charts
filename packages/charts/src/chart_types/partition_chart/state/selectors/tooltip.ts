@@ -20,14 +20,7 @@ export const getTooltipInfoSelector = createCustomCachedSelector(
   [getPartitionSpec, getPickedShapes, partitionMultiGeometries],
   (spec, pickedShapes, shapeViewModel): TooltipInfo => {
     return spec
-      ? pickShapesTooltipValues(
-          pickedShapes,
-          shapeViewModel,
-          spec.valueGetter,
-          spec.valueFormatter,
-          spec.percentFormatter,
-          spec.id,
-        )
+      ? pickShapesTooltipValues(pickedShapes, shapeViewModel, spec.valueFormatter, spec.percentFormatter, spec.id)
       : EMPTY_TOOLTIP;
   },
 );

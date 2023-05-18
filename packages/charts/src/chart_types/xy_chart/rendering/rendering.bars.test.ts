@@ -36,7 +36,7 @@ describe('Rendering bars', () => {
     );
     const { geometries } = computeSeriesGeometriesSelector(store.getState());
 
-    expect(geometries.bars[0].value).toMatchSnapshot();
+    expect(geometries.bars[0]?.value).toMatchSnapshot();
   });
 
   describe('Single series bar chart - ordinal', () => {
@@ -67,7 +67,7 @@ describe('Rendering bars', () => {
         store,
       );
       const { geometries } = computeSeriesGeometriesSelector(store.getState());
-      expect(geometries.bars[0].value[0].displayValue).toBeDefined();
+      expect(geometries.bars[0]?.value[0]?.displayValue).toBeDefined();
     });
 
     test('Can hide value labels if no formatter or showValueLabels is false/undefined', () => {
@@ -97,7 +97,7 @@ describe('Rendering bars', () => {
         store,
       );
       const { geometries } = computeSeriesGeometriesSelector(store.getState());
-      expect(geometries.bars[0].value[0].displayValue).toBeUndefined();
+      expect(geometries.bars[0]?.value[0]?.displayValue).toBeUndefined();
     });
 
     test('Can render bars with alternating value labels', () => {
@@ -128,8 +128,8 @@ describe('Rendering bars', () => {
       );
       const { geometries } = computeSeriesGeometriesSelector(store.getState());
 
-      expect(geometries.bars[0].value[0].displayValue?.text).toBeDefined();
-      expect(geometries.bars[0].value[1].displayValue?.text).toBeUndefined();
+      expect(geometries.bars[0]?.value[0]?.displayValue?.text).toBeDefined();
+      expect(geometries.bars[0]?.value[1]?.displayValue?.text).toBeUndefined();
     });
 
     test('Can render bars with contained value labels', () => {
@@ -160,7 +160,7 @@ describe('Rendering bars', () => {
       );
       const { geometries } = computeSeriesGeometriesSelector(store.getState());
 
-      expect(geometries.bars[0].value[0].displayValue?.width).toBe(50);
+      expect(geometries.bars[0]?.value[0]?.displayValue?.width).toBe(50);
     });
   });
   describe('Multi series bar chart - ordinal', () => {
@@ -205,10 +205,10 @@ describe('Rendering bars', () => {
     } = computeSeriesGeometriesSelector(store.getState());
 
     test('can render first spec bars', () => {
-      expect(bars[0].value).toMatchSnapshot();
+      expect(bars[0]?.value).toMatchSnapshot();
     });
     test('can render second spec bars', () => {
-      expect(bars[1].value).toMatchSnapshot();
+      expect(bars[1]?.value).toMatchSnapshot();
     });
   });
 });

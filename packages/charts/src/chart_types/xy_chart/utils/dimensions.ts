@@ -38,7 +38,7 @@ export interface ChartDimensions {
   axisTickDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
-  smSpec?: SmallMultiplesSpec,
+  smSpec: SmallMultiplesSpec | null,
 ): ChartDimensions {
   const axesDimensions = getAxesDimensions(theme, axisTickDimensions, axesStyles, axisSpecs, smSpec);
   const chartWidth = parentDimensions.width - axesDimensions.left - axesDimensions.right;

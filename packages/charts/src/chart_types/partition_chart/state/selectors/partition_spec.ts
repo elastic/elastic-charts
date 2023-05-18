@@ -9,7 +9,7 @@
 import { ChartType } from '../../..';
 import { SpecType } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { getSpecsFromStore } from '../../../../state/utils';
+import { getSpecsFromStore, getSpecFromStore } from '../../../../state/utils';
 import { PartitionSpec } from '../../specs';
 
 /** @internal */
@@ -19,6 +19,5 @@ export function getPartitionSpecs(state: GlobalChartState): PartitionSpec[] {
 
 /** @internal */
 export function getPartitionSpec(state: GlobalChartState): PartitionSpec | null {
-  const partitionSpecs = getPartitionSpecs(state);
-  return partitionSpecs.length > 0 ? partitionSpecs[0] : null; // singleton!
+  return getSpecFromStore<PartitionSpec, false>(state.specs, ChartType.Partition, SpecType.Series, false);
 }

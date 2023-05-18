@@ -1,5 +1,8 @@
 {
   "extends": "../tsconfig",
-  "include": ["../packages/charts/src/**/*", "./**/*", "../storybook-docs/config.docs.ts"],
-  "exclude": ["../**/*.test.*"]
+  "include": ["../packages/charts/src/**/*", "./**/*"],
+  "exclude": ["../**/*.test.*"],
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": false
+  }
 }

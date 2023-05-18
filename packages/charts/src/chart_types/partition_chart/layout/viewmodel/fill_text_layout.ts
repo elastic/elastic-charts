@@ -210,8 +210,6 @@ type GetShapeRowGeometry<C> = (
 
 type ShapeConstructor<C> = (n: ShapeTreeNode) => C;
 
-type NodeWithOrigin = { node: QuadViewModel; origin: PointTuple };
-
 function fill<C>(
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
@@ -233,13 +231,18 @@ function fill<C>(
       const container = shapeConstructor(node);
       const rotation = getRotation(node);
 
-      const layer = layers[node.depth - 1] || {};
+      const layer = layers[node.depth - 1];
+
+      if (!layer) {
+        throw new Error(`Failed to find layer at ${node.depth - 1}`);
+      }
+
       const verticalAlignment = middleAlign
         ? VerticalAlignments.middle
         : node.depth < layers.length
         ? VerticalAlignments.bottom
         : VerticalAlignments.top;
-      const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
+      const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1] ?? [];
       const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, clipText } = {
         ...fillLabel,
         valueFormatter: formatter,
@@ -355,6 +358,12 @@ function tryFontSize<C>(
       // iterate through rows
       while (currentRowIndex < targetRowCount) {
         const currentRow = rowSet.rows[currentRowIndex];
+
+        if (!currentRow) {
+          currentRowIndex++;
+          continue;
+        }
+
         const currentRowWords = currentRow.rowWords;
 
         // current row geometries
@@ -383,6 +392,7 @@ function tryFontSize<C>(
         while (measuredBoxes.length > 0 && rowHasRoom) {
           // adding box to row
           const [currentBox] = measuredBoxes;
+          if (!currentBox) continue;
           const wordBeginning = currentRowLength;
           currentRowLength += currentBox.width + wordSpacing;
 
@@ -441,14 +451,15 @@ function getRowSet<C>(
 
   // find largest fitting font size
   const largestIndex = fontSizes.length - 1;
-  const response = (i: number) => i + (tryFunction(identityRowSet(), fontSizes[i]).completed ? 0 : largestIndex + 1);
+  const response = (i: number) =>
+    i + (tryFunction(identityRowSet(), fontSizes[i] ?? 0).completed ? 0 : largestIndex + 1);
   const fontSizeIndex = monotonicHillClimb(response, largestIndex, largestIndex, integerSnap);
 
   if (!(fontSizeIndex >= 0)) {
     return identityRowSet();
   }
 
-  const { rowSet, completed } = tryFunction(identityRowSet(), fontSizes[fontSizeIndex]); // todo in the future, make the hill climber also yield the result to avoid this +1 call
+  const { rowSet, completed } = tryFunction(identityRowSet(), fontSizes[fontSizeIndex] ?? 0); // todo in the future, make the hill climber also yield the result to avoid this +1 call
   return { ...rowSet, rows: rowSet.rows.filter((r) => completed && Number.isFinite(r.length)) };
 }
 
@@ -490,7 +501,7 @@ export function fillTextLayout<C>(
       // get font size spec from config, which layer.fillLabel properties can override
       const { minFontSize, maxFontSize, idealFontSizeJump } = {
         ...style,
-        ...(l < layers.length && layers[l].fillLabel),
+        ...(l < layers.length && layers[l]?.fillLabel),
       };
       const fontSizeMagnification = maxFontSize / minFontSize;
       const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
@@ -519,12 +530,10 @@ export function fillTextLayout<C>(
 
     return childNodes
       .map((node: QuadViewModel, i: number) => ({ node, origin: textFillOrigins[i] }))
-      .sort((a: NodeWithOrigin, b: NodeWithOrigin) => b.node.value - a.node.value)
-      .reduce(
-        (
-          { rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] },
-          { node, origin }: { node: QuadViewModel; origin: [Pixels, Pixels] },
-        ) => {
+      .sort((a, b) => b.node.value - a.node.value)
+      .reduce<{ rowSets: RowSet[]; fontSizes: Pixels[][] }>(
+        ({ rowSets, fontSizes }, { node, origin }) => {
+          if (!origin) return { rowSets, fontSizes };
           const nextRowSet = filler(fontSizes, origin, node);
           const { fontSize } = nextRowSet;
           const layerIndex = node.depth - 1;
@@ -537,7 +546,7 @@ export function fillTextLayout<C>(
             ),
           };
         },
-        { rowSets: [] as RowSet[], fontSizes: allFontSizes },
+        { rowSets: [], fontSizes: allFontSizes },
       ).rowSets;
   };
 }

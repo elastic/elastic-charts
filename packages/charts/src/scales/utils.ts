@@ -18,7 +18,7 @@ export function getLinearNonDenserTicks(
 ): number[] {
   let currentCount = count;
   let ticks = getLinearTicks(start, stop, count, base);
-  while (ticks.length > 2 && currentCount > 0 && ticks[1] - ticks[0] < minInterval) {
+  while (ticks.length > 2 && currentCount > 0 && (ticks[1] ?? NaN) - (ticks[0] ?? NaN) < minInterval) {
     currentCount--;
     ticks = getLinearTicks(start, stop, currentCount, base);
   }

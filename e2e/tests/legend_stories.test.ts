@@ -208,7 +208,7 @@ test.describe('Legend stories', () => {
     const getPositionalUrl = (p1: string, p2: string, others: string = '') =>
       `http://localhost:9001/?path=/story/legend--inside-chart&knob-vAlign_Legend=${p1}&knob-hAlign_Legend=${p2}${others}`;
 
-    pwEach.test([
+    pwEach.test<[Position, Position]>([
       [Position.Top, Position.Left],
       [Position.Top, Position.Right],
       [Position.Bottom, Position.Left],
@@ -220,7 +220,7 @@ test.describe('Legend stories', () => {
       },
     );
 
-    pwEach.test([
+    pwEach.test<[Position, Position]>([
       [Position.Top, Position.Left],
       [Position.Top, Position.Right],
       [Position.Bottom, Position.Left],
@@ -235,7 +235,7 @@ test.describe('Legend stories', () => {
     const longLabel =
       'Non do aliqua veniam dolore ipsum eu aliquip. Culpa in duis amet non velit qui non ullamco sit adipisicing. Ut sunt Lorem mollit exercitation deserunt officia sunt ipsum eu amet.';
 
-    pwEach.test([
+    pwEach.test<[Position, Position]>([
       [Position.Top, Position.Left],
       [Position.Top, Position.Right],
       [Position.Bottom, Position.Left],

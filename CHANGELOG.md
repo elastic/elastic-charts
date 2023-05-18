@@ -1,3 +1,49 @@
+# [57.0.0](https://github.com/elastic/elastic-charts/compare/v56.0.0...v57.0.0) (2023-04-19)
+
+
+### Code Refactoring
+
+* enable `noUncheckedIndexedAccess` ([#2006](https://github.com/elastic/elastic-charts/issues/2006)) ([f446cca](https://github.com/elastic/elastic-charts/commit/f446cca1691bbe5d7608845b65ea555f74e0f6af))
+
+
+### BREAKING CHANGES
+
+* Enables stricter type option in src and could have
+unexpected changes. This release is meant to serve as a clean break
+in case any issues arise.
+
+# [56.0.0](https://github.com/elastic/elastic-charts/compare/v55.0.0...v56.0.0) (2023-04-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^76.4.0 ([#2008](https://github.com/elastic/elastic-charts/issues/2008)) ([95176e1](https://github.com/elastic/elastic-charts/commit/95176e14294b36fce983f53c6c5f278da24f50b1))
+* **deps:** update dependency @elastic/eui to v77 ([#2018](https://github.com/elastic/elastic-charts/issues/2018)) ([c079730](https://github.com/elastic/elastic-charts/commit/c079730dd849c34f71608df36938560566ba19d3))
+* **interactions:** brushing over origin coordinates ([#2013](https://github.com/elastic/elastic-charts/issues/2013)) ([937feb0](https://github.com/elastic/elastic-charts/commit/937feb0fcf1a11c473e45dfb0da36443660e98be))
+* **tooltip:** custom tooltip header context ([#1989](https://github.com/elastic/elastic-charts/issues/1989)) ([1e5b861](https://github.com/elastic/elastic-charts/commit/1e5b86106ff4c72e5a59b074e0472023ecc68164))
+
+
+### Features
+
+* **metric:** trend with string value ([#2011](https://github.com/elastic/elastic-charts/issues/2011)) ([91d7695](https://github.com/elastic/elastic-charts/commit/91d76957d88d25e93904f73b845c47d411f4ce32))
+
+
+### BREAKING CHANGES
+
+* **tooltip:** The `header` property of `TooltipInfo` type was simplified to `PointerValue` as to include only relevant properties. This change is propagated to all other types using `header` as a `TooltipValue`. The `TooltipInfo.values` used to conditionally pass only highlighted `TooltipValue`s when using a `customTooltip` and now _always_ passes all `values`.
+
+# [55.0.0](https://github.com/elastic/elastic-charts/compare/v54.0.0...v55.0.0) (2023-03-21)
+
+
+### Bug Fixes
+
+* **docs:** lint and fix EUI breaking changes ([0d14194](https://github.com/elastic/elastic-charts/commit/0d1419475f9f1a4ae5d83fdf247f35178e261d27))
+
+
+### Features
+
+* **heatmap:** small multiples ([#1933](https://github.com/elastic/elastic-charts/issues/1933)) ([690f568](https://github.com/elastic/elastic-charts/commit/690f5686c3de0da6714d649bc492a6c68e47b47f))
+
 # [54.0.0](https://github.com/elastic/elastic-charts/compare/v53.1.1...v54.0.0) (2023-03-09)
 
 

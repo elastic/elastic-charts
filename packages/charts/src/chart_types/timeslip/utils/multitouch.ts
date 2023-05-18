@@ -43,8 +43,12 @@ export const setNewMultitouch = (multitouch: MappedTouch[], newMultitouch: Mappe
 export const eraseMultitouch = (multitouch: MappedTouch[]) => multitouch.splice(0, Infinity);
 
 /** @internal */
-export const getPinchRatio = (multitouch: MappedTouch[], newMultitouch: MappedTouch[]) =>
-  (multitouch[1].position - multitouch[0].position) / (newMultitouch[1].position - newMultitouch[0].position);
+export const getPinchRatio = (multitouch: MappedTouch[], newMultitouch: MappedTouch[]) => {
+  return (
+    (multitouch[1]?.position ?? NaN - (multitouch[0]?.position ?? NaN)) /
+    ((newMultitouch[1]?.position ?? NaN) - (newMultitouch[0]?.position ?? NaN))
+  );
+};
 
 /** @internal */
 export const twoTouchPinch = (multitouch: MappedTouch[]) => multitouch.length === 2;

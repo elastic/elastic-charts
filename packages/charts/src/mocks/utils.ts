@@ -77,7 +77,7 @@ export const getRandomEntryFn = (seed = getRNGSeed()) => {
 
     const keys = Object.keys(entries);
     const index = Math.floor(rng() * keys.length);
-    const key = keys[index];
+    const key = keys[index]!;
 
     return entries[key];
   };

@@ -18,7 +18,7 @@ import { customKnobs } from '../utils/knobs';
 const dateFormatter = timeFormatter('HH:mm');
 
 export const Example = () => {
-  const dataset = KIBANA_METRICS.metrics.kibana_os_load[0];
+  const dataset = KIBANA_METRICS.metrics.kibana_os_load.v1;
   const yScaleType = customKnobs.enum.scaleType('Y scale', ScaleType.Linear, { include: ['Linear', 'Log'] });
 
   return (

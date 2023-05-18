@@ -9,7 +9,7 @@
 import { Selector } from 'react-redux';
 
 import { getPickedShapesLayerValues } from './picked_shapes';
-import { getSpecOrNull } from './wordcloud_spec';
+import { getWordcloudSpecSelector } from './wordcloud_spec';
 import { ChartType } from '../../..';
 import { getOnElementOverSelector } from '../../../../common/event_handler_selectors';
 import { LayerValue } from '../../../../specs';
@@ -29,7 +29,7 @@ export function createOnElementOverCaller(): (state: GlobalChartState) => void {
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Wordcloud) {
       selector = createCustomCachedSelector(
-        [getSpecOrNull, getPickedShapesLayerValues, getSettingsSpecSelector],
+        [getWordcloudSpecSelector, getPickedShapesLayerValues, getSettingsSpecSelector],
         getOnElementOverSelector(prev),
       );
     }

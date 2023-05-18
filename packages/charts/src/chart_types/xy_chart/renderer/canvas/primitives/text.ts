@@ -95,6 +95,7 @@ export function wrapLines(
   const additionalWidth = shouldAddEllipsis ? getTextWidth(ELLIPSIS) : 0;
   for (let i = 0, max = lines.length; i < max; ++i) {
     let line = lines[i];
+    if (!line) continue;
     let lineWidth = getTextWidth(line);
     if (lineWidth > maxWidth) {
       while (line.length > 0) {

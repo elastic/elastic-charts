@@ -16,10 +16,15 @@ import { checkCommitFn, isBaseRepo, testPatternString, updateAllChecks } from '.
  * build trigger for pushes to select base branches not pull requests
  */
 export function setupBuildTrigger(app: Probot) {
+  // @ts-ignore - probot issue https://github.com/probot/probot/issues/1680
   app.on('push', async (ctx) => {
     const [branch] = ctx.payload.ref.split('/').reverse();
 
-    if (!isBaseRepo(ctx.payload.repository) || !getConfig().github.env.branch.base.some(testPatternString(branch))) {
+    if (
+      !branch ||
+      !isBaseRepo(ctx.payload.repository) ||
+      !getConfig().github.env.branch.base.some(testPatternString(branch))
+    ) {
       return;
     }
 

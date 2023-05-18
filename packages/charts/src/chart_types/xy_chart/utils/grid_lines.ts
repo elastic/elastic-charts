@@ -111,9 +111,9 @@ function getGridLinesForAxis(
       const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
         gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
       );
-      const layered = typeof visibleTicksOfLayer[0].layer === 'number';
+      const layered = typeof visibleTicksOfLayer[0]?.layer === 'number';
 
-      const multilayerLuma = themeAxisStyle.gridLine.lumaSteps[detailedLayer];
+      const multilayerLuma = themeAxisStyle.gridLine.lumaSteps[detailedLayer] ?? NaN;
       const stroke: Stroke = {
         color: layered ? [multilayerLuma, multilayerLuma, multilayerLuma, 1] : strokeColor,
         width: layered ? HIERARCHICAL_GRID_WIDTH : gridLineStyles.strokeWidth,

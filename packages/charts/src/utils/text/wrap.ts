@@ -27,7 +27,7 @@ export function wrapText(
   // TODO add locale
   const segmenter = textSegmenter([]);
   // remove new lines and multi-spaces.
-  const cleanedText = text.replace(/\n/g, ' ').replace(/ +(?= )/g, '');
+  const cleanedText = text.replaceAll('\n', ' ').replaceAll(/ +(?= )/g, '');
 
   const segments = Array.from(segmenter(cleanedText)).map((d) => ({
     ...d,
@@ -48,8 +48,7 @@ export function wrapText(
         break;
       }
       lines.push(...multilineText);
-      currentLineWidth =
-        multilineText.length > 0 ? measure(multilineText[multilineText.length - 1], font, fontSize).width : 0;
+      currentLineWidth = multilineText.length > 0 ? measure(multilineText.at(-1) ?? '', font, fontSize).width : 0;
     } else {
       const lineIndex = lines.length > 0 ? lines.length - 1 : 0;
       lines[lineIndex] = (lines[lineIndex] ?? '') + segment.segment;
@@ -58,7 +57,7 @@ export function wrapText(
   }
   if (lines.length > maxLines) {
     const lastLineMaxLineWidth = maxLineWidth - ellipsisWidth;
-    const lastLine = clipTextToWidth(lines[maxLines - 1], font, fontSize, lastLineMaxLineWidth, measure);
+    const lastLine = clipTextToWidth(lines[maxLines - 1] ?? '', font, fontSize, lastLineMaxLineWidth, measure);
     if (lastLine.length > 0) {
       lines.splice(maxLines - 1, Infinity, `${lastLine}${ELLIPSIS}`);
     } else {
@@ -83,7 +82,11 @@ function textSegmenter(locale: string[]): (text: string) => { segment: string; i
       return text
         .split(' ')
         .reduce<{ segment: string; index: number; isWordLike?: boolean }[]>((acc, segment, index, array) => {
-          const currentSegment = { segment, index: index === 0 ? 0 : acc[acc.length - 1].index + 1, isWordLike: true };
+          const currentSegment = {
+            segment,
+            index: index === 0 ? 0 : (acc.at(-1)?.index ?? 0) + 1,
+            isWordLike: true,
+          };
           acc.push(currentSegment);
           // adding space to simulate the same behaviour of the segmenter in firefox
           if (index < array.length - 1) {

@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig",
+  "extends": "./tsconfig.src",
   "compilerOptions": {
     "removeComments": true,
     "declaration": false,

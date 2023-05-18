@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { ChartType } from '../../..';
+import { SpecType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
-import { createCustomCachedSelector } from '../../../../state/create_selector';
-
-const getPointerSelector = (state: GlobalChartState) => state.interactions.pointer;
+import { getSpecFromStore } from '../../../../state/utils';
+import { GoalSpec } from '../../specs';
 
 /** @internal */
-export const isBrushingSelector = createCustomCachedSelector([getPointerSelector], (pointer): boolean => {
-  return pointer.dragging;
-});
+export function getGoalSpecSelector(state: GlobalChartState): GoalSpec {
+  return getSpecFromStore<GoalSpec, true>(state.specs, ChartType.Goal, SpecType.Series, true);
+}

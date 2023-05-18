@@ -36,10 +36,12 @@ export const screenspaceMarkerScaleCompressor = (
   const itemCount = Math.min(domainPositions.length, itemWidths.length);
   for (let left = 0; left < itemCount; left++) {
     for (let right = 0; right < itemCount; right++) {
-      if (domainPositions[left] > domainPositions[right]) continue; // must adhere to left <= right
+      const domainLeft = domainPositions[left] ?? NaN;
+      const domainRight = domainPositions[right] ?? NaN;
+      if (domainLeft > domainRight) continue; // must adhere to left <= right
 
-      const range = outerWidth - itemWidths[left][0] - itemWidths[right][1]; // negative if not enough room
-      const domain = domainPositions[right] - domainPositions[left]; // always non-negative and finite
+      const range = outerWidth - (itemWidths[left]?.[0] ?? NaN) - (itemWidths[right]?.[1] ?? NaN); // negative if not enough room
+      const domain = domainRight - domainLeft; // always non-negative and finite
       const scaleMultiplier = range / domain; // may not be finite, and that's OK
 
       if (scaleMultiplier < result.scaleMultiplier || Number.isNaN(scaleMultiplier)) {

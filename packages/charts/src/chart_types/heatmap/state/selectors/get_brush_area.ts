@@ -13,24 +13,24 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { isBrushingSelector } from '../../../../state/selectors/is_brushing';
 import { clamp } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 
 const getMouseDownPosition = (state: GlobalChartState) => state.interactions.pointer.down;
-const getIsDragging = (state: GlobalChartState) => state.interactions.pointer.dragging;
 
 /** @internal */
 export const getBrushAreaSelector = createCustomCachedSelector(
   [
-    getIsDragging,
+    isBrushingSelector,
     getMouseDownPosition,
     getActivePointerPosition,
     getSettingsSpecSelector,
     computeChartDimensionsSelector,
     getBrushedHighlightedShapesSelector,
   ],
-  (isDragging, mouseDownPosition, end, { brushAxis }, { chartDimensions }, dragShape): Dimensions | null => {
-    if (!isDragging || !mouseDownPosition || !dragShape) {
+  (isBrushing, mouseDownPosition, end, { brushAxis }, { chartDimensions }, dragShape): Dimensions | null => {
+    if (!isBrushing || !mouseDownPosition || !dragShape) {
       return null;
     }
 

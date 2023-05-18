@@ -8,7 +8,7 @@
 
 import { Selector } from 'reselect';
 
-import { getSpecOrNull } from './heatmap_spec';
+import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 import { ChartType } from '../../..';
 import { SeriesIdentifier } from '../../../../common/series_id';
@@ -33,7 +33,7 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Heatmap) {
       selector = createCustomCachedSelector(
-        [getSpecOrNull, getLastClickSelector, getSettingsSpecSelector, getPickedShapes],
+        [getHeatmapSpecSelector, getLastClickSelector, getSettingsSpecSelector, getPickedShapes],
         (spec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes): void => {
           if (!spec) {
             return;

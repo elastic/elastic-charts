@@ -15,6 +15,6 @@ import { isSimpleLinear } from '../../layout/viewmodel/viewmodel';
 export const drilldownActive = createCustomCachedSelector(
   [getPartitionSpecs, getChartThemeSelector],
   (specs, { partition }) => {
-    return specs.length === 1 && isSimpleLinear(specs[0].layout, partition.fillLabel, specs[0].layers); // singleton!
+    return specs.length === 1 && specs[0] && isSimpleLinear(specs[0].layout, partition.fillLabel, specs[0].layers);
   },
 );

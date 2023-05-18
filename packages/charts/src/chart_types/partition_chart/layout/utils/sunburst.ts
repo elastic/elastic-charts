@@ -26,6 +26,7 @@ export function sunburst(
     for (let i = 0; i < nodeCount; i++) {
       const index = clockwiseSectors ? i : nodeCount - i - 1;
       const node = nodes[depth === 1 && specialFirstInnermostSector ? (index + 1) % nodeCount : index];
+      if (!node) continue;
       const area = areaAccessor(node);
       result.push({ node, x0: currentOffsetX, y0, x1: currentOffsetX + area, y1: y0 + heightStep });
       const children = childrenAccessor(node);

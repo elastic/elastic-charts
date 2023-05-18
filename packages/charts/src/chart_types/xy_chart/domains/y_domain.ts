@@ -56,11 +56,15 @@ function mergeYDomainForGroup(
   yScaleConfig: ScaleConfigs['y'],
 ): YDomain | null {
   const dataSeries = [...stacked, ...nonStacked];
-  if (dataSeries.length === 0) return null;
+  if (!dataSeries[0]) return null;
 
   const [{ isStacked, stackMode, spec }] = dataSeries;
   const groupId = getSpecDomainGroupId(spec);
-  const { customDomain, type, nice, desiredTickCount } = yScaleConfig[groupId];
+  const scaleConfig = yScaleConfig[groupId];
+
+  if (!scaleConfig) return null;
+
+  const { customDomain, type, nice, desiredTickCount } = scaleConfig;
   const newCustomDomain: YDomainRange = customDomain ? { ...customDomain } : { min: NaN, max: NaN };
   const { paddingUnit, padding, constrainPadding } = newCustomDomain;
 

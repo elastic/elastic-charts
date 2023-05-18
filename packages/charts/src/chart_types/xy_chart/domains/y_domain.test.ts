@@ -226,10 +226,10 @@ describe('Y Domain', () => {
     const groupValues = [...splitSpecs.values()];
     expect(groupKeys).toEqual(['group1', 'group2']);
     expect(groupValues.length).toBe(2);
-    expect(groupValues[0].nonStacked).toEqual([spec1]);
-    expect(groupValues[1].nonStacked).toEqual([spec2]);
-    expect(groupValues[0].stacked).toEqual([]);
-    expect(groupValues[1].stacked).toEqual([]);
+    expect(groupValues[0]?.nonStacked).toEqual([spec1]);
+    expect(groupValues[1]?.nonStacked).toEqual([spec2]);
+    expect(groupValues[0]?.stacked).toEqual([]);
+    expect(groupValues[1]?.stacked).toEqual([]);
   });
   test('Should split specs by groupId, two groups, stacked', () => {
     const spec1: BasicSeriesSpec = {
@@ -263,10 +263,10 @@ describe('Y Domain', () => {
     const groupValues = [...splitSpecs.values()];
     expect(groupKeys).toEqual(['group1', 'group2']);
     expect(groupValues.length).toBe(2);
-    expect(groupValues[0].stacked).toEqual([spec1]);
-    expect(groupValues[1].stacked).toEqual([spec2]);
-    expect(groupValues[0].nonStacked).toEqual([]);
-    expect(groupValues[1].nonStacked).toEqual([]);
+    expect(groupValues[0]?.stacked).toEqual([spec1]);
+    expect(groupValues[1]?.stacked).toEqual([spec2]);
+    expect(groupValues[0]?.nonStacked).toEqual([]);
+    expect(groupValues[1]?.nonStacked).toEqual([]);
   });
   test('Should split specs by groupId, 1 group, stacked', () => {
     const spec1: BasicSeriesSpec = {
@@ -300,8 +300,8 @@ describe('Y Domain', () => {
     const groupValues = [...splitSpecs.values()];
     expect(groupKeys).toEqual(['group']);
     expect(groupValues.length).toBe(1);
-    expect(groupValues[0].stacked).toEqual([spec1, spec2]);
-    expect(groupValues[0].nonStacked).toEqual([]);
+    expect(groupValues[0]?.stacked).toEqual([spec1, spec2]);
+    expect(groupValues[0]?.nonStacked).toEqual([]);
   });
   test('Should 3 split specs by groupId, 2 group, semi/stacked', () => {
     const spec1: BasicSeriesSpec = {
@@ -348,10 +348,10 @@ describe('Y Domain', () => {
     const groupValues = [...splitSpecs.values()];
     expect(groupKeys).toEqual(['group1', 'group2']);
     expect(groupValues.length).toBe(2);
-    expect(groupValues[0].stacked).toEqual([spec1, spec2]);
-    expect(groupValues[0].nonStacked).toEqual([]);
-    expect(groupValues[1].stacked).toEqual([spec3]);
-    expect(groupValues[0].nonStacked).toEqual([]);
+    expect(groupValues[0]?.stacked).toEqual([spec1, spec2]);
+    expect(groupValues[0]?.nonStacked).toEqual([]);
+    expect(groupValues[1]?.stacked).toEqual([spec3]);
+    expect(groupValues[0]?.nonStacked).toEqual([]);
   });
 
   test('Should return a default Scale Linear for YScaleType when there are no specs', () => {
@@ -418,10 +418,8 @@ describe('Y Domain', () => {
       store,
     );
 
-    const {
-      yDomains: [{ domain }],
-    } = computeSeriesDomainsSelector(store.getState());
-    expect(domain).toEqual([20, 20]);
+    const { yDomains } = computeSeriesDomainsSelector(store.getState());
+    expect(yDomains[0]?.domain).toEqual([20, 20]);
 
     const warnMessage = 'custom yDomain for a is invalid, custom min is greater than computed max.';
     expect(Logger.warn).toHaveBeenCalledWith(warnMessage);
@@ -463,10 +461,8 @@ describe('Y Domain', () => {
       store,
     );
 
-    const {
-      yDomains: [{ domain }],
-    } = computeSeriesDomainsSelector(store.getState());
-    expect(domain).toEqual([-1, -1]);
+    const { yDomains } = computeSeriesDomainsSelector(store.getState());
+    expect(yDomains[0]?.domain).toEqual([-1, -1]);
 
     const warnMessage = 'custom yDomain for a is invalid, custom max is less than computed max.';
     expect(Logger.warn).toHaveBeenCalledWith(warnMessage);

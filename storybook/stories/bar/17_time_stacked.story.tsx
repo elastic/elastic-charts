@@ -13,21 +13,37 @@ import {
   Axis,
   BarSeries,
   Chart,
+  CustomTooltip,
   niceTimeFormatByDay,
   Position,
   ScaleType,
   Settings,
   timeFormatter,
+  Tooltip,
+  TooltipContainer,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
 
+const CustomTooltipWithSubChart: CustomTooltip = ({ values }) => {
+  const [value] = values.filter((v) => v.isHighlighted);
+  return (
+    <TooltipContainer>
+      <div style={{ padding: 10 }}>Hovering: {value.label}</div>
+    </TooltipContainer>
+  );
+};
+
 export const Example = () => {
+  const useCustomTooltip = boolean('Use custom tooltip', false);
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   return (
     <Chart>
       <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} />
+
+      {useCustomTooltip && <Tooltip customTooltip={CustomTooltipWithSubChart} type="follow" />}
+
       <Axis
         id="bottom"
         position={Position.Bottom}
@@ -39,31 +55,31 @@ export const Example = () => {
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
       <BarSeries
-        id={KIBANA_METRICS.metrics.kibana_os_load[2].metric.label}
+        id={KIBANA_METRICS.metrics.kibana_os_load.v3.metric.label}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
         stackAccessors={[0]}
-        data={KIBANA_METRICS.metrics.kibana_os_load[2].data.slice(0, 20)}
+        data={KIBANA_METRICS.metrics.kibana_os_load.v3.data.slice(0, 20)}
       />
       <BarSeries
-        id={KIBANA_METRICS.metrics.kibana_os_load[1].metric.label}
+        id={KIBANA_METRICS.metrics.kibana_os_load.v2.metric.label}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
         stackAccessors={[0]}
-        data={KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, 20)}
+        data={KIBANA_METRICS.metrics.kibana_os_load.v2.data.slice(0, 20)}
       />
       <BarSeries
-        id={KIBANA_METRICS.metrics.kibana_os_load[0].metric.label}
+        id={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.label}
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
         stackAccessors={[0]}
-        data={KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 20)}
+        data={KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 20)}
       />
     </Chart>
   );
