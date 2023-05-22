@@ -24,7 +24,11 @@ export function getLegendExtraValue(
 ): number | null {
   // this give us the security of safe cast of x values in datapoints
   if (xDomain.type === ScaleType.Ordinal) {
-    return null;
+    const lastDataPoint = series.data.at(-1);
+    if (!lastDataPoint) {
+      return null;
+    }
+    return valueAccessor(lastDataPoint);
   }
 
   switch (type) {
