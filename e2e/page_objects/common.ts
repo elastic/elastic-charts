@@ -166,7 +166,7 @@ export class CommonPage {
   }
 
   static validatePath(path: string | string[]): string | string[] {
-    const fileName = Array.isArray(path) ? path[path.length - 1] : path;
+    const fileName = Array.isArray(path) ? path.at(-1) : path;
     if (fileName && /\.png$/.test(fileName)) return path;
     throw new Error(`Screenshot path or last path segment must contain the .png file extension.`);
   }
@@ -189,12 +189,14 @@ export class CommonPage {
     const options = { splitRegexp: /([a-z])([\dA-Z])/g };
     const formattedSegments = info.titlePath
       .slice(1)
-      .map((s) => paramCase(s, options).replace(/\//g, '-').replace(/\s/g, '-').replace(/-+/g, '-').toLowerCase());
+      .map((s) =>
+        paramCase(s, options).replaceAll('/', '-').replaceAll(/\s/g, '-').replaceAll(/-+/g, '-').toLowerCase(),
+      );
 
     return [
       // New directory for each test.describe block
       ...formattedSegments.slice(0, -1),
-      `${formattedSegments[formattedSegments.length - 1]}.png`,
+      `${formattedSegments.at(-1)}.png`,
     ];
   }
 
