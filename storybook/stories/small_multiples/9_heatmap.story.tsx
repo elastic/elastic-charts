@@ -9,7 +9,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import { range } from 'lodash';
 import { DateTime } from 'luxon';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import {
   ScaleType,
@@ -130,7 +130,11 @@ export const Example = () => {
     () => sampleSize(fullData, vSplitCountAbs * hSplitCountAbs * dataCount * categories * density),
     [categories, dataCount, density, fullData, vSplitCountAbs, hSplitCountAbs],
   );
-  const { highlightedData, onElementClick, onBrushEnd } = useHeatmapSelection();
+  const { highlightedData, onElementClick, onBrushEnd, clearSelection } = useHeatmapSelection();
+
+  useEffect(() => {
+    clearSelection();
+  }, [clearSelection, vSplit, hSplit, vSplitCount, hSplitCount, categories, density, xScaleType]);
 
   return (
     <Chart>
