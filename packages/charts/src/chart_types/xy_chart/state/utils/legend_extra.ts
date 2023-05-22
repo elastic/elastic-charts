@@ -64,9 +64,9 @@ export function getLegendExtraValue(
     case 'sum':
       return series.data.reduce((acc, curr) => acc + (valueAccessor(curr) ?? 0), 0);
     case 'min':
-      return series.data.reduce((acc, curr) => Math.min(acc + (valueAccessor(curr) ?? Infinity)), Infinity);
+      return series.data.reduce((acc, curr) => Math.min(acc, valueAccessor(curr) ?? Infinity), Infinity);
     case 'max':
-      return series.data.reduce((acc, curr) => Math.max(acc + (valueAccessor(curr) ?? -Infinity)), -Infinity);
+      return series.data.reduce((acc, curr) => Math.max(acc, valueAccessor(curr) ?? -Infinity), -Infinity);
     case 'lastInSeries':
       const dataPoint = series.data.length > 0 ? series.data[series.data.length - 1] : undefined;
       return dataPoint ? valueAccessor(dataPoint) : null;
