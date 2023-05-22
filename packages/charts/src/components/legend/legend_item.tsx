@@ -10,7 +10,6 @@ import classNames from 'classnames';
 import React, { Component, createRef, MouseEventHandler, CSSProperties } from 'react';
 
 import { Color as ItemColor } from './color';
-import { renderExtra } from './extra';
 import { Label as ItemLabel } from './label';
 import { getExtra } from './utils';
 import { Color } from '../../common/colors';
@@ -172,6 +171,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
   render() {
     const {
       extraValues,
+      legendExtra,
       item,
       colorPicker,
       totalItems,
@@ -191,7 +191,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     });
     const hasColorPicker = Boolean(colorPicker);
 
-    const extra = getExtra(extraValues, item, totalItems);
+    const extra = legendExtra !== 'none' ? getExtra(extraValues, item, totalItems) : undefined;
     const style: CSSProperties = {
       [isMostlyRTL ? 'marginRight' : 'marginLeft']: flatLegend
         ? undefined
@@ -226,7 +226,11 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             onToggle={this.onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
-          {extra && !isSeriesHidden && renderExtra(extra)}
+          {extra && !isSeriesHidden && (
+            <div className="echLegendItem__extra" title={`${extra}`}>
+              {extra}
+            </div>
+          )}
           {Action && (
             <div className="echLegendItem__action">
               <Action series={seriesIdentifiers} color={color} label={label} />
