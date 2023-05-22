@@ -102,7 +102,6 @@ export function computeLegend(
     if (name === '' || !spec) return;
 
     const postFixes = getPostfix(spec);
-    const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
 
     // Use this to get axis spec w/ tick formatter
     const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, settingsSpec.rotation);
@@ -120,10 +119,11 @@ export function computeLegend(
           : d.y1 - d.y0
         : d.initialY1;
     });
+    const formattedExtraValue = extraValue !== null ? formatter(extraValue) : '';
 
     legendItems.push({
       color,
-      label: labelY1,
+      label: banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name,
       seriesIdentifiers: [seriesIdentifier],
       childId: BandedAccessorType.Y1,
       isSeriesHidden,
@@ -131,8 +131,8 @@ export function computeLegend(
       isToggleable: true,
       extraValue: {
         raw: extraValue,
-        formatted: extraValue !== null ? formatter(extraValue) : '',
-        legendSizingLabel: extraValue !== null ? formatter(extraValue) : '',
+        formatted: formattedExtraValue,
+        legendSizingLabel: formattedExtraValue,
       },
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
@@ -142,10 +142,11 @@ export function computeLegend(
       const extraValue = getLegendExtraValue(series, xDomain, settingsSpec.legendExtra, (d) => {
         return series.stackMode === StackMode.Percentage ? d.y0 : d.initialY0;
       });
-      const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
+      const formattedExtraValue = extraValue !== null ? formatter(extraValue) : '';
+
       legendItems.push({
         color,
-        label: labelY0,
+        label: getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes),
         seriesIdentifiers: [seriesIdentifier],
         childId: BandedAccessorType.Y0,
         isSeriesHidden,
@@ -153,8 +154,8 @@ export function computeLegend(
         isToggleable: true,
         extraValue: {
           raw: extraValue,
-          formatted: extraValue !== null ? formatter(extraValue) : '',
-          legendSizingLabel: extraValue !== null ? formatter(extraValue) : '',
+          formatted: formattedExtraValue,
+          legendSizingLabel: formattedExtraValue,
         },
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
