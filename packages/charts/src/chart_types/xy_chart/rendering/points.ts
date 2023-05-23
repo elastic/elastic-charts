@@ -82,22 +82,22 @@ export function renderPoints(
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
       const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-      const isolatedPoint = isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const isPointIsolated =
+        isolatedPointThemeStyle.visible && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
       const isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle);
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
-      const radius =
-        isolatedPoint && isolatedPointThemeStyle.visible
-          ? isolatedPointThemeStyle.radius
-          : markSizeOptions.enabled
-          ? Math.max(getRadius(mark), pointStyle.radius)
-          : styleOverrides?.radius ?? pointStyle.radius;
+      const radius = isPointIsolated
+        ? isolatedPointThemeStyle.radius
+        : markSizeOptions.enabled
+        ? Math.max(getRadius(mark), pointStyle.radius)
+        : styleOverrides?.radius ?? pointStyle.radius;
 
       const pointGeometry: PointGeometry = {
         x,
         y: y === null ? NaN : y,
         radius,
         color,
-        style: isolatedPoint && isolatedPointThemeStyle.visible ? isolatedPointStyle : style,
+        style: isPointIsolated ? isolatedPointStyle : style,
         value: {
           x: xValue,
           y: originalY,
@@ -111,7 +111,7 @@ export function renderPoints(
         },
         seriesIdentifier,
         panel,
-        isolated: isolatedPoint,
+        isolated: isPointIsolated,
       };
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain

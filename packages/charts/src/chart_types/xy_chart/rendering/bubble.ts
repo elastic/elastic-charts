@@ -43,8 +43,8 @@ export function renderBubble(
     panel,
     color,
     seriesStyle.point,
-    // not used in bubble chart so it is safe to reuse the same point style
-    seriesStyle.point,
+    // there is no concept of isolated point in bubble chart, so we can just disable it through visibility
+    { ...seriesStyle.point, visible: false },
     hasY0Accessors,
     markSizeOptions,
     !isMixedChart,
