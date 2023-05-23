@@ -6,12 +6,22 @@
  * Side Public License, v 1.
  */
 
+import { $Values } from 'utility-types';
+
 import { addTime, propsFromCalendarObj, CalendarUnit } from './chrono';
 
 const timeProps = ['epochSeconds', 'dayOfWeek'];
 
 /** @internal */
 export const timeProp = Object.fromEntries(timeProps.map((propName, i) => [propName, i]));
+
+/** @public */
+export const TimeProp = Object.freeze({
+  EpochSeconds: 0 as const,
+  DayOfWeek: 1 as const,
+});
+/** @public */
+export type TimeProp = $Values<typeof TimeProp>;
 
 const zonedDateTimeFromCache: Record<string, [number, number]> = {}; // without caching, even luxon is choppy with zoom and pan
 

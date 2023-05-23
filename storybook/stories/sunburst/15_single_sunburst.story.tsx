@@ -72,7 +72,7 @@ export const Example = () => (
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
-          nodeLabel: (d: any) => regionLookup[d].regionName.replace(/\s/g, '\u00A0'),
+          nodeLabel: (d: any) => regionLookup[d].regionName.replaceAll(/\s/g, '\u00A0'),
           shape: {
             fillColor: (key, sortIndex, node) =>
               discreteColor(colorBrewerCategoricalStark9, 0.5)(node.parent.sortIndex),
@@ -80,7 +80,7 @@ export const Example = () => (
         },
         {
           groupByRollup: (d: Datum) => d.dest,
-          nodeLabel: (d: any) => countryLookup[d].name.replace(/\s/g, '\u00A0'),
+          nodeLabel: (d: any) => countryLookup[d].name.replaceAll(/\s/g, '\u00A0'),
           shape: {
             fillColor: (key, sortIndex, node) =>
               discreteColor(colorBrewerCategoricalStark9, 0.3)(node.parent.parent.sortIndex),

@@ -21,7 +21,6 @@ import {
   Datum,
   Goal,
   ChartType,
-  Color,
   defaultPartitionValueFormatter,
   BandFillColorAccessorInput,
 } from '@elastic/charts';
@@ -30,7 +29,7 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
-import { productLookup, indexInterpolatedFillColor, interpolatorCET2s } from '../utils/utils';
+import { productLookup, indexInterpolatedFillColor, interpolatorCET2s, getBandFillColorFn } from '../utils/utils';
 
 export const Example = () => {
   /**
@@ -98,7 +97,7 @@ function renderPartitionChart() {
 }
 
 function renderXYAxisChart() {
-  const data = KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 100);
+  const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 100);
   return (
     <>
       <Axis
@@ -131,13 +130,11 @@ function renderXYAxisChart() {
 function renderGoalchart() {
   const subtype = GoalSubtype.Goal;
 
-  const colorMap: { [k: number]: Color } = {
+  const getBandFillColor = getBandFillColorFn({
     200: '#fc8d62',
     250: 'lightgrey',
     300: '#66c2a5',
-  };
-
-  const bandFillColor = (x: number): Color => colorMap[x];
+  });
 
   return (
     <Goal
@@ -150,7 +147,7 @@ function renderGoalchart() {
       bands={[200, 250, 300]}
       ticks={[0, 50, 100, 150, 200, 250, 300]}
       tickValueFormatter={({ value }: BandFillColorAccessorInput) => String(value)}
-      bandFillColor={({ value }: BandFillColorAccessorInput) => bandFillColor(value)}
+      bandFillColor={getBandFillColor}
       labelMajor=""
       labelMinor=""
       centralMajor="280 MB/s"

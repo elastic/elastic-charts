@@ -24,10 +24,8 @@ export const getSettingsSpecSelector = createCustomCachedSelector([getSpecs], ge
 
 function getSettingsSpec(specs: SpecList): SettingsSpec {
   const settingsSpecs = getSpecsFromStore<SettingsSpec>(specs, ChartType.Global, SpecType.Settings);
-  if (settingsSpecs.length === 1) {
-    return handleListenerDebouncing(settingsSpecs[0]);
-  }
-  return DEFAULT_SETTINGS_SPEC;
+  const spec = settingsSpecs[0];
+  return spec ? handleListenerDebouncing(spec) : DEFAULT_SETTINGS_SPEC;
 }
 
 function handleListenerDebouncing(settings: SettingsSpec): SettingsSpec {

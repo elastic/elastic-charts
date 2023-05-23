@@ -224,7 +224,11 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
 
   const getPanelPointCoordinates = (x: Pixels, y: Pixels) => {
     const { category: v, panelValue: panelY, panelOffset: panelOffsetY } = getPanelPointCoordinate(y, 'vertical');
-    const { category: h, panelValue: panelX, panelOffset: panelOffsetX } = getPanelPointCoordinate(x, 'horizontal');
+    const {
+      category: h,
+      panelValue: panelX,
+      panelOffset: panelOffsetX,
+    } = getPanelPointCoordinate(x - chartDimensions.left, 'horizontal');
 
     return {
       x: panelX,
@@ -267,7 +271,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       y < chartDimensions.top + chartDimensions.height
     ) {
       // look up for a Y axis elements
-      const yLabelKey = yInvertedScale(y);
+      const { y: yLabelKey } = getPanelPointCoordinates(x - chartDimensions.left, y);
       const yLabelValue = textYValues.find((v) => v.value === yLabelKey);
       if (yLabelValue) {
         return yLabelValue;
@@ -278,14 +282,14 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       return [];
     }
 
-    const { x: xValue, y: yValue, h, v } = getPanelPointCoordinates(x - chartDimensions.left, y);
+    const { x: panelXValue, y: panelYValue, h, v } = getPanelPointCoordinates(x, y);
 
-    if (xValue === undefined || yValue === undefined) {
+    if (panelXValue === undefined || panelYValue === undefined) {
       return [];
     }
 
     const panelKey = getPanelKey(h, v);
-    const cellKey = getCellKey(xValue, yValue);
+    const cellKey = getCellKey(panelXValue, panelYValue);
     const cell = panelCellMap.get(panelKey)?.get(cellKey);
 
     if (cell) return [cell];
@@ -299,21 +303,24 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     const [start, end] = bound;
 
     const { left, top } = chartDimensions;
-    const topLeft = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
-    const bottomRight = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
+    const topLeft: [number, number] = [Math.min(start.x, end.x) - left, Math.min(start.y, end.y) - top];
+    const bottomRight: [number, number] = [Math.max(start.x, end.x) - left, Math.max(start.y, end.y) - top];
 
     // Find panel based on start pointer
-    const { category: smHorizontalAccessorValue, panelOffset: hOffset } = getPanelPointCoordinate(
-      start.x,
+    const { category: smHorizontalAccessorValue, panelOffset: horizontalPanelOffset } = getPanelPointCoordinate(
+      start.x - chartDimensions.left,
       'horizontal',
     );
-    const { category: smVerticalAccessorValue, panelOffset: vOffset } = getPanelPointCoordinate(start.y, 'vertical');
+    const { category: smVerticalAccessorValue, panelOffset: verticalPanelOffset } = getPanelPointCoordinate(
+      start.y,
+      'vertical',
+    );
 
     // confine selection to start panel
-    const panelStartX = clampWithOffset(topLeft[0], 0, panelSize.width, hOffset);
-    const panelStartY = clampWithOffset(topLeft[1], 0, panelSize.height, vOffset);
-    const panelEndX = clampWithOffset(bottomRight[0], 0, panelSize.width, hOffset);
-    const panelEndY = clampWithOffset(bottomRight[1], 0, panelSize.height, vOffset);
+    const panelStartX = clampWithOffset(topLeft[0], 0, panelSize.width, horizontalPanelOffset);
+    const panelStartY = clampWithOffset(topLeft[1], 0, panelSize.height, verticalPanelOffset);
+    const panelEndX = clampWithOffset(bottomRight[0], 0, panelSize.width, horizontalPanelOffset);
+    const panelEndY = clampWithOffset(bottomRight[1], 0, panelSize.height, verticalPanelOffset);
 
     const startX = xInvertedScale(panelStartX);
     const startY = yInvertedScale(panelStartY);
@@ -358,15 +365,15 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     smVerticalAccessorValue?: string | number,
   ) => {
     const startValue = x[0];
-    const endValue = x[x.length - 1];
-    const leftIndex = xValues.indexOf(startValue);
-    const rightIndex = xValues.indexOf(endValue) + (isRasterTimeScale(spec.xScale) && x.length > 1 ? 0 : 1);
+    const endValue = x.at(-1);
+    const leftIndex = xValues.indexOf(startValue ?? NaN);
+    const rightIndex = xValues.indexOf(endValue ?? NaN) + (isRasterTimeScale(spec.xScale) && x.length > 1 ? 0 : 1);
 
     const isRightOutOfRange = rightIndex > xValues.length - 1 || rightIndex < 0;
     const isLeftOutOfRange = leftIndex > xValues.length - 1 || leftIndex < 0;
 
-    const startFromScale = xScale(isLeftOutOfRange ? xValues[0] : xValues[leftIndex]);
-    const endFromScale = xScale(isRightOutOfRange ? xValues[xValues.length - 1] : xValues[rightIndex]);
+    const startFromScale = xScale((isLeftOutOfRange ? xValues[0] : xValues[leftIndex]) ?? NaN);
+    const endFromScale = xScale((isRightOutOfRange ? xValues.at(-1) : xValues[rightIndex]) ?? NaN);
 
     if (startFromScale === undefined || endFromScale === undefined) {
       return null;
@@ -423,7 +430,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       ? undefined
       : {
           width: cellWidth,
-          x: chartDimensions.left + (xScale(xValues[index]) ?? NaN),
+          x: chartDimensions.left + (xScale(xValues[index] ?? NaN) ?? NaN),
           y: chartDimensions.top,
           height: chartDimensions.height,
         };
@@ -474,7 +481,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     heatmapViewModels: getPerPanelMap(smScales, (anchor, h, v) => {
       const primaryColumn = smScales.vertical.domain[0] === v;
       const primaryRow = smScales.horizontal.domain[0] === h;
-      const lastColumn = smScales.vertical.domain[smScales.vertical.domain.length - 1] === v;
+      const lastColumn = smScales.vertical.domain.at(-1) === v;
 
       const titles: HeatmapTitleConfig[] = [];
       // TODO this should be filtered by the pageSize AND the pageNumber

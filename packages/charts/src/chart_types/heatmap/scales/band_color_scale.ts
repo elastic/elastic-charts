@@ -47,12 +47,7 @@ function getBandScale(bands: ColorBand[]): ColorScale {
     if (!isFiniteNumber(value)) {
       return Colors.Transparent.keyword;
     }
-    for (let i = 0; i < bands.length; i++) {
-      const { start, end, color } = bands[i];
-      if (start <= value && value < end) {
-        return color;
-      }
-    }
-    return Colors.Transparent.keyword;
+
+    return bands.find(({ start, end }) => start <= value && value < end)?.color ?? Colors.Transparent.keyword;
   };
 }

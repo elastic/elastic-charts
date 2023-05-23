@@ -24,16 +24,15 @@ export const getTooltipAnchorSelector = createCustomCachedSelector(
     getChartThemeSelector,
   ],
   (shapes, { chartDimensions }, position, smScales, { heatmap }): AnchorPosition => {
-    if (Array.isArray(shapes) && shapes.length > 0) {
-      const [
-        {
-          x,
-          y,
-          width,
-          height,
-          datum: { smHorizontalAccessorValue = '', smVerticalAccessorValue = '' },
-        },
-      ] = shapes;
+    const shape = Array.isArray(shapes) && shapes[0];
+    if (shape) {
+      const {
+        x,
+        y,
+        width,
+        height,
+        datum: { smHorizontalAccessorValue = '', smVerticalAccessorValue = '' },
+      } = shape;
 
       const scaledPanelXOffset = smScales.horizontal.scale(smHorizontalAccessorValue);
       const scaledPanelYOffset = smScales.vertical.scale(smVerticalAccessorValue);

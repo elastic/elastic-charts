@@ -70,17 +70,17 @@ class Component extends React.Component<StateProps & DispatchProps> {
       initialized,
       size: { width, height },
       a11y,
-      specs,
+      specs: [spec], // ignoring other specs
       style,
       onElementClick,
       onElementOut,
       onElementOver,
     } = this.props;
-    if (!initialized || specs.length === 0 || width === 0 || height === 0) {
+    if (!initialized || !spec || width === 0 || height === 0) {
       return null;
     }
-    // ignoring other specs
-    const { data } = specs[0];
+
+    const { data } = spec;
 
     const totalRows = data.length;
     const maxColumns = data.reduce((acc, row) => {

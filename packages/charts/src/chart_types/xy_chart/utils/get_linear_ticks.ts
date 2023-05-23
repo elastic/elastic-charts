@@ -23,6 +23,7 @@
 
 import { ScaleContinuousNumeric } from 'd3-scale';
 
+import { isNil } from '../../../utils/common';
 import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 
 const e10 = Math.sqrt(50);
@@ -93,6 +94,10 @@ export function getNiceLinearTicks(
   let prestep;
   let step;
   let maxIter = 10;
+
+  if (isNil(stop) || isNil(start)) {
+    return scale;
+  }
 
   if (stop < start) {
     step = start;

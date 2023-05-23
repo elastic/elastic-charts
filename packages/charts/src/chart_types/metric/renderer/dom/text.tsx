@@ -53,7 +53,7 @@ const SUBTITLE_FONT: Font = {
 
 function findRange(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
   const range = ranges.find(([min, max]) => min <= value && value < max);
-  return range ? range[2] : ranges[0][2];
+  return range ? range[2] : ranges[0]?.[2] ?? 's';
 }
 
 type ElementVisibility = {
@@ -116,8 +116,7 @@ function elementVisibility(
 
   return withTextMeasure((textMeasure) => {
     const visibilityBreakpoint =
-      responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ??
-      responsiveBreakPoints[responsiveBreakPoints.length - 1];
+      responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
     return {
       ...visibilityBreakpoint,
       titleLines: wrapText(
@@ -283,8 +282,8 @@ function splitNumericSuffixPrefix(text: string): { emphasis: 'normal' | 'small';
     .split('')
     .reduce<{ emphasis: 'normal' | 'small'; textParts: string[] }[]>((acc, curr) => {
       const emphasis = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'normal' : 'small';
-      if (acc.length > 0 && acc[acc.length - 1].emphasis === emphasis) {
-        acc[acc.length - 1].textParts.push(curr);
+      if (acc.length > 0 && acc.at(-1)?.emphasis === emphasis) {
+        acc.at(-1)?.textParts.push(curr);
       } else {
         acc.push({ emphasis, textParts: [curr] });
       }

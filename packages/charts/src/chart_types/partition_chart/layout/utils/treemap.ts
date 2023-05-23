@@ -76,7 +76,7 @@ function bestVector(
   nodes: HierarchyOfArrays,
   height: number,
   areaAccessor: (e: ArrayEntry) => number,
-  layout: LayerLayout,
+  layout: LayerLayout | null,
 ): LayoutElement {
   let previousWorstAspectRatio = -1;
   let currentWorstAspectRatio = 0;
@@ -97,10 +97,12 @@ function bestVector(
 function vectorNodeCoordinates(vectorLayout: LayoutElement, x0Base: number, y0Base: number, vertical: boolean) {
   const { nodes, dependentSize, sectionSizes, sectionOffsets } = vectorLayout;
   return nodes.map((e: ArrayEntry, i: number) => {
-    const x0 = vertical ? x0Base + sectionOffsets[i] : x0Base;
-    const y0 = vertical ? y0Base : y0Base + sectionOffsets[i];
-    const x1 = vertical ? x0 + sectionSizes[i] : x0 + dependentSize;
-    const y1 = vertical ? y0 + dependentSize : y0 + sectionSizes[i];
+    const offset = sectionOffsets[i] ?? 0;
+    const size = sectionSizes[i] ?? 0;
+    const x0 = vertical ? x0Base + offset : x0Base;
+    const y0 = vertical ? y0Base : y0Base + offset;
+    const x1 = vertical ? x0 + size : x0 + dependentSize;
+    const y1 = vertical ? y0 + dependentSize : y0 + size;
     return { node: e, x0, y0, x1, y1 };
   });
 }
@@ -125,7 +127,7 @@ export function treemap(
 ): Array<Part> {
   if (nodes.length === 0) return [];
   // some bias toward horizontal rectangles with a golden ratio of width to height
-  const depth = nodes[0][1][DEPTH_KEY] - 1;
+  const depth = (nodes[0]?.[1][DEPTH_KEY] ?? 1) - 1;
   const layerLayout = layouts[depth] ?? null;
   const vertical = layerLayout === LayerLayout.vertical || (!layerLayout && outerWidth / GOLDEN_RATIO <= outerHeight);
   const independentSize = vertical ? outerWidth : outerHeight;

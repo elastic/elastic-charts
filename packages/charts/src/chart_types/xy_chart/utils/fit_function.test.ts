@@ -565,7 +565,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toBeNull();
-            expect(finalValues[finalValues.length - 1]).toBeNull();
+            expect(finalValues.at(-1)).toBeNull();
           });
 
           it('should set end values - Zero', () => {
@@ -573,7 +573,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(0);
-            expect(finalValues[finalValues.length - 1]).toEqual(0);
+            expect(finalValues.at(-1)).toEqual(0);
           });
 
           it('should set end values - Explicit', () => {
@@ -585,7 +585,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(20);
-            expect(finalValues[finalValues.length - 1]).toEqual(20);
+            expect(finalValues.at(-1)).toEqual(20);
           });
 
           it('should set end values - Lookahead', () => {
@@ -593,7 +593,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(3);
-            expect(finalValues[finalValues.length - 1]).toEqual(endValue);
+            expect(finalValues.at(-1)).toEqual(endValue);
           });
 
           it('should set end values - Nearest', () => {
@@ -601,7 +601,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(3);
-            expect(finalValues[finalValues.length - 1]).toEqual(12);
+            expect(finalValues.at(-1)).toEqual(12);
           });
 
           it('should set end values - Average', () => {
@@ -609,7 +609,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(endValue);
-            expect(finalValues[finalValues.length - 1]).toEqual(endValue);
+            expect(finalValues.at(-1)).toEqual(endValue);
           });
 
           it('should set end values - Linear', () => {
@@ -617,7 +617,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(endValue);
-            expect(finalValues[finalValues.length - 1]).toEqual(endValue);
+            expect(finalValues.at(-1)).toEqual(endValue);
           });
         });
 
@@ -629,7 +629,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toBeNull();
-            expect(finalValues[finalValues.length - 1]).toBeNull();
+            expect(finalValues.at(-1)).toBeNull();
           });
 
           it('should set end values - Zero', () => {
@@ -637,7 +637,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(0);
-            expect(finalValues[finalValues.length - 1]).toEqual(0);
+            expect(finalValues.at(-1)).toEqual(0);
           });
 
           it('should set end values - Explicit', () => {
@@ -649,7 +649,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(20);
-            expect(finalValues[finalValues.length - 1]).toEqual(20);
+            expect(finalValues.at(-1)).toEqual(20);
           });
 
           it('should set end values - Lookahead', () => {
@@ -657,7 +657,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(3);
-            expect(finalValues[finalValues.length - 1]).toEqual(12);
+            expect(finalValues.at(-1)).toEqual(12);
           });
 
           it('should set end values - Nearest', () => {
@@ -665,7 +665,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(3);
-            expect(finalValues[finalValues.length - 1]).toEqual(12);
+            expect(finalValues.at(-1)).toEqual(12);
           });
 
           it('should set end values - Average', () => {
@@ -673,7 +673,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(3);
-            expect(finalValues[finalValues.length - 1]).toEqual(12);
+            expect(finalValues.at(-1)).toEqual(12);
           });
 
           it('should set end values - Linear', () => {
@@ -681,7 +681,7 @@ describe('Fit Function', () => {
             const finalValues = getYResolvedData(actual);
 
             expect(finalValues[0]).toEqual(3);
-            expect(finalValues[finalValues.length - 1]).toEqual(12);
+            expect(finalValues.at(-1)).toEqual(12);
           });
         });
       });

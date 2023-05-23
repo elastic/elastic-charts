@@ -104,7 +104,7 @@ describe('Chart state pointer interactions', () => {
     const { geometries } = computeSeriesGeometriesSelector(store.getState());
     expect(geometries).toBeDefined();
     expect(geometries.bars).toBeDefined();
-    expect(geometries.bars[0].value.length).toBe(2);
+    expect(geometries.bars[0]?.value.length).toBe(2);
   });
 
   test('can convert/limit mouse pointer positions relative to chart projection', () => {
@@ -272,7 +272,7 @@ describe('Chart state pointer interactions', () => {
       store.dispatch(onPointerMove({ x: chartLeft + 10, y: chartTop + 10 }, 0));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
-      expect(onPointerUpdateListener.mock.calls[0][0]).toMatchObject({
+      expect(onPointerUpdateListener.mock.calls[0]?.[0]).toMatchObject({
         x: 0,
         y: [
           {
@@ -785,8 +785,8 @@ describe('Chart state pointer interactions', () => {
         const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
         expect(tooltipInfo.tooltip.header?.value).toBe(0);
         expect(tooltipInfo.tooltip.header?.formattedValue).toBe('bottom 0');
-        expect(tooltipInfo.tooltip.values[0].value).toBe(10);
-        expect(tooltipInfo.tooltip.values[0].formattedValue).toBe('left 10');
+        expect(tooltipInfo.tooltip.values[0]?.value).toBe(10);
+        expect(tooltipInfo.tooltip.values[0]?.formattedValue).toBe('left 10');
       });
 
       test('chart 90 deg rotated', () => {
@@ -800,8 +800,8 @@ describe('Chart state pointer interactions', () => {
         const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
         expect(tooltipInfo.tooltip.header?.value).toBe(1);
         expect(tooltipInfo.tooltip.header?.formattedValue).toBe('left 1');
-        expect(tooltipInfo.tooltip.values[0].value).toBe(5);
-        expect(tooltipInfo.tooltip.values[0].formattedValue).toBe('bottom 5');
+        expect(tooltipInfo.tooltip.values[0]?.value).toBe(5);
+        expect(tooltipInfo.tooltip.values[0]?.formattedValue).toBe('bottom 5');
       });
     });
     describe('brush', () => {
@@ -863,7 +863,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
           expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [2.5, 3] });
+          expect(brushEndListener.mock.calls[1]?.[0]).toEqual({ x: [2.5, 3] });
         }
 
         const start3 = { x: 75, y: 0 };
@@ -875,7 +875,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
           expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [2.5, 3] });
+          expect(brushEndListener.mock.calls[2]?.[0]).toEqual({ x: [2.5, 3] });
         }
 
         const start4 = { x: 25, y: 0 };
@@ -887,7 +887,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
           expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[3][0]).toEqual({ x: [0, 0.5] });
+          expect(brushEndListener.mock.calls[3]?.[0]).toEqual({ x: [0, 0.5] });
         }
 
         store.dispatch(onMouseDown({ x: 25, y: 0 }, 1300));
@@ -944,7 +944,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
           expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[1][0]).toEqual({ x: [1, 1] });
+          expect(brushEndListener.mock.calls[1]?.[0]).toEqual({ x: [1, 1] });
         }
 
         const start3 = { x: 0, y: 75 };
@@ -956,7 +956,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
           expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[2][0]).toEqual({ x: [1, 1] }); // max of chart
+          expect(brushEndListener.mock.calls[2]?.[0]).toEqual({ x: [1, 1] }); // max of chart
         }
 
         const start4 = { x: 0, y: 25 };
@@ -968,7 +968,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
           expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[3][0]).toEqual({ x: [0, 0] });
+          expect(brushEndListener.mock.calls[3]?.[0]).toEqual({ x: [0, 0] });
         }
       });
       test('can respond to a Y brush', () => {
@@ -1037,7 +1037,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
           expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[1][0]).toEqual({
+          expect(brushEndListener.mock.calls[1]?.[0]).toEqual({
             y: [
               {
                 groupId: spec.groupId,
@@ -1114,7 +1114,7 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
           expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[1][0]).toEqual({
+          expect(brushEndListener.mock.calls[1]?.[0]).toEqual({
             x: [2.5, 3],
             y: [
               {
@@ -1166,7 +1166,7 @@ describe('Negative bars click and hover', () => {
     store.dispatch(onPointerMove({ x: 50, y: 75 }, 0));
     const highlightedGeoms = getHighlightedGeomsSelector(store.getState());
     expect(highlightedGeoms.length).toBe(1);
-    expect(highlightedGeoms[0].value.datum).toEqual([1, -10]);
+    expect(highlightedGeoms[0]?.value.datum).toEqual([1, -10]);
   });
   test('click negative bars', () => {
     store.dispatch(onPointerMove({ x: 50, y: 75 }, 0));
@@ -1174,7 +1174,7 @@ describe('Negative bars click and hover', () => {
     store.dispatch(onMouseUp({ x: 50, y: 75 }, 200));
 
     expect(onElementClick).toHaveBeenCalled();
-    const callArgs = onElementClick.mock.calls[0][0];
+    const callArgs = onElementClick.mock.calls[0]?.[0];
     expect(callArgs[0][0].datum).toEqual([1, -10]);
   });
 });
@@ -1227,7 +1227,7 @@ describe('Clickable annotations', () => {
     store.dispatch(onMouseUp({ x: 130, y: 217 }, 200));
 
     expect(onAnnotationClick).toHaveBeenCalled();
-    const callArgs = onAnnotationClick.mock.calls[0][0];
+    const callArgs = onAnnotationClick.mock.calls[0]?.[0];
     expect(callArgs.rects[0].id).toEqual('rect1______0__1__0__4__details about this annotation__0');
     // confirming there is only one rect annotation being picked up
     expect(callArgs.rects.length).toEqual(1);
@@ -1294,7 +1294,7 @@ describe('Clickable annotations', () => {
     store.dispatch(onMouseUp({ x: 200, y: 195 }, 200));
 
     expect(onAnnotationClick).toHaveBeenCalled();
-    const callArgs = onAnnotationClick.mock.calls[0][0];
+    const callArgs = onAnnotationClick.mock.calls[0]?.[0];
     expect(callArgs.rects[1]).toMatchObject({
       datum: {
         coordinates: {

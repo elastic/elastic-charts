@@ -70,8 +70,10 @@ export function getScaleConfigsFromSpecs(
   const scaleConfigsByGroupId = groupBy(seriesSpecs, getSpecDomainGroupId, true).reduce<
     Record<GroupId, { nice: boolean; type: ScaleContinuousType }>
   >((acc, series) => {
-    const groupId = getSpecDomainGroupId(series[0]);
-    acc[groupId] = coerceYScaleTypes(series);
+    if (series[0]) {
+      const groupId = getSpecDomainGroupId(series[0]);
+      acc[groupId] = coerceYScaleTypes(series);
+    }
     return acc;
   }, {});
 
@@ -89,11 +91,19 @@ export function getScaleConfigsFromSpecs(
     if (!acc[groupId]) {
       acc[groupId] = {
         customDomain: customDomainByGroupId.get(groupId),
-        ...scaleConfigsByGroupId[groupId],
+        ...(scaleConfigsByGroupId[groupId] || {
+          nice: false,
+          type: ScaleType.Linear,
+        }),
         desiredTickCount,
       };
     }
-    acc[groupId].desiredTickCount = Math.max(acc[groupId].desiredTickCount, desiredTickCount);
+
+    acc[groupId]!.desiredTickCount = Math.max(
+      acc[groupId]?.desiredTickCount ?? Number.NEGATIVE_INFINITY,
+      desiredTickCount,
+    );
+
     return acc;
   }, {});
   return { x, y };

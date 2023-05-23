@@ -459,7 +459,7 @@ function chartTypeFromSpecs(specs: SpecList): ChartType | null {
     .map((s) => s.chartType)
     .filter((type) => type !== ChartType.Global)
     .filter(keepDistinct);
-  if (nonGlobalTypes.length !== 1) {
+  if (!nonGlobalTypes[0]) {
     Logger.warn(`${nonGlobalTypes.length === 0 ? 'Zero' : 'Multiple'} chart types in the same configuration`);
     return null;
   }

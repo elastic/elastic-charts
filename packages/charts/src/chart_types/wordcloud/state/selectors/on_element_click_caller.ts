@@ -9,7 +9,7 @@
 import { Selector } from 'reselect';
 
 import { getPickedShapesLayerValues } from './picked_shapes';
-import { getSpecOrNull } from './wordcloud_spec';
+import { getWordcloudSpecSelector } from './wordcloud_spec';
 import { ChartType } from '../../..';
 import { getOnElementClickSelector } from '../../../../common/event_handler_selectors';
 import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
@@ -30,7 +30,7 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Wordcloud) {
       selector = createCustomCachedSelector(
-        [getSpecOrNull, getLastClickSelector, getSettingsSpecSelector, getPickedShapesLayerValues],
+        [getWordcloudSpecSelector, getLastClickSelector, getSettingsSpecSelector, getPickedShapesLayerValues],
         getOnElementClickSelector(prev),
       );
     }

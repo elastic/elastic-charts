@@ -26,7 +26,7 @@ import { LogScaleOptions } from './types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
-import { clamp, isFiniteNumber, mergePartial } from '../utils/common';
+import { clamp, isDefined, isFiniteNumber, mergePartial } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 
@@ -72,7 +72,7 @@ export class ScaleContinuous {
   readonly minInterval: number;
   readonly step: number;
   readonly type: ScaleContinuousType;
-  readonly domain: number[];
+  readonly domain: [number, number];
   readonly range: Range;
   readonly isInverted: boolean;
   readonly linearBase: number;
@@ -141,12 +141,12 @@ export class ScaleContinuous {
       }
     }
 
-    const niceDomain = isNice ? (d3Scale.domain() as number[]) : dataDomain;
+    const niceDomain = isNice ? (d3Scale.domain() as [number, number]) : dataDomain;
 
     const paddedDomain = isPixelPadded
       ? getPixelPaddedDomain(
           totalRange,
-          niceDomain as [number, number],
+          niceDomain,
           scaleOptions.domainPixelPadding,
           scaleOptions.constrainDomainPadding,
         )
@@ -156,7 +156,7 @@ export class ScaleContinuous {
     if (isPixelPadded && isNice)
       (d3Scale as ScaleContinuousNumeric<PrimitiveValue, number>).nice(scaleOptions.desiredTickCount);
 
-    const nicePaddedDomain = isPixelPadded && isNice ? (d3Scale.domain() as number[]) : paddedDomain;
+    const nicePaddedDomain = isPixelPadded && isNice ? (d3Scale.domain() as [number, number]) : paddedDomain;
 
     this.tickValues =
       type === ScaleType.Time
@@ -218,17 +218,19 @@ export class ScaleContinuous {
     const leftIndex = bisectLeft(data, bisectValue);
 
     if (leftIndex === 0) {
-      const withinBandwidth = invertedValue >= data[0];
+      const [dataValue = NaN] = data;
+      const withinBandwidth = invertedValue >= dataValue;
       return {
         withinBandwidth,
         value:
-          data[0] + (withinBandwidth ? 0 : -this.minInterval * Math.ceil((data[0] - invertedValue) / this.minInterval)),
+          dataValue +
+          (withinBandwidth ? 0 : -this.minInterval * Math.ceil((dataValue - invertedValue) / this.minInterval)),
       };
     }
-    const currentValue = data[leftIndex - 1];
+    const currentValue = data[leftIndex - 1] ?? NaN;
     // pure linear scale
     if (this.bandwidth === 0) {
-      const nextValue = data[leftIndex];
+      const nextValue = data[leftIndex] ?? NaN;
       const nextDiff = Math.abs(nextValue - invertedValue);
       const prevDiff = Math.abs(invertedValue - currentValue);
       return {
@@ -245,25 +247,37 @@ export class ScaleContinuous {
     };
   }
 
+  private isDegenerateDomain(): boolean {
+    return this.domain.every((v) => v === this.domain[0]);
+  }
+
   isSingleValue(): boolean {
-    return this.isSingleValueHistogram || isDegenerateDomain(this.domain);
+    return this.isSingleValueHistogram || this.isDegenerateDomain();
   }
 
   isValueInDomain(value: unknown): boolean {
-    return isFiniteNumber(value) && this.domain[0] <= value && value <= this.domain[1];
+    const [start = NaN, end = NaN] = this.domain;
+    return isFiniteNumber(value) && start <= value && value <= end;
   }
 }
 
-function getTimeTicks(domain: number[], desiredTickCount: number, timeZone: string, minInterval: number) {
-  const startDomain = getMomentWithTz(domain[0], timeZone);
-  const endDomain = getMomentWithTz(domain[1], timeZone);
+function getTimeTicks(domain: [number, number], desiredTickCount: number, timeZone: string, minInterval: number) {
+  const [start, end] = domain;
+  const startDomain = getMomentWithTz(start, timeZone);
+  const endDomain = getMomentWithTz(end, timeZone);
   const offset = startDomain.utcOffset();
   const shiftedDomainMin = startDomain.add(offset, 'minutes').valueOf();
   const shiftedDomainMax = endDomain.add(offset, 'minutes').valueOf();
   const tzShiftedScale = scaleUtc().domain([shiftedDomainMin, shiftedDomainMax]);
   let currentCount = desiredTickCount;
   let rawTicks = tzShiftedScale.ticks(desiredTickCount);
-  while (rawTicks.length > 2 && currentCount > 0 && rawTicks[1].valueOf() - rawTicks[0].valueOf() < minInterval) {
+  while (
+    rawTicks.length > 2 &&
+    currentCount > 0 &&
+    isDefined(rawTicks[0]) &&
+    isDefined(rawTicks[1]) &&
+    rawTicks[1].valueOf() - rawTicks[0].valueOf() < minInterval
+  ) {
     currentCount--;
     rawTicks = tzShiftedScale.ticks(currentCount);
   }
@@ -278,28 +292,29 @@ function getTimeTicks(domain: number[], desiredTickCount: number, timeZone: stri
 }
 
 function getLinearNonDenserTicks(
-  domain: number[],
+  domain: [number, number],
   desiredTickCount: number,
   base: number,
   minInterval: number,
 ): number[] {
-  const start = domain[0];
-  const stop = domain[domain.length - 1];
+  const [start, stop] = domain;
   let currentCount = desiredTickCount;
   let ticks = getLinearTicks(start, stop, desiredTickCount, base);
-  while (ticks.length > 2 && currentCount > 0 && ticks[1] - ticks[0] < minInterval) {
+  while (
+    ticks.length > 2 &&
+    currentCount > 0 &&
+    isDefined(ticks[0]) &&
+    isDefined(ticks[1]) &&
+    ticks[1] - ticks[0] < minInterval
+  ) {
     currentCount--;
     ticks = getLinearTicks(start, stop, currentCount, base);
   }
   return ticks;
 }
 
-function isDegenerateDomain(domain: unknown[]): boolean {
-  return domain.every((v) => v === domain[0]);
-}
-
 /** @internal */
-export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number) {
+export function limitLogScaleDomain([min, max]: ContinuousDomain, logMinLimit: number): [min: number, max: number] {
   // todo further simplify this
   const absLimit = Math.abs(logMinLimit);
   const fallback = absLimit || LOG_MIN_ABS_DOMAIN;
@@ -318,7 +333,7 @@ function getPixelPaddedDomain(
   desiredPixelPadding: number,
   constrainDomainPadding?: boolean,
   intercept = 0,
-) {
+): [number, number] {
   const inverted = domain[1] < domain[0];
   const orderedDomain: [number, number] = inverted ? [domain[1], domain[0]] : domain;
   const { scaleMultiplier } = screenspaceMarkerScaleCompressor(
@@ -372,13 +387,14 @@ type D3ScaleNonTime<R = PrimitiveValue, O = number> = ScaleLinear<R, O> | ScaleL
 
 /**
  * All possible d3 scales
+ * @internal
  */
 
-interface ScaleData {
+export interface ScaleData {
   /** The Type of continuous scale */
   type: ScaleContinuousType;
   /** The data input domain */
-  domain: number[];
+  domain: [number, number];
   /** The data output range */
   range: Range;
   nice?: boolean;

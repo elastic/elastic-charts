@@ -176,12 +176,12 @@ function scaleXonBandScale(
   scaledX1 += xScale.originalBandwidth + padding;
   // give the x1 value a maximum of the chart range
   if (scaledX1 > xScale.range[1]) {
-    [, scaledX1] = xScale.range;
+    scaledX1 = xScale.range[1];
   }
 
   scaledX0 -= padding;
   if (scaledX0 < xScale.range[0]) {
-    [scaledX0] = xScale.range;
+    scaledX0 = xScale.range[0];
   }
   const width = Math.abs(scaledX1 - scaledX0);
   return {
@@ -230,8 +230,8 @@ function limitValueToDomainRange(
     return min !== null && max !== null && min > max ? [null, null] : [min, max];
   } else {
     const min = isNil(minValue) || !scale.domain.includes(minValue) ? scale.domain[0] : minValue;
-    const max = isNil(maxValue) || !scale.domain.includes(maxValue) ? scale.domain[scale.domain.length - 1] : maxValue;
-    return [min, max];
+    const max = isNil(maxValue) || !scale.domain.includes(maxValue) ? scale.domain.at(-1) : maxValue;
+    return [min ?? null, max ?? null];
   }
 }
 

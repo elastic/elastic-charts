@@ -79,7 +79,7 @@ describe('[Scale Time] - timezones', () => {
       const midTime = DateTime.fromISO('2019-01-02T00:00:00.000').toMillis();
       const endTime = DateTime.fromISO('2019-01-03T00:00:00.000').toMillis();
       const data = [startTime, midTime, endTime];
-      const domain = [startTime, endTime];
+      const domain: [number, number] = [startTime, endTime];
       const minRange = 0;
       const maxRange = 99;
       const minInterval = (endTime - startTime) / 2;
@@ -111,7 +111,7 @@ describe('[Scale Time] - timezones', () => {
       const midTime = DateTime.fromISO('2019-01-02T00:00:00.000Z').toMillis();
       const endTime = DateTime.fromISO('2019-01-03T00:00:00.000Z').toMillis();
       const data = [startTime, midTime, endTime];
-      const domain = [startTime, endTime];
+      const domain: [number, number] = [startTime, endTime];
       const minRange = 0;
       const maxRange = 99;
       const minInterval = (endTime - startTime) / 2;
@@ -139,7 +139,7 @@ describe('[Scale Time] - timezones', () => {
       const midTime = DateTime.fromISO('2019-01-02T00:00:00.000+08:00').toMillis();
       const endTime = DateTime.fromISO('2019-01-03T00:00:00.000+08:00').toMillis();
       const data = [startTime, midTime, endTime];
-      const domain = [startTime, endTime];
+      const domain: [number, number] = [startTime, endTime];
       const minRange = 0;
       const maxRange = 99;
       const minInterval = (endTime - startTime) / 2;
@@ -173,7 +173,7 @@ describe('[Scale Time] - timezones', () => {
       const midTime = DateTime.fromISO('2019-01-02T00:00:00.000-08:00').toMillis();
       const endTime = DateTime.fromISO('2019-01-03T00:00:00.000-08:00').toMillis();
       const data = [startTime, midTime, endTime];
-      const domain = [startTime, endTime];
+      const domain: [number, number] = [startTime, endTime];
       const minRange = 0;
       const maxRange = 99;
       const minInterval = (endTime - startTime) / 2;
@@ -212,7 +212,7 @@ describe('[Scale Time] - timezones', () => {
         const midTime = DateTime.fromISO('2019-01-02T00:00:00.000', { zone: timezone }).toMillis();
         const endTime = DateTime.fromISO('2019-01-03T00:00:00.000', { zone: timezone }).toMillis();
         const data = [startTime, midTime, endTime];
-        const domain = [startTime, endTime];
+        const domain: [number, number] = [startTime, endTime];
         const minRange = 0;
         const maxRange = 99;
         const minInterval = (endTime - startTime) / 2;
@@ -235,17 +235,17 @@ describe('[Scale Time] - timezones', () => {
         expect(scale.tickValues[0]).toEqual(startTime);
         expect(scale.tickValues[4]).toEqual(midTime);
         expect(scale.tickValues[8]).toEqual(endTime);
-        expect(formatFunction(scale.tickValues[0])).toEqual(
+        expect(formatFunction(scale.tickValues[0] ?? NaN)).toEqual(
           DateTime.fromISO('2019-01-01T00:00:00.000', {
             zone: timezone,
           }).toISO(),
         );
-        expect(formatFunction(scale.tickValues[4])).toEqual(
+        expect(formatFunction(scale.tickValues[4] ?? NaN)).toEqual(
           DateTime.fromISO('2019-01-02T00:00:00.000', {
             zone: timezone,
           }).toISO(),
         );
-        expect(formatFunction(scale.tickValues[8])).toEqual(
+        expect(formatFunction(scale.tickValues[8] ?? NaN)).toEqual(
           DateTime.fromISO('2019-01-03T00:00:00.000', {
             zone: timezone,
           }).toISO(),

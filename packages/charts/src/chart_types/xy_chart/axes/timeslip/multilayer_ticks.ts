@@ -60,7 +60,7 @@ export function multilayerAxisEntry(
   const binWidthMs = xDomain.minInterval;
   const binWidth = binWidthMs / 1000; // seconds to milliseconds
   const domainExtension = extendByOneBin ? binWidthMs : 0;
-  const domainToS = ((Number(domainValues[domainValues.length - 1]) || NaN) + domainExtension) / 1000;
+  const domainToS = ((Number(domainValues.at(-1)) || NaN) + domainExtension) / 1000;
   const cartesianWidth = Math.abs(range[1] - range[0]);
   const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, cartesianWidth, MAX_TIME_TICK_COUNT));
   let layerIndex = -1;
@@ -85,8 +85,16 @@ export function multilayerAxisEntry(
       if (l.labeled) layerIndex++; // we want three (or however many) _labeled_ axis layers; others are useful for minor ticks/gridlines, and for giving coarser structure eg. stronger gridline for every 6th hour of the day
       if (layerIndex >= timeAxisLayerCount) return combinedEntry;
       const timeTicks = [...l.intervals(binStartsFrom, binStartsTo)]
-        .filter((b) => b.supremum > domainFromS && b.minimum <= domainToS)
+        .filter((b) => {
+          if (b.labelSupremum !== b.supremum && b.minimum < domainFromS) return false;
+          return b.supremum > domainFromS && b.minimum <= domainToS;
+        })
         .map((b) => 1000 * b.minimum);
+
+      if (timeTicks.length === 0) {
+        return combinedEntry;
+      }
+
       const { entry } = fillLayerTimeslip(
         layerIndex,
         detailedLayerIndex,
@@ -96,7 +104,7 @@ export function multilayerAxisEntry(
       );
       const minLabelGap = 4;
 
-      const lastTick = entry.ticks[entry.ticks.length - 1];
+      const lastTick = entry.ticks.at(-1);
       if (lastTick && lastTick.position + entry.labelBox.maxLabelBboxWidth > range[1]) {
         lastTick.label = '';
       }

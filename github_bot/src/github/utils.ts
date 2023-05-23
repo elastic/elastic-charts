@@ -259,6 +259,8 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
 
   const [previousCommitSha] = await getLatestCommits(ctx);
 
+  if (!previousCommitSha) throw new Error('Unable to load previous commit');
+
   const {
     data: { check_runs: checks },
   } = await ctx.octokit.checks.listForRef({
@@ -348,14 +350,15 @@ export async function updatePreviousDeployments(
   await Promise.all(
     deployments.map(async ({ id }) => {
       const {
-        data: [{ environment, state: currentState, ...status }],
+        data: [data],
       } = await ctx.octokit.repos.listDeploymentStatuses({
         ...ctx.repo(),
         deployment_id: id,
         per_page: 1,
       });
 
-      if (['in_progress', 'queued', 'pending'].includes(currentState)) {
+      if (data && ['in_progress', 'queued', 'pending'].includes(data.state)) {
+        const { environment, ...status } = data;
         await ctx.octokit.repos.createDeploymentStatus({
           ...ctx.repo(),
           ...status,

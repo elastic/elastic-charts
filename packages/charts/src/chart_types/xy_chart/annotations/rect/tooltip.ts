@@ -25,8 +25,8 @@ export function getRectAnnotationTooltipState(
   chartDimensions: Dimensions,
   specId: SpecId,
 ): AnnotationTooltipState | null {
-  for (let i = 0; i < annotationRects.length; i++) {
-    const { rect, panel, datum, id } = annotationRects[i];
+  for (const annotationRect of annotationRects) {
+    const { rect, panel, datum, id } = annotationRect;
     const newRect = transformRotateRect(rect, rotation, panel);
     const startX = newRect.x + chartDimensions.left + panel.left;
     const endX = startX + newRect.width;

@@ -80,14 +80,13 @@ function renderAnnotationLineMarkers(
   animations?: AnnotationAnimationConfig[],
 ) {
   const getHoverParams = getAnnotationHoverParamsFn(hoveredIds, sharedStyle, animations);
-  return annotationLines.reduce<JSX.Element[]>((acc, props: AnnotationLineProps) => {
-    if (props.markers.length === 0) {
-      return acc;
-    }
+  return annotationLines.reduce<JSX.Element[]>((acc, { markers, ...props }: AnnotationLineProps) => {
+    if (!markers[0]) return acc;
 
     acc.push(
       <LineMarker
         {...props}
+        marker={markers[0]}
         key={`annotation-${props.id}`}
         chartAreaRef={chartAreaRef}
         chartDimensions={chartDimensions}

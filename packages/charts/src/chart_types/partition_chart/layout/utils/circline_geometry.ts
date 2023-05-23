@@ -85,8 +85,8 @@ function circlineValidSectors(refC: CirclinePredicate, c: CirclineArc): Circline
   // These conditions don't happen; kept for documentation purposes:
   // if (circlineIntersections.length !== 2) throw new Error('Problem in intersection calculation.')
   // if (from > to) throw new Error('From/to problem in intersection calculation.')
-  if (circlineIntersections.length !== 2) return [];
   const [p1, p2] = circlineIntersections;
+  if (!p1 || !p2) return [];
   const aPre1 = Math.atan2(p1.y - c.y, p1.x - c.x);
   const aPre2 = Math.atan2(p2.y - c.y, p2.x - c.x);
   const a1p = Math.max(from, Math.min(to, aPre1 < 0 ? aPre1 + TAU : aPre1));
@@ -105,10 +105,8 @@ function circlineValidSectors(refC: CirclinePredicate, c: CirclineArc): Circline
   // imperative, slightly optimized buildup of `result` as it's in the hot loop:
   const result = [];
   for (let i = 0; i < breakpoints.length - 1; i++) {
-    // eslint-disable-next-line no-shadow
-    const from = breakpoints[i];
-    // eslint-disable-next-line no-shadow
-    const to = breakpoints[i + 1];
+    const from = breakpoints[i] ?? 0;
+    const to = breakpoints[i + 1] ?? 0;
     const midAngle = (from + to) / 2; // no winding clip ie. `meanAngle()` would be wrong here
     const xx = x + r * Math.cos(midAngle);
     const yy = y + r * Math.sin(midAngle);
@@ -124,8 +122,10 @@ export function conjunctiveConstraint(constraints: RingSectorConstruction, c: Ci
   for (let i = 0; i < constraints.length; i++) {
     const refC = constraints[i]; // reference circle
     const nextValids: CirclineArc[] = [];
+    if (!refC) break;
     for (let j = 0; j < valids.length; j++) {
       const cc = valids[j];
+      if (!cc) continue;
       const currentValids = circlineValidSectors(refC, cc);
       nextValids.push(...currentValids);
     }

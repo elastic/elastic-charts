@@ -107,8 +107,8 @@ function getVisibleTicks(
 ): AxisTick[] {
   const isSingleValueScale = scale.domain[0] === scale.domain[1];
   const makeRaster = enableHistogramMode && scale.bandwidth > 0 && !isMultilayerTimeAxis;
-  const ultimateTick = ticks[ticks.length - 1];
-  const penultimateTick = ticks[ticks.length - 2];
+  const ultimateTick = ticks.at(-1);
+  const penultimateTick = ticks.at(-2);
   if (makeRaster && !isSingleValueScale && typeof penultimateTick === 'number' && typeof ultimateTick === 'number') {
     const computedTickDistance = ultimateTick - penultimateTick;
     const numTicks = scale.minInterval / (computedTickDistance || scale.minInterval); // avoid infinite loop
@@ -296,7 +296,7 @@ function getVisibleTickSets(
               const areAdjacentTimeLabelsUnique =
                 scale.type === ScaleType.Time &&
                 !axisSpec.showDuplicatedTicks &&
-                (areLabelsUnique || raster.ticks.every((d, i, a) => i === 0 || d.label !== a[i - 1].label));
+                (areLabelsUnique || raster.ticks.every((d, i, a) => i === 0 || d.label !== a[i - 1]?.label));
               const atLeastTwoTicks = uniqueLabels.size >= 2;
               const allTicksFit = !uniqueLabels.has('');
               const compliant =

@@ -10,11 +10,10 @@ import { ChartType } from '../../..';
 import { SpecType } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSpecs } from '../../../../state/selectors/get_specs';
-import { getSpecsFromStore } from '../../../../state/utils';
+import { getSpecFromStore } from '../../../../state/utils';
 import { HeatmapSpec } from '../../specs';
 
 /** @internal */
 export const getHeatmapSpecSelector = createCustomCachedSelector([getSpecs], (specs): HeatmapSpec => {
-  const spec = getSpecsFromStore<HeatmapSpec>(specs, ChartType.Heatmap, SpecType.Series);
-  return spec[0];
+  return getSpecFromStore<HeatmapSpec, true>(specs, ChartType.Heatmap, SpecType.Series, true);
 });

@@ -361,7 +361,7 @@ describe('Rendering utils', () => {
     const xScale = MockScale.default({
       scale: jest.fn().mockImplementation((x) => x),
       bandwidth: 0,
-      range: [dataSeries.data[0].x as number, dataSeries.data[12].x as number],
+      range: [dataSeries.data[0]!.x as number, dataSeries.data[12]!.x as number],
     });
 
     it('should return array pairs of non-null x regions with null end values', () => {
@@ -380,7 +380,7 @@ describe('Rendering utils', () => {
       const data = dataSeries.data.slice(1, -1);
       const xScale = MockScale.default({
         scale: jest.fn().mockImplementation((x) => x),
-        range: [data[0].x as number, data[10].x as number],
+        range: [data[0]!.x as number, data[10]!.x as number],
       });
       const actual = getClippedRanges(data, xScale, 0);
 
@@ -396,7 +396,7 @@ describe('Rendering utils', () => {
       const xScale = MockScale.default({
         scale: jest.fn().mockImplementation((x) => x),
         bandwidth,
-        range: [dataSeries.data[0].x as number, (dataSeries.data[12].x as number) + bandwidth * (2 / 3)],
+        range: [dataSeries.data[0]!.x as number, (dataSeries.data[12]!.x as number) + bandwidth * (2 / 3)],
       });
       const actual = getClippedRanges(dataSeries.data, xScale, 0);
 
@@ -422,9 +422,9 @@ describe('Rendering utils', () => {
     it('should call scale to get x value for each datum', () => {
       getClippedRanges(dataSeries.data, xScale, 0);
 
-      expect(xScale.scale).toHaveBeenNthCalledWith(1, dataSeries.data[0].x);
+      expect(xScale.scale).toHaveBeenNthCalledWith(1, dataSeries.data[0]!.x);
       expect(xScale.scale).toHaveBeenCalledTimes(dataSeries.data.length);
-      expect(xScale.scale).toHaveBeenCalledWith(dataSeries.data[12].x);
+      expect(xScale.scale).toHaveBeenCalledWith(dataSeries.data[12]!.x);
     });
   });
   describe('#getRadiusFn', () => {
@@ -464,7 +464,7 @@ describe('Rendering utils', () => {
           15.29, 40.89, 13.39, 36.81, 44.66, 44.34, 51.01, 6.97, 34.04, 49.07, 45.11, 25.44, 8.98, 9.33, 50.62, 48.89,
           44.34, 1, 33.09, 5.94,
         ];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedValues[i]]))(
+        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedValues[i]!]))(
           'should return stepped value from domain - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);
@@ -504,7 +504,7 @@ describe('Rendering utils', () => {
       describe('markSizeRatio - 1', () => {
         const getRadius = getRadiusFn(data, 1, 1);
         const expectedRadii = [2.62, 2.59, 1, 2.73, 2.63];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
+        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]!]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);
@@ -515,7 +515,7 @@ describe('Rendering utils', () => {
       describe('markSizeRatio - 10', () => {
         const getRadius = getRadiusFn(data, 1, 10);
         const expectedRadii = [9.09, 8.56, 1, 11.1, 9.38];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
+        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]!]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);
@@ -526,7 +526,7 @@ describe('Rendering utils', () => {
       describe('markSizeRatio - 100', () => {
         const getRadius = getRadiusFn(data, 1, 100);
         const expectedRadii = [80.71, 75.37, 1, 101, 83.61];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
+        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]!]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);
@@ -538,7 +538,7 @@ describe('Rendering utils', () => {
         // Should be treated as 100
         const getRadius = getRadiusFn(data, 1, 1000);
         const expectedRadii = [80.71, 75.37, 1, 101, 83.61];
-        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]]))(
+        it.each<[number | null, number]>(data.map(({ mark }, i) => [mark, expectedRadii[i]!]))(
           'should return stepped value - data[%#]',
           (mark, expected) => {
             expect(getRadius(mark)).toBeCloseTo(expected, 1);

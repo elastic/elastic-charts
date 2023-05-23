@@ -155,7 +155,7 @@ function nodeToLinkLabel({
     // calculate and remember vertical offset, as linked labels accrete
     const poolIndex = rightSide + (1 - north);
     const relativeY = north * y;
-    const yOffset = Math.max(currentY[poolIndex] + rowPitch, relativeY + yRelativeIncrement, rowPitch / 2);
+    const yOffset = Math.max((currentY[poolIndex] ?? 0) + rowPitch, relativeY + yRelativeIncrement, rowPitch / 2);
     currentY[poolIndex] = yOffset;
 
     // more geometry: the part that depends on vertical position

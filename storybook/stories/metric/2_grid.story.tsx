@@ -20,9 +20,12 @@ import {
   MetricWTrend,
   Settings,
 } from '@elastic/charts';
+import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { useBaseTheme } from '../../use_base_theme';
+
+const rng = getRandomNumberGenerator();
 
 function split(a: (any | undefined)[], size: number) {
   return Array.from(new Array(Math.ceil(a.length / size))).map((_, index) => a.slice(index * size, (index + 1) * size));
@@ -50,7 +53,7 @@ export const Example = () => {
       icon: getIcon('compute'),
       value: NaN,
       valueFormatter: defaultValueFormatter,
-      trend: KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trend: KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
       trendShape: 'area',
       trendA11yTitle: 'Last hour CPU percentage trend',
       trendA11yDescription:
@@ -62,7 +65,7 @@ export const Example = () => {
       subtitle: 'Overall percentage',
       value: 33.57,
       valueFormatter: (d) => `${d} %`,
-      trend: KIBANA_METRICS.metrics.kibana_memory[0].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trend: KIBANA_METRICS.metrics.kibana_memory.v1.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
       trendShape: 'area',
       trendA11yTitle: 'Last hour Memory usage trend',
       trendA11yDescription:
@@ -108,7 +111,7 @@ export const Example = () => {
       subtitle: 'Cluster CPU Usage',
       value: 24.85,
       valueFormatter: (d) => `${d}%`,
-      trend: KIBANA_METRICS.metrics.kibana_os_load[1].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trend: KIBANA_METRICS.metrics.kibana_os_load.v2.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
       trendShape: 'area',
     },
     {
@@ -136,7 +139,7 @@ export const Example = () => {
       ),
       value: 323.57,
       valueFormatter: (d) => `$ ${d}k`,
-      trend: KIBANA_METRICS.metrics.kibana_os_load[2].data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+      trend: KIBANA_METRICS.metrics.kibana_os_load.v3.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
       trendShape: 'area',
       trendA11yTitle: 'Last quarter, daily Cloud Revenue trend',
       trendA11yDescription:
@@ -154,10 +157,10 @@ export const Example = () => {
         data
           .slice()
           .map((d) => {
-            return Math.random() > 0.8 ? undefined : d;
+            return rng(0, 1, 3) > 0.8 ? undefined : d;
           })
-          .slice(0, Math.ceil(Math.random() * data.length)),
-        Math.ceil((Math.random() * data.length) / 2),
+          .slice(0, rng(1, data.length)),
+        rng(1, data.length / 2),
       ),
     );
   });

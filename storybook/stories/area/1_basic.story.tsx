@@ -14,7 +14,7 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => {
-  const { data } = KIBANA_METRICS.metrics.kibana_os_load[0];
+  const { data } = KIBANA_METRICS.metrics.kibana_os_load.v1;
   return (
     <Chart>
       <Settings baseTheme={useBaseTheme()} />

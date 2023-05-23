@@ -8,7 +8,7 @@ on:
       - main
 
 env:
-  ECH_NODE_VERSION: '14.x'
+  ECH_NODE_VERSION: '16.x'
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
 
 jobs:
@@ -90,8 +90,7 @@ jobs:
 
       - name: Release
         env:
-          GH_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN_GH }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         run: yarn semantic-release

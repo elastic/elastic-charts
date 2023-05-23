@@ -30,7 +30,7 @@ import { useBaseTheme } from '../../use_base_theme';
 const rng = getRandomNumberGenerator('static');
 
 const aggData = [
-  ...KIBANA_METRICS.metrics.kibana_os_load[0].data
+  ...KIBANA_METRICS.metrics.kibana_os_load.v1.data
     .reduce<{ x: number; y: string; value: number }[]>((acc, [x, y], i) => {
       if (i % 5 === 0) {
         acc.push({ x, y: '2fd4e', value: y });
@@ -41,7 +41,7 @@ const aggData = [
       return acc;
     }, [])
     .map(({ x, y, value }) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
-  ...KIBANA_METRICS.metrics.kibana_os_load[1].data
+  ...KIBANA_METRICS.metrics.kibana_os_load.v2.data
     .reduce<{ x: number; y: string; value: number }[]>((acc, [x, y], i) => {
       if (i % 5 === 0) {
         acc.push({ x, y: '3afad', value: y });
@@ -52,7 +52,7 @@ const aggData = [
       return acc;
     }, [])
     .map(({ x, y, value }) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
-  ...KIBANA_METRICS.metrics.kibana_os_load[2].data
+  ...KIBANA_METRICS.metrics.kibana_os_load.v3.data
     .reduce<{ x: number; y: string; value: number }[]>((acc, [x, y], i) => {
       if (i % 5 === 0) {
         acc.push({ x, y: 'f9560', value: y });
@@ -132,7 +132,7 @@ export const Example = () => {
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          data={KIBANA_METRICS.metrics.kibana_response_times[0].data}
+          data={KIBANA_METRICS.metrics.kibana_response_times.v1.data}
           yNice
           color="#343741"
         />
@@ -181,7 +181,7 @@ export const Example = () => {
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          data={KIBANA_METRICS.metrics.kibana_requests[0].data}
+          data={KIBANA_METRICS.metrics.kibana_requests.v1.data}
           color="#343741"
           yNice
         />

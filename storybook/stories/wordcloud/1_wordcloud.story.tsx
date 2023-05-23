@@ -210,7 +210,7 @@ const getTemplate = (name: string): WordcloudKnobs => {
 };
 
 const rawData = text
-  .replace(/[,.]/g, '')
+  .replaceAll(/[,.]/g, '')
   .toLowerCase()
   .split(' ')
   .filter((d, index, a) => a.indexOf(d) === index)
