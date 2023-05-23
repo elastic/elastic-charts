@@ -14,6 +14,9 @@ import { isDatumFilled } from '../../rendering/utils';
 import { DataSeries, DataSeriesDatum } from '../../utils/series';
 
 /**
+ * This method return a value from a DataSeries that correspond to the type of value requested.
+ * It in general compute the last, min, max, avg, sum of the value in a series.
+ * NOTE: not every type can work correctly with the data provided, for example a sum will not work when using the percentage chart
  * @internal
  */
 export function getLegendExtraValue(
@@ -22,7 +25,7 @@ export function getLegendExtraValue(
   type: LegendSpec['legendExtra'],
   valueAccessor: (d: DataSeriesDatum) => number | null,
 ): number | null {
-  // this give us the security of safe cast of x values in datapoints
+  //TODO: this is a hacky way to give ordinal charts the right space in the legend in order to render the current value
   if (xDomain.type === ScaleType.Ordinal) {
     const lastDataPoint = series.data.at(-1);
     if (!lastDataPoint) {
