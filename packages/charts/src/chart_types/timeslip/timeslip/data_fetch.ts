@@ -54,8 +54,8 @@ export const updateDataState = (
 export const getNullDataState = (): DataState => ({
   valid: false,
   pending: false,
-  lo: { minimum: Infinity, supremum: Infinity },
-  hi: { minimum: -Infinity, supremum: -Infinity },
+  lo: { minimum: Infinity, supremum: Infinity, labelSupremum: Infinity },
+  hi: { minimum: -Infinity, supremum: -Infinity, labelSupremum: -Infinity },
   binUnit: 'year',
   binUnitCount: NaN,
   dataResponse: { stats: { minValue: NaN, maxValue: NaN }, rows: [] },
