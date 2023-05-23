@@ -30,6 +30,7 @@ export const DARK_THEME: Theme = {
     },
     point: {
       visible: true,
+      stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.Black.keyword,
       radius: 2,

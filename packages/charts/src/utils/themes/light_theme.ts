@@ -31,6 +31,7 @@ export const LIGHT_THEME: Theme = {
     point: {
       visible: true,
       strokeWidth: 1,
+      stroke: ColorVariant.Series,
       fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
@@ -73,6 +74,7 @@ export const LIGHT_THEME: Theme = {
     },
     point: {
       visible: false,
+      stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.White.keyword,
       radius: 2,
