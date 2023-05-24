@@ -25,13 +25,9 @@ export function getLegendExtraValue(
   type: LegendSpec['legendExtra'],
   valueAccessor: (d: DataSeriesDatum) => number | null,
 ): number | null {
-  //TODO: this is a hacky way to give ordinal charts the right space in the legend in order to render the current value
+  //If the x axis is categorical we don't allow this feature
   if (xDomain.type === ScaleType.Ordinal) {
-    const lastDataPoint = series.data.at(-1);
-    if (!lastDataPoint) {
-      return null;
-    }
-    return valueAccessor(lastDataPoint);
+    return null;
   }
 
   switch (type) {
