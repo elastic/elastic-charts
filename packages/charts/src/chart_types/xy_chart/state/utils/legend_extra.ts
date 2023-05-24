@@ -25,7 +25,10 @@ export function getLegendExtraValue(
   type: LegendSpec['legendExtra'],
   valueAccessor: (d: DataSeriesDatum) => number | null,
 ): number | null {
-  //If the x axis is categorical we don't allow this feature
+  // 24/05/2023 A decision was made by the Kibana Visualization Team (MarcoV, StratoulaK)
+  // to disable representing `current` hovered values if the X scale is Ordinal. at Elastic this feature wasn't used
+  // and the the information was redundant because it was alredy available in the tooltip.
+  // A possible enhancement will probably update this configuration to allow `current` values if explicitly configured.
   if (xDomain.type === ScaleType.Ordinal) {
     return null;
   }
