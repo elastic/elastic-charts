@@ -81,23 +81,4 @@ export function getLegendExtraValue(
     case 'none':
       return null;
   }
-
-  // if (last.x !== xDomain.domain.at(-1)) {
-  //   // we have a dataset that is not filled with all x values
-  //   // and the last value of the series is not the last value for every series
-  //   // let's skip it
-  //   return;
-  // }
-
-  // const { y0, y1, initialY0, initialY1 } = last;
-  // const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier, series.groupId);
-
-  // if (series.stackMode === StackMode.Percentage) {
-  //   const y1InPercentage = y1 === null || y0 === null ? null : y1 - y0;
-  //   extraValues.set(seriesKey, { y0, y1: y1InPercentage });
-  //   return;
-  // }
-  // if (initialY0 !== null || initialY1 !== null) {
-  //   extraValues.set(seriesKey, { y0: initialY0, y1: initialY1 });
-  // }
 }

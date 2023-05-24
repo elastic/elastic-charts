@@ -174,7 +174,7 @@ describe('Settings spec component', () => {
         snap: false,
       },
       legendPosition: Position.Bottom,
-      egendExtra: 'none',
+      legendExtra: 'none',
       debug: true,
       xDomain: { min: 0, max: 10 },
     };
