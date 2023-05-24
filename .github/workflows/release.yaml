@@ -8,7 +8,7 @@ on:
       - main
 
 env:
-  ECH_NODE_VERSION: '14.x'
+  ECH_NODE_VERSION: '16.x'
   PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
 
 jobs:
