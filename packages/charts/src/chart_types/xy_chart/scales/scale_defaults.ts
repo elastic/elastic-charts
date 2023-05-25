@@ -19,7 +19,7 @@ export const X_SCALE_DEFAULT = {
 export const Y_SCALE_DEFAULT = {
   type: ScaleType.Linear,
   nice: false,
-  desiredTickCount: 10,
+  desiredTickCount: 5,
   constrainDomainPadding: undefined,
   domainPixelPadding: 0,
   logBase: undefined,
