@@ -1,0 +1,8 @@
+*.jpeg
+*.jpg
+*.png
+# ignore all pngs created outside of docker
+!*-linux.png
+
+# Used to stage updated screenshots in buildkite ci
+__upload/
