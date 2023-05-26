@@ -11,10 +11,11 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const hasCustomDomain = boolean('has custom domain', false);
   const xDomain = hasCustomDomain ? ['a', 'b'] : undefined;
 
@@ -29,7 +30,7 @@ export const Example = () => {
     },
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings xDomain={xDomain} rotation={customKnobs.enum.rotation()} theme={theme} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />

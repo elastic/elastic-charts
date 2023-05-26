@@ -8,7 +8,6 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
-import { Story } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -28,6 +27,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
@@ -41,7 +41,7 @@ const data = dg.generateGroupedSeries(numOfDays, 6, 'CPU ').map((d) => {
 });
 const dataForLogScale = data.map((d) => ({ ...d, y: d.y - 3 }));
 
-export const Example: Story = (_, { kind, name }) => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showLegend = boolean('Show Legend', false);
   const onElementClick = action('onElementClick');
   const tickTimeFormatter = timeFormatter(niceTimeFormatByDay(numOfDays));
@@ -49,7 +49,7 @@ export const Example: Story = (_, { kind, name }) => {
 
   return (
     <>
-      <Chart size={['100%', 400]} title={kind} description={name}>
+      <Chart title={title} description={description} size={['100%', 400]}>
         <Settings
           baseTheme={useBaseTheme()}
           onElementClick={onElementClick}

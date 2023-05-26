@@ -12,12 +12,13 @@ import { BarSeries, Chart, ScaleType, Settings, PartialTheme, Tooltip } from '@e
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const data2 = dg.generateSimpleSeries(40);
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const theme: PartialTheme = {
     chartMargins: {
       bottom: 0,
@@ -28,7 +29,7 @@ export const Example = () => {
   };
   return (
     <div>
-      <Chart size={{ width: 100, height: 50 }}>
+      <Chart title={title} description={description} size={{ width: 100, height: 50 }}>
         <Settings theme={theme} baseTheme={useBaseTheme()} />
         <Tooltip type={TooltipType.None} />
         <BarSeries
@@ -40,7 +41,7 @@ export const Example = () => {
           data={data2}
         />
       </Chart>
-      <Chart size={{ height: 50 }}>
+      <Chart title={title} description={description} size={{ height: 50 }}>
         <Settings theme={theme} baseTheme={useBaseTheme()} />
         <Tooltip type={TooltipType.None} />
         <BarSeries
@@ -52,7 +53,7 @@ export const Example = () => {
           data={data2}
         />
       </Chart>
-      <Chart size={['50%', 50]}>
+      <Chart title={title} description={description} size={['50%', 50]}>
         <Settings theme={theme} baseTheme={useBaseTheme()} />
         <Tooltip type={TooltipType.None} />
         <BarSeries
@@ -64,7 +65,7 @@ export const Example = () => {
           data={data2}
         />
       </Chart>
-      <Chart size={[undefined, 50]}>
+      <Chart title={title} description={description} size={[undefined, 50]}>
         <Settings theme={theme} baseTheme={useBaseTheme()} />
         <Tooltip type={TooltipType.None} />
         <BarSeries
@@ -76,7 +77,7 @@ export const Example = () => {
           data={data2}
         />
       </Chart>
-      <Chart size={50}>
+      <Chart title={title} description={description} size={50}>
         <Settings theme={theme} baseTheme={useBaseTheme()} />
         <Tooltip type={TooltipType.None} />
         <BarSeries

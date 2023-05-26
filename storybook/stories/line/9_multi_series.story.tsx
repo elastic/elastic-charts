@@ -22,12 +22,13 @@ import {
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_tsvb';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis

@@ -12,6 +12,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -38,7 +39,7 @@ const t1 = data[data.length - 1][0];
 const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showLegend = boolean('Show legend', false);
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
@@ -69,7 +70,7 @@ export const Example = () => {
   });
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend={showLegend}
         baseTheme={useBaseTheme()}

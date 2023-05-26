@@ -24,6 +24,7 @@ import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { getDebugStateLogger } from '../../utils/debug_state_logger';
 import { customKnobs } from '../../utils/knobs';
@@ -38,7 +39,7 @@ function generateTimeAnnotationData(values: any[]): LineAnnotationDatum[] {
   }));
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const debugState = boolean('Enable debug state', false);
   const markerPosition = select(
@@ -53,7 +54,7 @@ export const Example = () => {
   ]);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         debug={debug}
         onRenderChange={getDebugStateLogger(debugState)}

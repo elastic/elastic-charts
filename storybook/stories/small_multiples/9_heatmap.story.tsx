@@ -24,6 +24,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { customKnobs } from '../utils/knobs';
@@ -36,7 +37,7 @@ const numOfDays = 90;
 
 const tickTimeFormatter = timeFormatter(niceTimeFormatByDay(numOfDays));
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('Debug', false);
   const debugState = boolean('Enable debug state', true);
   const timeBasedData = boolean('Time data', false);
@@ -133,7 +134,7 @@ export const Example = () => {
   const { highlightedData, onElementClick, onBrushEnd } = useHeatmapSelection();
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         debug={debug}
         debugState={debugState}

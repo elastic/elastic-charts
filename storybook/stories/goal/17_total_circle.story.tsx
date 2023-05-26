@@ -12,6 +12,7 @@ import React from 'react';
 import { Chart, Goal, Settings } from '@elastic/charts';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getBandFillColorFn } from '../utils/utils';
 
@@ -21,11 +22,11 @@ const getBandFillColor = getBandFillColorFn({
   300: '#66c2a5',
 });
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const start = number('startAngle (π)', 1.5, { min: -2, max: 2, step: 1 / 8 });
   const end = number('endAngle (π)', -0.5, { min: -2, max: 2, step: 1 / 8 });
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Goal
         id="spec_1"

@@ -11,10 +11,11 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const theme: PartialTheme = {
     scales: {
       histogramPadding: number('histogram padding', 0.05, {
@@ -32,7 +33,7 @@ export const Example = () => {
     },
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

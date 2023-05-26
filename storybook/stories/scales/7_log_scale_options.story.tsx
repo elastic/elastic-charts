@@ -22,6 +22,7 @@ import {
   LogScaleOptions,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { logFormatter } from '../utils/formatters';
 import { customKnobs } from '../utils/knobs';
@@ -112,7 +113,7 @@ const getData = (rows: number, yLogKnobs: LogKnobs, xLogKnobs: LogKnobs) =>
     };
   });
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const rows = number('Rows in dataset', 11, { min: 5, step: 2, max: 21 });
   const yLogKnobs = getLogKnobs(false);
   const xLogKnobs = getLogKnobs(true);
@@ -122,7 +123,7 @@ export const Example = () => {
   const Series = seriesMap[type];
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings xDomain={xLogKnobs} baseTheme={useBaseTheme()} />
       <Axis id="y" position={Position.Left} domain={yLogKnobs} tickFormat={logFormatter(yLogKnobs.logBase)} />
       <Axis

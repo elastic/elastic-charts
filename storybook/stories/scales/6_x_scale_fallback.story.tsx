@@ -11,12 +11,13 @@ import React from 'react';
 
 import { Axis, Chart, BarSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const includeString = boolean('include string is x data', true);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings xDomain={{ min: 0, max: 10 }} baseTheme={useBaseTheme()} />
       <Axis id="y" title="count" position={Position.Left} />
       <Axis id="x" title={includeString ? 'ordinal fallback scale' : 'linear scale'} position={Position.Bottom} />

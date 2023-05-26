@@ -23,6 +23,7 @@ import {
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const position = new Float32Array(columnarMock.position);
@@ -60,7 +61,7 @@ const columnarData: ColumnarViewModel = {
 
 const noop = () => {};
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   let resetFocusControl: FlameGlobalControl = noop; // initial value
   let focusOnNodeControl: FlameNodeControl = noop; // initial value
 
@@ -81,7 +82,7 @@ export const Example = () => {
   });
   const debug = boolean('Debug history', false);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
       <Flame
         id="spec_1"

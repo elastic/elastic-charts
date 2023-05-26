@@ -8,7 +8,6 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean, number, text } from '@storybook/addon-knobs';
-import { Story } from '@storybook/react';
 import { startCase } from 'lodash';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -30,6 +29,7 @@ import {
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
@@ -91,7 +91,7 @@ const getAxisOptions = (
   };
 };
 
-export const Example: Story = (_, { kind, name }) => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('Debug', false);
   const showLegend = boolean('Show Legend', false);
   const onElementClick = action('onElementClick');
@@ -99,7 +99,7 @@ export const Example: Story = (_, { kind, name }) => {
   const hostPrefix = text('host prefix', `Host `).trim();
 
   return (
-    <Chart title={kind} description={name}>
+    <Chart title={title} description={description}>
       <Settings
         debug={debug}
         onElementClick={onElementClick}

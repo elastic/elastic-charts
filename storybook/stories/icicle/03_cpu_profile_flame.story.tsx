@@ -13,6 +13,7 @@ import React from 'react';
 import { Chart, Datum, Partition, PartitionLayout, PrimitiveValue, Settings, PartialTheme } from '@elastic/charts';
 import data from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock.json';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, viridis18 as palette } from '../utils/utils';
 
@@ -28,7 +29,7 @@ const getLayerSpec = (maxDepth: number = 30) =>
     },
   }));
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const onElementListeners = {
     onElementClick: action('onElementClick'),
     onElementOver: action('onElementOver'),
@@ -47,7 +48,7 @@ export const Example = () => {
     },
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} />
       <Partition
         id="spec_1"

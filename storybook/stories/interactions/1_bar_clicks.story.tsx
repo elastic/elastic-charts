@@ -21,6 +21,7 @@ import {
   TooltipHeaderFormatter,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const onElementListeners = {
@@ -30,7 +31,7 @@ const onElementListeners = {
   onProjectionClick: action('onProjectionClick'),
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const useObjectAsX = boolean('use object on x', false);
   const headerFormatter: TooltipHeaderFormatter = ({ value }) => {
     if (value % 2 === 0) {
@@ -46,7 +47,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

@@ -11,6 +11,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function createThemeAction(title: string, min: number, max: number, value: number) {
@@ -46,7 +47,7 @@ function renderAxisWithOptions(position: Position, seriesGroup: string, show: bo
   return <Axis {...axisProps} />;
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const customTheme: PartialTheme = {
     chartMargins: {
       left: createThemeAction('margin left', 0, 50, 0),
@@ -64,7 +65,7 @@ export const Example = () => {
   const seriesGroup1 = 'group1';
   const seriesGroup2 = 'group2';
   return (
-    <Chart size={[500, 300]}>
+    <Chart title={title} description={description} size={[500, 300]}>
       <Settings showLegend={false} theme={customTheme} debug={boolean('debug', true)} baseTheme={useBaseTheme()} />
       {renderAxisWithOptions(Position.Top, seriesGroup1, false)}
       {renderAxisWithOptions(Position.Top, seriesGroup2, true)}

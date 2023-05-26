@@ -54,6 +54,7 @@ export const Example = () => {
 };
 
 Example.parameters = {
+  showHeader: true,
   background: { disable: true },
   markdown: 'Select a series to load async actions',
 };

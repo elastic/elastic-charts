@@ -10,11 +10,12 @@ import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings
       baseTheme={useBaseTheme()}
       showLegend

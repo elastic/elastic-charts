@@ -22,6 +22,7 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm');
@@ -39,7 +40,7 @@ const data3 = KIBANA_METRICS.metrics.kibana_os_load.v3.data.map((d) => [
 ]);
 const allMetrics = [...data3, ...data2, ...data1];
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const customLegend: CustomLegend = ({ items, pointerValue }) => (
     <div style={{ width: '100%', position: 'relative' }}>
       <p style={{ height: '1.5em' }}>{pointerValue ? moment(pointerValue?.value).format('HH:mm') : 'System Load'}</p>
@@ -58,7 +59,7 @@ export const Example = () => {
   );
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

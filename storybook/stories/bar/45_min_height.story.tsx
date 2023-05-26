@@ -11,9 +11,10 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const minBarHeight = number('minBarHeight', 5);
   const data = [
     [1, 100000],
@@ -27,7 +28,7 @@ export const Example = () => {
     [9, 0],
   ];
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="Bottom" position={Position.Bottom} />
       <Axis id="left" title="Left" position={Position.Left} />

@@ -10,11 +10,12 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} showLegend />
       <Axis id="bottom" position={Position.Bottom} />
       <Axis id="left" position={Position.Left} />

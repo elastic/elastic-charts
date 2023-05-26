@@ -12,6 +12,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -19,11 +20,11 @@ const dateFormatter = timeFormatter('HH:mm');
 
 const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map(([x, y]) => [x, -y]);
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const yScaleType = customKnobs.enum.scaleType('Y scale', ScaleType.Linear, { include: ['Linear', 'Log'] });
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis

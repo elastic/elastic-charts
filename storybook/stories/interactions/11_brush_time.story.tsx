@@ -24,10 +24,11 @@ import {
   Settings,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
   const oneDay = 1000 * 60 * 60 * 24;
   const oneDays = moment.duration(1, 'd');
@@ -41,7 +42,7 @@ export const Example = () => {
     action('onBrushEnd')(formatter(x[0]), formatter(x[1]));
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}

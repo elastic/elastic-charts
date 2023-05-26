@@ -23,13 +23,14 @@ import {
 import { isDefined } from '@elastic/charts/src/utils/common';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
 const dateFormatter = timeFormatter('HH:mm');
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings baseTheme={useBaseTheme()} rotation={customKnobs.enum.rotation()} />
     <Tooltip
       stickTo={customKnobs.enum.stickTo('stickTo')}

@@ -12,6 +12,7 @@ import React, { FC } from 'react';
 
 import { Chart, Settings, Axis, Position } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const NoResults: FC<{ msg: string }> = ({ msg }) => (
@@ -26,12 +27,12 @@ const NoResults: FC<{ msg: string }> = ({ msg }) => (
 /**
  * Should render no data value
  */
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const customNoResults = boolean('Show custom no results', true);
   const noResultsMsg = text('Custom No Results message', 'No Results');
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Axis id="count" title="count" position={Position.Left} />
       <Axis id="x" title="goods" position={Position.Bottom} />
       <Settings noResults={customNoResults ? <NoResults msg={noResultsMsg} /> : undefined} baseTheme={useBaseTheme()} />

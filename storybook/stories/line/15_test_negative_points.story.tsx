@@ -12,10 +12,11 @@ import React from 'react';
 
 import { LineSeries, Chart, ScaleType, Settings, Position, Axis } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const negative = boolean('use negative values', true);
   const yScaleType = customKnobs.enum.scaleType('Y scale type', ScaleType.Linear, { include: ['Linear', 'Log'] });
 
@@ -29,7 +30,7 @@ export const Example = () => {
     };
   });
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="y" position={Position.Left} />
       <Axis id="x" position={Position.Bottom} />

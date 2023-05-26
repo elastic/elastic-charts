@@ -10,6 +10,7 @@ import React from 'react';
 
 import { Chart, Timeslip, Settings, PartialTheme, GetData } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const getData = (dataDemand: Parameters<GetData>[0]) => {
@@ -35,7 +36,7 @@ const getData = (dataDemand: Parameters<GetData>[0]) => {
   return result;
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const theme: PartialTheme = {
     chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
@@ -43,7 +44,7 @@ export const Example = () => {
 
   // fixing width and height at multiples of 256 for now
   return (
-    <Chart size={{ width: 1024, height: 512 }}>
+    <Chart title={title} description={description} size={{ width: 1024, height: 512 }}>
       <Settings theme={theme} baseTheme={useBaseTheme()} />
       <Timeslip id="spec_1" getData={getData} />
     </Chart>

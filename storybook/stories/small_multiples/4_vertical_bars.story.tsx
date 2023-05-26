@@ -8,7 +8,6 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
-import { Story } from '@storybook/react';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -29,6 +28,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { ColorVariant } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
@@ -55,7 +55,7 @@ const datal2 = generateData(2, { a: 'avg new user', b: 'avg existing user' }).ma
   site: 'website B',
 }));
 
-export const Example: Story = (_, { kind, name }) => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const marker = (
     <span
       style={{
@@ -75,7 +75,7 @@ export const Example: Story = (_, { kind, name }) => {
   const onElementClick = action('onElementClick');
 
   return (
-    <Chart title={kind} description={name}>
+    <Chart title={title} description={description}>
       <Settings onElementClick={onElementClick} showLegend={showLegend} baseTheme={useBaseTheme()} />
       <Axis id="time" title="Day of week" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Count of logins" position={Position.Left} gridLine={{ visible: false }} />

@@ -23,6 +23,7 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
 
@@ -30,11 +31,11 @@ const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 20);
 const shapes = Object.values(PointShape);
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showColorPicker = boolean('Show color picker', false);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

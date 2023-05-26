@@ -12,6 +12,7 @@ import React, { ReactNode } from 'react';
 import { Chart, Heatmap, Settings, Tooltip, TooltipValue } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 
 function boldMap(d: TooltipValue[]) {
@@ -31,11 +32,11 @@ function boldMap(d: TooltipValue[]) {
   );
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data = BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         onElementClick={action('onElementClick')}
         brushAxis="both"

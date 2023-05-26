@@ -10,15 +10,16 @@ import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
 import { viridis18 as palette } from '../utils/utils';
 
 const color = palette.slice().reverse();
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         flatLegend

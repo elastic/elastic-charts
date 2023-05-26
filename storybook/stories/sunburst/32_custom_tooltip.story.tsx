@@ -23,6 +23,7 @@ import {
 import { CHILDREN_KEY, entryValue, PARENT_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
@@ -61,9 +62,9 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend legendMaxDepth={1} theme={theme} baseTheme={useBaseTheme()} />
       <Tooltip
         placement={customKnobs.enum.placement('Tooltip placement')}

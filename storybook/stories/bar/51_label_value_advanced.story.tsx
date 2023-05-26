@@ -22,6 +22,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -39,7 +40,7 @@ const frozenData: { [key: string]: any[] } = {
   h: frozenDataHighVolume,
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showValueLabel = boolean('show value label', true);
   const isAlternatingValueLabel = boolean('alternating value label', false);
   const isValueContainedInElement = boolean('contain value label within bar element', false);
@@ -124,7 +125,7 @@ export const Example = () => {
   const splitSeriesAccessors = isSplitSeries ? ['g'] : undefined;
   const stackAccessors = isStackedSeries ? ['x'] : undefined;
   return (
-    <Chart renderer="canvas">
+    <Chart title={title} description={description} renderer="canvas">
       <Settings
         theme={theme}
         baseTheme={useBaseTheme()}

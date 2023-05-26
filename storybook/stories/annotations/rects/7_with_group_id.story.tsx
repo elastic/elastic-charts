@@ -12,6 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 
 const getKnobs = () => {
@@ -36,11 +37,11 @@ const getKnobs = () => {
     y1: yDefined ? number('y1', 3) : undefined,
   };
 };
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const xAxisKnobs = getKnobs();
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       {xAxisKnobs.enabled && (
         <RectAnnotation
           groupId={xAxisKnobs.groupId}

@@ -11,14 +11,15 @@ import React from 'react';
 
 import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings, Fit, AreaSeries } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const fitEnabled = boolean('enable fit function', false);
   const isArea = boolean('switch to area', false);
   const LineOrAreaSeries = isArea ? AreaSeries : LineSeries;
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

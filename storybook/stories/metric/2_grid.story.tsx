@@ -23,6 +23,7 @@ import {
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();
@@ -36,7 +37,7 @@ const getIcon =
   ({ width, height, color }: { width: number; height: number; color: string }) =>
     <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />;
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showGridBorder = boolean('show grid border', false);
   const addMetricClick = boolean('attach click handler', true);
   const useProgressBar = boolean('use progress bar', true);
@@ -188,7 +189,7 @@ export const Example = () => {
           .flat()
           .map((d) => `[${d?.value}]`)
           .join(' ')}
-      <Chart title="This is a title" description="This is a description">
+      <Chart title={title} description={description}>
         <Settings
           baseTheme={useBaseTheme()}
           onElementClick={

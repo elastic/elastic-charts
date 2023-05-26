@@ -12,10 +12,11 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { getLegendSizeKnob } from './legend_size_knob';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings
       showLegend
       showLegendExtra

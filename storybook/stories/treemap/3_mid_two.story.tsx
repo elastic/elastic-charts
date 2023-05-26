@@ -19,6 +19,7 @@ import {
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, interpolatorTurbo, regionLookup } from '../utils/utils';
 
@@ -32,8 +33,8 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings showLegend theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"

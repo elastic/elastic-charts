@@ -11,11 +11,12 @@ import React from 'react';
 import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export const Example = () => (
-  <Chart title="This is a title" description="thuis is a description">
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings
       debugState
       baseTheme={useBaseTheme()}

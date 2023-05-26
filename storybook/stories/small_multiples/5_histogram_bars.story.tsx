@@ -7,11 +7,11 @@
  */
 
 import { boolean, number } from '@storybook/addon-knobs';
-import { Story } from '@storybook/react';
 import React from 'react';
 
 import { ScaleType, Position, Chart, Axis, GroupBy, SmallMultiples, Settings, BarSeries } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const data = [
@@ -52,13 +52,13 @@ const colorMap: Record<string, string> = {
   Default: 'red',
 };
 
-export const Example: Story = (_, { kind, name }) => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const enableHistogramMode = boolean('EnableHistogramMode', true);
   const barsPadding = number('barsPadding', 0, numberOptions);
   const histogramPadding = number('histogramPadding', 0, numberOptions);
 
   return (
-    <Chart title={kind} description={name}>
+    <Chart title={title} description={description}>
       <Settings theme={{ scales: { barsPadding, histogramPadding } }} showLegend baseTheme={useBaseTheme()} />
       <Axis id="x" position={Position.Bottom} />
       <Axis

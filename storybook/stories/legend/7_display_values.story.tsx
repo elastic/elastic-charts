@@ -12,10 +12,11 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '@elastic/charts';
 import { TSVB_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_tsvb';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showLegendDisplayValue = boolean('show display value in legend', true);
   const legendPosition = select(
     'legendPosition',
@@ -52,7 +53,7 @@ export const Example = () => {
     );
   });
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         legendPosition={legendPosition}

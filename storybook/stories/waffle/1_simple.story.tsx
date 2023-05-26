@@ -14,19 +14,20 @@ import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { ArrayEntry } from '../../../packages/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalStark9, discreteColor } from '../utils/utils';
 
 const rng = getRandomNumberGenerator();
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showDebug = boolean('show table for debugging', false);
   const ascendingSort = boolean('ascending sort', false);
   // this is used to test the sorting capabilities
   const data = mocks.pie.slice(0, 4).sort(() => (rng(0, 1, 3) > 0.5 ? 1 : -1));
   const names: Record<string, string> = { '7': 'Al', '3': 'Au', '5': 'Ag', '8': 'Cu' };
   return (
-    <Chart className="story-chart">
+    <Chart title={title} description={description} className="story-chart">
       <Settings
         theme={{
           chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },

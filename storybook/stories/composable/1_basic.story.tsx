@@ -14,6 +14,7 @@ import { Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { BarSeries } from '../../../packages/charts/src/chart_types/specs';
 import { LIGHT_THEME } from '../../../packages/charts/src/utils/themes/light_theme';
+import { ChartsStory } from '../../types';
 
 interface Dimensions {
   height: number;
@@ -81,7 +82,7 @@ const Measurement = (props: { text: string; horizontal: boolean; dims: CSSProper
 
 const HTML_CHART_PADDING = 20;
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const legendEnabled = boolean('show legend', true);
   const axisYEnabled = boolean('show y axis', true);
   const axisXEnabled = boolean('show x axis', true);
@@ -148,7 +149,7 @@ export const Example = () => {
           />
         </>
       )}
-      <Chart>
+      <Chart title={title} description={description}>
         <Settings
           showLegend={legendEnabled}
           baseTheme={LIGHT_THEME}

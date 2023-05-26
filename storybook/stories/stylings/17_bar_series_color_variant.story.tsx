@@ -13,9 +13,10 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme } f
 import { ColorVariant } from '@elastic/charts/src/utils/common';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const fillOption = select(
     'fillColor',
     {
@@ -52,7 +53,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

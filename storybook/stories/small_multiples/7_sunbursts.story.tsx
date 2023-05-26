@@ -8,7 +8,6 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean, select, number } from '@storybook/addon-knobs';
-import { Story } from '@storybook/react';
 import React from 'react';
 
 import {
@@ -26,6 +25,7 @@ import {
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalPastel12, countryLookup, productLookup, regionLookup } from '../utils/utils';
 
@@ -81,7 +81,7 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example: Story = (_, { kind, name }) => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const layout = select(
     'Inner breakdown layout',
     {
@@ -93,7 +93,7 @@ export const Example: Story = (_, { kind, name }) => {
   );
 
   return (
-    <Chart title={kind} description={name}>
+    <Chart title={title} description={description}>
       <Settings
         {...onElementListeners}
         showLegend={boolean('Show legend', true)}

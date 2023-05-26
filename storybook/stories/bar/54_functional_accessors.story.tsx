@@ -23,9 +23,10 @@ import {
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const xAccessorFn: AccessorFn = (d) => d.x;
   const yAccessorFn: AccessorFn = (d) => d.y;
   yAccessorFn.fieldName = text('y fn name', '') || undefined;
@@ -35,7 +36,7 @@ export const Example = () => {
   const onElementClick = ([[, { key }]]: XYChartElementEvent[]) => action('clicked series key')(key);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         onElementClick={onElementClick as ElementClickListener}
         showLegend

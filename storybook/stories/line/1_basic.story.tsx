@@ -12,9 +12,10 @@ import React from 'react';
 import { Chart, LineSeries, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const toggleSpec = boolean('toggle line spec', true);
   const data1 = KIBANA_METRICS.metrics.kibana_os_load.v1.data;
   const data2 = data1.map((datum) => [datum[0], datum[1] - 1]);
@@ -22,7 +23,7 @@ export const Example = () => {
   const specId = toggleSpec ? 'lines1' : 'lines2';
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <LineSeries
         id={specId}

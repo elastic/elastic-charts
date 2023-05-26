@@ -11,17 +11,18 @@ import React from 'react';
 
 import { Chart, Axis, Position, AreaSeries, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { logFormatter } from '../utils/formatters';
 
 /**
  * Should filter out zero values when fitting domain
  */
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const fit = boolean('fit', true);
   const logMinLimit = number('logMinLimit', 0.001);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis
         id="count"

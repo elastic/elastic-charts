@@ -25,6 +25,7 @@ import {
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator('static');
@@ -65,7 +66,7 @@ const aggData = [
     .map(({ x, y, value }) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
 ];
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const ref1 = React.useRef<Chart>(null);
   const ref2 = React.useRef<Chart>(null);
   const ref3 = React.useRef<Chart>(null);
@@ -86,7 +87,7 @@ export const Example = () => {
   return (
     <>
       <div style={{ paddingLeft: 52 }}>Response times</div>
-      <Chart ref={ref1} size={{ height: '30%' }} id="chart1">
+      <Chart title={title} description={description} ref={ref1} size={{ height: '30%' }} id="chart1">
         <Settings
           baseTheme={baseTheme}
           theme={{
@@ -138,7 +139,7 @@ export const Example = () => {
         />
       </Chart>
       <div style={{ paddingLeft: 52, height: 30, lineHeight: '30px' }}>Number of requests</div>
-      <Chart ref={ref2} size={{ height: '30%' }} id="chart2">
+      <Chart title={title} description={description} ref={ref2} size={{ height: '30%' }} id="chart2">
         <Settings
           baseTheme={baseTheme}
           pointerUpdateDebounce={0}
@@ -187,7 +188,7 @@ export const Example = () => {
         />
       </Chart>
       <div style={{ paddingLeft: 52, height: 30, lineHeight: '30px' }}>Memory pressure</div>
-      <Chart ref={ref3} size={{ height: '30%' }} id="heatmap">
+      <Chart title={title} description={description} ref={ref3} size={{ height: '30%' }} id="heatmap">
         <Settings
           baseTheme={baseTheme}
           theme={{

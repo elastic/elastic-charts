@@ -35,5 +35,6 @@ export const Example = () => {
 };
 
 Example.parameters = {
+  showHeader: true,
   background: { disable: true },
 };

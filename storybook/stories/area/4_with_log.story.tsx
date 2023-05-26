@@ -11,14 +11,15 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm');
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d) => (d[1] < 7 ? [d[0], null] : [d[0], d[1] - 10]));
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} tickFormat={dateFormatter} />
       <Axis

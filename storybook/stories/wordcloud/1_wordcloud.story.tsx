@@ -15,6 +15,7 @@ import { WeightFn, WordModel } from '@elastic/charts/src/chart_types/wordcloud/l
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes as euiPalettes } from '@elastic/charts/src/utils/themes/colors';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const text =
@@ -235,7 +236,7 @@ function sampleData(paletteName: keyof typeof palettes): WordModel[] {
   });
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const configName = select(
     'template',
     TEMPLATES.reduce((p, k) => ({ ...p, [k]: k }), {}),
@@ -244,7 +245,7 @@ export const Example = () => {
   const { backgroundColor, palette, ...knobs } = getTemplate(configName);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         theme={{ background: { color: backgroundColor } }}
         baseTheme={useBaseTheme()}
