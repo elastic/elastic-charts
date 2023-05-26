@@ -17,6 +17,7 @@ module.exports = {
     '@storybook/addon-viewport',
     'storybook-addon-background-toggle',
     'storybook-addon-theme-toggle',
+    'storybook-addon-toggles',
   ],
   typescript: {
     reactDocgen: false,

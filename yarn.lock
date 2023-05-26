@@ -11276,7 +11276,8 @@ eslint-module-utils@^2.7.4:
     debug "^3.2.7"
 
 "eslint-plugin-elastic-charts@link:./packages/eslint-plugin-elastic-charts":
-  version "1.0.0"
+  version "0.0.0"
+  uid ""
 
 eslint-plugin-eslint-comments@^3.2.0:
   version "3.2.0"
@@ -20862,15 +20863,20 @@ store2@^2.12.0:
   resolved "https://registry.yarnpkg.com/store2/-/store2-2.12.0.tgz#e1f1b7e1a59b6083b2596a8d067f6ee88fd4d3cf"
   integrity sha512-7t+/wpKLanLzSnQPX8WAcuLCCeuSHoWdQuh9SB3xD0kNOM38DNf+0Oa+wmvxmYueRzkmh6IcdKFtvTa+ecgPDw==
 
-storybook-addon-background-toggle@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/storybook-addon-background-toggle/-/storybook-addon-background-toggle-0.0.1.tgz#93fd398cb87f27a5db031c2cdbbbb681f73003c2"
-  integrity sha512-cTDx0qO90y5nQ2oi1rmttqMZsJuTvTPretB8HRpPgLVIvn2+Ldpy8OYqEWieZEAyd8v9/WbWbncJp1YXAcM5hA==
+storybook-addon-background-toggle@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/storybook-addon-background-toggle/-/storybook-addon-background-toggle-0.0.3.tgz#991ba3d84fe18d71bcc62f63ebcd47a8beddf72e"
+  integrity sha512-6WAyYTcdSg+Syfs09k7fFefjd8l9g8ETGZEOJIx65hlm6dyECxFfk+W3cHj6BK3Ivesb/hzkRcWgAp5p7B1MyA==
 
 storybook-addon-theme-toggle@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/storybook-addon-theme-toggle/-/storybook-addon-theme-toggle-0.0.1.tgz#b7c2c6316b67c89a8383d047b730e15741e891ec"
   integrity sha512-nPdYoFRm9ZEAOG6STX7MO540izUMjp9kt+FyUsGIt7J/mRaCM5xBx+k152t597jUcVssIzu5fT7/GVEYrSf48A==
+
+storybook-addon-toggles@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/storybook-addon-toggles/-/storybook-addon-toggles-0.0.3.tgz#4d4ee16aa1aee6edeb987d71d9c98b3d6c5e4fa6"
+  integrity sha512-LKOr0Co5jLBwdy+68QwKVr9SEFvB5MukrbqJWDlPSlpurgcPYH7ZMQD259MLbfwHTVXjmts3BDM4/L+/SR0hoQ==
 
 stream-browserify@^2.0.1:
   version "2.0.2"
