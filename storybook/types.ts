@@ -13,12 +13,20 @@ import { StoryBackgroundParameter, BackgroundGlobals } from 'storybook-addon-bac
 import { StoryThemeParameter, ThemeGlobals } from 'storybook-addon-theme-toggle';
 import { StoryTogglesParameter, TogglesGlobals } from 'storybook-addon-toggles';
 
-type StoryParameters = SBParameters & StoryThemeParameter & StoryBackgroundParameter & StoryTogglesParameter;
+/**
+ * Parameter accessible at the story level
+ */
+type StoryParameters = SBParameters &
+  StoryThemeParameter &
+  StoryBackgroundParameter &
+  StoryTogglesParameter & {
+    /**
+     * Renders markdown content below story
+     */
+    markdown?: string;
+  };
 type StoryGlobals = ThemeGlobals & TogglesGlobals & BackgroundGlobals;
 
-/**
- * Custom duplicate of the storybook `Story` type in order to have better types that storybook does not support.
- */
 type StoryContext = Omit<SBStoryContext, 'globals'> & {
   /**
    * global values used across stories
@@ -36,6 +44,9 @@ type StoryContext = Omit<SBStoryContext, 'globals'> & {
 
 type ReactReturnType = ReactElement<unknown>;
 
+/**
+ * Custom duplicate of the storybook `Story` type in order to have better types that storybook does not support.
+ */
 export interface ChartsStory {
   (args: Args, context: StoryContext): ReactReturnType;
   /**

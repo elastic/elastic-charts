@@ -15,6 +15,9 @@ import { TogglesParameter } from 'storybook-addon-toggles';
 
 import { SB_KNOBS_PANEL, SB_SOURCE_PANEL } from './stories/utils/storybook';
 
+/**
+ * Parameter accessible at the global level
+ */
 type Parameters = SBParameters & ThemeParameter & BackgroundParameter & TogglesParameter;
 
 const euiLogoUrl =
