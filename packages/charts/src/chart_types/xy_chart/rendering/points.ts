@@ -45,6 +45,7 @@ export function renderPoints(
   isBandChart: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
+  allowIsolated: boolean,
   styleAccessor?: PointStyleAccessor,
 ): {
   pointGeometries: PointGeometry[];
@@ -82,7 +83,7 @@ export function renderPoints(
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
       const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-      const isPointIsolated = isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
       const isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle);
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
       const radius = isPointIsolated

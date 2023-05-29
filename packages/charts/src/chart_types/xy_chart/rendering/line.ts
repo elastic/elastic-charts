@@ -61,6 +61,7 @@ export function renderLine(
     hasY0Accessors,
     markSizeOptions,
     false,
+    true,
     pointStyleAccessor,
   );
 
