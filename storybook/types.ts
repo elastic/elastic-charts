@@ -25,9 +25,9 @@ type StoryParameters = SBParameters &
      */
     markdown?: string;
   };
-type StoryGlobals = ThemeGlobals & TogglesGlobals & BackgroundGlobals;
+export type StoryGlobals = ThemeGlobals & BackgroundGlobals & TogglesGlobals;
 
-type StoryContext = Omit<SBStoryContext, 'globals'> & {
+export type StoryContext = Omit<SBStoryContext, 'globals'> & {
   /**
    * global values used across stories
    */
