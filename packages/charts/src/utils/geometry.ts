@@ -64,7 +64,7 @@ export interface PointGeometry {
   value: GeometryValue;
   style: PointGeometryStyle;
   panel: Dimensions;
-  orphan: boolean;
+  isolated: boolean;
 }
 /** @internal */
 export interface PointGeometryStyle {

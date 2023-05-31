@@ -45,7 +45,7 @@ export function renderLines(
         );
       }
 
-      const visiblePoints = style.point.visible ? points : points.filter(({ orphan }) => orphan);
+      const visiblePoints = style.point.visible ? points : points.filter(({ isolated }) => isolated);
       if (visiblePoints.length === 0) {
         return;
       }

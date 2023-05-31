@@ -11,6 +11,7 @@ import React from 'react';
 import { ShapeRendererFn } from '../../chart_types/xy_chart/renderer/shapes_paths';
 import { Color } from '../../common/colors';
 import { PointShape, PointStyle } from '../../utils/themes/theme';
+import { getColorFromVariant } from '../../utils/common';
 
 interface LegendIconProps {
   pointStyle?: PointStyle;
@@ -39,7 +40,13 @@ export const LegendIcon = ({ pointStyle, color, ariaLabel }: LegendIconProps) =>
           rotate(${rotation})
         `}
       >
-        <path d={shapeFn(adjustedSize / 2)} stroke={stroke} strokeWidth={strokeWidth} fill={color} opacity={opacity} />
+        <path
+          d={shapeFn(adjustedSize / 2)}
+          stroke={getColorFromVariant(color, stroke)}
+          strokeWidth={strokeWidth}
+          fill={color}
+          opacity={opacity}
+        />
       </g>
     </svg>
   );
