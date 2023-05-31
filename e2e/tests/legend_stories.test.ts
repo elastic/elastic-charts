@@ -268,7 +268,7 @@ test.describe('Legend stories', () => {
   test.describe('Custom width', () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const getUrl = (position: string, size: number) =>
-      `http://localhost:9001/?path=/story/legend--${position}&knob-enable legend size=true&knob-legend size=${size}`;
+      `http://localhost:9001/?path=/story/legend--positioning&knob-position=${position}&knob-enable legend size=true&knob-legend size=${size}`;
 
     pwEach.describe(['top', 'right', 'bottom', 'left'])(
       (p) => `position ${p}`,
