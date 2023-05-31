@@ -1,3 +1,11 @@
+.echChart {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .echChartContent {
   position: relative;
   display: flex;
@@ -9,6 +17,7 @@
     flex-direction: column;
   }
 }
+
 .echChartTitle {
   font-style: normal;
   font-weight: bold;
@@ -20,6 +29,7 @@
   text-overflow: ellipsis;
   flex-shrink: 0;
 }
+
 .echChartDescription {
   padding: 0 8px 8px 8px;
   font-style: normal;
@@ -30,11 +40,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   flex-shrink: 0;
-}
-
-.echChart {
-  height: 100%;
-  width: 100%;
 }
 
 .echContainer {

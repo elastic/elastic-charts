@@ -82,6 +82,7 @@ export const storybookParameters: Parameters = {
     ],
   },
   toggles: {
+    ignoreQueryParams: false,
     options: [
       {
         id: 'showHeader',
