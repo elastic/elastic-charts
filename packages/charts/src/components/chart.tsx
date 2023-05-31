@@ -169,8 +169,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   render() {
     const { size, className } = this.props;
     const containerSizeStyle = getChartSize(size);
-    const chartClassNames = classNames('echChart', className, {
-      'echChart--column': this.state.legendDirection === LayoutDirection.Horizontal,
+    const chartContentClassNames = classNames('echChartContent', className, {
+      'echChartContent--column': this.state.legendDirection === LayoutDirection.Horizontal,
     });
     const titleDescStyle = {
       paddingLeft: this.state.paddingLeft,
@@ -179,18 +179,18 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     return (
       <Provider store={this.chartStore}>
-        <div className={chartClassNames} style={containerSizeStyle}>
+        <div className="echChart" style={containerSizeStyle}>
           {this.props.title && (
-            <div className="echChartTitle" style={titleDescStyle}>
+            <h3 className="echChartTitle" style={titleDescStyle}>
               {this.props.title}
-            </div>
+            </h3>
           )}
           {this.props.description && (
-            <div className="echChartDescription" style={titleDescStyle}>
+            <h4 className="echChartDescription" style={titleDescStyle}>
               {this.props.description}
-            </div>
+            </h4>
           )}
-          <div className="echChartContent">
+          <div className={chartContentClassNames}>
             <ChartBackground />
             <ChartStatus />
             <ChartResizer />
