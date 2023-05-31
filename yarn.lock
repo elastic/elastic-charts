@@ -2976,13 +2976,13 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^80.0.0":
-  version "80.0.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-80.0.0.tgz#33e1df8a3f193fb6a7a4f7e52a3028983856ba3a"
-  integrity sha512-0xWizIQ/kH9N2n9zOficqXPdRbVxCpHez2ZErnvISAEOneJ6401usI7fILGKrrvR+uyiYnNybfaP3H8HcgDa+g==
+"@elastic/eui@^81.1.0":
+  version "81.1.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-81.1.0.tgz#397eb003e1cc38f525e633123a0d6bee3bf34094"
+  integrity sha512-G1NxNYjbPV32iEsosd3dRao8viZKClJnoeU3+GY/Ybrnn/hPYSc4Qsi4jkUvTvPD8MYGeXcoxsC+wt4I+mvbLw==
   dependencies:
     "@types/chroma-js" "^2.0.0"
-    "@types/lodash" "^4.14.160"
+    "@types/lodash" "^4.14.194"
     "@types/numeral" "^0.0.28"
     "@types/react-beautiful-dnd" "^13.1.2"
     "@types/react-input-autosize" "^2.2.1"
@@ -6616,15 +6616,15 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.144.tgz#12e57fc99064bce45e5ab3c8bc4783feb75eab8e"
   integrity sha512-ogI4g9W5qIQQUhXAclq6zhqgqNUr7UlFaqDHbch7WLSLeeM/7d3CRaw7GLajxvyFvhJqw4Rpcz5bhoaYtIx6Tg==
 
-"@types/lodash@^4.14.160":
-  version "4.14.168"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.168.tgz#fe24632e79b7ade3f132891afff86caa5e5ce008"
-  integrity sha512-oVfRvqHV/V6D1yifJbVRU3TMp8OT6o6BG+U9MkwuJ3U8/CsDHvalRpsxBqivn71ztOFZBTfJMvETbqHiaNSj7Q==
-
 "@types/lodash@^4.14.167":
   version "4.14.191"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.191.tgz#09511e7f7cba275acd8b419ddac8da9a6a79e2fa"
   integrity sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==
+
+"@types/lodash@^4.14.194":
+  version "4.14.195"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.195.tgz#bafc975b252eb6cea78882ce8a7b6bf22a6de632"
+  integrity sha512-Hwx9EUgdwf2GLarOjQp5ZH8ZmblzcbTBC2wtQWNKARBSxM9ezRIAUpeDTgoQRAFB0+8CNWXVA9+MaSOzOF3nPg==
 
 "@types/luxon@^1.25.0":
   version "1.25.0"
