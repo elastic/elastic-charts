@@ -20,7 +20,7 @@ export { Example as multipleWithAxisAndLegend } from './7_multiple.story';
 export { Example as stackedWithAxisAndLegend } from './8_stacked.story';
 export { Example as multiSeriesWithLogValues } from './9_multi_series.story';
 export { Example as discontinuousDataPoints } from './11_discontinuous_data_points.story';
-export { Example as testOrphanDataPoints } from './12_orphan_data_points.story';
+export { Example as isolatedDataPoints } from './12_isolated_data_points.story';
 export { Example as testPathOrdering } from './10_test_path_ordering.story';
 export { Example as lineWithMarkAccessor } from './13_line_mark_accessor.story';
 export { Example as pointShapes } from './14_point_shapes.story';

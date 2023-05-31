@@ -62,7 +62,7 @@ export function renderAreas(
     // now we can render the visible points on top of each the areas/lines
     areas.forEach(({ panel, value: area }) => {
       const { style, seriesIdentifier, points } = area;
-      const visiblePoints = style.point.visible ? points : points.filter(({ orphan }) => orphan);
+      const visiblePoints = style.point.visible ? points : points.filter(({ isolated }) => isolated);
       if (visiblePoints.length === 0) {
         return;
       }

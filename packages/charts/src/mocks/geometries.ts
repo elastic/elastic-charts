@@ -32,7 +32,7 @@ export class MockPointGeometry {
     value: { accessor: 'y0', x: 0, y: 0, mark: null, datum: { x: 0, y: 0 } },
     transform: { x: 0, y: 0 },
     panel: { width: 100, height: 100, left: 0, top: 0 },
-    orphan: false,
+    isolated: false,
   };
 
   static default(partial?: RecursivePartial<PointGeometry>) {

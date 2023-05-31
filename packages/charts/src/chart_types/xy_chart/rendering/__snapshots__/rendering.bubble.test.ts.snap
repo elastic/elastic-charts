@@ -4,7 +4,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -61,7 +61,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -123,7 +123,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
 [
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -180,7 +180,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
   },
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -242,7 +242,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -299,7 +299,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -361,7 +361,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
 [
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -418,7 +418,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
   },
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -480,7 +480,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -537,7 +537,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -599,7 +599,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
 [
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -656,7 +656,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
   },
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -718,7 +718,7 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -775,7 +775,7 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -837,7 +837,7 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -894,7 +894,7 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -956,7 +956,7 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -1013,7 +1013,7 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -1075,7 +1075,7 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -1132,7 +1132,7 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,

@@ -164,6 +164,14 @@ describe('Theme', () => {
           visible: true,
           opacity: 314571,
         },
+        isolatedPoint: {
+          fill: 'white',
+          radius: 314571,
+          stroke: 'elastic_charts',
+          strokeWidth: 314571,
+          visible: true,
+          opacity: 314571,
+        },
         fit: {
           line: {
             opacity: 314571,
@@ -210,6 +218,14 @@ describe('Theme', () => {
           opacity: 1,
         },
         point: {
+          fill: 'white',
+          visible: true,
+          radius: 314571,
+          stroke: 'elastic_charts',
+          strokeWidth: 314571,
+          opacity: 314571,
+        },
+        isolatedPoint: {
           fill: 'white',
           visible: true,
           radius: 314571,

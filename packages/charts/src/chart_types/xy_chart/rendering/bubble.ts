@@ -43,9 +43,13 @@ export function renderBubble(
     panel,
     color,
     seriesStyle.point,
+    // there is no concept of isolated point in bubble chart, so we mark it as invisible
+    { ...seriesStyle.point, visible: false },
     hasY0Accessors,
     markSizeOptions,
     !isMixedChart,
+    // don't allow rendering of isolated points
+    false,
     pointStyleAccessor,
   );
 

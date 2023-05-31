@@ -7,6 +7,7 @@
  */
 
 import { Position, Placement, ScaleType, TooltipStickTo, CurveType, Fit } from '@elastic/charts';
+import { PointShape } from '@elastic/charts/src';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 import { VerticalAlignment, HorizontalAlignment } from '@elastic/charts/src/utils/common';
 
@@ -64,6 +65,8 @@ const getCurveTypeKnob = getKnobsFnFromEnum(CurveType, 'Curve', CurveType.CURVE_
 
 const getFitKnob = getKnobsFnFromEnum(Fit, 'fitting function', Fit.Average);
 
+const getPointShapeKnob = getKnobsFnFromEnum(PointShape, 'point shape', PointShape.Circle);
+
 export const enumKnobs = {
   tooltipType: getTooltipTypeKnob,
   position: getPositionKnob,
@@ -75,4 +78,5 @@ export const enumKnobs = {
   scaleType: getScaleTypeKnob,
   curve: getCurveTypeKnob,
   fit: getFitKnob,
+  pointShape: getPointShapeKnob,
 };
