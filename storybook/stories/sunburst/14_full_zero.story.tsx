@@ -20,8 +20,7 @@ export const Example = () => (
       showLegend
       showLegendExtra
       theme={{
-        chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-      }}
+              }}
     />
     <Partition
       id="spec_1"
