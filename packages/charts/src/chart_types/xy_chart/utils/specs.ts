@@ -390,14 +390,6 @@ export interface DisplayValueSpec {
    */
   valueFormatter?: TickFormatter;
   /**
-   * If true will contain value label within element, else dimensions are computed based on value
-   * @deprecated This feature is deprecated and will be removed. Wrapping numbers into multiple lines
-   * is not considered a good practice.
-   * @defaultValue false
-   */
-  isValueContainedInElement?: boolean;
-
-  /**
    * An option to hide the value label on certain conditions:
    * - `barGeometry` the label is not rendered if the width/height overflows the associated bar geometry,
    * - `chartEdges` the label is not rendered if it overflows the chart projection area.

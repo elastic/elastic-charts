@@ -98,7 +98,6 @@ export interface BarGeometry {
     width: number;
     height: number;
     overflowConstraints: Set<LabelOverflowConstraint>;
-    isValueContainedInElement: boolean;
   };
   seriesIdentifier: XYChartSeriesIdentifier;
   value: GeometryValue;
