@@ -10,7 +10,8 @@
   position: relative;
   display: flex;
   flex-direction: row;
-  height: 100%;
+  flex-grow: 1;
+  height: 1px; // triggers flex height constraints
   width: 100%;
 
   &--column {
