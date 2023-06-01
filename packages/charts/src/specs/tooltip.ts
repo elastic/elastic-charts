@@ -82,13 +82,6 @@ export type TooltipValueFormatter<D extends BaseDatum = Datum, SI extends Series
  */
 export type TooltipHeaderFormatter<D extends BaseDatum = Datum> = (data: PointerValue<D>) => JSX.Element | string;
 
-/**
- * Either a {@link (TooltipProps:type)} or an {@link (TooltipProps:type)} configuration
- * @public
- * @deprecated use new Tooltip spec to set tooltip type and other options
- */
-export type TooltipSettings = TooltipType | TooltipProps;
-
 /** @internal */
 export function isCrosshairTooltipType(type: TooltipType) {
   return type === TooltipType.VerticalCursor || type === TooltipType.Crosshairs;
@@ -238,22 +231,6 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    */
   maxVisibleTooltipItems: number;
 }
-
-/**
- * Default value for the tooltip type
- * @defaultValue `vertical` {@link (TooltipType:type) | TooltipType.VerticalCursor}
- * @public
- * @deprecated unused type will soon be removed
- */
-export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
-
-/**
- * Default value for the tooltip snap
- * @defaultValue `true`
- * @public
- * @deprecated unused type will soon be removed
- */
-export const DEFAULT_TOOLTIP_SNAP = true;
 
 /**
  * Configure tooltip for chart
