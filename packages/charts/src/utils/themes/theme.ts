@@ -757,12 +757,6 @@ export interface LineAnnotationStyle {
    * The style for the line geometry
    */
   line: StrokeStyle & Opacity & Partial<StrokeDashArray>;
-  /**
-   * The style for the text shown on the tooltip.
-   * @deprecated This style is not currently used and will
-   * soon be removed.
-   */
-  details: TextStyle;
 }
 
 /** @public */
