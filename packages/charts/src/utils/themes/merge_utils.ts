@@ -16,13 +16,6 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
     strokeWidth: 1,
     opacity: 1,
   },
-  details: {
-    fontSize: 10,
-    fontFamily: 'sans-serif',
-    fontStyle: 'normal',
-    fill: '#777',
-    padding: 0,
-  },
 };
 /** @public */
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
