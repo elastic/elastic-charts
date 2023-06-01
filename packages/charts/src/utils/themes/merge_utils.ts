@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { LIGHT_THEME } from './light_theme';
-import { LineAnnotationStyle, PartialTheme, RectAnnotationStyle, Theme } from './theme';
+import { LineAnnotationStyle, RectAnnotationStyle } from './theme';
 import { mergePartial, RecursivePartial } from '../common';
 
 /** @public */
@@ -41,24 +40,4 @@ export function mergeWithDefaultAnnotationLine(config?: RecursivePartial<LineAnn
 /** @public */
 export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle {
   return mergePartial(DEFAULT_ANNOTATION_RECT_STYLE, config);
-}
-
-/**
- * Merge theme or themes with a base theme
- *
- * priority is based on spatial order
- *
- * @param theme - primary partial theme
- * @param defaultTheme - base theme
- * @param auxiliaryThemes - additional themes to be merged
- *
- * @public
- * @deprecated - Please use `baseTheme` and `theme` on Settings instead
- */
-export function mergeWithDefaultTheme(
-  theme: PartialTheme,
-  defaultTheme: Theme = LIGHT_THEME,
-  auxiliaryThemes: PartialTheme[] = [],
-): Theme {
-  return mergePartial(defaultTheme, theme, {}, auxiliaryThemes);
 }
