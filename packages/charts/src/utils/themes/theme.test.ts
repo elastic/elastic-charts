@@ -14,7 +14,7 @@ import {
   mergeWithDefaultAnnotationLine,
   mergeWithDefaultAnnotationRect,
 } from './merge_utils';
-import { LineAnnotationStyle, TextStyle, Theme } from './theme';
+import { LineAnnotationStyle, Theme } from './theme';
 
 describe('Theme', () => {
   let CLONED_LIGHT_THEME: Theme;
@@ -41,41 +41,11 @@ describe('Theme', () => {
         opacity: 1,
       };
 
-      const defaultLineConfig = {
-        stroke: '#777',
-        strokeWidth: 1,
-        opacity: 1,
-      };
-
-      const customDetailsConfig: TextStyle = {
-        fontSize: 50,
-        fontFamily: 'custom-font-family',
-        fontStyle: 'italic',
-        fill: 'custom-fill',
-        padding: 20,
-      };
-
-      const defaultDetailsConfig = {
-        fontSize: 10,
-        fill: '#777',
-        fontFamily: 'sans-serif',
-        fontStyle: 'normal',
-        padding: 0,
-      };
-
-      const expectedMergedCustomLineConfig = {
+      const expectedMergedCustomLineConfig: LineAnnotationStyle = {
         line: customLineConfig,
-        details: defaultDetailsConfig,
-      } as LineAnnotationStyle;
+      };
       const mergedCustomLineConfig = mergeWithDefaultAnnotationLine({ line: customLineConfig });
       expect(mergedCustomLineConfig).toEqual(expectedMergedCustomLineConfig);
-
-      const expectedMergedCustomDetailsConfig = {
-        line: defaultLineConfig,
-        details: customDetailsConfig,
-      } as LineAnnotationStyle;
-      const mergedCustomDetailsConfig = mergeWithDefaultAnnotationLine({ details: customDetailsConfig });
-      expect(mergedCustomDetailsConfig).toEqual(expectedMergedCustomDetailsConfig);
     });
   });
 

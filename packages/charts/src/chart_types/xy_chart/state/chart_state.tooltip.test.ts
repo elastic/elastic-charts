@@ -46,10 +46,8 @@ describe('XYChart - State tooltips', () => {
       store.dispatch(onPointerMove({ x: 25, y: 50 }, 0));
       store.dispatch(
         upsertSpec(
-          MockGlobalSpec.settings({
-            tooltip: {
-              type: tooltipType,
-            },
+          MockGlobalSpec.tooltip({
+            type: tooltipType,
           }),
         ),
       );
