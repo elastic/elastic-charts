@@ -428,12 +428,6 @@ export interface SeriesSpec<D extends BaseDatum = Datum> extends Spec {
    * @defaultValue `false`
    */
   hideInLegend?: boolean;
-  /**
-   * Index per series to sort by
-   * @deprecated This prop is not currently used and will
-   * soon be removed.
-   */
-  sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;
   /**
    * Postfix string or accessor function for y1 accessor when using `y0Accessors`
