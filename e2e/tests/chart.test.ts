@@ -22,7 +22,14 @@ test.describe('Chart', () => {
 
     test('should accommodate chart description only', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9002/?path=/story/legend--positioning&knob-position=bottom&globals=toggles.showChartTitle:true',
+        'http://localhost:9002/?path=/story/legend--positioning&knob-position=bottom&globals=toggles.showChartDescription:true',
+      );
+    });
+
+    test('should render multiple charts with titles', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/interactions--multi-chart-cursor-sync',
+        { screenshotSelector: '#story-root' },
       );
     });
 
