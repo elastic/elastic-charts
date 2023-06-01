@@ -141,4 +141,6 @@ export class HeatmapState implements InternalChartState {
     this.onBrushEndCaller(globalState);
     this.onPointerUpdate(globalState);
   }
+
+  canDisplayChartTitles = () => true;
 }

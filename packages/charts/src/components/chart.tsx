@@ -49,6 +49,7 @@ interface ChartState {
   legendDirection: LegendPositionConfig['direction'];
   paddingLeft: number;
   paddingRight: number;
+  displayTitles: boolean;
 }
 
 const getMiddlware = (id: string): StoreEnhancer => {
@@ -93,6 +94,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       legendDirection: LayoutDirection.Vertical,
       paddingLeft: LIGHT_THEME.chartMargins.left,
       paddingRight: LIGHT_THEME.chartMargins.right,
+      displayTitles: true,
     };
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
@@ -112,6 +114,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       this.setState({
         paddingLeft: theme.chartMargins.left,
         paddingRight: theme.chartMargins.right,
+        displayTitles: state.internalChartState?.canDisplayChartTitles(state) ?? true,
       });
       if (state.internalChartState) {
         state.internalChartState.eventCallbacks(state);
@@ -180,12 +183,12 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     return (
       <Provider store={this.chartStore}>
         <div className="echChart" style={containerSizeStyle}>
-          {this.props.title && (
+          {this.state.displayTitles && this.props.title && (
             <h3 className="echChartTitle" style={titleDescStyle}>
               {this.props.title}
             </h3>
           )}
-          {this.props.description && (
+          {this.state.displayTitles && this.props.description && (
             <h4 className="echChartDescription" style={titleDescStyle}>
               {this.props.description}
             </h4>

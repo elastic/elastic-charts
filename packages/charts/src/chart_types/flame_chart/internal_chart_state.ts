@@ -26,6 +26,7 @@ export class FlameState implements InternalChartState {
   isBrushAvailable = () => false;
   isBrushing = () => false;
   isChartEmpty = () => false;
+  canDisplayChartTitles = () => false;
   getLegendItemsLabels = () => [];
   getLegendItems = () => [];
   getLegendExtraValues = () => new Map<SeriesKey, LegendItemExtraValues>();

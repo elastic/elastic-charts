@@ -166,6 +166,11 @@ export interface InternalChartState {
    * Get the domain of the vertical and horizontal small multiple grids
    */
   getSmallMultiplesDomains(globalState: GlobalChartState): SmallMultiplesSeriesDomains;
+
+  /**
+   * Determines if chart titles are displayed when provided
+   */
+  canDisplayChartTitles(globalState: GlobalChartState): boolean;
 }
 
 /** @internal */
