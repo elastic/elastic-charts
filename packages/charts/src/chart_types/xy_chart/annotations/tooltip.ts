@@ -52,7 +52,7 @@ export function computeRectAnnotationTooltipState(
         ...rectAnnotationTooltipState,
         tooltipSettings,
         customTooltip,
-        customTooltipDetails: customTooltipDetails ?? spec.renderTooltip,
+        customTooltipDetails,
       };
     }
   }
@@ -91,7 +91,7 @@ export function computeMultipleRectAnnotationTooltipState(
           ...rectAnnotationTooltipState,
           tooltipSettings,
           customTooltip,
-          customTooltipDetails: customTooltipDetails ?? spec.renderTooltip,
+          customTooltipDetails,
         });
       }
     }

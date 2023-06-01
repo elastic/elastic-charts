@@ -922,10 +922,6 @@ export type RectAnnotationSpec = BaseAnnotationSpec<
   RectAnnotationStyle
 > & {
   /**
-   * @deprecated use customTooltipDetails
-   */
-  renderTooltip?: AnnotationTooltipFormatter;
-  /**
    * z-index of the annotation relative to other elements in the chart
    * @defaultValue -1
    */
