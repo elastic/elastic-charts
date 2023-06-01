@@ -117,6 +117,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
         overflow: 'auto',
         height: '200px',
         width: '200px',
+        maxWidth: '100%',
+        maxHeight: '80vh',
       }}
     >
       <Chart title={storyTitle} description={description}>

@@ -174,6 +174,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <div
       style={{
         resize: 'both',
+        maxWidth: '100%',
+        maxHeight: '80vh',
         padding: '0px',
         overflow: 'auto',
         height: layout === 'vertical' ? '720px' : layout === 'horizontal' ? '150px' : '300px',
