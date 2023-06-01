@@ -732,12 +732,6 @@ export interface AxisSpec extends Spec {
   showOverlappingTicks: boolean;
   /** Shows all labels, also the overlapping ones */
   showOverlappingLabels: boolean;
-  /**
-   * Shows grid lines for axis
-   * @defaultValue `false`
-   * @deprecated use `gridLine.visible`
-   */
-  showGridLines?: boolean;
   /** Where the axis appear on the chart */
   position: Position;
   /**
