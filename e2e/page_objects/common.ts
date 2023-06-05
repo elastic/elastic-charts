@@ -82,13 +82,6 @@ interface ScreenshotDOMElementOptions {
    */
   hiddenSelectors?: string[];
   /**
-   * Use playwright debug tooling
-   * See https://playwright.dev/docs/debug#run-in-debug-mode
-   *
-   * @deprecated
-   */
-  debug?: boolean;
-  /**
    * An acceptable ratio of pixels that are different to the total amount of pixels, between `0` and `1`. Default is
    * configurable with `TestConfig.expect`. Unset by default.
    */

@@ -138,9 +138,9 @@ export interface BuildProps<
 > {
   overrides: SFOverrides<S, Overrides>;
   defaults: SFDefaults<S, Overrides, Defaults>;
-  /** @deprecated typing only do not use as value */
+  /** @deprecated - ignore - used only as type do not use as value */
   optionals: Pick<S, Optionals>;
-  /** @deprecated typing only do not use as value */
+  /** @deprecated - ignore - used only as type do not use as value */
   requires: Pick<S, Requires>;
 }
 

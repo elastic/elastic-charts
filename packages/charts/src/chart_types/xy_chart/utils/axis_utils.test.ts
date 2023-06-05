@@ -107,7 +107,6 @@ describe('Axis computational utils', () => {
     groupId: 'group_1',
     hide: false,
     style,
-    showGridLines: true,
     integersOnly: false,
   });
 
@@ -133,7 +132,6 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       position: Position.Left,
       style,
-      showGridLines: true,
       integersOnly: false,
     });
   const lineSeriesSpec = MockSeriesSpec.line({
