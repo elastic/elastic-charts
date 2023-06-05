@@ -548,7 +548,7 @@ export interface PointStyle {
   /** the opacity of each point on the theme/series */
   opacity: number;
   /** the radius of each point of the theme/series */
-  radius: number;
+  radius: Pixels;
   /** shape for the point, default to circle */
   shape?: PointShape;
 }
@@ -704,6 +704,7 @@ export interface BubbleSeriesStyle {
 export interface LineSeriesStyle {
   line: LineStyle;
   point: PointStyle;
+  isolatedPoint: PointStyle;
   fit: {
     line: LineFitStyle;
   };
@@ -714,6 +715,7 @@ export interface AreaSeriesStyle {
   area: AreaStyle;
   line: LineStyle;
   point: PointStyle;
+  isolatedPoint: PointStyle;
   fit: {
     line: LineFitStyle;
     area: AreaFitStyle;

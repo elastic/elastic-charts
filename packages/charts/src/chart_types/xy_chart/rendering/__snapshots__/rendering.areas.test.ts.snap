@@ -4,7 +4,7 @@ exports[`Rendering points - areas Multi series area chart - linear can render fi
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -61,7 +61,7 @@ exports[`Rendering points - areas Multi series area chart - linear can render fi
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -123,7 +123,7 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
 [
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -180,7 +180,7 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
   },
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -242,7 +242,7 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render f
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -299,7 +299,7 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render f
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -361,7 +361,7 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
 [
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -418,7 +418,7 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
   },
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -480,7 +480,7 @@ exports[`Rendering points - areas Multi series area chart - time can render firs
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -537,7 +537,7 @@ exports[`Rendering points - areas Multi series area chart - time can render firs
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -599,7 +599,7 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
 [
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -656,7 +656,7 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
   },
   {
     "color": "blue",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -718,7 +718,7 @@ exports[`Rendering points - areas Single series area chart - linear Can render t
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -775,7 +775,7 @@ exports[`Rendering points - areas Single series area chart - linear Can render t
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -837,7 +837,7 @@ exports[`Rendering points - areas Single series area chart - ordinal Can render 
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -894,7 +894,7 @@ exports[`Rendering points - areas Single series area chart - ordinal Can render 
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -956,7 +956,7 @@ exports[`Rendering points - areas Single series area chart - time Can render two
 [
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,
@@ -1013,7 +1013,7 @@ exports[`Rendering points - areas Single series area chart - time Can render two
   },
   {
     "color": "red",
-    "orphan": false,
+    "isolated": false,
     "panel": {
       "height": 100,
       "left": 0,

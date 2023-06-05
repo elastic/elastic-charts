@@ -202,6 +202,8 @@ export interface AreaSeriesStyle {
         area: AreaFitStyle;
     };
     // (undocumented)
+    isolatedPoint: PointStyle;
+    // (undocumented)
     line: LineStyle;
     // (undocumented)
     point: PointStyle;
@@ -1739,6 +1741,8 @@ export interface LineSeriesStyle {
         line: LineFitStyle;
     };
     // (undocumented)
+    isolatedPoint: PointStyle;
+    // (undocumented)
     line: LineStyle;
     // (undocumented)
     point: PointStyle;
@@ -2156,7 +2160,7 @@ export type PointShape = $Values<typeof PointShape>;
 export interface PointStyle {
     fill?: Color | ColorVariant;
     opacity: number;
-    radius: number;
+    radius: Pixels;
     shape?: PointShape;
     stroke?: Color | ColorVariant;
     strokeWidth: number;

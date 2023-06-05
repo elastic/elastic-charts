@@ -41,9 +41,11 @@ export function renderPoints(
   panel: Dimensions,
   color: Color,
   pointStyle: PointStyle,
+  isolatedPointThemeStyle: PointStyle,
   isBandChart: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
+  allowIsolated: boolean,
   styleAccessor?: PointStyleAccessor,
 ): {
   pointGeometries: PointGeometry[];
@@ -81,17 +83,21 @@ export function renderPoints(
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
       const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-      const orphan = isOrphanDataPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle);
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
-      const radius = markSizeOptions.enabled
+      const radius = isPointIsolated
+        ? isolatedPointThemeStyle.radius
+        : markSizeOptions.enabled
         ? Math.max(getRadius(mark), pointStyle.radius)
         : styleOverrides?.radius ?? pointStyle.radius;
+
       const pointGeometry: PointGeometry = {
         x,
         y: y === null ? NaN : y,
         radius,
         color,
-        style,
+        style: isolatedPointThemeStyle.visible && isPointIsolated ? isolatedPointStyle : style,
         value: {
           x: xValue,
           y: originalY,
@@ -105,7 +111,7 @@ export function renderPoints(
         },
         seriesIdentifier,
         panel,
-        orphan,
+        isolated: isPointIsolated,
       };
       indexedGeometryMap.set(pointGeometry, geometryType);
       // use the geometry only if the yDatum in contained in the current yScale domain
@@ -214,25 +220,25 @@ export function getRadiusFn(
   };
 }
 
-function yAccessorForOrphanCheck(datum: DataSeriesDatum): number | null {
+function yAccessorForIsolatedPointCheck(datum: DataSeriesDatum): number | null {
   return datum.filled?.y1 ? null : datum.y1;
 }
 
-function isOrphanDataPoint(
+function isIsolatedPoint(
   index: number,
   length: number,
   yDefined: YDefinedFn,
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (index === 0 && (isNil(next) || !yDefined(next, yAccessorForOrphanCheck))) {
+  if (index === 0 && (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))) {
     return true;
   }
-  if (index === length - 1 && (isNil(prev) || !yDefined(prev, yAccessorForOrphanCheck))) {
+  if (index === length - 1 && (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck))) {
     return true;
   }
   return (
-    (isNil(prev) || !yDefined(prev, yAccessorForOrphanCheck)) &&
-    (isNil(next) || !yDefined(next, yAccessorForOrphanCheck))
+    (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck)) &&
+    (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))
   );
 }
