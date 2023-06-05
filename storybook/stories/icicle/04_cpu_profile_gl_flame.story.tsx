@@ -15,7 +15,6 @@ import {
   Datum,
   Flame,
   Settings,
-  PartialTheme,
   FlameGlobalControl,
   FlameNodeControl,
   ColumnarViewModel,
@@ -69,10 +68,6 @@ export const Example = () => {
     onElementOver: action('onElementOver'),
     onElementOut: action('onElementOut'),
   };
-  const theme: PartialTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-    chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
-  };
   button('Reset focus', () => {
     resetFocusControl();
   });
@@ -82,7 +77,7 @@ export const Example = () => {
   const debug = boolean('Debug history', false);
   return (
     <Chart>
-      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
+      <Settings baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
       <Flame
         id="spec_1"
         columnarData={columnarData}

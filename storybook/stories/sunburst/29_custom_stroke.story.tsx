@@ -29,8 +29,7 @@ const getColorKnob = (prop: string, defaultColor: Color) =>
 
 export const Example = () => {
   const theme: PartialTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-    background: {
+        background: {
       color: color('background.color', '#1c1c24'),
       fallbackColor: getColorKnob('background.fallbackColor', 'black'),
     },
