@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Chart, Timeslip, Settings, PartialTheme, GetData } from '@elastic/charts';
+import { Chart, Timeslip, Settings, GetData } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 
@@ -36,15 +36,10 @@ const getData = (dataDemand: Parameters<GetData>[0]) => {
 };
 
 export const Example = () => {
-  const theme: PartialTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-    chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
-  };
-
   // fixing width and height at multiples of 256 for now
   return (
     <Chart size={{ width: 1024, height: 512 }}>
-      <Settings theme={theme} baseTheme={useBaseTheme()} />
+      <Settings baseTheme={useBaseTheme()} />
       <Timeslip id="spec_1" getData={getData} />
     </Chart>
   );

@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "noUncheckedIndexedAccess": true,
     "module": "CommonJS",
-    "target": "es5",
+    "target": "ES2019",
     "lib": ["esnext", "dom"],
     "moduleResolution": "node",
     "jsx": "react",
