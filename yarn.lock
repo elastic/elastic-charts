@@ -4485,10 +4485,10 @@
   resolved "https://registry.yarnpkg.com/@mdx-js/util/-/util-1.6.6.tgz#9c70eb7e7e4abc1083c8edf7151d35a19e442c00"
   integrity sha512-PKTHVgMHnK5p+kcMWWNnZuoR7O19VmHiOujmVcyN50hya7qIdDb5vvsYC+dwLxApEXiABhLozq0dlIwFeS3yjg==
 
-"@microsoft/api-documenter@^7.22.8":
-  version "7.22.8"
-  resolved "https://registry.yarnpkg.com/@microsoft/api-documenter/-/api-documenter-7.22.8.tgz#9d0116595a719e81869f57a71a58b6dbb7d23ed1"
-  integrity sha512-0LHxKIcAskKRyZF0HmTYlEKFPJffKdumoLrMy3CNmE8y4xVza9RjpePvSvOFksAwrr3ClOLCSzd71mlvnjh4hQ==
+"@microsoft/api-documenter@^7.22.9":
+  version "7.22.9"
+  resolved "https://registry.yarnpkg.com/@microsoft/api-documenter/-/api-documenter-7.22.9.tgz#b15b7649c89a919c60bd85f54be107e3565749bf"
+  integrity sha512-NTrHrDOZ2CLfDnvspJITZ1OlDo+wWigLxZW4kuqE3xarshfOhekSIki/dLrl3Cf2IN76Ov92asbg8Ky216YISg==
   dependencies:
     "@microsoft/api-extractor-model" "7.27.1"
     "@microsoft/tsdoc" "0.14.2"
