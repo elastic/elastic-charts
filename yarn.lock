@@ -2976,10 +2976,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^81.1.0":
-  version "81.1.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-81.1.0.tgz#397eb003e1cc38f525e633123a0d6bee3bf34094"
-  integrity sha512-G1NxNYjbPV32iEsosd3dRao8viZKClJnoeU3+GY/Ybrnn/hPYSc4Qsi4jkUvTvPD8MYGeXcoxsC+wt4I+mvbLw==
+"@elastic/eui@^81.2.0":
+  version "81.2.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-81.2.0.tgz#cf48bb1437bd461ae48a347dcab5d232c988f085"
+  integrity sha512-JKp1NVoHWueWy704ierjD0ck+zAOH50aHuCnEMJWyVsixb0E89/9y/v1vn6VxIvrCs+6zo2OAMplG0RLQhvsFA==
   dependencies:
     "@types/chroma-js" "^2.0.0"
     "@types/lodash" "^4.14.194"
