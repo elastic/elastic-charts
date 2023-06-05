@@ -31,9 +31,6 @@ export const Example = () => {
         legendStrategy={select<LegendStrategy>('legendStrategy', LegendStrategy, LegendStrategy.Key)}
         legendMaxDepth={legendMaxDepth}
         baseTheme={useBaseTheme()}
-        theme={{
-
-        }}
       />
       <Partition
         id="spec_1"

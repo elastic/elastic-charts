@@ -24,7 +24,6 @@ import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
-
   partition: {
     minFontSize: 4,
     maxFontSize: 84,

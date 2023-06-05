@@ -20,7 +20,7 @@ export const Example = () => {
   const onElementClick = boolean('onElementClick listener', true);
   const onElementOver = boolean('onElementOver listener', true);
   const theme: PartialTheme = {
-        partition: {
+    partition: {
       outerSizeRatio: 0.9,
       linkLabel: {
         fontStyle: 'italic',

@@ -30,7 +30,7 @@ import {
 } from '../utils/utils';
 
 const theme: PartialTheme = {
-    partition: {
+  partition: {
     linkLabel: {
       maxCount: 0,
       fontSize: 14,

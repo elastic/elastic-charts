@@ -30,5 +30,4 @@ export type EasingFunction = (x: Ratio) => Ratio;
 export interface AnimKeyframe {
   time: number;
   easingFunction: EasingFunction;
-  // keyframeConfig: Partial<StaticConfig>;
 }

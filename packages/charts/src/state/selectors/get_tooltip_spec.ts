@@ -6,32 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { getSettingsSpecSelector } from './get_settings_spec';
 import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
 import { SpecType } from '../../specs/constants';
-import { DEFAULT_TOOLTIP_SPEC, TooltipProps, TooltipSettings, TooltipSpec } from '../../specs/tooltip';
-import { mergePartial } from '../../utils/common';
+import { DEFAULT_TOOLTIP_SPEC, TooltipSpec } from '../../specs/tooltip';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSpecsFromStore } from '../utils';
+import { getSpecFromStore } from '../utils';
 
 /**
  * @internal
  */
-export const getTooltipSpecSelector = createCustomCachedSelector(
-  [getSpecs, getSettingsSpecSelector],
-  (specs, settings): TooltipSpec => {
-    if (settings.tooltip) {
-      const legacyProps = isTooltipProps(settings.tooltip) ? settings.tooltip : { type: settings.tooltip };
-      // @ts-ignore - nesting limitation
-      return mergePartial(DEFAULT_TOOLTIP_SPEC, legacyProps);
-    }
-
-    const [tooltipSpec] = getSpecsFromStore<TooltipSpec>(specs, ChartType.Global, SpecType.Tooltip);
-    return tooltipSpec ?? DEFAULT_TOOLTIP_SPEC;
-  },
-);
-
-function isTooltipProps(tooltipSettings: TooltipSettings): tooltipSettings is TooltipProps {
-  return typeof tooltipSettings !== 'string';
-}
+export const getTooltipSpecSelector = createCustomCachedSelector([getSpecs], (specs): TooltipSpec => {
+  const tooltipSpec = getSpecFromStore<TooltipSpec, false>(specs, ChartType.Global, SpecType.Tooltip, false);
+  return tooltipSpec ?? DEFAULT_TOOLTIP_SPEC;
+});

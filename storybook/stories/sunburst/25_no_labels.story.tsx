@@ -18,7 +18,7 @@ export const Example = () => (
   <Chart>
     <Settings
       theme={{
-                partition: {
+        partition: {
           linkLabel: { maximumSection: Infinity, maxCount: 0 },
         },
       }}

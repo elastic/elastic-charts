@@ -15,7 +15,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
-    partition: {
+  partition: {
     linkLabel: { valueFont: { fontWeight: 900, fontStyle: 'italic' } },
   },
 };

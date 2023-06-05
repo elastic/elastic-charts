@@ -18,7 +18,7 @@ export const Example = () => (
   <Chart>
     <Settings
       theme={{
-                partition: { outerSizeRatio: 0.9 },
+        partition: { outerSizeRatio: 0.9 },
       }}
       baseTheme={useBaseTheme()}
     />
