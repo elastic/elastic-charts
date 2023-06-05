@@ -51,9 +51,6 @@ export const Example = () => {
         showLegendExtra
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
-        theme={{
-
-        }}
         {...onElementListeners}
       />
       <Partition

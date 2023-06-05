@@ -23,7 +23,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
-    chartPaddings: { left: 160 },
+  chartPaddings: { left: 160 },
   partition: {
     linkLabel: {
       maxCount: 32,

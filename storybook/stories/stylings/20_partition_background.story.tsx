@@ -34,7 +34,6 @@ export const Example = () => {
   const bgColor = color('Background color', 'rgba(255, 255, 255, 1)');
 
   const theme: PartialTheme = {
-
     background: {
       color: bGColorDisabled ? bgColor : undefined,
     },
