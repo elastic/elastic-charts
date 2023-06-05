@@ -17,8 +17,6 @@ export const Example = () => (
   <Chart>
     <Settings
       baseTheme={useBaseTheme()}
-      theme={{
-              }}
     />
     <Partition
       id="spec_1"

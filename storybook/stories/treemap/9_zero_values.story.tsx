@@ -16,7 +16,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example = () => (
   <Chart>
-    <Settings baseTheme={useBaseTheme()} showLegend showLegendExtra theme={{}} />
+    <Settings baseTheme={useBaseTheme()} showLegend showLegendExtra />
     <Partition
       id="spec_1"
       data={mocks.pie.map((d: any, i: number) => (i ? d : { ...d, exportVal: 0 }))}

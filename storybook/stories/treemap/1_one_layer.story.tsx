@@ -16,7 +16,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example = () => (
   <Chart>
-    <Settings debugState baseTheme={useBaseTheme()} theme={{}} />
+    <Settings debugState baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={mocks.pie}
