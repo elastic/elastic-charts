@@ -77,8 +77,7 @@ function getGridLinesForAxis(
   // axis can have a configured grid line style
   const gridLineStyles = axisSpec.gridLine ? mergePartial(gridLineThemeStyle, axisSpec.gridLine) : gridLineThemeStyle;
 
-  const showGridLines = axisSpec.showGridLines ?? gridLineStyles.visible;
-  if (!showGridLines) {
+  if (!gridLineStyles.visible) {
     return [];
   }
 

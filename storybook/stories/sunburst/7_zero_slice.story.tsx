@@ -19,7 +19,7 @@ export const Example = () => (
     <Settings
       baseTheme={useBaseTheme()}
       theme={{
-                chartPaddings: { left: 160 },
+        chartPaddings: { left: 160 },
       }}
     />
     <Partition

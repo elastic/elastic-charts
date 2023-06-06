@@ -25,7 +25,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example = () => {
   const theme: PartialTheme = {
-        partition: {
+    partition: {
       linkLabel: { maximumSection: Infinity, maxCount: 0 },
       sectorLineWidth: 10,
       sectorLineStroke: color('sectorLineStroke', 'lightgrey'),

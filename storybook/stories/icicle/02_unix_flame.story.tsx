@@ -27,7 +27,6 @@ export const Example = () => {
         legendMaxDepth={maxDepth}
         baseTheme={useBaseTheme()}
         theme={{
-
           partition: {
             minFontSize: 6,
             maxFontSize: 10,

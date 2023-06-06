@@ -75,9 +75,6 @@ const linearBarSeries = MockSeriesSpec.bar({
 const chartTop = 10;
 const chartLeft = 10;
 const settingSpec = MockGlobalSpec.settings({
-  tooltip: {
-    type: TooltipType.VerticalCursor,
-  },
   theme: {
     chartPaddings: { top: 0, left: 0, bottom: 0, right: 0 },
     chartMargins: { top: 10, left: 10, bottom: 0, right: 0 },
@@ -163,13 +160,16 @@ describe('Chart state pointer interactions', () => {
   });
 
   test('can respond to tooltip types changes', () => {
-    let updatedSettings: SettingsSpec = {
-      ...settingSpec,
-      tooltip: {
-        type: TooltipType.None,
-      },
-    };
-    MockStore.addSpecs([ordinalBarSeries, updatedSettings], store);
+    MockStore.addSpecs(
+      [
+        ordinalBarSeries,
+        settingSpec,
+        MockGlobalSpec.tooltip({
+          type: TooltipType.None,
+        }),
+      ],
+      store,
+    );
     store.dispatch(onPointerMove({ x: 10, y: 10 + 70 }, 0));
     const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
     // no tooltip values exist if we have a TooltipType === None
@@ -177,13 +177,16 @@ describe('Chart state pointer interactions', () => {
     let isTooltipVisible = isTooltipVisibleSelector(store.getState());
     expect(isTooltipVisible.visible).toBe(false);
 
-    updatedSettings = {
-      ...settingSpec,
-      tooltip: {
-        type: TooltipType.Follow,
-      },
-    };
-    MockStore.addSpecs([ordinalBarSeries, updatedSettings], store);
+    MockStore.addSpecs(
+      [
+        ordinalBarSeries,
+        settingSpec,
+        MockGlobalSpec.tooltip({
+          type: TooltipType.Follow,
+        }),
+      ],
+      store,
+    );
     store.dispatch(onPointerMove({ x: 10, y: 10 + 70 }, 1));
     const { geometriesIndex } = computeSeriesGeometriesSelector(store.getState());
     expect(geometriesIndex.size).toBe(2);

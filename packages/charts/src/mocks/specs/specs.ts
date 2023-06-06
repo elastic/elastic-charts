@@ -41,6 +41,8 @@ import {
   GroupBySpec,
   Spec,
   HeatmapSpec,
+  TooltipSpec,
+  DEFAULT_TOOLTIP_SPEC,
 } from '../../specs';
 import { Datum, mergePartial, Position, RecursivePartial, Rotation } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
@@ -303,6 +305,10 @@ export class MockGlobalSpec {
     xDomain: { min: NaN, max: NaN },
   };
 
+  private static readonly tooltipBase: TooltipSpec = {
+    ...DEFAULT_TOOLTIP_SPEC,
+  };
+
   private static readonly axisBase: AxisSpec = {
     id: 'yAxis',
     chartType: ChartType.XYAxis,
@@ -344,12 +350,15 @@ export class MockGlobalSpec {
   };
 
   static settings(partial?: RecursivePartial<SettingsSpec>): SettingsSpec {
-    // @ts-ignore - nesting limitation
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBase, partial);
   }
 
   static settingsNoMargins(partial?: RecursivePartial<SettingsSpec>): SettingsSpec {
     return mergePartial<SettingsSpec>(MockGlobalSpec.settingsBaseNoMargings, partial);
+  }
+
+  static tooltip(partial?: RecursivePartial<TooltipSpec>): TooltipSpec {
+    return mergePartial<TooltipSpec>(MockGlobalSpec.tooltipBase, partial);
   }
 
   static xAxis(partial?: RecursivePartial<Omit<AxisSpec, 'domain'>>, rotation: Rotation = 0): AxisSpec {

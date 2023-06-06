@@ -17,7 +17,6 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example = () => {
   const partialCustomTheme = {
-
     background: {
       color: color('Change background container color', '#1c1c24'),
     },

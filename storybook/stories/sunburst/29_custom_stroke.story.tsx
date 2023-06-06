@@ -29,7 +29,7 @@ const getColorKnob = (prop: string, defaultColor: Color) =>
 
 export const Example = () => {
   const theme: PartialTheme = {
-        background: {
+    background: {
       color: color('background.color', '#1c1c24'),
       fallbackColor: getColorKnob('background.fallbackColor', 'black'),
     },

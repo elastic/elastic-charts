@@ -17,7 +17,7 @@ export const Example = () => (
   <Chart>
     <Settings
       theme={{
-                partition: { linkLabel: { maximumSection: 10000 } },
+        partition: { linkLabel: { maximumSection: 10000 } },
       }}
       baseTheme={useBaseTheme()}
     />

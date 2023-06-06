@@ -25,7 +25,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
-    partition: {
+  partition: {
     linkLabel: {
       maxCount: 0,
       fontSize: 14,

@@ -68,7 +68,6 @@ export const Example = () => {
         showLegendExtra={boolean('Show legend values', true)}
         flatLegend={boolean('Flat legend', false)}
         theme={{
-
           partition: {
             linkLabel: { maxCount: 0 }, // relevant for sunburst only
             outerSizeRatio: 0.9, // relevant for sunburst only

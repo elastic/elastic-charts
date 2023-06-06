@@ -42,6 +42,6 @@
     "storybook-addon-background-toggle": "^0.0.1",
     "terser-webpack-plugin": "^4.2.3",
     "ts-loader": "8.4.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.3"
   }
 }

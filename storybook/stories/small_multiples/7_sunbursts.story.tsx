@@ -56,7 +56,6 @@ const onElementListeners = {
 };
 
 const theme: PartialTheme = {
-
   chartPaddings: { top: 6, left: 8, bottom: 6, right: 8 },
   partition: {
     linkLabel: {

@@ -43,12 +43,7 @@ export const Example = () => {
   const otherOnBottom = boolean('"Other" on bottom even if not the smallest', true);
   return (
     <Chart>
-      <Settings
-        baseTheme={useBaseTheme()}
-        theme={{
-
-        }}
-      />
+      <Settings baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
         data={data}
