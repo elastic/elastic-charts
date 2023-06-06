@@ -7,6 +7,6 @@
  */
 
 /** @internal */
-export interface LegendExtra {
+export interface LegendValue {
   value: number | null;
 }

@@ -7,7 +7,7 @@
  */
 
 import { isMosaic, isSunburst, isTreemap, isWaffle } from './viewmodel';
-import { LegendItemExtraValues } from '../../../../common/legend';
+import { LegendItemValues } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { Relation } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
@@ -100,27 +100,27 @@ export function partitionTree(
 }
 
 /**
- * Creates flat extra value map from nested key path
+ * Creates flat legend values map from nested key path
  * @internal
  */
-export function getExtraValueMap(
+export function getLegendValuesMap(
   layers: Layer[],
   valueFormatter: ValueFormatter,
   tree: HierarchyOfArrays,
   maxDepth: number,
   depth: number = 0,
-  keys: Map<SeriesKey, LegendItemExtraValues> = new Map(),
-): Map<SeriesKey, LegendItemExtraValues> {
+  keys: Map<SeriesKey, LegendItemValues> = new Map(),
+): Map<SeriesKey, LegendItemValues> {
   for (let i = 0; i < tree.length; i++) {
     const branch = tree[i];
     if (!branch) continue;
     const [key, arrayNode] = branch;
     const { value, path, [CHILDREN_KEY]: children } = arrayNode;
-    const values: LegendItemExtraValues = new Map();
+    const values: LegendItemValues = new Map();
     const formattedValue = valueFormatter ? valueFormatter(value) : value;
     values.set(key, formattedValue);
     keys.set(path.map(({ index }) => index).join('__'), values);
-    if (depth < maxDepth) getExtraValueMap(layers, valueFormatter, children, maxDepth, depth + 1, keys);
+    if (depth < maxDepth) getLegendValuesMap(layers, valueFormatter, children, maxDepth, depth + 1, keys);
   }
   return keys;
 }

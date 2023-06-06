@@ -124,7 +124,7 @@ export const Example = () => {
         }
         debugState
         showLegend={showLegend}
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         baseTheme={useBaseTheme()}
         legendColorPicker={getColorPicker('leftCenter')}
       />

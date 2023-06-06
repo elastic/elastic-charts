@@ -189,7 +189,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         theme={{
           areaSeriesStyle: {
             point: {

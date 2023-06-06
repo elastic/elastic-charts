@@ -18,7 +18,7 @@ describe('Legend icons', () => {
   it('should test default dot icons', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend legendExtra="lastBucket" />
+        <Settings showLegend legendValue="lastBucket" />
         <LineSeries
           id="areas"
           name="area"
@@ -39,7 +39,7 @@ describe('Legend icons', () => {
   it('should align styles - stroke', () => {
     const wrapperColorChange = mount(
       <Chart>
-        <Settings showLegend legendExtra="lastBucket" />
+        <Settings showLegend legendValue="lastBucket" />
         <AreaSeries
           id="areas"
           name="area"

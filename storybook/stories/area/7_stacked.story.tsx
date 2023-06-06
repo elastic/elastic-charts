@@ -31,7 +31,7 @@ export const Example = () => {
   const allMetrics = [...data3, ...data2, ...data1];
   return (
     <Chart>
-      <Settings showLegend legendExtra="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendValue="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
         position={Position.Bottom}

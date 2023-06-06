@@ -15,7 +15,7 @@ import { CustomLegend } from './custom_legend';
 import { LegendItemProps, LegendListItem } from './legend_item';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
-import { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { LegendItem, LegendItemValues } from '../../common/legend';
 import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 import {
@@ -30,7 +30,7 @@ import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get
 import { getInternalProjectionContainerAreaSelector } from '../../state/selectors/get_internal_projection_container_area';
 import { getLegendConfigSelector } from '../../state/selectors/get_legend_config_selector';
 import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
-import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
+import { getLegendValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
@@ -48,7 +48,7 @@ interface LegendStateProps {
   size: Size;
   config: LegendSpec;
   items: LegendItem[];
-  extraValues: Map<string, LegendItemExtraValues>;
+  values: Map<string, LegendItemValues>;
 }
 
 interface LegendDispatchProps {
@@ -96,8 +96,8 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     positionConfig,
     isMostlyRTL,
     totalItems: items.length,
-    extraValues: props.extraValues,
-    legendExtra: config.legendExtra,
+    values: props.values,
+    legendValue: config.legendValue,
     onMouseOut: config.onLegendItemOut,
     onMouseOver: config.onLegendItemOver,
     onClick: config.onLegendItemClick,
@@ -123,7 +123,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
               ...customProps,
               seriesIdentifiers,
               path,
-              extraValue: itemProps.extraValues.get(seriesIdentifiers[0]?.key ?? '')?.get(childId ?? ''),
+              value: itemProps.values.get(seriesIdentifiers[0]?.key ?? '')?.get(childId ?? ''),
               onItemOutAction: itemProps.mouseOutAction,
               onItemOverActon: () => itemProps.mouseOverAction(path),
               onItemClickAction: (negate: boolean) => itemProps.toggleDeselectSeriesAction(seriesIdentifiers, negate),
@@ -160,7 +160,7 @@ const EMPTY_DEFAULT_STATE: LegendStateProps = {
   chartDimensions: { width: 0, height: 0, left: 0, top: 0 },
   containerDimensions: { width: 0, height: 0, left: 0, top: 0 },
   items: [],
-  extraValues: new Map(),
+  values: new Map(),
   debug: false,
   isBrushing: false,
   chartTheme: LIGHT_THEME,
@@ -185,7 +185,7 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
     chartTheme: getChartThemeSelector(state),
     size: getLegendSizeSelector(state),
     items: getLegendItemsSelector(state),
-    extraValues: getLegendExtraValuesSelector(state),
+    values: getLegendValuesSelector(state),
     config,
   };
 };

@@ -48,7 +48,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         legendPosition={customKnobs.enum.position('legend position', 'top')}
         theme={{
           legend: { labelOptions: { maxLines } },

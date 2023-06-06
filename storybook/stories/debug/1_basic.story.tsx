@@ -21,7 +21,7 @@ export const Example = () => {
       <Settings
         debug={debug}
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
       />

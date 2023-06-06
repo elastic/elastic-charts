@@ -19,10 +19,10 @@ import { DataSeries, DataSeriesDatum } from '../../utils/series';
  * NOTE: not every type can work correctly with the data provided, for example a sum will not work when using the percentage chart
  * @internal
  */
-export function getLegendExtraValue(
+export function getLegendValue(
   series: DataSeries,
   xDomain: XDomain,
-  type: LegendSpec['legendExtra'],
+  type: LegendSpec['legendValue'],
   valueAccessor: (d: DataSeriesDatum) => number | null,
 ): number | null {
   // 24/05/2023 A decision was made by the Kibana Visualization Team (MarcoV, StratoulaK)

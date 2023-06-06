@@ -14,8 +14,8 @@ import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_la
 export const getLegendItemsLabelsSelector = createCustomCachedSelector(
   [computeLegendSelector],
   (legendItems): LegendItemLabel[] =>
-    legendItems.map(({ label, extraValue }) => ({
-      label: `${label}${extraValue.legendSizingLabel}`,
+    legendItems.map(({ label, value }) => ({
+      label: `${label}${value.legendSizingLabel}`,
       depth: 0,
     })),
 );

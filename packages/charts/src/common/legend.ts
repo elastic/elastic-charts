@@ -30,7 +30,7 @@ export type LegendItem = {
   label: CategoryLabel;
   isSeriesHidden?: boolean;
   isItemHidden?: boolean;
-  extraValue: {
+  value: {
     raw: number | null;
     formatted: string;
     legendSizingLabel: string;
@@ -43,4 +43,4 @@ export type LegendItem = {
 };
 
 /** @internal */
-export type LegendItemExtraValues = Map<LegendItemChildId, PrimitiveValue>;
+export type LegendItemValues = Map<LegendItemChildId, PrimitiveValue>;

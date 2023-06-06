@@ -14,7 +14,13 @@ import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => (
   <Chart>
-    <Settings showLegend legendExtra="lastBucket" legendPosition={Position.Right} rotation={-90} baseTheme={useBaseTheme()} />
+    <Settings
+      showLegend
+      legendValue="lastBucket"
+      legendPosition={Position.Right}
+      rotation={-90}
+      baseTheme={useBaseTheme()}
+    />
     <Axis id="y top" position={Position.Top} title="y top axis" />
     <Axis id="x right" title="x right axis" position={Position.Right} />
     <Axis id="y bottom" position={Position.Bottom} title="y bottom axis" />

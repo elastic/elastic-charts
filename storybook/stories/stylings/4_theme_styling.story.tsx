@@ -145,7 +145,7 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         legendPosition={Position.Right}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

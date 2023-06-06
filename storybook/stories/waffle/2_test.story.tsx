@@ -24,7 +24,7 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         showLegend
         flatLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
       />
       <Partition
         id="spec_1"

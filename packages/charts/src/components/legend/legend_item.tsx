@@ -11,9 +11,9 @@ import React, { Component, createRef, MouseEventHandler, CSSProperties } from 'r
 
 import { Color as ItemColor } from './color';
 import { Label as ItemLabel } from './label';
-import { getExtra } from './utils';
+import { getValue } from './utils';
 import { Color } from '../../common/colors';
-import { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { LegendItem, LegendItemValues } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
 import {
   LegendItemListener,
@@ -46,8 +46,8 @@ export interface LegendItemProps {
   flatLegend: boolean;
   totalItems: number;
   positionConfig: LegendPositionConfig;
-  extraValues: Map<string, LegendItemExtraValues>;
-  legendExtra: LegendSpec['legendExtra'];
+  values: Map<string, LegendItemValues>;
+  legendValue: LegendSpec['legendValue'];
   isMostlyRTL: boolean;
   labelOptions: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
@@ -170,8 +170,8 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
 
   render() {
     const {
-      extraValues,
-      legendExtra,
+      values,
+      legendValue,
       item,
       colorPicker,
       totalItems,
@@ -191,7 +191,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     });
     const hasColorPicker = Boolean(colorPicker);
 
-    const extra = legendExtra !== 'none' ? getExtra(extraValues, item, totalItems) : undefined;
+    const value = legendValue !== 'none' ? getValue(values, item, totalItems) : undefined;
     const style: CSSProperties = {
       [isMostlyRTL ? 'marginRight' : 'marginLeft']: flatLegend
         ? undefined
@@ -226,9 +226,9 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             onToggle={this.onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
-          {extra && !isSeriesHidden && (
-            <div className="echLegendItem__extra" title={`${extra}`}>
-              {extra}
+          {value && !isSeriesHidden && (
+            <div className="echLegendItem__value" title={`${value}`}>
+              {value}
             </div>
           )}
           {Action && (

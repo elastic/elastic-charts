@@ -19,7 +19,7 @@ export const Example = () => (
       baseTheme={useBaseTheme()}
       debug={boolean('Debug', true)}
       showLegend={boolean('Legend', true)}
-      legendExtra="lastBucket"
+      legendValue="lastBucket"
       legendPosition={select(
         'Legend position',
         {

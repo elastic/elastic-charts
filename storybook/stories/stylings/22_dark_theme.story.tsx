@@ -36,7 +36,7 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} debug={boolean('Debug', false)} showLegend legendExtra="lastBucket" />
+      <Settings baseTheme={useBaseTheme()} debug={boolean('Debug', false)} showLegend legendValue="lastBucket" />
       <Tooltip type={TooltipType.Crosshairs} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

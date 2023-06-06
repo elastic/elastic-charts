@@ -9,7 +9,7 @@
 import { TimeslipWithTooltip } from './timeslip_chart';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import { LegendItemExtraValues } from '../../common/legend';
+import { LegendItemValues } from '../../common/legend';
 import { SeriesKey } from '../../common/series_id';
 import { InternalChartState } from '../../state/chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
@@ -28,7 +28,7 @@ export class TimeslipState implements InternalChartState {
   isChartEmpty = () => false;
   getLegendItemsLabels = () => [];
   getLegendItems = () => [];
-  getLegendExtraValues = () => new Map<SeriesKey, LegendItemExtraValues>();
+  getLegendValues = () => new Map<SeriesKey, LegendItemValues>();
   getPointerCursor = () => DEFAULT_CSS_CURSOR;
   getTooltipAnchor = () => ({ x: 0, y: 0, width: 0, height: 0 });
   isTooltipVisible = () => ({

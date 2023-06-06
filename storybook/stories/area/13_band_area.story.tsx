@@ -40,7 +40,7 @@ export const Example = () => {
   const y1AccessorFormat = text('y1AccessorFormat', '');
   return (
     <Chart>
-      <Settings showLegend legendExtra="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendValue="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
         title="timestamp per 1 minute"

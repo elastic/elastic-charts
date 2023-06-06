@@ -37,7 +37,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
         legendColorPicker={showColorPicker ? getColorPicker('leftCenter') : undefined}

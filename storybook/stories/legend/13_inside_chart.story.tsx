@@ -83,7 +83,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         legendPosition={{
           vAlign,
           hAlign,

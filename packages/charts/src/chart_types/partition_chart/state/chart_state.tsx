@@ -12,8 +12,8 @@ import { computeLegendSelector } from './selectors/compute_legend';
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
-import { getLegendItemsExtra } from './selectors/get_legend_items_extra';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
+import { getLegendItemsValues } from './selectors/get_legend_items_values';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
@@ -62,7 +62,7 @@ export class PartitionState implements InternalChartState {
 
   getLegendItemsLabels(globalState: GlobalChartState) {
     // order doesn't matter, but it needs to return the highest depth of the label occurrence so enough horizontal width is allocated
-    // the label item strings needs to be a concatenation of the label + the extra formatted value if available.
+    // the label item strings needs to be a concatenation of the label + the value formatted value if available.
     // this is required to compute the legend automatic width
     return getLegendItemsLabels(globalState);
   }
@@ -71,8 +71,8 @@ export class PartitionState implements InternalChartState {
     return computeLegendSelector(globalState);
   }
 
-  getLegendExtraValues(globalState: GlobalChartState) {
-    return getLegendItemsExtra(globalState);
+  getLegendValues(globalState: GlobalChartState) {
+    return getLegendItemsValues(globalState);
   }
 
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {

@@ -381,7 +381,7 @@ export interface CustomLegendProps {
     label: CategoryLabel;
     seriesType?: SeriesType;
     pointStyle?: PointStyle;
-    extraValue?: PrimitiveValue;
+    value?: PrimitiveValue;
     isSeriesHidden?: boolean;
     onItemOverActon: () => void;
     onItemOutAction: () => void;
@@ -411,10 +411,10 @@ export interface LegendSpec {
    */
   legendPosition: Position | LegendPositionConfig;
   /**
-   * Show an extra parameter on each legend item defined by the chart type
+   * Show an calculated value for each legend item
    * @defaultValue `false`
    */
-  legendExtra: 'none' | 'lastBucket' | 'lastInSeries' | 'avg' | 'min' | 'max' | 'sum';
+  legendValue: 'none' | 'lastBucket' | 'lastInSeries' | 'avg' | 'min' | 'max' | 'sum';
   /**
    * Limit the legend to the specified maximal depth when showing a hierarchical legend
    *

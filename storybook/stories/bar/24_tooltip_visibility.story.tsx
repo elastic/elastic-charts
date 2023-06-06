@@ -17,7 +17,7 @@ export const Example = () => {
   const isVisibleFunction: FilterPredicate = (series) => series.splitAccessors.get('g1') === 'cloudflare.com';
   return (
     <Chart>
-      <Settings showLegend legendExtra="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendValue="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

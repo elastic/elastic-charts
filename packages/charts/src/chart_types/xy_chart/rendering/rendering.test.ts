@@ -128,7 +128,7 @@ describe('Rendering utils', () => {
       label: '',
       seriesIdentifiers: [seriesIdentifier],
       isSeriesHidden: false,
-      extraValue: {
+      value: {
         formatted: '',
         raw: null,
         legendSizingLabel: '',

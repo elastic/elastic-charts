@@ -68,7 +68,7 @@ export const Example = () => {
             : undefined
         }
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
       />

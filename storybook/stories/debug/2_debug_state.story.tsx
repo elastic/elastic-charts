@@ -49,7 +49,7 @@ export const Example = () => {
         debug={debug}
         debugState={debugState}
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         baseTheme={useBaseTheme()}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

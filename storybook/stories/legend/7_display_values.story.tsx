@@ -56,7 +56,7 @@ export const Example = () => {
       <Settings
         showLegend
         legendPosition={legendPosition}
-        legendExtra={showLegendDisplayValue ? 'lastBucket' : 'none'}
+        legendValue={showLegendDisplayValue ? 'lastBucket' : 'none'}
         baseTheme={useBaseTheme()}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

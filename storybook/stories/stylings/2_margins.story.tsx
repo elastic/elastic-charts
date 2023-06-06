@@ -56,7 +56,7 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         debug={boolean('debug', true)}
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         legendPosition={Position.Right}
       />
       <Axis

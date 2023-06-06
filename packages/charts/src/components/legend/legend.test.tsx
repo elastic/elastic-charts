@@ -22,7 +22,7 @@ describe('Legend', () => {
   it('shall render the all the series names', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend legendExtra='lastBucket' />
+        <Settings showLegend legendValue="lastBucket" />
         <BarSeries
           id="areas"
           name="area"
@@ -53,7 +53,7 @@ describe('Legend', () => {
   it('shall render the all the series names without the data value', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend legendExtra='none' />
+        <Settings showLegend legendValue="none" />
         <BarSeries
           id="areas"
           name="area"
@@ -88,7 +88,12 @@ describe('Legend', () => {
     const data = dg.generateGroupedSeries(10, numberOfSeries, 'split');
     const wrapper = mount(
       <Chart>
-        <Settings showLegend legendExtra='lastBucket' onLegendItemOver={onLegendItemOver} onLegendItemOut={onLegendItemOut} />
+        <Settings
+          showLegend
+          legendValue="lastBucket"
+          onLegendItemOver={onLegendItemOver}
+          onLegendItemOut={onLegendItemOut}
+        />
         <BarSeries
           id="areas"
           xScaleType={ScaleType.Linear}
@@ -117,7 +122,7 @@ describe('Legend', () => {
     const data = dg.generateGroupedSeries(10, numberOfSeries, 'split');
     const wrapper = mount(
       <Chart>
-        <Settings showLegend legendExtra='lastBucket' onLegendItemClick={onLegendItemClick} />
+        <Settings showLegend legendValue="lastBucket" onLegendItemClick={onLegendItemClick} />
         <BarSeries
           id="areas"
           xScaleType={ScaleType.Linear}
@@ -283,7 +288,7 @@ describe('Legend', () => {
       const data = [{ x: 2, y: 5 }];
       const wrapper = mount(
         <Chart>
-          <Settings showLegend legendExtra='lastBucket' onLegendItemClick={onLegendItemClick} />
+          <Settings showLegend legendValue="lastBucket" onLegendItemClick={onLegendItemClick} />
           <BarSeries
             id="areas"
             xScaleType={ScaleType.Linear}

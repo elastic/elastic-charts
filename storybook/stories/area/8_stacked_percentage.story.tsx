@@ -19,7 +19,7 @@ export const Example = () => {
   const stackedAsPercentage = boolean('stacked as percentage', true);
   return (
     <Chart>
-      <Settings showLegend legendExtra="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendValue="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"
         position={Position.Bottom}

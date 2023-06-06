@@ -49,7 +49,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend={showLegend}
-        legendExtra="avg"
+        legendValue="avg"
         baseTheme={useBaseTheme()}
         theme={{ axes: { tickLine: { visible: true } } }}
         xDomain={{

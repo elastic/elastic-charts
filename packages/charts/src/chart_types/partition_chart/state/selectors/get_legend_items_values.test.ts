@@ -8,13 +8,13 @@
 
 import { Store } from 'redux';
 
-import { getLegendItemsExtra } from './get_legend_items_extra';
+import { getLegendItemsValues } from './get_legend_items_values';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
 
-describe('Partition - Legend item extra values', () => {
+describe('Partition - Legend item values', () => {
   type TestDatum = [string, string, string, number];
   const spec = MockSeriesSpec.sunburst({
     data: [
@@ -53,11 +53,11 @@ describe('Partition - Legend item extra values', () => {
     store = MockStore.default();
   });
 
-  it('should return all extra values in nested legend', () => {
+  it('should return all values in nested legend', () => {
     MockStore.addSpecs([spec], store);
 
-    const extraValues = getLegendItemsExtra(store.getState());
-    expect([...extraValues.keys()]).toEqual([
+    const values = getLegendItemsValues(store.getState());
+    expect([...values.keys()]).toEqual([
       '0__0',
       '0__0__0',
       '0__0__0__0',
@@ -78,24 +78,24 @@ describe('Partition - Legend item extra values', () => {
       '0__0__1__2__0',
       '0__0__1__2__1',
     ]);
-    expect(extraValues.values()).toMatchSnapshot();
+    expect(values.values()).toMatchSnapshot();
   });
 
-  it('should return extra values in nested legend within max depth of 1', () => {
+  it('should return values in nested legend within max depth of 1', () => {
     const settings = MockGlobalSpec.settings({ legendMaxDepth: 1 });
     MockStore.addSpecs([settings, spec], store);
 
-    const extraValues = getLegendItemsExtra(store.getState());
-    expect([...extraValues.keys()]).toEqual(['0__0', '0__0__0', '0__0__1']);
-    expect(extraValues.values()).toMatchSnapshot();
+    const values = getLegendItemsValues(store.getState());
+    expect([...values.keys()]).toEqual(['0__0', '0__0__0', '0__0__1']);
+    expect(values.values()).toMatchSnapshot();
   });
 
-  it('should return extra values in nested legend within max depth of 2', () => {
+  it('should return values in nested legend within max depth of 2', () => {
     const settings = MockGlobalSpec.settings({ legendMaxDepth: 2 });
     MockStore.addSpecs([settings, spec], store);
 
-    const extraValues = getLegendItemsExtra(store.getState());
-    expect([...extraValues.keys()]).toEqual([
+    const values = getLegendItemsValues(store.getState());
+    expect([...values.keys()]).toEqual([
       '0__0',
       '0__0__0',
       '0__0__0__0',
@@ -105,22 +105,22 @@ describe('Partition - Legend item extra values', () => {
       '0__0__1__1',
       '0__0__1__2',
     ]);
-    expect(extraValues.values()).toMatchSnapshot();
+    expect(values.values()).toMatchSnapshot();
   });
 
-  it('filters all extraValues if depth is 0', () => {
+  it('filters all values if depth is 0', () => {
     const settings = MockGlobalSpec.settings({ legendMaxDepth: 0 });
     MockStore.addSpecs([settings, spec], store);
 
-    const extraValues = getLegendItemsExtra(store.getState());
-    expect([...extraValues.keys()]).toEqual([]);
+    const values = getLegendItemsValues(store.getState());
+    expect([...values.keys()]).toEqual([]);
   });
 
-  it('filters all extraValues if depth is NaN', () => {
+  it('filters all values if depth is NaN', () => {
     const settings = MockGlobalSpec.settings({ legendMaxDepth: NaN });
     MockStore.addSpecs([settings, spec], store);
 
-    const extraValues = getLegendItemsExtra(store.getState());
-    expect([...extraValues.keys()]).toEqual([]);
+    const values = getLegendItemsValues(store.getState());
+    expect([...values.keys()]).toEqual([]);
   });
 });

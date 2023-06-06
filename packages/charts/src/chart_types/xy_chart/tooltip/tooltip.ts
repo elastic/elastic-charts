@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { LegendItemExtraValues } from '../../../common/legend';
+import { LegendItemValues } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { TooltipValue } from '../../../specs';
 import { PointerValue } from '../../../state/types';
@@ -23,15 +23,15 @@ export const Y0_ACCESSOR_POSTFIX = ' - lower';
 export const Y1_ACCESSOR_POSTFIX = ' - upper';
 
 /** @internal */
-export function getLegendItemExtraValues(
+export function getLegendItemValues(
   tooltipValues: TooltipValue[],
   defaultValue?: string,
-): Map<SeriesKey, LegendItemExtraValues> {
-  const seriesTooltipValues = new Map<SeriesKey, LegendItemExtraValues>();
+): Map<SeriesKey, LegendItemValues> {
+  const seriesTooltipValues = new Map<SeriesKey, LegendItemValues>();
 
   tooltipValues.forEach(({ formattedValue, seriesIdentifier, valueAccessor }) => {
     const seriesValue = defaultValue || formattedValue;
-    const current: LegendItemExtraValues = seriesTooltipValues.get(seriesIdentifier.key) ?? new Map();
+    const current: LegendItemValues = seriesTooltipValues.get(seriesIdentifier.key) ?? new Map();
     if (defaultValue) {
       if (!current.has(BandedAccessorType.Y0)) {
         current.set(BandedAccessorType.Y0, defaultValue);

@@ -256,7 +256,7 @@ test.describe('Interactions', () => {
       );
     });
 
-    test('show synced extra values in legend', async ({ page }) => {
+    test('show synced values in legend', async ({ page }) => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
         'http://localhost:9001/?path=/story/interactions--cursor-update-action&knob-Series type_Top Chart=line&knob-enable external tooltip_Top Chart=true&knob-Series type_Bottom Chart=line&knob-enable external tooltip_Bottom Chart=false&knob-pointer update debounce=0',
         { right: 200, top: 80 },

@@ -15,7 +15,7 @@ import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { XDomain } from '../domains/types';
-import { getLegendExtraValue } from '../state/utils/legend_extra';
+import { getLegendValue } from '../state/utils/legend_value';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
@@ -112,14 +112,14 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const extraValue = getLegendExtraValue(series, xDomain, settingsSpec.legendExtra, (d) => {
+    const itemValue = getLegendValue(series, xDomain, settingsSpec.legendValue, (d) => {
       return series.stackMode === StackMode.Percentage
         ? d.y1 === null || d.y0 === null
           ? null
           : d.y1 - d.y0
         : d.initialY1;
     });
-    const formattedExtraValue = extraValue !== null ? formatter(extraValue) : '';
+    const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
 
     legendItems.push({
       color,
@@ -129,20 +129,20 @@ export function computeLegend(
       isSeriesHidden,
       isItemHidden: hideInLegend,
       isToggleable: true,
-      extraValue: {
-        raw: extraValue,
-        formatted: formattedExtraValue,
-        legendSizingLabel: formattedExtraValue,
+      value: {
+        raw: itemValue,
+        formatted: formattedItemValue,
+        legendSizingLabel: formattedItemValue,
       },
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
       pointStyle,
     });
     if (banded) {
-      const extraValue = getLegendExtraValue(series, xDomain, settingsSpec.legendExtra, (d) => {
+      const itemValue = getLegendValue(series, xDomain, settingsSpec.legendValue, (d) => {
         return series.stackMode === StackMode.Percentage ? d.y0 : d.initialY0;
       });
-      const formattedExtraValue = extraValue !== null ? formatter(extraValue) : '';
+      const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
 
       legendItems.push({
         color,
@@ -152,10 +152,10 @@ export function computeLegend(
         isSeriesHidden,
         isItemHidden: hideInLegend,
         isToggleable: true,
-        extraValue: {
-          raw: extraValue,
-          formatted: formattedExtraValue,
-          legendSizingLabel: formattedExtraValue,
+        value: {
+          raw: itemValue,
+          formatted: formattedItemValue,
+          legendSizingLabel: formattedItemValue,
         },
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],

@@ -19,7 +19,7 @@ export const Example = () => {
   const LineOrAreaSeries = isArea ? AreaSeries : LineSeries;
   return (
     <Chart>
-      <Settings showLegend legendExtra="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings showLegend legendValue="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis id="x" position={Position.Bottom} />
       <Axis id="y" position={Position.Left} />
 

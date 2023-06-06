@@ -51,7 +51,7 @@ export const Example = () => {
           onClick={() => i.onItemClickAction(false)}
           style={{ display: 'block', color: i.isSeriesHidden ? 'gray' : i.color }}
         >
-          {i.label} {i.extraValue}
+          {i.label} {i.value}
         </button>
       ))}
     </div>
@@ -61,7 +61,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendExtra="lastBucket"
+        legendValue="lastBucket"
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
         customLegend={customLegend}

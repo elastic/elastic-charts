@@ -76,7 +76,7 @@ describe('Settings spec component', () => {
           snap: false,
         },
         legendPosition: Position.Bottom,
-        legendExtra: 'none',
+        legendValue: 'none',
         debug: true,
         xDomain: { min: 0, max: 10 },
       },
@@ -92,7 +92,7 @@ describe('Settings spec component', () => {
       snap: false,
     });
     expect(settingSpec.legendPosition).toBe(Position.Bottom);
-    expect(settingSpec.legendExtra).toEqual('none');
+    expect(settingSpec.legendValue).toEqual('none');
     expect(settingSpec.debug).toBe(true);
     expect(settingSpec.xDomain).toEqual({ min: 0, max: 10 });
   });
@@ -174,7 +174,7 @@ describe('Settings spec component', () => {
         snap: false,
       },
       legendPosition: Position.Bottom,
-      legendExtra: 'none',
+      legendValue: 'none',
       debug: true,
       xDomain: { min: 0, max: 10 },
     };

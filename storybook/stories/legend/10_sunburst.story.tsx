@@ -43,7 +43,7 @@ export const Example = () => {
     PartitionLayout.sunburst,
   );
   const flatLegend = boolean('flatLegend', true);
-  const showLegendExtra = boolean('showLegendExtra', false);
+  const showLegendValue = boolean('showLegendValue', false);
   const legendMaxDepth = number('legendMaxDepth', 2, {
     min: 0,
     max: 3,
@@ -100,7 +100,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendExtra={showLegendExtra ? 'lastBucket' : 'none'}
+        legendValue={showLegendValue ? 'lastBucket' : 'none'}
         flatLegend={isFlatLegendSupported ? flatLegend : true}
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}

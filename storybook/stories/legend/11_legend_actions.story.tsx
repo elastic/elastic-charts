@@ -27,7 +27,7 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
 
 export const Example = () => {
   const hideActions = boolean('Hide legend action', false, 'Legend');
-  const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
+  const showLegendValue = !boolean('Hide legend value', false, 'Legend');
   const showColorPicker = !boolean('Hide color picker', true, 'Legend');
   const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
   const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
@@ -39,7 +39,7 @@ export const Example = () => {
         showLegend
         theme={{ legend: { labelOptions } }}
         baseTheme={useBaseTheme()}
-        legendExtra={showLegendExtra ? 'lastBucket' : 'none'}
+        legendValue={showLegendValue ? 'lastBucket' : 'none'}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
         legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}
