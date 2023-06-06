@@ -57,7 +57,6 @@ export function getLegendValue(
       const avg = series.data.reduce(
         (acc, curr) => {
           const value = valueAccessor(curr);
-          console.log(value, acc);
           return value !== null
             ? {
                 count: acc.count + 1,
@@ -75,7 +74,7 @@ export function getLegendValue(
     case 'max':
       return series.data.reduce((acc, curr) => Math.max(acc, valueAccessor(curr) ?? -Infinity), -Infinity);
     case 'lastInSeries':
-      const dataPoint = series.data.length > 0 ? series.data[series.data.length - 1] : undefined;
+      const dataPoint = series.data.length > 0 ? series.data.at(-1) : undefined;
       return dataPoint ? valueAccessor(dataPoint) : null;
     default:
     case 'none':

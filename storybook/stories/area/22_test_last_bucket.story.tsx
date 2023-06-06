@@ -9,8 +9,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, BarSeries, Chart, HistogramBarSeries, Position, ScaleType, Settings } from '@elastic/charts';
-import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { TIME_SERIES_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana_2';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -32,10 +31,6 @@ const tooltipDateFormatter = (d: any) =>
     minute: 'numeric',
   }).format(d);
 
-const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data;
-const t0 = data[0][0];
-const t1 = data[data.length - 1][0];
-
 const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
 
@@ -44,7 +39,6 @@ export const Example = () => {
   const minorGridLines = true;
   const horizontalAxisTitle = true;
   const yAxisTitle = 'CPU utilization';
-  console.log(TIME_SERIES_DATASET[TIME_SERIES_DATASET.length - 1]);
   return (
     <Chart>
       <Settings
