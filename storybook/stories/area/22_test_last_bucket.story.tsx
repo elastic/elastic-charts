@@ -20,7 +20,7 @@ const tickLabelStyle = { fontSize: 11, fontFamily };
 const axisTitleColor = 'rgb(112,112,112)';
 const axisTitleFontSize = 15;
 const dataInk = 'rgba(96, 146, 192, 1)';
-const horizontalGridLineStyle = { stroke: 'black', strokeWidth: 0.15, opacity: 1 };
+const horizontalGridLineStyle = { visible: true, stroke: 'black', strokeWidth: 0.15, opacity: 1 };
 
 const tooltipDateFormatter = (d: any) =>
   new Intl.DateTimeFormat('en-US', {
@@ -56,7 +56,7 @@ export const Example = () => {
         position={boolean('Top X axis', false) ? Position.Top : Position.Bottom}
         showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
         showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
-        showGridLines={minorGridLines}
+        gridLine={{ visible: true }}
         style={{
           axisLine: { stroke: dataInk },
           tickLine: { size: 0.0001, padding: 4 },
@@ -77,7 +77,6 @@ export const Example = () => {
         id="left"
         title={yAxisTitle}
         position={Position.Left}
-        showGridLines
         ticks={4}
         gridLine={horizontalGridLineStyle}
         style={{
