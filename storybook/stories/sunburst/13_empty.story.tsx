@@ -15,12 +15,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example = () => (
   <Chart>
-    <Settings
-      baseTheme={useBaseTheme()}
-      theme={{
-        chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-      }}
-    />
+    <Settings baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
       data={[

@@ -19,13 +19,7 @@ export const Example = () => {
   const showDebug = boolean('show table for debugging', false);
   return (
     <Chart>
-      <Settings
-        debug={showDebug}
-        baseTheme={useBaseTheme()}
-        theme={{
-          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-        }}
-      />
+      <Settings debug={showDebug} baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"
         data={mocks.pie}

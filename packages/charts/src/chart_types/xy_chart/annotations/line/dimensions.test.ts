@@ -46,7 +46,6 @@ describe('Annotation utils', () => {
   const defaultAxisSpec = {
     groupId,
     hide: true,
-    showGridLines: true,
   };
 
   test('should compute line annotation in x ordinal scale', () => {

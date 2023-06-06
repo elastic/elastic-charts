@@ -64,28 +64,36 @@ export const Example = () => {
         position={Position.Bottom}
         title={withBottomTitle ? 'Bottom axis' : undefined}
         showOverlappingTicks
-        showGridLines={boolean('show bottom axis grid lines', false)}
+        gridLine={{
+          visible: boolean('show bottom axis grid lines', false),
+        }}
       />
       <Axis
         id="left2"
         title={withLeftTitle ? 'Left axis' : undefined}
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
-        showGridLines={boolean('show left axis grid lines', false)}
+        gridLine={{
+          visible: boolean('show left axis grid lines', false),
+        }}
       />
       <Axis
         id="top"
         position={Position.Top}
         title={withTopTitle ? 'Top axis' : undefined}
         showOverlappingTicks
-        showGridLines={boolean('show top axis grid lines', false)}
+        gridLine={{
+          visible: boolean('show top axis grid lines', false),
+        }}
       />
       <Axis
         id="right"
         title={withRightTitle ? 'Right axis' : undefined}
         position={Position.Right}
         tickFormat={(d) => Number(d).toFixed(2)}
-        showGridLines={boolean('show right axis grid lines', false)}
+        gridLine={{
+          visible: boolean('show right axis grid lines', false),
+        }}
       />
       <BarSeries
         id="bars"

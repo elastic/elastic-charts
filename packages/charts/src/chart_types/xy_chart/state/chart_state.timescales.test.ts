@@ -22,7 +22,6 @@ import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { mergeWithDefaultTheme } from '../../../utils/themes/merge_utils';
 import { LineSeriesSpec, SeriesType } from '../utils/specs';
 
 describe('Render chart', () => {
@@ -55,13 +54,11 @@ describe('Render chart', () => {
 
       const settingSpec: SettingsSpec = {
         ...DEFAULT_SETTINGS_SPEC,
-        theme: mergeWithDefaultTheme(
-          {
-            chartPaddings: { top: 0, left: 0, bottom: 0, right: 0 },
-            chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-          },
-          LIGHT_THEME,
-        ),
+        baseTheme: LIGHT_THEME,
+        theme: {
+          chartPaddings: { top: 0, left: 0, bottom: 0, right: 0 },
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+        },
       };
       store.dispatch(upsertSpec(settingSpec));
       store.dispatch(specParsed());
@@ -129,13 +126,11 @@ describe('Render chart', () => {
       store.dispatch(upsertSpec(lineSeries));
       const settingSpec: SettingsSpec = {
         ...DEFAULT_SETTINGS_SPEC,
-        theme: mergeWithDefaultTheme(
-          {
-            chartPaddings: { top: 0, left: 0, bottom: 0, right: 0 },
-            chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-          },
-          LIGHT_THEME,
-        ),
+        baseTheme: LIGHT_THEME,
+        theme: {
+          chartPaddings: { top: 0, left: 0, bottom: 0, right: 0 },
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+        },
       };
       store.dispatch(upsertSpec(settingSpec));
       store.dispatch(specParsed());
@@ -202,13 +197,11 @@ describe('Render chart', () => {
       store.dispatch(upsertSpec(lineSeries));
       const settingSpec: SettingsSpec = {
         ...DEFAULT_SETTINGS_SPEC,
-        theme: mergeWithDefaultTheme(
-          {
-            chartPaddings: { top: 0, left: 0, bottom: 0, right: 0 },
-            chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-          },
-          LIGHT_THEME,
-        ),
+        baseTheme: LIGHT_THEME,
+        theme: {
+          chartPaddings: { top: 0, left: 0, bottom: 0, right: 0 },
+          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
+        },
       };
       store.dispatch(upsertSpec(settingSpec));
       store.dispatch(specParsed());

@@ -68,7 +68,6 @@ export const Example = () => {
         legendValue={boolean('Show legend values', true) ? 'lastBucket' : 'none'}
         flatLegend={boolean('Flat legend', false)}
         theme={{
-          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
           partition: {
             linkLabel: { maxCount: 0 }, // relevant for sunburst only
             outerSizeRatio: 0.9, // relevant for sunburst only

@@ -70,7 +70,9 @@ export const Example = () => {
           },
         }}
         timeAxisLayerCount={2}
-        showGridLines
+        gridLine={{
+          visible: true,
+        }}
       />
       <Axis id="y" position={Position.Left} ticks={5} />
 

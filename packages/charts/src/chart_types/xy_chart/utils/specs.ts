@@ -390,14 +390,6 @@ export interface DisplayValueSpec {
    */
   valueFormatter?: TickFormatter;
   /**
-   * If true will contain value label within element, else dimensions are computed based on value
-   * @deprecated This feature is deprecated and will be removed. Wrapping numbers into multiple lines
-   * is not considered a good practice.
-   * @defaultValue false
-   */
-  isValueContainedInElement?: boolean;
-
-  /**
    * An option to hide the value label on certain conditions:
    * - `barGeometry` the label is not rendered if the width/height overflows the associated bar geometry,
    * - `chartEdges` the label is not rendered if it overflows the chart projection area.
@@ -436,12 +428,6 @@ export interface SeriesSpec<D extends BaseDatum = Datum> extends Spec {
    * @defaultValue `false`
    */
   hideInLegend?: boolean;
-  /**
-   * Index per series to sort by
-   * @deprecated This prop is not currently used and will
-   * soon be removed.
-   */
-  sortIndex?: number;
   displayValueSettings?: DisplayValueSpec;
   /**
    * Postfix string or accessor function for y1 accessor when using `y0Accessors`
@@ -740,12 +726,6 @@ export interface AxisSpec extends Spec {
   showOverlappingTicks: boolean;
   /** Shows all labels, also the overlapping ones */
   showOverlappingLabels: boolean;
-  /**
-   * Shows grid lines for axis
-   * @defaultValue `false`
-   * @deprecated use `gridLine.visible`
-   */
-  showGridLines?: boolean;
   /** Where the axis appear on the chart */
   position: Position;
   /**
@@ -935,10 +915,6 @@ export type RectAnnotationSpec = BaseAnnotationSpec<
   RectAnnotationDatum,
   RectAnnotationStyle
 > & {
-  /**
-   * @deprecated use customTooltipDetails
-   */
-  renderTooltip?: AnnotationTooltipFormatter;
   /**
    * z-index of the annotation relative to other elements in the chart
    * @defaultValue -1

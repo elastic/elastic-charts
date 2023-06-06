@@ -91,7 +91,9 @@ export const Example = () => {
       <Axis
         id="x"
         position={Position.Bottom}
-        showGridLines={true}
+        gridLine={{
+          visible: true,
+        }}
         style={{
           tickLine: { size: 0.0001, padding: 4 },
           tickLabel: {
@@ -106,7 +108,9 @@ export const Example = () => {
       <Axis
         id="left"
         position={Position.Right}
-        showGridLines
+        gridLine={{
+          visible: true,
+        }}
         ticks={4}
         tickFormat={(d) => `${Number(d * 100).toFixed(0)}`}
       />

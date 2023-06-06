@@ -11,7 +11,6 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store } from 'redux';
 
-import { TooltipType } from './constants';
 import { Settings, SettingsSpec } from './settings';
 import { SpecsParser } from './specs_parser';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
@@ -71,10 +70,6 @@ describe('Settings spec component', () => {
         rendering: 'svg' as Rendering,
         animateData: true,
         showLegend: true,
-        tooltip: {
-          type: TooltipType.None,
-          snap: false,
-        },
         legendPosition: Position.Bottom,
         legendValue: 'none',
         debug: true,
@@ -87,10 +82,6 @@ describe('Settings spec component', () => {
     expect(settingSpec.rendering).toBe('svg');
     expect(settingSpec.animateData).toBe(true);
     expect(settingSpec.showLegend).toEqual(true);
-    expect(settingSpec.tooltip).toEqual({
-      type: TooltipType.None,
-      snap: false,
-    });
     expect(settingSpec.legendPosition).toBe(Position.Bottom);
     expect(settingSpec.legendValue).toEqual('none');
     expect(settingSpec.debug).toBe(true);
@@ -169,10 +160,6 @@ describe('Settings spec component', () => {
       rendering: 'svg' as Rendering,
       animateData: true,
       showLegend: true,
-      tooltip: {
-        type: TooltipType.None,
-        snap: false,
-      },
       legendPosition: Position.Bottom,
       legendValue: 'none',
       debug: true,

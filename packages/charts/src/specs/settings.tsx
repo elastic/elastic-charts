@@ -10,7 +10,6 @@ import { ComponentProps, ComponentType, ReactChild } from 'react';
 
 import { CustomXDomain, GroupByAccessor, Spec } from '.';
 import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
-import { TooltipSettings } from './tooltip';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
@@ -486,11 +485,6 @@ export interface SettingsSpec extends Spec, LegendSpec {
   rotation: Rotation;
   animateData: boolean;
 
-  /**
-   * The tooltip configuration {@link TooltipSettings}
-   * @deprecated please use the new Tooltip spec inside your Chart
-   */
-  tooltip?: TooltipSettings;
   /**
    * {@inheritDoc ExternalPointerEventsSettings}
    * @alpha

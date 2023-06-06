@@ -80,8 +80,10 @@ export const Example = () => {
         title="Left axis 1"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
-        showGridLines={boolean('show left axis grid lines', false, 'left axis')}
-        gridLine={leftAxisGridLineStyle}
+        gridLine={{
+          ...leftAxisGridLineStyle,
+          visible: boolean('show left axis grid lines', false, 'left axis'),
+        }}
       />
       <Axis
         id="left2"
@@ -89,8 +91,10 @@ export const Example = () => {
         groupId="group2"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
-        showGridLines={boolean('show left axis 2 grid lines', false, 'left2 axis')}
-        gridLine={leftAxisGridLineStyle2}
+        gridLine={{
+          ...leftAxisGridLineStyle2,
+          visible: boolean('show left axis 2 grid lines', false, 'left2 axis'),
+        }}
       />
       <BarSeries
         id="bars"
