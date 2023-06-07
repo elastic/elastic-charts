@@ -313,6 +313,13 @@ class FlameComponent extends React.Component<FlameProps> {
         this.focusOnNode(nodeIndex);
       });
     }
+    if (controlProviderCallback.search) {
+      controlProviderCallback.search((text: string) => {
+        if (!this.searchInputRef.current) return;
+        this.searchInputRef.current.value = text;
+        this.searchForText(false);
+      });
+    }
   }
 
   private resetFocus() {

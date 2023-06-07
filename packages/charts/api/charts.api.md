@@ -611,6 +611,8 @@ export interface ControlReceiverCallbacks {
     focusOnNode: (control: FlameNodeControl) => void;
     // (undocumented)
     resetFocus: (control: FlameGlobalControl) => void;
+    // (undocumented)
+    search: (control: FlameSearchControl) => void;
 }
 
 // @public (undocumented)
@@ -1077,6 +1079,9 @@ export interface FlameLayerValue {
 
 // @public
 export type FlameNodeControl = (nodeIndex: number) => void;
+
+// @public
+export type FlameSearchControl = (text: string) => void;
 
 // @public
 export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnimationConfig {
