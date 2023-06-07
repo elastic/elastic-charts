@@ -20,6 +20,7 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
+  LegendValue,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -37,7 +38,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendValue="lastBucket"
+        legendValue={LegendValue.LastTimeBucket}
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
         legendColorPicker={showColorPicker ? getColorPicker('leftCenter') : undefined}

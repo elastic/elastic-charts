@@ -17,6 +17,7 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
+  LegendValue,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -26,7 +27,12 @@ const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
 export const Example = () => (
   <Chart>
-    <Settings showLegend legendValue="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+    <Settings
+      showLegend
+      legendValue={LegendValue.LastTimeBucket}
+      legendPosition={Position.Right}
+      baseTheme={useBaseTheme()}
+    />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"

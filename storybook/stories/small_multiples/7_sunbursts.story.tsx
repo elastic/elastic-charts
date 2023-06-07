@@ -15,6 +15,7 @@ import {
   Datum,
   GroupBy,
   LegendStrategy,
+  LegendValue,
   PartialTheme,
   Partition,
   PartitionLayout,
@@ -95,7 +96,7 @@ export const Example = () => {
       <Settings
         {...onElementListeners}
         showLegend={boolean('Show legend', true)}
-        legendValue={boolean('Show legend value', false) ? 'lastBucket' : 'none'}
+        legendValue={boolean('Show legend value', false) ? LegendValue.Sum : LegendValue.None}
         legendStrategy={LegendStrategy.Key}
         flatLegend={boolean('Flat legend', true)}
         theme={theme}

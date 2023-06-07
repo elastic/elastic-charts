@@ -9,7 +9,7 @@
 import { select, color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme, LegendValue } from '@elastic/charts';
 import { ColorVariant } from '@elastic/charts/src/utils/common';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
@@ -55,7 +55,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendValue="lastBucket"
+        legendValue={LegendValue.LastTimeBucket}
         legendPosition={Position.Right}
         theme={customTheme}
         baseTheme={useBaseTheme()}

@@ -12,7 +12,7 @@ import { getLegendItemsLabelsSelector } from './get_legend_items_labels';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
-import { LegendPositionConfig } from '../../specs/settings';
+import { LegendPositionConfig, LegendValue } from '../../specs/settings';
 import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { isDefined, LayoutDirection, Position } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
@@ -64,7 +64,8 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     } = theme;
 
     const actionDimension = isDefined(legendAction) ? 24 : 0; // max width plus margin
-    const legendItemWidth = MARKER_WIDTH + SHARED_MARGIN + bbox.width + (legendValue !== 'none' ? SHARED_MARGIN : 0);
+    const legendItemWidth =
+      MARKER_WIDTH + SHARED_MARGIN + bbox.width + (legendValue !== LegendValue.None ? SHARED_MARGIN : 0);
 
     if (legendPosition.direction === LayoutDirection.Vertical) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;

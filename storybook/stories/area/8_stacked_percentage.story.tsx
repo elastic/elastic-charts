@@ -9,7 +9,17 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, niceTimeFormatter, Position, ScaleType, Settings, StackMode } from '@elastic/charts';
+import {
+  AreaSeries,
+  Axis,
+  Chart,
+  LegendValue,
+  niceTimeFormatter,
+  Position,
+  ScaleType,
+  Settings,
+  StackMode,
+} from '@elastic/charts';
 import DATA from '@elastic/charts/src/utils/data_samples/4_time_series.json';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -19,7 +29,12 @@ export const Example = () => {
   const stackedAsPercentage = boolean('stacked as percentage', true);
   return (
     <Chart>
-      <Settings showLegend legendValue="lastBucket" legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValue={LegendValue.LastTimeBucket}
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis
         id="bottom"
         position={Position.Bottom}

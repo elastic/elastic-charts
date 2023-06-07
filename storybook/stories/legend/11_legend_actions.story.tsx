@@ -9,7 +9,16 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendLabelOptions } from '@elastic/charts';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  Position,
+  ScaleType,
+  Settings,
+  LegendLabelOptions,
+  LegendValue,
+} from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -39,7 +48,7 @@ export const Example = () => {
         showLegend
         theme={{ legend: { labelOptions } }}
         baseTheme={useBaseTheme()}
-        legendValue={showLegendValue ? 'lastBucket' : 'none'}
+        legendValue={showLegendValue ? LegendValue.LastTimeBucket : LegendValue.None}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
         legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}

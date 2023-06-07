@@ -54,7 +54,13 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings showLegend legendValue="lastBucket" debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValue={LegendValue.LastTimeBucket}
+        debug={debug}
+        rotation={rotation}
+        baseTheme={useBaseTheme()}
+      />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.XDomain}

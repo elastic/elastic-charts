@@ -7,6 +7,7 @@
  */
 
 import { ComponentProps, ComponentType, ReactChild } from 'react';
+import { $Values } from 'utility-types';
 
 import { CustomXDomain, GroupByAccessor, Spec } from '.';
 import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
@@ -394,6 +395,19 @@ export interface CustomLegendProps {
  */
 export type CustomLegend = ComponentType<CustomLegendProps>;
 
+/** @public */
+export const LegendValue = Object.freeze({
+  None: 'none' as const,
+  LastTimeBucket: 'lastTimeBucket' as const,
+  LastNonNull: 'lastNonNull' as const,
+  Average: 'avg' as const,
+  Min: 'min' as const,
+  Max: 'max' as const,
+  Sum: 'sum' as const,
+});
+/** @public */
+export type LegendValue = $Values<typeof LegendValue>;
+
 /**
  * The legend configuration
  * @public
@@ -411,9 +425,9 @@ export interface LegendSpec {
   legendPosition: Position | LegendPositionConfig;
   /**
    * Show an calculated value for each legend item
-   * @defaultValue `false`
+   * @defaultValue `LegendValue.None`
    */
-  legendValue: 'none' | 'lastBucket' | 'lastInSeries' | 'avg' | 'min' | 'max' | 'sum';
+  legendValue: LegendValue;
   /**
    * Limit the legend to the specified maximal depth when showing a hierarchical legend
    *

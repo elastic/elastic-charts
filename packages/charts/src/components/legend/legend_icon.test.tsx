@@ -11,14 +11,14 @@ import React from 'react';
 
 import { LegendIcon } from './legend_icon';
 import { ScaleType } from '../../scales/constants';
-import { Settings, LineSeries, AreaSeries } from '../../specs';
+import { Settings, LineSeries, AreaSeries, LegendValue } from '../../specs';
 import { Chart } from '../chart';
 
 describe('Legend icons', () => {
   it('should test default dot icons', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend legendValue="lastBucket" />
+        <Settings showLegend legendValue={LegendValue.LastTimeBucket} />
         <LineSeries
           id="areas"
           name="area"
@@ -39,7 +39,7 @@ describe('Legend icons', () => {
   it('should align styles - stroke', () => {
     const wrapperColorChange = mount(
       <Chart>
-        <Settings showLegend legendValue="lastBucket" />
+        <Settings showLegend legendValue={LegendValue.LastTimeBucket} />
         <AreaSeries
           id="areas"
           name="area"

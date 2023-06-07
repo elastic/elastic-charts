@@ -18,6 +18,7 @@ import {
   Settings,
   LineSeriesStyle,
   RecursivePartial,
+  LegendValue,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -86,7 +87,7 @@ export const Example = () => {
     <Chart renderer="canvas">
       <Settings
         showLegend
-        legendValue="lastBucket"
+        legendValue={LegendValue.LastTimeBucket}
         legendPosition={Position.Right}
         theme={chartTheme}
         baseTheme={useBaseTheme()}

@@ -8,7 +8,7 @@
 
 import { $Values } from 'utility-types';
 
-import { SettingsSpec } from './settings';
+import { LegendValue, SettingsSpec } from './settings';
 import { ChartType } from '../chart_types';
 import { BOTTOM, CENTER, LEFT, MIDDLE, RIGHT, TOP } from '../common/constants';
 import { buildSFProps } from '../state/spec_factory';
@@ -134,7 +134,7 @@ export type TooltipStickTo = $Values<typeof TooltipStickTo>;
 export const DEFAULT_LEGEND_CONFIG = {
   showLegend: false,
   legendSize: NaN,
-  legendValue: 'none' as const,
+  legendValue: LegendValue.None,
   legendMaxDepth: Infinity,
   legendPosition: Position.Right,
   flatLegend: false,

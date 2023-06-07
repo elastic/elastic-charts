@@ -21,6 +21,7 @@ import {
   Position,
   ScaleType,
   Settings,
+  LegendValue,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
@@ -145,7 +146,7 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         showLegend
-        legendValue="lastBucket"
+        legendValue={LegendValue.LastTimeBucket}
         legendPosition={Position.Right}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

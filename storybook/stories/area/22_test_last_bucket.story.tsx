@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, LegendValue, Position, ScaleType, Settings } from '@elastic/charts';
 import { TIME_SERIES_DATASET } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana_2';
 
 import { useBaseTheme } from '../../use_base_theme';
+import { getKnobFromEnum } from '../utils/knobs/utils';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
 const fontFamily = '"Atkinson Hyperlegible"';
@@ -35,20 +36,19 @@ const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
 
 export const Example = () => {
-  const showLegend = boolean('Show legend', true);
-  const minorGridLines = true;
   const horizontalAxisTitle = true;
   const yAxisTitle = 'CPU utilization';
+  const legendValue = getKnobFromEnum('Legend Value', LegendValue, LegendValue.LastNonNull);
   return (
     <Chart>
       <Settings
-        showLegend={showLegend}
-        legendValue="avg"
+        showLegend={true}
+        legendValue={legendValue}
         baseTheme={useBaseTheme()}
         theme={{ axes: { tickLine: { visible: true } } }}
         xDomain={{
           min: 1684188000000,
-          max: 1684321199999,
+          max: 1684321199999 + 1,
         }}
       />
       <Axis
@@ -70,8 +70,7 @@ export const Example = () => {
         }}
         tickFormat={tooltipDateFormatter}
         labelFormat={topAxisLabelFormat}
-        title="time (1-minute measurements)"
-        timeAxisLayerCount={number('layerCount', 3, { range: true, min: 0, max: 3, step: 1 })}
+        timeAxisLayerCount={2}
       />
       <Axis
         id="left"
@@ -85,21 +84,17 @@ export const Example = () => {
           tickLabel: tickLabelStyle,
           axisTitle: { visible: !horizontalAxisTitle, fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
         }}
-        tickFormat={(d) => `${Number(d).toFixed(0)}%`}
+        tickFormat={(d) => `${Number(d).toFixed(1)}`}
       />
       <AreaSeries
-        id="CPU Utilization"
+        id="Document count"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}
         xAccessor={0}
         yAccessors={[1]}
         yNice
         color={dataInk}
-        // areaSeriesStyle={{ area: { opacity: 0.3 }, line: { opacity: 1 } }}
         data={TIME_SERIES_DATASET}
-        // data={data
-        //   .slice(0, timeZoom)
-        //   .map(([t, v]) => [t0 + (t - t0) * 4 * 2 ** timeStretch - (t1 - t0) * 2 ** timeStretch * timeShift, v])}
       />
     </Chart>
   );

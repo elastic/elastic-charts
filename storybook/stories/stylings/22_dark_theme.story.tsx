@@ -21,6 +21,7 @@ import {
   Settings,
   Tooltip,
   TooltipType,
+  LegendValue,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -36,7 +37,12 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings baseTheme={useBaseTheme()} debug={boolean('Debug', false)} showLegend legendValue="lastBucket" />
+      <Settings
+        baseTheme={useBaseTheme()}
+        debug={boolean('Debug', false)}
+        showLegend
+        legendValue={LegendValue.LastTimeBucket}
+      />
       <Tooltip type={TooltipType.Crosshairs} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

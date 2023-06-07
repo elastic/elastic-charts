@@ -20,6 +20,7 @@ import {
   VerticalAlignment,
   HorizontalAlignment,
   LayoutDirection,
+  LegendValue,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
@@ -83,7 +84,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendValue="lastBucket"
+        legendValue={LegendValue.LastTimeBucket}
         legendPosition={{
           vAlign,
           hAlign,

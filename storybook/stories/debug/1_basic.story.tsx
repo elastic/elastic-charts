@@ -9,7 +9,17 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, ScaleType, Settings, Position, Axis, BarSeries, AreaSeries, CurveType } from '@elastic/charts';
+import {
+  Chart,
+  ScaleType,
+  Settings,
+  Position,
+  Axis,
+  BarSeries,
+  AreaSeries,
+  CurveType,
+  LegendValue,
+} from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 
@@ -21,7 +31,7 @@ export const Example = () => {
       <Settings
         debug={debug}
         showLegend
-        legendValue="lastBucket"
+        legendValue={LegendValue.LastTimeBucket}
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
       />

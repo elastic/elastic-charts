@@ -22,6 +22,7 @@ import {
   LegendAction,
   LegendPositionConfig,
   LegendSpec,
+  LegendValue,
 } from '../../specs/settings';
 import {
   clearTemporaryColors as clearTemporaryColorsAction,
@@ -191,7 +192,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     });
     const hasColorPicker = Boolean(colorPicker);
 
-    const value = legendValue !== 'none' ? getValue(values, item, totalItems) : undefined;
+    const value = legendValue !== LegendValue.None ? getValue(values, item, totalItems) : undefined;
     const style: CSSProperties = {
       [isMostlyRTL ? 'marginRight' : 'marginLeft']: flatLegend
         ? undefined

@@ -7,7 +7,7 @@
  */
 
 import { ScaleType } from '../../../../scales/constants';
-import { LegendSpec } from '../../../../specs';
+import { LegendSpec, LegendValue } from '../../../../specs';
 import { roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { XDomain } from '../../domains/types';
 import { isDatumFilled } from '../../rendering/utils';
@@ -35,16 +35,22 @@ export function getLegendValue(
   }
 
   switch (type) {
-    case 'lastBucket':
+    case LegendValue.LastNonNull:
+      const last = series.data.findLast((d) => valueAccessor(d) !== null);
+      return last ? valueAccessor(last) : null;
+    case LegendValue.LastTimeBucket:
+      if (xDomain.type !== ScaleType.Time) {
+        return null;
+      }
       const lastDataPoint = series.data.at(-1);
       if (!lastDataPoint) {
         return null;
       }
 
       const lastX = lastDataPoint.x as number;
-      const lastDomainValue = xDomain.domain[1] as number;
+      const upperDomainBound = xDomain.domain[1] as number;
       const lastBucket = roundDateToESInterval(
-        lastDomainValue,
+        upperDomainBound,
         { type: 'fixed', unit: 'ms', value: xDomain.minInterval },
         'start',
         xDomain.timeZone,
@@ -53,7 +59,7 @@ export function getLegendValue(
         return valueAccessor(lastDataPoint);
       }
       return null;
-    case 'avg':
+    case LegendValue.Average:
       const avg = series.data.reduce(
         (acc, curr) => {
           const value = valueAccessor(curr);
@@ -67,17 +73,14 @@ export function getLegendValue(
         { count: 0, sum: 0 },
       );
       return avg.count > 0 ? avg.sum / avg.count : 0;
-    case 'sum':
+    case LegendValue.Sum:
       return series.data.reduce((acc, curr) => acc + (valueAccessor(curr) ?? 0), 0);
-    case 'min':
+    case LegendValue.Min:
       return series.data.reduce((acc, curr) => Math.min(acc, valueAccessor(curr) ?? Infinity), Infinity);
-    case 'max':
+    case LegendValue.Max:
       return series.data.reduce((acc, curr) => Math.max(acc, valueAccessor(curr) ?? -Infinity), -Infinity);
-    case 'lastInSeries':
-      const dataPoint = series.data.length > 0 ? series.data.at(-1) : undefined;
-      return dataPoint ? valueAccessor(dataPoint) : null;
     default:
-    case 'none':
+    case LegendValue.None:
       return null;
   }
 }

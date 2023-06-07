@@ -19,6 +19,7 @@ import {
   ScaleType,
   Settings,
   PartialTheme,
+  LegendValue,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -98,7 +99,7 @@ export const Example = () => {
         debug={debug}
         rotation={customKnobs.enum.rotation()}
         showLegend
-        legendValue="lastBucket"
+        legendValue={LegendValue.LastTimeBucket}
         legendPosition={customKnobs.enum.position('legend')}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

@@ -9,7 +9,7 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
+import { BarSeries, Chart, LegendValue, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -48,7 +48,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        legendValue="lastBucket"
+        legendValue={LegendValue.LastTimeBucket}
         legendPosition={customKnobs.enum.position('legend position', 'top')}
         theme={{
           legend: { labelOptions: { maxLines } },

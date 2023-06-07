@@ -11,7 +11,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store } from 'redux';
 
-import { Settings, SettingsSpec } from './settings';
+import { LegendValue, Settings, SettingsSpec } from './settings';
 import { SpecsParser } from './specs_parser';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
@@ -71,7 +71,7 @@ describe('Settings spec component', () => {
         animateData: true,
         showLegend: true,
         legendPosition: Position.Bottom,
-        legendValue: 'none',
+        legendValue: LegendValue.None,
         debug: true,
         xDomain: { min: 0, max: 10 },
       },
@@ -161,7 +161,7 @@ describe('Settings spec component', () => {
       animateData: true,
       showLegend: true,
       legendPosition: Position.Bottom,
-      legendValue: 'none',
+      legendValue: LegendValue.None,
       debug: true,
       xDomain: { min: 0, max: 10 },
     };
