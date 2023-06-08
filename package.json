@@ -39,7 +39,7 @@
     "pq": "pretty-quick",
     "semantic-release": "semantic-release --debug",
     "start": "yarn storybook",
-    "storybook": "lerna run --scope charts-storybook start --stream --no-prefix",
+    "storybook": "export NODE_OPTIONS=--openssl-legacy-provider; lerna run --scope charts-storybook start --stream --no-prefix",
     "storybook:build": "export NODE_OPTIONS=--openssl-legacy-provider; lerna run --scope charts-storybook build --stream --no-prefix",
     "test": "jest --verbose --config jest.config.js",
     "test:tz": "yarn test:tz-utc && yarn test:tz-ny && yarn test:tz-jp",
