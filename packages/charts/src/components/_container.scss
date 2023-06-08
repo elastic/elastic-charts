@@ -4,6 +4,10 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+
+  &__titles {
+    margin-right: 24px;
+  }
 }
 
 .echChartContent {

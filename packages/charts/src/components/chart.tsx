@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { createRef } from 'react';
+import React, { CSSProperties, createRef } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe, StoreEnhancer, applyMiddleware, Middleware } from 'redux';
 import { v4 as uuidv4 } from 'uuid';
@@ -175,24 +175,17 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const chartContentClassNames = classNames('echChartContent', className, {
       'echChartContent--column': this.state.legendDirection === LayoutDirection.Horizontal,
     });
-    const titleDescStyle = {
-      paddingLeft: this.state.paddingLeft,
-      paddingRight: this.state.paddingRight,
-    };
 
     return (
       <Provider store={this.chartStore}>
         <div className="echChart" style={containerSizeStyle}>
-          {this.state.displayTitles && this.props.title && (
-            <h3 className="echChartTitle" style={titleDescStyle}>
-              {this.props.title}
-            </h3>
-          )}
-          {this.state.displayTitles && this.props.description && (
-            <h4 className="echChartDescription" style={titleDescStyle}>
-              {this.props.description}
-            </h4>
-          )}
+          <Titles
+            displayTitles={this.state.displayTitles}
+            title={this.props.title}
+            description={this.props.description}
+            paddingLeft={this.state.paddingLeft}
+            paddingRight={this.state.paddingRight}
+          />
           <div className={chartContentClassNames}>
             <ChartBackground />
             <ChartStatus />
@@ -210,4 +203,34 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       </Provider>
     );
   }
+}
+
+function Titles({
+  displayTitles,
+  title,
+  description,
+  paddingLeft,
+  paddingRight,
+}: Pick<ChartProps, 'title' | 'description'> & Pick<ChartState, 'displayTitles' | 'paddingLeft' | 'paddingRight'>) {
+  if (!displayTitles || (!title && !description)) return null;
+
+  const titleDescStyle: CSSProperties = {
+    paddingLeft,
+    paddingRight,
+  };
+
+  return (
+    <div className="echChart__titles">
+      {title && (
+        <h3 className="echChartTitle" style={titleDescStyle}>
+          {title}
+        </h3>
+      )}
+      {description && (
+        <h4 className="echChartDescription" style={titleDescStyle}>
+          {description}
+        </h4>
+      )}
+    </div>
+  );
 }
