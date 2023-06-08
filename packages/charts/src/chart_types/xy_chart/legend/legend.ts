@@ -9,15 +9,14 @@
 import { Color } from '../../../common/colors';
 import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
-import { ScaleType } from '../../../scales/constants';
-import { SettingsSpec, TickFormatterOptions } from '../../../specs';
+import { SettingsSpec } from '../../../specs';
 import { isDefined, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
-import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
+import { XDomain } from '../domains/types';
+import { getLegendValue } from '../state/utils/legend_value';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
-import { LastValues } from '../state/utils/types';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
 import { defaultXYLegendSeriesSort } from '../utils/default_series_sort_fn';
@@ -34,17 +33,12 @@ import {
   AxisSpec,
   BasicSeriesSpec,
   Postfixes,
+  StackMode,
   isAreaSeriesSpec,
   isBarSeriesSpec,
   isBubbleSeriesSpec,
   isLineSeriesSpec,
 } from '../utils/specs';
-
-/** @internal */
-export interface FormattedLastValues {
-  y0: number | string | null;
-  y1: number | string | null;
-}
 
 function getPostfix(spec: BasicSeriesSpec): Postfixes {
   if (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec)) {
@@ -62,27 +56,6 @@ function getBandedLegendItemLabel(name: string, yAccessor: BandedAccessorType, p
 }
 
 /** @internal */
-export function getLegendExtra(
-  showLegendExtra: boolean,
-  xScaleType: ScaleType,
-  formatter: (value: any, options?: TickFormatterOptions | undefined) => string,
-  key: keyof LastValues,
-  lastValue?: LastValues,
-): LegendItem['defaultExtra'] {
-  if (showLegendExtra) {
-    const rawValue = (lastValue && lastValue[key]) ?? null;
-    const formattedValue = rawValue !== null ? formatter(rawValue) : null;
-
-    return {
-      raw: rawValue !== null ? rawValue : null,
-      formatted: xScaleType === ScaleType.Ordinal ? null : formattedValue,
-      legendSizingLabel: formattedValue,
-    };
-  }
-  return { raw: null, formatted: null, legendSizingLabel: null };
-}
-
-/** @internal */
 function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefined {
   if (isBubbleSeriesSpec(spec)) {
     return mergePartial(theme.bubbleSeriesStyle.point, spec.bubbleSeriesStyle?.point);
@@ -95,8 +68,8 @@ function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefi
 
 /** @internal */
 export function computeLegend(
+  xDomain: XDomain,
   dataSeries: DataSeries[],
-  lastValues: Map<SeriesKey, LastValues>,
   seriesColors: Map<SeriesKey, Color>,
   specs: BasicSeriesSpec[],
   axesSpecs: AxisSpec[],
@@ -111,7 +84,7 @@ export function computeLegend(
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
     const banded = isBandedSpec(series.spec);
-    const key = getSeriesKey(series, series.groupId);
+
     const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
     const dataSeriesKey = getSeriesKey(
       {
@@ -129,43 +102,61 @@ export function computeLegend(
     if (name === '' || !spec) return;
 
     const postFixes = getPostfix(spec);
-    const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
 
     // Use this to get axis spec w/ tick formatter
     const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, settingsSpec.rotation);
     const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? defaultTickFormatter;
     const { hideInLegend } = spec;
 
-    const lastValue = lastValues.get(key);
     const seriesIdentifier = getSeriesIdentifierFromDataSeries(series);
-    const xScaleType = getXScaleTypeFromSpec(spec.xScaleType);
 
     const pointStyle = getPointStyle(spec, theme);
 
+    const itemValue = getLegendValue(series, xDomain, settingsSpec.legendValue, (d) => {
+      return series.stackMode === StackMode.Percentage
+        ? d.y1 === null || d.y0 === null
+          ? null
+          : d.y1 - d.y0
+        : d.initialY1;
+    });
+    const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
+
     legendItems.push({
       color,
-      label: labelY1,
+      label: banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name,
       seriesIdentifiers: [seriesIdentifier],
       childId: BandedAccessorType.Y1,
       isSeriesHidden,
       isItemHidden: hideInLegend,
       isToggleable: true,
-      defaultExtra: getLegendExtra(settingsSpec.showLegendExtra, xScaleType, formatter, 'y1', lastValue),
+      value: {
+        raw: itemValue,
+        formatted: formattedItemValue,
+        legendSizingLabel: formattedItemValue,
+      },
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
       pointStyle,
     });
     if (banded) {
-      const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
+      const itemValue = getLegendValue(series, xDomain, settingsSpec.legendValue, (d) => {
+        return series.stackMode === StackMode.Percentage ? d.y0 : d.initialY0;
+      });
+      const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
+
       legendItems.push({
         color,
-        label: labelY0,
+        label: getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes),
         seriesIdentifiers: [seriesIdentifier],
         childId: BandedAccessorType.Y0,
         isSeriesHidden,
         isItemHidden: hideInLegend,
         isToggleable: true,
-        defaultExtra: getLegendExtra(settingsSpec.showLegendExtra, xScaleType, formatter, 'y0', lastValue),
+        value: {
+          raw: itemValue,
+          formatted: formattedItemValue,
+          legendSizingLabel: formattedItemValue,
+        },
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
         pointStyle,

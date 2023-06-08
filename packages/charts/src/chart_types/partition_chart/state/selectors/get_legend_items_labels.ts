@@ -8,6 +8,7 @@
 
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
+import { LegendValue } from '../../../../specs/legend_spec';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
@@ -16,11 +17,16 @@ import { getLegendLabelsAndValue } from '../../layout/utils/legend_labels';
 /** @internal */
 export const getLegendItemsLabels = createCustomCachedSelector(
   [getPartitionSpecs, getSettingsSpecSelector, getTrees],
-  (specs, { legendMaxDepth, showLegend, showLegendExtra }, trees): LegendItemLabel[] =>
+  (specs, { legendMaxDepth, showLegend, legendValue }, trees): LegendItemLabel[] =>
     specs.flatMap(({ layers, valueFormatter }) =>
       showLegend
         ? trees.flatMap(({ tree }) =>
-            getLegendLabelsAndValue(layers, tree, legendMaxDepth, showLegendExtra ? valueFormatter : () => ''),
+            getLegendLabelsAndValue(
+              layers,
+              tree,
+              legendMaxDepth,
+              legendValue && legendValue !== LegendValue.None ? valueFormatter : () => '',
+            ),
           )
         : [],
     ),

@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
+import { Chart, Datum, Partition, PartitionLayout, Settings, LegendValue } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalStark9, discreteColor, productPriceLookup } from '../utils/utils';
@@ -23,7 +23,7 @@ export const Example = () => {
         baseTheme={useBaseTheme()}
         showLegend
         flatLegend
-        showLegendExtra
+        legendValue={LegendValue.LastTimeBucket}
       />
       <Partition
         id="spec_1"

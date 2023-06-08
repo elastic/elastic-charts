@@ -14,6 +14,7 @@ import { LegendListItem } from './legend_item';
 import { SeededDataGenerator } from '../../mocks/utils';
 import { ScaleType } from '../../scales/constants';
 import { Settings, BarSeries, LegendColorPicker } from '../../specs';
+import { LegendValue } from '../../specs/legend_spec';
 import { Chart } from '../chart';
 
 const dg = new SeededDataGenerator();
@@ -22,7 +23,7 @@ describe('Legend', () => {
   it('shall render the all the series names', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend showLegendExtra />
+        <Settings showLegend legendValue={LegendValue.LastNonNull} />
         <BarSeries
           id="areas"
           name="area"
@@ -53,7 +54,7 @@ describe('Legend', () => {
   it('shall render the all the series names without the data value', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend showLegendExtra={false} />
+        <Settings showLegend legendValue={LegendValue.None} />
         <BarSeries
           id="areas"
           name="area"
@@ -88,7 +89,12 @@ describe('Legend', () => {
     const data = dg.generateGroupedSeries(10, numberOfSeries, 'split');
     const wrapper = mount(
       <Chart>
-        <Settings showLegend showLegendExtra onLegendItemOver={onLegendItemOver} onLegendItemOut={onLegendItemOut} />
+        <Settings
+          showLegend
+          legendValue={LegendValue.LastTimeBucket}
+          onLegendItemOver={onLegendItemOver}
+          onLegendItemOut={onLegendItemOut}
+        />
         <BarSeries
           id="areas"
           xScaleType={ScaleType.Linear}
@@ -117,7 +123,7 @@ describe('Legend', () => {
     const data = dg.generateGroupedSeries(10, numberOfSeries, 'split');
     const wrapper = mount(
       <Chart>
-        <Settings showLegend showLegendExtra onLegendItemClick={onLegendItemClick} />
+        <Settings showLegend legendValue={LegendValue.LastTimeBucket} onLegendItemClick={onLegendItemClick} />
         <BarSeries
           id="areas"
           xScaleType={ScaleType.Linear}
@@ -283,7 +289,7 @@ describe('Legend', () => {
       const data = [{ x: 2, y: 5 }];
       const wrapper = mount(
         <Chart>
-          <Settings showLegend showLegendExtra onLegendItemClick={onLegendItemClick} />
+          <Settings showLegend legendValue={LegendValue.LastTimeBucket} onLegendItemClick={onLegendItemClick} />
           <BarSeries
             id="areas"
             xScaleType={ScaleType.Linear}

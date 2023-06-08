@@ -20,6 +20,7 @@ import {
   SeriesType,
   LineAnnotation,
   AnnotationDomainType,
+  LegendValue,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -47,7 +48,12 @@ export const Example = () => {
   });
   return (
     <Chart>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={baseTheme} />
+      <Settings
+        showLegend
+        legendValue={LegendValue.LastTimeBucket}
+        legendPosition={Position.Right}
+        baseTheme={baseTheme}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Products" />
       <Axis
         id="left"

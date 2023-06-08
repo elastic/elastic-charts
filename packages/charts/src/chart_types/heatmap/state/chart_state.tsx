@@ -78,7 +78,7 @@ export class HeatmapState implements InternalChartState {
     return getLegendItemsLabelsSelector(globalState);
   }
 
-  getLegendExtraValues() {
+  getLegendValues() {
     return EMPTY_MAP;
   }
 

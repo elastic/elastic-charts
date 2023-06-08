@@ -34,7 +34,7 @@ import { WordcloudState } from '../chart_types/wordcloud/state/chart_state';
 import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { CategoryKey } from '../common/category';
 import { Color } from '../common/colors';
-import { LegendItem, LegendItemExtraValues } from '../common/legend';
+import { LegendItem, LegendItemValues } from '../common/legend';
 import { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import { SeriesIdentifier, SeriesKey } from '../common/series_id';
 import { AnchorPosition } from '../components/portal/types';
@@ -101,10 +101,10 @@ export interface InternalChartState {
    */
   getLegendItems(globalState: GlobalChartState): LegendItem[];
   /**
-   * Returns the list of extra values for each legend item
+   * Returns the list of values for each legend item
    * @param globalState
    */
-  getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues>;
+  getLegendValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemValues>;
   /**
    * Returns the CSS pointer cursor depending on the internal chart state
    * @param globalState

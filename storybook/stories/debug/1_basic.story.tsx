@@ -9,7 +9,17 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, ScaleType, Settings, Position, Axis, BarSeries, AreaSeries, CurveType } from '@elastic/charts';
+import {
+  Chart,
+  ScaleType,
+  Settings,
+  Position,
+  Axis,
+  BarSeries,
+  AreaSeries,
+  CurveType,
+  LegendValue,
+} from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 
@@ -18,7 +28,13 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings debug={debug} showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        debug={debug}
+        showLegend
+        legendValue={LegendValue.LastTimeBucket}
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <Axis id="top" position={Position.Top} title="Top axis" showOverlappingTicks />

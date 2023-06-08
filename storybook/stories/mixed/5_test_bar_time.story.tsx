@@ -9,7 +9,7 @@
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings, LegendValue } from '@elastic/charts';
 import { timeFormatter } from '@elastic/charts/src/utils/data/formatters';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -42,7 +42,12 @@ export const Example = () => {
 
   return (
     <Chart>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValue={LegendValue.LastTimeBucket}
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis
         id="bottom"
         position={Position.Bottom}

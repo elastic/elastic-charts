@@ -23,6 +23,7 @@ import {
   ChartType,
   defaultPartitionValueFormatter,
   BandFillColorAccessorInput,
+  LegendValue,
 } from '@elastic/charts';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
@@ -64,7 +65,7 @@ export const Example = () => {
       <Settings
         baseTheme={useBaseTheme()}
         showLegend={selectedChart === ChartType.XYAxis}
-        showLegendExtra={selectedChart === ChartType.XYAxis}
+        legendValue={selectedChart === ChartType.XYAxis ? LegendValue.LastTimeBucket : LegendValue.None}
       />
       {selectedChart === ChartType.Partition
         ? renderPartitionChart()

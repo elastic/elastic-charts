@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendValue } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { getLegendSizeKnob } from './legend_size_knob';
@@ -19,7 +19,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        showLegendExtra
+        legendValue={LegendValue.LastTimeBucket}
         legendPosition={Position.Right}
         legendSize={getLegendSizeKnob()}
         baseTheme={useBaseTheme()}

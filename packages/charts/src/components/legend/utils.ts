@@ -6,18 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { LegendItemExtraValues, LegendItem } from '../../common/legend';
+import { LegendItemValues, LegendItem } from '../../common/legend';
 
 /** @internal */
-export function getExtra(extraValues: Map<string, LegendItemExtraValues>, item: LegendItem, totalItems: number) {
-  const { seriesIdentifiers, defaultExtra, childId, path } = item;
-  // don't show extra if the legend item is associated with multiple series
-  if (extraValues.size === 0 || seriesIdentifiers.length > 1 || !seriesIdentifiers[0]) {
-    return defaultExtra?.formatted ?? '';
+export function getValue(values: Map<string, LegendItemValues>, item: LegendItem, totalItems: number) {
+  const { seriesIdentifiers, value, childId, path } = item;
+  // don't show value if the legend item is associated with multiple series
+  if (values.size === 0 || seriesIdentifiers.length > 1 || !seriesIdentifiers[0]) {
+    return value.formatted;
   }
   const [{ key }] = seriesIdentifiers;
-  const extraValueKey = path.map(({ index }) => index).join('__');
-  const itemExtraValues = extraValues.has(extraValueKey) ? extraValues.get(extraValueKey) : extraValues.get(key);
-  const actionExtra = childId !== undefined && itemExtraValues?.get(childId);
-  return actionExtra ?? (extraValues.size === totalItems ? defaultExtra?.formatted : null) ?? '';
+  const valueKey = path.map(({ index }) => index).join('__');
+  const itemValues = values.has(valueKey) ? values.get(valueKey) : values.get(key);
+  const actionValue = childId !== undefined ? itemValues?.get(childId) : null;
+  return actionValue ? `${actionValue}` : values.size === totalItems ? value.formatted : '';
 }

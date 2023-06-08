@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { array, boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendValue } from '@elastic/charts';
 import { BARCHART_2Y2G } from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -64,7 +64,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        showLegendExtra
+        legendValue={LegendValue.LastTimeBucket}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
         {...onLegendItemListeners}

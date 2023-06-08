@@ -15,7 +15,7 @@ import { getBrushAreaSelector } from './selectors/get_brush_area';
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
-import { getLegendItemExtraValuesSelector } from './selectors/get_legend_item_extra_values';
+import { getLegendItemValuesSelector } from './selectors/get_legend_item_values';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
 import { getSeriesSpecsSelector } from './selectors/get_specs';
 import { getTooltipAnchorPositionSelector } from './selectors/get_tooltip_anchor_position';
@@ -30,7 +30,7 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 import { createOnProjectionAreaCaller } from './selectors/on_projection_area_caller';
 import { ChartType } from '../..';
-import { LegendItemExtraValues } from '../../../common/legend';
+import { LegendItemValues } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { BrushTool } from '../../../components/brush/brush';
 import { Tooltip } from '../../../components/tooltip/tooltip';
@@ -111,8 +111,8 @@ export class XYAxisChartState implements InternalChartState {
     return computeLegendSelector(globalState);
   }
 
-  getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues> {
-    return getLegendItemExtraValuesSelector(globalState);
+  getLegendValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemValues> {
+    return getLegendItemValuesSelector(globalState);
   }
 
   chartRenderer(containerRef: BackwardRef, forwardCanvasRef: RefObject<HTMLCanvasElement>) {

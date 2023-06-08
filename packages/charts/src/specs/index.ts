@@ -21,6 +21,7 @@ export interface Spec {
 export * from './group_by';
 export * from './small_multiples';
 export * from './settings';
+export * from './legend_spec';
 export * from './constants';
 export * from './tooltip';
 export * from '../chart_types/specs';

@@ -24,6 +24,7 @@ import {
   LineSeries,
   AreaSeries,
   Tooltip,
+  LegendValue,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
@@ -97,7 +98,7 @@ export const Example = () => {
       <Chart ref={ref1} size={{ height: '50%' }} id="chart1">
         <Settings
           showLegend
-          showLegendExtra
+          legendValue={LegendValue.LastTimeBucket}
           baseTheme={useBaseTheme()}
           onPointerUpdate={pointerUpdate}
           pointerUpdateDebounce={debounceDelay}
@@ -128,7 +129,7 @@ export const Example = () => {
       <Chart ref={ref2} size={{ height: '50%' }} id="chart2">
         <Settings
           showLegend
-          showLegendExtra
+          legendValue={LegendValue.LastTimeBucket}
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{
             tooltip: { visible: bottomVisible, placement: bottomPlacement, boundary: 'chart' },

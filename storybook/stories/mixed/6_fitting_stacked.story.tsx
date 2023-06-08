@@ -10,7 +10,7 @@ import { select, number, boolean } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, Fit, StackMode } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, Fit, StackMode, LegendValue } from '@elastic/charts';
 import { getRandomNumberGenerator, getRNGSeed } from '@elastic/charts/src/mocks/utils';
 
 import { TextureShape } from '../../../packages/charts/src/utils/themes/theme';
@@ -130,7 +130,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        showLegendExtra
+        legendValue={LegendValue.LastTimeBucket}
         theme={{
           areaSeriesStyle: {
             point: {

@@ -21,6 +21,7 @@ import {
   Axis,
   Position,
   ScaleType,
+  LegendValue,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
@@ -117,7 +118,7 @@ export const Example = () => {
         rotation={type === SeriesType.Bar ? 90 : 0}
         debugState
         showLegend={showLegend}
-        showLegendExtra
+        legendValue={LegendValue.LastTimeBucket}
         baseTheme={useBaseTheme()}
         legendColorPicker={getColorPicker('leftCenter')}
       />

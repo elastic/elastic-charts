@@ -8,13 +8,18 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings, LegendValue } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example = () => (
   <Chart>
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+    <Settings
+      showLegend
+      legendValue={LegendValue.LastTimeBucket}
+      legendPosition={Position.Right}
+      baseTheme={useBaseTheme()}
+    />
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

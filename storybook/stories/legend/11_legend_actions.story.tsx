@@ -9,7 +9,16 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendLabelOptions } from '@elastic/charts';
+import {
+  Axis,
+  BarSeries,
+  Chart,
+  Position,
+  ScaleType,
+  Settings,
+  LegendLabelOptions,
+  LegendValue,
+} from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -27,7 +36,7 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
 
 export const Example = () => {
   const hideActions = boolean('Hide legend action', false, 'Legend');
-  const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
+  const showLegendValue = !boolean('Hide legend value', false, 'Legend');
   const showColorPicker = !boolean('Hide color picker', true, 'Legend');
   const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
   const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
@@ -39,7 +48,7 @@ export const Example = () => {
         showLegend
         theme={{ legend: { labelOptions } }}
         baseTheme={useBaseTheme()}
-        showLegendExtra={showLegendExtra}
+        legendValue={showLegendValue ? LegendValue.LastTimeBucket : LegendValue.None}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
         legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}

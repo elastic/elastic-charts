@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Position, Settings, Partition, PartitionLayout } from '@elastic/charts';
+import { Chart, Position, Settings, Partition, PartitionLayout, LegendValue } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, colorBrewerCategoricalPastel12 } from '../utils/utils';
@@ -48,7 +48,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        showLegendExtra
+        legendValue={LegendValue.LastTimeBucket}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
         {...onElementListeners}

@@ -7,7 +7,7 @@
  */
 
 import { LayoutDirection } from './common';
-import { LegendPositionConfig } from '../specs/settings';
+import { LegendPositionConfig } from '../specs/legend_spec';
 
 /** @internal */
 export const isHorizontalLegend = (legendPosition: LegendPositionConfig) =>

@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { LegendItemExtraValues } from '../../common/legend';
+import { LegendItemValues } from '../../common/legend';
 import { SeriesKey } from '../../common/series_id';
 import { GlobalChartState } from '../chart_state';
 
-const EMPTY_ITEM_LIST = new Map<SeriesKey, LegendItemExtraValues>();
+const EMPTY_ITEM_LIST = new Map<SeriesKey, LegendItemValues>();
 
 /** @internal */
-export const getLegendExtraValuesSelector = (state: GlobalChartState): Map<SeriesKey, LegendItemExtraValues> => {
+export const getLegendValuesSelector = (state: GlobalChartState): Map<SeriesKey, LegendItemValues> => {
   if (state.internalChartState) {
-    return state.internalChartState.getLegendExtraValues(state);
+    return state.internalChartState.getLegendValues(state);
   }
   return EMPTY_ITEM_LIST;
 };

@@ -8,20 +8,20 @@
 
 import { getPartitionSpec } from './partition_spec';
 import { getTrees } from './tree';
-import { LegendItemExtraValues } from '../../../../common/legend';
+import { LegendItemValues } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { getExtraValueMap } from '../../layout/viewmodel/hierarchy_of_arrays';
+import { getLegendValuesMap } from '../../layout/viewmodel/hierarchy_of_arrays';
 
 /** @internal */
-export const getLegendItemsExtra = createCustomCachedSelector(
+export const getLegendItemsValues = createCustomCachedSelector(
   [getPartitionSpec, getSettingsSpecSelector, getTrees],
-  (spec, { legendMaxDepth }, trees): Map<SeriesKey, LegendItemExtraValues> => {
-    const emptyMap = new Map<SeriesKey, LegendItemExtraValues>();
+  (spec, { legendMaxDepth }, trees): Map<SeriesKey, LegendItemValues> => {
+    const emptyMap = new Map<SeriesKey, LegendItemValues>();
     return spec && !Number.isNaN(legendMaxDepth) && legendMaxDepth > 0
       ? trees.reduce((result, { tree }) => {
-          const treeData = getExtraValueMap(spec.layers, spec.valueFormatter, tree, legendMaxDepth);
+          const treeData = getLegendValuesMap(spec.layers, spec.valueFormatter, tree, legendMaxDepth);
           for (const [key, value] of treeData) {
             result.set(key, value);
           }

@@ -21,7 +21,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   &:not([dir='rtl']) > *:not(.background) {
     margin-left: $euiSizeXS;
 
-    &:last-child:not(.echLegendItem__extra) {
+    &:last-child:not(.echLegendItem__value) {
       margin-right: $euiSizeXS;
     }
   }
@@ -29,7 +29,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   &[dir='rtl'] > *:not(.background) {
     margin-right: $euiSizeXS;
 
-    &:last-child:not(.echLegendItem__extra) {
+    &:last-child:not(.echLegendItem__value) {
       margin-left: $euiSizeXS;
     }
   }
@@ -102,7 +102,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     }
   }
 
-  &__extra {
+  &__value {
     @include euiFontSizeXS;
     text-align: right;
     flex: 0 0 auto;

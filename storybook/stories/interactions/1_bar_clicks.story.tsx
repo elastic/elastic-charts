@@ -19,6 +19,7 @@ import {
   Settings,
   Tooltip,
   TooltipHeaderFormatter,
+  LegendValue,
 } from '@elastic/charts';
 
 import { useBaseTheme } from '../../use_base_theme';
@@ -49,7 +50,7 @@ export const Example = () => {
     <Chart>
       <Settings
         showLegend
-        showLegendExtra
+        legendValue={LegendValue.LastTimeBucket}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
         {...onElementListeners}

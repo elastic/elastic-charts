@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { LegendPositionConfig } from '../../specs/settings';
+import { LegendPositionConfig } from '../../specs/legend_spec';
 import { clamp, LayoutDirection } from '../../utils/common';
 import { Margins, Size } from '../../utils/dimensions';
 import { LegendStyle as ThemeLegendStyle } from '../../utils/themes/theme';

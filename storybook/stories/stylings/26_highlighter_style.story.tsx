@@ -18,6 +18,7 @@ import {
   Settings,
   timeFormatter,
   Tooltip,
+  LegendValue,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -29,7 +30,7 @@ export const Example = () => (
   <Chart>
     <Settings
       showLegend
-      showLegendExtra
+      legendValue={LegendValue.LastTimeBucket}
       legendSize={100}
       pointBuffer={Infinity}
       legendPosition={Position.Right}

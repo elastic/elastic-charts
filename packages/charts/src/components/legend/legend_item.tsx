@@ -10,19 +10,20 @@ import classNames from 'classnames';
 import React, { Component, createRef, MouseEventHandler, CSSProperties } from 'react';
 
 import { Color as ItemColor } from './color';
-import { renderExtra } from './extra';
 import { Label as ItemLabel } from './label';
-import { getExtra } from './utils';
+import { getValue } from './utils';
 import { Color } from '../../common/colors';
-import { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { LegendItem, LegendItemValues } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
 import {
+  LegendSpec,
+  LegendValue,
   LegendItemListener,
-  BasicListener,
   LegendColorPicker,
   LegendAction,
   LegendPositionConfig,
-} from '../../specs/settings';
+} from '../../specs/legend_spec';
+import { BasicListener } from '../../specs/settings';
 import {
   clearTemporaryColors as clearTemporaryColorsAction,
   setTemporaryColor as setTemporaryColorAction,
@@ -46,8 +47,8 @@ export interface LegendItemProps {
   flatLegend: boolean;
   totalItems: number;
   positionConfig: LegendPositionConfig;
-  extraValues: Map<string, LegendItemExtraValues>;
-  showExtra: boolean;
+  values: Map<string, LegendItemValues>;
+  legendValue: LegendSpec['legendValue'];
   isMostlyRTL: boolean;
   labelOptions: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
@@ -170,9 +171,9 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
 
   render() {
     const {
-      extraValues,
+      values,
+      legendValue,
       item,
-      showExtra,
       colorPicker,
       totalItems,
       action: Action,
@@ -190,12 +191,13 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     });
     const hasColorPicker = Boolean(colorPicker);
-    const extra = showExtra && getExtra(extraValues, item, totalItems);
-    const style: CSSProperties = flatLegend
-      ? {}
-      : {
-          [isMostlyRTL ? 'marginRight' : 'marginLeft']: LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
-        };
+
+    const value = legendValue !== LegendValue.None ? getValue(values, item, totalItems) : undefined;
+    const style: CSSProperties = {
+      [isMostlyRTL ? 'marginRight' : 'marginLeft']: flatLegend
+        ? undefined
+        : LEGEND_HIERARCHY_MARGIN * (item.depth ?? 0),
+    };
     return (
       <>
         <li
@@ -225,7 +227,11 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             onToggle={this.onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
-          {extra && !isSeriesHidden && renderExtra(extra)}
+          {value && !isSeriesHidden && (
+            <div className="echLegendItem__value" title={`${value}`}>
+              {value}
+            </div>
+          )}
           {Action && (
             <div className="echLegendItem__action">
               <Action series={seriesIdentifiers} color={color} label={label} />

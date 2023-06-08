@@ -71,7 +71,7 @@ export class GoalState implements InternalChartState {
     return EMPTY_LEGEND_ITEM_LIST;
   }
 
-  getLegendExtraValues() {
+  getLegendValues() {
     return EMPTY_MAP;
   }
 
