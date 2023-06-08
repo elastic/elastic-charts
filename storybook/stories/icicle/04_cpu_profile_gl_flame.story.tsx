@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button } from '@storybook/addon-knobs';
+import { boolean, button, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -18,6 +18,7 @@ import {
   FlameGlobalControl,
   FlameNodeControl,
   ColumnarViewModel,
+  FlameSearchControl,
 } from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
@@ -62,6 +63,7 @@ const noop = () => {};
 export const Example = () => {
   let resetFocusControl: FlameGlobalControl = noop; // initial value
   let focusOnNodeControl: FlameNodeControl = noop; // initial value
+  let searchText: FlameSearchControl = noop; // initial value
 
   const onElementListeners = {
     onElementClick: action('onElementClick'),
@@ -73,6 +75,10 @@ export const Example = () => {
   });
   button('Set focus on random node', () => {
     focusOnNodeControl(rng(0, 19));
+  });
+  const textSearch = text('Text to search', 'github');
+  button('Search', () => {
+    searchText(textSearch);
   });
   const debug = boolean('Debug history', false);
   return (
@@ -87,6 +93,7 @@ export const Example = () => {
         controlProviderCallback={{
           resetFocus: (control) => (resetFocusControl = control),
           focusOnNode: (control) => (focusOnNodeControl = control),
+          search: (control) => (searchText = control),
         }}
       />
     </Chart>
