@@ -8,7 +8,8 @@
 
 import { $Values } from 'utility-types';
 
-import { LegendValue, SettingsSpec } from './settings';
+import { LegendValue } from './legend_spec';
+import { SettingsSpec } from './settings';
 import { ChartType } from '../chart_types';
 import { BOTTOM, CENTER, LEFT, MIDDLE, RIGHT, TOP } from '../common/constants';
 import { buildSFProps } from '../state/spec_factory';

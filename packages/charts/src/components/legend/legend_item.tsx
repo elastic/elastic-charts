@@ -16,14 +16,14 @@ import { Color } from '../../common/colors';
 import { LegendItem, LegendItemValues } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
 import {
+  LegendSpec,
+  LegendValue,
   LegendItemListener,
-  BasicListener,
   LegendColorPicker,
   LegendAction,
   LegendPositionConfig,
-  LegendSpec,
-  LegendValue,
-} from '../../specs/settings';
+} from '../../specs/legend_spec';
+import { BasicListener } from '../../specs/settings';
 import {
   clearTemporaryColors as clearTemporaryColorsAction,
   setTemporaryColor as setTemporaryColorAction,

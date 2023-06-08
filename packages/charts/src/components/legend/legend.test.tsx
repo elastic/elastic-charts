@@ -13,7 +13,8 @@ import { Legend } from './legend';
 import { LegendListItem } from './legend_item';
 import { SeededDataGenerator } from '../../mocks/utils';
 import { ScaleType } from '../../scales/constants';
-import { Settings, BarSeries, LegendColorPicker, LegendValue } from '../../specs';
+import { Settings, BarSeries, LegendColorPicker } from '../../specs';
+import { LegendValue } from '../../specs/legend_spec';
 import { Chart } from '../chart';
 
 const dg = new SeededDataGenerator();
@@ -22,7 +23,7 @@ describe('Legend', () => {
   it('shall render the all the series names', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend legendValue={LegendValue.LastTimeBucket} />
+        <Settings showLegend legendValue={LegendValue.LastNonNull} />
         <BarSeries
           id="areas"
           name="area"

@@ -11,7 +11,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store } from 'redux';
 
-import { LegendValue, Settings, SettingsSpec } from './settings';
+import { LegendValue } from './legend_spec';
+import { Settings, SettingsSpec } from './settings';
 import { SpecsParser } from './specs_parser';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';

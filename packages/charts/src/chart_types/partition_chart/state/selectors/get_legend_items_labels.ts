@@ -8,7 +8,7 @@
 
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
-import { LegendValue } from '../../../../specs/settings';
+import { LegendValue } from '../../../../specs/legend_spec';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
