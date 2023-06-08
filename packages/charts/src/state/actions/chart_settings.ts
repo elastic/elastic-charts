@@ -11,9 +11,18 @@ import { Dimensions } from '../../utils/dimensions';
 /** @internal */
 export const UPDATE_PARENT_DIMENSION = 'UPDATE_PARENT_DIMENSION';
 
+/** @internal */
+export const UPDATE_CHART_TITLES = 'UPDATE_CHART_TITLES';
+
 interface UpdateParentDimensionAction {
   type: typeof UPDATE_PARENT_DIMENSION;
   dimensions: Dimensions;
+}
+
+interface UpdateChartTitlesAction {
+  type: typeof UPDATE_CHART_TITLES;
+  title?: string;
+  description?: string;
 }
 
 /** @internal */
@@ -22,4 +31,9 @@ export function updateParentDimensions(dimensions: Dimensions): UpdateParentDime
 }
 
 /** @internal */
-export type ChartSettingsActions = UpdateParentDimensionAction;
+export function updateChartTitles(title?: string, description?: string): UpdateChartTitlesAction {
+  return { type: UPDATE_CHART_TITLES, title, description };
+}
+
+/** @internal */
+export type ChartSettingsActions = UpdateParentDimensionAction | UpdateChartTitlesAction;

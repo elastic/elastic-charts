@@ -33,10 +33,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   flex-shrink: 0;
+
+  +.echChartDescription {
+    padding-top: 0;
+  }
 }
 
 .echChartDescription {
-  padding: 0 8px 8px 8px;
+  padding: 8px;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;

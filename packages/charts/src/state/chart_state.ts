@@ -10,7 +10,7 @@ import React, { CSSProperties, RefObject } from 'react';
 
 import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
-import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
+import { UPDATE_CHART_TITLES, UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { CLEAR_TEMPORARY_COLORS, SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR } from './actions/colors';
 import { DOMElement } from './actions/dom_element';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
@@ -239,6 +239,14 @@ export interface GlobalChartState {
    */
   chartId: ChartId;
   /**
+   * Chart title
+   */
+  title?: string;
+  /**
+   * Chart description
+   */
+  description?: string;
+  /**
    * The Z-Index of the chart component
    */
   zIndex: number;
@@ -391,6 +399,12 @@ export const chartStoreReducer = (chartId: string) => {
           parentDimensions: {
             ...action.dimensions,
           },
+        };
+      case UPDATE_CHART_TITLES:
+        return {
+          ...state,
+          title: action.title,
+          description: action.description,
         };
       case EXTERNAL_POINTER_EVENT:
         // discard events from self if any

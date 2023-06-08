@@ -22,6 +22,7 @@ import { getElementZIndex } from './portal/utils';
 import { Colors } from '../common/colors';
 import { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
+import { updateChartTitles } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
@@ -131,6 +132,12 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   componentWillUnmount() {
     this.unsubscribeToStore();
+  }
+
+  componentDidUpdate({ title, description }: Readonly<ChartProps>) {
+    if (title !== this.props.title || description !== this.props.description) {
+      this.chartStore.dispatch(updateChartTitles(this.props.title, this.props.description));
+    }
   }
 
   getPNGSnapshot(
