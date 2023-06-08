@@ -4,6 +4,7 @@ exports[`Chart should render the legend name test 1`] = `
 "<Chart size={{...}} id="chart1" renderer="canvas">
   <Provider store={{...}}>
     <div className="echChart" style={{...}}>
+      <Titles displayTitles={true} title={[undefined]} description={[undefined]} paddingLeft={10} paddingRight={10} />
       <div className="echChartContent">
         <Connect(ChartBackground)>
           <ChartBackground backgroundColor="transparent" dispatch={[Function: dispatch]}>
