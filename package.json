@@ -35,6 +35,7 @@
     "lint:it": "NODE_ENV=production eslint --quiet --ext .tsx,.ts,.js",
     "lint:fix:it": "yarn lint:it --fix",
     "prettier:check": "prettier --check \"**/*.{json,html,css,scss}\"",
+    "prettier:fix": "prettier --w \"**/*.{json,html,css,scss}\"",
     "playground": "cd playground && RNG_SEED='elastic-charts' webpack serve",
     "pq": "pretty-quick",
     "semantic-release": "semantic-release --debug",
