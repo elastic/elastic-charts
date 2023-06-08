@@ -1,3 +1,23 @@
+# [58.1.0](https://github.com/elastic/elastic-charts/compare/v58.0.0...v58.1.0) (2023-06-08)
+
+
+### Features
+
+* **flame:** expose search control ([#2064](https://github.com/elastic/elastic-charts/issues/2064)) ([011b56b](https://github.com/elastic/elastic-charts/commit/011b56b3f51e2aa1fea8410b4f24e69403635933))
+
+# [58.0.0](https://github.com/elastic/elastic-charts/compare/v57.0.1...v58.0.0) (2023-06-06)
+
+
+### Bug Fixes
+
+* **axis:** reduce number of y axis ticks on linear scale ([#2005](https://github.com/elastic/elastic-charts/issues/2005)) ([0ef828b](https://github.com/elastic/elastic-charts/commit/0ef828b535f69d3a47fa38febd5dd1f5b88a6ce8))
+* **deps:** update dependency @elastic/eui to v81 ([#2052](https://github.com/elastic/elastic-charts/issues/2052)) ([4c55e01](https://github.com/elastic/elastic-charts/commit/4c55e0119e6d0def4340a620899b7ee0e0012b02))
+
+
+### BREAKING CHANGES
+
+* **axis:** the default number of desired ticks in the Y-Axis was changed from `10` to `5`
+
 ## [57.0.1](https://github.com/elastic/elastic-charts/compare/v57.0.0...v57.0.1) (2023-05-23)
 
 

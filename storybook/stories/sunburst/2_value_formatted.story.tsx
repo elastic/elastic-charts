@@ -21,7 +21,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const onElementClick = boolean('onElementClick listener', true);
   const onElementOver = boolean('onElementOver listener', true);
   const theme: PartialTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     partition: {
       outerSizeRatio: 0.9,
       linkLabel: {

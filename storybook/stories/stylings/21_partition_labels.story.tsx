@@ -18,7 +18,6 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const partialCustomTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     background: {
       color: color('Change background container color', '#1c1c24'),
     },

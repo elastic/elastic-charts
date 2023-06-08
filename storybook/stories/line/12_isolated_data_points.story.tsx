@@ -71,7 +71,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
           },
         }}
         timeAxisLayerCount={2}
-        showGridLines
+        gridLine={{
+          visible: true,
+        }}
       />
       <Axis id="y" position={Position.Left} ticks={5} />
 

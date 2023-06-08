@@ -53,7 +53,9 @@ export const Example: ChartsStory = (_, { title, description }) => (
       showOverlappingTicks
       tickFormat={dateFormatter}
       timeAxisLayerCount={2}
-      showGridLines
+      gridLine={{
+        visible: true,
+      }}
       style={{
         tickLine: { size: 0.0001, padding: 4 },
         tickLabel: {
@@ -67,7 +69,9 @@ export const Example: ChartsStory = (_, { title, description }) => (
     <Axis
       id="left"
       position={Position.Left}
-      showGridLines
+      gridLine={{
+        visible: true,
+      }}
       tickFormat={(d) => Number(d).toFixed(2)}
       labelFormat={(d) => Number(d).toFixed(0)}
       ticks={5}

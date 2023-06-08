@@ -44,7 +44,6 @@ const CustomTooltip: CT = ({ values }) => (
 );
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
   partition: {
     linkLabel: {
       maxCount: 0,

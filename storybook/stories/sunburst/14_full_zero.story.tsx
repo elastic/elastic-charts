@@ -16,14 +16,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description}>
-    <Settings
-      baseTheme={useBaseTheme()}
-      showLegend
-      showLegendExtra
-      theme={{
-        chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-      }}
-    />
+    <Settings baseTheme={useBaseTheme()} showLegend showLegendExtra />
     <Partition
       id="spec_1"
       data={[

@@ -75,10 +75,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Axis
         id="left2"
         position={Position.Left}
-        showGridLines
+        gridLine={{
+          visible: true,
+          stroke: 'rgba(128,128,128,0.5)',
+          strokeWidth: 0.5,
+        }}
         ticks={5}
         style={{ axisLine: { visible: false }, tickLine: { visible: false }, tickLabel: { padding: 5 } }}
-        gridLine={{ stroke: 'rgba(128,128,128,0.5)', strokeWidth: 0.5 }}
         tickFormat={(d: any) => (modes === 'stackAsPercentage' ? `${Number(d * 100).toFixed(0)} %` : `${d}`)}
       />
       <BarSeries

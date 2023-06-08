@@ -103,8 +103,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
         position={Position.Bottom}
         title="Bottom axis"
         showOverlappingTicks
-        showGridLines={boolean('show bottom axis grid lines', false, 'bottom axis')}
-        gridLine={toggleBottomAxisGridLineStyle ? bottomAxisGridLineStyle : undefined}
+        gridLine={{
+          ...(toggleBottomAxisGridLineStyle && bottomAxisGridLineStyle),
+          visible: boolean('show bottom axis grid lines', false, 'bottom axis'),
+        }}
         integersOnly={boolean('bottom axis show only integer values', false, 'bottom axis')}
       />
       <Axis
@@ -112,8 +114,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
         position={Position.Left}
         title="Left axis 1"
         tickFormat={integersOnlyLeft ? (d) => Number(d).toFixed(0) : (d) => Number(d).toFixed(2)}
-        showGridLines={boolean('show left axis grid lines', false, 'left axis')}
-        gridLine={toggleHorizontalAxisGridLineStyle ? leftAxisGridLineStyle : undefined}
+        gridLine={{
+          ...(toggleHorizontalAxisGridLineStyle && leftAxisGridLineStyle),
+          visible: boolean('show left axis grid lines', false, 'left axis'),
+        }}
         integersOnly={integersOnlyLeft}
       />
       <Axis
@@ -121,8 +125,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
         position={Position.Top}
         title="Top axis"
         showOverlappingTicks
-        showGridLines={boolean('show top axis grid lines', false, 'top axis')}
-        gridLine={topAxisGridLineStyle}
+        gridLine={{
+          ...topAxisGridLineStyle,
+          visible: boolean('show top axis grid lines', false, 'top axis'),
+        }}
         integersOnly={boolean('top axis show only integer values', false, 'top axis')}
       />
       <Axis
@@ -130,8 +136,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
         title="Right axis"
         position={Position.Right}
         tickFormat={integersOnlyRight ? (d) => Number(d).toFixed(0) : (d) => Number(d).toFixed(2)}
-        showGridLines={boolean('show right axis grid lines', false, 'right axis')}
-        gridLine={rightAxisGridLineStyle}
+        gridLine={{
+          ...rightAxisGridLineStyle,
+          visible: boolean('show right axis grid lines', false, 'right axis'),
+        }}
         integersOnly={integersOnlyRight}
       />
       <BarSeries

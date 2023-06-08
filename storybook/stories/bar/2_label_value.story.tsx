@@ -44,7 +44,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const singleSeries = boolean('show single series', false);
   const showValueLabel = boolean('show value label', true);
   const isAlternatingValueLabel = boolean('alternating value label', false);
-  const isValueContainedInElement = boolean('contain value label within bar element', false);
   const overflowChartEdges = boolean('hide label if overflows chart edges', false);
   const overflowBarGeometry = boolean('hide label if overflows bar geometry', false);
   const overflowConstraints: DisplayValueSpec['overflowConstraints'] = [];
@@ -57,7 +56,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const displayValueSettings = {
     showValueLabel,
     isAlternatingValueLabel,
-    isValueContainedInElement,
     overflowConstraints,
   };
 

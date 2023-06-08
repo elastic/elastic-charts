@@ -48,12 +48,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
       stroke: '#f00',
       opacity: 1,
     },
-    details: {
-      fontSize: 12,
-      fontFamily: 'Arial',
-      fill: 'gray',
-      padding: 0,
-    },
   };
 
   const isBottom = boolean('x domain axis is bottom', true);

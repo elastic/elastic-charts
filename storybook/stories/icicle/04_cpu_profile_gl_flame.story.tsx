@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button } from '@storybook/addon-knobs';
+import { boolean, button, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -15,10 +15,10 @@ import {
   Datum,
   Flame,
   Settings,
-  PartialTheme,
   FlameGlobalControl,
   FlameNodeControl,
   ColumnarViewModel,
+  FlameSearchControl,
 } from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
@@ -64,15 +64,12 @@ const noop = () => {};
 export const Example: ChartsStory = (_, { title, description }) => {
   let resetFocusControl: FlameGlobalControl = noop; // initial value
   let focusOnNodeControl: FlameNodeControl = noop; // initial value
+  let searchText: FlameSearchControl = noop; // initial value
 
   const onElementListeners = {
     onElementClick: action('onElementClick'),
     onElementOver: action('onElementOver'),
     onElementOut: action('onElementOut'),
-  };
-  const theme: PartialTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-    chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
   };
   button('Reset focus', () => {
     resetFocusControl();
@@ -80,10 +77,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
   button('Set focus on random node', () => {
     focusOnNodeControl(rng(0, 19));
   });
+  const textSearch = text('Text to search', 'github');
+  button('Search', () => {
+    searchText(textSearch);
+  });
   const debug = boolean('Debug history', false);
   return (
     <Chart title={title} description={description}>
-      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
+      <Settings baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
       <Flame
         id="spec_1"
         columnarData={columnarData}
@@ -93,6 +94,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         controlProviderCallback={{
           resetFocus: (control) => (resetFocusControl = control),
           focusOnNode: (control) => (focusOnNodeControl = control),
+          search: (control) => (searchText = control),
         }}
       />
     </Chart>

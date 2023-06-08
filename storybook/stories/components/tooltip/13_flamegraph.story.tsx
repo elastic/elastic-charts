@@ -16,7 +16,6 @@ import {
   Tooltip,
   Flame,
   Settings,
-  PartialTheme,
   FlameGlobalControl,
   FlameNodeControl,
   ColumnarViewModel,
@@ -71,10 +70,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
     onElementOver: action('onElementOver'),
     onElementOut: action('onElementOut'),
   };
-  const theme: PartialTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-    chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
-  };
   button('Reset focus', () => {
     resetFocusControl();
   });
@@ -85,7 +80,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const showTooltipActions = boolean('Use tooltip actions', true);
   return (
     <Chart title={title} description={description}>
-      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
+      <Settings baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
       <Tooltip
         maxVisibleTooltipItems={4}
         maxTooltipItems={4}
