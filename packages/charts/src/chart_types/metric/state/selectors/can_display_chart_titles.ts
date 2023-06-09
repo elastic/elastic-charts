@@ -11,5 +11,5 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
 export const canDisplayChartTitles = createCustomCachedSelector([getMetricSpecs], ([spec]): boolean => {
-  return (spec?.data?.length ?? 0) > 1;
+  return (spec?.data?.length ?? 0) > 1 || (spec?.data?.[0]?.length ?? 0) > 1;
 });
