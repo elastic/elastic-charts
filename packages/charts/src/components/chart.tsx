@@ -88,7 +88,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartStageRef = createRef();
 
     const id = props.id ?? uuidv4();
-    const storeReducer = chartStoreReducer(id);
+    const storeReducer = chartStoreReducer(id, props.title, props.description);
     const enhancer = getMiddlware(id);
     this.chartStore = createStore(storeReducer, enhancer);
     this.state = {
