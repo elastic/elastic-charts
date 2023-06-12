@@ -75,7 +75,7 @@ export const Example = () => {
   button('Set focus on random node', () => {
     focusOnNodeControl(rng(0, 19));
   });
-  const textSearch = text('Text to search', 'github');
+  const textSearch = text('Text to search', '');
   const textChangeAction = action('Text change');
 
   const debug = boolean('Debug history', false);

@@ -29,4 +29,9 @@ test.describe('Flame stories', () => {
       },
     );
   });
+  test('should focus on searched terms', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/flame-alpha--cpu-profile-gl-flame-chart&globals=theme:light&knob-Text to search=gotype&knob-Debug history=`,
+    );
+  });
 });
