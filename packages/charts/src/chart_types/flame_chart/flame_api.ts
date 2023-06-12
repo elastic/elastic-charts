@@ -77,6 +77,8 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
   valueAccessor: ValueAccessor<D>;
   valueFormatter: ValueFormatter;
   valueGetter: (datumIndex: number) => number;
+  search?: { text: string };
+  onSearchTextChange?: (text: string) => void;
 }
 
 const buildProps = buildSFProps<FlameSpec>()(
