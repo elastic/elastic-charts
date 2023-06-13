@@ -39,7 +39,8 @@
     "sass": "^1.49.9",
     "sass-loader": "^10.1.1",
     "storybook-addon-theme-toggle": "^0.0.1",
-    "storybook-addon-background-toggle": "^0.0.1",
+    "storybook-addon-background-toggle": "^0.0.3",
+    "storybook-addon-toggles": "^0.0.3",
     "terser-webpack-plugin": "^4.2.3",
     "ts-loader": "8.4.0",
     "typescript": "^5.1.3"

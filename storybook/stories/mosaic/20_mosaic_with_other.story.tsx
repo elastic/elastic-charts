@@ -20,6 +20,7 @@ import {
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup } from '../utils/utils';
 
@@ -38,11 +39,11 @@ const data = [
   { region: 'Africa', dest: 'Other', other: true, exportVal: 305443006088 },
 ];
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const alphabetical = boolean('Alphabetical outer group sorting', false);
   const otherOnBottom = boolean('"Other" on bottom even if not the smallest', true);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"

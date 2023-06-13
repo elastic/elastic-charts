@@ -10,10 +10,11 @@ import React from 'react';
 
 import { AreaSeries, Axis, Chart, Fit, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const yScaleType = customKnobs.enum.scaleType('Y scale', ScaleType.Linear, { include: ['Linear', 'Log'] });
 
   const data = [
@@ -26,7 +27,7 @@ export const Example = () => {
   ];
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         theme={{ areaSeriesStyle: { point: { visible: true } }, lineSeriesStyle: { point: { visible: false } } }}

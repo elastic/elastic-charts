@@ -13,10 +13,11 @@ import React from 'react';
 import { Chart, Datum, Partition, Settings, PartialTheme, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorTurbo, productLookup } from '../utils/utils';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const onElementClick = boolean('onElementClick listener', true);
   const onElementOver = boolean('onElementOver listener', true);
   const theme: PartialTheme = {
@@ -31,7 +32,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         theme={theme}
         baseTheme={useBaseTheme()}

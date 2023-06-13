@@ -24,6 +24,7 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const CustomTooltipWithSubChart: CustomTooltip = ({ values }) => {
@@ -35,11 +36,11 @@ const CustomTooltipWithSubChart: CustomTooltip = ({ values }) => {
   );
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const useCustomTooltip = boolean('Use custom tooltip', false);
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} />
 
       {useCustomTooltip && <Tooltip customTooltip={CustomTooltipWithSubChart} type="follow" />}

@@ -11,10 +11,11 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const leftDomain = {
     min: number('left min', 0),
     max: number('left max', 7),
@@ -28,7 +29,7 @@ export const Example = () => {
   const xDomain = customKnobs.array('xDomain', ['a', 'b', 'c', 'd', 0, 1, 2, 3]);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend={false} xDomain={xDomain} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis

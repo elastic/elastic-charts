@@ -12,15 +12,16 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { isVerticalRotation } from '@elastic/charts/src/chart_types/xy_chart/state/utils/common';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const rotation = customKnobs.enum.rotation();
   const isVertical = isVerticalRotation(rotation);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings onBrushEnd={action('onBrushEnd')} rotation={rotation} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"

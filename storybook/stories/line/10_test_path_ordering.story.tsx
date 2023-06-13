@@ -12,6 +12,7 @@ import React from 'react';
 
 import { Axis, LineSeries, Chart, Position, ScaleType, Settings, Direction } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 /**
@@ -38,11 +39,11 @@ const data2 = [
   { x: 'VE05', g: 'ES-Air', y1: 820.462463378906, y2: 541.392608642578, z: 541.392608642578 },
 ];
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const orderOrdinalBinsBy = boolean('enable orderOrdinalBinsBy', true);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         baseTheme={useBaseTheme()}
         orderOrdinalBinsBy={

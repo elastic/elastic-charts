@@ -29,6 +29,8 @@ import {
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
+import { ChartsStory } from '../../types';
+
 const chartTypes: Record<string, any> = {
   bar: BarSeries,
   line: LineSeries,
@@ -50,7 +52,7 @@ const getSeriesKnob = (group?: string) => {
   return chartTypes[type] ?? BarSeries;
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const ref1 = React.useRef<Chart>(null);
   const ref2 = React.useRef<Chart>(null);
   const pointerUpdate = (event: PointerEvent) => {
@@ -73,7 +75,14 @@ export const Example = () => {
 
   return (
     <>
-      <Chart className="story-chart" ref={ref1} size={{ height: '50%' }} id="chart1">
+      <Chart
+        title={title}
+        description={description}
+        className="story-chart"
+        ref={ref1}
+        size={{ height: '50%' }}
+        id="chart1"
+      >
         <Settings
           onPointerUpdate={pointerUpdate}
           pointerUpdateDebounce={0}
@@ -118,7 +127,14 @@ export const Example = () => {
           })}
         />
       </Chart>
-      <Chart className="story-chart" ref={ref2} size={{ height: '50%' }} id="chart2">
+      <Chart
+        title={title}
+        description={description}
+        className="story-chart"
+        ref={ref2}
+        size={{ height: '50%' }}
+        id="chart2"
+      >
         <Settings
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{

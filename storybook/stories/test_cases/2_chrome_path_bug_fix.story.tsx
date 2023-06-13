@@ -11,9 +11,10 @@ import React from 'react';
 
 import { AreaSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data = [
     { g: 'css', x: 1614092400000, y: 13 },
     { g: 'css', x: 1614103200000, y: 17 },
@@ -68,7 +69,7 @@ export const Example = () => {
   ].map((d) => ({ ...d, x: moment(d.x).valueOf() }));
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <AreaSeries
         id="test3"

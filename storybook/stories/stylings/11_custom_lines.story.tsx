@@ -20,6 +20,7 @@ import {
   RecursivePartial,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
@@ -64,7 +65,7 @@ function generateLineAndPointSeriesStyleKnobs(
   };
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
   const lineSeriesStyle1 = generateLineAndPointSeriesStyleKnobs('Line 1 style', 'line1', 'lime', 'green', 4, 10, 6);
   const lineSeriesStyle2 = generateLineAndPointSeriesStyleKnobs('Line 2 style', 'line2', 'blue', 'violet', 2, 5, 4);
@@ -83,7 +84,7 @@ export const Example = () => {
   const dataset3 = dataset1.map((datum) => ({ ...datum, y: datum.y - 2 }));
 
   return (
-    <Chart renderer="canvas">
+    <Chart title={title} description={description} renderer="canvas">
       <Settings
         showLegend
         showLegendExtra

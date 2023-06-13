@@ -166,4 +166,6 @@ export class XYAxisChartState implements InternalChartState {
   getChartTypeDescription(globalState: GlobalChartState) {
     return getChartTypeDescriptionSelector(globalState);
   }
+
+  canDisplayChartTitles = () => true;
 }

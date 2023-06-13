@@ -11,9 +11,10 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const leftDomain = {
     min: number('left min', 0),
     max: NaN,
@@ -25,7 +26,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend={false} xDomain={xDomain} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis

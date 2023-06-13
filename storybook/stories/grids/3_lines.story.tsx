@@ -25,6 +25,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -67,7 +68,7 @@ const getAxisKnobs = (position: Position) => {
   };
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const theme: PartialTheme = {
     crosshair: {
       line: getLineStyles({ stroke: 'red' }, 'Crosshair line'),
@@ -75,7 +76,7 @@ export const Example = () => {
     },
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings debug={boolean('debug', false)} theme={theme} baseTheme={useBaseTheme()} />
       <Tooltip type={customKnobs.enum.tooltipType('Tooltip type', TooltipType.Crosshairs)} />
       <Axis {...getAxisKnobs(Position.Left)} />

@@ -11,6 +11,7 @@ import React from 'react';
 import { Chart, Goal, BandFillColorAccessorInput, Settings } from '@elastic/charts';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getBandFillColorFn } from '../utils/utils';
 
@@ -22,8 +23,8 @@ const getBandFillColor = getBandFillColorFn({
   300: '#66c2a5',
 });
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings baseTheme={useBaseTheme()} />
     <Goal
       id="spec_1"

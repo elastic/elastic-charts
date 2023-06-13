@@ -22,9 +22,10 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const customStyle: RecursivePartial<AxisStyle> = {
     tickLabel: {
       padding: number('Tick Label Padding', 0, {
@@ -37,7 +38,7 @@ export const Example = () => {
   };
   const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 60);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"

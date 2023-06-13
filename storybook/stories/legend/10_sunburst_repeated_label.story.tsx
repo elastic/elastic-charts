@@ -11,9 +11,10 @@ import React from 'react';
 
 import { Chart, LegendStrategy, Partition, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const flatLegend = boolean('flatLegend', false);
   const legendMaxDepth = number('legendMaxDepth', 2, {
     min: 0,
@@ -24,7 +25,7 @@ export const Example = () => {
   type TestDatum = { cat1: string; cat2: string; val: number };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         flatLegend={flatLegend}

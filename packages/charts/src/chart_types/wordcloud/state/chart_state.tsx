@@ -120,4 +120,6 @@ export class WordcloudState implements InternalChartState {
       smVDomain: [],
     };
   }
+
+  canDisplayChartTitles = () => true;
 }

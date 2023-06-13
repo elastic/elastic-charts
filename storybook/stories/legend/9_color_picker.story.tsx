@@ -24,13 +24,14 @@ import {
 } from '@elastic/charts';
 import { BARCHART_1Y1G } from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
 import { getLegendAction } from '../utils/components/get_legend_action';
 
 const onChangeAction = action('onChange');
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const [colors, setColors] = useState<Record<SeriesKey, Color | null>>({});
   const showAction = boolean('show legend action', false);
 
@@ -65,7 +66,7 @@ export const Example = () => {
   );
   CustomColorPicker.displayName = 'CustomColorPicker';
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         legendColorPicker={CustomColorPicker}

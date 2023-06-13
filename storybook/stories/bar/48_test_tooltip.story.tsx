@@ -12,6 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip, TooltipProps } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -28,7 +29,7 @@ const CustomTooltip = () => (
   </div>
 );
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const rotation = customKnobs.enum.rotation();
   const tooltipOptions: TooltipProps = {
     stickTo: customKnobs.enum.stickTo('stickTo'),
@@ -45,7 +46,7 @@ export const Example = () => {
   // Added buffer to test tooltip positioning within chart container
   return (
     <div className="buffer" style={{ width: '100%', height: '100%', paddingLeft: 80, paddingRight: 80 }}>
-      <Chart>
+      <Chart title={title} description={description}>
         <Settings rotation={rotation} showLegend={showLegend} baseTheme={useBaseTheme()} />
         <Tooltip {...tooltipOptions} />
 

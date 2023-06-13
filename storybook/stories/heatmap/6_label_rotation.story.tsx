@@ -14,9 +14,10 @@ import { Chart, Heatmap, HeatmapStyle, RecursivePartial, Settings } from '@elast
 
 import { ScaleType } from '../../../packages/charts/src/scales/constants';
 import { DATA_1, ECOMMERCE_DATA } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const yAxisAutoWidth = boolean('Y-axis auto width', true);
   const yAxisWidth = number('Y-axis width', 50, { range: true, min: 0, max: 100 });
   const heatmap: RecursivePartial<HeatmapStyle> = {
@@ -33,7 +34,7 @@ export const Example = () => {
   const useCategoricalDataset = boolean('Use categorical data', false);
   const dataset = useCategoricalDataset ? ECOMMERCE_DATA : DATA_1.data;
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         onElementClick={action('onElementClick')}
         showLegend={boolean('Show legend', false)}

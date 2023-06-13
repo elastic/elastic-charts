@@ -13,9 +13,10 @@ import React from 'react';
 import { Chart, Heatmap, Settings } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data = boolean('filter dataset', true)
     ? BABYNAME_DATA.filter(([year]) => year > 1950 && year < 1960)
     : BABYNAME_DATA;
@@ -29,7 +30,7 @@ export const Example = () => {
   const showYAxisTitle = boolean('Show y axis title', true);
 
   return (
-    <Chart size={['100%', 320]}>
+    <Chart title={title} description={description} size={['100%', 320]}>
       <Settings
         onElementClick={action('onElementClick')}
         showLegend

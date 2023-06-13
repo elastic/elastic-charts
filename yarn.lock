@@ -8795,7 +8795,7 @@ callsites@^3.0.0:
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-3.1.0.tgz#b3630abd8943432f54b3f0519238e33cd7df2f73"
   integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
 
-camel-case@^4.1.1:
+camel-case@^4.1.1, camel-case@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/camel-case/-/camel-case-4.1.2.tgz#9728072a954f805228225a6deea6b38461e1bd5a"
   integrity sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==
@@ -8841,6 +8841,15 @@ caniuse-lite@^1.0.30001449:
   version "1.0.30001469"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001469.tgz#3dd505430c8522fdc9f94b4a19518e330f5c945a"
   integrity sha512-Rcp7221ScNqQPP3W+lVOYDyjdR6dC+neEQCttoNr5bAyz54AboB4iwpnWgyi8P4YUsPybVzT4LgWiBbI3drL4g==
+
+capital-case@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/capital-case/-/capital-case-1.0.4.tgz#9d130292353c9249f6b00fa5852bee38a717e669"
+  integrity sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==
+  dependencies:
+    no-case "^3.0.4"
+    tslib "^2.0.3"
+    upper-case-first "^2.0.2"
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -8909,6 +8918,24 @@ chalk@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.0.1.tgz#ca57d71e82bb534a296df63bbacc4a1c22b2a4b6"
   integrity sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==
+
+change-case@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/change-case/-/change-case-4.1.2.tgz#fedfc5f136045e2398c0410ee441f95704641e12"
+  integrity sha512-bSxY2ws9OtviILG1EiY5K7NNxkqg/JnRnFxLtKQ96JaviiIxi7djMrSd0ECT9AC+lttClmYwKw53BWpOMblo7A==
+  dependencies:
+    camel-case "^4.1.2"
+    capital-case "^1.0.4"
+    constant-case "^3.0.4"
+    dot-case "^3.0.4"
+    header-case "^2.0.4"
+    no-case "^3.0.4"
+    param-case "^3.0.4"
+    pascal-case "^3.1.2"
+    path-case "^3.0.4"
+    sentence-case "^3.0.4"
+    snake-case "^3.0.4"
+    tslib "^2.0.3"
 
 char-regex@^1.0.2:
   version "1.0.2"
@@ -9508,6 +9535,15 @@ console-control-strings@^1.0.0, console-control-strings@^1.1.0, console-control-
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
+
+constant-case@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/constant-case/-/constant-case-3.0.4.tgz#3b84a9aeaf4cf31ec45e6bf5de91bdfb0589faf1"
+  integrity sha512-I2hSBi7Vvs7BEuJDr5dDHfzb/Ruj3FyvFyh7KLilAjNQw3Be+xgqUBA2W6scVEcL0hL1dwPRtIqEPVUCKkSsyQ==
+  dependencies:
+    no-case "^3.0.4"
+    tslib "^2.0.3"
+    upper-case "^2.0.2"
 
 constants-browserify@^1.0.0:
   version "1.0.0"
@@ -11276,7 +11312,8 @@ eslint-module-utils@^2.7.4:
     debug "^3.2.7"
 
 "eslint-plugin-elastic-charts@link:./packages/eslint-plugin-elastic-charts":
-  version "1.0.0"
+  version "0.0.0"
+  uid ""
 
 eslint-plugin-eslint-comments@^3.2.0:
   version "3.2.0"
@@ -13120,6 +13157,14 @@ he@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
+
+header-case@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/header-case/-/header-case-2.0.4.tgz#5a42e63b55177349cf405beb8d775acabb92c063"
+  integrity sha512-H/vuk5TEEVZwrR0lp2zed9OCo1uAILMlx0JEMgC26rzyJJ3N1v6XkwHHXJQdR2doSjcGPM6OKPYoJgf0plJ11Q==
+  dependencies:
+    capital-case "^1.0.4"
+    tslib "^2.0.3"
 
 highlight.js@^10.1.1, highlight.js@~10.7.0:
   version "10.7.3"
@@ -17892,7 +17937,7 @@ parallel-transform@^1.1.0:
     inherits "^2.0.3"
     readable-stream "^2.1.5"
 
-param-case@^3.0.3:
+param-case@^3.0.3, param-case@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/param-case/-/param-case-3.0.4.tgz#7d17fe4aa12bde34d4a77d91acfb6219caad01c5"
   integrity sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==
@@ -18037,6 +18082,14 @@ path-browserify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.1.tgz#d98454a9c3753d5790860f16f68867b9e46be1fd"
   integrity sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==
+
+path-case@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/path-case/-/path-case-3.0.4.tgz#9168645334eb942658375c56f80b4c0cb5f82c6f"
+  integrity sha512-qO4qCFjXqVTrcbPt/hQfhTQ+VhFsqNKOPtytgNKkKxSoEp3XPUQ8ObFuePylOIok5gjn69ry8XiULxCwot3Wfg==
+  dependencies:
+    dot-case "^3.0.4"
+    tslib "^2.0.3"
 
 path-dirname@^1.0.0:
   version "1.0.2"
@@ -20305,6 +20358,15 @@ send@0.18.0:
     range-parser "~1.2.1"
     statuses "2.0.1"
 
+sentence-case@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/sentence-case/-/sentence-case-3.0.4.tgz#3645a7b8c117c787fde8702056225bb62a45131f"
+  integrity sha512-8LS0JInaQMCRoQ7YUytAo/xUu5W2XnQxV2HI/6uM6U7CITS1RqPElr30V6uIqyMKM9lJGRVFy5/4CuzcixNYSg==
+  dependencies:
+    no-case "^3.0.4"
+    tslib "^2.0.3"
+    upper-case-first "^2.0.2"
+
 serialize-javascript@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-4.0.0.tgz#b525e1238489a5ecfc42afacc3fe99e666f4b1aa"
@@ -20535,6 +20597,14 @@ smart-buffer@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-4.2.0.tgz#6e1d71fa4f18c05f7d0ff216dd16a481d0e8d9ae"
   integrity sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==
+
+snake-case@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/snake-case/-/snake-case-3.0.4.tgz#4f2bbd568e9935abdfd593f34c691dadb49c452c"
+  integrity sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==
+  dependencies:
+    dot-case "^3.0.4"
+    tslib "^2.0.3"
 
 snapdragon-node@^2.0.1:
   version "2.1.1"
@@ -20861,15 +20931,20 @@ store2@^2.12.0:
   resolved "https://registry.yarnpkg.com/store2/-/store2-2.12.0.tgz#e1f1b7e1a59b6083b2596a8d067f6ee88fd4d3cf"
   integrity sha512-7t+/wpKLanLzSnQPX8WAcuLCCeuSHoWdQuh9SB3xD0kNOM38DNf+0Oa+wmvxmYueRzkmh6IcdKFtvTa+ecgPDw==
 
-storybook-addon-background-toggle@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/storybook-addon-background-toggle/-/storybook-addon-background-toggle-0.0.1.tgz#93fd398cb87f27a5db031c2cdbbbb681f73003c2"
-  integrity sha512-cTDx0qO90y5nQ2oi1rmttqMZsJuTvTPretB8HRpPgLVIvn2+Ldpy8OYqEWieZEAyd8v9/WbWbncJp1YXAcM5hA==
+storybook-addon-background-toggle@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/storybook-addon-background-toggle/-/storybook-addon-background-toggle-0.0.3.tgz#991ba3d84fe18d71bcc62f63ebcd47a8beddf72e"
+  integrity sha512-6WAyYTcdSg+Syfs09k7fFefjd8l9g8ETGZEOJIx65hlm6dyECxFfk+W3cHj6BK3Ivesb/hzkRcWgAp5p7B1MyA==
 
 storybook-addon-theme-toggle@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/storybook-addon-theme-toggle/-/storybook-addon-theme-toggle-0.0.1.tgz#b7c2c6316b67c89a8383d047b730e15741e891ec"
   integrity sha512-nPdYoFRm9ZEAOG6STX7MO540izUMjp9kt+FyUsGIt7J/mRaCM5xBx+k152t597jUcVssIzu5fT7/GVEYrSf48A==
+
+storybook-addon-toggles@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/storybook-addon-toggles/-/storybook-addon-toggles-0.0.3.tgz#4d4ee16aa1aee6edeb987d71d9c98b3d6c5e4fa6"
+  integrity sha512-LKOr0Co5jLBwdy+68QwKVr9SEFvB5MukrbqJWDlPSlpurgcPYH7ZMQD259MLbfwHTVXjmts3BDM4/L+/SR0hoQ==
 
 stream-browserify@^2.0.1:
   version "2.0.2"
@@ -22195,6 +22270,20 @@ update-browserslist-db@^1.0.5:
   dependencies:
     escalade "^3.1.1"
     picocolors "^1.0.0"
+
+upper-case-first@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/upper-case-first/-/upper-case-first-2.0.2.tgz#992c3273f882abd19d1e02894cc147117f844324"
+  integrity sha512-514ppYHBaKwfJRK/pNC6c/OxfGa0obSnAl106u97Ed0I625Nin96KAjttZF6ZL3e1XLtphxnqrOi9iWgm+u+bg==
+  dependencies:
+    tslib "^2.0.3"
+
+upper-case@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/upper-case/-/upper-case-2.0.2.tgz#d89810823faab1df1549b7d97a76f8662bae6f7a"
+  integrity sha512-KgdgDGJt2TpuwBUIjgG6lzw2GWFRCW9Qkfkiv0DxqHHLYJHmtmdUIKcZd8rHgFSjopVTlw6ggzCm1b8MFQwikg==
+  dependencies:
+    tslib "^2.0.3"
 
 uri-js@^4.2.2:
   version "4.4.1"

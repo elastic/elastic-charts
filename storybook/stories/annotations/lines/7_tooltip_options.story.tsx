@@ -24,6 +24,7 @@ import { CustomAnnotationTooltip } from '@elastic/charts/src/chart_types/xy_char
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 
@@ -31,7 +32,7 @@ function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const rotation = customKnobs.enum.rotation();
   const boundary = customKnobs.enum.boundary();
   const placement = customKnobs.enum.placement('Tooltip placement');
@@ -60,7 +61,7 @@ export const Example = () => {
     : undefined;
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings rotation={rotation} baseTheme={useBaseTheme()} />
       <LineAnnotation
         id="annotation_1"

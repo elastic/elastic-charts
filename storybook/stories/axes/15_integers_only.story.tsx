@@ -11,15 +11,16 @@ import React from 'react';
 
 import { Axis, Chart, Position, ScaleType, Settings, BarSeries } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const integersOnly = boolean('Integers values', true);
   const scaleType = customKnobs.enum.scaleType('Scale type', ScaleType.Linear, { include: ['Linear', 'Log', 'Sqrt'] });
   const niceValues = boolean('yNice', false);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} />
       <Axis id="left" position={Position.Left} integersOnly={integersOnly} />

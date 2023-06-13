@@ -13,9 +13,10 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const tickFormatBottom = text('tickFormat bottom', '0.0000');
   const labelFormatBottom = text('labelFormat bottom', '0.0');
   const tickFormatLeft = text('tickFormat left', '$ 0,0[.]00');
@@ -24,7 +25,7 @@ export const Example = () => {
   const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, 20).map((d) => [(d[0] - start) / 30000, d[1]]);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"

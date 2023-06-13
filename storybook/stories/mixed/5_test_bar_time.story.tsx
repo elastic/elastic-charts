@@ -12,9 +12,10 @@ import React from 'react';
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { timeFormatter } from '@elastic/charts/src/utils/data/formatters';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data1 = [
     [start.toMillis(), 1, 4],
@@ -41,7 +42,7 @@ export const Example = () => {
   const dateFormatter = timeFormatter('HH:mm:ss');
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"

@@ -12,10 +12,11 @@ import React from 'react';
 import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings, Fit, AreaSeries } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const fitEnabled = boolean('enable fit function', false);
   const isArea = boolean('switch to area', false);
   const maxDataPoints = number('max data points', 60, {
@@ -33,7 +34,7 @@ export const Example = () => {
 
   const LineOrAreaSeries = isArea ? AreaSeries : LineSeries;
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         legendPosition={Position.Right}
         theme={{

@@ -20,6 +20,7 @@ import {
   Settings,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -27,7 +28,7 @@ function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const markerPositionHorizontal = select(
     'horizontal marker position',
     [Position.Top, Position.Left, Position.Bottom, Position.Right, 'undefined'],
@@ -40,7 +41,7 @@ export const Example = () => {
   );
   const chartRotation = customKnobs.enum.rotation();
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings rotation={chartRotation} baseTheme={useBaseTheme()} />
       <LineAnnotation
         domainType={AnnotationDomainType.XDomain}

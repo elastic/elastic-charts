@@ -25,9 +25,10 @@ import {
   PointStyleAccessor,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const hasThreshold = boolean('threshold', true);
   const threshold = number('min threshold', 3);
   const barStyle: RecursivePartial<BarSeriesStyle> = {
@@ -45,7 +46,7 @@ export const Example = () => {
     (g.specId === 'line' || g.specId === 'area') && d.y1! > threshold ? pointStyle : null;
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         theme={{
           areaSeriesStyle: {

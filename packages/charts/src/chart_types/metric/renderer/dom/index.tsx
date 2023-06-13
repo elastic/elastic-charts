@@ -34,10 +34,12 @@ import { MetricStyle } from '../../../../utils/themes/theme';
 import { MetricSpec } from '../../specs';
 import { chartSize } from '../../state/selectors/chart_size';
 import { getMetricSpecs } from '../../state/selectors/data';
+import { hasChartTitles } from '../../state/selectors/has_chart_titles';
 
 interface StateProps {
   initialized: boolean;
   chartId: string;
+  hasTitles: boolean;
   size: {
     width: number;
     height: number;
@@ -67,6 +69,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
   render() {
     const {
       chartId,
+      hasTitles,
       initialized,
       size: { width, height },
       a11y,
@@ -113,6 +116,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
               const emptyMetricClassName = classNames('echMetric', {
                 'echMetric--rightBorder': columnIndex < maxColumns - 1,
                 'echMetric--bottomBorder': rowIndex < totalRows - 1,
+                'echMetric--topBorder': hasTitles && rowIndex === 0,
               });
               return !datum ? (
                 <li key={`${columnIndex}-${rowIndex}`} role="presentation">
@@ -124,6 +128,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
                 <li key={`${columnIndex}-${rowIndex}`}>
                   <MetricComponent
                     chartId={chartId}
+                    hasTitles={hasTitles}
                     datum={datum}
                     totalRows={totalRows}
                     totalColumns={maxColumns}
@@ -143,6 +148,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
               const columnIndex = zeroBasedColumnIndex + columns.length;
               const emptyMetricClassName = classNames('echMetric', {
                 'echMetric--bottomBorder': rowIndex < totalRows - 1,
+                'echMetric--topBorder': hasTitles && rowIndex === 0,
               });
               return (
                 <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
@@ -168,6 +174,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
 const DEFAULT_PROPS: StateProps = {
   initialized: false,
   chartId: '',
+  hasTitles: false,
   specs: [],
   size: {
     width: 0,
@@ -185,6 +192,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   return {
     initialized: true,
     chartId: state.chartId,
+    hasTitles: hasChartTitles(state),
     specs: getMetricSpecs(state),
     size: chartSize(state),
     a11y: getA11ySettingsSelector(state),

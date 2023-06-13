@@ -13,6 +13,7 @@ import React from 'react';
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, TooltipType, Tooltip } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();
@@ -22,7 +23,7 @@ const data = new Array(100).fill(0).map(() => ({
   z: rng(0, 100),
 }));
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const onElementListeners = {
     onElementClick: action('onElementClick'),
     onElementOver: action('onElementOver'),
@@ -42,7 +43,7 @@ export const Example = () => {
   });
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         theme={{
           markSizeRatio,

@@ -12,9 +12,10 @@ import React from 'react';
 import { AreaSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const automatedSeries = boolean('Use the default generated series types of charts for screen readers', true);
   const customDescriptionForScreenReaders = text('add a description for screen readers', '');
   const customLabelForScreenReaders = text('add a label for screen readers', '');
@@ -22,7 +23,7 @@ export const Example = () => {
     ? select('heading level for label', { P: 'p', H1: 'h1', H2: 'h2', H3: 'h3', H4: 'h4', H5: 'h5', H6: 'h6' }, 'h2')
     : undefined;
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         baseTheme={useBaseTheme()}
         ariaDescription={customDescriptionForScreenReaders}

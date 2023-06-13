@@ -14,6 +14,7 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const getRandomNumber = getRandomNumberGenerator();
@@ -28,7 +29,7 @@ const data2 = new Array(100).fill(0).map((_, x) => ({
   z: getRandomNumber(200, 500, 4),
 }));
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const onElementListeners = {
     onElementClick: action('onElementClick'),
     onElementOver: action('onElementOver'),
@@ -49,7 +50,7 @@ export const Example = () => {
   const markFormat = text('markFormat', '0.0');
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         theme={{
           markSizeRatio,

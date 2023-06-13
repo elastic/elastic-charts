@@ -148,4 +148,7 @@ export class GoalState implements InternalChartState {
       smVDomain: [],
     };
   }
+
+  // TODO enable for small multiples
+  canDisplayChartTitles = () => false;
 }

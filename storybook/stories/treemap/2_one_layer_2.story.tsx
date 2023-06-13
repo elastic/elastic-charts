@@ -12,10 +12,11 @@ import React from 'react';
 import { Chart, Datum, defaultPartitionValueFormatter, Partition, PartitionLayout, Settings } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalPastel12, discreteColor, productLookup } from '../utils/utils';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const layout = select(
     'partitionLayout',
     {
@@ -25,7 +26,7 @@ export const Example = () => {
     PartitionLayout.treemap,
   );
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         baseTheme={useBaseTheme()}
         theme={{

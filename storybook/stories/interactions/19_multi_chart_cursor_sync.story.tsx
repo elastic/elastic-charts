@@ -25,6 +25,7 @@ import {
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator('static');
@@ -65,7 +66,7 @@ const aggData = [
     .map(({ x, y, value }) => (rng() > 0.6 ? { x, y, value: null } : { x, y, value })),
 ];
 
-export const Example = () => {
+export const Example: ChartsStory = () => {
   const ref1 = React.useRef<Chart>(null);
   const ref2 = React.useRef<Chart>(null);
   const ref3 = React.useRef<Chart>(null);
@@ -85,8 +86,7 @@ export const Example = () => {
 
   return (
     <>
-      <div style={{ paddingLeft: 52 }}>Response times</div>
-      <Chart ref={ref1} size={{ height: '30%' }} id="chart1">
+      <Chart title="Response times" ref={ref1} size={{ height: '30%' }} id="chart1">
         <Settings
           baseTheme={baseTheme}
           theme={{
@@ -137,8 +137,10 @@ export const Example = () => {
           color="#343741"
         />
       </Chart>
-      <div style={{ paddingLeft: 52, height: 30, lineHeight: '30px' }}>Number of requests</div>
-      <Chart ref={ref2} size={{ height: '30%' }} id="chart2">
+
+      <br />
+
+      <Chart title="Number of requests" ref={ref2} size={{ height: '30%' }} id="chart2">
         <Settings
           baseTheme={baseTheme}
           pointerUpdateDebounce={0}
@@ -186,11 +188,15 @@ export const Example = () => {
           yNice
         />
       </Chart>
-      <div style={{ paddingLeft: 52, height: 30, lineHeight: '30px' }}>Memory pressure</div>
-      <Chart ref={ref3} size={{ height: '30%' }} id="heatmap">
+
+      <br />
+
+      <Chart title="Memory pressure" ref={ref3} size={{ height: '30%' }} id="heatmap">
         <Settings
           baseTheme={baseTheme}
           theme={{
+            chartPaddings: { top: 0, bottom: 0, left: 0, right: 0 },
+            chartMargins: { top: 0, bottom: 0, left: 16, right: 0 },
             heatmap: {
               grid: {
                 stroke: {
@@ -266,5 +272,8 @@ export const Example = () => {
 };
 
 Example.parameters = {
-  markdown: '',
+  toggles: {
+    disabled: true,
+    overrides: {},
+  },
 };

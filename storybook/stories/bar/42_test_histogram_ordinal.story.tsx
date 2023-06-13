@@ -20,11 +20,12 @@ import {
   Settings,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
 // for testing purposes only
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data = [
     { x: 'a', y: 2 },
     { x: 'b', y: 7 },
@@ -44,7 +45,7 @@ export const Example = () => {
 
   const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         rotation={customKnobs.enum.rotation()}
         theme={theme}

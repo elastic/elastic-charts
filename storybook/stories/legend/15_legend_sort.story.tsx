@@ -13,9 +13,10 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/
 
 import { XYChartSeriesIdentifier } from '../../../packages/charts/src/chart_types/xy_chart/utils/series';
 import { SeriesIdentifier } from '../../../packages/charts/src/common/series_id';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data: Array<[number, string, number]> = [
     [2010, 'Apple', 10],
     [2010, 'Orange', 6],
@@ -48,7 +49,7 @@ export const Example = () => {
     return reverseSort ? catAIndex - catBIndex : catBIndex - catAIndex;
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend baseTheme={useBaseTheme()} legendSort={defaultSort ? undefined : legendSort} />
       <Axis id="bottom" position={Position.Bottom} title="[2010-2013] harvest" showOverlappingTicks />
       <Axis id="left2" position={Position.Left} ticks={4} tickFormat={(d) => `${d} tons`} />

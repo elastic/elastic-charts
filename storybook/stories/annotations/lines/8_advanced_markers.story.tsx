@@ -24,6 +24,7 @@ import {
 } from '@elastic/charts';
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 
@@ -82,7 +83,7 @@ const getMarkerBody =
 /** formats values correctly for any rotation/side combination */
 const looseFormatter = (d: any) => (d < 100 ? String(d) : moment(d).format('L'));
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const maxMetric = 30;
   const debug = boolean('Debug', true);
   const showLegend = boolean('show legend', true);
@@ -95,7 +96,7 @@ export const Example = () => {
   const isYDomain = rotation === -90 || rotation === 90 ? !isVerticalSide : isVerticalSide;
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings debug={debug} showLegend={showLegend} rotation={rotation} baseTheme={useBaseTheme()} />
       <Axis
         id="count"

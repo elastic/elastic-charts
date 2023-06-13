@@ -12,6 +12,7 @@ import React, { useState } from 'react';
 import { Axis, Chart, CurveType, Position, TexturedStyles, Settings, TextureShape, SeriesType } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator, getRandomEntryFn } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -90,7 +91,7 @@ const getTexture = (randomize: Random): Partial<TexturedStyles> => ({
 
 const data = new Array(10).fill(0).map(() => dg.generateBasicSeries(10, 10));
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const [count, setCount] = useState(0);
   button('Randomize', () => setCount((i) => i + 1), group.random);
   const n = number('Total series', 4, { min: 0, max: 10, step: 1 }) ?? 2;
@@ -104,7 +105,7 @@ export const Example = () => {
   const texture = getDefaultTextureKnobs();
 
   return (
-    <Chart data-count={count}>
+    <Chart title={title} description={description} data-count={count}>
       <Settings
         showLegend={showLegend}
         theme={{
