@@ -509,12 +509,9 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
 }
 
 // @public (undocumented)
-export type ChartChild = ReactElement<ComponentProps<PermittedSpecs>>;
-
-// @public (undocumented)
 export interface ChartProps {
     // (undocumented)
-    children: ChartChild | ChartChild[];
+    children?: ReactNode;
     // (undocumented)
     className?: string;
     // (undocumented)
@@ -2051,15 +2048,6 @@ export const PATH_KEY = "path";
 
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
-
-// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "SmallMultiples" which is marked as @alpha
-// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "Goal" which is marked as @alpha
-// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "Heatmap" which is marked as @alpha
-// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "Metric" which is marked as @alpha
-// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "Wordcloud" which is marked as @alpha
-//
-// @public
-export type PermittedSpecs = typeof Settings | typeof GroupBy | typeof SmallMultiples | typeof Axis | typeof LineSeries | typeof AreaSeries | typeof BarSeries | typeof BubbleSeries | typeof HistogramBarSeries | typeof LineAnnotation | typeof RectAnnotation | typeof Goal | typeof Heatmap | typeof Metric | typeof Partition | typeof Wordcloud;
 
 // @public
 export interface PerSideDistance {

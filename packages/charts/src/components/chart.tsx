@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, ComponentProps, ReactElement, createRef } from 'react';
+import React, { CSSProperties, ReactNode, createRef } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe, StoreEnhancer, applyMiddleware, Middleware } from 'redux';
 import { OptionalKeys } from 'utility-types';
@@ -23,7 +23,6 @@ import { getElementZIndex } from './portal/utils';
 import { Colors } from '../common/colors';
 import { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
-import { PermittedSpecs } from '../specs/types';
 import { updateChartTitles } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
@@ -34,9 +33,6 @@ import { getLegendConfigSelector } from '../state/selectors/get_legend_config_se
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-
-/** @public */
-export type ChartChild = ReactElement<ComponentProps<PermittedSpecs>> | false | null | undefined;
 
 /** @public */
 export interface ChartProps {
@@ -50,7 +46,7 @@ export interface ChartProps {
   id?: string;
   title?: string;
   description?: string;
-  children?: ChartChild | ChartChild[];
+  children?: ReactNode;
 }
 
 interface ChartState {

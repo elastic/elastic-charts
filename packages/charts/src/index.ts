@@ -14,7 +14,6 @@ export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 
 // Everything related to the specs types and react-components
 export * from './specs';
-export * from './specs/types';
 export {
   DebugState,
   DebugStateLine,
