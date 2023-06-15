@@ -8,13 +8,14 @@
 
 import { action } from '@storybook/addon-actions';
 import { array, boolean, color, number } from '@storybook/addon-knobs';
-import React, { memo, useEffect, useMemo, useState, ComponentProps } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 
 import {
   AnnotationAnimationConfig,
   AnnotationDomainType,
   Axis,
   Chart,
+  ChartProps,
   LineAnnotation,
   LineAnnotationDatum,
   RectAnnotation,
@@ -33,11 +34,8 @@ import { customKnobs } from '../../utils/knobs';
 
 const rng = getRandomNumberGenerator();
 const randomArray = new Array(100).fill(0).map(() => rng(0, 10, 2));
-const ExampleChart = memo(
-  ({
-    animationOptions,
-    ...chartProps
-  }: { animationOptions: AnnotationAnimationConfig['options'] } & ComponentProps<typeof Chart>) => {
+const ExampleChart = memo<{ animationOptions: AnnotationAnimationConfig['options'] } & ChartProps>(
+  ({ animationOptions, ...chartProps }) => {
     const debug = boolean('debug', false);
     const [SeriesType] = customKnobs.enum.xySeries(undefined, 'line');
     const xScaleType = customKnobs.enum.scaleType('Scale type', ScaleType.Linear, { include: ['Linear', 'Ordinal'] });

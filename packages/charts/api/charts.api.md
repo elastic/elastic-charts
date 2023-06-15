@@ -480,7 +480,6 @@ export interface Cell {
     yIndex: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ChartProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "ChartState" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -493,7 +492,7 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     // (undocumented)
     componentWillUnmount(): void;
     // (undocumented)
-    static defaultProps: ChartProps;
+    static defaultProps: Pick<ChartProps, OptionalKeys<ChartProps>>;
     // (undocumented)
     dispatchExternalPointerEvent(event: PointerEvent_2): void;
     // (undocumented)
@@ -507,6 +506,26 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     } | null;
     // (undocumented)
     render(): JSX.Element;
+}
+
+// @public (undocumented)
+export type ChartChild = ReactElement<ComponentProps<PermittedSpecs>>;
+
+// @public (undocumented)
+export interface ChartProps {
+    // (undocumented)
+    children: ChartChild | ChartChild[];
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    description?: string;
+    // (undocumented)
+    id?: string;
+    renderer?: 'svg' | 'canvas';
+    // (undocumented)
+    size?: ChartSize;
+    // (undocumented)
+    title?: string;
 }
 
 // @public (undocumented)
@@ -2032,6 +2051,15 @@ export const PATH_KEY = "path";
 
 // @public (undocumented)
 export function pathAccessor(n: ArrayEntry): LegendPath;
+
+// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "SmallMultiples" which is marked as @alpha
+// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "Goal" which is marked as @alpha
+// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "Heatmap" which is marked as @alpha
+// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "Metric" which is marked as @alpha
+// Warning: (ae-incompatible-release-tags) The symbol "PermittedSpecs" is marked as @public, but its signature references "Wordcloud" which is marked as @alpha
+//
+// @public
+export type PermittedSpecs = typeof Settings | typeof GroupBy | typeof SmallMultiples | typeof Axis | typeof LineSeries | typeof AreaSeries | typeof BarSeries | typeof BubbleSeries | typeof HistogramBarSeries | typeof LineAnnotation | typeof RectAnnotation | typeof Goal | typeof Heatmap | typeof Metric | typeof Partition | typeof Wordcloud;
 
 // @public
 export interface PerSideDistance {

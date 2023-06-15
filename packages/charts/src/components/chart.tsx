@@ -7,9 +7,10 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, createRef } from 'react';
+import React, { CSSProperties, ComponentProps, ReactElement, createRef } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, Store, Unsubscribe, StoreEnhancer, applyMiddleware, Middleware } from 'redux';
+import { OptionalKeys } from 'utility-types';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ChartBackground } from './chart_background';
@@ -22,6 +23,7 @@ import { getElementZIndex } from './portal/utils';
 import { Colors } from '../common/colors';
 import { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
+import { PermittedSpecs } from '../specs/types';
 import { updateChartTitles } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
@@ -33,7 +35,11 @@ import { ChartSize, getChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 
-interface ChartProps {
+/** @public */
+export type ChartChild = ReactElement<ComponentProps<PermittedSpecs>> | false | null | undefined;
+
+/** @public */
+export interface ChartProps {
   /**
    * The type of rendered
    * @defaultValue `canvas`
@@ -44,6 +50,7 @@ interface ChartProps {
   id?: string;
   title?: string;
   description?: string;
+  children?: ChartChild | ChartChild[];
 }
 
 interface ChartState {
@@ -70,7 +77,7 @@ const getMiddlware = (id: string): StoreEnhancer => {
 
 /** @public */
 export class Chart extends React.Component<ChartProps, ChartState> {
-  static defaultProps: ChartProps = {
+  static defaultProps: Pick<ChartProps, OptionalKeys<ChartProps>> = {
     renderer: 'canvas',
   };
 
