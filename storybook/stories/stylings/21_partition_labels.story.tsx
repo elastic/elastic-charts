@@ -12,17 +12,18 @@ import React from 'react';
 import { Chart, Datum, Partition, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const partialCustomTheme = {
     background: {
       color: color('Change background container color', '#1c1c24'),
     },
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings theme={partialCustomTheme} baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"

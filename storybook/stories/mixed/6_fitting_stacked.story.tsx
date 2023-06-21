@@ -14,10 +14,11 @@ import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, Fit, StackMode 
 import { getRandomNumberGenerator, getRNGSeed } from '@elastic/charts/src/mocks/utils';
 
 import { TextureShape } from '../../../packages/charts/src/utils/themes/theme';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const randomizeBoundingData = getRNGSeed() ? false : boolean('randomize bounding data', false);
   const dataTypes: Record<string, Array<{ x: number | string; y: number | null }>> = {
     isolated: [
@@ -127,7 +128,7 @@ export const Example = () => {
   const rng = getRandomNumberGenerator(rngSeed);
   const tickFormat = stackMode === 'percentage' ? (d: any) => numeral(d).format('0[.]00%') : undefined;
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

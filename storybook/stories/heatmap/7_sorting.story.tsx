@@ -12,16 +12,17 @@ import React from 'react';
 
 import { Chart, Heatmap, Predicate, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const keepNull = boolean('Fill gaps with nulls', true);
   const onlyNulls = boolean('Fill everything with nulls', false);
   const xSort = customKnobs.fromEnum('X sorting predicate', Predicate, Predicate.DataIndex);
   const ySort = customKnobs.fromEnum('Y sorting predicate', Predicate, Predicate.DataIndex);
   return (
-    <Chart size={[200, 200]}>
+    <Chart title={title} description={description} size={[200, 200]}>
       <Settings
         baseTheme={useBaseTheme()}
         onPointerUpdate={action('onPointerUpdate')}

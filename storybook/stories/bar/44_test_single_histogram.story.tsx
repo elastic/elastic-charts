@@ -22,10 +22,11 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 // for testing purposes only
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const useLine = boolean('use lines instead of bars', false);
   const multiLayerAxis = boolean('use multilayer time axis', false);
   const oddDomain = boolean('non-round time domain start', false);
@@ -43,7 +44,7 @@ export const Example = () => {
   const Series = useLine ? LineSeries : HistogramBarSeries;
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings xDomain={xDomain} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"

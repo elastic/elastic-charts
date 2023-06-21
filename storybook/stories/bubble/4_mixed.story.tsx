@@ -13,6 +13,7 @@ import React from 'react';
 import { Axis, Chart, BubbleSeries, Position, ScaleType, Settings, LineSeries } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
@@ -24,7 +25,7 @@ const bubbleData = new Array(100).fill(0).map((_, i) => ({
   z: rng(0, 100),
 }));
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const onElementListeners = {
     onElementClick: action('onElementClick'),
     onElementOver: action('onElementOver'),
@@ -38,7 +39,7 @@ export const Example = () => {
   });
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         theme={{
@@ -78,5 +79,3 @@ export const Example = () => {
     </Chart>
   );
 };
-
-Example.text = 'testing';

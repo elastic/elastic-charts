@@ -10,6 +10,8 @@ import React from 'react';
 
 import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
+
 const data = [
   {
     key: 0,
@@ -417,9 +419,9 @@ const data = [
   },
 ];
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   return (
-    <Chart className="story-chart">
+    <Chart title={title} description={description} className="story-chart">
       <Axis id="X" title="index" position={Position.Bottom} />
       <Axis id="Y" position={Position.Left} />
 

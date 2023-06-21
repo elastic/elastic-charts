@@ -24,10 +24,11 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const hideBars = boolean('hideBars', false);
   const formatter = timeFormatter(niceTimeFormatByDay(1));
   const chartRotation = customKnobs.enum.rotation();
@@ -45,7 +46,7 @@ export const Example = () => {
   );
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} rotation={chartRotation} />
       <Tooltip type={tooltipType} snap={boolean('tooltip snap to grid', true)} />
       <Axis

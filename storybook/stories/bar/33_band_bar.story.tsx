@@ -13,11 +13,12 @@ import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings, time
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const getRandomNumber = getRandomNumberGenerator();
   const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d: any) => ({
     x: d[0],
@@ -28,7 +29,7 @@ export const Example = () => {
   const fit = boolean('fit Y domain', true);
   const useFunctions = boolean('use fn accessors', false);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"

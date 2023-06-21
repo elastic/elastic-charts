@@ -93,6 +93,7 @@ function extractExamples(exampleRelativePath = 'storybook/stories') {
           name,
           filename,
           url,
+          groupTitle,
           filePath: path.join(path.relative(process.cwd(), path.dirname(groupFile)), filename),
         };
       });

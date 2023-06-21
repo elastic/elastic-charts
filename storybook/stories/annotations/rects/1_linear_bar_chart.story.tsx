@@ -11,10 +11,11 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings, Position } from '@elastic/charts';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const rotation = customKnobs.enum.rotation();
   const x0 = select(
@@ -42,7 +43,7 @@ export const Example = () => {
   );
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
       <RectAnnotation
         id="rect"

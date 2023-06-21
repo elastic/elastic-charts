@@ -22,6 +22,7 @@ import {
   DEFAULT_CHART_PADDING,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -108,7 +109,7 @@ const getAxisKnobs = (group?: string, gridLines = false): RecursivePartial<AxisS
   }),
 });
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false, 'general');
   const onlyGlobal = !boolean('disable axis overrides', false, 'general');
   const chartMargins = {
@@ -134,7 +135,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings debug={debug} theme={theme} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"

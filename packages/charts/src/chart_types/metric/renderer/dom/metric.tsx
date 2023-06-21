@@ -31,6 +31,7 @@ import { isMetricWProgress, isMetricWTrend } from '../../specs';
 /** @internal */
 export const Metric: React.FunctionComponent<{
   chartId: string;
+  hasTitles: boolean;
   rowIndex: number;
   columnIndex: number;
   totalColumns: number;
@@ -43,6 +44,7 @@ export const Metric: React.FunctionComponent<{
   onElementOut?: BasicListener;
 }> = ({
   chartId,
+  hasTitles,
   rowIndex,
   columnIndex,
   totalColumns,
@@ -63,6 +65,7 @@ export const Metric: React.FunctionComponent<{
   const containerClassName = classNames('echMetric', {
     'echMetric--rightBorder': columnIndex < totalColumns - 1,
     'echMetric--bottomBorder': rowIndex < totalRows - 1,
+    'echMetric--topBorder': hasTitles && rowIndex === 0,
     'echMetric--small': hasProgressBar,
     'echMetric--vertical': progressBarDirection === LayoutDirection.Vertical,
     'echMetric--horizontal': progressBarDirection === LayoutDirection.Horizontal,

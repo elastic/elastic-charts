@@ -23,6 +23,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -70,7 +71,7 @@ const getTextureKnobs = (useCustomPath: boolean): TexturedStyles => ({
   },
 });
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const useCustomPath = boolean('Use custom path', false, group.texture);
   const texture: TexturedStyles = getTextureKnobs(useCustomPath);
   const opacity = number('Series opacity', 1, { min: 0, max: 1, step: 0.1 }, group.series);
@@ -82,7 +83,7 @@ export const Example = () => {
   });
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         theme={{
           areaSeriesStyle: {

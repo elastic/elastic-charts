@@ -12,12 +12,13 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm:ss');
 
 // for testing purposes only
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const start = DateTime.fromISO('2019-01-01T00:00:00.000', { zone: 'utc' });
   const data = [
     [start.toMillis(), 1, 4],
@@ -31,7 +32,7 @@ export const Example = () => {
     [start.plus({ minute: 8 }).toMillis(), 1, 4],
   ];
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} tickFormat={dateFormatter} />
       <Axis

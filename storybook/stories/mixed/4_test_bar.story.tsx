@@ -10,9 +10,10 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data1 = [
     [1, 1],
     [2, 2],
@@ -37,7 +38,7 @@ export const Example = () => {
   ];
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

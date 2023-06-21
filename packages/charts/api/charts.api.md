@@ -480,7 +480,6 @@ export interface Cell {
     yIndex: number;
 }
 
-// Warning: (ae-forgotten-export) The symbol "ChartProps" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "ChartState" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
@@ -489,9 +488,11 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     // (undocumented)
     componentDidMount(): void;
     // (undocumented)
+    componentDidUpdate({ title, description }: Readonly<ChartProps>): void;
+    // (undocumented)
     componentWillUnmount(): void;
     // (undocumented)
-    static defaultProps: ChartProps;
+    static defaultProps: Pick<ChartProps, OptionalKeys<ChartProps>>;
     // (undocumented)
     dispatchExternalPointerEvent(event: PointerEvent_2): void;
     // (undocumented)
@@ -505,6 +506,23 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     } | null;
     // (undocumented)
     render(): JSX.Element;
+}
+
+// @public (undocumented)
+export interface ChartProps {
+    // (undocumented)
+    children?: ReactNode;
+    // (undocumented)
+    className?: string;
+    // (undocumented)
+    description?: string;
+    // (undocumented)
+    id?: string;
+    renderer?: 'svg' | 'canvas';
+    // (undocumented)
+    size?: ChartSize;
+    // (undocumented)
+    title?: string;
 }
 
 // @public (undocumented)

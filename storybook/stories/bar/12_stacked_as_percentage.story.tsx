@@ -21,9 +21,10 @@ import {
 } from '@elastic/charts';
 
 import { AnnotationDomainType, LineAnnotation } from '../../../packages/charts/src/chart_types/specs';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const modes = select(
     'mode',
     { stack: 'stack', stackAsPercentage: 'stackAsPercentage', unstacked: 'unstacked' },
@@ -67,7 +68,7 @@ export const Example = () => {
     : originalData;
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} />
 

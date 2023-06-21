@@ -11,9 +11,10 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data1 = [
     [1, 2],
     [2, 2],
@@ -70,7 +71,7 @@ export const Example = () => {
     [9, 8],
   ];
   return (
-    <Chart renderer="canvas">
+    <Chart title={title} description={description} renderer="canvas">
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis

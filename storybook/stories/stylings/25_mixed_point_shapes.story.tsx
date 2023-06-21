@@ -21,7 +21,9 @@ import {
   PointShape,
 } from '@elastic/charts';
 
-export const Example = () => {
+import { ChartsStory } from '../../types';
+
+export const Example: ChartsStory = (_, { title, description }) => {
   const shapeKnobArea = select(
     'area series marker shape',
     ['circle', 'diamond', 'square', 'triangle', 'plus', 'x'],
@@ -47,7 +49,7 @@ export const Example = () => {
   const fillKnobBubble = color('bubble series fill color', 'white');
 
   return (
-    <Chart className="story-chart">
+    <Chart title={title} description={description} className="story-chart">
       <Settings showLegend />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

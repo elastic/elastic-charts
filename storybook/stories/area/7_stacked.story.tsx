@@ -11,11 +11,12 @@ import React from 'react';
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm');
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data1 = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d) => [
     ...d,
     KIBANA_METRICS.metrics.kibana_os_load.v1.metric.label,
@@ -30,7 +31,7 @@ export const Example = () => {
   ]);
   const allMetrics = [...data3, ...data2, ...data1];
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"

@@ -24,6 +24,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
@@ -31,11 +32,11 @@ const data1 = dg.generateGroupedSeries(40, 4);
 const data2 = dg.generateSimpleSeries(40);
 const data3 = dg.generateSimpleSeries(40);
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const hideBars = boolean('Hide Bars', false);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} debug={boolean('Debug', false)} showLegend showLegendExtra />
       <Tooltip type={TooltipType.Crosshairs} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

@@ -23,11 +23,12 @@ import {
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm');
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const getRandomNumber = getRandomNumberGenerator();
   const data = KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d) => ({
     x: d[0],
@@ -39,7 +40,7 @@ export const Example = () => {
   const y0AccessorFormat = text('y0AccessorFormat', '');
   const y1AccessorFormat = text('y1AccessorFormat', '');
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
       <Axis
         id="bottom"

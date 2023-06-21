@@ -12,6 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
@@ -31,7 +32,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
 const dg = new SeededDataGenerator();
 const data1 = dg.generateGroupedSeries(40, 4);
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const primaryTheme: PartialTheme = {
     barSeriesStyle: {
       rect: {
@@ -49,7 +50,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

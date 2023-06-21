@@ -13,10 +13,11 @@ import { Chart, Goal, Settings } from '@elastic/charts';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const subtype = customKnobs.fromEnum('subtype', GoalSubtype, GoalSubtype.VerticalBullet);
   const reverse = boolean('reverse', false);
   const start = number('angleStart (π)', 5 / 4, { min: -2, max: 2, step: 1 / 8 });
@@ -35,7 +36,7 @@ export const Example = () => {
   const angleEnd = end * Math.PI;
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Goal
         id="spec"

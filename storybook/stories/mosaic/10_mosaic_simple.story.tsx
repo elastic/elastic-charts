@@ -22,6 +22,7 @@ import {
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, colorBrewerCategoricalPastel12B, regionLookup } from '../utils/utils';
 
@@ -51,7 +52,7 @@ const productToColor = new Map(
     .map((sitc1, i) => [sitc1, `rgba(${productPalette[i % productPalette.length].join(',')}, 0.7)`]),
 );
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const partitionLayout = radios(
     'Partition layout',
     {
@@ -62,7 +63,7 @@ export const Example = () => {
     PartitionLayout.mosaic,
   );
   return (
-    <Chart className="story-chart">
+    <Chart title={title} description={description} className="story-chart">
       <Settings
         showLegend={boolean('Show legend', true)}
         showLegendExtra={boolean('Show legend values', true)}

@@ -21,6 +21,7 @@ import {
   RecursivePartial,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
@@ -95,7 +96,7 @@ function generateAreaSeriesStyleKnobs(
   };
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const applyLineStyles = boolean('apply line series style', true, 'Chart Global Theme');
 
   const chartTheme: PartialTheme = {
@@ -115,7 +116,7 @@ export const Example = () => {
   const areaStyle2 = generateAreaSeriesStyleKnobs('Area 2 Style', 'area2', 'blue', 'violet', 2, 5, 4, undefined, 'red');
 
   return (
-    <Chart renderer="canvas">
+    <Chart title={title} description={description} renderer="canvas">
       <Settings
         showLegend
         showLegendExtra

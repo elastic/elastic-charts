@@ -24,6 +24,7 @@ import {
 
 import { ColorVariant } from '../../../packages/charts/src/utils/common';
 import { AreaFitStyle, LineFitStyle, TextureShape } from '../../../packages/charts/src/utils/themes/theme';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -32,7 +33,7 @@ interface MixedDatum {
   y: number | string | null;
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const dataTypes: Record<string, MixedDatum[]> = {
     isolated: [
       { x: 0, y: 3 },
@@ -186,7 +187,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

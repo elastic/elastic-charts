@@ -11,6 +11,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
@@ -27,7 +28,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
   );
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const theme: PartialTheme = {
     axes: {
       axisTitle: {
@@ -55,7 +56,7 @@ export const Example = () => {
     },
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         theme={theme}
         baseTheme={useBaseTheme()}

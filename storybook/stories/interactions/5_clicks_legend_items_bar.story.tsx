@@ -13,6 +13,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { BARCHART_2Y2G } from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const onLegendItemListeners = {
@@ -23,7 +24,7 @@ const onLegendItemListeners = {
   onLegendItemMinusClick: action('onLegendItemMinusClick'),
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const notSpecChange = 'not spec change';
   const specChange = 'spec change';
 
@@ -61,7 +62,7 @@ export const Example = () => {
   const data = hasAdditionalG1Value ? [...seriesData, additionalG1Value] : seriesData;
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

@@ -90,6 +90,7 @@ export const Example = () => {
 };
 
 Example.parameters = {
+  showHeader: true,
   markdown: `Tooltips may be composed with internal components to build out completely custom tooltips while maintaining a consistent style.\
   This example shows how you can build a tabular tooltip by structuring the table components explicitly within \`TooltipTable\` instead of using the \`columns\` option.`,
 };

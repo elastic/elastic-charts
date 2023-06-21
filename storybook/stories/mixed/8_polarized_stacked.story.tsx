@@ -22,11 +22,12 @@ import {
   AnnotationDomainType,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { data } from '../utils/datasets/product_profits';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const baseTheme = useBaseTheme();
   const stacked = boolean('stacked', true);
   const polarity = select('data polarity', ['Mixed', 'Positive', 'Negative'], 'Mixed');
@@ -46,7 +47,7 @@ export const Example = () => {
     exclude: [SeriesType.Bubble, SeriesType.Line],
   });
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={baseTheme} />
       <Axis id="bottom" position={Position.Bottom} title="Products" />
       <Axis

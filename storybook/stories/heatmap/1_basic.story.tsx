@@ -22,11 +22,12 @@ import {
 } from '@elastic/charts';
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { useHeatmapSelection } from '../utils/use_heatmap_selection';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const { highlightedData, onElementClick, onBrushEnd } = useHeatmapSelection();
 
   const debugState = boolean('Enable debug state', true);
@@ -71,7 +72,7 @@ export const Example = () => {
   }, [showBrushTool]);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         onElementClick={onElementClick}
         onPointerUpdate={pointerUpdate}

@@ -23,10 +23,11 @@ import {
 } from '@elastic/charts';
 import { isVerticalRotation } from '@elastic/charts/src/chart_types/xy_chart/state/utils/common';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const rotation = customKnobs.enum.rotation();
   const isVertical = isVerticalRotation(rotation);
   const now = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
@@ -40,7 +41,7 @@ export const Example = () => {
     action('onBrushEnd')(dateFormatter(x[0]), dateFormatter(x[1]));
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}

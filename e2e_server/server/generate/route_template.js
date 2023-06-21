@@ -6,6 +6,6 @@
  * Side Public License, v 1.
  */
 
-module.exports = function routeComponentTemplate(index, url) {
+module.exports = function routeComponentTemplate({ url }, index) {
   return `{path === '${url}' && <Component${index} />}`;
 };

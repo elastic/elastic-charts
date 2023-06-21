@@ -25,6 +25,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
@@ -46,7 +47,7 @@ const data1 = dg.generateGroupedSeries(40, 4);
 const data2 = dg.generateSimpleSeries(40);
 const data3 = dg.generateSimpleSeries(40);
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const customizeLineStroke = boolean('customizeLineStroke', false, 'line');
   const customizePointStroke = boolean('customizeLinePointStroke', false, 'line');
   const customizeAreaFill = boolean('customizeAreaFill', false, 'area');
@@ -139,7 +140,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         theme={theme}
         baseTheme={useBaseTheme()}

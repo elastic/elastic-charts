@@ -47,15 +47,26 @@ import React, { Suspense } from 'react';
 import { EuiProvider } from '@elastic/eui';
 import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
 import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
+import { StoryContext } from '../../storybook/types';
 
 export function VRTPage() {
   const {
     themeId,
     backgroundId,
+    toggles,
     setParams,
   } = useGlobalsParameters();
   const urlParams = new URL(window.location.toString()).searchParams;
-  const colorMode = themeId.includes('light') ? 'light' : 'dark';
+  const colorMode = (themeId ?? '').includes('light') ? 'light' : 'dark';
+  const getStoryContext = (title, name): StoryContext => ({
+    globals: {
+      theme: themeId,
+      background: backgroundId,
+      toggles,
+    },
+    title: toggles.showChartTitle ?  title : undefined,
+    description: toggles.showChartDescription ?  name : undefined,
+  });
   ${imports.join('\n  ')}
 
   const path = urlParams.get('path');
@@ -71,12 +82,13 @@ export function VRTPage() {
       </ul>
     </>);
   }
+
   return (
     <EuiProvider colorMode={colorMode}>
       <ThemeIdProvider value={themeId as any}>
         <BackgroundIdProvider value={backgroundId}>
           <Suspense fallback={<div>Loading...</div>}>
-            ${routes.join('\n          ')}
+            ${routes.join('\n            ')}
           </Suspense>
         </BackgroundIdProvider>
       </ThemeIdProvider>
@@ -93,10 +105,10 @@ function compileVRTPage(examples) {
     return acc;
   }, []);
   const { imports, routes, urls } = flatExamples.reduce(
-    (acc, { filePath, url }, index) => {
-      acc.imports.push(compileImportTemplate(index, filePath));
-      acc.routes.push(compileRouteTemplate(index, url));
-      acc.urls.push(url);
+    (acc, example, index) => {
+      acc.imports.push(compileImportTemplate(example, index));
+      acc.routes.push(compileRouteTemplate(example, index));
+      acc.urls.push(example.url);
       return acc;
     },
     { imports: [], routes: [], urls: [] },

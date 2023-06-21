@@ -20,6 +20,7 @@ import {
   timeFormatter,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const TEST_DATASET_DISCOVER = {
@@ -38,7 +39,7 @@ const TEST_DATASET_DISCOVER = {
 };
 
 // for testing purposes only
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const formatter = timeFormatter(niceTimeFormatByDay(1));
 
   const xDomain = {
@@ -50,7 +51,7 @@ export const Example = () => {
   const useCustomMinInterval = boolean('use custom minInterval of 30s', true);
   const multiLayerAxis = boolean('use multilayer time axis', false);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings xDomain={useCustomMinInterval ? xDomain : undefined} baseTheme={useBaseTheme()} />
       <Axis id="discover-histogram-left-axis" position={Position.Left} title={TEST_DATASET_DISCOVER.yAxisLabel} />
       <Axis

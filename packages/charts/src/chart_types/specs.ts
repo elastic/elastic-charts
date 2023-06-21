@@ -27,6 +27,10 @@ export {
 
 export * from './xy_chart/utils/specs';
 
+export * from './wordcloud/specs';
+
+export * from './goal_chart/specs';
+
 export { Partition } from './partition_chart/specs';
 
 export { Heatmap, HeatmapSpec, RasterTimeScale, TimeScale, LinearScale, OrdinalScale } from './heatmap/specs';

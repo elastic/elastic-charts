@@ -12,12 +12,13 @@ import React, { useRef } from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip, TooltipProps } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const rng = getRandomNumberGenerator();
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showAxes = boolean('Show axes', false);
   const groups = number('Groups', 5, { min: 2, max: 20, step: 1 });
   const offset = number('Offset', 10, { min: 0, step: 1 });
@@ -65,7 +66,7 @@ export const Example = () => {
     <div ref={red} style={{ backgroundColor: 'red', padding: 30, height: '100%' }}>
       <div ref={white} style={{ backgroundColor: 'white', padding: 30, height: '100%' }}>
         <div ref={blue} style={{ backgroundColor: 'blue', padding: 30, height: '100%' }}>
-          <Chart>
+          <Chart title={title} description={description}>
             <Settings baseTheme={useBaseTheme()} />
             <Tooltip boundary={boundary} boundaryPadding={boundaryPadding} offset={offset} />
             <Axis id="bottom" hide={!showAxes} position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

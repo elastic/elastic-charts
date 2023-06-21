@@ -23,10 +23,11 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const debugState = boolean('debugState', true);
   const line = boolean('show line', true);
@@ -43,7 +44,7 @@ export const Example = () => {
   const barData = dg.generateGroupedSeries(40, groupCount);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         onRenderChange={getDebugStateLogger(debugState)}
         debug={debug}

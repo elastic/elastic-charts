@@ -45,6 +45,7 @@ const groupsToSkip: Set<string> = new Set(['Components/Tooltip']);
 const storiesToSkip: Map<string, string[]> = new Map(
   Object.entries({
     'Test Cases': ['noSeries'],
+    Interactions: ['multiChartCursorSync'],
   }),
 );
 

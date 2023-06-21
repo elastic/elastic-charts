@@ -12,9 +12,10 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showLegend = boolean('Show legend', true, 'Y axis');
   const disableYAxisFormat = boolean('Disable Axis tickFormat', false, 'Y axis');
   const yAxisFormat = text('Axis value format', '0[.]0', 'Y axis');
@@ -29,7 +30,7 @@ export const Example = () => {
   const catLineFormat = text('Cat line unit', 'cats', 'Y axis');
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} showLegendExtra showLegend={showLegend} />
       <Tooltip
         headerFormatter={
