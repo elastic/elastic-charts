@@ -42,7 +42,7 @@ void (async () => {
       startGroup(`Running eslint checks - ${filesToLint.length} files`);
 
       await exec('yarn lint:it', {
-        input: filesToLint,
+        args: filesToLint,
       });
     }
   } else {
