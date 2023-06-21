@@ -39,14 +39,14 @@ void (async () => {
     const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
 
     if (filesToLint.length > 0) {
-      startGroup('Running eslint checks');
+      startGroup(`Running eslint checks - ${filesToLint.length} files`);
 
       await exec('yarn lint:it', {
         input: filesToLint,
       });
     }
   } else {
-    startGroup('Running eslint checks');
+    startGroup('Running eslint checks - all files');
     await exec('yarn lint');
   }
 })();
