@@ -1,3 +1,17 @@
+# [58.2.0](https://github.com/elastic/elastic-charts/compare/v58.1.0...v58.2.0) (2023-06-23)
+
+
+### Bug Fixes
+
+* `Chart` component `children` type ([#2071](https://github.com/elastic/elastic-charts/issues/2071)) ([525c782](https://github.com/elastic/elastic-charts/commit/525c782829a37e465b03d5aae7a0d697f00bd431))
+* **deps:** update dependency @elastic/eui to v82 ([#2074](https://github.com/elastic/elastic-charts/issues/2074)) ([69a655f](https://github.com/elastic/elastic-charts/commit/69a655f0dac2975ab42b48a48cc19693eaff1021))
+
+
+### Features
+
+* **flame:** expose search field text and search text change listener ([#2068](https://github.com/elastic/elastic-charts/issues/2068)) ([c339947](https://github.com/elastic/elastic-charts/commit/c339947c3963b8ad8124203435f410b34b93cc1e))
+* support native chart title and description ([#2002](https://github.com/elastic/elastic-charts/issues/2002)) ([341a990](https://github.com/elastic/elastic-charts/commit/341a990c5d1154f36927a91321e4d0c39b44a4be))
+
 # [58.1.0](https://github.com/elastic/elastic-charts/compare/v58.0.0...v58.1.0) (2023-06-08)
 
 
