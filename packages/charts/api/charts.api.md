@@ -1066,7 +1066,7 @@ export type FitConfig = {
 };
 
 // @public
-export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, "chartType" | "specType", "animation" | "valueFormatter" | "valueGetter" | "valueAccessor", never, "id" | "columnarData" | "controlProviderCallback">) => null;
+export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, "chartType" | "specType", "animation" | "valueFormatter" | "valueGetter" | "valueAccessor", "search" | "onSearchTextChange", "id" | "columnarData" | "controlProviderCallback">) => null;
 
 // @public (undocumented)
 export type FlameElementEvent = FlameLayerValue;
@@ -1109,6 +1109,12 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
     columnarData: ColumnarViewModel;
     // (undocumented)
     controlProviderCallback: Partial<ControlReceiverCallbacks>;
+    // (undocumented)
+    onSearchTextChange?: (text: string) => void;
+    // (undocumented)
+    search?: {
+        text: string;
+    };
     // (undocumented)
     specType: typeof SpecType.Series;
     // (undocumented)
