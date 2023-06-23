@@ -153,7 +153,6 @@
     "react-docgen-typescript-webpack-plugin": "^1.1.0",
     "react-dom": "^16.13.0",
     "react-is": "^16.13.0",
-    "redux-devtools-extension": "^2.13.8",
     "sass": "^1.49.9",
     "sass-graph": "^3.0.5",
     "seedrandom": "^3.0.5",
