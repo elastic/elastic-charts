@@ -9,7 +9,7 @@
 import classNames from 'classnames';
 import React, { CSSProperties, ReactNode, createRef } from 'react';
 import { Provider } from 'react-redux';
-import { createStore, Store, Unsubscribe, StoreEnhancer, applyMiddleware, Middleware } from 'redux';
+import { createStore, Store, Unsubscribe } from 'redux';
 import { OptionalKeys } from 'utility-types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -56,21 +56,6 @@ interface ChartState {
   displayTitles: boolean;
 }
 
-const getMiddlware = (id: string): StoreEnhancer => {
-  const middlware: Middleware<any, any, any>[] = [];
-
-  // eslint-disable-next-line no-underscore-dangle
-  if (typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, no-underscore-dangle
-    return (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-      trace: true,
-      name: `@elastic/charts (id: ${id})`,
-    })(applyMiddleware(...middlware));
-  }
-
-  return applyMiddleware(...middlware);
-};
-
 /** @public */
 export class Chart extends React.Component<ChartProps, ChartState> {
   static defaultProps: Pick<ChartProps, OptionalKeys<ChartProps>> = {
@@ -92,8 +77,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     const id = props.id ?? uuidv4();
     const storeReducer = chartStoreReducer(id, props.title, props.description);
-    const enhancer = getMiddlware(id);
-    this.chartStore = createStore(storeReducer, enhancer);
+    this.chartStore = createStore(storeReducer);
     this.state = {
       legendDirection: LayoutDirection.Vertical,
       paddingLeft: LIGHT_THEME.chartMargins.left,
