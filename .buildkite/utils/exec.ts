@@ -13,6 +13,8 @@ import { setJobMetadata, startGroup } from './buildkite';
 import { updateCheckStatus } from './github';
 
 interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
+  /** arguments to appended to the command */
+  args?: string;
   input?: string;
   failureMsg?: string;
   onFailure?: () => Promise<void> | void;
@@ -41,6 +43,7 @@ export const wait = (n: number) => new Promise((resolve) => setTimeout(resolve, 
 export const exec = async (
   command: string,
   {
+    args = '',
     input,
     cwd,
     failureMsg,
@@ -56,9 +59,9 @@ export const exec = async (
   let retryCount = 0;
   async function execInner(): Promise<string> {
     try {
-      const result = execSync(command, {
-        input,
+      const result = execSync([command, args].filter(Boolean).join(' '), {
         encoding: 'utf8',
+        input,
         cwd: cwd && path.isAbsolute(cwd) ? cwd : path.resolve(__dirname, '../../', cwd ?? ''),
         stdio,
         env: {
