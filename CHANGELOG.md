@@ -1,3 +1,10 @@
+## [58.2.1](https://github.com/elastic/elastic-charts/compare/v58.2.0...v58.2.1) (2023-06-23)
+
+
+### Bug Fixes
+
+* remove unused redux dev tools ([#2079](https://github.com/elastic/elastic-charts/issues/2079)) ([1870303](https://github.com/elastic/elastic-charts/commit/18703038807b784c347348bd8e88b9f5ae47f67e))
+
 # [58.2.0](https://github.com/elastic/elastic-charts/compare/v58.1.0...v58.2.0) (2023-06-23)
 
 
