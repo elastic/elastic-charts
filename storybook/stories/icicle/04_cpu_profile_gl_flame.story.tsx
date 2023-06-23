@@ -8,7 +8,7 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean, button, text } from '@storybook/addon-knobs';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import {
   Chart,
@@ -18,7 +18,6 @@ import {
   FlameGlobalControl,
   FlameNodeControl,
   ColumnarViewModel,
-  FlameSearchControl,
 } from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
