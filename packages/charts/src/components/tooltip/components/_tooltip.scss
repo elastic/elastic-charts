@@ -7,9 +7,6 @@ $rowColorStripWidth: 5px;
  * Manually synced with `COLOR_STRIP_CHECK_WIDTH` const in [`tooltip_table.tsx`](packages/charts/src/components/tooltip/components/tooltip_table.tsx)
  */
 $colorStripCheckWidth: 11px;
-/**
- * Manually synced with `COLOR_STRIP_PADDING` const in [`tooltip_table.tsx`](packages/charts/src/components/tooltip/components/tooltip_table.tsx)
- */
 $colorStripPadding: 5px;
 $maxRowColorStripWidth: $colorStripCheckWidth + $colorStripPadding * 2;
 

@@ -27,11 +27,6 @@ const TOOLTIP_FOOTER_HEIGHT = 25;
  * Manually synced with `$colorStripCheckWidth` scss var in [`_tooltip.scss`](packages/charts/src/components/tooltip/_tooltip.scss)
  */
 const COLOR_STRIP_CHECK_WIDTH = 11;
-/**
- * Manually synced with `$colorStripPadding` scss var in [`_tooltip.scss`](packages/charts/src/components/tooltip/_tooltip.scss)
- */
-const COLOR_STRIP_PADDING = 5;
-const MAX_ROW_COLOR_STRIP_WIDTH = COLOR_STRIP_CHECK_WIDTH + COLOR_STRIP_PADDING * 2;
 
 type TooltipTableProps<
   D extends BaseDatum = Datum,
@@ -83,7 +78,7 @@ export const TooltipTable = <D extends BaseDatum = Datum, SI extends SeriesIdent
   });
 
   const gridTemplateColumns = columns
-    .map(({ type, width }) => width ?? (type === 'color' ? MAX_ROW_COLOR_STRIP_WIDTH : 'auto'))
+    .map(({ type, width }) => width ?? (type === 'color' ? COLOR_STRIP_CHECK_WIDTH : 'auto'))
     .map((width) => (typeof width === 'number' ? `${width}px` : width))
     .join(' ');
 
