@@ -22,10 +22,16 @@ import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../
 const TOOLTIP_ITEM_HEIGHT = 20;
 const TOOLTIP_HEADER_HEIGHT = 25;
 const TOOLTIP_FOOTER_HEIGHT = 25;
+
 /**
- * Manually synced with `$maxRowColorStripWidth` scss var in [`_tooltip.scss`](packages/charts/src/components/tooltip/_tooltip.scss)
+ * Manually synced with `$colorStripCheckWidth` scss var in [`_tooltip.scss`](packages/charts/src/components/tooltip/_tooltip.scss)
  */
-const MAX_ROW_COLOR_STRIP_WIDTH = 11;
+const COLOR_STRIP_CHECK_WIDTH = 11;
+/**
+ * Manually synced with `$colorStripPadding` scss var in [`_tooltip.scss`](packages/charts/src/components/tooltip/_tooltip.scss)
+ */
+const COLOR_STRIP_PADDING = 5;
+const MAX_ROW_COLOR_STRIP_WIDTH = COLOR_STRIP_CHECK_WIDTH + COLOR_STRIP_PADDING * 2;
 
 type TooltipTableProps<
   D extends BaseDatum = Datum,
