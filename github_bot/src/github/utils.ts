@@ -336,41 +336,6 @@ export async function getLatestCommits(ctx: ProbotEventContext<'pull_request'>, 
   return response.repository.pullRequest.commits.nodes.map((n) => n.commit.oid);
 }
 
-// TODO remove or use this function
-export async function updatePreviousDeployments(
-  ctx: ProbotEventContext<'pull_request'>,
-  state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
-) {
-  const { data: deployments } = await ctx.octokit.repos.listDeployments({
-    ...ctx.repo(),
-    ref: ctx.payload.pull_request.head.ref,
-    per_page: 100,
-  });
-
-  await Promise.all(
-    deployments.map(async ({ id }) => {
-      const {
-        data: [data],
-      } = await ctx.octokit.repos.listDeploymentStatuses({
-        ...ctx.repo(),
-        deployment_id: id,
-        per_page: 1,
-      });
-
-      if (data && ['in_progress', 'queued', 'pending'].includes(data.state)) {
-        const { environment, ...status } = data;
-        await ctx.octokit.repos.createDeploymentStatus({
-          ...ctx.repo(),
-          ...status,
-          // @ts-ignore - bad type for environment
-          environment,
-          state,
-        });
-      }
-    }),
-  );
-}
-
 export function pickDefined<R extends Record<string, unknown>>(source: R): R {
   return Object.keys(source).reduce((acc, key) => {
     const val = source[key];

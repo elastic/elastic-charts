@@ -17,7 +17,7 @@ interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
   args?: string;
   input?: string;
   failureMsg?: string;
-  onFailure?: () => Promise<void> | void;
+  onFailure?: (err: string) => Promise<void> | void;
   onSuccess?: () => Promise<void> | void;
   cwd?: string;
   /**
@@ -81,9 +81,11 @@ export const exec = async (
         if (retryWait) await wait(retryWait * 1000);
         return await execInner();
       }
+
+      const errorMsg = error instanceof Error ? error.message : typeof error === 'string' ? error : '';
       console.error(`❌ Failed to run command: [${command}]`);
       await setJobMetadata('failed', 'true');
-      await onFailure?.();
+      await onFailure?.(errorMsg);
       await updateCheckStatus(
         {
           status: 'completed',

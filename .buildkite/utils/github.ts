@@ -9,18 +9,16 @@
 import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
 import { components } from '@octokit/openapi-types';
 import { retry } from '@octokit/plugin-retry';
-import { Octokit, RestEndpointMethodTypes } from '@octokit/rest';
-import { getMetadata, metadataExists, setMetadata } from 'buildkite-agent-node';
+import { Octokit } from '@octokit/rest';
+import { getMetadata } from 'buildkite-agent-node';
 import ghpages from 'gh-pages';
 import minimatch, { IOptions as MinimatchOptions } from 'minimatch';
 import { Optional } from 'utility-types';
 
 import { getJobCheckName } from './build';
 import { bkEnv } from './buildkite';
-import { getNumber } from './common';
-import { MetaDataKeys } from './constants';
+import { UpdateDeploymentCommentOptions } from './deployment';
 import { CheckStatusOptions, CreateCheckOptions } from './octokit';
-import { OctokitParameters } from './types';
 
 if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
 
@@ -274,72 +272,6 @@ export const updateCheckStatus = async (
   }
 };
 
-export const getDeploymentTask = () =>
-  bkEnv.isPullRequest ? `deploy:pr:${bkEnv.pullRequestNumber}` : `deploy:${bkEnv.branch}`;
-
-export const createDeployment = async (
-  options: Optional<OctokitParameters<'repos/create-deployment-status'>> = {},
-): Promise<number | null> => {
-  if (process.env.BLOCK_REQUESTS) return null;
-  if (await metadataExists(MetaDataKeys.deploymentId)) {
-    console.warn(`Deployment already exists for build`);
-  }
-
-  const ref = bkEnv.commit;
-
-  if (!ref) throw new Error(`Failed to set status, no ref available`);
-
-  try {
-    const response = await octokit.repos.createDeployment({
-      ...defaultGHOptions,
-      environment: bkEnv.isPullRequest ? 'pull-requests' : bkEnv.branch,
-      transient_environment: bkEnv.isPullRequest, // sets previous statuses to inactive
-      production_environment: false,
-      task: getDeploymentTask(),
-      ...options,
-      auto_merge: false, // use branch as is without merging with base
-      required_contexts: [],
-      ref,
-    });
-    if (response.status === 202) return null; // Merged branch response
-
-    await setMetadata(MetaDataKeys.deploymentId, String(response.data.id));
-    return response.data.id;
-  } catch (error) {
-    console.error(`Failed to create deployment for ref [${ref}]`);
-    throw error;
-  }
-};
-
-export const createDeploymentStatus = async (
-  options: Optional<OctokitParameters<'repos/create-deployment-status'>> = {},
-) => {
-  if (process.env.BLOCK_REQUESTS) return;
-
-  console.trace('createDeploymentStatus', options.state);
-
-  console.log('MetaDataKeys.skipDeployment', await getMetadata(MetaDataKeys.skipDeployment));
-
-  if ((await getMetadata(MetaDataKeys.skipDeployment)) === 'true') return;
-
-  const deployment_id = options.deployment_id ?? getNumber(await getMetadata(MetaDataKeys.deploymentId));
-
-  if (deployment_id === null) throw new Error(`Failed to set status, no deployment found`);
-
-  try {
-    await octokit.rest.repos.createDeploymentStatus({
-      ...defaultGHOptions,
-      state: 'success',
-      log_url: bkEnv.jobUrl,
-      ...options,
-      deployment_id,
-    });
-  } catch {
-    // Should not throw as this would be an issue with CI
-    console.error(`Failed to create deployment status for deployment [${deployment_id}]`);
-  }
-};
-
 interface GLQPullRequestFiles {
   repository: {
     pullRequest: {
@@ -357,45 +289,6 @@ interface GLQPullRequestFiles {
       };
     };
   };
-}
-
-export async function updatePreviousDeployments(
-  state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
-) {
-  const currentDeploymentId = getNumber(await getMetadata(MetaDataKeys.deploymentId));
-  const { data: deployments } = await octokit.repos.listDeployments({
-    ...defaultGHOptions,
-    task: getDeploymentTask(),
-    per_page: 100, // should never get this high
-  });
-
-  await Promise.all(
-    deployments.map(async ({ id }) => {
-      if (id === currentDeploymentId) return;
-      const {
-        data: [{ state: currentState, log_url, environment_url }],
-      } = await octokit.repos.listDeploymentStatuses({
-        ...defaultGHOptions,
-        deployment_id: id,
-        per_page: 1,
-      });
-
-      if (!['in_progress', 'queued', 'pending', 'success'].includes(currentState)) {
-        return;
-      }
-
-      console.log(`Updating deployment ${id} state: ${currentState} -> ${state}`);
-
-      await octokit.repos.createDeploymentStatus({
-        ...defaultGHOptions,
-        deployment_id: id,
-        description: 'This deployment precedes a newer deployment',
-        log_url,
-        environment_url,
-        state,
-      });
-    }),
-  );
 }
 
 export async function getFileDiffs(): Promise<string[]> {
@@ -476,7 +369,8 @@ function generateMsg(key: string, body: string): string {
 
 const reMsgKey = /^<!-- comment-key: (.+) -->/;
 export function commentByKey<T extends keyof Comments>(key: T) {
-  return (comment?: string): boolean => {
+  return (commentRaw?: string | { body?: string }): boolean => {
+    const comment = typeof commentRaw === 'string' ? commentRaw : commentRaw?.body;
     if (!comment) return false;
     const [, commentKey] = reMsgKey.exec(comment) ?? [];
     return commentKey === key;
@@ -487,12 +381,48 @@ export const comments = {
   communityPR() {
     return `Community pull request, @elastic/datavis please add the \`ci:approved ✅\` label to allow this and future builds.`;
   },
-  deployments(deploymentUrl: string, sha: string) {
-    return `## Deployments - ${sha}
+  deployment({
+    deploymentUrl,
+    sha,
+    previousSha,
+    state,
+    errorMsg,
+    jobLink,
+    preDeploy = false,
+  }: UpdateDeploymentCommentOptions) {
+    if (state === 'failure') {
+      const err = errorMsg
+        ? `\n
+\`\`\`
+${errorMsg}
+\`\`\``
+        : '';
+      return `## ❌ Failed Deployment - ${sha}
+Failure${jobLink ? ` - [failed job](${jobLink}).` : ''}${err}
+`;
+    }
 
-- Storybook ([link](${deploymentUrl}))
-- e2e server ([link](${deploymentUrl}/e2e))
-- Playwright report ([link](${deploymentUrl}/e2e-report))`;
+    if (state === 'pending') {
+      const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';
+      const deploymentMsg =
+        previousSha && deploymentUrl
+          ? `### Old deployment - ${previousSha}
+- [Storybook](${deploymentUrl})
+- [e2e server](${deploymentUrl}/e2e)
+- ([Playwright report](${deploymentUrl}/e2e-report)`
+          : `- ⏳ Storybook
+- ⏳ e2e server
+- ⏳ Playwright report`;
+      return `## ⏳ Pending Deployment - ${sha}${updateComment}
+
+${deploymentMsg}`;
+    }
+
+    return `## ✅ Successful ${preDeploy ? 'Preliminary ' : ''}Deployment - ${sha}
+
+- [Storybook](${deploymentUrl})
+- [e2e server](${deploymentUrl}/e2e)
+${preDeploy ? '- ⏳ Playwright report - Running e2e tests' : `- [Playwright report](${deploymentUrl}/e2e-report)`}`;
   },
 };
 
