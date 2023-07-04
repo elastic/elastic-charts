@@ -207,7 +207,8 @@ export async function getPreviousDeployCommitSha(): Promise<string | null> {
     }
   }
 }`);
-  const { commit, jobs } = data?.pipeline?.builds?.edges[0]?.node;
+
+  const { commit, jobs } = data?.pipeline?.builds?.edges[0]?.node ?? {};
 
   return jobs.edges[0]?.node?.passed ? commit : null;
 }
