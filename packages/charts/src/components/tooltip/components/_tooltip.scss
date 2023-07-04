@@ -4,15 +4,19 @@ $tooltipBorderColor: $euiColorLightShade;
 $tooltipBorderWidth: 1px;
 $rowColorStripWidth: 5px;
 /**
- * Manually synced with `MAX_ROW_COLOR_STRIP_WIDTH` const in [`tooltip_table.tsx`](packages/charts/src/components/tooltip/components/tooltip_table.tsx)
+ * Manually synced with `COLOR_STRIP_CHECK_WIDTH` const in [`tooltip_table.tsx`](packages/charts/src/components/tooltip/components/tooltip_table.tsx)
  */
-$maxRowColorStripWidth: 11px;
+$colorStripCheckWidth: 11px;
+$colorStripPadding: 5px;
+$maxRowColorStripWidth: $colorStripCheckWidth + $colorStripPadding * 2;
 
 $tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
 
 $tableRowHoverColor: transparentize($euiColorPrimary, 0.95);
 $tableRowSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
 $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
+
+$transitionTime: 200ms;
 
 .echTooltip {
   @include euiToolTipStyle;
@@ -124,12 +128,18 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
   &__tableBody {
     .echTooltip__tableCell:not(.echTooltip__colorCell) {
       padding: 2px 4px;
+      transition: margin $transitionTime, padding $transitionTime;
     }
 
     .echTooltip__tableRow--selected {
       .echTooltip__tableCell:not(.echTooltip__colorCell),
       .echTooltip__colorCell .echTooltip__colorStrip--spacer {
         background-color: $tableRowSelectedColor;
+      }
+
+      .echTooltip__colorCell + .echTooltip__tableCell {
+        margin-left: $colorStripPadding * 2;
+        padding-left: 10px;
       }
     }
 
@@ -193,7 +203,7 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
     left: 0;
     bottom: 0;
     width: $rowColorStripWidth;
-    transition: width 200ms;
+    transition: width $transitionTime;
   }
 
   &__colorStrip {
@@ -203,17 +213,18 @@ $tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 95%; // to center dot better
-      font-size: 90%;
-      font-weight: bold;
-      transition: opacity 200ms;
+      height: 95%; // to center check
+      font-size: 130%;
+      font-weight: 200;
+      transition: opacity $transitionTime;
+      padding: 0 $colorStripPadding;
     }
 
     &--spacer {
       left: auto;
-      right: 0;
-      width: $maxRowColorStripWidth - $rowColorStripWidth;
-      min-width: $maxRowColorStripWidth - $rowColorStripWidth;
+      right: $colorStripPadding * 2;
+      width: $maxRowColorStripWidth - $rowColorStripWidth - $colorStripPadding * 2;
+      min-width: $maxRowColorStripWidth - $rowColorStripWidth - $colorStripPadding * 2;
     }
   }
 
