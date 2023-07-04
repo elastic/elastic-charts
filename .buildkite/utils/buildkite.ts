@@ -158,13 +158,67 @@ interface JobStep {
   key: string;
 }
 
+interface PreviousDeployCommitShaResponse {
+  data: {
+    pipeline: {
+      builds: {
+        edges: [
+          {
+            node: {
+              commit: string;
+              jobs: {
+                edges: [
+                  {
+                    node: {
+                      passed: boolean;
+                    };
+                  },
+                ];
+              };
+            };
+          },
+        ];
+      };
+    };
+  };
+}
+
+/**
+ * Returns previously successful firebase deploy commit sha for the current branch
+ */
+export async function getPreviousDeployCommitSha(): Promise<string | null> {
+  const { data } = await buildkiteGQLQuery<PreviousDeployCommitShaResponse>(`query getPreviousDeployCommitSha {
+  pipeline(slug: "${bkEnv.organizationSlug}/${bkEnv.pipelineSlug}") {
+    builds(first: 1, branch: "${bkEnv.branch}", state: PASSED) {
+      edges {
+        node {
+          commit
+          jobs(first: 1, step: { key: "deploy_fb" }, state: FINISHED) {
+            edges {
+              node {
+                ... on JobTypeCommand {
+                  passed
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}`);
+  const { commit, jobs } = data?.pipeline?.builds?.edges[0]?.node;
+
+  return jobs.edges[0]?.node?.passed ? commit : null;
+}
+
 export async function getBuildJobs(stepKey?: string): Promise<JobStep[]> {
   const buildId = bkEnv.buildId;
 
   if (!buildId) throw new Error(`Error: no job id found [${buildId}]`);
 
   const jobQuery = stepKey ? `first: 100, step: { key: "${stepKey}" }` : 'first: 100';
-  const { data } = await buildkiteGQLQuery<BuildJobsReponse>(`query getBuildJobs {
+  const { data } = await buildkiteGQLQuery<BuildJobsResponse>(`query getBuildJobs {
     build(uuid: "${buildId}") {
       jobs(${jobQuery}) {
         edges {
@@ -194,7 +248,7 @@ export async function getBuildJobs(stepKey?: string): Promise<JobStep[]> {
   );
 }
 
-interface BuildJobsReponse {
+interface BuildJobsResponse {
   data: {
     build: {
       jobs: {

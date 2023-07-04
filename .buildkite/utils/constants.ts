@@ -12,6 +12,9 @@
 export const MetaDataKeys = {
   skipDeployment: 'skipDeployment',
   deploymentId: 'deploymentId',
+  deploymentCommentId: 'deploymentCommentId',
+  deploymentPreviousSha: 'deploymentPreviousSha',
+  deploymentStatus: 'deploymentStatus',
   deploymentUrl: 'deploymentUrl',
 };
 

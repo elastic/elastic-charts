@@ -24,6 +24,7 @@ import { updateAllChecks } from '../../utils';
  * - deletes firebase deployment (auto expires after 7 days)
  */
 export function cleanup(app: Probot) {
+  // @ts-ignore - probot issue https://github.com/probot/probot/issues/1680
   app.on('pull_request.closed', async (ctx) => {
     console.log(`------- Triggered probot ${ctx.name} | ${ctx.payload.action}`);
 
