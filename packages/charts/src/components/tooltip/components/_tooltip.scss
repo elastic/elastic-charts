@@ -176,7 +176,7 @@ $transitionTime: 200ms;
           min-width: 0;
         }
 
-        &:not(&--bg)::before {
+        &--icon {
           opacity: 1;
         }
       }
@@ -207,17 +207,14 @@ $transitionTime: 200ms;
   }
 
   &__colorStrip {
-    &::before {
+    &--icon {
       opacity: 0;
-      content: '✓';
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 95%; // to center check
-      font-size: 130%;
-      font-weight: 200;
+      height: 100%; // to center check
       transition: opacity $transitionTime;
-      padding: 0 $colorStripPadding;
+      padding: 0 4px;
     }
 
     &--spacer {
