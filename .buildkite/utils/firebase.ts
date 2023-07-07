@@ -19,11 +19,10 @@ import { exec } from './exec';
 // Set up Google Application Credentials for use by the Firebase CLI
 // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
 function createGACFile() {
-  const tmpFile = fileSync({ postfix: '.json' });
   const gac = process.env.FIREBASE_AUTH;
   if (!gac) throw new Error('Error: unable to find FIREBASE_AUTH');
+  const tmpFile = fileSync({ postfix: '.json' });
   writeSync(tmpFile.fd, gac);
-
   return tmpFile.name;
 }
 
