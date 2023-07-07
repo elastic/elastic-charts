@@ -103,18 +103,17 @@ interface ChannelDeploymentInfo {
  * Returns deployment id for given PR channel
  */
 export async function getDeploymentUrl() {
-  const channelId = getChannelId();
-  const gacFile = createGACFile();
-  const deploymentJson = await exec(`npx firebase-tools hosting:channel:open ${channelId} --json`, {
-    cwd: './e2e_server',
-    stdio: 'pipe',
-    env: {
-      ...process.env,
-      GOOGLE_APPLICATION_CREDENTIALS: gacFile,
-    },
-  });
-
   try {
+    const channelId = getChannelId();
+    const gacFile = createGACFile();
+    const deploymentJson = await exec(`npx firebase-tools hosting:channel:open ${channelId} --json`, {
+      cwd: './e2e_server',
+      stdio: 'pipe',
+      env: {
+        ...process.env,
+        GOOGLE_APPLICATION_CREDENTIALS: gacFile,
+      },
+    });
     const info = JSON.parse(deploymentJson) as ChannelDeploymentInfo;
     return info?.result?.url || undefined;
   } catch {
