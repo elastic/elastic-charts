@@ -105,7 +105,7 @@ interface ChannelDeploymentInfo {
 export async function getDeploymentUrl() {
   const channelId = getChannelId();
   const gacFile = createGACFile();
-  const deploymentJson = await exec(`npx firebase hosting:channel:open ${channelId} --json`, {
+  const deploymentJson = await exec(`npx firebase-tools hosting:channel:open ${channelId} --json`, {
     cwd: './e2e_server',
     stdio: 'pipe',
     env: {
