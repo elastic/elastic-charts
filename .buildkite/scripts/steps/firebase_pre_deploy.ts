@@ -53,6 +53,9 @@ void (async () => {
     throw new Error(`Error: Missing deployment files: [${missingFiles.join(', ')}]`);
   }
 
+  // Move 404 file to /e2e-report
+  fs.renameSync('../../assets/404-report.html', './e2e_server/public/e2e-report/index.html');
+
   await firebaseDeploy({
     preDeploy: true,
   });
