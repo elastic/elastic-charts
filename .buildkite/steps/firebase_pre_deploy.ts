@@ -8,7 +8,7 @@
 
 import { createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 
-export const firebaseDeployStep = createStep<CustomCommandStep>(() => {
+export const firebasePreDeployStep = createStep<CustomCommandStep>(() => {
   return {
     ...commandStepDefaults,
     label: ':firebase: Pre Deploy - firebase',

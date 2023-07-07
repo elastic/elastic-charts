@@ -14,5 +14,6 @@ export * from './prettier';
 export * from './playwright';
 export * from './storybook';
 export * from './e2e_server';
+export * from './firebase_pre_deploy';
 export * from './firebase_deploy';
 export * from './ghp_deploy';
