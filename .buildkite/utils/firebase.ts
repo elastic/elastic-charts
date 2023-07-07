@@ -28,7 +28,7 @@ function createGACFile() {
 
 interface DeployOptions {
   expires?: string;
-  redeploy?: boolean;
+  preDeploy?: boolean;
 }
 
 const getChannelId = () =>
@@ -78,6 +78,7 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
     if (bkEnv.isPullRequest) {
       await createOrUpdateDeploymentComment({
         state: 'success',
+        preDeploy: opt.preDeploy,
         deploymentUrl,
       });
     } else {
