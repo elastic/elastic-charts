@@ -53,5 +53,7 @@ void (async () => {
     throw new Error(`Error: Missing deployment files: [${missingFiles.join(', ')}]`);
   }
 
-  await firebaseDeploy();
+  await firebaseDeploy({
+    preDeploy: true,
+  });
 })();
