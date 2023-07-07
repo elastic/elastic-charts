@@ -32,6 +32,7 @@ interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
    * Logic to run before next retry
    */
   onRetry?: () => void | Promise<void>;
+  allowFailure?: boolean;
 }
 
 export const wait = (n: number) => new Promise((resolve) => setTimeout(resolve, n));
@@ -54,6 +55,7 @@ export const exec = async (
     retry = 0,
     retryWait = 0,
     onRetry,
+    allowFailure = false,
   }: ExecOptions = {},
 ): Promise<string> => {
   let retryCount = 0;
@@ -80,6 +82,10 @@ export const exec = async (
         if (onRetry) await onRetry();
         if (retryWait) await wait(retryWait * 1000);
         return await execInner();
+      }
+
+      if (allowFailure) {
+        throw error; // still need to catch
       }
 
       const errorMsg = error instanceof Error ? error.message : typeof error === 'string' ? error : '';

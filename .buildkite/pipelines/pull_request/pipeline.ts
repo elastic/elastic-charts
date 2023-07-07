@@ -22,6 +22,7 @@ import {
   prettierStep,
   storybookStep,
   typeCheckStep,
+  firebasePreDeployStep,
 } from '../../steps';
 import { bkEnv, ChangeContext, uploadPipeline, Step, CustomCommandStep } from '../../utils';
 import { getBuildConfig } from '../../utils/build';
@@ -54,6 +55,7 @@ void (async () => {
       typeCheckStep(),
       storybookStep(),
       e2eServerStep(),
+      firebasePreDeployStep(),
       ghpDeployStep(),
       playwrightStep(),
       firebaseDeployStep(),

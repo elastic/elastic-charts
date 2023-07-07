@@ -109,6 +109,7 @@ export async function getDeploymentUrl() {
     const deploymentJson = await exec(`npx firebase-tools hosting:channel:open ${channelId} --json`, {
       cwd: './e2e_server',
       stdio: 'pipe',
+      allowFailure: true,
       env: {
         ...process.env,
         GOOGLE_APPLICATION_CREDENTIALS: gacFile,
