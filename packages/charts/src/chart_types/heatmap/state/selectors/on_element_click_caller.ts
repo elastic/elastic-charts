@@ -38,14 +38,14 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
           if (!spec) {
             return;
           }
-          if (!settings.onElementClick) {
+          if (!settings || !settings.onElementClick) {
             return;
           }
           if (!isPickedCells(pickedShapes)) {
             return;
           }
           const nextPickedShapesLength = pickedShapes.length;
-          if (nextPickedShapesLength > 0 && isClicking(prevClick, lastClick) && settings && settings.onElementClick) {
+          if (nextPickedShapesLength > 0 && isClicking(prevClick, lastClick)) {
             const elements = pickedShapes.map<[Cell, SeriesIdentifier]>((value) => [
               value,
               {
