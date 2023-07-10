@@ -8,6 +8,7 @@ wiki
 **/node_modules
 coverage
 license_header.js
+*.html
 
 # Editor configs
 .vscode
