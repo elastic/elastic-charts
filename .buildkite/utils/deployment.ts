@@ -76,7 +76,7 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
 
   const deploymentUrl = options.deploymentUrl ?? (await getDeploymentUrl());
   const previousSha = options.previousSha ?? (await getMetadata(MetaDataKeys.deploymentPreviousSha));
-  const commentBody = getComment('deployment', { state, sha, deploymentUrl, previousSha });
+  const commentBody = getComment('deployment', { ...options, state, sha, deploymentUrl, previousSha });
 
   const {
     data: { id },
