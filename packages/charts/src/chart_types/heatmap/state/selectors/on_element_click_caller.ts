@@ -38,7 +38,7 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
           if (!spec) {
             return;
           }
-          if (!settings || !settings.onElementClick) {
+          if (!settings.onElementClick) {
             return;
           }
           if (!isPickedCells(pickedShapes)) {
