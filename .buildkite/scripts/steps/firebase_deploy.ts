@@ -10,14 +10,10 @@ import fs from 'fs';
 import path from 'path';
 
 import { firebaseDeploy, downloadArtifacts, startGroup, decompress, bkEnv } from '../../utils';
-import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
+import { createDeploymentStatus } from '../../utils/deployment';
 
 void (async () => {
-  if (bkEnv.isPullRequest) {
-    await createOrUpdateDeploymentComment({
-      state: 'pending',
-    });
-  } else {
+  if (!bkEnv.isPullRequest) {
     await createDeploymentStatus({ state: 'in_progress' });
   }
 
