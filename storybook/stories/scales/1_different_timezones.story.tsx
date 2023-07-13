@@ -12,6 +12,7 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const today = Date.now();
@@ -30,7 +31,7 @@ const OTHER_MINUS8_TIMEZONE_DATASET = new Array(10)
   .fill(0)
   .map((d, i) => [UTC_MINUS8_DATE + DAY_INCREMENT_1 * i, i % 5]);
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const timezones = {
     utc: 'utc',
     local: 'local',
@@ -73,7 +74,7 @@ export const Example = () => {
       break;
   }
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="time" position={Position.Bottom} tickFormat={tooltipFn} />
       <Axis id="y" position={Position.Left} />

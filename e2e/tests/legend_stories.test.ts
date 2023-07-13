@@ -101,22 +101,28 @@ test.describe('Legend stories', () => {
 
   test.describe('Tooltip placement with legend', () => {
     test('should render tooltip with left legend', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)('http://localhost:9001/?path=/story/legend--left', {
-        bottom: 190,
-        left: 310,
-      });
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/legend--positioning&knob-position=left',
+        {
+          bottom: 190,
+          left: 310,
+        },
+      );
     });
 
     test('should render tooltip with top legend', async ({ page }) => {
-      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)('http://localhost:9001/?path=/story/legend--top', {
-        top: 150,
-        left: 320,
-      });
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/legend--positioning&knob-position=top',
+        {
+          top: 150,
+          left: 320,
+        },
+      );
     });
 
     test('should render tooltip with right legend', async ({ page }) => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/legend--right',
+        'http://localhost:9001/?path=/story/legend--positioning&knob-position=right',
         {
           bottom: 180,
           left: 330,
@@ -126,7 +132,7 @@ test.describe('Legend stories', () => {
 
     test('should render tooltip with bottom legend', async ({ page }) => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/legend--bottom',
+        'http://localhost:9001/?path=/story/legend--positioning&knob-position=bottom',
         {
           top: 150,
           left: 320,
@@ -140,7 +146,7 @@ test.describe('Legend stories', () => {
       // puts mouse to the bottom left
       await common.moveMouse(page)(0, 0);
       await common.expectChartWithKeyboardEventsAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/legend--right',
+        'http://localhost:9001/?path=/story/legend--positioning&knob-position=right',
         [
           {
             key: 'tab',
@@ -155,7 +161,7 @@ test.describe('Legend stories', () => {
     });
     test('should change aria label to hidden when clicked', async ({ page }) => {
       await common.loadElementFromURL(page)(
-        'http://localhost:9001/?path=/story/legend--right',
+        'http://localhost:9001/?path=/story/legend--positioning&knob-position=right',
         '.echLegendItem__label',
       );
       await common.clickMouseRelativeToDOMElement(page)(
@@ -262,7 +268,7 @@ test.describe('Legend stories', () => {
   test.describe('Custom width', () => {
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const getUrl = (position: string, size: number) =>
-      `http://localhost:9001/?path=/story/legend--${position}&knob-enable legend size=true&knob-legend size=${size}`;
+      `http://localhost:9001/?path=/story/legend--positioning&knob-position=${position}&knob-enable legend size=true&knob-legend size=${size}`;
 
     pwEach.describe(['top', 'right', 'bottom', 'left'])(
       (p) => `position ${p}`,

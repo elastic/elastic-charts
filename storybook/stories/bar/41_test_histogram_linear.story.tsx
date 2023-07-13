@@ -27,11 +27,12 @@ import {
 } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
 // for testing purposes only
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data = TestDatasets.BARCHART_2Y1G;
 
   const lineAnnotationStyle = {
@@ -96,7 +97,7 @@ export const Example = () => {
 
   const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         rotation={customKnobs.enum.rotation()}
         theme={theme}

@@ -20,9 +20,13 @@ import {
   MetricWTrend,
   Settings,
 } from '@elastic/charts';
+import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+
+const rng = getRandomNumberGenerator();
 
 function split(a: (any | undefined)[], size: number) {
   return Array.from(new Array(Math.ceil(a.length / size))).map((_, index) => a.slice(index * size, (index + 1) * size));
@@ -33,7 +37,7 @@ const getIcon =
   ({ width, height, color }: { width: number; height: number; color: string }) =>
     <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />;
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showGridBorder = boolean('show grid border', false);
   const addMetricClick = boolean('attach click handler', true);
   const useProgressBar = boolean('use progress bar', true);
@@ -154,10 +158,10 @@ export const Example = () => {
         data
           .slice()
           .map((d) => {
-            return Math.random() > 0.8 ? undefined : d;
+            return rng(0, 1, 3) > 0.8 ? undefined : d;
           })
-          .slice(0, Math.ceil(Math.random() * data.length)),
-        Math.ceil((Math.random() * data.length) / 2),
+          .slice(0, rng(1, data.length)),
+        rng(1, data.length / 2),
       ),
     );
   });
@@ -170,6 +174,8 @@ export const Example = () => {
     <div
       style={{
         resize: 'both',
+        maxWidth: '100%',
+        maxHeight: '80vh',
         padding: '0px',
         overflow: 'auto',
         height: layout === 'vertical' ? '720px' : layout === 'horizontal' ? '150px' : '300px',
@@ -185,7 +191,7 @@ export const Example = () => {
           .flat()
           .map((d) => `[${d?.value}]`)
           .join(' ')}
-      <Chart>
+      <Chart title={title} description={description}>
         <Settings
           baseTheme={useBaseTheme()}
           onElementClick={

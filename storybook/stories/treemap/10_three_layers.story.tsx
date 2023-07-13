@@ -21,6 +21,7 @@ import {
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import {
   countryLookup,
@@ -37,7 +38,6 @@ const countries = mocks.sunburst
   .reverse();
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
   partition: {
     minFontSize: 4,
     maxFontSize: 36,
@@ -46,8 +46,8 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings showLegend theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"

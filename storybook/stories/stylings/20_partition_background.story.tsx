@@ -20,6 +20,7 @@ import {
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import {
   discreteColor,
@@ -29,12 +30,11 @@ import {
   regionLookup,
 } from '../utils/utils';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const bGColorDisabled = boolean('disable background color', false);
   const bgColor = color('Background color', 'rgba(255, 255, 255, 1)');
 
   const theme: PartialTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
     background: {
       color: bGColorDisabled ? bgColor : undefined,
     },
@@ -61,7 +61,7 @@ export const Example = () => {
     },
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings theme={theme} baseTheme={useBaseTheme()} />
       <Partition
         id="spec_1"

@@ -11,14 +11,15 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const UTC_DATE = DateTime.fromISO('2019-01-01T00:00:00.000Z').toMillis();
 const DAY_INCREMENT_1 = 1000 * 60 * 60 * 24;
 const UTC_DATASET = new Array(10).fill(0).map((d, i) => [UTC_DATE + DAY_INCREMENT_1 * i, i % 5]);
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings baseTheme={useBaseTheme()} />
     <Axis
       id="time"

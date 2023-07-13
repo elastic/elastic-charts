@@ -274,7 +274,7 @@ export function getAllKeys(object?: any, objects: any[] = []): Set<any> {
   return new Set(
     [object, ...objects].filter(Boolean).reduce((keys: any[], obj) => {
       if (obj && typeof obj === 'object') {
-        const newKeys = obj ? (obj instanceof Map ? obj.keys() : Object.keys(obj)) : [];
+        const newKeys = obj instanceof Map ? obj.keys() : Object.keys(obj);
         keys.push(...newKeys);
       }
 
@@ -509,8 +509,8 @@ export function isUniqueArray<B, T>(arr: B[], extractor?: (value: B) => T) {
  * @internal
  */
 export function isRTLString(s: string, ratio: number = 0.5) {
-  const stripped = s.replace(/[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]|\s|\d/gi, '');
-  return stripped.length / s.replace(/\s|\d/gi, '').length < ratio;
+  const stripped = s.replaceAll(/[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]|\s|\d/gi, '');
+  return stripped.length / s.replaceAll(/\s|\d/gi, '').length < ratio;
 }
 
 /** @internal */

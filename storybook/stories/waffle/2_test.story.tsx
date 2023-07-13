@@ -10,15 +10,15 @@ import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalStark9, discreteColor, productPriceLookup } from '../utils/utils';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   return (
-    <Chart className="story-chart">
+    <Chart title={title} description={description} className="story-chart">
       <Settings
         theme={{
-          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
           chartPaddings: { left: 170, right: 170, top: 70, bottom: 70 },
         }}
         baseTheme={useBaseTheme()}

@@ -1,17 +1,62 @@
 .echChart {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &__titles {
+    margin-right: 24px;
+  }
+}
+
+.echChartContent {
   position: relative;
   display: flex;
-  height: 100%;
+  flex-direction: row;
+  flex-grow: 1;
+  height: 1px; // triggers flex height constraints
+  width: 100%;
 
   &--column {
     flex-direction: column;
   }
 }
 
+.echChartTitle {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 19px;
+  padding: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+
+  + .echChartDescription {
+    padding-top: 0;
+  }
+}
+
+.echChartDescription {
+  padding: 8px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
 .echContainer {
   flex: 1;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 .echChartPointerContainer {

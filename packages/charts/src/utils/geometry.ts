@@ -64,7 +64,7 @@ export interface PointGeometry {
   value: GeometryValue;
   style: PointGeometryStyle;
   panel: Dimensions;
-  orphan: boolean;
+  isolated: boolean;
 }
 /** @internal */
 export interface PointGeometryStyle {
@@ -98,7 +98,6 @@ export interface BarGeometry {
     width: number;
     height: number;
     overflowConstraints: Set<LabelOverflowConstraint>;
-    isValueContainedInElement: boolean;
   };
   seriesIdentifier: XYChartSeriesIdentifier;
   value: GeometryValue;

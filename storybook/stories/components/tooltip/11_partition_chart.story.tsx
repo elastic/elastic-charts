@@ -27,6 +27,7 @@ import { combineColors } from '@elastic/charts/src/common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '@elastic/charts/src/common/color_library_wrappers';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import {
   discreteColor,
@@ -37,12 +38,6 @@ import {
 } from '../../utils/utils';
 
 const theme: PartialTheme = {
-  chartMargins: {
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-  },
   partition: {
     linkLabel: {
       maxCount: 0,
@@ -92,7 +87,7 @@ const actionByDepth = (depth: number): TooltipAction => {
   };
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const layout = select<PartitionLayout>(
     'layout',
     {
@@ -134,7 +129,7 @@ export const Example = () => {
   ];
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings theme={theme} baseTheme={useBaseTheme()} />
       <Tooltip
         maxVisibleTooltipItems={4}

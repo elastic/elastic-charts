@@ -9,9 +9,10 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { AreaSeries, Axis, AxisProps, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 
@@ -20,7 +21,12 @@ const tickLabelStyle = { fontSize: 11, fontFamily };
 const axisTitleColor = 'rgb(112,112,112)';
 const axisTitleFontSize = 15;
 const dataInk = 'rgba(96, 146, 192, 1)';
-const horizontalGridLineStyle = { stroke: 'black', strokeWidth: 0.15, opacity: 1 };
+const horizontalGridLineStyle: AxisProps['gridLine'] = {
+  visible: true,
+  stroke: 'black',
+  strokeWidth: 0.15,
+  opacity: 1,
+};
 
 const tooltipDateFormatter = (d: any) =>
   new Intl.DateTimeFormat('en-US', {
@@ -38,7 +44,7 @@ const t1 = data[data.length - 1][0];
 const topAxisLabelFormat = (d: any) =>
   `${new Intl.DateTimeFormat('en-US', { minute: 'numeric' }).format(d).padStart(2, '0')}′  `;
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showLegend = boolean('Show legend', false);
   const minorGridLines = boolean('Minor grid lines', true);
   const horizontalAxisTitle = boolean('Horizontal axis title', false);
@@ -69,7 +75,7 @@ export const Example = () => {
   });
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend={showLegend}
         baseTheme={useBaseTheme()}
@@ -89,7 +95,9 @@ export const Example = () => {
         position={boolean('Top X axis', false) ? Position.Top : Position.Bottom}
         showOverlappingTicks={boolean('showOverlappingTicks time axis', false)}
         showOverlappingLabels={boolean('showOverlappingLabels time axis', false)}
-        showGridLines={minorGridLines}
+        gridLine={{
+          visible: minorGridLines,
+        }}
         style={{
           axisLine: { stroke: dataInk },
           tickLine: { size: 0.0001, padding: 4 },
@@ -99,6 +107,7 @@ export const Example = () => {
             padding: 0,
             offset: { x: 0, y: 0 },
           },
+
           axisTitle: { fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },
         }}
         tickFormat={tooltipDateFormatter}
@@ -110,9 +119,8 @@ export const Example = () => {
         id="left"
         title={yAxisTitle}
         position={Position.Left}
-        showGridLines
-        ticks={4}
         gridLine={horizontalGridLineStyle}
+        ticks={4}
         style={{
           tickLine: { ...horizontalGridLineStyle, size: 8, padding: 4 },
           axisLine: { visible: false },

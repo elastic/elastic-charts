@@ -19,6 +19,7 @@ import {
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import {
   discreteColor,
@@ -29,7 +30,6 @@ import {
 } from '../utils/utils';
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
   partition: {
     linkLabel: {
       maxCount: 0,
@@ -53,8 +53,8 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings showLegend theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"
@@ -72,7 +72,7 @@ export const Example = () => (
         },
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.slice(0, 2),
-          nodeLabel: (d: any) => regionLookup[d].regionName.replace(/\s/g, '\u00A0'),
+          nodeLabel: (d: any) => regionLookup[d].regionName.replaceAll(/\s/g, '\u00A0'),
           shape: {
             fillColor: (key, sortIndex, node) =>
               discreteColor(colorBrewerCategoricalStark9, 0.5)(node.parent.sortIndex),
@@ -80,7 +80,7 @@ export const Example = () => (
         },
         {
           groupByRollup: (d: Datum) => d.dest,
-          nodeLabel: (d: any) => countryLookup[d].name.replace(/\s/g, '\u00A0'),
+          nodeLabel: (d: any) => countryLookup[d].name.replaceAll(/\s/g, '\u00A0'),
           shape: {
             fillColor: (key, sortIndex, node) =>
               discreteColor(colorBrewerCategoricalStark9, 0.3)(node.parent.parent.sortIndex),

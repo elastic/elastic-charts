@@ -25,6 +25,7 @@ import {
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalPastel12, countryLookup, productLookup, regionLookup } from '../utils/utils';
 
@@ -56,7 +57,6 @@ const onElementListeners = {
 };
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
   chartPaddings: { top: 6, left: 8, bottom: 6, right: 8 },
   partition: {
     linkLabel: {
@@ -80,7 +80,7 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const layout = select(
     'Inner breakdown layout',
     {
@@ -92,7 +92,7 @@ export const Example = () => {
   );
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         {...onElementListeners}
         showLegend={boolean('Show legend', true)}

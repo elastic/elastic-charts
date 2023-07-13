@@ -25,6 +25,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
@@ -43,7 +44,7 @@ const data1 = generateData();
 const data2 = generateData();
 const data3 = generateData();
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const marker = (
     <span
       style={{
@@ -64,7 +65,7 @@ export const Example = () => {
   const disableSmallMultiples = boolean('Disable small multiples', false);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings onElementClick={onElementClick} rotation={90} showLegend={showLegend} baseTheme={useBaseTheme()} />
       <Axis id="time" position={Position.Bottom} gridLine={{ visible: false }} />
       <Axis id="y" title="Day of week" position={Position.Left} gridLine={{ visible: false }} />

@@ -12,6 +12,7 @@ import React from 'react';
 import { Axis, Chart, DomainPaddingUnit, Position, ScaleType, Settings } from '@elastic/charts';
 import { computeContinuousDataDomain } from '@elastic/charts/src/utils/domain';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -24,7 +25,7 @@ const logDomains = (data: any[], customDomain: any) => {
   /* eslint-enable */
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const fit = boolean('fit Y domain to data', true);
   const constrainPadding = boolean('constrain padding', true);
   const nice = boolean('nice ticks', false);
@@ -70,7 +71,7 @@ export const Example = () => {
   }
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="top" position={Position.Top} title="Top axis" />
       <Axis

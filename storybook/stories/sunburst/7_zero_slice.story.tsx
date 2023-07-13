@@ -11,15 +11,15 @@ import React from 'react';
 import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export const Example = () => (
-  <Chart size={{ height: 180 }}>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description} size={{ height: 180 }}>
     <Settings
       baseTheme={useBaseTheme()}
       theme={{
-        chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
         chartPaddings: { left: 160 },
       }}
     />

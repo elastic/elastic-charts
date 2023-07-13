@@ -8,10 +8,11 @@
 
 import React from 'react';
 
+import { canDisplayChartTitles } from './selectors/can_display_chart_titles';
 import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { LegendItem } from '../../../common/legend';
-import { InternalChartState } from '../../../state/chart_state';
+import { GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
 import { Metric } from '../renderer/dom';
@@ -52,5 +53,9 @@ export class MetricState implements InternalChartState {
       smHDomain: [],
       smVDomain: [],
     };
+  }
+
+  canDisplayChartTitles(globalState: GlobalChartState) {
+    return canDisplayChartTitles(globalState);
   }
 }

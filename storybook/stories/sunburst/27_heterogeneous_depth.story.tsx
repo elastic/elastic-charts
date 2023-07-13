@@ -20,6 +20,7 @@ import {
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import {
   discreteColor,
@@ -30,7 +31,6 @@ import {
 } from '../utils/utils';
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
   partition: {
     linkLabel: {
       maxCount: 0,
@@ -54,8 +54,8 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_1"

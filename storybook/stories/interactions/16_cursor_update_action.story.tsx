@@ -28,6 +28,7 @@ import {
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
@@ -52,7 +53,7 @@ const getSeriesKnob = (group?: string) => {
   return chartTypes[type] ?? BarSeries;
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const ref1 = React.useRef<Chart>(null);
   const ref2 = React.useRef<Chart>(null);
   const pointerUpdate = (event: PointerEvent) => {
@@ -94,7 +95,7 @@ export const Example = () => {
 
   return (
     <>
-      <Chart ref={ref1} size={{ height: '50%' }} id="chart1">
+      <Chart title={title} description={description} ref={ref1} size={{ height: '50%' }} id="chart1">
         <Settings
           showLegend
           showLegendExtra
@@ -125,7 +126,7 @@ export const Example = () => {
           data={data1.slice(3, 60)}
         />
       </Chart>
-      <Chart ref={ref2} size={{ height: '50%' }} id="chart2">
+      <Chart title={title} description={description} ref={ref2} size={{ height: '50%' }} id="chart2">
         <Settings
           showLegend
           showLegendExtra

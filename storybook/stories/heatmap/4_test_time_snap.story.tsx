@@ -25,6 +25,7 @@ import {
   DATA_8,
   DATA_9,
 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const datasets = [DATA_1, DATA_2, DATA_3, DATA_4, DATA_5, DATA_6, DATA_7, DATA_8, DATA_9];
@@ -59,7 +60,7 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const datasetIndex = select('dataset', [1, 2, 3, 4, 5, 6, 7, 8, 9], 1) - 1;
   const dataset = datasets[datasetIndex];
   const [min = 0, max = 0] = extent(dataset.data, (d) => d.value);
@@ -79,7 +80,7 @@ export const Example = () => {
         {DateTime.fromMillis(tMin).toISO()} to {DateTime.fromMillis(tMax).toISO()}{' '}
         {`${dataset.interval.type}: ${dataset.interval.value}${dataset.interval.unit} points:${dataset.data.length}`}
       </div>
-      <Chart className="story-chart">
+      <Chart title={title} description={description} className="story-chart">
         <Settings theme={theme} baseTheme={useBaseTheme()} xDomain={dataset.domain} />
         <Heatmap
           id="heatmap1"

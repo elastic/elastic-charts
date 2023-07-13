@@ -12,6 +12,7 @@ import { Chart, Goal, Settings } from '@elastic/charts';
 import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getBandFillColorFn } from '../utils/utils';
 
@@ -27,7 +28,7 @@ const getBandFillColor = getBandFillColorFn({
   300: `rgb(${q3},${q3},${q3})`,
 });
 
-export const Example = () => (
+export const Example: ChartsStory = (_, { title, description }) => (
   <div
     style={{
       resize: 'both',
@@ -39,7 +40,7 @@ export const Example = () => (
       borderRadius: '6px',
     }}
   >
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Goal
         id="spec_1"

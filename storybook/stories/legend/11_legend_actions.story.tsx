@@ -12,6 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendLabelOptions } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
 import { getLegendAction } from '../utils/components/get_legend_action';
@@ -25,7 +26,7 @@ const getLabelOptionKnobs = (): LegendLabelOptions => {
   };
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const hideActions = boolean('Hide legend action', false, 'Legend');
   const showLegendExtra = !boolean('Hide legend extra', false, 'Legend');
   const showColorPicker = !boolean('Hide color picker', true, 'Legend');
@@ -34,7 +35,7 @@ export const Example = () => {
   const labelOptions = getLabelOptionKnobs();
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         theme={{ legend: { labelOptions } }}

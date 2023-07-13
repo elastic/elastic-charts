@@ -12,10 +12,11 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, StackMode } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 // for testing purposes only
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data = [
     [1, 1, 3, 'a'],
     [2, null, 4, 'a'],
@@ -28,7 +29,7 @@ export const Example = () => {
   ];
   const stackMode = boolean('stack as percentage', false) ? StackMode.Percentage : undefined;
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis

@@ -10,7 +10,7 @@ import React, { CSSProperties, RefObject } from 'react';
 
 import { StateActions } from './actions';
 import { CHART_RENDERED } from './actions/chart';
-import { UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
+import { UPDATE_CHART_TITLES, UPDATE_PARENT_DIMENSION } from './actions/chart_settings';
 import { CLEAR_TEMPORARY_COLORS, SET_PERSISTED_COLOR, SET_TEMPORARY_COLOR } from './actions/colors';
 import { DOMElement } from './actions/dom_element';
 import { EXTERNAL_POINTER_EVENT } from './actions/events';
@@ -167,6 +167,11 @@ export interface InternalChartState {
    * Get the domain of the vertical and horizontal small multiple grids
    */
   getSmallMultiplesDomains(globalState: GlobalChartState): SmallMultiplesSeriesDomains;
+
+  /**
+   * Determines if chart titles are displayed when provided
+   */
+  canDisplayChartTitles(globalState: GlobalChartState): boolean;
 }
 
 /** @internal */
@@ -235,6 +240,14 @@ export interface GlobalChartState {
    */
   chartId: ChartId;
   /**
+   * Chart title
+   */
+  title?: string;
+  /**
+   * Chart description
+   */
+  description?: string;
+  /**
    * The Z-Index of the chart component
    */
   zIndex: number;
@@ -282,8 +295,10 @@ export interface GlobalChartState {
 }
 
 /** @internal */
-export const getInitialState = (chartId: string): GlobalChartState => ({
+export const getInitialState = (chartId: string, title?: string, description?: string): GlobalChartState => ({
   chartId,
+  title,
+  description,
   zIndex: 0,
   specsInitialized: false,
   specParsing: false,
@@ -319,10 +334,10 @@ export const getInitialState = (chartId: string): GlobalChartState => ({
 });
 
 /** @internal */
-export const chartStoreReducer = (chartId: string) => {
+export const chartStoreReducer = (chartId: string, title?: string, description?: string) => {
   // redux types controls state as first parameter
   // eslint-disable-next-line @typescript-eslint/default-param-last
-  return (state = getInitialState(chartId), action: StateActions): GlobalChartState => {
+  return (state = getInitialState(chartId, title, description), action: StateActions): GlobalChartState => {
     switch (action.type) {
       case Z_INDEX_EVENT:
         return {
@@ -387,6 +402,12 @@ export const chartStoreReducer = (chartId: string) => {
           parentDimensions: {
             ...action.dimensions,
           },
+        };
+      case UPDATE_CHART_TITLES:
+        return {
+          ...state,
+          title: action.title,
+          description: action.description,
         };
       case EXTERNAL_POINTER_EVENT:
         // discard events from self if any

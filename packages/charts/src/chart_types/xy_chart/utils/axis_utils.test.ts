@@ -107,7 +107,6 @@ describe('Axis computational utils', () => {
     groupId: 'group_1',
     hide: false,
     style,
-    showGridLines: true,
     integersOnly: false,
   });
 
@@ -133,7 +132,6 @@ describe('Axis computational utils', () => {
       showOverlappingLabels: false,
       position: Position.Left,
       style,
-      showGridLines: true,
       integersOnly: false,
     });
   const lineSeriesSpec = MockSeriesSpec.line({
@@ -208,7 +206,7 @@ describe('Axis computational utils', () => {
     expect(yScale?.bandwidth).toBe(0);
     expect(yScale?.domain).toEqual([0, 1]);
     expect(yScale?.range).toEqual([100, 0]);
-    expect(yScale?.ticks()).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]);
+    expect(yScale?.ticks()).toEqual([0, 0.2, 0.4, 0.6, 0.8, 1]);
 
     const ungroupedAxisSpec = { ...verticalAxisSpec, groupId: 'foo' };
     const nullYScale = getScaleForAxisSpec(

@@ -28,10 +28,11 @@ import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/co
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s, getBandFillColorFn } from '../utils/utils';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   /**
    * The handler section of this story demonstrates the PNG export functionality
    */
@@ -60,7 +61,7 @@ export const Example = () => {
   const selectedChart = select('chart type', [ChartType.XYAxis, ChartType.Partition, ChartType.Goal], ChartType.XYAxis);
 
   return (
-    <Chart ref={chartRef}>
+    <Chart title={title} description={description} ref={chartRef}>
       <Settings
         baseTheme={useBaseTheme()}
         showLegend={selectedChart === ChartType.XYAxis}

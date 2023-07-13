@@ -92,11 +92,12 @@ export function renderBars(
     const displayValueText =
       displayValueSettings?.isAlternatingValueLabel && barGeometries.length % 2 ? undefined : formattedDisplayValue;
 
-    const { displayValueWidth, fixedFontScale } = computeBoxWidth(
-      displayValueText ?? '',
-      { padding: PADDING, fontSize, fontFamily, measureText, width },
-      displayValueSettings,
-    );
+    const { displayValueWidth, fixedFontScale } = computeBoxWidth(displayValueText ?? '', {
+      padding: PADDING,
+      fontSize,
+      fontFamily,
+      measureText,
+    });
 
     const isHorizontalRotation = chartRotation % 180 === 0;
     // Pick the right side of the label's box to use as factor reference
@@ -126,7 +127,6 @@ export function renderBars(
             width: bboxWidthFactor * displayValueWidth,
             height: textScalingFactor * fixedFontScale,
             overflowConstraints,
-            isValueContainedInElement: displayValueSettings?.isValueContainedInElement ?? false,
           }
         : undefined;
 
@@ -164,15 +164,12 @@ function computeBoxWidth(
     fontSize,
     fontFamily,
     measureText,
-    width,
   }: {
     padding: number;
     fontSize: number | { min: number; max: number };
     fontFamily: string;
     measureText: TextMeasure;
-    width: number;
   },
-  displayValueSettings: DisplayValueSpec | undefined,
 ): { fixedFontScale: number; displayValueWidth: number } {
   const fixedFontScale = Math.max(typeof fontSize === 'number' ? fontSize : fontSize.min, 1);
 
@@ -189,8 +186,7 @@ function computeBoxWidth(
   }
   return {
     fixedFontScale,
-    displayValueWidth:
-      displayValueSettings && displayValueSettings.isValueContainedInElement ? width : computedDisplayValueWidth,
+    displayValueWidth: computedDisplayValueWidth,
   };
 }
 

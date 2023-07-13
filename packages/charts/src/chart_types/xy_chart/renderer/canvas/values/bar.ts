@@ -15,7 +15,7 @@ import { Dimensions } from '../../../../../utils/dimensions';
 import { BarGeometry } from '../../../../../utils/geometry';
 import { BackgroundStyle, TextAlignment, Theme } from '../../../../../utils/themes/theme';
 import { LabelOverflowConstraint } from '../../../utils/specs';
-import { renderText, wrapLines } from '../primitives/text';
+import { renderText } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 import { withPanelTransform } from '../utils/panel_transform';
 
@@ -44,7 +44,7 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     if (!bar.displayValue) {
       return;
     }
-    const { text, fontSize, fontScale, overflowConstraints, isValueContainedInElement } = bar.displayValue;
+    const { text, fontSize, fontScale, overflowConstraints } = bar.displayValue;
     const shadowSize = getTextBorderSize(fill);
     const { fillColor, shadowColor } = getTextColors(fill, bar.color, background);
     const font: Font = {
@@ -69,9 +69,8 @@ export function renderBarValues(ctx: CanvasRenderingContext2D, props: BarValuesP
     if (overflowConstraints.has(LabelOverflowConstraint.BarGeometry) && overflow) {
       return;
     }
-    const { width, height, lines } = isValueContainedInElement
-      ? wrapLines(ctx, text, font, fontSize, rotation === 0 || rotation === 180 ? bar.width : bar.height, 100)
-      : { lines: [text], width: bar.displayValue.width, height: bar.displayValue.height };
+    const lines = [text];
+    const { width, height } = bar.displayValue;
 
     if (debug) withPanelTransform(ctx, panel, rotation, renderingArea, () => renderDebugRect(ctx, rect));
 

@@ -9,7 +9,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import { range } from 'lodash';
 import { DateTime } from 'luxon';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import {
   ScaleType,
@@ -24,6 +24,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { customKnobs } from '../utils/knobs';
@@ -36,7 +37,7 @@ const numOfDays = 90;
 
 const tickTimeFormatter = timeFormatter(niceTimeFormatByDay(numOfDays));
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('Debug', false);
   const debugState = boolean('Enable debug state', true);
   const timeBasedData = boolean('Time data', false);
@@ -130,10 +131,14 @@ export const Example = () => {
     () => sampleSize(fullData, vSplitCountAbs * hSplitCountAbs * dataCount * categories * density),
     [categories, dataCount, density, fullData, vSplitCountAbs, hSplitCountAbs],
   );
-  const { highlightedData, onElementClick, onBrushEnd } = useHeatmapSelection();
+  const { highlightedData, onElementClick, onBrushEnd, clearSelection } = useHeatmapSelection();
+
+  useEffect(() => {
+    clearSelection();
+  }, [clearSelection, vSplit, hSplit, vSplitCount, hSplitCount, categories, density, xScaleType]);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         debug={debug}
         debugState={debugState}

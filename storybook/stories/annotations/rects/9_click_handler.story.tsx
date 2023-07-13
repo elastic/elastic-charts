@@ -24,17 +24,18 @@ import {
 } from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { getDebugStateLogger } from '../../utils/debug_state_logger';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const onAnnotationClick = boolean('onAnnotationClick listener', true);
   const onElementClick = boolean('onElementClick listener', true);
   const typeOfSeries = select('series type', ['line', 'bar'], 'bar');
   const debugState = boolean('Enable debug state', false);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         onRenderChange={getDebugStateLogger(debugState)}
         debugState={debugState}

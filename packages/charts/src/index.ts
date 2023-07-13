@@ -48,11 +48,6 @@ export { CategoryKey, CategoryLabel } from './common/category';
 export { Layer as PartitionLayer, PartitionProps } from './chart_types/partition_chart/specs/index';
 export { FillLabelConfig as PartitionFillLabel, PartitionStyle } from './utils/themes/partition';
 export { PartitionLayout } from './chart_types/partition_chart/layout/types/config_types';
-export * from './chart_types/goal_chart/specs/index';
-export * from './chart_types/wordcloud/specs/index';
-
-// TODO: Remove deprecated config types. Need for eui alignment
-export * from './chart_types/partition_chart/layout/types/config';
 
 export {
   Accessor,

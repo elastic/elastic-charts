@@ -229,9 +229,6 @@ export const updateCheckStatus = async (
   // revert the completed check run is to create a new check run. This will not show as a duplicate run.
   const newCheckNeeded = options.status !== 'completed' && checkRun?.status === 'completed';
 
-  // console.trace('updateCheckStatus', checkId, title);
-  // console.log(JSON.stringify(options, null, 2));
-
   try {
     const output =
       title && typeof title === 'string'
@@ -252,7 +249,7 @@ export const updateCheckStatus = async (
         name,
         external_id: checkId,
         head_sha: bkEnv.commit,
-      } as any); // octokit types are bad :(
+      });
       await syncCheckRun(check);
     } else {
       const { data: check } = await octokit.checks.update({
@@ -267,7 +264,7 @@ export const updateCheckStatus = async (
         output,
         external_id: checkId,
         check_run_id: checkRun.id, // required
-      } as any); // octokit types are bad :(
+      });
       await syncCheckRun(check);
     }
   } catch (error) {

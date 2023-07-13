@@ -1,3 +1,69 @@
+# [59.0.0](https://github.com/elastic/elastic-charts/compare/v58.2.1...v59.0.0) (2023-06-27)
+
+
+### Bug Fixes
+
+* **legend:** use reading direction sorting for stacked bar charts ([#2080](https://github.com/elastic/elastic-charts/issues/2080)) ([be9c839](https://github.com/elastic/elastic-charts/commit/be9c83906ab58ac6193fdc9219951741d284447b))
+
+
+### BREAKING CHANGES
+
+* **legend:** the sorting order of the legend is now inverted for stacked charts, following the reading direction of the legend (top-to-bottom in insertion order)
+
+## [58.2.1](https://github.com/elastic/elastic-charts/compare/v58.2.0...v58.2.1) (2023-06-23)
+
+
+### Bug Fixes
+
+* remove unused redux dev tools ([#2079](https://github.com/elastic/elastic-charts/issues/2079)) ([1870303](https://github.com/elastic/elastic-charts/commit/18703038807b784c347348bd8e88b9f5ae47f67e))
+
+# [58.2.0](https://github.com/elastic/elastic-charts/compare/v58.1.0...v58.2.0) (2023-06-23)
+
+
+### Bug Fixes
+
+* `Chart` component `children` type ([#2071](https://github.com/elastic/elastic-charts/issues/2071)) ([525c782](https://github.com/elastic/elastic-charts/commit/525c782829a37e465b03d5aae7a0d697f00bd431))
+* **deps:** update dependency @elastic/eui to v82 ([#2074](https://github.com/elastic/elastic-charts/issues/2074)) ([69a655f](https://github.com/elastic/elastic-charts/commit/69a655f0dac2975ab42b48a48cc19693eaff1021))
+
+
+### Features
+
+* **flame:** expose search field text and search text change listener ([#2068](https://github.com/elastic/elastic-charts/issues/2068)) ([c339947](https://github.com/elastic/elastic-charts/commit/c339947c3963b8ad8124203435f410b34b93cc1e))
+* support native chart title and description ([#2002](https://github.com/elastic/elastic-charts/issues/2002)) ([341a990](https://github.com/elastic/elastic-charts/commit/341a990c5d1154f36927a91321e4d0c39b44a4be))
+
+# [58.1.0](https://github.com/elastic/elastic-charts/compare/v58.0.0...v58.1.0) (2023-06-08)
+
+
+### Features
+
+* **flame:** expose search control ([#2064](https://github.com/elastic/elastic-charts/issues/2064)) ([011b56b](https://github.com/elastic/elastic-charts/commit/011b56b3f51e2aa1fea8410b4f24e69403635933))
+
+# [58.0.0](https://github.com/elastic/elastic-charts/compare/v57.0.1...v58.0.0) (2023-06-06)
+
+
+### Bug Fixes
+
+* **axis:** reduce number of y axis ticks on linear scale ([#2005](https://github.com/elastic/elastic-charts/issues/2005)) ([0ef828b](https://github.com/elastic/elastic-charts/commit/0ef828b535f69d3a47fa38febd5dd1f5b88a6ce8))
+* **deps:** update dependency @elastic/eui to v81 ([#2052](https://github.com/elastic/elastic-charts/issues/2052)) ([4c55e01](https://github.com/elastic/elastic-charts/commit/4c55e0119e6d0def4340a620899b7ee0e0012b02))
+
+
+### BREAKING CHANGES
+
+* **axis:** the default number of desired ticks in the Y-Axis was changed from `10` to `5`
+
+## [57.0.1](https://github.com/elastic/elastic-charts/compare/v57.0.0...v57.0.1) (2023-05-23)
+
+
+### Bug Fixes
+
+* **axes:** start of week label on multilayer time axis ([#2035](https://github.com/elastic/elastic-charts/issues/2035)) ([9711233](https://github.com/elastic/elastic-charts/commit/9711233cbffb39e3c879e7a13502ef895e4838ee))
+* **deps:** update dependency @elastic/eui to ^77.2.0 ([#2032](https://github.com/elastic/elastic-charts/issues/2032)) ([93cadcb](https://github.com/elastic/elastic-charts/commit/93cadcb7ae0aaa01ba485ee6a6f63de594a76576))
+* **deps:** update dependency @elastic/eui to v78 ([#2038](https://github.com/elastic/elastic-charts/issues/2038)) ([3feff2c](https://github.com/elastic/elastic-charts/commit/3feff2c5bc3db746494a7fa417a96aa50aaaaf13))
+* **deps:** update dependency @elastic/eui to v79 ([#2042](https://github.com/elastic/elastic-charts/issues/2042)) ([8015830](https://github.com/elastic/elastic-charts/commit/8015830f2086793b474ade9dfa1122d68ba169da))
+* **deps:** update dependency @elastic/eui to v80 ([#2047](https://github.com/elastic/elastic-charts/issues/2047)) ([e6042f3](https://github.com/elastic/elastic-charts/commit/e6042f3da33b4e7400c6dbc5ae5e1522413a16a3))
+* **heatmap:** brushing selection values ([#2028](https://github.com/elastic/elastic-charts/issues/2028)) ([6a877b4](https://github.com/elastic/elastic-charts/commit/6a877b431e68458dcf78bd7ce92c692ed5ad53af))
+* **heatmap:** wrong axes labels on hover ([#2033](https://github.com/elastic/elastic-charts/issues/2033)) ([045fb03](https://github.com/elastic/elastic-charts/commit/045fb037a97db7fcad0c3d0af2b31f7a4260149d))
+
 # [57.0.0](https://github.com/elastic/elastic-charts/compare/v56.0.0...v57.0.0) (2023-04-19)
 
 

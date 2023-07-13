@@ -12,10 +12,11 @@ import React from 'react';
 import { BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const rng = getRandomNumberGenerator();
   const maxLines = number('max label lines', 0, { min: 0, step: 1 });
   const seriesCount = number('series count', 1, { min: 1, step: 1 });
@@ -45,7 +46,7 @@ export const Example = () => {
     return series;
   };
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

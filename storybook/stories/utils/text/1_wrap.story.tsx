@@ -119,3 +119,7 @@ export const Example = () => {
     </div>
   );
 };
+
+Example.parameters = {
+  showHeader: true,
+};

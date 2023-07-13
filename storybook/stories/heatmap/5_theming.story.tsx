@@ -22,10 +22,11 @@ import {
 import { DATA_6 } from '@elastic/charts/src/utils/data_samples/test_dataset_heatmap';
 
 import { AxisStyle } from '../../../packages/charts/src/utils/themes/theme';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debugState = boolean('Enable debug state', true);
   const axes: RecursivePartial<AxisStyle> = {
     axisTitle: {
@@ -97,7 +98,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         onRenderChange={getDebugStateLogger(debugState)}
         showLegend

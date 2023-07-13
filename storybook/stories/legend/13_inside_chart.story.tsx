@@ -24,12 +24,13 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getLegendAction } from '../utils/components/get_legend_action';
 
 const dg = new SeededDataGenerator();
 const data = dg.generateGroupedSeries(10, 40);
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const numberOfSeries = number('Number of series', 5, { min: 1, max: 40, step: 1, range: true });
   const seriesWithLongName = number('Series with long name', 3, {
     min: 0,
@@ -80,7 +81,7 @@ export const Example = () => {
   const maxLines = number('max label lines', 1, { min: 0, step: 1 }, 'Legend');
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

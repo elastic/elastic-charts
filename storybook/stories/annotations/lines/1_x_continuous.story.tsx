@@ -23,6 +23,7 @@ import {
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 
@@ -30,7 +31,7 @@ function generateAnnotationData(values: any[]): LineAnnotationDatum[] {
   return values.map((value, index) => ({ dataValue: value, details: `detail-${index}` }));
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const markerPosition = select(
     'marker position',
@@ -47,19 +48,13 @@ export const Example = () => {
       stroke: '#f00',
       opacity: 1,
     },
-    details: {
-      fontSize: 12,
-      fontFamily: 'Arial',
-      fill: 'gray',
-      padding: 0,
-    },
   };
 
   const isBottom = boolean('x domain axis is bottom', true);
   const axisPosition = isBottom ? Position.Bottom : Position.Top;
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend showLegendExtra debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
       <LineAnnotation
         id="annotation_1"

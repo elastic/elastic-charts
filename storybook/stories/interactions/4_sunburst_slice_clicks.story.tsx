@@ -12,6 +12,7 @@ import React from 'react';
 
 import { Chart, Position, Settings, Partition, PartitionLayout } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, colorBrewerCategoricalPastel12 } from '../utils/utils';
 
@@ -42,18 +43,15 @@ const pieData: Array<PieDatum> = [
   ['PK', 43, 'PK', 2],
 ];
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const layout = select('layout', { sunburst: PartitionLayout.sunburst, treemap: PartitionLayout.treemap }, 'sunburst');
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
-        theme={{
-          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-        }}
         {...onElementListeners}
       />
       <Partition

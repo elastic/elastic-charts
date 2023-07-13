@@ -80,7 +80,7 @@ function extractExamples(exampleRelativePath = 'storybook/stories') {
       });
       const exampleFiles = examples.map(({ name, filename }) => {
         const urlPath = name
-          .replace(/([A-Z])/g, '-$1')
+          .replaceAll(/([A-Z])/g, '-$1')
           .trim()
           .toLocaleLowerCase();
         // TODO fix poor slug matching for special characters
@@ -93,6 +93,7 @@ function extractExamples(exampleRelativePath = 'storybook/stories') {
           name,
           filename,
           url,
+          groupTitle,
           filePath: path.join(path.relative(process.cwd(), path.dirname(groupFile)), filename),
         };
       });

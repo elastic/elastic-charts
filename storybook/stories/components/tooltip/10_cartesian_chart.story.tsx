@@ -23,6 +23,7 @@ import {
 } from '@elastic/charts';
 
 import { DATA_SERIES } from './data/series';
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 import { SB_SOURCE_PANEL } from '../../utils/storybook';
@@ -38,7 +39,7 @@ const formatter = new Intl.DateTimeFormat('en-US', {
 const tooltipDateFormatter = (d: number) => formatter.format(d);
 const stringPluralize = (d: unknown[]) => (d.length > 1 ? 's' : '');
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const chartType = select('chart type', { bar: 'bar', line: 'line' }, 'line');
   const reduceData = boolean('reduce data', false);
   const asyncDelay = number('async actions delay', 0, { step: 100, min: 0 });
@@ -67,7 +68,7 @@ export const Example = () => {
   ];
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         baseTheme={useBaseTheme()}
         theme={{
@@ -91,7 +92,9 @@ export const Example = () => {
       <Axis
         id="x"
         position={Position.Bottom}
-        showGridLines={true}
+        gridLine={{
+          visible: true,
+        }}
         style={{
           tickLine: { size: 0.0001, padding: 4 },
           tickLabel: {
@@ -106,7 +109,9 @@ export const Example = () => {
       <Axis
         id="left"
         position={Position.Right}
-        showGridLines
+        gridLine={{
+          visible: true,
+        }}
         ticks={4}
         tickFormat={(d) => `${Number(d * 100).toFixed(0)}`}
       />

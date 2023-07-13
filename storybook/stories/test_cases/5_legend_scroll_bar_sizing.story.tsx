@@ -10,6 +10,7 @@ import React from 'react';
 
 import { Chart, Axis, Position, BarSeries, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const data = [
@@ -61,9 +62,9 @@ const data = [
 /**
  * Should filter out zero values when fitting domain
  */
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend baseTheme={useBaseTheme()} />
       <Axis id="count" position={Position.Left} />
       <Axis id="time" position={Position.Bottom} integersOnly />

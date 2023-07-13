@@ -11,6 +11,7 @@ import React from 'react';
 
 import { Axis, Chart, LineSeries, Position, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 
@@ -19,7 +20,7 @@ const vGroups = {
   Secondary: 'secondary',
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const rotation = customKnobs.enum.rotation();
   const tickSize = number('Tick size', 10, { min: 0, max: 20, step: 1 });
@@ -42,7 +43,7 @@ export const Example = () => {
   const blueGroupId = select('Blue groupId', vGroups, vGroups.Secondary, 'Annotations');
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         debug={debug}
         rotation={rotation}

@@ -12,10 +12,11 @@ import React from 'react';
 
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, BrushAxis } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const brushAxisSelect = select(
     'brush axis',
     {
@@ -26,7 +27,7 @@ export const Example = () => {
     BrushAxis.Both,
   );
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         rotation={customKnobs.enum.rotation()}
         brushAxis={brushAxisSelect}

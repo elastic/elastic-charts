@@ -12,13 +12,14 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip } from '
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const dg = new SeededDataGenerator();
   const data = dg.generateSimpleSeries(15000);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Tooltip type={TooltipType.Follow} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />

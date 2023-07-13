@@ -24,10 +24,11 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const title = text('title', '21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9');
   const subtitle = text('subtitle', 'Cluster CPU usage');
   const progressOrTrend = select(
@@ -116,9 +117,11 @@ export const Example = () => {
         overflow: 'auto',
         height: '200px',
         width: '200px',
+        maxWidth: '100%',
+        maxHeight: '80vh',
       }}
     >
-      <Chart>
+      <Chart title={storyTitle} description={description}>
         <Settings
           baseTheme={useBaseTheme()}
           onElementClick={([d]) => {

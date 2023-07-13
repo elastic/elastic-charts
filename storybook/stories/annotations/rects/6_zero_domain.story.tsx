@@ -12,6 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 
 const getKnobs = () => {
@@ -30,13 +31,13 @@ const getKnobs = () => {
   };
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const xAxisKnobs = getKnobs();
   // only show the fit enable or disable if relevant
   const fit = xAxisKnobs.minY === xAxisKnobs.maxY ? boolean('fit to the domain', false) : undefined;
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <RectAnnotation id="rect" dataValues={[{ coordinates: xAxisKnobs }]} style={{ fill: 'red' }} />
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />

@@ -148,6 +148,8 @@ interface StateProps {
   a11ySettings: ReturnType<typeof getA11ySettingsSelector>;
   tooltipRequired: boolean;
   canPinTooltip: boolean;
+  search: NonNullable<FlameSpec['search']>;
+  onSeachTextChange: (text: string) => void;
   onElementOver: NonNullable<SettingsSpec['onElementOver']>;
   onElementClick: NonNullable<SettingsSpec['onElementClick']>;
   onElementOut: NonNullable<SettingsSpec['onElementOut']>;
@@ -248,6 +250,7 @@ class FlameComponent extends React.Component<FlameProps> {
       throw new Error('flame error: Mismatch between position1 (xy) and label length');
 
     this.targetFocus = this.getFocusOnRoot();
+
     this.bindControls();
     this.currentFocus = { ...this.targetFocus };
 
@@ -311,6 +314,13 @@ class FlameComponent extends React.Component<FlameProps> {
         const rect = focusRect(this.props.columnarViewModel, this.props.chartDimensions.height, nodeIndex);
         this.navigator.add({ ...rect, index: nodeIndex });
         this.focusOnNode(nodeIndex);
+      });
+    }
+    if (controlProviderCallback.search) {
+      controlProviderCallback.search((text: string) => {
+        if (!this.searchInputRef.current) return;
+        this.searchInputRef.current.value = text;
+        this.searchForText(false);
       });
     }
   }
@@ -377,6 +387,12 @@ class FlameComponent extends React.Component<FlameProps> {
      * so we could use a couple of ! non-null assertions but no big plus
      */
     this.tryCanvasContext();
+
+    if (this.props.search.text.length > 0 && this.searchInputRef.current) {
+      this.searchInputRef.current.value = this.props.search.text;
+      this.searchForText(false);
+    }
+
     this.drawCanvas();
     this.props.onChartRendered();
     this.setupDevicePixelRatioChangeListener();
@@ -396,12 +412,17 @@ class FlameComponent extends React.Component<FlameProps> {
     return this.props.chartDimensions.height !== height || this.props.chartDimensions.width !== width;
   }
 
-  componentDidUpdate = ({ chartDimensions }: FlameProps) => {
+  componentDidUpdate = ({ chartDimensions, search }: FlameProps) => {
     if (!this.ctx) this.tryCanvasContext();
     if (this.tooltipPinned && this.chartDimensionsChanged(chartDimensions)) {
       this.unpinTooltip();
     }
     this.bindControls();
+    if (search.text !== this.props.search.text && this.searchInputRef.current) {
+      this.searchInputRef.current.value = this.props.search.text;
+      this.searchForText(false);
+    }
+
     this.ensureTextureAndDraw();
 
     // eg. due to chartDimensions (parentDimensions) change
@@ -986,7 +1007,10 @@ class FlameComponent extends React.Component<FlameProps> {
             placeholder="Search string"
             onKeyPress={this.handleSearchFieldKeyPress}
             onKeyUp={this.handleEscapeKey}
-            onChange={() => this.searchForText(false)}
+            onChange={(e) => {
+              this.searchForText(false);
+              this.props.onSeachTextChange(e.currentTarget.value);
+            }}
             style={{
               border: 'none',
               padding: 3,
@@ -1015,6 +1039,7 @@ class FlameComponent extends React.Component<FlameProps> {
               onClick={() => {
                 if (this.currentSearchString && this.searchInputRef.current) {
                   this.clearSearchText();
+                  this.props.onSeachTextChange('');
                 }
               }}
               style={{ display: 'none' }}
@@ -1351,6 +1376,8 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     a11ySettings: getA11ySettingsSelector(state),
     tooltipRequired: tooltipSpec.type !== TooltipType.None,
     canPinTooltip: isPinnableTooltip(state),
+    search: flameSpec?.search ?? { text: '' },
+    onSeachTextChange: flameSpec?.onSearchTextChange ?? (() => {}),
     // mandatory charts API protocol; todo extract these mappings once there are other charts like Flame
     onElementOver: settingsSpec.onElementOver ?? (() => {}),
     onElementClick: settingsSpec.onElementClick ?? (() => {}),

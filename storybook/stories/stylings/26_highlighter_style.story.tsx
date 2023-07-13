@@ -21,12 +21,13 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm');
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings
       showLegend
       showLegendExtra
@@ -52,7 +53,9 @@ export const Example = () => (
       showOverlappingTicks
       tickFormat={dateFormatter}
       timeAxisLayerCount={2}
-      showGridLines
+      gridLine={{
+        visible: true,
+      }}
       style={{
         tickLine: { size: 0.0001, padding: 4 },
         tickLabel: {
@@ -66,7 +69,9 @@ export const Example = () => (
     <Axis
       id="left"
       position={Position.Left}
-      showGridLines
+      gridLine={{
+        visible: true,
+      }}
       tickFormat={(d) => Number(d).toFixed(2)}
       labelFormat={(d) => Number(d).toFixed(0)}
       ticks={5}

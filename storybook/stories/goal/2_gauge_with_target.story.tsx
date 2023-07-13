@@ -14,12 +14,13 @@ import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
 import { Color } from '../../../packages/charts/src/common/colors';
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getBandFillColorFn } from '../utils/utils';
 
 const subtype = GoalSubtype.Goal;
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const base = number('base', 0, { range: true, min: 0, max: 300, step: 1 });
   const target = number('target', 260, { range: true, min: 0, max: 300, step: 1 });
   const actual = number('actual', 170, { range: true, min: 0, max: 300, step: 1 });
@@ -57,7 +58,7 @@ export const Example = () => {
     (Math.PI / 8);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Goal
         id="spec_1"

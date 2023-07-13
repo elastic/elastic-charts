@@ -11,6 +11,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, BinAgg, Direction } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const data = [
@@ -26,7 +27,7 @@ const data = [
   { x1: 'c', x2: 3, g1: 'false', g2: 'Canada', y1: 87, y2: 39 },
 ];
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const orderOrdinalBinsBy = boolean('enable orderOrdinalBinsBy', true);
   const dataType = select(
     'Data type',
@@ -57,7 +58,7 @@ export const Example = () => {
       BinAgg.Sum,
     ) || undefined;
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         orderOrdinalBinsBy={
           orderOrdinalBinsBy

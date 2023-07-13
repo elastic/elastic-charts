@@ -15,11 +15,11 @@ import {
 } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, interpolatorTurbo, regionLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
   partition: {
     minFontSize: 4,
     maxFontSize: 84,
@@ -28,8 +28,8 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings theme={theme} baseTheme={useBaseTheme()} />
     <Partition
       id="spec_7"

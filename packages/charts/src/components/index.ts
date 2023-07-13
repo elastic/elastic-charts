@@ -6,5 +6,5 @@
  * Side Public License, v 1.
  */
 
-export { Chart } from './chart';
+export * from './chart';
 export { Placement, TooltipPortalSettings } from './portal';

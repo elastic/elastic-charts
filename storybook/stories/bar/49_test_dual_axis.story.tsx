@@ -11,13 +11,14 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const stack13 = boolean('Stack bars1 and bars3', true);
   const stack24 = boolean('Stack bars2 and bars4', false);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend baseTheme={useBaseTheme()} />
       <Axis id="count1" title="count" position={Position.Left} />
       <Axis id="count2" groupId="2" title="count" position={Position.Right} />

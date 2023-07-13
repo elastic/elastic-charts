@@ -11,6 +11,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, GridLineStyle, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function generateGridLineStyle(group: string, gridColor = 'purple'): GridLineStyle {
@@ -68,20 +69,22 @@ function generateGridLineStyle(group: string, gridColor = 'purple'): GridLineSty
   };
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const leftAxisGridLineStyle = generateGridLineStyle(Position.Left);
   const leftAxisGridLineStyle2 = generateGridLineStyle(`${Position.Left}2`);
 
   return (
-    <Chart size={[500, 300]}>
+    <Chart title={title} description={description} size={[500, 300]}>
       <Settings debug={boolean('debug', false)} baseTheme={useBaseTheme()} />
       <Axis
         id="left1"
         title="Left axis 1"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
-        showGridLines={boolean('show left axis grid lines', false, 'left axis')}
-        gridLine={leftAxisGridLineStyle}
+        gridLine={{
+          ...leftAxisGridLineStyle,
+          visible: boolean('show left axis grid lines', false, 'left axis'),
+        }}
       />
       <Axis
         id="left2"
@@ -89,8 +92,10 @@ export const Example = () => {
         groupId="group2"
         position={Position.Left}
         tickFormat={(d) => Number(d).toFixed(2)}
-        showGridLines={boolean('show left axis 2 grid lines', false, 'left2 axis')}
-        gridLine={leftAxisGridLineStyle2}
+        gridLine={{
+          ...leftAxisGridLineStyle2,
+          visible: boolean('show left axis 2 grid lines', false, 'left2 axis'),
+        }}
       />
       <BarSeries
         id="bars"

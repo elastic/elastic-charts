@@ -21,10 +21,11 @@ import {
 } from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const rotation = customKnobs.enum.rotation();
 
@@ -40,12 +41,6 @@ export const Example = () => {
       stroke: '#f00',
       opacity: 1,
     },
-    details: {
-      fontSize: 12,
-      fontFamily: 'Arial',
-      fill: 'gray',
-      padding: 0,
-    },
   };
 
   const xDomain = {
@@ -55,7 +50,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings debug={debug} rotation={rotation} xDomain={xDomain} baseTheme={useBaseTheme()} />
       <LineAnnotation
         id="annotation_1"

@@ -13,6 +13,7 @@ import React, { useMemo } from 'react';
 import { Chart, Heatmap, RecursivePartial, ScaleType, Settings, HeatmapStyle } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();
@@ -28,7 +29,7 @@ const data = [...new Array(14)].flatMap((d, i) => {
   ];
 });
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const heatmap = useMemo(() => {
     const styles: RecursivePartial<HeatmapStyle> = {
       grid: {
@@ -77,7 +78,7 @@ export const Example = () => {
         {DateTime.fromMillis(start.toMillis() + startTimeOffset).toISO()} to{' '}
         {DateTime.fromMillis(end.toMillis() + endTimeOffset).toISO()}
       </div>
-      <Chart size={['100%', 180]} className="story-chart">
+      <Chart title={title} description={description} size={['100%', 180]} className="story-chart">
         <Settings
           showLegend
           xDomain={{

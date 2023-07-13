@@ -198,4 +198,17 @@ test.describe('Axis stories', () => {
       },
     );
   });
+
+  test.describe('Timeslip/Multilayer time axis', () => {
+    test('should show start of week label on last month when tick is inside extents', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=0.3&knob-Stretch time=8.6&knob-Time zoom=78&knob-layerCount=2&knob-Show legend=&knob-Horizontal axis title=&knob-Top X axis=&knob-showOverlappingTicks time axis=&knob-showOverlappingLabels time axis=',
+      );
+    });
+    test('should shide start of week label on last month when tick is outside extents', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/area-chart--timeslip&globals=theme:light&knob-Bin width in ms (0: none specifed)=0&knob-Minor grid lines=true&knob-Shift time=0.25&knob-Stretch time=8.6&knob-Time zoom=78&knob-layerCount=2&knob-Show legend=&knob-Horizontal axis title=&knob-Top X axis=&knob-showOverlappingTicks time axis=&knob-showOverlappingLabels time axis=',
+      );
+    });
+  });
 });

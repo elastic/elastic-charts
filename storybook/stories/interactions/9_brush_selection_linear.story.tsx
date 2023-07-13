@@ -11,11 +11,12 @@ import React from 'react';
 
 import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-export const Example = () => (
-  <Chart>
+export const Example: ChartsStory = (_, { title, description }) => (
+  <Chart title={title} description={description}>
     <Settings onBrushEnd={action('onBrushEnd')} rotation={customKnobs.enum.rotation()} baseTheme={useBaseTheme()} />
     <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks />
     <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

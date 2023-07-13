@@ -142,4 +142,6 @@ export class PartitionState implements InternalChartState {
       smVDomain: [],
     };
   }
+
+  canDisplayChartTitles = () => true;
 }

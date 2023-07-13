@@ -31,13 +31,13 @@ const legendStrategies: Record<LegendStrategy, LegendStrategyFn> = {
     (legendPath) =>
     ({ path, dataName }) =>
       // highlight all identically named items which are within the same depth (ring) as the hovered legend depth
-      legendPath.length === path.length && dataName === legendPath[legendPath.length - 1]?.value,
+      legendPath.length === path.length && dataName === legendPath.at(-1)?.value,
 
   key:
     (legendPath) =>
     ({ dataName }) =>
       // highlight all identically named items, no matter where they are
-      dataName === legendPath[legendPath.length - 1]?.value,
+      dataName === legendPath.at(-1)?.value,
 
   nodeWithDescendants:
     (legendPath) =>

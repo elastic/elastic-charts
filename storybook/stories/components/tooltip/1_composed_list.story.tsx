@@ -99,6 +99,7 @@ export const Example = () => {
 };
 
 Example.parameters = {
+  showHeader: true,
   markdown: `Tooltips may be composed with internal components to build out completely custom tooltips while maintaining a consistent style.\
   This example shows how you can build the default list tooltip by defining the \`columns\` on the \`TooltipTable\` component inside a \`CustomTooltip\`.`,
   background: { disable: true },

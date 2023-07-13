@@ -12,12 +12,13 @@ import React from 'react';
 import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();
 const data1 = dg.generateGroupedSeries(40, 4);
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const customPartialTheme: PartialTheme = {
     barSeriesStyle: {
       rectBorder: {
@@ -31,7 +32,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         showLegend
         showLegendExtra

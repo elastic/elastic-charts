@@ -18,6 +18,7 @@ void (async () => {
     cwd: 'storybook',
     env: {
       NODE_ENV: bkEnv.isMainBranch ? 'production' : 'development',
+      NODE_OPTIONS: '--openssl-legacy-provider',
     },
   });
 

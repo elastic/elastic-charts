@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { boolean, button } from '@storybook/addon-knobs';
+import { boolean, button, text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -15,7 +15,6 @@ import {
   Datum,
   Flame,
   Settings,
-  PartialTheme,
   FlameGlobalControl,
   FlameNodeControl,
   ColumnarViewModel,
@@ -23,12 +22,10 @@ import {
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-const position = new Float32Array(columnarMock.position);
-const size = new Float32Array(columnarMock.size);
-
-const pseudoRandom = getRandomNumberGenerator('a_seed');
+const rng = getRandomNumberGenerator();
 
 const paletteColorBrewerCat12 = [
   [141, 211, 199],
@@ -45,22 +42,25 @@ const paletteColorBrewerCat12 = [
   [255, 237, 111],
 ];
 
+const position = new Float32Array(columnarMock.position);
+const size = new Float32Array(columnarMock.size);
+
 const columnarData: ColumnarViewModel = {
   label: columnarMock.label.map((index: number) => columnarMock.dictionary[index]), // reversing the dictionary encoding
   value: new Float64Array(columnarMock.value),
   // color: new Float32Array((columnarMock.color.match(/.{2}/g) ?? []).map((hex: string) => Number.parseInt(hex, 16) / 255)),
   color: new Float32Array(
-    columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[pseudoRandom(0, 11)].map((c) => c / 255), 1]),
+    columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[rng(0, 11)].map((c) => c / 255), 1]),
   ),
-  position0: position.map((p, i) => (i % 2 === 0 ? 1 - p - size[i / 2] : p)), //.map((p, i) => (i % 2 === 0 ? 1 - p - size[i / 2] : p)), // new Float32Array([...position].slice(1)), // try with the wrong array length
+  position0: position, //position.map((p, i) => (i % 2 === 0 ? 1 - p - size[i / 2] : p)), //.map((p, i) => (i % 2 === 0 ? 1 - p - size[i / 2] : p)), // new Float32Array([...position].slice(1)), // try with the wrong array length
   position1: position,
-  size0: size.map((s) => 0.8 * s),
+  size0: size, //size.map((s) => 0.8 * s),
   size1: size,
 };
 
 const noop = () => {};
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   let resetFocusControl: FlameGlobalControl = noop; // initial value
   let focusOnNodeControl: FlameNodeControl = noop; // initial value
 
@@ -69,26 +69,27 @@ export const Example = () => {
     onElementOver: action('onElementOver'),
     onElementOut: action('onElementOut'),
   };
-  const theme: PartialTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-    chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
-  };
   button('Reset focus', () => {
     resetFocusControl();
   });
   button('Set focus on random node', () => {
-    focusOnNodeControl(Math.floor(20 * Math.random()));
+    focusOnNodeControl(rng(0, 19));
   });
+  const textSearch = text('Text to search', '');
+  const textChangeAction = action('Text change');
+
   const debug = boolean('Debug history', false);
   return (
-    <Chart>
-      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
+    <Chart title={title} description={description}>
+      <Settings baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
       <Flame
         id="spec_1"
         columnarData={columnarData}
         valueAccessor={(d: Datum) => d.value as number}
         valueFormatter={(value) => `${value}`}
         animation={{ duration: 500 }}
+        search={{ text: textSearch }}
+        onSearchTextChange={(text) => textChangeAction(`text changed to: [${text}]`)}
         controlProviderCallback={{
           resetFocus: (control) => (resetFocusControl = control),
           focusOnNode: (control) => (focusOnNodeControl = control),

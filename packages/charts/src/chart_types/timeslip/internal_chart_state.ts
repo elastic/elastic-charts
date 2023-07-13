@@ -49,4 +49,6 @@ export class TimeslipState implements InternalChartState {
       smVDomain: [],
     };
   }
+
+  canDisplayChartTitles = () => true;
 }

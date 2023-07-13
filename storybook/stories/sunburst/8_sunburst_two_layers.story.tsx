@@ -21,11 +21,11 @@ import {
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 
 const theme: PartialTheme = {
-  chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
   partition: {
     linkLabel: {
       maxCount: 0,
@@ -43,10 +43,10 @@ const theme: PartialTheme = {
   },
 };
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const showDebug = boolean('show table for debugging', false);
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings showLegend legendMaxDepth={1} theme={theme} baseTheme={useBaseTheme()} debug={showDebug} />
       <Partition
         id="spec_1"

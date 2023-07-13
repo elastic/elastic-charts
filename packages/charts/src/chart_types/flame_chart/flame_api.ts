@@ -26,6 +26,12 @@ export type FlameGlobalControl = () => void; // takes no argument
 export type FlameNodeControl = (nodeIndex: number) => void; // takes no arguments
 
 /**
+ * Control function for setting chart focus on a specific node
+ * @public
+ */
+export type FlameSearchControl = (text: string) => void; // takes no arguments
+
+/**
  * Provides direct controls for the Flame component user.
  * The call site supplied callback function is invoked on the chart component initialization as well as on component update,
  * so the callback must be idempotent.
@@ -34,6 +40,7 @@ export type FlameNodeControl = (nodeIndex: number) => void; // takes no argument
 export interface ControlReceiverCallbacks {
   resetFocus: (control: FlameGlobalControl) => void; // call site responsibility to store and use the `control` function
   focusOnNode: (control: FlameNodeControl) => void; // same but the control function passed to the call site uses one arg
+  search: (control: FlameSearchControl) => void;
 }
 
 /**
@@ -70,6 +77,8 @@ export interface FlameSpec<D extends BaseDatum = Datum> extends Spec, LegacyAnim
   valueAccessor: ValueAccessor<D>;
   valueFormatter: ValueFormatter;
   valueGetter: (datumIndex: number) => number;
+  search?: { text: string };
+  onSearchTextChange?: (text: string) => void;
 }
 
 const buildProps = buildSFProps<FlameSpec>()(

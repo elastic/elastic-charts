@@ -12,9 +12,10 @@ import React from 'react';
 import { AreaSeries, Chart, ScaleType, StackMode, Axis, Position, CurveType, Settings } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const stackMode = select<StackMode>(
     'stackMode',
     {
@@ -24,7 +25,7 @@ export const Example = () => {
     StackMode.Silhouette,
   );
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="x" position={Position.Bottom} />
       <Axis id="y" position={Position.Left} />

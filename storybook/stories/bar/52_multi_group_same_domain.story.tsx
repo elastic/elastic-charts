@@ -11,9 +11,10 @@ import React from 'react';
 
 import { Axis, BarSeries, Settings, Chart, Position, ScaleType } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const data1 = [
     [1, 2],
     [2, 2],
@@ -48,7 +49,7 @@ export const Example = () => {
   const useDefaultDomain = boolean('Use the same data domain for each group', false);
 
   return (
-    <Chart renderer="canvas">
+    <Chart title={title} description={description} renderer="canvas">
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} />
       <Axis

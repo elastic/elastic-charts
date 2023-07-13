@@ -12,6 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {
@@ -28,7 +29,7 @@ function range(title: string, min: number, max: number, value: number, groupId?:
   );
 }
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const applyBarStyle = boolean('apply bar style (bar 1 series)', true, 'Chart Global Theme');
   const changeRectWidthPixel = boolean('enable custom rect width (px)', false, 'Bar width');
   const rectWidthPixel = range('rect width (px)', 0, 100, 30, 'Bar width', 1);
@@ -62,7 +63,7 @@ export const Example = () => {
   };
 
   return (
-    <Chart renderer="canvas">
+    <Chart title={title} description={description} renderer="canvas">
       <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={theme} baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

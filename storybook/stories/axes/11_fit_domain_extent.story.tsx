@@ -22,13 +22,14 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
 const dg = new SeededDataGenerator();
 const base = dg.generateBasicSeries(100, 0, 50);
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const positive = base.map(({ x, y }) => ({ x, y: y + 1000 }));
   const both = base.map(({ x, y }) => ({ x, y: y - 100 }));
   const negative = base.map(({ x, y }) => ({ x, y: y - 1000 }));
@@ -66,7 +67,7 @@ export const Example = () => {
   const rectTheshold = object('theshold - rect', { y0: 100, y1: null });
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" title="index" position={Position.Bottom} />
       <Axis

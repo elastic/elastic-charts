@@ -49,6 +49,7 @@ export const useHeatmapSelection = (disableActions = false) => {
     setSelection,
     onBrushEnd,
     onElementClick,
+    clearSelection,
     highlightedData: persistCellsSelection ? selection : undefined,
   };
 };

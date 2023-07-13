@@ -16,7 +16,6 @@ import {
   Tooltip,
   Flame,
   Settings,
-  PartialTheme,
   FlameGlobalControl,
   FlameNodeControl,
   ColumnarViewModel,
@@ -24,12 +23,13 @@ import {
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
+import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 
 const position = new Float32Array(columnarMock.position);
 const size = new Float32Array(columnarMock.size);
 
-const pseudoRandom = getRandomNumberGenerator('a_seed');
+const rng = getRandomNumberGenerator();
 
 const paletteColorBrewerCat12 = [
   [141, 211, 199],
@@ -51,7 +51,7 @@ const columnarData: ColumnarViewModel = {
   value: new Float64Array(columnarMock.value),
   // color: new Float32Array((columnarMock.color.match(/.{2}/g) ?? []).map((hex: string) => Number.parseInt(hex, 16) / 255)),
   color: new Float32Array(
-    columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[pseudoRandom(0, 11)].map((c) => c / 255), 1]),
+    columnarMock.label.flatMap(() => [...paletteColorBrewerCat12[rng(0, 11)].map((c) => c / 255), 1]),
   ),
   position0: position, // new Float32Array([...position].slice(1)), // try with the wrong array length
   position1: position,
@@ -61,7 +61,7 @@ const columnarData: ColumnarViewModel = {
 
 const noop = () => {};
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   let resetFocusControl: FlameGlobalControl = noop; // initial value
   let focusOnNodeControl: FlameNodeControl = noop; // initial value
 
@@ -70,21 +70,17 @@ export const Example = () => {
     onElementOver: action('onElementOver'),
     onElementOut: action('onElementOut'),
   };
-  const theme: PartialTheme = {
-    chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
-    chartPaddings: { left: 0, right: 0, top: 0, bottom: 0 },
-  };
   button('Reset focus', () => {
     resetFocusControl();
   });
   button('Set focus on random node', () => {
-    focusOnNodeControl(Math.floor(20 * Math.random()));
+    focusOnNodeControl(rng(0, 19));
   });
   const debug = boolean('Debug history', false);
   const showTooltipActions = boolean('Use tooltip actions', true);
   return (
-    <Chart>
-      <Settings theme={theme} baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
+    <Chart title={title} description={description}>
+      <Settings baseTheme={useBaseTheme()} {...onElementListeners} debug={debug} />
       <Tooltip
         maxVisibleTooltipItems={4}
         maxTooltipItems={4}

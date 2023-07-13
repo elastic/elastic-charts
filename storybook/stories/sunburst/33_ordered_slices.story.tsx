@@ -19,6 +19,7 @@ import {
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, countryLookup, colorBrewerCategoricalPastel12B } from '../utils/utils';
 
@@ -51,16 +52,15 @@ const sortPredicate = ([name1, node1]: ArrayEntry, [name2, node2]: ArrayEntry) =
   (name1 === 'Other') - (name2 === 'Other') || node2.value - node1.value;
 */
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const sortPredicateEnabled = boolean('Move "Other" to end', true);
   const clockwiseSectors = boolean('clockwiseSectors', true);
   const specialFirstInnermostSector = boolean('specialFirstInnermostSector', false);
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         theme={{
-          chartMargins: { top: 0, left: 0, bottom: 0, right: 0 },
           partition: { outerSizeRatio: 0.96 },
         }}
         baseTheme={useBaseTheme()}

@@ -24,11 +24,12 @@ import {
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const lang = select(
     'rtl language',
     {
@@ -112,16 +113,9 @@ export const Example = () => {
     );
 
   return (
-    <Chart>
+    <Chart title={title} description={description}>
       <Settings
         rotation={type === SeriesType.Bar ? 90 : 0}
-        theme={
-          type === SeriesType.Bar
-            ? {}
-            : {
-                chartMargins: { top: 0, right: 0, bottom: 0, left: 0 },
-              }
-        }
         debugState
         showLegend={showLegend}
         showLegendExtra
