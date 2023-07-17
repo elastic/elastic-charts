@@ -35,7 +35,7 @@ const getChannelId = () =>
   bkEnv.isPullRequest ? `pr-${bkEnv.pullRequestNumber!}` : bkEnv.isMainBranch ? null : bkEnv.branch;
 
 export const firebaseDeploy = async (opt: DeployOptions = {}) => {
-  const expires = opt.expires ?? '7d';
+  const expires = opt.expires ?? '4w';
 
   startGroup('Deploying to firebase');
 
