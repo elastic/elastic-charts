@@ -13,11 +13,12 @@ import { buildkiteClient } from '../../../utils/buildkite';
 import { checkCommitFn, isBaseRepo, testPatternString, updateAllChecks, getBranchFromRef } from '../../utils';
 
 /**
- * build trigger for pushes to select base branches not pull requests
+ * Build trigger for pushes to select base branches, only on base repo not forks
  */
 export function setupBuildTrigger(app: Probot) {
   // @ts-ignore - probot issue https://github.com/probot/probot/issues/1680
   app.on('push', async (ctx) => {
+    console.log(`------- Triggered probot ${ctx.name}`);
     const branch = getBranchFromRef(ctx.payload.ref);
 
     if (

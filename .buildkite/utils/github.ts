@@ -390,6 +390,8 @@ export const comments = {
     jobLink,
     preDeploy = false,
   }: UpdateDeploymentCommentOptions) {
+    console.log(`DEPLOYMENT STATUS - ${state} - preDeploy: ${preDeploy}`);
+
     if (state === 'failure') {
       const err = errorMsg
         ? `\n

@@ -90,8 +90,11 @@ export const exec = async (
 
       const errorMsg = error instanceof Error ? error.message : typeof error === 'string' ? error : '';
       console.error(`❌ Failed to run command: [${command}]`);
+      console.log(Object.keys(error as any).join(', '));
+      console.log(JSON.stringify(error, null, 2));
+
       await setJobMetadata('failed', 'true');
-      await onFailure?.(errorMsg);
+      await onFailure?.(errorMsg.trim());
       await updateCheckStatus(
         {
           status: 'completed',
