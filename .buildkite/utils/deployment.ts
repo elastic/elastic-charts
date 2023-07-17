@@ -29,21 +29,16 @@ export interface UpdateDeploymentCommentOptions {
 }
 
 export async function createOrUpdateDeploymentComment(options: UpdateDeploymentCommentOptions) {
+  const { state, preDeploy, sha = bkEnv.commit! } = options;
   const skipDeployment = await getMetadata(MetaDataKeys.skipDeployment);
   console.log('MetaDataKeys.skipDeployment', skipDeployment);
   const deploymentStatus = await getMetadata(MetaDataKeys.deploymentStatus);
+  const status = preDeploy ? `${state}-preDeploy` : state;
 
-  if (
-    process.env.BLOCK_REQUESTS ||
-    !bkEnv.isPullRequest ||
-    skipDeployment === 'true' ||
-    deploymentStatus === options.state
-  )
+  if (process.env.BLOCK_REQUESTS || !bkEnv.isPullRequest || skipDeployment === 'true' || deploymentStatus === status)
     return;
 
-  const { state, sha = bkEnv.commit! } = options;
-
-  await setMetadata(MetaDataKeys.deploymentStatus, state);
+  await setMetadata(MetaDataKeys.deploymentStatus, status);
 
   const previousCommentId = await getMetadata(MetaDataKeys.deploymentCommentId);
 
@@ -77,7 +72,7 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
 
   const deploymentUrl = options.deploymentUrl ?? (await getDeploymentUrl());
   const previousSha = options.previousSha ?? (await getMetadata(MetaDataKeys.deploymentPreviousSha));
-  const commentBody = getComment('deployment', { ...options, state, sha, deploymentUrl, previousSha });
+  const commentBody = getComment('deployment', { ...options, state, preDeploy, sha, deploymentUrl, previousSha });
 
   const {
     data: { id },
