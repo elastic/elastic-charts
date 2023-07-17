@@ -64,11 +64,14 @@ export const getKnobFromEnum = <
     .filter('include' in rest ? ([k]) => rest.include!.includes(k) : () => true)
     // @ts-ignore - skip key type checks
     .filter('exclude' in rest ? ([k]) => !rest.exclude!.includes(k) : () => true)
-    .reduce<O>((acc, [key, value]) => {
-      // @ts-ignore - override key casing
-      acc[startCase(kebabCase(key))] = value;
-      return acc;
-    }, (allowUndefined ? { [undefinedLabel || 'Undefined']: undefined } : ({} as unknown)) as O);
+    .reduce<O>(
+      (acc, [key, value]) => {
+        // @ts-ignore - override key casing
+        acc[startCase(kebabCase(key))] = value;
+        return acc;
+      },
+      (allowUndefined ? { [undefinedLabel || 'Undefined']: undefined } : ({} as unknown)) as O,
+    );
 
   const hasOnlyNumbers = Object.values(options).every((v) => typeof v === 'number');
   const selectFunction = hasOnlyNumbers ? getNumberSelectKnob : select;
