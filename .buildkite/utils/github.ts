@@ -395,22 +395,23 @@ export const comments = {
 
     if (state === 'failure') {
       const errorCmdMsg = errorCmd
-        ? `Command failed:
+        ? `\n\n**Command failed:**
 \`\`\`
 ${errorCmd}
 \`\`\`\n\n`
         : '\n';
       const err = errorMsg
         ? `${errorCmdMsg}
-Error:
+**Error:**
 
 \`\`\`
 ${errorMsg}
 \`\`\``
         : errorCmdMsg;
-      return `## ❌ Failed Deployment - ${sha}
+      const finalMessage = `## ❌ Failed Deployment - ${sha}
 Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
-`.trim();
+`;
+      return `${finalMessage.trim()}\n\ncc: @nickofthyme`;
     }
 
     if (state === 'pending') {
