@@ -17,7 +17,7 @@ interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
   args?: string;
   input?: string;
   failureMsg?: string;
-  onFailure?: (err: string) => Promise<void> | void;
+  onFailure?: (err: { command: string; message: string }) => Promise<void> | void;
   onSuccess?: () => Promise<void> | void;
   cwd?: string;
   /**
@@ -92,7 +92,7 @@ export const exec = async (
       console.error(`❌ Failed to run command: [${command}]`);
 
       await setJobMetadata('failed', 'true');
-      await onFailure?.(errorMsg.trim());
+      await onFailure?.({ command, message: errorMsg });
       await updateCheckStatus(
         {
           status: 'completed',
@@ -117,7 +117,7 @@ export const yarnInstall = async (cwd?: string, ignoreScripts = true) => {
 function getErrorMsg(error: unknown): string {
   const output: Array<string | null> = (error as any)?.output ?? [];
   if (output?.length > 0) {
-    output
+    return output
       .filter(Boolean)
       .map((s) => s?.trim())
       .join('\n\n');

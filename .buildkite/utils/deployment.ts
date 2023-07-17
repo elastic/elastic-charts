@@ -22,6 +22,7 @@ export interface UpdateDeploymentCommentOptions {
   state: 'pending' | 'success' | 'failure';
   deploymentUrl?: string;
   previousSha?: string;
+  errorCmd?: string;
   errorMsg?: string;
   jobLink?: string;
   preDeploy?: boolean;

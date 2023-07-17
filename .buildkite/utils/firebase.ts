@@ -56,7 +56,8 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
         await createOrUpdateDeploymentComment({
           state: 'failure',
           jobLink: bkEnv.jobUrl,
-          errorMsg: err,
+          errorCmd: err.command,
+          errorMsg: err.message,
         });
       } else {
         await createDeploymentStatus({

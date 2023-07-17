@@ -386,6 +386,7 @@ export const comments = {
     sha,
     previousSha,
     state,
+    errorCmd,
     errorMsg,
     jobLink,
     preDeploy = false,
@@ -393,15 +394,23 @@ export const comments = {
     console.log(`DEPLOYMENT STATUS - ${state} - preDeploy: ${preDeploy}`);
 
     if (state === 'failure') {
+      const errorCmdMsg = errorCmd
+        ? `Command failed:
+\`\`\`
+${errorCmd}
+\`\`\`\n\n`
+        : '\n';
       const err = errorMsg
-        ? `\n
+        ? `${errorCmdMsg}
+Error:
+
 \`\`\`
 ${errorMsg}
 \`\`\``
-        : '';
+        : errorCmdMsg;
       return `## ❌ Failed Deployment - ${sha}
 Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
-`;
+`.trim();
     }
 
     if (state === 'pending') {
