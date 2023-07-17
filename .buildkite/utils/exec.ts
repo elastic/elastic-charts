@@ -88,10 +88,8 @@ export const exec = async (
         throw error; // still need to catch
       }
 
-      const errorMsg = error instanceof Error ? error.message : typeof error === 'string' ? error : '';
+      const errorMsg = getErrorMsg(error);
       console.error(`❌ Failed to run command: [${command}]`);
-      console.log(Object.keys(error as any).join(', '));
-      console.log(JSON.stringify(error, null, 2));
 
       await setJobMetadata('failed', 'true');
       await onFailure?.(errorMsg.trim());
@@ -115,3 +113,15 @@ export const yarnInstall = async (cwd?: string, ignoreScripts = true) => {
   const scriptFlag = ignoreScripts ? ' --ignore-scripts' : '';
   await exec(`yarn install --frozen-lockfile${scriptFlag}`, { cwd, retry: 5, retryWait: 15 });
 };
+
+function getErrorMsg(error: unknown): string {
+  const output: Array<string | null> = (error as any)?.output ?? [];
+  if (output?.length > 0) {
+    output
+      .filter(Boolean)
+      .map((s) => s?.trim())
+      .join('\n\n');
+  }
+
+  return error instanceof Error ? error.message : typeof error === 'string' ? error : '';
+}

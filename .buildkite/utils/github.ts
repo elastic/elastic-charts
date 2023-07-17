@@ -400,7 +400,7 @@ ${errorMsg}
 \`\`\``
         : '';
       return `## ❌ Failed Deployment - ${sha}
-Failure${jobLink ? ` - [failed job](${jobLink}).` : ''}${err}
+Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
 `;
     }
 
