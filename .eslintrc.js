@@ -185,6 +185,8 @@ module.exports = {
     '@typescript-eslint/indent': 0,
     '@typescript-eslint/no-inferrable-types': 0,
     '@typescript-eslint/prefer-regexp-exec': 0,
+    '@typescript-eslint/no-duplicate-type-constituents': 0,
+    '@typescript-eslint/no-redundant-type-constituents': 0,
     '@typescript-eslint/ban-ts-comment': [
       2,
       {
@@ -242,6 +244,7 @@ module.exports = {
     'import/prefer-default-export': 0,
     // Limit usage in development directories
     'import/no-extraneous-dependencies': 0,
+    'import/no-unresolved': 0, // new version does not play nice with our storybook local type remapping
 
     /*
      * react plugin
@@ -306,6 +309,7 @@ module.exports = {
     'unicorn/no-useless-switch-case': 0,
     'unicorn/prefer-dom-node-dataset': 0,
     'unicorn/switch-case-braces': 0,
+    'unicorn/no-empty-file': 0,
 
     /*
      * file-header plugin
