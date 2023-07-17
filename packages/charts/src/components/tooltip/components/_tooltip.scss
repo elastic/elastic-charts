@@ -29,7 +29,9 @@ $transitionTime: 200ms;
   color: $euiTextColor;
   overflow: hidden;
   cursor: default;
-  transition: box-shadow 400ms, opacity $euiAnimSpeedNormal;
+  transition:
+    box-shadow 400ms,
+    opacity $euiAnimSpeedNormal;
   border: 1px solid $euiColorEmptyShade;
 
   &__outerWrapper {
@@ -128,7 +130,9 @@ $transitionTime: 200ms;
   &__tableBody {
     .echTooltip__tableCell:not(.echTooltip__colorCell) {
       padding: 2px 4px;
-      transition: margin $transitionTime, padding $transitionTime;
+      transition:
+        margin $transitionTime,
+        padding $transitionTime;
     }
 
     .echTooltip__tableRow--selected {
