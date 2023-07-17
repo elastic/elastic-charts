@@ -1,3 +1,15 @@
+# [59.0.0](https://github.com/elastic/elastic-charts/compare/v58.2.1...v59.0.0) (2023-06-27)
+
+
+### Bug Fixes
+
+* **legend:** use reading direction sorting for stacked bar charts ([#2080](https://github.com/elastic/elastic-charts/issues/2080)) ([be9c839](https://github.com/elastic/elastic-charts/commit/be9c83906ab58ac6193fdc9219951741d284447b))
+
+
+### BREAKING CHANGES
+
+* **legend:** the sorting order of the legend is now inverted for stacked charts, following the reading direction of the legend (top-to-bottom in insertion order)
+
 ## [58.2.1](https://github.com/elastic/elastic-charts/compare/v58.2.0...v58.2.1) (2023-06-23)
 
 

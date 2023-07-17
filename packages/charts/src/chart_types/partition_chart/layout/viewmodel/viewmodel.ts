@@ -475,7 +475,7 @@ export function shapeViewModel(
     ? (x, y) => {
         return quadViewModel.filter(({ x0, y0px, x1, y1px }) => {
           const angleX = (Math.atan2(y, x) + TAU / 4 + TAU) % TAU;
-          const yPx = Math.sqrt(x * x + y * y);
+          const yPx = Math.hypot(x, y);
           return x0 <= angleX && angleX <= x1 && y0px <= yPx && yPx <= y1px;
         });
       }

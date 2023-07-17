@@ -30,7 +30,7 @@ export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
 /**
  * Return the default sorting used for XY series.
  * Ordered by group insert order, then first stacked, after non stacked.
- * Stacked are sorted from from top to bottom to respect the rendering order
+ * Stacked series are sorted by their insert order
  * @internal
  */
 export function defaultXYLegendSeriesSort(a?: DataSeries, b?: DataSeries) {
@@ -44,9 +44,6 @@ export function defaultXYLegendSeriesSort(a?: DataSeries, b?: DataSeries) {
   }
   if (!a.isStacked && b.isStacked) {
     return 1; // b first then a
-  }
-  if (a.isStacked && b.isStacked) {
-    return b.insertIndex - a.insertIndex;
   }
   return a.insertIndex - b.insertIndex;
 }

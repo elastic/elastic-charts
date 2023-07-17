@@ -14,8 +14,8 @@ module.exports = function lazyImportTemplate({ filePath, groupTitle, name }, ind
     return import('../../${filePath}').then((module) => {
       setParams(urlParams, (module.Example as any).parameters);
       const Component = module.Example.bind(module.Example, {}, getStoryContext('${groupTitle}', '${capitalCase(
-    name,
-  )}'))
+        name,
+      )}'))
       return { default: Component };
     });
   });`;

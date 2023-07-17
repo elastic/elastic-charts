@@ -274,7 +274,7 @@ export function getAllKeys(object?: any, objects: any[] = []): Set<any> {
   return new Set(
     [object, ...objects].filter(Boolean).reduce((keys: any[], obj) => {
       if (obj && typeof obj === 'object') {
-        const newKeys = obj ? (obj instanceof Map ? obj.keys() : Object.keys(obj)) : [];
+        const newKeys = obj instanceof Map ? obj.keys() : Object.keys(obj);
         keys.push(...newKeys);
       }
 
