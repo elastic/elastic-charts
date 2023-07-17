@@ -36,6 +36,7 @@ const prActionTriggers = new Set<ProbotEventPayload<'pull_request'>['action']>([
  * build trigger for base and 3rd - party forked branches
  */
 export function setupBuildTrigger(app: Probot) {
+  // @ts-ignore - TS complains here about ctx being too large of a union
   app.on('pull_request', async (ctx) => {
     if (
       !prActionTriggers.has(ctx.payload.action) ||
@@ -108,7 +109,8 @@ export function setupBuildTrigger(app: Probot) {
     }
 
     const build = await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
-      branch: head.label, // user:branch
+      context: ` - ${ctx.name} | ${ctx.payload.action}`,
+      branch: head.label, // <user>:<branch>
       commit: head.sha,
       message: commit.commit.message,
       ignore_pipeline_branch_filters: true,

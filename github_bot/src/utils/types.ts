@@ -28,6 +28,10 @@ export interface BuildkiteTriggerBuildOptions<
   MD extends Record<string, string> = Record<string, never>,
 > {
   /**
+   * trigger context, used for logging
+   */
+  context?: string;
+  /**
    * Ref, SHA or tag to be built.
    *
    * **Note**: Before running builds on tags, make sure your agent is [fetching git tags](https://buildkite.com/docs/integrations/github#running-builds-on-git-tags).

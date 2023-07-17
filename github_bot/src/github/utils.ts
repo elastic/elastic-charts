@@ -18,6 +18,11 @@ import { githubClient } from '../utils/github';
 
 type GetPullResponseData = RestEndpointMethodTypes['pulls']['get']['response']['data'];
 
+/**
+ * Strips away `refs/xxx` from `refs/xxx/<branch>`
+ */
+export const getBranchFromRef = (ref: string) => ref.replace(/^refs\/(.+?\/){0,1}/, '');
+
 export function isBaseRepo({
   id,
   fork,
@@ -93,8 +98,6 @@ export async function isValidUser(ctx: ProbotEventContext<'issue_comment' | 'pul
       ...ctx.repo(),
       username,
     });
-    console.log({ permission });
-
     if (status === 200 && requiredPermission.has(permission)) {
       return true;
     } else {
@@ -223,8 +226,6 @@ export async function updateAllChecks(
       throw new Error('Missing check runs, pagination required');
     }
 
-    console.log(checkRuns);
-
     for (const { id, external_id, details_url, status } of checkRuns) {
       if (status !== 'completed' || external_id === main.id) {
         await ctx.octokit.checks.update({
@@ -255,8 +256,6 @@ export async function updateAllChecks(
 }
 
 export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
-  console.log('syncChecks');
-
   const [previousCommitSha] = await getLatestCommits(ctx);
 
   if (!previousCommitSha) throw new Error('Unable to load previous commit');
@@ -269,6 +268,7 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
     ref: previousCommitSha,
   });
 
+  console.log('syncChecks');
   console.log(checks.map((c) => `${c.name}: status ${c.status}`));
 
   await Promise.all(

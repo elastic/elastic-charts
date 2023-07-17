@@ -26,8 +26,6 @@ interface MetaData {
  * This function runs to cleanup the commit statuses for all build statuses.
  */
 export async function handleFinishedBuild(body: BuildkiteWebhookPayload<any, MetaData>, res: Response) {
-  console.log(body);
-
   const build = body?.build;
   if (!build || !build?.commit) {
     res.sendStatus(400); // need sha to set statuses
@@ -51,8 +49,6 @@ export async function handleFinishedBuild(body: BuildkiteWebhookPayload<any, Met
     // TODO handle this with pagination if check runs exceed 100
     throw new Error('Missing check runs, pagination required');
   }
-
-  console.log(checkRuns);
 
   const buildStatus = {
     status: 'completed',
@@ -175,8 +171,6 @@ export async function syncCheckRun(
   syncCommit?: string,
 ) {
   if (syncCommit) {
-    console.log('syncCheckRun');
-
     const output = title && summary ? { title, summary } : undefined;
     // TODO find a better way to do this for commits by datavis bot
     // Syncs checks to newer skipped commit, always creates to avoid id lookup
