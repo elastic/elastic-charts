@@ -34,8 +34,9 @@ function split(a: (any | undefined)[], size: number) {
 
 const getIcon =
   (type: string) =>
-  ({ width, height, color }: { width: number; height: number; color: string }) =>
-    <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />;
+  ({ width, height, color }: { width: number; height: number; color: string }) => (
+    <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
+  );
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const showGridBorder = boolean('show grid border', false);

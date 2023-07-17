@@ -66,8 +66,9 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const iconType = text('EUI icon glyph name', 'warning');
   const getIcon =
     (type: string) =>
-    ({ width, height, color }: { width: number; height: number; color: string }) =>
-      <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />;
+    ({ width, height, color }: { width: number; height: number; color: string }) => (
+      <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
+    );
   const data = {
     color: metricColor,
     title,
