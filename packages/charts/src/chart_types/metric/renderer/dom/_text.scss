@@ -51,6 +51,13 @@
     overflow: hidden;
   }
 
+  &__valueIcon {
+    display: inline-block;
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+  }
+
   &__part {
     font-weight: bold;
   }

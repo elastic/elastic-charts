@@ -60,10 +60,14 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const valuePrefix = text('value prefix', '');
   const valuePostfix = text('value postfix', ' %');
   const metricColor = color('color', '#3c3c3c');
+  const useValueColor = boolean('use value color', false);
+  const valueColor = color('value color', '#3c3c3c');
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
   const showIcon = boolean('show icon', false);
   const iconType = text('EUI icon glyph name', 'warning');
+  const showValueIcon = boolean('show value icon', false);
+  const valueIconType = text('EUI value icon glyph name', 'sortUp');
   const getIcon =
     (type: string) =>
     ({ width, height, color }: { width: number; height: number; color: string }) =>
@@ -71,9 +75,11 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const data = {
     color: metricColor,
     title,
+    valueColor: useValueColor ? valueColor : undefined,
     subtitle,
     extra: <span dangerouslySetInnerHTML={{ __html: extra }}></span>,
     ...(showIcon ? { icon: getIcon(iconType) } : {}),
+    ...(showValueIcon ? { valueIcon: getIcon(valueIconType) } : {}),
   };
 
   const numericData: MetricWProgress | MetricWNumber | MetricWTrend = {
