@@ -24,7 +24,7 @@ test.describe('Interactions', () => {
       pwEach.describe<string>(['default', 'chart'])(
         (b) => `Boundary El - ${b}`,
         (boundary) => {
-          eachRotation.describe((rotation) => {
+          eachRotation.describe(({ rotation }) => {
             pwEach.describe<Placement>([Placement.Right, Placement.Left, Placement.Top, Placement.Bottom])(
               (p) => `Placement - ${p}`,
               (placement) => {
