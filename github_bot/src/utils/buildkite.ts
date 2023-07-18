@@ -99,7 +99,8 @@ class Buildkite {
     // TODO build out separate pipelines to handle tasks on a run-as-needed basis
     const url = `organizations/elastic/pipelines/${this.pipelineSlug}/builds`;
 
-    console.log(`Triggering pipeline '${this.pipelineSlug}' against ${options.branch}...`);
+    console.log(`Trigger pipeline '${this.pipelineSlug}' against '${options.branch}'${options.context ?? ''}`);
+    console.log(JSON.stringify(options, null, 2));
 
     try {
       const response = await this.http.post(url, options);

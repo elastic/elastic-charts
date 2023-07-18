@@ -6,12 +6,19 @@
  * Side Public License, v 1.
  */
 
-import { createDeploymentStatus, exec, yarnInstall, compress, startGroup } from '../../utils';
+import { exec, yarnInstall, compress, startGroup, bkEnv } from '../../utils';
+import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
   await yarnInstall();
 
-  await createDeploymentStatus({ state: 'pending' });
+  if (bkEnv.isPullRequest) {
+    await createOrUpdateDeploymentComment({
+      state: 'pending',
+    });
+  } else {
+    await createDeploymentStatus({ state: 'pending' });
+  }
 
   startGroup('Generating e2e server files');
   await exec('yarn test:e2e:generate');

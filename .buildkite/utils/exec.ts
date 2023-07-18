@@ -17,7 +17,7 @@ interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
   args?: string;
   input?: string;
   failureMsg?: string;
-  onFailure?: () => Promise<void> | void;
+  onFailure?: (err: { command: string; message: string }) => Promise<void> | void;
   onSuccess?: () => Promise<void> | void;
   cwd?: string;
   /**
@@ -32,6 +32,7 @@ interface ExecOptions extends ExecSyncOptionsWithBufferEncoding {
    * Logic to run before next retry
    */
   onRetry?: () => void | Promise<void>;
+  allowFailure?: boolean;
 }
 
 export const wait = (n: number) => new Promise((resolve) => setTimeout(resolve, n));
@@ -54,6 +55,7 @@ export const exec = async (
     retry = 0,
     retryWait = 0,
     onRetry,
+    allowFailure = false,
   }: ExecOptions = {},
 ): Promise<string> => {
   let retryCount = 0;
@@ -81,9 +83,16 @@ export const exec = async (
         if (retryWait) await wait(retryWait * 1000);
         return await execInner();
       }
+
+      if (allowFailure) {
+        throw error; // still need to catch
+      }
+
+      const errorMsg = getErrorMsg(error);
       console.error(`❌ Failed to run command: [${command}]`);
+
       await setJobMetadata('failed', 'true');
-      await onFailure?.();
+      await onFailure?.({ command, message: errorMsg });
       await updateCheckStatus(
         {
           status: 'completed',
@@ -104,3 +113,15 @@ export const yarnInstall = async (cwd?: string, ignoreScripts = true) => {
   const scriptFlag = ignoreScripts ? ' --ignore-scripts' : '';
   await exec(`yarn install --frozen-lockfile${scriptFlag}`, { cwd, retry: 5, retryWait: 15 });
 };
+
+function getErrorMsg(error: unknown): string {
+  const output: Array<string | null> = (error as any)?.output ?? [];
+  if (output?.length > 0) {
+    return output
+      .filter(Boolean)
+      .map((s) => s?.trim())
+      .join('\n\n');
+  }
+
+  return error instanceof Error ? error.message : typeof error === 'string' ? error : '';
+}

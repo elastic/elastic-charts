@@ -10,10 +10,15 @@ import fs from 'fs';
 import path from 'path';
 
 import { firebaseDeploy, downloadArtifacts, startGroup, decompress, bkEnv } from '../../utils';
-import { createDeploymentStatus } from '../../utils/deployment';
+import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
-  if (!bkEnv.isPullRequest) {
+  if (bkEnv.isPullRequest) {
+    await createOrUpdateDeploymentComment({
+      state: 'pending',
+      preDeploy: true,
+    });
+  } else {
     await createDeploymentStatus({ state: 'in_progress' });
   }
 
@@ -33,22 +38,13 @@ void (async () => {
     dest: path.join(outDir, 'e2e'),
   });
 
-  const e2eReportSrc = '.buildkite/artifacts/merged_html_report.gz';
-  await downloadArtifacts(e2eReportSrc, 'playwright_merge_and_status');
-  await decompress({
-    src: e2eReportSrc,
-    dest: path.join(outDir, 'e2e-report'),
-  });
-
   startGroup('Check deployment files');
 
   const hasStorybookIndex = fs.existsSync('./e2e_server/public/index.html');
   const hasE2EIndex = fs.existsSync('./e2e_server/public/e2e/index.html');
-  const hasE2EReportIndex = fs.existsSync('./e2e_server/public/e2e-report/index.html');
   const missingFiles = [
     ['storybook', hasStorybookIndex],
     ['e2e server', hasE2EIndex],
-    ['e2e report', hasE2EReportIndex],
   ]
     .filter(([, exists]) => !exists)
     .map<string>(([f]) => f as string);
@@ -57,5 +53,11 @@ void (async () => {
     throw new Error(`Error: Missing deployment files: [${missingFiles.join(', ')}]`);
   }
 
-  await firebaseDeploy();
+  // Move 404 file to /e2e-report
+  fs.mkdirSync('./e2e_server/public/e2e-report');
+  fs.renameSync('./.buildkite/assets/404-report.html', './e2e_server/public/e2e-report/index.html');
+
+  await firebaseDeploy({
+    preDeploy: true,
+  });
 })();

@@ -23,12 +23,8 @@ export const comments = {
   communityPR() {
     return `Community pull request, @elastic/datavis please add the \`ci:approved ✅\` label to allow this and future builds.`;
   },
-  deployments(deploymentUrl: string, sha: string) {
-    return `## Deployments - ${sha}
-
-- Storybook ([link](${deploymentUrl}))
-- e2e server ([link](${deploymentUrl}/e2e))
-- Playwright report ([link](${deploymentUrl}/e2e-report))`;
+  deployment() {
+    return ''; // needed for type lookup
   },
 };
 

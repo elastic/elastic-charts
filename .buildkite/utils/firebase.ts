@@ -13,39 +13,33 @@ import { fileSync } from 'tmp';
 
 import { bkEnv, startGroup } from './buildkite';
 import { DEFAULT_FIREBASE_URL, MetaDataKeys } from './constants';
+import { createDeploymentStatus, createOrUpdateDeploymentComment } from './deployment';
 import { exec } from './exec';
-import {
-  octokit,
-  commentByKey,
-  createDeploymentStatus,
-  updatePreviousDeployments,
-  defaultGHOptions,
-  getComment,
-} from './github';
 
 // Set up Google Application Credentials for use by the Firebase CLI
 // https://cloud.google.com/docs/authentication/production#finding_credentials_automatically
 function createGACFile() {
-  const tmpFile = fileSync({ postfix: '.json' });
   const gac = process.env.FIREBASE_AUTH;
   if (!gac) throw new Error('Error: unable to find FIREBASE_AUTH');
+  const tmpFile = fileSync({ postfix: '.json' });
   writeSync(tmpFile.fd, gac);
-
   return tmpFile.name;
 }
 
 interface DeployOptions {
   expires?: string;
-  redeploy?: boolean;
+  preDeploy?: boolean;
 }
 
+const getChannelId = () =>
+  bkEnv.isPullRequest ? `pr-${bkEnv.pullRequestNumber!}` : bkEnv.isMainBranch ? null : bkEnv.branch;
+
 export const firebaseDeploy = async (opt: DeployOptions = {}) => {
-  const expires = opt.expires ?? '7d';
+  const expires = opt.expires ?? '30d';
 
   startGroup('Deploying to firebase');
 
-  const channelId = bkEnv.isPullRequest ? `pr-${bkEnv.pullRequestNumber!}` : bkEnv.isMainBranch ? null : bkEnv.branch;
-
+  const channelId = getChannelId();
   const gacFile = createGACFile();
   const command = channelId
     ? `npx firebase-tools hosting:channel:deploy ${channelId} --expires ${expires} --no-authorized-domains --json`
@@ -57,10 +51,19 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
       ...process.env,
       GOOGLE_APPLICATION_CREDENTIALS: gacFile,
     },
-    async onFailure() {
-      await createDeploymentStatus({
-        state: 'failure',
-      });
+    async onFailure(err) {
+      if (bkEnv.isPullRequest) {
+        await createOrUpdateDeploymentComment({
+          state: 'failure',
+          jobLink: bkEnv.jobUrl,
+          errorCmd: err.command,
+          errorMsg: err.message,
+        });
+      } else {
+        await createDeploymentStatus({
+          state: 'failure',
+        });
+      }
     },
   });
 
@@ -74,37 +77,52 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
     await setMetadata(MetaDataKeys.deploymentUrl, deploymentUrl);
 
     if (bkEnv.isPullRequest) {
-      // deactivate old deployments
-      await updatePreviousDeployments();
-
-      const { data: botComments } = await octokit.issues.listComments({
-        ...defaultGHOptions,
-        issue_number: bkEnv.pullRequestNumber!,
+      await createOrUpdateDeploymentComment({
+        state: 'success',
+        preDeploy: opt.preDeploy,
+        deploymentUrl,
       });
-      const deployComments = botComments.filter((c) => commentByKey('deployments')(c.body));
-      await Promise.all(
-        deployComments.map(async ({ id }) => {
-          await octokit.issues.deleteComment({
-            ...defaultGHOptions,
-            comment_id: id,
-          });
-        }),
-      );
-      await octokit.issues.createComment({
-        ...defaultGHOptions,
-        issue_number: bkEnv.pullRequestNumber!,
-        body: getComment('deployments', deploymentUrl, bkEnv.commit!),
+    } else {
+      await createDeploymentStatus({
+        state: 'success',
+        environment_url: deploymentUrl,
       });
     }
-    await createDeploymentStatus({
-      state: 'success',
-      environment_url: deploymentUrl,
-    });
     return deploymentUrl;
   } else {
     throw new Error(`Error: Firebase deployment resulted in ${status}`);
   }
 };
+
+interface ChannelDeploymentInfo {
+  status: string;
+  result?: {
+    url?: string;
+  };
+}
+
+/**
+ * Returns deployment id for given PR channel
+ */
+export async function getDeploymentUrl() {
+  try {
+    const channelId = getChannelId();
+    const gacFile = createGACFile();
+    const deploymentJson = await exec(`npx firebase-tools hosting:channel:open ${channelId} --json`, {
+      cwd: './e2e_server',
+      stdio: 'pipe',
+      allowFailure: true,
+      env: {
+        ...process.env,
+        GOOGLE_APPLICATION_CREDENTIALS: gacFile,
+      },
+    });
+    const info = JSON.parse(deploymentJson) as ChannelDeploymentInfo;
+    return info?.result?.url || undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 interface DeployResult {
   status: string;
