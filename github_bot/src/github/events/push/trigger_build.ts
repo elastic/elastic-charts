@@ -46,7 +46,7 @@ export function setupBuildTrigger(app: Probot) {
 
     const build = await buildkiteClient.triggerBuild({
       context: ` - ${ctx.name}`,
-      branch: `${ctx.payload.repository.owner.login}:${branch}`,
+      branch,
       commit: ctx.payload.after,
       message: ctx.payload.head_commit?.message,
       ignore_pipeline_branch_filters: true,
