@@ -20,6 +20,8 @@ import { LayoutDirection } from '../../../utils/common';
 export type MetricBase = {
   color: Color;
   title?: string;
+  valueColor?: Color;
+  valueIcon?: ComponentType<{ width: number; height: number; color: Color; verticalAlign: 'middle' }>;
   subtitle?: string;
   extra?: ReactElement;
   icon?: ComponentType<{ width: number; height: number; color: Color }>;

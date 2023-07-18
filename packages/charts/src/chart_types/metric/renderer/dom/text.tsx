@@ -255,6 +255,8 @@ export const MetricText: React.FunctionComponent<{
           style={{
             fontSize: `${VALUE_FONT_SIZE[size]}px`,
             textOverflow: isNumericalMetric ? undefined : 'ellipsis',
+            marginRight: datum.valueIcon ? ICON_SIZE[size] + 8 : undefined,
+            color: datum.valueColor,
           }}
           title={textParts.map(({ text }) => text).join('')}
         >
@@ -272,6 +274,19 @@ export const MetricText: React.FunctionComponent<{
             );
           })}
         </p>
+        {datum.valueIcon && (
+          <p
+            className="echMetricText__valueIcon"
+            style={{ fontSize: `${VALUE_FONT_SIZE[size]}px`, color: datum.valueColor ?? highContrastTextColor }}
+          >
+            {renderWithProps(datum.valueIcon, {
+              width: VALUE_PART_FONT_SIZE[size],
+              height: VALUE_PART_FONT_SIZE[size],
+              color: datum.valueColor ?? highContrastTextColor,
+              verticalAlign: 'middle',
+            })}
+          </p>
+        )}
       </div>
     </div>
   );
