@@ -27,13 +27,15 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@playwright/test@^1.23.0":
-  version "1.23.0"
-  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.23.0.tgz#5d07ace37e1598a4a1a785b07856620b4e26fc43"
-  integrity sha512-RPWI8AHBVBiDyfTuxi1BhOaY3yaVy3S5ZsGKkSGGeWpZtSgN4SerInCYvgh9+EunIAK4RJQo+bzupbAn5pVqHQ==
+"@playwright/test@1.37.0-alpha-jul-18-2023":
+  version "1.37.0-alpha-jul-18-2023"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.37.0-alpha-jul-18-2023.tgz#27319e4e6778a06c95a00e97e2336fa44beeb3ca"
+  integrity sha512-Rljc3fc30RtjB0DwncZgGxRtJXxITILBIfeWKIPFv8Fa+SkJhwa57rZjakP0W9xc//JJycE+PmD6hHe98aiCdg==
   dependencies:
     "@types/node" "*"
-    playwright-core "1.23.0"
+    playwright-core "1.37.0-alpha-jul-18-2023"
+  optionalDependencies:
+    fsevents "2.3.2"
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
@@ -152,6 +154,11 @@ expect-playwright@^0.8.0:
   resolved "https://registry.yarnpkg.com/expect-playwright/-/expect-playwright-0.8.0.tgz#6d4ebe0bdbdd3c1693d880d97153b96a129ae4e8"
   integrity sha512-+kn8561vHAY+dt+0gMqqj1oY+g5xWrsuGMk4QGxotT2WS545nVqqjs37z6hrYfIuucwqthzwJfCJUEYqixyljg==
 
+fsevents@2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
+  integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
+
 header-case@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/header-case/-/header-case-2.0.4.tgz#5a42e63b55177349cf405beb8d775acabb92c063"
@@ -241,10 +248,10 @@ path-case@^3.0.4:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
-playwright-core@1.23.0:
-  version "1.23.0"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.23.0.tgz#51e24121b3a5bbe759d79738d8eff7a63156293c"
-  integrity sha512-Zzhyr5RZGoJ1ek2sgfJCt2076kdOg8hnNwFBqAYeLySiutXyxSQk93vZ5gbnFiWV1sHvueCcwla9n35acUTxtA==
+playwright-core@1.37.0-alpha-jul-18-2023:
+  version "1.37.0-alpha-jul-18-2023"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.37.0-alpha-jul-18-2023.tgz#bd4d91f18b27b4c82358ed48296b357dbb531749"
+  integrity sha512-I+8adOU6sOyjTms9j7W63zc2wR2DfEmmRt5HNUSJZB0OmocpoY4jL6VK/v/OkZW98bnSFTv3+4bDi3H9AZZo7Q==
 
 playwright-merge-html-reports@^0.2.3:
   version "0.2.3"

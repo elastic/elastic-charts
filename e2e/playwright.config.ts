@@ -33,10 +33,14 @@ const config: PlaywrightTestConfig = {
   ],
   expect: {
     toMatchSnapshot: {
+      _comparator: 'ssim-cie94',
       threshold: 0,
       maxDiffPixelRatio: 0,
       maxDiffPixels: 0,
-    },
+    } as any,
+    toHaveScreenshot: {
+      _comparator: 'ssim-cie94',
+    } as any,
   },
   // TODO limit this to only flaky tests. Watch https://github.com/microsoft/playwright/issues/15657
   retries: 1,
