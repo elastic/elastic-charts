@@ -63,7 +63,8 @@ export function setupBuildTrigger(app: Probot) {
       );
     });
     const build = await buildkiteClient.triggerBuild<PullRequestBuildEnv>({
-      branch: `${head.repo?.owner.login}:${head.ref}`,
+      context: ` - ${ctx.name} | ${ctx.payload.action}`,
+      branch: `${head.repo!.owner.login}:${head.ref}`,
       commit: head.sha,
       message: commit.commit.message,
       ignore_pipeline_branch_filters: true,

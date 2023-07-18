@@ -18,6 +18,11 @@ import { githubClient } from '../utils/github';
 
 type GetPullResponseData = RestEndpointMethodTypes['pulls']['get']['response']['data'];
 
+/**
+ * Strips away `refs/xxx` from `refs/xxx/<branch>`
+ */
+export const getBranchFromRef = (ref: string) => ref.replace(/^refs\/(.+?\/){0,1}/, '');
+
 export function isBaseRepo({
   id,
   fork,
@@ -93,8 +98,6 @@ export async function isValidUser(ctx: ProbotEventContext<'issue_comment' | 'pul
       ...ctx.repo(),
       username,
     });
-    console.log({ permission });
-
     if (status === 200 && requiredPermission.has(permission)) {
       return true;
     } else {
@@ -223,8 +226,6 @@ export async function updateAllChecks(
       throw new Error('Missing check runs, pagination required');
     }
 
-    console.log(checkRuns);
-
     for (const { id, external_id, details_url, status } of checkRuns) {
       if (status !== 'completed' || external_id === main.id) {
         await ctx.octokit.checks.update({
@@ -255,8 +256,6 @@ export async function updateAllChecks(
 }
 
 export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
-  console.log('syncChecks');
-
   const [previousCommitSha] = await getLatestCommits(ctx);
 
   if (!previousCommitSha) throw new Error('Unable to load previous commit');
@@ -269,6 +268,7 @@ export async function syncChecks(ctx: ProbotEventContext<'pull_request'>) {
     ref: previousCommitSha,
   });
 
+  console.log('syncChecks');
   console.log(checks.map((c) => `${c.name}: status ${c.status}`));
 
   await Promise.all(
@@ -334,41 +334,6 @@ export async function getLatestCommits(ctx: ProbotEventContext<'pull_request'>, 
   }`);
 
   return response.repository.pullRequest.commits.nodes.map((n) => n.commit.oid);
-}
-
-// TODO remove or use this function
-export async function updatePreviousDeployments(
-  ctx: ProbotEventContext<'pull_request'>,
-  state: RestEndpointMethodTypes['repos']['createDeploymentStatus']['parameters']['state'] = 'inactive',
-) {
-  const { data: deployments } = await ctx.octokit.repos.listDeployments({
-    ...ctx.repo(),
-    ref: ctx.payload.pull_request.head.ref,
-    per_page: 100,
-  });
-
-  await Promise.all(
-    deployments.map(async ({ id }) => {
-      const {
-        data: [data],
-      } = await ctx.octokit.repos.listDeploymentStatuses({
-        ...ctx.repo(),
-        deployment_id: id,
-        per_page: 1,
-      });
-
-      if (data && ['in_progress', 'queued', 'pending'].includes(data.state)) {
-        const { environment, ...status } = data;
-        await ctx.octokit.repos.createDeploymentStatus({
-          ...ctx.repo(),
-          ...status,
-          // @ts-ignore - bad type for environment
-          environment,
-          state,
-        });
-      }
-    }),
-  );
 }
 
 export function pickDefined<R extends Record<string, unknown>>(source: R): R {

@@ -9,23 +9,36 @@
 import { Probot } from 'probot';
 
 import { buildkiteClient } from '../../../utils/buildkite';
+import { deleteDeployment } from '../../../utils/firebase';
 import { commentByKey } from '../../../utils/github_utils/comments';
-import { updateLastDeployment } from '../../../utils/github_utils/deployments';
 import { updateAllChecks } from '../../utils';
 
 /**
  * Cleanups prs after closure. Includes:
  *
  * - cancels running buildkite builds
- * - sets GitHub deployment to inactive
- * - deletes deployment issue comment
- *
- * TODOs
  * - deletes firebase deployment (auto expires after 7 days)
+ * - deletes deployment issue comment
  */
 export function cleanup(app: Probot) {
+  // @ts-ignore - probot issue https://github.com/probot/probot/issues/1680
   app.on('pull_request.closed', async (ctx) => {
     console.log(`------- Triggered probot ${ctx.name} | ${ctx.payload.action}`);
+
+    const { data: botComments } = await ctx.octokit.issues.listComments({
+      ...ctx.repo(),
+      issue_number: ctx.payload.pull_request.number,
+    });
+
+    const deployComments = botComments.filter((c) => commentByKey('deployment')(c.body));
+    for (const { id } of deployComments) {
+      await ctx.octokit.issues.deleteComment({
+        ...ctx.repo(),
+        comment_id: id,
+      });
+    }
+
+    deleteDeployment(ctx.payload.number);
 
     const { head } = ctx.payload.pull_request;
 
@@ -37,20 +50,5 @@ export function cleanup(app: Probot) {
         });
       }
     });
-
-    await updateLastDeployment(ctx);
-
-    const { data: botComments } = await ctx.octokit.issues.listComments({
-      ...ctx.repo(),
-      issue_number: ctx.payload.pull_request.number,
-    });
-
-    const deployComments = botComments.filter((c) => commentByKey('deployments')(c.body));
-    for (const { id } of deployComments) {
-      await ctx.octokit.issues.deleteComment({
-        ...ctx.repo(),
-        comment_id: id,
-      });
-    }
   });
 }

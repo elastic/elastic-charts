@@ -10,15 +10,16 @@ import { Probot } from 'probot';
 
 import { getConfig } from '../../../config';
 import { buildkiteClient } from '../../../utils/buildkite';
-import { checkCommitFn, isBaseRepo, testPatternString, updateAllChecks } from '../../utils';
+import { checkCommitFn, isBaseRepo, testPatternString, updateAllChecks, getBranchFromRef } from '../../utils';
 
 /**
- * build trigger for pushes to select base branches not pull requests
+ * Build trigger for pushes to select base branches, only on base repo not forks
  */
 export function setupBuildTrigger(app: Probot) {
   // @ts-ignore - probot issue https://github.com/probot/probot/issues/1680
   app.on('push', async (ctx) => {
-    const [branch] = ctx.payload.ref.split('/').reverse();
+    console.log(`------- Triggered probot ${ctx.name}`);
+    const branch = getBranchFromRef(ctx.payload.ref);
 
     if (
       !branch ||
@@ -44,7 +45,8 @@ export function setupBuildTrigger(app: Probot) {
     }
 
     const build = await buildkiteClient.triggerBuild({
-      branch,
+      context: ` - ${ctx.name}`,
+      branch: `${ctx.payload.repository.owner.login}:${branch}`,
       commit: ctx.payload.after,
       message: ctx.payload.head_commit?.message,
       ignore_pipeline_branch_filters: true,

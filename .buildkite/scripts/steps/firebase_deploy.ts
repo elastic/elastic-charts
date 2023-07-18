@@ -9,10 +9,13 @@
 import fs from 'fs';
 import path from 'path';
 
-import { createDeploymentStatus, firebaseDeploy, downloadArtifacts, startGroup, decompress } from '../../utils';
+import { firebaseDeploy, downloadArtifacts, startGroup, decompress, bkEnv } from '../../utils';
+import { createDeploymentStatus } from '../../utils/deployment';
 
 void (async () => {
-  await createDeploymentStatus({ state: 'in_progress' });
+  if (!bkEnv.isPullRequest) {
+    await createDeploymentStatus({ state: 'in_progress' });
+  }
 
   const outDir = 'e2e_server/public';
 
@@ -38,6 +41,7 @@ void (async () => {
   });
 
   startGroup('Check deployment files');
+
   const hasStorybookIndex = fs.existsSync('./e2e_server/public/index.html');
   const hasE2EIndex = fs.existsSync('./e2e_server/public/e2e/index.html');
   const hasE2EReportIndex = fs.existsSync('./e2e_server/public/e2e-report/index.html');

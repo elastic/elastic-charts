@@ -22,18 +22,12 @@ import {
   prettierStep,
   storybookStep,
   typeCheckStep,
+  firebasePreDeployStep,
 } from '../../steps';
-import {
-  bkEnv,
-  ChangeContext,
-  createDeployment,
-  uploadPipeline,
-  createDeploymentStatus,
-  Step,
-  CustomCommandStep,
-} from '../../utils';
+import { bkEnv, ChangeContext, uploadPipeline, Step, CustomCommandStep } from '../../utils';
 import { getBuildConfig } from '../../utils/build';
 import { MetaDataKeys } from '../../utils/constants';
+import { createDeployment, createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';
 
 void (async () => {
   try {
@@ -61,6 +55,7 @@ void (async () => {
       typeCheckStep(),
       storybookStep(),
       e2eServerStep(),
+      firebasePreDeployStep(),
       ghpDeployStep(),
       playwrightStep(),
       firebaseDeployStep(),
@@ -93,8 +88,12 @@ void (async () => {
     const skipDeployStep = (steps.find(({ key }) => key === 'deploy_fb') as CustomCommandStep)?.skip ?? false;
     await setMetadata(MetaDataKeys.skipDeployment, skipDeployStep ? 'true' : 'false');
     if (!skipDeployStep) {
-      await createDeployment();
-      await createDeploymentStatus({ state: 'queued' });
+      if (bkEnv.isPullRequest) {
+        await createOrUpdateDeploymentComment({ state: 'pending' });
+      } else {
+        await createDeployment();
+        await createDeploymentStatus({ state: 'queued' });
+      }
     }
 
     pipeline.steps = steps;

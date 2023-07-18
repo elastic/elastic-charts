@@ -31,6 +31,7 @@ export const getBuildConfig = (): BuildConfig => {
       { name: 'API', id: 'api' },
       { name: 'Build - e2e server', id: 'build_e2e' },
       { name: 'Build - Storybook', id: 'build_storybook' },
+      { name: 'Pre Deploy - firebase', id: 'pre_deploy_fb' },
       { name: 'Eslint', id: 'eslint' },
       { name: 'Prettier', id: 'prettier' },
       { name: 'Deploy - firebase', id: 'deploy_fb' },

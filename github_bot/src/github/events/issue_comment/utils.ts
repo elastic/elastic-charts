@@ -55,11 +55,5 @@ export function hasCommentAction<T extends keyof Actions>(
   const actionText = body.replace(ciNamePattern, '');
   const foundActions = actionKeys.filter((k) => actions[k].test(actionText));
 
-  console.log({
-    body,
-    actionText,
-    actions: foundActions,
-  });
-
   return foundActions.length > 0;
 }
