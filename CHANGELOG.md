@@ -1,3 +1,16 @@
+# [59.1.0](https://github.com/elastic/elastic-charts/compare/v59.0.0...v59.1.0) (2023-07-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v83 ([#2088](https://github.com/elastic/elastic-charts/issues/2088)) ([c72695e](https://github.com/elastic/elastic-charts/commit/c72695e80c5dcb4a810fa9f0f3e3e29da61eb868))
+* **deps:** update dependency @elastic/eui to v84 ([#2108](https://github.com/elastic/elastic-charts/issues/2108)) ([2b76a9a](https://github.com/elastic/elastic-charts/commit/2b76a9ae888df84cf57646217d1af5d8339d9e71))
+
+
+### Features
+
+* **metric:** add value icon and color ([#2101](https://github.com/elastic/elastic-charts/issues/2101)) ([d7134f5](https://github.com/elastic/elastic-charts/commit/d7134f5a458d2fb1611794ae0754156cd866fb4e))
+
 # [59.0.0](https://github.com/elastic/elastic-charts/compare/v58.2.1...v59.0.0) (2023-06-27)
 
 
