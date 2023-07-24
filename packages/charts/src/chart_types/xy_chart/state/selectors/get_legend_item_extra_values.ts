@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getComputedScalesSelector } from './get_computed_scales';
 import { getTooltipInfoAndGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { LegendItemExtraValues } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
+import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLegendItemExtraValues } from '../../tooltip/tooltip';
-import { getComputedScalesSelector } from './get_computed_scales';
-import { ScaleType } from '../../../../scales/constants';
 
 const EMPTY_MAP = new Map();
 /** @internal */
