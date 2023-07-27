@@ -6,58 +6,89 @@
  * Side Public License, v 1.
  */
 
-import { LastValues } from './types';
-import { SeriesKey } from '../../../../common/series_id';
+import { $Values } from 'utility-types';
+
 import { ScaleType } from '../../../../scales/constants';
+import { roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { XDomain } from '../../domains/types';
 import { isDatumFilled } from '../../rendering/utils';
-import { DataSeries, getSeriesKey, XYChartSeriesIdentifier } from '../../utils/series';
-import { StackMode } from '../../utils/specs';
+import { DataSeries, DataSeriesDatum } from '../../utils/series';
+
+/** @internal */
+export const LegendValue = Object.freeze({
+  None: 'none' as const,
+  LastTimeBucket: 'lastTimeBucket' as const,
+  LastNonNull: 'lastNonNull' as const,
+  Average: 'avg' as const,
+  Min: 'min' as const,
+  Max: 'max' as const,
+  Sum: 'sum' as const,
+});
+/** @internal */
+export type LegendValue = $Values<typeof LegendValue>;
 
 /**
+ * This method return a value from a DataSeries that correspond to the type of value requested.
+ * It in general compute the last, min, max, avg, sum of the value in a series.
+ * NOTE: not every type can work correctly with the data provided, for example a sum will not work when using the percentage chart
  * @internal
- * @param dataSeries
- * @param xDomain
  */
-export function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<SeriesKey, LastValues> {
+export function getLegendValue(
+  series: DataSeries,
+  xDomain: XDomain,
+  type: LegendValue,
+  valueAccessor: (d: DataSeriesDatum) => number | null,
+): number | null {
   // See https://github.com/elastic/elastic-charts/issues/2050
   if (xDomain.type === ScaleType.Ordinal) {
-    return new Map();
+    return null;
   }
-  const lastValues = new Map<SeriesKey, LastValues>();
 
-  // we need to get the latest
-  dataSeries.forEach((series) => {
-    if (series.data.length === 0) {
-      return;
+  switch (type) {
+    case LegendValue.LastNonNull: {
+      const last = series.data.findLast((d) => valueAccessor(d) !== null);
+      return last ? valueAccessor(last) : null;
     }
-
-    const last = series.data.at(-1);
-    if (!last) {
-      return;
-    }
-    if (isDatumFilled(last)) {
-      return;
-    }
-
-    if (last.x !== xDomain.domain.at(-1)) {
-      // we have a dataset that is not filled with all x values
-      // and the last value of the series is not the last value for every series
-      // let's skip it
-      return;
-    }
-
-    const { y0, y1, initialY0, initialY1 } = last;
-    const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier, series.groupId);
-
-    if (series.stackMode === StackMode.Percentage) {
-      const y1InPercentage = y1 === null || y0 === null ? null : y1 - y0;
-      lastValues.set(seriesKey, { y0, y1: y1InPercentage });
-      return;
-    }
-    if (initialY0 !== null || initialY1 !== null) {
-      lastValues.set(seriesKey, { y0: initialY0, y1: initialY1 });
-    }
-  });
-  return lastValues;
+    case LegendValue.LastTimeBucket:
+      if (xDomain.type !== ScaleType.Time) {
+        return null;
+      }
+      const upperDomainBound = xDomain.domain[1] as number;
+      const lastBucket = roundDateToESInterval(
+        upperDomainBound,
+        { type: 'fixed', unit: 'ms', value: xDomain.minInterval },
+        'start',
+        xDomain.timeZone,
+      );
+      const last = series.data.findLast((d) => (d.x as number) <= lastBucket);
+      if (last && !isDatumFilled(last)) {
+        return valueAccessor(last);
+      }
+      return null;
+    // all these cases are not currently used and exposed. We need to test and enable them
+    // then the legend value will be configurable by the user.
+    // case LegendValue.Average:
+    //   const avg = series.data.reduce(
+    //     (acc, curr) => {
+    //       const value = valueAccessor(curr);
+    //       return value !== null
+    //         ? {
+    //             count: acc.count + 1,
+    //             sum: acc.sum + value,
+    //           }
+    //         : acc;
+    //     },
+    //     { count: 0, sum: 0 },
+    //   );
+    //   return avg.count > 0 ? avg.sum / avg.count : 0;
+    // case LegendValue.Sum:
+    //   return series.data.reduce((acc, curr) => acc + (valueAccessor(curr) ?? 0), 0);
+    // case LegendValue.Min:
+    //   return series.data.reduce((acc, curr) => Math.min(acc, valueAccessor(curr) ?? Infinity), Infinity);
+    // case LegendValue.Max:
+    //   return series.data.reduce((acc, curr) => Math.max(acc, valueAccessor(curr) ?? -Infinity), -Infinity);
+    default:
+    case LegendValue.None:
+      return null;
+  }
 }

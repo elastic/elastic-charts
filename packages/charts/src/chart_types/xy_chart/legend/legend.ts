@@ -15,7 +15,8 @@ import { isDefined, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
-import { getXScaleTypeFromSpec } from '../scales/get_api_scales';
+import { XDomain } from '../domains/types';
+import { LegendValue, getLegendValue } from '../state/utils/get_last_value';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { LastValues } from '../state/utils/types';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
@@ -34,6 +35,7 @@ import {
   AxisSpec,
   BasicSeriesSpec,
   Postfixes,
+  StackMode,
   isAreaSeriesSpec,
   isBarSeriesSpec,
   isBubbleSeriesSpec,
@@ -93,10 +95,11 @@ function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefi
   }
 }
 
+
 /** @internal */
 export function computeLegend(
+  xDomain: XDomain,
   dataSeries: DataSeries[],
-  lastValues: Map<SeriesKey, LastValues>,
   seriesColors: Map<SeriesKey, Color>,
   specs: BasicSeriesSpec[],
   axesSpecs: AxisSpec[],
@@ -107,11 +110,12 @@ export function computeLegend(
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
+  // Let's show the last value only when using time scale until we don't enable the user customization of the legend extra value
+  const legendValueMode = xDomain.type === ScaleType.Time ? LegendValue.LastTimeBucket : LegendValue.None
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
     const banded = isBandedSpec(series.spec);
-    const key = getSeriesKey(series, series.groupId);
     const spec = getSpecsById<BasicSeriesSpec>(specs, specId);
     const dataSeriesKey = getSeriesKey(
       {
@@ -129,33 +133,47 @@ export function computeLegend(
     if (name === '' || !spec) return;
 
     const postFixes = getPostfix(spec);
-    const labelY1 = banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name;
-
     // Use this to get axis spec w/ tick formatter
     const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, settingsSpec.rotation);
     const formatter = spec.tickFormat ?? yAxis?.tickFormat ?? defaultTickFormatter;
     const { hideInLegend } = spec;
 
-    const lastValue = lastValues.get(key);
     const seriesIdentifier = getSeriesIdentifierFromDataSeries(series);
-    const xScaleType = getXScaleTypeFromSpec(spec.xScaleType);
 
     const pointStyle = getPointStyle(spec, theme);
 
+    const itemValue = getLegendValue(series, xDomain, legendValueMode, (d) => {
+      return series.stackMode === StackMode.Percentage
+        ? d.y1 === null || d.y0 === null
+          ? null
+          : d.y1 - d.y0
+        : d.initialY1;
+    });
+    const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
+    
+
     legendItems.push({
       color,
-      label: labelY1,
+      label: banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name,
       seriesIdentifiers: [seriesIdentifier],
       childId: BandedAccessorType.Y1,
       isSeriesHidden,
       isItemHidden: hideInLegend,
       isToggleable: true,
-      defaultExtra: getLegendExtra(settingsSpec.showLegendExtra, xScaleType, formatter, 'y1', lastValue),
+      defaultExtra: {
+        raw: itemValue,
+        formatted: formattedItemValue,
+        legendSizingLabel: formattedItemValue,
+      },
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
       pointStyle,
     });
     if (banded) {
+      const itemValue = getLegendValue(series, xDomain, legendValueMode, (d) => {
+        return series.stackMode === StackMode.Percentage ? d.y0 : d.initialY0;
+      });
+      const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
       legendItems.push({
         color,
@@ -165,7 +183,11 @@ export function computeLegend(
         isSeriesHidden,
         isItemHidden: hideInLegend,
         isToggleable: true,
-        defaultExtra: getLegendExtra(settingsSpec.showLegendExtra, xScaleType, formatter, 'y0', lastValue),
+        defaultExtra: {
+          raw: itemValue,
+          formatted: formattedItemValue,
+          legendSizingLabel: formattedItemValue,
+        },
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
         pointStyle,
