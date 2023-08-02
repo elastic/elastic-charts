@@ -31,7 +31,17 @@ export function renderGrids(
     perPanelGridLines.forEach(({ lineGroups, panelAnchor: { x, y } }) => {
       withContext(ctx, () => {
         ctx.translate(x, y);
-        lineGroups.forEach(({ lines, stroke }) => renderMultiLine(ctx, lines, stroke));
+        lineGroups
+          .sort((a, b) =>
+            a.isVertical && b.isVertical
+              ? 0
+              : a.isVertical && !b.isVertical
+              ? -1
+              : !a.isVertical && b.isVertical
+              ? 1
+              : 0,
+          )
+          .forEach(({ lines, stroke }) => renderMultiLine(ctx, lines, stroke));
       });
     });
   });

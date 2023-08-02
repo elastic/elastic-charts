@@ -62,20 +62,19 @@ export function renderXYChartCanvas2d(
         () => debug && renderGridPanels(ctx, transform, panelGeoms),
 
         () =>
-          renderGrids(ctx, {
-            axesSpecs,
-            renderingArea,
-            perPanelGridLines,
-            axesStyles,
-            sharedAxesStyle,
-          }),
-
-        () =>
           renderPanelSubstrates(ctx, {
             axesSpecs,
             perPanelAxisGeoms,
             renderingArea,
             debug,
+            axesStyles,
+            sharedAxesStyle,
+          }),
+        () =>
+          renderGrids(ctx, {
+            axesSpecs,
+            renderingArea,
+            perPanelGridLines,
             axesStyles,
             sharedAxesStyle,
           }),

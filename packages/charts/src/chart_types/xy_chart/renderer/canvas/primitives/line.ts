@@ -25,6 +25,7 @@ export function renderMultiLine(ctx: CanvasRenderingContext2D, lines: Line[] | s
   withContext(ctx, () => {
     ctx.strokeStyle = RGBATupleToString(stroke.color);
     ctx.lineJoin = 'round';
+    ctx.lineCap = 'square';
     ctx.lineWidth = stroke.width;
     if (stroke.dash) {
       ctx.setLineDash(stroke.dash);

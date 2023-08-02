@@ -31,6 +31,7 @@ export interface GridLineGroup {
   lines: Array<Line>;
   stroke: Stroke;
   axisId: AxisId;
+  isVertical: boolean;
 }
 
 /** @internal */
@@ -118,7 +119,7 @@ function getGridLinesForAxis(
         width: layered ? HIERARCHICAL_GRID_WIDTH : gridLineStyles.strokeWidth,
         dash: gridLineStyles.dash,
       };
-      return { lines, stroke, axisId: axisSpec.id };
+      return { lines, stroke, axisId: axisSpec.id, isVertical };
     });
 }
 
