@@ -19,10 +19,6 @@ const EMPTY_MAP = new Map();
 export const getLegendItemExtraValuesSelector = createCustomCachedSelector(
   [getTooltipInfoAndGeomsSelector, getComputedScalesSelector],
   ({ tooltip: { values } }, { xScale: { type } }): Map<SeriesKey, LegendItemExtraValues> =>
-    // 24/05/2023 A decision was made by the Kibana Visualization Team (MarcoV, StratoulaK)
-    // to disable representing `current` hovered values if the X scale is Ordinal. at Elastic this feature wasn't used
-    // and the the information was redundant because it was alredy available in the tooltip.
-    // A possible enhancement will probably update this configuration to allow `current` values if explicitly configured.
     // See https://github.com/elastic/elastic-charts/issues/2050
     type === ScaleType.Ordinal ? EMPTY_MAP : getLegendItemExtraValues(values),
 );
