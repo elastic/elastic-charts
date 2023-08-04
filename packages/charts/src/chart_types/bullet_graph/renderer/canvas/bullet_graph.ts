@@ -17,9 +17,8 @@ import { measureText } from '../../../../utils/bbox/canvas_text_bbox_calculator'
 import { clamp, isFiniteNumber } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { Point } from '../../../../utils/point';
-import { wrapText } from '../../../../utils/text/wrap';
-import { BulletGraphLayout, layout } from '../../selectors/layout';
-import { BulletDatum, BulletGraphSpec, BulletGraphSubtype } from '../../spec';
+import { BulletGraphLayout } from '../../selectors/layout';
+import { BulletDatum, BulletGraphSpec } from '../../spec';
 import {
   BulletGraphStyle,
   GRAPH_PADDING,
@@ -64,7 +63,7 @@ export function renderBulletGraph(
 
     // render each Small multiple
     ctx.fillStyle = props.style.background;
-    //@ts-expect-error
+    //@ts-expect-error - unsupported type
     ctx.letterSpacing = 'normal';
 
     layout.headerLayout.forEach((row, rowIndex) =>
@@ -244,7 +243,6 @@ function horizontalBullet(
   colorTicks
     .filter((tick) => tick > datum.domain.min && tick < datum.domain.max)
     .forEach((tick) => {
-      console.log(tick);
       ctx.moveTo(scale(tick), verticalAlignment - BULLET_SIZE / 2);
       ctx.lineTo(scale(tick), verticalAlignment + BULLET_SIZE / 2);
     });
@@ -259,14 +257,23 @@ function horizontalBullet(
     ctx.fillRect(scale(datum.target) - 1.5, verticalAlignment - TARGET_SIZE / 2, 3, TARGET_SIZE);
   }
   // Tick labels
-  // TODO: add text measurement
   ctx.fillStyle = style.textColor;
   ctx.textBaseline = 'top';
   ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
-  colorTicks.forEach((tick, i) => {
-    ctx.textAlign = i === colorTicks.length - 1 ? 'end' : 'start';
-    ctx.fillText(datum.tickFormatter(tick), scale(tick), verticalAlignment + TARGET_SIZE / 2);
-  });
+  colorTicks
+    .filter((tick) => tick >= datum.domain.min && tick <= datum.domain.max)
+    .forEach((tick, i) => {
+      const labelText = datum.tickFormatter(tick);
+      if (i === colorTicks.length - 1) {
+        const availableWidth = datum.domain.max - (colorTicks.at(-1) ?? 0);
+        const { width: labelWidth } = measureText(ctx)(labelText, TICK_FONT, TICK_FONT_SIZE);
+        ctx.textAlign = labelWidth >= scale(availableWidth) ? 'end' : 'start';
+      } else {
+        ctx.textAlign = 'start';
+      }
+
+      ctx.fillText(labelText, scale(tick), verticalAlignment + TARGET_SIZE / 2);
+    });
 }
 
 function verticalBullet(
@@ -311,8 +318,7 @@ function verticalBullet(
   );
 
   // color bands
-
-  colors.forEach((band, index) => {
+  colors.forEach((band) => {
     ctx.fillStyle = band.color;
     ctx.fillRect(
       graphSize.width / 2 - BULLET_SIZE / 2,
@@ -348,15 +354,25 @@ function verticalBullet(
   }
 
   // Tick labels
-  // TODO: add text measurement
   ctx.textBaseline = 'top';
   ctx.fillStyle = style.textColor;
   ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
-  colorTicks.forEach((tick, i) => {
-    ctx.textAlign = 'end';
-    ctx.textBaseline = i === colorTicks.length - 1 ? 'hanging' : 'bottom';
-    ctx.fillText(datum.tickFormatter(tick), graphSize.width / 2 - TARGET_SIZE / 2 - 6, graphPaddedHeight - scale(tick));
-  });
+  colorTicks
+    .filter((tick) => tick >= datum.domain.min && tick <= datum.domain.max)
+    .forEach((tick, i) => {
+      ctx.textAlign = 'end';
+
+      const labelText = datum.tickFormatter(tick);
+      if (i === colorTicks.length - 1) {
+        const availableHeight = datum.domain.max - (colorTicks.at(-1) ?? 0);
+        const labelHeight = TICK_FONT_SIZE;
+        ctx.textBaseline = labelHeight >= scale(availableHeight) ? 'hanging' : 'bottom';
+      } else {
+        ctx.textBaseline = 'bottom';
+      }
+
+      ctx.fillText(labelText, graphSize.width / 2 - TARGET_SIZE / 2 - 6, graphPaddedHeight - scale(tick));
+    });
 }
 
 function maxHorizontalTick(panelWidth: number) {
