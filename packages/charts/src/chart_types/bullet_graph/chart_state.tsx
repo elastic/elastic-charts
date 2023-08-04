@@ -49,6 +49,7 @@ export class BulletGraphState implements InternalChartState {
   getProjectionContainerArea = () => ({ width: 0, height: 0, top: 0, left: 0 });
   getMainProjectionArea = () => ({ width: 0, height: 0, top: 0, left: 0 });
   getBrushArea = () => null;
+  canDisplayChartTitles = () => true;
   getDebugState = () => ({});
   getSmallMultiplesDomains() {
     return {
