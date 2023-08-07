@@ -23,47 +23,50 @@ import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-const theme: PartialTheme = {
-  chartPaddings: { left: 160 },
-  partition: {
-    linkLabel: {
-      maxCount: 32,
-      fontSize: 14,
+export const Example: ChartsStory = (_, { title, description }) => {
+  const theme: PartialTheme = {
+    chartPaddings: { left: 160 },
+    partition: {
+      linkLabel: {
+        maxCount: 32,
+        fontSize: 14,
+      },
+      fontFamily: 'Arial',
+      fillLabel: {
+        fontStyle: 'italic',
+      },
+      minFontSize: 1,
+      idealFontSizeJump: 1.1,
+      outerSizeRatio: 0.9,
+      // the `emptySizeRatio` prop controls the inner size of the donut
+      emptySizeRatio: 0.4,
+      circlePadding: 4,
     },
-    fontFamily: 'Arial',
-    fillLabel: {
-      fontStyle: 'italic',
-    },
-    minFontSize: 1,
-    idealFontSizeJump: 1.1,
-    outerSizeRatio: 0.9,
-    emptySizeRatio: 0.4,
-    circlePadding: 4,
-  },
-};
+  };
 
-export const Example: ChartsStory = (_, { title, description }) => (
-  <Chart title={title} description={description}>
-    <Settings theme={theme} baseTheme={useBaseTheme()} />
-    <Partition
-      id="spec_1"
-      data={mocks.pie}
-      layout={PartitionLayout.sunburst}
-      valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-      layers={[
-        {
-          groupByRollup: (d: Datum) => d.sitc1,
-          nodeLabel: (d: Datum) => productLookup[d].name,
-          shape: {
-            fillColor: (key, sortIndex, node, tree) =>
-              indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, sortIndex, tree),
+  return (
+    <Chart title={title} description={description}>
+      <Settings theme={theme} baseTheme={useBaseTheme()} />
+      <Partition
+        id="spec_1"
+        data={mocks.pie}
+        layout={PartitionLayout.sunburst}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: (key, sortIndex, node, tree) =>
+                indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, sortIndex, tree),
+            },
           },
-        },
-      ]}
-    />
-  </Chart>
-);
+        ]}
+      />
+    </Chart>
+  );
+};
 
 Example.parameters = {
   background: { default: 'white' },
