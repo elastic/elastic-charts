@@ -43,7 +43,7 @@ export function renderBulletGraph(
   ctx: CanvasRenderingContext2D,
   dpr: Ratio,
   props: {
-    spec: BulletGraphSpec | undefined;
+    spec?: BulletGraphSpec;
     a11y: A11ySettings;
     size: Size;
     layout: BulletGraphLayout;
@@ -183,8 +183,6 @@ export function renderBulletGraph(
     );
   });
 }
-
-/////////////////////////////
 
 const TARGET_SIZE = 40;
 const BULLET_SIZE = 32;

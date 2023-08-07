@@ -29,7 +29,8 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { Size } from '../../../../utils/dimensions';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { Metric } from '../../../metric/renderer/dom/metric';
-import { getBulletGraphSpec, chartSize } from '../../selectors/chart_size';
+import { getBulletSpec, chartSize } from '../../selectors/chart_size';
+import { hasChartTitles } from '../../selectors/has_chart_titles';
 import { BulletGraphLayout, layout } from '../../selectors/layout';
 import { BulletDatum, BulletGraphSpec } from '../../spec';
 import { BulletGraphStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
@@ -37,7 +38,8 @@ import { BulletGraphStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
 interface StateProps {
   initialized: boolean;
   chartId: string;
-  spec: BulletGraphSpec | undefined;
+  hasTitles: boolean;
+  spec?: BulletGraphSpec;
   a11y: A11ySettings;
   size: Size;
   layout: BulletGraphLayout;
@@ -130,14 +132,10 @@ class Component extends React.Component<Props> {
           <div className="echBulletAsMetric" style={{ width: '100%', height: '100%' }}>
             <AlignedGrid<BulletDatum>
               data={spec.data}
-              headerComponent={({ datum, stats }) => {
-                return null;
-              }}
               contentComponent={({ datum, stats }) => {
                 const colorScale = scaleLinear()
                   .domain([datum.domain.min, datum.domain.max])
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
+                  // @ts-ignore - range determined from strings
                   .range(this.props.bandColors);
                 return (
                   <Metric
@@ -156,6 +154,7 @@ class Component extends React.Component<Props> {
                         </span>
                       ) : undefined,
                     }}
+                    hasTitles={this.props.hasTitles}
                     totalRows={stats.rows}
                     totalColumns={stats.columns}
                     columnIndex={stats.columnIndex}
@@ -196,6 +195,7 @@ const DEFAULT_PROPS: StateProps = {
   initialized: false,
   chartId: '',
   spec: undefined,
+  hasTitles: false,
   size: {
     width: 0,
     height: 0,
@@ -221,7 +221,8 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   return {
     initialized: true,
     chartId: state.chartId,
-    spec: getBulletGraphSpec(state)[0],
+    hasTitles: hasChartTitles(state),
+    spec: getBulletSpec(state),
     size: chartSize(state),
     a11y: getA11ySettingsSelector(state),
     layout: layout(state),

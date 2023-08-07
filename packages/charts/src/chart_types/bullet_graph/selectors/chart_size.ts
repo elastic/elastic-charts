@@ -11,7 +11,7 @@ import { BulletGraphSpec } from '../../../chart_types/bullet_graph/spec';
 import { SpecType } from '../../../specs';
 import { GlobalChartState } from '../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../state/create_selector';
-import { getSpecsByType } from '../../../state/selectors/get_specs_by_type';
+import { getSpecFromStore } from '../../../state/utils';
 import { Dimensions } from '../../../utils/dimensions';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
@@ -22,4 +22,6 @@ export const chartSize = createCustomCachedSelector([getParentDimension], (conta
 });
 
 /** @internal */
-export const getBulletGraphSpec = getSpecsByType<BulletGraphSpec>(ChartType.BulletGraph, SpecType.Series);
+export function getBulletSpec(state: GlobalChartState): BulletGraphSpec {
+  return getSpecFromStore<BulletGraphSpec, true>(state.specs, ChartType.BulletGraph, SpecType.Series, true);
+}

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { chartSize, getBulletGraphSpec } from './chart_size';
+import { chartSize, getBulletSpec } from './chart_size';
 import { BulletDatum } from '../../../chart_types/bullet_graph/spec';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
@@ -58,11 +58,8 @@ export interface BulletGraphLayout {
 }
 
 /** @internal */
-export const layout = createCustomCachedSelector([getBulletGraphSpec, chartSize], (specs, size): BulletGraphLayout => {
-  const spec = specs[0]!;
-
+export const layout = createCustomCachedSelector([getBulletSpec, chartSize], (spec, size): BulletGraphLayout => {
   const { data } = spec;
-
   const rows = data.length;
   const columns = data.reduce((acc, row) => {
     return Math.max(acc, row.length);

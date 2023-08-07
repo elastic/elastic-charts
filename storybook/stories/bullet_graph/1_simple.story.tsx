@@ -10,10 +10,11 @@ import React from 'react';
 
 import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.vertical);
   return (
     <div
@@ -27,7 +28,7 @@ export const Example = () => {
         borderRadius: '6px',
       }}
     >
-      <Chart>
+      <Chart title={title} description={description}>
         <Settings baseTheme={useBaseTheme()} />
         <BulletGraph
           id="bubbles"

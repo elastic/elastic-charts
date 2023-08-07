@@ -11,12 +11,13 @@ import React from 'react';
 
 import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
 
+import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
-export const Example = () => {
+export const Example: ChartsStory = (_, { title, description }) => {
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
-  const title = text('title', 'Error rate');
+  const bulletTitle = text('title', 'Error rate');
   const subtitle = text('subtitle', '');
   const value = number('value', 56, { range: true, min: 0, max: 200 });
   const target = number('target', 75, { range: true, min: 0, max: 200 });
@@ -36,7 +37,7 @@ export const Example = () => {
         borderRadius: '6px',
       }}
     >
-      <Chart>
+      <Chart title={title} description={description}>
         <Settings baseTheme={useBaseTheme()} />
         <BulletGraph
           id="bubbles"
@@ -47,7 +48,7 @@ export const Example = () => {
                 ticks: 'auto',
                 target,
                 value,
-                title,
+                title: bulletTitle,
                 subtitle,
                 domain: { min, max, nice: false },
                 valueFormatter: (d) => `${d}${postfix}`,

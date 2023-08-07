@@ -6,11 +6,10 @@
  * Side Public License, v 1.
  */
 
-export default {
-  title: 'Bullet Graph',
-};
+import { getBulletSpec } from './chart_size';
+import { createCustomCachedSelector } from '../../../state/create_selector';
 
-export { Example as single } from './1_single.story';
-export { Example as grid } from './1_simple.story';
-export { Example as singleRow } from './2_horizontal.story';
-export { Example as singleColumn } from './3_vertical.story';
+/** @internal */
+export const canDisplayChartTitles = createCustomCachedSelector([getBulletSpec], (spec): boolean => {
+  return (spec?.data?.length ?? 0) > 1 || (spec?.data?.[0]?.length ?? 0) > 1;
+});

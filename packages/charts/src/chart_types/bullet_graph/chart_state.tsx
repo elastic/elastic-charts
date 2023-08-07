@@ -9,10 +9,11 @@
 import React, { RefObject } from 'react';
 
 import { BulletGraphRenderer } from './renderer/canvas';
+import { canDisplayChartTitles } from './selectors/can_display_chart_titles';
 import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { LegendItem } from '../../common/legend';
-import { BackwardRef, InternalChartState } from '../../state/chart_state';
+import { BackwardRef, GlobalChartState, InternalChartState } from '../../state/chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../state/selectors/get_legend_items_labels';
 
@@ -49,12 +50,15 @@ export class BulletGraphState implements InternalChartState {
   getProjectionContainerArea = () => ({ width: 0, height: 0, top: 0, left: 0 });
   getMainProjectionArea = () => ({ width: 0, height: 0, top: 0, left: 0 });
   getBrushArea = () => null;
-  canDisplayChartTitles = () => true;
   getDebugState = () => ({});
   getSmallMultiplesDomains() {
     return {
       smHDomain: [],
       smVDomain: [],
     };
+  }
+
+  canDisplayChartTitles(globalState: GlobalChartState) {
+    return canDisplayChartTitles(globalState);
   }
 }

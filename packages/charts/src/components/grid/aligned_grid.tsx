@@ -11,10 +11,6 @@ import React, { ComponentType, CSSProperties } from 'react';
 
 interface AlignedGridProps<D> {
   data: Array<Array<D | undefined>>;
-  headerComponent: ComponentType<{
-    datum: D;
-    stats: { rows: number; rowIndex: number; columns: number; columnIndex: number };
-  }>;
   contentComponent: ComponentType<{
     datum: D;
     stats: { rows: number; rowIndex: number; columns: number; columnIndex: number };
@@ -22,11 +18,7 @@ interface AlignedGridProps<D> {
 }
 
 /** @internal */
-export function AlignedGrid<D>({
-  data,
-  headerComponent: HeaderComponent,
-  contentComponent: ContentComponent,
-}: AlignedGridProps<D>) {
+export function AlignedGrid<D>({ data, contentComponent: ContentComponent }: AlignedGridProps<D>) {
   const rows = data.length;
   const columns = data.reduce((acc, row) => {
     return Math.max(acc, row.length);
@@ -65,15 +57,11 @@ export function AlignedGrid<D>({
               </>
             );
           }
+
           return (
-            <>
-              <div className={headerClassName} style={headerStyle}>
-                <HeaderComponent datum={cell} stats={{ rowIndex, columnIndex, columns, rows }} />
-              </div>
-              <div className={contentClassName} style={contentStyle}>
-                <ContentComponent datum={cell} stats={{ rowIndex, columnIndex, columns, rows }} />
-              </div>
-            </>
+            <div key={`${rowIndex}-${columnIndex}`} className={contentClassName} style={contentStyle}>
+              <ContentComponent datum={cell} stats={{ rowIndex, columnIndex, columns, rows }} />
+            </div>
           );
         }),
       )}
