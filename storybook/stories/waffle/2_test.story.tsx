@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
@@ -15,6 +16,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalStark9, discreteColor, productPriceLookup } from '../utils/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const useOpaqueColor = boolean('use alpha', false);
   return (
     <Chart title={title} description={description} className="story-chart">
       <Settings
@@ -45,7 +47,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
             groupByRollup: (d: Datum) => d.products_price,
             nodeLabel: (d: Datum) => productPriceLookup[d].name,
             shape: {
-              fillColor: (nodeKey, sortIndex) => discreteColor(colorBrewerCategoricalStark9.slice(1))(sortIndex),
+              fillColor: (nodeKey, sortIndex) =>
+                discreteColor(colorBrewerCategoricalStark9.slice(1), useOpaqueColor ? 0.5 : 1)(sortIndex),
             },
           },
         ]}
