@@ -25,8 +25,8 @@ function toEqualArrayOf(this: jest.MatcherUtils, received: any[], value: any, le
   }
 
   const receivedPretty = this.utils.printReceived(received);
-  const elementCheck = received.every((v) => v === value);
   const lengthCheck = length === undefined || received.length === length;
+  const elementCheck = received.every((v) => v === value);
 
   if (!lengthCheck) {
     return {

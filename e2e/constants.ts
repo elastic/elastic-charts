@@ -21,9 +21,9 @@ export type Rotation = 0 | 90 | -90 | 180;
 
 export const Placement = Object.freeze({
   Top: 'top' as const,
-  Bottom: 'bottom' as const,
   Left: 'left' as const,
-  Right: 'right' as const,
+  Right: 'right' as const,  
+  Bottom: 'bottom' as const,
   TopStart: 'top-start' as const,
   TopEnd: 'top-end' as const,
   BottomStart: 'bottom-start' as const,
