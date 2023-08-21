@@ -164,7 +164,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
   const minorDayFormat = (d: number) => {
     const numberString = minorDayBaseFormat(d);
     const number = Number.parseInt(numberString, 10);
-    return locale.substr(0, 2) === 'en' ? `${numberString}${englishOrdinalEnding(number)}` : numberString;
+    return locale.substring(0, 2) === 'en' ? `${numberString}${englishOrdinalEnding(number)}` : numberString;
   };
   const detailedDayFormat = new Intl.DateTimeFormat(locale, {
     year: 'numeric',
