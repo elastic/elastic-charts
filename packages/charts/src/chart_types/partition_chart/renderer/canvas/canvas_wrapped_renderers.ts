@@ -41,23 +41,22 @@ export function renderWrappedPartitionCanvas2d(
 
     const fWidth = x1 - x0;
     const fPadding = Math.min(padding, MAX_PADDING_RATIO * fWidth);
-    const paintedWidth = fWidth - fPadding;
-    const paintedHeight = y1 - y0 - padding;
-    const cornerRadius = 2 * cornerRatio * Math.min(paintedWidth, paintedHeight);
-    const halfRadius = cornerRadius / 2;
+    const w = fWidth - fPadding;
+    const h = y1 - y0 - padding;
+    const x = x0 + fPadding;
+    const y = y0 + padding / 2;
+    const r = cornerRatio * Math.min(w, h);
 
     ctx.fillStyle = fillColor;
-    ctx.strokeStyle = fillColor;
-    ctx.lineWidth = cornerRadius;
+
     ctx.beginPath();
-    ctx.rect(
-      x0 + fPadding + halfRadius,
-      y0 + padding / 2 + halfRadius,
-      paintedWidth - cornerRadius,
-      paintedHeight - cornerRadius,
-    );
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
     ctx.fill();
-    ctx.stroke();
   });
 
   ctx.restore();

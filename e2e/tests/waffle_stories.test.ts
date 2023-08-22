@@ -16,4 +16,9 @@ test.describe('Waffle', () => {
       'http://localhost:9001/?path=/story/waffle-alpha--simple&globals=theme:light&knob-show table for debugging=&knob-ascending sort=true',
     );
   });
+  test('no stroke artifacts when using semi-transparent colors', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/waffle-alpha--test&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;theme:light&knob-use alpha=true',
+    );
+  });
 });
