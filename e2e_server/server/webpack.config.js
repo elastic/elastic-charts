@@ -46,8 +46,6 @@ module.exports = {
     },
   },
   module: {
-    // used to skip parsing the EUI used hello-pangea/dnd that contains optional chaining code
-    noParse: [path.resolve(__dirname, '../../node_modules/@hello-pangea')],
     rules: [
       {
         test: /\.(ttf|eot|woff|woff2|svg)$/,
@@ -56,6 +54,16 @@ module.exports = {
           options: {
             name: '[name].[ext]',
             outputPath: 'fonts/',
+          },
+        },
+      },
+      {
+        test: /\.js$/,
+        include: [path.resolve(__dirname, '../../node_modules/@hello-pangea')],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
           },
         },
       },
