@@ -111,6 +111,8 @@ module.exports = ({ config }) => {
       ...scssLoaders,
     ],
   });
+  // used to skip parsing the EUI used hello-pangea/dnd that contains optional chaining code
+  config.module.noParse = [path.resolve(__dirname, '../node_modules/@hello-pangea')];
 
   config.resolve.extensions.push('.ts', '.tsx');
 
