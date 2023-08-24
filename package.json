@@ -60,10 +60,10 @@
     "ts:prune": "ts-prune"
   },
   "devDependencies": {
-    "@babel/core": "^7.10.4",
-    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/preset-react": "^7.10.4",
+    "@babel/core": "^7.22.10",
+    "@babel/plugin-transform-modules-commonjs": "^7.22.5",
+    "@babel/preset-env": "^7.22.10",
+    "@babel/preset-react": "^7.22.5",
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
     "@elastic/datemath": "^5.0.3",
@@ -105,6 +105,7 @@
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
+    "babel-loader": "^8.3.0",
     "autoprefixer": "^9.0.0",
     "backport": "^5.6.6",
     "commitizen": "^4.2.3",
