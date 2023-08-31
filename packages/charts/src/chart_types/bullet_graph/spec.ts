@@ -36,15 +36,26 @@ export const BulletGraphSubtype = Object.freeze({
 /** @public */
 export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
 
+/** @public */
+export const BulletGraphSize = Object.freeze({
+  full: 'full' as const, // need to address label overlapping
+  half: 'half' as const,
+  twoThirds: 'two-thirds' as const,
+});
+/** @public */
+export type BulletGraphSize = $Values<typeof BulletGraphSize>;
+
 /** @alpha */
 export interface BulletGraphSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.BulletGraph;
   data: (BulletDatum | undefined)[][];
   subtype: BulletGraphSubtype;
+  /**
+   * Size options of chart for angular subType only
+   */
+  size: BulletGraphSize;
 }
-
-const defaultBulletGraph = {};
 
 const buildProps = buildSFProps<BulletGraphSpec>()(
   {
@@ -52,7 +63,7 @@ const buildProps = buildSFProps<BulletGraphSpec>()(
     chartType: ChartType.BulletGraph,
   },
   {
-    ...defaultBulletGraph,
+    size: BulletGraphSize.twoThirds,
   },
 );
 
@@ -70,20 +81,7 @@ export const BulletGraph = function (
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  // const angleStart = props.angleStart ?? defaults.angleStart;
-  // const angleEnd = props.angleEnd ?? defaults.angleEnd;
   const constraints = {};
-  //
-  //   if (Math.abs(angleEnd - angleStart) > TAU) {
-  //     constraints.angleEnd = angleStart + TAU * Math.sign(angleEnd - angleStart);
-  //
-  //     Logger.warn(`The total angle of the goal chart must not exceed 2π radians.\
-  // To prevent overlapping, the value of \`angleEnd\` will be replaced.
-  //
-  //   original: ${angleEnd} (~${round(angleEnd / Math.PI, 3)}π)
-  //   replaced: ${constraints.angleEnd} (~${round(constraints.angleEnd / Math.PI, 3)}π)
-  // `);
-  //   }
 
   useSpecFactory<BulletGraphSpec>({
     ...defaults,

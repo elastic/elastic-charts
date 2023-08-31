@@ -26,6 +26,7 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Size } from '../../../../utils/dimensions';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { Metric } from '../../../metric/renderer/dom/metric';
@@ -37,6 +38,7 @@ import { BulletGraphStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
 
 interface StateProps {
   initialized: boolean;
+  debug: boolean;
   chartId: string;
   hasTitles: boolean;
   spec?: BulletGraphSpec;
@@ -193,6 +195,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
 
 const DEFAULT_PROPS: StateProps = {
   initialized: false,
+  debug: false,
   chartId: '',
   spec: undefined,
   hasTitles: false,
@@ -217,9 +220,16 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   }
   const theme = getChartThemeSelector(state);
 
-  // const { onElementClick, onElementOut, onElementOver } = getSettingsSpecSelector(state);
+  const {
+    debug,
+    // onElementClick,
+    // onElementOut,
+    // onElementOver,
+  } = getSettingsSpecSelector(state);
+
   return {
     initialized: true,
+    debug,
     chartId: state.chartId,
     hasTitles: hasChartTitles(state),
     spec: getBulletSpec(state),

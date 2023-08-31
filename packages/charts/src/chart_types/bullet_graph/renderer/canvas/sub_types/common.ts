@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-export default {
-  title: 'Bullet Graph',
-};
+import { clamp } from '../../../../../utils/common';
+import { MIN_TICK_COUNT, MAX_TICK_COUNT } from '../constants';
 
-export { Example as single } from './1_single.story';
-export { Example as grid } from './1_simple.story';
-export { Example as singleRow } from './2_horizontal.story';
-export { Example as singleColumn } from './3_vertical.story';
-export { Example as angular } from './4_angular.story';
+/**
+ * @internal
+ */
+export function maxTicksByLength(length: number, interval: number) {
+  const target = Math.floor(length / interval);
+  return clamp(target, MIN_TICK_COUNT, MAX_TICK_COUNT);
+}

@@ -6,30 +6,24 @@
  * Side Public License, v 1.
  */
 
-import { scaleLinear } from 'd3-scale';
-
-import { Color } from '../../../../common/colors';
+import { angularBullet, horizontalBullet, verticalBullet } from './sub_types';
+import { Colors } from '../../../../common/colors';
 import { Ratio } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import { withContext, clearCanvas } from '../../../../renderers/canvas';
 import { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
-import { measureText } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, isFiniteNumber } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
-import { Point } from '../../../../utils/point';
+import { renderDebugRect } from '../../../xy_chart/renderer/canvas/utils/debug';
 import { BulletGraphLayout } from '../../selectors/layout';
-import { BulletDatum, BulletGraphSpec } from '../../spec';
+import { BulletGraphSpec, BulletGraphSubtype } from '../../spec';
 import {
   BulletGraphStyle,
-  GRAPH_PADDING,
   HEADER_PADDING,
   SUBTITLE_FONT,
   SUBTITLE_FONT_SIZE,
   SUBTITLE_LINE_HEIGHT,
   TARGET_FONT,
   TARGET_FONT_SIZE,
-  TICK_FONT,
-  TICK_FONT_SIZE,
   TITLE_FONT,
   TITLE_FONT_SIZE,
   TITLE_LINE_HEIGHT,
@@ -43,6 +37,7 @@ export function renderBulletGraph(
   ctx: CanvasRenderingContext2D,
   dpr: Ratio,
   props: {
+    debug: boolean;
     spec?: BulletGraphSpec;
     a11y: A11ySettings;
     size: Size;
@@ -51,7 +46,7 @@ export function renderBulletGraph(
     bandColors: [string, string];
   },
 ) {
-  const { style, layout, spec, bandColors } = props;
+  const { debug, style, layout, spec, bandColors } = props;
   withContext(ctx, (ctx) => {
     ctx.scale(dpr, dpr);
     clearCanvas(ctx, props.style.background);
@@ -169,213 +164,29 @@ export function renderBulletGraph(
           withContext(ctx, (ctx) => {
             ctx.translate(graphOrigin.x, graphOrigin.y);
 
-            //DEBUG
-            //ctx.strokeRect(0, 0, graphSize.width, graphSize.height);
+            if (debug) {
+              renderDebugRect(
+                ctx,
+                {
+                  ...graphSize,
+                  x: 0,
+                  y: 0,
+                },
+                0,
+                { color: Colors.Transparent.rgba },
+              );
+            }
 
-            if (spec.subtype === 'horizontal') {
-              horizontalBullet(ctx, bulletGraph.datum, graphOrigin, graphSize, style, bandColors);
+            if (spec.subtype === BulletGraphSubtype.horizontal) {
+              horizontalBullet(ctx, bulletGraph.datum, graphSize, style, bandColors);
+            } else if (spec.subtype === BulletGraphSubtype.vertical) {
+              verticalBullet(ctx, bulletGraph.datum, graphSize, style, bandColors);
             } else {
-              verticalBullet(ctx, bulletGraph.datum, graphOrigin, graphSize, style, bandColors);
+              angularBullet(ctx, bulletGraph.datum, graphSize, style, bandColors, spec, debug);
             }
           });
         });
       }),
     );
   });
-}
-
-const TARGET_SIZE = 40;
-const BULLET_SIZE = 32;
-const BAR_SIZE = 12;
-
-function horizontalBullet(
-  ctx: CanvasRenderingContext2D,
-
-  datum: BulletDatum,
-  origin: Point,
-  graphSize: Size,
-  style: BulletGraphStyle,
-  bandColors: [string, string],
-) {
-  ctx.translate(GRAPH_PADDING.left, 0);
-  // TODO: add BASE
-  // const base = datum.domain.min < 0 && datum.domain.max > 0 ? 0 : NaN;
-  const paddedWidth = graphSize.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
-  const scale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range([0, paddedWidth]);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const colorScale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range(bandColors);
-  const maxTicks = maxHorizontalTick(graphSize.width);
-  const colorTicks = scale.ticks(maxTicks - 1);
-  const colorBandSize = paddedWidth / colorTicks.length;
-  const { colors } = colorTicks.reduce<{
-    last: number;
-    colors: Array<{ color: Color; size: number; position: number }>;
-  }>(
-    (acc, tick) => {
-      return {
-        last: acc.last + colorBandSize,
-        colors: [
-          ...acc.colors,
-          {
-            color: `${colorScale(tick)}`,
-            size: colorBandSize,
-            position: acc.last,
-          },
-        ],
-      };
-    },
-    { last: 0, colors: [] },
-  );
-
-  // color bands
-  const verticalAlignment = TARGET_SIZE / 2;
-  colors.forEach((band) => {
-    ctx.fillStyle = band.color;
-    ctx.fillRect(band.position, verticalAlignment - BULLET_SIZE / 2, band.size, BULLET_SIZE);
-  });
-
-  // Ticks
-  ctx.beginPath();
-  ctx.strokeStyle = style.background;
-  colorTicks
-    .filter((tick) => tick > datum.domain.min && tick < datum.domain.max)
-    .forEach((tick) => {
-      ctx.moveTo(scale(tick), verticalAlignment - BULLET_SIZE / 2);
-      ctx.lineTo(scale(tick), verticalAlignment + BULLET_SIZE / 2);
-    });
-  ctx.stroke();
-
-  // Bar
-  ctx.fillStyle = style.barBackground;
-  ctx.fillRect(0, verticalAlignment - BAR_SIZE / 2, scale(clamp(datum.value, datum.domain.min, datum.domain.max)), 12);
-
-  // TARGET
-  if (isFiniteNumber(datum.target) && (datum.target <= datum.domain.max || datum.target >= datum.domain.min)) {
-    ctx.fillRect(scale(datum.target) - 1.5, verticalAlignment - TARGET_SIZE / 2, 3, TARGET_SIZE);
-  }
-  // Tick labels
-  ctx.fillStyle = style.textColor;
-  ctx.textBaseline = 'top';
-  ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
-  colorTicks
-    .filter((tick) => tick >= datum.domain.min && tick <= datum.domain.max)
-    .forEach((tick, i) => {
-      const labelText = datum.tickFormatter(tick);
-      if (i === colorTicks.length - 1) {
-        const availableWidth = datum.domain.max - (colorTicks.at(-1) ?? 0);
-        const { width: labelWidth } = measureText(ctx)(labelText, TICK_FONT, TICK_FONT_SIZE);
-        ctx.textAlign = labelWidth >= scale(availableWidth) ? 'end' : 'start';
-      } else {
-        ctx.textAlign = 'start';
-      }
-
-      ctx.fillText(labelText, scale(tick), verticalAlignment + TARGET_SIZE / 2);
-    });
-}
-
-function verticalBullet(
-  ctx: CanvasRenderingContext2D,
-  datum: BulletDatum,
-  origin: Point,
-  graphSize: Size,
-  style: BulletGraphStyle,
-  bandColors: [string, string],
-) {
-  ctx.translate(0, GRAPH_PADDING.top);
-  const graphPaddedHeight = graphSize.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
-  // TODO: add BASE
-  // const base = datum.domain.min < 0 && datum.domain.max > 0 ? 0 : NaN;
-  const scale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range([0, graphPaddedHeight]).clamp(true);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  //#6092C0, #3F4E61
-
-  const colorScale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range(bandColors);
-  const maxTicks = 4;
-  const colorTicks = scale.ticks(maxTicks - 1);
-  const colorBandSize = graphPaddedHeight / colorTicks.length;
-  const { colors } = colorTicks.reduce<{
-    last: number;
-    colors: Array<{ color: Color; size: number; position: number }>;
-  }>(
-    (acc, tick) => {
-      return {
-        last: acc.last + colorBandSize,
-        colors: [
-          ...acc.colors,
-          {
-            color: `${colorScale(tick)}`,
-            size: colorBandSize,
-            position: acc.last,
-          },
-        ],
-      };
-    },
-    { last: 0, colors: [] },
-  );
-
-  // color bands
-  colors.forEach((band) => {
-    ctx.fillStyle = band.color;
-    ctx.fillRect(
-      graphSize.width / 2 - BULLET_SIZE / 2,
-      graphPaddedHeight - band.position - band.size,
-      BULLET_SIZE,
-      band.size,
-    );
-  });
-
-  // Ticks
-  ctx.beginPath();
-  ctx.strokeStyle = style.background;
-  colorTicks
-    .filter((tick) => tick > datum.domain.min && tick < datum.domain.max)
-    .forEach((tick) => {
-      ctx.moveTo(graphSize.width / 2 - BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
-      ctx.lineTo(graphSize.width / 2 + BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
-    });
-  ctx.stroke();
-
-  // Bar
-  ctx.fillStyle = style.barBackground;
-  ctx.fillRect(
-    graphSize.width / 2 - BAR_SIZE / 2,
-    graphPaddedHeight - scale(datum.value),
-    BAR_SIZE,
-    scale(datum.value),
-  );
-
-  // target
-  if (isFiniteNumber(datum.target)) {
-    ctx.fillRect(graphSize.width / 2 - TARGET_SIZE / 2, graphPaddedHeight - scale(datum.target) - 1.5, TARGET_SIZE, 3);
-  }
-
-  // Tick labels
-  ctx.textBaseline = 'top';
-  ctx.fillStyle = style.textColor;
-  ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
-  colorTicks
-    .filter((tick) => tick >= datum.domain.min && tick <= datum.domain.max)
-    .forEach((tick, i) => {
-      ctx.textAlign = 'end';
-
-      const labelText = datum.tickFormatter(tick);
-      if (i === colorTicks.length - 1) {
-        const availableHeight = datum.domain.max - (colorTicks.at(-1) ?? 0);
-        const labelHeight = TICK_FONT_SIZE;
-        ctx.textBaseline = labelHeight >= scale(availableHeight) ? 'hanging' : 'bottom';
-      } else {
-        ctx.textBaseline = 'bottom';
-      }
-
-      ctx.fillText(labelText, graphSize.width / 2 - TARGET_SIZE / 2 - 6, graphPaddedHeight - scale(tick));
-    });
-}
-
-function maxHorizontalTick(panelWidth: number) {
-  return panelWidth > 250 ? 4 : 3;
-}
-function maxVerticalTick(panelHeight: number) {
-  return panelHeight > 200 ? 4 : 3;
 }

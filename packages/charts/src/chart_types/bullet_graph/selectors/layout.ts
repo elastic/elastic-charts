@@ -7,7 +7,7 @@
  */
 
 import { chartSize, getBulletSpec } from './chart_size';
-import { BulletDatum } from '../../../chart_types/bullet_graph/spec';
+import { BulletDatum, BulletGraphSubtype } from '../../../chart_types/bullet_graph/spec';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { Size } from '../../../utils/dimensions';
@@ -57,6 +57,18 @@ export interface BulletGraphLayout {
   shouldRenderMetric: boolean;
 }
 
+const minChartHeights: Record<BulletGraphSubtype, number> = {
+  horizontal: 50,
+  vertical: 100,
+  angular: 200,
+};
+
+const minChartWidths: Record<BulletGraphSubtype, number> = {
+  horizontal: 140,
+  vertical: 140,
+  angular: 200,
+};
+
 /** @internal */
 export const layout = createCustomCachedSelector([getBulletSpec, chartSize], (spec, size): BulletGraphLayout => {
   const { data } = spec;
@@ -81,7 +93,7 @@ export const layout = createCustomCachedSelector([getBulletSpec, chartSize], (sp
         const content = {
           title: cell.title.trim(),
           subtitle: cell.subtitle?.trim(),
-          value: cell.valueFormatter(cell.value),
+          value: cell.target ? `${cell.value}` : cell.valueFormatter(cell.value),
           target: cell.target ? `/ ${cell.valueFormatter(cell.target)}` : '',
           datum: cell,
         };
@@ -158,8 +170,8 @@ export const layout = createCustomCachedSelector([getBulletSpec, chartSize], (sp
               (cell?.multiline ? VALUE_LINE_HEIGHT : 0) +
               HEADER_PADDING.top +
               HEADER_PADDING.bottom +
-              (spec.subtype === 'horizontal' ? 50 : 100), // chart height
-            minWidth: spec.subtype === 'horizontal' ? 140 : 140,
+              minChartHeights[spec.subtype],
+            minWidth: minChartWidths[spec.subtype],
           };
         },
         { maxTitleRows: 0, maxSubtitleRows: 0, multiline: false, minHeight: 0, minWidth: 0 },
