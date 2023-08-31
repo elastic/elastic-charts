@@ -35,7 +35,7 @@ export function angularBullet(
 ) {
   const [maxWidth, maxHeight] = getAngledChartSizing(graphSize, spec.size);
   const radius = Math.min(maxWidth, maxHeight) / 2 - TARGET_SIZE / 2;
-  const [startAngle, endAngle] = getAnglesBySize(spec.size);
+  const [startAngle, endAngle] = getAnglesBySize(spec.size, spec.reverse);
 
   const center = {
     x: graphSize.width / 2 - GRAPH_PADDING.left,
@@ -51,7 +51,7 @@ export function angularBullet(
   const maxTicks = maxTicksByLength(Math.abs(startAngle - endAngle) * radius, TICK_INTERVAL);
   const colorTicks = scale.ticks(maxTicks - 1);
   const colorBandSize = totalDomainArc / colorTicks.length;
-  const counterClockwise = spec.counterClockwise ?? startAngle > endAngle;
+  const counterClockwise = startAngle > endAngle;
   const { colors } = colorTicks.reduce<{
     last: number;
     colors: Array<{ color: Color; start: number; end: number }>;
@@ -175,13 +175,13 @@ const sizeAngles: Record<BulletGraphSize, { startAngle: number; endAngle: number
 };
 
 /** @internal */
-export function getAnglesBySize(size: BulletGraphSize): [startAngle: number, endAngle: number] {
+export function getAnglesBySize(size: BulletGraphSize, reverse: boolean): [startAngle: number, endAngle: number] {
   const angles = sizeAngles[size] ?? sizeAngles[BulletGraphSize.twoThirds]!;
   // Negative angles used to match current radian pattern
   const startAngle = -angles.startAngle;
   // limit endAngle to startAngle +/- 2π
   const endAngle = clamp(-angles.endAngle, startAngle - TAU, startAngle + TAU);
-
+  if (reverse) return [endAngle, startAngle];
   return [startAngle, endAngle];
 }
 

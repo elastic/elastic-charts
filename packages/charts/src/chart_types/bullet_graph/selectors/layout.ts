@@ -60,13 +60,13 @@ export interface BulletGraphLayout {
 const minChartHeights: Record<BulletGraphSubtype, number> = {
   horizontal: 50,
   vertical: 100,
-  angular: 200,
+  angular: 160,
 };
 
 const minChartWidths: Record<BulletGraphSubtype, number> = {
   horizontal: 140,
   vertical: 140,
-  angular: 200,
+  angular: 160,
 };
 
 /** @internal */
@@ -93,7 +93,7 @@ export const layout = createCustomCachedSelector([getBulletSpec, chartSize], (sp
         const content = {
           title: cell.title.trim(),
           subtitle: cell.subtitle?.trim(),
-          value: cell.target ? `${cell.value}` : cell.valueFormatter(cell.value),
+          value: cell.target ? `${cell.value} ` : cell.valueFormatter(cell.value),
           target: cell.target ? `/ ${cell.valueFormatter(cell.target)}` : '',
           datum: cell,
         };

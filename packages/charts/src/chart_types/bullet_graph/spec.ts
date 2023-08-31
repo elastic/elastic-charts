@@ -55,6 +55,7 @@ export interface BulletGraphSpec extends Spec {
    * Size options of chart for angular subType only
    */
   size: BulletGraphSize;
+  reverse: boolean;
 }
 
 const buildProps = buildSFProps<BulletGraphSpec>()(
@@ -63,6 +64,7 @@ const buildProps = buildSFProps<BulletGraphSpec>()(
     chartType: ChartType.BulletGraph,
   },
   {
+    reverse: false,
     size: BulletGraphSize.twoThirds,
   },
 );
