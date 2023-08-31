@@ -16,7 +16,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const debug = boolean('debug', true);
+  const debug = boolean('debug', false);
   const bulletTitle = text('title', 'A Nice Title');
   const subtitle = text('subtitle', 'Subtitle');
   const value = number('value', 56, { range: true, min: 0, max: 200 });
@@ -24,6 +24,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const min = number('min', 0, { range: true, min: 0, max: 200 });
   const max = number('max', 100, { range: true, min: 0, max: 200 });
   const size = getKnobFromEnum('size', BulletGraphSize, 'two-thirds');
+  const reverse = boolean('reverse', false);
 
   const postfix = text('postfix', '');
   return (
@@ -44,6 +45,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           id="bubbles"
           subtype={BulletGraphSubtype.angular}
           size={size}
+          reverse={reverse}
           data={[
             [
               {

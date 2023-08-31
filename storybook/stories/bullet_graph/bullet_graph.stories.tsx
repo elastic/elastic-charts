@@ -11,7 +11,7 @@ export default {
 };
 
 export { Example as single } from './1_single.story';
-export { Example as grid } from './1_simple.story';
-export { Example as singleRow } from './2_horizontal.story';
-export { Example as singleColumn } from './3_vertical.story';
-export { Example as angular } from './4_angular.story';
+export { Example as angular } from './2_angular.story';
+export { Example as singleRow } from './3_single_row.story';
+export { Example as singleColumn } from './4_single_column.story';
+export { Example as grid } from './5_grid.story';
