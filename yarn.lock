@@ -3162,10 +3162,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^88.0.0":
-  version "88.0.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-88.0.0.tgz#2f82c4552068c1a8b665250bd1c61a1418fb5f5c"
-  integrity sha512-kQbYPVg4CU5HvSykgMLPdMLzQG6IG6YOGADF0tFaNIicRlbY6O/DfNQa0VyhOULPgV21BxnGYT+RImy6Gm54ug==
+"@elastic/eui@^88.2.0":
+  version "88.2.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-88.2.0.tgz#ba29775ceaca27b6c44300bcd58783acf720b420"
+  integrity sha512-h756c4vB6lcyrf5bVZhLeaACWYh2t5Y8rxIX1/0BTQ4kJugBoSwSbSdGgW4G1tUa6hdYEsCzqvAQ2mI6LPSbbw==
   dependencies:
     "@hello-pangea/dnd" "^16.2.0"
     "@types/lodash" "^4.14.194"
