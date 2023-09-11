@@ -8,6 +8,7 @@
 
 import { LastValues } from './types';
 import { SeriesKey } from '../../../../common/series_id';
+import { ScaleType } from '../../../../scales/constants';
 import { XDomain } from '../../domains/types';
 import { isDatumFilled } from '../../rendering/utils';
 import { DataSeries, getSeriesKey, XYChartSeriesIdentifier } from '../../utils/series';
@@ -19,6 +20,10 @@ import { StackMode } from '../../utils/specs';
  * @param xDomain
  */
 export function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<SeriesKey, LastValues> {
+  // See https://github.com/elastic/elastic-charts/issues/2050
+  if (xDomain.type === ScaleType.Ordinal) {
+    return new Map();
+  }
   const lastValues = new Map<SeriesKey, LastValues>();
 
   // we need to get the latest

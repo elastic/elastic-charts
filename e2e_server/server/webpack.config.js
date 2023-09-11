@@ -58,6 +58,16 @@ module.exports = {
         },
       },
       {
+        test: /\.js$/,
+        include: [path.resolve(__dirname, '../../node_modules/@hello-pangea')],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
+      {
         test: /\.tsx?$/,
         loader: 'ts-loader',
         exclude: /node_modules/,

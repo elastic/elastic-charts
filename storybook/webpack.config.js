@@ -111,6 +111,17 @@ module.exports = ({ config }) => {
       ...scssLoaders,
     ],
   });
+  // exception for this library that can't be parsed by webpack4 due to their optional chaining method
+  config.module.rules.push({
+    test: /\.js$/,
+    include: [path.resolve(__dirname, '../node_modules/@hello-pangea/dnd')],
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env'],
+      },
+    },
+  });
 
   config.resolve.extensions.push('.ts', '.tsx');
 
