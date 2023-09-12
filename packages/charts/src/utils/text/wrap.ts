@@ -20,12 +20,12 @@ export function wrapText(
   maxLineWidth: number,
   maxLines: number,
   measure: TextMeasure,
+  locale: string,
 ): string[] {
   if (maxLines <= 0) {
     return [];
   }
-  // TODO add locale
-  const segmenter = textSegmenter([]);
+  const segmenter = textSegmenter(locale);
   // remove new lines and multi-spaces.
   const cleanedText = text.replaceAll('\n', ' ').replaceAll(/ +(?= )/g, '');
 
@@ -71,7 +71,7 @@ export function wrapText(
   return lines;
 }
 
-function textSegmenter(locale: string[]): (text: string) => { segment: string; index: number; isWordLike?: boolean }[] {
+function textSegmenter(locale: string): (text: string) => { segment: string; index: number; isWordLike?: boolean }[] {
   if ('Segmenter' in Intl) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore

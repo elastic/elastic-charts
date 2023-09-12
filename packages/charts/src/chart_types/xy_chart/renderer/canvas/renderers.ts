@@ -51,6 +51,7 @@ export function renderXYChartCanvas2d(
         debug,
         panelGeoms,
         hoveredAnnotationIds,
+        locale,
       } = props;
 
       const transform = { x: renderingArea.left + chartTransform.x, y: renderingArea.top + chartTransform.y };
@@ -71,14 +72,18 @@ export function renderXYChartCanvas2d(
           }),
 
         () =>
-          renderPanelSubstrates(ctx, {
-            axesSpecs,
-            perPanelAxisGeoms,
-            renderingArea,
-            debug,
-            axesStyles,
-            sharedAxesStyle,
-          }),
+          renderPanelSubstrates(
+            ctx,
+            {
+              axesSpecs,
+              perPanelAxisGeoms,
+              renderingArea,
+              debug,
+              axesStyles,
+              sharedAxesStyle,
+            },
+            locale,
+          ),
 
         // rendering background annotations
         () =>

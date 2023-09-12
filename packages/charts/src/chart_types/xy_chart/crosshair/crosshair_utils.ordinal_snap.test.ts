@@ -93,6 +93,7 @@ describe('Crosshair utils ordinal scales', () => {
     barSeries,
     getScaleConfigsFromSpecs([], barSeries, MockGlobalSpec.settings()),
     [],
+    { locale: 'en' },
   );
 
   const multiBarSeries = [barSeries1, barSeries2];
@@ -100,6 +101,7 @@ describe('Crosshair utils ordinal scales', () => {
     multiBarSeries,
     getScaleConfigsFromSpecs([], multiBarSeries, MockGlobalSpec.settings()),
     [],
+    { locale: 'en' },
   );
 
   const lineSeries = [lineSeries1];
@@ -107,6 +109,7 @@ describe('Crosshair utils ordinal scales', () => {
     lineSeries,
     getScaleConfigsFromSpecs([], lineSeries, MockGlobalSpec.settings()),
     [],
+    { locale: 'en' },
   );
 
   const multiLineSeries = [lineSeries1, lineSeries2];
@@ -114,6 +117,7 @@ describe('Crosshair utils ordinal scales', () => {
     multiLineSeries,
     getScaleConfigsFromSpecs([], multiLineSeries, MockGlobalSpec.settings()),
     [],
+    { locale: 'en' },
   );
 
   const mixedLinesBars = [lineSeries1, lineSeries2, barSeries1, barSeries2];
@@ -121,6 +125,7 @@ describe('Crosshair utils ordinal scales', () => {
     mixedLinesBars,
     getScaleConfigsFromSpecs([], mixedLinesBars, MockGlobalSpec.settings()),
     [],
+    { locale: 'en' },
   );
 
   const barSeriesScale = computeXScale({

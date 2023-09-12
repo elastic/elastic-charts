@@ -15,6 +15,7 @@ import { renderXYChartCanvas2d } from './renderers';
 import { hasMostlyRTL } from './utils/has_mostly_rtl';
 import { LegendItem } from '../../../../common/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
+import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { computePanelsSelectors, PanelGeoms } from '../../../../state/selectors/compute_panels';
@@ -77,6 +78,7 @@ export interface ReactiveChartStateProps {
   annotationSpecs: AnnotationSpec[];
   panelGeoms: PanelGeoms;
   a11ySettings: A11ySettings;
+  locale: string;
 }
 
 interface ReactiveChartDispatchProps {
@@ -237,6 +239,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
   annotationSpecs: [],
   panelGeoms: [],
   a11ySettings: DEFAULT_A11Y_SETTINGS,
+  locale: settingsBuildProps.defaults.locale,
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -245,10 +248,11 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
   }
 
   const { geometries, geometriesIndex } = computeSeriesGeometriesSelector(state);
-  const { debug } = getSettingsSpecSelector(state);
+  const { debug, locale } = getSettingsSpecSelector(state);
   const perPanelAxisGeoms = computePerPanelAxesGeomsSelector(state);
 
   return {
+    locale,
     isRTL: hasMostlyRTL(perPanelAxisGeoms),
     initialized: true,
     isChartEmpty: isChartEmptySelector(state),

@@ -18,6 +18,7 @@ import {
   SpecType,
 } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_multiples_spec';
 import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils';
@@ -42,6 +43,7 @@ function getTreesForSpec(
   spec: PartitionSpec,
   smSpecs: SmallMultiplesSpec[],
   groupBySpecs: GroupBySpec[],
+  locale: string,
 ): StyledTree[] {
   const { layout, data, valueAccessor, layers, smallMultiples: smId } = spec;
   const smSpec = smSpecs.find((s) => s.id === smId);
@@ -68,7 +70,7 @@ function getTreesForSpec(
       group.push(next);
       return map;
     }, new Map<string, HierarchyOfArrays>());
-    return [...groups].sort(getPredicateFn(sort)).map(([groupKey, subData], innerIndex) => ({
+    return [...groups].sort(getPredicateFn(sort, locale)).map(([groupKey, subData], innerIndex) => ({
       name: format(groupKey),
       smAccessorValue: groupKey,
       style: smStyle,
@@ -93,7 +95,7 @@ function getTreesForSpec(
 
 /** @internal */
 export const getTrees = createCustomCachedSelector(
-  [getPartitionSpecs, getSmallMultiplesSpecs, getGroupBySpecs],
-  ([spec], smallMultiplesSpecs, groupBySpecs): StyledTree[] =>
-    spec ? getTreesForSpec(spec, smallMultiplesSpecs, groupBySpecs) : [],
+  [getPartitionSpecs, getSmallMultiplesSpecs, getGroupBySpecs, getSettingsSpecSelector],
+  ([spec], smallMultiplesSpecs, groupBySpecs, { locale }): StyledTree[] =>
+    spec ? getTreesForSpec(spec, smallMultiplesSpecs, groupBySpecs, locale) : [],
 );

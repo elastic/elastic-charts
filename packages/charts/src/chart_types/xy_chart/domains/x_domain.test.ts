@@ -31,6 +31,8 @@ jest.spyOn(Intl, 'DateTimeFormat');
   })),
 });
 
+const DEFAULT_LOCALE = 'en';
+
 describe('X Domain', () => {
   test('Should return a default scale when missing specs or specs types', () => {
     const seriesSpecs: BasicSeriesSpec[] = [];
@@ -255,7 +257,7 @@ describe('X Domain', () => {
     const specDataSeries: BasicSeriesSpec[] = [ds1, ds2];
     const scalesConfig = getScaleConfigsFromSpecs([], specDataSeries, MockGlobalSpec.settings());
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(scalesConfig.x, xValues);
+    const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
   test('Should merge bar series correctly', () => {
@@ -294,7 +296,7 @@ describe('X Domain', () => {
     const specDataSeries = [ds1, ds2];
     const scalesConfig = getScaleConfigsFromSpecs([], specDataSeries, MockGlobalSpec.settings());
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(scalesConfig.x, xValues);
+    const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
   test('Should merge multi bar series correctly', () => {
@@ -333,7 +335,7 @@ describe('X Domain', () => {
     const specDataSeries = [ds1, ds2];
     const scalesConfig = getScaleConfigsFromSpecs([], specDataSeries, MockGlobalSpec.settings());
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(scalesConfig.x, xValues);
+    const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
   test('Should merge multi bar series correctly - 2', () => {
@@ -374,7 +376,7 @@ describe('X Domain', () => {
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
     const scalesConfig = getScaleConfigsFromSpecs([], specDataSeries, MockGlobalSpec.settings());
 
-    const mergedDomain = mergeXDomain(scalesConfig.x, xValues);
+    const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain).toEqual([0, 7]);
   });
   test('Should merge multi bar linear/bar ordinal series correctly', () => {
@@ -413,7 +415,7 @@ describe('X Domain', () => {
     const specDataSeries = [ds1, ds2];
     const scalesConfig = getScaleConfigsFromSpecs([], specDataSeries, MockGlobalSpec.settings());
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
-    const mergedDomain = mergeXDomain(scalesConfig.x, xValues);
+    const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
 
@@ -463,7 +465,7 @@ describe('X Domain', () => {
       MockGlobalSpec.settings({ xDomain: customDomain }),
     );
 
-    const getResult = () => mergeXDomain(scalesConfig.x, xValues, ScaleType.Ordinal);
+    const getResult = () => mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE, ScaleType.Ordinal);
 
     expect(getResult).not.toThrow();
 
@@ -510,7 +512,7 @@ describe('X Domain', () => {
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
     const scalesConfig = getScaleConfigsFromSpecs([], specDataSeries, MockGlobalSpec.settings());
 
-    const mergedDomain = mergeXDomain(scalesConfig.x, xValues);
+    const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
   test('Should merge multi bar/line time series correctly', () => {
@@ -551,7 +553,7 @@ describe('X Domain', () => {
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
     const scalesConfig = getScaleConfigsFromSpecs([], specDataSeries, MockGlobalSpec.settings());
 
-    const mergedDomain = mergeXDomain(scalesConfig.x, xValues);
+    const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
   test('Should merge multi lines series correctly', () => {
@@ -592,7 +594,7 @@ describe('X Domain', () => {
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
     const scalesConfig = getScaleConfigsFromSpecs([], specDataSeries, MockGlobalSpec.settings());
 
-    const mergedDomain = mergeXDomain(scalesConfig.x, xValues);
+    const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain).toEqual([0, 1, 2, 5, 7]);
   });
 
@@ -627,7 +629,7 @@ describe('X Domain', () => {
     const { xValues } = getDataSeriesFromSpecs(specDataSeries);
     const scalesConfig = getScaleConfigsFromSpecs([], specDataSeries, MockGlobalSpec.settings());
 
-    const mergedDomain = mergeXDomain(scalesConfig.x, xValues);
+    const mergedDomain = mergeXDomain(scalesConfig.x, xValues, DEFAULT_LOCALE);
     expect(mergedDomain.domain.length).toEqual(maxValues);
   });
   test('should compute minInterval an ordered list of numbers', () => {
@@ -666,6 +668,7 @@ describe('X Domain', () => {
     const basicMergedDomain = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
       xValues,
+      DEFAULT_LOCALE,
     );
     expect(basicMergedDomain.domain).toEqual([0, 3]);
 
@@ -673,6 +676,7 @@ describe('X Domain', () => {
     let { domain } = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: arrayXDomain })).x,
       xValues,
+      DEFAULT_LOCALE,
     );
     expect(domain).toEqual([1, 5]);
     const warnMessage = 'xDomain for continuous scale should be a DomainRange object, not an array';
@@ -684,6 +688,7 @@ describe('X Domain', () => {
     domain = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
       xValues,
+      DEFAULT_LOCALE,
     ).domain;
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toHaveBeenCalledWith(
@@ -699,6 +704,7 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
       xValues,
+      DEFAULT_LOCALE,
     );
     expect(mergedDomain.domain).toEqual([0, 5]);
 
@@ -706,6 +712,7 @@ describe('X Domain', () => {
     const { domain } = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
       xValues,
+      DEFAULT_LOCALE,
     );
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toHaveBeenCalledWith(
@@ -721,6 +728,7 @@ describe('X Domain', () => {
     const mergedDomain = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
       xValues,
+      DEFAULT_LOCALE,
     );
     expect(mergedDomain.domain).toEqual([1, 3]);
 
@@ -728,6 +736,7 @@ describe('X Domain', () => {
     const { domain } = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
       xValues,
+      DEFAULT_LOCALE,
     );
     expect(domain).toEqual([1, 5]);
     expect(Logger.warn).toHaveBeenCalledWith(
@@ -742,6 +751,7 @@ describe('X Domain', () => {
     const basicMergedDomain = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
       xValues,
+      DEFAULT_LOCALE,
     );
     expect(basicMergedDomain.domain).toEqual(['a', 'b', 'c']);
 
@@ -749,6 +759,7 @@ describe('X Domain', () => {
     const { domain } = mergeXDomain(
       getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: objectXDomain })).x,
       xValues,
+      DEFAULT_LOCALE,
     );
     expect(domain).toEqual(['a', 'b', 'c', 'd']);
     const warnMessage =
@@ -765,6 +776,7 @@ describe('X Domain', () => {
       const mergedDomain = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
         xValues,
+        DEFAULT_LOCALE,
       );
       expect(mergedDomain.minInterval).toEqual(0.5);
     });
@@ -774,6 +786,7 @@ describe('X Domain', () => {
       const mergedDomain = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain })).x,
         new Set([5]),
+        DEFAULT_LOCALE,
       );
       expect(mergedDomain.minInterval).toEqual(10);
     });
@@ -783,6 +796,7 @@ describe('X Domain', () => {
       const { minInterval } = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
         xValues,
+        DEFAULT_LOCALE,
       );
       expect(minInterval).toEqual(1);
       const expectedWarning =
@@ -795,6 +809,7 @@ describe('X Domain', () => {
       const { minInterval } = mergeXDomain(
         getScaleConfigsFromSpecs([], specs, MockGlobalSpec.settings({ xDomain: invalidXDomain })).x,
         xValues,
+        DEFAULT_LOCALE,
       );
       expect(minInterval).toEqual(1);
       const expectedWarning =

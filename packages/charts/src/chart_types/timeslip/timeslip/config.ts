@@ -10,7 +10,7 @@ import { LocaleOptions } from './render/annotations/time_extent';
 import { getValidatedTimeZone, getZoneFromSpecs } from '../../../utils/time_zone';
 import { cachedZonedDateTimeFrom, TimeProp } from '../../xy_chart/axes/timeslip/chrono/cached_chrono';
 import { RasterConfig, TimeFormatter } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
-import { DEFAULT_LOCALE, MINIMUM_TICK_PIXEL_DISTANCE } from '../../xy_chart/axes/timeslip/multilayer_ticks';
+import { MINIMUM_TICK_PIXEL_DISTANCE } from '../../xy_chart/axes/timeslip/multilayer_ticks';
 
 /** @internal */
 export type AxisType = 'continuousTime' | 'continuousNumeric';
@@ -89,7 +89,7 @@ export interface TimeslipConfig extends TimeslipTheme, RasterConfig {
 /** @internal */
 export const rasterConfig: RasterConfig = {
   minimumTickPixelDistance: MINIMUM_TICK_PIXEL_DISTANCE,
-  locale: DEFAULT_LOCALE,
+  locale: 'en-US',
 };
 
 /** @internal */
