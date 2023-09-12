@@ -36,7 +36,7 @@ void (async () => {
   await exec('yarn build:ts');
 
   if (bkEnv.isPullRequest && !hasLintConfigChanges) {
-    const filesToLint = changes.files.filter('**/*.ts?(x)').join(' ');
+    const filesToLint = changes.files.byType('DELETED', true).filter('**/*.ts?(x)').join(' ');
 
     if (filesToLint.length > 0) {
       startGroup(`Running eslint checks - ${filesToLint.length} files`);
