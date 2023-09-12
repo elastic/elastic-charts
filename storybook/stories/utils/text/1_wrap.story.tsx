@@ -47,7 +47,7 @@ export const Example = () => {
       ctx.fillStyle = 'black';
       ctx.strokeRect(0, 0, maxLineWidth, fontSize * maxLines);
       withTextMeasure((measure) => {
-        const lines = wrapText(text, font, fontSize, maxLineWidth, maxLines, measure);
+        const lines = wrapText(text, font, fontSize, maxLineWidth, maxLines, measure, 'en');
         lines.forEach((line, i) => {
           ctx.fillText(line, 0, i * fontSize);
         });
