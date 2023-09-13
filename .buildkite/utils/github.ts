@@ -39,14 +39,45 @@ export const defaultGHOptions = {
 };
 
 class FilesContext {
-  private _files: string[] = [];
+  private _files: FileDiff[] = [];
+  private _initialized: boolean = false;
+
+  constructor(files?: FileDiff[]) {
+    if (files) {
+      this._files = files;
+      this._initialized = true;
+    }
+  }
 
   async init() {
-    this._files = await getFileDiffs();
+    if (!this._initialized) {
+      this._files = await getFileDiffs();
+      this._initialized = true;
+    }
   }
 
   get names(): readonly string[] {
-    return this._files;
+    return this._files.map(({ path }) => path);
+  }
+
+  /**
+   * Returns new FileContext by given changeType(s)
+   */
+  byType(type: FileDiff['changeType'], negate?: boolean): FilesContext;
+  byType(types: FileDiff['changeType'][], negate?: boolean): FilesContext;
+  byType(typeArg: FileDiff['changeType'] | FileDiff['changeType'][], negate: boolean = false): FilesContext {
+    const changeTypes = Array.isArray(typeArg) ? typeArg : [typeArg];
+
+    if (changeTypes.length === 0) {
+      console.warn('No changeType(s) provided');
+    }
+
+    const filesByType = this._files.filter(({ changeType }) => {
+      const match = changeTypes.includes(changeType);
+      return negate ? !match : match;
+    });
+
+    return new FilesContext(filesByType);
   }
 
   /**
@@ -272,6 +303,11 @@ export const updateCheckStatus = async (
   }
 };
 
+interface FileDiff {
+  path: string;
+  changeType: 'ADDED' | 'DELETED' | 'RENAMED' | 'COPIED' | 'MODIFIED' | 'CHANGED';
+}
+
 interface GLQPullRequestFiles {
   repository: {
     pullRequest: {
@@ -281,24 +317,20 @@ interface GLQPullRequestFiles {
           endCursor: string;
           hasNextPage: boolean;
         };
-        nodes: [
-          {
-            path: string;
-          },
-        ];
+        nodes: FileDiff[];
       };
     };
   };
 }
 
-export async function getFileDiffs(): Promise<string[]> {
+export async function getFileDiffs(): Promise<FileDiff[]> {
   if (!bkEnv.isPullRequest) return [];
 
   const prNumber = bkEnv.pullRequestNumber;
   if (!prNumber) throw new Error(`Failed to set status, no prNumber available`);
 
   try {
-    const files: string[] = [];
+    const files: FileDiff[] = [];
     let hasNextPage = true;
     let after = '';
 
@@ -315,6 +347,7 @@ export async function getFileDiffs(): Promise<string[]> {
                 }
                 nodes {
                   path
+                  changeType
                 }
               }
             }
@@ -323,7 +356,7 @@ export async function getFileDiffs(): Promise<string[]> {
       ).repository.pullRequest.files;
       hasNextPage = response.pageInfo.hasNextPage;
       after = `, after: "${response.pageInfo.endCursor}"`;
-      files.push(...response.nodes.map(({ path }) => path));
+      files.push(...response.nodes);
     }
 
     return files;
