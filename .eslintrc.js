@@ -94,6 +94,7 @@ module.exports = {
     'react/prefer-stateless-function': 1,
     'react/require-default-props': 0,
     'react/display-name': 0,
+    'react/react-in-jsx-scope': 0,
     'react/require-render-return': 0, // rule is broken for certain types of function syntax
     'react/prefer-stateless-function': 0, // annoying rule that could be used in the future
     'jsx-a11y/no-static-element-interactions': 1,
