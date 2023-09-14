@@ -95,7 +95,7 @@ describe('Crosshair utils linear scale', () => {
     barSeries,
     getScaleConfigsFromSpecs([], barSeries, MockGlobalSpec.settings()),
     [],
-    { locale: 'en' },
+    { locale: 'en-US' },
   );
 
   const multiBarSeries = [barSeries1, barSeries2];
@@ -103,7 +103,7 @@ describe('Crosshair utils linear scale', () => {
     multiBarSeries,
     getScaleConfigsFromSpecs([], multiBarSeries, MockGlobalSpec.settings()),
     [],
-    { locale: 'en' },
+    { locale: 'en-US' },
   );
 
   const lineSeries = [lineSeries1];
@@ -111,7 +111,7 @@ describe('Crosshair utils linear scale', () => {
     lineSeries,
     getScaleConfigsFromSpecs([], lineSeries, MockGlobalSpec.settings()),
     [],
-    { locale: 'en' },
+    { locale: 'en-US' },
   );
 
   const multiLineSeries = [lineSeries1, lineSeries2];
@@ -119,7 +119,7 @@ describe('Crosshair utils linear scale', () => {
     multiLineSeries,
     getScaleConfigsFromSpecs([], multiLineSeries, MockGlobalSpec.settings()),
     [],
-    { locale: 'en' },
+    { locale: 'en-US' },
   );
 
   const mixedLinesBars = [lineSeries1, lineSeries2, barSeries1, barSeries2];
@@ -127,7 +127,7 @@ describe('Crosshair utils linear scale', () => {
     mixedLinesBars,
     getScaleConfigsFromSpecs([], mixedLinesBars, MockGlobalSpec.settings()),
     [],
-    { locale: 'en' },
+    { locale: 'en-US' },
   );
 
   const barSeriesScale = computeXScale({
