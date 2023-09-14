@@ -41,6 +41,7 @@ export function renderTitle(
     debug,
     anchorPoint,
   }: TitleProps,
+  locale: string,
 ) {
   const titleToRender = panel ? panelTitle : title;
   const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
@@ -74,6 +75,7 @@ export function renderTitle(
     horizontal ? width : height,
     1,
     measureText(ctx),
+    locale,
   );
   if (!wrappedText[0]) return;
   if (debug) renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, rotation);

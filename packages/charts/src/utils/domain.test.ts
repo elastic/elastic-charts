@@ -11,6 +11,7 @@ import { computeContinuousDataDomain, computeDomainExtent, computeOrdinalDataDom
 import { ScaleType } from '../scales/constants';
 import { DomainPaddingUnit } from '../specs';
 
+const DEFAULT_LOCALE = 'en';
 describe('utils/domain', () => {
   test('should return [] domain if no data', () => {
     const data: any[] = [];
@@ -18,7 +19,7 @@ describe('utils/domain', () => {
     const isSorted = true;
     const removeNull = true;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull, DEFAULT_LOCALE);
 
     expect(ordinalDataDomain).toEqual([]);
   });
@@ -29,7 +30,7 @@ describe('utils/domain', () => {
     const isSorted = true;
     const removeNull = true;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull, DEFAULT_LOCALE);
 
     const expectedOrdinalDomain = ['a', 'b', 'd'];
 
@@ -42,7 +43,7 @@ describe('utils/domain', () => {
     const isSorted = false;
     const removeNull = true;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull, DEFAULT_LOCALE);
 
     const expectedOrdinalDomain = ['d', 'a', 'b'];
 
@@ -55,7 +56,7 @@ describe('utils/domain', () => {
     const isSorted = true;
     const removeNull = false;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull, DEFAULT_LOCALE);
 
     const expectedOrdinalDomain = ['a', 'b', 'd', null];
 
@@ -68,7 +69,7 @@ describe('utils/domain', () => {
     const isSorted = false;
     const removeNull = false;
 
-    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull);
+    const ordinalDataDomain = computeOrdinalDataDomain(data.map(accessor), isSorted, removeNull, DEFAULT_LOCALE);
 
     const expectedOrdinalDomain = ['d', 'a', null, 'b'];
 

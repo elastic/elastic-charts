@@ -33,9 +33,9 @@ function constrainPadding(
 }
 
 /** @internal */
-export function computeOrdinalDataDomain<T>(data: T[], sorted: boolean, removeNull: boolean): T[] {
+export function computeOrdinalDataDomain<T>(data: T[], sorted: boolean, removeNull: boolean, locale: string): T[] {
   const uniqueValues = [...new Set(removeNull ? data.filter((d) => d !== null) : data)];
-  return sorted ? uniqueValues.sort((a, b) => `${a}`.localeCompare(`${b}`)) : uniqueValues;
+  return sorted ? uniqueValues.sort((a, b) => `${a}`.localeCompare(`${b}`, locale)) : uniqueValues;
 }
 
 function getPaddedDomain(start: number, end: number, domainOptions: YDomainRange): [number, number] {

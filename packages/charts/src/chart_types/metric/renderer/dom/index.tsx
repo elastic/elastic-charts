@@ -18,7 +18,7 @@ import { Metric as MetricComponent } from './metric';
 import { highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
-import { BasicListener, ElementClickListener, ElementOverListener } from '../../../../specs';
+import { BasicListener, ElementClickListener, ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -47,6 +47,7 @@ interface StateProps {
   specs: MetricSpec[];
   a11y: A11ySettings;
   style: MetricStyle;
+  locale: string;
   onElementClick?: ElementClickListener;
   onElementOut?: BasicListener;
   onElementOver?: ElementOverListener;
@@ -78,6 +79,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
       onElementClick,
       onElementOut,
       onElementOver,
+      locale,
     } = this.props;
     if (!initialized || !spec || width === 0 || height === 0) {
       return null;
@@ -139,6 +141,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
                     onElementClick={onElementClick}
                     onElementOut={onElementOut}
                     onElementOver={onElementOver}
+                    locale={locale}
                   />
                 </li>
               );
@@ -182,13 +185,14 @@ const DEFAULT_PROPS: StateProps = {
   },
   a11y: DEFAULT_A11Y_SETTINGS,
   style: LIGHT_THEME.metric,
+  locale: settingsBuildProps.defaults.locale,
 };
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
-  const { onElementClick, onElementOut, onElementOver } = getSettingsSpecSelector(state);
+  const { onElementClick, onElementOut, onElementOver, locale } = getSettingsSpecSelector(state);
   return {
     initialized: true,
     chartId: state.chartId,
@@ -200,6 +204,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     onElementOver,
     onElementOut,
     style: getChartThemeSelector(state).metric,
+    locale,
   };
 };
 

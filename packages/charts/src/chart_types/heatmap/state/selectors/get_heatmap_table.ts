@@ -37,7 +37,7 @@ export interface HeatmapTable extends SmallMultiplesSeriesDomains {
  */
 export const getHeatmapTableSelector = createCustomCachedSelector(
   [getHeatmapSpecSelector, getSettingsSpecSelector, getSmallMultiplesIndexOrderSelector],
-  (spec, { xDomain }, smallMultiples): HeatmapTable => {
+  (spec, { xDomain, locale }, smallMultiples): HeatmapTable => {
     const { data, valueAccessor, xAccessor, yAccessor, xSortPredicate, ySortPredicate, xScale, timeZone } = spec;
     const smVValues = new Set<string | number>();
     const smHValues = new Set<string | number>();
@@ -101,18 +101,18 @@ export const getHeatmapTableSelector = createCustomCachedSelector(
       resultData.xValues =
         isFiniteNumber(min) && isFiniteNumber(max) ? timeRange(min, max, xScale.interval, timeZone) : [];
     } else if (xScale.type === ScaleType.Ordinal) {
-      resultData.xValues.sort(getPredicateFn(xSortPredicate));
+      resultData.xValues.sort(getPredicateFn(xSortPredicate, locale));
     }
 
     // sort Y values by their predicates
-    resultData.yValues.sort(getPredicateFn(ySortPredicate));
+    resultData.yValues.sort(getPredicateFn(ySortPredicate, locale));
 
     // sort small multiples values
     const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
-    const smHDomain = [...smHValues].sort(getPredicateFn(horizontalPredicate));
+    const smHDomain = [...smHValues].sort(getPredicateFn(horizontalPredicate, locale));
 
     const verticalPredicate = smallMultiples?.vertical?.sort ?? Predicate.DataIndex;
-    const smVDomain = [...smVValues].sort(getPredicateFn(verticalPredicate));
+    const smVDomain = [...smVValues].sort(getPredicateFn(verticalPredicate, locale));
 
     return {
       ...resultData,
