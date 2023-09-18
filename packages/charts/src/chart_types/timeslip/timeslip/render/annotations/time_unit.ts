@@ -6,16 +6,26 @@
  * Side Public License, v 1.
  */
 
-import { hasKey } from '../../../../../common/predicate';
 import { BinUnit } from '../../../../xy_chart/axes/timeslip/continuous_time_rasters';
-import { LOCALE_TRANSLATIONS } from '../../../../xy_chart/axes/timeslip/locale_translations';
-import { DEFAULT_LOCALE } from '../../../../xy_chart/axes/timeslip/multilayer_ticks';
+
+/** @internal */
+const LOCALE_TRANSLATIONS = {
+  bar: 'bar',
+  year: ['year', 'years'],
+  month: ['month', 'months'],
+  week: ['week', 'weeks'],
+  day: ['day', 'days'],
+  hour: ['hour', 'hours'],
+  minute: ['minute', 'minutes'],
+  second: ['second', 'seconds'],
+  millisecond: ['millisecond', 'milliseconds'],
+  one: ['', ''],
+};
 
 /** @internal */
 export function renderTimeUnitAnnotation(
   ctx: CanvasRenderingContext2D,
   config: {
-    locale: string;
     monospacedFontShorthand: string;
     subduedFontColor: string;
     defaultFontColor: string;
@@ -27,9 +37,6 @@ export function renderTimeUnitAnnotation(
   yOffset: number,
   unitBarMaxWidthPixels: number,
 ) {
-  const locale: keyof typeof LOCALE_TRANSLATIONS = hasKey(LOCALE_TRANSLATIONS, config.locale)
-    ? config.locale
-    : DEFAULT_LOCALE;
   const unitBarY = yOffset - chartTopFontSize * 1.7;
 
   ctx.save();
@@ -38,9 +45,7 @@ export function renderTimeUnitAnnotation(
   ctx.font = config.monospacedFontShorthand;
   ctx.fillStyle = config.a11y.contrast === 'low' ? config.subduedFontColor : config.defaultFontColor;
   ctx.fillText(
-    `1 ${LOCALE_TRANSLATIONS[locale].bar} = ${binUnitCount} ${
-      LOCALE_TRANSLATIONS[locale][binUnit][binUnitCount === 1 ? 0 : 1]
-    }`,
+    `1 ${LOCALE_TRANSLATIONS.bar} = ${binUnitCount} ${LOCALE_TRANSLATIONS[binUnit][binUnitCount === 1 ? 0 : 1]}`,
     0,
     yOffset,
   );

@@ -33,7 +33,7 @@ export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: 
   );
 }
 
-function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps) {
+function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps, locale: string) {
   const { size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary } = props;
   const { position } = axisSpec;
   const x = anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x;
@@ -42,16 +42,21 @@ function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps) {
   withContext(ctx, () => {
     ctx.translate(x, y);
     if (debug && !secondary) renderDebugRect(ctx, { x: 0, y: 0, ...size });
-    renderAxis(ctx, props); // For now, just render the axis line TODO: compute axis dimensions per panel
+    renderAxis(ctx, props); // TODO: compute axis dimensions per panel, For now, just render the axis line
     if (!secondary) {
       const { panelTitle, dimension } = props;
-      renderTitle(ctx, true, { panelTitle, axisSpec, axisStyle, size, dimension, debug, anchorPoint: { x: 0, y: 0 } }); // fixme axisSpec/Style?
+      renderTitle(
+        ctx,
+        true,
+        { panelTitle, axisSpec, axisStyle, size, dimension, debug, anchorPoint: { x: 0, y: 0 } },
+        locale,
+      ); // TODO: should we use the axisSpec/Style for the title of small multiple or use their own style?
     }
   });
 }
 
 /** @internal */
-export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: AxesProps) {
+export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: AxesProps, locale: string) {
   const { axesSpecs, perPanelAxisGeoms, axesStyles, sharedAxesStyle, debug, renderingArea } = props;
   const seenAxesTitleIds = new Set<AxisId>();
 
@@ -75,25 +80,34 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
 
       if (!seenAxesTitleIds.has(id)) {
         seenAxesTitleIds.add(id);
-        renderTitle(ctx, false, { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec });
+        renderTitle(
+          ctx,
+          false,
+          { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec },
+          locale,
+        );
       }
 
       const layerGirth = dimension.maxLabelBboxHeight;
 
-      renderPanel(ctx, {
-        panelTitle,
-        secondary,
-        panelAnchor,
-        axisSpec,
-        anchorPoint,
-        size,
-        dimension,
-        ticks,
-        axisStyle,
-        debug,
-        renderingArea,
-        layerGirth,
-      });
+      renderPanel(
+        ctx,
+        {
+          panelTitle,
+          secondary,
+          panelAnchor,
+          axisSpec,
+          anchorPoint,
+          size,
+          dimension,
+          ticks,
+          axisStyle,
+          debug,
+          renderingArea,
+          layerGirth,
+        },
+        locale,
+      );
     });
   });
 }

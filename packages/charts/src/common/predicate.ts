@@ -21,19 +21,19 @@ export const Predicate = Object.freeze({
 export type Predicate = $Values<typeof Predicate>;
 
 /** @internal */
-export function getPredicateFn<T>(predicate: Predicate, accessor?: keyof T): (a: T, b: T) => number {
+export function getPredicateFn<T>(predicate: Predicate, locale: string, accessor?: keyof T): (a: T, b: T) => number {
   switch (predicate) {
     case 'alphaAsc':
       return (a: T, b: T) => {
         const aValue = String(accessor ? a[accessor] : a);
         const bValue = String(accessor ? b[accessor] : b);
-        return aValue.localeCompare(bValue);
+        return aValue.localeCompare(bValue, locale);
       };
     case 'alphaDesc':
       return (a: T, b: T) => {
         const aValue = String(accessor ? a[accessor] : a);
         const bValue = String(accessor ? b[accessor] : b);
-        return bValue.localeCompare(aValue);
+        return bValue.localeCompare(aValue, locale);
       };
     case 'numDesc':
       return (a: T, b: T) => {
