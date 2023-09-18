@@ -7,21 +7,12 @@
  */
 
 import 'core-js';
-
-import React, { StrictMode } from 'react';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import '../packages/charts/src/theme_light.scss';
 import '@elastic/eui/dist/eui_theme_light.css';
 
-import { createRoot } from 'react-dom/client';
-
 import { Playground } from './playground';
 
-const rootElement = document.getElementById('root');
-const root = createRoot(rootElement!);
-
-root.render(
-  <StrictMode>
-    <Playground />
-  </StrictMode>,
-);
+ReactDOM.render(<Playground />, document.getElementById('root') as HTMLElement);
