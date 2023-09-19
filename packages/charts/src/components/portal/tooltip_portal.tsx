@@ -93,18 +93,17 @@ const TooltipPortalComponent = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [(anchor as PortalAnchorRef)?.current ?? (anchor as PositionedPortalAnchorRef)?.appendRef?.current]);
 
+  const portalNode = useMemo(() => {
+    return getOrCreateNode(`echTooltipPortal${scope}__${chartId}`, 'echTooltipPortal__invisible', undefined, zIndex);
+  }, [chartId, scope, zIndex]);
+
   /**
    * This must not be removed from DOM throughout life of this component.
    * Otherwise the portal will loose reference to the correct node.
    */
-  const portalNodeElement = getOrCreateNode(
-    `echTooltipPortal${scope}__${chartId}`,
-    'echTooltipPortal__invisible',
-    undefined,
-    zIndex,
-  );
-
-  const portalNode = useRef(portalNodeElement);
+  useEffect(() => {
+    document.body.appendChild(portalNode);
+  });
 
   /**
    * Popper instance used to manage position of tooltip.
@@ -126,7 +125,7 @@ const TooltipPortalComponent = ({
     if (!visible) return;
 
     const { fallbackPlacements, placement, boundary, offset, boundaryPadding } = popperSettings;
-    popper.current = createPopper(anchorNode, portalNode.current, {
+    popper.current = createPopper(anchorNode, portalNode, {
       strategy: 'absolute',
       placement,
       modifiers: [
@@ -178,7 +177,7 @@ const TooltipPortalComponent = ({
 
   useEffect(() => {
     setPopper();
-    const nodeCopy = portalNode.current;
+    const nodeCopy = portalNode;
 
     return () => {
       if (nodeCopy.parentNode) {
@@ -223,20 +222,20 @@ const TooltipPortalComponent = ({
 
   useEffect(() => {
     if (!position && !skipPositioning) {
-      portalNode.current.classList.add('echTooltipPortal__invisible');
+      portalNode.classList.add('echTooltipPortal__invisible');
       return;
     }
-    portalNode.current.classList.remove('echTooltipPortal__invisible');
-  }, [position, skipPositioning]);
+    portalNode.classList.remove('echTooltipPortal__invisible');
+  }, [portalNode.classList, position, skipPositioning]);
 
   useEffect(() => {
     if (popper.current) {
       updateAnchorDimensions();
       void popper.current.update();
     }
-  }, [updateAnchorDimensions, popper]);
+  }, [updateAnchorDimensions]);
 
-  return createPortal(children, portalNode.current);
+  return createPortal(children, portalNode, 'ech-tooltip-portal');
 };
 
 TooltipPortalComponent.displayName = 'TooltipPortal';

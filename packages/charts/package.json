@@ -32,7 +32,7 @@
     "typecheck": "tsc -p ./tsconfig.src.json --noEmit && tsc -p ./tsconfig.nocomments.json --noEmit"
   },
   "dependencies": {
-    "@popperjs/core": "^2.4.0",
+    "@popperjs/core": "^2.11.8",
     "bezier-easing": "^2.1.0",
     "chroma-js": "^2.1.0",
     "classnames": "^2.2.6",
