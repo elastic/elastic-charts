@@ -7,6 +7,10 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
   "repository": "git@github.com:elastic/elastic-charts.git",
   "publishConfig": {
     "access": "public"
