@@ -1,3 +1,29 @@
+# [60.0.0](https://github.com/elastic/elastic-charts/compare/v59.1.0...v60.0.0) (2023-09-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^88.2.0 ([#2161](https://github.com/elastic/elastic-charts/issues/2161)) ([6609a19](https://github.com/elastic/elastic-charts/commit/6609a19231ef8503a7cd467b1fca23c4528d6a32))
+* **deps:** update dependency @elastic/eui to ^88.3.0 ([#2163](https://github.com/elastic/elastic-charts/issues/2163)) ([624f43a](https://github.com/elastic/elastic-charts/commit/624f43a0f8cffffc6622bd9c3f65a3f43af40b08))
+* **deps:** update dependency @elastic/eui to v85 ([#2113](https://github.com/elastic/elastic-charts/issues/2113)) ([1b3fa7c](https://github.com/elastic/elastic-charts/commit/1b3fa7c34a96d38117cef6e1214757795b57dcd3))
+* **deps:** update dependency @elastic/eui to v87 ([#2145](https://github.com/elastic/elastic-charts/issues/2145)) ([312c32c](https://github.com/elastic/elastic-charts/commit/312c32cb71cb13ce0b92c86e77c3a975e426fd2b))
+* **deps:** update dependency @elastic/eui to v88 ([#2154](https://github.com/elastic/elastic-charts/issues/2154)) ([4070da0](https://github.com/elastic/elastic-charts/commit/4070da0c1f152009cd3a62abf314f6cb9f711845))
+* **tooltip:** rendering in react v18 ([#2169](https://github.com/elastic/elastic-charts/issues/2169)) ([f30df54](https://github.com/elastic/elastic-charts/commit/f30df5444f0a1938b27c08acf6a15f4fc748d4ea))
+* update font family ([#2165](https://github.com/elastic/elastic-charts/issues/2165)) ([be07b0c](https://github.com/elastic/elastic-charts/commit/be07b0c2164fc0a8784eb2550ad7495ed585bcdf))
+* **waffle:** remove alpha artifacts ([#2139](https://github.com/elastic/elastic-charts/issues/2139)) ([8eb4ede](https://github.com/elastic/elastic-charts/commit/8eb4edecf87e9eabfeb01b1138533c5d20dcab2a))
+* Wait a tick before reporting render status ([#2131](https://github.com/elastic/elastic-charts/issues/2131)) ([fd2bca4](https://github.com/elastic/elastic-charts/commit/fd2bca4ee25f7a99eafc4e2af3c312dc9183e49b))
+* **xy:** disable legend extra on ordinal ([#2114](https://github.com/elastic/elastic-charts/issues/2114)) ([3ddfb18](https://github.com/elastic/elastic-charts/commit/3ddfb1816b82522e16d23b5c5230772eb5d3bd69))
+
+
+### Features
+
+* add locale prop to Settings ([#2164](https://github.com/elastic/elastic-charts/issues/2164)) ([0bb3ab1](https://github.com/elastic/elastic-charts/commit/0bb3ab1f3afc0a04c7e1af2418c6fa0a3bdd1af4))
+
+
+### BREAKING CHANGES
+
+* **xy:** when using the `ScaleType.Ordinal` for the X scale the legend extra value, representing the last and current hovered value, will not be shown.
+
 # [59.1.0](https://github.com/elastic/elastic-charts/compare/v59.0.0...v59.1.0) (2023-07-19)
 
 
