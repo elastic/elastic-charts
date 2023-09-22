@@ -6,15 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { scaleLinear } from 'd3-scale';
-
 import { maxTicksByLength } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isFiniteNumber } from '../../../../../utils/common';
-import { Size } from '../../../../../utils/dimensions';
-import { BulletDatum } from '../../../spec';
+import { BulletPanelDimensions } from '../../../selectors/get_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE } from '../constants';
 
@@ -23,19 +20,14 @@ const TICK_INTERVAL = 100;
 /** @internal */
 export function horizontalBullet(
   ctx: CanvasRenderingContext2D,
-  datum: BulletDatum,
-  graphSize: Size,
+  dimensions: BulletPanelDimensions,
   style: BulletGraphStyle,
-  bandColors: [string, string],
 ) {
   ctx.translate(GRAPH_PADDING.left, 0);
-  // TODO: add BASE
-  // const base = datum.domain.min < 0 && datum.domain.max > 0 ? 0 : NaN;
-  const paddedWidth = graphSize.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
-  const scale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range([0, paddedWidth]);
-  // @ts-ignore - range derived from strings
-  const colorScale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range(bandColors);
-  const maxTicks = maxTicksByLength(graphSize.width, TICK_INTERVAL);
+
+  const { datum, graphArea, scale, colorScale } = dimensions;
+  const paddedWidth = graphArea.size.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
+  const maxTicks = maxTicksByLength(graphArea.size.width, TICK_INTERVAL);
   const colorTicks = scale.ticks(maxTicks - 1);
   const colorBandSize = paddedWidth / colorTicks.length;
   const { colors } = colorTicks.reduce<{
@@ -58,7 +50,7 @@ export function horizontalBullet(
     { last: 0, colors: [] },
   );
 
-  // color bands
+  // Color bands
   const verticalAlignment = TARGET_SIZE / 2;
   colors.forEach((band) => {
     ctx.fillStyle = band.color;

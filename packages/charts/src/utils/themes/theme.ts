@@ -10,14 +10,13 @@ import { CSSProperties } from 'react';
 import { $Values } from 'utility-types';
 
 import { PartitionStyle } from './partition';
+import { BulletGraphStyle } from '../../chart_types/bullet_graph/theme';
 import { Color } from '../../common/colors';
 import { Pixels, Radian, Ratio } from '../../common/geometry';
 import { Font, FontStyle } from '../../common/text_utils';
 import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, Padding, SimplePadding } from '../dimensions';
 import { Point } from '../point';
-
-import { BulletGraphStyle } from '/@elastic/charts/src/chart_types/bullet_graph/theme';
 
 /** @public */
 export interface Visible {

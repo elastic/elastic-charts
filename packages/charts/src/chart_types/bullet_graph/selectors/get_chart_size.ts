@@ -6,10 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { getBulletSpec } from './get_bullet_spec';
+import { GlobalChartState } from '../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../state/create_selector';
+import { Dimensions } from '../../../utils/dimensions';
+
+const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
 /** @internal */
-export const canDisplayChartTitles = createCustomCachedSelector([getBulletSpec], (spec): boolean => {
-  return (spec?.data?.length ?? 0) > 1 || (spec?.data?.[0]?.length ?? 0) > 1;
+export const getChartSize = createCustomCachedSelector([getParentDimension], (container): Dimensions => {
+  return { ...container };
 });

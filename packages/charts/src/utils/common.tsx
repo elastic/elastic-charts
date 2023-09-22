@@ -565,6 +565,16 @@ export const round = (value: number, fractionDigits = 0): number => {
 };
 
 /**
+ * Returns rounded number to nearest interval
+ *
+ * @internal
+ */
+export const roundToNearest = (value: number, interval: number, options: { min?: number; max?: number }): number => {
+  const roundedValue = Math.round(value / interval) * interval;
+  return clamp(roundedValue, options?.min ?? -Infinity, options?.max ?? Infinity);
+};
+
+/**
  * Get number/percentage value from string
  *
  * i.e. `'90%'` with relative value of `100` returns `90`

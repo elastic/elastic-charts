@@ -56,6 +56,7 @@ export interface BulletGraphSpec extends Spec {
    */
   size: BulletGraphSize;
   reverse: boolean;
+  tickSnapStep?: number;
 }
 
 const buildProps = buildSFProps<BulletGraphSpec>()(

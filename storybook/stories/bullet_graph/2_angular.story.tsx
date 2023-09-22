@@ -23,6 +23,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const target = number('target', 75, { range: true, min: 0, max: 200 });
   const min = number('min', 0, { range: true, min: 0, max: 200 });
   const max = number('max', 100, { range: true, min: 0, max: 200 });
+  const tickSnapStep = number('active tick step', 0, { min: 0, max: 10 });
+  const angularTickLabelPadding = number('tick label padding', 10, { range: true, min: 0, max: 50 });
   const size = getKnobFromEnum('size', BulletGraphSize, 'two-thirds');
   const reverse = boolean('reverse', false);
 
@@ -40,11 +42,20 @@ export const Example: ChartsStory = (_, { title, description }) => {
       }}
     >
       <Chart title={title} description={description}>
-        <Settings baseTheme={useBaseTheme()} debug={debug} />
+        <Settings
+          theme={{
+            bulletGraph: {
+              angularTickLabelPadding,
+            },
+          }}
+          baseTheme={useBaseTheme()}
+          debug={debug}
+        />
         <BulletGraph
           id="bubbles"
           subtype={BulletGraphSubtype.angular}
           size={size}
+          tickSnapStep={tickSnapStep}
           reverse={reverse}
           data={[
             [

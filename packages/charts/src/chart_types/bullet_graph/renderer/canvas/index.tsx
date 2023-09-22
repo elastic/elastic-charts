@@ -16,7 +16,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { renderBulletGraph } from './bullet_graph';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
-import { ElementClickListener, BasicListener, ElementOverListener } from '../../../../specs';
+import { ElementOverListener } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -29,10 +29,12 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Size } from '../../../../utils/dimensions';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
+import { Point } from '../../../../utils/point';
 import { Metric } from '../../../metric/renderer/dom/metric';
-import { getBulletSpec, chartSize } from '../../selectors/chart_size';
+import { getBulletSpec } from '../../selectors/get_bullet_spec';
+import { getChartSize } from '../../selectors/get_chart_size';
+import { BulletDimensions, getPanelDimensions } from '../../selectors/get_dimensions';
 import { hasChartTitles } from '../../selectors/has_chart_titles';
-import { BulletGraphLayout, layout } from '../../selectors/layout';
 import { BulletDatum, BulletGraphSpec } from '../../spec';
 import { BulletGraphStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
 
@@ -44,11 +46,10 @@ interface StateProps {
   spec?: BulletGraphSpec;
   a11y: A11ySettings;
   size: Size;
-  layout: BulletGraphLayout;
+  dimensions: BulletDimensions;
   style: BulletGraphStyle;
+  pointerPosition?: Point;
   bandColors: [string, string];
-  onElementClick?: ElementClickListener;
-  onElementOut?: BasicListener;
   onElementOver?: ElementOverListener;
 }
 
@@ -108,7 +109,7 @@ class Component extends React.Component<Props> {
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   render() {
-    const { initialized, size, forwardStageRef, a11y, layout, spec, style } = this.props;
+    const { initialized, size, forwardStageRef, a11y, dimensions, spec, style } = this.props;
     if (!initialized || size.width === 0 || size.height === 0 || !spec) {
       return null;
     }
@@ -124,13 +125,11 @@ class Component extends React.Component<Props> {
           className="echCanvasRenderer"
           width={size.width * this.devicePixelRatio}
           height={size.height * this.devicePixelRatio}
-          style={{
-            ...size,
-          }}
+          style={size}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
         ></canvas>
-        {layout.shouldRenderMetric && (
+        {dimensions.shouldRenderMetric && (
           <div className="echBulletAsMetric" style={{ width: '100%', height: '100%' }}>
             <AlignedGrid<BulletDatum>
               data={spec.data}
@@ -146,7 +145,7 @@ class Component extends React.Component<Props> {
                       value: datum.value,
                       valueFormatter: datum.valueFormatter,
                       color: style.barBackground,
-                      progressBarDirection: spec.subtype === 'horizontal' ? 'horizontal' : 'vertical',
+                      progressBarDirection: spec.subtype === 'vertical' ? 'vertical' : 'horizontal',
                       title: datum.title,
                       subtitle: datum.subtitle,
                       domainMax: datum.domain.max,
@@ -204,9 +203,8 @@ const DEFAULT_PROPS: StateProps = {
     height: 0,
   },
   a11y: DEFAULT_A11Y_SETTINGS,
-
-  layout: {
-    headerLayout: [],
+  dimensions: {
+    rows: [],
     layoutAlignment: [],
     shouldRenderMetric: false,
   },
@@ -220,12 +218,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   }
   const theme = getChartThemeSelector(state);
 
-  const {
-    debug,
-    // onElementClick,
-    // onElementOut,
-    // onElementOver,
-  } = getSettingsSpecSelector(state);
+  const { debug, onElementOver } = getSettingsSpecSelector(state);
 
   return {
     initialized: true,
@@ -233,15 +226,12 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     chartId: state.chartId,
     hasTitles: hasChartTitles(state),
     spec: getBulletSpec(state),
-    size: chartSize(state),
+    size: getChartSize(state),
     a11y: getA11ySettingsSelector(state),
-    layout: layout(state),
+    dimensions: getPanelDimensions(state),
     style: theme.bulletGraph,
-    bandColors: theme.background.fallbackColor === 'black' ? ['#6092C0', '#3F4E61'] : ['#D9C6EF', '#AA87D1'], //['#6092C0', '#3F4E61']
-    //.range(['#D9C6EF', '#AA87D1']);
-    // onElementClick,
-    // onElementOver,
-    // onElementOut,
+    bandColors: theme.bulletGraph.bandColors,
+    onElementOver,
   };
 };
 

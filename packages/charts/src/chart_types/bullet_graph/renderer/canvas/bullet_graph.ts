@@ -12,9 +12,8 @@ import { Ratio } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import { withContext, clearCanvas } from '../../../../renderers/canvas';
 import { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
-import { Size } from '../../../../utils/dimensions';
 import { renderDebugRect } from '../../../xy_chart/renderer/canvas/utils/debug';
-import { BulletGraphLayout } from '../../selectors/layout';
+import { BulletDimensions } from '../../selectors/get_dimensions';
 import { BulletGraphSpec, BulletGraphSubtype } from '../../spec';
 import {
   BulletGraphStyle,
@@ -29,7 +28,6 @@ import {
   TITLE_LINE_HEIGHT,
   VALUE_FONT,
   VALUE_FONT_SIZE,
-  VALUE_LINE_HEIGHT,
 } from '../../theme';
 
 /** @internal */
@@ -40,19 +38,17 @@ export function renderBulletGraph(
     debug: boolean;
     spec?: BulletGraphSpec;
     a11y: A11ySettings;
-    size: Size;
-    layout: BulletGraphLayout;
+    dimensions: BulletDimensions;
     style: BulletGraphStyle;
-    bandColors: [string, string];
   },
 ) {
-  const { debug, style, layout, spec, bandColors } = props;
+  const { debug, style, dimensions, spec } = props;
   withContext(ctx, (ctx) => {
     ctx.scale(dpr, dpr);
     clearCanvas(ctx, props.style.background);
 
     // clear only if need to render metric or no spec available
-    if (!spec || layout.shouldRenderMetric) {
+    if (!spec || dimensions.shouldRenderMetric) {
       return;
     }
 
@@ -61,23 +57,24 @@ export function renderBulletGraph(
     //@ts-expect-error - unsupported type
     ctx.letterSpacing = 'normal';
 
-    layout.headerLayout.forEach((row, rowIndex) =>
+    // layout.headerLayout.forEach((row, rowIndex) =>
+    dimensions.rows.forEach((row, rowIndex) =>
       row.forEach((bulletGraph, columnIndex) => {
         if (!bulletGraph) return;
         const { panel, multiline } = bulletGraph;
         withContext(ctx, (ctx) => {
-          const verticalAlignment = layout.layoutAlignment[rowIndex]!;
-          const panelY = panel.height * rowIndex;
-          const panelX = panel.width * columnIndex;
+          const verticalAlignment = dimensions.layoutAlignment[rowIndex]!;
 
-          // ctx.strokeRect(panelX, panelY, panel.width, panel.height);
+          if (debug) {
+            renderDebugRect(ctx, panel);
+          }
 
           // move into the panel position
-          ctx.translate(panelX, panelY);
+          ctx.translate(panel.x, panel.y);
 
           // paint right border
-          // TODO: check paddings
           ctx.strokeStyle = style.border;
+          // TODO: check paddings
           if (row.length > 1 && columnIndex < row.length - 1) {
             ctx.beginPath();
             ctx.moveTo(panel.width, 0);
@@ -85,7 +82,7 @@ export function renderBulletGraph(
             ctx.stroke();
           }
 
-          if (layout.headerLayout.length > 1 && columnIndex < layout.headerLayout.length) {
+          if (dimensions.rows.length > 1 && columnIndex < dimensions.rows.length) {
             ctx.beginPath();
             ctx.moveTo(0, panel.height);
             ctx.lineTo(panel.width, panel.height);
@@ -95,7 +92,7 @@ export function renderBulletGraph(
           // this helps render the header without considering paddings
           ctx.translate(HEADER_PADDING.left, HEADER_PADDING.top);
 
-          // TITLE
+          // Title
           ctx.fillStyle = props.style.textColor;
           ctx.textBaseline = 'top';
           ctx.textAlign = 'start';
@@ -105,14 +102,14 @@ export function renderBulletGraph(
             ctx.fillText(titleLine, 0, y);
           });
 
-          // SUBTITLE
+          // Subtitle
           if (bulletGraph.subtitle) {
             const y = verticalAlignment.maxTitleRows * TITLE_LINE_HEIGHT;
             ctx.font = cssFontShorthand(SUBTITLE_FONT, SUBTITLE_FONT_SIZE);
             ctx.fillText(bulletGraph.subtitle, 0, y);
           }
 
-          // VALUE
+          // Value
           ctx.textBaseline = 'alphabetic';
           ctx.font = cssFontShorthand(VALUE_FONT, VALUE_FONT_SIZE);
           if (!multiline) ctx.textAlign = 'end';
@@ -125,7 +122,7 @@ export function renderBulletGraph(
             ctx.fillText(bulletGraph.value, x, y);
           }
 
-          // TARGET
+          // Target
           ctx.font = cssFontShorthand(TARGET_FONT, TARGET_FONT_SIZE);
           if (!multiline) ctx.textAlign = 'end';
           {
@@ -137,38 +134,26 @@ export function renderBulletGraph(
             ctx.fillText(bulletGraph.target, x, y);
           }
 
-          const graphSize = {
-            width: panel.width,
-            height:
-              panel.height -
-              HEADER_PADDING.top -
-              verticalAlignment.maxTitleRows * TITLE_LINE_HEIGHT -
-              verticalAlignment.maxSubtitleRows * SUBTITLE_LINE_HEIGHT -
-              (multiline ? VALUE_LINE_HEIGHT : 0) -
-              HEADER_PADDING.bottom,
-          };
-          const graphOrigin = {
-            x: 0,
-            y: panel.height - graphSize.height,
-          };
           ctx.translate(-HEADER_PADDING.left, -HEADER_PADDING.top);
+
+          const { graphArea } = bulletGraph;
 
           if (spec.subtype === 'vertical') {
             ctx.strokeStyle = style.border;
             ctx.beginPath();
-            ctx.moveTo(HEADER_PADDING.left, graphOrigin.y);
-            ctx.lineTo(panel.width - HEADER_PADDING.right, graphOrigin.y);
+            ctx.moveTo(HEADER_PADDING.left, graphArea.origin.y);
+            ctx.lineTo(panel.width - HEADER_PADDING.right, graphArea.origin.y);
             ctx.stroke();
           }
 
           withContext(ctx, (ctx) => {
-            ctx.translate(graphOrigin.x, graphOrigin.y);
+            ctx.translate(graphArea.origin.x, graphArea.origin.y);
 
             if (debug) {
               renderDebugRect(
                 ctx,
                 {
-                  ...graphSize,
+                  ...graphArea.size,
                   x: 0,
                   y: 0,
                 },
@@ -178,11 +163,11 @@ export function renderBulletGraph(
             }
 
             if (spec.subtype === BulletGraphSubtype.horizontal) {
-              horizontalBullet(ctx, bulletGraph.datum, graphSize, style, bandColors);
+              horizontalBullet(ctx, bulletGraph, style);
             } else if (spec.subtype === BulletGraphSubtype.vertical) {
-              verticalBullet(ctx, bulletGraph.datum, graphSize, style, bandColors);
+              verticalBullet(ctx, bulletGraph, style);
             } else {
-              angularBullet(ctx, bulletGraph.datum, graphSize, style, bandColors, spec, debug);
+              angularBullet(ctx, bulletGraph, style, spec, debug);
             }
           });
         });

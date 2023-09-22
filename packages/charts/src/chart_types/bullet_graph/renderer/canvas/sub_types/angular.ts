@@ -6,50 +6,47 @@
  * Side Public License, v 1.
  */
 
-import { scaleLinear } from 'd3-scale';
-
 import { maxTicksByLength } from './common';
 import { Color } from '../../../../../common/colors';
 import { TAU } from '../../../../../common/constants';
 import { Radian } from '../../../../../common/geometry';
 import { cssFontShorthand } from '../../../../../common/text_utils';
-import { clamp, isFiniteNumber } from '../../../../../utils/common';
-import { Size } from '../../../../../utils/dimensions';
+import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
+import { clamp, isFiniteNumber, roundToNearest } from '../../../../../utils/common';
 import { Point } from '../../../../../utils/point';
+import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
 import { renderDebugPoint } from '../../../../xy_chart/renderer/canvas/utils/debug';
-import { BulletDatum, BulletGraphSize, BulletGraphSpec } from '../../../spec';
+import { BulletPanelDimensions } from '../../../selectors/get_dimensions';
+import { BulletGraphSpec } from '../../../spec';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_WIDTH, TICK_LABEL_PADDING } from '../constants';
+import { getAngledChartSizing } from '../../../utils/angular';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_WIDTH, HOVER_SLOP } from '../constants';
 
 const TICK_INTERVAL = 120;
 
 /** @internal */
 export function angularBullet(
   ctx: CanvasRenderingContext2D,
-  datum: BulletDatum,
-  graphSize: Size,
+  dimensions: BulletPanelDimensions,
   style: BulletGraphStyle,
-  bandColors: [string, string],
   spec: BulletGraphSpec,
   debug: boolean,
+  pointerPosition?: Point,
 ) {
-  const [maxWidth, maxHeight] = getAngledChartSizing(graphSize, spec.size);
+  const { datum, graphArea, scale, colorScale } = dimensions;
+  const [maxWidth, maxHeight] = getAngledChartSizing(graphArea.size, spec.size);
   const radius = Math.min(maxWidth, maxHeight) / 2 - TARGET_SIZE / 2;
-  const [startAngle, endAngle] = getAnglesBySize(spec.size, spec.reverse);
+  const [startAngle, endAngle] = scale.range() as [number, number];
 
   const center = {
-    x: graphSize.width / 2 - GRAPH_PADDING.left,
+    x: graphArea.center.x,
     y: radius + TARGET_SIZE / 2,
   };
 
   ctx.translate(GRAPH_PADDING.left, GRAPH_PADDING.top);
   const totalDomainArc = Math.abs(datum.domain.min - datum.domain.max);
-
-  const scale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range([startAngle, endAngle]);
-  // @ts-ignore - range derived from strings
-  const colorScale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range(bandColors);
   const maxTicks = maxTicksByLength(Math.abs(startAngle - endAngle) * radius, TICK_INTERVAL);
-  const colorTicks = scale.ticks(maxTicks - 1);
+  const colorTicks = scale.ticks(maxTicks - 1).map((v) => ({ value: v, formattedValue: datum.tickFormatter(v) }));
   const colorBandSize = totalDomainArc / colorTicks.length;
   const counterClockwise = startAngle > endAngle;
   const { colors } = colorTicks.reduce<{
@@ -62,7 +59,7 @@ export function angularBullet(
         colors: [
           ...acc.colors,
           {
-            color: `${colorScale(tick)}`,
+            color: `${colorScale(tick.value)}`,
             start: scale(acc.last),
             end: scale(acc.last + colorBandSize),
           },
@@ -87,10 +84,10 @@ export function angularBullet(
   ctx.lineWidth = TICK_WIDTH;
 
   colorTicks
-    .filter((tick) => tick > datum.domain.min && tick < datum.domain.max)
+    .filter((tick) => tick.value > datum.domain.min && tick.value < datum.domain.max)
     .forEach((tick) => {
       const bulletWidth = BULLET_SIZE + 4; // TODO fix arbitrary extension
-      drawPolarLine(ctx)(scale(tick), radius, bulletWidth, center);
+      drawPolarLine(ctx, scale(tick.value), radius, bulletWidth, center);
     });
 
   ctx.stroke();
@@ -114,89 +111,74 @@ export function angularBullet(
     ctx.beginPath();
     ctx.lineWidth = TARGET_WIDTH;
 
-    drawPolarLine(ctx)(scale(datum.target), radius, TARGET_SIZE, center);
+    drawPolarLine(ctx, scale(datum.target), radius, TARGET_SIZE, center);
 
     ctx.stroke();
   }
+
+  const measure = measureText(ctx);
+  // Assumes mostly homogenous formatting
+  const maxTickWidth = colorTicks.reduce((acc, t) => {
+    const { width } = measure(t.formattedValue, TICK_FONT, TICK_FONT_SIZE);
+    return Math.max(acc, width);
+  }, 0);
 
   // Tick labels
   ctx.fillStyle = style.textColor;
   ctx.textBaseline = 'middle';
   ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
   colorTicks
-    .filter((tick) => tick >= datum.domain.min && tick <= datum.domain.max)
+    .filter((tick) => tick.value >= datum.domain.min && tick.value <= datum.domain.max)
     .forEach((tick) => {
-      const labelText = datum.tickFormatter(tick);
       ctx.textAlign = 'center';
-      const textPadding = TICK_LABEL_PADDING;
-      const start = scale(tick);
+      const textPadding = style.angularTickLabelPadding + maxTickWidth / 2;
+      const start = scale(tick.value);
       const y1 = Math.sin(start) * (radius - BULLET_SIZE / 2 - textPadding);
       const x1 = Math.cos(start) * (radius - BULLET_SIZE / 2 - textPadding);
 
-      ctx.fillText(labelText, center.x + x1, center.y + y1);
+      ctx.fillText(tick.formattedValue, center.x + x1, center.y + y1);
     });
+
+  ctx.beginPath();
+
+  if (pointerPosition) {
+    const { x, y } = pointerPosition;
+    const normalizedPointer = {
+      x: x - center.x - graphArea.origin.x - GRAPH_PADDING.left,
+      y: y - center.y - graphArea.origin.y - GRAPH_PADDING.top,
+    };
+
+    const distance = Math.sqrt(Math.pow(normalizedPointer.x, 2) + Math.pow(normalizedPointer.y, 2));
+    const outerLimit = radius + BULLET_SIZE / 2 + HOVER_SLOP;
+    const innerLimit = radius - BULLET_SIZE / 2 - HOVER_SLOP;
+
+    if (Number.isFinite(distance) && distance <= outerLimit && distance >= innerLimit) {
+      // TODO find why to determine angle between origin and point
+      // The angle goes from -π in Quadrant 2 to +π in Quadrant 3
+      // This angle offset is a temporary fix
+      const angleOffset = normalizedPointer.x < 0 && normalizedPointer.y > 0 ? -TAU : 0;
+      const angle: Radian = Math.atan2(normalizedPointer.y, normalizedPointer.x) + angleOffset;
+      const rawValue = scale.invert(angle);
+
+      if (isFiniteNumber(rawValue) && rawValue <= datum.domain.max && rawValue >= datum.domain.min) {
+        const value = spec.tickSnapStep ? roundToNearest(rawValue, spec.tickSnapStep, datum.domain) : rawValue;
+        ctx.lineWidth = TARGET_WIDTH;
+        ctx.strokeStyle = 'red';
+        const snapAngle = spec.tickSnapStep ? scale(value) : angle;
+        drawPolarLine(ctx, snapAngle, radius, TARGET_SIZE, center);
+
+        ctx.stroke();
+
+        // TODO: return value on callback
+      }
+    }
+  }
 
   ctx.beginPath();
 
   if (debug) {
     renderDebugPoint(ctx, 0, 0);
     renderDebugPoint(ctx, center.x, center.y);
-    renderDebugPoint(ctx, graphSize.width / 2 - GRAPH_PADDING.left, graphSize.height / 2 - GRAPH_PADDING.top);
+    renderDebugPoint(ctx, graphArea.size.width / 2 - GRAPH_PADDING.left, graphArea.size.height / 2 - GRAPH_PADDING.top);
   }
-}
-/**
- * Draws line along a polar axis
- */
-function drawPolarLine(ctx: CanvasRenderingContext2D) {
-  return function (angle: Radian, radius: number, length: number, center: Point = { x: 0, y: 0 }) {
-    const y1 = Math.sin(angle) * (radius - length / 2);
-    const x1 = Math.cos(angle) * (radius - length / 2);
-    const y2 = Math.sin(angle) * (radius + length / 2);
-    const x2 = Math.cos(angle) * (radius + length / 2);
-
-    ctx.moveTo(center.x + x1, center.y + y1);
-    ctx.lineTo(center.x + x2, center.y + y2);
-  };
-}
-
-const sizeAngles: Record<BulletGraphSize, { startAngle: number; endAngle: number }> = {
-  [BulletGraphSize.half]: {
-    startAngle: 1 * Math.PI,
-    endAngle: 0,
-  },
-  [BulletGraphSize.twoThirds]: {
-    startAngle: 1.25 * Math.PI,
-    endAngle: -0.25 * Math.PI,
-  },
-  [BulletGraphSize.full]: {
-    startAngle: 1.5 * Math.PI,
-    endAngle: -0.5 * Math.PI,
-  },
-};
-
-/** @internal */
-export function getAnglesBySize(size: BulletGraphSize, reverse: boolean): [startAngle: number, endAngle: number] {
-  const angles = sizeAngles[size] ?? sizeAngles[BulletGraphSize.twoThirds]!;
-  // Negative angles used to match current radian pattern
-  const startAngle = -angles.startAngle;
-  // limit endAngle to startAngle +/- 2π
-  const endAngle = clamp(-angles.endAngle, startAngle - TAU, startAngle + TAU);
-  if (reverse) return [endAngle, startAngle];
-  return [startAngle, endAngle];
-}
-
-const heightModifiers: Record<BulletGraphSize, number> = {
-  [BulletGraphSize.half]: 0.5,
-  [BulletGraphSize.twoThirds]: 0.86, // approximated to account for flare of arc stroke at the bottom
-  [BulletGraphSize.full]: 1,
-};
-
-/** @internal */
-export function getAngledChartSizing(graphSize: Size, size: BulletGraphSize): [maxWidth: number, maxHeight: number] {
-  const heightModifier = heightModifiers[size] ?? 1;
-  const maxWidth = graphSize.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
-  const maxHeight = graphSize.height - GRAPH_PADDING.top - GRAPH_PADDING.bottom;
-  const modifiedHeight = maxHeight / heightModifier;
-
-  return [maxWidth, modifiedHeight];
 }

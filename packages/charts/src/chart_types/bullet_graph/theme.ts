@@ -18,8 +18,10 @@ export interface BulletGraphStyle {
   border: Color;
   background: Color;
   barBackground: Color;
+  bandColors: [start: Color, end: Color];
   nonFiniteText: string;
   minHeight: Pixels;
+  angularTickLabelPadding: Pixels;
 }
 
 /** @internal */
@@ -27,9 +29,11 @@ export const LIGHT_THEME_BULLET_STYLE: BulletGraphStyle = {
   textColor: '#343741',
   border: '#EDF0F5',
   barBackground: '#343741',
+  bandColors: ['#D9C6EF', '#AA87D1'],
   background: '#FFFFFF',
   nonFiniteText: 'N/A',
   minHeight: 64,
+  angularTickLabelPadding: 10,
 };
 
 /** @internal */
@@ -37,9 +41,11 @@ export const DARK_THEME_BULLET_STYLE: BulletGraphStyle = {
   textColor: '#E0E5EE',
   border: '#343741',
   barBackground: '#FFF',
+  bandColors: ['#6092C0', '#3F4E61'],
   background: '#1D1E23',
   nonFiniteText: 'N/A',
   minHeight: 64,
+  angularTickLabelPadding: 10,
 };
 
 /** @internal */

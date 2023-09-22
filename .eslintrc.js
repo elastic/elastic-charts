@@ -69,7 +69,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call': 0, // seems to have issues with default import types
     '@typescript-eslint/unbound-method': 1,
     '@typescript-eslint/no-redeclare': 0, // we use to declare enum type and object with the same name
-    '@typescript-eslint/no-shadow': 0, // we use shadow mostly within the canvas renderer function when we need a new context
+    '@typescript-eslint/no-shadow': 0,
     '@typescript-eslint/quotes': 0,
     '@typescript-eslint/no-unsafe-argument': 1,
     'unicorn/consistent-function-scoping': 1,
@@ -89,7 +89,7 @@ module.exports = {
     'unicorn/number-literal-case': 0, // use prettier lower case preference
     'global-require': 1,
     'import/no-dynamic-require': 1,
-    'no-shadow': 1,
+    'no-shadow': ['warn', { allow: ['ctx'] }], // allow replacing ctx in canvas renderer functions, too tedious to rename at each level
     'react/no-array-index-key': 1,
     'react/prefer-stateless-function': 1,
     'react/require-default-props': 0,

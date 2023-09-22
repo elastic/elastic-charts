@@ -22,10 +22,10 @@ export const BAR_SIZE = 12;
 export const TICK_WIDTH = 1;
 
 /** @internal */
-export const TICK_LABEL_PADDING = 16;
-
-/** @internal */
 export const MIN_TICK_COUNT = 3;
 
 /** @internal */
 export const MAX_TICK_COUNT = 8;
+
+/** @internal */
+export const HOVER_SLOP = 20;

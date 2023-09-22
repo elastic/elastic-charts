@@ -10,7 +10,7 @@ import React, { RefObject } from 'react';
 
 import { BulletGraphRenderer } from './renderer/canvas';
 import { canDisplayChartTitles } from './selectors/can_display_chart_titles';
-import { ChartType } from '../..';
+import { ChartType } from '../../chart_types';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { LegendItem } from '../../common/legend';
 import { BackwardRef, GlobalChartState, InternalChartState } from '../../state/chart_state';

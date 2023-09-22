@@ -6,14 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { scaleLinear } from 'd3-scale';
-
 import { maxTicksByLength } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { isFiniteNumber } from '../../../../../utils/common';
-import { Size } from '../../../../../utils/dimensions';
-import { BulletDatum } from '../../../spec';
+import { BulletPanelDimensions } from '../../../selectors/get_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE } from '../constants';
 
@@ -22,19 +19,15 @@ const TICK_INTERVAL = 100;
 /** @internal */
 export function verticalBullet(
   ctx: CanvasRenderingContext2D,
-  datum: BulletDatum,
-  graphSize: Size,
+  dimensions: BulletPanelDimensions,
   style: BulletGraphStyle,
-  bandColors: [string, string],
 ) {
   ctx.translate(0, GRAPH_PADDING.top);
-  const graphPaddedHeight = graphSize.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
-  // TODO: add BASE
-  // const base = datum.domain.min < 0 && datum.domain.max > 0 ? 0 : NaN;
-  const scale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range([0, graphPaddedHeight]).clamp(true);
-  // @ts-ignore - range derived from strings
-  const colorScale = scaleLinear().domain([datum.domain.min, datum.domain.max]).range(bandColors);
-  const maxTicks = maxTicksByLength(graphSize.height, TICK_INTERVAL);
+
+  const { datum, graphArea, scale, colorScale } = dimensions;
+
+  const graphPaddedHeight = graphArea.size.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
+  const maxTicks = maxTicksByLength(graphArea.size.height, TICK_INTERVAL);
   const colorTicks = scale.ticks(maxTicks - 1);
   const colorBandSize = graphPaddedHeight / colorTicks.length;
   const { colors } = colorTicks.reduce<{
@@ -61,7 +54,7 @@ export function verticalBullet(
   colors.forEach((band) => {
     ctx.fillStyle = band.color;
     ctx.fillRect(
-      graphSize.width / 2 - BULLET_SIZE / 2,
+      graphArea.size.width / 2 - BULLET_SIZE / 2,
       graphPaddedHeight - band.position - band.size,
       BULLET_SIZE,
       band.size,
@@ -76,15 +69,15 @@ export function verticalBullet(
   colorTicks
     .filter((tick) => tick > datum.domain.min && tick < datum.domain.max)
     .forEach((tick) => {
-      ctx.moveTo(graphSize.width / 2 - BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
-      ctx.lineTo(graphSize.width / 2 + BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
+      ctx.moveTo(graphArea.size.width / 2 - BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
+      ctx.lineTo(graphArea.size.width / 2 + BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
     });
   ctx.stroke();
 
   // Bar
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(
-    graphSize.width / 2 - BAR_SIZE / 2,
+    graphArea.size.width / 2 - BAR_SIZE / 2,
     graphPaddedHeight - scale(datum.value),
     BAR_SIZE,
     scale(datum.value),
@@ -92,7 +85,12 @@ export function verticalBullet(
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {
-    ctx.fillRect(graphSize.width / 2 - TARGET_SIZE / 2, graphPaddedHeight - scale(datum.target) - 1.5, TARGET_SIZE, 3);
+    ctx.fillRect(
+      graphArea.size.width / 2 - TARGET_SIZE / 2,
+      graphPaddedHeight - scale(datum.target) - 1.5,
+      TARGET_SIZE,
+      3,
+    );
   }
 
   // Tick labels
@@ -113,6 +111,6 @@ export function verticalBullet(
         ctx.textBaseline = 'bottom';
       }
 
-      ctx.fillText(labelText, graphSize.width / 2 - TARGET_SIZE / 2 - 6, graphPaddedHeight - scale(tick));
+      ctx.fillText(labelText, graphArea.size.width / 2 - TARGET_SIZE / 2 - 6, graphPaddedHeight - scale(tick));
     });
 }
