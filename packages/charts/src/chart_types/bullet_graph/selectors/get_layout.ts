@@ -54,6 +54,8 @@ export interface BulletLayoutAlignment {
 
 /** @internal */
 export interface BulletGraphLayout {
+  /** Common panel size */
+  panel: Size;
   headerLayout: (BulletHeaderLayout | null)[][];
   layoutAlignment: BulletLayoutAlignment[];
   shouldRenderMetric: boolean;
@@ -199,6 +201,7 @@ export const getLayout = createCustomCachedSelector(
       const shouldRenderMetric = chartSize.height <= totalHeight || chartSize.width <= totalWidth * columns;
 
       return {
+        panel,
         headerLayout,
         layoutAlignment,
         shouldRenderMetric,

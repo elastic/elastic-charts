@@ -41,19 +41,21 @@ export type BulletPanelDimensions = {
 /** @internal */
 export type BulletDimensions = {
   rows: (BulletPanelDimensions | null)[][];
+  panel: Size;
 } & Pick<BulletGraphLayout, 'layoutAlignment' | 'shouldRenderMetric'>;
 
 /** @internal */
 export const getPanelDimensions = createCustomCachedSelector(
   [getLayout, getBulletSpec, getChartThemeSelector],
   (
-    { shouldRenderMetric, headerLayout, layoutAlignment },
+    { shouldRenderMetric, headerLayout, layoutAlignment, panel: panelSize },
     spec,
     { bulletGraph: bulletGraphStyles },
   ): BulletDimensions => {
     if (shouldRenderMetric)
       return {
         rows: [],
+        panel: { width: 0, height: 0 },
         layoutAlignment,
         shouldRenderMetric,
       };
@@ -102,6 +104,7 @@ export const getPanelDimensions = createCustomCachedSelector(
 
     return {
       rows,
+      panel: panelSize,
       layoutAlignment,
       shouldRenderMetric,
     };

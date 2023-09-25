@@ -10,9 +10,13 @@ import React, { RefObject } from 'react';
 
 import { BulletGraphRenderer } from './renderer/canvas';
 import { canDisplayChartTitles } from './selectors/can_display_chart_titles';
+import { getTooltipAnchor } from './selectors/get_tooltip_anchor';
+import { getTooltipInfo } from './selectors/get_tooltip_info';
+import { isTooltipVisible } from './selectors/is_tooltip_visible';
 import { ChartType } from '../../chart_types';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { LegendItem } from '../../common/legend';
+import { Tooltip } from '../../components/tooltip/tooltip';
 import { BackwardRef, GlobalChartState, InternalChartState } from '../../state/chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { LegendItemLabel } from '../../state/selectors/get_legend_items_labels';
@@ -25,8 +29,11 @@ const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 export class BulletGraphState implements InternalChartState {
   chartType = ChartType.BulletGraph;
   getChartTypeDescription = () => 'Bullet Graph';
-  chartRenderer = (backwordRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
-    <BulletGraphRenderer forwardStageRef={forwardStageRef} />
+  chartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
+    <>
+      <BulletGraphRenderer forwardStageRef={forwardStageRef} />
+      <Tooltip getChartContainerRef={containerRef} />
+    </>
   );
 
   isInitialized = () => InitStatus.Initialized;
@@ -37,15 +44,18 @@ export class BulletGraphState implements InternalChartState {
   getLegendItemsLabels = () => EMPTY_LEGEND_ITEM_LIST;
   getLegendExtraValues = () => EMPTY_MAP;
   getPointerCursor = () => DEFAULT_CSS_CURSOR;
-  isTooltipVisible = () => ({
-    visible: false,
-    isExternal: false,
-    displayOnly: false,
-    isPinnable: false,
-  });
+  isTooltipVisible(globalState: GlobalChartState) {
+    return isTooltipVisible(globalState);
+  }
 
-  getTooltipInfo = () => undefined;
-  getTooltipAnchor = () => null;
+  getTooltipInfo(globalState: GlobalChartState) {
+    return getTooltipInfo(globalState);
+  }
+
+  getTooltipAnchor(globalState: GlobalChartState) {
+    return getTooltipAnchor(globalState);
+  }
+
   eventCallbacks = () => {};
   getProjectionContainerArea = () => ({ width: 0, height: 0, top: 0, left: 0 });
   getMainProjectionArea = () => ({ width: 0, height: 0, top: 0, left: 0 });

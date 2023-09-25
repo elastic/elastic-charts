@@ -10,6 +10,9 @@
 export const TARGET_SIZE = 40;
 
 /** @internal */
+export const TARGET_STROKE_WIDTH = 3;
+
+/** @internal */
 export const TARGET_WIDTH = 4;
 
 /** @internal */

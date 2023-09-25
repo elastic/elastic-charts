@@ -94,15 +94,15 @@ export interface XYBrushEvent {
 }
 
 /** @public */
-export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
+export type XYChartElementEvent = [geometry: GeometryValue, seriesIdentifier: XYChartSeriesIdentifier];
 /** @public */
-export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
+export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier: SeriesIdentifier];
 /** @public */
 export type FlameElementEvent = FlameLayerValue;
 /** @public */
-export type HeatmapElementEvent = [Cell, SeriesIdentifier];
+export type HeatmapElementEvent = [cell: Cell, seriesIdentifier: SeriesIdentifier];
 /** @public */
-export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
+export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];
 
 /**
  * Describes a Metric element that is the subject of an interaction.

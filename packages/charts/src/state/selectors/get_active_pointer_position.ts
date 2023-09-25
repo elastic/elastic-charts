@@ -10,6 +10,6 @@ import { Point } from '../../utils/point';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getActivePointerPosition = ({ interactions }: GlobalChartState): Point | undefined => {
+export const getActivePointerPosition = ({ interactions }: GlobalChartState): Point => {
   return interactions.pointer.pinned?.position ?? interactions.pointer.current.position;
 };

@@ -13,7 +13,8 @@ import { cssFontShorthand } from '../../../../common/text_utils';
 import { withContext, clearCanvas } from '../../../../renderers/canvas';
 import { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { renderDebugRect } from '../../../xy_chart/renderer/canvas/utils/debug';
-import { BulletDimensions } from '../../selectors/get_dimensions';
+import { ActiveValue } from '../../selectors/get_active_values';
+import { BulletDimensions } from '../../selectors/get_panel_dimensions';
 import { BulletGraphSpec, BulletGraphSubtype } from '../../spec';
 import {
   BulletGraphStyle,
@@ -39,10 +40,11 @@ export function renderBulletGraph(
     spec?: BulletGraphSpec;
     a11y: A11ySettings;
     dimensions: BulletDimensions;
+    activeValues: (ActiveValue | null)[][];
     style: BulletGraphStyle;
   },
 ) {
-  const { debug, style, dimensions, spec } = props;
+  const { debug, style, dimensions, activeValues, spec } = props;
   withContext(ctx, (ctx) => {
     ctx.scale(dpr, dpr);
     clearCanvas(ctx, props.style.background);
@@ -64,6 +66,7 @@ export function renderBulletGraph(
         const { panel, multiline } = bulletGraph;
         withContext(ctx, (ctx) => {
           const verticalAlignment = dimensions.layoutAlignment[rowIndex]!;
+          const activeValue = activeValues?.[rowIndex]?.[columnIndex];
 
           if (debug) {
             renderDebugRect(ctx, panel);
@@ -163,11 +166,11 @@ export function renderBulletGraph(
             }
 
             if (spec.subtype === BulletGraphSubtype.horizontal) {
-              horizontalBullet(ctx, bulletGraph, style);
+              horizontalBullet(ctx, bulletGraph, style, activeValue);
             } else if (spec.subtype === BulletGraphSubtype.vertical) {
-              verticalBullet(ctx, bulletGraph, style);
+              verticalBullet(ctx, bulletGraph, style, activeValue);
             } else {
-              angularBullet(ctx, bulletGraph, style, spec, debug);
+              angularBullet(ctx, bulletGraph, style, spec, debug, activeValue);
             }
           });
         });

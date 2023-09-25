@@ -8,19 +8,17 @@
 
 import { maxTicksByLength } from './common';
 import { Color } from '../../../../../common/colors';
-import { TAU } from '../../../../../common/constants';
-import { Radian } from '../../../../../common/geometry';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, isFiniteNumber, roundToNearest } from '../../../../../utils/common';
-import { Point } from '../../../../../utils/point';
+import { clamp, isFiniteNumber } from '../../../../../utils/common';
 import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
 import { renderDebugPoint } from '../../../../xy_chart/renderer/canvas/utils/debug';
-import { BulletPanelDimensions } from '../../../selectors/get_dimensions';
+import { ActiveValue } from '../../../selectors/get_active_values';
+import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphSpec } from '../../../spec';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_WIDTH, HOVER_SLOP } from '../constants';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_WIDTH } from '../constants';
 
 const TICK_INTERVAL = 120;
 
@@ -31,7 +29,7 @@ export function angularBullet(
   style: BulletGraphStyle,
   spec: BulletGraphSpec,
   debug: boolean,
-  pointerPosition?: Point,
+  activeValue?: ActiveValue | null,
 ) {
   const { datum, graphArea, scale, colorScale } = dimensions;
   const [maxWidth, maxHeight] = getAngledChartSizing(graphArea.size, spec.size);
@@ -141,37 +139,10 @@ export function angularBullet(
 
   ctx.beginPath();
 
-  if (pointerPosition) {
-    const { x, y } = pointerPosition;
-    const normalizedPointer = {
-      x: x - center.x - graphArea.origin.x - GRAPH_PADDING.left,
-      y: y - center.y - graphArea.origin.y - GRAPH_PADDING.top,
-    };
+  if (activeValue) {
+    drawPolarLine(ctx, activeValue.value, radius, TARGET_SIZE, center);
 
-    const distance = Math.sqrt(Math.pow(normalizedPointer.x, 2) + Math.pow(normalizedPointer.y, 2));
-    const outerLimit = radius + BULLET_SIZE / 2 + HOVER_SLOP;
-    const innerLimit = radius - BULLET_SIZE / 2 - HOVER_SLOP;
-
-    if (Number.isFinite(distance) && distance <= outerLimit && distance >= innerLimit) {
-      // TODO find why to determine angle between origin and point
-      // The angle goes from -π in Quadrant 2 to +π in Quadrant 3
-      // This angle offset is a temporary fix
-      const angleOffset = normalizedPointer.x < 0 && normalizedPointer.y > 0 ? -TAU : 0;
-      const angle: Radian = Math.atan2(normalizedPointer.y, normalizedPointer.x) + angleOffset;
-      const rawValue = scale.invert(angle);
-
-      if (isFiniteNumber(rawValue) && rawValue <= datum.domain.max && rawValue >= datum.domain.min) {
-        const value = spec.tickSnapStep ? roundToNearest(rawValue, spec.tickSnapStep, datum.domain) : rawValue;
-        ctx.lineWidth = TARGET_WIDTH;
-        ctx.strokeStyle = 'red';
-        const snapAngle = spec.tickSnapStep ? scale(value) : angle;
-        drawPolarLine(ctx, snapAngle, radius, TARGET_SIZE, center);
-
-        ctx.stroke();
-
-        // TODO: return value on callback
-      }
-    }
+    ctx.stroke();
   }
 
   ctx.beginPath();

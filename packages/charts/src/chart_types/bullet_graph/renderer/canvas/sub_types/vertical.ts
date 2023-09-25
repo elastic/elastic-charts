@@ -10,9 +10,10 @@ import { maxTicksByLength } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { isFiniteNumber } from '../../../../../utils/common';
-import { BulletPanelDimensions } from '../../../selectors/get_dimensions';
+import { ActiveValue } from '../../../selectors/get_active_values';
+import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE } from '../constants';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
 
 const TICK_INTERVAL = 100;
 
@@ -21,6 +22,7 @@ export function verticalBullet(
   ctx: CanvasRenderingContext2D,
   dimensions: BulletPanelDimensions,
   style: BulletGraphStyle,
+  activeValue?: ActiveValue | null,
 ) {
   ctx.translate(0, GRAPH_PADDING.top);
 
@@ -87,9 +89,19 @@ export function verticalBullet(
   if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {
     ctx.fillRect(
       graphArea.size.width / 2 - TARGET_SIZE / 2,
-      graphPaddedHeight - scale(datum.target) - 1.5,
+      graphPaddedHeight - scale(datum.target) - TARGET_STROKE_WIDTH / 2,
       TARGET_SIZE,
-      3,
+      TARGET_STROKE_WIDTH,
+    );
+  }
+
+  // Active Value
+  if (activeValue && (datum.syncCursor || !activeValue.external)) {
+    ctx.fillRect(
+      graphArea.size.width / 2 - TARGET_SIZE / 2,
+      graphPaddedHeight - activeValue.value - TARGET_STROKE_WIDTH / 2,
+      TARGET_SIZE,
+      TARGET_STROKE_WIDTH,
     );
   }
 

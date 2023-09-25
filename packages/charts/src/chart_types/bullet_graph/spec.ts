@@ -15,7 +15,7 @@ import { SpecType } from '../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
 
-/** @internal */
+/** @public */
 export interface BulletDatum {
   title: string;
   subtitle?: string;
@@ -24,6 +24,7 @@ export interface BulletDatum {
   target?: number;
   domain: { min: number; max: number; nice: boolean };
   ticks: 'auto' | number[];
+  syncCursor?: boolean;
   tickFormatter: (value: number) => string;
 }
 

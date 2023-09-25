@@ -11,9 +11,10 @@ import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isFiniteNumber } from '../../../../../utils/common';
-import { BulletPanelDimensions } from '../../../selectors/get_dimensions';
+import { ActiveValue } from '../../../selectors/get_active_values';
+import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE } from '../constants';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
 
 const TICK_INTERVAL = 100;
 
@@ -22,6 +23,7 @@ export function horizontalBullet(
   ctx: CanvasRenderingContext2D,
   dimensions: BulletPanelDimensions,
   style: BulletGraphStyle,
+  activeValue?: ActiveValue | null,
 ) {
   ctx.translate(GRAPH_PADDING.left, 0);
 
@@ -80,7 +82,23 @@ export function horizontalBullet(
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {
-    ctx.fillRect(scale(datum.target) - 1.5, verticalAlignment - TARGET_SIZE / 2, 3, TARGET_SIZE);
+    ctx.fillRect(
+      scale(datum.target) - TARGET_STROKE_WIDTH / 2,
+      verticalAlignment - TARGET_SIZE / 2,
+      TARGET_STROKE_WIDTH,
+      TARGET_SIZE,
+    );
+  }
+
+  // Active Value
+  if (activeValue && (datum.syncCursor || !activeValue.external)) {
+    ctx.fillStyle = 'red';
+    ctx.fillRect(
+      activeValue.snapValue - TARGET_STROKE_WIDTH / 2,
+      verticalAlignment - TARGET_SIZE / 2,
+      TARGET_STROKE_WIDTH,
+      TARGET_SIZE,
+    );
   }
 
   // Tick labels

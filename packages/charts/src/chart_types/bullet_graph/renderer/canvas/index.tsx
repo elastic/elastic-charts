@@ -31,9 +31,10 @@ import { Size } from '../../../../utils/dimensions';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { Point } from '../../../../utils/point';
 import { Metric } from '../../../metric/renderer/dom/metric';
+import { ActiveValue, getActiveValues } from '../../selectors/get_active_values';
 import { getBulletSpec } from '../../selectors/get_bullet_spec';
 import { getChartSize } from '../../selectors/get_chart_size';
-import { BulletDimensions, getPanelDimensions } from '../../selectors/get_dimensions';
+import { BulletDimensions, getPanelDimensions } from '../../selectors/get_panel_dimensions';
 import { hasChartTitles } from '../../selectors/has_chart_titles';
 import { BulletDatum, BulletGraphSpec } from '../../spec';
 import { BulletGraphStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
@@ -47,6 +48,7 @@ interface StateProps {
   a11y: A11ySettings;
   size: Size;
   dimensions: BulletDimensions;
+  activeValues: (ActiveValue | null)[][];
   style: BulletGraphStyle;
   pointerPosition?: Point;
   bandColors: [string, string];
@@ -205,9 +207,11 @@ const DEFAULT_PROPS: StateProps = {
   a11y: DEFAULT_A11Y_SETTINGS,
   dimensions: {
     rows: [],
+    panel: { height: 0, width: 0 },
     layoutAlignment: [],
     shouldRenderMetric: false,
   },
+  activeValues: [],
   style: LIGHT_THEME_BULLET_STYLE,
   bandColors: ['#D9C6EF', '#AA87D1'],
 };
@@ -229,6 +233,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     size: getChartSize(state),
     a11y: getA11ySettingsSelector(state),
     dimensions: getPanelDimensions(state),
+    activeValues: getActiveValues(state),
     style: theme.bulletGraph,
     bandColors: theme.bulletGraph.bandColors,
     onElementOver,
