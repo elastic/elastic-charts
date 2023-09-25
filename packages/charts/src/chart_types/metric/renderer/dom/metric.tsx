@@ -39,6 +39,7 @@ export const Metric: React.FunctionComponent<{
   datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
+  locale: string;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
   onElementOut?: BasicListener;
@@ -52,6 +53,7 @@ export const Metric: React.FunctionComponent<{
   datum,
   panel,
   style,
+  locale,
   onElementClick,
   onElementOver,
   onElementOut,
@@ -143,6 +145,7 @@ export const Metric: React.FunctionComponent<{
         style={updatedStyle}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
         highContrastTextColor={highContrastTextColor}
+        locale={locale}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (

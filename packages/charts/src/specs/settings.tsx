@@ -617,6 +617,11 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * User can provide a table description of the data
    */
   ariaTableCaption?: string;
+
+  /**
+   * Unicode Locale Identifier, default `en`
+   */
+  locale: string;
 }
 
 /**

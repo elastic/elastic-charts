@@ -31,8 +31,8 @@ import {
 import { isLinear } from '../../layout/viewmodel/viewmodel';
 import { Layer, PartitionSpec } from '../../specs';
 
-function compareLegendItemNames(aItem: LegendNode, bItem: LegendNode): number {
-  return aItem.item.label.localeCompare(bItem.item.label);
+function compareLegendItemNames(aItem: LegendNode, bItem: LegendNode, locale: string): number {
+  return aItem.item.label.localeCompare(bItem.item.label, locale);
 }
 
 function compareDescendingLegendItemValues(aItem: LegendNode, bItem: LegendNode): number {
@@ -46,7 +46,7 @@ export const computeLegendSelector = createCustomCachedSelector(
     if (!spec) return [];
 
     const sortingFn = flatLegend && settings.legendSort;
-
+    const { locale } = settings;
     return trees.flatMap((tree) => {
       const customSortingFn = sortingFn
         ? (aItem: LegendNode, bItem: LegendNode) =>
@@ -80,7 +80,7 @@ export const computeLegendSelector = createCustomCachedSelector(
             (spec.layout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
               ? compareDescendingLegendItemValues
               : isLinear(spec.layout) // icicle/flame are sorted by name
-              ? compareLegendItemNames
+              ? (a, b) => compareLegendItemNames(a, b, locale)
               : () => 0), // all others are sorted by hierarchy
         )
         .map(({ item }) => item);

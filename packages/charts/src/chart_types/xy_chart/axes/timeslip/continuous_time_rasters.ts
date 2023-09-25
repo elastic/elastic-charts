@@ -11,7 +11,6 @@
 
 import { cachedTimeDelta, cachedZonedDateTimeFrom, TimeProp } from './chrono/cached_chrono';
 import { epochDaysInMonth, epochInSecondsToYear } from './chrono/chrono';
-import { LOCALE_TRANSLATIONS } from './locale_translations';
 
 /** @public */
 export type BinUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond' | 'one';
@@ -81,7 +80,7 @@ export interface AxisLayer<T extends Interval> {
 /** @internal */
 export interface RasterConfig {
   minimumTickPixelDistance: number;
-  locale: keyof typeof LOCALE_TRANSLATIONS;
+  locale: string;
 }
 
 const millisecondIntervals = (rasterMs: number): IntervalIterableMaker<Interval> =>

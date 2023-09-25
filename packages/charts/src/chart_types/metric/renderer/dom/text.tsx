@@ -68,6 +68,7 @@ function elementVisibility(
   datum: MetricDatum,
   panel: Size,
   size: BreakPoint,
+  locale: string,
 ): ElementVisibility & { titleLines: string[]; subtitleLines: string[] } {
   const LEFT_RIGHT_PADDING = 16;
   const maxTitlesWidth = (size === 's' ? 1 : 0.8) * panel.width - (datum.icon ? 24 : 0) - LEFT_RIGHT_PADDING;
@@ -75,7 +76,8 @@ function elementVisibility(
   const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
     return datum.title
       ? PADDING +
-          wrapText(datum.title, TITLE_FONT, TITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure).length *
+          wrapText(datum.title, TITLE_FONT, TITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure, locale)
+            .length *
             TITLE_FONT_SIZE[size] *
             LINE_HEIGHT
       : 0;
@@ -84,8 +86,15 @@ function elementVisibility(
   const subtitleHeight = (maxLines: number, textMeasure: TextMeasure) => {
     return datum.subtitle
       ? PADDING +
-          wrapText(datum.subtitle, SUBTITLE_FONT, SUBTITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure)
-            .length *
+          wrapText(
+            datum.subtitle,
+            SUBTITLE_FONT,
+            SUBTITLE_FONT_SIZE[size],
+            maxTitlesWidth,
+            maxLines,
+            textMeasure,
+            locale,
+          ).length *
             SUBTITLE_FONT_SIZE[size] *
             LINE_HEIGHT
       : 0;
@@ -126,6 +135,7 @@ function elementVisibility(
         maxTitlesWidth,
         visibilityBreakpoint.titleMaxLines,
         textMeasure,
+        locale,
       ),
       subtitleLines: wrapText(
         datum.subtitle ?? '',
@@ -134,6 +144,7 @@ function elementVisibility(
         maxTitlesWidth,
         visibilityBreakpoint.subtitleMaxLines,
         textMeasure,
+        locale,
       ),
     };
   });
@@ -158,7 +169,8 @@ export const MetricText: React.FunctionComponent<{
   style: MetricStyle;
   onElementClick?: () => void;
   highContrastTextColor: Color;
-}> = ({ id, datum, panel, style, onElementClick, highContrastTextColor }) => {
+  locale: string;
+}> = ({ id, datum, panel, style, onElementClick, highContrastTextColor, locale }) => {
   const { extra, value } = datum;
 
   const size = findRange(WIDTH_BP, panel.width);
@@ -170,7 +182,7 @@ export const MetricText: React.FunctionComponent<{
     'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
 
-  const visibility = elementVisibility(datum, panel, size);
+  const visibility = elementVisibility(datum, panel, size, locale);
 
   const titleWidthMaxSize = size === 's' ? '100%' : '80%';
   const titlesWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;

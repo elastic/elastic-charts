@@ -119,11 +119,11 @@ export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   scaleConfigs: ScaleConfigs,
   annotations: AnnotationSpec[],
+  settingsSpec: Pick<SettingsSpec, 'orderOrdinalBinsBy' | 'locale'>,
   deselectedDataSeries: SeriesIdentifier[] = [],
-  settingsSpec?: Pick<SettingsSpec, 'orderOrdinalBinsBy'>,
   smallMultiples?: SmallMultiplesGroupBy,
 ): SeriesDomainsAndData {
-  const orderOrdinalBinsBy = settingsSpec?.orderOrdinalBinsBy;
+  const { orderOrdinalBinsBy, locale } = settingsSpec;
   const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
     seriesSpecs,
     deselectedDataSeries,
@@ -131,7 +131,7 @@ export function computeSeriesDomains(
     smallMultiples,
   );
   // compute the x domain merging any custom domain
-  const xDomain = mergeXDomain(scaleConfigs.x, xValues, fallbackScale);
+  const xDomain = mergeXDomain(scaleConfigs.x, xValues, locale, fallbackScale);
 
   // fill series with missing x values
   const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.type);
@@ -150,10 +150,10 @@ export function computeSeriesDomains(
 
   // sort small multiples values
   const horizontalPredicate = smallMultiples?.horizontal?.sort ?? Predicate.DataIndex;
-  const smHDomain = [...smHValues].sort(getPredicateFn(horizontalPredicate));
+  const smHDomain = [...smHValues].sort(getPredicateFn(horizontalPredicate, locale));
 
   const verticalPredicate = smallMultiples?.vertical?.sort ?? Predicate.DataIndex;
-  const smVDomain = [...smVValues].sort(getPredicateFn(verticalPredicate));
+  const smVDomain = [...smVValues].sort(getPredicateFn(verticalPredicate, locale));
 
   return {
     xDomain,

@@ -49,11 +49,11 @@ export const getDebugStateSelector = createCustomCachedSelector(
     getSettingsSpecSelector,
     getAnnotationSpecsSelector,
   ],
-  ({ geometries }, legend, axes, gridLines, axesSpecs, { rotation }, annotations): DebugState => {
+  ({ geometries }, legend, axes, gridLines, axesSpecs, { rotation, locale }, annotations): DebugState => {
     const seriesNameMap = getSeriesNameMap(legend);
     return {
       legend: getLegendState(legend),
-      axes: getAxes(axes, axesSpecs, gridLines, rotation),
+      axes: getAxes(axes, axesSpecs, gridLines, rotation, locale),
       areas: geometries.areas.map(getAreaState(seriesNameMap)),
       lines: geometries.lines.map(getLineState(seriesNameMap)),
       bars: getBarsState(seriesNameMap, geometries.bars),
@@ -67,6 +67,7 @@ function getAxes(
   axesSpecs: AxisSpec[],
   gridLines: LinesGrid[],
   rotation: Rotation,
+  locale: string,
 ): DebugStateAxes {
   return axesSpecs.reduce<DebugStateAxes>(
     (acc, { position, title, id }) => {
@@ -89,7 +90,7 @@ function getAxes(
         : Predicate.NumAsc;
       const visibleTicks = geom.visibleTicks
         .filter(({ label }) => label !== '')
-        .sort(getPredicateFn(sortingOrder, 'position'));
+        .sort(getPredicateFn(sortingOrder, locale, 'position'));
 
       const labels = visibleTicks.map(({ label }) => label);
       const values = visibleTicks.map(({ value }) => value);

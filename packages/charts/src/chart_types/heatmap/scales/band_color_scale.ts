@@ -25,10 +25,11 @@ function defaultColorBandFormatter(valueFormatter?: ValueFormatter) {
 /** @internal */
 export function getBandsColorScale(
   colorScale: HeatmapBandsColorScale,
+  locale: string,
   valueFormatter?: ValueFormatter,
 ): { scale: ColorScale; bands: Required<ColorBand>[] } {
   const labelFormatter = colorScale.labelFormatter ?? defaultColorBandFormatter(valueFormatter);
-  const ascendingSortFn = getPredicateFn('numAsc', 'start');
+  const ascendingSortFn = getPredicateFn('numAsc', locale, 'start');
   const bands = colorScale.bands
     .reduce<Required<ColorBand>[]>((acc, { start, end, color, label }) => {
       // admit only proper bands

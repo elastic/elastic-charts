@@ -25,6 +25,7 @@ import { BasicSeriesSpec, SeriesType, XScaleType } from '../utils/specs';
 export function mergeXDomain(
   { type, nice, isBandScale, timeZone, desiredTickCount, customDomain }: ScaleConfigs['x'],
   xValues: Set<string | number>,
+  locale: string,
   fallbackScale?: XScaleType,
 ): XDomain {
   let seriesXComputedDomains;
@@ -35,7 +36,7 @@ export function mergeXDomain(
       Logger.warn(`Each X value in a ${type} x scale needs be be a number. Using ordinal x scale as fallback.`);
     }
 
-    seriesXComputedDomains = computeOrdinalDataDomain([...xValues], false, true);
+    seriesXComputedDomains = computeOrdinalDataDomain([...xValues], false, true, locale);
     if (customDomain) {
       if (Array.isArray(customDomain)) {
         seriesXComputedDomains = [...customDomain];

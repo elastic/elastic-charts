@@ -9,6 +9,7 @@
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { Color } from '../../../../common/colors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getBandsColorScale } from '../../scales/band_color_scale';
 import { ColorBand } from '../../specs/heatmap';
 
@@ -20,11 +21,12 @@ export type ColorScale = (value: number) => Color;
  * Gets color scale based on specification and values range.
  */
 export const getColorScale = createCustomCachedSelector(
-  [getHeatmapSpecSelector],
+  [getSettingsSpecSelector, getHeatmapSpecSelector],
   (
+    { locale },
     spec,
   ): {
     scale: ColorScale;
     bands: Required<ColorBand>[];
-  } => getBandsColorScale(spec.colorScale, spec.valueFormatter),
+  } => getBandsColorScale(spec.colorScale, locale, spec.valueFormatter),
 );
