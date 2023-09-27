@@ -16,7 +16,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { renderBulletGraph } from './bullet_graph';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
-import { ElementOverListener } from '../../../../specs';
+import { ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -50,6 +50,7 @@ interface StateProps {
   dimensions: BulletDimensions;
   activeValues: (ActiveValue | null)[][];
   style: BulletGraphStyle;
+  locale: string;
   pointerPosition?: Point;
   bandColors: [string, string];
   onElementOver?: ElementOverListener;
@@ -111,7 +112,7 @@ class Component extends React.Component<Props> {
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   render() {
-    const { initialized, size, forwardStageRef, a11y, dimensions, spec, style } = this.props;
+    const { initialized, size, forwardStageRef, a11y, dimensions, spec, style, locale } = this.props;
     if (!initialized || size.width === 0 || size.height === 0 || !spec) {
       return null;
     }
@@ -173,6 +174,7 @@ class Component extends React.Component<Props> {
                       },
                       nonFiniteText: 'N/A',
                     }}
+                    locale={locale}
                     panel={{ width: size.width / stats.columns, height: size.height / stats.rows }}
                   />
                 );
@@ -213,6 +215,7 @@ const DEFAULT_PROPS: StateProps = {
   },
   activeValues: [],
   style: LIGHT_THEME_BULLET_STYLE,
+  locale: settingsBuildProps.defaults.locale,
   bandColors: ['#D9C6EF', '#AA87D1'],
 };
 
@@ -222,7 +225,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   }
   const theme = getChartThemeSelector(state);
 
-  const { debug, onElementOver } = getSettingsSpecSelector(state);
+  const { debug, onElementOver, locale } = getSettingsSpecSelector(state);
 
   return {
     initialized: true,
@@ -235,6 +238,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     dimensions: getPanelDimensions(state),
     activeValues: getActiveValues(state),
     style: theme.bulletGraph,
+    locale,
     bandColors: theme.bulletGraph.bandColors,
     onElementOver,
   };
