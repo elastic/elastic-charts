@@ -16,6 +16,7 @@ export const getTooltipInfo = createCustomCachedSelector([getActiveValue], (acti
   if (!activeValue) return;
 
   const showActive = true;
+  const useHighlighter = false;
   const highlightMargin = 2;
 
   const activeDatum = activeValue.panel.datum;
@@ -29,7 +30,7 @@ export const getTooltipInfo = createCustomCachedSelector([getActiveValue], (acti
       label: 'Active',
       value: activeValue.value,
       color: activeValue.color,
-      isHighlighted: true,
+      isHighlighted: false,
       seriesIdentifier: {
         specId: 'bullet',
         key: 'active',
@@ -39,7 +40,9 @@ export const getTooltipInfo = createCustomCachedSelector([getActiveValue], (acti
     });
   }
 
-  const isHighlighted = isBetween(activeValue.pixelValue - highlightMargin, activeValue.pixelValue + highlightMargin);
+  const isHighlighted = useHighlighter
+    ? isBetween(activeValue.pixelValue - highlightMargin, activeValue.pixelValue + highlightMargin)
+    : () => false;
   const scaledValue = activeValue.panel.scale(clamp(activeDatum.value, activeDatum.domain.min, activeDatum.domain.max));
   tooltipInfo.values.push({
     label: 'Value',

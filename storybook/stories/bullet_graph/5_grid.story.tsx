@@ -19,7 +19,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const hideTooltip = boolean('hide tooltip', false);
   const syncCursor = boolean('sync cursor', false);
-  const tickSnapStep = number('active tick step', 0, { min: 0, max: 10 });
+  const tickSnapStep = number('active tick step', 1, { min: 0, max: 10 });
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.vertical);
 
   return (

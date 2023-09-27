@@ -48,8 +48,12 @@ export const getActiveValue = createCustomCachedSelector(
       y: y - activePanel.panel.y,
     };
 
+    const valueDetails = getPanelValue(activePanel, relativePointer, spec);
+
+    if (!valueDetails || !isFiniteNumber(valueDetails.value)) return null;
+
     return {
-      ...getPanelValue(activePanel, relativePointer, spec),
+      ...valueDetails,
       rowIndex,
       columnIndex,
       panel: activePanel,
@@ -61,7 +65,7 @@ function getPanelValue(
   panel: BulletPanelDimensions,
   pointer: Point,
   spec: BulletGraphSpec,
-): Pick<ActiveValueDetails, 'value' | 'snapValue' | 'color' | 'pixelValue'> {
+): Pick<ActiveValueDetails, 'value' | 'snapValue' | 'color' | 'pixelValue'> | undefined {
   switch (spec.subtype) {
     case BulletGraphSubtype.angular: {
       const { datum, graphArea, scale } = panel;
@@ -99,6 +103,7 @@ function getPanelValue(
           };
         }
       }
+      break;
     }
 
     case BulletGraphSubtype.horizontal: {
@@ -128,11 +133,6 @@ function getPanelValue(
     }
 
     default:
-      return {
-        value: NaN,
-        snapValue: NaN,
-        color: '',
-        pixelValue: NaN,
-      };
+      return;
   }
 }
