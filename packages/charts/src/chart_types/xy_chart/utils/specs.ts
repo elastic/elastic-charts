@@ -19,6 +19,7 @@ import { ScaleType } from '../../../scales/constants';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { AccessorFormat, AccessorFn, Accessor } from '../../../utils/accessor';
+import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { RecursivePartial, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';
 import { OrdinalDomain } from '../../../utils/domain';
@@ -601,6 +602,7 @@ export type BarSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'bar
  */
 export type HistogramBarSeriesSpec<D extends BaseDatum = Datum> = Omit<BarSeriesSpec<D>, 'stackAccessors'> & {
   enableHistogramMode: true;
+  histogramInterval: ESCalendarInterval | ESFixedInterval;
 };
 
 /** @public */

@@ -7,8 +7,7 @@
  */
 
 export default {
-    title: 'Cartesian',
-  };
-  
-  export { Example as domainEdges } from './1_domain_edges.story';
-  
+  title: 'Cartesian',
+};
+
+export { Example as domainEdges } from './1_domain_edges.story';

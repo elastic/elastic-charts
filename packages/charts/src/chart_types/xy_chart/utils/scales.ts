@@ -38,12 +38,14 @@ export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuo
   }
   if (isBandScale) {
     const [domainMin, domainMax] = domain as ContinuousDomain;
-    const isSingleValueHistogram = !!enableHistogramMode && domainMax - domainMin === 0;
+    // This will be fixed when the histogram mode will require a binWidth value
+    const isSingleValueHistogram = enableHistogramMode === true && domainMax - domainMin === 0;
     const adjustedDomain: [number, number] = [domainMin, isSingleValueHistogram ? domainMin + minInterval : domainMax];
     const intervalCount = (adjustedDomain[1] - adjustedDomain[0]) / minInterval;
-    const intervalCountOffset = isSingleValueHistogram ? 0 : 1;
-    const bandwidth = rangeDiff / (intervalCount + intervalCountOffset);
-    
+
+    // const intervalCountOffset = isSingleValueHistogram ? 0 : 1;
+    // const bandwidth = rangeDiff / (intervalCount + intervalCountOffset);
+    const bandwidth = +(rangeDiff / intervalCount).toFixed(2);
     return new ScaleContinuous(
       {
         type,

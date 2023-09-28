@@ -95,7 +95,6 @@ function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefi
   }
 }
 
-
 /** @internal */
 export function computeLegend(
   xDomain: XDomain,
@@ -111,7 +110,7 @@ export function computeLegend(
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
   // Let's show the last value only when using time scale until we don't enable the user customization of the legend extra value
-  const legendValueMode = xDomain.type === ScaleType.Time ? LegendValue.LastTimeBucket : LegendValue.None
+  const legendValueMode = xDomain.type === ScaleType.Time ? LegendValue.LastTimeBucket : LegendValue.None;
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
@@ -150,7 +149,6 @@ export function computeLegend(
         : d.initialY1;
     });
     const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
-    
 
     legendItems.push({
       color,
@@ -170,10 +168,11 @@ export function computeLegend(
       pointStyle,
     });
     if (banded) {
-      const itemValue = getLegendValue(series, xDomain, legendValueMode, (d) => {
+      const bandedItemValue = getLegendValue(series, xDomain, legendValueMode, (d) => {
         return series.stackMode === StackMode.Percentage ? d.y0 : d.initialY0;
       });
-      const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
+      const bandedFormattedItemValue = bandedItemValue !== null ? formatter(bandedItemValue) : '';
+
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
       legendItems.push({
         color,
@@ -184,9 +183,9 @@ export function computeLegend(
         isItemHidden: hideInLegend,
         isToggleable: true,
         defaultExtra: {
-          raw: itemValue,
-          formatted: formattedItemValue,
-          legendSizingLabel: formattedItemValue,
+          raw: bandedItemValue,
+          formatted: bandedFormattedItemValue,
+          legendSizingLabel: bandedFormattedItemValue,
         },
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
