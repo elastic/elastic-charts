@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { maxTicksByLength } from './common';
+import { getColorBandSizes } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -14,9 +14,7 @@ import { clamp, isFiniteNumber } from '../../../../../utils/common';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
-
-const TICK_INTERVAL = 100;
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_INTERVAL } from '../constants';
 
 /** @internal */
 export function horizontalBullet(
@@ -28,10 +26,8 @@ export function horizontalBullet(
   ctx.translate(GRAPH_PADDING.left, 0);
 
   const { datum, graphArea, scale, colorScale } = dimensions;
-  const paddedWidth = graphArea.size.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
-  const maxTicks = maxTicksByLength(graphArea.size.width, TICK_INTERVAL);
-  const colorTicks = scale.ticks(maxTicks - 1);
-  const colorBandSize = paddedWidth / colorTicks.length;
+  const graphPaddedWidth = graphArea.size.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
+  const { colorTicks, colorBandSize } = getColorBandSizes(graphPaddedWidth, TICK_INTERVAL, scale);
   const { colors } = colorTicks.reduce<{
     last: number;
     colors: Array<{ color: Color; size: number; position: number }>;
@@ -42,7 +38,7 @@ export function horizontalBullet(
         colors: [
           ...acc.colors,
           {
-            color: `${colorScale(tick)}`,
+            color: `${colorScale(tick, true)}`,
             size: colorBandSize,
             position: acc.last,
           },

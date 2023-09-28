@@ -9,6 +9,7 @@
 import { TAU } from '../../../common/constants';
 import { clamp } from '../../../utils/common';
 import { Size } from '../../../utils/dimensions';
+import { TARGET_SIZE } from '../renderer/canvas/constants';
 import { BulletGraphSize } from '../spec';
 import { GRAPH_PADDING } from '../theme';
 
@@ -45,11 +46,15 @@ const heightModifiers: Record<BulletGraphSize, number> = {
 };
 
 /** @internal */
-export function getAngledChartSizing(graphSize: Size, size: BulletGraphSize): [maxWidth: number, maxHeight: number] {
+export function getAngledChartSizing(
+  graphSize: Size,
+  size: BulletGraphSize,
+): { maxWidth: number; maxHeight: number; radius: number } {
   const heightModifier = heightModifiers[size] ?? 1;
   const maxWidth = graphSize.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
   const maxHeight = graphSize.height - GRAPH_PADDING.top - GRAPH_PADDING.bottom;
   const modifiedHeight = maxHeight / heightModifier;
+  const radius = Math.min(maxWidth, modifiedHeight) / 2 - TARGET_SIZE / 2;
 
-  return [maxWidth, modifiedHeight];
+  return { maxWidth, maxHeight: modifiedHeight, radius };
 }

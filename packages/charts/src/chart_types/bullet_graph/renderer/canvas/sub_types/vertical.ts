@@ -6,16 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { maxTicksByLength } from './common';
+import { getColorBandSizes } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { isFiniteNumber } from '../../../../../utils/common';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
-
-const TICK_INTERVAL = 100;
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_INTERVAL } from '../constants';
 
 /** @internal */
 export function verticalBullet(
@@ -29,9 +27,7 @@ export function verticalBullet(
   const { datum, graphArea, scale, colorScale } = dimensions;
 
   const graphPaddedHeight = graphArea.size.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
-  const maxTicks = maxTicksByLength(graphArea.size.height, TICK_INTERVAL);
-  const colorTicks = scale.ticks(maxTicks - 1);
-  const colorBandSize = graphPaddedHeight / colorTicks.length;
+  const { colorTicks, colorBandSize } = getColorBandSizes(graphPaddedHeight, TICK_INTERVAL, scale);
   const { colors } = colorTicks.reduce<{
     last: number;
     colors: Array<{ color: Color; size: number; position: number }>;
@@ -42,7 +38,7 @@ export function verticalBullet(
         colors: [
           ...acc.colors,
           {
-            color: `${colorScale(tick)}`,
+            color: `${colorScale(tick, true)}`,
             size: colorBandSize,
             position: acc.last,
           },

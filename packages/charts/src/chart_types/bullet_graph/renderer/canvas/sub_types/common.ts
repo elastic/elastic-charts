@@ -6,13 +6,36 @@
  * Side Public License, v 1.
  */
 
-import { clamp } from '../../../../../utils/common';
+import { ScaleLinear } from 'd3-scale';
+
+import { clamp, isNil } from '../../../../../utils/common';
 import { MIN_TICK_COUNT, MAX_TICK_COUNT } from '../constants';
 
-/**
- * @internal
- */
-export function maxTicksByLength(length: number, interval: number) {
+const COLOR_TICK_OFFSET = -1;
+
+/** @internal */
+export function getColorBandSizes(
+  length: number,
+  tickInterval: number,
+  scale: ScaleLinear<number, number>,
+  totalBandLength?: number,
+): {
+  colorTicks: number[];
+  colorBandSize: number;
+  colorBandSizeValue: number;
+} {
+  const maxTicks = maxTicksByLength(length, tickInterval);
+  const colorTicks = scale.ticks(maxTicks + COLOR_TICK_OFFSET);
+  const colorBandSize = (totalBandLength ?? length) / colorTicks.length;
+
+  return {
+    colorTicks,
+    colorBandSize,
+    colorBandSizeValue: !isNil(totalBandLength) ? totalBandLength / colorTicks.length : scale.invert(colorBandSize),
+  };
+}
+
+function maxTicksByLength(length: number, interval: number) {
   const target = Math.floor(length / interval);
   return clamp(target, MIN_TICK_COUNT, MAX_TICK_COUNT);
 }

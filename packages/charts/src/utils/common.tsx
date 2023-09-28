@@ -565,12 +565,16 @@ export const round = (value: number, fractionDigits = 0): number => {
 };
 
 /**
- * Returns rounded number to nearest interval
+ * Returns rounded number to nearest/lowest/highest interval
  *
  * @internal
  */
-export const roundToNearest = (value: number, interval: number, options: { min?: number; max?: number }): number => {
-  const roundedValue = Math.round(value / interval) * interval;
+export const roundTo = (
+  value: number,
+  interval: number,
+  options: { min?: number; max?: number; type?: 'round' | 'ceil' | 'floor' },
+): number => {
+  const roundedValue = Math[options.type ?? 'round'](value / interval) * interval;
   return clamp(roundedValue, options?.min ?? -Infinity, options?.max ?? Infinity);
 };
 

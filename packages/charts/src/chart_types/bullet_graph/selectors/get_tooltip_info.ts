@@ -9,7 +9,7 @@
 import { getActiveValue } from './get_active_value';
 import { TooltipInfo } from '../../../components/tooltip';
 import { createCustomCachedSelector } from '../../../state/create_selector';
-import { clamp, isBetween } from '../../../utils/common';
+import { isBetween } from '../../../utils/common';
 
 /** @internal */
 export const getTooltipInfo = createCustomCachedSelector([getActiveValue], (activeValue): TooltipInfo | undefined => {
@@ -43,11 +43,11 @@ export const getTooltipInfo = createCustomCachedSelector([getActiveValue], (acti
   const isHighlighted = useHighlighter
     ? isBetween(activeValue.pixelValue - highlightMargin, activeValue.pixelValue + highlightMargin)
     : () => false;
-  const scaledValue = activeValue.panel.scale(clamp(activeDatum.value, activeDatum.domain.min, activeDatum.domain.max));
+
   tooltipInfo.values.push({
     label: 'Value',
     value: activeDatum.value,
-    color: `${activeValue.panel.colorScale(scaledValue)}`,
+    color: `${activeValue.panel.colorScale(activeDatum.value)}`,
     isHighlighted: isHighlighted(activeValue.panel.scale(activeDatum.value)),
     seriesIdentifier: {
       specId: 'bullet',
@@ -58,13 +58,10 @@ export const getTooltipInfo = createCustomCachedSelector([getActiveValue], (acti
   });
 
   if (activeDatum.target) {
-    const scaledTarget = activeValue.panel.scale(
-      clamp(activeDatum.target, activeDatum.domain.min, activeDatum.domain.max),
-    );
     tooltipInfo.values.push({
       label: 'Target',
       value: activeDatum.target,
-      color: `${activeValue.panel.colorScale(scaledTarget)}`,
+      color: `${activeValue.panel.colorScale(activeDatum.target)}`,
       isHighlighted: isHighlighted(activeValue.panel.scale(activeDatum.target)),
       seriesIdentifier: {
         // TODO make this better

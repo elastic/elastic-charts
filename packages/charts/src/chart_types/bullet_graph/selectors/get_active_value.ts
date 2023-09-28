@@ -12,7 +12,7 @@ import { TAU } from '../../../common/constants';
 import { Radian } from '../../../common/geometry';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
-import { isFiniteNumber, roundToNearest } from '../../../utils/common';
+import { isFiniteNumber, roundTo } from '../../../utils/common';
 import { Point } from '../../../utils/point';
 import { BULLET_SIZE, HOVER_SLOP, TARGET_SIZE } from '../renderer/canvas/constants';
 import { BulletGraphSpec, BulletGraphSubtype } from '../spec';
@@ -69,8 +69,7 @@ function getPanelValue(
   switch (spec.subtype) {
     case BulletGraphSubtype.angular: {
       const { datum, graphArea, scale } = panel;
-      const [maxWidth, maxHeight] = getAngledChartSizing(graphArea.size, spec.size);
-      const radius = Math.min(maxWidth, maxHeight) / 2 - TARGET_SIZE / 2;
+      const { radius } = getAngledChartSizing(graphArea.size, spec.size);
       const center = {
         x: graphArea.center.x,
         y: radius + TARGET_SIZE / 2,
@@ -94,11 +93,12 @@ function getPanelValue(
         const value = scale.invert(angle);
 
         if (isFiniteNumber(value) && value <= datum.domain.max && value >= datum.domain.min) {
-          const snapValue = spec.tickSnapStep ? roundToNearest(value, spec.tickSnapStep, datum.domain) : value;
+          const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, datum.domain) : value;
+
           return {
             value,
             snapValue,
-            color: `${panel.colorScale(angle)}`,
+            color: `${panel.colorScale(snapValue)}`,
             pixelValue: angle,
           };
         }
@@ -109,12 +109,12 @@ function getPanelValue(
     case BulletGraphSubtype.horizontal: {
       const relativeX = pointer.x - GRAPH_PADDING.left;
       const value = panel.scale.invert(relativeX);
-      const snapValue = spec.tickSnapStep ? roundToNearest(value, spec.tickSnapStep, panel.datum.domain) : value;
+      const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, panel.datum.domain) : value;
 
       return {
         value,
         snapValue,
-        color: `${panel.colorScale(relativeX)}`,
+        color: `${panel.colorScale(snapValue)}`,
         pixelValue: relativeX,
       };
     }
@@ -122,12 +122,12 @@ function getPanelValue(
     case BulletGraphSubtype.vertical: {
       const relativeY = panel.panel.height - pointer.y - GRAPH_PADDING.bottom;
       const value = panel.scale.invert(relativeY);
-      const snapValue = spec.tickSnapStep ? roundToNearest(value, spec.tickSnapStep, panel.datum.domain) : value;
+      const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, panel.datum.domain) : value;
 
       return {
         value,
         snapValue,
-        color: `${panel.colorScale(relativeY)}`,
+        color: `${panel.colorScale(snapValue)}`,
         pixelValue: relativeY,
       };
     }

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { maxTicksByLength } from './common';
+import { getColorBandSizes } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -18,9 +18,7 @@ import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphSpec } from '../../../spec';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_WIDTH } from '../constants';
-
-const TICK_INTERVAL = 120;
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_WIDTH, ANGULAR_TICK_INTERVAL } from '../constants';
 
 /** @internal */
 export function angularBullet(
@@ -32,22 +30,26 @@ export function angularBullet(
   activeValue?: ActiveValue | null,
 ) {
   const { datum, graphArea, scale, colorScale } = dimensions;
-  const [maxWidth, maxHeight] = getAngledChartSizing(graphArea.size, spec.size);
-  const radius = Math.min(maxWidth, maxHeight) / 2 - TARGET_SIZE / 2;
+  const { radius } = getAngledChartSizing(graphArea.size, spec.size);
   const [startAngle, endAngle] = scale.range() as [number, number];
-
+  const counterClockwise = startAngle > endAngle;
   const center = {
     x: graphArea.center.x,
     y: radius + TARGET_SIZE / 2,
   };
 
   ctx.translate(GRAPH_PADDING.left, GRAPH_PADDING.top);
+
   const totalDomainArc = Math.abs(datum.domain.min - datum.domain.max);
-  const maxTicks = maxTicksByLength(Math.abs(startAngle - endAngle) * radius, TICK_INTERVAL);
-  const colorTicks = scale.ticks(maxTicks - 1).map((v) => ({ value: v, formattedValue: datum.tickFormatter(v) }));
-  const colorBandSize = totalDomainArc / colorTicks.length;
-  const counterClockwise = startAngle > endAngle;
-  const { colors } = colorTicks.reduce<{
+  const { colorTicks, colorBandSize } = getColorBandSizes(
+    Math.abs(startAngle - endAngle) * radius,
+    ANGULAR_TICK_INTERVAL,
+    scale,
+    totalDomainArc,
+  );
+
+  const formatterColorTicks = colorTicks.map((v) => ({ value: v, formattedValue: datum.tickFormatter(v) }));
+  const { colors } = formatterColorTicks.reduce<{
     last: number;
     colors: Array<{ color: Color; start: number; end: number }>;
   }>(
@@ -57,7 +59,7 @@ export function angularBullet(
         colors: [
           ...acc.colors,
           {
-            color: `${colorScale(tick.value)}`,
+            color: colorScale(tick.value, true),
             start: scale(acc.last),
             end: scale(acc.last + colorBandSize),
           },
@@ -81,7 +83,7 @@ export function angularBullet(
   ctx.strokeStyle = style.background;
   ctx.lineWidth = TICK_WIDTH;
 
-  colorTicks
+  formatterColorTicks
     .filter((tick) => tick.value > datum.domain.min && tick.value < datum.domain.max)
     .forEach((tick) => {
       const bulletWidth = BULLET_SIZE + 4; // TODO fix arbitrary extension
@@ -116,7 +118,7 @@ export function angularBullet(
 
   const measure = measureText(ctx);
   // Assumes mostly homogenous formatting
-  const maxTickWidth = colorTicks.reduce((acc, t) => {
+  const maxTickWidth = formatterColorTicks.reduce((acc, t) => {
     const { width } = measure(t.formattedValue, TICK_FONT, TICK_FONT_SIZE);
     return Math.max(acc, width);
   }, 0);
@@ -125,7 +127,7 @@ export function angularBullet(
   ctx.fillStyle = style.textColor;
   ctx.textBaseline = 'middle';
   ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
-  colorTicks
+  formatterColorTicks
     .filter((tick) => tick.value >= datum.domain.min && tick.value <= datum.domain.max)
     .forEach((tick) => {
       ctx.textAlign = 'center';

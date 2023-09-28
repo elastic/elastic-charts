@@ -32,3 +32,9 @@ export const MAX_TICK_COUNT = 8;
 
 /** @internal */
 export const HOVER_SLOP = 20;
+
+/** @internal */
+export const TICK_INTERVAL = 100;
+
+/** @internal */
+export const ANGULAR_TICK_INTERVAL = 120;
