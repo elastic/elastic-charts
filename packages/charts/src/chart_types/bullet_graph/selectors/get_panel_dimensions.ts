@@ -114,9 +114,9 @@ export const getPanelDimensions = createCustomCachedSelector(
 );
 
 function getScalesBySubtype(
-  { subtype, size, reverse }: BulletGraphSpec,
+  { subtype, size }: BulletGraphSpec,
   graphSize: Size,
-  { domain }: BulletDatum,
+  { domain, reverse = false }: BulletDatum,
   { bandColors }: BulletGraphStyle,
 ): Pick<BulletPanelDimensions, 'scale' | 'colorScale'> {
   switch (subtype) {

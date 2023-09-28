@@ -22,6 +22,7 @@ export interface BulletDatum {
   value: number;
   target?: number;
   domain: { min: number; max: number; nice: boolean };
+  reverse?: boolean;
   ticks: 'auto' | number[];
   syncCursor?: boolean;
   valueFormatter: ValueFormatter;
@@ -57,7 +58,6 @@ export interface BulletGraphSpec extends Spec {
    * Size options of chart for angular subType only
    */
   size: BulletGraphSize;
-  reverse: boolean;
   tickSnapStep?: number;
 }
 
@@ -67,7 +67,6 @@ const buildProps = buildSFProps<BulletGraphSpec>()(
     chartType: ChartType.BulletGraph,
   },
   {
-    reverse: false,
     size: BulletGraphSize.twoThirds,
   },
 );

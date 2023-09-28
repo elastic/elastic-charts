@@ -56,7 +56,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           subtype={BulletGraphSubtype.angular}
           size={size}
           tickSnapStep={tickSnapStep}
-          reverse={reverse}
           data={[
             [
               {
@@ -65,6 +64,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 value,
                 title: bulletTitle,
                 subtitle,
+                reverse,
                 domain: { min, max, nice: false },
                 valueFormatter: (d) => `${d}${postfix}`,
                 tickFormatter: (d) => `${d}${postfix}`,

@@ -15,7 +15,6 @@ import { isBetween } from '../../../utils/common';
 export const getTooltipInfo = createCustomCachedSelector([getActiveValue], (activeValue): TooltipInfo | undefined => {
   if (!activeValue) return;
 
-  const showActive = true;
   const useHighlighter = false;
   const highlightMargin = 2;
 
@@ -25,20 +24,18 @@ export const getTooltipInfo = createCustomCachedSelector([getActiveValue], (acti
     values: [],
   };
 
-  if (showActive) {
-    tooltipInfo.values.push({
-      label: 'Active',
-      value: activeValue.value,
-      color: activeValue.color,
-      isHighlighted: false,
-      seriesIdentifier: {
-        specId: 'bullet',
-        key: 'active',
-      },
-      isVisible: true,
-      formattedValue: activeDatum.valueFormatter(activeValue.snapValue),
-    });
-  }
+  tooltipInfo.values.push({
+    label: 'Active',
+    value: activeValue.value,
+    color: activeValue.color,
+    isHighlighted: false,
+    seriesIdentifier: {
+      specId: 'bullet',
+      key: 'active',
+    },
+    isVisible: true,
+    formattedValue: activeDatum.valueFormatter(activeValue.snapValue),
+  });
 
   const isHighlighted = useHighlighter
     ? isBetween(activeValue.pixelValue - highlightMargin, activeValue.pixelValue + highlightMargin)
