@@ -10,18 +10,23 @@ import classNames from 'classnames';
 import React from 'react';
 
 import { Color } from '../../../../common/colors';
-import { clamp, LayoutDirection } from '../../../../utils/common';
+import { Icon } from '../../../../components/icons/icon';
+import { clamp, isNil, LayoutDirection } from '../../../../utils/common';
 import { MetricWProgress } from '../../specs';
+
+const TARGET_SIZE = 8;
 
 /** @internal */
 export const ProgressBar: React.FunctionComponent<{
   datum: MetricWProgress;
   barBackground: Color;
-}> = ({ datum: { title, domainMax, value, color, progressBarDirection }, barBackground }) => {
+}> = ({ datum: { title, domainMax, value, target, color, progressBarDirection }, barBackground }) => {
   const verticalDirection = progressBarDirection === LayoutDirection.Vertical;
   // currently we provide only the small progress bar;
   const isSmall = true;
-  const percent = Number(clamp((value / domainMax) * 100, 0, 100).toFixed(1));
+  const getPercent = (n: number) => Number(clamp((n / domainMax) * 100, 0, 100).toFixed(1));
+  const percent = getPercent(value);
+  const targetPlacement = isNil(target) ? null : `calc(${getPercent(target)}% - ${TARGET_SIZE / 2}px)`;
 
   const bgClassName = classNames('echSingleMetricProgress', {
     'echSingleMetricProgress--vertical': verticalDirection,
@@ -33,9 +38,24 @@ export const ProgressBar: React.FunctionComponent<{
     'echSingleMetricProgressBar--horizontal': !verticalDirection,
     'echSingleMetricProgressBar--small': isSmall,
   });
+  const targetClassName = classNames('echSingleMetricTarget', {
+    'echSingleMetricTarget--vertical': verticalDirection,
+    'echSingleMetricTarget--horizontal': !verticalDirection,
+    'echSingleMetricTarget--small': isSmall,
+  });
   const percentProp = verticalDirection ? { height: `${percent}%` } : { width: `${percent}%` };
+
   return (
     <div className={bgClassName} style={{ backgroundColor: isSmall ? barBackground : undefined }}>
+      {targetPlacement && (
+        <div
+          className={targetClassName}
+          style={verticalDirection ? { bottom: targetPlacement } : { left: targetPlacement }}
+          aria-valuenow={target}
+        >
+          <Icon height={TARGET_SIZE} width={TARGET_SIZE} type="downArrow" color={color} />
+        </div>
+      )}
       <div
         className={barClassName}
         style={{ backgroundColor: color, ...percentProp }}

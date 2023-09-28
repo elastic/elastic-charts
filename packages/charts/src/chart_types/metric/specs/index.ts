@@ -35,6 +35,7 @@ export type MetricWText = MetricBase & {
 /** @alpha */
 export type MetricWNumber = MetricBase & {
   value: number;
+  target?: number;
   valueFormatter: (d: number) => string;
 };
 

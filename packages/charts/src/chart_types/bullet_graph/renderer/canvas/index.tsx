@@ -146,6 +146,7 @@ class Component extends React.Component<Props> {
                     chartId="XX"
                     datum={{
                       value: datum.value,
+                      target: datum.target,
                       valueFormatter: datum.valueFormatter,
                       color: style.barBackground,
                       progressBarDirection: spec.subtype === 'vertical' ? 'vertical' : 'horizontal',
