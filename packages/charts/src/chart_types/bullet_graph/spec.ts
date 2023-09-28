@@ -13,19 +13,20 @@ import { ChartType } from '../../chart_types/index';
 import { Spec } from '../../specs';
 import { SpecType } from '../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
-import { stripUndefined } from '../../utils/common';
+import { stripUndefined, ValueFormatter } from '../../utils/common';
 
 /** @public */
 export interface BulletDatum {
   title: string;
   subtitle?: string;
   value: number;
-  valueFormatter: (value: number) => string;
   target?: number;
   domain: { min: number; max: number; nice: boolean };
   ticks: 'auto' | number[];
   syncCursor?: boolean;
-  tickFormatter: (value: number) => string;
+  valueFormatter: ValueFormatter;
+  targetFormatter?: ValueFormatter;
+  tickFormatter: ValueFormatter;
 }
 
 /** @public */

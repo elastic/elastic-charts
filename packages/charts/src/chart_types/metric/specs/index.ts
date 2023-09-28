@@ -14,7 +14,7 @@ import { Color } from '../../../common/colors';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { specComponentFactory } from '../../../state/spec_factory';
-import { LayoutDirection } from '../../../utils/common';
+import { LayoutDirection, ValueFormatter } from '../../../utils/common';
 
 /** @alpha */
 export type MetricBase = {
@@ -36,7 +36,11 @@ export type MetricWText = MetricBase & {
 export type MetricWNumber = MetricBase & {
   value: number;
   target?: number;
-  valueFormatter: (d: number) => string;
+  valueFormatter: ValueFormatter;
+  /**
+   * Used for header display only, defaults to `valueFormatter`
+   */
+  targetFormatter?: ValueFormatter;
 };
 
 /** @alpha */

@@ -48,15 +48,32 @@
   }
 
   &--vertical {
-    &.echMetric--small {
-      padding-left: 10px;
+    // TODO: find a better way to style based on sizes (i.e. sass functions)
+    &.echMetric--withProgressBar {
+      &--small {
+        padding-left: 10px;
+      }
+    }
+
+    &.echMetric--withTargetProgressBar {
+      &--small {
+        padding-left: 14px;
+      }
     }
   }
 
   &--horizontal {
-    &.echMetric--small {
-      padding-bottom: 10px;
-    }
+    &.echMetric--withProgressBar {
+        &--small {
+          padding-bottom: 10px;
+        }
+      }
+
+      &.echMetric--withTargetProgressBar {
+        &--small {
+          padding-bottom: 12px;
+        }
+      }
   }
 }
 

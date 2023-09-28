@@ -20,38 +20,39 @@ const TARGET_SIZE = 8;
 export const ProgressBar: React.FunctionComponent<{
   datum: MetricWProgress;
   barBackground: Color;
-}> = ({ datum: { title, domainMax, value, target, color, progressBarDirection }, barBackground }) => {
+  size: 'small';
+}> = ({
+  datum: { title, domainMax, value, target, color, valueFormatter, targetFormatter, progressBarDirection },
+  barBackground,
+  size,
+}) => {
   const verticalDirection = progressBarDirection === LayoutDirection.Vertical;
-  // currently we provide only the small progress bar;
-  const isSmall = true;
   const getPercent = (n: number) => Number(clamp((n / domainMax) * 100, 0, 100).toFixed(1));
   const percent = getPercent(value);
   const targetPlacement = isNil(target) ? null : `calc(${getPercent(target)}% - ${TARGET_SIZE / 2}px)`;
 
-  const bgClassName = classNames('echSingleMetricProgress', {
+  const bgClassName = classNames('echSingleMetricProgress', `echSingleMetricProgress--${size}`, {
     'echSingleMetricProgress--vertical': verticalDirection,
     'echSingleMetricProgress--horizontal': !verticalDirection,
-    'echSingleMetricProgress--small': isSmall,
   });
-  const barClassName = classNames('echSingleMetricProgressBar', {
+  const barClassName = classNames('echSingleMetricProgressBar', `echSingleMetricProgressBar--${size}`, {
     'echSingleMetricProgressBar--vertical': verticalDirection,
     'echSingleMetricProgressBar--horizontal': !verticalDirection,
-    'echSingleMetricProgressBar--small': isSmall,
   });
-  const targetClassName = classNames('echSingleMetricTarget', {
+  const targetClassName = classNames('echSingleMetricTarget', `echSingleMetricTarget--${size}`, {
     'echSingleMetricTarget--vertical': verticalDirection,
     'echSingleMetricTarget--horizontal': !verticalDirection,
-    'echSingleMetricTarget--small': isSmall,
   });
   const percentProp = verticalDirection ? { height: `${percent}%` } : { width: `${percent}%` };
 
   return (
-    <div className={bgClassName} style={{ backgroundColor: isSmall ? barBackground : undefined }}>
+    <div className={bgClassName} style={{ backgroundColor: size === 'small' ? barBackground : undefined }}>
       {targetPlacement && (
         <div
           className={targetClassName}
           style={verticalDirection ? { bottom: targetPlacement } : { left: targetPlacement }}
           aria-valuenow={target}
+          title={`target: ${(targetFormatter ?? valueFormatter)(target || 0)}`}
         >
           <Icon height={TARGET_SIZE} width={TARGET_SIZE} type="downArrow" color={color} />
         </div>
@@ -60,6 +61,7 @@ export const ProgressBar: React.FunctionComponent<{
         className={barClassName}
         style={{ backgroundColor: color, ...percentProp }}
         role="meter"
+        title={`value: ${valueFormatter(value)}`}
         aria-label={title ? `Percentage of ${title}` : 'Percentage'}
         aria-valuemin={0}
         aria-valuemax={100}

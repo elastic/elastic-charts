@@ -52,6 +52,7 @@
 
 .echSingleMetricTarget {
   overflow: visible;
+  z-index: 1; // needed to pop up to top for hovered title
 
   &--vertical {
     transform: rotate(90deg);

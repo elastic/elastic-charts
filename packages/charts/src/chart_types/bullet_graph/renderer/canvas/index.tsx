@@ -148,6 +148,7 @@ class Component extends React.Component<Props> {
                       value: datum.value,
                       target: datum.target,
                       valueFormatter: datum.valueFormatter,
+                      targetFormatter: datum.targetFormatter,
                       color: style.barBackground,
                       progressBarDirection: spec.subtype === 'vertical' ? 'vertical' : 'horizontal',
                       title: datum.title,
@@ -155,7 +156,7 @@ class Component extends React.Component<Props> {
                       domainMax: datum.domain.max,
                       extra: datum.target ? (
                         <span>
-                          target: <strong>{datum.valueFormatter(datum.target)}</strong>
+                          target: <strong>{(datum.targetFormatter ?? datum.valueFormatter)(datum.target)}</strong>
                         </span>
                       ) : undefined,
                     }}

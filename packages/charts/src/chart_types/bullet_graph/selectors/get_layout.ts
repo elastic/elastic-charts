@@ -10,6 +10,7 @@ import { getBulletSpec } from './get_bullet_spec';
 import { getChartSize } from './get_chart_size';
 import { BulletDatum, BulletGraphSubtype } from '../../../chart_types/bullet_graph/spec';
 import { createCustomCachedSelector } from '../../../state/create_selector';
+import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { Size } from '../../../utils/dimensions';
 import { wrapText } from '../../../utils/text/wrap';
@@ -75,8 +76,8 @@ const minChartWidths: Record<BulletGraphSubtype, number> = {
 
 /** @internal */
 export const getLayout = createCustomCachedSelector(
-  [getBulletSpec, getChartSize],
-  (spec, chartSize): BulletGraphLayout => {
+  [getBulletSpec, getChartSize, getSettingsSpecSelector],
+  (spec, chartSize, { locale }): BulletGraphLayout => {
     const { data } = spec;
     const rows = data.length;
     const columns = data.reduce((acc, row) => {
@@ -98,8 +99,8 @@ export const getLayout = createCustomCachedSelector(
           const content = {
             title: cell.title.trim(),
             subtitle: cell.subtitle?.trim(),
-            value: cell.target ? `${cell.value} ` : cell.valueFormatter(cell.value),
-            target: cell.target ? `/ ${cell.valueFormatter(cell.target)}` : '',
+            value: `${cell.valueFormatter(cell.value)}${cell.target ? ' ' : ''}`,
+            target: cell.target ? `/ ${(cell.targetFormatter ?? cell.valueFormatter)(cell.target)}` : '',
             datum: cell,
           };
           const size = {
@@ -132,7 +133,15 @@ export const getLayout = createCustomCachedSelector(
               panel,
               header: headerSize,
               // wrap only title if necessary
-              title: wrapText(cell.content.title, TITLE_FONT, TITLE_FONT_SIZE, headerSize.width, 2, textMeasurer),
+              title: wrapText(
+                cell.content.title,
+                TITLE_FONT,
+                TITLE_FONT_SIZE,
+                headerSize.width,
+                2,
+                textMeasurer,
+                locale,
+              ),
               subtitle: cell.content.subtitle
                 ? wrapText(
                     cell.content.subtitle,
@@ -141,6 +150,7 @@ export const getLayout = createCustomCachedSelector(
                     headerSize.width,
                     1,
                     textMeasurer,
+                    locale,
                   )[0]
                 : undefined,
               value: cell.content.value,

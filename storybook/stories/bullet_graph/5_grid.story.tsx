@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, text } from '@storybook/addon-knobs';
+import numeral from 'numeral';
 import React from 'react';
 
 import { Chart, BulletGraph, BulletGraphSubtype, Settings, Tooltip } from '@elastic/charts';
@@ -20,7 +21,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const hideTooltip = boolean('hide tooltip', false);
   const syncCursor = boolean('sync cursor', false);
   const tickSnapStep = number('active tick step', 1, { min: 0, max: 10 });
+  const valueFormat = text('valueFormat', '0');
+  const targetFormat = text('targetFormat', '');
+  const tickFormat = text('tickFormat', '0[.]00');
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.vertical);
+
+  const valueFormatter = (d: number) => numeral(d).format(valueFormat);
+  const targetFormatter = targetFormat ? (d: number) => numeral(d).format(targetFormat) : undefined;
+  const tickFormatter = (d: number) => numeral(d).format(tickFormat);
 
   return (
     <div
@@ -51,8 +59,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 // subtitle: 'First row first column subtitle',
                 syncCursor,
                 domain: { min: 0, max: 100, nice: false },
-                valueFormatter: (d) => `${d}`,
-                tickFormatter: (d) => `${d}`,
+                valueFormatter,
+                targetFormatter,
+                tickFormatter,
               },
               {
                 ticks: 'auto',
@@ -62,8 +71,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 subtitle: 'error rate (%)',
                 syncCursor,
                 domain: { min: 0, max: 100, nice: false },
-                valueFormatter: (d) => `${d}`,
-                tickFormatter: (d) => `${d}`,
+                valueFormatter,
+                targetFormatter,
+                tickFormatter,
               },
             ],
             [
@@ -75,8 +85,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 subtitle: 'Requests per second',
                 syncCursor,
                 domain: { min: 0, max: 100, nice: false },
-                valueFormatter: (d) => `${d}`,
-                tickFormatter: (d) => `${d}`,
+                valueFormatter,
+                targetFormatter,
+                tickFormatter,
               },
               {
                 ticks: 'auto',
@@ -86,8 +97,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 subtitle: 'percentage',
                 syncCursor,
                 domain: { min: 0, max: 200, nice: false },
-                valueFormatter: (d) => `${d}`,
-                tickFormatter: (d) => `${d}`,
+                valueFormatter,
+                targetFormatter,
+                tickFormatter,
               },
             ],
           ]}
@@ -95,4 +107,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
       </Chart>
     </div>
   );
+};
+
+Example.parameters = {
+  markdown: `You can apply different formatter for ticks and values using
+      different formats for \`tickFormatter\` and \`valueFormatter\`.
+
+Use a [numeraljs](http://numeraljs.com/) format with the knobs to see the difference`,
 };
