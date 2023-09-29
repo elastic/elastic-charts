@@ -78,20 +78,6 @@ export function angularBullet(
     ctx.stroke();
   });
 
-  // Ticks
-  ctx.beginPath();
-  ctx.strokeStyle = style.background;
-  ctx.lineWidth = TICK_WIDTH;
-
-  formatterColorTicks
-    .filter((tick) => tick.value > datum.domain.min && tick.value < datum.domain.max)
-    .forEach((tick) => {
-      const bulletWidth = BULLET_SIZE + 4; // TODO fix arbitrary extension
-      drawPolarLine(ctx, scale(tick.value), radius, bulletWidth, center);
-    });
-
-  ctx.stroke();
-
   // Bar
   ctx.beginPath();
   ctx.arc(
@@ -106,9 +92,24 @@ export function angularBullet(
   ctx.strokeStyle = style.barBackground;
   ctx.stroke();
 
+  // Ticks
+  ctx.beginPath();
+  ctx.strokeStyle = style.background;
+  ctx.lineWidth = TICK_WIDTH;
+
+  formatterColorTicks
+    .filter((tick) => tick.value > datum.domain.min && tick.value < datum.domain.max)
+    .forEach((tick) => {
+      const bulletWidth = BULLET_SIZE + 4; // TODO fix arbitrary extension
+      drawPolarLine(ctx, scale(tick.value), radius, bulletWidth, center);
+    });
+
+  ctx.stroke();
+
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {
     ctx.beginPath();
+    ctx.strokeStyle = style.barBackground;
     ctx.lineWidth = TARGET_WIDTH;
 
     drawPolarLine(ctx, scale(datum.target), radius, TARGET_SIZE, center);
@@ -150,8 +151,6 @@ export function angularBullet(
   ctx.beginPath();
 
   if (debug) {
-    renderDebugPoint(ctx, 0, 0);
-    renderDebugPoint(ctx, center.x, center.y);
-    renderDebugPoint(ctx, graphArea.size.width / 2 - GRAPH_PADDING.left, graphArea.size.height / 2 - GRAPH_PADDING.top);
+    renderDebugPoint(ctx, center.x, center.y); // arch center
   }
 }

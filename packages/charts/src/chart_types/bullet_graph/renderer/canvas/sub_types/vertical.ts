@@ -59,6 +59,15 @@ export function verticalBullet(
     );
   });
 
+  // Bar
+  ctx.fillStyle = style.barBackground;
+  ctx.fillRect(
+    graphArea.size.width / 2 - BAR_SIZE / 2,
+    graphPaddedHeight - scale(datum.value),
+    BAR_SIZE,
+    scale(datum.value),
+  );
+
   // Ticks
   ctx.beginPath();
   ctx.strokeStyle = style.background;
@@ -71,15 +80,6 @@ export function verticalBullet(
       ctx.lineTo(graphArea.size.width / 2 + BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
     });
   ctx.stroke();
-
-  // Bar
-  ctx.fillStyle = style.barBackground;
-  ctx.fillRect(
-    graphArea.size.width / 2 - BAR_SIZE / 2,
-    graphPaddedHeight - scale(datum.value),
-    BAR_SIZE,
-    scale(datum.value),
-  );
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {

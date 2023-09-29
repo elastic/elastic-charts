@@ -12,7 +12,7 @@ import { Ratio } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import { withContext, clearCanvas } from '../../../../renderers/canvas';
 import { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
-import { renderDebugRect } from '../../../xy_chart/renderer/canvas/utils/debug';
+import { renderDebugPoint, renderDebugRect } from '../../../xy_chart/renderer/canvas/utils/debug';
 import { ActiveValue } from '../../selectors/get_active_values';
 import { BulletDimensions } from '../../selectors/get_panel_dimensions';
 import { BulletGraphSpec, BulletGraphSubtype } from '../../spec';
@@ -152,7 +152,18 @@ export function renderBulletGraph(
           withContext(ctx, (ctx) => {
             ctx.translate(graphArea.origin.x, graphArea.origin.y);
 
-            if (debug) {
+            if (spec.subtype === BulletGraphSubtype.horizontal) {
+              horizontalBullet(ctx, bulletGraph, style, activeValue);
+            } else if (spec.subtype === BulletGraphSubtype.vertical) {
+              verticalBullet(ctx, bulletGraph, style, activeValue);
+            } else {
+              angularBullet(ctx, bulletGraph, style, spec, debug, activeValue);
+            }
+          });
+
+          if (debug) {
+            withContext(ctx, (ctx) => {
+              ctx.translate(graphArea.origin.x, graphArea.origin.y);
               renderDebugRect(
                 ctx,
                 {
@@ -163,16 +174,10 @@ export function renderBulletGraph(
                 0,
                 { color: Colors.Transparent.rgba },
               );
-            }
-
-            if (spec.subtype === BulletGraphSubtype.horizontal) {
-              horizontalBullet(ctx, bulletGraph, style, activeValue);
-            } else if (spec.subtype === BulletGraphSubtype.vertical) {
-              verticalBullet(ctx, bulletGraph, style, activeValue);
-            } else {
-              angularBullet(ctx, bulletGraph, style, spec, debug, activeValue);
-            }
-          });
+              renderDebugPoint(ctx, 0, 0);
+              renderDebugPoint(ctx, graphArea.size.width / 2, graphArea.size.height / 2);
+            });
+          }
         });
       }),
     );

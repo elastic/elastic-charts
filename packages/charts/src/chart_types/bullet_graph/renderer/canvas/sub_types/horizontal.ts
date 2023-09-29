@@ -55,6 +55,15 @@ export function horizontalBullet(
     ctx.fillRect(band.position, verticalAlignment - BULLET_SIZE / 2, band.size, BULLET_SIZE);
   });
 
+  // Bar
+  ctx.fillStyle = style.barBackground;
+  ctx.fillRect(
+    0,
+    verticalAlignment - BAR_SIZE / 2,
+    scale(clamp(datum.value, datum.domain.min, datum.domain.max)),
+    BAR_SIZE,
+  );
+
   // Ticks
   ctx.beginPath();
   ctx.strokeStyle = style.background;
@@ -66,15 +75,6 @@ export function horizontalBullet(
       ctx.lineTo(scale(tick), verticalAlignment + BULLET_SIZE / 2);
     });
   ctx.stroke();
-
-  // Bar
-  ctx.fillStyle = style.barBackground;
-  ctx.fillRect(
-    0,
-    verticalAlignment - BAR_SIZE / 2,
-    scale(clamp(datum.value, datum.domain.min, datum.domain.max)),
-    BAR_SIZE,
-  );
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {

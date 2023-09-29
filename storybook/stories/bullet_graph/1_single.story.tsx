@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { text, number } from '@storybook/addon-knobs';
+import { text, number, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
@@ -16,6 +16,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const debug = boolean('debug', false);
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
   const bulletTitle = text('title', 'Error rate');
   const subtitle = text('subtitle', '');
@@ -38,7 +39,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       }}
     >
       <Chart title={title} description={description}>
-        <Settings baseTheme={useBaseTheme()} />
+        <Settings debug={debug} baseTheme={useBaseTheme()} />
         <BulletGraph
           id="bubbles"
           subtype={subtype}
