@@ -13,6 +13,7 @@ import { Radian } from '../../../common/geometry';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { isFiniteNumber, roundTo } from '../../../utils/common';
+import { Range } from '../../../utils/domain';
 import { Point } from '../../../utils/point';
 import { BULLET_SIZE, HOVER_SLOP, TARGET_SIZE } from '../renderer/canvas/constants';
 import { BulletGraphSpec, BulletGraphSubtype } from '../spec';
@@ -66,9 +67,9 @@ function getPanelValue(
   pointer: Point,
   spec: BulletGraphSpec,
 ): Pick<ActiveValueDetails, 'value' | 'snapValue' | 'color' | 'pixelValue'> | undefined {
+  const { datum, graphArea, scale } = panel;
   switch (spec.subtype) {
     case BulletGraphSubtype.angular: {
-      const { datum, graphArea, scale } = panel;
       const { radius } = getAngledChartSizing(graphArea.size, spec.size);
       const center = {
         x: graphArea.center.x,
@@ -107,29 +108,54 @@ function getPanelValue(
     }
 
     case BulletGraphSubtype.horizontal: {
-      const relativeX = pointer.x - GRAPH_PADDING.left;
-      const value = panel.scale.invert(relativeX);
-      const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, panel.datum.domain) : value;
+      const yCenterOffset = Math.abs(pointer.y - graphArea.origin.y - TARGET_SIZE / 2);
 
-      return {
-        value,
-        snapValue,
-        color: `${panel.colorScale(snapValue)}`,
-        pixelValue: relativeX,
-      };
+      if (yCenterOffset > TARGET_SIZE / 2 + HOVER_SLOP) return;
+
+      const relativeX = pointer.x - GRAPH_PADDING.left;
+      const [min, max] = scale.range() as Range;
+
+      if (relativeX < min || relativeX > max) break;
+
+      const value = panel.scale.invert(relativeX);
+
+      if (isFiniteNumber(value) && value <= datum.domain.max && value >= datum.domain.min) {
+        const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, panel.datum.domain) : value;
+
+        return {
+          value,
+          snapValue,
+          color: `${panel.colorScale(snapValue)}`,
+          pixelValue: relativeX,
+        };
+      }
+
+      break;
     }
 
     case BulletGraphSubtype.vertical: {
-      const relativeY = panel.panel.height - pointer.y - GRAPH_PADDING.bottom;
-      const value = panel.scale.invert(relativeY);
-      const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, panel.datum.domain) : value;
+      const xCenterOffset = Math.abs(pointer.x - graphArea.center.x - GRAPH_PADDING.left);
 
-      return {
-        value,
-        snapValue,
-        color: `${panel.colorScale(snapValue)}`,
-        pixelValue: relativeY,
-      };
+      if (xCenterOffset > TARGET_SIZE / 2 + HOVER_SLOP) return;
+
+      const relativeY = panel.panel.height - pointer.y - GRAPH_PADDING.bottom;
+      const [min, max] = scale.range() as Range;
+
+      if (relativeY < min || relativeY > max) break;
+
+      const value = panel.scale.invert(relativeY);
+
+      if (isFiniteNumber(value) && value <= datum.domain.max && value >= datum.domain.min) {
+        const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, panel.datum.domain) : value;
+
+        return {
+          value,
+          snapValue,
+          color: `${panel.colorScale(snapValue)}`,
+          pixelValue: relativeY,
+        };
+      }
+      break;
     }
 
     default:

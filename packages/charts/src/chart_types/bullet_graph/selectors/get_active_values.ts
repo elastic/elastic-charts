@@ -14,7 +14,6 @@ import { isFiniteNumber } from '../../../utils/common';
 /** @internal */
 export interface ActiveValue {
   value: number;
-  snapValue: number;
   external: boolean;
 }
 
@@ -24,18 +23,18 @@ export const getActiveValues = createCustomCachedSelector(
   (activeValue, dimensions): (ActiveValue | null)[][] => {
     if (!activeValue) return [];
 
-    const { value: panelValue, snapValue, rowIndex, columnIndex } = activeValue;
+    // Synced cursor values should always use the snapValue to avoid strange diffs
+    const { snapValue, rowIndex, columnIndex } = activeValue;
 
     return dimensions.rows.map((row, ri) =>
       row.map((panel, ci): ActiveValue | null => {
         const external = !(rowIndex === ri && columnIndex === ci);
         if (!panel || (!panel.datum.syncCursor && external)) return null;
-        if (!isFiniteNumber(panelValue) || panelValue >= panel.datum.domain.max || panelValue <= panel.datum.domain.min)
+        if (!isFiniteNumber(snapValue) || snapValue >= panel.datum.domain.max || snapValue <= panel.datum.domain.min)
           return null;
 
         return {
-          value: panel.scale(panelValue),
-          snapValue: panel.scale(snapValue),
+          value: panel.scale(snapValue),
           external,
         };
       }),

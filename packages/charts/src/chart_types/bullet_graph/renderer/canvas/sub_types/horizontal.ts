@@ -88,9 +88,8 @@ export function horizontalBullet(
 
   // Active Value
   if (activeValue && (datum.syncCursor || !activeValue.external)) {
-    ctx.fillStyle = 'red';
     ctx.fillRect(
-      activeValue.snapValue - TARGET_STROKE_WIDTH / 2,
+      activeValue.value - TARGET_STROKE_WIDTH / 2,
       verticalAlignment - TARGET_SIZE / 2,
       TARGET_STROKE_WIDTH,
       TARGET_SIZE,
