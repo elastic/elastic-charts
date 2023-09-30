@@ -440,6 +440,48 @@ export interface BubbleSeriesStyle {
     point: PointStyle;
 }
 
+// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
+//
+// @alpha
+export const BulletGraph: (props: SFProps<BulletGraphSpec, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
+
+// @public (undocumented)
+export const BulletGraphSize: Readonly<{
+    full: "full";
+    half: "half";
+    twoThirds: "two-thirds";
+}>;
+
+// @public (undocumented)
+export type BulletGraphSize = $Values<typeof BulletGraphSize>;
+
+// @alpha (undocumented)
+export interface BulletGraphSpec extends Spec {
+    // (undocumented)
+    chartType: typeof ChartType.BulletGraph;
+    // Warning: (ae-forgotten-export) The symbol "BulletDatum" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    data: (BulletDatum | undefined)[][];
+    size: BulletGraphSize;
+    // (undocumented)
+    specType: typeof SpecType.Series;
+    // (undocumented)
+    subtype: BulletGraphSubtype;
+    // (undocumented)
+    tickSnapStep?: number;
+}
+
+// @public (undocumented)
+export const BulletGraphSubtype: Readonly<{
+    vertical: "vertical";
+    horizontal: "horizontal";
+    angular: "angular";
+}>;
+
+// @public (undocumented)
+export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
+
 // @public (undocumented)
 export type CategoryKey = string;
 
@@ -550,6 +592,7 @@ export const ChartType: Readonly<{
     Heatmap: "heatmap";
     Wordcloud: "wordcloud";
     Metric: "metric";
+    BulletGraph: "bullet_graph";
 }>;
 
 // @public (undocumented)
@@ -1163,10 +1206,10 @@ export type GetData = (dataDemand: DataDemand) => TimeslipDataRows;
 // @public (undocumented)
 export function getNodeName(node: ArrayNode): string;
 
-// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps_2" needs to be exported by the entry point index.d.ts
 //
 // @alpha
-export const Goal: (props: SFProps<GoalSpec, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
+export const Goal: (props: SFProps<GoalSpec, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
 
 // @alpha (undocumented)
 export interface GoalDomainRange {
@@ -1351,7 +1394,7 @@ export interface HeatmapCellDatum extends SmallMultiplesDatum {
 }
 
 // @public (undocumented)
-export type HeatmapElementEvent = [Cell, SeriesIdentifier];
+export type HeatmapElementEvent = [cell: Cell, seriesIdentifier: SeriesIdentifier];
 
 // @public (undocumented)
 export interface HeatmapHighlightedData extends SmallMultiplesDatum {
@@ -1869,7 +1912,9 @@ export type MetricTrendShape = $Values<typeof MetricTrendShape>;
 // @alpha (undocumented)
 export type MetricWNumber = MetricBase & {
     value: number;
-    valueFormatter: (d: number) => string;
+    target?: number;
+    valueFormatter: ValueFormatter;
+    targetFormatter?: ValueFormatter;
 };
 
 // @alpha (undocumented)
@@ -1975,7 +2020,7 @@ export type PartialTheme = RecursivePartial<Theme>;
 export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, "chartType" | "specType", "animation" | "layout" | "layers" | "valueFormatter" | "valueGetter" | "fillOutside" | "radiusOutside" | "fillRectangleWidth" | "fillRectangleHeight" | "topGroove" | "percentFormatter" | "clockwiseSectors" | "maxRowCount" | "specialFirstInnermostSector" | "valueAccessor" | "smallMultiples" | "drilldown", never, "id" | "data">) => null;
 
 // @public (undocumented)
-export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
+export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier: SeriesIdentifier];
 
 // Warning: (ae-forgotten-export) The symbol "LabelConfig" needs to be exported by the entry point index.d.ts
 //
@@ -2757,6 +2802,8 @@ export interface Theme {
     background: BackgroundStyle;
     barSeriesStyle: BarSeriesStyle;
     bubbleSeriesStyle: BubbleSeriesStyle;
+    // Warning: (ae-forgotten-export) The symbol "BulletGraphStyle" needs to be exported by the entry point index.d.ts
+    bulletGraph: BulletGraphStyle;
     chartMargins: Margins;
     chartPaddings: Margins;
     // (undocumented)
@@ -2820,10 +2867,10 @@ export interface TimeScale {
     type: typeof ScaleType.Time;
 }
 
-// Warning: (ae-forgotten-export) The symbol "buildProps_2" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps_3" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const Timeslip: (props: SFProps<TimeslipSpec, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
+export const Timeslip: (props: SFProps<TimeslipSpec, keyof (typeof buildProps_3)['overrides'], keyof (typeof buildProps_3)['defaults'], keyof (typeof buildProps_3)['optionals'], keyof (typeof buildProps_3)['requires']>) => null;
 
 // @public
 export interface TimeslipSpec extends Spec {
@@ -3185,7 +3232,7 @@ export type WeightFn = $Values<typeof WeightFn>;
 export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontFamily" | "fontStyle" | "fontWeight" | "padding" | "exponent" | "minFontSize" | "maxFontSize" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
 
 // @public (undocumented)
-export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
+export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];
 
 // Warning: (ae-incompatible-release-tags) The symbol "WordcloudProps" is marked as @public, but its signature references "Wordcloud" which is marked as @alpha
 //
@@ -3254,7 +3301,7 @@ export interface XYBrushEvent {
 }
 
 // @public (undocumented)
-export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
+export type XYChartElementEvent = [geometry: GeometryValue, seriesIdentifier: XYChartSeriesIdentifier];
 
 // @public (undocumented)
 export interface XYChartSeriesIdentifier<D extends BaseDatum = Datum> extends SeriesIdentifier, SmallMultiplesDatum {
