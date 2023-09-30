@@ -64,16 +64,16 @@
 
   &--horizontal {
     &.echMetric--withProgressBar {
-        &--small {
-          padding-bottom: 10px;
-        }
+      &--small {
+        padding-bottom: 10px;
       }
+    }
 
-      &.echMetric--withTargetProgressBar {
-        &--small {
-          padding-bottom: 12px;
-        }
+    &.echMetric--withTargetProgressBar {
+      &--small {
+        padding-bottom: 12px;
       }
+    }
   }
 }
 
