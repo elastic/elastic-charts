@@ -9,7 +9,6 @@
 import { getActiveValue } from './get_active_value';
 import { getPanelDimensions } from './get_panel_dimensions';
 import { createCustomCachedSelector } from '../../../state/create_selector';
-import { isFiniteNumber } from '../../../utils/common';
 
 /** @internal */
 export interface ActiveValue {
@@ -30,8 +29,7 @@ export const getActiveValues = createCustomCachedSelector(
       row.map((panel, ci): ActiveValue | null => {
         const external = !(rowIndex === ri && columnIndex === ci);
         if (!panel || (!panel.datum.syncCursor && external)) return null;
-        if (!isFiniteNumber(snapValue) || snapValue >= panel.datum.domain.max || snapValue <= panel.datum.domain.min)
-          return null;
+        if (snapValue > panel.datum.domain.max || snapValue < panel.datum.domain.min) return null;
 
         return {
           value: panel.scale(snapValue),

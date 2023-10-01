@@ -572,7 +572,7 @@ export const round = (value: number, fractionDigits = 0): number => {
 export const roundTo = (
   value: number,
   interval: number,
-  options: { min?: number; max?: number; type?: 'round' | 'ceil' | 'floor' },
+  options: { min?: number; max?: number; type?: 'round' | 'ceil' | 'floor' } = {},
 ): number => {
   const roundedValue = Math[options.type ?? 'round'](value / interval) * interval;
   return clamp(roundedValue, options?.min ?? -Infinity, options?.max ?? Infinity);

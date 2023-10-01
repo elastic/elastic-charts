@@ -12,7 +12,7 @@ import { TAU } from '../../../common/constants';
 import { Radian } from '../../../common/geometry';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
-import { isFiniteNumber, roundTo } from '../../../utils/common';
+import { isBetween, isFiniteNumber, roundTo } from '../../../utils/common';
 import { Range } from '../../../utils/domain';
 import { Point } from '../../../utils/point';
 import { BULLET_SIZE, HOVER_SLOP, TARGET_SIZE } from '../renderer/canvas/constants';
@@ -68,6 +68,8 @@ function getPanelValue(
   spec: BulletGraphSpec,
 ): Pick<ActiveValueDetails, 'value' | 'snapValue' | 'color' | 'pixelValue'> | undefined {
   const { datum, graphArea, scale } = panel;
+  const isWithinDomain = isBetween(datum.domain.min, datum.domain.max);
+
   switch (spec.subtype) {
     case BulletGraphSubtype.angular: {
       const { radius } = getAngledChartSizing(graphArea.size, spec.size);
@@ -85,17 +87,16 @@ function getPanelValue(
       const outerLimit = radius + BULLET_SIZE / 2 + HOVER_SLOP;
       const innerLimit = radius - BULLET_SIZE / 2 - HOVER_SLOP;
 
-      if (Number.isFinite(distance) && distance <= outerLimit && distance >= innerLimit) {
+      if (distance <= outerLimit && distance >= innerLimit) {
         // TODO find why to determine angle between origin and point
         // The angle goes from -π in Quadrant 2 to +π in Quadrant 3
         // This angle offset is a temporary fix
         const angleOffset = normalizedPointer.x < 0 && normalizedPointer.y > 0 ? -TAU : 0;
         const angle: Radian = Math.atan2(normalizedPointer.y, normalizedPointer.x) + angleOffset;
         const value = scale.invert(angle);
+        const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep) : value;
 
-        if (isFiniteNumber(value) && value <= datum.domain.max && value >= datum.domain.min) {
-          const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, datum.domain) : value;
-
+        if (isWithinDomain(snapValue)) {
           return {
             value,
             snapValue,
@@ -118,10 +119,9 @@ function getPanelValue(
       if (relativeX < min || relativeX > max) break;
 
       const value = panel.scale.invert(relativeX);
+      const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep) : value;
 
-      if (isFiniteNumber(value) && value <= datum.domain.max && value >= datum.domain.min) {
-        const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, panel.datum.domain) : value;
-
+      if (isWithinDomain(snapValue)) {
         return {
           value,
           snapValue,
@@ -144,10 +144,9 @@ function getPanelValue(
       if (relativeY < min || relativeY > max) break;
 
       const value = panel.scale.invert(relativeY);
+      const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep) : value;
 
-      if (isFiniteNumber(value) && value <= datum.domain.max && value >= datum.domain.min) {
-        const snapValue = spec.tickSnapStep ? roundTo(value, spec.tickSnapStep, panel.datum.domain) : value;
-
+      if (isWithinDomain(snapValue)) {
         return {
           value,
           snapValue,
