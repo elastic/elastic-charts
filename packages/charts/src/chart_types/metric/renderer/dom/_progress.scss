@@ -51,6 +51,9 @@
 }
 
 .echSingleMetricTarget {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: visible;
   z-index: 1; // needed to pop up to top for hovered title
 
