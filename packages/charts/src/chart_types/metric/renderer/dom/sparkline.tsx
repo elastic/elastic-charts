@@ -36,8 +36,8 @@ export const SparkLine: FunctionComponent<{
     trendShape === MetricTrendShape.Bars ? CurveType.CURVE_STEP_AFTER : CurveType.LINEAR,
   );
 
-  const [h, s, l] = colorToHsl(color);
-  const pathColor = hslToColor(h, s, l >= 0.8 ? l - 0.1 : l + 0.1);
+  const [h, s, l, a] = colorToHsl(color);
+  const pathColor = hslToColor(h, s, l >= 0.8 ? l - 0.1 : l + 0.1, a);
   const titleId = `${id}-trend-title`;
   const descriptionId = `${id}-trend-description`;
   return (

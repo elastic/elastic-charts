@@ -41,3 +41,17 @@ export function fillTextColor(
 
   return RGBATupleToString(highContrastColor(backgroundRGBA));
 }
+
+/** @internal */
+export function getResolvedBackgroundColor(
+  fallbackBGColor: Color,
+  background: Color = Colors.Transparent.keyword,
+): Color {
+  let backgroundRGBA = colorToRgba(background);
+
+  if (backgroundRGBA[3] < TRANSPARENT_LIMIT) {
+    backgroundRGBA = colorToRgba(fallbackBGColor);
+  }
+
+  return RGBATupleToString(backgroundRGBA);
+}
