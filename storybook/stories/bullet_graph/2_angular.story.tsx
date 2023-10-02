@@ -7,6 +7,7 @@
  */
 
 import { text, number, boolean } from '@storybook/addon-knobs';
+import numeral from 'numeral';
 import React from 'react';
 
 import { Chart, BulletGraph, BulletGraphSubtype, Settings, BulletGraphSize } from '@elastic/charts';
@@ -27,8 +28,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const angularTickLabelPadding = number('tick label padding', 10, { range: true, min: 0, max: 50 });
   const size = getKnobFromEnum('size', BulletGraphSize, 'two-thirds');
   const reverse = boolean('reverse', false);
+  const format = text('format', '0');
+  const formatter = (d: number) => numeral(d).format(format);
 
-  const postfix = text('postfix', '');
   return (
     <div
       style={{
@@ -66,8 +68,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 subtitle,
                 reverse,
                 domain: { min, max, nice: false },
-                valueFormatter: (d) => `${d}${postfix}`,
-                tickFormatter: (d) => `${d}${postfix}`,
+                valueFormatter: formatter,
+                tickFormatter: formatter,
               },
             ],
           ]}

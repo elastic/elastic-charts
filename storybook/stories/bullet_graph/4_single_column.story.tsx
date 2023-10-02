@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { boolean } from '@storybook/addon-knobs';
+import { boolean, text } from '@storybook/addon-knobs';
+import numeral from 'numeral';
 import React from 'react';
 
 import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
@@ -17,6 +18,8 @@ import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
+  const format = text('format', '0');
+  const formatter = (d: number) => numeral(d).format(format);
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
 
   return (
@@ -42,8 +45,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 value: 1320,
                 title: 'Total requests',
                 domain: { min: 0, max: 2000, nice: false },
-                valueFormatter: (d) => `${d}`,
-                tickFormatter: (d) => `${d}`,
+                valueFormatter: formatter,
+                tickFormatter: formatter,
               },
             ],
             [
@@ -54,8 +57,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 title: 'Erroring Request duration millis',
                 subtitle: '90th percentile',
                 domain: { min: 0, max: 500, nice: false },
-                valueFormatter: (d) => `${d}`,
-                tickFormatter: (d) => `${d}`,
+                valueFormatter: formatter,
+                tickFormatter: formatter,
               },
             ],
             [
@@ -65,8 +68,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 title: 'Error rate',
                 subtitle: 'percentage',
                 domain: { min: 0, max: 100, nice: false },
-                valueFormatter: (d) => `${d}%`,
-                tickFormatter: (d) => `${d}%`,
+                valueFormatter: formatter,
+                tickFormatter: formatter,
               },
             ],
           ]}

@@ -7,6 +7,7 @@
  */
 
 import { text, number, boolean } from '@storybook/addon-knobs';
+import numeral from 'numeral';
 import React from 'react';
 
 import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
@@ -17,15 +18,16 @@ import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
   const bulletTitle = text('title', 'Error rate');
   const subtitle = text('subtitle', '');
   const value = number('value', 56, { range: true, min: 0, max: 200 });
   const target = number('target', 75, { range: true, min: 0, max: 200 });
   const min = number('min', 0, { range: true, min: 0, max: 200 });
   const max = number('max', 100, { range: true, min: 0, max: 200 });
+  const format = text('format', '0');
+  const formatter = (d: number) => numeral(d).format(format);
+  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
 
-  const postfix = text('postfix', '');
   return (
     <div
       style={{
@@ -52,8 +54,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 title: bulletTitle,
                 subtitle,
                 domain: { min, max, nice: false },
-                valueFormatter: (d) => `${d}${postfix}`,
-                tickFormatter: (d) => `${d}${postfix}`,
+                valueFormatter: formatter,
+                tickFormatter: formatter,
               },
             ],
           ]}
