@@ -9,7 +9,17 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { LineSeries, Axis, BarSeries, Chart, ScaleType, Settings, Position, HistogramBarSeries } from '@elastic/charts';
+import {
+  LineSeries,
+  Axis,
+  BarSeries,
+  Chart,
+  ScaleType,
+  Settings,
+  Position,
+  HistogramBarSeries,
+  niceTimeFormatter,
+} from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { ChartsStory } from '../../types';
@@ -21,31 +31,36 @@ const interval = 1000 * 60 * 5;
 const data = Array.from({ length: 20 }, (d, i) => {
   return [start + interval * i, Math.floor(rng(2, 10))];
 });
-console.log(
-  data
-    .map((d) => [`"${new Date(d[0]).toISOString()}"`, d[1]])
-    .map((d) => d.join(','))
-    .join('\n'),
-);
+
 export const Example: ChartsStory = (_, { title, description }) => {
   const customDomain = boolean('custom domain', false);
-  const rangeSlider = number('time range', 19, { min: 1, max: 25, range: true, step: 0.2 });
+  const startTimeSlider = number('start time', 0, { min: 0, max: 20, range: true, step: 0.2 });
+  const rangeSlider = number('end time', 19, { min: 1, max: 25, range: true, step: 0.2 });
   const subtract = boolean('subtract 1ms', false);
 
   const tickFormat = (d: number) => new Date(d).toISOString();
-  const xDomain = customDomain ? { min: start, max: start + interval * rangeSlider - (subtract ? 1 : 0) } : undefined;
+  const xDomain = customDomain
+    ? { min: start + interval * startTimeSlider, max: start + interval * rangeSlider - (subtract ? 1 : 0) }
+    : undefined;
+  const domain: [number, number] = [xDomain?.min ?? data[0][0] ?? 0, xDomain?.max ?? data.at(-1)?.[0] ?? 0];
 
   return (
     <>
       <p>
-        {xDomain ? 'configured' : 'data'} domain: {new Date(xDomain ? xDomain.min : data[0][0]).toISOString()} to{' '}
-        {new Date(xDomain ? xDomain.max : data.at(-1)?.[0] ?? start).toISOString()}
+        {xDomain ? 'configured' : 'data'} domain: {new Date(domain[0]).toISOString()} to{' '}
+        {new Date(domain[1]).toISOString()}
       </p>
       <Chart title={title} description={description} size={['100%', 250]}>
         <Settings
           baseTheme={useBaseTheme()}
           showLegend
-          legendPosition={Position.Bottom}
+          legendPosition={{
+            floatingColumns: 1,
+            floating: true,
+            direction: 'vertical',
+            hAlign: 'right',
+            vAlign: 'top',
+          }}
           showLegendExtra
           xDomain={xDomain}
           theme={{
@@ -81,7 +96,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         />
         <Axis id="y" position={Position.Left} gridLine={{ visible: true }} />
         <HistogramBarSeries
-          id="area"
+          id="Area"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
@@ -99,8 +114,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Chart title={title} description={description} size={['100%', 250]}>
         <Settings
           baseTheme={useBaseTheme()}
+          legendPosition={{
+            floatingColumns: 1,
+            floating: true,
+            direction: 'vertical',
+            hAlign: 'right',
+            vAlign: 'top',
+          }}
           showLegend
-          legendPosition={Position.Bottom}
           showLegendExtra
           xDomain={xDomain}
           theme={{
@@ -129,7 +150,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         />
         <Axis id="y" position={Position.Left} gridLine={{ visible: true }} />
         <LineSeries
-          id="area"
+          id="Line"
           xScaleType={ScaleType.Time}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
@@ -142,25 +163,30 @@ export const Example: ChartsStory = (_, { title, description }) => {
         <Settings
           baseTheme={useBaseTheme()}
           showLegend
-          legendPosition={Position.Bottom}
+          legendPosition={{
+            floatingColumns: 1,
+            floating: true,
+            direction: 'vertical',
+            hAlign: 'right',
+            vAlign: 'top',
+          }}
           showLegendExtra
           xDomain={xDomain}
           theme={{
             scales: {
               histogramPadding: 0,
-              barsPadding: 0,
+              barsPadding: 0.2,
             },
           }}
         />
         <Axis
           id="x"
-          tickFormat={tickFormat}
           position={Position.Bottom}
           gridLine={{ visible: true }}
           timeAxisLayerCount={2}
           style={{
             tickLabel: {
-              alignment: { horizontal: 'left' },
+              alignment: { horizontal: 'center' },
               padding: 0,
             },
             tickLine: {
@@ -168,11 +194,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
               size: 5,
             },
           }}
+          tickFormat={(d) => niceTimeFormatter(domain)(d, { timeZone: 'UTC' })}
         />
         <Axis id="y" position={Position.Left} gridLine={{ visible: true }} />
         <BarSeries
-          id="area"
-          xScaleType={ScaleType.Time}
+          id="Categorical"
+          xScaleType={ScaleType.Ordinal}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
