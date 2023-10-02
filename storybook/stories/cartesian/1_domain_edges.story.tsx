@@ -102,11 +102,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           xAccessor={0}
           yAccessors={[1]}
           data={data}
-          histogramInterval={{
-            type: 'fixed',
-            unit: 'm',
-            value: 5,
-          }}
           timeZone="UTC"
           color="#FF6666"
         />
