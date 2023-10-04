@@ -34,19 +34,12 @@ export interface BulletDatum {
 export const BulletGraphSubtype = Object.freeze({
   vertical: 'vertical' as const,
   horizontal: 'horizontal' as const,
-  angular: 'angular' as const,
+  circle: 'circle' as const,
+  halfCircle: 'half-circle' as const,
+  twoThirdsCircle: 'two-thirds-circle' as const,
 });
 /** @public */
 export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
-
-/** @public */
-export const BulletGraphSize = Object.freeze({
-  full: 'full' as const, // need to address label overlapping
-  half: 'half' as const,
-  twoThirds: 'two-thirds' as const,
-});
-/** @public */
-export type BulletGraphSize = $Values<typeof BulletGraphSize>;
 
 /** @alpha */
 export interface BulletGraphSpec extends Spec {
@@ -54,10 +47,6 @@ export interface BulletGraphSpec extends Spec {
   chartType: typeof ChartType.BulletGraph;
   data: (BulletDatum | undefined)[][];
   subtype: BulletGraphSubtype;
-  /**
-   * Size options of chart for angular subType only
-   */
-  size: BulletGraphSize;
   tickSnapStep?: number;
 }
 
@@ -66,9 +55,7 @@ const buildProps = buildSFProps<BulletGraphSpec>()(
     specType: SpecType.Series,
     chartType: ChartType.BulletGraph,
   },
-  {
-    size: BulletGraphSize.twoThirds,
-  },
+  {},
 );
 
 /**

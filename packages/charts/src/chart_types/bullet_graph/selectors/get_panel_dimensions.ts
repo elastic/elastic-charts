@@ -114,16 +114,18 @@ export const getPanelDimensions = createCustomCachedSelector(
 );
 
 function getScalesBySubtype(
-  { subtype, size }: BulletGraphSpec,
+  { subtype }: BulletGraphSpec,
   graphSize: Size,
   { domain, reverse = false }: BulletDatum,
   { bandColors }: BulletGraphStyle,
 ): Pick<BulletPanelDimensions, 'scale' | 'colorScale'> {
   switch (subtype) {
-    case BulletGraphSubtype.angular: {
-      const [startAngle, endAngle] = getAnglesBySize(size, reverse);
+    case BulletGraphSubtype.circle:
+    case BulletGraphSubtype.halfCircle:
+    case BulletGraphSubtype.twoThirdsCircle: {
+      const [startAngle, endAngle] = getAnglesBySize(subtype, reverse);
       const scale = scaleLinear().domain([domain.min, domain.max]).range([startAngle, endAngle]);
-      const { radius } = getAngledChartSizing(graphSize, size);
+      const { radius } = getAngledChartSizing(graphSize, subtype);
       const totalDomainArc = Math.abs(domain.min - domain.max);
       const { colorTicks, colorBandSizeValue } = getColorBandSizes(
         Math.abs(startAngle - endAngle) * radius,

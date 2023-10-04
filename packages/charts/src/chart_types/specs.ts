@@ -48,4 +48,9 @@ export {
   MetricDatum,
 } from './metric/specs';
 
-export { BulletGraph, BulletGraphSpec, BulletGraphSubtype, BulletGraphSize } from './bullet_graph/spec';
+export {
+  BulletGraph,
+  BulletGraphSpec,
+  BulletGraphSubtype,
+  BulletGraphSubtype as BulletGraphSize,
+} from './bullet_graph/spec';

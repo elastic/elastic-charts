@@ -30,7 +30,7 @@ export function angularBullet(
   activeValue?: ActiveValue | null,
 ) {
   const { datum, graphArea, scale, colorScale } = dimensions;
-  const { radius } = getAngledChartSizing(graphArea.size, spec.size);
+  const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
   const [startAngle, endAngle] = scale.range() as [number, number];
   const counterClockwise = startAngle > endAngle;
   const center = {

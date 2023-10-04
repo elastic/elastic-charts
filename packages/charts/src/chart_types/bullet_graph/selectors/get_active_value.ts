@@ -71,8 +71,10 @@ function getPanelValue(
   const isWithinDomain = isBetween(datum.domain.min, datum.domain.max);
 
   switch (spec.subtype) {
-    case BulletGraphSubtype.angular: {
-      const { radius } = getAngledChartSizing(graphArea.size, spec.size);
+    case BulletGraphSubtype.circle:
+    case BulletGraphSubtype.halfCircle:
+    case BulletGraphSubtype.twoThirdsCircle: {
+      const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
       const center = {
         x: graphArea.center.x,
         y: radius + TARGET_SIZE / 2,

@@ -63,15 +63,19 @@ export interface BulletGraphLayout {
 }
 
 const minChartHeights: Record<BulletGraphSubtype, number> = {
-  horizontal: 50,
-  vertical: 100,
-  angular: 160,
+  [BulletGraphSubtype.horizontal]: 50,
+  [BulletGraphSubtype.vertical]: 100,
+  [BulletGraphSubtype.circle]: 160,
+  [BulletGraphSubtype.halfCircle]: 160,
+  [BulletGraphSubtype.twoThirdsCircle]: 160,
 };
 
 const minChartWidths: Record<BulletGraphSubtype, number> = {
-  horizontal: 140,
-  vertical: 140,
-  angular: 160,
+  [BulletGraphSubtype.horizontal]: 140,
+  [BulletGraphSubtype.vertical]: 140,
+  [BulletGraphSubtype.circle]: 160,
+  [BulletGraphSubtype.halfCircle]: 160,
+  [BulletGraphSubtype.twoThirdsCircle]: 160,
 };
 
 /** @internal */

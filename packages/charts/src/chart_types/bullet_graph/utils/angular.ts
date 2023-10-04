@@ -10,27 +10,32 @@ import { TAU } from '../../../common/constants';
 import { clamp } from '../../../utils/common';
 import { Size } from '../../../utils/dimensions';
 import { TARGET_SIZE } from '../renderer/canvas/constants';
-import { BulletGraphSize } from '../spec';
+import { BulletGraphSubtype } from '../spec';
 import { GRAPH_PADDING } from '../theme';
 
-const sizeAngles: Record<BulletGraphSize, { startAngle: number; endAngle: number }> = {
-  [BulletGraphSize.half]: {
+type AngularBulletSubtypes = Extract<BulletGraphSubtype, 'circle' | 'half-circle' | 'two-thirds-circle'>;
+
+const sizeAngles: Record<AngularBulletSubtypes, { startAngle: number; endAngle: number }> = {
+  [BulletGraphSubtype.halfCircle]: {
     startAngle: 1 * Math.PI,
     endAngle: 0,
   },
-  [BulletGraphSize.twoThirds]: {
+  [BulletGraphSubtype.twoThirdsCircle]: {
     startAngle: 1.25 * Math.PI,
     endAngle: -0.25 * Math.PI,
   },
-  [BulletGraphSize.full]: {
+  [BulletGraphSubtype.circle]: {
     startAngle: 1.5 * Math.PI,
     endAngle: -0.5 * Math.PI,
   },
 };
 
 /** @internal */
-export function getAnglesBySize(size: BulletGraphSize, reverse: boolean): [startAngle: number, endAngle: number] {
-  const angles = sizeAngles[size] ?? sizeAngles[BulletGraphSize.twoThirds]!;
+export function getAnglesBySize(subtype: BulletGraphSubtype, reverse: boolean): [startAngle: number, endAngle: number] {
+  if (subtype === BulletGraphSubtype.vertical || subtype === BulletGraphSubtype.horizontal) {
+    throw new Error('Attempting to retrieve angle size from horizontal/vertical bullet');
+  }
+  const angles = sizeAngles[subtype] ?? sizeAngles[BulletGraphSubtype.twoThirdsCircle]!;
   // Negative angles used to match current radian pattern
   const startAngle = -angles.startAngle;
   // limit endAngle to startAngle +/- 2π
@@ -39,18 +44,21 @@ export function getAnglesBySize(size: BulletGraphSize, reverse: boolean): [start
   return [startAngle, endAngle];
 }
 
-const heightModifiers: Record<BulletGraphSize, number> = {
-  [BulletGraphSize.half]: 0.5,
-  [BulletGraphSize.twoThirds]: 0.86, // approximated to account for flare of arc stroke at the bottom
-  [BulletGraphSize.full]: 1,
+const heightModifiers: Record<AngularBulletSubtypes, number> = {
+  [BulletGraphSubtype.halfCircle]: 0.5,
+  [BulletGraphSubtype.twoThirdsCircle]: 0.86, // approximated to account for flare of arc stroke at the bottom
+  [BulletGraphSubtype.circle]: 1,
 };
 
 /** @internal */
 export function getAngledChartSizing(
   graphSize: Size,
-  size: BulletGraphSize,
+  subtype: BulletGraphSubtype,
 ): { maxWidth: number; maxHeight: number; radius: number } {
-  const heightModifier = heightModifiers[size] ?? 1;
+  if (subtype === BulletGraphSubtype.vertical || subtype === BulletGraphSubtype.horizontal) {
+    throw new Error('Attempting to retrieve angle size from horizontal/vertical bullet');
+  }
+  const heightModifier = heightModifiers[subtype] ?? 1;
   const maxWidth = graphSize.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
   const maxHeight = graphSize.height - GRAPH_PADDING.top - GRAPH_PADDING.bottom;
   const modifiedHeight = maxHeight / heightModifier;
