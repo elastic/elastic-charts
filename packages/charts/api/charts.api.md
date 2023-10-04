@@ -445,16 +445,6 @@ export interface BubbleSeriesStyle {
 // @alpha
 export const BulletGraph: (props: SFProps<BulletGraphSpec, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
 
-// @public (undocumented)
-export const BulletGraphSize: Readonly<{
-    full: "full";
-    half: "half";
-    twoThirds: "two-thirds";
-}>;
-
-// @public (undocumented)
-export type BulletGraphSize = $Values<typeof BulletGraphSize>;
-
 // @alpha (undocumented)
 export interface BulletGraphSpec extends Spec {
     // (undocumented)
@@ -463,7 +453,6 @@ export interface BulletGraphSpec extends Spec {
     //
     // (undocumented)
     data: (BulletDatum | undefined)[][];
-    size: BulletGraphSize;
     // (undocumented)
     specType: typeof SpecType.Series;
     // (undocumented)
@@ -473,14 +462,38 @@ export interface BulletGraphSpec extends Spec {
 }
 
 // @public (undocumented)
-export const BulletGraphSubtype: Readonly<{
+export interface BulletGraphStyle {
+    // (undocumented)
+    angularTickLabelPadding: Pixels;
+    // (undocumented)
+    background: Color;
+    // (undocumented)
+    bandColors: [start: Color, end: Color];
+    // (undocumented)
+    barBackground: Color;
+    // (undocumented)
+    border: Color;
+    // (undocumented)
+    minHeight: Pixels;
+    // (undocumented)
+    nonFiniteText: string;
+    // (undocumented)
+    textColor: Color;
+}
+
+// @public (undocumented)
+const BulletGraphSubtype: Readonly<{
     vertical: "vertical";
     horizontal: "horizontal";
-    angular: "angular";
+    circle: "circle";
+    halfCircle: "half-circle";
+    twoThirdsCircle: "two-thirds-circle";
 }>;
 
 // @public (undocumented)
-export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
+type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
+export { BulletGraphSubtype as BulletGraphSize }
+export { BulletGraphSubtype }
 
 // @public (undocumented)
 export type CategoryKey = string;
@@ -1208,7 +1221,7 @@ export function getNodeName(node: ArrayNode): string;
 
 // Warning: (ae-forgotten-export) The symbol "buildProps_2" needs to be exported by the entry point index.d.ts
 //
-// @alpha
+// @alpha @deprecated
 export const Goal: (props: SFProps<GoalSpec, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
 
 // @alpha (undocumented)
@@ -2802,7 +2815,6 @@ export interface Theme {
     background: BackgroundStyle;
     barSeriesStyle: BarSeriesStyle;
     bubbleSeriesStyle: BubbleSeriesStyle;
-    // Warning: (ae-forgotten-export) The symbol "BulletGraphStyle" needs to be exported by the entry point index.d.ts
     bulletGraph: BulletGraphStyle;
     chartMargins: Margins;
     chartPaddings: Margins;
