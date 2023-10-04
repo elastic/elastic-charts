@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { Required } from 'utility-types';
+
 import { APCAContrast } from './apca_color_contrast';
 import { RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
 import { Colors } from './colors';
@@ -45,16 +47,30 @@ export function combineColors([fgR, fgG, fgB, fgA]: RgbaTuple, [bgR, bgG, bgB, b
   return [r, g, b, alpha];
 }
 
-function getHighContrastColorWCAG2(background: RgbTuple): RgbaTuple {
-  const wWhite = getWCAG2ContrastRatio(Colors.White.rgba, background);
-  const wBlack = getWCAG2ContrastRatio(Colors.Black.rgba, background);
-  return wWhite >= wBlack ? Colors.White.rgba : Colors.Black.rgba;
+/** @internal */
+export interface ColorContrastOptions {
+  darkColor?: RgbaTuple;
+  lightColor?: RgbaTuple;
 }
 
-function getHighContrastColorAPCA(background: RgbTuple): RgbaTuple {
-  const wWhiteText = Math.abs(APCAContrast(background, Colors.White.rgba));
-  const wBlackText = Math.abs(APCAContrast(background, Colors.Black.rgba));
-  return wWhiteText > wBlackText ? Colors.White.rgba : Colors.Black.rgba;
+const getOptionWithDefaults = (options: ColorContrastOptions = {}): Required<ColorContrastOptions> => ({
+  darkColor: Colors.Black.rgba,
+  lightColor: Colors.White.rgba,
+  ...options,
+});
+
+function getHighContrastColorWCAG2(background: RgbTuple, options: ColorContrastOptions = {}): RgbaTuple {
+  const { lightColor, darkColor } = getOptionWithDefaults(options);
+  const wWhite = getWCAG2ContrastRatio(lightColor, background);
+  const wBlack = getWCAG2ContrastRatio(darkColor, background);
+  return wWhite >= wBlack ? lightColor : darkColor;
+}
+
+function getHighContrastColorAPCA(background: RgbTuple, options: ColorContrastOptions = {}): RgbaTuple {
+  const { lightColor, darkColor } = getOptionWithDefaults(options);
+  const wWhiteText = Math.abs(APCAContrast(background, lightColor));
+  const wBlackText = Math.abs(APCAContrast(background, darkColor));
+  return wWhiteText > wBlackText ? lightColor : darkColor;
 }
 
 const HIGH_CONTRAST_FN = {
@@ -66,6 +82,10 @@ const HIGH_CONTRAST_FN = {
  * Use white or black text depending on the high contrast mode used
  * @internal
  */
-export function highContrastColor(background: RgbTuple, mode: keyof typeof HIGH_CONTRAST_FN = 'WCAG2'): RgbaTuple {
-  return HIGH_CONTRAST_FN[mode](background);
+export function highContrastColor(
+  background: RgbTuple,
+  mode: keyof typeof HIGH_CONTRAST_FN = 'WCAG2',
+  options?: ColorContrastOptions,
+): RgbaTuple {
+  return HIGH_CONTRAST_FN[mode](background, options);
 }

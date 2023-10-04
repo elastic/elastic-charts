@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { combineColors, highContrastColor } from './color_calcs';
+import { ColorContrastOptions, combineColors, highContrastColor } from './color_calcs';
 import { colorToRgba, RGBATupleToString } from './color_library_wrappers';
 import { Color, Colors } from './colors';
 
@@ -26,6 +26,7 @@ export function fillTextColor(
   fallbackBGColor: Color,
   foreground: Color | null,
   background: Color = Colors.Transparent.keyword,
+  options?: ColorContrastOptions,
 ): Color {
   let backgroundRGBA = colorToRgba(background);
 
@@ -36,7 +37,7 @@ export function fillTextColor(
   if (foreground) {
     const foregroundRGBA = colorToRgba(foreground);
     const blendedFgBg = combineColors(foregroundRGBA, backgroundRGBA);
-    return RGBATupleToString(highContrastColor(blendedFgBg));
+    return RGBATupleToString(highContrastColor(blendedFgBg, 'WCAG2', options));
   }
 
   return RGBATupleToString(highContrastColor(backgroundRGBA));

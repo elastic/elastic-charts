@@ -12,7 +12,7 @@ import React, { CSSProperties, useState } from 'react';
 import { ProgressBar } from './progress';
 import { SparkLine } from './sparkline';
 import { MetricText } from './text';
-import { changeColorLightness } from '../../../../common/color_library_wrappers';
+import { changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
@@ -97,6 +97,11 @@ export const Metric: React.FunctionComponent<{
   const highContrastTextColor = fillTextColor(
     backgroundColor,
     isMetricWProgress(datum) ? backgroundColor : datum.color,
+    undefined,
+    {
+      lightColor: colorToRgba(style.text.lightColor),
+      darkColor: colorToRgba(style.text.darkColor),
+    },
   );
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
 
