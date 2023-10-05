@@ -140,6 +140,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const cellHeightInner = cellHeight - gridStrokeWidth;
 
   if (colorToRgba(background.color)[3] < 1) {
+    // TODO: centralize this check and bg color fallback across all chart types
     Logger.expected(
       'Text contrast requires a opaque background color, using fallbackColor',
       'an opaque color',

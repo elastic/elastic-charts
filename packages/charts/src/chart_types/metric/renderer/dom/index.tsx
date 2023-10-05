@@ -30,7 +30,6 @@ import {
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { Logger } from '../../../../utils/logger';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { BackgroundStyle, MetricStyle } from '../../../../utils/themes/theme';
 import { MetricSpec } from '../../specs';
@@ -97,16 +96,6 @@ class Component extends React.Component<StateProps & DispatchProps> {
     }, 0);
 
     const panel = { width: width / maxColumns, height: height / totalRows };
-
-    if (colorToRgba(background.color)[3] < 1) {
-      // TODO: centralize this check and bg color fallback across all chart types
-      Logger.expected(
-        'Text contrast requires an opaque background color, using fallbackColor blend',
-        'an opaque color',
-        background.color,
-      );
-    }
-
     const backgroundColor = getResolvedBackgroundColor(background.fallbackColor, background.color);
     const emptyForegroundColor =
       highContrastColor(colorToRgba(backgroundColor)) === Colors.White.rgba
