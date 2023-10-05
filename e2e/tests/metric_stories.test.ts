@@ -38,7 +38,7 @@ test.describe('Metric', () => {
   });
   test('text value with trend', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/metric-alpha--basic&globals=theme:light&knob-EUI icon glyph name=warning&knob-color=rgba(166, 219, 208, 0.47)&knob-extra=1310 (-74% week before)&knob-is numeric metric=false&knob-progress bar direction=vertical&knob-progress max=100&knob-progress or trend=trend&knob-subtitle=&knob-title=Most used in&knob-trend a11y description=The trend shows a peak of CPU usage in the last 5 minutes&knob-trend a11y title=The Cluster CPU Usage trend&knob-trend data points=30&knob-trend shape=area&knob-value=United States&knob-value postfix=&knob-value prefix=&knob-show icon=',
+      'http://localhost:9001/?path=/story/metric-alpha--basic&globals=theme:light&knob-EUI icon glyph name=warning&knob-color=rgba(166, 219, 208, 1)&knob-extra=1310 (-74% week before)&knob-is numeric metric=false&knob-progress bar direction=vertical&knob-progress max=100&knob-progress or trend=trend&knob-subtitle=&knob-title=Most used in&knob-trend a11y description=The trend shows a peak of CPU usage in the last 5 minutes&knob-trend a11y title=The Cluster CPU Usage trend&knob-trend data points=30&knob-trend shape=area&knob-value=United States&knob-value postfix=&knob-value prefix=&knob-show icon=',
     );
   });
   test('value icon and value color', async ({ page }) => {
