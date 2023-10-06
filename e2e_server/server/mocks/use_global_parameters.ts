@@ -52,7 +52,7 @@ interface GlobalParameters {
 }
 
 export function useGlobalsParameters(): GlobalParameters {
-  const [themeId, setThemeId] = useState<string>(ThemeId.Light);
+  const [themeId, setThemeId] = useState<string>(ThemeId.EUILight);
   const [backgroundId, setBackgroundId] = useState<string | undefined>('white');
   const [togglesJSON, setTogglesJSON] = useState<string>('{}');
 
@@ -63,7 +63,7 @@ export function useGlobalsParameters(): GlobalParameters {
     const globals = getGlobalParams(params);
     const backgroundIdFromParams = globals.background ?? parameters?.background?.default ?? backgroundParams.default;
     setBackgroundId(backgroundIdFromParams);
-    const themeIdFromParams = globals.theme ?? parameters?.theme?.default ?? themeParams.default ?? ThemeId.Light;
+    const themeIdFromParams = globals.theme ?? parameters?.theme?.default ?? themeParams.default ?? ThemeId.EUILight;
     setThemeId(themeIdFromParams);
     setTogglesJSON(JSON.stringify(globals.toggles ?? '{}'));
     applyThemeCSS(themeIdFromParams);
