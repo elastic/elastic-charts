@@ -576,7 +576,7 @@ describe('Axis computational utils', () => {
       offsetY: 0,
       textOffsetX: 50,
       textOffsetY: 0,
-      x: 85,
+      x: 75,
       y: 0,
       horizontalAlign: 'right',
       verticalAlign: 'middle',
@@ -602,7 +602,7 @@ describe('Axis computational utils', () => {
       offsetY: 0,
       textOffsetX: 0,
       textOffsetY: 0,
-      x: 80,
+      x: 70,
       y: 0,
       horizontalAlign: 'center',
       verticalAlign: 'middle',
@@ -628,7 +628,7 @@ describe('Axis computational utils', () => {
       offsetY: 0,
       textOffsetX: 0,
       textOffsetY: 0,
-      x: 20,
+      x: 30,
       y: 0,
       horizontalAlign: 'center',
       verticalAlign: 'middle',
@@ -651,7 +651,7 @@ describe('Axis computational utils', () => {
       offsetY: 0,
       textOffsetX: -50,
       textOffsetY: 0,
-      x: 20,
+      x: 30,
       y: 0,
       horizontalAlign: 'left',
       verticalAlign: 'middle',
@@ -687,7 +687,7 @@ describe('Axis computational utils', () => {
       textOffsetY: 50,
       textOffsetX: 0,
       x: 0,
-      y: -5,
+      y: -15,
       horizontalAlign: 'center',
       verticalAlign: 'bottom',
     });
@@ -710,7 +710,7 @@ describe('Axis computational utils', () => {
       textOffsetX: 50,
       textOffsetY: 0,
       x: 0,
-      y: -10,
+      y: -20,
       horizontalAlign: 'right',
       verticalAlign: 'middle',
     });
@@ -733,7 +733,7 @@ describe('Axis computational utils', () => {
       textOffsetX: -50,
       textOffsetY: 0,
       x: 0,
-      y: 20,
+      y: 30,
       horizontalAlign: 'left',
       verticalAlign: 'middle',
     });
@@ -759,7 +759,7 @@ describe('Axis computational utils', () => {
       textOffsetX: 0,
       textOffsetY: -50,
       x: 0,
-      y: 20,
+      y: 30,
       horizontalAlign: 'center',
       verticalAlign: 'top',
     });
@@ -853,13 +853,13 @@ describe('Axis computational utils', () => {
     const expectedLeftAxisPosition = {
       dimensions: {
         height: 100,
-        width: 50,
-        left: 20,
+        width: 48,
+        left: 10,
         top: 0,
       },
       topIncrement: 0,
       bottomIncrement: 0,
-      leftIncrement: 60,
+      leftIncrement: 48,
       rightIncrement: 0,
     };
 
@@ -887,14 +887,14 @@ describe('Axis computational utils', () => {
     const expectedRightAxisPosition = {
       dimensions: {
         height: 100,
-        width: 50,
+        width: 48,
         left: 110,
         top: 0,
       },
       topIncrement: 0,
       bottomIncrement: 0,
       leftIncrement: 0,
-      rightIncrement: 60,
+      rightIncrement: 48,
     };
 
     expect(rightAxisPosition).toEqual(expectedRightAxisPosition);
@@ -921,12 +921,12 @@ describe('Axis computational utils', () => {
 
     const expectedTopAxisPosition = {
       dimensions: {
-        height: 50 || axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
+        height: 48 || axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
         width: 100,
         left: 0,
         top: cumTopSum + LIGHT_THEME.chartMargins.top,
       },
-      topIncrement: 60,
+      topIncrement: 48,
       bottomIncrement: 0,
       leftIncrement: 0,
       rightIncrement: 0,
@@ -955,13 +955,13 @@ describe('Axis computational utils', () => {
 
     const expectedBottomAxisPosition = {
       dimensions: {
-        height: 50,
+        height: 48,
         width: 100,
         left: 0,
         top: 110,
       },
       topIncrement: 0,
-      bottomIncrement: 60,
+      bottomIncrement: 48,
       leftIncrement: 0,
       rightIncrement: 0,
     };
@@ -1689,14 +1689,14 @@ describe('Axis computational utils', () => {
         const expectedLeftAxisPosition = {
           dimensions: {
             height: 100,
-            width: title ? 66 : 46,
+            width: title ? 64 : 44,
             left: 110,
             top: 0,
           },
           topIncrement: 0,
           bottomIncrement: 0,
           leftIncrement: 0,
-          rightIncrement: title ? 76 : 56,
+          rightIncrement: title ? 64 : 44,
         };
 
         expect(leftAxisPosition).toEqual(expectedLeftAxisPosition);
@@ -1717,14 +1717,14 @@ describe('Axis computational utils', () => {
         const expectedRightAxisPosition = {
           dimensions: {
             height: 100,
-            width: title ? 66 : 46,
+            width: title ? 64 : 44,
             left: 110,
             top: 0,
           },
           topIncrement: 0,
           bottomIncrement: 0,
           leftIncrement: 0,
-          rightIncrement: title ? 76 : 56,
+          rightIncrement: title ? 64 : 44,
         };
 
         expect(rightAxisPosition).toEqual(expectedRightAxisPosition);
@@ -1744,12 +1744,12 @@ describe('Axis computational utils', () => {
 
         const expectedTopAxisPosition = {
           dimensions: {
-            height: title ? 66 : 46,
+            height: title ? 64 : 44,
             width: 100,
             left: 0,
-            top: 20,
+            top: 10,
           },
-          topIncrement: title ? 76 : 56,
+          topIncrement: title ? 64 : 44,
           bottomIncrement: 0,
           leftIncrement: 0,
           rightIncrement: 0,
@@ -1772,13 +1772,13 @@ describe('Axis computational utils', () => {
 
         const expectedBottomAxisPosition = {
           dimensions: {
-            height: title ? 66 : 46,
+            height: title ? 64 : 44,
             width: 100,
             left: 0,
             top: 110,
           },
           topIncrement: 0,
-          bottomIncrement: title ? 76 : 56,
+          bottomIncrement: title ? 64 : 44,
           leftIncrement: 0,
           rightIncrement: 0,
         };

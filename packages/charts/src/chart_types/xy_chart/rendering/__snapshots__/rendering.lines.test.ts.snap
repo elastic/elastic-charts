@@ -11,7 +11,7 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -39,7 +39,7 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -68,7 +68,7 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -96,7 +96,7 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -130,7 +130,7 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -158,7 +158,7 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
           255,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -187,7 +187,7 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -215,7 +215,7 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
           255,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -249,7 +249,7 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -277,7 +277,7 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -306,7 +306,7 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -334,7 +334,7 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -368,7 +368,7 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -396,7 +396,7 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
           255,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -425,7 +425,7 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -453,7 +453,7 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
           255,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -487,7 +487,7 @@ exports[`Rendering points - line Multi series line chart - time can render first
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -515,7 +515,7 @@ exports[`Rendering points - line Multi series line chart - time can render first
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -544,7 +544,7 @@ exports[`Rendering points - line Multi series line chart - time can render first
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -572,7 +572,7 @@ exports[`Rendering points - line Multi series line chart - time can render first
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -606,7 +606,7 @@ exports[`Rendering points - line Multi series line chart - time can render secon
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -634,7 +634,7 @@ exports[`Rendering points - line Multi series line chart - time can render secon
           255,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -663,7 +663,7 @@ exports[`Rendering points - line Multi series line chart - time can render secon
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{point2}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -691,7 +691,7 @@ exports[`Rendering points - line Multi series line chart - time can render secon
           255,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -725,7 +725,7 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{__global__}spec{spec_1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -753,7 +753,7 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -782,7 +782,7 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{__global__}spec{spec_1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -810,7 +810,7 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -844,7 +844,7 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -872,7 +872,7 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -901,7 +901,7 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -929,7 +929,7 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -963,7 +963,7 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -991,7 +991,7 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -1020,7 +1020,7 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -1048,7 +1048,7 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -1082,7 +1082,7 @@ exports[`Rendering points - line Single series line chart - time Can render two 
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -1110,7 +1110,7 @@ exports[`Rendering points - line Single series line chart - time Can render two 
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -1139,7 +1139,7 @@ exports[`Rendering points - line Single series line chart - time Can render two 
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
       "seriesKeys": [
@@ -1167,7 +1167,7 @@ exports[`Rendering points - line Single series line chart - time Can render two 
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {

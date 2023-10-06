@@ -24,9 +24,15 @@ exports[`Rendering bars Can render two bars within domain 1`] = `
     },
     "seriesStyle": {
       "displayValue": {
-        "fill": "#777",
-        "fontFamily": "sans-serif",
-        "fontSize": 8,
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
         "fontStyle": "normal",
         "offsetX": 0,
         "offsetY": 0,
@@ -80,9 +86,15 @@ exports[`Rendering bars Can render two bars within domain 1`] = `
     },
     "seriesStyle": {
       "displayValue": {
-        "fill": "#777",
-        "fontFamily": "sans-serif",
-        "fontSize": 8,
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
         "fontStyle": "normal",
         "offsetX": 0,
         "offsetY": 0,
@@ -141,9 +153,15 @@ exports[`Rendering bars Multi series bar chart - ordinal can render first spec b
     },
     "seriesStyle": {
       "displayValue": {
-        "fill": "#777",
-        "fontFamily": "sans-serif",
-        "fontSize": 8,
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
         "fontStyle": "normal",
         "offsetX": 0,
         "offsetY": 0,
@@ -197,9 +215,15 @@ exports[`Rendering bars Multi series bar chart - ordinal can render first spec b
     },
     "seriesStyle": {
       "displayValue": {
-        "fill": "#777",
-        "fontFamily": "sans-serif",
-        "fontSize": 8,
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
         "fontStyle": "normal",
         "offsetX": 0,
         "offsetY": 0,
@@ -258,9 +282,15 @@ exports[`Rendering bars Multi series bar chart - ordinal can render second spec 
     },
     "seriesStyle": {
       "displayValue": {
-        "fill": "#777",
-        "fontFamily": "sans-serif",
-        "fontSize": 8,
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
         "fontStyle": "normal",
         "offsetX": 0,
         "offsetY": 0,
@@ -314,9 +344,15 @@ exports[`Rendering bars Multi series bar chart - ordinal can render second spec 
     },
     "seriesStyle": {
       "displayValue": {
-        "fill": "#777",
-        "fontFamily": "sans-serif",
-        "fontSize": 8,
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
         "fontStyle": "normal",
         "offsetX": 0,
         "offsetY": 0,
