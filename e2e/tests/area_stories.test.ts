@@ -93,7 +93,7 @@ test.describe('Area series stories', () => {
 
   test('small multiples with log scale dont clip', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/small-multiples-alpha--vertical-areas&globals=theme:light&knob-Show Legend=true&knob-Use log scale (different data)=true',
+      'http://localhost:9001/?path=/story/small-multiples-alpha--vertical-areas&globals=theme:eui-light&knob-Show Legend=true&knob-Use log scale (different data)=true',
     );
   });
 });

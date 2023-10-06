@@ -78,13 +78,13 @@ test.describe('Goal stories', () => {
 
   test('should prevent overlapping angles - clockwise', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:light&knob-endAngle%20(%CF%80)=-0.625&knob-startAngle%20(%CF%80)=1.5',
+      'http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:eui-light&knob-endAngle%20(%CF%80)=-0.625&knob-startAngle%20(%CF%80)=1.5',
     );
   });
 
   test('should prevent overlapping angles - counterclockwise', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:light&knob-endAngle%20(%CF%80)=1.625&knob-startAngle%20(%CF%80)=-0.5',
+      'http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:eui-light&knob-endAngle%20(%CF%80)=1.625&knob-startAngle%20(%CF%80)=-0.5',
     );
   });
 
@@ -112,7 +112,7 @@ test.describe('Goal stories', () => {
       ([p]) => `should apply correct top shift (${p})`,
       async (page, [, startAngle, endAngle]) => {
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:light&knob-startAngle%20(%CF%80)=${startAngle}&knob-endAngle%20(%CF%80)=${endAngle}`,
+          `http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:eui-light&knob-startAngle%20(%CF%80)=${startAngle}&knob-endAngle%20(%CF%80)=${endAngle}`,
         );
       },
     );
@@ -128,7 +128,7 @@ test.describe('Goal stories', () => {
       ([p]) => `should apply correct bottom shift (${p})`,
       async (page, [, startAngle, endAngle]) => {
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:light&knob-startAngle%20(%CF%80)=${startAngle}&knob-endAngle%20(%CF%80)=${endAngle}`,
+          `http://localhost:9001/?path=/story/goal-alpha--full-circle&globals=theme:eui-light&knob-startAngle%20(%CF%80)=${startAngle}&knob-endAngle%20(%CF%80)=${endAngle}`,
         );
       },
     );

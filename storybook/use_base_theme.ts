@@ -28,7 +28,7 @@ export const ThemeId = Object.freeze({
 /** @internal */
 export type ThemeId = $Values<typeof ThemeId>;
 
-const ThemeContext = createContext<ThemeId>(ThemeId.Light);
+const ThemeContext = createContext<ThemeId>(ThemeId.EUILight);
 const BackgroundContext = createContext<string | undefined>(undefined);
 
 export const ThemeIdProvider = ThemeContext.Provider;
