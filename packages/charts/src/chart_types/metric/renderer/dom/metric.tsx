@@ -10,9 +10,10 @@ import classNames from 'classnames';
 import React, { CSSProperties, useState } from 'react';
 
 import { ProgressBar } from './progress';
-import { SparkLine } from './sparkline';
+import { SparkLine, getSparkLineColor } from './sparkline';
 import { MetricText } from './text';
-import { changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
+import { ColorContrastOptions } from '../../../../common/color_calcs';
+import { changeColorLightness } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
@@ -40,6 +41,7 @@ export const Metric: React.FunctionComponent<{
   panel: Size;
   style: MetricStyle;
   backgroundColor: Color;
+  contrastOptions: ColorContrastOptions;
   locale: string;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
@@ -55,6 +57,7 @@ export const Metric: React.FunctionComponent<{
   panel,
   style,
   backgroundColor,
+  contrastOptions,
   locale,
   onElementClick,
   onElementOver,
@@ -98,11 +101,24 @@ export const Metric: React.FunctionComponent<{
     backgroundColor,
     isMetricWProgress(datum) ? backgroundColor : datum.color,
     undefined,
-    {
-      lightColor: colorToRgba(style.text.lightColor),
-      darkColor: colorToRgba(style.text.darkColor),
-    },
+    contrastOptions,
   );
+  let finalTextColor = highContrastTextColor.color;
+
+  if (isMetricWTrend(datum)) {
+    const { ratio, color, shade } = fillTextColor(
+      backgroundColor,
+      getSparkLineColor(datum.color),
+      undefined,
+      contrastOptions,
+    );
+
+    // TODO verify this check is applied correctly
+    if (shade !== highContrastTextColor.shade && ratio > highContrastTextColor.ratio) {
+      finalTextColor = color;
+    }
+  }
+
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
 
   return (
@@ -146,14 +162,14 @@ export const Metric: React.FunctionComponent<{
         panel={panel}
         style={style}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
-        highContrastTextColor={highContrastTextColor}
+        highContrastTextColor={finalTextColor.keyword}
         locale={locale}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (
         <ProgressBar datum={datumWithInteractionColor} barBackground={style.barBackground} />
       )}
-      <div className="echMetric--outline" style={{ color: highContrastTextColor }}></div>
+      <div className="echMetric--outline" style={{ color: finalTextColor.keyword }}></div>
     </div>
   );
 };

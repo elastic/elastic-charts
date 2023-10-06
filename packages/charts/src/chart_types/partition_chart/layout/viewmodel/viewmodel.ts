@@ -170,7 +170,7 @@ export function makeQuadViewModel(
     const textColor = textNegligible
       ? Colors.Transparent.keyword
       : fillLabel.textColor === ColorVariant.Adaptive
-      ? fillTextColor(fallbackBGColor, fillColor, backgroundColor)
+      ? fillTextColor(fallbackBGColor, fillColor, backgroundColor).color.keyword
       : fillLabel.textColor;
 
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor, ...node };

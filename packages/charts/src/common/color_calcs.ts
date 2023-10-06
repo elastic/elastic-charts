@@ -10,7 +10,7 @@ import { Required } from 'utility-types';
 
 import { APCAContrast } from './apca_color_contrast';
 import { RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
-import { Colors } from './colors';
+import { ColorDefinition, Colors } from './colors';
 import { getWCAG2ContrastRatio } from './wcag2_color_contrast';
 
 /** @internal */
@@ -59,24 +59,64 @@ const getOptionWithDefaults = (options: ColorContrastOptions = {}): Required<Col
   ...options,
 });
 
-function getHighContrastColorWCAG2(background: RgbTuple, options: ColorContrastOptions = {}): RgbaTuple {
+function getHighContrastColorWCAG2(background: RgbTuple, options: ColorContrastOptions = {}): HighContrastResult {
   const { lightColor, darkColor } = getOptionWithDefaults(options);
-  const wWhite = getWCAG2ContrastRatio(lightColor, background);
-  const wBlack = getWCAG2ContrastRatio(darkColor, background);
-  return wWhite >= wBlack ? lightColor : darkColor;
+  const wLight = getWCAG2ContrastRatio(lightColor, background);
+  const wDark = getWCAG2ContrastRatio(darkColor, background);
+  return wLight >= wDark
+    ? {
+        color: {
+          rgba: lightColor,
+          keyword: RGBATupleToString(lightColor),
+        },
+        ratio: wLight,
+        shade: 'light',
+      }
+    : {
+        color: {
+          rgba: darkColor,
+          keyword: RGBATupleToString(darkColor),
+        },
+        ratio: wDark,
+        shade: 'dark',
+      };
 }
 
-function getHighContrastColorAPCA(background: RgbTuple, options: ColorContrastOptions = {}): RgbaTuple {
+function getHighContrastColorAPCA(background: RgbTuple, options: ColorContrastOptions = {}): HighContrastResult {
   const { lightColor, darkColor } = getOptionWithDefaults(options);
-  const wWhiteText = Math.abs(APCAContrast(background, lightColor));
-  const wBlackText = Math.abs(APCAContrast(background, darkColor));
-  return wWhiteText > wBlackText ? lightColor : darkColor;
+  const wLightText = Math.abs(APCAContrast(background, lightColor));
+  const wDarkText = Math.abs(APCAContrast(background, darkColor));
+
+  return wLightText > wDarkText
+    ? {
+        color: {
+          rgba: lightColor,
+          keyword: RGBATupleToString(lightColor),
+        },
+        ratio: wLightText,
+        shade: 'light',
+      }
+    : {
+        color: {
+          rgba: darkColor,
+          keyword: RGBATupleToString(darkColor),
+        },
+        ratio: wDarkText,
+        shade: 'dark',
+      };
 }
 
 const HIGH_CONTRAST_FN = {
   WCAG2: getHighContrastColorWCAG2,
   WCAG3: getHighContrastColorAPCA,
 };
+
+/** @internal */
+export interface HighContrastResult {
+  color: ColorDefinition;
+  ratio: number;
+  shade: 'light' | 'dark';
+}
 
 /**
  * Use white or black text depending on the high contrast mode used
@@ -86,6 +126,6 @@ export function highContrastColor(
   background: RgbTuple,
   mode: keyof typeof HIGH_CONTRAST_FN = 'WCAG2',
   options?: ColorContrastOptions,
-): RgbaTuple {
+): HighContrastResult {
   return HIGH_CONTRAST_FN[mode](background, options);
 }

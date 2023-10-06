@@ -201,7 +201,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       visible: !isValueInRanges(d.value, bandsToHide),
       formatted: formattedValue,
       fontSize,
-      textColor: fillTextColor(background.fallbackColor, cellBackgroundColor, background.color),
+      textColor: fillTextColor(background.fallbackColor, cellBackgroundColor, background.color).color.keyword,
     });
     return acc;
   }, new Map());
