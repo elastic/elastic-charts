@@ -8,14 +8,10 @@
 
 import { palettes } from './colors';
 import { Theme } from './theme';
-import {
-  DEFAULT_CHART_MARGINS,
-  DEFAULT_CHART_PADDING,
-  DEFAULT_GEOMETRY_STYLES,
-  DEFAULT_MISSING_COLOR,
-} from './theme_common';
+import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { Colors } from '../../common/colors';
-import { GOLDEN_RATIO, TAU } from '../../common/constants';
+import { TAU } from '../../common/constants';
+import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
 
 /** @public */
@@ -25,15 +21,15 @@ export const DARK_THEME: Theme = {
   lineSeriesStyle: {
     line: {
       visible: true,
-      strokeWidth: 1,
+      strokeWidth: 2,
       opacity: 1,
     },
     point: {
       visible: true,
       stroke: ColorVariant.Series,
-      strokeWidth: 1,
-      fill: Colors.Black.keyword,
-      radius: 2,
+      strokeWidth: 2,
+      fill: '#1D1E24',
+      radius: 3,
       opacity: 1,
     },
     isolatedPoint: {
@@ -69,15 +65,15 @@ export const DARK_THEME: Theme = {
     },
     line: {
       visible: true,
-      strokeWidth: 1,
+      strokeWidth: 2,
       opacity: 1,
     },
     point: {
       visible: false,
       stroke: ColorVariant.Series,
-      strokeWidth: 1,
-      fill: Colors.Black.keyword,
-      radius: 2,
+      strokeWidth: 2,
+      fill: '#1D1E24',
+      radius: 3,
       opacity: 1,
     },
     isolatedPoint: {
@@ -111,11 +107,12 @@ export const DARK_THEME: Theme = {
       strokeWidth: 1,
     },
     displayValue: {
-      fontSize: 8,
+      fontSize: 10,
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
+      alignment: { horizontal: 'center', vertical: 'middle' },
       padding: 0,
-      fill: '#999',
+      fill: { textBorder: 0 },
       offsetX: 0,
       offsetY: 0,
     },
@@ -136,17 +133,17 @@ export const DARK_THEME: Theme = {
   axes: {
     axisTitle: {
       fontSize: 12,
-      fontFamily: 'sans-serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       padding: {
-        inner: 8,
+        inner: 10,
         outer: 0,
       },
-      fill: '#D4D4D4',
+      fill: '#DFE5EF',
       visible: true,
     },
     axisPanelTitle: {
       fontSize: 10,
-      fontFamily: 'sans-serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       padding: {
         inner: 8,
         outer: 0,
@@ -156,16 +153,16 @@ export const DARK_THEME: Theme = {
     },
     axisLine: {
       visible: true,
-      stroke: '#444',
+      stroke: '#343741',
       strokeWidth: 1,
     },
     tickLabel: {
       visible: true,
       fontSize: 10,
-      fontFamily: 'sans-serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: '#999',
-      padding: 0,
+      fill: '#81858f',
+      padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
         x: 0,
@@ -178,33 +175,33 @@ export const DARK_THEME: Theme = {
       },
     },
     tickLine: {
-      visible: true,
-      stroke: '#444',
+      visible: false,
+      stroke: '#343741',
       strokeWidth: 1,
       size: 10,
       padding: 10,
     },
     gridLine: {
       horizontal: {
-        visible: false,
-        stroke: '#D3DAE6',
+        visible: true,
+        stroke: '#343741',
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
-        visible: false,
-        stroke: '#D3DAE6',
+        visible: true,
+        stroke: '#343741',
         strokeWidth: 1,
         opacity: 1,
-        dash: [0, 0],
+        dash: [4, 4],
       },
       lumaSteps: [63, 103, 159, 191, 223, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255],
     },
   },
   colors: {
     vizColors: palettes.echPaletteColorBlind.colors,
-    defaultVizColor: DEFAULT_MISSING_COLOR,
+    defaultVizColor: '#6092C0',
   },
   legend: {
     verticalWidth: 200,
@@ -217,24 +214,25 @@ export const DARK_THEME: Theme = {
   },
   crosshair: {
     band: {
-      fill: '#2A2A2A',
       visible: true,
+      fill: '#2a2b33',
     },
     line: {
-      stroke: '#999',
-      strokeWidth: 1,
       visible: true,
+      stroke: '#98A2B3',
+      strokeWidth: 1,
+      dash: [4, 4],
     },
     crossLine: {
-      stroke: '#999',
-      strokeWidth: 1,
-      dash: [5, 5],
       visible: true,
+      stroke: '#98A2B3',
+      strokeWidth: 1,
+      dash: [4, 4],
     },
   },
   background: {
-    color: 'transparent',
-    fallbackColor: Colors.Black.keyword,
+    color: '#1D1E24',
+    fallbackColor: '#1D1E24',
   },
   goal: {
     minFontSize: 8,
@@ -252,48 +250,48 @@ export const DARK_THEME: Theme = {
     capturePad: 16,
     tickLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: 'white',
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: '#81858f',
     },
     majorLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: 'white',
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: '#DFE5EF',
     },
     minorLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: 'white',
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: '#81858f',
     },
     majorCenterLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: 'white',
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: '#DFE5EF',
     },
     minorCenterLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: 'white',
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: '#81858f',
     },
     targetLine: {
-      stroke: 'white',
+      stroke: '#D4DAE5',
     },
     tickLine: {
-      stroke: 'snow',
+      stroke: '#535966',
     },
     progressLine: {
-      stroke: 'white',
+      stroke: '#D4DAE5',
     },
   },
   partition: {
-    outerSizeRatio: 1 / GOLDEN_RATIO,
+    outerSizeRatio: 1,
     emptySizeRatio: 0,
-    fontFamily: 'Sans-Serif',
+    fontFamily: DEFAULT_FONT_FAMILY,
     minFontSize: 8,
     maxFontSize: 64,
     idealFontSizeJump: 1.05,
     maximizeFontSize: false,
-    circlePadding: 2,
+    circlePadding: 4,
     radialPadding: TAU / 360,
     horizontalTextAngleThreshold: TAU / 12,
     horizontalTextEnforcer: 1,
@@ -304,7 +302,7 @@ export const DARK_THEME: Theme = {
       fontVariant: 'normal',
       fontWeight: 400,
       valueFont: {
-        fontWeight: 400,
+        fontWeight: 700,
         fontStyle: 'normal',
         fontVariant: 'normal',
       },
@@ -314,7 +312,7 @@ export const DARK_THEME: Theme = {
     linkLabel: {
       maximumSection: 10,
       fontFamily: 'Sans-Serif',
-      fontSize: 12,
+      fontSize: 11,
       fontStyle: 'normal',
       fontVariant: 'normal',
       fontWeight: 400,
@@ -323,9 +321,9 @@ export const DARK_THEME: Theme = {
       horizontalStemLength: 10,
       radiusPadding: 10,
       lineWidth: 1,
-      maxCount: 36,
+      maxCount: 5,
       maxTextLength: 100,
-      textColor: ColorVariant.Adaptive,
+      textColor: '#DFE5EF',
       minimumStemLength: 0,
       stemAngle: TAU / 8,
       padding: 0,
@@ -335,8 +333,8 @@ export const DARK_THEME: Theme = {
         fontVariant: 'normal',
       },
     },
-    sectorLineWidth: 1,
-    sectorLineStroke: Colors.Black.keyword,
+    sectorLineWidth: 1.5,
+    sectorLineStroke: '#1D1E24',
   },
   heatmap: {
     brushArea: {
@@ -356,7 +354,7 @@ export const DARK_THEME: Theme = {
     xAxisLabel: {
       visible: true,
       fontSize: 12,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
       textColor: Colors.White.keyword,
       fontVariant: 'normal',
@@ -368,7 +366,7 @@ export const DARK_THEME: Theme = {
       visible: true,
       width: 'auto',
       fontSize: 12,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
       textColor: Colors.White.keyword,
       fontVariant: 'normal',
@@ -390,7 +388,7 @@ export const DARK_THEME: Theme = {
         maxWidth: 'fill',
         minFontSize: 8,
         maxFontSize: 12,
-        fontFamily: 'Sans-Serif',
+        fontFamily: DEFAULT_FONT_FAMILY,
         fontStyle: 'normal',
         textColor: Colors.White.keyword,
         fontVariant: 'normal',

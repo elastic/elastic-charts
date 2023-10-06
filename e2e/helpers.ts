@@ -122,7 +122,7 @@ interface EachThemeCbParams {
   urlParam: string;
 }
 
-export const themeIds = ['light', 'dark', 'eui-light', 'eui-dark'];
+export const themeIds = ['light', 'dark'];
 
 /**
  * This is a wrapper around it.each for Themes

@@ -1579,6 +1579,12 @@ export const LayoutDirection: Readonly<{
 // @public (undocumented)
 export type LayoutDirection = $Values<typeof LayoutDirection>;
 
+// @public @deprecated
+export const LEGACY_DARK_THEME: Theme;
+
+// @public @deprecated
+export const LEGACY_LIGHT_THEME: Theme;
+
 // @public
 export interface LegacyAnimationConfig {
     // @alpha (undocumented)

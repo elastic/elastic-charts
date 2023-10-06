@@ -75,6 +75,8 @@ export * from './utils/themes/theme';
 export * from './utils/themes/theme_common';
 export { LIGHT_THEME } from './utils/themes/light_theme';
 export { DARK_THEME } from './utils/themes/dark_theme';
+export { LEGACY_LIGHT_THEME } from './utils/themes/legacy_light_theme';
+export { LEGACY_DARK_THEME } from './utils/themes/legacy_dark_theme';
 
 // wordcloud
 export { WordcloudViewModel } from './chart_types/wordcloud/layout/types/viewmodel_types';
