@@ -13,13 +13,13 @@ import { common } from '../page_objects/common';
 test.describe('Time zone', () => {
   test('UTC plus 8', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/scales--timezone-configuration&globals=theme:light&knob-dataset=utc%2B8&knob-tooltip=utc',
+      'http://localhost:9001/?path=/story/scales--timezone-configuration&globals=theme:eui-light&knob-dataset=utc%2B8&knob-tooltip=utc',
     );
   });
 
   test('UTC minus 8', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/scales--timezone-configuration&globals=theme:light&knob-dataset=utc-8&knob-tooltip=utc',
+      'http://localhost:9001/?path=/story/scales--timezone-configuration&globals=theme:eui-light&knob-dataset=utc-8&knob-tooltip=utc',
     );
   });
 
