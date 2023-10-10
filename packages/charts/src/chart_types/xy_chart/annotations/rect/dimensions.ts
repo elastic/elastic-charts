@@ -243,10 +243,8 @@ function maxOf(base: number, value: number | string | null | undefined): number 
   return typeof value === 'number' ? Math.max(value, base) : typeof value === 'string' ? value : base;
 }
 
-function getOutsideDimension(style: AxisStyle): number {
-  const { visible, size, strokeWidth } = style.tickLine;
-
-  return visible && size > 0 && strokeWidth > 0 ? size : 0;
+function getOutsideDimension({ tickLine: { visible, size } }: AxisStyle): number {
+  return visible ? size : 0;
 }
 
 /**

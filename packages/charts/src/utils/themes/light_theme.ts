@@ -407,7 +407,6 @@ export const LIGHT_THEME: Theme = {
     },
     border: '#EDF0F5',
     barBackground: '#EDF0F5',
-    background: '#FFFFFF',
     nonFiniteText: 'N/A',
     minHeight: 64,
   },

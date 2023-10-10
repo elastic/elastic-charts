@@ -10,12 +10,13 @@ import classNames from 'classnames';
 import React, { CSSProperties, useState } from 'react';
 
 import { ProgressBar } from './progress';
-import { SparkLine } from './sparkline';
+import { SparkLine, getSparkLineColor } from './sparkline';
 import { MetricText } from './text';
-import { highContrastColor } from '../../../../common/color_calcs';
-import { changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
-import { Colors } from '../../../../common/colors';
+import { ColorContrastOptions } from '../../../../common/color_calcs';
+import { changeColorLightness } from '../../../../common/color_library_wrappers';
+import { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
+import { fillTextColor } from '../../../../common/fill_text_color';
 import {
   BasicListener,
   ElementClickListener,
@@ -39,6 +40,8 @@ export const Metric: React.FunctionComponent<{
   datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
+  backgroundColor: Color;
+  contrastOptions: ColorContrastOptions;
   locale: string;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
@@ -53,6 +56,8 @@ export const Metric: React.FunctionComponent<{
   datum,
   panel,
   style,
+  backgroundColor,
+  contrastOptions,
   locale,
   onElementClick,
   onElementOver,
@@ -75,15 +80,10 @@ export const Metric: React.FunctionComponent<{
 
   const lightnessAmount = mouseState === 'leave' ? 0 : mouseState === 'enter' ? 0.05 : 0.1;
   const interactionColor = changeColorLightness(datum.color, lightnessAmount, 0.8);
-  const backgroundInteractionColor = changeColorLightness(style.background, lightnessAmount, 0.8);
 
   const datumWithInteractionColor: MetricDatum = {
     ...datum,
     color: interactionColor,
-  };
-  const updatedStyle: MetricStyle = {
-    ...style,
-    background: backgroundInteractionColor,
   };
 
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
@@ -92,17 +92,35 @@ export const Metric: React.FunctionComponent<{
     backgroundColor:
       !isMetricWTrend(datumWithInteractionColor) && !isMetricWProgress(datumWithInteractionColor)
         ? datumWithInteractionColor.color
-        : updatedStyle.background,
+        : undefined,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
   };
 
-  const bgColor = isMetricWTrend(datum) || !isMetricWProgress(datum) ? datum.color : style.background;
+  const highContrastTextColor = fillTextColor(
+    backgroundColor,
+    isMetricWProgress(datum) ? backgroundColor : datum.color,
+    undefined,
+    contrastOptions,
+  );
+  let finalTextColor = highContrastTextColor.color;
 
-  const highContrastTextColor =
-    highContrastColor(colorToRgba(bgColor)) === Colors.White.rgba ? style.text.lightColor : style.text.darkColor;
+  if (isMetricWTrend(datum)) {
+    const { ratio, color, shade } = fillTextColor(
+      backgroundColor,
+      getSparkLineColor(datum.color),
+      undefined,
+      contrastOptions,
+    );
+
+    // TODO verify this check is applied correctly
+    if (shade !== highContrastTextColor.shade && ratio > highContrastTextColor.ratio) {
+      finalTextColor = color;
+    }
+  }
 
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
+
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions,jsx-a11y/click-events-have-key-events
     <div
@@ -142,16 +160,16 @@ export const Metric: React.FunctionComponent<{
         id={metricHTMLId}
         datum={datumWithInteractionColor}
         panel={panel}
-        style={updatedStyle}
+        style={style}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
-        highContrastTextColor={highContrastTextColor}
+        highContrastTextColor={finalTextColor.keyword}
         locale={locale}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (
-        <ProgressBar datum={datumWithInteractionColor} barBackground={updatedStyle.barBackground} />
+        <ProgressBar datum={datumWithInteractionColor} barBackground={style.barBackground} />
       )}
-      <div className="echMetric--outline" style={{ color: highContrastTextColor }}></div>
+      <div className="echMetric--outline" style={{ color: finalTextColor.keyword }}></div>
     </div>
   );
 };
