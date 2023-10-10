@@ -268,6 +268,6 @@ describe('Test fillTextColor function', () => {
     const fillColor = 'rgba(55, 126, 184, 0.7)';
     const containerBackgroundColor = 'white';
     const expectedAdjustedTextColor = 'rgba(0, 0, 0, 1)'; // with  WCAG 2 is black
-    expect(fillTextColor(fillColor, containerBackgroundColor)).toEqual(expectedAdjustedTextColor);
+    expect(fillTextColor(fillColor, containerBackgroundColor).color.keyword).toEqual(expectedAdjustedTextColor);
   });
 });
