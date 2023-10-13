@@ -22,7 +22,7 @@ export const LIGHT_BASE_COLORS: ChartBaseColors = {
   mediumShade: '#98A2B3',
   darkShade: '#69707D',
   darkestShade: '#343741',
-  title: '#1a1c21',
+  title: '#1A1C21',
 };
 
 /** @public */
@@ -435,8 +435,8 @@ export const LIGHT_THEME: Theme = {
       buttonBackgroundColor: '#CCE4F5',
       buttonDisabledBackgroundColor: '#D3DAE626',
     },
-    scrollbarThumb: 'rgb(52, 55, 65)',
-    scrollbarTrack: 'rgb(211, 218, 230)',
+    scrollbarThumb: LIGHT_BASE_COLORS.darkestShade,
+    scrollbarTrack: LIGHT_BASE_COLORS.lightShade,
   },
   highlighter: {
     point: {

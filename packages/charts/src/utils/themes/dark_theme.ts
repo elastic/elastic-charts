@@ -436,8 +436,8 @@ export const DARK_THEME: Theme = {
       buttonBackgroundColor: '#36A2EF33',
       buttonDisabledBackgroundColor: '#34374126',
     },
-    scrollbarThumb: 'rgb(223, 229, 239)',
-    scrollbarTrack: 'rgb(52, 55, 65)',
+    scrollbarThumb: DARK_BASE_COLORS.title,
+    scrollbarTrack: DARK_BASE_COLORS.lightShade,
   },
   highlighter: {
     point: {
