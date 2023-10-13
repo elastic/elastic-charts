@@ -7,12 +7,23 @@
  */
 
 import { palettes } from './colors';
-import { Theme } from './theme';
+import { ChartBaseColors, Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
+
+/** @public */
+export const LIGHT_BASE_COLORS: ChartBaseColors = {
+  emptyShade: '#FFF',
+  lightestShade: '#F1F4FA',
+  lightShade: '#D3DAE6',
+  mediumShade: '#98A2B3',
+  darkShade: '#69707D',
+  darkestShade: '#343741',
+  title: '#1a1c21',
+};
 
 /** @public */
 export const LIGHT_THEME: Theme = {
@@ -28,7 +39,7 @@ export const LIGHT_THEME: Theme = {
       visible: true,
       strokeWidth: 2,
       stroke: ColorVariant.Series,
-      fill: '#FFF',
+      fill: LIGHT_BASE_COLORS.emptyShade,
       radius: 3,
       opacity: 1,
     },
@@ -72,7 +83,7 @@ export const LIGHT_THEME: Theme = {
       visible: false,
       stroke: ColorVariant.Series,
       strokeWidth: 2,
-      fill: '#FFF',
+      fill: LIGHT_BASE_COLORS.emptyShade,
       radius: 3,
       opacity: 1,
     },
@@ -139,7 +150,7 @@ export const LIGHT_THEME: Theme = {
         inner: 10,
         outer: 0,
       },
-      fill: '#343741',
+      fill: LIGHT_BASE_COLORS.darkestShade,
     },
     axisPanelTitle: {
       visible: true,
@@ -149,11 +160,11 @@ export const LIGHT_THEME: Theme = {
         inner: 8,
         outer: 0,
       },
-      fill: '#333',
+      fill: LIGHT_BASE_COLORS.darkestShade,
     },
     axisLine: {
       visible: true,
-      stroke: '#eaedf3',
+      stroke: LIGHT_BASE_COLORS.lightShade,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -161,7 +172,7 @@ export const LIGHT_THEME: Theme = {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: '#646a77',
+      fill: LIGHT_BASE_COLORS.darkShade,
       padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
@@ -176,7 +187,7 @@ export const LIGHT_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: '#eaedf3',
+      stroke: LIGHT_BASE_COLORS.lightShade,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -184,14 +195,14 @@ export const LIGHT_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: '#eaedf3',
+        stroke: LIGHT_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: '#eaedf3',
+        stroke: LIGHT_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
         dash: [4, 4],
@@ -215,24 +226,24 @@ export const LIGHT_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: '#F1F4FA',
+      fill: LIGHT_BASE_COLORS.lightestShade,
     },
     line: {
       visible: true,
-      stroke: '#69707D',
+      stroke: LIGHT_BASE_COLORS.darkShade,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: '#69707D',
+      stroke: LIGHT_BASE_COLORS.darkShade,
       strokeWidth: 1,
       dash: [4, 4],
     },
   },
   background: {
-    color: '#FFF',
-    fallbackColor: '#FFF',
+    color: LIGHT_BASE_COLORS.emptyShade,
+    fallbackColor: LIGHT_BASE_COLORS.emptyShade,
   },
   goal: {
     minFontSize: 8,
@@ -251,36 +262,36 @@ export const LIGHT_THEME: Theme = {
     tickLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#646a77',
+      fill: LIGHT_BASE_COLORS.darkShade,
     },
     majorLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#343741',
+      fill: LIGHT_BASE_COLORS.darkestShade,
     },
     minorLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#646a77',
+      fill: LIGHT_BASE_COLORS.darkShade,
     },
     majorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#343741',
+      fill: LIGHT_BASE_COLORS.darkestShade,
     },
     minorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#646a77',
+      fill: LIGHT_BASE_COLORS.darkShade,
     },
     targetLine: {
-      stroke: '#343741',
+      stroke: LIGHT_BASE_COLORS.darkestShade,
     },
     tickLine: {
-      stroke: '#98A2B3',
+      stroke: LIGHT_BASE_COLORS.mediumShade,
     },
     progressLine: {
-      stroke: '#343741',
+      stroke: LIGHT_BASE_COLORS.darkestShade,
     },
   },
   partition: {
@@ -323,7 +334,7 @@ export const LIGHT_THEME: Theme = {
       lineWidth: 1,
       maxCount: 5,
       maxTextLength: 100,
-      textColor: '#343741',
+      textColor: LIGHT_BASE_COLORS.darkestShade,
       minimumStemLength: 0,
       stemAngle: TAU / 8,
       padding: 0,
@@ -334,12 +345,12 @@ export const LIGHT_THEME: Theme = {
       },
     },
     sectorLineWidth: 1.5,
-    sectorLineStroke: '#FFF',
+    sectorLineStroke: LIGHT_BASE_COLORS.emptyShade,
   },
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: '#69707D', // euiColorDarkShade,
+      stroke: LIGHT_BASE_COLORS.darkShade,
       strokeWidth: 2,
     },
     brushMask: {
@@ -402,11 +413,11 @@ export const LIGHT_THEME: Theme = {
   },
   metric: {
     text: {
-      lightColor: '#E0E5EE',
-      darkColor: '#343741',
+      lightColor: LIGHT_BASE_COLORS.title,
+      darkColor: LIGHT_BASE_COLORS.darkestShade,
     },
-    border: '#EDF0F5',
-    barBackground: '#EDF0F5',
+    border: LIGHT_BASE_COLORS.lightShade,
+    barBackground: LIGHT_BASE_COLORS.lightShade,
     nonFiniteText: 'N/A',
     minHeight: 64,
   },
@@ -415,13 +426,14 @@ export const LIGHT_THEME: Theme = {
     maxTableHeight: 120,
     defaultDotColor: Colors.Black.keyword,
   },
+  // TODO map colors to base color mappings
   flamegraph: {
     navigation: {
-      textColor: 'rgb(52, 55, 65)',
-      buttonTextColor: 'rgb(0, 97, 166)',
-      buttonDisabledTextColor: 'rgb(162, 171, 186)',
-      buttonBackgroundColor: 'rgb(204, 228, 245)',
-      buttonDisabledBackgroundColor: 'rgba(211, 218, 230, 0.15)',
+      textColor: LIGHT_BASE_COLORS.darkestShade,
+      buttonTextColor: '#0061A6',
+      buttonDisabledTextColor: '#A2ABBA',
+      buttonBackgroundColor: '#CCE4F5',
+      buttonDisabledBackgroundColor: '#D3DAE626',
     },
     scrollbarThumb: 'rgb(52, 55, 65)',
     scrollbarTrack: 'rgb(211, 218, 230)',

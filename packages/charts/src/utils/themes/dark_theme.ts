@@ -7,12 +7,23 @@
  */
 
 import { palettes } from './colors';
-import { Theme } from './theme';
+import { ChartBaseColors, Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
+
+/** @public */
+export const DARK_BASE_COLORS: ChartBaseColors = {
+  emptyShade: '#1D1E24',
+  lightestShade: '#25262E',
+  lightShade: '#343741',
+  mediumShade: '#535966',
+  darkShade: '#98A2B3',
+  darkestShade: '#D4DAE5',
+  title: '#DFE5EF',
+};
 
 /** @public */
 export const DARK_THEME: Theme = {
@@ -28,7 +39,7 @@ export const DARK_THEME: Theme = {
       visible: true,
       stroke: ColorVariant.Series,
       strokeWidth: 2,
-      fill: '#1D1E24',
+      fill: DARK_BASE_COLORS.emptyShade,
       radius: 3,
       opacity: 1,
     },
@@ -72,7 +83,7 @@ export const DARK_THEME: Theme = {
       visible: false,
       stroke: ColorVariant.Series,
       strokeWidth: 2,
-      fill: '#1D1E24',
+      fill: DARK_BASE_COLORS.emptyShade,
       radius: 3,
       opacity: 1,
     },
@@ -138,7 +149,7 @@ export const DARK_THEME: Theme = {
         inner: 10,
         outer: 0,
       },
-      fill: '#DFE5EF',
+      fill: DARK_BASE_COLORS.title,
       visible: true,
     },
     axisPanelTitle: {
@@ -153,7 +164,7 @@ export const DARK_THEME: Theme = {
     },
     axisLine: {
       visible: true,
-      stroke: '#343741',
+      stroke: DARK_BASE_COLORS.lightShade,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -176,7 +187,7 @@ export const DARK_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: '#343741',
+      stroke: DARK_BASE_COLORS.lightShade,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -184,14 +195,14 @@ export const DARK_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: '#343741',
+        stroke: DARK_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: '#343741',
+        stroke: DARK_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
         dash: [4, 4],
@@ -215,24 +226,24 @@ export const DARK_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: '#2a2b33',
+      fill: DARK_BASE_COLORS.lightestShade,
     },
     line: {
       visible: true,
-      stroke: '#98A2B3',
+      stroke: DARK_BASE_COLORS.darkShade,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: '#98A2B3',
+      stroke: DARK_BASE_COLORS.darkShade,
       strokeWidth: 1,
       dash: [4, 4],
     },
   },
   background: {
-    color: '#1D1E24',
-    fallbackColor: '#1D1E24',
+    color: DARK_BASE_COLORS.emptyShade,
+    fallbackColor: DARK_BASE_COLORS.emptyShade,
   },
   goal: {
     minFontSize: 8,
@@ -256,7 +267,7 @@ export const DARK_THEME: Theme = {
     majorLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#DFE5EF',
+      fill: DARK_BASE_COLORS.title,
     },
     minorLabel: {
       fontStyle: 'normal',
@@ -266,7 +277,7 @@ export const DARK_THEME: Theme = {
     majorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#DFE5EF',
+      fill: DARK_BASE_COLORS.title,
     },
     minorCenterLabel: {
       fontStyle: 'normal',
@@ -277,7 +288,7 @@ export const DARK_THEME: Theme = {
       stroke: '#D4DAE5',
     },
     tickLine: {
-      stroke: '#535966',
+      stroke: DARK_BASE_COLORS.mediumShade,
     },
     progressLine: {
       stroke: '#D4DAE5',
@@ -323,7 +334,7 @@ export const DARK_THEME: Theme = {
       lineWidth: 1,
       maxCount: 5,
       maxTextLength: 100,
-      textColor: '#DFE5EF',
+      textColor: DARK_BASE_COLORS.title,
       minimumStemLength: 0,
       stemAngle: TAU / 8,
       padding: 0,
@@ -334,12 +345,12 @@ export const DARK_THEME: Theme = {
       },
     },
     sectorLineWidth: 1.5,
-    sectorLineStroke: '#1D1E24',
+    sectorLineStroke: DARK_BASE_COLORS.emptyShade,
   },
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: '#D3DAE6', // euiColorLightShade,
+      stroke: DARK_BASE_COLORS.darkestShade,
       strokeWidth: 2,
     },
     brushMask: {
@@ -403,11 +414,11 @@ export const DARK_THEME: Theme = {
   },
   metric: {
     text: {
-      lightColor: '#E0E5EE',
-      darkColor: '#343741',
+      lightColor: DARK_BASE_COLORS.title,
+      darkColor: DARK_BASE_COLORS.lightShade,
     },
-    border: '#343741',
-    barBackground: '#343741',
+    border: DARK_BASE_COLORS.lightShade,
+    barBackground: DARK_BASE_COLORS.lightShade,
     nonFiniteText: 'N/A',
     minHeight: 64,
   },
@@ -416,13 +427,14 @@ export const DARK_THEME: Theme = {
     maxTableHeight: 120,
     defaultDotColor: Colors.White.keyword,
   },
+  // TODO map colors to base color mappings
   flamegraph: {
     navigation: {
-      textColor: 'rgb(223, 229, 239)',
-      buttonTextColor: 'rgb(54, 162, 239)',
-      buttonDisabledTextColor: 'rgb(81, 87, 97)',
-      buttonBackgroundColor: '#36a2ef33',
-      buttonDisabledBackgroundColor: 'rgba(52, 55, 65, 0.15)',
+      textColor: DARK_BASE_COLORS.title,
+      buttonTextColor: '#36A2EF',
+      buttonDisabledTextColor: '#515761',
+      buttonBackgroundColor: '#36A2EF33',
+      buttonDisabledBackgroundColor: '#34374126',
     },
     scrollbarThumb: 'rgb(223, 229, 239)',
     scrollbarTrack: 'rgb(52, 55, 65)',

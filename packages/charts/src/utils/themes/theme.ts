@@ -17,6 +17,20 @@ import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment 
 import { Margins, Padding, SimplePadding } from '../dimensions';
 import { Point } from '../point';
 
+/**
+ * Base color definitions - theme-specific
+ * @public
+ */
+export interface ChartBaseColors {
+  emptyShade: string;
+  lightShade: string;
+  lightestShade: string;
+  mediumShade: string;
+  darkShade: string;
+  darkestShade: string;
+  title: string;
+}
+
 /** @public */
 export interface Visible {
   visible: boolean;
