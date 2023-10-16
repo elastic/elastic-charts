@@ -132,7 +132,7 @@ test.describe('Bar series stories', () => {
           ])(
             (h) => `Horizontal Alignment - ${h}`,
             (horizontalAlignment) => {
-              const url = `http://localhost:9001/?path=/story/bar-chart--data-value&args=&globals=theme:eui-light&knob-chartRotation=${rotation}&knob-Horizontal alignment=${horizontalAlignment}&knob-Vertical alignment=${verticalAlignment}`;
+              const url = `http://localhost:9001/?path=/story/bar-chart--data-value&args=&globals=theme:light&knob-chartRotation=${rotation}&knob-Horizontal alignment=${horizontalAlignment}&knob-Vertical alignment=${verticalAlignment}`;
               test('place the value labels on the correct area', async ({ page }) => {
                 await common.expectChartAtUrlToMatchScreenshot(page)(url);
               });
@@ -237,28 +237,28 @@ test.describe('Bar series stories', () => {
   test.describe('Stacked bars configs', () => {
     test('percentage stacked with internal fn', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:eui-light&knob-mode=stackAsPercentage&knob-use computeRatioByGroups fn=',
+        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:light&knob-mode=stackAsPercentage&knob-use computeRatioByGroups fn=',
       );
     });
     test('percentage stacked with external fn', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:eui-light&knob-mode=stackAsPercentage&knob-use computeRatioByGroups fn=true',
+        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:light&knob-mode=stackAsPercentage&knob-use computeRatioByGroups fn=true',
       );
     });
     test('non stacked with external fn', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:eui-light&knob-mode=unstacked&knob-use computeRatioByGroups fn=true',
+        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:light&knob-mode=unstacked&knob-use computeRatioByGroups fn=true',
       );
     });
 
     test('percentage stacked with external fn multi Y', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:eui-light&knob-mode=stackAsPercentage&knob-use computeRatioByGroups fn=true&knob-use multiple Y accessors=true',
+        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:light&knob-mode=stackAsPercentage&knob-use computeRatioByGroups fn=true&knob-use multiple Y accessors=true',
       );
     });
     test('non stacked with external fn multi Y', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:eui-light&knob-mode=unstacked&knob-use computeRatioByGroups fn=true&knob-use multiple Y accessors=true',
+        'http://localhost:9001/?path=/story/bar-chart--stacked-as-percentage&globals=theme:light&knob-mode=unstacked&knob-use computeRatioByGroups fn=true&knob-use multiple Y accessors=true',
       );
     });
   });

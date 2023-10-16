@@ -10,7 +10,7 @@ import { test } from '@playwright/test';
 import { camelCase } from 'change-case';
 
 import { Placement } from '../constants';
-import { eachRotation, pwEach } from '../helpers';
+import { eachRotation, eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
 test.describe('Interactions', () => {
@@ -400,24 +400,24 @@ test.describe('Interactions', () => {
   });
 
   test.describe('mouse cursor', () => {
-    pwEach.test<string>(['eui-light', 'eui-dark'])(
-      (t) => `should show cursor when background is set with ${t} theme`,
-      async (page, theme) => {
+    eachTheme.test(
+      async ({ page, urlParam }) => {
         await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/mixed-charts--lines-and-areas&globals=theme:${theme}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
+          `http://localhost:9001/?path=/story/mixed-charts--lines-and-areas&${urlParam}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
           { top: 150, left: 250 },
         );
       },
+      (t) => `should show cursor when background is set with ${t} theme`,
     );
 
-    pwEach.test<string>(['eui-light', 'eui-dark'])(
-      (t) => `should show cursor band when background is set with ${t} theme`,
-      async (page, theme) => {
+    eachTheme.test(
+      async ({ page, urlParam }) => {
         await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/mixed-charts--bars-and-lines&globals=theme:${theme}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
+          `http://localhost:9001/?path=/story/mixed-charts--bars-and-lines&${urlParam}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
           { top: 150, left: 150 },
         );
       },
+      (t) => `should show cursor band when background is set with ${t} theme`,
     );
   });
   // currently wrong due to https://github.com/elastic/elastic-charts/issues/1921
@@ -435,7 +435,7 @@ test.describe('Interactions', () => {
       top: 200,
     };
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/interactions--brush-tool&globals=theme:eui-light&knob-Debug=true&knob-Enable debug state=true&knob-Grid stroke_SmallMultiples Styles=1&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes panel titles_SmallMultiples Styles=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Use custom tooltip=true&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=75,75,75,75,20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20,20,75&knob-dataset=7&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-xScaleType_Data=linear&knob-brush axis=both&knob-chartRotation=0',
+      'http://localhost:9001/?path=/story/interactions--brush-tool&globals=theme:light&knob-Debug=true&knob-Enable debug state=true&knob-Grid stroke_SmallMultiples Styles=1&knob-Hide_left=true&knob-Hide_right=true&knob-Hide_top=true&knob-Horizontal inner pad=0.1&knob-Horizontal inner pad_SmallMultiples Styles=0.05&knob-Horizontal outer pad=0&knob-Horizontal outer pad_SmallMultiples Styles=0&knob-Persist cells selection=true&knob-Show Legend=true&knob-Show axes panel titles_SmallMultiples Styles=true&knob-Show axes title_SmallMultiples Styles=true&knob-Show axis panel titles=true&knob-Show axis panel titles_SmallMultiples Styles=true&knob-Show grid line_bottom=true&knob-Show grid line_left=true&knob-Show x axis title_SmallMultiples Styles=true&knob-Show y axis title_SmallMultiples Styles=true&knob-Time data=true&knob-Title_bottom=Hosts - Bottom&knob-Title_left=Metrics - Left&knob-Title_right=Metrics - Right&knob-Title_top=Hosts - Top&knob-Use custom tooltip=true&knob-Vertical inner pad=0.3&knob-Vertical inner pad_SmallMultiples Styles=0.1&knob-Vertical outer pad=0&knob-Vertical outer pad_SmallMultiples Styles=0&knob-categories_Data=4&knob-cell%20density(%)_Data=75,75,75,75,20,20,60,20,20,50,20,5,25,20,25,50,50,50,50,25,20,20,20,20,75&knob-dataset=7&knob-density(%)_Data=100&knob-density_Data=2&knob-group count_Data=9&knob-h - split count_Data=2&knob-h - split_Data=true&knob-number of groups_Data=4&knob-v - split count_Data=2&knob-v - split_Data=true&knob-xScaleType_Data=linear&knob-brush axis=both&knob-chartRotation=0',
       {
         action: async () => {
           await common.dragMouseRelativeToDOMElement(page)(
