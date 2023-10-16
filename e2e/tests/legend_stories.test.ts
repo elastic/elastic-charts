@@ -41,7 +41,7 @@ test.describe('Legend stories', () => {
 
   test('should correctly render multiline nested legend labels', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/legend--piechart&globals=background:white;theme:eui-light&knob-Hide color picker=true&knob-Hide color picker_Legend=true&knob-Legend position=right&knob-Legend position_Legend=right&knob-max legend label lines=0&knob-Number of series=5&knob-Popover position=leftCenter&knob-Popover position_Legend=leftCenter&knob-Series with long name=3&knob-direction_Legend=vertical&knob-floating columns_Legend=2&knob-hAlign_Legend=right&knob-legend buffer value=80&knob-legend margins=20&knob-long label text_Legend=Non do aliqua veniam dolore ipsum eu aliquip. Culpa in duis amet non velit qui non ullamco sit adipisicing. Ut sunt Lorem mollit exercitation deserunt officia sunt ipsum eu amet.&knob-multiline Legend labels=true&knob-vAlign_Legend=bottom&knob-Partition Layout=sunburst&knob-flatLegend=&knob-showLegendExtra=&knob-legendMaxDepth=2&knob-legendStrategy=key',
+      'http://localhost:9001/?path=/story/legend--piechart&globals=theme:light&knob-Hide color picker=true&knob-Hide color picker_Legend=true&knob-Legend position=right&knob-Legend position_Legend=right&knob-max legend label lines=0&knob-Number of series=5&knob-Popover position=leftCenter&knob-Popover position_Legend=leftCenter&knob-Series with long name=3&knob-direction_Legend=vertical&knob-floating columns_Legend=2&knob-hAlign_Legend=right&knob-legend buffer value=80&knob-legend margins=20&knob-long label text_Legend=Non do aliqua veniam dolore ipsum eu aliquip. Culpa in duis amet non velit qui non ullamco sit adipisicing. Ut sunt Lorem mollit exercitation deserunt officia sunt ipsum eu amet.&knob-multiline Legend labels=true&knob-vAlign_Legend=bottom&knob-Partition Layout=sunburst&knob-flatLegend=&knob-showLegendExtra=&knob-legendMaxDepth=2&knob-legendStrategy=key',
     );
   });
 
@@ -59,14 +59,14 @@ test.describe('Legend stories', () => {
 
   test('should break multiline legends with long url characters', async ({ page }) => {
     await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/legend--inside-chart&globals=theme:eui-light&knob-Number of series=5&knob-Series with long name=3&knob-Inside chart_Legend=false&knob-Show legend action_Legend=true&knob-floating columns_Legend=1&knob-vAlign_Legend=bottom&knob-hAlign_Legend=right&knob-direction_Legend=vertical&knob-max label lines_Legend=0&knob-long label_Legend=/people/type:astronauts/name:gregory-chamitoff/profile',
+      'http://localhost:9001/?path=/story/legend--inside-chart&globals=theme:light&knob-Number of series=5&knob-Series with long name=3&knob-Inside chart_Legend=false&knob-Show legend action_Legend=true&knob-floating columns_Legend=1&knob-vAlign_Legend=bottom&knob-hAlign_Legend=right&knob-direction_Legend=vertical&knob-max label lines_Legend=0&knob-long label_Legend=/people/type:astronauts/name:gregory-chamitoff/profile',
       { left: 182, top: 178 },
     );
   });
 
   test('should render long floating legends inside chart', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/legend--inside-chart&globals=theme:eui-light&knob-Number of series=40&knob-Series with long name=0&knob-Inside chart_Legend=true&knob-floating columns_Legend=1&knob-vAlign_Legend=bottom&knob-hAlign_Legend=right&knob-direction_Legend=vertical&knob-max label lines_Legend=1&knob-long label_Legend=long name',
+      'http://localhost:9001/?path=/story/legend--inside-chart&globals=theme:light&knob-Number of series=40&knob-Series with long name=0&knob-Inside chart_Legend=true&knob-floating columns_Legend=1&knob-vAlign_Legend=bottom&knob-hAlign_Legend=right&knob-direction_Legend=vertical&knob-max label lines_Legend=1&knob-long label_Legend=long name',
     );
   });
 
@@ -222,7 +222,7 @@ test.describe('Legend stories', () => {
     ])(
       ([p1, p2]) => `should correctly display ${p1} ${p2}`,
       async (page, [p1, p2]) => {
-        await common.expectChartAtUrlToMatchScreenshot(page)(getPositionalUrl(p1, p2, '&globals=theme:eui-light'));
+        await common.expectChartAtUrlToMatchScreenshot(page)(getPositionalUrl(p1, p2, '&globals=theme:light'));
       },
     );
 
@@ -234,7 +234,7 @@ test.describe('Legend stories', () => {
     ])(
       ([p1, p2]) => `should correctly display ${p1} ${p2} in dark mode`,
       async (page, [p1, p2]) => {
-        await common.expectChartAtUrlToMatchScreenshot(page)(getPositionalUrl(p1, p2, '&globals=theme:eui-dark'));
+        await common.expectChartAtUrlToMatchScreenshot(page)(getPositionalUrl(p1, p2, '&globals=theme:dark'));
       },
     );
 

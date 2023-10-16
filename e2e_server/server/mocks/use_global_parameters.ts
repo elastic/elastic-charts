@@ -53,7 +53,7 @@ interface GlobalParameters {
 
 export function useGlobalsParameters(): GlobalParameters {
   const [themeId, setThemeId] = useState<string>(ThemeId.Light);
-  const [backgroundId, setBackgroundId] = useState<string | undefined>('white');
+  const [backgroundId, setBackgroundId] = useState<string | undefined>();
   const [togglesJSON, setTogglesJSON] = useState<string>('{}');
 
   /**

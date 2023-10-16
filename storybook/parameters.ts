@@ -73,8 +73,10 @@ export const storybookParameters: Parameters = {
     clearable: true,
     selector: '#none',
     options: [
-      { id: 'white', title: 'White', color: '#fff' },
+      { id: 'emptyShadeDark', title: 'Empty Shade - Dark', color: euiDarkVars.euiColorEmptyShade },
+      { id: 'emptyShadeLight', title: 'Empty Shade - Light', color: euiLightVars.euiColorEmptyShade },
       { id: 'black', title: 'Black', color: '#000' },
+      { id: 'white', title: 'White', color: '#fff' },
       { id: 'red', title: 'Red', color: '#f04d9a' },
       { id: 'blue', title: 'Blue', color: '#14abf5' },
       { id: 'yellow', title: 'Yellow', color: '#fec709' },

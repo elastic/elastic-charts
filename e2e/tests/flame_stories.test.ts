@@ -31,7 +31,7 @@ test.describe('Flame stories', () => {
   });
   test('should focus on searched terms', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      `http://localhost:9001/?path=/story/flame-alpha--cpu-profile-g-l-flame-chart&globals=theme:eui-light&knob-Text%20to%20search=gotype`,
+      `http://localhost:9001/?path=/story/flame-alpha--cpu-profile-g-l-flame-chart&globals=theme:light&knob-Text%20to%20search=gotype`,
       {
         // replace this with render count selector when render count fixed
         delay: 300, // wait for tweening and blinking to finish
