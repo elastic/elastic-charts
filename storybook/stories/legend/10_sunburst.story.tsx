@@ -150,7 +150,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
 };
 
 Example.parameters = {
-  background: { default: 'white' },
   markdown: `To flatten a hierarchical legend (like the rendered in a pie chart or a treemap when using a multi-layer configuration) you can
 add the \`flatLegend\` prop into the \`<Settings  baseTheme={useBaseTheme()} />\` component.
 
