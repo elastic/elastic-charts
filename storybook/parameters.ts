@@ -62,10 +62,9 @@ export const storybookParameters: Parameters = {
     selector: '#none',
     options: [
       { id: 'emptyShadeDark', title: 'Empty Shade - Dark', color: euiDarkVars.euiColorEmptyShade },
-      { id: 'emptyShadeLight', title: 'Empty Shade - Light', color: euiDarkVars.euiColorEmptyShade },
-      // TODO put back after testing vrt diffs
-      // { id: 'black', title: 'Black', color: '#000' },
-      // { id: 'white', title: 'White', color: '#fff' },
+      { id: 'emptyShadeLight', title: 'Empty Shade - Light', color: euiLightVars.euiColorEmptyShade },
+      { id: 'black', title: 'Black', color: '#000' },
+      { id: 'white', title: 'White', color: '#fff' },
       { id: 'red', title: 'Red', color: '#f04d9a' },
       { id: 'blue', title: 'Blue', color: '#14abf5' },
       { id: 'yellow', title: 'Yellow', color: '#fec709' },
