@@ -48,6 +48,11 @@ export interface BulletGraphSpec extends Spec {
   data: (BulletDatum | undefined)[][];
   subtype: BulletGraphSubtype;
   tickSnapStep?: number;
+  valueLabels?: {
+    active?: string;
+    value?: string;
+    target?: string;
+  };
 }
 
 const buildProps = buildSFProps<BulletGraphSpec>()(
