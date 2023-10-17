@@ -482,7 +482,7 @@ export interface BulletGraphStyle {
 }
 
 // @public (undocumented)
-const BulletGraphSubtype: Readonly<{
+export const BulletGraphSubtype: Readonly<{
     vertical: "vertical";
     horizontal: "horizontal";
     circle: "circle";
@@ -491,9 +491,7 @@ const BulletGraphSubtype: Readonly<{
 }>;
 
 // @public (undocumented)
-type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
-export { BulletGraphSubtype as BulletGraphSize }
-export { BulletGraphSubtype }
+export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
 
 // @public (undocumented)
 export type CategoryKey = string;

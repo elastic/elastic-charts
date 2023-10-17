@@ -15,6 +15,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { renderBulletGraph } from './bullet_graph';
+import { ColorContrastOptions } from '../../../../common/color_calcs';
+import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { Color } from '../../../../common/colors';
+import { getResolvedBackgroundColor } from '../../../../common/fill_text_color';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
 import { ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -30,6 +34,7 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { Size } from '../../../../utils/dimensions';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { Point } from '../../../../utils/point';
+import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Metric } from '../../../metric/renderer/dom/metric';
 import { ActiveValue, getActiveValues } from '../../selectors/get_active_values';
 import { getBulletSpec } from '../../selectors/get_bullet_spec';
@@ -50,9 +55,11 @@ interface StateProps {
   dimensions: BulletDimensions;
   activeValues: (ActiveValue | null)[][];
   style: BulletGraphStyle;
+  backgroundColor: Color;
   locale: string;
   pointerPosition?: Point;
   bandColors: [string, string];
+  contrastOptions: ColorContrastOptions;
   onElementOver?: ElementOverListener;
 }
 
@@ -110,9 +117,23 @@ class Component extends React.Component<Props> {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/member-ordering
   render() {
-    const { initialized, size, forwardStageRef, a11y, dimensions, spec, style, locale } = this.props;
+    /* eslint-disable prettier/prettier */
+    // TODO - Prettier is going crazy on this line, need to investigate
+    const {
+      initialized,
+      size,
+      forwardStageRef,
+      a11y,
+      dimensions,
+      spec,
+      style,
+      backgroundColor,
+      locale,
+      contrastOptions,
+    } = this.props;
+    /* eslint-enable prettier/prettier */
+
     if (!initialized || size.width === 0 || size.height === 0 || !spec) {
       return null;
     }
@@ -166,7 +187,6 @@ class Component extends React.Component<Props> {
                     columnIndex={stats.columnIndex}
                     rowIndex={stats.rowIndex}
                     style={{
-                      background: style.background,
                       barBackground: `${colorScale(datum.value)}`,
                       border: 'gray',
                       minHeight: 0,
@@ -177,6 +197,8 @@ class Component extends React.Component<Props> {
                       nonFiniteText: 'N/A',
                     }}
                     locale={locale}
+                    backgroundColor={backgroundColor}
+                    contrastOptions={contrastOptions}
                     panel={{ width: size.width / stats.columns, height: size.height / stats.rows }}
                   />
                 );
@@ -217,15 +239,17 @@ const DEFAULT_PROPS: StateProps = {
   },
   activeValues: [],
   style: LIGHT_THEME_BULLET_STYLE,
+  backgroundColor: LIGHT_THEME.background.color,
   locale: settingsBuildProps.defaults.locale,
   bandColors: ['#D9C6EF', '#AA87D1'],
+  contrastOptions: {},
 };
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
-  const theme = getChartThemeSelector(state);
+  const { bulletGraph: style, metric: metricStyle, background } = getChartThemeSelector(state);
 
   const { debug, onElementOver, locale } = getSettingsSpecSelector(state);
 
@@ -239,10 +263,15 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     a11y: getA11ySettingsSelector(state),
     dimensions: getPanelDimensions(state),
     activeValues: getActiveValues(state),
-    style: theme.bulletGraph,
+    style,
     locale,
-    bandColors: theme.bulletGraph.bandColors,
+    backgroundColor: getResolvedBackgroundColor(background.fallbackColor, background.color),
+    bandColors: style.bandColors,
     onElementOver,
+    contrastOptions: {
+      lightColor: colorToRgba(metricStyle.text.lightColor),
+      darkColor: colorToRgba(metricStyle.text.darkColor),
+    },
   };
 };
 
