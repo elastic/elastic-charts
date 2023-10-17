@@ -1897,8 +1897,6 @@ export type MetricSpecProps = ComponentProps<typeof Metric>;
 // @public (undocumented)
 export interface MetricStyle {
     // (undocumented)
-    background: Color;
-    // (undocumented)
     barBackground: Color;
     // (undocumented)
     border: Color;

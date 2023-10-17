@@ -13,7 +13,7 @@ import { common } from '../page_objects/common';
 test.describe('Small multiples - dark mode', () => {
   test('renders panel titles', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      `http://localhost:9001/?path=/story/small-multiples-alpha--sunbursts&globals=theme:dark;background:black`,
+      `http://localhost:9001/?path=/story/small-multiples-alpha--sunbursts&globals=theme:dark`,
     );
   });
 });

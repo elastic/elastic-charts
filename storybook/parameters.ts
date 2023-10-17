@@ -43,25 +43,13 @@ export const storybookParameters: Parameters = {
     themes: [
       {
         id: 'light',
-        title: 'Light',
-        class: 'light-theme',
-        color: '#fff',
-      },
-      {
-        id: 'dark',
-        title: 'Dark',
-        class: 'dark-theme',
-        color: '#000',
-      },
-      {
-        id: 'eui-light',
         title: 'Light - EUI',
         class: ['light-theme', 'eui'],
         color: euiLightVars.euiColorEmptyShade,
         imageUrl: euiLogoUrl,
       },
       {
-        id: 'eui-dark',
+        id: 'dark',
         title: 'Dark - EUI',
         class: ['dark-theme', 'eui'],
         color: euiDarkVars.euiColorEmptyShade,
@@ -73,8 +61,10 @@ export const storybookParameters: Parameters = {
     clearable: true,
     selector: '#none',
     options: [
-      { id: 'white', title: 'White', color: '#fff' },
+      { id: 'emptyShadeDark', title: 'Empty Shade - Dark', color: euiDarkVars.euiColorEmptyShade },
+      { id: 'emptyShadeLight', title: 'Empty Shade - Light', color: euiLightVars.euiColorEmptyShade },
       { id: 'black', title: 'Black', color: '#000' },
+      { id: 'white', title: 'White', color: '#fff' },
       { id: 'red', title: 'Red', color: '#f04d9a' },
       { id: 'blue', title: 'Blue', color: '#14abf5' },
       { id: 'yellow', title: 'Yellow', color: '#fec709' },

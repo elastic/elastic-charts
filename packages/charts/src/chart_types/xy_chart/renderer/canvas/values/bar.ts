@@ -204,8 +204,8 @@ function getTextColors(
       shadowColor: fillDefinition.borderColor || Colors.Transparent.keyword,
     };
   }
-  const fillColor = fillTextColor(fallbackBGColor, geometryColor, backgroundColor);
-  const shadowColor = fillTextColor(fallbackBGColor, fillColor, backgroundColor);
+  const fillColor = fillTextColor(fallbackBGColor, geometryColor, backgroundColor).color.keyword;
+  const shadowColor = fillTextColor(fallbackBGColor, fillColor, backgroundColor).color.keyword;
 
   return {
     fillColor,

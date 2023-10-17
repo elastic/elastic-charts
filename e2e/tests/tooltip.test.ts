@@ -75,7 +75,7 @@ test.describe('Tooltip', () => {
     test.describe('Partition', () => {
       test('pinning with selection', async ({ page }) => {
         await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--partition-charts&globals=background:white;theme:light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
+          'http://localhost:9001/?path=/story/components-tooltip--partition-charts&globals=theme:light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
           { left: 245, bottom: 185 },
           'right',
         );

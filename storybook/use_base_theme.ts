@@ -22,8 +22,6 @@ import { storybookParameters } from './parameters';
 export const ThemeId = Object.freeze({
   Light: 'light' as const,
   Dark: 'dark' as const,
-  EUILight: 'eui-light' as const,
-  EUIDark: 'eui-dark' as const,
 });
 /** @internal */
 export type ThemeId = $Values<typeof ThemeId>;
@@ -35,10 +33,8 @@ export const ThemeIdProvider = ThemeContext.Provider;
 export const BackgroundIdProvider = BackgroundContext.Provider;
 
 const themeMap = {
-  [ThemeId.Light]: LIGHT_THEME,
-  [ThemeId.Dark]: DARK_THEME,
-  [ThemeId.EUILight]: mergePartial(LIGHT_THEME, EUI_CHARTS_THEME_LIGHT.theme),
-  [ThemeId.EUIDark]: mergePartial(DARK_THEME, EUI_CHARTS_THEME_DARK.theme),
+  [ThemeId.Light]: mergePartial(LIGHT_THEME, EUI_CHARTS_THEME_LIGHT.theme),
+  [ThemeId.Dark]: mergePartial(DARK_THEME, EUI_CHARTS_THEME_DARK.theme),
 };
 
 const getBackground = (backgroundId?: string) => {
