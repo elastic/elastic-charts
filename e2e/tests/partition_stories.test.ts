@@ -15,12 +15,12 @@ import { common } from '../page_objects';
 test.describe('Axis stories', () => {
   test('should sort the first layer too', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/mosaic-alpha--other-slices&globals=background:white;theme:eui-light&knob-"Other" on bottom even if not the smallest=true&knob-Alphabetical outer group sorting=true',
+      'http://localhost:9001/?path=/story/mosaic-alpha--other-slices&globals=theme:light&knob-"Other" on bottom even if not the smallest=true&knob-Alphabetical outer group sorting=true',
     );
   });
   test('should sort just the first layer', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/mosaic-alpha--other-slices&globals=background:white;theme:eui-light&knob-"Other" on bottom even if not the smallest=false&knob-Alphabetical outer group sorting=true',
+      'http://localhost:9001/?path=/story/mosaic-alpha--other-slices&globals=theme:light&knob-"Other" on bottom even if not the smallest=false&knob-Alphabetical outer group sorting=true',
     );
   });
 

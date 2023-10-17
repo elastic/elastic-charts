@@ -17,7 +17,7 @@ test.describe('Tooltip', () => {
     test.describe('Cartesian', () => {
       test('pinning without selection', async ({ page }) => {
         await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:eui-light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
+          'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
           { left: 240, bottom: 260 },
           'right',
         );
@@ -25,7 +25,7 @@ test.describe('Tooltip', () => {
 
       test('pinning over selection', async ({ page }) => {
         await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:eui-light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=line&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=0',
+          'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=line&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=0',
           { left: 220, bottom: 285 },
           'right',
         );
@@ -33,7 +33,7 @@ test.describe('Tooltip', () => {
 
       test('show loading prompt for async actions', async ({ page }) => {
         await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:eui-light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=line&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=1000',
+          'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=line&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=1000',
           { left: 220, bottom: 285 },
           'right',
         );
@@ -41,7 +41,7 @@ test.describe('Tooltip', () => {
 
       test('selecting series on pinned tooltip', async ({ page }) => {
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:eui-light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=bar&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=0',
+          'http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=bar&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=0',
           {
             action: async () => {
               await common.clickMouseRelativeToDOMElement(page)({ left: 260, top: 180 }, common.chartSelector, 'right');
@@ -58,7 +58,7 @@ test.describe('Tooltip', () => {
       test('selecting series on pinned tooltip async', async ({ page }) => {
         const delay = 100;
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:eui-light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=bar&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=${delay}`,
+          `http://localhost:9001/?path=/story/components-tooltip--cartesian-charts&globals=theme:light&knob-Chart type=treemap&knob-SeriesType=bar&knob-async delay=1000&knob-async delay (ms)=1500&knob-character set=rtl&knob-chart type=bar&knob-data polarity=Mixed&knob-pinned=true&knob-rtl language=AR&knob-show legend=true&knob-stacked=true&knob-visible=true&knob-reduce data=true&knob-async actions delay=${delay}`,
           {
             action: async () => {
               await common.clickMouseRelativeToDOMElement(page)({ left: 260, top: 180 }, common.chartSelector, 'right');
@@ -75,7 +75,7 @@ test.describe('Tooltip', () => {
     test.describe('Partition', () => {
       test('pinning with selection', async ({ page }) => {
         await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--partition-charts&globals=background:white;theme:eui-light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
+          'http://localhost:9001/?path=/story/components-tooltip--partition-charts&globals=theme:light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
           { left: 245, bottom: 185 },
           'right',
         );
@@ -85,7 +85,7 @@ test.describe('Tooltip', () => {
     test.describe('Heatmap', () => {
       test('pinning with selection', async ({ page }) => {
         await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--heatmap-chart&globals=theme:eui-light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
+          'http://localhost:9001/?path=/story/components-tooltip--heatmap-chart&globals=theme:light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
           { left: 300, bottom: 180 },
           'right',
         );
@@ -95,20 +95,20 @@ test.describe('Tooltip', () => {
     test.describe('Flamegraph', () => {
       test('pinning with selection', async ({ page }) => {
         await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:eui-light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
+          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:light&knob-Chart%20type=treemap&knob-SeriesType=bar&knob-async%20delay%20(ms)=1500&knob-character%20set=rtl&knob-data%20polarity=Mixed&knob-pinned=true&knob-rtl%20language=AR&knob-show%20legend=true&knob-stacked=true&knob-visible=true',
           { left: 220, bottom: 220 },
           'right',
         );
       });
       test('show prompt with actions ', async ({ page }) => {
         await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:eui-light&knob-Use%20tooltip%20actions=true',
+          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:light&knob-Use%20tooltip%20actions=true',
           { left: 220, bottom: 220 },
         );
       });
       test('hide prompt with no actions ', async ({ page }) => {
         await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:eui-light&knob-Use%20tooltip%20actions=false',
+          'http://localhost:9001/?path=/story/components-tooltip--flamegraph&globals=theme:light&knob-Use%20tooltip%20actions=false',
           { left: 220, bottom: 220 },
         );
       });

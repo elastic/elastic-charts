@@ -17,7 +17,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
 
   const { globals, parameters } = context;
 
-  const themeId = globals?.theme ?? ThemeId.EUILight;
+  const themeId = globals?.theme ?? ThemeId.Light;
   const backgroundId = globals?.background;
   const { showHeader = false, showChartTitle = false, showChartDescription = false } = globals?.toggles ?? {};
   const markdown = parameters?.markdown;
