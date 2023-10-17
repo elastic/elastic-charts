@@ -28,7 +28,7 @@ interface ResizerDispatchProps {
 
 type ResizerProps = ResizerStateProps & ResizerDispatchProps;
 
-const DEFAULT_RESIZE_DEBOUNCE = 0;
+const DEFAULT_RESIZE_DEBOUNCE = 200;
 
 class Resizer extends React.Component<ResizerProps> {
   private initialResizeComplete = false;
