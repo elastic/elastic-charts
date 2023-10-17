@@ -56,8 +56,6 @@ export function renderBulletGraph(
 
     // render each Small multiple
     ctx.fillStyle = props.style.background;
-    //@ts-expect-error - unsupported type
-    ctx.letterSpacing = 'normal';
 
     // layout.headerLayout.forEach((row, rowIndex) =>
     dimensions.rows.forEach((row, rowIndex) =>
