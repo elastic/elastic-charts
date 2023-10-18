@@ -139,7 +139,7 @@ export function renderBulletGraph(
 
           const { graphArea } = bulletGraph;
 
-          if (spec.subtype === BulletGraphSubtype.vertical) {
+          if (spec.subtype !== BulletGraphSubtype.horizontal) {
             ctx.strokeStyle = style.border;
             ctx.beginPath();
             ctx.moveTo(HEADER_PADDING.left, graphArea.origin.y);
