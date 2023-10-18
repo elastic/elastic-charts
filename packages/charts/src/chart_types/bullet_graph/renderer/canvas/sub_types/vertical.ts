@@ -9,7 +9,7 @@
 import { getColorBandSizes } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
-import { isFiniteNumber } from '../../../../../utils/common';
+import { clamp, isFiniteNumber } from '../../../../../utils/common';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
@@ -60,12 +60,13 @@ export function verticalBullet(
   });
 
   // Bar
+  const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(
     graphArea.size.width / 2 - BAR_SIZE / 2,
-    graphPaddedHeight - scale(datum.value),
+    confinedValue > 0 ? graphPaddedHeight - scale(confinedValue) : graphPaddedHeight - scale(0),
     BAR_SIZE,
-    scale(datum.value),
+    confinedValue > 0 ? scale(confinedValue) - scale(0) : scale(0) - scale(confinedValue),
   );
 
   // Ticks
