@@ -79,13 +79,14 @@ export function angularBullet(
   });
 
   // Bar
+  const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
   ctx.beginPath();
   ctx.arc(
     center.x,
     center.y,
     radius,
-    startAngle,
-    scale(clamp(datum.value, datum.domain.min, datum.domain.max)),
+    confinedValue > 0 ? scale(0) : scale(confinedValue),
+    confinedValue > 0 ? scale(confinedValue) : scale(0),
     counterClockwise,
   );
   ctx.lineWidth = BAR_SIZE;
