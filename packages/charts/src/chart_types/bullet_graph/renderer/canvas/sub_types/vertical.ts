@@ -61,12 +61,13 @@ export function verticalBullet(
 
   // Bar
   const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
+  const adjustedZero = clamp(0, datum.domain.min, datum.domain.max);
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(
     graphArea.size.width / 2 - BAR_SIZE / 2,
-    confinedValue > 0 ? graphPaddedHeight - scale(confinedValue) : graphPaddedHeight - scale(0),
+    confinedValue > 0 ? graphPaddedHeight - scale(confinedValue) : graphPaddedHeight - scale(adjustedZero),
     BAR_SIZE,
-    confinedValue > 0 ? scale(confinedValue) - scale(0) : scale(0) - scale(confinedValue),
+    confinedValue > 0 ? scale(confinedValue) - scale(adjustedZero) : scale(adjustedZero) - scale(confinedValue),
   );
 
   // Ticks
