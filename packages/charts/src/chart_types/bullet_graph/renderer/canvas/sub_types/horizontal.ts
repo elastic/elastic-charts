@@ -56,11 +56,12 @@ export function horizontalBullet(
   });
 
   // Bar
+  const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(
-    0,
+    datum.value > 0 ? scale(0) : scale(confinedValue),
     verticalAlignment - BAR_SIZE / 2,
-    scale(clamp(datum.value, datum.domain.min, datum.domain.max)),
+    confinedValue > 0 ? scale(confinedValue) - scale(0) : scale(0) - scale(confinedValue),
     BAR_SIZE,
   );
 
