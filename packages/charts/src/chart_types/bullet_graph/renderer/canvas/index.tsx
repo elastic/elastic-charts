@@ -41,7 +41,7 @@ import { getBulletSpec } from '../../selectors/get_bullet_spec';
 import { getChartSize } from '../../selectors/get_chart_size';
 import { BulletDimensions, getPanelDimensions } from '../../selectors/get_panel_dimensions';
 import { hasChartTitles } from '../../selectors/has_chart_titles';
-import { BulletDatum, BulletGraphSpec } from '../../spec';
+import { BulletDatum, BulletGraphSpec, BulletGraphSubtype } from '../../spec';
 import { BulletGraphStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
 
 interface StateProps {
@@ -171,7 +171,7 @@ class Component extends React.Component<Props> {
                       valueFormatter: datum.valueFormatter,
                       targetFormatter: datum.targetFormatter,
                       color: style.barBackground,
-                      progressBarDirection: spec.subtype === 'vertical' ? 'vertical' : 'horizontal',
+                      progressBarDirection: spec.subtype === BulletGraphSubtype.vertical ? 'vertical' : 'horizontal',
                       title: datum.title,
                       subtitle: datum.subtitle,
                       domainMax: datum.domain.max,

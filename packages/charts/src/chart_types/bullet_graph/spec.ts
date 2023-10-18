@@ -34,6 +34,11 @@ export interface BulletDatum {
 export const BulletGraphSubtype = Object.freeze({
   vertical: 'vertical' as const,
   horizontal: 'horizontal' as const,
+  /**
+   * This bullet subtype is not yet fully supported
+   * See https://github.com/elastic/elastic-charts/issues/2200
+   * @alpha
+   */
   circle: 'circle' as const,
   halfCircle: 'half-circle' as const,
   twoThirdsCircle: 'two-thirds-circle' as const,
