@@ -212,6 +212,11 @@ export type PointerUpdateListener = (event: PointerEvent) => void;
  * @public
  */
 export type RenderChangeListener = (isRendered: boolean) => void;
+/**
+ * Listener to be called *before* chart renders
+ * @public
+ */
+export type WillRenderListener = () => void;
 /** @public */
 export type BasicListener = () => undefined | void;
 /** @public */
@@ -511,6 +516,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
   onBrushEnd?: BrushEndListener;
   onPointerUpdate?: PointerUpdateListener;
   onRenderChange?: RenderChangeListener;
+  onWillRender?: WillRenderListener;
   onProjectionAreaChange?: ProjectionAreaChangeListener;
 
   /**
