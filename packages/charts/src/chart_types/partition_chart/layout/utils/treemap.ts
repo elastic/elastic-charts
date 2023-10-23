@@ -27,13 +27,14 @@ function layVector(
   nodes: HierarchyOfArrays,
   independentSize: number,
   areaAccessor: (e: ArrayEntry) => number,
+  rescaleAreaFactor: number = 1,
 ): LayoutElement {
-  const area = nodes.reduce((p, n) => p + areaAccessor(n), 0);
+  const area = nodes.reduce((p, n) => p + areaAccessor(n) * rescaleAreaFactor, 0);
   const dependentSize = area / independentSize; // here we lose a bit of accuracy
   let currentOffset = 0;
   const sectionOffsets = [currentOffset];
   const sectionSizes = nodes.map((e, i) => {
-    const sectionSize = areaAccessor(e) / dependentSize; // here we gain back a bit of accuracy
+    const sectionSize = (rescaleAreaFactor * areaAccessor(e)) / dependentSize; // here we gain back a bit of accuracy
     if (i < nodes.length - 1) sectionOffsets.push((currentOffset += sectionSize));
     return sectionSize;
   });
@@ -77,6 +78,7 @@ function bestVector(
   height: number,
   areaAccessor: (e: ArrayEntry) => number,
   layout: LayerLayout | null,
+  rescaleAreaFactor: number = 1,
 ): LayoutElement {
   let previousWorstAspectRatio = -1;
   let currentWorstAspectRatio = 0;
@@ -87,7 +89,7 @@ function bestVector(
   do {
     previousVectorLayout = currentVectorLayout;
     previousWorstAspectRatio = currentWorstAspectRatio;
-    currentVectorLayout = layVector(nodes.slice(0, currentCount), height, areaAccessor);
+    currentVectorLayout = layVector(nodes.slice(0, currentCount), height, areaAccessor, rescaleAreaFactor);
     currentWorstAspectRatio = leastSquarishAspectRatio(currentVectorLayout);
   } while (currentCount++ < nodes.length && (layout || currentWorstAspectRatio > previousWorstAspectRatio));
 
@@ -124,6 +126,7 @@ export function treemap(
     height: outerHeight,
   }: { x0: number; y0: number; width: number; height: number },
   layouts: LayerLayout[],
+  rescaleAreaFactor: number = 1,
 ): Array<Part> {
   if (nodes.length === 0) return [];
   // some bias toward horizontal rectangles with a golden ratio of width to height
@@ -131,7 +134,7 @@ export function treemap(
   const layerLayout = layouts[depth] ?? null;
   const vertical = layerLayout === LayerLayout.vertical || (!layerLayout && outerWidth / GOLDEN_RATIO <= outerHeight);
   const independentSize = vertical ? outerWidth : outerHeight;
-  const vectorElements = bestVector(nodes, independentSize, areaAccessor, layerLayout);
+  const vectorElements = bestVector(nodes, independentSize, areaAccessor, layerLayout, rescaleAreaFactor);
   const vector = vectorNodeCoordinates(vectorElements, outerX0, outerY0, vertical);
   const { dependentSize } = vectorElements;
   return vector
@@ -153,7 +156,7 @@ export function treemap(
         const height = fullHeight - uPadding - topPadding;
         return treemap(
           childrenNodes,
-          (d) => ((width * height) / (fullWidth * fullHeight)) * areaAccessor(d),
+          areaAccessor,
           topPaddingAccessor,
           paddingAccessor,
           {
@@ -163,6 +166,7 @@ export function treemap(
             height,
           },
           layouts,
+          (rescaleAreaFactor * (width * height)) / (fullWidth * fullHeight),
         );
       }),
     )
@@ -176,6 +180,7 @@ export function treemap(
           ? { x0: outerX0, y0: outerY0 + dependentSize, width: outerWidth, height: outerHeight - dependentSize }
           : { x0: outerX0 + dependentSize, y0: outerY0, width: outerWidth - dependentSize, height: outerHeight },
         layouts,
+        rescaleAreaFactor,
       ),
     );
 }
