@@ -128,7 +128,7 @@ export function treemap(
   layouts: LayerLayout[],
   rescaleAreaFactor: number = 1,
 ): Array<Part> {
-  if (nodes.length === 0) return [];
+  if (nodes.length === 0 || Number.isNaN(outerX0) || Number.isNaN(outerY0)) return [];
   // some bias toward horizontal rectangles with a golden ratio of width to height
   const depth = (nodes[0]?.[1][DEPTH_KEY] ?? 1) - 1;
   const layerLayout = layouts[depth] ?? null;
