@@ -160,11 +160,11 @@ export const LIGHT_THEME: Theme = {
         inner: 8,
         outer: 0,
       },
-      fill: LIGHT_BASE_COLORS.darkestShade,
+      fill: '#333', // LIGHT_BASE_COLORS.darkestShade,
     },
     axisLine: {
       visible: true,
-      stroke: LIGHT_BASE_COLORS.lightShade,
+      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -172,7 +172,7 @@ export const LIGHT_THEME: Theme = {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: LIGHT_BASE_COLORS.darkShade,
+      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
       padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
@@ -187,7 +187,7 @@ export const LIGHT_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: LIGHT_BASE_COLORS.lightShade,
+      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -195,14 +195,14 @@ export const LIGHT_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: LIGHT_BASE_COLORS.lightShade,
+        stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: LIGHT_BASE_COLORS.lightShade,
+        stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
         dash: [4, 4],
@@ -262,7 +262,7 @@ export const LIGHT_THEME: Theme = {
     tickLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: LIGHT_BASE_COLORS.darkShade,
+      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
     },
     majorLabel: {
       fontStyle: 'normal',
@@ -272,7 +272,7 @@ export const LIGHT_THEME: Theme = {
     minorLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: LIGHT_BASE_COLORS.darkShade,
+      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
     },
     majorCenterLabel: {
       fontStyle: 'normal',
@@ -282,7 +282,7 @@ export const LIGHT_THEME: Theme = {
     minorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: LIGHT_BASE_COLORS.darkShade,
+      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
     },
     targetLine: {
       stroke: LIGHT_BASE_COLORS.darkestShade,
@@ -413,11 +413,11 @@ export const LIGHT_THEME: Theme = {
   },
   metric: {
     text: {
-      lightColor: LIGHT_BASE_COLORS.title,
+      lightColor: '#E0E5EE', // LIGHT_BASE_COLORS.title,
       darkColor: LIGHT_BASE_COLORS.darkestShade,
     },
-    border: LIGHT_BASE_COLORS.lightShade,
-    barBackground: LIGHT_BASE_COLORS.lightShade,
+    border: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
+    barBackground: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
     nonFiniteText: 'N/A',
     minHeight: 64,
   },

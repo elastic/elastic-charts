@@ -226,7 +226,7 @@ export const DARK_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: DARK_BASE_COLORS.lightestShade,
+      fill: '#2a2b33', // DARK_BASE_COLORS.lightestShade,
     },
     line: {
       visible: true,
@@ -350,7 +350,7 @@ export const DARK_THEME: Theme = {
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: DARK_BASE_COLORS.darkestShade,
+      stroke: '#D3DAE6', // DARK_BASE_COLORS.darkestShade,
       strokeWidth: 2,
     },
     brushMask: {
@@ -414,7 +414,7 @@ export const DARK_THEME: Theme = {
   },
   metric: {
     text: {
-      lightColor: DARK_BASE_COLORS.title,
+      lightColor: '#E0E5EE', //DARK_BASE_COLORS.title,
       darkColor: DARK_BASE_COLORS.lightShade,
     },
     border: DARK_BASE_COLORS.lightShade,
