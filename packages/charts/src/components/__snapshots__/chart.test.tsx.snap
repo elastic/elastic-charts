@@ -4,10 +4,10 @@ exports[`Chart should render the legend name test 1`] = `
 "<Chart size={{...}} id="chart1" renderer="canvas">
   <Provider store={{...}}>
     <div className="echChart" style={{...}}>
-      <Titles displayTitles={true} title={[undefined]} description={[undefined]} paddingLeft={10} paddingRight={10} />
+      <Titles displayTitles={true} title={[undefined]} description={[undefined]} paddingLeft={0} paddingRight={0} />
       <div className="echChartContent">
         <Connect(ChartBackground)>
-          <ChartBackground backgroundColor="transparent" dispatch={[Function: dispatch]}>
+          <ChartBackground backgroundColor="#FFF" dispatch={[Function: dispatch]}>
             <div className="echChartBackground" style={{...}} />
           </ChartBackground>
         </Connect(ChartBackground)>
@@ -100,7 +100,7 @@ exports[`Chart should render the legend name test 1`] = `
                     <CursorCrossLine theme={{...}} chartRotation={0} cursorCrossLinePosition={[undefined]} tooltipType="vertical" dispatch={[Function: dispatch]} />
                   </Connect(CursorCrossLine)>
                   <Connect(Tooltip) getChartContainerRef={[Function (anonymous)]}>
-                    <Tooltip getChartContainerRef={[Function (anonymous)]} tooltip={{...}} isExternal={false} isBrushing={false} zIndex={0} settings={{...}} tooltipTheme={{...}} rotation={0} chartId="chart1" backgroundColor="transparent" visible={false} position={{...}} info={{...}} pinned={false} selected={{...}} canPinTooltip={false} onPointerMove={[Function (anonymous)]} toggleSelectedTooltipItem={[Function (anonymous)]} setSelectedTooltipItems={[Function (anonymous)]} pinTooltip={[Function (anonymous)]} />
+                    <Tooltip getChartContainerRef={[Function (anonymous)]} tooltip={{...}} isExternal={false} isBrushing={false} zIndex={0} settings={{...}} tooltipTheme={{...}} rotation={0} chartId="chart1" backgroundColor="#FFF" visible={false} position={{...}} info={{...}} pinned={false} selected={{...}} canPinTooltip={false} onPointerMove={[Function (anonymous)]} toggleSelectedTooltipItem={[Function (anonymous)]} setSelectedTooltipItems={[Function (anonymous)]} pinTooltip={[Function (anonymous)]} />
                   </Connect(Tooltip)>
                   <Connect(Annotations) getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}}>
                     <Annotations getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}} isChartEmpty={false} chartDimensions={{...}} sharedStyle={{...}} annotationDimensions={{...}} annotationSpecs={{...}} tooltipState={{...}} chartId="chart1" zIndex={0} hoveredAnnotationIds={{...}} clickable={false} onPointerMove={[Function (anonymous)]} onDOMElementLeave={[Function (anonymous)]} onDOMElementEnter={[Function (anonymous)]} onDOMElementClick={[Function (anonymous)]}>
@@ -112,7 +112,7 @@ exports[`Chart should render the legend name test 1`] = `
                       <svg className="echHighlighter" style={{...}}>
                         <defs>
                           <clipPath id="echHighlighterClipPath__chart1">
-                            <rect x="0" y="0" width={150} height={180} />
+                            <rect x="0" y="0" width={170} height={200} />
                           </clipPath>
                         </defs>
                       </svg>

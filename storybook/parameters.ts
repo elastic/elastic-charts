@@ -43,17 +43,29 @@ export const storybookParameters: Parameters = {
     themes: [
       {
         id: 'light',
-        title: 'Light - EUI',
-        class: ['light-theme', 'eui'],
+        title: 'Light',
+        class: 'light-theme',
         color: euiLightVars.euiColorEmptyShade,
         imageUrl: euiLogoUrl,
       },
       {
         id: 'dark',
-        title: 'Dark - EUI',
-        class: ['dark-theme', 'eui'],
+        title: 'Dark',
+        class: 'dark-theme',
         color: euiDarkVars.euiColorEmptyShade,
         imageUrl: euiLogoUrl,
+      },
+      {
+        id: 'legacy-light',
+        title: 'Legacy Light',
+        class: ['light-theme', 'legacy'],
+        color: '#fff',
+      },
+      {
+        id: 'legacy-dark',
+        title: 'Legacy Dark',
+        class: ['dark-theme', 'legacy'],
+        color: '#000',
       },
     ],
   },
@@ -91,6 +103,11 @@ export const storybookParameters: Parameters = {
       {
         id: 'showChartDescription',
         title: 'Show chart description',
+        defaultValue: false,
+      },
+      {
+        id: 'showChartBoundary',
+        title: 'Show chart boundary',
         defaultValue: false,
       },
     ],

@@ -13,8 +13,8 @@ import React, { CSSProperties, useState } from 'react';
 import { Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { BarSeries } from '../../../packages/charts/src/chart_types/specs';
-import { LIGHT_THEME } from '../../../packages/charts/src/utils/themes/light_theme';
 import { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 interface Dimensions {
   height: number;
@@ -152,7 +152,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Chart title={title} description={description}>
         <Settings
           showLegend={legendEnabled}
-          baseTheme={LIGHT_THEME}
+          baseTheme={useBaseTheme()}
           theme={[
             {
               background: {

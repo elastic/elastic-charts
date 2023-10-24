@@ -30,14 +30,18 @@ html {
     @import '~@elastic/eui/dist/eui_theme_light';
     @import '~@elastic/charts/src/theme_light';
 
-    body,
-    .echChart {
-      background: white !important;
-    }
+    &:not(.legacy) {
+      @import '~@elastic/eui/src/themes/amsterdam/colors_light';
 
-    .euiText {
-      // required to prevent inheriting from html
-      color: $euiTitleColor;
+      body,
+      .echChart {
+        background: $euiColorEmptyShade !important;
+      }
+
+      .euiText {
+        // required to prevent inheriting from html
+        color: $euiTitleColor;
+      }
     }
   }
 
@@ -45,33 +49,33 @@ html {
     @import '~@elastic/eui/dist/eui_theme_dark';
     @import '~@elastic/charts/src/theme_dark';
 
-    body,
-    .echChart {
-      background: black !important;
-    }
-
-    .euiText {
-      // required to prevent inheriting from html
-      color: $euiTitleColor;
-    }
-  }
-
-  &.eui {
-    &.dark-theme {
+    &:not(.legacy) {
       @import '~@elastic/eui/src/themes/amsterdam/colors_dark';
 
       body,
       .echChart {
         background: $euiColorEmptyShade !important;
       }
+
+      .euiText {
+        // required to prevent inheriting from html
+        color: $euiTitleColor;
+      }
+    }
+  }
+
+  &.legacy {
+    &.dark-theme {
+      body,
+      .echChart {
+        background: black !important;
+      }
     }
 
     &.light-theme {
-      @import '~@elastic/eui/src/themes/amsterdam/colors_light';
-
       body,
       .echChart {
-        background: $euiColorEmptyShade !important;
+        background: white !important;
       }
     }
   }
@@ -131,7 +135,10 @@ body {
   position: relative;
   z-index: 500;
   box-sizing: border-box;
-  /* background-color: blanchedalmond; */
+
+  &.showChartBoundary {
+    background-color: blanchedalmond;
+  }
 }
 
 #story-header {

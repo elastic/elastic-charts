@@ -30,6 +30,7 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
 import { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 const chartTypes: Record<string, any> = {
   bar: BarSeries,
@@ -84,6 +85,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         id="chart1"
       >
         <Settings
+          baseTheme={useBaseTheme()}
           onPointerUpdate={pointerUpdate}
           pointerUpdateDebounce={0}
           pointerUpdateTrigger="x"
@@ -136,6 +138,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         id="chart2"
       >
         <Settings
+          baseTheme={useBaseTheme()}
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{
             tooltip: { visible: true, placement: Placement.Left, boundary: 'chart' },

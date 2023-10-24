@@ -508,6 +508,24 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     render(): JSX.Element;
 }
 
+// @public
+export interface ChartBaseColors {
+    // (undocumented)
+    darkestShade: string;
+    // (undocumented)
+    darkShade: string;
+    // (undocumented)
+    emptyShade: string;
+    // (undocumented)
+    lightestShade: string;
+    // (undocumented)
+    lightShade: string;
+    // (undocumented)
+    mediumShade: string;
+    // (undocumented)
+    title: string;
+}
+
 // @public (undocumented)
 export interface ChartProps {
     // (undocumented)
@@ -708,6 +726,9 @@ export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends Seri
 
 // @public (undocumented)
 export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
+
+// @public (undocumented)
+export const DARK_BASE_COLORS: ChartBaseColors;
 
 // @public (undocumented)
 export const DARK_THEME: Theme;
@@ -1579,6 +1600,12 @@ export const LayoutDirection: Readonly<{
 // @public (undocumented)
 export type LayoutDirection = $Values<typeof LayoutDirection>;
 
+// @public @deprecated
+export const LEGACY_DARK_THEME: Theme;
+
+// @public @deprecated
+export const LEGACY_LIGHT_THEME: Theme;
+
 // @public
 export interface LegacyAnimationConfig {
     // @alpha (undocumented)
@@ -1682,6 +1709,9 @@ export interface LegendStyle {
     spacingBuffer: number;
     verticalWidth: number;
 }
+
+// @public (undocumented)
+export const LIGHT_BASE_COLORS: ChartBaseColors;
 
 // @public (undocumented)
 export const LIGHT_THEME: Theme;
