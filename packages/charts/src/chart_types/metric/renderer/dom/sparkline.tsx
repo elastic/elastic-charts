@@ -44,6 +44,7 @@ export const SparkLine: FunctionComponent<{
 
   const titleId = `${id}-trend-title`;
   const descriptionId = `${id}-trend-description`;
+
   return (
     <div className="echSingleMetricSparkline">
       <svg
@@ -82,6 +83,13 @@ export const SparkLine: FunctionComponent<{
           fill={getSparkLineColor(color)}
           stroke="none"
           strokeWidth={0}
+        />
+        <path
+          d={path.y1(trend)}
+          transform="translate(0, 0.5),scale(1,0.5)"
+          fill="none"
+          stroke={color}
+          strokeWidth={0.0006}
         />
       </svg>
     </div>
