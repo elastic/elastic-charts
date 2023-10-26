@@ -55,17 +55,6 @@ export function horizontalBullet(
     ctx.fillRect(band.position, verticalAlignment - BULLET_SIZE / 2, band.size, BULLET_SIZE);
   });
 
-  // Bar
-  const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
-  const adjustedZero = clamp(0, datum.domain.min, datum.domain.max);
-  ctx.fillStyle = style.barBackground;
-  ctx.fillRect(
-    datum.value > 0 ? scale(adjustedZero) : scale(confinedValue),
-    verticalAlignment - BAR_SIZE / 2,
-    confinedValue > 0 ? scale(confinedValue) - scale(adjustedZero) : scale(adjustedZero) - scale(confinedValue),
-    BAR_SIZE,
-  );
-
   // Ticks
   ctx.beginPath();
   ctx.strokeStyle = style.background;
@@ -77,6 +66,17 @@ export function horizontalBullet(
       ctx.lineTo(scale(tick), verticalAlignment + BULLET_SIZE / 2);
     });
   ctx.stroke();
+
+  // Bar
+  const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
+  const adjustedZero = clamp(0, datum.domain.min, datum.domain.max);
+  ctx.fillStyle = style.barBackground;
+  ctx.fillRect(
+    datum.value > 0 ? scale(adjustedZero) : scale(confinedValue),
+    verticalAlignment - BAR_SIZE / 2,
+    confinedValue > 0 ? scale(confinedValue) - scale(adjustedZero) : scale(adjustedZero) - scale(confinedValue),
+    BAR_SIZE,
+  );
 
   // Target
   if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {

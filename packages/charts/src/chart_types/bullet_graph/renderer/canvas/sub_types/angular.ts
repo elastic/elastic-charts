@@ -78,6 +78,20 @@ export function angularBullet(
     ctx.stroke();
   });
 
+  // Ticks
+  ctx.beginPath();
+  ctx.strokeStyle = style.background;
+  ctx.lineWidth = TICK_WIDTH;
+
+  formatterColorTicks
+    .filter((tick) => tick.value > datum.domain.min && tick.value < datum.domain.max)
+    .forEach((tick) => {
+      const bulletWidth = BULLET_SIZE + 4; // TODO fix arbitrary extension
+      drawPolarLine(ctx, scale(tick.value), radius, bulletWidth, center);
+    });
+
+  ctx.stroke();
+
   // Bar
   const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
   const adjustedZero = clamp(0, datum.domain.min, datum.domain.max);
@@ -92,20 +106,6 @@ export function angularBullet(
   );
   ctx.lineWidth = BAR_SIZE;
   ctx.strokeStyle = style.barBackground;
-  ctx.stroke();
-
-  // Ticks
-  ctx.beginPath();
-  ctx.strokeStyle = style.background;
-  ctx.lineWidth = TICK_WIDTH;
-
-  formatterColorTicks
-    .filter((tick) => tick.value > datum.domain.min && tick.value < datum.domain.max)
-    .forEach((tick) => {
-      const bulletWidth = BULLET_SIZE + 4; // TODO fix arbitrary extension
-      drawPolarLine(ctx, scale(tick.value), radius, bulletWidth, center);
-    });
-
   ctx.stroke();
 
   // Target
