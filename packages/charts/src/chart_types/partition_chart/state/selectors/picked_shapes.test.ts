@@ -10,6 +10,7 @@ import { createStore, Store } from 'redux';
 
 import { partitionMultiGeometries } from './geometries';
 import { createOnElementClickCaller } from './on_element_click_caller';
+import { GOLDEN_RATIO } from '../../../../common/constants';
 import { Predicate } from '../../../../common/predicate';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
 import { SettingsSpec, GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
@@ -206,6 +207,11 @@ describe('Picked shapes selector', () => {
     const onClickListener = jest.fn();
     addSeries(store, sunburstSpec, {
       onElementClick: onClickListener,
+      theme: {
+        partition: {
+          outerSizeRatio: 1 / GOLDEN_RATIO,
+        },
+      },
     });
     const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries?.quadViewModel).toHaveLength(6);

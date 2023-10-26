@@ -8,6 +8,7 @@
 
 import { EuiProvider, EuiMarkdownFormat, EuiFlexGroup, EuiFlexItem, EuiHorizontalRule, EuiText } from '@elastic/eui';
 import { DecoratorFunction } from '@storybook/addons';
+import classNames from 'classnames';
 import React from 'react';
 
 import { ThemeId, ThemeIdProvider, BackgroundIdProvider } from './use_base_theme';
@@ -19,7 +20,12 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
 
   const themeId = globals?.theme ?? ThemeId.Light;
   const backgroundId = globals?.background;
-  const { showHeader = false, showChartTitle = false, showChartDescription = false } = globals?.toggles ?? {};
+  const {
+    showHeader = false,
+    showChartTitle = false,
+    showChartDescription = false,
+    showChartBoundary = false,
+  } = globals?.toggles ?? {};
   const markdown = parameters?.markdown;
   const colorMode = themeId.includes('light') ? 'light' : 'dark';
 
@@ -49,7 +55,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
             )}
 
             <EuiFlexItem grow={false}>
-              <div id="story-root">
+              <div id="story-root" className={classNames({ showChartBoundary })}>
                 <Story
                   {...context}
                   title={showChartTitle ? context.kind : undefined}

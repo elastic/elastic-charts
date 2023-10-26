@@ -22,6 +22,7 @@ import {
 } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 /**
  * This story is used on VRTs to test the sorting logic of the dataIndex sort predicate
@@ -39,7 +40,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings rotation={90} />
+      <Settings baseTheme={useBaseTheme()} rotation={90} />
       <Axis id="time" title="Day of week" position={Position.Left} />
       <Axis id="y" title="Count of logins" position={Position.Bottom} />
 
