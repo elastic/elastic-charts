@@ -1,0 +1,1 @@
+{"version":3,"file":"get_internal_cursor_pointer.js","sourceRoot":"","sources":["../../../src/state/selectors/get_internal_cursor_pointer.ts"],"names":[],"mappings":";;;AAUA,sDAA4D;AAIrD,MAAM,wBAAwB,GAAG,CAAC,KAAuB,EAA2B,EAAE;;IAC3F,OAAO,MAAA,MAAA,KAAK,CAAC,kBAAkB,0CAAE,gBAAgB,CAAC,KAAK,CAAC,mCAAI,8BAAkB,CAAC;AACjF,CAAC,CAAC;AAFW,QAAA,wBAAwB,4BAEnC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"is_chart_empty.js","sourceRoot":"","sources":["../../../src/state/selectors/is_chart_empty.ts"],"names":[],"mappings":";;;AAWO,MAAM,4BAA4B,GAAG,CAAC,KAAuB,EAAuB,EAAE;IAC3F,IAAI,KAAK,CAAC,kBAAkB,EAAE;QAC5B,OAAO,KAAK,CAAC,kBAAkB,CAAC,YAAY,CAAC,KAAK,CAAC,CAAC;KACrD;AACH,CAAC,CAAC;AAJW,QAAA,4BAA4B,gCAIvC"}

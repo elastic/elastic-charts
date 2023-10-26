@@ -1,0 +1,1 @@
+{"version":3,"file":"legend.js","sourceRoot":"","sources":["../../src/utils/legend.ts"],"names":[],"mappings":";;;AAQA,qCAA2C;AAIpC,MAAM,kBAAkB,GAAG,CAAC,cAAoC,EAAE,EAAE,CACzE,cAAc,CAAC,SAAS,KAAK,wBAAe,CAAC,UAAU,CAAC;AAD7C,QAAA,kBAAkB,sBAC2B;AAGnD,MAAM,oBAAoB,GAAG,CAAC,UAA+B,EAAE,cAAoC,EAAE,EAAE,CAC5G,CAAC,UAAU,IAAI,CAAC,IAAA,0BAAkB,EAAC,cAAc,CAAC,CAAC;AADxC,QAAA,oBAAoB,wBACoB"}
