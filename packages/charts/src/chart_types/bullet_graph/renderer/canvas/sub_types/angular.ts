@@ -10,7 +10,8 @@ import { getColorBandSizes } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, isFiniteNumber } from '../../../../../utils/common';
+import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
+import { ContinuousDomain } from '../../../../../utils/domain';
 import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
 import { renderDebugPoint } from '../../../../xy_chart/renderer/canvas/utils/debug';
 import { ActiveValue } from '../../../selectors/get_active_values';
@@ -18,7 +19,14 @@ import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphSpec } from '../../../spec';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_WIDTH, ANGULAR_TICK_INTERVAL } from '../constants';
+import {
+  TARGET_SIZE,
+  BULLET_SIZE,
+  TICK_WIDTH,
+  BAR_SIZE,
+  ANGULAR_TICK_INTERVAL,
+  TARGET_STROKE_WIDTH,
+} from '../constants';
 
 /** @internal */
 export function angularBullet(
@@ -32,7 +40,6 @@ export function angularBullet(
   const { datum, graphArea, scale, colorScale } = dimensions;
   const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
   const [startAngle, endAngle] = scale.range() as [number, number];
-  const counterClockwise = startAngle > endAngle;
   const center = {
     x: graphArea.center.x,
     y: radius + TARGET_SIZE / 2,
@@ -40,7 +47,11 @@ export function angularBullet(
 
   ctx.translate(GRAPH_PADDING.left, GRAPH_PADDING.top);
 
-  const totalDomainArc = Math.abs(datum.domain.min - datum.domain.max);
+  const [start, end] = datum.domain;
+  // const counterClockwise = true;
+  const counterClockwise = startAngle < endAngle && start > end;
+  const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
+  const totalDomainArc = Math.abs(start - end);
   const { colorTicks, colorBandSize } = getColorBandSizes(
     Math.abs(startAngle - endAngle) * radius,
     ANGULAR_TICK_INTERVAL,
@@ -66,7 +77,7 @@ export function angularBullet(
         ],
       };
     },
-    { last: datum.domain.min, colors: [] },
+    { last: min, colors: [] },
   );
 
   // Color bands
@@ -82,9 +93,8 @@ export function angularBullet(
   ctx.beginPath();
   ctx.strokeStyle = style.background;
   ctx.lineWidth = TICK_WIDTH;
-
   formatterColorTicks
-    .filter((tick) => tick.value > datum.domain.min && tick.value < datum.domain.max)
+    .filter((tick) => tick.value > min && tick.value < max)
     .forEach((tick) => {
       const bulletWidth = BULLET_SIZE + 4; // TODO fix arbitrary extension
       drawPolarLine(ctx, scale(tick.value), radius, bulletWidth, center);
@@ -93,9 +103,11 @@ export function angularBullet(
   ctx.stroke();
 
   // Bar
-  const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
-  const adjustedZero = clamp(0, datum.domain.min, datum.domain.max);
+  const confinedValue = clamp(datum.value, min, max);
+  const adjustedZero = clamp(0, min, max);
   ctx.beginPath();
+  ctx.lineWidth = BAR_SIZE;
+  ctx.strokeStyle = style.barBackground;
   ctx.arc(
     center.x,
     center.y,
@@ -104,15 +116,13 @@ export function angularBullet(
     confinedValue > 0 ? scale(confinedValue) : scale(adjustedZero),
     counterClockwise,
   );
-  ctx.lineWidth = BAR_SIZE;
-  ctx.strokeStyle = style.barBackground;
   ctx.stroke();
 
   // Target
-  if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {
+  if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
     ctx.beginPath();
     ctx.strokeStyle = style.barBackground;
-    ctx.lineWidth = TARGET_WIDTH;
+    ctx.lineWidth = TARGET_STROKE_WIDTH;
 
     drawPolarLine(ctx, scale(datum.target), radius, TARGET_SIZE, center);
 
@@ -131,7 +141,7 @@ export function angularBullet(
   ctx.textBaseline = 'middle';
   ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
   formatterColorTicks
-    .filter((tick) => tick.value >= datum.domain.min && tick.value <= datum.domain.max)
+    .filter((tick) => tick.value >= min && tick.value <= max)
     .forEach((tick) => {
       ctx.textAlign = 'center';
       const textPadding = style.angularTickLabelPadding + maxTickWidth / 2;
@@ -142,9 +152,10 @@ export function angularBullet(
       ctx.fillText(tick.formattedValue, center.x + x1, center.y + y1);
     });
 
-  ctx.beginPath();
-
   if (activeValue) {
+    ctx.beginPath();
+    ctx.strokeStyle = style.barBackground;
+    ctx.lineWidth = TARGET_STROKE_WIDTH;
     drawPolarLine(ctx, activeValue.value, radius, TARGET_SIZE, center);
 
     ctx.stroke();

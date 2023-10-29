@@ -505,6 +505,14 @@ export function isUniqueArray<B, T>(arr: B[], extractor?: (value: B) => T) {
 }
 
 /**
+ * Sorts array of numbers
+ * @internal
+ */
+export function sortNumbers<T extends any[]>(arr: T, descending = false): T {
+  return arr.slice().sort(descending ? (a, b) => b - 1 : (a, b) => a - b) as T;
+}
+
+/**
  * Returns true if _most_ chars in a string are rtl, exluding spaces and numbers
  * @internal
  */

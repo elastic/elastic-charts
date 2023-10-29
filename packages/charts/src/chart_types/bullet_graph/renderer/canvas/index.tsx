@@ -159,9 +159,10 @@ class Component extends React.Component<Props> {
               data={spec.data}
               contentComponent={({ datum, stats }) => {
                 const colorScale = scaleLinear()
-                  .domain([datum.domain.min, datum.domain.max])
+                  .domain(datum.domain)
                   // @ts-ignore - range determined from strings
                   .range(this.props.bandColors);
+
                 return (
                   <Metric
                     chartId="XX"
@@ -174,7 +175,7 @@ class Component extends React.Component<Props> {
                       progressBarDirection: spec.subtype === BulletGraphSubtype.vertical ? 'vertical' : 'horizontal',
                       title: datum.title,
                       subtitle: datum.subtitle,
-                      domainMax: datum.domain.max,
+                      domainMax: datum.domain[1],
                       extra: datum.target ? (
                         <span>
                           target: <strong>{(datum.targetFormatter ?? datum.valueFormatter)(datum.target)}</strong>

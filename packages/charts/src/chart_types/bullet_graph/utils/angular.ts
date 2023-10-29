@@ -31,7 +31,7 @@ const sizeAngles: Record<AngularBulletSubtypes, { startAngle: number; endAngle: 
 };
 
 /** @internal */
-export function getAnglesBySize(subtype: BulletGraphSubtype, reverse: boolean): [startAngle: number, endAngle: number] {
+export function getAnglesBySize(subtype: BulletGraphSubtype): [startAngle: number, endAngle: number] {
   if (subtype === BulletGraphSubtype.vertical || subtype === BulletGraphSubtype.horizontal) {
     throw new Error('Attempting to retrieve angle size from horizontal/vertical bullet');
   }
@@ -40,7 +40,6 @@ export function getAnglesBySize(subtype: BulletGraphSubtype, reverse: boolean): 
   const startAngle = -angles.startAngle;
   // limit endAngle to startAngle +/- 2π
   const endAngle = clamp(-angles.endAngle, startAngle - TAU, startAngle + TAU);
-  if (reverse) return [endAngle, startAngle];
   return [startAngle, endAngle];
 }
 

@@ -13,9 +13,6 @@ export const TARGET_SIZE = 40;
 export const TARGET_STROKE_WIDTH = 3;
 
 /** @internal */
-export const TARGET_WIDTH = 4;
-
-/** @internal */
 export const BULLET_SIZE = 32;
 
 /** @internal */

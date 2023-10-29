@@ -20,16 +20,15 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const bulletTitle = text('title', 'A Nice Title');
   const subtitle = text('subtitle', 'Subtitle');
-  const value = number('value', 56, { range: true, min: 0, max: 200 });
-  const target = number('target', 75, { range: true, min: 0, max: 200 });
-  const min = number('min', 0, { range: true, min: 0, max: 200 });
-  const max = number('max', 100, { range: true, min: 0, max: 200 });
+  const value = number('value', 56, { range: true, min: -200, max: 200 });
+  const target = number('target', 75, { range: true, min: -200, max: 200 });
+  const start = number('start', 0, { range: true, min: -200, max: 200 });
+  const end = number('end', 100, { range: true, min: -200, max: 200 });
   const tickSnapStep = number('active tick step', 0, { min: 0, max: 10 });
   const angularTickLabelPadding = number('tick label padding', 10, { range: true, min: 0, max: 50 });
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.twoThirdsCircle, {
     exclude: ['vertical', 'horizontal'],
   });
-  const reverse = boolean('reverse', false);
   const format = text('format', '0');
   const formatter = (d: number) => numeral(d).format(format);
 
@@ -39,8 +38,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         resize: 'both',
         padding: '0px',
         overflow: 'auto',
-        width: 480,
-        height: 420,
+        width: 500,
+        height: 500,
         boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
         borderRadius: '6px',
       }}
@@ -67,8 +66,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 value,
                 title: bulletTitle,
                 subtitle,
-                reverse,
-                domain: { min, max, nice: false },
+                domain: [start, end],
                 valueFormatter: formatter,
                 tickFormatter: formatter,
               },

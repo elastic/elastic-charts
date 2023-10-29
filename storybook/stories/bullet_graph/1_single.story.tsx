@@ -20,10 +20,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const bulletTitle = text('title', 'Error rate');
   const subtitle = text('subtitle', '');
-  const value = number('value', 56, { range: true, min: 0, max: 200 });
-  const target = number('target', 75, { range: true, min: 0, max: 200 });
-  const min = number('min', 0, { range: true, min: 0, max: 200 });
-  const max = number('max', 100, { range: true, min: 0, max: 200 });
+  const value = number('value', 56, { range: true, min: -200, max: 200 });
+  const target = number('target', 75, { range: true, min: -200, max: 200 });
+  const start = number('start', 0, { range: true, min: -200, max: 200 });
+  const end = number('end', 100, { range: true, min: -200, max: 200 });
   const format = text('format', '0');
   const formatter = (d: number) => numeral(d).format(format);
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
@@ -34,8 +34,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         resize: 'both',
         padding: '0px',
         overflow: 'auto',
-        width: 480,
-        height: 120,
+        width: 500,
+        height: 500,
         boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
         borderRadius: '6px',
       }}
@@ -53,7 +53,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 value,
                 title: bulletTitle,
                 subtitle,
-                domain: { min, max, nice: false },
+                domain: [start, end],
                 valueFormatter: formatter,
                 tickFormatter: formatter,
               },

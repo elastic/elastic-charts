@@ -14,6 +14,7 @@ import { Spec } from '../../specs';
 import { SpecType } from '../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined, ValueFormatter } from '../../utils/common';
+import { GenericDomain } from '../../utils/domain';
 
 /** @public */
 export interface BulletDatum {
@@ -21,8 +22,7 @@ export interface BulletDatum {
   subtitle?: string;
   value: number;
   target?: number;
-  domain: { min: number; max: number; nice: boolean };
-  reverse?: boolean;
+  domain: GenericDomain;
   ticks: 'auto' | number[];
   syncCursor?: boolean;
   valueFormatter: ValueFormatter;

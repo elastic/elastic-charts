@@ -12,8 +12,8 @@ import { TAU } from '../../../common/constants';
 import { Radian } from '../../../common/geometry';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
-import { isBetween, isFiniteNumber, roundTo } from '../../../utils/common';
-import { Range } from '../../../utils/domain';
+import { isBetween, isFiniteNumber, roundTo, sortNumbers } from '../../../utils/common';
+import { ContinuousDomain, Range } from '../../../utils/domain';
 import { Point } from '../../../utils/point';
 import { BULLET_SIZE, HOVER_SLOP, TARGET_SIZE } from '../renderer/canvas/constants';
 import { BulletGraphSpec, BulletGraphSubtype } from '../spec';
@@ -68,7 +68,8 @@ function getPanelValue(
   spec: BulletGraphSpec,
 ): Pick<ActiveValueDetails, 'value' | 'snapValue' | 'color' | 'pixelValue'> | undefined {
   const { datum, graphArea, scale } = panel;
-  const isWithinDomain = isBetween(datum.domain.min, datum.domain.max);
+  const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
+  const isWithinDomain = isBetween(min, max);
 
   switch (spec.subtype) {
     case BulletGraphSubtype.circle:

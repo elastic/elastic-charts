@@ -8,6 +8,7 @@
 
 import { overrideOpacity } from '../../../../common/color_library_wrappers';
 import { Fill, Stroke } from '../../../../geoms/types';
+import { GenericDomain } from '../../../../utils/domain';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { Cell } from '../../layout/types/viewmodel_types';
 import { isValueInRanges } from '../../layout/viewmodel/viewmodel';
@@ -16,7 +17,7 @@ import { isValueInRanges } from '../../layout/viewmodel/viewmodel';
 export function getGeometryStateStyle(
   cell: Cell,
   sharedGeometryStyle: SharedGeometryStateStyle,
-  highlightedLegendBands: Array<[start: number, end: number]>,
+  highlightedLegendBands: Array<GenericDomain>,
 ): GeometryStateStyle {
   const { default: defaultStyles, highlighted, unhighlighted } = sharedGeometryStyle;
 

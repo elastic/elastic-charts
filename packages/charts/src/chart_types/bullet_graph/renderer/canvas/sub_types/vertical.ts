@@ -9,7 +9,8 @@
 import { getColorBandSizes } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
-import { clamp, isFiniteNumber } from '../../../../../utils/common';
+import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
+import { ContinuousDomain } from '../../../../../utils/domain';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
@@ -25,7 +26,7 @@ export function verticalBullet(
   ctx.translate(0, GRAPH_PADDING.top);
 
   const { datum, graphArea, scale, colorScale } = dimensions;
-
+  const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
   const graphPaddedHeight = graphArea.size.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
   const { colorTicks, colorBandSize } = getColorBandSizes(graphPaddedHeight, TICK_INTERVAL, scale);
   const { colors } = colorTicks.reduce<{
@@ -38,7 +39,7 @@ export function verticalBullet(
         colors: [
           ...acc.colors,
           {
-            color: `${colorScale(tick, true)}`,
+            color: colorScale(tick, true),
             size: colorBandSize,
             position: acc.last,
           },
@@ -65,7 +66,7 @@ export function verticalBullet(
   ctx.lineWidth = TICK_WIDTH;
 
   colorTicks
-    .filter((tick) => tick > datum.domain.min && tick < datum.domain.max)
+    .filter((tick) => tick > min && tick < max)
     .forEach((tick) => {
       ctx.moveTo(graphArea.size.width / 2 - BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
       ctx.lineTo(graphArea.size.width / 2 + BULLET_SIZE / 2, graphPaddedHeight - scale(tick));
@@ -73,8 +74,8 @@ export function verticalBullet(
   ctx.stroke();
 
   // Bar
-  const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
-  const adjustedZero = clamp(0, datum.domain.min, datum.domain.max);
+  const confinedValue = clamp(datum.value, min, max);
+  const adjustedZero = clamp(0, min, max);
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(
     graphArea.size.width / 2 - BAR_SIZE / 2,
@@ -84,7 +85,7 @@ export function verticalBullet(
   );
 
   // Target
-  if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {
+  if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
     ctx.fillRect(
       graphArea.size.width / 2 - TARGET_SIZE / 2,
       graphPaddedHeight - scale(datum.target) - TARGET_STROKE_WIDTH / 2,
@@ -108,13 +109,13 @@ export function verticalBullet(
   ctx.fillStyle = style.textColor;
   ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
   colorTicks
-    .filter((tick) => tick >= datum.domain.min && tick <= datum.domain.max)
+    .filter((tick) => tick >= min && tick <= max)
     .forEach((tick, i) => {
       ctx.textAlign = 'end';
 
       const labelText = datum.tickFormatter(tick);
       if (i === colorTicks.length - 1) {
-        const availableHeight = datum.domain.max - (colorTicks.at(-1) ?? 0);
+        const availableHeight = max - (colorTicks.at(-1) ?? 0);
         const labelHeight = TICK_FONT_SIZE;
         ctx.textBaseline = labelHeight >= scale(availableHeight) ? 'hanging' : 'bottom';
       } else {

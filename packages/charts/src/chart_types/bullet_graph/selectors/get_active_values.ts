@@ -9,6 +9,8 @@
 import { getActiveValue } from './get_active_value';
 import { getPanelDimensions } from './get_panel_dimensions';
 import { createCustomCachedSelector } from '../../../state/create_selector';
+import { sortNumbers } from '../../../utils/common';
+import { ContinuousDomain } from '../../../utils/domain';
 
 /** @internal */
 export interface ActiveValue {
@@ -29,7 +31,8 @@ export const getActiveValues = createCustomCachedSelector(
       row.map((panel, ci): ActiveValue | null => {
         const external = !(rowIndex === ri && columnIndex === ci);
         if (!panel || (!panel.datum.syncCursor && external)) return null;
-        if (snapValue > panel.datum.domain.max || snapValue < panel.datum.domain.min) return null;
+        const [min, max] = sortNumbers(panel.datum.domain) as ContinuousDomain;
+        if (snapValue > max || snapValue < min) return null;
 
         return {
           value: panel.scale(snapValue),

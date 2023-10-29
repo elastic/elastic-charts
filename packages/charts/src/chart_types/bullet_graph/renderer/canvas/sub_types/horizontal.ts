@@ -10,7 +10,8 @@ import { getColorBandSizes } from './common';
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, isFiniteNumber } from '../../../../../utils/common';
+import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
+import { ContinuousDomain } from '../../../../../utils/domain';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
@@ -26,6 +27,7 @@ export function horizontalBullet(
   ctx.translate(GRAPH_PADDING.left, 0);
 
   const { datum, graphArea, scale, colorScale } = dimensions;
+  const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
   const graphPaddedWidth = graphArea.size.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
   const { colorTicks, colorBandSize } = getColorBandSizes(graphPaddedWidth, TICK_INTERVAL, scale);
   const { colors } = colorTicks.reduce<{
@@ -38,7 +40,7 @@ export function horizontalBullet(
         colors: [
           ...acc.colors,
           {
-            color: `${colorScale(tick, true)}`,
+            color: colorScale(tick, true),
             size: colorBandSize,
             position: acc.last,
           },
@@ -60,7 +62,7 @@ export function horizontalBullet(
   ctx.strokeStyle = style.background;
   ctx.lineWidth = TICK_WIDTH;
   colorTicks
-    .filter((tick) => tick > datum.domain.min && tick < datum.domain.max)
+    .filter((tick) => tick > min && tick < max)
     .forEach((tick) => {
       ctx.moveTo(scale(tick), verticalAlignment - BULLET_SIZE / 2);
       ctx.lineTo(scale(tick), verticalAlignment + BULLET_SIZE / 2);
@@ -68,8 +70,8 @@ export function horizontalBullet(
   ctx.stroke();
 
   // Bar
-  const confinedValue = clamp(datum.value, datum.domain.min, datum.domain.max);
-  const adjustedZero = clamp(0, datum.domain.min, datum.domain.max);
+  const confinedValue = clamp(datum.value, min, max);
+  const adjustedZero = clamp(0, min, max);
   ctx.fillStyle = style.barBackground;
   ctx.fillRect(
     datum.value > 0 ? scale(adjustedZero) : scale(confinedValue),
@@ -79,7 +81,7 @@ export function horizontalBullet(
   );
 
   // Target
-  if (isFiniteNumber(datum.target) && datum.target <= datum.domain.max && datum.target >= datum.domain.min) {
+  if (isFiniteNumber(datum.target) && datum.target <= max && datum.target >= min) {
     ctx.fillRect(
       scale(datum.target) - TARGET_STROKE_WIDTH / 2,
       verticalAlignment - TARGET_SIZE / 2,
@@ -103,11 +105,11 @@ export function horizontalBullet(
   ctx.textBaseline = 'top';
   ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
   colorTicks
-    .filter((tick) => tick >= datum.domain.min && tick <= datum.domain.max)
+    .filter((tick) => tick >= min && tick <= max)
     .forEach((tick, i) => {
       const labelText = datum.tickFormatter(tick);
       if (i === colorTicks.length - 1) {
-        const availableWidth = datum.domain.max - (colorTicks.at(-1) ?? 0);
+        const availableWidth = max - (colorTicks.at(-1) ?? 0);
         const { width: labelWidth } = measureText(ctx)(labelText, TICK_FONT, TICK_FONT_SIZE);
         ctx.textAlign = labelWidth >= scale(availableWidth) ? 'end' : 'start';
       } else {
