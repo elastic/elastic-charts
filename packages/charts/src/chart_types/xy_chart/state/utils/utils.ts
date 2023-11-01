@@ -32,7 +32,7 @@ import { getRenderingCompareFn } from '../../../../utils/series_sort';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
-import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
+import { YBasicSeriesSpec, isStackedSpecFn, mergeYDomain } from '../../domains/y_domain';
 import { renderArea } from '../../rendering/area';
 import { renderBars } from '../../rendering/bars';
 import { renderBubble } from '../../rendering/bubble';
@@ -47,7 +47,7 @@ import {
   getDataSeriesFromSpecs,
   getFormattedDataSeries,
   getSeriesKey,
-  isBandedSpec,
+  isBandedSpecFn,
 } from '../../utils/series';
 import {
   AnnotationDomainType,
@@ -204,9 +204,10 @@ export function computeSeriesGeometries(
     false,
   );
 
+  const getBarIndexKey = getBarIndexKeyFn(seriesSpecs);
   const barIndexByPanel = Object.keys(dataSeriesGroupedByPanel).reduce<Record<string, string[]>>((acc, panelKey) => {
     const panelBars = dataSeriesGroupedByPanel[panelKey] ?? [];
-    const barDataSeriesByBarIndex = groupBy(panelBars, (d) => getBarIndexKey(d, enableHistogramMode), false);
+    const barDataSeriesByBarIndex = groupBy(panelBars, getBarIndexKey, false);
     acc[panelKey] = Object.keys(barDataSeriesByBarIndex);
     return acc;
   }, {});
@@ -325,6 +326,8 @@ function renderGeometries(
     bubblePoints: 0,
   };
   const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
+  const isBandedSpec = isBandedSpecFn(seriesSpecs);
+  const getBarIndexKey = getBarIndexKeyFn(seriesSpecs);
 
   dataSeries.forEach((ds) => {
     const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, ds.specId);
@@ -370,7 +373,7 @@ function renderGeometries(
     const color = seriesColorsMap.get(dataSeriesKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
-      const shift = barIndexOrder.indexOf(getBarIndexKey(ds, enableHistogramMode));
+      const shift = barIndexOrder.indexOf(getBarIndexKey(ds));
 
       if (shift === -1) return; // skip bar dataSeries if index is not available
 
@@ -528,14 +531,13 @@ function hasFitFnConfigured(fit?: Fit | FitConfig) {
 }
 
 /** @internal */
-export function getBarIndexKey(
-  { spec, specId, groupId, yAccessor, splitAccessors }: DataSeries,
-  histogramModeEnabled: boolean,
-) {
-  const isStacked = isStackedSpec(spec, histogramModeEnabled);
-  if (isStacked) {
-    return [groupId, '__stacked__'].join('__-__');
-  }
+export function getBarIndexKeyFn(specs: YBasicSeriesSpec[]) {
+  const isStackedSpec = isStackedSpecFn(specs);
+  return ({ spec, specId, groupId, yAccessor, splitAccessors }: DataSeries) => {
+    if (isStackedSpec(spec)) {
+      return [groupId, '__stacked__'].join('__-__');
+    }
 
-  return [groupId, specId, ...splitAccessors.values(), yAccessor].join('__-__');
+    return [groupId, specId, ...splitAccessors.values(), yAccessor].join('__-__');
+  };
 }

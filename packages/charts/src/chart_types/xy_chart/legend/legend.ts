@@ -27,8 +27,8 @@ import {
   getSeriesName,
   DataSeries,
   getSeriesKey,
-  isBandedSpec,
   getSeriesIdentifierFromDataSeries,
+  isBandedSpecFn,
 } from '../utils/series';
 import {
   AxisSpec,
@@ -107,6 +107,7 @@ export function computeLegend(
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
+  const isBandedSpec = isBandedSpecFn(specs);
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;

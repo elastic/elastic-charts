@@ -141,7 +141,8 @@ export function groupSeriesByYGroup(specs: YBasicSeriesSpec[]) {
     { stackMode: StackMode | undefined; stacked: YBasicSeriesSpec[]; nonStacked: YBasicSeriesSpec[] }
   >();
 
-  const histogramEnabled = isHistogramEnabled(specs);
+  const isStackedSpec = isStackedSpecFn(specs);
+
   // split each specs by groupId and by stacked or not
   specs.forEach((spec) => {
     const group = specsByGroupIds.get(spec.groupId) || {
@@ -150,7 +151,7 @@ export function groupSeriesByYGroup(specs: YBasicSeriesSpec[]) {
       nonStacked: [],
     };
 
-    if (isStackedSpec(spec, histogramEnabled)) {
+    if (isStackedSpec(spec)) {
       group.stacked.push(spec);
     } else {
       group.nonStacked.push(spec);
@@ -168,15 +169,20 @@ export function groupSeriesByYGroup(specs: YBasicSeriesSpec[]) {
 }
 
 /** @internal */
-export function isHistogramEnabled(specs: YBasicSeriesSpec[]) {
+export function hasHistogramBarSpec(specs: YBasicSeriesSpec[]) {
   return specs.some(({ seriesType, enableHistogramMode }) => seriesType === SeriesType.Bar && enableHistogramMode);
 }
 
 /** @internal */
-export function isStackedSpec(spec: YBasicSeriesSpec, histogramEnabled: boolean) {
-  const isBarAndHistogram = spec.seriesType === SeriesType.Bar && histogramEnabled;
-  const hasStackAccessors = spec.stackAccessors && spec.stackAccessors.length > 0;
-  return isBarAndHistogram || hasStackAccessors;
+export function isStackedSpecFn(specs: YBasicSeriesSpec[]) {
+  const barSpecs = specs.filter(({ seriesType }) => seriesType === SeriesType.Bar);
+  const shouldForceStackBars = barSpecs.length > 1 && barSpecs.some(({ enableHistogramMode }) => enableHistogramMode);
+
+  return (spec: YBasicSeriesSpec) => {
+    const isBarAndHistogram = spec.seriesType === SeriesType.Bar && shouldForceStackBars;
+    const hasStackAccessors = spec.stackAccessors && spec.stackAccessors.length > 0;
+    return isBarAndHistogram || hasStackAccessors;
+  };
 }
 
 /** @internal */

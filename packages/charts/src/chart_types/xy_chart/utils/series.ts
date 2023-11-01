@@ -22,7 +22,7 @@ import { Datum, isNil, stripUndefined } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
-import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec } from '../domains/y_domain';
+import { YBasicSeriesSpec, groupSeriesByYGroup, isStackedSpecFn } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
 
 /** @internal */
@@ -112,6 +112,7 @@ export function splitSeriesDataByAccessors(
   spec: BasicSeriesSpec,
   xValueSums: Map<string | number, number>,
   isStacked = false,
+  isBanded = false,
   stackMode?: StackMode,
   groupBySpec?: SmallMultiplesGroupBy,
 ): {
@@ -170,7 +171,7 @@ export function splitSeriesDataByAccessors(
         datum,
         accessor,
         nonNumericValues,
-        isBandedSpec(spec),
+        isBanded,
         y0Accessors && y0Accessors[index],
         markSizeAccessor,
       );
@@ -318,7 +319,7 @@ export function getFormattedDataSeries(
   xValues: Set<string | number>,
   xScaleType: ScaleType,
 ): DataSeries[] {
-  const histogramEnabled = isHistogramEnabled(seriesSpecs);
+  const isStackedSpec = isStackedSpecFn(seriesSpecs);
 
   // apply fit function to every data series
   const fittedDataSeries = applyFitFunctionToDataSeries(
@@ -328,7 +329,7 @@ export function getFormattedDataSeries(
   );
 
   // apply fitting for stacked DataSeries by YGroup, Panel
-  const stackedDataSeries = fittedDataSeries.filter(({ spec }) => isStackedSpec(spec, histogramEnabled));
+  const stackedDataSeries = fittedDataSeries.filter(({ spec }) => isStackedSpec(spec));
   const stackedGroups = groupBy<DataSeries>(
     stackedDataSeries,
     ['smHorizontalAccessorValue', 'smVerticalAccessorValue', 'groupId'],
@@ -342,7 +343,7 @@ export function getFormattedDataSeries(
     return [...acc, ...formatted];
   }, []);
   // get already fitted non stacked dataSeries
-  const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !isStackedSpec(spec, histogramEnabled));
+  const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !isStackedSpec(spec));
 
   return [...fittedAndStackedDataSeries, ...nonStackedDataSeries];
 }
@@ -370,6 +371,7 @@ export function getDataSeriesFromSpecs(
   let isOrdinalScale = false;
 
   const specsByYGroup = groupSeriesByYGroup(seriesSpecs);
+  const isBandedSpec = isBandedSpecFn(seriesSpecs);
 
   // eslint-disable-next-line no-restricted-syntax
   for (const spec of seriesSpecs) {
@@ -381,10 +383,13 @@ export function getDataSeriesFromSpecs(
 
     const specGroup = specsByYGroup.get(spec.groupId);
     const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
+    const isBanded = isBandedSpec(spec);
+
     const { dataSeries, xValues } = splitSeriesDataByAccessors(
       spec,
       mutatedXValueSums,
       isStacked,
+      isBanded,
       specGroup?.stackMode,
       groupBySpec,
     );
@@ -461,8 +466,11 @@ export function getDataSeriesFromSpecs(
  * TODO: Add check for chart type other than area and bar.
  * @internal
  */
-export function isBandedSpec(spec: BasicSeriesSpec): boolean {
-  return Boolean(spec.y0Accessors && spec.y0Accessors.length > 0 && !isStackedSpec(spec, false));
+export function isBandedSpecFn(specs: YBasicSeriesSpec[]) {
+  const isStackedSpec = isStackedSpecFn(specs);
+  return (spec: BasicSeriesSpec) => {
+    return Boolean(spec.y0Accessors && spec.y0Accessors.length > 0 && !isStackedSpec(spec));
+  };
 }
 
 function getSortedOrdinalXValues(
