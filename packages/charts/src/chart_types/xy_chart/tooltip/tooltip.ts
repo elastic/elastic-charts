@@ -14,7 +14,7 @@ import { getAccessorFormatLabel } from '../../../utils/accessor';
 import { isDefined } from '../../../utils/common';
 import { BandedAccessorType, IndexedGeometry } from '../../../utils/geometry';
 import { defaultTickFormatter } from '../utils/axis_utils';
-import { getSeriesName, isBandedSpec } from '../utils/series';
+import { getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, isAreaSeriesSpec, isBarSeriesSpec, TickFormatterOptions } from '../utils/specs';
 
 /** @internal */
@@ -55,11 +55,12 @@ export function formatTooltipValue(
   spec: BasicSeriesSpec,
   isHighlighted: boolean,
   hasSingleSeries: boolean,
+  isBanded: boolean,
   axisSpec?: AxisSpec,
 ): TooltipValue {
   let label = getSeriesName(seriesIdentifier, hasSingleSeries, true, spec);
 
-  if (isBandedSpec(spec) && (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))) {
+  if (isBanded && (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
     const formatter = accessor === BandedAccessorType.Y0 ? y0AccessorFormat : y1AccessorFormat;
     label = getAccessorFormatLabel(formatter, label);

@@ -39,7 +39,7 @@ import { getTooltipCompareFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
-import { DataSeries } from '../../utils/series';
+import { DataSeries, isBandedSpec } from '../../utils/series';
 import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
 import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from '../utils/spec';
 import { ComputedScales } from '../utils/types';
@@ -161,7 +161,14 @@ function getTooltipAndHighlightFromValue(
     }
 
     // format the tooltip values
-    const formattedTooltip = formatTooltipValue(indexedGeometry, spec, isHighlighted, hasSingleSeries, yAxis);
+    const formattedTooltip = formatTooltipValue(
+      indexedGeometry,
+      spec,
+      isHighlighted,
+      hasSingleSeries,
+      isBandedSpec(spec),
+      yAxis,
+    );
 
     // format only one time the x value
     if (!header) {

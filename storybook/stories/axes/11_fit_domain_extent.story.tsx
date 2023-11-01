@@ -14,7 +14,6 @@ import {
   Chart,
   DomainPaddingUnit,
   LineAnnotation,
-  LineSeries,
   Position,
   RectAnnotation,
   ScaleType,
@@ -30,6 +29,7 @@ const dg = new SeededDataGenerator();
 const base = dg.generateBasicSeries(100, 0, 50);
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const [SeriesType] = customKnobs.enum.xySeries(undefined, 'line', { exclude: ['bubble'] });
   const positive = base.map(({ x, y }) => ({ x, y: y + 1000 }));
   const both = base.map(({ x, y }) => ({ x, y: y - 100 }));
   const negative = base.map(({ x, y }) => ({ x, y: y - 1000 }));
@@ -60,8 +60,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
     ['theshold', 'rect'],
     'check',
   );
+  const enableHistogramMode = boolean('enableHistogramMode', true);
+  const stacked = boolean('stacked', true);
   const constrainPadding = boolean('constrain padding', true);
   const padding = number('domain padding', 0.1);
+  const seriesCount = number('number of series', 1, { min: 1, max: 3, range: true });
   const paddingUnit = customKnobs.fromEnum('Domain padding unit', DomainPaddingUnit, DomainPaddingUnit.DomainRatio);
   const thesholds = array('thesholds - line', ['200']).filter(Boolean).map(Number);
   const rectTheshold = object('theshold - rect', { y0: 100, y1: null });
@@ -105,14 +108,19 @@ export const Example: ChartsStory = (_, { title, description }) => {
           fill: '#f137407b',
         }}
       />
-      <LineSeries
-        id="lines"
-        xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y']}
-        data={dataset}
-      />
+      {Array.from({ length: seriesCount }, (_, i) => (
+        <SeriesType
+          id={`series-${i}`}
+          key={`series-${i}`}
+          enableHistogramMode={enableHistogramMode}
+          xScaleType={ScaleType.Linear}
+          yScaleType={ScaleType.Linear}
+          stackAccessors={stacked ? ['true'] : []}
+          xAccessor="x"
+          yAccessors={['y']}
+          data={dataset}
+        />
+      ))}
     </Chart>
   );
 };
