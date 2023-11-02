@@ -1,0 +1,1052 @@
+.echChartStatus {
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -100000;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.echChartBackground {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.echChart {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &__titles {
+    margin-right: 24px;
+  }
+}
+
+.echChartContent {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  height: 1px; // triggers flex height constraints
+  width: 100%;
+
+  &--column {
+    flex-direction: column;
+  }
+}
+
+.echChartTitle {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 19px;
+  padding: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+
+  + .echChartDescription {
+    padding-top: 0;
+  }
+}
+
+.echChartDescription {
+  padding: 8px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.echContainer {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.echChartPointerContainer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.echChartResizer {
+  z-index: -10000000;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+}
+
+.echBrushTool {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+
+@mixin wrapText {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  word-break: break-word;
+  hyphens: auto;
+  overflow: hidden;
+  min-width: 1px;
+}
+
+
+$tooltipBorderColor: $euiColorLightShade;
+$tooltipBorderWidth: 1px;
+$rowColorStripWidth: 5px;
+/**
+ * Manually synced with `COLOR_STRIP_CHECK_WIDTH` const in [`tooltip_table.tsx`](packages/charts/src/components/tooltip/components/tooltip_table.tsx)
+ */
+$colorStripCheckWidth: 11px;
+$colorStripPadding: 5px;
+$maxRowColorStripWidth: $colorStripCheckWidth + $colorStripPadding * 2;
+
+$tableBorder: solid $tooltipBorderWidth $tooltipBorderColor;
+
+$tableRowHoverColor: transparentize($euiColorPrimary, 0.95);
+$tableRowSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
+$tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
+
+$transitionTime: 200ms;
+
+.echTooltip {
+  @include euiToolTipStyle;
+  @include euiFontSizeXS;
+  padding: 0;
+  max-width: 100%;
+  pointer-events: none;
+  user-select: none;
+  background-color: $euiColorEmptyShade;
+  color: $euiTextColor;
+  overflow: hidden;
+  cursor: default;
+  transition:
+    box-shadow 400ms,
+    opacity $euiAnimSpeedNormal;
+  border: 1px solid $euiColorEmptyShade;
+
+  &__outerWrapper {
+    display: flex;
+  }
+
+  &--pinned {
+    @include euiBottomShadowSmall;
+    pointer-events: auto;
+    user-select: auto;
+
+    .echTooltip__tableRow--selectable {
+      cursor: pointer;
+    }
+
+    .echTooltipActions {
+      pointer-events: auto;
+    }
+    .echTooltip__tableWrapper {
+      pointer-events: auto;
+    }
+  }
+
+  .echTooltip__tableCell--truncate {
+    @include euiTextTruncate;
+  }
+
+  &__metricRow {
+    padding: $euiSizeXS ($euiSizeXS * 2);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__tableWrapper {
+    overflow: hidden;
+    @include euiScrollBar;
+    background-color: $euiColorEmptyShade;
+    &--pinned {
+      overflow: auto;
+    }
+  }
+
+  &__table {
+    display: grid;
+    width: 100%;
+
+    &--noGrid {
+      display: table;
+    }
+  }
+
+  &__tableHeader,
+  &__tableFooter {
+    .echTooltip__tableCell {
+      cursor: default;
+      font-weight: $euiFontWeightSemiBold;
+      background-color: $euiColorEmptyShade;
+      position: sticky;
+      z-index: 1;
+    }
+  }
+
+  &__tableHeader,
+  &__tableBody,
+  &__tableFooter,
+  &__tableRow {
+    // This ignores all above elements for positioning
+    // effectively spreading all children in its place
+    display: contents;
+  }
+
+  &__tableHeader {
+    margin-bottom: 0;
+    top: 0;
+
+    .echTooltip__tableCell {
+      border-bottom: $tableBorder;
+      top: 0;
+    }
+  }
+
+  &__tableFooter {
+    margin-top: 0;
+    bottom: 0;
+
+    .echTooltip__tableCell {
+      border-top: $tableBorder;
+      bottom: 0;
+    }
+  }
+
+  &__tableCell:not(.echTooltip__colorCell) {
+    padding: 4px;
+  }
+
+  &__tableBody {
+    .echTooltip__tableCell:not(.echTooltip__colorCell) {
+      padding: 2px 4px;
+      transition:
+        margin $transitionTime,
+        padding $transitionTime;
+    }
+
+    .echTooltip__tableRow--selected {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color: $tableRowSelectedColor;
+      }
+
+      .echTooltip__colorCell + .echTooltip__tableCell {
+        margin-left: $colorStripPadding * 2;
+        padding-left: 10px;
+      }
+    }
+
+    .echTooltip__tableRow--selected:hover {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color: $tableRowHoverSelectedColor;
+      }
+    }
+    .echTooltip__tableRow--selectable:hover {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color: $tableRowHoverColor;
+      }
+    }
+  }
+
+  &__tableRow {
+    position: relative;
+
+    &--highlighted {
+      .echTooltip__tableCell:not(.echTooltip__colorCell),
+      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
+        background-color: transparentize($euiColorLightShade, 0.5);
+      }
+    }
+
+    &--selected {
+      :not(.echTooltip__colorCell--static) .echTooltip__colorStrip {
+        width: $maxRowColorStripWidth;
+
+        &--spacer {
+          width: 0;
+          min-width: 0;
+        }
+
+        &--icon {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &__colorCell {
+    padding: 0;
+    height: 100%;
+    position: relative;
+    overflow: hidden; // to avoid extra height from color strip styles
+    width: $maxRowColorStripWidth;
+
+    &--static {
+      width: $rowColorStripWidth;
+    }
+  }
+
+  &__colorStrip,
+  &__colorStrip--bg,
+  &__colorStrip--spacer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: $rowColorStripWidth;
+    transition: width $transitionTime;
+  }
+
+  &__colorStrip {
+    &--icon {
+      opacity: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%; // to center check
+      transition: opacity $transitionTime;
+      padding: 0 4px;
+    }
+
+    &--spacer {
+      left: auto;
+      right: $colorStripPadding * 2;
+      width: $maxRowColorStripWidth - $rowColorStripWidth - $colorStripPadding * 2;
+      min-width: $maxRowColorStripWidth - $rowColorStripWidth - $colorStripPadding * 2;
+    }
+  }
+
+  &__label {
+    min-width: 1px;
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  &__value {
+    text-align: right;
+    font-feature-settings: 'tnum';
+  }
+
+  &[dir='rtl'] {
+    .echTooltip {
+      &__colorStrip {
+        left: auto;
+        right: 0;
+      }
+    }
+  }
+}
+
+.echTooltipHeader {
+  font-weight: $euiFontWeightSemiBold;
+  margin-bottom: 0;
+  padding: $euiSizeXS ($euiSizeXS * 2);
+}
+
+.echTooltipFooter {
+  font-weight: $euiFontWeightSemiBold;
+  margin-top: 0;
+  padding: $euiSizeXS ($euiSizeXS * 2);
+}
+
+.echTooltipDivider {
+  width: 100%;
+  border-bottom: $tableBorder;
+}
+
+$tooltipPromptAnimDelay: 1.5s;
+$tooltipPromptAnimTime: 0.25s;
+
+@keyframes promptSlideDown {
+  100% {
+    opacity: 1;
+    top: 0;
+    height: 26px;
+  }
+}
+
+.echTooltipPrompt {
+  position: relative;
+  width: 100%;
+  z-index: -1;
+
+  &__content {
+    color: $euiTextSubduedColor;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 26px;
+    padding: 0 $euiSizeS;
+  }
+  &.slideDown {
+    opacity: 0;
+    top: -26px;
+    height: 0;
+    animation: promptSlideDown $tooltipPromptAnimTime forwards;
+    animation-delay: $tooltipPromptAnimDelay;
+  }
+}
+
+.echTooltipActions {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  font-style: normal;
+  font-size: 12px;
+  line-height: 21px;
+
+  &__prompt {
+    position: relative;
+    height: 26px;
+    padding: 0 $euiSizeS;
+    line-height: 26px;
+    width: 100%;
+    color: $euiTextSubduedColor;
+    font-style: normal;
+    font-size: 12px;
+  }
+
+  &__action {
+    &:nth-child(2) {
+      padding-top: 4px;
+    }
+    &:last-child {
+      padding-bottom: 2px;
+    }
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    text-align: left;
+    width: 100%;
+    padding: 0 $euiSizeS;
+    line-height: 21px;
+    cursor: pointer;
+    color: $euiTextColor;
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+
+    &[disabled] {
+      cursor: default;
+      color: $euiButtonColorDisabledText;
+      &:hover,
+      &:focus {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+
+[id^='echTooltipPortal'] {
+  pointer-events: none;
+}
+
+[id^='echAnchor'] {
+  position: absolute;
+  pointer-events: none;
+}
+
+.echTooltipPortal__invisible {
+  position: fixed;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+
+.echIcon {
+  flex-shrink: 0; // Ensures it never scales down below it's intended size
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor;
+
+  svg {
+    transform: translate(0, 0); // Hack to fix Firefox "softness"
+  }
+
+  &:focus {
+    opacity: 1; // We often hide icons on hover. Make sure they appear on focus.
+    background: $euiFocusBackgroundColor;
+  }
+}
+
+
+$echLegendMaxWidth: 200px;
+$echLegendRowGap: 8px;
+$echLegendColumnGap: 24px;
+
+.echLegend {
+  .echLegendList {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+  }
+  &--horizontal {
+    .echLegendList {
+      grid-column-gap: $echLegendColumnGap;
+      grid-row-gap: $echLegendRowGap;
+      margin-top: $echLegendRowGap;
+      margin-bottom: $echLegendRowGap;
+    }
+  }
+
+  &--top,
+  &--left {
+    order: 0;
+  }
+
+  &--bottom,
+  &--right {
+    order: 1;
+  }
+
+  &--debug {
+    background: rgba(238, 130, 238, 0.2);
+    position: relative;
+  }
+
+  &--inert {
+    pointer-events: none;
+  }
+
+  .echLegendListContainer {
+    @include euiYScrollWithShadows;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    :focus {
+      @include euiFocusRing(null, 1);
+      background-color: $euiFocusBackgroundColor;
+      border-radius: $euiBorderRadius / 2;
+    }
+  }
+}
+
+@mixin wrapText {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-all;
+  word-break: break-word;
+  hyphens: auto;
+  overflow: hidden;
+  min-width: 1px;
+}
+
+
+$legendItemVerticalPadding: $echLegendRowGap / 2;
+$legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
+
+.echLegendItem {
+  color: $euiTextColor;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+
+  // wrapper is needed to isolate color icon when wrapped or not
+  .colorWrapper > *:first-of-type {
+    // euiPopover adds a div with height of 19px otherwise
+    // this prevents color dot from shifting when wrapped
+    height: $legendItemHeight;
+  }
+
+  &:not([dir='rtl']) > *:not(.background) {
+    margin-left: $euiSizeXS;
+
+    &:last-child:not(.echLegendItem__extra) {
+      margin-right: $euiSizeXS;
+    }
+  }
+
+  &[dir='rtl'] > *:not(.background) {
+    margin-right: $euiSizeXS;
+
+    &:last-child:not(.echLegendItem__extra) {
+      margin-left: $euiSizeXS;
+    }
+  }
+
+  &:not(&--hidden) {
+    .echLegendItem__color--changable {
+      cursor: pointer;
+    }
+  }
+
+  &:hover .background {
+    background-color: $euiColorLightestShade;
+  }
+
+  .background {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  &__action {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: $legendItemHeight;
+    max-width: calc(#{$legendItemHeight} + #{$euiSizeXS * 2});
+
+    .euiPopover,
+    .euiPopover__anchor,
+    .euiPopover__anchor > *:first-child {
+      // makes custom buttons in eui popover take full action size
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  &__color {
+    display: flex;
+    line-height: 1.5;
+    align-items: center;
+  }
+
+  &__label {
+    @include euiFontSizeXS;
+    flex: 1 1 auto;
+    text-align: left;
+    vertical-align: baseline;
+    letter-spacing: unset;
+    align-items: center;
+    @include wrapText;
+
+    &--singleline {
+      @include euiTextTruncate;
+    }
+
+    // div to prevent changing to button
+    &--multiline:is(div) {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2; // number of lines to show, overridden in element styles
+    }
+
+    &--clickable:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+
+  &__extra {
+    @include euiFontSizeXS;
+    text-align: right;
+    flex: 0 0 auto;
+    margin-left: $euiSizeXS;
+    font-feature-settings: 'tnum';
+    letter-spacing: unset;
+    direction: ltr;
+  }
+
+  &--vertical {
+    padding-top: $legendItemVerticalPadding / 2;
+    padding-bottom: $legendItemVerticalPadding / 2;
+
+    &:first-of-type {
+      margin-top: $legendItemVerticalPadding / 2;
+    }
+
+    .background {
+      margin-top: $legendItemVerticalPadding / 2;
+      margin-bottom: $legendItemVerticalPadding / 2;
+    }
+  }
+
+  &--hidden {
+    color: $euiColorDarkShade;
+  }
+
+  &[dir='rtl'] {
+    .echLegendItem {
+      &__label {
+        text-align: right;
+      }
+    }
+  }
+}
+
+
+.echReactiveChart_noResults {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  @include euiFontSizeXS;
+  color: $euiColorDarkShade;
+}
+
+.echHighlighter {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.echHighlighterOverlay__fill {
+  fill: transparentize($euiColorGhost, 0.8);
+}
+
+.echHighlighterOverlay__stroke {
+  stroke: transparentize($euiColorGhost, 0.8);
+}
+
+.echHighlighter__mask {
+  fill: transparentize($euiColorEmptyShade, 0.5);
+}
+
+.echCrosshair,
+.echCrosshair__cursor,
+.echCrosshair__crossLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.echScreenReaderOnly {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.echScreenReaderOnlyDebug {
+  left: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: auto !important;
+  background: rgba(255, 255, 255, 0.8);
+  table,
+  td,
+  th {
+    border: 1px solid black;
+    font-size: 12px;
+  }
+}
+
+.echScreenReaderTable {
+  overflow-x: auto;
+  text-align: left;
+}
+
+.echAnnotation {
+  padding: 0;
+  transition: opacity $euiAnimSpeedNormal;
+  pointer-events: none;
+  user-select: none;
+  max-width: 260px;
+
+  &__marker {
+    position: absolute;
+    user-select: none;
+    font-size: $euiFontSizeXS;
+    font-weight: $euiFontWeightBold;
+    line-height: normal;
+  }
+
+  &__details {
+    padding: $euiSizeXS ($euiSizeXS * 2);
+  }
+
+  &__icon {
+    position: relative;
+  }
+
+  &__body {
+    white-space: nowrap;
+  }
+}
+
+
+
+
+.echCanvasRenderer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+}
+
+@mixin lineClamp($maxLines) {
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $maxLines; /* number of lines to show */
+  line-clamp: $maxLines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.echMetricText {
+  position: relative;
+  padding: 8px;
+  height: 100%;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: min-content min-content auto min-content min-content;
+  text-align: left;
+  line-height: 1.2;
+  &__title {
+    font-weight: bold;
+    word-wrap: break-word;
+    button {
+      font-weight: bold;
+      width: 100%;
+      text-align: left;
+    }
+  }
+  &__icon {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
+
+  &__subtitle {
+    padding-top: 5px;
+    font-weight: normal;
+    text-align: left;
+  }
+
+  &__extra {
+    text-align: right;
+    font-weight: normal;
+  }
+
+  &__value {
+    position: relative;
+    font-weight: bold;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &__valueIcon {
+    display: inline-block;
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+  }
+
+  &__part {
+    font-weight: bold;
+  }
+
+  &__gap {
+    position: relative;
+  }
+}
+
+.echSingleMetricProgress {
+  position: absolute;
+  overflow: hidden;
+
+  &--vertical {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    &.echSingleMetricProgress--small {
+      right: auto;
+      width: 10px;
+    }
+  }
+
+  &--horizontal {
+    left: 0;
+    right: 0;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    &.echSingleMetricProgress--small {
+      top: auto;
+      height: 10px;
+    }
+  }
+}
+
+.echSingleMetricProgressBar {
+  transition: background-color ease-in-out 0.1s;
+  &--vertical {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  &--horizontal {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+  }
+}
+
+.echSingleMetricSparkline {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.echSingleMetricSparkline__svg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  rect,
+  path {
+    transition: fill ease-in-out 0.1s;
+  }
+}
+
+.echSingleMetricChart--small {
+  position: absolute;
+  top: auto;
+  left: auto;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  height: 30px;
+}
+
+.echMetricContainer {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  align-content: start;
+  justify-content: stretch;
+  align-items: stretch;
+  user-select: text;
+}
+
+.echMetric {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: background-color ease-in-out 0.1s;
+
+  .echMetric--outline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+
+  &:focus-within {
+    .echMetric--outline {
+      outline: auto;
+      outline-offset: -1.5px;
+    }
+  }
+
+  &:focus-within button {
+    outline: none;
+  }
+
+  &--rightBorder {
+    border-right: 1px solid #343741;
+  }
+
+  &--topBorder {
+    border-top: 1px solid #343741;
+  }
+
+  &--bottomBorder {
+    border-bottom: 1px solid #343741;
+  }
+
+  &--vertical {
+    &.echMetric--small {
+      padding-left: 10px;
+    }
+  }
+
+  &--horizontal {
+    &.echMetric--small {
+      padding-bottom: 10px;
+    }
+  }
+}
+
+.echMetricEmpty {
+  position: absolute;
+  bottom: 9px;
+  right: 11px;
+  width: 20px;
+  border-bottom: 1px solid;
+}
+
+
+

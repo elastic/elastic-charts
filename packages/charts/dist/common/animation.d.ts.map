@@ -1,0 +1,1 @@
+{"version":3,"file":"animation.d.ts","sourceRoot":"","sources":["../../src/common/animation.ts"],"names":[],"mappings":"AAcA,OAAO,EAAE,MAAM,EAAE,MAAM,YAAY,CAAC;AAEpC;;;;GAIG;AACH,MAAM,WAAW,qBAAqB;IACpC,aAAa;IACb,SAAS,EAAE;QACT,QAAQ,EAAE,MAAM,CAAC;KAClB,CAAC;CACH"}

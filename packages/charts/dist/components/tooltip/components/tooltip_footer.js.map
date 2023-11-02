@@ -1,0 +1,1 @@
+{"version":3,"file":"tooltip_footer.js","sourceRoot":"","sources":["../../../../src/components/tooltip/components/tooltip_footer.tsx"],"names":[],"mappings":";;;;;;AAQA,kDAAiD;AAEjD,kDAA8D;AAKvD,MAAM,aAAa,GAAG,CAAC,EAAE,QAAQ,EAAsB,EAAE,EAAE;IAChE,OAAO,uCAAK,SAAS,EAAC,kBAAkB,IAAE,IAAA,8BAAqB,EAAC,QAAQ,CAAC,CAAO,CAAC;AACnF,CAAC,CAAC;AAFW,QAAA,aAAa,iBAExB"}

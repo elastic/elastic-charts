@@ -1,0 +1,1 @@
+{"version":3,"file":"get_internal_brush_area.js","sourceRoot":"","sources":["../../../src/state/selectors/get_internal_brush_area.ts"],"names":[],"mappings":";;;AAYO,MAAM,4BAA4B,GAAG,CAAC,KAAuB,EAAqB,EAAE;IACzF,IAAI,KAAK,CAAC,kBAAkB,EAAE;QAC5B,OAAO,KAAK,CAAC,kBAAkB,CAAC,YAAY,CAAC,KAAK,CAAC,CAAC;KACrD;IACD,OAAO,IAAI,CAAC;AACd,CAAC,CAAC;AALW,QAAA,4BAA4B,gCAKvC"}

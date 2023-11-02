@@ -1,0 +1,1 @@
+{"version":3,"file":"is_empty.js","sourceRoot":"","sources":["../../../../../src/chart_types/heatmap/state/selectors/is_empty.ts"],"names":[],"mappings":";;;AAQA,2DAA8D;AAC9D,uEAA+E;AAGlE,QAAA,eAAe,GAAG,IAAA,4CAA0B,EAAC,CAAC,2CAAuB,CAAC,EAAE,CAAC,OAAO,EAAW,EAAE;IACxG,OAAO,OAAO,CAAC,OAAO,CAAC,MAAM,KAAK,CAAC,IAAI,OAAO,CAAC,OAAO,CAAC,MAAM,KAAK,CAAC,CAAC;AACtE,CAAC,CAAC,CAAC"}
