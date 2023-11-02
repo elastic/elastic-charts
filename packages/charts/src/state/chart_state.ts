@@ -380,11 +380,11 @@ export const chartStoreReducer = (chartId: string, title?: string, description?:
           },
         };
       case CHART_RENDERED:
-        const count = state.chartRendered ? state.chartRenderedCount : state.chartRenderedCount + 1;
+        const chartRenderedCount = state.chartRendered ? state.chartRenderedCount : state.chartRenderedCount + 1;
         return {
           ...state,
           chartRendered: true,
-          chartRenderedCount: count,
+          chartRenderedCount,
         };
       case UPDATE_PARENT_DIMENSION:
         return {
@@ -401,6 +401,7 @@ export const chartStoreReducer = (chartId: string, title?: string, description?:
           parentDimensions: {
             ...action.dimensions,
           },
+          chartRendered: false,
         };
       case UPDATE_CHART_TITLES:
         return {

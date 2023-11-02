@@ -16,14 +16,13 @@ import { GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { isFiniteNumber } from '../utils/common';
 import { debounce, DebouncedFunction } from '../utils/debounce';
-import { Dimensions } from '../utils/dimensions';
 
 interface ResizerStateProps {
   resizeDebounce: number;
 }
 
 interface ResizerDispatchProps {
-  updateParentDimensions(dimension: Dimensions): void;
+  updateParentDimensions: typeof updateParentDimensions;
 }
 
 type ResizerProps = ResizerStateProps & ResizerDispatchProps;
