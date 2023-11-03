@@ -41,21 +41,16 @@ test.describe('Bar series stories', () => {
   });
 
   test.describe('[test] histogram mode (linear)', () => {
-    test.describe('enableHistogramMode is true', () => {
-      eachRotation.test(async ({ page, rotation }) => {
-        await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-linear&knob-chartRotation=${rotation}&knob-bars padding=0.25&knob-histogram padding=0.05&knob-other series=line&knob-point series alignment=center&knob-hasHistogramBarSeries=&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=`,
-        );
-      });
-    });
-
-    test.describe('enableHistogramMode is false', () => {
-      eachRotation.test(async ({ page, rotation }) => {
-        await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-linear&knob-chartRotation=${rotation}&knob-bars padding=0.25&knob-histogram padding=0.05&knob-other series=line&knob-point series alignment=center&knob-hasHistogramBarSeries=&knob-debug=true&knob-bars-1 enableHistogramMode=&knob-bars-2 enableHistogramMode=`,
-        );
-      });
-    });
+    pwEach.describe([true, false])(
+      (enableHistogramMode) => `enableHistogramMode is ${enableHistogramMode}`,
+      (enableHistogramMode) => {
+        eachRotation.test(async ({ page, rotation }) => {
+          await common.expectChartAtUrlToMatchScreenshot(page)(
+            `http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-linear&knob-chartRotation=${rotation}&knob-bars padding=0.25&knob-histogram padding=0.05&knob-other series=line&knob-point series alignment=center&knob-hasHistogramBarSeries=&knob-debug=false&knob-bars-1 enableHistogramMode=${enableHistogramMode}&knob-bars-2 enableHistogramMode=`,
+          );
+        });
+      },
+    );
 
     test.describe('point alignment', () => {
       test('start', async ({ page }) => {
@@ -77,21 +72,20 @@ test.describe('Bar series stories', () => {
   });
 
   test.describe('[test] histogram mode (ordinal)', () => {
-    test.describe('enableHistogramMode is false, hasHistogramBarSeries is false', () => {
-      eachRotation.test(async ({ page, rotation }) => {
-        await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=${rotation}&knob-bars padding=0.25&knob-hasHistogramBarSeries=&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=`,
-        );
-      });
-    });
-
-    test.describe('enableHistogramMode is true, hasHistogramBarSeries is true', () => {
-      eachRotation.test(async ({ page, rotation }) => {
-        await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=${rotation}&knob-bars padding=0.25&knob-hasHistogramBarSeries=true&knob-debug=true&knob-bars-1 enableHistogramMode=true&knob-bars-2 enableHistogramMode=`,
-        );
-      });
-    });
+    pwEach.describe([
+      [true, true],
+      [false, false],
+    ])(
+      ([enableHistogramMode, hasHistogramBarSeries]) =>
+        `enableHistogramMode is ${enableHistogramMode}, hasHistogramBarSeries is ${hasHistogramBarSeries}`,
+      ([enableHistogramMode, hasHistogramBarSeries]) => {
+        eachRotation.test(async ({ page, rotation }) => {
+          await common.expectChartAtUrlToMatchScreenshot(page)(
+            `http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-ordinal&knob-chartRotation=${rotation}&knob-bars padding=0.25&knob-hasHistogramBarSeries=${hasHistogramBarSeries}&knob-debug=false&knob-bars-1 enableHistogramMode=${enableHistogramMode}&knob-bars-2 enableHistogramMode=`,
+          );
+        });
+      },
+    );
   });
 
   test.describe('different groupId', () => {
