@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { clamp, isFiniteNumber, isNil } from '../../../utils/common';
+import { clamp, isFiniteNumber } from '../../../utils/common';
 import { MAX_TICK_COUNT, MIN_TICK_COUNT } from '../renderer/canvas/constants';
 import { BulletDatum } from '../spec';
 
@@ -23,7 +23,7 @@ export interface TickOptions {
 
 /** @internal */
 export function getTickCount(length: number, { desiredTicks, interval }: Omit<TickOptions, 'nice'>) {
-  if ((isFiniteNumber(desiredTicks) && desiredTicks > 0) || !isNil(desiredTicks)) return desiredTicks;
+  if ((isFiniteNumber(desiredTicks) && desiredTicks > 0) || typeof desiredTicks === 'function') return desiredTicks;
   const target = Math.floor(length / interval);
   return clamp(target, MIN_TICK_COUNT, MAX_TICK_COUNT);
 }
