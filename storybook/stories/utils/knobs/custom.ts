@@ -14,6 +14,8 @@ import {
 } from '@storybook/addon-knobs/dist/components/types';
 import { OptionsKnobOptionsDisplay } from '@storybook/addon-knobs/dist/components/types/Options';
 
+import { isFiniteNumber } from '@elastic/charts/src/utils/common';
+
 /**
  * Fix default storybook behavior that does not correctly parse numbers/strings in arrays
  */
@@ -27,6 +29,19 @@ export function getArrayKnob(
   return array(name, stringifiedValues, separator, group).map<string | number>((value: string) =>
     Number.isFinite(parseFloat(value)) ? parseFloat(value) : value,
   );
+}
+
+/**
+ * Fix default storybook behavior that does not correctly parse numbers/strings in arrays
+ */
+export function getNumbersArrayKnob<T extends number>(
+  name: string,
+  values: T[],
+  separator?: string,
+  group?: string,
+): T[] {
+  const stringifiedValues = values.map<string>((d) => `${d}`);
+  return array(name, stringifiedValues, separator, group).map(parseFloat).filter(isFiniteNumber) as T[];
 }
 
 export const getPositiveNumberKnob = (name: string, value: number, group?: string) =>

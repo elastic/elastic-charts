@@ -15,6 +15,7 @@ import { Rect } from '../../../geoms/types';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getChartThemeSelector } from '../../../state/selectors/get_chart_theme';
 import { getResolvedBackgroundColorSelector } from '../../../state/selectors/get_resolved_background_color';
+import { isWithinRange } from '../../../utils/common';
 import { Size } from '../../../utils/dimensions';
 import { GenericDomain, Range } from '../../../utils/domain';
 import { Point } from '../../../utils/point';
@@ -210,17 +211,17 @@ function getSubtypeDimensions(
 function getScaleWithTicks(domain: GenericDomain, range: Range, tickOptions: TickOptions) {
   let scale = scaleLinear().domain(domain).range(range);
   const scaleRange: Range = scale.range() as Range;
-  const tickCount = getTickCount(
-    Math.abs(scaleRange[1] - scaleRange[0]) * (tickOptions.rangeMultiplier || 1),
-    tickOptions,
-  );
+  const ticks = getTickCount(Math.abs(scaleRange[1] - scaleRange[0]) * (tickOptions.rangeMultiplier || 1), tickOptions);
+  const customRange = typeof ticks !== 'number';
 
   if (tickOptions.nice) {
-    scale = scale.nice(tickCount);
+    scale = scale.nice(customRange ? undefined : ticks);
   }
+
+  const updatedDomain = scale.domain() as GenericDomain;
 
   return {
     scale,
-    ticks: scale.ticks(tickCount),
+    ticks: customRange ? ticks(updatedDomain).filter(isWithinRange(updatedDomain)) : scale.ticks(ticks),
   };
 }

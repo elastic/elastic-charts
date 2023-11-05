@@ -28,11 +28,16 @@ export interface BulletDatum {
   /**
    * Approximate number of ticks to be returned. Must be greater than 0.
    *
+   * Or
+   *
+   * Function that returns the exact ticks to use, this if you pass bad ticks we will not be able to help you!
+   * Sort order must match the direction of the domain.
+   *
    * Defaults to auto ticks based on length
    *
    * See https://d3js.org/d3-scale/linear#linear_ticks
    */
-  ticks?: number;
+  ticks?: number | ((domain: GenericDomain) => number[]);
   syncCursor?: boolean;
   valueFormatter: ValueFormatter;
   targetFormatter?: ValueFormatter;

@@ -35,12 +35,19 @@ export const Example: ChartsStory = (_, { title, description }) => {
     {
       Auto: 'auto',
       TickCount: 'count',
+      TickPlacements: 'placements',
     },
     'auto',
     'select',
     'Ticks',
   );
   const ticks = number('ticks(approx. count)', 5, { min: 0, step: 1 }, 'Ticks');
+  const tickPlacements = customKnobs.numbersArray(
+    'ticks(placements)',
+    [-200, -100, 0, 10, 20, 30, 40, 50, 100, 200],
+    undefined,
+    'Ticks',
+  );
 
   return (
     <div
@@ -68,7 +75,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 subtitle,
                 domain: [start, end],
                 niceDomain,
-                ticks: tickStrategy[0] === 'count' ? ticks : undefined,
+                ticks:
+                  tickStrategy[0] === 'count'
+                    ? ticks
+                    : tickStrategy[0] === 'placements'
+                    ? () => tickPlacements
+                    : undefined,
                 valueFormatter: formatter,
                 tickFormatter: formatter,
               },
