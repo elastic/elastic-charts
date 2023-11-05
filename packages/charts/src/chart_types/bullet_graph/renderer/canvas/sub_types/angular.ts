@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { getColorBandSizes } from './common';
-import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
@@ -19,14 +17,7 @@ import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphSpec } from '../../../spec';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
-import {
-  TARGET_SIZE,
-  BULLET_SIZE,
-  TICK_WIDTH,
-  BAR_SIZE,
-  ANGULAR_TICK_INTERVAL,
-  TARGET_STROKE_WIDTH,
-} from '../constants';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
 
 /** @internal */
 export function angularBullet(
@@ -37,7 +28,7 @@ export function angularBullet(
   debug: boolean,
   activeValue?: ActiveValue | null,
 ) {
-  const { datum, graphArea, scale, colorScale } = dimensions;
+  const { datum, graphArea, scale, ticks, colorBands } = dimensions;
   const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
   const [startAngle, endAngle] = scale.range() as [number, number];
   const center = {
@@ -51,39 +42,12 @@ export function angularBullet(
   // const counterClockwise = true;
   const counterClockwise = startAngle < endAngle && start > end;
   const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
-  const totalDomainArc = Math.abs(start - end);
-  const { colorTicks, colorBandSize } = getColorBandSizes(
-    Math.abs(startAngle - endAngle) * radius,
-    ANGULAR_TICK_INTERVAL,
-    scale,
-    totalDomainArc,
-  );
-
-  const formatterColorTicks = colorTicks.map((v) => ({ value: v, formattedValue: datum.tickFormatter(v) }));
-  const { colors } = formatterColorTicks.reduce<{
-    last: number;
-    colors: Array<{ color: Color; start: number; end: number }>;
-  }>(
-    (acc, tick) => {
-      return {
-        last: acc.last + colorBandSize,
-        colors: [
-          ...acc.colors,
-          {
-            color: colorScale(tick.value, true),
-            start: scale(acc.last),
-            end: scale(acc.last + colorBandSize),
-          },
-        ],
-      };
-    },
-    { last: min, colors: [] },
-  );
+  const formatterColorTicks = ticks.map((v) => ({ value: v, formattedValue: datum.tickFormatter(v) }));
 
   // Color bands
-  colors.forEach((band) => {
+  colorBands.forEach((band) => {
     ctx.beginPath();
-    ctx.arc(center.x, center.y, radius, band.start, band.end, counterClockwise);
+    ctx.arc(center.x, center.y, radius, band.start, band.end, false);
     ctx.lineWidth = BULLET_SIZE;
     ctx.strokeStyle = band.color;
     ctx.stroke();

@@ -7,7 +7,7 @@
  */
 
 import { ColorContrastOptions, HighContrastResult, combineColors, highContrastColor } from './color_calcs';
-import { colorToRgba, RGBATupleToString } from './color_library_wrappers';
+import { colorToRgba } from './color_library_wrappers';
 import { Color, Colors } from './colors';
 
 /**
@@ -41,18 +41,4 @@ export function fillTextColor(
   }
 
   return highContrastColor(backgroundRGBA);
-}
-
-/** @internal */
-export function getResolvedBackgroundColor(
-  fallbackBGColor: Color,
-  background: Color = Colors.Transparent.keyword,
-): Color {
-  let backgroundRGBA = colorToRgba(background);
-
-  if (backgroundRGBA[3] < TRANSPARENT_LIMIT) {
-    backgroundRGBA = colorToRgba(fallbackBGColor);
-  }
-
-  return RGBATupleToString(backgroundRGBA);
 }

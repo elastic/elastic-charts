@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { BulletColorConfig } from './utils/color';
 import { Color } from '../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { Pixels } from '../../common/geometry';
@@ -18,7 +19,10 @@ export interface BulletGraphStyle {
   border: Color;
   background: Color;
   barBackground: Color;
-  bandColors: [start: Color, end: Color];
+  /**
+   * Default band colors when not defined on spec
+   */
+  colorBands: BulletColorConfig;
   nonFiniteText: string;
   minHeight: Pixels;
   angularTickLabelPadding: Pixels;
@@ -29,7 +33,7 @@ export const LIGHT_THEME_BULLET_STYLE: BulletGraphStyle = {
   textColor: '#343741',
   border: '#EDF0F5',
   barBackground: '#343741',
-  bandColors: ['#D9C6EF', '#AA87D1'],
+  colorBands: ['#D9C6EF', '#AA87D1'],
   background: '#FFFFFF',
   nonFiniteText: 'N/A',
   minHeight: 64,
@@ -41,7 +45,7 @@ export const DARK_THEME_BULLET_STYLE: BulletGraphStyle = {
   textColor: '#E0E5EE',
   border: '#343741',
   barBackground: '#FFF',
-  bandColors: ['#6092C0', '#3F4E61'],
+  colorBands: ['#6092C0', '#3F4E61'],
   background: '#1D1E23',
   nonFiniteText: 'N/A',
   minHeight: 64,

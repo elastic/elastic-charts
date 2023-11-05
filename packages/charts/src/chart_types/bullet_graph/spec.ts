@@ -9,6 +9,7 @@
 import { ComponentProps } from 'react';
 import { $Values } from 'utility-types';
 
+import { BulletColorConfig } from './utils/color';
 import { ChartType } from '../../chart_types/index';
 import { Spec } from '../../specs';
 import { SpecType } from '../../specs/constants';
@@ -53,6 +54,7 @@ export interface BulletGraphSpec extends Spec {
   data: (BulletDatum | undefined)[][];
   subtype: BulletGraphSubtype;
   tickSnapStep?: number;
+  colorBands?: BulletColorConfig;
   valueLabels?: {
     active?: string;
     value?: string;

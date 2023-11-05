@@ -18,7 +18,6 @@ import { renderBulletGraph } from './bullet_graph';
 import { ColorContrastOptions } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
-import { getResolvedBackgroundColor } from '../../../../common/fill_text_color';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
 import { ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -30,6 +29,7 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Size } from '../../../../utils/dimensions';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
@@ -43,6 +43,7 @@ import { BulletDimensions, getPanelDimensions } from '../../selectors/get_panel_
 import { hasChartTitles } from '../../selectors/has_chart_titles';
 import { BulletDatum, BulletGraphSpec, BulletGraphSubtype } from '../../spec';
 import { BulletGraphStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
+import { BulletColorConfig } from '../../utils/color';
 
 interface StateProps {
   initialized: boolean;
@@ -58,7 +59,7 @@ interface StateProps {
   backgroundColor: Color;
   locale: string;
   pointerPosition?: Point;
-  bandColors: [string, string];
+  colorBands: BulletColorConfig;
   contrastOptions: ColorContrastOptions;
   onElementOver?: ElementOverListener;
 }
@@ -160,8 +161,9 @@ class Component extends React.Component<Props> {
               contentComponent={({ datum, stats }) => {
                 const colorScale = scaleLinear()
                   .domain(datum.domain)
+                  // TODO use colorBands in metric implementation
                   // @ts-ignore - range determined from strings
-                  .range(this.props.bandColors);
+                  .range(this.props.colorBands);
 
                 return (
                   <Metric
@@ -242,7 +244,7 @@ const DEFAULT_PROPS: StateProps = {
   style: LIGHT_THEME_BULLET_STYLE,
   backgroundColor: LIGHT_THEME.background.color,
   locale: settingsBuildProps.defaults.locale,
-  bandColors: ['#D9C6EF', '#AA87D1'],
+  colorBands: LIGHT_THEME.bulletGraph.colorBands,
   contrastOptions: {},
 };
 
@@ -250,7 +252,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
-  const { bulletGraph: style, metric: metricStyle, background } = getChartThemeSelector(state);
+  const { bulletGraph: style, metric: metricStyle } = getChartThemeSelector(state);
 
   const { debug, onElementOver, locale } = getSettingsSpecSelector(state);
 
@@ -266,8 +268,8 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     activeValues: getActiveValues(state),
     style,
     locale,
-    backgroundColor: getResolvedBackgroundColor(background.fallbackColor, background.color),
-    bandColors: style.bandColors,
+    backgroundColor: getResolvedBackgroundColorSelector(state),
+    colorBands: style.colorBands,
     onElementOver,
     contrastOptions: {
       lightColor: colorToRgba(metricStyle.text.lightColor),

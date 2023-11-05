@@ -6,8 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { getColorBandSizes } from './common';
-import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
@@ -15,7 +13,7 @@ import { ContinuousDomain } from '../../../../../utils/domain';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_INTERVAL } from '../constants';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
 
 /** @internal */
 export function horizontalBullet(
@@ -26,42 +24,21 @@ export function horizontalBullet(
 ) {
   ctx.translate(GRAPH_PADDING.left, 0);
 
-  const { datum, graphArea, scale, colorScale } = dimensions;
+  const { datum, colorBands, ticks, scale } = dimensions;
   const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
-  const graphPaddedWidth = graphArea.size.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
-  const { colorTicks, colorBandSize } = getColorBandSizes(graphPaddedWidth, TICK_INTERVAL, scale);
-  const { colors } = colorTicks.reduce<{
-    last: number;
-    colors: Array<{ color: Color; size: number; position: number }>;
-  }>(
-    (acc, tick) => {
-      return {
-        last: acc.last + colorBandSize,
-        colors: [
-          ...acc.colors,
-          {
-            color: colorScale(tick, true),
-            size: colorBandSize,
-            position: acc.last,
-          },
-        ],
-      };
-    },
-    { last: 0, colors: [] },
-  );
 
   // Color bands
   const verticalAlignment = TARGET_SIZE / 2;
-  colors.forEach((band) => {
+  colorBands.forEach((band) => {
     ctx.fillStyle = band.color;
-    ctx.fillRect(band.position, verticalAlignment - BULLET_SIZE / 2, band.size, BULLET_SIZE);
+    ctx.fillRect(band.start, verticalAlignment - BULLET_SIZE / 2, band.size, BULLET_SIZE);
   });
 
   // Ticks
   ctx.beginPath();
   ctx.strokeStyle = style.background;
   ctx.lineWidth = TICK_WIDTH;
-  colorTicks
+  ticks
     .filter((tick) => tick > min && tick < max)
     .forEach((tick) => {
       ctx.moveTo(scale(tick), verticalAlignment - BULLET_SIZE / 2);
@@ -104,12 +81,12 @@ export function horizontalBullet(
   ctx.fillStyle = style.textColor;
   ctx.textBaseline = 'top';
   ctx.font = cssFontShorthand(TICK_FONT, TICK_FONT_SIZE);
-  colorTicks
+  ticks
     .filter((tick) => tick >= min && tick <= max)
     .forEach((tick, i) => {
       const labelText = datum.tickFormatter(tick);
-      if (i === colorTicks.length - 1) {
-        const availableWidth = max - (colorTicks.at(-1) ?? 0);
+      if (i === ticks.length - 1) {
+        const availableWidth = max - (ticks.at(-1) ?? 0);
         const { width: labelWidth } = measureText(ctx)(labelText, TICK_FONT, TICK_FONT_SIZE);
         ctx.textAlign = labelWidth >= scale(availableWidth) ? 'end' : 'start';
       } else {

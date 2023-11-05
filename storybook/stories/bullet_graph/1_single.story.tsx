@@ -43,7 +43,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Chart title={title} description={description}>
         <Settings debug={debug} baseTheme={useBaseTheme()} />
         <BulletGraph
-          id="bubbles"
+          id="bullet"
           subtype={subtype}
           data={[
             [

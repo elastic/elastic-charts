@@ -10,15 +10,14 @@ import { ScaleLinear, scaleLinear } from 'd3-scale';
 
 import { getBulletSpec } from './get_bullet_spec';
 import { BulletGraphLayout, BulletHeaderLayout, getLayout } from './get_layout';
+import { Color } from '../../../common/colors';
 import { Rect } from '../../../geoms/types';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getChartThemeSelector } from '../../../state/selectors/get_chart_theme';
-import { sortNumbers } from '../../../utils/common';
+import { getResolvedBackgroundColorSelector } from '../../../state/selectors/get_resolved_background_color';
 import { Size } from '../../../utils/dimensions';
-import { ContinuousDomain } from '../../../utils/domain';
 import { Point } from '../../../utils/point';
 import { ANGULAR_TICK_INTERVAL, TICK_INTERVAL } from '../renderer/canvas/constants';
-import { getColorBandSizes } from '../renderer/canvas/sub_types/common';
 import { BulletDatum, BulletGraphSpec, BulletGraphSubtype } from '../spec';
 import {
   BulletGraphStyle,
@@ -29,6 +28,7 @@ import {
   VALUE_LINE_HEIGHT,
 } from '../theme';
 import { getAngledChartSizing, getAnglesBySize } from '../utils/angular';
+import { ColorTick, getColorBands } from '../utils/color';
 
 /** @internal */
 export type BulletPanelDimensions = {
@@ -38,7 +38,9 @@ export type BulletPanelDimensions = {
     center: Point;
   };
   scale: ScaleLinear<number, number>;
-  colorScale: (value: number, continuous?: boolean) => string;
+  ticks: number[];
+  colorScale: chroma.Scale<chroma.Color>;
+  colorBands: ColorTick[];
   panel: Rect;
 } & Omit<BulletHeaderLayout, 'panel'>;
 
@@ -50,11 +52,12 @@ export type BulletDimensions = {
 
 /** @internal */
 export const getPanelDimensions = createCustomCachedSelector(
-  [getLayout, getBulletSpec, getChartThemeSelector],
+  [getLayout, getBulletSpec, getChartThemeSelector, getResolvedBackgroundColorSelector],
   (
     { shouldRenderMetric, headerLayout, layoutAlignment, panel: panelSize },
     spec,
     { bulletGraph: bulletGraphStyles },
+    backgroundColor,
   ): BulletDimensions => {
     if (shouldRenderMetric)
       return {
@@ -83,7 +86,7 @@ export const getPanelDimensions = createCustomCachedSelector(
 
         return {
           ...rest,
-          ...getScalesBySubtype(spec, graphSize, datum, bulletGraphStyles),
+          ...getSubtypeDimensions(spec, graphSize, datum, bulletGraphStyles, backgroundColor),
           datum,
           multiline,
           graphArea: {
@@ -115,14 +118,13 @@ export const getPanelDimensions = createCustomCachedSelector(
   },
 );
 
-function getScalesBySubtype(
-  { subtype }: BulletGraphSpec,
+function getSubtypeDimensions(
+  { subtype, colorBands: colorBandsConfig }: BulletGraphSpec,
   graphSize: Size,
   { domain }: BulletDatum,
-  { bandColors }: BulletGraphStyle,
-): Pick<BulletPanelDimensions, 'scale' | 'colorScale'> {
-  const [start, end] = domain;
-  const [min, max] = sortNumbers(domain) as ContinuousDomain;
+  { colorBands: defaultColorBandsConfig }: BulletGraphStyle,
+  backgroundColor: Color,
+): Pick<BulletPanelDimensions, 'scale' | 'colorScale' | 'colorBands' | 'ticks'> {
   switch (subtype) {
     case BulletGraphSubtype.circle:
     case BulletGraphSubtype.halfCircle:
@@ -130,64 +132,75 @@ function getScalesBySubtype(
       const [startAngle, endAngle] = getAnglesBySize(subtype);
       const scale = scaleLinear().domain(domain).range([startAngle, endAngle]);
       const { radius } = getAngledChartSizing(graphSize, subtype);
-      const totalDomainArc = Math.abs(end - start);
-      const { colorTicks, colorBandSizeValue } = getColorBandSizes(
-        Math.abs(startAngle - endAngle) * radius,
-        ANGULAR_TICK_INTERVAL,
+
+      const {
+        bands: colorBands,
+        scale: colorScale,
+        ticks,
+      } = getColorBands(
         scale,
-        totalDomainArc,
+        Math.abs(startAngle - endAngle) * radius,
+        colorBandsConfig ?? defaultColorBandsConfig,
+        ANGULAR_TICK_INTERVAL,
+        backgroundColor,
       );
 
       return {
         scale,
-        colorScale: getDiscreteColorScale([min, max], bandColors, colorTicks, colorBandSizeValue),
+        ticks,
+        colorBands,
+        colorScale,
       };
     }
 
     case BulletGraphSubtype.horizontal: {
       const paddedWidth = graphSize.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
       const scale = scaleLinear().domain(domain).range([0, paddedWidth]);
-      const { colorTicks, colorBandSizeValue } = getColorBandSizes(paddedWidth, TICK_INTERVAL, scale);
+      const {
+        bands: colorBands,
+        scale: colorScale,
+        ticks,
+      } = getColorBands(
+        scale,
+        paddedWidth,
+        colorBandsConfig ?? defaultColorBandsConfig,
+        TICK_INTERVAL,
+        backgroundColor,
+      );
 
       return {
         scale,
-        colorScale: getDiscreteColorScale(domain, bandColors, colorTicks, colorBandSizeValue),
+        ticks,
+        colorBands,
+        colorScale,
       };
     }
 
     case BulletGraphSubtype.vertical: {
       const paddedHeight = graphSize.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
       const scale = scaleLinear().domain(domain).range([0, paddedHeight]);
-      const { colorTicks, colorBandSizeValue } = getColorBandSizes(paddedHeight, TICK_INTERVAL, scale);
+
+      const {
+        bands: colorBands,
+        scale: colorScale,
+        ticks,
+      } = getColorBands(
+        scale,
+        paddedHeight,
+        colorBandsConfig ?? defaultColorBandsConfig,
+        TICK_INTERVAL,
+        backgroundColor,
+      );
 
       return {
         scale,
-        colorScale: getDiscreteColorScale(domain, bandColors, colorTicks, colorBandSizeValue),
+        ticks,
+        colorBands,
+        colorScale,
       };
     }
 
     default:
       throw new Error('Unknown Bullet subtype');
   }
-}
-
-function getDiscreteColorScale(
-  domain: BulletDatum['domain'],
-  bandColors: BulletGraphStyle['bandColors'],
-  colorTicks: number[],
-  colorBandSizeValue: number,
-): BulletPanelDimensions['colorScale'] {
-  const continuosScale = scaleLinear()
-    .domain(domain)
-    // @ts-ignore - range derived from strings
-    .range(bandColors);
-
-  return (value, continuous = false) => {
-    if (continuous) return `${continuosScale(value)}`;
-
-    const tickIndex = Math.floor(value / colorBandSizeValue);
-    const tickValue = colorTicks[tickIndex];
-
-    return `${continuosScale(tickValue ?? colorTicks.at(tickIndex > colorTicks.length ? 0 : -1) ?? NaN)}`;
-  };
 }
