@@ -24,7 +24,7 @@ export function verticalBullet(
   ctx.translate(0, GRAPH_PADDING.top);
 
   const { datum, graphArea, scale, colorBands, ticks } = dimensions;
-  const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
+  const [min, max] = sortNumbers(scale.domain()) as ContinuousDomain;
   const graphPaddedHeight = graphArea.size.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
 
   // color bands

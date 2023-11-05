@@ -41,7 +41,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           data={[
             [
               {
-                ticks: 'auto',
                 value: 1320,
                 title: 'Total requests',
                 domain: [0, 2000],
@@ -51,7 +50,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
             ],
             [
               {
-                ticks: 'auto',
                 target: 150,
                 value: 483,
                 title: 'Erroring Request duration millis',
@@ -63,7 +61,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
             ],
             [
               {
-                ticks: 'auto',
                 value: 12,
                 title: 'Error rate',
                 subtitle: 'percentage',

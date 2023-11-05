@@ -52,7 +52,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           data={[
             [
               {
-                ticks: 'auto',
                 target: 10,
                 value: 23,
                 title: 'Network inbound error rate',
@@ -64,7 +63,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 tickFormatter,
               },
               {
-                ticks: 'auto',
                 target: 67,
                 value: 123,
                 title: 'Network outbound',
@@ -78,7 +76,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
             ],
             [
               {
-                ticks: 'auto',
                 target: 50,
                 value: 11,
                 title: 'Number of requests',
@@ -90,7 +87,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 tickFormatter,
               },
               {
-                ticks: 'auto',
                 target: 80,
                 value: 92,
                 title: 'Second row second column title',

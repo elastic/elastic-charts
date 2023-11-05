@@ -25,7 +25,7 @@ export function horizontalBullet(
   ctx.translate(GRAPH_PADDING.left, 0);
 
   const { datum, colorBands, ticks, scale } = dimensions;
-  const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
+  const [min, max] = sortNumbers(scale.domain()) as ContinuousDomain;
 
   // Color bands
   const verticalAlignment = TARGET_SIZE / 2;

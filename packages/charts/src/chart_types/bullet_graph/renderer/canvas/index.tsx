@@ -177,6 +177,7 @@ class Component extends React.Component<Props> {
                       progressBarDirection: spec.subtype === BulletGraphSubtype.vertical ? 'vertical' : 'horizontal',
                       title: datum.title,
                       subtitle: datum.subtitle,
+                      // TODO nice domain here
                       domainMax: datum.domain[1],
                       extra: datum.target ? (
                         <span>

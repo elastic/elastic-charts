@@ -61,7 +61,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           data={[
             [
               {
-                ticks: 'auto',
                 target,
                 value,
                 title: bulletTitle,

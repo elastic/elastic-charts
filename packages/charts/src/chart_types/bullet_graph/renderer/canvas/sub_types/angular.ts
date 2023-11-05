@@ -9,7 +9,7 @@
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
-import { ContinuousDomain } from '../../../../../utils/domain';
+import { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
 import { renderDebugPoint } from '../../../../xy_chart/renderer/canvas/utils/debug';
 import { ActiveValue } from '../../../selectors/get_active_values';
@@ -38,10 +38,10 @@ export function angularBullet(
 
   ctx.translate(GRAPH_PADDING.left, GRAPH_PADDING.top);
 
-  const [start, end] = datum.domain;
+  const [start, end] = scale.domain() as GenericDomain;
   // const counterClockwise = true;
   const counterClockwise = startAngle < endAngle && start > end;
-  const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
+  const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
   const formatterColorTicks = ticks.map((v) => ({ value: v, formattedValue: datum.tickFormatter(v) }));
 
   // Color bands

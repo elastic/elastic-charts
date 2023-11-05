@@ -17,9 +17,14 @@ import { OptionsKnobOptionsDisplay } from '@storybook/addon-knobs/dist/component
 /**
  * Fix default storybook behavior that does not correctly parse numbers/strings in arrays
  */
-export function getArrayKnob(name: string, values: (string | number)[]): (string | number)[] {
+export function getArrayKnob(
+  name: string,
+  values: (string | number)[],
+  separator?: string,
+  group?: string,
+): (string | number)[] {
   const stringifiedValues = values.map<string>((d) => `${d}`);
-  return array(name, stringifiedValues).map<string | number>((value: string) =>
+  return array(name, stringifiedValues, separator, group).map<string | number>((value: string) =>
     Number.isFinite(parseFloat(value)) ? parseFloat(value) : value,
   );
 }

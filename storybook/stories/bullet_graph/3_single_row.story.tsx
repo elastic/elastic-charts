@@ -42,7 +42,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           data={[
             [
               {
-                ticks: 'auto',
                 target: 85,
                 value: 23,
                 title: 'CPU',
@@ -51,7 +50,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 tickFormatter: formatter,
               },
               {
-                ticks: 'auto',
                 target: 75,
                 value: 98,
                 title: 'Memory',
@@ -61,7 +59,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 tickFormatter: formatter,
               },
               {
-                ticks: 'auto',
                 target: 25,
                 value: 35.5,
                 title: 'Network In',
@@ -71,7 +68,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 tickFormatter: formatter,
               },
               {
-                ticks: 'auto',
                 target: 25,
                 value: 91,
                 title: 'Network out',

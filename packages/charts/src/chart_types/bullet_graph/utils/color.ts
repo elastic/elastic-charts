@@ -11,7 +11,6 @@ import { ScaleLinear } from 'd3-scale';
 import { $Values } from 'utility-types';
 
 import { BaseBoundsConfig, OpenClosedBoundsConfig } from './bounds';
-import { getTicks } from './ticks';
 import { combineColors } from '../../../common/color_calcs';
 import { RGBATupleToString, colorToRgba } from '../../../common/color_library_wrappers';
 import { Color } from '../../../common/colors';
@@ -258,16 +257,13 @@ export type ColorTick = { color: Color } & BandPositions;
 /** @internal */
 export function getColorBands(
   scale: ScaleLinear<number, number>,
-  length: number,
   config: BulletColorConfig,
-  tickInterval: number,
+  ticks: number[],
   backgroundColor: Color,
 ): {
   scale: chroma.Scale<chroma.Color>;
   bands: ColorTick[];
-  ticks: number[];
 } {
-  const ticks = getTicks(length, tickInterval, scale);
   const domain = scale.domain() as GenericDomain;
   const orderedDomain = sortNumbers(domain) as ContinuousDomain;
   const fullTicks = getFullDomainTicks(orderedDomain, ticks);
@@ -300,6 +296,5 @@ export function getColorBands(
   return {
     scale: colorScale,
     bands,
-    ticks,
   };
 }

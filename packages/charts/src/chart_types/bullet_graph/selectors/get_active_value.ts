@@ -67,8 +67,8 @@ function getPanelValue(
   pointer: Point,
   spec: BulletGraphSpec,
 ): Pick<ActiveValueDetails, 'value' | 'snapValue' | 'color' | 'pixelValue'> | undefined {
-  const { datum, graphArea, scale } = panel;
-  const [min, max] = sortNumbers(datum.domain) as ContinuousDomain;
+  const { graphArea, scale } = panel;
+  const [min, max] = sortNumbers(scale.domain()) as ContinuousDomain;
   const isWithinDomain = isBetween(min, max);
 
   switch (spec.subtype) {

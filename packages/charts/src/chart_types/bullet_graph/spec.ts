@@ -24,7 +24,15 @@ export interface BulletDatum {
   value: number;
   target?: number;
   domain: GenericDomain;
-  ticks: 'auto' | number[];
+  niceDomain?: boolean;
+  /**
+   * Approximate number of ticks to be returned. Must be greater than 0.
+   *
+   * Defaults to auto ticks based on length
+   *
+   * See https://d3js.org/d3-scale/linear#linear_ticks
+   */
+  ticks?: number;
   syncCursor?: boolean;
   valueFormatter: ValueFormatter;
   targetFormatter?: ValueFormatter;

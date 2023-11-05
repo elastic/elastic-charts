@@ -14,19 +14,33 @@ import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/chart
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { customKnobs } from '../utils/knobs';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
-  const bulletTitle = text('title', 'Error rate');
-  const subtitle = text('subtitle', '');
-  const value = number('value', 56, { range: true, min: -200, max: 200 });
-  const target = number('target', 75, { range: true, min: -200, max: 200 });
-  const start = number('start', 0, { range: true, min: -200, max: 200 });
-  const end = number('end', 100, { range: true, min: -200, max: 200 });
-  const format = text('format', '0');
+  const bulletTitle = text('title', 'Error rate', 'General');
+  const subtitle = text('subtitle', '', 'General');
+  const value = number('value', 56, { range: true, min: -200, max: 200 }, 'General');
+  const target = number('target', 75, { range: true, min: -200, max: 200 }, 'General');
+  const start = number('start', 0, { range: true, min: -200, max: 200 }, 'General');
+  const end = number('end', 100, { range: true, min: -200, max: 200 }, 'General');
+  const format = text('format', '0', 'General');
   const formatter = (d: number) => numeral(d).format(format);
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
+  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal, { group: 'General' });
+
+  const niceDomain = boolean('niceDomain', false, 'Ticks');
+  const tickStrategy = customKnobs.multiSelect(
+    'tick strategy',
+    {
+      Auto: 'auto',
+      TickCount: 'count',
+    },
+    'auto',
+    'select',
+    'Ticks',
+  );
+  const ticks = number('ticks(approx. count)', 5, { min: 0, step: 1 }, 'Ticks');
 
   return (
     <div
@@ -48,12 +62,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
           data={[
             [
               {
-                ticks: 'auto',
                 target,
                 value,
                 title: bulletTitle,
                 subtitle,
                 domain: [start, end],
+                niceDomain,
+                ticks: tickStrategy[0] === 'count' ? ticks : undefined,
                 valueFormatter: formatter,
                 tickFormatter: formatter,
               },

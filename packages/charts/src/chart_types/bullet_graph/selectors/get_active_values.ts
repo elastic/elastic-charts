@@ -31,7 +31,7 @@ export const getActiveValues = createCustomCachedSelector(
       row.map((panel, ci): ActiveValue | null => {
         const external = !(rowIndex === ri && columnIndex === ci);
         if (!panel || (!panel.datum.syncCursor && external)) return null;
-        const [min, max] = sortNumbers(panel.datum.domain) as ContinuousDomain;
+        const [min, max] = sortNumbers(panel.scale.domain()) as ContinuousDomain;
         if (snapValue > max || snapValue < min) return null;
 
         return {

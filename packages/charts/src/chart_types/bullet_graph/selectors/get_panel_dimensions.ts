@@ -16,6 +16,7 @@ import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getChartThemeSelector } from '../../../state/selectors/get_chart_theme';
 import { getResolvedBackgroundColorSelector } from '../../../state/selectors/get_resolved_background_color';
 import { Size } from '../../../utils/dimensions';
+import { GenericDomain, Range } from '../../../utils/domain';
 import { Point } from '../../../utils/point';
 import { ANGULAR_TICK_INTERVAL, TICK_INTERVAL } from '../renderer/canvas/constants';
 import { BulletDatum, BulletGraphSpec, BulletGraphSubtype } from '../spec';
@@ -29,6 +30,7 @@ import {
 } from '../theme';
 import { getAngledChartSizing, getAnglesBySize } from '../utils/angular';
 import { ColorTick, getColorBands } from '../utils/color';
+import { TickOptions, getTickCount } from '../utils/ticks';
 
 /** @internal */
 export type BulletPanelDimensions = {
@@ -121,7 +123,7 @@ export const getPanelDimensions = createCustomCachedSelector(
 function getSubtypeDimensions(
   { subtype, colorBands: colorBandsConfig }: BulletGraphSpec,
   graphSize: Size,
-  { domain }: BulletDatum,
+  { ticks: desiredTicks, domain, niceDomain }: BulletDatum,
   { colorBands: defaultColorBandsConfig }: BulletGraphStyle,
   backgroundColor: Color,
 ): Pick<BulletPanelDimensions, 'scale' | 'colorScale' | 'colorBands' | 'ticks'> {
@@ -130,18 +132,19 @@ function getSubtypeDimensions(
     case BulletGraphSubtype.halfCircle:
     case BulletGraphSubtype.twoThirdsCircle: {
       const [startAngle, endAngle] = getAnglesBySize(subtype);
-      const scale = scaleLinear().domain(domain).range([startAngle, endAngle]);
       const { radius } = getAngledChartSizing(graphSize, subtype);
 
-      const {
-        bands: colorBands,
-        scale: colorScale,
-        ticks,
-      } = getColorBands(
+      const { scale, ticks } = getScaleWithTicks(domain, [startAngle, endAngle], {
+        rangeMultiplier: radius,
+        desiredTicks,
+        nice: niceDomain,
+        interval: ANGULAR_TICK_INTERVAL,
+      });
+
+      const { bands: colorBands, scale: colorScale } = getColorBands(
         scale,
-        Math.abs(startAngle - endAngle) * radius,
         colorBandsConfig ?? defaultColorBandsConfig,
-        ANGULAR_TICK_INTERVAL,
+        ticks,
         backgroundColor,
       );
 
@@ -155,16 +158,16 @@ function getSubtypeDimensions(
 
     case BulletGraphSubtype.horizontal: {
       const paddedWidth = graphSize.width - GRAPH_PADDING.left - GRAPH_PADDING.right;
-      const scale = scaleLinear().domain(domain).range([0, paddedWidth]);
-      const {
-        bands: colorBands,
-        scale: colorScale,
-        ticks,
-      } = getColorBands(
+      const { scale, ticks } = getScaleWithTicks(domain, [0, paddedWidth], {
+        desiredTicks,
+        nice: niceDomain,
+        interval: TICK_INTERVAL,
+      });
+
+      const { bands: colorBands, scale: colorScale } = getColorBands(
         scale,
-        paddedWidth,
         colorBandsConfig ?? defaultColorBandsConfig,
-        TICK_INTERVAL,
+        ticks,
         backgroundColor,
       );
 
@@ -178,17 +181,16 @@ function getSubtypeDimensions(
 
     case BulletGraphSubtype.vertical: {
       const paddedHeight = graphSize.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
-      const scale = scaleLinear().domain(domain).range([0, paddedHeight]);
+      const { scale, ticks } = getScaleWithTicks(domain, [0, paddedHeight], {
+        desiredTicks,
+        nice: niceDomain,
+        interval: TICK_INTERVAL,
+      });
 
-      const {
-        bands: colorBands,
-        scale: colorScale,
-        ticks,
-      } = getColorBands(
+      const { bands: colorBands, scale: colorScale } = getColorBands(
         scale,
-        paddedHeight,
         colorBandsConfig ?? defaultColorBandsConfig,
-        TICK_INTERVAL,
+        ticks,
         backgroundColor,
       );
 
@@ -203,4 +205,22 @@ function getSubtypeDimensions(
     default:
       throw new Error('Unknown Bullet subtype');
   }
+}
+
+function getScaleWithTicks(domain: GenericDomain, range: Range, tickOptions: TickOptions) {
+  let scale = scaleLinear().domain(domain).range(range);
+  const scaleRange: Range = scale.range() as Range;
+  const tickCount = getTickCount(
+    Math.abs(scaleRange[1] - scaleRange[0]) * (tickOptions.rangeMultiplier || 1),
+    tickOptions,
+  );
+
+  if (tickOptions.nice) {
+    scale = scale.nice(tickCount);
+  }
+
+  return {
+    scale,
+    ticks: scale.ticks(tickCount),
+  };
 }
