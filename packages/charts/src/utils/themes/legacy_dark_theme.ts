@@ -14,6 +14,7 @@ import {
   DEFAULT_GEOMETRY_STYLES,
   DEFAULT_MISSING_COLOR,
 } from './theme_common';
+import { DARK_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
 import { Colors } from '../../common/colors';
 import { GOLDEN_RATIO, TAU } from '../../common/constants';
 import { ColorVariant } from '../common';
@@ -418,6 +419,7 @@ export const LEGACY_DARK_THEME: Theme = {
     nonFiniteText: 'N/A',
     minHeight: 64,
   },
+  bulletGraph: DARK_THEME_BULLET_STYLE,
   tooltip: {
     maxWidth: 260,
     maxTableHeight: 120,
