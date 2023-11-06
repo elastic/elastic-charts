@@ -103,7 +103,7 @@ function getPanelValue(
           return {
             value,
             snapValue,
-            color: `${panel.colorScale(snapValue)}`,
+            color: panel.colorScale(snapValue).hex(),
             pixelValue: angle,
           };
         }
@@ -128,7 +128,7 @@ function getPanelValue(
         return {
           value,
           snapValue,
-          color: `${panel.colorScale(snapValue)}`,
+          color: panel.colorScale(snapValue).hex(),
           pixelValue: relativeX,
         };
       }
@@ -153,7 +153,7 @@ function getPanelValue(
         return {
           value,
           snapValue,
-          color: `${panel.colorScale(snapValue)}`,
+          color: panel.colorScale(snapValue).hex(),
           pixelValue: relativeY,
         };
       }

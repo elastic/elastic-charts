@@ -55,7 +55,7 @@ export const getTooltipInfo = createCustomCachedSelector(
     tooltipInfo.values.push({
       label: valueLabels.value,
       value: activeDatum.value,
-      color: `${activeValue.panel.colorScale(activeDatum.value)}`,
+      color: activeValue.panel.colorScale(activeDatum.value).hex(),
       isHighlighted: isHighlighted(activeValue.panel.scale(activeDatum.value)),
       seriesIdentifier: {
         specId: 'bullet',
@@ -69,7 +69,7 @@ export const getTooltipInfo = createCustomCachedSelector(
       tooltipInfo.values.push({
         label: valueLabels.target,
         value: activeDatum.target,
-        color: `${activeValue.panel.colorScale(activeDatum.target)}`,
+        color: activeValue.panel.colorScale(activeDatum.target).hex(),
         isHighlighted: isHighlighted(activeValue.panel.scale(activeDatum.target)),
         seriesIdentifier: {
           // TODO make this better
