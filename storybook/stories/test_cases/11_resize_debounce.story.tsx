@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { action } from '@storybook/addon-actions';
 import { number } from '@storybook/addon-knobs';
 import moment from 'moment';
 import React from 'react';
@@ -48,7 +49,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
       }}
     >
       <Chart title={title} description={description}>
-        <Settings baseTheme={useBaseTheme()} resizeDebounce={resizeDebounce} showLegend />
+        <Settings
+          showLegend
+          resizeDebounce={resizeDebounce}
+          onResize={action('onResize')}
+          onRenderChange={action('onRenderChange')}
+          baseTheme={useBaseTheme()}
+        />
         <Axis
           id="bottom"
           position={Position.Bottom}

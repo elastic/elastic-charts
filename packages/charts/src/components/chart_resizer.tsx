@@ -12,6 +12,7 @@ import { Dispatch, bindActionCreators } from 'redux';
 import ResizeObserver from 'resize-observer-polyfill';
 
 import { DEFAULT_RESIZE_DEBOUNCE } from '../specs/constants';
+import { ResizeListener } from '../specs/settings';
 import { updateParentDimensions } from '../state/actions/chart_settings';
 import { GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
@@ -20,6 +21,7 @@ import { debounce, DebouncedFunction } from '../utils/debounce';
 
 interface ResizerStateProps {
   resizeDebounce: number;
+  onResize?: ResizeListener;
 }
 
 interface ResizerDispatchProps {
@@ -78,6 +80,7 @@ class Resizer extends React.Component<ResizerProps> {
     const { width, height } = entries[0].contentRect;
     this.animationFrameID = window.requestAnimationFrame(() => {
       this.props.updateParentDimensions({ width, height, top: 0, left: 0 });
+      this.props.onResize?.();
     });
   };
 
@@ -104,9 +107,10 @@ const mapDispatchToProps = (dispatch: Dispatch): ResizerDispatchProps =>
   );
 
 const mapStateToProps = (state: GlobalChartState): ResizerStateProps => {
-  const { resizeDebounce } = getSettingsSpecSelector(state);
+  const { resizeDebounce, onResize } = getSettingsSpecSelector(state);
   return {
     resizeDebounce: isFiniteNumber(resizeDebounce) ? resizeDebounce : DEFAULT_RESIZE_DEBOUNCE,
+    onResize,
   };
 };
 
