@@ -8,7 +8,7 @@
 
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
-import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
+import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import { ContinuousDomain } from '../../../../../utils/domain';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
@@ -71,6 +71,16 @@ export function verticalBullet(
       graphPaddedHeight - scale(datum.target) - TARGET_STROKE_WIDTH / 2,
       TARGET_SIZE,
       TARGET_STROKE_WIDTH,
+    );
+  }
+
+  // Zero baseline
+  if (isBetween(min, max, true)(0)) {
+    ctx.fillRect(
+      graphArea.size.width / 2 - BULLET_SIZE / 2,
+      graphPaddedHeight - scale(0) - TICK_WIDTH / 2,
+      BULLET_SIZE,
+      TICK_WIDTH,
     );
   }
 

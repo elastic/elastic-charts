@@ -9,7 +9,7 @@
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
+import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import { ContinuousDomain } from '../../../../../utils/domain';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
@@ -67,6 +67,11 @@ export function horizontalBullet(
       TARGET_STROKE_WIDTH,
       TARGET_SIZE,
     );
+  }
+
+  // Zero baseline
+  if (isBetween(min, max, true)(0)) {
+    ctx.fillRect(scale(0) - TICK_WIDTH / 2, verticalAlignment - BULLET_SIZE / 2, TICK_WIDTH, BULLET_SIZE);
   }
 
   // Active Value

@@ -9,7 +9,7 @@
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
+import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
 import { renderDebugPoint } from '../../../../xy_chart/renderer/canvas/utils/debug';
@@ -91,6 +91,17 @@ export function angularBullet(
     ctx.lineWidth = TARGET_STROKE_WIDTH;
 
     drawPolarLine(ctx, scale(datum.target), radius, TARGET_SIZE, center);
+
+    ctx.stroke();
+  }
+
+  // Zero baseline
+  if (isBetween(min, max, true)(0)) {
+    ctx.beginPath();
+    ctx.strokeStyle = style.barBackground;
+    ctx.lineWidth = TICK_WIDTH;
+
+    drawPolarLine(ctx, scale(0), radius, BULLET_SIZE, center);
 
     ctx.stroke();
   }
