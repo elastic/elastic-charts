@@ -25,7 +25,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const target = number('target', 75, { range: true, min: -200, max: 200 }, 'General');
   const start = number('start', 0, { range: true, min: -200, max: 200 }, 'General');
   const end = number('end', 100, { range: true, min: -200, max: 200 }, 'General');
-  const format = text('format', '0', 'General');
+  const format = text('format (numeraljs)', '0.[0]', 'General');
   const formatter = (d: number) => numeral(d).format(format);
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal, { group: 'General' });
 

@@ -7,66 +7,100 @@
  */
 
 import classNames from 'classnames';
+import { scaleLinear } from 'd3-scale';
 import React from 'react';
 
 import { Color } from '../../../../common/colors';
 import { Icon } from '../../../../components/icons/icon';
-import { clamp, isNil, LayoutDirection } from '../../../../utils/common';
-import { MetricWProgress } from '../../specs';
+import { isNil, LayoutDirection, sortNumbers } from '../../../../utils/common';
+import { ContinuousDomain, GenericDomain } from '../../../../utils/domain';
+import { BulletMetricWProgress, isBulletMetric, MetricWProgress } from '../../specs';
 
 const TARGET_SIZE = 8;
+const BASELINE_SIZE = 2;
 
-/** @internal */
-export const ProgressBar: React.FunctionComponent<{
-  datum: MetricWProgress;
+interface ProgressBarProps {
+  datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
   size: 'small';
-}> = ({
-  datum: { title, domainMax, value, target, color, valueFormatter, targetFormatter, progressBarDirection },
-  barBackground,
-  size,
-}) => {
-  const verticalDirection = progressBarDirection === LayoutDirection.Vertical;
-  const getPercent = (n: number) => Number(clamp((n / domainMax) * 100, 0, 100).toFixed(1));
-  const percent = getPercent(value);
-  const targetPlacement = isNil(target) ? null : `calc(${getPercent(target)}% - ${TARGET_SIZE / 2}px)`;
+}
 
-  const bgClassName = classNames('echSingleMetricProgress', `echSingleMetricProgress--${size}`, {
-    'echSingleMetricProgress--vertical': verticalDirection,
-    'echSingleMetricProgress--horizontal': !verticalDirection,
-  });
-  const barClassName = classNames('echSingleMetricProgressBar', `echSingleMetricProgressBar--${size}`, {
-    'echSingleMetricProgressBar--vertical': verticalDirection,
-    'echSingleMetricProgressBar--horizontal': !verticalDirection,
-  });
-  const targetClassName = classNames('echSingleMetricTarget', `echSingleMetricTarget--${size}`, {
-    'echSingleMetricTarget--vertical': verticalDirection,
-    'echSingleMetricTarget--horizontal': !verticalDirection,
-  });
-  const percentProp = verticalDirection ? { height: `${percent}%` } : { width: `${percent}%` };
+/** @internal */
+export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ datum, barBackground, size }) => {
+  const { title, value, target, color, valueFormatter, targetFormatter, progressBarDirection } = datum;
+  const isBullet = isBulletMetric(datum);
+  const isVertical = progressBarDirection === LayoutDirection.Vertical;
+  const domain: GenericDomain = isBulletMetric(datum) ? datum.domain : [0, datum.domainMax];
+  // TODO clamp and round values
+  const scale = scaleLinear().domain(domain).range([0, 100]);
 
+  if (isBulletMetric(datum) && datum.niceDomain) {
+    scale.nice();
+  }
+
+  const updatedDomain = scale.domain() as GenericDomain;
+  const [domainMin, domainMax] = sortNumbers(updatedDomain) as ContinuousDomain;
+  const scaledValue = scale(value);
+  const [min, max] = sortNumbers([scale(0), scaledValue]);
+  const positionStyle = isVertical
+    ? {
+        bottom: `${min}%`,
+        top: `${100 - max}%`,
+      }
+    : {
+        left: `${min}%`,
+        right: `${100 - max}%`,
+      };
+
+  const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${TARGET_SIZE / 2}px)`;
+  const zeroPlacement = domainMin > 0 || domainMax < 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
+
+  const labelType = isBullet ? 'Value' : 'Percentage';
   return (
-    <div className={bgClassName} style={{ backgroundColor: size === 'small' ? barBackground : undefined }}>
+    <div
+      className={getDirectionalClasses('Progress', isVertical, size)}
+      style={{ backgroundColor: size === 'small' ? barBackground : undefined }}
+      title={!isBullet ? '' : `${updatedDomain[0]} to ${updatedDomain[1]}`}
+    >
       {targetPlacement && (
         <div
-          className={targetClassName}
-          style={verticalDirection ? { bottom: targetPlacement } : { left: targetPlacement }}
+          className={getDirectionalClasses('Target', isVertical, size)}
+          style={{
+            [isVertical ? 'bottom' : 'left']: targetPlacement,
+          }}
           aria-valuenow={target}
-          title={`target: ${(targetFormatter ?? valueFormatter)(target || 0)}`}
+          title={`Target: ${(targetFormatter ?? valueFormatter)(target || 0)}`}
         >
           <Icon height={TARGET_SIZE} width={TARGET_SIZE} type="downArrow" color={color} />
         </div>
       )}
+      {zeroPlacement && (
+        <div
+          className={getDirectionalClasses('ZeroBaseline', isVertical, size)}
+          style={{
+            backgroundColor: color,
+            [isVertical ? 'bottom' : 'left']: zeroPlacement,
+          }}
+        />
+      )}
       <div
-        className={barClassName}
-        style={{ backgroundColor: color, ...percentProp }}
+        className={getDirectionalClasses('ProgressBar', isVertical, size)}
+        style={{ backgroundColor: color, ...positionStyle }}
         role="meter"
-        title={`value: ${valueFormatter(value)}`}
-        aria-label={title ? `Percentage of ${title}` : 'Percentage'}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={percent}
+        title={`${labelType}: ${valueFormatter(value)}`}
+        aria-label={title ? `${labelType} of ${title}` : labelType}
+        aria-valuemin={isBullet ? domainMin : 0}
+        aria-valuemax={isBullet ? domainMax : 100}
+        aria-valuenow={isBullet ? value : scaledValue}
       />
     </div>
   );
 };
+
+function getDirectionalClasses(element: string, isVertical: boolean, size: ProgressBarProps['size']) {
+  const base = `echSingleMetric${element}`;
+  return classNames(base, `${base}--${size}`, {
+    [`${base}--vertical`]: isVertical,
+    [`${base}--horizontal`]: !isVertical,
+  });
+}

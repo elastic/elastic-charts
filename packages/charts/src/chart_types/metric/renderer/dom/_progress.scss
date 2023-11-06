@@ -67,6 +67,36 @@
   &--horizontal {
     position: absolute;
     bottom: 100%;
-    left: -4px;
+  }
+}
+
+.echSingleMetricZeroBaseline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  $line-width: 2px;
+  $line-length: 13px;
+
+  &--vertical {
+    position: absolute;
+    left: 0;
+
+    &.echSingleMetricZeroBaseline--small {
+      right: auto;
+      height: $line-width;
+      width: $line-length;
+    }
+  }
+
+  &--horizontal {
+    position: absolute;
+    bottom: 0;
+
+    &.echSingleMetricZeroBaseline--small {
+      top: auto;
+      width: $line-width;
+      height: $line-length;
+    }
   }
 }

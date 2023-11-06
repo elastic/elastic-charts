@@ -9,7 +9,7 @@
 /* eslint-disable-next-line eslint-comments/disable-enable-pair */
 /* eslint-disable react/no-array-index-key */
 
-import { scaleLinear } from 'd3-scale';
+import chroma from 'chroma-js';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -36,6 +36,7 @@ import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Metric } from '../../../metric/renderer/dom/metric';
+import { BulletMetricWProgress, MetricDatum } from '../../../metric/specs';
 import { ActiveValue, getActiveValues } from '../../selectors/get_active_values';
 import { getBulletSpec } from '../../selectors/get_bullet_spec';
 import { getChartSize } from '../../selectors/get_chart_size';
@@ -159,39 +160,40 @@ class Component extends React.Component<Props> {
             <AlignedGrid<BulletDatum>
               data={spec.data}
               contentComponent={({ datum, stats }) => {
-                const colorScale = scaleLinear()
-                  .domain(datum.domain)
+                const colorScale = chroma
                   // TODO use colorBands in metric implementation
-                  // @ts-ignore - range determined from strings
-                  .range(this.props.colorBands);
+                  // @ts-ignore - TODO fix when not an array
+                  .scale(Array.isArray(this.props.colorBands) ? this.props.colorBands : this.props.style.colorBands)
+                  .domain(datum.domain);
+                const bulletDatum: BulletMetricWProgress = {
+                  value: datum.value,
+                  target: datum.target,
+                  valueFormatter: datum.valueFormatter,
+                  targetFormatter: datum.targetFormatter,
+                  color: style.barBackground,
+                  progressBarDirection: spec.subtype === BulletGraphSubtype.vertical ? 'vertical' : 'horizontal',
+                  title: datum.title,
+                  subtitle: datum.subtitle,
+                  domain: datum.domain,
+                  niceDomain: datum.niceDomain,
+                  extra: datum.target ? (
+                    <span>
+                      target: <strong>{(datum.targetFormatter ?? datum.valueFormatter)(datum.target)}</strong>
+                    </span>
+                  ) : undefined,
+                };
 
                 return (
                   <Metric
                     chartId="XX"
-                    datum={{
-                      value: datum.value,
-                      target: datum.target,
-                      valueFormatter: datum.valueFormatter,
-                      targetFormatter: datum.targetFormatter,
-                      color: style.barBackground,
-                      progressBarDirection: spec.subtype === BulletGraphSubtype.vertical ? 'vertical' : 'horizontal',
-                      title: datum.title,
-                      subtitle: datum.subtitle,
-                      // TODO nice domain here
-                      domainMax: datum.domain[1],
-                      extra: datum.target ? (
-                        <span>
-                          target: <strong>{(datum.targetFormatter ?? datum.valueFormatter)(datum.target)}</strong>
-                        </span>
-                      ) : undefined,
-                    }}
+                    datum={bulletDatum as MetricDatum} // forcing internal type use
                     hasTitles={this.props.hasTitles}
                     totalRows={stats.rows}
                     totalColumns={stats.columns}
                     columnIndex={stats.columnIndex}
                     rowIndex={stats.rowIndex}
                     style={{
-                      barBackground: `${colorScale(datum.value)}`,
+                      barBackground: colorScale(datum.value).hex(),
                       border: 'gray',
                       minHeight: 0,
                       text: {
