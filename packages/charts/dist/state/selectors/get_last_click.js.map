@@ -1,1 +1,0 @@
-{"version":3,"file":"get_last_click.js","sourceRoot":"","sources":["../../../src/state/selectors/get_last_click.ts"],"names":[],"mappings":";;;AAWA,SAAgB,oBAAoB,CAAC,KAAuB;IAC1D,OAAO,KAAK,CAAC,YAAY,CAAC,OAAO,CAAC,SAAS,CAAC;AAC9C,CAAC;AAFD,oDAEC"}

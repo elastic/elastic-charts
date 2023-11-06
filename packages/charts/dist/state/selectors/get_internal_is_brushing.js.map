@@ -1,1 +1,0 @@
-{"version":3,"file":"get_internal_is_brushing.js","sourceRoot":"","sources":["../../../src/state/selectors/get_internal_is_brushing.ts"],"names":[],"mappings":";;;AAWO,MAAM,6BAA6B,GAAG,CAAC,KAAuB,EAAW,EAAE;IAChF,IAAI,KAAK,CAAC,kBAAkB,EAAE;QAC5B,OAAO,KAAK,CAAC,kBAAkB,CAAC,UAAU,CAAC,KAAK,CAAC,CAAC;KACnD;IACD,OAAO,KAAK,CAAC;AACf,CAAC,CAAC;AALW,QAAA,6BAA6B,iCAKxC"}

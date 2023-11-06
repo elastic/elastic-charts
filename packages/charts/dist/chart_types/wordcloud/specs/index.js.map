@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/chart_types/wordcloud/specs/index.ts"],"names":[],"mappings":";;;AAUA,6BAAkC;AAElC,wDAAoD;AACpD,8DAAmE;AACnE,qEAA2F;AAY9E,QAAA,SAAS,GAAG,IAAA,mCAAoB,GAAiB,CAC5D;IACE,SAAS,EAAE,aAAS,CAAC,SAAS;IAC9B,QAAQ,EAAE,oBAAQ,CAAC,MAAM;CAC1B,EACD;IACE,GAAG,sCAAoB;CACxB,CACF,CAAC;AAKF,mEAAyF;AAArE,2GAAA,QAAQ,OAAA"}

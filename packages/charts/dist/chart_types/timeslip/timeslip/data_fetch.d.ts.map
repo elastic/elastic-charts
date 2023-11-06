@@ -1,1 +1,0 @@
-{"version":3,"file":"data_fetch.d.ts","sourceRoot":"","sources":["../../../../src/chart_types/timeslip/timeslip/data_fetch.ts"],"names":[],"mappings":"AASA,OAAO,EAAE,UAAU,EAAE,MAAM,yBAAyB,CAAC;AAMrD,cAAc;AACd,MAAM,MAAM,gBAAgB,GAAG,KAAK,CAAC;IAAE,OAAO,EAAE,MAAM,CAAC;IAAC,OAAO,CAAC,EAAE,UAAU,CAAC,SAAS,CAAC,CAAC;IAAC,KAAK,CAAC,EAAE,MAAM,CAAA;CAAE,CAAC,CAAC"}

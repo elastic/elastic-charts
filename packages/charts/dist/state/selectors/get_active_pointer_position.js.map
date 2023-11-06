@@ -1,1 +1,0 @@
-{"version":3,"file":"get_active_pointer_position.js","sourceRoot":"","sources":["../../../src/state/selectors/get_active_pointer_position.ts"],"names":[],"mappings":";;;AAWO,MAAM,wBAAwB,GAAG,CAAC,EAAE,YAAY,EAAoB,EAAE,EAAE;;IAC7E,OAAO,MAAA,MAAA,YAAY,CAAC,OAAO,CAAC,MAAM,0CAAE,QAAQ,mCAAI,YAAY,CAAC,OAAO,CAAC,OAAO,CAAC,QAAQ,CAAC;AACxF,CAAC,CAAC;AAFW,QAAA,wBAAwB,4BAEnC"}
