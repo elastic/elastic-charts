@@ -53,7 +53,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ datum, 
       };
 
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${TARGET_SIZE / 2}px)`;
-  const zeroPlacement = domainMin > 0 || domainMax < 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
+  const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
 
   const labelType = isBullet ? 'Value' : 'Percentage';
   return (
