@@ -46,7 +46,7 @@ test.describe('Bar series stories', () => {
       (enableHistogramMode) => {
         eachRotation.test(async ({ page, rotation }) => {
           await common.expectChartAtUrlToMatchScreenshot(page)(
-            `http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-linear&knob-chartRotation=${rotation}&knob-bars padding=0.25&knob-histogram padding=0.05&knob-other series=line&knob-point series alignment=center&knob-hasHistogramBarSeries=&knob-debug=false&knob-bars-1 enableHistogramMode=${enableHistogramMode}&knob-bars-2 enableHistogramMode=`,
+            `http://localhost:9001/?path=/story/bar-chart--test-histogram-mode-linear&knob-chartRotation=${rotation}&knob-stacked=false&knob-bars padding=0.25&knob-histogram padding=0.05&knob-other series=line&knob-point series alignment=center&knob-hasHistogramBarSeries=&knob-debug=false&knob-bars-1 enableHistogramMode=${enableHistogramMode}&knob-bars-2 enableHistogramMode=`,
           );
         });
       },
