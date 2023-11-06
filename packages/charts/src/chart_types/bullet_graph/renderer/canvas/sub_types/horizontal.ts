@@ -10,7 +10,7 @@ import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
-import { ContinuousDomain } from '../../../../../utils/domain';
+import { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
@@ -27,7 +27,8 @@ export function horizontalBullet(
   ctx.translate(GRAPH_PADDING.left, 0);
 
   const { datum, colorBands, ticks, scale } = dimensions;
-  const [min, max] = sortNumbers(scale.domain()) as ContinuousDomain;
+  const [start, end] = scale.domain() as GenericDomain;
+  const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
 
   // Color bands
   const verticalAlignment = TARGET_SIZE / 2;
@@ -93,13 +94,12 @@ export function horizontalBullet(
     .forEach((tick, i) => {
       const labelText = datum.tickFormatter(tick);
       if (i === ticks.length - 1) {
-        const availableWidth = max - (ticks.at(-1) ?? 0);
+        const availableWidth = Math.abs((start > end ? min : max) - (ticks.at(i) ?? NaN));
         const { width: labelWidth } = measureText(ctx)(labelText, TICK_FONT, TICK_FONT_SIZE);
-        ctx.textAlign = labelWidth >= scale(availableWidth) ? 'end' : 'start';
+        ctx.textAlign = labelWidth >= Math.abs(scale(availableWidth) - scale(0)) ? 'end' : 'start';
       } else {
         ctx.textAlign = 'start';
       }
-
       ctx.fillText(labelText, scale(tick), verticalAlignment + TARGET_SIZE / 2);
     });
 }

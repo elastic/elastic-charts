@@ -9,7 +9,7 @@
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
-import { ContinuousDomain } from '../../../../../utils/domain';
+import { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
@@ -26,7 +26,8 @@ export function verticalBullet(
   ctx.translate(0, GRAPH_PADDING.top);
 
   const { datum, graphArea, scale, colorBands, ticks } = dimensions;
-  const [min, max] = sortNumbers(scale.domain()) as ContinuousDomain;
+  const [start, end] = scale.domain() as GenericDomain;
+  const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
   const graphPaddedHeight = graphArea.size.height - GRAPH_PADDING.bottom - GRAPH_PADDING.top;
 
   // color bands
@@ -105,9 +106,9 @@ export function verticalBullet(
 
       const labelText = datum.tickFormatter(tick);
       if (i === ticks.length - 1) {
-        const availableHeight = max - (ticks.at(-1) ?? 0);
+        const availableHeight = Math.abs((start > end ? min : max) - (ticks.at(i) ?? NaN));
         const labelHeight = TICK_FONT_SIZE;
-        ctx.textBaseline = labelHeight >= scale(availableHeight) ? 'hanging' : 'bottom';
+        ctx.textBaseline = labelHeight >= Math.abs(scale(availableHeight) - scale(0)) ? 'hanging' : 'bottom';
       } else {
         ctx.textBaseline = 'bottom';
       }
