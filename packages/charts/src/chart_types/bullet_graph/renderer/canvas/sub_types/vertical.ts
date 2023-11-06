@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import { ContinuousDomain } from '../../../../../utils/domain';
@@ -19,6 +20,7 @@ export function verticalBullet(
   ctx: CanvasRenderingContext2D,
   dimensions: BulletPanelDimensions,
   style: BulletGraphStyle,
+  backgroundColor: Color,
   activeValue?: ActiveValue | null,
 ) {
   ctx.translate(0, GRAPH_PADDING.top);
@@ -40,7 +42,7 @@ export function verticalBullet(
 
   // Ticks
   ctx.beginPath();
-  ctx.strokeStyle = style.background;
+  ctx.strokeStyle = backgroundColor;
   ctx.lineWidth = TICK_WIDTH;
 
   ticks

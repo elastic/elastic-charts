@@ -6,25 +6,15 @@
  * Side Public License, v 1.
  */
 
+import { DARK_BASE_COLORS } from './base_colors';
 import { palettes } from './colors';
-import { Theme, ChartBaseColors } from './theme';
+import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { DARK_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
-
-/** @public */
-export const DARK_BASE_COLORS: ChartBaseColors = {
-  emptyShade: '#1D1E24',
-  lightestShade: '#25262E',
-  lightShade: '#343741',
-  mediumShade: '#535966',
-  darkShade: '#98A2B3',
-  darkestShade: '#D4DAE5',
-  title: '#DFE5EF',
-};
 
 /** @public */
 export const DARK_THEME: Theme = {

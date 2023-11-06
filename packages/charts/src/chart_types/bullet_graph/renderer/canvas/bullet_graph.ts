@@ -7,7 +7,7 @@
  */
 
 import { angularBullet, horizontalBullet, verticalBullet } from './sub_types';
-import { Colors } from '../../../../common/colors';
+import { Color, Colors } from '../../../../common/colors';
 import { Ratio } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import { withContext, clearCanvas } from '../../../../renderers/canvas';
@@ -42,12 +42,13 @@ export function renderBulletGraph(
     dimensions: BulletDimensions;
     activeValues: (ActiveValue | null)[][];
     style: BulletGraphStyle;
+    backgroundColor: Color;
   },
 ) {
-  const { debug, style, dimensions, activeValues, spec } = props;
+  const { debug, style, dimensions, activeValues, spec, backgroundColor } = props;
   withContext(ctx, (ctx) => {
     ctx.scale(dpr, dpr);
-    clearCanvas(ctx, props.style.background);
+    clearCanvas(ctx, backgroundColor);
 
     // clear only if need to render metric or no spec available
     if (!spec || dimensions.shouldRenderMetric) {
@@ -55,7 +56,7 @@ export function renderBulletGraph(
     }
 
     // render each Small multiple
-    ctx.fillStyle = props.style.background;
+    ctx.fillStyle = backgroundColor;
 
     // layout.headerLayout.forEach((row, rowIndex) =>
     dimensions.rows.forEach((row, rowIndex) =>
@@ -151,11 +152,11 @@ export function renderBulletGraph(
             ctx.translate(graphArea.origin.x, graphArea.origin.y);
 
             if (spec.subtype === BulletGraphSubtype.horizontal) {
-              horizontalBullet(ctx, bulletGraph, style, activeValue);
+              horizontalBullet(ctx, bulletGraph, style, backgroundColor, activeValue);
             } else if (spec.subtype === BulletGraphSubtype.vertical) {
-              verticalBullet(ctx, bulletGraph, style, activeValue);
+              verticalBullet(ctx, bulletGraph, style, backgroundColor, activeValue);
             } else {
-              angularBullet(ctx, bulletGraph, style, spec, debug, activeValue);
+              angularBullet(ctx, bulletGraph, style, backgroundColor, spec, debug, activeValue);
             }
           });
 

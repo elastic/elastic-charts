@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
@@ -24,6 +25,7 @@ export function angularBullet(
   ctx: CanvasRenderingContext2D,
   dimensions: BulletPanelDimensions,
   style: BulletGraphStyle,
+  backgroundColor: Color,
   spec: BulletGraphSpec,
   debug: boolean,
   activeValue?: ActiveValue | null,
@@ -55,7 +57,7 @@ export function angularBullet(
 
   // Ticks
   ctx.beginPath();
-  ctx.strokeStyle = style.background;
+  ctx.strokeStyle = backgroundColor;
   ctx.lineWidth = TICK_WIDTH;
   formatterColorTicks
     .filter((tick) => tick.value > min && tick.value < max)

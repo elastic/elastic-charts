@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
@@ -20,6 +21,7 @@ export function horizontalBullet(
   ctx: CanvasRenderingContext2D,
   dimensions: BulletPanelDimensions,
   style: BulletGraphStyle,
+  backgroundColor: Color,
   activeValue?: ActiveValue | null,
 ) {
   ctx.translate(GRAPH_PADDING.left, 0);
@@ -36,7 +38,7 @@ export function horizontalBullet(
 
   // Ticks
   ctx.beginPath();
-  ctx.strokeStyle = style.background;
+  ctx.strokeStyle = backgroundColor;
   ctx.lineWidth = TICK_WIDTH;
   ticks
     .filter((tick) => tick > min && tick < max)

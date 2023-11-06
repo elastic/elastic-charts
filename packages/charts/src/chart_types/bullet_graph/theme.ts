@@ -12,12 +12,12 @@ import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { Pixels } from '../../common/geometry';
 import { Font } from '../../common/text_utils';
 import { Padding } from '../../utils/dimensions';
+import { DARK_BASE_COLORS, LIGHT_BASE_COLORS } from '../../utils/themes/base_colors';
 
 /** @public */
 export interface BulletGraphStyle {
   textColor: Color;
   border: Color;
-  background: Color;
   barBackground: Color;
   /**
    * Default band colors when not defined on spec
@@ -30,11 +30,10 @@ export interface BulletGraphStyle {
 
 /** @internal */
 export const LIGHT_THEME_BULLET_STYLE: BulletGraphStyle = {
-  textColor: '#343741',
+  textColor: LIGHT_BASE_COLORS.darkestShade,
   border: '#EDF0F5',
-  barBackground: '#343741',
+  barBackground: LIGHT_BASE_COLORS.darkestShade,
   colorBands: ['#D9C6EF', '#AA87D1'],
-  background: '#FFFFFF',
   nonFiniteText: 'N/A',
   minHeight: 64,
   angularTickLabelPadding: 10,
@@ -43,10 +42,9 @@ export const LIGHT_THEME_BULLET_STYLE: BulletGraphStyle = {
 /** @internal */
 export const DARK_THEME_BULLET_STYLE: BulletGraphStyle = {
   textColor: '#E0E5EE',
-  border: '#343741',
+  border: DARK_BASE_COLORS.lightShade,
   barBackground: '#FFF',
   colorBands: ['#6092C0', '#3F4E61'],
-  background: '#1D1E23',
   nonFiniteText: 'N/A',
   minHeight: 64,
   angularTickLabelPadding: 10,
