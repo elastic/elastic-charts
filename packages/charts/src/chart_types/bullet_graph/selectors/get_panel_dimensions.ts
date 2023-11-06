@@ -10,7 +10,7 @@ import { ScaleLinear, scaleLinear } from 'd3-scale';
 
 import { getBulletSpec } from './get_bullet_spec';
 import { BulletGraphLayout, BulletHeaderLayout, getLayout } from './get_layout';
-import { Color } from '../../../common/colors';
+import { ChromaColorScale, Color } from '../../../common/colors';
 import { Rect } from '../../../geoms/types';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getChartThemeSelector } from '../../../state/selectors/get_chart_theme';
@@ -31,7 +31,7 @@ import {
 } from '../theme';
 import { getAngledChartSizing, getAnglesBySize } from '../utils/angular';
 import { ColorTick, getColorBands } from '../utils/color';
-import { TickOptions, getTickCount } from '../utils/ticks';
+import { TickOptions, getTicks } from '../utils/ticks';
 
 /** @internal */
 export type BulletPanelDimensions = {
@@ -42,7 +42,7 @@ export type BulletPanelDimensions = {
   };
   scale: ScaleLinear<number, number>;
   ticks: number[];
-  colorScale: chroma.Scale<chroma.Color>;
+  colorScale: ChromaColorScale;
   colorBands: ColorTick[];
   panel: Rect;
 } & Omit<BulletHeaderLayout, 'panel'>;
@@ -125,7 +125,7 @@ function getSubtypeDimensions(
   { subtype, colorBands: colorBandsConfig }: BulletGraphSpec,
   graphSize: Size,
   { ticks: desiredTicks, domain, niceDomain }: BulletDatum,
-  { colorBands: defaultColorBandsConfig }: BulletGraphStyle,
+  { colorBands: defaultColorBandsConfig, fallbackBandColor }: BulletGraphStyle,
   backgroundColor: Color,
 ): Pick<BulletPanelDimensions, 'scale' | 'colorScale' | 'colorBands' | 'ticks'> {
   switch (subtype) {
@@ -147,6 +147,7 @@ function getSubtypeDimensions(
         colorBandsConfig ?? defaultColorBandsConfig,
         ticks,
         backgroundColor,
+        fallbackBandColor,
       );
 
       return {
@@ -170,6 +171,7 @@ function getSubtypeDimensions(
         colorBandsConfig ?? defaultColorBandsConfig,
         ticks,
         backgroundColor,
+        fallbackBandColor,
       );
 
       return {
@@ -193,6 +195,7 @@ function getSubtypeDimensions(
         colorBandsConfig ?? defaultColorBandsConfig,
         ticks,
         backgroundColor,
+        fallbackBandColor,
       );
 
       return {
@@ -211,7 +214,7 @@ function getSubtypeDimensions(
 function getScaleWithTicks(domain: GenericDomain, range: Range, tickOptions: TickOptions) {
   let scale = scaleLinear().domain(domain).range(range);
   const scaleRange: Range = scale.range() as Range;
-  const ticks = getTickCount(Math.abs(scaleRange[1] - scaleRange[0]) * (tickOptions.rangeMultiplier || 1), tickOptions);
+  const ticks = getTicks(Math.abs(scaleRange[1] - scaleRange[0]) * (tickOptions.rangeMultiplier || 1), tickOptions);
   const customRange = typeof ticks !== 'number';
 
   if (tickOptions.nice) {

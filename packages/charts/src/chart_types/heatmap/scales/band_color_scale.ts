@@ -6,11 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Colors } from '../../../common/colors';
+import { Colors, ColorScale } from '../../../common/colors';
 import { getPredicateFn } from '../../../common/predicate';
 import { isFiniteNumber, safeFormat, ValueFormatter } from '../../../utils/common';
 import { ColorBand, HeatmapBandsColorScale } from '../specs/heatmap';
-import { ColorScale } from '../state/selectors/get_color_scale';
 
 function defaultColorBandFormatter(valueFormatter?: ValueFormatter) {
   return (startValue: number, endValue: number) => {

@@ -26,6 +26,7 @@ export interface BulletGraphStyle {
   nonFiniteText: string;
   minHeight: Pixels;
   angularTickLabelPadding: Pixels;
+  fallbackBandColor: Color;
 }
 
 /** @internal */
@@ -37,6 +38,7 @@ export const LIGHT_THEME_BULLET_STYLE: BulletGraphStyle = {
   nonFiniteText: 'N/A',
   minHeight: 64,
   angularTickLabelPadding: 10,
+  fallbackBandColor: LIGHT_BASE_COLORS.mediumShade,
 };
 
 /** @internal */
@@ -48,6 +50,7 @@ export const DARK_THEME_BULLET_STYLE: BulletGraphStyle = {
   nonFiniteText: 'N/A',
   minHeight: 64,
   angularTickLabelPadding: 10,
+  fallbackBandColor: DARK_BASE_COLORS.mediumShade,
 };
 
 /** @internal */

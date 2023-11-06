@@ -22,7 +22,7 @@ export interface TickOptions {
 }
 
 /** @internal */
-export function getTickCount(length: number, { desiredTicks, interval }: Omit<TickOptions, 'nice'>) {
+export function getTicks(length: number, { desiredTicks, interval }: Omit<TickOptions, 'nice'>) {
   if ((isFiniteNumber(desiredTicks) && desiredTicks > 0) || typeof desiredTicks === 'function') return desiredTicks;
   const target = Math.floor(length / interval);
   return clamp(target, MIN_TICK_COUNT, MAX_TICK_COUNT);

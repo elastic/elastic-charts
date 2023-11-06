@@ -13,8 +13,8 @@ import { $Values } from 'utility-types';
 import { BaseBoundsConfig, OpenClosedBoundsConfig } from './bounds';
 import { combineColors } from '../../../common/color_calcs';
 import { RGBATupleToString, colorToRgba } from '../../../common/color_library_wrappers';
-import { Color } from '../../../common/colors';
-import { isFiniteNumber, isNil, sortNumbers } from '../../../utils/common';
+import { ChromaColorScale, Color } from '../../../common/colors';
+import { isFiniteNumber, isNil, isWithinRange, sortNumbers } from '../../../utils/common';
 import { ContinuousDomain, GenericDomain } from '../../../utils/domain';
 
 /**
@@ -234,13 +234,15 @@ export function getColorScale(
   config: BulletColorConfig,
   fullTicks: number[],
   backgroundColor: Color,
-) {
+  fallbackBandColor: Color,
+): ChromaColorScale {
   const { colors, domain, classes } = getScaleInputs(baseDomain, config, fullTicks, backgroundColor);
   const scale = chroma.scale(colors).mode('lab').domain(domain);
 
   if (classes) scale.classes(classes);
+  const isInDomain = isWithinRange(baseDomain);
 
-  return scale;
+  return (n) => (isInDomain(n) ? scale(n) : chroma(fallbackBandColor));
 }
 
 /** @internal */
@@ -260,14 +262,15 @@ export function getColorBands(
   config: BulletColorConfig,
   ticks: number[],
   backgroundColor: Color,
+  fallbackBandColor: Color,
 ): {
-  scale: chroma.Scale<chroma.Color>;
+  scale: ChromaColorScale;
   bands: ColorTick[];
 } {
   const domain = scale.domain() as GenericDomain;
   const orderedDomain = sortNumbers(domain) as ContinuousDomain;
   const fullTicks = getFullDomainTicks(orderedDomain, ticks);
-  const colorScale = getColorScale(orderedDomain, config, sortNumbers(fullTicks), backgroundColor);
+  const colorScale = getColorScale(orderedDomain, config, sortNumbers(fullTicks), backgroundColor, fallbackBandColor);
   const scaledBandPositions = fullTicks.reduce<[pixelPosition: BandPositions, tick: number][]>((acc, start, i) => {
     const end = fullTicks[i + 1];
     if (end === undefined) return acc;
