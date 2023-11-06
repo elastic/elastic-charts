@@ -206,7 +206,7 @@ export function computeSeriesGeometries(
 
   const barIndexByPanel = Object.keys(dataSeriesGroupedByPanel).reduce<Record<string, string[]>>((acc, panelKey) => {
     const panelBars = dataSeriesGroupedByPanel[panelKey] ?? [];
-    const barDataSeriesByBarIndex = groupBy(panelBars, (d) => getBarIndexKey(d, enableHistogramMode), false);
+    const barDataSeriesByBarIndex = groupBy(panelBars, getBarIndexKey, false);
     acc[panelKey] = Object.keys(barDataSeriesByBarIndex);
     return acc;
   }, {});
@@ -370,7 +370,7 @@ function renderGeometries(
     const color = seriesColorsMap.get(dataSeriesKey) || defaultColor;
 
     if (isBarSeriesSpec(spec)) {
-      const shift = barIndexOrder.indexOf(getBarIndexKey(ds, enableHistogramMode));
+      const shift = barIndexOrder.indexOf(getBarIndexKey(ds));
 
       if (shift === -1) return; // skip bar dataSeries if index is not available
 
@@ -528,12 +528,8 @@ function hasFitFnConfigured(fit?: Fit | FitConfig) {
 }
 
 /** @internal */
-export function getBarIndexKey(
-  { spec, specId, groupId, yAccessor, splitAccessors }: DataSeries,
-  histogramModeEnabled: boolean,
-) {
-  const isStacked = isStackedSpec(spec, histogramModeEnabled);
-  if (isStacked) {
+export function getBarIndexKey({ spec, specId, groupId, yAccessor, splitAccessors }: DataSeries): string {
+  if (isStackedSpec(spec)) {
     return [groupId, '__stacked__'].join('__-__');
   }
 

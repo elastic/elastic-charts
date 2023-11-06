@@ -945,8 +945,11 @@ describe('Series', () => {
           })),
           yAccessors: [(d) => d.max],
           y0Accessors: [(d) => d.min],
+          stackAccessors: ['yes'],
         }),
         new Map(),
+        true,
+        true,
       );
       expect([...splitSeries.dataSeries.values()].map(({ yAccessor }) => yAccessor)).toEqualArrayOf('(index:0)');
       expect([...splitSeries.dataSeries.values()].length).toBe(1);
