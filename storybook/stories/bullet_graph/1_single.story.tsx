@@ -44,7 +44,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const ticks = number('ticks(approx. count)', 5, { min: 0, step: 1 }, 'Ticks');
   const tickPlacements = customKnobs.numbersArray(
     'ticks(placements)',
-    [-200, -100, 0, 10, 20, 30, 40, 50, 100, 200],
+    [-200, -100, 0, 5, 10, 15, 20, 25, 50, 100, 200],
     undefined,
     'Ticks',
   );

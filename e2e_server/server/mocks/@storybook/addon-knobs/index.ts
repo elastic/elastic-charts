@@ -67,6 +67,14 @@ export function object(name: string, dftValue: unknown, options: any, groupId?: 
 }
 
 export function optionsKnob(name: string, values: unknown, dftValues: unknown[], options: any, groupId?: string) {
+  const params = getParams();
+  const knobName = getKnobKey(name, groupId);
+
+  // Check for single values first
+  const paramValues = params.getAll(knobName);
+
+  if (paramValues.length > 0) return paramValues;
+
   return array(name, dftValues, options, groupId);
 }
 

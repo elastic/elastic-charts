@@ -8,7 +8,10 @@
 
 import { test } from '@playwright/test';
 
+import { pwEach } from '../helpers';
 import { common } from '../page_objects/common';
+
+export const BulletGraphSubtype = ['vertical', 'horizontal', 'circle', 'half-circle', 'two-thirds-circle'];
 
 test.describe('Bullet stories', () => {
   test('renders single bullet', async ({ page }) => {
@@ -35,4 +38,54 @@ test.describe('Bullet stories', () => {
     await page.setViewportSize({ width: 785, height: 1000 });
     await common.expectChartAtUrlToMatchScreenshot(page)('http://localhost:9001/?path=/story/bullet-graph--grid');
   });
+
+  pwEach.describe(BulletGraphSubtype)(
+    (subtype) => `subtype - ${subtype}`,
+    (subtype) => {
+      test.describe('Ticks', () => {
+        test('should render with auto ticks', async ({ page }) => {
+          await page.setViewportSize({ width: 785, height: 800 });
+          await common.expectChartAtUrlToMatchScreenshot(page)(
+            `http://localhost:9001/?path=/story/bullet-graph--single&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-end_General=100&knob-format (numeraljs)_General=0.[0]&knob-niceDomain_Ticks=true&knob-start_General=0&knob-subtype_General=${subtype}&knob-target_General=81&knob-tick strategy_Ticks=auto&knob-ticks(approx. count)_Ticks=10&knob-ticks(placements)_Ticks[0]=-200&knob-ticks(placements)_Ticks[1]=-100&knob-ticks(placements)_Ticks[2]=0&knob-ticks(placements)_Ticks[3]=5&knob-ticks(placements)_Ticks[4]=10&knob-ticks(placements)_Ticks[5]=15&knob-ticks(placements)_Ticks[6]=20&knob-ticks(placements)_Ticks[7]=25&knob-ticks(placements)_Ticks[8]=50&knob-ticks(placements)_Ticks[9]=100&knob-ticks(placements)_Ticks[10]=200&knob-title_General=Error rate&knob-value_General=57&knob-debug=&knob-subtitle_General=`,
+          );
+        });
+
+        test('should render with explicit tick count', async ({ page }) => {
+          await page.setViewportSize({ width: 785, height: 800 });
+          await common.expectChartAtUrlToMatchScreenshot(page)(
+            `http://localhost:9002/?path=/story/bullet-graph--single&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-end_General=100&knob-format%20(numeraljs)_General=0.[0]&knob-niceDomain_Ticks=true&knob-start_General=0&knob-subtype_General=${subtype}&knob-target_General=81&knob-tick%20strategy_Ticks[0]=count&knob-tick%20strategy_Ticks[1]=auto&knob-ticks(approx.%20count)_Ticks=14&knob-ticks(placements)_Ticks[0]=-200&knob-ticks(placements)_Ticks[1]=-100&knob-ticks(placements)_Ticks[2]=0&knob-ticks(placements)_Ticks[3]=5&knob-ticks(placements)_Ticks[4]=10&knob-ticks(placements)_Ticks[5]=15&knob-ticks(placements)_Ticks[6]=20&knob-ticks(placements)_Ticks[7]=25&knob-ticks(placements)_Ticks[8]=50&knob-ticks(placements)_Ticks[9]=100&knob-ticks(placements)_Ticks[10]=200&knob-title_General=Error%20rate&knob-value_General=57&knob-debug=&knob-subtitle_General=`,
+          );
+        });
+
+        test('should render with explicit tick placements', async ({ page }) => {
+          await page.setViewportSize({ width: 785, height: 800 });
+          await common.expectChartAtUrlToMatchScreenshot(page)(
+            `http://localhost:9001/?path=/story/bullet-graph--single&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-end_General=100&knob-format (numeraljs)_General=0.[0]&knob-niceDomain_Ticks=true&knob-start_General=0&knob-subtype_General=${subtype}&knob-target_General=81&knob-tick strategy_Ticks=placements&knob-ticks(approx. count)_Ticks=16&knob-ticks(placements)_Ticks[0]=-200&knob-ticks(placements)_Ticks[1]=-100&knob-ticks(placements)_Ticks[2]=0&knob-ticks(placements)_Ticks[3]=5&knob-ticks(placements)_Ticks[4]=10&knob-ticks(placements)_Ticks[5]=15&knob-ticks(placements)_Ticks[6]=20&knob-ticks(placements)_Ticks[7]=25&knob-ticks(placements)_Ticks[8]=50&knob-ticks(placements)_Ticks[9]=100&knob-ticks(placements)_Ticks[10]=200&knob-title_General=Error rate&knob-value_General=57&knob-debug=&knob-subtitle_General=`,
+          );
+        });
+      });
+
+      pwEach.describe([true, false])(
+        (d) => `Nice domain - ${d}`,
+        (niceDomain) => {
+          pwEach.test<[string, { start: number; end: number; value: number; target: number }]>([
+            ['positive values', { start: 4, end: 167, value: 50, target: 100 }],
+            ['positive values - reversed', { start: 167, end: 4, value: 50, target: 100 }],
+            ['positive/negative values', { start: -57, end: 97, value: -12, target: 50 }],
+            ['positive/negative values - reversed', { start: 97, end: -57, value: -12, target: 50 }],
+            ['negative values', { start: -194, end: -5, value: -50, target: -150 }],
+            ['negative values - reversed', { start: -5, end: -194, value: -50, target: -150 }],
+          ])(
+            ([v]) => `should render with ${v}`,
+            async (page, [, { start, end, target, value }]) => {
+              await page.setViewportSize({ width: 785, height: 800 });
+              await common.expectChartAtUrlToMatchScreenshot(page)(
+                `http://localhost:9001/?path=/story/bullet-graph--single&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-debug=&knob-title_General=Error rate&knob-subtitle_General=&knob-value_General=${value}&knob-target_General=${target}&knob-start_General=${start}&knob-end_General=${end}&knob-format (numeraljs)_General=0.[0]&knob-subtype_General=${subtype}&knob-niceDomain_Ticks=${niceDomain}&knob-tick strategy_Ticks=auto&knob-ticks(approx. count)_Ticks=10&knob-ticks(placements)_Ticks[0]=-200&knob-ticks(placements)_Ticks[1]=-100&knob-ticks(placements)_Ticks[2]=0&knob-ticks(placements)_Ticks[3]=5&knob-ticks(placements)_Ticks[4]=10&knob-ticks(placements)_Ticks[5]=15&knob-ticks(placements)_Ticks[6]=20&knob-ticks(placements)_Ticks[7]=25&knob-ticks(placements)_Ticks[8]=50&knob-ticks(placements)_Ticks[9]=100&knob-ticks(placements)_Ticks[10]=200`,
+              );
+            },
+          );
+        },
+      );
+    },
+  );
 });
