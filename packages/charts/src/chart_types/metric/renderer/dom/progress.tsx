@@ -69,7 +69,9 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ datum, 
             [isVertical ? 'bottom' : 'left']: targetPlacement,
           }}
           aria-valuenow={target}
-          title={`Target: ${(targetFormatter ?? valueFormatter)(target || 0)}`}
+          title={`${isBullet ? `${datum.valueLabels.target}: ` : ''}${(targetFormatter ?? valueFormatter)(
+            target || 0,
+          )}`}
         >
           <Icon height={TARGET_SIZE} width={TARGET_SIZE} type="downArrow" color={color} />
         </div>
@@ -87,7 +89,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ datum, 
         className={getDirectionalClasses('ProgressBar', isVertical, size)}
         style={{ backgroundColor: color, ...positionStyle }}
         role="meter"
-        title={`${labelType}: ${valueFormatter(value)}`}
+        title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
         aria-label={title ? `${labelType} of ${title}` : labelType}
         aria-valuemin={isBullet ? domainMin : 0}
         aria-valuemax={isBullet ? domainMax : 100}

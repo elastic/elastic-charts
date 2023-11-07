@@ -10,14 +10,8 @@ import { getActiveValue } from './get_active_value';
 import { getBulletSpec } from './get_bullet_spec';
 import { TooltipInfo } from '../../../components/tooltip';
 import { createCustomCachedSelector } from '../../../state/create_selector';
-import { isBetween, mergePartial } from '../../../utils/common';
-import { BulletGraphSpec } from '../spec';
-
-const defaultValueLabels: Required<BulletGraphSpec['valueLabels']> = {
-  active: 'Active',
-  value: 'Value',
-  target: 'Target',
-};
+import { isBetween } from '../../../utils/common';
+import { mergeValueLabels } from '../spec';
 
 /** @internal */
 export const getTooltipInfo = createCustomCachedSelector(
@@ -27,7 +21,7 @@ export const getTooltipInfo = createCustomCachedSelector(
 
     const useHighlighter = false;
     const highlightMargin = 2;
-    const valueLabels = mergePartial(defaultValueLabels, spec.valueLabels);
+    const valueLabels = mergeValueLabels(spec.valueLabels);
 
     const activeDatum = activeValue.panel.datum;
     const tooltipInfo: TooltipInfo = {

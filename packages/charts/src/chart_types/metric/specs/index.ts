@@ -16,6 +16,7 @@ import { SpecType } from '../../../specs/constants';
 import { specComponentFactory } from '../../../state/spec_factory';
 import { LayoutDirection, ValueFormatter } from '../../../utils/common';
 import { GenericDomain } from '../../../utils/domain';
+import { BulletValueLabels } from '../../bullet_graph/spec';
 
 /** @alpha */
 export type MetricBase = {
@@ -59,6 +60,7 @@ export type MetricWProgress = MetricWNumber & {
 export type BulletMetricWProgress = Omit<MetricWProgress, 'domainMax'> & {
   domain: GenericDomain;
   niceDomain?: boolean;
+  valueLabels: Omit<BulletValueLabels, 'active'>;
 };
 
 /** @alpha */

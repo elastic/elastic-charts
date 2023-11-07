@@ -42,7 +42,7 @@ import { getBulletSpec } from '../../selectors/get_bullet_spec';
 import { getChartSize } from '../../selectors/get_chart_size';
 import { BulletDimensions, getPanelDimensions } from '../../selectors/get_panel_dimensions';
 import { hasChartTitles } from '../../selectors/has_chart_titles';
-import { BulletDatum, BulletGraphSpec, BulletGraphSubtype } from '../../spec';
+import { BulletDatum, BulletGraphSpec, BulletGraphSubtype, mergeValueLabels } from '../../spec';
 import { BulletGraphStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
 import { BulletColorConfig } from '../../utils/color';
 
@@ -176,6 +176,7 @@ class Component extends React.Component<Props> {
                   subtitle: datum.subtitle,
                   domain: datum.domain,
                   niceDomain: datum.niceDomain,
+                  valueLabels: mergeValueLabels(spec.valueLabels),
                   extra: datum.target ? (
                     <span>
                       target: <strong>{(datum.targetFormatter ?? datum.valueFormatter)(datum.target)}</strong>

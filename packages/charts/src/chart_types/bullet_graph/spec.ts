@@ -7,14 +7,14 @@
  */
 
 import { ComponentProps } from 'react';
-import { $Values } from 'utility-types';
+import { $Values, Optional } from 'utility-types';
 
 import { BulletColorConfig } from './utils/color';
 import { ChartType } from '../../chart_types/index';
 import { Spec } from '../../specs';
 import { SpecType } from '../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
-import { stripUndefined, ValueFormatter } from '../../utils/common';
+import { mergePartial, stripUndefined, ValueFormatter } from '../../utils/common';
 import { GenericDomain } from '../../utils/domain';
 
 /** @public */
@@ -60,6 +60,13 @@ export const BulletGraphSubtype = Object.freeze({
 /** @public */
 export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
 
+/** @internal */
+export interface BulletValueLabels {
+  active: string;
+  value: string;
+  target: string;
+}
+
 /** @alpha */
 export interface BulletGraphSpec extends Spec {
   specType: typeof SpecType.Series;
@@ -68,12 +75,19 @@ export interface BulletGraphSpec extends Spec {
   subtype: BulletGraphSubtype;
   tickSnapStep?: number;
   colorBands?: BulletColorConfig;
-  valueLabels?: {
-    active?: string;
-    value?: string;
-    target?: string;
-  };
+  valueLabels?: Optional<BulletValueLabels>;
 }
+
+/** @internal */
+export const mergeValueLabels = (labels?: BulletGraphSpec['valueLabels']) =>
+  mergePartial<BulletValueLabels>(
+    {
+      active: 'Active',
+      value: 'Value',
+      target: 'Target',
+    },
+    labels,
+  );
 
 const buildProps = buildSFProps<BulletGraphSpec>()(
   {
