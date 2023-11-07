@@ -596,10 +596,10 @@ export type BarSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'bar
 
 /**
  * This spec describe the dataset configuration used to display a histogram bar series.
- * A histogram bar series is identical to a bar series except that stackAccessors are not allowed.
+ * A histogram bar series is identical to a bar series except for the bar width.
  * @public
  */
-export type HistogramBarSeriesSpec<D extends BaseDatum = Datum> = Omit<BarSeriesSpec<D>, 'stackAccessors'> & {
+export type HistogramBarSeriesSpec<D extends BaseDatum = Datum> = BarSeriesSpec<D> & {
   enableHistogramMode: true;
 };
 
