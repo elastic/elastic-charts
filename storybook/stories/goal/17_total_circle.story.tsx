@@ -23,8 +23,8 @@ const getBandFillColor = getBandFillColorFn({
 });
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const start = number('startAngle (π)', 1.5, { min: -2, max: 2, range: true, step: 1 / 8 });
-  const end = number('endAngle (π)', -0.5, { min: -2, max: 2, range: true, step: 1 / 8 });
+  const start = number('startAngle (π)', 1.5, { min: -2, max: 2, step: 1 / 8 });
+  const end = number('endAngle (π)', -0.5, { min: -2, max: 2, step: 1 / 8 });
   return (
     <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} />
