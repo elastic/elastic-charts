@@ -12,12 +12,12 @@ exports[`Chart should render the legend name test 1`] = `
           </ChartBackground>
         </Connect(ChartBackground)>
         <Connect(ChartStatusComponent)>
-          <ChartStatusComponent chartId="chart1" rendered={true} renderedCount={1} onRenderChange={[undefined]} debugState={{...}} dispatch={[Function: dispatch]}>
+          <ChartStatusComponent chartId="chart1" rendered={true} renderedCount={1} onWillRender={[undefined]} onRenderChange={[undefined]} debugState={{...}} dispatch={[Function: dispatch]}>
             <div className="echChartStatus" data-ech-render-complete={true} data-ech-render-count={1} data-ech-debug-state={{...}} />
           </ChartStatusComponent>
         </Connect(ChartStatusComponent)>
         <Connect(Resizer)>
-          <Resizer resizeDebounce={10} updateParentDimensions={[Function (anonymous)]}>
+          <Resizer resizeDebounce={10} onResize={[undefined]} updateParentDimensions={[Function (anonymous)]}>
             <div className="echChartResizer" />
           </Resizer>
         </Connect(Resizer)>
