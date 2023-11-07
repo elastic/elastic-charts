@@ -12,7 +12,7 @@ import { Required, Assign } from 'utility-types';
  * Base configurable bounds based on greater than, less than (equal to)
  *
  * `T` may be set to any value to be used as needed
- * @internal
+ * @public
  */
 export type BaseBoundsConfig<T = number> = {
   /**
@@ -33,7 +33,7 @@ export type BaseBoundsConfig<T = number> = {
   gte?: T;
 };
 
-/** @internal */
+/** @public */
 export type BoundsLimiter<T, U extends keyof BaseBoundsConfig<T>> = Assign<
   BaseBoundsConfig<never>,
   Required<Pick<BaseBoundsConfig<T>, U>>
@@ -41,7 +41,7 @@ export type BoundsLimiter<T, U extends keyof BaseBoundsConfig<T>> = Assign<
 
 /**
  * Allowed combination to define closed-ended/two-sided bounds
- * @internal
+ * @public
  */
 export type ClosedBoundsConfig<T> =
   | BoundsLimiter<T, 'lt' | 'gt'>
@@ -51,7 +51,7 @@ export type ClosedBoundsConfig<T> =
 
 /**
  * Allowed combination to define open-ended/one-sided bounds
- * @internal
+ * @public
  */
 export type OpenBoundsConfig<T> =
   | BoundsLimiter<T, 'lt'>
@@ -61,6 +61,6 @@ export type OpenBoundsConfig<T> =
 
 /**
  * Open and closed bound configurations
- * @internal
+ * @public
  */
 export type OpenClosedBoundsConfig<T> = OpenBoundsConfig<T> | ClosedBoundsConfig<T>;

@@ -8,17 +8,20 @@
 
 import { $Keys } from 'utility-types';
 import { $Values } from 'utility-types';
+import { Assign } from 'utility-types';
 import { ComponentProps } from 'react';
 import { ComponentType } from 'react';
 import { CSSProperties } from 'react';
 import { FC } from 'react';
 import { LegacyRef } from 'react';
+import { Optional } from 'utility-types';
 import { OptionalKeys } from 'utility-types';
 import { PropsWithChildren as PropsWithChildren_2 } from 'react';
 import { default as React_2 } from 'react';
 import { ReactChild } from 'react';
 import { ReactElement } from 'react';
 import { ReactNode } from 'react';
+import { Required as Required_2 } from 'utility-types';
 import { RequiredKeys } from 'utility-types';
 
 // @public (undocumented)
@@ -449,6 +452,10 @@ export const BulletGraph: (props: SFProps<BulletGraphSpec, keyof (typeof buildPr
 export interface BulletGraphSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.BulletGraph;
+    // Warning: (ae-forgotten-export) The symbol "BulletColorConfig" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    colorBands?: BulletColorConfig;
     // Warning: (ae-forgotten-export) The symbol "BulletDatum" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
@@ -459,12 +466,10 @@ export interface BulletGraphSpec extends Spec {
     subtype: BulletGraphSubtype;
     // (undocumented)
     tickSnapStep?: number;
+    // Warning: (ae-forgotten-export) The symbol "BulletValueLabels" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
-    valueLabels?: {
-        active?: string;
-        value?: string;
-        target?: string;
-    };
+    valueLabels?: Optional<BulletValueLabels>;
 }
 
 // @public (undocumented)
@@ -472,13 +477,12 @@ export interface BulletGraphStyle {
     // (undocumented)
     angularTickLabelPadding: Pixels;
     // (undocumented)
-    background: Color;
-    // (undocumented)
-    bandColors: [start: Color, end: Color];
-    // (undocumented)
     barBackground: Color;
     // (undocumented)
     border: Color;
+    colorBands: BulletColorConfig;
+    // (undocumented)
+    fallbackBandColor: Color;
     // (undocumented)
     minHeight: Pixels;
     // (undocumented)
@@ -1572,13 +1576,13 @@ export interface HighlighterStyle {
 }
 
 // @public
-export const HistogramBarSeries: <D extends BaseDatum = any>(props: SFProps<HistogramBarSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "hideInLegend" | "xScaleType" | "yScaleType" | "enableHistogramMode", "name" | "color" | "timeZone" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "markSizeAccessor" | "xNice" | "yNice" | "barSeriesStyle" | "stackMode" | "styleAccessor" | "minBarHeight", "id" | "data" | "xAccessor" | "yAccessors">) => null;
+export const HistogramBarSeries: <D extends BaseDatum = any>(props: SFProps<HistogramBarSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "hideInLegend" | "xScaleType" | "yScaleType" | "enableHistogramMode", "name" | "color" | "timeZone" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "xNice" | "yNice" | "barSeriesStyle" | "stackMode" | "styleAccessor" | "minBarHeight", "id" | "data" | "xAccessor" | "yAccessors">) => null;
 
 // @public (undocumented)
 export type HistogramBarSeriesProps = ComponentProps<typeof HistogramBarSeries>;
 
 // @public
-export type HistogramBarSeriesSpec<D extends BaseDatum = Datum> = Omit<BarSeriesSpec<D>, 'stackAccessors'> & {
+export type HistogramBarSeriesSpec<D extends BaseDatum = Datum> = BarSeriesSpec<D> & {
     enableHistogramMode: true;
 };
 
@@ -2415,6 +2419,9 @@ export type RenderChangeListener = (isRendered: boolean) => void;
 // @public (undocumented)
 export type Rendering = 'canvas' | 'svg';
 
+// @alpha
+export type ResizeListener = () => void;
+
 // @public (undocumented)
 export type RGB = number;
 
@@ -2574,7 +2581,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuild
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "debug" | "locale" | "rotation" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "flatLegend" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "xDomain" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "theme" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "customLegend" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onRenderChange" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "debug" | "locale" | "rotation" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "flatLegend" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "resizeDebounce" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "xDomain" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "theme" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "customLegend" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "onAnnotationClick" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -2617,6 +2624,10 @@ export interface SettingsSpec extends Spec, LegendSpec {
     onProjectionClick?: ProjectionClickListener;
     // (undocumented)
     onRenderChange?: RenderChangeListener;
+    // @alpha
+    onResize?: ResizeListener;
+    // (undocumented)
+    onWillRender?: WillRenderListener;
     orderOrdinalBinsBy?: OrderBy;
     pointBuffer: MarkBuffer;
     pointerUpdateDebounce?: number;
@@ -3271,6 +3282,9 @@ export const WeightFn: Readonly<{
 
 // @public (undocumented)
 export type WeightFn = $Values<typeof WeightFn>;
+
+// @public
+export type WillRenderListener = () => void;
 
 // @alpha
 export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontFamily" | "fontStyle" | "fontWeight" | "padding" | "exponent" | "minFontSize" | "maxFontSize" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;

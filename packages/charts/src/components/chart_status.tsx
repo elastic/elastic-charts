@@ -9,7 +9,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { RenderChangeListener } from '../specs';
+import { RenderChangeListener, WillRenderListener } from '../specs';
 import { GlobalChartState } from '../state/chart_state';
 import { globalSelectorCache } from '../state/create_selector';
 import { getDebugStateSelector } from '../state/selectors/get_debug_state';
@@ -21,6 +21,7 @@ interface ChartStatusStateProps {
   rendered: boolean;
   renderedCount: number;
   onRenderChange?: RenderChangeListener;
+  onWillRender?: WillRenderListener;
   debugState: DebugState | null;
 }
 
@@ -38,7 +39,9 @@ class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
   }
 
   dispatchRenderChange = () => {
-    const { onRenderChange, rendered } = this.props;
+    const { onWillRender, onRenderChange, rendered } = this.props;
+    onWillRender?.();
+
     if (onRenderChange) {
       window.requestAnimationFrame(() => {
         onRenderChange(rendered);
@@ -61,12 +64,13 @@ class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
 }
 
 const mapStateToProps = (state: GlobalChartState): ChartStatusStateProps => {
-  const { onRenderChange, debugState } = getSettingsSpecSelector(state);
+  const { onWillRender, onRenderChange, debugState } = getSettingsSpecSelector(state);
 
   return {
     chartId: state.chartId,
     rendered: state.chartRendered,
     renderedCount: state.chartRenderedCount,
+    onWillRender,
     onRenderChange,
     debugState: debugState ? getDebugStateSelector(state) : null,
   };

@@ -11,24 +11,25 @@ import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 import ResizeObserver from 'resize-observer-polyfill';
 
+import { DEFAULT_RESIZE_DEBOUNCE } from '../specs/constants';
+import { ResizeListener } from '../specs/settings';
 import { updateParentDimensions } from '../state/actions/chart_settings';
 import { GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { isFiniteNumber } from '../utils/common';
 import { debounce, DebouncedFunction } from '../utils/debounce';
-import { Dimensions } from '../utils/dimensions';
 
 interface ResizerStateProps {
   resizeDebounce: number;
+  onResize?: ResizeListener;
 }
 
 interface ResizerDispatchProps {
-  updateParentDimensions(dimension: Dimensions): void;
+  updateParentDimensions: typeof updateParentDimensions;
 }
 
 type ResizerProps = ResizerStateProps & ResizerDispatchProps;
-
-const DEFAULT_RESIZE_DEBOUNCE = 200;
+type ResizeFn = (entries: ResizeObserverEntry[]) => void;
 
 class Resizer extends React.Component<ResizerProps> {
   private initialResizeComplete = false;
@@ -39,10 +40,7 @@ class Resizer extends React.Component<ResizerProps> {
 
   private animationFrameID: number;
 
-  private onResizeDebounced?: DebouncedFunction<
-    [entries: ResizeObserverEntry[]],
-    (entries: ResizeObserverEntry[]) => void
-  >;
+  private onResizeDebounced?: ResizeFn | DebouncedFunction<Parameters<ResizeFn>, ResizeFn>;
 
   constructor(props: ResizerProps) {
     super(props);
@@ -52,10 +50,14 @@ class Resizer extends React.Component<ResizerProps> {
   }
 
   componentDidMount() {
-    this.onResizeDebounced = debounce(this.onResize, this.props.resizeDebounce);
+    this.setupResizeDebounce();
     if (this.containerRef.current) {
       this.ro.observe(this.containerRef.current as Element);
     }
+  }
+
+  componentDidUpdate({ resizeDebounce }: Readonly<ResizerProps>): void {
+    if (resizeDebounce !== this.props.resizeDebounce) this.setupResizeDebounce();
   }
 
   componentWillUnmount() {
@@ -63,7 +65,12 @@ class Resizer extends React.Component<ResizerProps> {
     this.ro.disconnect();
   }
 
-  onResize = (entries: ResizeObserverEntry[]) => {
+  setupResizeDebounce() {
+    this.onResizeDebounced =
+      this.props.resizeDebounce > 0 ? debounce(this.onResize, this.props.resizeDebounce) : this.onResize;
+  }
+
+  onResize: ResizeFn = (entries) => {
     if (!Array.isArray(entries)) {
       return;
     }
@@ -73,6 +80,7 @@ class Resizer extends React.Component<ResizerProps> {
     const { width, height } = entries[0].contentRect;
     this.animationFrameID = window.requestAnimationFrame(() => {
       this.props.updateParentDimensions({ width, height, top: 0, left: 0 });
+      this.props.onResize?.();
     });
   };
 
@@ -99,9 +107,10 @@ const mapDispatchToProps = (dispatch: Dispatch): ResizerDispatchProps =>
   );
 
 const mapStateToProps = (state: GlobalChartState): ResizerStateProps => {
-  const { resizeDebounce } = getSettingsSpecSelector(state);
+  const { resizeDebounce, onResize } = getSettingsSpecSelector(state);
   return {
     resizeDebounce: isFiniteNumber(resizeDebounce) ? resizeDebounce : DEFAULT_RESIZE_DEBOUNCE,
+    onResize,
   };
 };
 

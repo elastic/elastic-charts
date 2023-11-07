@@ -60,7 +60,7 @@ export const BulletGraphSubtype = Object.freeze({
 /** @public */
 export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
 
-/** @internal */
+/** @public */
 export interface BulletValueLabels {
   active: string;
   value: string;

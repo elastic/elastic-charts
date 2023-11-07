@@ -8,7 +8,7 @@
 
 import { ChartBaseColors } from './theme';
 
-/** @internal */
+/** @public */
 export const LIGHT_BASE_COLORS: ChartBaseColors = {
   emptyShade: '#FFF',
   lightestShade: '#F1F4FA',

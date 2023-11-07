@@ -87,7 +87,7 @@ export function getMultiSelectKnob<T extends OptionsTypeKnobSingleValue>(
   );
 
   if (Array.isArray(knob)) return knob as T[];
-  if (typeof knob === 'string') return knob.split(', ') as T[];
+  if (typeof knob === 'string') return knob.split(/\s*,\s*/) as T[];
   if (typeof knob === 'number') return [knob] as T[];
   return !knob ? [] : knob;
 }

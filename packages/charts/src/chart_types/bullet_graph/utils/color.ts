@@ -18,7 +18,7 @@ import { isFiniteNumber, isNil, isWithinRange, sortNumbers } from '../../../util
 import { ContinuousDomain, GenericDomain } from '../../../utils/domain';
 
 /**
- * @internal
+ * @public
  */
 export const ColorBandValueType = Object.freeze({
   /**
@@ -30,10 +30,10 @@ export const ColorBandValueType = Object.freeze({
    */
   Percentage: 'percentage' as const,
 });
-/** @internal */
+/** @public */
 export type ColorBandValueType = $Values<typeof ColorBandValueType>;
 
-/** @internal */
+/** @public */
 export interface ColorBandValue {
   /**
    * Type of value
@@ -52,7 +52,7 @@ export type ColorBandConfig = OpenClosedBoundsConfig<number | ColorBandValue> & 
   color: Color;
 };
 
-/** @internal */
+/** @public */
 export interface ColorBandStepConfig {
   /**
    * Distinct color classes to defined discrete color breakdown
@@ -64,7 +64,7 @@ export interface ColorBandStepConfig {
   colors: Color[];
 }
 
-/** @internal */
+/** @public */
 export type ColorBandComplexConfig = ColorBandConfig[];
 
 /**

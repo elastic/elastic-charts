@@ -28,7 +28,7 @@ import { clamp, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { hasDragged, DragCheckProps } from '../../../../utils/events';
 import { GroupId } from '../../../../utils/ids';
-import { isHistogramEnabled } from '../../domains/y_domain';
+import { hasHistogramBarSpec } from '../../domains/y_domain';
 import { isVerticalRotation } from '../utils/common';
 
 const getLastDragSelector = (state: GlobalChartState) => state.interactions.pointer.lastDrag;
@@ -155,7 +155,7 @@ function getXBrushExtent(
     return;
   }
   const offset = histogramMode ? 0 : -(xScale.bandwidth + xScale.bandwidthPadding) / 2;
-  const histogramEnabled = isHistogramEnabled(seriesSpecs);
+  const histogramEnabled = hasHistogramBarSpec(seriesSpecs);
   const invertValue =
     histogramEnabled && roundHistogramBrushValues
       ? (value: number) => xScale.invertWithStep(value, xScale.domain).value
