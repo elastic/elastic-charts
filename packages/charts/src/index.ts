@@ -31,7 +31,7 @@ export {
 } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
-export { ContinuousDomain, OrdinalDomain } from './utils/domain';
+export { ContinuousDomain, OrdinalDomain, GenericDomain, Range } from './utils/domain';
 export { Dimensions, SimplePadding, Padding, PerSideDistance, Margins } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
 export { SeriesCompareFn } from './utils/series_sort';
@@ -153,8 +153,4 @@ export {
   ColorBandSimpleConfig,
   ColorBandComplexConfig,
   BulletColorConfig,
-  getColorScale,
-  BandPositions,
-  ColorTick,
-  getColorBands,
 } from './chart_types/bullet_graph/utils/color';

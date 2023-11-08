@@ -443,6 +443,34 @@ export interface BubbleSeriesStyle {
     point: PointStyle;
 }
 
+// @public
+export type BulletColorConfig = Color[] | ColorBandSimpleConfig | ColorBandComplexConfig;
+
+// @public (undocumented)
+export interface BulletDatum {
+    // (undocumented)
+    domain: GenericDomain;
+    // (undocumented)
+    niceDomain?: boolean;
+    // (undocumented)
+    subtitle?: string;
+    // (undocumented)
+    syncCursor?: boolean;
+    // (undocumented)
+    target?: number;
+    // (undocumented)
+    targetFormatter?: ValueFormatter;
+    // (undocumented)
+    tickFormatter: ValueFormatter;
+    ticks?: number | ((domain: GenericDomain) => number[]);
+    // (undocumented)
+    title: string;
+    // (undocumented)
+    value: number;
+    // (undocumented)
+    valueFormatter: ValueFormatter;
+}
+
 // Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha
@@ -452,12 +480,8 @@ export const BulletGraph: (props: SFProps<BulletGraphSpec, keyof (typeof buildPr
 export interface BulletGraphSpec extends Spec {
     // (undocumented)
     chartType: typeof ChartType.BulletGraph;
-    // Warning: (ae-forgotten-export) The symbol "BulletColorConfig" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     colorBands?: BulletColorConfig;
-    // Warning: (ae-forgotten-export) The symbol "BulletDatum" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     data: (BulletDatum | undefined)[][];
     // (undocumented)
@@ -466,8 +490,6 @@ export interface BulletGraphSpec extends Spec {
     subtype: BulletGraphSubtype;
     // (undocumented)
     tickSnapStep?: number;
-    // Warning: (ae-forgotten-export) The symbol "BulletValueLabels" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     valueLabels?: Optional<BulletValueLabels>;
 }
@@ -502,6 +524,16 @@ export const BulletGraphSubtype: Readonly<{
 
 // @public (undocumented)
 export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
+
+// @public (undocumented)
+export interface BulletValueLabels {
+    // (undocumented)
+    active: string;
+    // (undocumented)
+    target: string;
+    // (undocumented)
+    value: string;
+}
 
 // @public (undocumented)
 export type CategoryKey = string;
@@ -653,6 +685,31 @@ export type ColorBand = {
     color: Color;
     label?: string;
 };
+
+// @public (undocumented)
+export type ColorBandComplexConfig = ColorBandConfig[];
+
+// Warning: (ae-forgotten-export) The symbol "OpenClosedBoundsConfig" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type ColorBandConfig = OpenClosedBoundsConfig<number | ColorBandValue> & {
+    color: Color;
+};
+
+// @public (undocumented)
+export interface ColorBandSimpleConfig {
+    classes?: number | number[];
+    // (undocumented)
+    colors: Color[];
+}
+
+// @public (undocumented)
+export interface ColorBandValue {
+    // Warning: (ae-forgotten-export) The symbol "ColorBandValueType" needs to be exported by the entry point index.d.ts
+    type: ColorBandValueType;
+    // (undocumented)
+    value: number;
+}
 
 // @public (undocumented)
 export interface ColorConfig {
@@ -1215,6 +1272,9 @@ export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "i
 
 // @public (undocumented)
 export type FontStyle = (typeof FONT_STYLES)[number];
+
+// @public (undocumented)
+export type GenericDomain = [start: number, end: number];
 
 // @public
 export interface GeometryStateStyle {
@@ -2339,6 +2399,10 @@ export type PropsWithChildren<ChildrenProps extends Record<string, unknown> = Re
 export type PropsWithoutChildren<Props extends Record<string, unknown> = Record<string, any>, ExtraProps extends Record<string, unknown> = Record<string, any>, ChildrenProps extends Record<string, unknown> = Record<string, any>> = {
     children?: never | undefined;
 } & Neverify<ChildrenProps> & Props & ExtraProps;
+
+// @public (undocumented)
+type Range_2 = [min: number, max: number];
+export { Range_2 as Range }
 
 // @public (undocumented)
 export interface RasterTimeScale extends TimeScale {
