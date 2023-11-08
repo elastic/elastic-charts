@@ -9,13 +9,14 @@
 import { EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
 import { select, number, boolean, button } from '@storybook/addon-knobs';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import {
   Chart,
   isMetricElementEvent,
   Metric,
   MetricBase,
+  MetricDatum,
   MetricWProgress,
   MetricWTrend,
   Settings,
@@ -25,6 +26,7 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { set } from 'lodash';
 
 const rng = getRandomNumberGenerator();
 
@@ -47,7 +49,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
 
   const defaultValueFormatter = (d: number) => `${d}`;
-  const data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[] = [
+  const data: (MetricDatum | undefined)[] = [
     {
       color: '#3c3c3c',
       title: 'CPU Usage',
@@ -149,10 +151,31 @@ export const Example: ChartsStory = (_, { title, description }) => {
     },
   ];
 
-  const layout = select('layout', ['grid', 'vertical', 'horizontal'], 'grid');
-  const configuredData =
-    layout === 'grid' ? split(data, 4) : layout === 'horizontal' ? [data.slice(0, 4)] : split(data.slice(0, 4), 1);
-  const [chartData, setChartData] = useState(configuredData);
+  const nColumns = number('number of columns', 4, { min: 1, max: data.length, step: 1 });
+  
+  const getDataGrid: () => (MetricDatum | undefined)[][] = () => {
+    const ret = [];
+    for (let i = 0; i < data.length; i += nColumns) {
+      ret.push(data.slice(i, i + nColumns));
+    }
+    return ret;
+  };
+
+  const maxTileSideLength = 200;
+  const getContainerWidth = (_data: (MetricDatum | undefined)[][]) => _data[0].length * maxTileSideLength;
+  const getContainerHeight = (_data: (MetricDatum | undefined)[][]) => _data.length * maxTileSideLength;
+
+  const [chartData, setChartData] = useState(getDataGrid());
+  const [containerHeight, setContainerHeight] = useState(getContainerHeight(chartData));
+  const [containerWidth, setContainerWidth] = useState(getContainerWidth(chartData));
+
+  useEffect(() => {
+    const newData = getDataGrid()
+    setChartData(newData);
+    setContainerHeight(getContainerHeight(newData));
+    setContainerWidth(getContainerWidth(newData));
+  }, [nColumns]);
+
   button('randomize data', () => {
     setChartData(
       split(
@@ -179,8 +202,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         maxHeight: '80vh',
         padding: '0px',
         overflow: 'auto',
-        height: layout === 'vertical' ? '720px' : layout === 'horizontal' ? '150px' : '300px',
-        width: layout === 'vertical' ? '180px' : '720px',
+        height: `${containerHeight}px`,
+        width: `${containerWidth}px`,
         ...(showGridBorder && {
           boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
           borderRadius: '6px',
@@ -201,7 +224,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
                   if (isMetricElementEvent(d)) {
                     const { rowIndex, columnIndex } = d;
                     onEventClickAction(
-                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`,
+                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.value}`,
                     );
                   }
                 }
@@ -210,7 +233,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           onElementOver={([d]) => {
             if (isMetricElementEvent(d)) {
               const { rowIndex, columnIndex } = d;
-              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`);
+              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.value}`);
             }
           }}
           onElementOut={() => onEventOutAction('out')}
