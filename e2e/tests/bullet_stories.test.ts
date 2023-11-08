@@ -122,7 +122,7 @@ test.describe('Bullet stories', () => {
   ])(
     ({ subtype }) => `Bullet as Metric - ${subtype}`,
     ({ subtype, height, width }) => {
-      test.describe.only('Bullet as Metric', () => {
+      test.describe('Bullet as Metric', () => {
         pwEach.test(testCases)(
           ([v]) => `should render with ${v}`,
           async (page, [, { start, end, target, value }]) => {
