@@ -556,7 +556,6 @@ export class CommonPage {
     }
 
     await el.evaluate((element, { height, width }) => {
-      console.log({ height, width });
       if (height !== undefined) element.style.height = height;
       if (width !== undefined) element.style.width = width;
     }, dimensions);
