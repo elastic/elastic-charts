@@ -23,63 +23,60 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.vertical);
 
   return (
-    <div
-      style={{
-        resize: 'both',
-        padding: '0px',
-        overflow: 'auto',
-        width: 600,
-        height: 270,
-        boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
-        borderRadius: '6px',
-      }}
-    >
-      <Chart title={title} description={description}>
-        <Settings baseTheme={useBaseTheme()} debug={debug} />
-        <BulletGraph
-          id="bubbles"
-          subtype={subtype}
-          data={[
-            [
-              {
-                target: 85,
-                value: 23,
-                title: 'CPU',
-                domain: [0, 100],
-                valueFormatter: formatter,
-                tickFormatter: formatter,
-              },
-              {
-                target: 75,
-                value: 98,
-                title: 'Memory',
-                // subtitle: 'percent',
-                domain: [0, 100],
-                valueFormatter: formatter,
-                tickFormatter: formatter,
-              },
-              {
-                target: 25,
-                value: 35.5,
-                title: 'Network In',
-                subtitle: 'bandwidth',
-                domain: [0, 200],
-                valueFormatter: formatter,
-                tickFormatter: formatter,
-              },
-              {
-                target: 25,
-                value: 91,
-                title: 'Network out',
-                subtitle: 'available (percent)',
-                domain: [0, 100],
-                valueFormatter: formatter,
-                tickFormatter: formatter,
-              },
-            ],
-          ]}
-        />
-      </Chart>
-    </div>
+    <Chart title={title} description={description}>
+      <Settings baseTheme={useBaseTheme()} debug={debug} />
+      <BulletGraph
+        id="bubbles"
+        subtype={subtype}
+        data={[
+          [
+            {
+              target: 85,
+              value: 23,
+              title: 'CPU',
+              domain: [0, 100],
+              valueFormatter: formatter,
+              tickFormatter: formatter,
+            },
+            {
+              target: 75,
+              value: 98,
+              title: 'Memory',
+              // subtitle: 'percent',
+              domain: [0, 100],
+              valueFormatter: formatter,
+              tickFormatter: formatter,
+            },
+            {
+              target: 25,
+              value: 35.5,
+              title: 'Network In',
+              subtitle: 'bandwidth',
+              domain: [0, 200],
+              valueFormatter: formatter,
+              tickFormatter: formatter,
+            },
+            {
+              target: 25,
+              value: 91,
+              title: 'Network out',
+              subtitle: 'available (percent)',
+              domain: [0, 100],
+              valueFormatter: formatter,
+              tickFormatter: formatter,
+            },
+          ],
+        ]}
+      />
+    </Chart>
   );
+};
+
+Example.parameters = {
+  resize: {
+    width: 600,
+    height: 270,
+    boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
+    borderRadius: '6px',
+  },
 };

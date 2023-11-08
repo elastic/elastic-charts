@@ -33,46 +33,43 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const formatter = (d: number) => numeral(d).format(format);
 
   return (
-    <div
-      style={{
-        resize: 'both',
-        padding: '0px',
-        overflow: 'auto',
-        width: 500,
-        height: 500,
-        boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
-        borderRadius: '6px',
-      }}
-    >
-      <Chart title={title} description={description}>
-        <Settings
-          theme={{
-            bulletGraph: {
-              angularTickLabelPadding,
+    <Chart title={title} description={description}>
+      <Settings
+        theme={{
+          bulletGraph: {
+            angularTickLabelPadding,
+          },
+        }}
+        baseTheme={useBaseTheme()}
+        debug={debug}
+      />
+      <BulletGraph
+        id="bubbles"
+        subtype={subtype}
+        tickSnapStep={tickSnapStep}
+        data={[
+          [
+            {
+              target,
+              value,
+              title: bulletTitle,
+              subtitle,
+              domain: [start, end],
+              valueFormatter: formatter,
+              tickFormatter: formatter,
             },
-          }}
-          baseTheme={useBaseTheme()}
-          debug={debug}
-        />
-        <BulletGraph
-          id="bubbles"
-          subtype={subtype}
-          tickSnapStep={tickSnapStep}
-          data={[
-            [
-              {
-                target,
-                value,
-                title: bulletTitle,
-                subtitle,
-                domain: [start, end],
-                valueFormatter: formatter,
-                tickFormatter: formatter,
-              },
-            ],
-          ]}
-        />
-      </Chart>
-    </div>
+          ],
+        ]}
+      />
+    </Chart>
   );
+};
+
+Example.parameters = {
+  resize: {
+    width: 500,
+    height: 500,
+    boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
+    borderRadius: '6px',
+  },
 };

@@ -31,77 +31,65 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const tickFormatter = (d: number) => numeral(d).format(tickFormat);
 
   return (
-    <div
-      style={{
-        resize: 'both',
-        padding: '0px',
-        overflow: 'auto',
-        width: 550,
-        height: 640,
-        boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
-        borderRadius: '6px',
-      }}
-    >
-      <Chart title={title} description={description}>
-        <Settings baseTheme={useBaseTheme()} debug={debug} />
-        <Tooltip type={hideTooltip ? 'none' : undefined} />
-        <BulletGraph
-          id="bubbles"
-          subtype={subtype}
-          tickSnapStep={tickSnapStep}
-          data={[
-            [
-              {
-                target: 10,
-                value: 23,
-                title: 'Network inbound error rate',
-                // subtitle: 'First row first column subtitle',
-                syncCursor,
-                domain: [0, 100],
-                valueFormatter,
-                targetFormatter,
-                tickFormatter,
-              },
-              {
-                target: 67,
-                value: 123,
-                title: 'Network outbound',
-                subtitle: 'error rate (%)',
-                syncCursor,
-                domain: [0, 100],
-                valueFormatter,
-                targetFormatter,
-                tickFormatter,
-              },
-            ],
-            [
-              {
-                target: 50,
-                value: 11,
-                title: 'Number of requests',
-                subtitle: 'Requests per second',
-                syncCursor,
-                domain: [0, 100],
-                valueFormatter,
-                targetFormatter,
-                tickFormatter,
-              },
-              {
-                target: 80,
-                value: 92,
-                title: 'Second row second column title',
-                subtitle: 'percentage',
-                syncCursor,
-                domain: [0, 200],
-                valueFormatter,
-                targetFormatter,
-                tickFormatter,
-              },
-            ],
-          ]}
-        />
-      </Chart>
-    </div>
+    <Chart title={title} description={description}>
+      <Settings baseTheme={useBaseTheme()} debug={debug} />
+      <Tooltip type={hideTooltip ? 'none' : undefined} />
+      <BulletGraph
+        id="bubbles"
+        subtype={subtype}
+        tickSnapStep={tickSnapStep}
+        data={[
+          [
+            {
+              target: 10,
+              value: 23,
+              title: 'Network inbound error rate',
+              // subtitle: 'First row first column subtitle',
+              syncCursor,
+              domain: [0, 100],
+              valueFormatter,
+              targetFormatter,
+              tickFormatter,
+            },
+            {
+              target: 67,
+              value: 123,
+              title: 'Network outbound',
+              subtitle: 'error rate (%)',
+              syncCursor,
+              domain: [0, 100],
+              valueFormatter,
+              targetFormatter,
+              tickFormatter,
+            },
+          ],
+          [
+            {
+              target: 50,
+              value: 11,
+              title: 'Number of requests',
+              subtitle: 'Requests per second',
+              syncCursor,
+              domain: [0, 100],
+              valueFormatter,
+              targetFormatter,
+              tickFormatter,
+            },
+            {
+              target: 80,
+              value: 92,
+              title: 'Second row second column title',
+              subtitle: 'percentage',
+              syncCursor,
+              domain: [0, 200],
+              valueFormatter,
+              targetFormatter,
+              tickFormatter,
+            },
+          ],
+        ]}
+      />
+    </Chart>
   );
 };
 
@@ -110,4 +98,10 @@ Example.parameters = {
       different formats for \`tickFormatter\` and \`valueFormatter\`.
 
 Use a [numeraljs](http://numeraljs.com/) format with the knobs to see the difference`,
+  resize: {
+    width: 550,
+    height: 640,
+    boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
+    borderRadius: '6px',
+  },
 };
