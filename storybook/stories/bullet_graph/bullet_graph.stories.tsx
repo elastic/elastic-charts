@@ -12,6 +12,7 @@ export default {
 
 export { Example as single } from './1_single.story';
 export { Example as angular } from './2_angular.story';
-export { Example as singleRow } from './3_single_row.story';
-export { Example as singleColumn } from './4_single_column.story';
-export { Example as grid } from './5_grid.story';
+export { Example as colorBands } from './3_color_bands.story';
+export { Example as singleRow } from './4_single_row.story';
+export { Example as singleColumn } from './5_single_column.story';
+export { Example as grid } from './6_grid.story';

@@ -12,7 +12,7 @@ import { $Values } from 'utility-types';
 
 import { BaseBoundsConfig, OpenClosedBoundsConfig } from './bounds';
 import { combineColors } from '../../../common/color_calcs';
-import { RGBATupleToString, colorToRgba } from '../../../common/color_library_wrappers';
+import { RGBATupleToString, colorToRgba, getChromaColor } from '../../../common/color_library_wrappers';
 import { ChromaColorScale, Color } from '../../../common/colors';
 import { isFiniteNumber, isNil, isWithinRange, sortNumbers } from '../../../utils/common';
 import { ContinuousDomain, GenericDomain } from '../../../utils/domain';
@@ -53,10 +53,13 @@ export type ColorBandConfig = OpenClosedBoundsConfig<number | ColorBandValue> & 
 };
 
 /** @public */
-export interface ColorBandStepConfig {
+export interface ColorBandSimpleConfig {
   /**
    * Distinct color classes to defined discrete color breakdown
    * Defaults to intervals between ticks
+   *
+   * Number value scales colors evenly n times
+   * Array of numbers defines the color stop positions
    *
    * See https://gka.github.io/chroma.js/#scale-classes
    */
@@ -71,7 +74,7 @@ export type ColorBandComplexConfig = ColorBandConfig[];
  * Defines the color of bullet chart bands
  * @public
  */
-export type BulletColorConfig = Color[] | ColorBandStepConfig | ColorBandComplexConfig;
+export type BulletColorConfig = Color[] | ColorBandSimpleConfig | ColorBandComplexConfig;
 
 const getValueByTypeFn = ([min, max]: ContinuousDomain) => {
   const domainLength = max - min;
@@ -126,6 +129,7 @@ const getFullDomainTicks = ([min, max]: ContinuousDomain, ticks: number[]): numb
 
 function getScaleInputs(
   baseDomain: ContinuousDomain,
+  flippedDomain: boolean,
   config: BulletColorConfig,
   fullTicks: number[],
   backgroundColor: Color,
@@ -135,21 +139,28 @@ function getScaleInputs(
   classes?: number | number[];
 } {
   if (!Array.isArray(config) || !isComplexConfig(config)) {
-    const { colors, classes }: { colors: string[]; classes?: number | number[] } = !Array.isArray(config)
+    const { colors: rawColors, classes }: { colors: string[]; classes?: number | number[] } = !Array.isArray(config)
       ? config
       : {
           colors: config,
         };
 
+    // TODO - fix thrown error for RGBA colors from storybook
+    const colors = rawColors.map((c) => c.toLowerCase());
     if (colors.length === 1) {
       // Adds second color
       const [color] = colors;
       // should always have color
       if (color) {
-        const secondary = chroma(color).alpha(0.7).hex();
+        const secondary = getChromaColor(color).alpha(0.7).hex();
         const blendedSecondary = combineColors(colorToRgba(secondary), colorToRgba(backgroundColor));
         colors.push(RGBATupleToString(blendedSecondary));
       }
+    }
+
+    if (flippedDomain) {
+      // Array of colors should always begin at the domain start
+      colors.reverse();
     }
 
     return {
@@ -231,18 +242,19 @@ function getScaleInputs(
 /** @internal */
 export function getColorScale(
   baseDomain: ContinuousDomain,
+  flippedDomain: boolean,
   config: BulletColorConfig,
   fullTicks: number[],
   backgroundColor: Color,
   fallbackBandColor: Color,
 ): ChromaColorScale {
-  const { colors, domain, classes } = getScaleInputs(baseDomain, config, fullTicks, backgroundColor);
+  const { colors, domain, classes } = getScaleInputs(baseDomain, flippedDomain, config, fullTicks, backgroundColor);
   const scale = chroma.scale(colors).mode('lab').domain(domain);
 
   if (classes) scale.classes(classes);
   const isInDomain = isWithinRange(baseDomain);
 
-  return (n) => (isInDomain(n) ? scale(n) : chroma(fallbackBandColor));
+  return (n) => (isInDomain(n) ? scale(n) : getChromaColor(fallbackBandColor));
 }
 
 /** @internal */
@@ -270,7 +282,14 @@ export function getColorBands(
   const domain = scale.domain() as GenericDomain;
   const orderedDomain = sortNumbers(domain) as ContinuousDomain;
   const fullTicks = getFullDomainTicks(orderedDomain, ticks);
-  const colorScale = getColorScale(orderedDomain, config, sortNumbers(fullTicks), backgroundColor, fallbackBandColor);
+  const colorScale = getColorScale(
+    orderedDomain,
+    domain[0] > domain[1],
+    config,
+    sortNumbers(fullTicks),
+    backgroundColor,
+    fallbackBandColor,
+  );
   const scaledBandPositions = fullTicks.reduce<[pixelPosition: BandPositions, tick: number][]>((acc, start, i) => {
     const end = fullTicks[i + 1];
     if (end === undefined) return acc;

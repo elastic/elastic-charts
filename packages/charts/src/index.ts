@@ -145,3 +145,16 @@ export { TimeFunction } from './utils/time_functions';
 export * from './chart_types/flame_chart/flame_api';
 export * from './chart_types/timeslip/timeslip_api';
 export { LegacyAnimationConfig } from './common/animation';
+
+// Bullet
+export {
+  ColorBandValue,
+  ColorBandConfig,
+  ColorBandSimpleConfig,
+  ColorBandComplexConfig,
+  BulletColorConfig,
+  getColorScale,
+  BandPositions,
+  ColorTick,
+  getColorBands,
+} from './chart_types/bullet_graph/utils/color';

@@ -56,7 +56,12 @@ export function isValid(color: Color): chroma.Color | false {
 }
 
 /** @internal */
-export function getChromaColor(color: RgbaTuple): chroma.Color {
+export function getChromaColor(color: string): chroma.Color;
+/** @internal */
+export function getChromaColor(color: RgbaTuple): chroma.Color;
+/** @internal */
+export function getChromaColor(color: string | RgbaTuple): chroma.Color {
+  if (typeof color === 'string') return chroma(color.toLowerCase());
   // chroma mutates the input
   return chroma(...color);
 }
