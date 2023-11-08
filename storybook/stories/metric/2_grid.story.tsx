@@ -176,6 +176,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
     setContainerWidth(getContainerWidth(newData));
   }, [nColumns]);
 
+  useEffect(() => {
+    setChartData(getDataGrid());
+  }, [progressBarDirection, useProgressBar, maxDataPoints])
+
   button('randomize data', () => {
     setChartData(
       split(
