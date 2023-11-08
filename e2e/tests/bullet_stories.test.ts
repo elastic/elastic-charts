@@ -74,7 +74,7 @@ test.describe('Bullet stories', () => {
 
       // Each color config type
       pwEach.test([1, 2, 3, 4])(
-        ([v]) => `should render colors with config - ${v}`,
+        (v) => `should render colors with config - ${v}`,
         async (page, configIndex) => {
           await page.setViewportSize({ width: 785, height: 800 });
           await common.expectChartAtUrlToMatchScreenshot(page)(
