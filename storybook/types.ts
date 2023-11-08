@@ -25,7 +25,7 @@ export type StoryParameters = SBParameters &
      */
     markdown?: string;
     /**
-     * Defines resize wrapper under `#story-root` to define
+     * Used to enable and style resize wrapper under `#story-root`
      */
     resize?: boolean | CSSProperties;
   };
