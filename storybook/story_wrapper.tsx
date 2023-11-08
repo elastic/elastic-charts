@@ -9,24 +9,35 @@
 import { EuiProvider, EuiMarkdownFormat, EuiFlexGroup, EuiFlexItem, EuiHorizontalRule, EuiText } from '@elastic/eui';
 import { DecoratorFunction } from '@storybook/addons';
 import classNames from 'classnames';
-import React from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 
+import { StoryGlobals, StoryParameters } from './types';
 import { ThemeId, ThemeIdProvider, BackgroundIdProvider } from './use_base_theme';
+
+const ResizeWrapper: FC<PropsWithChildren<{ resize: StoryParameters['resize'] }>> = ({ resize, children }) =>
+  resize ? (
+    <div id="story-resize-wrapper" style={resize === true ? {} : resize}>
+      {children}
+    </div>
+  ) : (
+    <>{children}</>
+  );
 
 export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => {
   if (!Story) return <div>No Story</div>;
 
-  const { globals, parameters } = context;
+  const globals = (context.globals as StoryGlobals) ?? {};
+  const parameters = (context.parameters as StoryParameters) ?? {};
 
-  const themeId = globals?.theme ?? ThemeId.Light;
-  const backgroundId = globals?.background;
+  const themeId = (globals.theme as ThemeId) ?? ThemeId.Light;
+  const backgroundId = globals.background;
   const {
     showHeader = false,
     showChartTitle = false,
     showChartDescription = false,
     showChartBoundary = false,
-  } = globals?.toggles ?? {};
-  const markdown = parameters?.markdown;
+  } = globals.toggles ?? {};
+  const { markdown, resize } = parameters;
   const colorMode = themeId.includes('light') ? 'light' : 'dark';
 
   return (
@@ -56,11 +67,13 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
 
             <EuiFlexItem grow={false}>
               <div id="story-root" className={classNames({ showChartBoundary })}>
-                <Story
-                  {...context}
-                  title={showChartTitle ? context.kind : undefined}
-                  description={showChartDescription ? context.name : undefined}
-                />
+                <ResizeWrapper resize={resize}>
+                  <Story
+                    {...context}
+                    title={showChartTitle ? context.kind : undefined}
+                    description={showChartDescription ? context.name : undefined}
+                  />
+                </ResizeWrapper>
               </div>
             </EuiFlexItem>
             {markdown && (

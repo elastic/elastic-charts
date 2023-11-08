@@ -8,7 +8,7 @@
 
 import type { Parameters as SBParameters } from '@storybook/addons';
 import { ArgTypes, Args, StoryContext as SBStoryContext } from '@storybook/react';
-import { ReactElement } from 'react';
+import { CSSProperties, ReactElement } from 'react';
 import { StoryBackgroundParameter, BackgroundGlobals } from 'storybook-addon-background-toggle';
 import { StoryThemeParameter, ThemeGlobals } from 'storybook-addon-theme-toggle';
 import { StoryTogglesParameter, TogglesGlobals } from 'storybook-addon-toggles';
@@ -16,7 +16,7 @@ import { StoryTogglesParameter, TogglesGlobals } from 'storybook-addon-toggles';
 /**
  * Parameter accessible at the story level
  */
-type StoryParameters = SBParameters &
+export type StoryParameters = SBParameters &
   StoryThemeParameter &
   StoryBackgroundParameter &
   StoryTogglesParameter & {
@@ -24,6 +24,10 @@ type StoryParameters = SBParameters &
      * Renders markdown content below story
      */
     markdown?: string;
+    /**
+     * Defines resize wrapper under `#story-root` to define
+     */
+    resize?: boolean | CSSProperties;
   };
 export type StoryGlobals = ThemeGlobals & BackgroundGlobals & TogglesGlobals;
 

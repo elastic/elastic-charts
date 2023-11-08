@@ -117,40 +117,35 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   const configuredData = [[numberTextSwitch ? numericData : textualData]];
   return (
-    <div
-      style={{
-        resize: 'both',
-        padding: '0px',
-        overflow: 'auto',
-        height: '200px',
-        width: '200px',
-        maxWidth: '100%',
-        maxHeight: '80vh',
-      }}
-    >
-      <Chart title={storyTitle} description={description}>
-        <Settings
-          baseTheme={useBaseTheme()}
-          onElementClick={([d]) => {
-            if (isMetricElementEvent(d)) {
-              const { rowIndex, columnIndex } = d;
-              onEventClickAction(
-                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
-              );
-            }
-          }}
-          onElementOver={([d]) => {
-            if (isMetricElementEvent(d)) {
-              const { rowIndex, columnIndex } = d;
-              onEventOverAction(
-                `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
-              );
-            }
-          }}
-          onElementOut={() => onEventOutAction('out')}
-        />
-        <Metric id="1" data={configuredData} />
-      </Chart>
-    </div>
+    <Chart title={storyTitle} description={description}>
+      <Settings
+        baseTheme={useBaseTheme()}
+        onElementClick={([d]) => {
+          if (isMetricElementEvent(d)) {
+            const { rowIndex, columnIndex } = d;
+            onEventClickAction(
+              `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+            );
+          }
+        }}
+        onElementOver={([d]) => {
+          if (isMetricElementEvent(d)) {
+            const { rowIndex, columnIndex } = d;
+            onEventOverAction(
+              `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+            );
+          }
+        }}
+        onElementOut={() => onEventOutAction('out')}
+      />
+      <Metric id="1" data={configuredData} />
+    </Chart>
   );
+};
+
+Example.parameters = {
+  resize: {
+    height: '200px',
+    width: '200px',
+  },
 };
