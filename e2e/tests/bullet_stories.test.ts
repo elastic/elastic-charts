@@ -12,6 +12,14 @@ import { pwEach } from '../helpers';
 import { common } from '../page_objects/common';
 
 export const BulletGraphSubtype = ['vertical', 'horizontal', 'circle', 'half-circle', 'two-thirds-circle'];
+const testCases: [string, { start: number; end: number; value: number; target: number }][] = [
+  ['positive values', { start: 4, end: 167, value: 50, target: 100 }],
+  ['positive values - reversed', { start: 167, end: 4, value: 50, target: 100 }],
+  ['positive/negative values', { start: -57, end: 97, value: -12, target: 50 }],
+  ['positive/negative values - reversed', { start: 97, end: -57, value: -12, target: 50 }],
+  ['negative values', { start: -194, end: -5, value: -50, target: -150 }],
+  ['negative values - reversed', { start: -5, end: -194, value: -50, target: -150 }],
+];
 
 test.describe('Bullet stories', () => {
   test('renders single bullet', async ({ page }) => {
@@ -93,14 +101,7 @@ test.describe('Bullet stories', () => {
       pwEach.describe([true, false])(
         (d) => `Nice domain - ${d}`,
         (niceDomain) => {
-          pwEach.test<[string, { start: number; end: number; value: number; target: number }]>([
-            ['positive values', { start: 4, end: 167, value: 50, target: 100 }],
-            ['positive values - reversed', { start: 167, end: 4, value: 50, target: 100 }],
-            ['positive/negative values', { start: -57, end: 97, value: -12, target: 50 }],
-            ['positive/negative values - reversed', { start: 97, end: -57, value: -12, target: 50 }],
-            ['negative values', { start: -194, end: -5, value: -50, target: -150 }],
-            ['negative values - reversed', { start: -5, end: -194, value: -50, target: -150 }],
-          ])(
+          pwEach.test(testCases)(
             ([v]) => `should render with ${v}`,
             async (page, [, { start, end, target, value }]) => {
               await page.setViewportSize({ width: 785, height: 800 });
@@ -111,6 +112,30 @@ test.describe('Bullet stories', () => {
           );
         },
       );
+    },
+  );
+
+  pwEach.describe([
+    { subtype: 'vertical', width: '140px' },
+    { subtype: 'horizontal', height: '85px' },
+    { subtype: 'two-thirds-circle', height: '195px' },
+  ])(
+    ({ subtype }) => `Bullet as Metric - ${subtype}`,
+    ({ subtype, height, width }) => {
+      test.describe.only('Bullet as Metric', () => {
+        pwEach.test(testCases)(
+          ([v]) => `should render with ${v}`,
+          async (page, [, { start, end, target, value }]) => {
+            await page.setViewportSize({ width: 785, height: 800 });
+            await common.expectChartAtUrlToMatchScreenshot(page)(
+              `http://localhost:9001/?path=/story/bullet-graph--single&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-debug=&knob-title_General=Error rate&knob-subtitle_General=&knob-value_General=${value}&knob-target_General=${target}&knob-start_General=${start}&knob-end_General=${end}&knob-format (numeraljs)_General=0.[0]&knob-subtype_General=${subtype}&knob-niceDomain_Ticks=false&knob-tick strategy_Ticks=auto&knob-ticks(approx. count)_Ticks=10&knob-ticks(placements)_Ticks[0]=-200&knob-ticks(placements)_Ticks[1]=-100&knob-ticks(placements)_Ticks[2]=0&knob-ticks(placements)_Ticks[3]=5&knob-ticks(placements)_Ticks[4]=10&knob-ticks(placements)_Ticks[5]=15&knob-ticks(placements)_Ticks[6]=20&knob-ticks(placements)_Ticks[7]=25&knob-ticks(placements)_Ticks[8]=50&knob-ticks(placements)_Ticks[9]=100&knob-ticks(placements)_Ticks[10]=200`,
+              {
+                action: async () => await common.setResizeDimensions(page)({ height, width }),
+              },
+            );
+          },
+        );
+      });
     },
   );
 });
