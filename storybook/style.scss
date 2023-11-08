@@ -141,6 +141,15 @@ body {
   }
 }
 
+#story-resize-wrapper {
+  resize: both;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  max-width: 100%;
+  max-height: 80vh;
+}
+
 #story-header {
   padding: 20px 40px 16px;
 }
