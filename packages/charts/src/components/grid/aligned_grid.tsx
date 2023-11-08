@@ -43,7 +43,6 @@ export function AlignedGrid<D>({ data, contentComponent: ContentComponent }: Ali
           };
           const headerClassName = classNames('echAlignedGrid--header', {
             echAlignedGrid__borderRight: columnIndex < columns - 1,
-            // echAlignedGrid__borderBottom: true,
           });
           const contentClassName = classNames('echAlignedGrid--content', {
             echAlignedGrid__borderRight: columnIndex < columns - 1,

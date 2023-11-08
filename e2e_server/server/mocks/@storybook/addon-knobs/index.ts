@@ -59,7 +59,7 @@ export function array(name: string, dftValues: unknown[], options: any, groupId?
   return values;
 }
 
-export function object(name: string, dftValue: unknown, options: any, groupId?: string) {
+export function object(name: string, dftValue: unknown, groupId?: string) {
   const params = getParams();
   const key = getKnobKey(name, groupId);
   const value = params.get(key);
