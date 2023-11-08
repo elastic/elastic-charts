@@ -548,6 +548,18 @@ export class CommonPage {
         strict: false, // should be true but some stories have multiple charts
       });
     };
+
+  setResizeDimensions = (page: Page) => async (dimensions: { height?: string; width?: string }) => {
+    const el = page.locator('#story-resize-wrapper');
+    if (!(await el.isVisible())) {
+      throw new Error('setResizeDimensions was called when no #story-resize-wrapper exists');
+    }
+
+    await el.evaluate((element, { height, width }) => {
+      if (height !== undefined) element.style.height = height;
+      if (width !== undefined) element.style.width = width;
+    }, dimensions);
+  };
 }
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {

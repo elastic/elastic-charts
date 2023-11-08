@@ -10,8 +10,6 @@ import { test } from '@playwright/test';
 
 import { common } from '../page_objects/common';
 
-process.env.ENV_URL = 'http://localhost:9002/';
-
 test.describe('Tooltip', () => {
   test.describe('Chart Types', () => {
     test.describe('Cartesian', () => {

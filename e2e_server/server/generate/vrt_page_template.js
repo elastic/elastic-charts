@@ -43,17 +43,24 @@ ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElemen
 
 function pageTemplate(imports, routes, urls) {
   return `
-import React, { Suspense } from 'react';
+import React, { PropsWithChildren, FC, Suspense, CSSProperties } from 'react';
 import { EuiProvider } from '@elastic/eui';
 import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
 import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 import { StoryContext } from '../../storybook/types';
+
+const ResizeWrapper: FC<PropsWithChildren<{ resize?: boolean | CSSProperties }>> = ({ resize, children }) => resize ? (
+  <div id="story-resize-wrapper" style={resize === true ? {} : resize}>
+    { children }
+  </div>
+) : (<>{children}</>)
 
 export function VRTPage() {
   const {
     themeId,
     backgroundId,
     toggles,
+    resize,
     setParams,
   } = useGlobalsParameters();
   const urlParams = new URL(window.location.toString()).searchParams;
@@ -84,15 +91,17 @@ export function VRTPage() {
   }
 
   return (
-    <EuiProvider colorMode={colorMode}>
-      <ThemeIdProvider value={themeId as any}>
-        <BackgroundIdProvider value={backgroundId}>
-          <Suspense fallback={<div>Loading...</div>}>
-            ${routes.join('\n            ')}
-          </Suspense>
-        </BackgroundIdProvider>
-      </ThemeIdProvider>
-    </EuiProvider>
+    <ResizeWrapper resize={resize}>
+      <EuiProvider colorMode={colorMode}>
+        <ThemeIdProvider value={themeId as any}>
+          <BackgroundIdProvider value={backgroundId}>
+            <Suspense fallback={<div>Loading...</div>}>
+              ${routes.join('\n            ')}
+            </Suspense>
+          </BackgroundIdProvider>
+        </ThemeIdProvider>
+      </EuiProvider>
+    </ResizeWrapper>
   );
 }
 
