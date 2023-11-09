@@ -10,6 +10,7 @@ import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
 import { BaseDatum } from './../../../xy_chart/utils/specs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { ColorScale } from '../../../../common/colors';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import {
@@ -35,7 +36,6 @@ import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_r
 import { ChartDimensions } from '../../../xy_chart/utils/dimensions';
 import { HeatmapSpec } from '../../specs';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
-import { ColorScale } from '../../state/selectors/get_color_scale';
 import { HeatmapTable } from '../../state/selectors/get_heatmap_table';
 import {
   Cell,

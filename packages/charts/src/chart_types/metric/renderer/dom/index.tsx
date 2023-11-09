@@ -17,7 +17,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { Metric as MetricComponent } from './metric';
 import { ColorContrastOptions, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { getResolvedBackgroundColor } from '../../../../common/fill_text_color';
+import { Color } from '../../../../common/colors';
 import { BasicListener, ElementClickListener, ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -28,9 +28,10 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { BackgroundStyle, MetricStyle } from '../../../../utils/themes/theme';
+import { MetricStyle } from '../../../../utils/themes/theme';
 import { MetricSpec } from '../../specs';
 import { chartSize } from '../../state/selectors/chart_size';
 import { getMetricSpecs } from '../../state/selectors/data';
@@ -47,7 +48,7 @@ interface StateProps {
   specs: MetricSpec[];
   a11y: A11ySettings;
   style: MetricStyle;
-  background: BackgroundStyle;
+  backgroundColor: Color;
   locale: string;
   onElementClick?: ElementClickListener;
   onElementOut?: BasicListener;
@@ -77,7 +78,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
       a11y,
       specs: [spec], // ignoring other specs
       style,
-      background,
+      backgroundColor,
       onElementClick,
       onElementOut,
       onElementOver,
@@ -95,7 +96,6 @@ class Component extends React.Component<StateProps & DispatchProps> {
     }, 0);
 
     const panel = { width: width / maxColumns, height: height / totalRows };
-    const backgroundColor = getResolvedBackgroundColor(background.fallbackColor, background.color);
     const contrastOptions: ColorContrastOptions = {
       lightColor: colorToRgba(style.text.lightColor),
       darkColor: colorToRgba(style.text.darkColor),
@@ -190,7 +190,7 @@ const DEFAULT_PROPS: StateProps = {
   },
   a11y: DEFAULT_A11Y_SETTINGS,
   style: LIGHT_THEME.metric,
-  background: LIGHT_THEME.background,
+  backgroundColor: LIGHT_THEME.background.color,
   locale: settingsBuildProps.defaults.locale,
 };
 
@@ -199,7 +199,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     return DEFAULT_PROPS;
   }
   const { onElementClick, onElementOut, onElementOver, locale } = getSettingsSpecSelector(state);
-  const { metric: style, background } = getChartThemeSelector(state);
+  const { metric: style } = getChartThemeSelector(state);
   return {
     initialized: true,
     chartId: state.chartId,
@@ -210,7 +210,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     onElementClick,
     onElementOver,
     onElementOut,
-    background,
+    backgroundColor: getResolvedBackgroundColorSelector(state),
     style,
     locale,
   };

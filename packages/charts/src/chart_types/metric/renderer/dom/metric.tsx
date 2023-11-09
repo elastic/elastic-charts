@@ -24,10 +24,10 @@ import {
   MetricDatum,
   MetricElementEvent,
 } from '../../../../specs';
-import { LayoutDirection } from '../../../../utils/common';
+import { LayoutDirection, isNil } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, isMetricWTrend } from '../../specs';
+import { MetricWNumber, isMetricWProgress, isMetricWTrend } from '../../specs';
 
 /** @internal */
 export const Metric: React.FunctionComponent<{
@@ -63,6 +63,7 @@ export const Metric: React.FunctionComponent<{
   onElementOver,
   onElementOut,
 }) => {
+  const progressBarSize = 'small'; // currently we provide only the small progress bar;
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
   const [lastMouseDownTimestamp, setLastMouseDownTimestamp] = useState<number>(0);
   const metricHTMLId = `echMetric-${chartId}-${rowIndex}-${columnIndex}`;
@@ -73,9 +74,10 @@ export const Metric: React.FunctionComponent<{
     'echMetric--rightBorder': columnIndex < totalColumns - 1,
     'echMetric--bottomBorder': rowIndex < totalRows - 1,
     'echMetric--topBorder': hasTitles && rowIndex === 0,
-    'echMetric--small': hasProgressBar,
     'echMetric--vertical': progressBarDirection === LayoutDirection.Vertical,
     'echMetric--horizontal': progressBarDirection === LayoutDirection.Horizontal,
+    [`echMetric--withProgressBar--${progressBarSize}`]: hasProgressBar,
+    [`echMetric--withTargetProgressBar--${progressBarSize}`]: !isNil((datum as MetricWNumber)?.target),
   });
 
   const lightnessAmount = mouseState === 'leave' ? 0 : mouseState === 'enter' ? 0.05 : 0.1;
@@ -162,12 +164,13 @@ export const Metric: React.FunctionComponent<{
         panel={panel}
         style={style}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
+        progressBarSize={progressBarSize}
         highContrastTextColor={finalTextColor.keyword}
         locale={locale}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (
-        <ProgressBar datum={datumWithInteractionColor} barBackground={style.barBackground} />
+        <ProgressBar datum={datumWithInteractionColor} barBackground={style.barBackground} size={progressBarSize} />
       )}
       <div className="echMetric--outline" style={{ color: finalTextColor.keyword }}></div>
     </div>

@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import chroma from 'chroma-js';
+
 import { RgbaTuple } from './color_library_wrappers';
 
 /**
@@ -13,6 +15,12 @@ import { RgbaTuple } from './color_library_wrappers';
  * @public
  */
 export type Color = string; // todo static/runtime type it this for proper color string content; several places in the code, and ultimate use, dictate it not be an empty string
+
+/** @internal */
+export type ColorScale<T = Color> = (value: number) => T;
+
+/** @internal */
+export type ChromaColorScale = ColorScale<chroma.Color>;
 
 /** @internal */
 export interface ColorDefinition {

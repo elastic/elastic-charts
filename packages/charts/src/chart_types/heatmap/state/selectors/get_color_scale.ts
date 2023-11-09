@@ -7,14 +7,11 @@
  */
 
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
-import { Color } from '../../../../common/colors';
+import { ColorScale } from '../../../../common/colors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getBandsColorScale } from '../../scales/band_color_scale';
 import { ColorBand } from '../../specs/heatmap';
-
-/** @internal */
-export type ColorScale = (value: number) => Color;
 
 /**
  * @internal

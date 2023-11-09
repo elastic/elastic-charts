@@ -6,24 +6,15 @@
  * Side Public License, v 1.
  */
 
+import { LIGHT_BASE_COLORS } from './base_colors';
 import { palettes } from './colors';
-import { ChartBaseColors, Theme } from './theme';
+import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
+import { LIGHT_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
-
-/** @public */
-export const LIGHT_BASE_COLORS: ChartBaseColors = {
-  emptyShade: '#FFF',
-  lightestShade: '#F1F4FA',
-  lightShade: '#D3DAE6',
-  mediumShade: '#98A2B3',
-  darkShade: '#69707D',
-  darkestShade: '#343741',
-  title: '#1A1C21',
-};
 
 /** @public */
 export const LIGHT_THEME: Theme = {
@@ -421,6 +412,7 @@ export const LIGHT_THEME: Theme = {
     nonFiniteText: 'N/A',
     minHeight: 64,
   },
+  bulletGraph: LIGHT_THEME_BULLET_STYLE,
   tooltip: {
     maxWidth: 260,
     maxTableHeight: 120,
