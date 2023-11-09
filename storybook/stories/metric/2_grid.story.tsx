@@ -160,18 +160,15 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const nColumns = number('number of columns', 4, { min: 1, max: data.length, step: 1 });
 
   const [chartData, setChartData] = useState(arrayToGrid(data, nColumns));
-
-  useEffect(() => {
-    setChartData(arrayToGrid(data, nColumns));
-  }, [data, progressBarDirection, useProgressBar, maxDataPoints, nColumns]);
-
   const [containerHeight, setContainerHeight] = useState(getContainerHeight(chartData));
   const [containerWidth, setContainerWidth] = useState(getContainerWidth(chartData));
 
   useEffect(() => {
-    setContainerHeight(getContainerHeight(chartData));
-    setContainerWidth(getContainerWidth(chartData));
-  }, [chartData]);
+    const newData = arrayToGrid(data, nColumns)
+    setChartData(newData);
+    setContainerHeight(getContainerHeight(newData));
+    setContainerWidth(getContainerWidth(newData));
+  }, [data, progressBarDirection, useProgressBar, maxDataPoints, nColumns]);
 
   button('randomize data', () => {
     setChartData(
