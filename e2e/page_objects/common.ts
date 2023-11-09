@@ -366,6 +366,11 @@ export class CommonPage {
 
       if (options?.action) {
         await options.action();
+
+        if (options.waitSelector) {
+          // check waitSelector again after any actions
+          await this.waitForElement(page)(options.waitSelector, options.timeout);
+        }
       }
 
       if (options?.delay) {
@@ -549,15 +554,15 @@ export class CommonPage {
       });
     };
 
-  setResizeDimensions = (page: Page) => async (dimensions: { height?: string; width?: string }) => {
+  setResizeDimensions = (page: Page) => async (dimensions: { height?: string | number; width?: string | number }) => {
     const el = page.locator('#story-resize-wrapper');
     if (!(await el.isVisible())) {
       throw new Error('setResizeDimensions was called when no #story-resize-wrapper exists');
     }
 
     await el.evaluate((element, { height, width }) => {
-      if (height !== undefined) element.style.height = height;
-      if (width !== undefined) element.style.width = width;
+      if (height !== undefined) element.style.height = typeof height === 'number' ? `${height}px` : height;
+      if (width !== undefined) element.style.width = typeof width === 'number' ? `${width}px` : width;
     }, dimensions);
   };
 }

@@ -88,3 +88,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     </Chart>
   );
 };
+
+Example.parameters = {
+  resize: true,
+};

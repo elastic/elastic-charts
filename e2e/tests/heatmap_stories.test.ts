@@ -39,12 +39,18 @@ test.describe('Heatmap stories', () => {
   test('should maximize the label with an unique fontSize', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/heatmap-alpha--categorical',
+      {
+        action: async () => await common.setResizeDimensions(page)({ width: 410, height: 320 }),
+      },
     );
   });
 
   test('should maximize the label fontSize', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/heatmap-alpha--categorical&knob-use global min fontSize_labels=false',
+      {
+        action: async () => await common.setResizeDimensions(page)({ width: 380, height: 320 }),
+      },
     );
   });
 

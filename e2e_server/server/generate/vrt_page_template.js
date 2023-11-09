@@ -36,7 +36,7 @@ appendIconComponentCache({
 
 const path = new URL(window.location.toString()).searchParams.get('path');
 document.getElementsByTagName('body')[0].style.overflow = path ? 'hidden' : 'scroll';
-ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElement);
+ReactDOM.render(<VRTPage />, document.getElementById('root') as HTMLElement);
 
 `.trim();
 }
@@ -45,15 +45,23 @@ function pageTemplate(imports, routes, urls) {
   return `
 import React, { PropsWithChildren, FC, Suspense, CSSProperties } from 'react';
 import { EuiProvider } from '@elastic/eui';
+import classNames from 'classnames';
+
 import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
 import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 import { StoryContext } from '../../storybook/types';
 
-const ResizeWrapper: FC<PropsWithChildren<{ resize?: boolean | CSSProperties }>> = ({ resize, children }) => resize ? (
-  <div id="story-resize-wrapper" style={resize === true ? {} : resize}>
-    { children }
+const ResizeWrapper: FC<PropsWithChildren<{ resize?: boolean | CSSProperties }>> = ({ resize, children }) => (
+  <div id="story-root" className={classNames({ resize: Boolean(resize) })}>
+    {resize ? (
+      <div id="story-resize-wrapper" className="e2e-server" style={resize === true ? {} : resize}>
+        {children}
+      </div>
+    ) : (
+      <>{children}</>
+    )}
   </div>
-) : (<>{children}</>)
+);
 
 export function VRTPage() {
   const {

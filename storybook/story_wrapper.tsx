@@ -66,7 +66,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
             )}
 
             <EuiFlexItem grow={false}>
-              <div id="story-root" className={classNames({ showChartBoundary })}>
+              <div id="story-root" className={classNames({ showChartBoundary, resize: Boolean(resize) })}>
                 <ResizeWrapper resize={resize}>
                   <Story
                     {...context}
