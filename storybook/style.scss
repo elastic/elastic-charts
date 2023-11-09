@@ -113,8 +113,10 @@ html {
     }
 
     #root {
-      padding-top: 200px;
-      padding-bottom: 200px;
+      // This is meant to provide space above and below the chart for tooltip placement
+      min-height: 800px;
+      display: flex;
+      align-items: center;
     }
   }
 }
