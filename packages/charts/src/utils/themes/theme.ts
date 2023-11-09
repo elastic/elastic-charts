@@ -10,6 +10,7 @@ import { CSSProperties } from 'react';
 import { $Values } from 'utility-types';
 
 import { PartitionStyle } from './partition';
+import { BulletGraphStyle } from '../../chart_types/bullet_graph/theme';
 import { Color } from '../../common/colors';
 import { Pixels, Radian, Ratio } from '../../common/geometry';
 import { Font, FontStyle } from '../../common/text_utils';
@@ -500,6 +501,11 @@ export interface Theme {
    * Theme styles for metric chart types
    */
   metric: MetricStyle;
+
+  /**
+   * Theme styles for bullet graph types
+   */
+  bulletGraph: BulletGraphStyle;
   /**
    * Theme styles for tooltip
    */

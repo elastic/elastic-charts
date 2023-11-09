@@ -56,8 +56,12 @@ const getBackground = (backgroundId?: string) => {
   return option?.background ?? option?.color;
 };
 
+export const useThemeId = (): ThemeId => {
+  return useContext(ThemeContext);
+};
+
 export const useBaseTheme = (): Theme => {
-  const themeId = useContext(ThemeContext);
+  const themeId = useThemeId();
   const backgroundId = useContext(BackgroundContext);
   const theme = themeMap[themeId] ?? LIGHT_THEME;
   const backgroundColor = getBackground(backgroundId);

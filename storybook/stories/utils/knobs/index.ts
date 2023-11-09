@@ -12,6 +12,7 @@ import {
   getPositiveNumberKnob,
   getToggledNumberKnob,
   getMultiSelectKnob,
+  getNumbersArrayKnob,
 } from './custom';
 import { enumKnobs } from './enums';
 import { specialEnumKnobs } from './special_enums';
@@ -24,6 +25,7 @@ export const customKnobs = {
   },
   fromEnum: getKnobFromEnum,
   array: getArrayKnob,
+  numbersArray: getNumbersArrayKnob,
   positiveNumber: getPositiveNumberKnob,
   toggledNumber: getToggledNumberKnob,
   numberSelect: getNumberSelectKnob,

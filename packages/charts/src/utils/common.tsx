@@ -505,6 +505,14 @@ export function isUniqueArray<B, T>(arr: B[], extractor?: (value: B) => T) {
 }
 
 /**
+ * Sorts array of numbers
+ * @internal
+ */
+export function sortNumbers<T extends any[]>(arr: T, descending = false): T {
+  return arr.slice().sort(descending ? (a, b) => b - 1 : (a, b) => a - b) as T;
+}
+
+/**
  * Returns true if _most_ chars in a string are rtl, exluding spaces and numbers
  * @internal
  */
@@ -562,6 +570,20 @@ export const round = (value: number, fractionDigits = 0): number => {
   const scaledValue = Math.floor(value * precision);
 
   return scaledValue / precision;
+};
+
+/**
+ * Returns rounded number to nearest/lowest/highest interval
+ *
+ * @internal
+ */
+export const roundTo = (
+  value: number,
+  interval: number,
+  options: { min?: number; max?: number; type?: 'round' | 'ceil' | 'floor' } = {},
+): number => {
+  const roundedValue = Math[options.type ?? 'round'](value / interval) * interval;
+  return clamp(roundedValue, options?.min ?? -Infinity, options?.max ?? Infinity);
 };
 
 /**
@@ -673,6 +695,15 @@ export function stripUndefined<R extends Record<string, unknown>>(source: R): R 
  */
 export const isBetween = (min: number, max: number, exclusive = false): ((n: number) => boolean) =>
   exclusive ? (n) => n < max && n > min : (n) => n <= max && n >= min;
+
+/**
+ * Returns `Array.filter` callback for values between two unordered values
+ * @internal
+ */
+export const isWithinRange = (range: [number, number], exclusive = false) => {
+  const [min, max] = sortNumbers(range);
+  return isBetween(min, max, exclusive);
+};
 
 /**
  * Returns `Array.reduce` callback to clamp values and remove duplicates

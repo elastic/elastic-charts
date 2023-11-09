@@ -11,7 +11,7 @@ import { Rect } from '../../geoms/types';
 import { ClippedRanges } from '../../utils/geometry';
 
 /** @internal */
-export type CanvasRenderer = (ctx: CanvasRenderingContext2D) => void;
+export type CanvasRenderer<R = void> = (ctx: CanvasRenderingContext2D) => R;
 
 /**
  * withContext abstracts out the otherwise error-prone save/restore pairing; it can be nested and/or put into sequence
@@ -22,10 +22,11 @@ export type CanvasRenderer = (ctx: CanvasRenderingContext2D) => void;
  * @param fun
  * @internal
  */
-export function withContext(ctx: CanvasRenderingContext2D, fun: CanvasRenderer) {
+export function withContext<R = void>(ctx: CanvasRenderingContext2D, fun: CanvasRenderer<R>): R {
   ctx.save();
-  fun(ctx);
+  const r = fun(ctx);
   ctx.restore();
+  return r;
 }
 
 /** @internal */

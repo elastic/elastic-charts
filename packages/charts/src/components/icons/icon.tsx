@@ -11,6 +11,7 @@ import React, { SVGAttributes, memo } from 'react';
 
 import { AlertIcon } from './assets/alert';
 import { DotIcon } from './assets/dot';
+import { DownArrowIcon } from './assets/down_arrow';
 import { EmptyIcon } from './assets/empty';
 import { EyeIcon } from './assets/eye';
 import { EyeClosedIcon } from './assets/eye_closed';
@@ -26,6 +27,7 @@ const typeToIconMap = {
   eyeClosed: EyeClosedIcon,
   list: ListIcon,
   questionInCircle: QuestionInCircle,
+  downArrow: DownArrowIcon,
 };
 
 /** @internal */
