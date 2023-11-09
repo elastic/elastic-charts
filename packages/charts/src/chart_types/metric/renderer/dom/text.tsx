@@ -169,15 +169,16 @@ export const MetricText: React.FunctionComponent<{
   style: MetricStyle;
   onElementClick?: () => void;
   highContrastTextColor: Color;
+  progressBarSize: 'small';
   locale: string;
-}> = ({ id, datum, panel, style, onElementClick, highContrastTextColor, locale }) => {
+}> = ({ id, datum, panel, style, onElementClick, highContrastTextColor, progressBarSize, locale }) => {
   const { extra, value } = datum;
 
   const size = findRange(WIDTH_BP, panel.width);
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
   const containerClassName = classNames('echMetricText', {
-    'echMetricText--small': hasProgressBar,
+    [`echMetricText--${progressBarSize}`]: hasProgressBar,
     'echMetricText--vertical': progressBarDirection === LayoutDirection.Vertical,
     'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
