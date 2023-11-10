@@ -52,7 +52,7 @@ import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 import { StoryContext } from '../../storybook/types';
 
 const ResizeWrapper: FC<PropsWithChildren<{ resize?: boolean | CSSProperties }>> = ({ resize, children }) => (
-  <div id="story-root" className={classNames({ resizeHeight: (resize as CSSProperties).height === undefined })}>
+  <div id="story-root" className={classNames({ resizeHeight: (resize as CSSProperties)?.height === undefined })}>
     {resize ? (
       <div id="story-resize-wrapper" className="e2e-server" style={resize === true ? {} : resize}>
         {children}

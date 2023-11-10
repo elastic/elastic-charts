@@ -70,7 +70,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
                 id="story-root"
                 className={classNames({
                   showChartBoundary,
-                  resizeHeight: (resize as CSSProperties).height === undefined,
+                  resizeHeight: (resize as CSSProperties)?.height === undefined,
                 })}
               >
                 <ResizeWrapper resize={resize}>
