@@ -67,6 +67,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
       // makes custom buttons in eui popover take full action size
       height: 100%;
       width: 100%;
+      display: flex;
     }
   }
 
