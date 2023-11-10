@@ -17,7 +17,7 @@ const config: PlaywrightTestConfig = {
   use: {
     headless: true,
     locale: 'en-us',
-    viewport: { width: 785, height: 600 },
+    viewport: { width: 785, height: 1000 },
     trace: 'retain-on-failure',
     screenshot: 'off', // already testing screenshots
     video: 'retain-on-failure',
@@ -39,7 +39,7 @@ const config: PlaywrightTestConfig = {
     },
   },
   // TODO limit this to only flaky tests. Watch https://github.com/microsoft/playwright/issues/15657
-  retries: 1,
+  retries: isCI ? 1 : 0,
   forbidOnly: isCI,
   timeout: 10 * 1000,
   preserveOutput: 'failures-only',
