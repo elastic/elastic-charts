@@ -9,7 +9,7 @@
 import { EuiProvider, EuiMarkdownFormat, EuiFlexGroup, EuiFlexItem, EuiHorizontalRule, EuiText } from '@elastic/eui';
 import { DecoratorFunction } from '@storybook/addons';
 import classNames from 'classnames';
-import React, { FC, PropsWithChildren } from 'react';
+import React, { CSSProperties, FC, PropsWithChildren } from 'react';
 
 import { StoryGlobals, StoryParameters } from './types';
 import { ThemeId, ThemeIdProvider, BackgroundIdProvider } from './use_base_theme';
@@ -66,7 +66,13 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
             )}
 
             <EuiFlexItem grow={false}>
-              <div id="story-root" className={classNames({ showChartBoundary, resize: Boolean(resize) })}>
+              <div
+                id="story-root"
+                className={classNames({
+                  showChartBoundary,
+                  resizeHeight: (resize as CSSProperties).height === undefined,
+                })}
+              >
                 <ResizeWrapper resize={resize}>
                   <Story
                     {...context}

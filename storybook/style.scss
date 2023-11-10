@@ -144,9 +144,8 @@ body {
     background-color: blanchedalmond;
   }
 
-  &:not(.resize) {
+  &.resizeHeight {
     // This is to trigger the non-resize stories to fill the story-root
-    width: 0;
     height: 0;
   }
 }
