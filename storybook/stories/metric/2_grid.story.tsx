@@ -164,7 +164,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const [containerWidth, setContainerWidth] = useState(getContainerWidth(chartData));
 
   useEffect(() => {
-    const newData = arrayToGrid(data, nColumns)
+    const newData = arrayToGrid(data, nColumns);
     setChartData(newData);
     setContainerHeight(getContainerHeight(newData));
     setContainerWidth(getContainerWidth(newData));
