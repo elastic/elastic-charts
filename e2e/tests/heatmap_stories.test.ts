@@ -37,23 +37,26 @@ test.describe('Heatmap stories', () => {
   });
 
   test('should maximize the label with an unique fontSize', async ({ page }) => {
-    await page.setViewportSize({ width: 450, height: 600 });
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/heatmap-alpha--categorical',
+      {
+        action: async () => await common.setResizeDimensions(page)({ width: 410, height: 320 }),
+      },
     );
   });
 
   test('should maximize the label fontSize', async ({ page }) => {
-    await page.setViewportSize({ width: 420, height: 600 });
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/heatmap-alpha--categorical&knob-use global min fontSize_labels=false',
+      {
+        action: async () => await common.setResizeDimensions(page)({ width: 380, height: 320 }),
+      },
     );
   });
 
   pwEach.test([[2], [3], [4], [5], [6], [7], [8], [9]])(
     (d) => `time snap with dataset ${d}`,
     async (page, dataset) => {
-      await page.setViewportSize({ width: 785, height: 600 });
       await common.expectChartAtUrlToMatchScreenshot(page)(
         `http://localhost:9001/?path=/story/heatmap-alpha--time-snap&globals=theme:light&knob-dataset=${dataset}`,
       );
