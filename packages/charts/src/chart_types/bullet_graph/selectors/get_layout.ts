@@ -15,18 +15,19 @@ import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator
 import { Size } from '../../../utils/dimensions';
 import { wrapText } from '../../../utils/text/wrap';
 import {
+  FONT_PADDING,
   HEADER_PADDING,
+  MAX_TARGET_VALUE_FONT_SIZE,
   SUBTITLE_FONT,
   SUBTITLE_FONT_SIZE,
-  SUBTITLE_LINE_HEIGHT,
   TARGET_FONT,
   TARGET_FONT_SIZE,
+  TEXT_DESCENT_RATIO,
   TITLE_FONT,
   TITLE_FONT_SIZE,
-  TITLE_LINE_HEIGHT,
+  TITLE_LINE_SPACING,
   VALUE_FONT,
   VALUE_FONT_SIZE,
-  VALUE_LINE_HEIGHT,
 } from '../theme';
 
 /** @internal */
@@ -49,6 +50,7 @@ export interface BulletLayoutAlignment {
   maxTitleRows: number;
   maxSubtitleRows: number;
   multiline: boolean;
+  headerHeight: number;
   minHeight: number;
   minWidth: number;
 }
@@ -117,7 +119,7 @@ export const getLayout = createCustomCachedSelector(
         }),
       );
 
-      const goesToMultiline = header.some((row) => {
+      const valueIsBelowTitles = header.some((row) => {
         const valueAlignedWithSubtitle = row.some((cell) => cell?.content.subtitle);
         return row.some((cell) => {
           if (!cell) return false;
@@ -132,7 +134,7 @@ export const getLayout = createCustomCachedSelector(
         return row.map((cell) => {
           if (!cell) return null;
 
-          if (goesToMultiline) {
+          if (valueIsBelowTitles) {
             return {
               panel,
               header: headerSize,
@@ -183,25 +185,30 @@ export const getLayout = createCustomCachedSelector(
         });
       });
       const layoutAlignment = headerLayout.map((curr) => {
-        return curr.reduce(
+        return curr.reduce<BulletLayoutAlignment>(
           (rowStats, cell) => {
+            const multiline = cell?.multiline ?? false;
             const maxTitleRows = Math.max(rowStats.maxTitleRows, cell?.title.length ?? 0);
             const maxSubtitleRows = Math.max(rowStats.maxSubtitleRows, cell?.subtitle ? 1 : 0);
+            const leftHeaderHeight =
+              getTextHeight(TITLE_FONT_SIZE, maxTitleRows, TITLE_LINE_SPACING) +
+              (maxSubtitleRows > 0 ? FONT_PADDING : 0) +
+              getTextHeight(SUBTITLE_FONT_SIZE, maxSubtitleRows) +
+              (cell?.multiline ? MAX_TARGET_VALUE_FONT_SIZE + FONT_PADDING : 0);
+            const rightHeaderHeight = cell?.multiline ? 0 : getTextHeight(MAX_TARGET_VALUE_FONT_SIZE);
+            const headerHeight =
+              Math.max(leftHeaderHeight, rightHeaderHeight) + HEADER_PADDING.top + HEADER_PADDING.bottom;
+
             return {
+              multiline,
               maxTitleRows,
               maxSubtitleRows,
-              multiline: cell?.multiline ?? false,
-              minHeight:
-                maxTitleRows * TITLE_LINE_HEIGHT +
-                maxSubtitleRows * SUBTITLE_LINE_HEIGHT +
-                (cell?.multiline ? VALUE_LINE_HEIGHT : 0) +
-                HEADER_PADDING.top +
-                HEADER_PADDING.bottom +
-                minChartHeights[spec.subtype],
+              headerHeight,
+              minHeight: headerHeight + minChartHeights[spec.subtype],
               minWidth: minChartWidths[spec.subtype],
             };
           },
-          { maxTitleRows: 0, maxSubtitleRows: 0, multiline: false, minHeight: 0, minWidth: 0 },
+          { maxTitleRows: 0, maxSubtitleRows: 0, multiline: false, headerHeight: 0, minHeight: 0, minWidth: 0 },
         );
       });
 
@@ -223,3 +230,11 @@ export const getLayout = createCustomCachedSelector(
     });
   },
 );
+
+/**
+ * Returns text height reduced by descent height for hanging characters
+ * @internal
+ */
+export function getTextHeight(fontSize: number, lines = 1, lineSpacing = 0) {
+  return lines * (fontSize * (1 - TEXT_DESCENT_RATIO)) + (lines - 1) * lineSpacing;
+}

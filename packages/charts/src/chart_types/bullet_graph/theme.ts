@@ -61,10 +61,19 @@ export const TITLE_FONT: Font = {
   fontWeight: 'bold',
   textColor: 'black',
 };
+/**
+ * Approximate height of hanging character from the baseline
+ * @internal
+ */
+export const TEXT_DESCENT_RATIO = 0.2;
+
+/** @internal */
+export const FONT_PADDING = 8;
+
 /** @internal */
 export const TITLE_FONT_SIZE = 16;
 /** @internal */
-export const TITLE_LINE_HEIGHT = 19;
+export const TITLE_LINE_SPACING = 4;
 
 /** @internal */
 export const SUBTITLE_FONT: Font = {
@@ -73,17 +82,13 @@ export const SUBTITLE_FONT: Font = {
 };
 /** @internal */
 export const SUBTITLE_FONT_SIZE = 14;
-/** @internal */
-export const SUBTITLE_LINE_HEIGHT = 16;
 
 /** @internal */
 export const VALUE_FONT: Font = {
   ...TITLE_FONT,
 };
 /** @internal */
-export const VALUE_FONT_SIZE = 22;
-/** @internal */
-export const VALUE_LINE_HEIGHT = 22;
+export const VALUE_FONT_SIZE = 30;
 
 /** @internal */
 export const TARGET_FONT: Font = {
@@ -91,8 +96,9 @@ export const TARGET_FONT: Font = {
 };
 /** @internal */
 export const TARGET_FONT_SIZE = 16;
+
 /** @internal */
-export const TARGET_LINE_HEIGHT = 16;
+export const MAX_TARGET_VALUE_FONT_SIZE = Math.max(TARGET_FONT_SIZE, VALUE_FONT_SIZE);
 
 /** @internal */
 export const TICK_FONT: Font = {
@@ -105,7 +111,7 @@ export const TICK_FONT_SIZE = 10;
 /** @internal */
 export const HEADER_PADDING: Padding = {
   top: 8,
-  bottom: 8,
+  bottom: 10, // allow more space for descenders
   left: 8,
   right: 8,
 };
