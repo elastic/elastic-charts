@@ -96,7 +96,7 @@ export const VALUE_FONT: Font = {
   ...TITLE_FONT,
 };
 /** @internal */
-export const VALUE_FONT_SIZE = 30;
+export const VALUE_FONT_SIZE = 22;
 
 const VALUE_FONT_ASCENT = VALUE_FONT_SIZE * TEXT_ASCENT_RATIO;
 
