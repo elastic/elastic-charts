@@ -17,17 +17,17 @@ import { wrapText } from '../../../utils/text/wrap';
 import {
   FONT_PADDING,
   HEADER_PADDING,
-  MAX_TARGET_VALUE_FONT_SIZE,
   SUBTITLE_FONT,
   SUBTITLE_FONT_SIZE,
   TARGET_FONT,
   TARGET_FONT_SIZE,
-  TEXT_DESCENT_RATIO,
   TITLE_FONT,
   TITLE_FONT_SIZE,
   TITLE_LINE_SPACING,
   VALUE_FONT,
   VALUE_FONT_SIZE,
+  getMaxTargetValueAssent,
+  getTextAscentHeight,
 } from '../theme';
 
 /** @internal */
@@ -109,30 +109,57 @@ export const getLayout = createCustomCachedSelector(
             target: cell.target ? `/ ${(cell.targetFormatter ?? cell.valueFormatter)(cell.target)}` : '',
             datum: cell,
           };
-          const size = {
+          const widths = {
             title: textMeasurer(content.title.trim(), TITLE_FONT, TITLE_FONT_SIZE).width,
             subtitle: content.subtitle ? textMeasurer(content.subtitle, TITLE_FONT, TITLE_FONT_SIZE).width : 0,
             value: textMeasurer(content.value, VALUE_FONT, VALUE_FONT_SIZE).width,
             target: textMeasurer(content.target, TARGET_FONT, TARGET_FONT_SIZE).width,
           };
-          return { content, size };
+          return { content, widths };
         }),
       );
 
       const valueIsBelowTitles = header.some((row) => {
-        const valueAlignedWithSubtitle = row.some((cell) => cell?.content.subtitle);
         return row.some((cell) => {
           if (!cell) return false;
-          const valuesWidth = cell.size.value + cell.size.target;
-          return valueAlignedWithSubtitle
-            ? cell.size.subtitle + valuesWidth > headerSize.width || cell.size.title > headerSize.width
-            : cell.size.title + valuesWidth > headerSize.width;
+          const valuesWidth = cell.widths.value + cell.widths.target;
+          const availableWidth = 0.95 * (headerSize.width - valuesWidth);
+
+          if (
+            availableWidth < 0.5 * headerSize.width &&
+            (cell.widths.title > availableWidth || cell.widths.subtitle > availableWidth)
+          )
+            return true;
+
+          const titleTruncated = wrapText(
+            cell.content.title,
+            TITLE_FONT,
+            TITLE_FONT_SIZE,
+            availableWidth,
+            2,
+            textMeasurer,
+            locale,
+          ).meta.truncated;
+          const subtitleTruncated = wrapText(
+            cell.content.title,
+            TITLE_FONT,
+            TITLE_FONT_SIZE,
+            availableWidth,
+            2,
+            textMeasurer,
+            locale,
+          ).meta.truncated;
+
+          return titleTruncated || subtitleTruncated;
         });
       });
 
       const headerLayout = header.map((row) => {
         return row.map((cell) => {
           if (!cell) return null;
+
+          const valuesWidth = cell.widths.value + cell.widths.target;
+          const availableWidth = 0.95 * (headerSize.width - valuesWidth);
 
           if (valueIsBelowTitles) {
             return {
@@ -162,9 +189,9 @@ export const getLayout = createCustomCachedSelector(
               value: cell.content.value,
               target: cell.content.target,
               multiline: true,
-              valueWidth: cell.size.value,
-              targetWidth: cell.size.target,
-              sizes: cell.size,
+              valueWidth: cell.widths.value,
+              targetWidth: cell.widths.target,
+              sizes: cell.widths,
               datum: cell.content.datum,
             };
           }
@@ -172,14 +199,24 @@ export const getLayout = createCustomCachedSelector(
           return {
             panel,
             header: headerSize,
-            title: [cell.content.title],
-            subtitle: cell.content.subtitle ? cell.content.subtitle : undefined,
+            title: wrapText(cell.content.title, TITLE_FONT, TITLE_FONT_SIZE, availableWidth, 2, textMeasurer, locale),
+            subtitle: cell.content.subtitle
+              ? wrapText(
+                  cell.content.subtitle,
+                  SUBTITLE_FONT,
+                  SUBTITLE_FONT_SIZE,
+                  availableWidth,
+                  1,
+                  textMeasurer,
+                  locale,
+                )[0]
+              : undefined,
             value: cell.content.value,
             target: cell.content.target,
             multiline: false,
-            valueWidth: cell.size.value,
-            targetWidth: cell.size.target,
-            sizes: cell.size,
+            valueWidth: cell.widths.value,
+            targetWidth: cell.widths.target,
+            sizes: cell.widths,
             datum: cell.content.datum,
           };
         });
@@ -187,15 +224,16 @@ export const getLayout = createCustomCachedSelector(
       const layoutAlignment = headerLayout.map((curr) => {
         return curr.reduce<BulletLayoutAlignment>(
           (rowStats, cell) => {
+            const MAX_TARGET_VALUE_ASCENT = getMaxTargetValueAssent(cell?.target);
             const multiline = cell?.multiline ?? false;
             const maxTitleRows = Math.max(rowStats.maxTitleRows, cell?.title.length ?? 0);
             const maxSubtitleRows = Math.max(rowStats.maxSubtitleRows, cell?.subtitle ? 1 : 0);
             const leftHeaderHeight =
-              getTextHeight(TITLE_FONT_SIZE, maxTitleRows, TITLE_LINE_SPACING) +
+              getTextAscentHeight(TITLE_FONT_SIZE, maxTitleRows, TITLE_LINE_SPACING) +
               (maxSubtitleRows > 0 ? FONT_PADDING : 0) +
-              getTextHeight(SUBTITLE_FONT_SIZE, maxSubtitleRows) +
-              (cell?.multiline ? MAX_TARGET_VALUE_FONT_SIZE + FONT_PADDING : 0);
-            const rightHeaderHeight = cell?.multiline ? 0 : getTextHeight(MAX_TARGET_VALUE_FONT_SIZE);
+              getTextAscentHeight(SUBTITLE_FONT_SIZE, maxSubtitleRows) +
+              (cell?.multiline ? MAX_TARGET_VALUE_ASCENT + FONT_PADDING : 0);
+            const rightHeaderHeight = cell?.multiline ? 0 : MAX_TARGET_VALUE_ASCENT;
             const headerHeight =
               Math.max(leftHeaderHeight, rightHeaderHeight) + HEADER_PADDING.top + HEADER_PADDING.bottom;
 
@@ -230,11 +268,3 @@ export const getLayout = createCustomCachedSelector(
     });
   },
 );
-
-/**
- * Returns text height reduced by descent height for hanging characters
- * @internal
- */
-export function getTextHeight(fontSize: number, lines = 1, lineSpacing = 0) {
-  return lines * (fontSize * (1 - TEXT_DESCENT_RATIO)) + (lines - 1) * lineSpacing;
-}

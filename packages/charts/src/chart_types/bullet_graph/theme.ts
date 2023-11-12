@@ -61,17 +61,22 @@ export const TITLE_FONT: Font = {
   fontWeight: 'bold',
   textColor: 'black',
 };
+
 /**
- * Approximate height of hanging character from the baseline
+ * Approximate height of font ascent from the baseline
  * @internal
  */
-export const TEXT_DESCENT_RATIO = 0.2;
+export const TEXT_ASCENT_RATIO = 0.8;
 
 /** @internal */
 export const FONT_PADDING = 8;
 
 /** @internal */
 export const TITLE_FONT_SIZE = 16;
+
+/** @internal */
+export const TITLE_FONT_ASCENT = TITLE_FONT_SIZE * TEXT_ASCENT_RATIO;
+
 /** @internal */
 export const TITLE_LINE_SPACING = 4;
 
@@ -84,11 +89,16 @@ export const SUBTITLE_FONT: Font = {
 export const SUBTITLE_FONT_SIZE = 14;
 
 /** @internal */
+export const SUBTITLE_FONT_ASCENT = SUBTITLE_FONT_SIZE * TEXT_ASCENT_RATIO;
+
+/** @internal */
 export const VALUE_FONT: Font = {
   ...TITLE_FONT,
 };
 /** @internal */
 export const VALUE_FONT_SIZE = 30;
+
+const VALUE_FONT_ASCENT = VALUE_FONT_SIZE * TEXT_ASCENT_RATIO;
 
 /** @internal */
 export const TARGET_FONT: Font = {
@@ -97,8 +107,11 @@ export const TARGET_FONT: Font = {
 /** @internal */
 export const TARGET_FONT_SIZE = 16;
 
+const TARGET_FONT_ASCENT = TARGET_FONT_SIZE * TEXT_ASCENT_RATIO;
+
 /** @internal */
-export const MAX_TARGET_VALUE_FONT_SIZE = Math.max(TARGET_FONT_SIZE, VALUE_FONT_SIZE);
+export const getMaxTargetValueAssent = (target?: string) =>
+  !target ? VALUE_FONT_ASCENT : Math.max(VALUE_FONT_ASCENT, TARGET_FONT_ASCENT);
 
 /** @internal */
 export const TICK_FONT: Font = {
@@ -122,3 +135,11 @@ export const GRAPH_PADDING: Padding = {
   left: 8,
   right: 8,
 };
+
+/**
+ * Returns approx ascent height of text reduced by descent height for characters with descenders
+ * @internal
+ */
+export function getTextAscentHeight(fontSize: number, lines = 1, lineSpacing = 0) {
+  return lines * (fontSize * TEXT_ASCENT_RATIO) + (lines - 1) * lineSpacing;
+}

@@ -7,7 +7,6 @@
  */
 
 import { angularBullet, horizontalBullet, verticalBullet } from './sub_types';
-import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color, Colors } from '../../../../common/colors';
 import { Ratio } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
@@ -15,14 +14,12 @@ import { withContext, clearCanvas } from '../../../../renderers/canvas';
 import { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { renderDebugPoint, renderDebugRect } from '../../../xy_chart/renderer/canvas/utils/debug';
 import { ActiveValue } from '../../selectors/get_active_values';
-import { getTextHeight } from '../../selectors/get_layout';
 import { BulletDimensions } from '../../selectors/get_panel_dimensions';
 import { BulletGraphSpec, BulletGraphSubtype } from '../../spec';
 import {
   BulletGraphStyle,
   FONT_PADDING,
   HEADER_PADDING,
-  MAX_TARGET_VALUE_FONT_SIZE,
   SUBTITLE_FONT,
   SUBTITLE_FONT_SIZE,
   TARGET_FONT,
@@ -32,9 +29,9 @@ import {
   TITLE_LINE_SPACING,
   VALUE_FONT,
   VALUE_FONT_SIZE,
+  getMaxTargetValueAssent,
+  getTextAscentHeight,
 } from '../../theme';
-
-// renderDebugPoint(ctx, 0, y, 50, { color: colorToRgba('blue'), width: 1 });
 
 /** @internal */
 export function renderBulletGraph(
@@ -98,16 +95,16 @@ export function renderBulletGraph(
 
           // this helps render the header without considering paddings
           ctx.translate(HEADER_PADDING.left, HEADER_PADDING.top);
-          // renderDebugPoint(ctx, 0, 0, 500, { color: colorToRgba('red'), width: 1 });
 
           ctx.textBaseline = 'alphabetic';
 
+          const MAX_TARGET_VALUE_ASCENT = getMaxTargetValueAssent(bulletGraph.target);
           const commonYBaseline = // to share baseline with value and target
             Math.max(
-              getTextHeight(TITLE_FONT_SIZE, verticalAlignment.maxTitleRows, TITLE_LINE_SPACING, true) +
+              getTextAscentHeight(TITLE_FONT_SIZE, verticalAlignment.maxTitleRows, TITLE_LINE_SPACING) +
                 (verticalAlignment.maxSubtitleRows > 0 ? FONT_PADDING : 0) +
-                getTextHeight(SUBTITLE_FONT_SIZE, verticalAlignment.maxSubtitleRows),
-              getTextHeight(MAX_TARGET_VALUE_FONT_SIZE),
+                getTextAscentHeight(SUBTITLE_FONT_SIZE, verticalAlignment.maxSubtitleRows),
+              verticalAlignment.multiline ? 0 : MAX_TARGET_VALUE_ASCENT,
             );
 
           // Title
@@ -117,15 +114,16 @@ export function renderBulletGraph(
 
           const titleYBaseline =
             commonYBaseline -
-            getTextHeight(SUBTITLE_FONT_SIZE, verticalAlignment.maxSubtitleRows) -
+            getTextAscentHeight(SUBTITLE_FONT_SIZE, verticalAlignment.maxSubtitleRows) -
             (verticalAlignment.maxSubtitleRows > 0 ? FONT_PADDING : 0);
 
-          bulletGraph.title.reverse().forEach((titleLine, lineIndex) => {
-            const y = titleYBaseline - lineIndex * (getTextHeight(TITLE_FONT_SIZE) + TITLE_LINE_SPACING);
-            ctx.fillText(titleLine, 0, y);
-          });
-
-          // renderDebugPoint(ctx, 0, commonYBaseline, 500, { color: colorToRgba('red'), width: 1 });
+          bulletGraph.title
+            .slice()
+            .reverse()
+            .forEach((titleLine, lineIndex) => {
+              const y = titleYBaseline - lineIndex * (getTextAscentHeight(TITLE_FONT_SIZE) + TITLE_LINE_SPACING);
+              ctx.fillText(titleLine, 0, y);
+            });
 
           // Subtitle
           if (bulletGraph.subtitle) {
@@ -137,18 +135,18 @@ export function renderBulletGraph(
           ctx.font = cssFontShorthand(VALUE_FONT, VALUE_FONT_SIZE);
           if (!multiline) ctx.textAlign = 'end';
           {
-            const y = commonYBaseline + (multiline ? getTextHeight(MAX_TARGET_VALUE_FONT_SIZE) + FONT_PADDING : 0);
+            const y = commonYBaseline + (multiline ? MAX_TARGET_VALUE_ASCENT + FONT_PADDING : 0);
             const x = multiline ? 0 : bulletGraph.header.width - bulletGraph.targetWidth;
 
             ctx.fillText(bulletGraph.value, x, y);
           }
 
           // Target
-          ctx.font = cssFontShorthand(TARGET_FONT, TARGET_FONT_SIZE);
-          if (!multiline) ctx.textAlign = 'end';
-          {
+          if (bulletGraph.target) {
+            ctx.font = cssFontShorthand(TARGET_FONT, TARGET_FONT_SIZE);
+            if (!multiline) ctx.textAlign = 'end';
             const x = multiline ? bulletGraph.valueWidth : bulletGraph.header.width;
-            const y = commonYBaseline + (multiline ? getTextHeight(MAX_TARGET_VALUE_FONT_SIZE) + FONT_PADDING : 0);
+            const y = commonYBaseline + (multiline ? MAX_TARGET_VALUE_ASCENT + FONT_PADDING : 0);
             ctx.fillText(bulletGraph.target, x, y);
           }
 
