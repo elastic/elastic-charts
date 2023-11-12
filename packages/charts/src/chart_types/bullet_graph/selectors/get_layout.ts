@@ -128,8 +128,9 @@ export const getLayout = createCustomCachedSelector(
           if (
             availableWidth < 0.5 * headerSize.width &&
             (cell.widths.title > availableWidth || cell.widths.subtitle > availableWidth)
-          )
+          ) {
             return true;
+          }
 
           const titleTruncated = wrapText(
             cell.content.title,
@@ -140,15 +141,17 @@ export const getLayout = createCustomCachedSelector(
             textMeasurer,
             locale,
           ).meta.truncated;
-          const subtitleTruncated = wrapText(
-            cell.content.title,
-            TITLE_FONT,
-            TITLE_FONT_SIZE,
-            availableWidth,
-            2,
-            textMeasurer,
-            locale,
-          ).meta.truncated;
+          const subtitleTruncated = cell.content.subtitle
+            ? wrapText(
+                cell.content.subtitle,
+                SUBTITLE_FONT,
+                SUBTITLE_FONT_SIZE,
+                availableWidth,
+                1,
+                textMeasurer,
+                locale,
+              ).meta.truncated
+            : false;
 
           return titleTruncated || subtitleTruncated;
         });
