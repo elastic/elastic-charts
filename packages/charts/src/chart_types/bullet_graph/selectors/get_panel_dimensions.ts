@@ -21,14 +21,7 @@ import { GenericDomain, Range } from '../../../utils/domain';
 import { Point } from '../../../utils/point';
 import { ANGULAR_TICK_INTERVAL, TICK_INTERVAL } from '../renderer/canvas/constants';
 import { BulletDatum, BulletGraphSpec, BulletGraphSubtype } from '../spec';
-import {
-  BulletGraphStyle,
-  GRAPH_PADDING,
-  HEADER_PADDING,
-  SUBTITLE_LINE_HEIGHT,
-  TITLE_LINE_HEIGHT,
-  VALUE_LINE_HEIGHT,
-} from '../theme';
+import { BulletGraphStyle, GRAPH_PADDING } from '../theme';
 import { getAngledChartSizing, getAnglesBySize } from '../utils/angular';
 import { ColorTick, getColorBands } from '../utils/color';
 import { TickOptions, getTicks } from '../utils/ticks';
@@ -78,13 +71,7 @@ export const getPanelDimensions = createCustomCachedSelector(
 
         const graphSize = {
           width: panel.width,
-          height:
-            panel.height -
-            HEADER_PADDING.top -
-            verticalAlignment.maxTitleRows * TITLE_LINE_HEIGHT -
-            verticalAlignment.maxSubtitleRows * SUBTITLE_LINE_HEIGHT -
-            (multiline ? VALUE_LINE_HEIGHT : 0) -
-            HEADER_PADDING.bottom,
+          height: panel.height - verticalAlignment.headerHeight,
         };
 
         return {

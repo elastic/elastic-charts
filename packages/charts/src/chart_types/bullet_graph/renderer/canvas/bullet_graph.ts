@@ -18,17 +18,19 @@ import { BulletDimensions } from '../../selectors/get_panel_dimensions';
 import { BulletGraphSpec, BulletGraphSubtype } from '../../spec';
 import {
   BulletGraphStyle,
+  FONT_PADDING,
   HEADER_PADDING,
   SUBTITLE_FONT,
   SUBTITLE_FONT_SIZE,
-  SUBTITLE_LINE_HEIGHT,
   TARGET_FONT,
   TARGET_FONT_SIZE,
   TITLE_FONT,
   TITLE_FONT_SIZE,
-  TITLE_LINE_HEIGHT,
+  TITLE_LINE_SPACING,
   VALUE_FONT,
   VALUE_FONT_SIZE,
+  getMaxTargetValueAssent,
+  getTextAscentHeight,
 } from '../../theme';
 
 /** @internal */
@@ -71,7 +73,7 @@ export function renderBulletGraph(
             renderDebugRect(ctx, panel);
           }
 
-          // move into the panel position
+          // move to panel origin
           ctx.translate(panel.x, panel.y);
 
           // paint right border
@@ -94,45 +96,57 @@ export function renderBulletGraph(
           // this helps render the header without considering paddings
           ctx.translate(HEADER_PADDING.left, HEADER_PADDING.top);
 
+          ctx.textBaseline = 'alphabetic';
+
+          const MAX_TARGET_VALUE_ASCENT = getMaxTargetValueAssent(bulletGraph.target);
+          const commonYBaseline = // to share baseline with value and target
+            Math.max(
+              getTextAscentHeight(TITLE_FONT_SIZE, verticalAlignment.maxTitleRows, TITLE_LINE_SPACING) +
+                (verticalAlignment.maxSubtitleRows > 0 ? FONT_PADDING : 0) +
+                getTextAscentHeight(SUBTITLE_FONT_SIZE, verticalAlignment.maxSubtitleRows),
+              verticalAlignment.multiline ? 0 : MAX_TARGET_VALUE_ASCENT,
+            );
+
           // Title
           ctx.fillStyle = props.style.textColor;
-          ctx.textBaseline = 'top';
           ctx.textAlign = 'start';
           ctx.font = cssFontShorthand(TITLE_FONT, TITLE_FONT_SIZE);
-          bulletGraph.title.forEach((titleLine, lineIndex) => {
-            const y = lineIndex * TITLE_LINE_HEIGHT;
-            ctx.fillText(titleLine, 0, y);
-          });
+
+          const titleYBaseline =
+            commonYBaseline -
+            getTextAscentHeight(SUBTITLE_FONT_SIZE, verticalAlignment.maxSubtitleRows) -
+            (verticalAlignment.maxSubtitleRows > 0 ? FONT_PADDING : 0);
+
+          bulletGraph.title
+            .slice()
+            .reverse()
+            .forEach((titleLine, lineIndex) => {
+              const y = titleYBaseline - lineIndex * (getTextAscentHeight(TITLE_FONT_SIZE) + TITLE_LINE_SPACING);
+              ctx.fillText(titleLine, 0, y);
+            });
 
           // Subtitle
           if (bulletGraph.subtitle) {
-            const y = verticalAlignment.maxTitleRows * TITLE_LINE_HEIGHT;
             ctx.font = cssFontShorthand(SUBTITLE_FONT, SUBTITLE_FONT_SIZE);
-            ctx.fillText(bulletGraph.subtitle, 0, y);
+            ctx.fillText(bulletGraph.subtitle, 0, commonYBaseline);
           }
 
           // Value
-          ctx.textBaseline = 'alphabetic';
           ctx.font = cssFontShorthand(VALUE_FONT, VALUE_FONT_SIZE);
           if (!multiline) ctx.textAlign = 'end';
           {
-            const y =
-              verticalAlignment.maxTitleRows * TITLE_LINE_HEIGHT +
-              verticalAlignment.maxSubtitleRows * SUBTITLE_LINE_HEIGHT +
-              (multiline ? TARGET_FONT_SIZE : 0);
+            const y = commonYBaseline + (multiline ? MAX_TARGET_VALUE_ASCENT + FONT_PADDING : 0);
             const x = multiline ? 0 : bulletGraph.header.width - bulletGraph.targetWidth;
+
             ctx.fillText(bulletGraph.value, x, y);
           }
 
           // Target
-          ctx.font = cssFontShorthand(TARGET_FONT, TARGET_FONT_SIZE);
-          if (!multiline) ctx.textAlign = 'end';
-          {
+          if (bulletGraph.target) {
+            ctx.font = cssFontShorthand(TARGET_FONT, TARGET_FONT_SIZE);
+            if (!multiline) ctx.textAlign = 'end';
             const x = multiline ? bulletGraph.valueWidth : bulletGraph.header.width;
-            const y =
-              verticalAlignment.maxTitleRows * TITLE_LINE_HEIGHT +
-              verticalAlignment.maxSubtitleRows * SUBTITLE_LINE_HEIGHT +
-              (multiline ? TARGET_FONT_SIZE : 0);
+            const y = commonYBaseline + (multiline ? MAX_TARGET_VALUE_ASCENT + FONT_PADDING : 0);
             ctx.fillText(bulletGraph.target, x, y);
           }
 

@@ -15,18 +15,19 @@ import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator
 import { Size } from '../../../utils/dimensions';
 import { wrapText } from '../../../utils/text/wrap';
 import {
+  FONT_PADDING,
   HEADER_PADDING,
   SUBTITLE_FONT,
   SUBTITLE_FONT_SIZE,
-  SUBTITLE_LINE_HEIGHT,
   TARGET_FONT,
   TARGET_FONT_SIZE,
   TITLE_FONT,
   TITLE_FONT_SIZE,
-  TITLE_LINE_HEIGHT,
+  TITLE_LINE_SPACING,
   VALUE_FONT,
   VALUE_FONT_SIZE,
-  VALUE_LINE_HEIGHT,
+  getMaxTargetValueAssent,
+  getTextAscentHeight,
 } from '../theme';
 
 /** @internal */
@@ -49,6 +50,7 @@ export interface BulletLayoutAlignment {
   maxTitleRows: number;
   maxSubtitleRows: number;
   multiline: boolean;
+  headerHeight: number;
   minHeight: number;
   minWidth: number;
 }
@@ -107,24 +109,51 @@ export const getLayout = createCustomCachedSelector(
             target: cell.target ? `/ ${(cell.targetFormatter ?? cell.valueFormatter)(cell.target)}` : '',
             datum: cell,
           };
-          const size = {
+          const widths = {
             title: textMeasurer(content.title.trim(), TITLE_FONT, TITLE_FONT_SIZE).width,
             subtitle: content.subtitle ? textMeasurer(content.subtitle, TITLE_FONT, TITLE_FONT_SIZE).width : 0,
             value: textMeasurer(content.value, VALUE_FONT, VALUE_FONT_SIZE).width,
             target: textMeasurer(content.target, TARGET_FONT, TARGET_FONT_SIZE).width,
           };
-          return { content, size };
+          return { content, widths };
         }),
       );
 
-      const goesToMultiline = header.some((row) => {
-        const valueAlignedWithSubtitle = row.some((cell) => cell?.content.subtitle);
+      const valueIsBelowTitles = header.some((row) => {
         return row.some((cell) => {
           if (!cell) return false;
-          const valuesWidth = cell.size.value + cell.size.target;
-          return valueAlignedWithSubtitle
-            ? cell.size.subtitle + valuesWidth > headerSize.width || cell.size.title > headerSize.width
-            : cell.size.title + valuesWidth > headerSize.width;
+          const valuesWidth = cell.widths.value + cell.widths.target;
+          const availableWidth = 0.95 * (headerSize.width - valuesWidth);
+
+          if (
+            availableWidth < 0.5 * headerSize.width &&
+            (cell.widths.title > availableWidth || cell.widths.subtitle > availableWidth)
+          ) {
+            return true;
+          }
+
+          const titleTruncated = wrapText(
+            cell.content.title,
+            TITLE_FONT,
+            TITLE_FONT_SIZE,
+            availableWidth,
+            2,
+            textMeasurer,
+            locale,
+          ).meta.truncated;
+          const subtitleTruncated = cell.content.subtitle
+            ? wrapText(
+                cell.content.subtitle,
+                SUBTITLE_FONT,
+                SUBTITLE_FONT_SIZE,
+                availableWidth,
+                1,
+                textMeasurer,
+                locale,
+              ).meta.truncated
+            : false;
+
+          return titleTruncated || subtitleTruncated;
         });
       });
 
@@ -132,7 +161,10 @@ export const getLayout = createCustomCachedSelector(
         return row.map((cell) => {
           if (!cell) return null;
 
-          if (goesToMultiline) {
+          const valuesWidth = cell.widths.value + cell.widths.target;
+          const availableWidth = 0.95 * (headerSize.width - valuesWidth);
+
+          if (valueIsBelowTitles) {
             return {
               panel,
               header: headerSize,
@@ -160,9 +192,9 @@ export const getLayout = createCustomCachedSelector(
               value: cell.content.value,
               target: cell.content.target,
               multiline: true,
-              valueWidth: cell.size.value,
-              targetWidth: cell.size.target,
-              sizes: cell.size,
+              valueWidth: cell.widths.value,
+              targetWidth: cell.widths.target,
+              sizes: cell.widths,
               datum: cell.content.datum,
             };
           }
@@ -170,38 +202,54 @@ export const getLayout = createCustomCachedSelector(
           return {
             panel,
             header: headerSize,
-            title: [cell.content.title],
-            subtitle: cell.content.subtitle ? cell.content.subtitle : undefined,
+            title: wrapText(cell.content.title, TITLE_FONT, TITLE_FONT_SIZE, availableWidth, 2, textMeasurer, locale),
+            subtitle: cell.content.subtitle
+              ? wrapText(
+                  cell.content.subtitle,
+                  SUBTITLE_FONT,
+                  SUBTITLE_FONT_SIZE,
+                  availableWidth,
+                  1,
+                  textMeasurer,
+                  locale,
+                )[0]
+              : undefined,
             value: cell.content.value,
             target: cell.content.target,
             multiline: false,
-            valueWidth: cell.size.value,
-            targetWidth: cell.size.target,
-            sizes: cell.size,
+            valueWidth: cell.widths.value,
+            targetWidth: cell.widths.target,
+            sizes: cell.widths,
             datum: cell.content.datum,
           };
         });
       });
       const layoutAlignment = headerLayout.map((curr) => {
-        return curr.reduce(
+        return curr.reduce<BulletLayoutAlignment>(
           (rowStats, cell) => {
+            const MAX_TARGET_VALUE_ASCENT = getMaxTargetValueAssent(cell?.target);
+            const multiline = cell?.multiline ?? false;
             const maxTitleRows = Math.max(rowStats.maxTitleRows, cell?.title.length ?? 0);
             const maxSubtitleRows = Math.max(rowStats.maxSubtitleRows, cell?.subtitle ? 1 : 0);
+            const leftHeaderHeight =
+              getTextAscentHeight(TITLE_FONT_SIZE, maxTitleRows, TITLE_LINE_SPACING) +
+              (maxSubtitleRows > 0 ? FONT_PADDING : 0) +
+              getTextAscentHeight(SUBTITLE_FONT_SIZE, maxSubtitleRows) +
+              (cell?.multiline ? MAX_TARGET_VALUE_ASCENT + FONT_PADDING : 0);
+            const rightHeaderHeight = cell?.multiline ? 0 : MAX_TARGET_VALUE_ASCENT;
+            const headerHeight =
+              Math.max(leftHeaderHeight, rightHeaderHeight) + HEADER_PADDING.top + HEADER_PADDING.bottom;
+
             return {
+              multiline,
               maxTitleRows,
               maxSubtitleRows,
-              multiline: cell?.multiline ?? false,
-              minHeight:
-                maxTitleRows * TITLE_LINE_HEIGHT +
-                maxSubtitleRows * SUBTITLE_LINE_HEIGHT +
-                (cell?.multiline ? VALUE_LINE_HEIGHT : 0) +
-                HEADER_PADDING.top +
-                HEADER_PADDING.bottom +
-                minChartHeights[spec.subtype],
+              headerHeight,
+              minHeight: headerHeight + minChartHeights[spec.subtype],
               minWidth: minChartWidths[spec.subtype],
             };
           },
-          { maxTitleRows: 0, maxSubtitleRows: 0, multiline: false, minHeight: 0, minWidth: 0 },
+          { maxTitleRows: 0, maxSubtitleRows: 0, multiline: false, headerHeight: 0, minHeight: 0, minWidth: 0 },
         );
       });
 

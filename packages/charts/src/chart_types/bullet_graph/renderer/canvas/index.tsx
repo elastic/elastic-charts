@@ -140,6 +140,8 @@ class Component extends React.Component<Props> {
       return null;
     }
 
+    const valueLabels = mergeValueLabels(spec.valueLabels);
+
     return (
       <figure
         aria-labelledby={a11y.labelId}
@@ -176,10 +178,11 @@ class Component extends React.Component<Props> {
                   subtitle: datum.subtitle,
                   domain: datum.domain,
                   niceDomain: datum.niceDomain,
-                  valueLabels: mergeValueLabels(spec.valueLabels),
+                  valueLabels,
                   extra: datum.target ? (
                     <span>
-                      target: <strong>{(datum.targetFormatter ?? datum.valueFormatter)(datum.target)}</strong>
+                      {valueLabels.target}:{' '}
+                      <strong>{(datum.targetFormatter ?? datum.valueFormatter)(datum.target)}</strong>
                     </span>
                   ) : undefined,
                 };

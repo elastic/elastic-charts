@@ -64,6 +64,7 @@ export function renderDebugPoint(
   stroke = DEFAULT_DEBUG_STROKE,
 ) {
   withContext(ctx, () => {
+    ctx.beginPath();
     ctx.lineWidth = stroke.width;
     ctx.strokeStyle = RGBATupleToString(stroke.color);
 
