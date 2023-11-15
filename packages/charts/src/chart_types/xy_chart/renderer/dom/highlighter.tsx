@@ -71,7 +71,6 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
         </defs>
 
         {highlightedGeometries.map((geom, i) => {
-          console.log({geom})
           const { panel } = geom;
           const x = geom.x + geom.transform.x;
           const y = geom.y + geom.transform.y;
