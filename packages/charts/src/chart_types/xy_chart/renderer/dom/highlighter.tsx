@@ -75,10 +75,10 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           const x = geom.x + geom.transform.x;
           const y = geom.y + geom.transform.y;
           const geomTransform = getTransformForPanel(panel, chartRotation, chartDimensions);
-          if (typeof (geom as PointGeometry).style?.shape === 'function') {
-            return;
-          }
-          if (isPointGeometry(geom) ) {
+          if (isPointGeometry(geom)) {
+            if (typeof geom.style.shape === 'function') {
+              return;
+            }
             // using the stroke because the fill is always white on points
             const fillColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.fill);
             const strokeColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.stroke);
