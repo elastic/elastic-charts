@@ -62,7 +62,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
               ctx.fill();
               ctx.fillText(Math.floor(datum.y1), coordinates.x - 5, coordinates.y - 10);
             },
-            visible: true
+            visible: true;
           };
         }}
         data={data.map(([x, y], i) => [x, y + 60, i])}
