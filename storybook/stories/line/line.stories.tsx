@@ -25,3 +25,4 @@ export { Example as testPathOrdering } from './10_test_path_ordering.story';
 export { Example as lineWithMarkAccessor } from './13_line_mark_accessor.story';
 export { Example as pointShapes } from './14_point_shapes.story';
 export { Example as testNegativePoints } from './15_test_negative_points.story';
+export { Example as customPointShapes } from './16_custom_point_shapes.story';

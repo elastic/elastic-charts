@@ -19,7 +19,7 @@ import { getColorFromVariant, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { isPointGeometry, IndexedGeometry, PointGeometry } from '../../../../utils/geometry';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { HighlighterStyle } from '../../../../utils/themes/theme';
+import { HighlighterStyle, PointShape } from '../../../../utils/themes/theme';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
 import { getHighlightedGeomsSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
@@ -46,7 +46,7 @@ function getTransformForPanel(panel: Dimensions, rotation: Rotation, { left, top
 
 function renderPath(geom: PointGeometry, radius: number) {
   // keep the highlighter radius to a minimum
-  const [shapeFn, rotate] = ShapeRendererFn[geom.style.shape];
+  const [shapeFn, rotate] = ShapeRendererFn[geom.style.shape as PointShape];
   return {
     d: shapeFn(radius),
     rotate,
@@ -75,8 +75,10 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
           const x = geom.x + geom.transform.x;
           const y = geom.y + geom.transform.y;
           const geomTransform = getTransformForPanel(panel, chartRotation, chartDimensions);
-
-          if (isPointGeometry(geom)) {
+          if (typeof geom.style?.shape === 'function') {
+            return;
+          }
+          if (isPointGeometry(geom) ) {
             // using the stroke because the fill is always white on points
             const fillColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.fill);
             const strokeColor = getColorFromVariant(RGBATupleToString(geom.style.stroke.color), style.point.stroke);
