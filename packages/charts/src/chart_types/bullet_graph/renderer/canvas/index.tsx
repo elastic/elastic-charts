@@ -17,7 +17,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { renderBulletGraph } from './bullet_graph';
 import { ColorContrastOptions } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Color } from '../../../../common/colors';
+import { Color, Colors } from '../../../../common/colors';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
 import { ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -198,6 +198,7 @@ class Component extends React.Component<Props> {
                     rowIndex={stats.rowIndex}
                     style={{
                       barBackground: colorScale(datum.value).hex(),
+                      emptyBackground: Colors.Transparent.keyword,
                       border: 'gray',
                       minHeight: 0,
                       text: {
