@@ -81,6 +81,7 @@ export const storybookParameters: Parameters = {
       { id: 'blue', title: 'Blue', color: '#14abf5' },
       { id: 'yellow', title: 'Yellow', color: '#fec709' },
       { id: 'green', title: 'Green', color: '#00c1b4' },
+      { id: 'gray', title: 'Gray', color: 'rgb(237, 240, 245)' },
     ],
   },
   toggles: {

@@ -15,8 +15,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
-import { ColorContrastOptions, highContrastColor } from '../../../../common/color_calcs';
-import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { ColorContrastOptions, combineColors, highContrastColor } from '../../../../common/color_calcs';
+import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
 import { BasicListener, ElementClickListener, ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -100,7 +100,10 @@ class Component extends React.Component<StateProps & DispatchProps> {
       lightColor: colorToRgba(style.text.lightColor),
       darkColor: colorToRgba(style.text.darkColor),
     };
-    const { color: emptyForegroundColor } = highContrastColor(colorToRgba(backgroundColor), undefined, contrastOptions);
+
+    const emptyBackgroundRGBA = combineColors(colorToRgba(style.emptyBackground), colorToRgba(backgroundColor));
+    const emptyBackground = RGBATupleToString(emptyBackgroundRGBA);
+    const { color: emptyForegroundColor } = highContrastColor(emptyBackgroundRGBA, undefined, contrastOptions);
 
     return (
       // eslint-disable-next-line jsx-a11y/no-redundant-roles
@@ -125,7 +128,10 @@ class Component extends React.Component<StateProps & DispatchProps> {
               });
               return !datum ? (
                 <li key={`${columnIndex}-${rowIndex}`} role="presentation">
-                  <div className={emptyMetricClassName} style={{ borderColor: style.border }}>
+                  <div
+                    className={emptyMetricClassName}
+                    style={{ borderColor: style.border, backgroundColor: emptyBackground }}
+                  >
                     <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor.keyword }}></div>
                   </div>
                 </li>
@@ -160,7 +166,10 @@ class Component extends React.Component<StateProps & DispatchProps> {
               });
               return (
                 <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
-                  <div className={emptyMetricClassName} style={{ borderColor: style.border }}></div>
+                  <div
+                    className={emptyMetricClassName}
+                    style={{ borderColor: style.border, backgroundColor: emptyBackground }}
+                  ></div>
                 </li>
               );
             }),
