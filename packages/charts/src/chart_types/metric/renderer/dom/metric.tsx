@@ -12,8 +12,8 @@ import React, { CSSProperties, useState } from 'react';
 import { ProgressBar } from './progress';
 import { SparkLine, getSparkLineColor } from './sparkline';
 import { MetricText } from './text';
-import { ColorContrastOptions } from '../../../../common/color_calcs';
-import { changeColorLightness } from '../../../../common/color_library_wrappers';
+import { ColorContrastOptions, combineColors } from '../../../../common/color_calcs';
+import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
@@ -81,7 +81,9 @@ export const Metric: React.FunctionComponent<{
   });
 
   const lightnessAmount = mouseState === 'leave' ? 0 : mouseState === 'enter' ? 0.05 : 0.1;
-  const interactionColor = changeColorLightness(datum.color, lightnessAmount, 0.8);
+
+  const interactionColor = changeColorLightness(hasProgressBar ? backgroundColor : datum.color, lightnessAmount, 0.8);
+  const blendedBarColor = RGBATupleToString(combineColors(colorToRgba(datum.color), colorToRgba(backgroundColor)));
 
   const datumWithInteractionColor: MetricDatum = {
     ...datum,
@@ -91,10 +93,7 @@ export const Metric: React.FunctionComponent<{
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
   const containerStyle: CSSProperties = {
-    backgroundColor:
-      !isMetricWTrend(datumWithInteractionColor) && !isMetricWProgress(datumWithInteractionColor)
-        ? datumWithInteractionColor.color
-        : undefined,
+    backgroundColor: isMetricWTrend(datumWithInteractionColor) ? backgroundColor : datumWithInteractionColor.color,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
   };
@@ -170,7 +169,12 @@ export const Metric: React.FunctionComponent<{
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (
-        <ProgressBar datum={datumWithInteractionColor} barBackground={style.barBackground} size={progressBarSize} />
+        <ProgressBar
+          datum={datumWithInteractionColor}
+          barBackground={style.barBackground}
+          blendedBarColor={blendedBarColor}
+          size={progressBarSize}
+        />
       )}
       <div className="echMetric--outline" style={{ color: finalTextColor.keyword }}></div>
     </div>

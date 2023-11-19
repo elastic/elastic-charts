@@ -22,12 +22,18 @@ const BASELINE_SIZE = 2;
 interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
+  blendedBarColor: Color;
   size: 'small';
 }
 
 /** @internal */
-export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ datum, barBackground, size }) => {
-  const { title, value, target, color, valueFormatter, targetFormatter, progressBarDirection } = datum;
+export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
+  datum,
+  barBackground,
+  blendedBarColor,
+  size,
+}) => {
+  const { title, value, target, valueFormatter, targetFormatter, progressBarDirection } = datum;
   const isBullet = isBulletMetric(datum);
   const isVertical = progressBarDirection === LayoutDirection.Vertical;
   const domain: GenericDomain = isBulletMetric(datum) ? datum.domain : [0, datum.domainMax];
@@ -54,8 +60,8 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ datum, 
 
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${TARGET_SIZE / 2}px)`;
   const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
-
   const labelType = isBullet ? 'Value' : 'Percentage';
+
   return (
     <div
       className={getDirectionalClasses('Progress', isVertical, size)}
@@ -73,21 +79,21 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ datum, 
             target || 0,
           )}`}
         >
-          <Icon height={TARGET_SIZE} width={TARGET_SIZE} type="downArrow" color={color} />
+          <Icon height={TARGET_SIZE} width={TARGET_SIZE} type="downArrow" color={blendedBarColor} />
         </div>
       )}
       {zeroPlacement && (
         <div
           className={getDirectionalClasses('ZeroBaseline', isVertical, size)}
           style={{
-            backgroundColor: color,
+            backgroundColor: blendedBarColor,
             [isVertical ? 'bottom' : 'left']: zeroPlacement,
           }}
         />
       )}
       <div
         className={getDirectionalClasses('ProgressBar', isVertical, size)}
-        style={{ backgroundColor: color, ...positionStyle }}
+        style={{ ...positionStyle, backgroundColor: blendedBarColor }}
         role="meter"
         title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
         aria-label={title ? `${labelType} of ${title}` : labelType}
