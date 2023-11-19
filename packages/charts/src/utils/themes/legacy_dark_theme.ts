@@ -415,6 +415,7 @@ export const LEGACY_DARK_THEME: Theme = {
     },
     border: '#343741',
     barBackground: '#343741',
+    emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
   },

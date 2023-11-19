@@ -327,6 +327,7 @@ export interface MetricStyle {
   };
   border: Color;
   barBackground: Color;
+  emptyBackground: Color;
   nonFiniteText: string;
   minHeight: Pixels;
 }

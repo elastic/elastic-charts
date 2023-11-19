@@ -47,6 +47,11 @@ test.describe('Metric', () => {
       'http://localhost:9001/?path=/story/metric-alpha--basic&globals=theme:light&knob-title=Network out&knob-subtitle=host: 1dc4e&knob-progress or trend=trend&knob-progress bar direction=vertical&knob-trend data points=30&knob-trend shape=area&knob-trend a11y title=The Cluster CPU Usage trend&knob-trend a11y description=The trend shows a peak of CPU usage in the last 5 minutes&knob-extra=last <b>5m</b>&knob-progress max=100&knob-is numeric metric=true&knob-value=55.23&knob-value prefix=&knob-value postfix=GB&knob-color=rgba(255, 255, 255, 1)&knob-use value color=true&knob-value color=rgba(189, 0, 0, 1)&knob-show icon=true&knob-EUI icon glyph name=warning&knob-show value icon=true&knob-EUI value icon glyph name=sortUp',
     );
   });
+  test('should render with empty and missing background colors', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/metric-alpha--grid&globals=theme:light;background:gray&knob-empty background=white&knob-number of columns=3',
+    );
+  });
 
   pwEach.describe(['trend', 'bar', 'none'])(
     (v) => `Metric - ${v} type`,

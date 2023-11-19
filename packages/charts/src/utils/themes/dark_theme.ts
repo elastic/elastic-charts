@@ -419,6 +419,7 @@ export const DARK_THEME: Theme = {
     },
     border: DARK_BASE_COLORS.lightShade,
     barBackground: DARK_BASE_COLORS.lightShade,
+    emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
   },
