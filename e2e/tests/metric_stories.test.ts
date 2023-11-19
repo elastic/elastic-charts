@@ -63,7 +63,11 @@ test.describe('Metric', () => {
           });
 
           test('should render metric with click interaction', async ({ page }) => {
-            await common.expectChartWithClickAtUrlToMatchScreenshot(page)(metricUrl, { top: 100, left: 100 });
+            await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
+              metricUrl,
+              { top: 100, left: 100 },
+              { delay: 400 }, // 10ms delay to capture click and hold
+            );
           });
         },
         (t) => `${t} theme`,
