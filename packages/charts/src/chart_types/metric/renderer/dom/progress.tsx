@@ -17,7 +17,8 @@ import { MetricWProgress } from '../../specs';
 export const ProgressBar: React.FunctionComponent<{
   datum: MetricWProgress;
   barBackground: Color;
-}> = ({ datum: { title, domainMax, value, color, progressBarDirection }, barBackground }) => {
+  blendedBarColor: Color;
+}> = ({ datum: { title, domainMax, value, progressBarDirection }, barBackground, blendedBarColor }) => {
   const verticalDirection = progressBarDirection === LayoutDirection.Vertical;
   // currently we provide only the small progress bar;
   const isSmall = true;
@@ -38,7 +39,7 @@ export const ProgressBar: React.FunctionComponent<{
     <div className={bgClassName} style={{ backgroundColor: isSmall ? barBackground : undefined }}>
       <div
         className={barClassName}
-        style={{ backgroundColor: color, ...percentProp }}
+        style={{ ...percentProp, backgroundColor: blendedBarColor }}
         role="meter"
         aria-label={title ? `Percentage of ${title}` : 'Percentage'}
         aria-valuemin={0}
