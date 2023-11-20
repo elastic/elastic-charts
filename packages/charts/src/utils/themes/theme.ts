@@ -329,6 +329,10 @@ export interface MetricStyle {
   border: Color;
   barBackground: Color;
   emptyBackground: Color;
+  /**
+   * Optional color used to blend transparent colors. Defaults to `Theme.background`
+   */
+  blendingBackground?: Color;
   nonFiniteText: string;
   minHeight: Pixels;
 }

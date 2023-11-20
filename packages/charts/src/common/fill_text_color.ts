@@ -40,5 +40,5 @@ export function fillTextColor(
     return highContrastColor(blendedFgBg, 'WCAG2', options);
   }
 
-  return highContrastColor(backgroundRGBA);
+  return highContrastColor(backgroundRGBA, 'WCAG2', options);
 }
