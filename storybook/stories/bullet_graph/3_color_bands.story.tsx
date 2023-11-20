@@ -174,8 +174,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
                 tickStrategy[0] === 'count'
                   ? ticks
                   : tickStrategy[0] === 'placements'
-                  ? () => tickPlacements
-                  : undefined,
+                    ? () => tickPlacements
+                    : undefined,
               valueFormatter: formatter,
               tickFormatter: formatter,
             },

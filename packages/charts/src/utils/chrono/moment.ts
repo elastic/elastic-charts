@@ -41,8 +41,8 @@ export const timeObjFromAny = (time: DateTime, timeZone?: string): moment.Moment
   return typeof time === 'number'
     ? timeObjFromUnixTimestamp(time, timeZone)
     : time instanceof Date
-    ? timeObjFromDate(time, timeZone)
-    : timeObjFromCalendarObj(time, timeZone);
+      ? timeObjFromDate(time, timeZone)
+      : timeObjFromCalendarObj(time, timeZone);
 };
 
 /** @internal */

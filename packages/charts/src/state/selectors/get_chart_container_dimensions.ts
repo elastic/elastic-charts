@@ -22,16 +22,16 @@ export const getChartContainerDimensionsSelector = createCustomCachedSelector(
     floating || !showLegend
       ? parentDimensions
       : direction === LayoutDirection.Vertical
-      ? {
-          left: 0,
-          top: 0,
-          width: parentDimensions.width - legendSize.width - legendSize.margin * 2,
-          height: parentDimensions.height,
-        }
-      : {
-          left: 0,
-          top: 0,
-          width: parentDimensions.width,
-          height: parentDimensions.height - legendSize.height - legendSize.margin * 2,
-        },
+        ? {
+            left: 0,
+            top: 0,
+            width: parentDimensions.width - legendSize.width - legendSize.margin * 2,
+            height: parentDimensions.height,
+          }
+        : {
+            left: 0,
+            top: 0,
+            width: parentDimensions.width,
+            height: parentDimensions.height - legendSize.height - legendSize.margin * 2,
+          },
 );
