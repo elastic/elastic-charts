@@ -675,16 +675,16 @@ class FlameComponent extends React.Component<FlameProps> {
       Math.abs(x0) < EPSILON && (zoomOut || this.pointerX < ZOOM_FROM_EDGE_BAND_LEFT)
         ? 0
         : Math.abs(x1 - 1) < EPSILON &&
-          (zoomOut || this.pointerX > this.props.chartDimensions.width - ZOOM_FROM_EDGE_BAND_RIGHT)
-        ? 1
-        : clamp(x0 + unitX * Math.abs(x1 - x0), 0, 1);
+            (zoomOut || this.pointerX > this.props.chartDimensions.width - ZOOM_FROM_EDGE_BAND_RIGHT)
+          ? 1
+          : clamp(x0 + unitX * Math.abs(x1 - x0), 0, 1);
     const midY =
       Math.abs(y0) < EPSILON &&
       (zoomOut || this.pointerY > this.props.chartDimensions.height - ZOOM_FROM_EDGE_BAND_BOTTOM)
         ? 0
         : Math.abs(y1 - 1) < EPSILON && (zoomOut || this.pointerY < ZOOM_FROM_EDGE_BAND_TOP)
-        ? 1
-        : clamp(y0 + unitY * Math.abs(y1 - y0), 0, 1);
+          ? 1
+          : clamp(y0 + unitY * Math.abs(y1 - y0), 0, 1);
     const targetX0 = clamp(x0 - delta * (x0 - midX), 0, 1);
     const targetX1 = clamp(x1 + delta * (midX - x1), 0, 1);
     const targetY0 = clamp(y0 - delta * (y0 - midY), 0, 1);
@@ -841,8 +841,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
       ? hitCount - 1
       : this.focusedMatchIndex === 0
-      ? NaN
-      : this.focusedMatchIndex - 1;
+        ? NaN
+        : this.focusedMatchIndex - 1;
     this.focusOnHit();
     this.setState({});
   };
@@ -853,8 +853,8 @@ class FlameComponent extends React.Component<FlameProps> {
     this.focusedMatchIndex = this.focusedMatchIndex = Number.isNaN(this.focusedMatchIndex)
       ? 0
       : this.focusedMatchIndex === hitCount - 1
-      ? NaN
-      : this.focusedMatchIndex + 1;
+        ? NaN
+        : this.focusedMatchIndex + 1;
     this.focusOnHit();
     this.setState({});
   };

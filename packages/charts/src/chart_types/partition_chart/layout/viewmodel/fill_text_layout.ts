@@ -240,8 +240,8 @@ function fill<C>(
       const verticalAlignment = middleAlign
         ? VerticalAlignments.middle
         : node.depth < layers.length
-        ? VerticalAlignments.bottom
-        : VerticalAlignments.top;
+          ? VerticalAlignments.bottom
+          : VerticalAlignments.top;
       const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1] ?? [];
       const { fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter, padding, clipText } = {
         ...fillLabel,

@@ -40,8 +40,8 @@ const getAxisSizeForLabel = (
   const maxLabelBoxHalfLength = isVerticalAxis(axisSpec.position)
     ? maxLabelBboxHeight / 2
     : axisSpec.timeAxisLayerCount > 0
-    ? 0
-    : maxLabelBboxWidth / 2;
+      ? 0
+      : maxLabelBboxWidth / 2;
   return horizontal
     ? {
         top: axisSpec.position === Position.Top ? maxAxisGirth + chartMargins.top : 0,

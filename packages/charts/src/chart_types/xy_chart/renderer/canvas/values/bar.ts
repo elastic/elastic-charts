@@ -110,14 +110,14 @@ function positionText(
         horizontal === HorizontalAlignment.Left
           ? geom.width / 2 - valueBox.width / 2
           : horizontal === HorizontalAlignment.Right
-          ? -geom.width / 2 + valueBox.width / 2
-          : 0;
+            ? -geom.width / 2 + valueBox.width / 2
+            : 0;
       const alignmentOffsetY =
         vertical === VerticalAlignment.Top
           ? geom.height - valueBox.height
           : vertical === VerticalAlignment.Middle
-          ? geom.height / 2 - valueBox.height / 2
-          : 0;
+            ? geom.height / 2 - valueBox.height / 2
+            : 0;
       const x = geom.x + geom.width / 2 - offsetX + alignmentOffsetX;
       const y = geom.y + offsetY + alignmentOffsetY;
       const rect = { x: x - valueBox.width / 2, y, width: valueBox.width, height: valueBox.height };
@@ -128,14 +128,14 @@ function positionText(
         horizontal === HorizontalAlignment.Right
           ? geom.height - valueBox.width
           : horizontal === HorizontalAlignment.Center
-          ? geom.height / 2 - valueBox.width / 2
-          : 0;
+            ? geom.height / 2 - valueBox.width / 2
+            : 0;
       const alignmentOffsetY =
         vertical === VerticalAlignment.Bottom
           ? -geom.width + valueBox.height
           : vertical === VerticalAlignment.Middle
-          ? -geom.width / 2 + valueBox.height / 2
-          : 0;
+            ? -geom.width / 2 + valueBox.height / 2
+            : 0;
       const x = geom.x + geom.width + offsetY + alignmentOffsetY;
       const y = geom.y - offsetX + alignmentOffsetX;
       const rect = { x: x - valueBox.height, y, width: valueBox.height, height: valueBox.width };
@@ -146,14 +146,14 @@ function positionText(
         horizontal === HorizontalAlignment.Left
           ? geom.height - valueBox.width
           : horizontal === HorizontalAlignment.Center
-          ? geom.height / 2 - valueBox.width / 2
-          : 0;
+            ? geom.height / 2 - valueBox.width / 2
+            : 0;
       const alignmentOffsetY =
         vertical === VerticalAlignment.Bottom
           ? geom.width - valueBox.height
           : vertical === VerticalAlignment.Middle
-          ? geom.width / 2 - valueBox.height / 2
-          : 0;
+            ? geom.width / 2 - valueBox.height / 2
+            : 0;
       const x = geom.x - offsetY + alignmentOffsetY;
       const y = geom.y + offsetX + alignmentOffsetX;
       const rect = { x, y, width: valueBox.height, height: valueBox.width };
@@ -165,14 +165,14 @@ function positionText(
         horizontal === HorizontalAlignment.Left
           ? -geom.width / 2 + valueBox.width / 2
           : horizontal === HorizontalAlignment.Right
-          ? geom.width / 2 - valueBox.width / 2
-          : 0;
+            ? geom.width / 2 - valueBox.width / 2
+            : 0;
       const alignmentOffsetY =
         vertical === VerticalAlignment.Bottom
           ? geom.height - valueBox.height
           : vertical === VerticalAlignment.Middle
-          ? geom.height / 2 - valueBox.height / 2
-          : 0;
+            ? geom.height / 2 - valueBox.height / 2
+            : 0;
       const x = geom.x + geom.width / 2 - offsetX + alignmentOffsetX;
       const y = geom.y - offsetY + alignmentOffsetY;
       const rect = { x: x - valueBox.width / 2, y, width: valueBox.width, height: valueBox.height };

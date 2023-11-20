@@ -351,17 +351,17 @@ function getPixelPaddedDomain(
   const paddedDomainLo = crossBelow
     ? intercept
     : crossAbove
-    ? orderedDomain[0] -
-      desiredPixelPadding /
-        screenspaceMarkerScaleCompressor(
-          [orderedDomain[0], intercept],
-          [
-            [desiredPixelPadding, desiredPixelPadding],
-            [0, 0],
-          ],
-          chartHeight,
-        ).scaleMultiplier
-    : baselinePaddedDomainLo;
+      ? orderedDomain[0] -
+        desiredPixelPadding /
+          screenspaceMarkerScaleCompressor(
+            [orderedDomain[0], intercept],
+            [
+              [desiredPixelPadding, desiredPixelPadding],
+              [0, 0],
+            ],
+            chartHeight,
+          ).scaleMultiplier
+      : baselinePaddedDomainLo;
   const paddedDomainHigh = crossBelow
     ? orderedDomain[1] +
       desiredPixelPadding /
@@ -374,8 +374,8 @@ function getPixelPaddedDomain(
           chartHeight,
         ).scaleMultiplier
     : crossAbove
-    ? intercept
-    : baselinePaddedDomainHigh;
+      ? intercept
+      : baselinePaddedDomainHigh;
 
   return inverted ? [paddedDomainHigh, paddedDomainLo] : [paddedDomainLo, paddedDomainHigh];
 }

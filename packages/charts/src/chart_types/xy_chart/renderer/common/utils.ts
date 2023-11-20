@@ -48,8 +48,8 @@ export const getAnnotationHoverParamsFn =
       hoveredElementIds.length === 0 || !fadeOutConfig
         ? styles.default
         : isHighlighted
-        ? styles.highlighted
-        : styles.unhighlighted;
+          ? styles.highlighted
+          : styles.unhighlighted;
     const shouldTransition = !isHighlighted && hoveredElementIds.length > 0;
 
     return {

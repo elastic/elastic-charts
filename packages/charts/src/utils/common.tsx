@@ -208,20 +208,20 @@ export type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends NonAny[] // checks for nested any[]
     ? T[P]
     : T[P] extends ReadonlyArray<NonAny> // checks for nested ReadonlyArray<any>
-    ? T[P]
-    : T[P] extends (infer U)[]
-    ? RecursivePartial<U>[]
-    : T[P] extends ReadonlyArray<infer U> // eslint-disable-line @typescript-eslint/array-type
-    ? ReadonlyArray<RecursivePartial<U>> // eslint-disable-line @typescript-eslint/array-type
-    : T[P] extends Set<infer V> // checks for Sets
-    ? Set<RecursivePartial<V>>
-    : T[P] extends Map<infer K, infer V> // checks for Maps
-    ? Map<K, RecursivePartial<V>>
-    : T[P] extends NonAny // checks for primitive values
-    ? T[P]
-    : IsUnknown<T[P], 1, 0> extends 1
-    ? T[P]
-    : RecursivePartial<T[P]>; // recurse for all non-array and non-primitive values
+      ? T[P]
+      : T[P] extends (infer U)[]
+        ? RecursivePartial<U>[]
+        : T[P] extends ReadonlyArray<infer U> // eslint-disable-line @typescript-eslint/array-type
+          ? ReadonlyArray<RecursivePartial<U>> // eslint-disable-line @typescript-eslint/array-type
+          : T[P] extends Set<infer V> // checks for Sets
+            ? Set<RecursivePartial<V>>
+            : T[P] extends Map<infer K, infer V> // checks for Maps
+              ? Map<K, RecursivePartial<V>>
+              : T[P] extends NonAny // checks for primitive values
+                ? T[P]
+                : IsUnknown<T[P], 1, 0> extends 1
+                  ? T[P]
+                  : RecursivePartial<T[P]>; // recurse for all non-array and non-primitive values
 };
 
 /**

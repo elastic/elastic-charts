@@ -29,8 +29,8 @@ export const timeObjFromAny = (time: DateTime, timeZone: string = 'local'): Luxo
   return typeof time === 'number'
     ? timeObjFromUnixTimestamp(time, timeZone)
     : time instanceof Date
-    ? timeObjFromDate(time, timeZone)
-    : timeObjFromCalendarObj(time, timeZone);
+      ? timeObjFromDate(time, timeZone)
+      : timeObjFromCalendarObj(time, timeZone);
 };
 
 /** @internal */

@@ -70,8 +70,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
       {selectedChart === ChartType.Partition
         ? renderPartitionChart()
         : selectedChart === ChartType.Goal
-        ? renderGoalchart()
-        : renderXYAxisChart()}
+          ? renderGoalchart()
+          : renderXYAxisChart()}
     </Chart>
   );
 };

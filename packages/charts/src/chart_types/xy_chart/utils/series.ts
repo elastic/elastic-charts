@@ -535,8 +535,8 @@ export function getSeriesName(
     typeof spec?.name === 'function'
       ? spec.name(seriesIdentifier, isTooltip)
       : typeof spec?.name === 'object' // extract booleans once https://github.com/microsoft/TypeScript/issues/12184 is fixed
-      ? getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER)
-      : null;
+        ? getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER)
+        : null;
 
   if (customLabel !== null) {
     return customLabel.toString();
@@ -549,10 +549,10 @@ export function getSeriesName(
   return nonZeroLength && (spec?.splitSeriesAccessors || !hasSingleSeries)
     ? nameKeys.join(typeof spec?.name === 'object' ? spec.name.delimiter ?? SERIES_DELIMITER : SERIES_DELIMITER)
     : spec === undefined
-    ? ''
-    : typeof spec.name === 'string'
-    ? spec.name
-    : spec.id;
+      ? ''
+      : typeof spec.name === 'string'
+        ? spec.name
+        : spec.id;
 }
 
 /**

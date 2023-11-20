@@ -77,10 +77,10 @@ const sorter =
     (isTreemap(layout) || isSunburst(layout) || isWaffle(layout)
       ? descendingValueNodes
       : isMosaic(layout)
-      ? i === 2
-        ? ascendingValueNodes
-        : descendingValueNodes
-      : null);
+        ? i === 2
+          ? ascendingValueNodes
+          : descendingValueNodes
+        : null);
 
 /** @internal */
 export function partitionTree(

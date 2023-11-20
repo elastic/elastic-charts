@@ -89,8 +89,8 @@ export function renderPoints(
       const radius = isPointIsolated
         ? isolatedPointThemeStyle.radius
         : markSizeOptions.enabled
-        ? Math.max(getRadius(mark), pointStyle.radius)
-        : styleOverrides?.radius ?? pointStyle.radius;
+          ? Math.max(getRadius(mark), pointStyle.radius)
+          : styleOverrides?.radius ?? pointStyle.radius;
 
       const pointGeometry: PointGeometry = {
         x,
