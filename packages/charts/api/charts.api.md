@@ -1828,6 +1828,7 @@ export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", ne
 // @alpha (undocumented)
 export type MetricBase = {
     color: Color;
+    background?: Color;
     title?: string;
     valueColor?: Color;
     valueIcon?: ComponentType<{
@@ -1872,6 +1873,7 @@ export type MetricSpecProps = ComponentProps<typeof Metric>;
 export interface MetricStyle {
     // (undocumented)
     barBackground: Color;
+    blendingBackground?: Color;
     // (undocumented)
     border: Color;
     // (undocumented)
