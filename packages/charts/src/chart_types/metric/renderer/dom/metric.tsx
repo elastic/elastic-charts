@@ -56,7 +56,7 @@ export const Metric: React.FunctionComponent<{
   datum,
   panel,
   style,
-  backgroundColor,
+  backgroundColor: chartBackgroundColor,
   contrastOptions,
   locale,
   onElementClick,
@@ -80,12 +80,21 @@ export const Metric: React.FunctionComponent<{
 
   const lightnessAmount = mouseState === 'leave' ? 0 : mouseState === 'enter' ? 0.05 : 0.1;
 
+  const backgroundColor = datum.background
+    ? RGBATupleToString(combineColors(colorToRgba(datum.background), colorToRgba(chartBackgroundColor)))
+    : chartBackgroundColor;
+  const blendingBackgroundColor = !style.blendingBackground
+    ? colorToRgba(backgroundColor)
+    : combineColors(colorToRgba(style.blendingBackground), colorToRgba(backgroundColor));
   const interactionColor = changeColorLightness(hasProgressBar ? backgroundColor : datum.color, lightnessAmount, 0.8);
-  const blendedBarColor = RGBATupleToString(combineColors(colorToRgba(datum.color), colorToRgba(backgroundColor)));
+  const blendedColor = RGBATupleToString(combineColors(colorToRgba(datum.color), blendingBackgroundColor));
+  const blendedInteractionColor = RGBATupleToString(
+    combineColors(colorToRgba(interactionColor), blendingBackgroundColor),
+  );
 
   const datumWithInteractionColor: MetricDatum = {
     ...datum,
-    color: interactionColor,
+    color: blendedInteractionColor,
   };
 
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
@@ -98,7 +107,7 @@ export const Metric: React.FunctionComponent<{
 
   const highContrastTextColor = fillTextColor(
     backgroundColor,
-    isMetricWProgress(datum) ? backgroundColor : datum.color,
+    isMetricWProgress(datum) ? backgroundColor : blendedColor,
     undefined,
     contrastOptions,
   );
@@ -107,7 +116,7 @@ export const Metric: React.FunctionComponent<{
   if (isMetricWTrend(datum)) {
     const { ratio, color, shade } = fillTextColor(
       backgroundColor,
-      getSparkLineColor(datum.color),
+      getSparkLineColor(blendedColor),
       undefined,
       contrastOptions,
     );
@@ -169,7 +178,7 @@ export const Metric: React.FunctionComponent<{
         <ProgressBar
           datum={datumWithInteractionColor}
           barBackground={style.barBackground}
-          blendedBarColor={blendedBarColor}
+          blendedBarColor={blendedColor}
         />
       )}
       <div className="echMetric--outline" style={{ color: finalTextColor.keyword }}></div>

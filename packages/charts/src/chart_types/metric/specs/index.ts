@@ -19,6 +19,10 @@ import { LayoutDirection } from '../../../utils/common';
 /** @alpha */
 export type MetricBase = {
   color: Color;
+  /**
+   * Overrides background color from `Theme.background` and `Theme.metric.emptyBackground`
+   */
+  background?: Color;
   title?: string;
   valueColor?: Color;
   valueIcon?: ComponentType<{ width: number; height: number; color: Color; verticalAlign: 'middle' }>;

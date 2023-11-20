@@ -55,19 +55,6 @@ export const SparkLine: FunctionComponent<{
         role="img"
         aria-labelledby={`${titleId} ${descriptionId}`}
       >
-        <defs>
-          <mask id="sparkline-mask">
-            <rect x={0} y={0} width={1} height={1} fill="white" mask="url(#sparkline-mask)" />
-            <path
-              d={path.area(trend)}
-              transform="translate(0, 0.5),scale(1,0.5)"
-              fill="black"
-              stroke="none"
-              strokeWidth={0}
-            />
-          </mask>
-        </defs>
-
         <title id={titleId} className="echScreenReaderOnly">
           {trendA11yTitle}
         </title>
@@ -75,7 +62,8 @@ export const SparkLine: FunctionComponent<{
           {trendA11yDescription}
         </text>
 
-        <rect x={0} y={0} width={1} height={1} fill={color} mask="url(#sparkline-mask)" />
+        <rect x={0} y={0} width={1} height={1} fill={color} />
+
         <path
           d={path.area(trend)}
           transform="translate(0, 0.5),scale(1,0.5)"
