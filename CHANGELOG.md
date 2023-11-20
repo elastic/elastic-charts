@@ -1,3 +1,18 @@
+# [61.1.0](https://github.com/elastic/elastic-charts/compare/v61.0.0...v61.1.0) (2023-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v91 ([#2233](https://github.com/elastic/elastic-charts/issues/2233)) ([e89f623](https://github.com/elastic/elastic-charts/commit/e89f623792312c4f6b609ebb975de0800f3c297e))
+* **metric:** add option to set empty cell background color ([#2247](https://github.com/elastic/elastic-charts/issues/2247)) ([6a9fb86](https://github.com/elastic/elastic-charts/commit/6a9fb86bee5212a47060c5070f260961097014b4))
+* **metric:** background color for bar with interactions ([#2248](https://github.com/elastic/elastic-charts/issues/2248)) ([dcb56fa](https://github.com/elastic/elastic-charts/commit/dcb56fa08540631a9b3b0e588352ee6daf3d54a0))
+
+
+### Features
+
+* **bullet:** improve header layout and positioning ([#2243](https://github.com/elastic/elastic-charts/issues/2243)) ([b3a95d2](https://github.com/elastic/elastic-charts/commit/b3a95d24fb02690ca6599622352c743c04624690))
+* **bullet:** new design style and implementation ([#2156](https://github.com/elastic/elastic-charts/issues/2156)) ([fca6cdd](https://github.com/elastic/elastic-charts/commit/fca6cdd5bc34a65c0792dbab7d756404bf43501b))
+
 # [61.0.0](https://github.com/elastic/elastic-charts/compare/v60.0.0...v61.0.0) (2023-11-08)
 
 
