@@ -8,7 +8,7 @@
 
 import { EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
-import { select, number, boolean, button } from '@storybook/addon-knobs';
+import { select, number, boolean, button, color } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
 import {
@@ -45,6 +45,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   const progressBarDirection = select('progress bar direction', ['horizontal', 'vertical'], 'vertical');
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
+  const emptyBackground = color('empty background', 'transparent');
 
   const defaultValueFormatter = (d: number) => `${d}`;
   const data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[] = [
@@ -194,6 +195,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
           .join(' ')}
       <Chart title={title} description={description}>
         <Settings
+          theme={{
+            metric: {
+              emptyBackground,
+            },
+          }}
           baseTheme={useBaseTheme()}
           onElementClick={
             addMetricClick

@@ -418,6 +418,7 @@ export const LIGHT_THEME: Theme = {
     },
     border: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
     barBackground: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
+    emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
   },
