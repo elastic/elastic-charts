@@ -121,7 +121,7 @@ export const storybookParameters: Parameters = {
         name: 'VRT Viewport',
         styles: {
           width: '785px',
-          height: '600px',
+          height: '1000px',
         },
       },
     },

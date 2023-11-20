@@ -49,6 +49,23 @@ interface KeyboardKey {
   count: number;
 }
 
+interface ClickOptions {
+  /**
+   * Defaults to `left`.
+   */
+  button?: 'left' | 'right' | 'middle';
+
+  /**
+   * defaults to 1. See [UIEvent.detail].
+   */
+  clickCount?: number;
+
+  /**
+   * Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
+   */
+  delay?: number;
+}
+
 type KeyboardKeys = Array<KeyboardKey>;
 
 /**
@@ -278,10 +295,16 @@ export class CommonPage {
    * @param selector
    */
   clickMouseRelativeToDOMElement =
-    (page: Page) => async (mousePosition: MousePosition, selector: string, button?: 'left' | 'right' | 'middle') => {
+    (page: Page) => async (mousePosition: MousePosition, selector: string, options?: ClickOptions) => {
       const element = await this.getBoundingClientRect(page)(selector);
       const { x, y } = getCursorPosition(mousePosition, element);
-      await page.mouse.click(x, y, { button });
+
+      if (options?.delay) {
+        // need to skip await to resolve early and capture delay
+        void page.mouse.click(x, y, options);
+      } else {
+        await page.mouse.click(x, y, options);
+      }
     };
 
   /**
@@ -445,12 +468,12 @@ export class CommonPage {
     async (
       url: string,
       mousePosition: MousePosition,
-      button?: 'left' | 'right' | 'middle',
+      clickOptions?: ClickOptions,
       options?: ScreenshotElementAtUrlOptions,
     ) => {
       const action = async () => {
         await options?.action?.();
-        await this.clickMouseRelativeToDOMElement(page)(mousePosition, this.chartSelector, button);
+        await this.clickMouseRelativeToDOMElement(page)(mousePosition, this.chartSelector, clickOptions);
       };
       await this.expectChartAtUrlToMatchScreenshot(page)(url, {
         ...options,
