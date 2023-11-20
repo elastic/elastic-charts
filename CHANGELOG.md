@@ -1,3 +1,11 @@
+## [61.0.1](https://github.com/elastic/elastic-charts/compare/v61.0.0...v61.0.1) (2023-11-20)
+
+
+### Bug Fixes
+
+* **metric:** add option to set empty cell background color ([#2247](https://github.com/elastic/elastic-charts/issues/2247)) [61.0.x] ([#2250](https://github.com/elastic/elastic-charts/issues/2250)) ([fe3aefe](https://github.com/elastic/elastic-charts/commit/fe3aefed30dad26ba700ee7046f79d93e17700da))
+* **metric:** background color for bar with interactions ([#2248](https://github.com/elastic/elastic-charts/issues/2248)) [61.0.x] ([#2249](https://github.com/elastic/elastic-charts/issues/2249)) ([4483606](https://github.com/elastic/elastic-charts/commit/4483606b2ec19bc7630c4c9f8ba0050de0986fa7))
+
 # [61.0.0](https://github.com/elastic/elastic-charts/compare/v60.0.0...v61.0.0) (2023-11-08)
 
 
