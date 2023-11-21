@@ -1,3 +1,10 @@
+## [61.0.2](https://github.com/elastic/elastic-charts/compare/v61.0.1...v61.0.2) (2023-11-21)
+
+
+### Bug Fixes
+
+* **metric:** background colors and sparkline rendering ([#2255](https://github.com/elastic/elastic-charts/issues/2255)) [61.0.x] ([#2257](https://github.com/elastic/elastic-charts/issues/2257)) ([dfcb57a](https://github.com/elastic/elastic-charts/commit/dfcb57a962f160551b8e340c7c707586246d7438))
+
 ## [61.0.1](https://github.com/elastic/elastic-charts/compare/v61.0.0...v61.0.1) (2023-11-20)
 
 
