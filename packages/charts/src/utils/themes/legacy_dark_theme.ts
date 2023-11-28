@@ -422,7 +422,7 @@ export const LEGACY_DARK_THEME: Theme = {
   },
   bulletGraph: DARK_THEME_BULLET_STYLE,
   tooltip: {
-    maxWidth: 260,
+    maxWidth: 500,
     maxTableHeight: 120,
     defaultDotColor: Colors.White.keyword,
   },
