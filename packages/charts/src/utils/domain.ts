@@ -16,6 +16,8 @@ export type OrdinalDomain = (number | string)[];
 /** @public */
 export type ContinuousDomain = [min: number, max: number];
 /** @public */
+export type GenericDomain = [start: number, end: number];
+/** @public */
 export type Range = [min: number, max: number];
 
 function constrainPadding(

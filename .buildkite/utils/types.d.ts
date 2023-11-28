@@ -29,12 +29,12 @@ type ExtractRequestBody<T> = 'requestBody' extends keyof T
           }[keyof T['requestBody']['content']];
         }
     : 'application/json' extends keyof T['requestBody']
-    ? T['requestBody']['application/json']
-    : {
-        data: {
-          [K in keyof T['requestBody']]: T['requestBody'][K];
-        }[keyof T['requestBody']];
-      }
+      ? T['requestBody']['application/json']
+      : {
+          data: {
+            [K in keyof T['requestBody']]: T['requestBody'][K];
+          }[keyof T['requestBody']];
+        }
   : {}; // eslint-disable-line @typescript-eslint/ban-types
 type SuccessStatuses = 200 | 201 | 202 | 204;
 type RedirectStatuses = 301 | 302;

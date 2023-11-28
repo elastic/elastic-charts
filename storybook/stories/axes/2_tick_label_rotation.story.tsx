@@ -18,7 +18,7 @@ import {
   Settings,
   AxisStyle,
   RecursivePartial,
-  DEFAULT_CHART_MARGINS,
+  LEGACY_CHART_MARGINS,
   DEFAULT_CHART_PADDING,
 } from '@elastic/charts';
 
@@ -113,10 +113,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false, 'general');
   const onlyGlobal = !boolean('disable axis overrides', false, 'general');
   const chartMargins = {
-    left: customKnobs.positiveNumber('margin left', DEFAULT_CHART_MARGINS.left, 'general'),
-    right: customKnobs.positiveNumber('margin right', DEFAULT_CHART_MARGINS.right, 'general'),
-    top: customKnobs.positiveNumber('margin top', DEFAULT_CHART_MARGINS.top, 'general'),
-    bottom: customKnobs.positiveNumber('margin bottom', DEFAULT_CHART_MARGINS.bottom, 'general'),
+    left: customKnobs.positiveNumber('margin left', LEGACY_CHART_MARGINS.left, 'general'),
+    right: customKnobs.positiveNumber('margin right', LEGACY_CHART_MARGINS.right, 'general'),
+    top: customKnobs.positiveNumber('margin top', LEGACY_CHART_MARGINS.top, 'general'),
+    bottom: customKnobs.positiveNumber('margin bottom', LEGACY_CHART_MARGINS.bottom, 'general'),
   };
   const chartPaddings = {
     left: customKnobs.positiveNumber('padding left', DEFAULT_CHART_PADDING.left, 'general'),

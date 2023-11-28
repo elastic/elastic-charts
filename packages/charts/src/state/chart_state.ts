@@ -24,6 +24,7 @@ import { LegendItemLabel } from './selectors/get_legend_items_labels';
 import { DebugState } from './types';
 import { getInitialPointerState, getInitialTooltipState } from './utils';
 import { ChartType } from '../chart_types';
+import { BulletGraphState } from '../chart_types/bullet_graph/chart_state';
 import { FlameState } from '../chart_types/flame_chart/internal_chart_state';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
@@ -380,11 +381,11 @@ export const chartStoreReducer = (chartId: string, title?: string, description?:
           },
         };
       case CHART_RENDERED:
-        const count = state.chartRendered ? state.chartRenderedCount : state.chartRenderedCount + 1;
+        const chartRenderedCount = state.chartRendered ? state.chartRenderedCount : state.chartRenderedCount + 1;
         return {
           ...state,
           chartRendered: true,
-          chartRenderedCount: count,
+          chartRenderedCount,
         };
       case UPDATE_PARENT_DIMENSION:
         return {
@@ -401,6 +402,7 @@ export const chartStoreReducer = (chartId: string, title?: string, description?:
           parentDimensions: {
             ...action.dimensions,
           },
+          chartRendered: false,
         };
       case UPDATE_CHART_TITLES:
         return {
@@ -496,6 +498,7 @@ const constructors: Record<ChartType, () => InternalChartState | null> = {
   [ChartType.Heatmap]: () => new HeatmapState(),
   [ChartType.Wordcloud]: () => new WordcloudState(),
   [ChartType.Metric]: () => new MetricState(),
+  [ChartType.BulletGraph]: () => new BulletGraphState(),
   [ChartType.Global]: () => null,
 }; // with no default, TS signals if a new chart type isn't added here too
 

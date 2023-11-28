@@ -11,7 +11,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -39,7 +39,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -69,7 +69,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -97,7 +97,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -127,7 +127,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -155,7 +155,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -185,7 +185,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -213,7 +213,7 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -364,7 +364,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -392,7 +392,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -422,7 +422,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -450,7 +450,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -480,7 +480,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -508,7 +508,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -538,7 +538,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -566,7 +566,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           0,
           1,
         ],
-        "width": 1,
+        "width": 2,
       },
     },
     "transform": {
@@ -614,9 +614,15 @@ exports[`Rendering bands - areas Single series band bar chart - ordinal Can rend
     },
     "seriesStyle": {
       "displayValue": {
-        "fill": "#777",
-        "fontFamily": "sans-serif",
-        "fontSize": 8,
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
         "fontStyle": "normal",
         "offsetX": 0,
         "offsetY": 0,
@@ -671,9 +677,15 @@ exports[`Rendering bands - areas Single series band bar chart - ordinal Can rend
     },
     "seriesStyle": {
       "displayValue": {
-        "fill": "#777",
-        "fontFamily": "sans-serif",
-        "fontSize": 8,
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
         "fontStyle": "normal",
         "offsetX": 0,
         "offsetY": 0,
@@ -728,9 +740,15 @@ exports[`Rendering bands - areas Single series band bar chart - ordinal Can rend
     },
     "seriesStyle": {
       "displayValue": {
-        "fill": "#777",
-        "fontFamily": "sans-serif",
-        "fontSize": 8,
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
         "fontStyle": "normal",
         "offsetX": 0,
         "offsetY": 0,

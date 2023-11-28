@@ -17,8 +17,8 @@ describe('Color calcs', () => {
       const background: RgbaTuple = [120, 116, 178, 0.7];
       const blendedBackground: RgbaTuple = [161, 158, 201, 1];
       expect(combineColors(background, Colors.White.rgba)).toEqual(blendedBackground);
-      expect(highContrastColor(blendedBackground, 'WCAG2')).toEqual(Colors.Black.rgba);
-      expect(highContrastColor(blendedBackground, 'WCAG3')).toEqual(Colors.White.rgba);
+      expect(highContrastColor(blendedBackground, 'WCAG2').color.rgba).toEqual(Colors.Black.rgba);
+      expect(highContrastColor(blendedBackground, 'WCAG3').color.rgba).toEqual(Colors.White.rgba);
     });
   });
   describe('test the combineColors function', () => {

@@ -102,7 +102,3 @@ export const Example: ChartsStory = (_, { title, description }) => {
     </Chart>
   );
 };
-
-Example.parameters = {
-  background: { default: 'white' },
-};

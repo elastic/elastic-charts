@@ -7,7 +7,52 @@ exports[`XYChart - debug state line chart rotation: -90 1`] = `
   "axes": {
     "x": [
       {
-        "gridlines": [],
+        "gridlines": [
+          {
+            "x": 0,
+            "y": 0,
+          },
+          {
+            "x": 0,
+            "y": 18.199999999999996,
+          },
+          {
+            "x": 0,
+            "y": 36.39999999999999,
+          },
+          {
+            "x": 0,
+            "y": 54.60000000000001,
+          },
+          {
+            "x": 0,
+            "y": 72.8,
+          },
+          {
+            "x": 0,
+            "y": 91,
+          },
+          {
+            "x": 0,
+            "y": 109.2,
+          },
+          {
+            "x": 0,
+            "y": 127.39999999999999,
+          },
+          {
+            "x": 0,
+            "y": 145.6,
+          },
+          {
+            "x": 0,
+            "y": 163.8,
+          },
+          {
+            "x": 0,
+            "y": 182,
+          },
+        ],
         "id": "xAxis",
         "labels": [
           "0",
@@ -41,7 +86,32 @@ exports[`XYChart - debug state line chart rotation: -90 1`] = `
     ],
     "y": [
       {
-        "gridlines": [],
+        "gridlines": [
+          {
+            "x": 0,
+            "y": 0,
+          },
+          {
+            "x": 36.39999999999999,
+            "y": 0,
+          },
+          {
+            "x": 72.8,
+            "y": 0,
+          },
+          {
+            "x": 109.2,
+            "y": 0,
+          },
+          {
+            "x": 145.6,
+            "y": 0,
+          },
+          {
+            "x": 182,
+            "y": 0,
+          },
+        ],
         "id": "yAxis",
         "labels": [
           "0",
@@ -79,7 +149,7 @@ exports[`XYChart - debug state line chart rotation: -90 1`] = `
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,159.5L64,112L160,0",
+      "path": "M0,181.5L72.8,127.39999999999999L182,0",
       "points": [
         {
           "mark": null,
@@ -111,7 +181,52 @@ exports[`XYChart - debug state line chart rotation: 0 1`] = `
   "axes": {
     "x": [
       {
-        "gridlines": [],
+        "gridlines": [
+          {
+            "x": 0,
+            "y": 0,
+          },
+          {
+            "x": 18.2,
+            "y": 0,
+          },
+          {
+            "x": 36.4,
+            "y": 0,
+          },
+          {
+            "x": 54.6,
+            "y": 0,
+          },
+          {
+            "x": 72.8,
+            "y": 0,
+          },
+          {
+            "x": 91,
+            "y": 0,
+          },
+          {
+            "x": 109.2,
+            "y": 0,
+          },
+          {
+            "x": 127.39999999999999,
+            "y": 0,
+          },
+          {
+            "x": 145.6,
+            "y": 0,
+          },
+          {
+            "x": 163.8,
+            "y": 0,
+          },
+          {
+            "x": 182,
+            "y": 0,
+          },
+        ],
         "id": "xAxis",
         "labels": [
           "0",
@@ -145,7 +260,32 @@ exports[`XYChart - debug state line chart rotation: 0 1`] = `
     ],
     "y": [
       {
-        "gridlines": [],
+        "gridlines": [
+          {
+            "x": 0,
+            "y": 0,
+          },
+          {
+            "x": 0,
+            "y": 36.39999999999999,
+          },
+          {
+            "x": 0,
+            "y": 72.8,
+          },
+          {
+            "x": 0,
+            "y": 109.2,
+          },
+          {
+            "x": 0,
+            "y": 145.6,
+          },
+          {
+            "x": 0,
+            "y": 182,
+          },
+        ],
         "id": "yAxis",
         "labels": [
           "0",
@@ -183,7 +323,7 @@ exports[`XYChart - debug state line chart rotation: 0 1`] = `
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,159.5L64,112L160,0",
+      "path": "M0,181.5L72.8,127.39999999999999L182,0",
       "points": [
         {
           "mark": null,
@@ -215,7 +355,52 @@ exports[`XYChart - debug state line chart rotation: 90 1`] = `
   "axes": {
     "x": [
       {
-        "gridlines": [],
+        "gridlines": [
+          {
+            "x": 0,
+            "y": 0,
+          },
+          {
+            "x": 0,
+            "y": 18.2,
+          },
+          {
+            "x": 0,
+            "y": 36.4,
+          },
+          {
+            "x": 0,
+            "y": 54.6,
+          },
+          {
+            "x": 0,
+            "y": 72.8,
+          },
+          {
+            "x": 0,
+            "y": 91,
+          },
+          {
+            "x": 0,
+            "y": 109.2,
+          },
+          {
+            "x": 0,
+            "y": 127.39999999999999,
+          },
+          {
+            "x": 0,
+            "y": 145.6,
+          },
+          {
+            "x": 0,
+            "y": 163.8,
+          },
+          {
+            "x": 0,
+            "y": 182,
+          },
+        ],
         "id": "xAxis",
         "labels": [
           "0",
@@ -249,7 +434,32 @@ exports[`XYChart - debug state line chart rotation: 90 1`] = `
     ],
     "y": [
       {
-        "gridlines": [],
+        "gridlines": [
+          {
+            "x": 0,
+            "y": 0,
+          },
+          {
+            "x": 36.4,
+            "y": 0,
+          },
+          {
+            "x": 72.8,
+            "y": 0,
+          },
+          {
+            "x": 109.2,
+            "y": 0,
+          },
+          {
+            "x": 145.6,
+            "y": 0,
+          },
+          {
+            "x": 182,
+            "y": 0,
+          },
+        ],
         "id": "yAxis",
         "labels": [
           "0",
@@ -287,7 +497,7 @@ exports[`XYChart - debug state line chart rotation: 90 1`] = `
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,159.5L64,112L160,0",
+      "path": "M0,181.5L72.8,127.39999999999999L182,0",
       "points": [
         {
           "mark": null,
@@ -319,7 +529,52 @@ exports[`XYChart - debug state line chart rotation: 180 1`] = `
   "axes": {
     "x": [
       {
-        "gridlines": [],
+        "gridlines": [
+          {
+            "x": 0,
+            "y": 0,
+          },
+          {
+            "x": 18.199999999999996,
+            "y": 0,
+          },
+          {
+            "x": 36.39999999999999,
+            "y": 0,
+          },
+          {
+            "x": 54.60000000000001,
+            "y": 0,
+          },
+          {
+            "x": 72.8,
+            "y": 0,
+          },
+          {
+            "x": 91,
+            "y": 0,
+          },
+          {
+            "x": 109.2,
+            "y": 0,
+          },
+          {
+            "x": 127.39999999999999,
+            "y": 0,
+          },
+          {
+            "x": 145.6,
+            "y": 0,
+          },
+          {
+            "x": 163.8,
+            "y": 0,
+          },
+          {
+            "x": 182,
+            "y": 0,
+          },
+        ],
         "id": "xAxis",
         "labels": [
           "0",
@@ -353,7 +608,32 @@ exports[`XYChart - debug state line chart rotation: 180 1`] = `
     ],
     "y": [
       {
-        "gridlines": [],
+        "gridlines": [
+          {
+            "x": 0,
+            "y": 0,
+          },
+          {
+            "x": 0,
+            "y": 36.4,
+          },
+          {
+            "x": 0,
+            "y": 72.8,
+          },
+          {
+            "x": 0,
+            "y": 109.2,
+          },
+          {
+            "x": 0,
+            "y": 145.6,
+          },
+          {
+            "x": 0,
+            "y": 182,
+          },
+        ],
         "id": "yAxis",
         "labels": [
           "0",
@@ -391,7 +671,7 @@ exports[`XYChart - debug state line chart rotation: 180 1`] = `
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,159.5L64,112L160,0",
+      "path": "M0,181.5L72.8,127.39999999999999L182,0",
       "points": [
         {
           "mark": null,

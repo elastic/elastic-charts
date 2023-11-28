@@ -1,3 +1,50 @@
+# [61.1.0](https://github.com/elastic/elastic-charts/compare/v61.0.0...v61.1.0) (2023-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v91 ([#2233](https://github.com/elastic/elastic-charts/issues/2233)) ([e89f623](https://github.com/elastic/elastic-charts/commit/e89f623792312c4f6b609ebb975de0800f3c297e))
+* **metric:** add option to set empty cell background color ([#2247](https://github.com/elastic/elastic-charts/issues/2247)) ([6a9fb86](https://github.com/elastic/elastic-charts/commit/6a9fb86bee5212a47060c5070f260961097014b4))
+* **metric:** background color for bar with interactions ([#2248](https://github.com/elastic/elastic-charts/issues/2248)) ([dcb56fa](https://github.com/elastic/elastic-charts/commit/dcb56fa08540631a9b3b0e588352ee6daf3d54a0))
+
+
+### Features
+
+* **bullet:** improve header layout and positioning ([#2243](https://github.com/elastic/elastic-charts/issues/2243)) ([b3a95d2](https://github.com/elastic/elastic-charts/commit/b3a95d24fb02690ca6599622352c743c04624690))
+* **bullet:** new design style and implementation ([#2156](https://github.com/elastic/elastic-charts/issues/2156)) ([fca6cdd](https://github.com/elastic/elastic-charts/commit/fca6cdd5bc34a65c0792dbab7d756404bf43501b))
+
+# [61.0.0](https://github.com/elastic/elastic-charts/compare/v60.0.0...v61.0.0) (2023-11-08)
+
+
+### Bug Fixes
+
+* `onRenderChange` callback trigger on resize ([#2228](https://github.com/elastic/elastic-charts/issues/2228)) ([be30c1b](https://github.com/elastic/elastic-charts/commit/be30c1bd48ce3e50b8e9fa28c0d8999b6366b305))
+* **axis:** always render `tickLine` unless `visible` is `false` ([#2194](https://github.com/elastic/elastic-charts/issues/2194)) ([ec95d50](https://github.com/elastic/elastic-charts/commit/ec95d50180d86fb7cec8c90d952f894ac9548b4f))
+* **BarSeries:** ignore histogram mode in determining stacked series ([#2225](https://github.com/elastic/elastic-charts/issues/2225)) ([27b4281](https://github.com/elastic/elastic-charts/commit/27b4281581d6d5613c3bac55b308c49c519e7160))
+* clamp brushing min of last bucket ([#2227](https://github.com/elastic/elastic-charts/issues/2227)) ([155c22d](https://github.com/elastic/elastic-charts/commit/155c22dee1f891cbb630d3d99fae005d89bf76d8))
+* **deps:** update dependency @elastic/eui to ^88.5.0 ([#2179](https://github.com/elastic/elastic-charts/issues/2179)) ([2bb921e](https://github.com/elastic/elastic-charts/commit/2bb921e42bf790ce091178fc66794265a2832c0e))
+* **deps:** update dependency @elastic/eui to ^88.5.4 ([#2190](https://github.com/elastic/elastic-charts/issues/2190)) ([05b33e5](https://github.com/elastic/elastic-charts/commit/05b33e58f27da3685bc8a2668435e83fb260a033))
+* **deps:** update dependency @elastic/eui to ^89.1.0 ([#2212](https://github.com/elastic/elastic-charts/issues/2212)) ([a91f68d](https://github.com/elastic/elastic-charts/commit/a91f68d6b7c19da43a02e2b6d205ddc7f758243b))
+* **deps:** update dependency @elastic/eui to v89 ([#2193](https://github.com/elastic/elastic-charts/issues/2193)) ([132327d](https://github.com/elastic/elastic-charts/commit/132327d980f4941d81a6df5e9e76cdf065f7d744))
+* **deps:** update dependency @elastic/eui to v90 ([#2222](https://github.com/elastic/elastic-charts/issues/2222)) ([10cd53b](https://github.com/elastic/elastic-charts/commit/10cd53b2e6b4f65096837a994aff69626dc4050e))
+
+
+### chore
+
+* reclaim charts theme ownership from eui ([#2175](https://github.com/elastic/elastic-charts/issues/2175)) ([422c7d5](https://github.com/elastic/elastic-charts/commit/422c7d529e2b2a1bf01d6f78c1e35a2f9c79c91f))
+
+
+### Features
+
+* **metric:** allow alpha colors and improve contrast logic  ([#2184](https://github.com/elastic/elastic-charts/issues/2184)) ([dd5732e](https://github.com/elastic/elastic-charts/commit/dd5732e83b4a23143f6fa8ceb82066150dc9fe8d))
+
+
+### BREAKING CHANGES
+
+* **BarSeries:** now ignores histogram mode in determining stacked series
+* elastic charts theme renamed to `LEGACY_DARK_THEME` and `LEGACY_LIGHT_THEME` in favor of the main `DARK_THEME` and `LIGHT_THEME` which was merged with eui theme overrides. These new themes are now default.
+* **axis:** Now respects `tickLine.padding` whenever `tickLine.visible` is `true`
+
 # [60.0.0](https://github.com/elastic/elastic-charts/compare/v59.1.0...v60.0.0) (2023-09-20)
 
 

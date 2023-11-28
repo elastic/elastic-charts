@@ -10,6 +10,7 @@ import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
 import { BaseDatum } from './../../../xy_chart/utils/specs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
+import { ColorScale } from '../../../../common/colors';
 import { fillTextColor } from '../../../../common/fill_text_color';
 import { Pixels } from '../../../../common/geometry';
 import {
@@ -35,7 +36,6 @@ import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_r
 import { ChartDimensions } from '../../../xy_chart/utils/dimensions';
 import { HeatmapSpec } from '../../specs';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
-import { ColorScale } from '../../state/selectors/get_color_scale';
 import { HeatmapTable } from '../../state/selectors/get_heatmap_table';
 import {
   Cell,
@@ -140,6 +140,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const cellHeightInner = cellHeight - gridStrokeWidth;
 
   if (colorToRgba(background.color)[3] < 1) {
+    // TODO: centralize this check and bg color fallback across all chart types
     Logger.expected(
       'Text contrast requires a opaque background color, using fallbackColor',
       'an opaque color',
@@ -200,7 +201,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       visible: !isValueInRanges(d.value, bandsToHide),
       formatted: formattedValue,
       fontSize,
-      textColor: fillTextColor(background.fallbackColor, cellBackgroundColor, background.color),
+      textColor: fillTextColor(background.fallbackColor, cellBackgroundColor, background.color).color.keyword,
     });
     return acc;
   }, new Map());

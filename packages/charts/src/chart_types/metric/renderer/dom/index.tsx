@@ -15,9 +15,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
-import { highContrastColor } from '../../../../common/color_calcs';
-import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Colors } from '../../../../common/colors';
+import { ColorContrastOptions, combineColors, highContrastColor } from '../../../../common/color_calcs';
+import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
+import { Color } from '../../../../common/colors';
 import { BasicListener, ElementClickListener, ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
@@ -28,6 +28,7 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
+import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
@@ -47,6 +48,7 @@ interface StateProps {
   specs: MetricSpec[];
   a11y: A11ySettings;
   style: MetricStyle;
+  backgroundColor: Color;
   locale: string;
   onElementClick?: ElementClickListener;
   onElementOut?: BasicListener;
@@ -76,6 +78,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
       a11y,
       specs: [spec], // ignoring other specs
       style,
+      backgroundColor,
       onElementClick,
       onElementOut,
       onElementOver,
@@ -93,11 +96,14 @@ class Component extends React.Component<StateProps & DispatchProps> {
     }, 0);
 
     const panel = { width: width / maxColumns, height: height / totalRows };
+    const contrastOptions: ColorContrastOptions = {
+      lightColor: colorToRgba(style.text.lightColor),
+      darkColor: colorToRgba(style.text.darkColor),
+    };
 
-    const emptyForegroundColor =
-      highContrastColor(colorToRgba(style.background)) === Colors.White.rgba
-        ? style.text.lightColor
-        : style.text.darkColor;
+    const emptyBackgroundRGBA = combineColors(colorToRgba(style.emptyBackground), colorToRgba(backgroundColor));
+    const emptyBackground = RGBATupleToString(emptyBackgroundRGBA);
+    const { color: emptyForegroundColor } = highContrastColor(emptyBackgroundRGBA, undefined, contrastOptions);
 
     return (
       // eslint-disable-next-line jsx-a11y/no-redundant-roles
@@ -122,8 +128,11 @@ class Component extends React.Component<StateProps & DispatchProps> {
               });
               return !datum ? (
                 <li key={`${columnIndex}-${rowIndex}`} role="presentation">
-                  <div className={emptyMetricClassName} style={{ borderColor: style.border }}>
-                    <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor }}></div>
+                  <div
+                    className={emptyMetricClassName}
+                    style={{ borderColor: style.border, backgroundColor: emptyBackground }}
+                  >
+                    <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor.keyword }}></div>
                   </div>
                 </li>
               ) : (
@@ -138,6 +147,8 @@ class Component extends React.Component<StateProps & DispatchProps> {
                     columnIndex={columnIndex}
                     panel={panel}
                     style={style}
+                    backgroundColor={backgroundColor}
+                    contrastOptions={contrastOptions}
                     onElementClick={onElementClick}
                     onElementOut={onElementOut}
                     onElementOver={onElementOver}
@@ -155,7 +166,10 @@ class Component extends React.Component<StateProps & DispatchProps> {
               });
               return (
                 <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
-                  <div className={emptyMetricClassName} style={{ borderColor: style.border }}></div>
+                  <div
+                    className={emptyMetricClassName}
+                    style={{ borderColor: style.border, backgroundColor: emptyBackground }}
+                  ></div>
                 </li>
               );
             }),
@@ -185,6 +199,7 @@ const DEFAULT_PROPS: StateProps = {
   },
   a11y: DEFAULT_A11Y_SETTINGS,
   style: LIGHT_THEME.metric,
+  backgroundColor: LIGHT_THEME.background.color,
   locale: settingsBuildProps.defaults.locale,
 };
 
@@ -193,6 +208,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     return DEFAULT_PROPS;
   }
   const { onElementClick, onElementOut, onElementOver, locale } = getSettingsSpecSelector(state);
+  const { metric: style } = getChartThemeSelector(state);
   return {
     initialized: true,
     chartId: state.chartId,
@@ -203,7 +219,8 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     onElementClick,
     onElementOver,
     onElementOut,
-    style: getChartThemeSelector(state).metric,
+    backgroundColor: getResolvedBackgroundColorSelector(state),
+    style,
     locale,
   };
 };

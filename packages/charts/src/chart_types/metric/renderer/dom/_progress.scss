@@ -1,6 +1,5 @@
 .echSingleMetricProgress {
   position: absolute;
-  overflow: hidden;
 
   &--vertical {
     left: 0;
@@ -9,6 +8,7 @@
     bottom: 0;
     height: 100%;
     width: 100%;
+
     &.echSingleMetricProgress--small {
       right: auto;
       width: 10px;
@@ -22,6 +22,7 @@
     top: 0;
     bottom: 0;
     height: 100%;
+
     &.echSingleMetricProgress--small {
       top: auto;
       height: 10px;
@@ -31,6 +32,7 @@
 
 .echSingleMetricProgressBar {
   transition: background-color ease-in-out 0.1s;
+
   &--vertical {
     position: absolute;
     left: 0;
@@ -38,11 +40,63 @@
     bottom: 0;
     width: 100%;
   }
+
   &--horizontal {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     height: 100%;
+  }
+}
+
+.echSingleMetricTarget {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  z-index: 1; // needed to pop up to top for hovered title
+
+  &--vertical {
+    transform: rotate(90deg);
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+  }
+
+  &--horizontal {
+    position: absolute;
+    bottom: 100%;
+  }
+}
+
+.echSingleMetricZeroBaseline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  $line-width: 2px;
+  $line-length: 13px;
+
+  &--vertical {
+    position: absolute;
+    left: 0;
+
+    &.echSingleMetricZeroBaseline--small {
+      right: auto;
+      height: $line-width;
+      width: $line-length;
+    }
+  }
+
+  &--horizontal {
+    position: absolute;
+    bottom: 0;
+
+    &.echSingleMetricZeroBaseline--small {
+      top: auto;
+      width: $line-width;
+      height: $line-length;
+    }
   }
 }

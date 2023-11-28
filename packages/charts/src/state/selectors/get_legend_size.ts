@@ -87,8 +87,8 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     const height = Number.isFinite(legendConfig.legendSize)
       ? Math.min(legendConfig.legendSize, parentDimensions.height * 0.7)
       : isSingleLine
-      ? bbox.height + 16
-      : bbox.height * 2 + 24;
+        ? bbox.height + 16
+        : bbox.height * 2 + 24;
 
     return {
       height,

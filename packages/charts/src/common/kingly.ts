@@ -383,8 +383,8 @@ export const bindFramebuffer = (
       updateReadTarget && updateWriteTarget
         ? GL.FRAMEBUFFER
         : updateReadTarget
-        ? GL.READ_FRAMEBUFFER
-        : GL.DRAW_FRAMEBUFFER;
+          ? GL.READ_FRAMEBUFFER
+          : GL.DRAW_FRAMEBUFFER;
     gl.bindFramebuffer(targetToUpdate, targetFrameBuffer);
   }
 };

@@ -10,7 +10,7 @@ import { test } from '@playwright/test';
 import { camelCase } from 'change-case';
 
 import { Placement } from '../constants';
-import { eachRotation, pwEach } from '../helpers';
+import { eachRotation, eachTheme, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
 test.describe('Interactions', () => {
@@ -400,24 +400,24 @@ test.describe('Interactions', () => {
   });
 
   test.describe('mouse cursor', () => {
-    pwEach.test<string>(['eui-light', 'eui-dark'])(
-      (t) => `should show cursor when background is set with ${t} theme`,
-      async (page, theme) => {
+    eachTheme.test(
+      async ({ page, urlParam }) => {
         await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/mixed-charts--lines-and-areas&globals=theme:${theme}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
+          `http://localhost:9001/?path=/story/mixed-charts--lines-and-areas&${urlParam}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
           { top: 150, left: 250 },
         );
       },
+      (t) => `should show cursor when background is set with ${t} theme`,
     );
 
-    pwEach.test<string>(['eui-light', 'eui-dark'])(
-      (t) => `should show cursor band when background is set with ${t} theme`,
-      async (page, theme) => {
+    eachTheme.test(
+      async ({ page, urlParam }) => {
         await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/mixed-charts--bars-and-lines&globals=theme:${theme}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
+          `http://localhost:9001/?path=/story/mixed-charts--bars-and-lines&${urlParam}&knob-Fit%20domain_Y%20-%20Axis=true&knob-Log%20base_Y%20-%20Axis=natural&knob-Use%20default%20limit_Y%20-%20Axis=true&knob-Use%20negative%20values_Y%20-%20Axis=false`,
           { top: 150, left: 150 },
         );
       },
+      (t) => `should show cursor band when background is set with ${t} theme`,
     );
   });
   // currently wrong due to https://github.com/elastic/elastic-charts/issues/1921

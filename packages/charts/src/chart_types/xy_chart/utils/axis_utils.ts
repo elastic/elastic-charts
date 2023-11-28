@@ -24,7 +24,6 @@ import { Range } from '../../../utils/domain';
 import { AxisId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
 import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
-import { MIN_STROKE_WIDTH } from '../renderer/canvas/primitives/line';
 import { Projection } from '../state/selectors/visible_ticks';
 import { SeriesDomainsAndData } from '../state/utils/types';
 
@@ -291,8 +290,8 @@ export function getPosition(
 }
 
 /** @internal */
-export function shouldShowTicks({ visible, strokeWidth, size }: AxisStyle['tickLine'], axisHidden: boolean): boolean {
-  return !axisHidden && visible && size > 0 && strokeWidth >= MIN_STROKE_WIDTH;
+export function shouldShowTicks({ visible }: AxisStyle['tickLine'], axisHidden: boolean): boolean {
+  return !axisHidden && visible;
 }
 
 /** @internal */

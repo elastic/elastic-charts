@@ -12,12 +12,14 @@ import { renderLinePaths } from './primitives/path';
 import { buildLineStyles } from './styles/line';
 import { withPanelTransform } from './utils/panel_transform';
 import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
+import { Radian } from '../../../../common/geometry';
 import { LegendItem } from '../../../../common/legend';
 import { Rect, Stroke } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
 import { ColorVariant, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { LineGeometry, PerPanel } from '../../../../utils/geometry';
+import { Point } from '../../../../utils/point';
 import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
 
@@ -94,4 +96,24 @@ function renderLine(
     clippings,
     shouldClip && style.fit.line.visible,
   );
+}
+
+/**
+ * Draws line along a polar axis
+ * @internal
+ */
+export function drawPolarLine(
+  ctx: CanvasRenderingContext2D,
+  angle: Radian,
+  radius: number,
+  length: number,
+  center: Point = { x: 0, y: 0 },
+) {
+  const y1 = Math.sin(angle) * (radius - length / 2);
+  const x1 = Math.cos(angle) * (radius - length / 2);
+  const y2 = Math.sin(angle) * (radius + length / 2);
+  const x2 = Math.cos(angle) * (radius + length / 2);
+
+  ctx.moveTo(center.x + x1, center.y + y1);
+  ctx.lineTo(center.x + x2, center.y + y2);
 }

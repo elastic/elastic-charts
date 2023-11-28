@@ -1,0 +1,25 @@
+.echGridContainer {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  align-content: start;
+  justify-content: stretch;
+  align-items: stretch;
+  user-select: text;
+}
+
+.echGridCell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: background-color ease-in-out 0.1s;
+
+  &--rightBorder {
+    border-right: 1px solid #343741;
+  }
+
+  &--bottomBorder {
+    border-bottom: 1px solid #343741;
+  }
+}

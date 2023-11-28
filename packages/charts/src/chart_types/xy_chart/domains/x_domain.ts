@@ -164,8 +164,8 @@ export function convertXScaleTypes(
     scaleTypes.size === 1
       ? scaleTypes.values().next().value // pick the only scaleType present
       : scaleTypes.has(ScaleType.Ordinal)
-      ? ScaleType.Ordinal
-      : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether it's present or not
+        ? ScaleType.Ordinal
+        : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether it's present or not
   const nice = !niceDomains.includes(false);
   const isBandScale = seriesTypes.has(SeriesType.Bar);
   return { type, nice, isBandScale, timeZone };

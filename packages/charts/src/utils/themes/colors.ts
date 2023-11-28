@@ -19,15 +19,28 @@ const echPaletteColorBlind: EchPalette = {
   colors: [
     '#54B399',
     '#6092C0',
-    '#D36086',
     '#9170B8',
     '#CA8EAE',
-    '#D6BF57',
-    '#B9A888',
-    '#DA8B45',
-    '#AA6556',
+    '#D36086',
     '#E7664C',
+    '#AA6556',
+    '#DA8B45',
+    '#B9A888',
+    '#D6BF57',
   ],
+  // TODO swap colors for original colors after main changes
+  // colors: [
+  //   '#54B399',
+  //   '#6092C0',
+  //   '#D36086',
+  //   '#9170B8',
+  //   '#CA8EAE',
+  //   '#D6BF57',
+  //   '#B9A888',
+  //   '#DA8B45',
+  //   '#AA6556',
+  //   '#E7664C',
+  // ],
 };
 
 const echPaletteForLightBackground: EchPalette = {

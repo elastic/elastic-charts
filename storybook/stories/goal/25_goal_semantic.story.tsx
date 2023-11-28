@@ -8,10 +8,11 @@
 
 import React from 'react';
 
-import { Chart, Goal, Color, BandFillColorAccessorInput } from '@elastic/charts';
+import { Chart, Goal, Color, BandFillColorAccessorInput, Settings } from '@elastic/charts';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
 import { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 import { getBandFillColorFn } from '../utils/utils';
 
 const subtype = GoalSubtype.Goal;
@@ -36,6 +37,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description} className="story-chart">
+      <Settings baseTheme={useBaseTheme()} />
       <Goal
         id="spec_1"
         subtype={subtype}

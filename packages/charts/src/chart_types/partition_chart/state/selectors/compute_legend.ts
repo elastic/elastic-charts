@@ -80,8 +80,8 @@ export const computeLegendSelector = createCustomCachedSelector(
             (spec.layout === PartitionLayout.waffle // waffle has inherent top to bottom descending order
               ? compareDescendingLegendItemValues
               : isLinear(spec.layout) // icicle/flame are sorted by name
-              ? (a, b) => compareLegendItemNames(a, b, locale)
-              : () => 0), // all others are sorted by hierarchy
+                ? (a, b) => compareLegendItemNames(a, b, locale)
+                : () => 0), // all others are sorted by hierarchy
         )
         .map(({ item }) => item);
     });

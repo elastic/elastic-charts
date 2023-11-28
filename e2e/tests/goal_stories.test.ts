@@ -20,7 +20,7 @@ test.describe('Goal stories', () => {
 
   test('should render actual tooltip color on hover', async ({ page }) => {
     await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-      'http://localhost:9001/?path=/story/goal-alpha--gaps&knob-show target=false&knob-target=260&globals=background:white',
+      'http://localhost:9001/?path=/story/goal-alpha--gaps&knob-show target=false&knob-target=260',
       { right: 245, bottom: 120 },
     );
   });
