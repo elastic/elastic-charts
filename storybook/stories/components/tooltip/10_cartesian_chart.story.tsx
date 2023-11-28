@@ -125,6 +125,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             yScaleType={ScaleType.Linear}
             xAccessor="timestamp"
             yAccessors={['metric_0']}
+            stackAccessors={['yes']}
             yNice
             data={data}
           />

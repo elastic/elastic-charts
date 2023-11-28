@@ -36,24 +36,39 @@ appendIconComponentCache({
 
 const path = new URL(window.location.toString()).searchParams.get('path');
 document.getElementsByTagName('body')[0].style.overflow = path ? 'hidden' : 'scroll';
-ReactDOM.render(<VRTPage />, document.getElementById('story-root') as HTMLElement);
+ReactDOM.render(<VRTPage />, document.getElementById('root') as HTMLElement);
 
 `.trim();
 }
 
 function pageTemplate(imports, routes, urls) {
   return `
-import React, { Suspense } from 'react';
+import React, { PropsWithChildren, FC, Suspense, CSSProperties } from 'react';
 import { EuiProvider } from '@elastic/eui';
+import classNames from 'classnames';
+
 import { ThemeIdProvider, BackgroundIdProvider } from '../../storybook/use_base_theme';
 import { useGlobalsParameters } from '../server/mocks/use_global_parameters';
 import { StoryContext } from '../../storybook/types';
+
+const ResizeWrapper: FC<PropsWithChildren<{ resize?: boolean | CSSProperties }>> = ({ resize, children }) => (
+  <div id="story-root" className={classNames({ resizeHeight: (resize as CSSProperties)?.height === undefined })}>
+    {resize ? (
+      <div id="story-resize-wrapper" className="e2e-server" style={resize === true ? {} : resize}>
+        {children}
+      </div>
+    ) : (
+      <>{children}</>
+    )}
+  </div>
+);
 
 export function VRTPage() {
   const {
     themeId,
     backgroundId,
     toggles,
+    resize,
     setParams,
   } = useGlobalsParameters();
   const urlParams = new URL(window.location.toString()).searchParams;
@@ -84,15 +99,17 @@ export function VRTPage() {
   }
 
   return (
-    <EuiProvider colorMode={colorMode}>
-      <ThemeIdProvider value={themeId as any}>
-        <BackgroundIdProvider value={backgroundId}>
-          <Suspense fallback={<div>Loading...</div>}>
-            ${routes.join('\n            ')}
-          </Suspense>
-        </BackgroundIdProvider>
-      </ThemeIdProvider>
-    </EuiProvider>
+    <ResizeWrapper resize={resize}>
+      <EuiProvider colorMode={colorMode}>
+        <ThemeIdProvider value={themeId as any}>
+          <BackgroundIdProvider value={backgroundId}>
+            <Suspense fallback={<div>Loading...</div>}>
+              ${routes.join('\n            ')}
+            </Suspense>
+          </BackgroundIdProvider>
+        </ThemeIdProvider>
+      </EuiProvider>
+    </ResizeWrapper>
   );
 }
 

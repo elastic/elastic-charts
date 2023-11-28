@@ -94,15 +94,15 @@ export interface XYBrushEvent {
 }
 
 /** @public */
-export type XYChartElementEvent = [GeometryValue, XYChartSeriesIdentifier];
+export type XYChartElementEvent = [geometry: GeometryValue, seriesIdentifier: XYChartSeriesIdentifier];
 /** @public */
-export type PartitionElementEvent = [Array<LayerValue>, SeriesIdentifier];
+export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier: SeriesIdentifier];
 /** @public */
 export type FlameElementEvent = FlameLayerValue;
 /** @public */
-export type HeatmapElementEvent = [Cell, SeriesIdentifier];
+export type HeatmapElementEvent = [cell: Cell, seriesIdentifier: SeriesIdentifier];
 /** @public */
-export type WordCloudElementEvent = [WordModel, SeriesIdentifier];
+export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];
 
 /**
  * Describes a Metric element that is the subject of an interaction.
@@ -206,12 +206,22 @@ export type LegendItemListener = (series: SeriesIdentifier[]) => void;
  */
 export type PointerUpdateListener = (event: PointerEvent) => void;
 /**
+ * Listener to be called when chart resizes
+ * @alpha
+ */
+export type ResizeListener = () => void;
+/**
  * Listener to be called when chart render state changes
  *
  * `isRendered` value is `true` when rendering is complete and `false` otherwise
  * @public
  */
 export type RenderChangeListener = (isRendered: boolean) => void;
+/**
+ * Listener to be called *before* chart renders
+ * @public
+ */
+export type WillRenderListener = () => void;
 /** @public */
 export type BasicListener = () => undefined | void;
 /** @public */
@@ -510,7 +520,12 @@ export interface SettingsSpec extends Spec, LegendSpec {
   onElementOut?: BasicListener;
   onBrushEnd?: BrushEndListener;
   onPointerUpdate?: PointerUpdateListener;
+  /**
+   * @alpha subject to be removed in the future
+   */
+  onResize?: ResizeListener;
   onRenderChange?: RenderChangeListener;
+  onWillRender?: WillRenderListener;
   onProjectionAreaChange?: ProjectionAreaChangeListener;
 
   /**

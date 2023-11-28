@@ -56,7 +56,12 @@ export function isValid(color: Color): chroma.Color | false {
 }
 
 /** @internal */
-export function getChromaColor(color: RgbaTuple): chroma.Color {
+export function getChromaColor(color: string): chroma.Color;
+/** @internal */
+export function getChromaColor(color: RgbaTuple): chroma.Color;
+/** @internal */
+export function getChromaColor(color: string | RgbaTuple): chroma.Color {
+  if (typeof color === 'string') return chroma(color.toLowerCase());
   // chroma mutates the input
   return chroma(...color);
 }
@@ -83,18 +88,20 @@ export function colorToRgba(color: Color): RgbaTuple {
 }
 
 /** @internal */
-export function colorToHsl(color: Color) {
-  const [r, g, b] = colorToRgba(color);
-  return chroma.rgb(r, g, b).hsl();
+export function colorToHsl(color: Color): [h: number, s: number, l: number, a: number] {
+  const [r, g, b, a] = colorToRgba(color);
+  const [h, s, l] = chroma.rgb(r, g, b).hsl(); // alpha not preserved
+  return [h, s, l, a];
 }
+
 /** @internal */
-export function hslToColor(h: number, s: number, l: number): Color {
-  const rgba = chroma.hsl(h, s, l).rgba();
+export function hslToColor(h: number, s: number, l: number, a = 1): Color {
+  const rgba = chroma.hsl(h, s, l).alpha(a).rgba();
   return RGBATupleToString(rgba);
 }
 
 /** @internal */
 export function changeColorLightness(color: Color, lightnessAmount: number, lightnessThreshold: number): Color {
-  const [h, s, l] = colorToHsl(color);
-  return hslToColor(h, s, l >= lightnessThreshold ? l - lightnessAmount : l + lightnessAmount);
+  const [h, s, l, a] = colorToHsl(color);
+  return hslToColor(h, s, l >= lightnessThreshold ? l - lightnessAmount : l + lightnessAmount, a);
 }

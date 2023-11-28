@@ -31,7 +31,7 @@ export {
 } from './state/types';
 export { toEntries } from './utils/common';
 export { CurveType } from './utils/curves';
-export { ContinuousDomain, OrdinalDomain } from './utils/domain';
+export { ContinuousDomain, OrdinalDomain, GenericDomain, Range } from './utils/domain';
 export { Dimensions, SimplePadding, Padding, PerSideDistance, Margins } from './utils/dimensions';
 export { timeFormatter, niceTimeFormatter, niceTimeFormatByDay } from './utils/data/formatters';
 export { SeriesCompareFn } from './utils/series_sort';
@@ -75,6 +75,9 @@ export * from './utils/themes/theme';
 export * from './utils/themes/theme_common';
 export { LIGHT_THEME } from './utils/themes/light_theme';
 export { DARK_THEME } from './utils/themes/dark_theme';
+export { LIGHT_BASE_COLORS, DARK_BASE_COLORS } from './utils/themes/base_colors';
+export { LEGACY_LIGHT_THEME } from './utils/themes/legacy_light_theme';
+export { LEGACY_DARK_THEME } from './utils/themes/legacy_dark_theme';
 
 // wordcloud
 export { WordcloudViewModel } from './chart_types/wordcloud/layout/types/viewmodel_types';
@@ -142,3 +145,12 @@ export { TimeFunction } from './utils/time_functions';
 export * from './chart_types/flame_chart/flame_api';
 export * from './chart_types/timeslip/timeslip_api';
 export { LegacyAnimationConfig } from './common/animation';
+
+// Bullet
+export {
+  ColorBandValue,
+  ColorBandConfig,
+  ColorBandSimpleConfig,
+  ColorBandComplexConfig,
+  BulletColorConfig,
+} from './chart_types/bullet_graph/utils/color';

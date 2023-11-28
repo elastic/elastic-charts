@@ -59,8 +59,8 @@ const ScreenReaderPartitionTableComponent = ({
     hasMultipleLayers && isSmallMultiple
       ? (countOfCol += 3)
       : hasMultipleLayers || isSmallMultiple
-      ? (countOfCol += 2)
-      : countOfCol;
+        ? (countOfCol += 2)
+        : countOfCol;
 
   return (
     <div className={`echScreenReaderOnly ${debug ? 'echScreenReaderOnlyDebug' : ''} echScreenReaderTable`}>

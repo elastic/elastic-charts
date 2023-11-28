@@ -42,8 +42,8 @@ function isTooltipVisible(
   const visibleTooltip = isFollowTooltipType(tooltipType)
     ? highlightedGeometries
     : tooltip.values.length > maxTooltipItems && highlightedGeometries.length > 0
-    ? highlightedGeometries
-    : tooltip.values;
+      ? highlightedGeometries
+      : tooltip.values;
   const isLocalTooltip =
     tooltipType !== TooltipType.None &&
     projectedPointerPosition.x > -1 &&

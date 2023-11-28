@@ -22,7 +22,7 @@ import { Datum, isNil, stripUndefined } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
 import { ColorConfig } from '../../../utils/themes/theme';
-import { groupSeriesByYGroup, isHistogramEnabled, isStackedSpec } from '../domains/y_domain';
+import { groupSeriesByYGroup, isStackedSpec } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
 
 /** @internal */
@@ -112,6 +112,7 @@ export function splitSeriesDataByAccessors(
   spec: BasicSeriesSpec,
   xValueSums: Map<string | number, number>,
   isStacked = false,
+  isBanded = false,
   stackMode?: StackMode,
   groupBySpec?: SmallMultiplesGroupBy,
 ): {
@@ -170,7 +171,7 @@ export function splitSeriesDataByAccessors(
         datum,
         accessor,
         nonNumericValues,
-        isBandedSpec(spec),
+        isBanded,
         y0Accessors && y0Accessors[index],
         markSizeAccessor,
       );
@@ -318,8 +319,6 @@ export function getFormattedDataSeries(
   xValues: Set<string | number>,
   xScaleType: ScaleType,
 ): DataSeries[] {
-  const histogramEnabled = isHistogramEnabled(seriesSpecs);
-
   // apply fit function to every data series
   const fittedDataSeries = applyFitFunctionToDataSeries(
     getSortedDataSeries(availableDataSeries, xValues, xScaleType),
@@ -328,7 +327,7 @@ export function getFormattedDataSeries(
   );
 
   // apply fitting for stacked DataSeries by YGroup, Panel
-  const stackedDataSeries = fittedDataSeries.filter(({ spec }) => isStackedSpec(spec, histogramEnabled));
+  const stackedDataSeries = fittedDataSeries.filter(({ spec }) => isStackedSpec(spec));
   const stackedGroups = groupBy<DataSeries>(
     stackedDataSeries,
     ['smHorizontalAccessorValue', 'smVerticalAccessorValue', 'groupId'],
@@ -342,7 +341,7 @@ export function getFormattedDataSeries(
     return [...acc, ...formatted];
   }, []);
   // get already fitted non stacked dataSeries
-  const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !isStackedSpec(spec, histogramEnabled));
+  const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !isStackedSpec(spec));
 
   return [...fittedAndStackedDataSeries, ...nonStackedDataSeries];
 }
@@ -381,10 +380,13 @@ export function getDataSeriesFromSpecs(
 
     const specGroup = specsByYGroup.get(spec.groupId);
     const isStacked = Boolean(specGroup?.stacked.find(({ id }) => id === spec.id));
+    const isBanded = isBandedSpec(spec);
+
     const { dataSeries, xValues } = splitSeriesDataByAccessors(
       spec,
       mutatedXValueSums,
       isStacked,
+      isBanded,
       specGroup?.stackMode,
       groupBySpec,
     );
@@ -462,7 +464,7 @@ export function getDataSeriesFromSpecs(
  * @internal
  */
 export function isBandedSpec(spec: BasicSeriesSpec): boolean {
-  return Boolean(spec.y0Accessors && spec.y0Accessors.length > 0 && !isStackedSpec(spec, false));
+  return Boolean(spec.y0Accessors && spec.y0Accessors.length > 0 && !isStackedSpec(spec));
 }
 
 function getSortedOrdinalXValues(
@@ -533,8 +535,8 @@ export function getSeriesName(
     typeof spec?.name === 'function'
       ? spec.name(seriesIdentifier, isTooltip)
       : typeof spec?.name === 'object' // extract booleans once https://github.com/microsoft/TypeScript/issues/12184 is fixed
-      ? getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER)
-      : null;
+        ? getSeriesNameFromOptions(spec.name, seriesIdentifier, spec.name.delimiter ?? SERIES_DELIMITER)
+        : null;
 
   if (customLabel !== null) {
     return customLabel.toString();
@@ -547,10 +549,10 @@ export function getSeriesName(
   return nonZeroLength && (spec?.splitSeriesAccessors || !hasSingleSeries)
     ? nameKeys.join(typeof spec?.name === 'object' ? spec.name.delimiter ?? SERIES_DELIMITER : SERIES_DELIMITER)
     : spec === undefined
-    ? ''
-    : typeof spec.name === 'string'
-    ? spec.name
-    : spec.id;
+      ? ''
+      : typeof spec.name === 'string'
+        ? spec.name
+        : spec.id;
 }
 
 /**

@@ -73,8 +73,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         yAxisLabelWidthType === 'static'
           ? yAxisLabelWidthSize
           : yAxisLabelWidthType === 'max'
-          ? { max: yAxisLabelWidthSize }
-          : 'auto',
+            ? { max: yAxisLabelWidthSize }
+            : 'auto',
     },
     grid: {
       stroke: {

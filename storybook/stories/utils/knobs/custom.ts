@@ -14,14 +14,34 @@ import {
 } from '@storybook/addon-knobs/dist/components/types';
 import { OptionsKnobOptionsDisplay } from '@storybook/addon-knobs/dist/components/types/Options';
 
+import { isFiniteNumber } from '@elastic/charts/src/utils/common';
+
 /**
  * Fix default storybook behavior that does not correctly parse numbers/strings in arrays
  */
-export function getArrayKnob(name: string, values: (string | number)[]): (string | number)[] {
+export function getArrayKnob(
+  name: string,
+  values: (string | number)[],
+  separator?: string,
+  group?: string,
+): (string | number)[] {
   const stringifiedValues = values.map<string>((d) => `${d}`);
-  return array(name, stringifiedValues).map<string | number>((value: string) =>
+  return array(name, stringifiedValues, separator, group).map<string | number>((value: string) =>
     Number.isFinite(parseFloat(value)) ? parseFloat(value) : value,
   );
+}
+
+/**
+ * Fix default storybook behavior that does not correctly parse numbers/strings in arrays
+ */
+export function getNumbersArrayKnob<T extends number>(
+  name: string,
+  values: T[],
+  separator?: string,
+  group?: string,
+): T[] {
+  const stringifiedValues = values.map<string>((d) => `${d}`);
+  return array(name, stringifiedValues, separator, group).map(parseFloat).filter(isFiniteNumber) as T[];
 }
 
 export const getPositiveNumberKnob = (name: string, value: number, group?: string) =>
@@ -67,7 +87,7 @@ export function getMultiSelectKnob<T extends OptionsTypeKnobSingleValue>(
   );
 
   if (Array.isArray(knob)) return knob as T[];
-  if (typeof knob === 'string') return knob.split(', ') as T[];
+  if (typeof knob === 'string') return knob.split(/\s*,\s*/) as T[];
   if (typeof knob === 'number') return [knob] as T[];
   return !knob ? [] : knob;
 }

@@ -12,6 +12,12 @@ import { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
 
 const ELLIPSIS = '…';
 
+interface WrapTextLines extends Array<string> {
+  meta: {
+    truncated: boolean;
+  };
+}
+
 /** @internal */
 export function wrapText(
   text: string,
@@ -21,9 +27,14 @@ export function wrapText(
   maxLines: number,
   measure: TextMeasure,
   locale: string,
-): string[] {
+): WrapTextLines {
+  const lines: WrapTextLines = [] as any;
+  lines.meta = {
+    truncated: false,
+  };
+
   if (maxLines <= 0) {
-    return [];
+    return lines;
   }
   const segmenter = textSegmenter(locale);
   // remove new lines and multi-spaces.
@@ -35,7 +46,6 @@ export function wrapText(
   }));
 
   const ellipsisWidth = measure(ELLIPSIS, font, fontSize).width;
-  const lines: string[] = [];
   let currentLineWidth = 0;
   for (const segment of segments) {
     // the word is longer then the available space and is not a space
@@ -56,6 +66,7 @@ export function wrapText(
     }
   }
   if (lines.length > maxLines) {
+    lines.meta.truncated = true;
     const lastLineMaxLineWidth = maxLineWidth - ellipsisWidth;
     const lastLine = clipTextToWidth(lines[maxLines - 1] ?? '', font, fontSize, lastLineMaxLineWidth, measure);
     if (lastLine.length > 0) {

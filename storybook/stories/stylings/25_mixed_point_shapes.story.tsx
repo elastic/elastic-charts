@@ -22,6 +22,7 @@ import {
 } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const shapeKnobArea = select(
@@ -50,7 +51,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description} className="story-chart">
-      <Settings showLegend />
+      <Settings baseTheme={useBaseTheme()} showLegend />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
       <AreaSeries

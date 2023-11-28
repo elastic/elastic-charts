@@ -162,16 +162,16 @@ export function makeQuadViewModel(
     const fillColor = !entry
       ? RGBATupleToString(Colors.DarkOpaqueRed.rgba)
       : typeof fill === 'function'
-      ? fill(node.dataName, node.sortIndex, entryValue(entry), node[MODEL_KEY].children)
-      : fill;
+        ? fill(node.dataName, node.sortIndex, entryValue(entry), node[MODEL_KEY].children)
+        : fill;
     const strokeWidth = sectorLineWidth;
     const strokeStyle = sectorLineStroke;
     const textNegligible = node.y1px - node.y0px < minRectHeightForText;
     const textColor = textNegligible
       ? Colors.Transparent.keyword
       : fillLabel.textColor === ColorVariant.Adaptive
-      ? fillTextColor(fallbackBGColor, fillColor, backgroundColor)
-      : fillLabel.textColor;
+        ? fillTextColor(fallbackBGColor, fillColor, backgroundColor).color.keyword
+        : fillLabel.textColor;
 
     return { index, innerIndex, smAccessorValue, strokeWidth, strokeStyle, fillColor, textColor, ...node };
   });
@@ -415,12 +415,12 @@ export function shapeViewModel(
         inSectorRotation(style.horizontalTextEnforcer, style.horizontalTextAngleThreshold),
       )
     : simpleLinear || waffleLayout
-    ? () => [] // no multirow layout needed for simpleLinear partitions; no text at all for waffles
-    : fillTextLayout(
-        rectangleConstruction(treeHeight, treemapLayout || mosaicLayout ? topGroove : null),
-        getRectangleRowGeometry,
-        () => 0,
-      );
+      ? () => [] // no multirow layout needed for simpleLinear partitions; no text at all for waffles
+      : fillTextLayout(
+          rectangleConstruction(treeHeight, treemapLayout || mosaicLayout ? topGroove : null),
+          getRectangleRowGeometry,
+          () => 0,
+        );
 
   const rowSets: RowSet[] = getRowSets(
     textMeasure,

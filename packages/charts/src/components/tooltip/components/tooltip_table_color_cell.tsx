@@ -12,7 +12,7 @@ import React from 'react';
 import { useTooltipContext } from './tooltip_provider';
 import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
 import { combineColors, highContrastColor } from '../../../common/color_calcs';
-import { colorToRgba, RGBATupleToString } from '../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../common/color_library_wrappers';
 import { Color, Colors } from '../../../common/colors';
 
 /** @public */
@@ -42,7 +42,7 @@ export function TooltipTableColorCell({
     const foregroundRGBA = colorToRgba(stripColor === Colors.Transparent.keyword ? backgroundColor : stripColor);
     const backgroundRGBA = colorToRgba(backgroundColor);
     const blendedFgBg = combineColors(foregroundRGBA, backgroundRGBA);
-    return RGBATupleToString(highContrastColor(blendedFgBg, 'WCAG3'));
+    return highContrastColor(blendedFgBg, 'WCAG3').color.keyword;
   };
 
   const renderColorStrip = () => {

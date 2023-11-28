@@ -77,11 +77,15 @@ const controllingAngle = (angleStart: Radian, angleEnd: Radian): number => {
  * Assumes angles are no more that 2π apart.
  * @internal
  */
-export function normalizeAngles(angleStart: Radian, angleEnd: Radian): [angleStart: Radian, angleEnd: Radian] {
+export function normalizeAngles(
+  angleStart: Radian,
+  angleEnd: Radian,
+  multiplier = 1,
+): [angleStart: Radian, angleEnd: Radian] {
   const maxOffset = Math.max(Math.ceil(Math.abs(angleStart) / TAU), Math.ceil(Math.abs(angleEnd) / TAU)) - 1;
   const offsetDirection = angleStart > 0 && angleEnd > 0 ? -1 : 1;
   const offset = offsetDirection * maxOffset * TAU;
-  return [angleStart + offset, angleEnd + offset];
+  return [multiplier * (angleStart + offset), multiplier * (angleEnd + offset)];
 }
 
 /**

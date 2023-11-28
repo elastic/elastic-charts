@@ -8,18 +8,10 @@
 
 import { EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
-import { select, number, boolean, button } from '@storybook/addon-knobs';
-import React, { useState } from 'react';
+import { select, number, boolean, button, color } from '@storybook/addon-knobs';
+import React, { useEffect, useMemo, useState } from 'react';
 
-import {
-  Chart,
-  isMetricElementEvent,
-  Metric,
-  MetricBase,
-  MetricWProgress,
-  MetricWTrend,
-  Settings,
-} from '@elastic/charts';
+import { Chart, isMetricElementEvent, Metric, MetricDatum, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -38,6 +30,20 @@ const getIcon =
     <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
   );
 
+const arrayToGrid: <T>(array: T[], nColumns: number) => T[][] = (array, nColumns) => {
+  const ret = [];
+  for (let i = 0; i < array.length; i += nColumns) {
+    ret.push(array.slice(i, i + nColumns));
+  }
+  return ret;
+};
+
+const maxTileSideLength = 200;
+const getContainerWidth = (_data: (MetricDatum | undefined)[][]) => _data[0].length * maxTileSideLength;
+const getContainerHeight = (_data: (MetricDatum | undefined)[][]) => _data.length * maxTileSideLength;
+
+const defaultValueFormatter = (d: number) => `${d}`;
+
 export const Example: ChartsStory = (_, { title, description }) => {
   const showGridBorder = boolean('show grid border', false);
   const addMetricClick = boolean('attach click handler', true);
@@ -45,114 +51,126 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   const progressBarDirection = select('progress bar direction', ['horizontal', 'vertical'], 'vertical');
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
+  const emptyBackground = color('empty background', 'transparent');
 
-  const defaultValueFormatter = (d: number) => `${d}`;
-  const data: (MetricBase | MetricWProgress | MetricWTrend | undefined)[] = [
-    {
-      color: '#3c3c3c',
-      title: 'CPU Usage',
-      subtitle: 'Overall percentage',
-      icon: getIcon('compute'),
-      value: NaN,
-      valueFormatter: defaultValueFormatter,
-      trend: KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
-      trendShape: 'area',
-      trendA11yTitle: 'Last hour CPU percentage trend',
-      trendA11yDescription:
-        'The trend shows the CPU Usage in percentage in the last hour. The trend shows a general flat behaviour with peaks every 10 minutes',
-    },
-    {
-      color: '#FF7E62',
-      title: 'Memory Usage',
-      subtitle: 'Overall percentage',
-      value: 33.57,
-      valueFormatter: (d) => `${d} %`,
-      trend: KIBANA_METRICS.metrics.kibana_memory.v1.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
-      trendShape: 'area',
-      trendA11yTitle: 'Last hour Memory usage trend',
-      trendA11yDescription:
-        'The trend shows the memory usage in the last hour. The trend shows a general flat behaviour across the entire time window',
-    },
-    {
-      color: '#5e5e5e',
-      title: 'Disk I/O',
-      subtitle: 'Read',
-      icon: getIcon('sortUp'),
-      value: 12.57,
-      valueFormatter: (d) => `${d} Mb/s`,
-      ...(useProgressBar && {
-        domainMax: 100,
-        progressBarDirection,
+  const data: (MetricDatum | undefined)[] = useMemo(
+    () => [
+      {
+        color: '#3c3c3c',
+        title: 'CPU Usage',
+        subtitle: 'Overall percentage',
+        icon: getIcon('compute'),
+        value: NaN,
+        valueFormatter: defaultValueFormatter,
+        trend: KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+        trendShape: 'area',
+        trendA11yTitle: 'Last hour CPU percentage trend',
+        trendA11yDescription:
+          'The trend shows the CPU Usage in percentage in the last hour. The trend shows a general flat behaviour with peaks every 10 minutes',
+      },
+      {
+        color: '#FF7E62',
+        title: 'Memory Usage',
+        subtitle: 'Overall percentage',
+        value: 33.57,
+        valueFormatter: (d) => `${d} %`,
+        trend: KIBANA_METRICS.metrics.kibana_memory.v1.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+        trendShape: 'area',
+        trendA11yTitle: 'Last hour Memory usage trend',
+        trendA11yDescription:
+          'The trend shows the memory usage in the last hour. The trend shows a general flat behaviour across the entire time window',
+      },
+      {
+        color: '#5e5e5e',
+        title: 'Disk I/O',
+        subtitle: 'Read',
+        icon: getIcon('sortUp'),
+        value: 12.57,
+        valueFormatter: (d) => `${d} Mb/s`,
+        ...(useProgressBar && {
+          domainMax: 100,
+          progressBarDirection,
+          extra: (
+            <span>
+              max <b>100Mb/s</b>
+            </span>
+          ),
+        }),
+      },
+      {
+        color: '#5e5e5e',
+        title: 'Disk I/O',
+        subtitle: 'Write',
+        icon: getIcon('sortDown'),
+        value: 41.12,
+        valueFormatter: (d) => `${d} Mb/s`,
+        ...(useProgressBar && {
+          domainMax: 100,
+          progressBarDirection,
+          extra: (
+            <span>
+              max <b>100Mb/s</b>
+            </span>
+          ),
+        }),
+      },
+      {
+        color: '#6DCCB1',
+        title: '21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9',
+        subtitle: 'Cluster CPU Usage',
+        value: 24.85,
+        valueFormatter: (d) => `${d}%`,
+        trend: KIBANA_METRICS.metrics.kibana_os_load.v2.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+        trendShape: 'area',
+      },
+      {
+        color: '#FFBDAF',
+        title: 'Inbound Traffic',
+        subtitle: 'Network eth0',
         extra: (
           <span>
-            max <b>100Mb/s</b>
+            last <b>5m</b>
           </span>
         ),
-      }),
-    },
-    {
-      color: '#5e5e5e',
-      title: 'Disk I/O',
-      subtitle: 'Write',
-      icon: getIcon('sortDown'),
-      value: 41.12,
-      valueFormatter: (d) => `${d} Mb/s`,
-      ...(useProgressBar && {
-        domainMax: 100,
-        progressBarDirection,
+        icon: getIcon('sortUp'),
+        value: 3.57,
+        valueFormatter: (d) => `${d}KBps`,
+      },
+      undefined,
+      {
+        color: '#F1D86F',
+        title: 'Cloud Revenue',
+        subtitle: 'Quarterly',
         extra: (
           <span>
-            max <b>100Mb/s</b>
+            This Year <b>10M</b>
           </span>
         ),
-      }),
-    },
-    {
-      color: '#6DCCB1',
-      title: '21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9',
-      subtitle: 'Cluster CPU Usage',
-      value: 24.85,
-      valueFormatter: (d) => `${d}%`,
-      trend: KIBANA_METRICS.metrics.kibana_os_load.v2.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
-      trendShape: 'area',
-    },
-    {
-      color: '#FFBDAF',
-      title: 'Inbound Traffic',
-      subtitle: 'Network eth0',
-      extra: (
-        <span>
-          last <b>5m</b>
-        </span>
-      ),
-      icon: getIcon('sortUp'),
-      value: 3.57,
-      valueFormatter: (d) => `${d}KBps`,
-    },
-    undefined,
-    {
-      color: '#F1D86F',
-      title: 'Cloud Revenue',
-      subtitle: 'Quarterly',
-      extra: (
-        <span>
-          This Year <b>10M</b>
-        </span>
-      ),
-      value: 323.57,
-      valueFormatter: (d) => `$ ${d}k`,
-      trend: KIBANA_METRICS.metrics.kibana_os_load.v3.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
-      trendShape: 'area',
-      trendA11yTitle: 'Last quarter, daily Cloud Revenue trend',
-      trendA11yDescription:
-        'The trend shows the daily Cloud revenue in the last quarter, showing peaks during weekends.',
-    },
-  ];
+        value: 323.57,
+        valueFormatter: (d) => `$ ${d}k`,
+        trend: KIBANA_METRICS.metrics.kibana_os_load.v3.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
+        trendShape: 'area',
+        trendA11yTitle: 'Last quarter, daily Cloud Revenue trend',
+        trendA11yDescription:
+          'The trend shows the daily Cloud revenue in the last quarter, showing peaks during weekends.',
+      },
+    ],
+    [maxDataPoints, useProgressBar, progressBarDirection],
+  );
 
-  const layout = select('layout', ['grid', 'vertical', 'horizontal'], 'grid');
-  const configuredData =
-    layout === 'grid' ? split(data, 4) : layout === 'horizontal' ? [data.slice(0, 4)] : split(data.slice(0, 4), 1);
-  const [chartData, setChartData] = useState(configuredData);
+  const nColumns = number('number of columns', 4, { min: 1, max: data.length, step: 1 });
+
+  const [chartData, setChartData] = useState(arrayToGrid(data, nColumns));
+  const [containerHeight, setContainerHeight] = useState(getContainerHeight(chartData));
+  const [containerWidth, setContainerWidth] = useState(getContainerWidth(chartData));
+
+  useEffect(() => {
+    const newData = arrayToGrid(data, nColumns);
+    setChartData(newData);
+    setContainerHeight(getContainerHeight(newData));
+    setContainerWidth(getContainerWidth(newData));
+  }, [data, progressBarDirection, useProgressBar, maxDataPoints, nColumns]);
+
   button('randomize data', () => {
     setChartData(
       split(
@@ -179,8 +197,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         maxHeight: '80vh',
         padding: '0px',
         overflow: 'auto',
-        height: layout === 'vertical' ? '720px' : layout === 'horizontal' ? '150px' : '300px',
-        width: layout === 'vertical' ? '180px' : '720px',
+        height: `${containerHeight}px`,
+        width: `${containerWidth}px`,
         ...(showGridBorder && {
           boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
           borderRadius: '6px',
@@ -194,6 +212,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
           .join(' ')}
       <Chart title={title} description={description}>
         <Settings
+          theme={{
+            metric: {
+              emptyBackground,
+            },
+          }}
           baseTheme={useBaseTheme()}
           onElementClick={
             addMetricClick
@@ -201,7 +224,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
                   if (isMetricElementEvent(d)) {
                     const { rowIndex, columnIndex } = d;
                     onEventClickAction(
-                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`,
+                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.value}`,
                     );
                   }
                 }
@@ -210,7 +233,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           onElementOver={([d]) => {
             if (isMetricElementEvent(d)) {
               const { rowIndex, columnIndex } = d;
-              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex].value}`);
+              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.value}`);
             }
           }}
           onElementOut={() => onEventOutAction('out')}

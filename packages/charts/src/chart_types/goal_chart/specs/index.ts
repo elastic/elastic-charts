@@ -93,6 +93,7 @@ const buildProps = buildSFProps<GoalSpec>()(
 
 /**
  * Add Goal spec to chart
+ * @deprecated please use `BulletGraph` spec instead
  * @alpha
  */
 export const Goal = function (

@@ -175,10 +175,10 @@ export function getTooltipAnchorPosition(
       stickTo === TooltipStickTo.MousePosition
         ? cursorPosition.y + panel.top
         : stickTo === TooltipStickTo.Middle
-        ? y + height / 2
-        : stickTo === TooltipStickTo.Bottom
-        ? y + height
-        : y; // TooltipStickTo.Top is also ok with that value
+          ? y + height / 2
+          : stickTo === TooltipStickTo.Bottom
+            ? y + height
+            : y; // TooltipStickTo.Top is also ok with that value
     return {
       x,
       width,
@@ -190,10 +190,10 @@ export function getTooltipAnchorPosition(
     stickTo === TooltipStickTo.MousePosition
       ? cursorPosition.x + panel.left
       : stickTo === TooltipStickTo.Right
-      ? x + width
-      : stickTo === TooltipStickTo.Center
-      ? x + width / 2
-      : x; // TooltipStickTo.Left
+        ? x + width
+        : stickTo === TooltipStickTo.Center
+          ? x + width / 2
+          : x; // TooltipStickTo.Left
   return {
     x: stickX,
     width: 0,

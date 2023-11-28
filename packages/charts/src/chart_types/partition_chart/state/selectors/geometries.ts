@@ -52,8 +52,8 @@ export const partitionMultiGeometries = createCustomCachedSelector(
     const innerBreakdownDirection = horizontalSplit(smallMultiplesSpecs[0])
       ? 'horizontal'
       : verticalSplit(smallMultiplesSpecs[0])
-      ? 'vertical'
-      : 'zigzag';
+        ? 'vertical'
+        : 'zigzag';
 
     const outerPanelCount = partitionSpecs.length;
     const zigzagColumnCount = Math.ceil(Math.sqrt(outerPanelCount));
@@ -63,14 +63,14 @@ export const partitionMultiGeometries = createCustomCachedSelector(
       outerSpecDirection === 'horizontal'
         ? 1 / outerPanelCount
         : outerSpecDirection === 'zigzag'
-        ? 1 / zigzagColumnCount
-        : 1;
+          ? 1 / zigzagColumnCount
+          : 1;
     const outerHeightRatio =
       outerSpecDirection === 'vertical'
         ? 1 / outerPanelCount
         : outerSpecDirection === 'zigzag'
-        ? 1 / zigzagRowCount
-        : 1;
+          ? 1 / zigzagRowCount
+          : 1;
 
     const result = partitionSpecs.flatMap((spec, index) => {
       const innerWidth = chartWidth - chartPaddings.left - chartPaddings.right;
@@ -91,66 +91,66 @@ export const partitionMultiGeometries = createCustomCachedSelector(
           innerBreakdownDirection === 'vertical'
             ? a.length
             : innerBreakdownDirection === 'zigzag'
-            ? innerZigzagRowCount
-            : 1;
+              ? innerZigzagRowCount
+              : 1;
         const innerColumnCount =
           innerBreakdownDirection === 'vertical'
             ? 1
             : innerBreakdownDirection === 'zigzag'
-            ? innerZigzagColumnCount
-            : a.length;
+              ? innerZigzagColumnCount
+              : a.length;
         const innerRowIndex =
           innerBreakdownDirection === 'vertical'
             ? innerIndex
             : innerBreakdownDirection === 'zigzag'
-            ? Math.floor(innerIndex / innerZigzagColumnCount)
-            : 0;
+              ? Math.floor(innerIndex / innerZigzagColumnCount)
+              : 0;
         const innerColumnIndex =
           innerBreakdownDirection === 'vertical'
             ? 0
             : innerBreakdownDirection === 'zigzag'
-            ? innerIndex % innerZigzagColumnCount
-            : innerIndex;
+              ? innerIndex % innerZigzagColumnCount
+              : innerIndex;
         const topOuterRatio =
           outerSpecDirection === 'vertical'
             ? index / outerPanelCount
             : outerSpecDirection === 'zigzag'
-            ? Math.floor(index / zigzagColumnCount) / zigzagRowCount
-            : 0;
+              ? Math.floor(index / zigzagColumnCount) / zigzagRowCount
+              : 0;
         const topInnerRatio =
           outerHeightRatio *
           (innerBreakdownDirection === 'vertical'
             ? innerIndex / a.length
             : innerBreakdownDirection === 'zigzag'
-            ? Math.floor(innerIndex / innerZigzagColumnCount) / innerZigzagRowCount
-            : 0);
+              ? Math.floor(innerIndex / innerZigzagColumnCount) / innerZigzagRowCount
+              : 0);
         const panelHeightRatio =
           outerHeightRatio *
           (innerBreakdownDirection === 'vertical'
             ? 1 / a.length
             : innerBreakdownDirection === 'zigzag'
-            ? 1 / innerZigzagRowCount
-            : 1);
+              ? 1 / innerZigzagRowCount
+              : 1);
         const leftOuterRatio =
           outerSpecDirection === 'horizontal'
             ? index / outerPanelCount
             : outerSpecDirection === 'zigzag'
-            ? (index % zigzagColumnCount) / zigzagColumnCount
-            : 0;
+              ? (index % zigzagColumnCount) / zigzagColumnCount
+              : 0;
         const leftInnerRatio =
           outerWidthRatio *
           (innerBreakdownDirection === 'horizontal'
             ? innerIndex / a.length
             : innerBreakdownDirection === 'zigzag'
-            ? (innerIndex % innerZigzagColumnCount) / innerZigzagColumnCount
-            : 0);
+              ? (innerIndex % innerZigzagColumnCount) / innerZigzagColumnCount
+              : 0);
         const panelWidthRatio =
           outerWidthRatio *
           (innerBreakdownDirection === 'horizontal'
             ? 1 / a.length
             : innerBreakdownDirection === 'zigzag'
-            ? 1 / innerZigzagColumnCount
-            : 1);
+              ? 1 / innerZigzagColumnCount
+              : 1);
 
         const panelInnerWidth = bandwidth(innerWidth, innerColumnCount, style.horizontalPanelPadding);
 
