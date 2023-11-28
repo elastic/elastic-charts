@@ -29,11 +29,11 @@ function layVector(
   areaAccessor: (e: ArrayEntry) => number,
 ): LayoutElement {
   const area = nodes.reduce((p, n) => p + areaAccessor(n), 0);
-  const dependentSize = area / independentSize; // here we lose a bit of accuracy
+  const dependentSize = independentSize === 0 ? 0 : area / independentSize; // here we lose a bit of accuracy
   let currentOffset = 0;
   const sectionOffsets = [currentOffset];
   const sectionSizes = nodes.map((e, i) => {
-    const sectionSize = areaAccessor(e) / dependentSize; // here we gain back a bit of accuracy
+    const sectionSize = dependentSize === 0 ? 0 : areaAccessor(e) / dependentSize; // here we gain back a bit of accuracy
     if (i < nodes.length - 1) sectionOffsets.push((currentOffset += sectionSize));
     return sectionSize;
   });
