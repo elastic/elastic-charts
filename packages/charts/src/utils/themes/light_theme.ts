@@ -415,7 +415,7 @@ export const LIGHT_THEME: Theme = {
   },
   bulletGraph: LIGHT_THEME_BULLET_STYLE,
   tooltip: {
-    maxWidth: 260,
+    maxWidth: 500,
     maxTableHeight: 120,
     defaultDotColor: Colors.Black.keyword,
   },

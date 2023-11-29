@@ -25,7 +25,7 @@ export function getStylesFromPlacement(
     case 'top-end':
     case 'bottom-end':
       return {
-        width: maxWidth,
+        maxWidth,
         justifyContent: 'flex-end',
       };
     case 'right':
@@ -34,13 +34,13 @@ export function getStylesFromPlacement(
     case 'top-start':
     case 'bottom-start':
       return {
-        width: maxWidth,
+        maxWidth,
         justifyContent: 'flex-start',
       };
     case 'top':
     case 'bottom':
       return {
-        width: maxWidth,
+        maxWidth,
         justifyContent: 'center',
       };
     case 'auto':
@@ -48,7 +48,7 @@ export function getStylesFromPlacement(
     case 'auto-end':
     default:
       return {
-        width: maxWidth,
+        maxWidth,
       };
   }
 }
