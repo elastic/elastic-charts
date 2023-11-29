@@ -1,12 +1,3 @@
-@mixin lineClamp($maxLines) {
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: $maxLines; /* number of lines to show */
-  line-clamp: $maxLines;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .echMetricText {
   position: relative;
   padding: 8px;
