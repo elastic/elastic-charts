@@ -9,11 +9,13 @@
 import { Store } from 'redux';
 
 import { computeLegendSelector } from './state/selectors/compute_legend';
+import { partitionMultiGeometries } from './state/selectors/geometries';
 import { getLegendItemsLabels } from './state/selectors/get_legend_items_labels';
 import { MockGlobalSpec, MockSeriesSpec } from '../../mocks/specs';
 import { MockStore } from '../../mocks/store';
 import { GlobalChartState } from '../../state/chart_state';
 import { LegendItemLabel } from '../../state/selectors/get_legend_items_labels';
+import { LIGHT_THEME } from '../../utils/themes/light_theme';
 
 // sorting is useful to ensure tests pass even if order changes (where order doesn't matter)
 const ascByLabel = (a: LegendItemLabel, b: LegendItemLabel) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0);
@@ -159,6 +161,32 @@ describe('Retain hierarchy even with arbitrary names', () => {
         store,
       );
       expect(getLegendItemsLabels(store.getState()).map((l) => l.label)).toEqual([]);
+    });
+    it('avoid max stack call with zero value at specific dimensions', () => {
+      MockStore.updateDimensions(store, { width: 557, height: 360, top: 0, left: 0 });
+      MockStore.addSpecs(
+        [
+          MockGlobalSpec.settings({ showLegend: false, theme: LIGHT_THEME }),
+          MockSeriesSpec.treemap({
+            data: [
+              { cat: 'a', val: 1 },
+              { cat: 'b', val: 1 },
+              { cat: 'c', val: 0 },
+              { cat: 'd', val: 1 },
+            ],
+            valueAccessor: (d: { cat: string; val: number }) => d.val,
+            layers: [
+              {
+                groupByRollup: (d: { cat: string; val: number }) => d.cat,
+              },
+            ],
+          }),
+        ],
+        store,
+      );
+      expect(() => {
+        partitionMultiGeometries(store.getState());
+      }).not.toThrow();
     });
   });
 });
