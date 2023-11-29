@@ -56,7 +56,7 @@ $transitionTime: 200ms;
   }
 
   .echTooltip__tableCell--truncate {
-    @include euiTextTruncate;
+    @include lineClamp(2);
   }
 
   &__metricRow {
