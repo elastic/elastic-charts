@@ -9,10 +9,10 @@
 import { palettes } from './colors';
 import { Theme } from './theme';
 import {
-  DEFAULT_CHART_MARGINS,
-  DEFAULT_CHART_PADDING,
   DEFAULT_GEOMETRY_STYLES,
   DEFAULT_MISSING_COLOR,
+  LEGACY_CHART_MARGINS,
+  LEGACY_CHART_PADDING,
 } from './theme_common';
 import { DARK_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
 import { Colors } from '../../common/colors';
@@ -26,8 +26,8 @@ import { ColorVariant } from '../common';
  * @deprecated Use new `DARK_THEME`
  */
 export const LEGACY_DARK_THEME: Theme = {
-  chartPaddings: DEFAULT_CHART_PADDING,
-  chartMargins: DEFAULT_CHART_MARGINS,
+  chartPaddings: LEGACY_CHART_PADDING,
+  chartMargins: LEGACY_CHART_MARGINS,
   lineSeriesStyle: {
     line: {
       visible: true,
