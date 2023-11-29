@@ -1,3 +1,10 @@
+## [61.0.3](https://github.com/elastic/elastic-charts/compare/v61.0.2...v61.0.3) (2023-11-29)
+
+
+### Bug Fixes
+
+* **theme:** legacy margins ([#2262](https://github.com/elastic/elastic-charts/issues/2262)) [61.0.x] ([#2263](https://github.com/elastic/elastic-charts/issues/2263)) ([d60b2fe](https://github.com/elastic/elastic-charts/commit/d60b2feb36d3da3de29d057edcddb6b3277db9b3))
+
 ## [61.0.2](https://github.com/elastic/elastic-charts/compare/v61.0.1...v61.0.2) (2023-11-21)
 
 
