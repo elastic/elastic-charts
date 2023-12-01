@@ -109,8 +109,8 @@ export function computeLegend(
 ): LegendItem[] {
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
-  // Let's show the last value only when using time scale until we don't enable the user customization of the legend extra value
-  const legendValueMode = xDomain.type === ScaleType.Time ? LegendValue.LastTimeBucket : LegendValue.None;
+
+  const legendValueMode = xDomain.type === ScaleType.Time ? LegendValue.LastTimeBucket : LegendValue.LastNonNull;
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
