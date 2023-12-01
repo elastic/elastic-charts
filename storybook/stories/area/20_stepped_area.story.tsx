@@ -8,9 +8,10 @@
 
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, CurveType, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
+import { useBaseTheme } from '../../use_base_theme';
 
 const data = [
   {
@@ -422,6 +423,7 @@ const data = [
 export const Example: ChartsStory = (_, { title, description }) => {
   return (
     <Chart title={title} description={description} className="story-chart">
+      <Settings baseTheme={useBaseTheme()} />
       <Axis id="X" title="index" position={Position.Bottom} />
       <Axis id="Y" position={Position.Left} />
 

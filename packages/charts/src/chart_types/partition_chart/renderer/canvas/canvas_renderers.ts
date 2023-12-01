@@ -36,8 +36,8 @@ const getCurrentRowX = (row: TextRow, horizontalAlignment: HorizontalAlignment, 
     horizontalAlignment === HorizontalAlignment.left
       ? -row.maximumLength / 2
       : horizontalAlignment === HorizontalAlignment.right
-      ? row.maximumLength / 2 - rowLength
-      : -rowLength / 2;
+        ? row.maximumLength / 2 - rowLength
+        : -rowLength / 2;
   return row.rowAnchorX + offset;
 };
 

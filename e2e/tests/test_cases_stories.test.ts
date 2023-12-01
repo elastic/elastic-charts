@@ -54,14 +54,14 @@ test.describe('Test cases stories', () => {
               (charSet) => {
                 test('should render with correct direction', async ({ page }) => {
                   await common.expectChartAtUrlToMatchScreenshot(page)(
-                    `http://localhost:9001/?path=/story/test-cases--rtl-text&globals=background:white;theme:light&knob-Chart type=${type}&knob-character set=${charSet}&knob-show legend=true&knob-clockwiseSectors=true&knob-rtl language=${lang}`,
+                    `http://localhost:9001/?path=/story/test-cases--rtl-text&globals=theme:light&knob-Chart type=${type}&knob-character set=${charSet}&knob-show legend=true&knob-clockwiseSectors=true&knob-rtl language=${lang}`,
                   );
                 });
 
                 if (type === PartitionLayout.sunburst) {
                   test('should render with correct direction - clockwiseSectors', async ({ page }) => {
                     await common.expectChartAtUrlToMatchScreenshot(page)(
-                      `http://localhost:9001/?path=/story/test-cases--rtl-text&globals=background:white;theme:light&knob-Chart type=${type}&knob-character set=${charSet}&knob-show legend=true&knob-clockwiseSectors=false&knob-rtl language=${lang}`,
+                      `http://localhost:9001/?path=/story/test-cases--rtl-text&globals=theme:light&knob-Chart type=${type}&knob-character set=${charSet}&knob-show legend=true&knob-clockwiseSectors=false&knob-rtl language=${lang}`,
                     );
                   });
                 }

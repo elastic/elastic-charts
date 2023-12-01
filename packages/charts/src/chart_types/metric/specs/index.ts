@@ -14,11 +14,17 @@ import { Color } from '../../../common/colors';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { specComponentFactory } from '../../../state/spec_factory';
-import { LayoutDirection } from '../../../utils/common';
+import { LayoutDirection, ValueFormatter } from '../../../utils/common';
+import { GenericDomain } from '../../../utils/domain';
+import { BulletValueLabels } from '../../bullet_graph/spec';
 
 /** @alpha */
 export type MetricBase = {
   color: Color;
+  /**
+   * Overrides background color from `Theme.background` and `Theme.metric.emptyBackground`
+   */
+  background?: Color;
   title?: string;
   valueColor?: Color;
   valueIcon?: ComponentType<{ width: number; height: number; color: Color; verticalAlign: 'middle' }>;
@@ -35,13 +41,30 @@ export type MetricWText = MetricBase & {
 /** @alpha */
 export type MetricWNumber = MetricBase & {
   value: number;
-  valueFormatter: (d: number) => string;
+  target?: number;
+  valueFormatter: ValueFormatter;
+  /**
+   * Used for header display only, defaults to `valueFormatter`
+   */
+  targetFormatter?: ValueFormatter;
 };
 
 /** @alpha */
 export type MetricWProgress = MetricWNumber & {
   domainMax: number;
   progressBarDirection: LayoutDirection;
+};
+
+/**
+ * Type used internally by bullet
+ * TODO - discuss usage of this externally
+ *
+ * @internal
+ */
+export type BulletMetricWProgress = Omit<MetricWProgress, 'domainMax'> & {
+  domain: GenericDomain;
+  niceDomain?: boolean;
+  valueLabels: Omit<BulletValueLabels, 'active'>;
 };
 
 /** @alpha */
@@ -86,6 +109,11 @@ export const Metric = specComponentFactory<MetricSpec>()(
 export type MetricSpecProps = ComponentProps<typeof Metric>;
 
 /** @internal */
+export function isBulletMetric(datum: MetricDatum): datum is BulletMetricWProgress {
+  return Array.isArray((datum as BulletMetricWProgress).domain);
+}
+
+/** @internal */
 export function isMetricWNumber(datum: MetricDatum): datum is MetricWNumber {
   return typeof datum.value === 'number' && datum.hasOwnProperty('valueFormatter');
 }
@@ -96,7 +124,10 @@ export function isMetricWText(datum: MetricDatum): datum is MetricWNumber {
 
 /** @internal */
 export function isMetricWProgress(datum: MetricDatum): datum is MetricWProgress {
-  return isMetricWNumber(datum) && datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend');
+  return (
+    (isMetricWNumber(datum) && datum.hasOwnProperty('domainMax') && !datum.hasOwnProperty('trend')) ||
+    isBulletMetric(datum)
+  );
 }
 
 /** @internal */

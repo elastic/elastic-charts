@@ -24,6 +24,7 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Dimensions } from '../../../../utils/dimensions';
+import { GenericDomain } from '../../../../utils/domain';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
@@ -38,7 +39,7 @@ export interface ReactiveChartStateProps {
   initialized: boolean;
   geometries: ShapeViewModel;
   chartContainerDimensions: Dimensions;
-  highlightedLegendBands: Array<[start: number, end: number]>;
+  highlightedLegendBands: Array<GenericDomain>;
   theme: Theme;
   a11ySettings: A11ySettings;
   background: Color;

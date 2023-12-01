@@ -82,7 +82,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
 };
 
 Example.parameters = {
-  background: { default: 'white' },
   markdown: `The \`onElementClick\` receive an argument with the following type definition: \`Array<[Array<LayerValue>, SeriesIdentifier]>\`.
 
 Usually the outer array contains only one item but, in a near future, we will group smaller slices into a single one during the interaction.

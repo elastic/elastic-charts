@@ -10,12 +10,27 @@ import { CSSProperties } from 'react';
 import { $Values } from 'utility-types';
 
 import { PartitionStyle } from './partition';
+import { BulletGraphStyle } from '../../chart_types/bullet_graph/theme';
 import { Color } from '../../common/colors';
 import { Pixels, Radian, Ratio } from '../../common/geometry';
 import { Font, FontStyle } from '../../common/text_utils';
 import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import { Margins, Padding, SimplePadding } from '../dimensions';
 import { Point } from '../point';
+
+/**
+ * Base color definitions - theme-specific
+ * @public
+ */
+export interface ChartBaseColors {
+  emptyShade: string;
+  lightShade: string;
+  lightestShade: string;
+  mediumShade: string;
+  darkShade: string;
+  darkestShade: string;
+  title: string;
+}
 
 /** @public */
 export interface Visible {
@@ -312,8 +327,12 @@ export interface MetricStyle {
     lightColor: Color;
   };
   border: Color;
-  background: Color;
   barBackground: Color;
+  emptyBackground: Color;
+  /**
+   * Optional color used to blend transparent colors. Defaults to `Theme.background`
+   */
+  blendingBackground?: Color;
   nonFiniteText: string;
   minHeight: Pixels;
 }
@@ -487,6 +506,11 @@ export interface Theme {
    * Theme styles for metric chart types
    */
   metric: MetricStyle;
+
+  /**
+   * Theme styles for bullet graph types
+   */
+  bulletGraph: BulletGraphStyle;
   /**
    * Theme styles for tooltip
    */

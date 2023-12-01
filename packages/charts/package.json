@@ -1,7 +1,7 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "60.0.0",
+  "version": "61.1.0",
   "author": "Elastic DataVis",
   "license": "SEE LICENSE IN LICENSE.txt",
   "main": "dist/index.js",
@@ -34,7 +34,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "bezier-easing": "^2.1.0",
-    "chroma-js": "^2.1.0",
+    "chroma-js": "^2.4.2",
     "classnames": "^2.2.6",
     "d3-array": "^1.2.4",
     "d3-cloud": "^1.2.5",

@@ -96,6 +96,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     );
 
   const hasHistogramBarSeries = boolean('hasHistogramBarSeries', false);
+  const stacked = boolean('stacked', true);
+  const stackAccessors = stacked ? ['yes'] : [];
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -148,6 +150,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
+          stackAccessors={stackAccessors}
           data={pointData}
           name="histogram"
         />
@@ -158,6 +161,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}
+        stackAccessors={stackAccessors}
         data={pointData}
         name="bars 1"
         enableHistogramMode={boolean('bars-1 enableHistogramMode', false)}
@@ -169,6 +173,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xAccessor="x"
         yAccessors={['y1', 'y2']}
         splitSeriesAccessors={['g']}
+        stackAccessors={stackAccessors}
         data={data}
         enableHistogramMode={boolean('bars-2 enableHistogramMode', false)}
       />

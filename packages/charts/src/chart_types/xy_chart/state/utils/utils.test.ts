@@ -564,9 +564,9 @@ describe('Chart State utils', () => {
         visible: true,
         fill: 'green', // the override strokeWidth
         opacity: 1,
-        radius: 2,
+        radius: 3,
         stroke: ColorVariant.Series,
-        strokeWidth: 1,
+        strokeWidth: 2,
       });
     });
     test('can compute area geometries with custom style', () => {
@@ -630,9 +630,9 @@ describe('Chart State utils', () => {
         visible: false,
         fill: 'point-fill-custom-color', // the override strokeWidth
         opacity: 1,
-        radius: 2,
+        radius: 3,
         stroke: ColorVariant.Series,
-        strokeWidth: 1,
+        strokeWidth: 2,
       });
     });
     test('can compute bars geometries counts', () => {

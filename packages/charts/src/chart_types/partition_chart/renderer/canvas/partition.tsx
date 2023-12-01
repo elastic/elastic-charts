@@ -189,8 +189,8 @@ class PartitionComponent extends React.Component<PartitionProps> {
         const renderer = isSimpleLinear(geometries.layout, geometries.style.fillLabel, geometries.layers)
           ? renderLinearPartitionCanvas2d
           : isWaffle(geometries.layout)
-          ? renderWrappedPartitionCanvas2d
-          : renderPartitionCanvas2d;
+            ? renderWrappedPartitionCanvas2d
+            : renderPartitionCanvas2d;
         renderer(ctx, devicePixelRatio, geometries, focus, this.animationState);
       });
     }

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
 import { Fill, Stroke, Rect } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 import { degToRad } from '../../../../../utils/common';
@@ -24,8 +25,8 @@ const DEFAULT_DEBUG_STROKE: Stroke = {
 export function renderDebugRect(
   ctx: CanvasRenderingContext2D,
   rect: Rect,
-  rotation: number = 0,
-  fill = DEFAULT_DEBUG_FILL, // violet
+  rotation = 0,
+  fill = DEFAULT_DEBUG_FILL,
   stroke = DEFAULT_DEBUG_STROKE,
 ) {
   withContext(ctx, () => {
@@ -51,5 +52,28 @@ export function renderDebugRectCenterRotated(
     ctx.rotate(degToRad(rotation));
     ctx.translate(-x, -y);
     renderRect(ctx, { ...rect, x: x - rect.width / 2, y: y - rect.height / 2 }, fill, stroke);
+  });
+}
+
+/** @internal */
+export function renderDebugPoint(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  size = 16,
+  stroke = DEFAULT_DEBUG_STROKE,
+) {
+  withContext(ctx, () => {
+    ctx.beginPath();
+    ctx.lineWidth = stroke.width;
+    ctx.strokeStyle = RGBATupleToString(stroke.color);
+
+    ctx.moveTo(x - size, y);
+    ctx.lineTo(x + size, y);
+
+    ctx.moveTo(x, y - size);
+    ctx.lineTo(x, y + size);
+
+    ctx.stroke();
   });
 }

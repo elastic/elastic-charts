@@ -6,16 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { LIGHT_BASE_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
-import {
-  DEFAULT_CHART_MARGINS,
-  DEFAULT_CHART_PADDING,
-  DEFAULT_GEOMETRY_STYLES,
-  DEFAULT_MISSING_COLOR,
-} from './theme_common';
+import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
+import { LIGHT_THEME_BULLET_STYLE } from '../../chart_types/bullet_graph/theme';
 import { Colors } from '../../common/colors';
-import { GOLDEN_RATIO, TAU } from '../../common/constants';
+import { TAU } from '../../common/constants';
+import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
 
 /** @public */
@@ -25,15 +23,15 @@ export const LIGHT_THEME: Theme = {
   lineSeriesStyle: {
     line: {
       visible: true,
-      strokeWidth: 1,
+      strokeWidth: 2,
       opacity: 1,
     },
     point: {
       visible: true,
-      strokeWidth: 1,
+      strokeWidth: 2,
       stroke: ColorVariant.Series,
-      fill: Colors.White.keyword,
-      radius: 2,
+      fill: LIGHT_BASE_COLORS.emptyShade,
+      radius: 3,
       opacity: 1,
     },
     isolatedPoint: {
@@ -69,15 +67,15 @@ export const LIGHT_THEME: Theme = {
     },
     line: {
       visible: true,
-      strokeWidth: 1,
+      strokeWidth: 2,
       opacity: 1,
     },
     point: {
       visible: false,
       stroke: ColorVariant.Series,
-      strokeWidth: 1,
-      fill: Colors.White.keyword,
-      radius: 2,
+      strokeWidth: 2,
+      fill: LIGHT_BASE_COLORS.emptyShade,
+      radius: 3,
       opacity: 1,
     },
     isolatedPoint: {
@@ -111,11 +109,12 @@ export const LIGHT_THEME: Theme = {
       strokeWidth: 1,
     },
     displayValue: {
-      fontSize: 8,
+      fontSize: 10,
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
+      alignment: { horizontal: 'center', vertical: 'middle' },
       padding: 0,
-      fill: '#777',
+      fill: { textBorder: 0 },
       offsetX: 0,
       offsetY: 0,
     },
@@ -137,12 +136,12 @@ export const LIGHT_THEME: Theme = {
     axisTitle: {
       visible: true,
       fontSize: 12,
-      fontFamily: 'sans-serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       padding: {
-        inner: 8,
+        inner: 10,
         outer: 0,
       },
-      fill: '#333',
+      fill: LIGHT_BASE_COLORS.darkestShade,
     },
     axisPanelTitle: {
       visible: true,
@@ -152,20 +151,20 @@ export const LIGHT_THEME: Theme = {
         inner: 8,
         outer: 0,
       },
-      fill: '#333',
+      fill: '#333', // LIGHT_BASE_COLORS.darkestShade,
     },
     axisLine: {
       visible: true,
-      stroke: '#eaeaea',
+      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
       strokeWidth: 1,
     },
     tickLabel: {
       visible: true,
       fontSize: 10,
-      fontFamily: 'sans-serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: '#777',
-      padding: 0,
+      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
+      padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
         x: 0,
@@ -178,33 +177,33 @@ export const LIGHT_THEME: Theme = {
       },
     },
     tickLine: {
-      visible: true,
-      stroke: '#eaeaea',
+      visible: false,
+      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
       strokeWidth: 1,
       size: 10,
       padding: 10,
     },
     gridLine: {
       horizontal: {
-        visible: false,
-        stroke: '#D3DAE6',
+        visible: true,
+        stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
-        visible: false,
-        stroke: '#D3DAE6',
+        visible: true,
+        stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
-        dash: [0, 0],
+        dash: [4, 4],
       },
       lumaSteps: [224, 184, 128, 96, 64, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0],
     },
   },
   colors: {
     vizColors: palettes.echPaletteColorBlind.colors,
-    defaultVizColor: DEFAULT_MISSING_COLOR,
+    defaultVizColor: '#6092C0',
   },
   legend: {
     verticalWidth: 200,
@@ -217,24 +216,25 @@ export const LIGHT_THEME: Theme = {
   },
   crosshair: {
     band: {
-      fill: '#F5F5F5',
       visible: true,
+      fill: LIGHT_BASE_COLORS.lightestShade,
     },
     line: {
-      stroke: '#98A2B3',
-      strokeWidth: 1,
       visible: true,
+      stroke: LIGHT_BASE_COLORS.darkShade,
+      strokeWidth: 1,
+      dash: [4, 4],
     },
     crossLine: {
-      stroke: '#98A2B3',
-      strokeWidth: 1,
-      dash: [5, 5],
       visible: true,
+      stroke: LIGHT_BASE_COLORS.darkShade,
+      strokeWidth: 1,
+      dash: [4, 4],
     },
   },
   background: {
-    color: Colors.Transparent.keyword,
-    fallbackColor: Colors.White.keyword,
+    color: LIGHT_BASE_COLORS.emptyShade,
+    fallbackColor: LIGHT_BASE_COLORS.emptyShade,
   },
   goal: {
     minFontSize: 8,
@@ -252,48 +252,48 @@ export const LIGHT_THEME: Theme = {
     capturePad: 16,
     tickLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: Colors.Black.keyword,
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
     },
     majorLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: Colors.Black.keyword,
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: LIGHT_BASE_COLORS.darkestShade,
     },
     minorLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: Colors.Black.keyword,
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
     },
     majorCenterLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: Colors.Black.keyword,
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: LIGHT_BASE_COLORS.darkestShade,
     },
     minorCenterLabel: {
       fontStyle: 'normal',
-      fontFamily: 'sans-serif',
-      fill: Colors.Black.keyword,
+      fontFamily: DEFAULT_FONT_FAMILY,
+      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
     },
     targetLine: {
-      stroke: Colors.Black.keyword,
+      stroke: LIGHT_BASE_COLORS.darkestShade,
     },
     tickLine: {
-      stroke: 'darkgrey',
+      stroke: LIGHT_BASE_COLORS.mediumShade,
     },
     progressLine: {
-      stroke: Colors.Black.keyword,
+      stroke: LIGHT_BASE_COLORS.darkestShade,
     },
   },
   partition: {
-    outerSizeRatio: 1 / GOLDEN_RATIO,
+    outerSizeRatio: 1,
     emptySizeRatio: 0,
-    fontFamily: 'Sans-Serif',
+    fontFamily: DEFAULT_FONT_FAMILY,
     minFontSize: 8,
-    maxFontSize: 64,
+    maxFontSize: 16,
     idealFontSizeJump: 1.05,
     maximizeFontSize: false,
-    circlePadding: 2,
+    circlePadding: 4,
     radialPadding: TAU / 360,
     horizontalTextAngleThreshold: TAU / 12,
     horizontalTextEnforcer: 1,
@@ -304,7 +304,7 @@ export const LIGHT_THEME: Theme = {
       fontVariant: 'normal',
       fontWeight: 400,
       valueFont: {
-        fontWeight: 400,
+        fontWeight: 700,
         fontStyle: 'normal',
         fontVariant: 'normal',
       },
@@ -314,7 +314,7 @@ export const LIGHT_THEME: Theme = {
     linkLabel: {
       maximumSection: 10,
       fontFamily: 'Sans-Serif',
-      fontSize: 12,
+      fontSize: 11,
       fontStyle: 'normal',
       fontVariant: 'normal',
       fontWeight: 400,
@@ -323,9 +323,9 @@ export const LIGHT_THEME: Theme = {
       horizontalStemLength: 10,
       radiusPadding: 10,
       lineWidth: 1,
-      maxCount: 36,
+      maxCount: 5,
       maxTextLength: 100,
-      textColor: ColorVariant.Adaptive,
+      textColor: LIGHT_BASE_COLORS.darkestShade,
       minimumStemLength: 0,
       stemAngle: TAU / 8,
       padding: 0,
@@ -335,13 +335,13 @@ export const LIGHT_THEME: Theme = {
         fontVariant: 'normal',
       },
     },
-    sectorLineWidth: 1,
-    sectorLineStroke: 'white',
+    sectorLineWidth: 1.5,
+    sectorLineStroke: LIGHT_BASE_COLORS.emptyShade,
   },
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: '#69707D', // euiColorDarkShade,
+      stroke: LIGHT_BASE_COLORS.darkShade,
       strokeWidth: 2,
     },
     brushMask: {
@@ -404,30 +404,32 @@ export const LIGHT_THEME: Theme = {
   },
   metric: {
     text: {
-      lightColor: '#E0E5EE',
-      darkColor: '#343741',
+      lightColor: '#E0E5EE', // LIGHT_BASE_COLORS.title,
+      darkColor: LIGHT_BASE_COLORS.darkestShade,
     },
-    border: '#EDF0F5',
-    barBackground: '#EDF0F5',
-    background: '#FFFFFF',
+    border: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
+    barBackground: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
+    emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
   },
+  bulletGraph: LIGHT_THEME_BULLET_STYLE,
   tooltip: {
-    maxWidth: 260,
+    maxWidth: 500,
     maxTableHeight: 120,
     defaultDotColor: Colors.Black.keyword,
   },
+  // TODO map colors to base color mappings
   flamegraph: {
     navigation: {
-      textColor: 'rgb(52, 55, 65)',
-      buttonTextColor: 'rgb(0, 97, 166)',
-      buttonDisabledTextColor: 'rgb(162, 171, 186)',
-      buttonBackgroundColor: 'rgb(204, 228, 245)',
-      buttonDisabledBackgroundColor: 'rgba(211, 218, 230, 0.15)',
+      textColor: LIGHT_BASE_COLORS.darkestShade,
+      buttonTextColor: '#0061A6',
+      buttonDisabledTextColor: '#A2ABBA',
+      buttonBackgroundColor: '#CCE4F5',
+      buttonDisabledBackgroundColor: '#D3DAE626',
     },
-    scrollbarThumb: 'rgb(52, 55, 65)',
-    scrollbarTrack: 'rgb(211, 218, 230)',
+    scrollbarThumb: LIGHT_BASE_COLORS.darkestShade,
+    scrollbarTrack: LIGHT_BASE_COLORS.lightShade,
   },
   highlighter: {
     point: {

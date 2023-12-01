@@ -30,14 +30,18 @@ html {
     @import '~@elastic/eui/dist/eui_theme_light';
     @import '~@elastic/charts/src/theme_light';
 
-    body,
-    .echChart {
-      background: white !important;
-    }
+    &:not(.legacy) {
+      @import '~@elastic/eui/src/themes/amsterdam/colors_light';
 
-    .euiText {
-      // required to prevent inheriting from html
-      color: $euiTitleColor;
+      body,
+      .echChart {
+        background: $euiColorEmptyShade !important;
+      }
+
+      .euiText {
+        // required to prevent inheriting from html
+        color: $euiTitleColor;
+      }
     }
   }
 
@@ -45,33 +49,33 @@ html {
     @import '~@elastic/eui/dist/eui_theme_dark';
     @import '~@elastic/charts/src/theme_dark';
 
-    body,
-    .echChart {
-      background: black !important;
-    }
-
-    .euiText {
-      // required to prevent inheriting from html
-      color: $euiTitleColor;
-    }
-  }
-
-  &.eui {
-    &.dark-theme {
+    &:not(.legacy) {
       @import '~@elastic/eui/src/themes/amsterdam/colors_dark';
 
       body,
       .echChart {
         background: $euiColorEmptyShade !important;
       }
+
+      .euiText {
+        // required to prevent inheriting from html
+        color: $euiTitleColor;
+      }
+    }
+  }
+
+  &.legacy {
+    &.dark-theme {
+      body,
+      .echChart {
+        background: black !important;
+      }
     }
 
     &.light-theme {
-      @import '~@elastic/eui/src/themes/amsterdam/colors_light';
-
       body,
       .echChart {
-        background: $euiColorEmptyShade !important;
+        background: white !important;
       }
     }
   }
@@ -109,8 +113,11 @@ html {
     }
 
     #root {
-      padding-top: 200px;
-      padding-bottom: 200px;
+      // This is meant to provide space above and below the chart for tooltip placement
+      width: 785px;
+      height: 1000px;
+      display: flex;
+      align-items: center;
     }
   }
 }
@@ -126,12 +133,35 @@ body {
 
 #story-root {
   padding: 20px;
-  width: 100%;
-  height: 400px;
+  // This allows for the resize stories to grow inside the story-root
+  min-width: 100%;
+  min-height: 400px;
   position: relative;
   z-index: 500;
   box-sizing: border-box;
-  /* background-color: blanchedalmond; */
+
+  &.showChartBoundary {
+    background-color: blanchedalmond;
+  }
+
+  &.resizeHeight {
+    // This is to trigger the non-resize stories to fill the story-root
+    height: 0;
+  }
+}
+
+#story-resize-wrapper {
+  resize: both;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  max-width: 100%;
+  max-height: 80vh;
+
+  &.e2e-server {
+    // The resize on the bullet-as-metric causes slight shift and consistent flakiness
+    resize: none;
+  }
 }
 
 #story-header {
@@ -171,4 +201,11 @@ body {
 // for using EuiWrappingPopover in stories
 .euiPopover__anchor {
   width: 100%;
+}
+
+.resizable {
+  resize: both;
+  overflow: auto;
+  width: 500px;
+  height: 600px;
 }

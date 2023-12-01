@@ -10,12 +10,13 @@ import classNames from 'classnames';
 import React, { CSSProperties, useState } from 'react';
 
 import { ProgressBar } from './progress';
-import { SparkLine } from './sparkline';
+import { SparkLine, getSparkLineColor } from './sparkline';
 import { MetricText } from './text';
-import { highContrastColor } from '../../../../common/color_calcs';
-import { changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
-import { Colors } from '../../../../common/colors';
+import { ColorContrastOptions, combineColors } from '../../../../common/color_calcs';
+import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
+import { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
+import { fillTextColor } from '../../../../common/fill_text_color';
 import {
   BasicListener,
   ElementClickListener,
@@ -23,10 +24,10 @@ import {
   MetricDatum,
   MetricElementEvent,
 } from '../../../../specs';
-import { LayoutDirection } from '../../../../utils/common';
+import { LayoutDirection, isNil } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWProgress, isMetricWTrend } from '../../specs';
+import { MetricWNumber, isMetricWProgress, isMetricWTrend } from '../../specs';
 
 /** @internal */
 export const Metric: React.FunctionComponent<{
@@ -39,6 +40,8 @@ export const Metric: React.FunctionComponent<{
   datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
+  backgroundColor: Color;
+  contrastOptions: ColorContrastOptions;
   locale: string;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
@@ -53,11 +56,14 @@ export const Metric: React.FunctionComponent<{
   datum,
   panel,
   style,
+  backgroundColor: chartBackgroundColor,
+  contrastOptions,
   locale,
   onElementClick,
   onElementOver,
   onElementOut,
 }) => {
+  const progressBarSize = 'small'; // currently we provide only the small progress bar;
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
   const [lastMouseDownTimestamp, setLastMouseDownTimestamp] = useState<number>(0);
   const metricHTMLId = `echMetric-${chartId}-${rowIndex}-${columnIndex}`;
@@ -68,41 +74,63 @@ export const Metric: React.FunctionComponent<{
     'echMetric--rightBorder': columnIndex < totalColumns - 1,
     'echMetric--bottomBorder': rowIndex < totalRows - 1,
     'echMetric--topBorder': hasTitles && rowIndex === 0,
-    'echMetric--small': hasProgressBar,
     'echMetric--vertical': progressBarDirection === LayoutDirection.Vertical,
     'echMetric--horizontal': progressBarDirection === LayoutDirection.Horizontal,
+    [`echMetric--withProgressBar--${progressBarSize}`]: hasProgressBar,
+    [`echMetric--withTargetProgressBar--${progressBarSize}`]: !isNil((datum as MetricWNumber)?.target),
   });
 
   const lightnessAmount = mouseState === 'leave' ? 0 : mouseState === 'enter' ? 0.05 : 0.1;
-  const interactionColor = changeColorLightness(datum.color, lightnessAmount, 0.8);
-  const backgroundInteractionColor = changeColorLightness(style.background, lightnessAmount, 0.8);
+
+  const backgroundColor = datum.background
+    ? RGBATupleToString(combineColors(colorToRgba(datum.background), colorToRgba(chartBackgroundColor)))
+    : chartBackgroundColor;
+  const blendingBackgroundColor = !style.blendingBackground
+    ? colorToRgba(backgroundColor)
+    : combineColors(colorToRgba(style.blendingBackground), colorToRgba(backgroundColor));
+  const interactionColor = changeColorLightness(hasProgressBar ? backgroundColor : datum.color, lightnessAmount, 0.8);
+  const blendedColor = RGBATupleToString(combineColors(colorToRgba(datum.color), blendingBackgroundColor));
+  const blendedInteractionColor = RGBATupleToString(
+    combineColors(colorToRgba(interactionColor), blendingBackgroundColor),
+  );
 
   const datumWithInteractionColor: MetricDatum = {
     ...datum,
-    color: interactionColor,
-  };
-  const updatedStyle: MetricStyle = {
-    ...style,
-    background: backgroundInteractionColor,
+    color: blendedInteractionColor,
   };
 
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
   const containerStyle: CSSProperties = {
-    backgroundColor:
-      !isMetricWTrend(datumWithInteractionColor) && !isMetricWProgress(datumWithInteractionColor)
-        ? datumWithInteractionColor.color
-        : updatedStyle.background,
+    backgroundColor: isMetricWTrend(datumWithInteractionColor) ? backgroundColor : datumWithInteractionColor.color,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
   };
 
-  const bgColor = isMetricWTrend(datum) || !isMetricWProgress(datum) ? datum.color : style.background;
+  const highContrastTextColor = fillTextColor(
+    backgroundColor,
+    isMetricWProgress(datum) ? backgroundColor : blendedColor,
+    undefined,
+    contrastOptions,
+  );
+  let finalTextColor = highContrastTextColor.color;
 
-  const highContrastTextColor =
-    highContrastColor(colorToRgba(bgColor)) === Colors.White.rgba ? style.text.lightColor : style.text.darkColor;
+  if (isMetricWTrend(datum)) {
+    const { ratio, color, shade } = fillTextColor(
+      backgroundColor,
+      getSparkLineColor(blendedColor),
+      undefined,
+      contrastOptions,
+    );
+
+    // TODO verify this check is applied correctly
+    if (shade !== highContrastTextColor.shade && ratio > highContrastTextColor.ratio) {
+      finalTextColor = color;
+    }
+  }
 
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
+
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions,jsx-a11y/click-events-have-key-events
     <div
@@ -142,16 +170,22 @@ export const Metric: React.FunctionComponent<{
         id={metricHTMLId}
         datum={datumWithInteractionColor}
         panel={panel}
-        style={updatedStyle}
+        style={style}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
-        highContrastTextColor={highContrastTextColor}
+        progressBarSize={progressBarSize}
+        highContrastTextColor={finalTextColor.keyword}
         locale={locale}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (
-        <ProgressBar datum={datumWithInteractionColor} barBackground={updatedStyle.barBackground} />
+        <ProgressBar
+          datum={datumWithInteractionColor}
+          barBackground={style.barBackground}
+          blendedBarColor={blendedColor}
+          size={progressBarSize}
+        />
       )}
-      <div className="echMetric--outline" style={{ color: highContrastTextColor }}></div>
+      <div className="echMetric--outline" style={{ color: finalTextColor.keyword }}></div>
     </div>
   );
 };

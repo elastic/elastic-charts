@@ -8,13 +8,13 @@
 
 import { useMemo, useState } from 'react';
 
-import type { StoryGlobals } from './../../../storybook/types';
+import type { StoryGlobals, StoryParameters } from './../../../storybook/types';
 import { BackgroundParameter } from '../../../storybook/node_modules/storybook-addon-background-toggle';
 import { ThemeParameter } from '../../../storybook/node_modules/storybook-addon-theme-toggle';
 import { storybookParameters as globalParams } from '../../../storybook/parameters';
 import { ThemeId } from '../../../storybook/use_base_theme';
 
-type Parameters = BackgroundParameter & ThemeParameter;
+type Parameters = BackgroundParameter & ThemeParameter & Pick<StoryParameters, 'resize'>;
 
 const themeParams = globalParams.theme!;
 const backgroundParams = globalParams.background!;
@@ -48,13 +48,15 @@ interface GlobalParameters {
   themeId: StoryGlobals['theme'];
   backgroundId: StoryGlobals['background'];
   toggles: StoryGlobals['toggles'];
+  resize: StoryParameters['resize'];
   setParams(params: URLSearchParams, parameters?: Parameters): void;
 }
 
 export function useGlobalsParameters(): GlobalParameters {
   const [themeId, setThemeId] = useState<string>(ThemeId.Light);
-  const [backgroundId, setBackgroundId] = useState<string | undefined>('white');
+  const [backgroundId, setBackgroundId] = useState<string | undefined>();
   const [togglesJSON, setTogglesJSON] = useState<string>('{}');
+  const [resize, setResize] = useState<StoryParameters['resize']>(false);
 
   /**
    * Handles setting global context values. Stub for theme and background addons
@@ -67,6 +69,7 @@ export function useGlobalsParameters(): GlobalParameters {
     setThemeId(themeIdFromParams);
     setTogglesJSON(JSON.stringify(globals.toggles ?? '{}'));
     applyThemeCSS(themeIdFromParams);
+    setResize(parameters?.resize);
   }
 
   // using toggles object creates an infinite update loop, thus using JSON state.
@@ -76,6 +79,7 @@ export function useGlobalsParameters(): GlobalParameters {
     themeId,
     backgroundId,
     toggles,
+    resize,
     setParams,
   };
 }

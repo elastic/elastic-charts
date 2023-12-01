@@ -28,8 +28,8 @@ import {
   getSeriesName,
   DataSeries,
   getSeriesKey,
-  isBandedSpec,
   getSeriesIdentifierFromDataSeries,
+  isBandedSpec,
 } from '../utils/series';
 import {
   AxisSpec,
