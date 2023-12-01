@@ -12,6 +12,22 @@ import { ContinuousDomain, Range } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { XDomain, YDomain } from '../domains/types';
 
+function getBandScaleRange(
+  isInverse: boolean,
+  isSingleValueHistogram: boolean,
+  minRange: number,
+  maxRange: number,
+  bandwidth: number,
+): {
+  start: number;
+  end: number;
+} {
+  const rangeEndOffset = isSingleValueHistogram ? 0 : bandwidth;
+  const start = isInverse ? minRange - rangeEndOffset : minRange;
+  const end = isInverse ? maxRange : maxRange - rangeEndOffset;
+  return { start, end };
+}
+
 interface XScaleOptions {
   xDomain: XDomain;
   totalBarsInCluster: number;
@@ -31,6 +47,7 @@ export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuo
   const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly } = options;
   const { type, nice, minInterval, domain, isBandScale, timeZone, logBase, desiredTickCount } = xDomain;
   const rangeDiff = Math.abs(range[1] - range[0]);
+  const isInverse = range[1] < range[0];
   if (type === ScaleType.Ordinal) {
     const dividend = totalBarsInCluster > 0 ? totalBarsInCluster : 1;
     const bandwidth = rangeDiff / (domain.length * dividend);
@@ -38,19 +55,17 @@ export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuo
   }
   if (isBandScale) {
     const [domainMin, domainMax] = domain as ContinuousDomain;
-    // This will be fixed when the histogram mode will require a binWidth value
-    const isSingleValueHistogram = enableHistogramMode === true && domainMax - domainMin === 0;
+    const isSingleValueHistogram = !!enableHistogramMode && domainMax - domainMin === 0;
     const adjustedDomain: [number, number] = [domainMin, isSingleValueHistogram ? domainMin + minInterval : domainMax];
     const intervalCount = (adjustedDomain[1] - adjustedDomain[0]) / minInterval;
-
-    // const intervalCountOffset = isSingleValueHistogram ? 0 : 1;
-    // const bandwidth = rangeDiff / (intervalCount + intervalCountOffset);
-    const bandwidth = +(rangeDiff / intervalCount).toFixed(2);
+    const intervalCountOffset = isSingleValueHistogram ? 0 : 1;
+    const bandwidth = rangeDiff / (intervalCount + intervalCountOffset);
+    const { start, end } = getBandScaleRange(isInverse, isSingleValueHistogram, range[0], range[1], bandwidth);
     return new ScaleContinuous(
       {
         type,
         domain: adjustedDomain,
-        range,
+        range: [start, end],
         nice,
       },
       {
