@@ -18,6 +18,7 @@ import { DataSeries, DataSeriesDatum } from '../../utils/series';
 export const LegendValue = Object.freeze({
   None: 'none' as const,
   LastTimeBucket: 'lastTimeBucket' as const,
+  LastBucket: 'lastBucket' as const,
   LastNonNull: 'lastNonNull' as const,
   Average: 'avg' as const,
   Min: 'min' as const,
@@ -45,6 +46,10 @@ export function getLegendValue(
   }
 
   switch (type) {
+    case LegendValue.LastBucket: {
+      const last = series.data.at(-1);
+      return last ? valueAccessor(last) : null;
+    }
     case LegendValue.LastNonNull: {
       const last = series.data.findLast((d) => valueAccessor(d) !== null);
       return last ? valueAccessor(last) : null;
