@@ -59,13 +59,19 @@ export function getLegendValue(
         return null;
       }
       const upperDomainBound = xDomain.domain[1] as number;
+      // This has a problem: the minInterval could be smaller then the last bucket interval due to DTS
+      // this cause the bucket to be smaller and the round date wrongly computed.
       const lastBucket = roundDateToESInterval(
         upperDomainBound,
         { type: 'fixed', unit: 'ms', value: xDomain.minInterval },
         'start',
         xDomain.timeZone,
       );
-      const last = series.data.findLast((d) => (d.x as number) <= lastBucket);
+      let lastIndex = series.data.findLastIndex((d) => (d.x as number) <= lastBucket);
+      if (lastIndex < series.data.length - 1) {
+        lastIndex = series.data.length - 1;
+      }
+      const last = series.data.at(lastIndex);
       if (last && !isDatumFilled(last)) {
         return valueAccessor(last);
       }
