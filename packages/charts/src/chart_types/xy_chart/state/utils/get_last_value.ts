@@ -17,9 +17,8 @@ import { DataSeries, DataSeriesDatum } from '../../utils/series';
 /** @internal */
 export const LegendValue = Object.freeze({
   None: 'none' as const,
-  LastTimeBucket: 'lastTimeBucket' as const,
   LastBucket: 'lastBucket' as const,
-  LastNonNull: 'lastNonNull' as const,
+  LastNonNullBucket: 'lastNonNull' as const,
   Average: 'avg' as const,
   Min: 'min' as const,
   Max: 'max' as const,
@@ -46,30 +45,41 @@ export function getLegendValue(
   }
 
   switch (type) {
-    case LegendValue.LastBucket: {
-      const last = series.data.at(-1);
-      return last ? valueAccessor(last) : null;
-    }
-    case LegendValue.LastNonNull: {
+    case LegendValue.LastNonNullBucket: {
       const last = series.data.findLast((d) => valueAccessor(d) !== null);
       return last ? valueAccessor(last) : null;
     }
-    case LegendValue.LastTimeBucket:
-      if (xDomain.type !== ScaleType.Time) {
+    case LegendValue.LastBucket:
+      if (xDomain.type === ScaleType.Time) {
+        const upperDomainBound = xDomain.domain[1] as number;
+        const lastBucket = roundDateToESInterval(
+          upperDomainBound,
+          { type: 'fixed', unit: 'ms', value: xDomain.minInterval },
+          'start',
+          xDomain.timeZone,
+        );
+        let lastIndex = series.data.findLastIndex((d) => (d.x as number) <= lastBucket);
+        if (lastIndex === -1) {
+          return null;
+        }
+        // When the chart cross a DTS the minInterval could be smaller then the last bucket interval
+        // causing the bucket to be smaller and wrongly rounded. If this falls into the penultime bucket
+        // we are in this exact situation and we should consider that as last bucket
+        // TODO: reconsider this trick
+        if (lastIndex === series.data.length - 2) {
+          lastIndex = series.data.length - 2;
+        }
+        const last = series.data.at(lastIndex);
+        if (last && !isDatumFilled(last)) {
+          return valueAccessor(last);
+        }
         return null;
       }
-      const upperDomainBound = xDomain.domain[1] as number;
-      // This has a problem: the minInterval could be smaller then the last bucket interval due to DTS
-      // this cause the bucket to be smaller and the round date wrongly computed.
-      const lastBucket = roundDateToESInterval(
-        upperDomainBound,
-        { type: 'fixed', unit: 'ms', value: xDomain.minInterval },
-        'start',
-        xDomain.timeZone,
-      );
-      let lastIndex = series.data.findLastIndex((d) => (d.x as number) <= lastBucket);
-      if (lastIndex < series.data.length - 1) {
-        lastIndex = series.data.length - 1;
+
+      const lastBucket = xDomain.domain[1] as number;
+      const lastIndex = series.data.findLastIndex((d) => (d.x as number) === lastBucket);
+      if (lastIndex === -1) {
+        return null;
       }
       const last = series.data.at(lastIndex);
       if (last && !isDatumFilled(last)) {
