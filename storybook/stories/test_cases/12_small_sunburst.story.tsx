@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -44,7 +43,6 @@ const theme: PartialTheme = {
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const showDebug = boolean('show table for debugging', false);
   return (
     <div
       style={{
@@ -57,8 +55,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         overflow: 'auto',
       }}
     >
-      <Chart title={title} description={description}>
-        <Settings showLegend legendMaxDepth={1} theme={theme} baseTheme={useBaseTheme()} debug={showDebug} />
+      <Chart title={title} description={description} size={{ height: 21 }}>
+        <Settings showLegend legendMaxDepth={1} theme={theme} baseTheme={useBaseTheme()} />
         <Partition
           id="spec_1"
           data={mocks.sunburst}
@@ -100,4 +98,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
       </Chart>
     </div>
   );
+};
+
+Example.parameters = {
+  markdown:
+    'In this test we show a very short pie chart, where the legend is bearly visible and serves to check the avoidance of rendering error with zero or lower outerRadius',
 };
