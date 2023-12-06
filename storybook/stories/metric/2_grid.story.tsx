@@ -210,7 +210,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           .flat()
           .map((d) => `[${d?.value}]`)
           .join(' ')}
-      <Chart title={title} description={description}>
+      <Chart title={title} description={description} size={{ height: containerHeight, width: containerWidth }}>
         <Settings
           theme={{
             metric: {

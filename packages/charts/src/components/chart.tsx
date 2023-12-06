@@ -23,14 +23,14 @@ import { getElementZIndex } from './portal/utils';
 import { Colors } from '../common/colors';
 import { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
-import { updateChartTitles } from '../state/actions/chart_settings';
+import { updateChartTitles, updateParentDimensions } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { getLegendConfigSelector } from '../state/selectors/get_legend_config_selector';
-import { ChartSize, getChartSize } from '../utils/chart_size';
+import { ChartSize, getChartSize, getFixedChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 
@@ -121,9 +121,16 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.unsubscribeToStore();
   }
 
-  componentDidUpdate({ title, description }: Readonly<ChartProps>) {
+  componentDidUpdate({ title, description, size }: Readonly<ChartProps>) {
     if (title !== this.props.title || description !== this.props.description) {
       this.chartStore.dispatch(updateChartTitles(this.props.title, this.props.description));
+    }
+    if (size !== this.props.size) {
+      const fixedSize = getFixedChartSize(this.props.size);
+      // if the size is specified in pixels then update directly the store
+      if (fixedSize) {
+        this.chartStore.dispatch(updateParentDimensions({ ...fixedSize, top: 0, left: 0 }));
+      }
     }
   }
 
