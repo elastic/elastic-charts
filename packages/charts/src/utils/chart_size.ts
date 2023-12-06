@@ -18,7 +18,7 @@ export interface ChartSizeObject {
 export type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
 
 /** @internal */
-export function getChartSize(size?: ChartSize): ChartSizeObject {
+export function getChartSize(size?: ChartSize): Required<ChartSizeObject> {
   if (Array.isArray(size)) {
     return {
       width: size[0] === undefined ? '100%' : size[0],
@@ -43,25 +43,6 @@ export function getChartSize(size?: ChartSize): ChartSizeObject {
  * @internal
  */
 export function getFixedChartSize(size?: ChartSize): { width: number; height: number } | null {
-  if (size === undefined) {
-    return null;
-  }
-  if (typeof size === 'number') {
-    return { width: size, height: size };
-  }
-  if (Array.isArray(size)) {
-    const width = size[0];
-    const height = size[1];
-    if (typeof width === 'number' && typeof height === 'number') {
-      return { width, height };
-    }
-    return null;
-  }
-  if (typeof size === 'object') {
-    const { width, height } = size;
-    if (typeof width === 'number' && typeof height === 'number') {
-      return { width, height };
-    }
-  }
-  return null;
+  const { width, height } = getChartSize(size);
+  return typeof height === 'number' && typeof width === 'number' ? { width, height } : null;
 }
