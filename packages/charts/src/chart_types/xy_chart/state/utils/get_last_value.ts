@@ -9,7 +9,6 @@
 import { $Values } from 'utility-types';
 
 import { ScaleType } from '../../../../scales/constants';
-import { roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { XDomain } from '../../domains/types';
 import { isDatumFilled } from '../../rendering/utils';
 import { DataSeries, DataSeriesDatum } from '../../utils/series';
@@ -17,12 +16,8 @@ import { DataSeries, DataSeriesDatum } from '../../utils/series';
 /** @internal */
 export const LegendValue = Object.freeze({
   None: 'none' as const,
-  LastBucket: 'lastBucket' as const,
-  LastNonNullBucket: 'lastNonNull' as const,
-  Average: 'avg' as const,
-  Min: 'min' as const,
-  Max: 'max' as const,
-  Sum: 'sum' as const,
+  LastValue: 'lastValue' as const,
+  LastNonNullValue: 'lastNonNullValue' as const,
 });
 /** @internal */
 export type LegendValue = $Values<typeof LegendValue>;
@@ -45,69 +40,16 @@ export function getLegendValue(
   }
 
   switch (type) {
-    case LegendValue.LastNonNullBucket: {
+    case LegendValue.LastNonNullValue: {
       const last = series.data.findLast((d) => valueAccessor(d) !== null);
       return last ? valueAccessor(last) : null;
     }
-    case LegendValue.LastBucket:
-      if (xDomain.type === ScaleType.Time) {
-        const upperDomainBound = xDomain.domain[1] as number;
-        const lastBucket = roundDateToESInterval(
-          upperDomainBound,
-          { type: 'fixed', unit: 'ms', value: xDomain.minInterval },
-          'start',
-          xDomain.timeZone,
-        );
-        let lastIndex = series.data.findLastIndex((d) => (d.x as number) <= lastBucket);
-        if (lastIndex === -1) {
-          return null;
-        }
-        // When the chart cross a DTS the minInterval could be smaller then the last bucket interval
-        // causing the bucket to be smaller and wrongly rounded. If this falls into the penultime bucket
-        // we are in this exact situation and we should consider that as last bucket
-        // TODO: reconsider this trick
-        if (lastIndex === series.data.length - 2) {
-          lastIndex = series.data.length - 2;
-        }
-        const last = series.data.at(lastIndex);
-        if (last && !isDatumFilled(last)) {
-          return valueAccessor(last);
-        }
-        return null;
-      }
-
-      const lastBucket = xDomain.domain[1] as number;
-      const lastIndex = series.data.findLastIndex((d) => (d.x as number) === lastBucket);
-      if (lastIndex === -1) {
-        return null;
-      }
-      const last = series.data.at(lastIndex);
+    case LegendValue.LastValue:
+      const last = series.data.at(-1);
       if (last && !isDatumFilled(last)) {
         return valueAccessor(last);
       }
       return null;
-    // all these cases are not currently used and exposed. We need to test and enable them
-    // then the legend value will be configurable by the user.
-    // case LegendValue.Average:
-    //   const avg = series.data.reduce(
-    //     (acc, curr) => {
-    //       const value = valueAccessor(curr);
-    //       return value !== null
-    //         ? {
-    //             count: acc.count + 1,
-    //             sum: acc.sum + value,
-    //           }
-    //         : acc;
-    //     },
-    //     { count: 0, sum: 0 },
-    //   );
-    //   return avg.count > 0 ? avg.sum / avg.count : 0;
-    // case LegendValue.Sum:
-    //   return series.data.reduce((acc, curr) => acc + (valueAccessor(curr) ?? 0), 0);
-    // case LegendValue.Min:
-    //   return series.data.reduce((acc, curr) => Math.min(acc, valueAccessor(curr) ?? Infinity), Infinity);
-    // case LegendValue.Max:
-    //   return series.data.reduce((acc, curr) => Math.max(acc, valueAccessor(curr) ?? -Infinity), -Infinity);
     default:
     case LegendValue.None:
       return null;

@@ -110,7 +110,7 @@ export function computeLegend(
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
 
-  const legendValueMode = LegendValue.LastBucket;
+  const legendValueMode = LegendValue.LastValue;
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
