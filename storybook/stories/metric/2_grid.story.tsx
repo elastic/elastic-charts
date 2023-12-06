@@ -45,7 +45,7 @@ const getContainerHeight = (_data: (MetricDatum | undefined)[][]) => _data.lengt
 const defaultValueFormatter = (d: number) => `${d}`;
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const resizable = boolean('resizable', false);
+  const resizable = boolean('resizable', true);
   const showGridBorder = boolean('show grid border', false);
   const addMetricClick = boolean('attach click handler', true);
   const useProgressBar = boolean('use progress bar', true);
