@@ -21,4 +21,3 @@ export { Example as testPointsOutsideOfDomain } from './8_test_points_outside_of
 export { Example as duplicateLabelsInPartitionLegend } from './9_duplicate_labels_in_partition_legend.story';
 export { Example as highlighterZIndex } from './10_highlighter_z_index.story';
 export { Example as resizeDebounce } from './11_resize_debounce.story';
-export { Example as smallSunburst } from './12_small_sunburst.story';
