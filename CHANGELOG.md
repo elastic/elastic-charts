@@ -1,3 +1,11 @@
+## [60.0.1](https://github.com/elastic/elastic-charts/compare/v60.0.0...v60.0.1) (2023-12-07)
+
+
+### Bug Fixes
+
+* clamp brushing min of last bucket ([#2227](https://github.com/elastic/elastic-charts/issues/2227)) [60.x] ([#2276](https://github.com/elastic/elastic-charts/issues/2276)) ([7582811](https://github.com/elastic/elastic-charts/commit/75828113369f2cfb468c1a11f8dd91b263290290))
+* **partition:** zero value sectors cause max stack call ([#2260](https://github.com/elastic/elastic-charts/issues/2260)) [60.x] ([#2274](https://github.com/elastic/elastic-charts/issues/2274)) ([5034852](https://github.com/elastic/elastic-charts/commit/5034852d05d9ce570b9710155ada11dd3aab47e2))
+
 # [60.0.0](https://github.com/elastic/elastic-charts/compare/v59.1.0...v60.0.0) (2023-09-20)
 
 
