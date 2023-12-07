@@ -193,15 +193,17 @@ export const Example: ChartsStory = (_, { title, description }) => {
   return (
     <div
       style={{
+        padding: '0px',
+        overflow: 'auto',
+        height: `100%`,
+        width: `100%`,
         ...(resizable && {
           resize: 'both',
           maxWidth: '100%',
           maxHeight: '80vh',
+          height: `${containerHeight}px`,
+          width: `${containerWidth}px`,
         }),
-        padding: '0px',
-        overflow: 'auto',
-        height: `${containerHeight}px`,
-        width: `${containerWidth}px`,
         ...(showGridBorder && {
           boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
           borderRadius: '6px',
