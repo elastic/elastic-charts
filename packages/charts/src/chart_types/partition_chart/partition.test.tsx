@@ -188,5 +188,36 @@ describe('Retain hierarchy even with arbitrary names', () => {
         partitionMultiGeometries(store.getState());
       }).not.toThrow();
     });
+    it('avoid rendering on too small outer radius', () => {
+      MockStore.updateDimensions(store, { width: 800, height: 10, top: 0, left: 0 });
+      MockStore.addSpecs(
+        [
+          MockGlobalSpec.settings({
+            showLegend: false,
+            theme: {
+              chartMargins: { top: 5, bottom: 4 },
+            },
+          }),
+          MockSeriesSpec.treemap({
+            data: [
+              { cat: 'a', val: 1 },
+              { cat: 'b', val: 1 },
+              { cat: 'c', val: 0 },
+              { cat: 'd', val: 1 },
+            ],
+            valueAccessor: (d: { cat: string; val: number }) => d.val,
+            layers: [
+              {
+                groupByRollup: (d: { cat: string; val: number }) => d.cat,
+              },
+            ],
+          }),
+        ],
+        store,
+      );
+      const geometries = partitionMultiGeometries(store.getState());
+      const outerRadius = geometries?.[0]?.outerRadius ?? 0;
+      expect(outerRadius).toBeGreaterThanOrEqual(0);
+    });
   });
 });

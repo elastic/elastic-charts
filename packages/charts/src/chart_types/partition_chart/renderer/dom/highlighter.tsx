@@ -165,7 +165,7 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
       <>
         <defs>
           {renderedHighlightSet
-            .filter(({ geometries }) => geometries.length > 0)
+            .filter(({ geometries, outerRadius }) => geometries.length > 0 && outerRadius > 0)
             .map(
               ({
                 geometries,
@@ -187,38 +187,40 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
               ),
             )}
         </defs>
-        {renderedHighlightSet.map(
-          ({
-            diskCenter,
-            outerRadius,
-            index,
-            innerIndex,
-            layout,
-            marginLeftPx,
-            marginTopPx,
-            panel: { innerWidth, innerHeight },
-          }) =>
-            isSunburst(layout) ? (
-              <circle
-                key={`${index}__${innerIndex}`}
-                cx={diskCenter.x}
-                cy={diskCenter.y}
-                r={outerRadius}
-                mask={`url(#${maskId(index, innerIndex)})`}
-                className="echHighlighter__mask"
-              />
-            ) : (
-              <rect
-                key={`${index}__${innerIndex}`}
-                x={marginLeftPx}
-                y={marginTopPx}
-                width={innerWidth}
-                height={innerHeight}
-                mask={`url(#${maskId(index, innerIndex)})`}
-                className="echHighlighter__mask"
-              />
-            ),
-        )}
+        {renderedHighlightSet
+          .filter(({ outerRadius }) => outerRadius > 0)
+          .map(
+            ({
+              diskCenter,
+              outerRadius,
+              index,
+              innerIndex,
+              layout,
+              marginLeftPx,
+              marginTopPx,
+              panel: { innerWidth, innerHeight },
+            }) =>
+              isSunburst(layout) ? (
+                <circle
+                  key={`${index}__${innerIndex}`}
+                  cx={diskCenter.x}
+                  cy={diskCenter.y}
+                  r={outerRadius}
+                  mask={`url(#${maskId(index, innerIndex)})`}
+                  className="echHighlighter__mask"
+                />
+              ) : (
+                <rect
+                  key={`${index}__${innerIndex}`}
+                  x={marginLeftPx}
+                  y={marginTopPx}
+                  width={innerWidth}
+                  height={innerHeight}
+                  mask={`url(#${maskId(index, innerIndex)})`}
+                  className="echHighlighter__mask"
+                />
+              ),
+          )}
       </>
     );
   }
@@ -228,7 +230,7 @@ export class HighlighterComponent extends React.Component<HighlighterProps> {
       canvasDimension: { width },
     } = this.props;
     return this.props.highlightSets
-      .filter(({ geometries }) => geometries.length > 0)
+      .filter(({ geometries, outerRadius }) => geometries.length > 0 && outerRadius > 0)
       .map(({ index, innerIndex, layout, geometries, diskCenter, geometriesFoci }) => (
         <g key={`${index}|${innerIndex}`} transform={`translate(${diskCenter.x}, ${diskCenter.y})`}>
           {renderGeometries(
