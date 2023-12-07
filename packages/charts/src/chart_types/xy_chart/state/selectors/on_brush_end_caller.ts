@@ -165,7 +165,7 @@ function getXBrushExtent(
   const [domainStart, domainEnd] = xScale.domain;
   const maxDomainValue = domainEnd + (histogramEnabled && allowBrushingLastHistogramBin ? xScale.minInterval : 0);
 
-  const minValue = clamp(minPosScaled, domainStart, maxPosScaled);
+  const minValue = clamp(minPosScaled, domainStart, maxDomainValue);
   const maxValue = clamp(minPosScaled, maxPosScaled, maxDomainValue);
 
   return [minValue, maxValue];
