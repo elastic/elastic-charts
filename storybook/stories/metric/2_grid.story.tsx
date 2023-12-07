@@ -195,14 +195,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
       style={{
         padding: '0px',
         overflow: 'auto',
-        height: `100%`,
-        width: `100%`,
+        height: `${containerHeight}px`,
+        width: `${containerWidth}px`,
         ...(resizable && {
           resize: 'both',
           maxWidth: '100%',
           maxHeight: '80vh',
-          height: `${containerHeight}px`,
-          width: `${containerWidth}px`,
+          height: `100%`,
+          width: `100%`,
         }),
         ...(showGridBorder && {
           boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
