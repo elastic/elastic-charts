@@ -455,13 +455,13 @@ export interface SeriesSpec<D extends BaseDatum = Datum> extends Spec {
 /** @public */
 export interface Postfixes {
   /**
-   * Postfix for y1 accessor when using `y0Accessors`
+   * Postfix for y0 accessor when using `y0Accessors`
    *
    * @defaultValue `upper`
    */
   y0AccessorFormat?: string;
   /**
-   * Postfix for y1 accessor when using `y0Accessors`
+   * Postfix for y1 accessor when using `y1Accessors`
    *
    * @defaultValue `lower`
    */
@@ -688,7 +688,7 @@ export type AreaSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'ar
 /** @public */
 export interface HistogramConfig {
   /**
-   *  Determines how points in the series will align to bands in histogram mode
+   * Determines how points in the series will align to bands in histogram mode
    * @defaultValue `start`
    */
   histogramModeAlignment?: HistogramModeAlignment;
