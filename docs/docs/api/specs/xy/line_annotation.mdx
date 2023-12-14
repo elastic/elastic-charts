@@ -1,0 +1,89 @@
+---
+id: LineAnnotation
+sidebar_position: 0
+sidebar_label: LineAnnotation
+---
+
+# `LineAnnotation` Spec
+
+Defines a line annotation in the chart.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+{/* TODO find a better way to present this idea of incompatible specs */}
+
+`LineAnnotation` spec can be used multiple times along with any of the following specs:
+
+### Global Specs
+
+- [`Settings`](/api/specs/global/Settings)
+- [`Tooltip`](/api/specs/global/Tooltip)
+- [`GroupBy`](/api/specs/global/GroupBy)
+- [`SmallMultiples`](/api/specs/global/SmallMultiples)
+
+### Specs
+
+- [`Axis`](./Axis)
+- [`AreaSeries`](./AreaSeries)
+- [`LineSeries`](./LineSeries)
+- [`BarSeries`](./BarSeries)
+- [`BubbleSeries`](./BubbleSeries)
+- [`HistogramBarSeries`](./HistogramBarSeries)
+- `LineAnnotation`
+- [`RectAnnotation`](./RectAnnotation)
+
+## Props {#props}
+
+All props can be found via [`LineAnnotationProps`](/all-types/type-aliases/LineAnnotationProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`BaseAnnotationSpec`](../types/BaseAnnotationSpec) Props
+
+Inherits [`BaseAnnotationSpec`](../types/BaseAnnotationSpec) props
+
+### `domainType`
+- Type: <code>domainType: AnnotationDomainType</code>
+
+### `marker`
+- Type: <code>marker?: ReactNode | ComponentWithAnnotationDatum\<D\></code>
+
+Optional Custom marker icon centered on data value
+
+### `markerBody`
+- Type: <code>markerBody?: ReactNode | ComponentWithAnnotationDatum\<D\></code>
+
+Optional marker body, always contained within chart area
+
+### `markerDimensions`
+
+- Type: <code>markerDimensions?: \{ width: number; height: number \}</code>
+
+Custom marker dimensions; will be computed internally. Any user-supplied values will be overwritten
+
+### `markerPosition`
+- Type: <code>markerPosition?: Position</code>
+
+An optional marker position.
+
+:::info
+The default position, if this property is not specified, falls back to the linked axis position (if available). If no axis present on the chart, the marker position is positioned by default on the bottom on the X domain and on the left of the chart for the Y domain. The specified position is an absolute position and reflect the spatial position of the marker independently from the chart rotation.
+:::
+
+### `hideLines`
+- Type: <code>hideLines?: boolean</code>
+
+Annotation lines are hidden
+
+### `hideLinesTooltips`
+- Type: <code>hideLinesTooltips?: boolean</code>
+- Default: `true`
+
+Hide tooltip when hovering over the line
+
+### `zIndex`
+- Type: <code>zIndex?: number</code>
+- Default: `1`
+
+z-index of the annotation relative to other elements in the chart

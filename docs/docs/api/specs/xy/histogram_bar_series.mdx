@@ -1,0 +1,74 @@
+---
+id: HistogramBarSeries
+sidebar_position: 0
+sidebar_label: HistogramBarSeries
+---
+
+# `HistogramBarSeries` Spec
+
+This spec describe the dataset configuration used to display a histogram bar series. This is identical to the `BarSeries` but overrides `enableHistogramMode` to `true`.
+
+A histogram bar series is identical to a bar series except for the bar width.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+{/* TODO find a better way to present this idea of incompatible specs */}
+
+`HistogramBarSeries` spec can be used multiple times along with any of the following specs:
+
+### Global Specs
+
+- [`Settings`](/api/specs/global/Settings)
+- [`Tooltip`](/api/specs/global/Tooltip)
+- [`GroupBy`](/api/specs/global/GroupBy)
+- [`SmallMultiples`](/api/specs/global/SmallMultiples)
+
+### Specs
+
+- [`Axis`](./Axis)
+- [`AreaSeries`](./AreaSeries)
+- [`LineSeries`](./LineSeries)
+- [`BarSeries`](./BarSeries)
+- [`BubbleSeries`](./BubbleSeries)
+- `HistogramBarSeries`
+- [`LineAnnotation`](./LineAnnotation)
+- [`RectAnnotation`](./RectAnnotation)
+
+## Overrides
+
+- `enableHistogramMode` -> `true`
+
+## Props {#props}
+
+All props can be found via [`HistogramBarSeriesProps`](/all-types/type-aliases/HistogramBarSeriesProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`BarSeriesSpec`](./BarSeriesSpec) Props
+
+Inherits [`BarSeriesSpec`](./BarSeriesSpec) props
+
+### `barSeriesStyle`
+- Type: <code>barSeriesStyle?: [RecursivePartial](/all-types/type-aliases/RecursivePartial)\<[BarSeriesStyle](/all-types/type-aliases/BarSeriesStyle)\></code>
+
+Styles to apply to bar series. Overrides syles from [`Theme`](#gtd-theme)
+
+### `stackMode`
+- Type: <code>stackMode?: [StackMode](/all-types/type-aliases/StackMode)</code>
+- Default: `'100%'`
+
+Stack each series using a specific mode: Percentage, Wiggle, Silhouette.
+The last two modes are generally used for stream graphs
+
+### `styleAccessor`
+- Type: <code>styleAccessor?: [BarStyleAccessor](/all-types/type-aliases/BarStyleAccessor)</code>
+- Default: `'100%'`
+
+Functional accessor to return custom color or style for bar datum
+
+### `minBarHeight`
+- Type: <code>minBarHeight?: number</code>
+- Unit: `pixel`
+
+Min height to render bars for highly variable data (i.e. ranges from 1 to 100,000).

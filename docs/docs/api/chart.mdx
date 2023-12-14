@@ -1,0 +1,98 @@
+---
+id: Chart
+sidebar_position: 0
+sidebar_label: Chart
+---
+
+# Top-level `Chart` Component
+
+## Overview {#overview}
+
+The whole `@elastic/charts` library starts with the `Chart` component.
+
+## Props {#props}
+
+### `size`
+- Type: <code>size?: [ChartSize](#td-chart-size)</code>
+- Default: `'100%'`
+
+Sets the size of the chart.
+
+```tsx
+<Chart size={200}> // Sets width and height to 200px
+<Chart size="90%"> // Sets width and height to 90% of parent
+<Chart size={['100%', 200]}> // Sets width to 100% of parent and height to 200px
+<Chart size={{ width: '100%', height: 200 }}> // Sets width to 100% of parent and height to 200px
+```
+
+### `id`
+- Type: `id?: string`
+- Default: a random UUID via [`uuid`](https://www.npmjs.com/package/uuid)
+
+A unique id to indetify the chart. Used to renerate individual chart state.
+
+### `title`
+- Type: `title?: string`
+
+Top-level title of the chart.
+
+### `description`
+- Type: `description?: string`
+
+Top-level description of the chart.
+
+### `children`
+- Type: `children?: ReactNode`
+
+The children **specs** defining the chart.
+
+In `@elastic/charts` we configure the chart using a react component api, we call these configuration components **specs**. Theses specs are applied as `children` of the `Chart` element.
+
+While technically `children` are optional, passing no children will simply return an empty chart.
+
+
+### `className`
+- Type: `className?: string`
+
+Adds className to `.echChartContent` element for custom styling.
+
+:::warning
+
+Careful adding too many styles as this can lead to unexpected apperance and behaviour of the chart.
+
+:::
+
+### `renderer`
+- Type: `renderer?: 'svg' | 'canvas'`
+- Default: `'canvas'`
+
+This sets the renderer type of the chart.
+
+:::info
+
+Currently this option not configurable per chart as there is not a parrallel renderer for all charts.
+
+:::
+
+## Type Definitions  {#type-definitions}
+
+### `ChartSize` {#td-chart-size}
+
+```ts
+type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
+```
+
+### `ChartSizeObject` {#td-chart-size-obj}
+
+```ts
+interface ChartSizeObject {
+  width?: number | string;
+  height?: number | string;
+}
+```
+
+### `ChartSizeArray` {#td-chart-size-array}
+
+```ts
+type ChartSizeArray = [number | string | undefined, number | string | undefined];
+```

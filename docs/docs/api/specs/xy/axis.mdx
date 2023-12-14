@@ -1,0 +1,138 @@
+---
+id: Axis
+sidebar_position: 0
+sidebar_label: Axis
+---
+
+# `Axis` Spec
+
+Defines a area series in the chart.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+{/* TODO find a better way to present this idea of incompatible specs */}
+
+`Axis` spec can be used multiple times along with any of the following specs:
+
+### Global Specs
+
+- [`Settings`](/api/specs/global/Settings)
+- [`Tooltip`](/api/specs/global/Tooltip)
+- [`GroupBy`](/api/specs/global/GroupBy)
+- [`SmallMultiples`](/api/specs/global/SmallMultiples)
+
+### Specs
+
+- `Axis`
+- [`AreaSeries`](./AreaSeries)
+- [`LineSeries`](./LineSeries)
+- [`BarSeries`](./BarSeries)
+- [`BubbleSeries`](./BubbleSeries)
+- [`HistogramBarSeries`](./HistogramBarSeries)
+- [`LineAnnotation`](./LineAnnotation)
+- [`RectAnnotation`](./RectAnnotation)
+
+## Overrides
+
+- `specType` -> `SpecType.Axis`
+- `chartType` -> `ChartType.XYAxis`
+
+## Props {#props}
+
+All props can be found via [`LineSeriesProps`](/all-types/type-aliases/LineSeriesProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`Spec`](../types/Spec) Props
+
+Inherits [`Spec`](../types/Spec) props
+
+### `id`
+- Type: <code>id: AxisId</code>
+
+The id of this axis spec.
+
+### `gridLine`
+- Type: <code>gridLine?: Partial\<GridLineStyle\></code>
+
+Style options for grid line.
+
+### `groupId`
+- Type: <code>groupId: GroupId</code>
+- Default: `DEFAULT_GLOBAL_ID`
+
+The id of the axis group.
+
+### `hide`
+- Type: <code>hide: boolean</code>
+
+Hide this axis
+
+### `showOverlappingTicks`
+- Type: <code>showOverlappingTicks: boolean</code>
+
+shows all ticks and gridlines, including those belonging to labels that got culled due to overlapping with other labels.
+
+### `showOverlappingLabels`
+- Type: <code>showOverlappingLabels: boolean</code>
+
+Shows all labels, also the overlapping ones.
+
+### `position`
+- Type: <code>position: Position</code>
+
+Where the axis appear on the chart
+
+### `tickFormat`
+- Type: <code>tickFormat?: TickFormatter</code>
+- Default: Uses first series spec `tickFormat`
+
+A function called to format every axis tick value label.
+
+:::info
+Used in tooltip when no `tickFormat` is provided from series spec
+:::
+
+### `labelFormat`
+- Type: <code>labelFormat?: TickFormatter</code>
+
+A function called to format every label  (excludes tooltip) overrides tickFormat for axis labels
+
+### `ticks`
+- Type: <code>ticks?: number</code>
+
+An approximate count of how many ticks will be generated.
+
+### `title`
+- Type: <code>title?: string</code>
+
+The axis title
+
+### `style`
+- Type: <code>style?: RecursivePartial\<Omit\<AxisStyle, 'gridLine'\>\></code>
+
+Custom style overrides.
+
+### `domain`
+- Type: <code>domain?: YDomainRange</code>
+
+If specified, it constrains the domain for these values.
+
+### `integersOnly`
+- Type: <code>integersOnly?: boolean</code>
+
+Show only integar values.
+
+### `showDuplicatedTicks`
+- Type: <code>showDuplicatedTicks?: boolean</code>
+- Default: `false`
+
+Show duplicated ticks
+
+### `timeAxisLayerCount`
+- Type: <code>timeAxisLayerCount: number</code>
+- Default: `0`
+- tag: `@alpha`
+
+Render a multi-layer time axis. Use 2 or 3 as valid number of layers. Use 0 to use the alternative, one row, time axis.
