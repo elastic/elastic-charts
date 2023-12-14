@@ -13,17 +13,16 @@ The whole `@elastic/charts` library starts with the `Chart` component.
 ## Props {#props}
 
 ### `size`
-- Type: <code>size?: [ChartSize](#td-chart-size)</code>
+- Type: <code>size?: [ChartSize](/all-types/type-aliases/ChartSize)</code>
 - Default: `'100%'`
 
 Sets the size of the chart.
 
-```tsx
-<Chart size={200}> // Sets width and height to 200px
-<Chart size="90%"> // Sets width and height to 90% of parent
-<Chart size={['100%', 200]}> // Sets width to 100% of parent and height to 200px
-<Chart size={{ width: '100%', height: 200 }}> // Sets width to 100% of parent and height to 200px
-```
+Examples:
+- `200` - Sets width and height to 200px
+- `'90%'` - Sets width and height to 90% of parent
+- `['100%', 200]` - Sets width to 100% of parent and height to 200px
+- `{ width: '100%', height: 200 }` - Sets width to 100% of parent and height to 200px
 
 ### `id`
 - Type: `id?: string`
@@ -58,7 +57,7 @@ Adds className to `.echChartContent` element for custom styling.
 
 :::warning
 
-Careful adding too many styles as this can lead to unexpected apperance and behaviour of the chart.
+Careful adding too many styles, as this can lead to unexpected apperance and behaviour of the chart.
 
 :::
 
@@ -69,30 +68,5 @@ Careful adding too many styles as this can lead to unexpected apperance and beha
 This sets the renderer type of the chart.
 
 :::info
-
 Currently this option not configurable per chart as there is not a parrallel renderer for all charts.
-
 :::
-
-## Type Definitions  {#type-definitions}
-
-### `ChartSize` {#td-chart-size}
-
-```ts
-type ChartSize = number | string | ChartSizeArray | ChartSizeObject;
-```
-
-### `ChartSizeObject` {#td-chart-size-obj}
-
-```ts
-interface ChartSizeObject {
-  width?: number | string;
-  height?: number | string;
-}
-```
-
-### `ChartSizeArray` {#td-chart-size-array}
-
-```ts
-type ChartSizeArray = [number | string | undefined, number | string | undefined];
-```
