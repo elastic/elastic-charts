@@ -8,7 +8,7 @@
 
 import { createStep, CustomCommandStep, commandStepDefaults } from '../utils';
 
-export const storybookStep = createStep<CustomCommandStep>(() => {
+export const docsStep = createStep<CustomCommandStep>(() => {
   return {
     ...commandStepDefaults,
     label: ':docusaurus: Build - Docs',
