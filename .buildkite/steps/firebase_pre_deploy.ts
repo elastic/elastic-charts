@@ -14,7 +14,7 @@ export const firebasePreDeployStep = createStep<CustomCommandStep>(() => {
     label: ':firebase: Pre Deploy - firebase',
     key: 'pre_deploy_fb',
     allow_dependency_failure: false,
-    depends_on: ['build_storybook', 'build_e2e'],
+    depends_on: ['build_docs', 'build_storybook', 'build_e2e'],
     commands: ['npx ts-node .buildkite/scripts/steps/firebase_pre_deploy.ts'],
     env: {
       ECH_CHECK_ID: 'pre_deploy_fb',

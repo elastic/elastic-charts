@@ -104,10 +104,12 @@ interface ChannelDeploymentInfo {
 /**
  * Returns deployment id for given PR channel
  */
-export async function getDeploymentUrl() {
+export async function getOrCreateDeploymentUrl(): Promise<string> {
+  const channelId = getChannelId();
+  const gacFile = createGACFile();
+  let channelUrl: string | undefined;
+
   try {
-    const channelId = getChannelId();
-    const gacFile = createGACFile();
     const deploymentJson = await exec(`npx firebase-tools hosting:channel:open ${channelId} --json`, {
       cwd: './e2e_server',
       stdio: 'pipe',
@@ -118,10 +120,31 @@ export async function getDeploymentUrl() {
       },
     });
     const info = JSON.parse(deploymentJson) as ChannelDeploymentInfo;
-    return info?.result?.url || undefined;
+    channelUrl = info?.result?.url || undefined;
   } catch {
-    return undefined;
+    // Try to create channel...
   }
+
+  if (channelUrl) return channelUrl;
+
+  try {
+    const deploymentJson = await exec(`npx firebase-tools hosting:channel:create ${channelId} --json`, {
+      cwd: './e2e_server',
+      stdio: 'pipe',
+      allowFailure: true,
+      env: {
+        ...process.env,
+        GOOGLE_APPLICATION_CREDENTIALS: gacFile,
+      },
+    });
+    const info = JSON.parse(deploymentJson) as ChannelDeploymentInfo;
+    channelUrl = info?.result?.url || undefined;
+  } catch {
+    // Handle error below
+  }
+
+  if (channelUrl) return channelUrl;
+  throw new Error(`Error: Unable to get firebase url for channel: ${channelId}`);
 }
 
 interface DeployResult {

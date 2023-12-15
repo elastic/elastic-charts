@@ -452,7 +452,8 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
       const deploymentMsg =
         previousSha && deploymentUrl
           ? `### Old deployment - ${previousSha}
-- [Storybook](${deploymentUrl})
+- [Docs](${deploymentUrl})
+- [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
 - ([Playwright report](${deploymentUrl}/e2e-report)`
           : `- ⏳ Storybook
@@ -465,7 +466,8 @@ ${deploymentMsg}`;
 
     return `## ✅ Successful ${preDeploy ? 'Preliminary ' : ''}Deployment - ${sha}
 
-- [Storybook](${deploymentUrl})
+- [Docs](${deploymentUrl})
+- [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
 ${preDeploy ? '- ⏳ Playwright report - Running e2e tests' : `- [Playwright report](${deploymentUrl}/e2e-report)`}`;
   },

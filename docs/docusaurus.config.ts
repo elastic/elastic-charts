@@ -2,7 +2,9 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-process.env.STORYBOOK_URL = 'https://elastic.github.io/elastic-charts';
+if (!process.env.DOCUSAURUS_URL && process.env.NODE_ENV === 'production') {
+  throw new Error('DOCUSAURUS_URL was not provided')
+}
 
 const config: Config = {
   title: 'Elastic Charts',
@@ -10,10 +12,11 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: process.env.DOCUSAURUS_URL || 'https://elastic.github.io',
+
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: process.env.DOCUSAURUS_BASE_URL || '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -97,9 +100,10 @@ const config: Config = {
           'aria-label': 'Codesandbox link',
         },
         {
-          href: process.env.STORYBOOK_URL,
+          href: process.env.DOCS_URL ? `${process.env.DOCS_URL}/storybook` : '/storybook',
           label: 'Storybook',
           position: 'right',
+          target: '_blank',
           className: 'header-storybook-link',
           'aria-label': 'Storybook',
         },
