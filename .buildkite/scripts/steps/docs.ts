@@ -11,6 +11,7 @@ import { createDeploymentStatus, createOrUpdateDeploymentComment } from '../../u
 
 void (async () => {
   await yarnInstall();
+  await yarnInstall('docs');
 
   if (bkEnv.isPullRequest) {
     await createOrUpdateDeploymentComment({
