@@ -35,6 +35,7 @@ const config: Config = {
   },
 
   plugins: [
+    'docusaurus-plugin-sass',
     [
       'docusaurus-lunr-search',
       {
@@ -60,7 +61,7 @@ const config: Config = {
           },
         },
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: './src/css/custom.scss',
         },
       } satisfies Preset.Options,
     ],
