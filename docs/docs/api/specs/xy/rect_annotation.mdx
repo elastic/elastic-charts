@@ -1,0 +1,61 @@
+---
+id: RectAnnotation
+sidebar_position: 0
+sidebar_label: RectAnnotation
+---
+
+# `RectAnnotation` Spec
+
+Defines a line annotation in the chart.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+{/* TODO find a better way to present this idea of incompatible specs */}
+
+`RectAnnotation` spec can be used multiple times along with any of the following specs:
+
+### Global Specs
+
+- [`Settings`](/api/specs/global/Settings)
+- [`Tooltip`](/api/specs/global/Tooltip)
+- [`GroupBy`](/api/specs/global/GroupBy)
+- [`SmallMultiples`](/api/specs/global/SmallMultiples)
+
+### Specs
+
+- [`Axis`](./Axis)
+- [`AreaSeries`](./AreaSeries)
+- [`LineSeries`](./LineSeries)
+- [`BarSeries`](./BarSeries)
+- [`BubbleSeries`](./BubbleSeries)
+- [`HistogramBarSeries`](./HistogramBarSeries)
+- [`LineAnnotation`](./LineAnnotation)
+- `RectAnnotation`
+
+## Props {#props}
+
+All props can be found via [`RectAnnotationProps`](/all-types/type-aliases/RectAnnotationProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`BaseAnnotationSpec`](../types/BaseAnnotationSpec) Props
+
+Inherits [`BaseAnnotationSpec`](../types/BaseAnnotationSpec) props
+
+### `outside`
+- Type: <code>outside?: boolean</code>
+- Default: `false`
+
+Renders annotation outside of chart area within axis gutter
+
+### `outsideDimension`
+- Type: <code>outsideDimension?: number</code>
+
+Dimension, either height or width, of outside annotation
+
+### `zIndex`
+- Type: <code>zIndex?: number</code>
+- Default: `-1`
+
+z-index of the annotation relative to other elements in the chart

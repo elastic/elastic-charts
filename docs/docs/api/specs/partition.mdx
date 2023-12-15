@@ -1,0 +1,102 @@
+---
+id: Partition
+sidebar_position: 4
+sidebar_label: Partition
+---
+
+# `Partition` Spec
+
+Defines pie, sunburst, treemap and waffle charts.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+`Partition` is a standalone spec and cannot be combined with other specs except for supported global specs.
+
+## Overrides
+
+- `specType` -> `SpecType.Series`
+- `chartType` -> `ChartType.Partition`
+
+## Props {#props}
+
+All props can be found via [`PartitionProps`](/all-types/type-aliases/PartitionProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`Spec`](./types/Spec) Props
+
+Inherits [`Spec`](./types/Spec) props
+
+### [`LegacyAnimationConfig`](/all-types/interfaces/LegacyAnimationConfig) Props
+
+Inherits [`LegacyAnimationConfig`](/all-types/interfaces/LegacyAnimationConfig) props
+
+### `data`
+- Type: <code>data: D[]</code>
+
+### `valueAccessor`
+- Type: <code>valueAccessor?: ValueAccessor\<D\></code>
+- Default: `(d) => (typeof d === 'number' ? d : 0)`
+
+### `valueFormatter`
+- Type: <code>valueFormatter?: ValueFormatter</code>
+- Default: `(d) => String(d)`
+
+### `valueGetter`
+- Type: <code>valueGetter?: ValueGetter</code>
+- Default: `(n) => n[AGGREGATE_KEY]`
+
+### `percentFormatter`
+- Type: <code>percentFormatter: ValueFormatter</code>
+
+### `topGroove`
+- Type: <code>topGroove: Pixels</code>
+- Default: `20`
+
+### `smallMultiples`
+- Type: <code>smallMultiples?: string | null</code>
+- Default: `__global__small_multiples___`
+
+### `layers`
+- Type: <code>layers?: Layer\<D\>[]</code>
+
+### `clockwiseSectors`
+- Type: <code>clockwiseSectors?: boolean</code>
+- Default: `true`
+
+Largest to smallest sectors are positioned in a clockwise order
+
+### `specialFirstInnermostSector`
+- Type: <code>specialFirstInnermostSector?: boolean</code>
+- Default: `true`
+
+Starts placement with the second largest slice, for the innermost pie/ring
+
+### `layout`
+- Type: <code>layout: PartitionLayout</code>
+
+### `maxRowCount`
+- Type: <code>maxRowCount?: number</code>
+- Default: `12`
+
+### `drilldown`
+- Type: <code>drilldown?: boolean</code>
+- Tag: `@alpha`
+- Default: `false`
+
+### `fillOutside`
+- Type: <code>fillOutside?: boolean</code>
+- Default: `false`
+
+### `radiusOutside`
+- Type: <code>radiusOutside?: Radius</code>
+- Default: `128`
+
+### `fillRectangleWidth`
+- Type: <code>fillRectangleWidth?: Distance</code>
+- Default: `Infinity`
+
+### `fillRectangleHeight`
+- Type: <code>fillRectangleHeight?: Distance</code>
+- Default: `Infinity`

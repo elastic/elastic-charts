@@ -4,8 +4,8 @@
   "license": "Apache-2.0",
   "version": "0.0.1",
   "scripts": {
-    "start": "start-storybook -s ../public -p 9001 -c . --ci --no-version-updates",
-    "build": "rm -rf ../.out && build-storybook -s ../public -c . -o ../.out",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider; start-storybook -s ../public -p 9001 -c . --ci --no-version-updates",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider; rm -rf ../.out && build-storybook -s ../public -c . -o ../.out",
     "build:firebase": "build-storybook -s ../public -c . -o ../e2e_server/public",
     "typecheck": "tsc -p ./tsconfig.json --noEmit"
   },

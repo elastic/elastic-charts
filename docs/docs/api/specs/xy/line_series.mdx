@@ -1,0 +1,79 @@
+---
+id: LineSeries
+sidebar_position: 0
+sidebar_label: LineSeries
+---
+
+# `LineSeries` Spec
+
+Defines a line series in the chart.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+{/* TODO find a better way to present this idea of incompatible specs */}
+
+`LineSeries` spec can be used multiple times along with any of the following specs:
+
+### Global Specs
+
+- [`Settings`](/api/specs/global/Settings)
+- [`Tooltip`](/api/specs/global/Tooltip)
+- [`GroupBy`](/api/specs/global/GroupBy)
+- [`SmallMultiples`](/api/specs/global/SmallMultiples)
+
+### Specs
+
+- [`Axis`](./Axis)
+- [`AreaSeries`](./AreaSeries)
+- `LineSeries`
+- [`BarSeries`](./BarSeries)
+- [`BubbleSeries`](./BubbleSeries)
+- [`HistogramBarSeries`](./HistogramBarSeries)
+- [`LineAnnotation`](./LineAnnotation)
+- [`RectAnnotation`](./RectAnnotation)
+
+## Overrides
+
+- `seriesType` -> `SeriesType.Line`
+
+## Props {#props}
+
+All props can be found via [`LineSeriesProps`](/all-types/type-aliases/LineSeriesProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`BasicSeriesSpec`](../types/BasicSeriesSpec) Props
+
+Inherits [`BasicSeriesSpec`](../types/BasicSeriesSpec) props
+
+### [`HistogramConfig`](../types/HistogramConfig) Props
+
+Inherits [`HistogramConfig`](../types/HistogramConfig) props
+
+### [`Postfixes`](../types/Postfixes) Props
+
+Inherits [`Postfixes`](../types/Postfixes) props
+
+### `curve`
+- Type: <code>curve?: CurveType</code>
+
+The type of interpolator to be used to interpolate values between points
+
+### `lineSeriesStyle`
+- Type: <code>lineSeriesStyle?: RecursivePartial\<LineSeriesStyle\></code>
+
+### `stackMode`
+- Type: <code>stackMode?: StackMode</code>
+
+Stack each series using a specific mode: Percentage, Wiggle, Silhouette. The last two modes are generally used for stream graphs
+
+### `pointStyleAccessor`
+- Type: <code>pointStyleAccessor?: PointStyleAccessor</code>
+
+An optional functional accessor to return custom color or style for point datum
+
+### `fit`
+- Type: <code>fit?: Exclude\<Fit, 'explicit'\> | FitConfig</code>
+
+Fit config to fill `null` values in dataset

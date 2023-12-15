@@ -1,0 +1,33 @@
+---
+id: Metric
+sidebar_position: 6
+sidebar_label: Metric
+---
+
+# `Metric` Spec
+
+Defines a word cloud chart.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+`Metric` is a standalone spec and cannot be combined with other specs except the `Settings` specs.
+
+## Overrides
+
+- `specType` -> `SpecType.Series`
+- `chartType` -> `ChartType.Metric`
+
+## Props {#props}
+
+All props can be found via [`MetricSpecProps`](/all-types/type-aliases/MetricSpecProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`Spec`](./types/Spec) Props
+
+Inherits [`Spec`](./types/Spec) props
+
+### `data`
+- Type: <code>data: ([MetricDatum](/all-types/type-aliases/MetricDatum) | undefined)[][]</code>
+- Default: `[]`

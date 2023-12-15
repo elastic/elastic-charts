@@ -1,0 +1,57 @@
+---
+id: GroupBy
+sidebar_position: 3
+sidebar_label: GroupBy
+---
+
+# `GroupBy` Spec
+
+Defines grouping of `SmallMultiples`.
+
+## Compatible Specs
+
+`GroupBy` goes hand-in-hand with `SmallMultiples` spec to define a faceted chart.
+
+Supported chart types include:
+
+- All Cartesian/XY Charts
+  - [`AreaSeries`](../xy/AreaSeries)
+  - [`LineSeries`](../xy/LineSeries)
+  - [`BarSeries`](../xy/BarSeries)
+  - [`BubbleSeries`](../xy/BubbleSeries)
+  - [`HistogramBarSeries`](../xy/HistogramBarSeries)
+- [`Partition`](../Partition) Charts
+- [`Heatmap`](../Heatmap) Charts
+
+## Overrides
+
+- `chartType` -> `ChartType.Global`
+- `specType` -> `SpecType.IndexOrder`
+
+## Props {#props}
+
+All props can be found via [`GroupByProps`](/all-types/type-aliases/GroupByProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`Spec`](../types/Spec) Props
+
+Inherits [`Spec`](../types/Spec) props
+
+### `by`
+- Type: <code>by: GroupByAccessor\<D\></code>
+
+Function to return a unique value __by__ which to group the data
+
+### `sort`
+- Type: <code>sort: GroupBySort</code>
+
+Sort predicate used to sort grouped data
+
+### `format`
+- Type: <code>format?: GroupByFormatter\<D\></code>
+
+Formatter used on all `by` values.
+
+:::info
+Only for displayed values, not used in sorting or other internal computations.
+:::

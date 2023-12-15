@@ -1,0 +1,82 @@
+---
+id: SeriesSpec
+sidebar_label: SeriesSpec
+---
+
+# `SeriesSpec`
+
+Default spec for all XY series specs.
+
+## Overrides
+
+- `specType` -> `SpecType.Series`
+- `chartType` -> `ChartType.XYAxis`
+
+## Props {#props}
+
+### [`Spec`](./Spec) Props
+
+Inherits [`Spec`](./Spec) props
+
+### `name`
+- Type: <code>name?: SeriesNameAccessor</code>
+
+The name of the spec. Also a mechanism to provide custom series names.
+
+### `groupId`
+- Type: <code>groupId: string</code>
+- Default: `DEFAULT_GLOBAL_ID`
+
+The ID of the spec group
+
+### `useDefaultGroupDomain`
+- Type: <code>useDefaultGroupDomain?: boolean | string</code>
+
+When specify a groupId on this series, this option can be used to compute this series domain as it was part of the default group (when using the boolean value true) or as the series was part of the specified group (when issuing a string).
+
+### `data`
+- Type: <code>data: D[]</code>
+
+Array of data
+
+### `seriesType`
+- Type: <code>seriesType: SeriesType</code>
+
+The type of series you are looking to render
+
+### `color`
+- Type: <code>color?: SeriesColorAccessor</code>
+
+Color configuration to assign colors to specific series.
+
+### `hideInLegend`
+- Type: <code>hideInLegend?: boolean</code>
+- Default: `false`
+
+If the series should appear in the legend
+
+### `displayValueSettings`
+- Type: <code>displayValueSettings?: DisplayValueSpec</code>
+
+### `y0AccessorFormat`
+- Type: <code>y0AccessorFormat?: AccessorFormat</code>
+- Default: ` - upper`
+
+Postfix string or accessor function for y1 accessor when using `y0Accessors`
+
+### `y1AccessorFormat`
+- Type: <code>y1AccessorFormat?: AccessorFormat</code>
+- Default: ` - lower`
+
+Postfix string or accessor function for y1 accessor when using `y0Accessors`
+
+### `filterSeriesInTooltip`
+- Type: <code>filterSeriesInTooltip?: FilterPredicate</code>
+
+Predicate used to hide series in tooltip.
+
+### `tickFormat`
+- Type: <code>tickFormat?: TickFormatter</code>
+- Default: `tickFormat`
+
+A function called to format every value label.

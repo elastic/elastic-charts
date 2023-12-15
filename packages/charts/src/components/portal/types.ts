@@ -34,7 +34,6 @@ export const Placement = Object.freeze({
 });
 
 /**
- * {@inheritDoc (Placement:variable)}
  * @public
  */
 export type Placement = $Values<typeof Placement>;

@@ -29,6 +29,7 @@ export const getBuildConfig = (): BuildConfig => {
     jobs: [
       { name: 'Types', id: 'types' },
       { name: 'API', id: 'api' },
+      { name: 'Build - Docs', id: 'build_docs' },
       { name: 'Build - e2e server', id: 'build_e2e' },
       { name: 'Build - Storybook', id: 'build_storybook' },
       { name: 'Pre Deploy - firebase', id: 'pre_deploy_fb' },

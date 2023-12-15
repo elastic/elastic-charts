@@ -1,0 +1,60 @@
+---
+id: BaseAnnotationSpec
+sidebar_label: BaseAnnotationSpec
+---
+
+# `BaseAnnotationSpec`
+
+Base spec to define annotations.
+
+## Overrides
+
+- `specType` -> `SpecType.Annotation`
+- `chartType` -> `ChartType.XYAxis`
+
+## Props {#props}
+
+### [`Spec`](./Spec) Props
+
+Inherits [`Spec`](./Spec) props
+
+### [`AnnotationPortalSettings`](./AnnotationPortalSettings) Props
+
+Inherits [`AnnotationPortalSettings`](./AnnotationPortalSettings) props
+
+### `annotationType`
+- Types: <code>annotationType: 'rectangle' | 'line'</code>
+
+Annotation type
+
+### `groupId`
+- Types: <code>groupId: GroupId</code>
+- Default: `DEFAULT_GLOBAL_ID`
+
+The ID of the axis group, needed for yDomain position
+
+### `dataValues`
+- Types: <code>dataValues: RectAnnotationDatum | LineAnnotationDatum\<D\>[]</code>
+
+Data values defined with coordinates and details
+
+### `style`
+- Types: <code>style?: RecursivePartial\<RectAnnotationStyle | LineAnnotationStyle\></code>
+
+Custom annotation style. Overrides `Theme` styles.
+
+### `hideTooltips`
+- Types: <code>hideTooltips?: boolean</code>
+
+Toggles tooltip annotation visibility
+
+### `zIndex`
+- Types: <code>zIndex?: number</code>
+- Default: Assigned per specific annotation spec.
+
+z-index of the annotation relative to other elements in the chart
+
+### `animations`
+- Types: <code>animations?: AnnotationAnimationConfig[]</code>
+
+Animation configurations for annotations

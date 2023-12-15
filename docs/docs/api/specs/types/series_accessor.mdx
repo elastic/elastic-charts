@@ -1,0 +1,44 @@
+---
+id: SeriesAccessors
+sidebar_label: SeriesAccessors
+---
+
+# `SeriesAccessors`
+
+Defines accessors used to pull values from data.
+
+## Props
+
+### `xAccessor`
+- Type: <code>xAccessor: Accessor\<D\> | AccessorFn\<D\></code>
+
+The field name of the x value on Datum object.
+
+### `yAccessors`
+- Type: <code>yAccessors: (Accessor\<D\> | AccessorFn\<D\>)[]</code>
+
+An array of field names one per y metric value.
+
+### `y0Accessors`
+- Type: <code>y0Accessors?: (Accessor\<D\> | AccessorFn\<D\>)[]</code>
+
+An optional accessor of the y0 value: base point for area/bar charts.
+
+### `splitSeriesAccessors`
+- Type: <code>splitSeriesAccessors?: (Accessor\<D\> | AccessorFn\<D\>)[]</code>
+
+An array of fields thats indicates the datum series membership.
+
+### `stackAccessors`
+- Type: <code>stackAccessors?: (Accessor\<any\> | AccessorFn\<any\>)[]</code>
+
+An array of fields thats indicates the stack membership. Does not depend on datum at the moment.
+
+### `markSizeAccessor`
+- Type: <code>markSizeAccessor?: Accessor\<D\> | AccessorFn\<D\></code>
+
+Field name of mark size value on `Datum`.
+
+:::info
+Only applied when used with `LineSeries` or `AreaSeries`
+:::
