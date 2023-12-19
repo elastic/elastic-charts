@@ -9,8 +9,7 @@
 import { Color } from '../../../common/colors';
 import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
-import { ScaleType } from '../../../scales/constants';
-import { SettingsSpec, TickFormatterOptions } from '../../../specs';
+import { SettingsSpec } from '../../../specs';
 import { isDefined, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
@@ -18,7 +17,6 @@ import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { XDomain } from '../domains/types';
 import { LegendValue, getLegendValue } from '../state/utils/get_last_value';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
-import { LastValues } from '../state/utils/types';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
 import { defaultXYLegendSeriesSort } from '../utils/default_series_sort_fn';
@@ -61,27 +59,6 @@ function getBandedLegendItemLabel(name: string, yAccessor: BandedAccessorType, p
   return yAccessor === BandedAccessorType.Y1
     ? `${name}${postfixes.y1AccessorFormat}`
     : `${name}${postfixes.y0AccessorFormat}`;
-}
-
-/** @internal */
-export function getLegendExtra(
-  showLegendExtra: boolean,
-  xScaleType: ScaleType,
-  formatter: (value: any, options?: TickFormatterOptions | undefined) => string,
-  key: keyof LastValues,
-  lastValue?: LastValues,
-): LegendItem['defaultExtra'] {
-  if (showLegendExtra) {
-    const rawValue = (lastValue && lastValue[key]) ?? null;
-    const formattedValue = rawValue !== null ? formatter(rawValue) : null;
-
-    return {
-      raw: rawValue !== null ? rawValue : null,
-      formatted: xScaleType === ScaleType.Ordinal ? null : formattedValue,
-      legendSizingLabel: formattedValue,
-    };
-  }
-  return { raw: null, formatted: null, legendSizingLabel: null };
 }
 
 /** @internal */
