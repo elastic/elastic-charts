@@ -20,7 +20,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const LineOrAreaSeries = isArea ? AreaSeries : LineSeries;
   return (
     <Chart title={title} description={description}>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        showLegendExtra
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+        xDomain={{ min: 0, max: 10 }}
+      />
       <Axis id="x" position={Position.Bottom} />
       <Axis id="y" position={Position.Left} />
 

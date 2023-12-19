@@ -41,11 +41,11 @@ export function getLegendValue(
 
   switch (type) {
     case LegendValue.LastNonNullValue: {
-      const last = series.data.findLast((d) => valueAccessor(d) !== null);
+      const last = series.data.findLast((d) => d.x === xDomain.dataDomain[1] && valueAccessor(d) !== null);
       return last ? valueAccessor(last) : null;
     }
     case LegendValue.LastValue:
-      const last = series.data.at(-1);
+      const last = series.data.findLast((d) => d.x === xDomain.dataDomain[1]);
       if (last && !isDatumFilled(last)) {
         return valueAccessor(last);
       }

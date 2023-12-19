@@ -73,6 +73,7 @@ describe('Chart State utils', () => {
     expect(domains.xDomain).toEqual(
       MockXDomain.fromScaleType(ScaleType.Linear, {
         domain: [0, 3],
+        dataDomain: [0, 3],
         isBandScale: false,
         minInterval: 1,
         logBase: 10,
@@ -125,6 +126,7 @@ describe('Chart State utils', () => {
     expect(domains.xDomain).toEqual(
       MockXDomain.fromScaleType(ScaleType.Linear, {
         domain: [0, 3],
+        dataDomain: [0, 3],
         isBandScale: false,
         minInterval: 1,
         logBase: 10,

@@ -27,6 +27,7 @@ export class MockXDomain {
     minInterval: 0,
     timeZone: 'local',
     domain: [0, 1],
+    dataDomain: [0, 1],
   };
 
   static default(partial?: RecursivePartial<XDomain>) {
