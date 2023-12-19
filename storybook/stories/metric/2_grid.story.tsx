@@ -45,7 +45,6 @@ const getContainerHeight = (_data: (MetricDatum | undefined)[][]) => _data.lengt
 const defaultValueFormatter = (d: number) => `${d}`;
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const resizable = boolean('resizable', true);
   const showGridBorder = boolean('show grid border', false);
   const addMetricClick = boolean('attach click handler', true);
   const useProgressBar = boolean('use progress bar', true);
@@ -193,17 +192,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
   return (
     <div
       style={{
+        resize: 'both',
+        maxWidth: '100%',
+        maxHeight: '80vh',
         padding: '0px',
         overflow: 'auto',
         height: `${containerHeight}px`,
         width: `${containerWidth}px`,
-        ...(resizable && {
-          resize: 'both',
-          maxWidth: '100%',
-          maxHeight: '80vh',
-          height: `100%`,
-          width: `100%`,
-        }),
         ...(showGridBorder && {
           boxShadow: '5px 5px 15px 5px rgba(0,0,0,0.29)',
           borderRadius: '6px',
@@ -215,11 +210,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           .flat()
           .map((d) => `[${d?.value}]`)
           .join(' ')}
-      <Chart
-        title={title}
-        description={description}
-        size={resizable ? undefined : { height: containerHeight, width: containerWidth }}
-      >
+      <Chart title={title} description={description}>
         <Settings
           theme={{
             metric: {
