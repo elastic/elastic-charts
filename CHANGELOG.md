@@ -1,3 +1,20 @@
+# [61.2.0](https://github.com/elastic/elastic-charts/compare/v61.1.0...v61.2.0) (2023-12-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^91.1.0 ([#2267](https://github.com/elastic/elastic-charts/issues/2267)) ([308e974](https://github.com/elastic/elastic-charts/commit/308e97429c6d69fc3b902ed557c322c1d2e6bfa8))
+* **deps:** update dependency @elastic/eui to ^91.2.0 ([#2268](https://github.com/elastic/elastic-charts/issues/2268)) ([29cdcb3](https://github.com/elastic/elastic-charts/commit/29cdcb360740a535710f1a4d08a1dd44c5cb569b))
+* **metric:** background colors and sparkline rendering ([#2255](https://github.com/elastic/elastic-charts/issues/2255)) ([5abddfc](https://github.com/elastic/elastic-charts/commit/5abddfc67fe284d1a483deb4f8f6bc51e7cfedbc))
+* **partition:** rendering with small radius ([#2273](https://github.com/elastic/elastic-charts/issues/2273)) ([95a8537](https://github.com/elastic/elastic-charts/commit/95a8537248eff8e72db21f960852b20ccd64fa62))
+* **partition:** zero value sectors cause max stack call ([#2260](https://github.com/elastic/elastic-charts/issues/2260)) ([4b30db7](https://github.com/elastic/elastic-charts/commit/4b30db72981af3baed78ad72c7ab679324a767f6))
+* **theme:** legacy margins ([#2262](https://github.com/elastic/elastic-charts/issues/2262)) ([299c869](https://github.com/elastic/elastic-charts/commit/299c869fec254c16fea169cc32b319c2bc79ee71))
+
+
+### Features
+
+* increase tooltip width to 500px and truncate items to 2 lines ([#2261](https://github.com/elastic/elastic-charts/issues/2261)) ([afdef1c](https://github.com/elastic/elastic-charts/commit/afdef1c0142d954dd72a5833d6b9f0abce064f4a))
+
 # [61.1.0](https://github.com/elastic/elastic-charts/compare/v61.0.0...v61.1.0) (2023-11-20)
 
 
