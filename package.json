@@ -93,7 +93,7 @@
     "@types/d3-shape": "^2.0.0",
     "@types/enzyme": "^3.9.0",
     "@types/enzyme-adapter-react-16": "^1.0.5",
-    "@types/jest": "^29.5.10",
+    "@types/jest": "^29.5.11",
     "@types/lodash": "^4.14.121",
     "@types/luxon": "^1.25.0",
     "@types/marked": "^2.0.1",
