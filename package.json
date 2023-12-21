@@ -84,7 +84,6 @@
     "@types/chroma-js": "^2.4.2",
     "@types/classnames": "^2.2.7",
     "@types/color": "^3.0.1",
-    "@types/core-js": "^2.5.2",
     "@types/d3-array": "^1.2.6",
     "@types/d3-cloud": "^1.2.5",
     "@types/d3-collection": "^1.0.8",

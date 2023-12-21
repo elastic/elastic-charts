@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import 'core-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
