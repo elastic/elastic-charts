@@ -43,6 +43,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
     ? { min: start + interval * startTimeSlider, max: start + interval * rangeSlider - (subtract ? 1 : 0) }
     : undefined;
   const domain: [number, number] = [xDomain?.min ?? data[0][0] ?? 0, xDomain?.max ?? data.at(-1)?.[0] ?? 0];
+  const limitedData = data
+    .filter((d) => d[0] <= (xDomain?.max ?? Infinity))
+    .map((d, i) => [d[0], i === 10 ? null : d[1]]);
 
   return (
     <>
@@ -101,7 +104,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          data={data}
+          data={limitedData}
           timeZone="UTC"
           color="#FF6666"
         />
@@ -150,7 +153,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          data={data}
+          data={limitedData}
           timeZone="UTC"
         />
       </Chart>
@@ -198,7 +201,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
-          data={data}
+          data={limitedData}
           timeZone="UTC"
         />
       </Chart>
