@@ -205,3 +205,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
     </>
   );
 };
+
+Example.parameters = {
+  resize: {
+    height: '100%',
+    maxHeight: '100%',
+    overflow: 'hidden',
+    resize: 'none',
+  },
+};
