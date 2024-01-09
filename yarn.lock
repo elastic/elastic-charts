@@ -3106,10 +3106,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^91.3.1":
-  version "91.3.1"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-91.3.1.tgz#2289b1683f0409c043150c39f5fb7233aa7beb16"
-  integrity sha512-zxnhBaAsykmDqjbZ3i++CFTyv2dKZSe3UUZKSgYj5MaMnbE86uzeWGjhp3gh1b+LxJZP2672MbNZ6qxVOh1vcQ==
+"@elastic/eui@^92.0.0":
+  version "92.0.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-92.0.0.tgz#659fb595b22760a2b77703874706599dbc494ba8"
+  integrity sha512-Yee5nnRt3t+zDBsMkVntW5Y6XEqwdjCx/h0J28Obx77Hnv0UMP9d65+kC5xZzflT2dKoFp65CEf8ZC6dS7gVOw==
   dependencies:
     "@hello-pangea/dnd" "^16.3.0"
     "@types/lodash" "^4.14.198"
@@ -12457,9 +12457,9 @@ focus-lock@^0.11.6:
     tslib "^2.0.3"
 
 follow-redirects@^1.0.0, follow-redirects@^1.14.0:
-  version "1.14.8"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.8.tgz#016996fb9a11a100566398b1c6839337d7bfa8fc"
-  integrity sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==
+  version "1.15.4"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.4.tgz#cdc7d308bf6493126b17ea2191ea0ccf3e535adf"
+  integrity sha512-Cr4D/5wlrb0z9dgERpUL3LrmPKVDsETIJhaCMeDfuFYcqa5bldGV6wBsAN6X/vxlXQtFBMrXdXxdL8CbDTGniw==
 
 for-each@^0.3.3:
   version "0.3.3"
