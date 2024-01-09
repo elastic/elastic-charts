@@ -17,7 +17,6 @@ import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_des
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { computeLegend } from '../../legend/legend';
 import { DataSeries } from '../../utils/series';
-import { getLastValues } from '../utils/get_last_value';
 
 /** @internal */
 export const computeLegendSelector = createCustomCachedSelector(
@@ -42,8 +41,8 @@ export const computeLegendSelector = createCustomCachedSelector(
     siDataSeriesMap: Record<string, DataSeries>,
   ): LegendItem[] => {
     return computeLegend(
+      xDomain,
       formattedDataSeries,
-      getLastValues(formattedDataSeries, xDomain),
       seriesColors,
       seriesSpecs,
       axesSpecs,

@@ -28,7 +28,8 @@ export function mergeXDomain(
   locale: string,
   fallbackScale?: XScaleType,
 ): XDomain {
-  let seriesXComputedDomains;
+  let domain;
+  let dataDomain;
   let minInterval = 0;
 
   if (type === ScaleType.Ordinal || fallbackScale === ScaleType.Ordinal) {
@@ -36,10 +37,11 @@ export function mergeXDomain(
       Logger.warn(`Each X value in a ${type} x scale needs be be a number. Using ordinal x scale as fallback.`);
     }
 
-    seriesXComputedDomains = computeOrdinalDataDomain([...xValues], false, true, locale);
+    dataDomain = computeOrdinalDataDomain([...xValues], false, true, locale);
+    domain = dataDomain;
     if (customDomain) {
       if (Array.isArray(customDomain)) {
-        seriesXComputedDomains = [...customDomain];
+        domain = [...customDomain];
       } else {
         if (fallbackScale === ScaleType.Ordinal) {
           Logger.warn(`xDomain ignored for fallback ordinal scale. Options to resolve:
@@ -54,7 +56,8 @@ export function mergeXDomain(
     }
   } else {
     const domainOptions = { min: NaN, max: NaN, fit: true };
-    seriesXComputedDomains = computeContinuousDataDomain([...xValues] as number[], type, domainOptions);
+    dataDomain = computeContinuousDataDomain([...xValues] as number[], type, domainOptions);
+    domain = dataDomain;
     let customMinInterval: undefined | number;
 
     if (customDomain) {
@@ -62,13 +65,13 @@ export function mergeXDomain(
         Logger.warn('xDomain for continuous scale should be a DomainRange object, not an array');
       } else {
         customMinInterval = customDomain.minInterval;
-        const [computedDomainMin, computedDomainMax] = seriesXComputedDomains;
+        const [computedDomainMin, computedDomainMax] = domain;
 
         if (Number.isFinite(customDomain.min) && Number.isFinite(customDomain.max)) {
           if (customDomain.min > customDomain.max) {
             Logger.warn('Custom xDomain is invalid: min is greater than max. Custom domain is ignored.');
           } else {
-            seriesXComputedDomains = [customDomain.min, customDomain.max];
+            domain = [customDomain.min, customDomain.max];
           }
         } else if (Number.isFinite(customDomain.min)) {
           if (customDomain.min > computedDomainMax) {
@@ -76,7 +79,7 @@ export function mergeXDomain(
               'Custom xDomain is invalid: custom min is greater than computed max. Custom domain is ignored.',
             );
           } else {
-            seriesXComputedDomains = [customDomain.min, computedDomainMax];
+            domain = [customDomain.min, computedDomainMax];
           }
         } else if (Number.isFinite(customDomain.max)) {
           if (computedDomainMin > customDomain.max) {
@@ -84,7 +87,7 @@ export function mergeXDomain(
               'Custom xDomain is invalid: computed min is greater than custom max. Custom domain is ignored.',
             );
           } else {
-            seriesXComputedDomains = [computedDomainMin, customDomain.max];
+            domain = [computedDomainMin, customDomain.max];
           }
         }
       }
@@ -97,7 +100,8 @@ export function mergeXDomain(
     type: fallbackScale ?? type,
     nice,
     isBandScale,
-    domain: seriesXComputedDomains,
+    domain,
+    dataDomain,
     minInterval,
     timeZone: getValidatedTimeZone(timeZone),
     logBase: customDomain && 'logBase' in customDomain ? customDomain.logBase : 10, // fixme preexisting TS workaround
