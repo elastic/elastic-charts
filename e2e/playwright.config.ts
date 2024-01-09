@@ -38,8 +38,7 @@ const config: PlaywrightTestConfig = {
       maxDiffPixels: 0,
     },
   },
-  // TODO limit this to only flaky tests. Watch https://github.com/microsoft/playwright/issues/15657
-  retries: isCI ? 1 : 0,
+  retries: 0,
   forbidOnly: isCI,
   timeout: 10 * 1000,
   preserveOutput: 'failures-only',
