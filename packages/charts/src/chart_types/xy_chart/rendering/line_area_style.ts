@@ -9,25 +9,6 @@
 import { RecursivePartial, mergePartial } from '../../../utils/common';
 import { AreaSeriesStyle, LineSeriesStyle } from '../../../utils/themes/theme';
 
-// Typings does play well here
-// /** @internal */
-// export function getLineAreaSeriesStyles<T extends LineSeriesStyle | AreaSeriesStyle>(
-//   baseStyle: T,
-//   seriesStyle?: RecursivePartial<T>,
-// ): T {
-//   if (!seriesStyle) return baseStyle;
-
-//   const isolatedPointStyleOverrides = mergePartial<T['isolatedPoint']>(
-//     baseStyle.isolatedPoint,
-//     seriesStyle.isolatedPoint,
-//     undefined,
-//     seriesStyle.point ? [seriesStyle.point] : [],
-//   );
-//   console.log(isolatedPointStyleOverrides);
-
-//   return mergePartial(baseStyle, { isolatedPoint: isolatedPointStyleOverrides }, undefined, [seriesStyle]);
-// }
-
 /** @internal */
 export function getLineSeriesStyles(
   baseStyle: LineSeriesStyle,
@@ -42,7 +23,17 @@ export function getLineSeriesStyles(
     seriesStyle.point ? [seriesStyle.point] : [],
   );
 
-  return mergePartial(baseStyle, { isolatedPoint: isolatedPointStyleOverrides }, undefined, [seriesStyle]);
+  return mergePartial(
+    baseStyle,
+    {
+      isolatedPoint: {
+        ...isolatedPointStyleOverrides,
+        visible: seriesStyle?.isolatedPoint?.visible ?? baseStyle.isolatedPoint.visible,
+      },
+    },
+    undefined,
+    [seriesStyle],
+  );
 }
 
 /** @internal */
@@ -59,5 +50,15 @@ export function getAreaSeriesStyles(
     seriesStyle.point ? [seriesStyle.point] : [],
   );
 
-  return mergePartial(baseStyle, { isolatedPoint: isolatedPointStyleOverrides }, undefined, [seriesStyle]);
+  return mergePartial(
+    baseStyle,
+    {
+      isolatedPoint: {
+        ...isolatedPointStyleOverrides,
+        visible: seriesStyle?.isolatedPoint?.visible ?? baseStyle.isolatedPoint.visible,
+      },
+    },
+    undefined,
+    [seriesStyle],
+  );
 }
