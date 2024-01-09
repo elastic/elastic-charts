@@ -92,6 +92,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
               padding: 0,
             },
             tickLine: {
+              visible: true,
               padding: 0,
               size: 5,
             },
@@ -141,6 +142,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
               padding: 0,
             },
             tickLine: {
+              visible: true,
               padding: 0,
               size: 5,
             },
@@ -188,6 +190,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
               padding: 0,
             },
             tickLine: {
+              visible: true,
               padding: 0,
               size: 5,
             },
