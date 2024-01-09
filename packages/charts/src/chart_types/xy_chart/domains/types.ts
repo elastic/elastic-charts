@@ -22,6 +22,7 @@ export type XDomain = Pick<LogScaleOptions, 'logBase'> & {
   /** the configured timezone in the specs or the fallback to the browser local timezone */
   timeZone: string;
   domain: OrdinalDomain | ContinuousDomain;
+  dataDomain: OrdinalDomain | ContinuousDomain;
   desiredTickCount: number;
 };
 

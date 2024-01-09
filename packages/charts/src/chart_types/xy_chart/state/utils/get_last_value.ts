@@ -6,58 +6,52 @@
  * Side Public License, v 1.
  */
 
-import { LastValues } from './types';
-import { SeriesKey } from '../../../../common/series_id';
+import { $Values } from 'utility-types';
+
 import { ScaleType } from '../../../../scales/constants';
 import { XDomain } from '../../domains/types';
 import { isDatumFilled } from '../../rendering/utils';
-import { DataSeries, getSeriesKey, XYChartSeriesIdentifier } from '../../utils/series';
-import { StackMode } from '../../utils/specs';
+import { DataSeries, DataSeriesDatum } from '../../utils/series';
+
+/** @internal */
+export const LegendValue = Object.freeze({
+  None: 'none' as const,
+  LastValue: 'lastValue' as const,
+  LastNonNullValue: 'lastNonNullValue' as const,
+});
+/** @internal */
+export type LegendValue = $Values<typeof LegendValue>;
 
 /**
+ * This method return a value from a DataSeries that correspond to the type of value requested.
+ * It in general compute the last, min, max, avg, sum of the value in a series.
+ * NOTE: not every type can work correctly with the data provided, for example a sum will not work when using the percentage chart
  * @internal
- * @param dataSeries
- * @param xDomain
  */
-export function getLastValues(dataSeries: DataSeries[], xDomain: XDomain): Map<SeriesKey, LastValues> {
+export function getLegendValue(
+  series: DataSeries,
+  xDomain: XDomain,
+  type: LegendValue,
+  valueAccessor: (d: DataSeriesDatum) => number | null,
+): number | null {
   // See https://github.com/elastic/elastic-charts/issues/2050
   if (xDomain.type === ScaleType.Ordinal) {
-    return new Map();
+    return null;
   }
-  const lastValues = new Map<SeriesKey, LastValues>();
 
-  // we need to get the latest
-  dataSeries.forEach((series) => {
-    if (series.data.length === 0) {
-      return;
+  switch (type) {
+    case LegendValue.LastNonNullValue: {
+      const last = series.data.findLast((d) => d.x === xDomain.dataDomain[1] && valueAccessor(d) !== null);
+      return last ? valueAccessor(last) : null;
     }
-
-    const last = series.data.at(-1);
-    if (!last) {
-      return;
-    }
-    if (isDatumFilled(last)) {
-      return;
-    }
-
-    if (last.x !== xDomain.domain.at(-1)) {
-      // we have a dataset that is not filled with all x values
-      // and the last value of the series is not the last value for every series
-      // let's skip it
-      return;
-    }
-
-    const { y0, y1, initialY0, initialY1 } = last;
-    const seriesKey = getSeriesKey(series as XYChartSeriesIdentifier, series.groupId);
-
-    if (series.stackMode === StackMode.Percentage) {
-      const y1InPercentage = y1 === null || y0 === null ? null : y1 - y0;
-      lastValues.set(seriesKey, { y0, y1: y1InPercentage });
-      return;
-    }
-    if (initialY0 !== null || initialY1 !== null) {
-      lastValues.set(seriesKey, { y0: initialY0, y1: initialY1 });
-    }
-  });
-  return lastValues;
+    case LegendValue.LastValue:
+      const last = series.data.findLast((d) => d.x === xDomain.dataDomain[1]);
+      if (last && !isDatumFilled(last)) {
+        return valueAccessor(last);
+      }
+      return null;
+    default:
+    case LegendValue.None:
+      return null;
+  }
 }
