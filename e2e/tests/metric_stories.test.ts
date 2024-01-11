@@ -77,7 +77,7 @@ test.describe('Metric', () => {
             await common.expectChartWithClickAtUrlToMatchScreenshot(page)(
               metricUrl,
               { top: 100, left: 100 },
-              { delay: 400 }, // 10ms delay to capture click and hold
+              { delay: 10 }, // delay to capture click and hold
             );
           });
         },

@@ -17,11 +17,12 @@
   "packageRules": [
     {
       "matchPackagePatterns": [".*"],
-      "excludePackageNames": ["@elastic/eui", "@elastic/datemath", "prettier", "pretty-quick"],
+      "excludePackageNames": ["@elastic/eui", "@elastic/datemath", "prettier", "pretty-quick", "@playwright/test"],
       "excludePackagePatterns": [
         ".*typescript.*",
         "ts-.+",
         ".*eslint.*",
+        ".*jest.*",
         "^@typescript-eslint/.+",
         "^@microsoft/api-.+"
       ],
@@ -53,6 +54,12 @@
     {
       "groupName": "jest",
       "matchPackagePatterns": [".*jest.*"],
+      "automerge": true,
+      "enabled": true
+    },
+    {
+      "groupName": "playwright",
+      "matchPackageNames": ["@playwright/test"],
       "automerge": true,
       "enabled": true
     }
