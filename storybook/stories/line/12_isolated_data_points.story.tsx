@@ -18,7 +18,7 @@ import { customKnobs } from '../utils/knobs';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const fitEnabled = boolean('enable fit function', false);
-  const [Series] = customKnobs.enum.xySeries('series type', 'area', { exclude: ['bar', 'bubble'] });
+  const [Series] = customKnobs.enum.xySeries('series type', 'line', { exclude: ['bar', 'bubble'] });
   const maxDataPoints = number('max data points', 60, {
     range: true,
     min: 0,
