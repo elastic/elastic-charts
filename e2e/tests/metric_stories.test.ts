@@ -82,7 +82,6 @@ test.describe('Metric', () => {
           });
         },
         (t) => `${t} theme`,
-        { retries: 1 },
       );
     },
   );

@@ -15,7 +15,6 @@ import { common } from '../page_objects';
 test.describe('Mixed series stories', () => {
   test.describe('Fitting functions', () => {
     test.describe('Area charts - no endValue', () => {
-      test.describe.configure({ retries: 1 });
       Object.values(Fit).forEach((fitType) => {
         test(`should display correct fit for type - ${fitType}`, async ({ page }) => {
           await common.expectChartAtUrlToMatchScreenshot(page)(
