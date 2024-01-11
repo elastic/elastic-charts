@@ -64,6 +64,13 @@ interface ClickOptions {
    * Time to wait between `mousedown` and `mouseup` in milliseconds. Defaults to 0.
    */
   delay?: number;
+
+  /**
+   * Whether to skip or wait for click delay. Skipping allows capturing of long press actions.
+   *
+   * Defaults to false
+   */
+  waitForDelay?: boolean;
 }
 
 type KeyboardKeys = Array<KeyboardKey>;
@@ -299,9 +306,12 @@ export class CommonPage {
       const element = await this.getBoundingClientRect(page)(selector);
       const { x, y } = getCursorPosition(mousePosition, element);
 
-      if (options?.delay) {
-        // need to skip await to resolve early and capture delay
-        void page.mouse.click(x, y, options);
+      if (options?.delay && !options?.waitForDelay) {
+        // TODO: revisit this - see https://github.com/microsoft/playwright/issues/28956
+        // Here we need to avoid using `page.mouse.click` because it will wait for the delay to expire before resolving
+        // Note: This never triggers `mouseup` action but seems to be an edge case at this point. Calling in SetTimeout fails.
+        await page.mouse.move(x, y);
+        await page.mouse.down(options);
       } else {
         await page.mouse.click(x, y, options);
       }

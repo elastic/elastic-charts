@@ -38,7 +38,7 @@ const config: PlaywrightTestConfig = {
       maxDiffPixels: 0,
     },
   },
-  retries: 0,
+  retries: isCI ? 0 : 1, // retry for locally run tests
   forbidOnly: isCI,
   timeout: 10 * 1000,
   preserveOutput: 'failures-only',
