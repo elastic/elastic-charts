@@ -300,8 +300,10 @@ export class CommonPage {
       const { x, y } = getCursorPosition(mousePosition, element);
 
       if (options?.delay) {
-        // need to skip await to resolve early and capture delay
-        void page.mouse.click(x, y, options);
+        // TODO: revisit this - see https://github.com/microsoft/playwright/issues/28956
+        // Here we need to avoid using `page.mouse.click` because it will wait for the delay to expire before resolving
+        await page.mouse.move(x, y);
+        await page.mouse.down();
       } else {
         await page.mouse.click(x, y, options);
       }
