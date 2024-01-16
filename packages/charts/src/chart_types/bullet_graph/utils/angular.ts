@@ -35,7 +35,7 @@ export function getAnglesBySize(subtype: BulletGraphSubtype): [startAngle: numbe
   if (subtype === BulletGraphSubtype.vertical || subtype === BulletGraphSubtype.horizontal) {
     throw new Error('Attempting to retrieve angle size from horizontal/vertical bullet');
   }
-  const angles = sizeAngles[subtype] ?? sizeAngles[BulletGraphSubtype.twoThirdsCircle]!;
+  const angles = sizeAngles[subtype] ?? sizeAngles[BulletGraphSubtype.twoThirdsCircle];
   // Negative angles used to match current radian pattern
   const startAngle = -angles.startAngle;
   // limit endAngle to startAngle +/- 2π
