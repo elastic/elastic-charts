@@ -15,6 +15,7 @@ import {
   getNumbersArrayKnob,
 } from './custom';
 import { enumKnobs } from './enums';
+import { euiKnobs } from './eui';
 import { specialEnumKnobs } from './special_enums';
 import { getKnobFromEnum } from './utils';
 
@@ -23,6 +24,7 @@ export const customKnobs = {
     ...enumKnobs,
     ...specialEnumKnobs,
   },
+  eui: euiKnobs,
   fromEnum: getKnobFromEnum,
   array: getArrayKnob,
   numbersArray: getNumbersArrayKnob,

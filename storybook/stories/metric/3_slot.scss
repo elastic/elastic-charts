@@ -1,0 +1,17 @@
+.myCustomMetricSlot {
+  display: flex;
+  height: 100%;
+
+  .euiBadge {
+    padding-inline: 8px;
+  }
+
+  &.showSlotArea {
+    background: repeating-linear-gradient(45deg,
+      #cd252588,
+      #cd252588 10px,
+      #fff0 10px,
+      #fff0 20px);
+  }
+}
+

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps, ComponentType, ReactElement } from 'react';
+import { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
@@ -92,6 +92,7 @@ export interface MetricSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Metric;
   data: (MetricDatum | undefined)[][];
+  slot?: ReactNode;
 }
 
 /** @alpha */

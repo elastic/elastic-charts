@@ -147,6 +147,7 @@ class Component extends React.Component<StateProps & DispatchProps> {
                     columnIndex={columnIndex}
                     panel={panel}
                     style={style}
+                    slot={spec.slot}
                     backgroundColor={backgroundColor}
                     contrastOptions={contrastOptions}
                     onElementClick={onElementClick}
