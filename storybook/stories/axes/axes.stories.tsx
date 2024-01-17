@@ -14,7 +14,7 @@ export { Example as basic } from './1_basic.story';
 export { Example as tickLabelRotation } from './2_tick_label_rotation.story';
 export { Example as with4Axes } from './3_axis_4_axes.story';
 export { Example as multiAxes } from './4_multi_axis.story';
-export { Example as showOnlyIntegers } from './15_integers_only.story';
+export { Example as showOnlyIntegers } from './15_maximum_fraction_digits.story';
 export { Example as barsAndLines } from './5_multi_axis_bar_lines.story';
 export { Example as differentTooltip } from './6_different_tooltip.story';
 export { Example as differentTooltipFormatter } from './6a_different_tooltip_formatter.story';

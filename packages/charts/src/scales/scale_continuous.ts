@@ -26,7 +26,7 @@ import { LogScaleOptions } from './types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
-import { clamp, isDefined, isFiniteNumber, mergePartial } from '../utils/common';
+import { clamp, isDefined, isFiniteNumber, mergePartial, round } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
 import { ContinuousDomain, Range } from '../utils/domain';
 
@@ -56,7 +56,7 @@ const defaultScaleOptions: ScaleOptions = {
   domainPixelPadding: 0,
   desiredTickCount: 10,
   isSingleValueHistogram: false,
-  integersOnly: false,
+  maximumFractionDigits: undefined,
   logBase: 10,
   logMinLimit: NaN, // NaN preserves the replaced `undefined` semantics
   linearBase: 10,
@@ -174,7 +174,11 @@ export class ScaleContinuous {
                 scaleOptions.bandwidth === 0 ? 0 : scaleOptions.minInterval,
               )
             : (d3Scale as D3ScaleNonTime).ticks(scaleOptions.desiredTickCount)
-          ).filter(scaleOptions.integersOnly ? Number.isInteger : () => true);
+          ).filter(
+            scaleOptions.maximumFractionDigits === undefined
+              ? () => true
+              : (n) => round(n, scaleOptions.maximumFractionDigits) === n,
+          );
 
     this.domain = nicePaddedDomain;
     // Returning NaN means that the value is projectable/invertible within the domain or range
@@ -451,9 +455,9 @@ type ScaleOptions = Required<LogScaleOptions, 'logBase'> & {
    */
   isSingleValueHistogram: boolean;
   /**
-   * Show only integer values
+   * Max fractional digit to limit precision of number ticks
    */
-  integersOnly: boolean;
+  maximumFractionDigits?: number;
   /**
    * As log(0) = -Infinite, a log scale domain must be strictly-positive
    * or strictly-negative; the domain must not include or cross zero value.
