@@ -49,7 +49,7 @@ import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec
 import { getTooltipSelectedItems } from '../../state/selectors/get_tooltip_selected_items';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
-import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
+import { Datum, hasMostlyRTLItems, isDefined, mergePartial, Rotation } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
@@ -329,17 +329,19 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
 
 TooltipComponent.displayName = 'Tooltip';
 
+const tooltipSettings = {};
+
 function getTooltipSettings(
   tooltip: TooltipSpec,
   { externalPointerEvents }: SettingsSpec,
   isExternalTooltipVisible: boolean,
 ): TooltipProps {
   if (!isExternalTooltipVisible) return tooltip;
-
-  return {
-    ...tooltip,
-    ...externalPointerEvents.tooltip,
-  };
+  return Object.assign(
+    tooltipSettings,
+    // @ts-ignore - nesting limitation
+    mergePartial(tooltip, externalPointerEvents.tooltip),
+  );
 }
 
 const HIDDEN_TOOLTIP_PROPS: TooltipStateProps = {

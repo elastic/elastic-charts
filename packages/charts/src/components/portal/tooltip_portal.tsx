@@ -109,11 +109,11 @@ const TooltipPortalComponent = ({
    * Popper instance used to manage position of tooltip.
    */
   const popper = useRef<Instance | null>(null);
-  const popperSettings = useMemo(
+  const popperSettings = useMemo(() => {
     // @ts-ignore - nesting limitation
-    () => mergePartial(DEFAULT_POPPER_SETTINGS, settings),
-    [settings],
-  );
+    return mergePartial(DEFAULT_POPPER_SETTINGS, settings);
+  }, [settings]);
+
   const destroyPopper = useCallback(() => {
     if (popper.current) {
       popper.current.destroy();
