@@ -1,3 +1,17 @@
+# [62.0.0](https://github.com/elastic/elastic-charts/compare/v61.2.0...v62.0.0) (2024-01-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^91.3.1 ([#2286](https://github.com/elastic/elastic-charts/issues/2286)) ([d4d7b5d](https://github.com/elastic/elastic-charts/commit/d4d7b5db6681ec0c65ef8b7e576f1b5fc8b5433a))
+* **deps:** update dependency @elastic/eui to v92 ([#2290](https://github.com/elastic/elastic-charts/issues/2290)) ([cc537fa](https://github.com/elastic/elastic-charts/commit/cc537faf43d88acc9abab7e0dac9360bd460b574))
+* **legend:** improve last value handling ([#2115](https://github.com/elastic/elastic-charts/issues/2115)) ([9f99447](https://github.com/elastic/elastic-charts/commit/9f9944734c4a13bfe9e4ffc9f4c0f39da5f9931f))
+
+
+### BREAKING CHANGES
+
+* **legend:** In cartesian charts, the default legend value now represents the data points that coincide with the latest datum in the X domain. Please consider passing every data point, even the empty ones (like empty buckets/bins/etc) if your x data domain doesn't fully cover a custom x domain passed to the chart configuration.
+
 # [61.2.0](https://github.com/elastic/elastic-charts/compare/v61.1.0...v61.2.0) (2023-12-19)
 
 
