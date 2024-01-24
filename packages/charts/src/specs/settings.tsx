@@ -390,7 +390,7 @@ export interface CustomLegendProps {
     label: CategoryLabel;
     seriesType?: SeriesType;
     pointStyle?: PointStyle;
-    extraValue?: PrimitiveValue;
+    extraValue?: { raw: PrimitiveValue; formatted: string };
     isSeriesHidden?: boolean;
     onItemOverActon: () => void;
     onItemOutAction: () => void;

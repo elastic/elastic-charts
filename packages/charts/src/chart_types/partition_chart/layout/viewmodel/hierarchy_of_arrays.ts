@@ -117,8 +117,8 @@ export function getExtraValueMap(
     const [key, arrayNode] = branch;
     const { value, path, [CHILDREN_KEY]: children } = arrayNode;
     const values: LegendItemExtraValues = new Map();
-    const formattedValue = valueFormatter ? valueFormatter(value) : value;
-    values.set(key, formattedValue);
+    const formattedValue = valueFormatter ? valueFormatter(value) : `${value}`;
+    values.set(key, { formatted: formattedValue, raw: value });
     keys.set(path.map(({ index }) => index).join('__'), values);
     if (depth < maxDepth) getExtraValueMap(layers, valueFormatter, children, maxDepth, depth + 1, keys);
   }
