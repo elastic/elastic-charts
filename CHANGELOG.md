@@ -1,3 +1,15 @@
+# [63.0.0](https://github.com/elastic/elastic-charts/compare/v62.0.0...v63.0.0) (2024-01-24)
+
+
+### Features
+
+* **legend:** expose extra raw values ([#2308](https://github.com/elastic/elastic-charts/issues/2308)) ([85bfe06](https://github.com/elastic/elastic-charts/commit/85bfe0668d66fd24e78f2bba8be4570fa926e94c))
+
+
+### BREAKING CHANGES
+
+* **legend:** The `CustomLegend.item` now exposes both the `raw` and the `formatted` version of the extra value.
+
 # [62.0.0](https://github.com/elastic/elastic-charts/compare/v61.2.0...v62.0.0) (2024-01-23)
 
 
