@@ -103,7 +103,7 @@ const TooltipPortalComponent = ({
    */
   useEffect(() => {
     document.body.appendChild(portalNode);
-  });
+  }, [portalNode]);
 
   /**
    * Popper instance used to manage position of tooltip.
