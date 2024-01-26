@@ -236,7 +236,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "groupId" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "integersOnly" | "tickFormat" | "gridLine" | "ticks" | "labelFormat" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "groupId" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "tickFormat" | "gridLine" | "ticks" | "integersOnly" | "labelFormat" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -253,8 +253,10 @@ export interface AxisSpec extends Spec {
     groupId: GroupId;
     hide: boolean;
     id: AxisId;
+    // @deprecated
     integersOnly?: boolean;
     labelFormat?: TickFormatter;
+    maximumFractionDigits?: number;
     position: Position;
     showDuplicatedTicks?: boolean;
     showOverlappingLabels: boolean;

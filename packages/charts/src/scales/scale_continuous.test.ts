@@ -93,9 +93,23 @@ describe('Scale Continuous', () => {
     for (const scaleType of [ScaleType.Linear, ScaleType.Log, ScaleType.Sqrt]) {
       const scaleInstance = new ScaleContinuous(
         { type: scaleType, domain, range },
-        { integersOnly: true, desiredTickCount: 10 },
+        { maximumFractionDigits: 0, desiredTickCount: 10 },
       );
       expect(scaleInstance.ticks()).toEqual(scaleType === ScaleType.Log ? [1, 2] : [0, 1, 2]);
+    }
+  });
+
+  test('get filtered ticks when maximumFractionDigits: 1', () => {
+    const domain: ContinuousDomain = [0, 0.4];
+    const range: Range = [0, 0.4];
+    for (const scaleType of [ScaleType.Linear, ScaleType.Log, ScaleType.Sqrt]) {
+      const scaleInstance = new ScaleContinuous(
+        { type: scaleType, domain, range },
+        { maximumFractionDigits: 1, desiredTickCount: 10 },
+      );
+      expect(scaleInstance.ticks()).toEqual(
+        scaleType === ScaleType.Log ? [1, 0.9, 0.8, 0.5, 0.4] : [0, 0.1, 0.2, 0.3, 0.4],
+      );
     }
   });
 
@@ -219,7 +233,7 @@ describe('Scale Continuous', () => {
           domain: [0, 2],
           range: [0, 3],
         },
-        { integersOnly: true, desiredTickCount: 10 },
+        { maximumFractionDigits: 0, desiredTickCount: 10 },
       );
       expect(scale.ticks()).toEqual([0, 1, 2]);
     });
@@ -231,7 +245,7 @@ describe('Scale Continuous', () => {
     function getTicksForDomain(domainStart: number, domainEnd: number) {
       const scale = new ScaleContinuous(
         { type: ScaleType.Time, domain: [domainStart, domainEnd], range: [0, 100] },
-        { bandwidth: 0, minInterval: 0, timeZone: Settings.defaultZoneName, integersOnly: false },
+        { bandwidth: 0, minInterval: 0, timeZone: Settings.defaultZoneName },
       );
       return scale.tickValues;
     }

@@ -107,7 +107,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           ...(toggleBottomAxisGridLineStyle && bottomAxisGridLineStyle),
           visible: boolean('show bottom axis grid lines', false, 'bottom axis'),
         }}
-        integersOnly={boolean('bottom axis show only integer values', false, 'bottom axis')}
+        maximumFractionDigits={boolean('bottom axis show only integer values', false, 'bottom axis') ? 0 : undefined}
       />
       <Axis
         id="left1"
@@ -118,7 +118,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           ...(toggleHorizontalAxisGridLineStyle && leftAxisGridLineStyle),
           visible: boolean('show left axis grid lines', false, 'left axis'),
         }}
-        integersOnly={integersOnlyLeft}
+        maximumFractionDigits={integersOnlyLeft ? 0 : undefined}
       />
       <Axis
         id="top"
@@ -129,7 +129,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           ...topAxisGridLineStyle,
           visible: boolean('show top axis grid lines', false, 'top axis'),
         }}
-        integersOnly={boolean('top axis show only integer values', false, 'top axis')}
+        maximumFractionDigits={boolean('top axis show only integer values', false, 'top axis') ? 0 : undefined}
       />
       <Axis
         id="right"
@@ -140,7 +140,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           ...rightAxisGridLineStyle,
           visible: boolean('show right axis grid lines', false, 'right axis'),
         }}
-        integersOnly={integersOnlyRight}
+        maximumFractionDigits={integersOnlyRight ? 0 : undefined}
       />
       <BarSeries
         id="bars"

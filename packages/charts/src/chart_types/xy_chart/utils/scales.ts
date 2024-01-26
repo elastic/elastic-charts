@@ -34,7 +34,7 @@ interface XScaleOptions {
   range: Range;
   barsPadding?: number;
   enableHistogramMode?: boolean;
-  integersOnly?: boolean;
+  maximumFractionDigits?: number;
   logBase?: number;
   logMinLimit?: number;
 }
@@ -44,7 +44,7 @@ interface XScaleOptions {
  * @internal
  */
 export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuous {
-  const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly } = options;
+  const { xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, maximumFractionDigits } = options;
   const { type, nice, minInterval, domain, isBandScale, timeZone, logBase, desiredTickCount } = xDomain;
   const rangeDiff = Math.abs(range[1] - range[0]);
   const isInverse = range[1] < range[0];
@@ -89,7 +89,7 @@ export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuo
         totalBarsInCluster,
         barsPadding,
         desiredTickCount,
-        integersOnly,
+        maximumFractionDigits,
         logBase,
       },
     );
@@ -99,7 +99,7 @@ export function computeXScale(options: XScaleOptions): ScaleBand | ScaleContinuo
 interface YScaleOptions {
   yDomains: YDomain[];
   range: Range;
-  integersOnly?: boolean;
+  maximumFractionDigits?: number;
 }
 
 /**
@@ -107,7 +107,7 @@ interface YScaleOptions {
  * @internal
  */
 export function computeYScales(options: YScaleOptions): Map<GroupId, ScaleContinuous> {
-  const { yDomains, range, integersOnly } = options;
+  const { yDomains, range, maximumFractionDigits } = options;
   return yDomains.reduce(
     (
       yScales,
@@ -127,7 +127,7 @@ export function computeYScales(options: YScaleOptions): Map<GroupId, ScaleContin
         { type, domain, range, nice },
         {
           desiredTickCount,
-          integersOnly,
+          maximumFractionDigits,
           logBase,
           logMinLimit,
           domainPixelPadding,
