@@ -30,7 +30,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         domain={{ min: NaN, max: NaN, fit, logMinLimit }}
         tickFormat={logFormatter(10)}
       />
-      <Axis id="x" position={Position.Bottom} integersOnly />
+      <Axis id="x" position={Position.Bottom} maximumFractionDigits={0} />
       <AreaSeries
         id="bars"
         name="amount"

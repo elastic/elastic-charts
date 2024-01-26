@@ -67,7 +67,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings showLegend baseTheme={useBaseTheme()} />
       <Axis id="count" position={Position.Left} />
-      <Axis id="time" position={Position.Bottom} integersOnly />
+      <Axis id="time" position={Position.Bottom} maximumFractionDigits={0} />
       <BarSeries
         id="bars"
         xAccessor="x"

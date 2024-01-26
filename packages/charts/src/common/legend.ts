@@ -43,4 +43,4 @@ export type LegendItem = {
 };
 
 /** @internal */
-export type LegendItemExtraValues = Map<LegendItemChildId, PrimitiveValue>;
+export type LegendItemExtraValues = Map<LegendItemChildId, { raw: PrimitiveValue; formatted: string }>;

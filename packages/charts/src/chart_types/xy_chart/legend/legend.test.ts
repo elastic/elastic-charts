@@ -22,11 +22,7 @@ import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_
 import { getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesType } from '../utils/specs';
 
-const nullDisplayValue = {
-  raw: null,
-  formatted: '',
-  legendSizingLabel: '',
-};
+const nullDisplayValue = undefined;
 
 const spec1: BasicSeriesSpec = {
   chartType: ChartType.XYAxis,

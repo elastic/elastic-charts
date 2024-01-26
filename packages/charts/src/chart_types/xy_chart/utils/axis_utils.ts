@@ -88,12 +88,21 @@ export function getScaleForAxisSpec(
   enableHistogramMode?: boolean,
 ) {
   return (
-    { groupId, integersOnly, position }: Pick<AxisSpec, 'groupId' | 'integersOnly' | 'position'>,
+    {
+      groupId,
+      integersOnly,
+      maximumFractionDigits: mfd,
+      position,
+    }: Pick<AxisSpec, 'groupId' | 'integersOnly' | 'maximumFractionDigits' | 'position'>,
     range: Range,
-  ): ScaleContinuous | ScaleBand | null =>
-    isXDomain(position, chartRotation)
-      ? computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, integersOnly })
-      : computeYScales({ yDomains, range, integersOnly }).get(groupId) ?? null;
+  ): ScaleContinuous | ScaleBand | null => {
+    // TODO: remove this fallback when integersOnly is removed
+    const maximumFractionDigits = mfd ?? (integersOnly ? 0 : undefined);
+
+    return isXDomain(position, chartRotation)
+      ? computeXScale({ xDomain, totalBarsInCluster, range, barsPadding, enableHistogramMode, maximumFractionDigits })
+      : computeYScales({ yDomains, range, maximumFractionDigits }).get(groupId) ?? null;
+  };
 }
 
 /** @internal */
