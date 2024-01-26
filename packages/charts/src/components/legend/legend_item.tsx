@@ -190,7 +190,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     });
     const hasColorPicker = Boolean(colorPicker);
-    const extra = showExtra && getExtra(extraValues, item, totalItems);
+    const extra = showExtra ? getExtra(extraValues, item, totalItems) : null;
     const style: CSSProperties = flatLegend
       ? {}
       : {
@@ -225,7 +225,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             onToggle={this.onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
-          {extra && !isSeriesHidden && renderExtra(extra)}
+          {extra && !isSeriesHidden && renderExtra(extra.formatted)}
           {Action && (
             <div className="echLegendItem__action">
               <Action series={seriesIdentifiers} color={color} label={label} />

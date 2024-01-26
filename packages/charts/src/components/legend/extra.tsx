@@ -13,7 +13,7 @@ import React from 'react';
  * @param extra
  * @param isSeriesHidden
  */
-export function renderExtra(extra: string | number) {
+export function renderExtra(extra: string) {
   return (
     <div className="echLegendItem__extra" title={`${extra}`}>
       {extra}

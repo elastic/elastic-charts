@@ -23,26 +23,13 @@ export const Y0_ACCESSOR_POSTFIX = ' - lower';
 export const Y1_ACCESSOR_POSTFIX = ' - upper';
 
 /** @internal */
-export function getLegendItemExtraValues(
-  tooltipValues: TooltipValue[],
-  defaultValue?: string,
-): Map<SeriesKey, LegendItemExtraValues> {
+export function getLegendItemExtraValues(tooltipValues: TooltipValue[]): Map<SeriesKey, LegendItemExtraValues> {
   const seriesTooltipValues = new Map<SeriesKey, LegendItemExtraValues>();
 
-  tooltipValues.forEach(({ formattedValue, seriesIdentifier, valueAccessor }) => {
-    const seriesValue = defaultValue || formattedValue;
+  tooltipValues.forEach(({ formattedValue, value, seriesIdentifier, valueAccessor }) => {
     const current: LegendItemExtraValues = seriesTooltipValues.get(seriesIdentifier.key) ?? new Map();
-    if (defaultValue) {
-      if (!current.has(BandedAccessorType.Y0)) {
-        current.set(BandedAccessorType.Y0, defaultValue);
-      }
-      if (!current.has(BandedAccessorType.Y1)) {
-        current.set(BandedAccessorType.Y1, defaultValue);
-      }
-    }
-
     if (valueAccessor === BandedAccessorType.Y0 || valueAccessor === BandedAccessorType.Y1) {
-      current.set(valueAccessor, seriesValue);
+      current.set(valueAccessor, { formatted: formattedValue, raw: value });
     }
     seriesTooltipValues.set(seriesIdentifier.key, current);
   });
