@@ -27,7 +27,7 @@ import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-import './3_slot.scss';
+import './3_body.scss';
 
 export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const title = text('title', 'SLO: Frontend Latency');

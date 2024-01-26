@@ -1952,7 +1952,7 @@ export function mergeWithDefaultAnnotationLine(config?: RecursivePartial<LineAnn
 export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle;
 
 // @alpha (undocumented)
-export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", "slot", "id">>;
+export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", "body", "id">>;
 
 // @alpha (undocumented)
 export type MetricBase = {
@@ -1988,11 +1988,11 @@ export type MetricElementEvent = {
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
     // (undocumented)
+    body?: ReactNode;
+    // (undocumented)
     chartType: typeof ChartType.Metric;
     // (undocumented)
     data: (MetricDatum | undefined)[][];
-    // (undocumented)
-    slot?: ReactNode;
     // (undocumented)
     specType: typeof SpecType.Series;
 }
