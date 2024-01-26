@@ -16,7 +16,7 @@ import { isBetween, isFiniteNumber, roundTo, sortNumbers } from '../../../utils/
 import { ContinuousDomain, Range } from '../../../utils/domain';
 import { Point } from '../../../utils/point';
 import { BULLET_SIZE, HOVER_SLOP, TARGET_SIZE } from '../renderer/canvas/constants';
-import { BulletGraphSpec, BulletGraphSubtype } from '../spec';
+import { BulletSpec, BulletSubtype } from '../spec';
 import { GRAPH_PADDING } from '../theme';
 import { getAngledChartSizing } from '../utils/angular';
 
@@ -65,16 +65,16 @@ export const getActiveValue = createCustomCachedSelector(
 function getPanelValue(
   panel: BulletPanelDimensions,
   pointer: Point,
-  spec: BulletGraphSpec,
+  spec: BulletSpec,
 ): Pick<ActiveValueDetails, 'value' | 'snapValue' | 'color' | 'pixelValue'> | undefined {
   const { graphArea, scale } = panel;
   const [min, max] = sortNumbers(scale.domain()) as ContinuousDomain;
   const isWithinDomain = isBetween(min, max);
 
   switch (spec.subtype) {
-    case BulletGraphSubtype.circle:
-    case BulletGraphSubtype.halfCircle:
-    case BulletGraphSubtype.twoThirdsCircle: {
+    case BulletSubtype.circle:
+    case BulletSubtype.halfCircle:
+    case BulletSubtype.twoThirdsCircle: {
       const { radius } = getAngledChartSizing(graphArea.size, spec.subtype);
       const center = {
         x: graphArea.center.x,
@@ -111,7 +111,7 @@ function getPanelValue(
       break;
     }
 
-    case BulletGraphSubtype.horizontal: {
+    case BulletSubtype.horizontal: {
       const yCenterOffset = Math.abs(pointer.y - graphArea.origin.y - TARGET_SIZE / 2);
 
       if (yCenterOffset > TARGET_SIZE / 2 + HOVER_SLOP) return;
@@ -136,7 +136,7 @@ function getPanelValue(
       break;
     }
 
-    case BulletGraphSubtype.vertical: {
+    case BulletSubtype.vertical: {
       const xCenterOffset = Math.abs(pointer.x - graphArea.center.x - GRAPH_PADDING.left);
 
       if (xCenterOffset > TARGET_SIZE / 2 + HOVER_SLOP) return;

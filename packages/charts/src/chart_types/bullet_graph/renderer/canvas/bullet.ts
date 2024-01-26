@@ -15,9 +15,9 @@ import { A11ySettings } from '../../../../state/selectors/get_accessibility_conf
 import { renderDebugPoint, renderDebugRect } from '../../../xy_chart/renderer/canvas/utils/debug';
 import { ActiveValue } from '../../selectors/get_active_values';
 import { BulletDimensions } from '../../selectors/get_panel_dimensions';
-import { BulletGraphSpec, BulletGraphSubtype } from '../../spec';
+import { BulletSpec, BulletSubtype } from '../../spec';
 import {
-  BulletGraphStyle,
+  BulletStyle,
   FONT_PADDING,
   HEADER_PADDING,
   SUBTITLE_FONT,
@@ -34,16 +34,16 @@ import {
 } from '../../theme';
 
 /** @internal */
-export function renderBulletGraph(
+export function renderBullet(
   ctx: CanvasRenderingContext2D,
   dpr: Ratio,
   props: {
     debug: boolean;
-    spec?: BulletGraphSpec;
+    spec?: BulletSpec;
     a11y: A11ySettings;
     dimensions: BulletDimensions;
     activeValues: (ActiveValue | null)[][];
-    style: BulletGraphStyle;
+    style: BulletStyle;
     backgroundColor: Color;
   },
 ) {
@@ -154,7 +154,7 @@ export function renderBulletGraph(
 
           const { graphArea } = bulletGraph;
 
-          if (spec.subtype !== BulletGraphSubtype.horizontal) {
+          if (spec.subtype !== BulletSubtype.horizontal) {
             ctx.strokeStyle = style.border;
             ctx.beginPath();
             ctx.moveTo(HEADER_PADDING.left, graphArea.origin.y);
@@ -165,9 +165,9 @@ export function renderBulletGraph(
           withContext(ctx, (ctx) => {
             ctx.translate(graphArea.origin.x, graphArea.origin.y);
 
-            if (spec.subtype === BulletGraphSubtype.horizontal) {
+            if (spec.subtype === BulletSubtype.horizontal) {
               horizontalBullet(ctx, bulletGraph, style, backgroundColor, activeValue);
-            } else if (spec.subtype === BulletGraphSubtype.vertical) {
+            } else if (spec.subtype === BulletSubtype.vertical) {
               verticalBullet(ctx, bulletGraph, style, backgroundColor, activeValue);
             } else {
               angularBullet(ctx, bulletGraph, style, backgroundColor, spec, debug, activeValue);

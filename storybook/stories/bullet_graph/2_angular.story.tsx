@@ -10,7 +10,7 @@ import { text, number, boolean } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
+import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -26,7 +26,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const end = number('end', 100, { range: true, min: -200, max: 200 });
   const tickSnapStep = number('active tick step', 0, { min: 0, max: 10 });
   const angularTickLabelPadding = number('tick label padding', 10, { range: true, min: 0, max: 50 });
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.twoThirdsCircle, {
+  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.twoThirdsCircle, {
     exclude: ['vertical', 'horizontal'],
   });
   const format = text('format', '0');
@@ -43,7 +43,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={useBaseTheme()}
         debug={debug}
       />
-      <BulletGraph
+      <Bullet
         id="bubbles"
         subtype={subtype}
         tickSnapStep={tickSnapStep}

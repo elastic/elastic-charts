@@ -48,5 +48,5 @@ export {
   MetricDatum,
 } from './metric/specs';
 
-export { BulletGraph, BulletGraphSpec, BulletDatum, BulletGraphSubtype, BulletValueLabels } from './bullet_graph/spec';
-export { BulletGraphStyle } from './bullet_graph/theme';
+export { Bullet, BulletProps, BulletSpec, BulletDatum, BulletSubtype, BulletValueLabels } from './bullet_graph/spec';
+export { BulletStyle } from './bullet_graph/theme';

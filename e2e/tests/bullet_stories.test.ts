@@ -11,7 +11,7 @@ import { test } from '@playwright/test';
 import { pwEach } from '../helpers';
 import { common } from '../page_objects/common';
 
-export const BulletGraphSubtype = ['vertical', 'horizontal', 'circle', 'half-circle', 'two-thirds-circle'];
+export const BulletSubtype = ['vertical', 'horizontal', 'circle', 'half-circle', 'two-thirds-circle'];
 const testCases: [string, { start: number; end: number; value: number; target: number }][] = [
   ['positive values', { start: 4, end: 167, value: 50, target: 100 }],
   ['positive values - reversed', { start: 167, end: 4, value: 50, target: 100 }],
@@ -44,7 +44,7 @@ test.describe('Bullet stories', () => {
     await common.expectChartAtUrlToMatchScreenshot(page)('http://localhost:9001/?path=/story/bullet-graph--grid');
   });
 
-  pwEach.describe(BulletGraphSubtype)(
+  pwEach.describe(BulletSubtype)(
     (subtype) => `subtype - ${subtype}`,
     (subtype) => {
       test('should render in dark theme', async ({ page }) => {

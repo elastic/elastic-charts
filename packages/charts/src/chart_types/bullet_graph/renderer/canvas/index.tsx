@@ -14,7 +14,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { renderBulletGraph } from './bullet_graph';
+import { renderBullet } from './bullet';
 import { ColorContrastOptions } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color, Colors } from '../../../../common/colors';
@@ -42,8 +42,8 @@ import { getBulletSpec } from '../../selectors/get_bullet_spec';
 import { getChartSize } from '../../selectors/get_chart_size';
 import { BulletDimensions, getPanelDimensions } from '../../selectors/get_panel_dimensions';
 import { hasChartTitles } from '../../selectors/has_chart_titles';
-import { BulletDatum, BulletGraphSpec, BulletGraphSubtype, mergeValueLabels } from '../../spec';
-import { BulletGraphStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
+import { BulletDatum, BulletSpec, BulletSubtype, mergeValueLabels } from '../../spec';
+import { BulletStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
 import { BulletColorConfig } from '../../utils/color';
 
 interface StateProps {
@@ -51,12 +51,12 @@ interface StateProps {
   debug: boolean;
   chartId: string;
   hasTitles: boolean;
-  spec?: BulletGraphSpec;
+  spec?: BulletSpec;
   a11y: A11ySettings;
   size: Size;
   dimensions: BulletDimensions;
   activeValues: (ActiveValue | null)[][];
-  style: BulletGraphStyle;
+  style: BulletStyle;
   backgroundColor: Color;
   locale: string;
   pointerPosition?: Point;
@@ -76,7 +76,7 @@ interface OwnProps {
 type Props = DispatchProps & StateProps & OwnProps;
 
 class Component extends React.Component<Props> {
-  static displayName = 'BulletGraph';
+  static displayName = 'Bullet';
   private ctx: CanvasRenderingContext2D | null;
   private readonly devicePixelRatio: number;
 
@@ -115,7 +115,7 @@ class Component extends React.Component<Props> {
 
   private drawCanvas() {
     if (this.ctx) {
-      renderBulletGraph(this.ctx, this.devicePixelRatio, this.props);
+      renderBullet(this.ctx, this.devicePixelRatio, this.props);
     }
   }
 
@@ -173,7 +173,7 @@ class Component extends React.Component<Props> {
                   valueFormatter: datum.valueFormatter,
                   targetFormatter: datum.targetFormatter,
                   color: style.barBackground,
-                  progressBarDirection: spec.subtype === BulletGraphSubtype.vertical ? 'vertical' : 'horizontal',
+                  progressBarDirection: spec.subtype === BulletSubtype.vertical ? 'vertical' : 'horizontal',
                   title: datum.title,
                   subtitle: datum.subtitle,
                   domain: datum.domain,
@@ -287,4 +287,4 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
 };
 
 /** @internal */
-export const BulletGraphRenderer = connect(mapStateToProps, mapDispatchToProps)(Component);
+export const BulletRenderer = connect(mapStateToProps, mapDispatchToProps)(Component);

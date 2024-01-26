@@ -476,12 +476,12 @@ export interface BulletDatum {
 // Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
 //
 // @alpha
-export const BulletGraph: (props: SFProps<BulletGraphSpec, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
+export const Bullet: (props: SFProps<BulletSpec, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
 
 // @alpha (undocumented)
-export interface BulletGraphSpec extends Spec {
+export interface BulletSpec extends Spec {
     // (undocumented)
-    chartType: typeof ChartType.BulletGraph;
+    chartType: typeof ChartType.Bullet;
     // (undocumented)
     colorBands?: BulletColorConfig;
     // (undocumented)
@@ -489,7 +489,7 @@ export interface BulletGraphSpec extends Spec {
     // (undocumented)
     specType: typeof SpecType.Series;
     // (undocumented)
-    subtype: BulletGraphSubtype;
+    subtype: BulletSubtype;
     // (undocumented)
     tickSnapStep?: number;
     // (undocumented)
@@ -497,7 +497,7 @@ export interface BulletGraphSpec extends Spec {
 }
 
 // @public (undocumented)
-export interface BulletGraphStyle {
+export interface BulletStyle {
     // (undocumented)
     angularTickLabelPadding: Pixels;
     // (undocumented)
@@ -516,7 +516,7 @@ export interface BulletGraphStyle {
 }
 
 // @public (undocumented)
-export const BulletGraphSubtype: Readonly<{
+export const BulletSubtype: Readonly<{
     vertical: "vertical";
     horizontal: "horizontal";
     circle: "circle";
@@ -525,7 +525,7 @@ export const BulletGraphSubtype: Readonly<{
 }>;
 
 // @public (undocumented)
-export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
+export type BulletSubtype = $Values<typeof BulletSubtype>;
 
 // @public (undocumented)
 export interface BulletValueLabels {
@@ -665,7 +665,7 @@ export const ChartType: Readonly<{
     Heatmap: "heatmap";
     Wordcloud: "wordcloud";
     Metric: "metric";
-    BulletGraph: "bullet_graph";
+    Bullet: "bullet_graph";
 }>;
 
 // @public (undocumented)
@@ -2933,7 +2933,7 @@ export interface Theme {
     background: BackgroundStyle;
     barSeriesStyle: BarSeriesStyle;
     bubbleSeriesStyle: BubbleSeriesStyle;
-    bulletGraph: BulletGraphStyle;
+    bulletGraph: BulletStyle;
     chartMargins: Margins;
     chartPaddings: Margins;
     // (undocumented)

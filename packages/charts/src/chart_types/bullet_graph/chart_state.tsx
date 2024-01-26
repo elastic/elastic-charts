@@ -8,7 +8,7 @@
 
 import React, { RefObject } from 'react';
 
-import { BulletGraphRenderer } from './renderer/canvas';
+import { BulletRenderer } from './renderer/canvas';
 import { canDisplayChartTitles } from './selectors/can_display_chart_titles';
 import { getTooltipAnchor } from './selectors/get_tooltip_anchor';
 import { getTooltipInfo } from './selectors/get_tooltip_info';
@@ -26,12 +26,12 @@ const EMPTY_LEGEND_LIST: LegendItem[] = [];
 const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /** @internal */
-export class BulletGraphState implements InternalChartState {
-  chartType = ChartType.BulletGraph;
+export class BulletState implements InternalChartState {
+  chartType = ChartType.Bullet;
   getChartTypeDescription = () => 'Bullet Graph';
   chartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
     <>
-      <BulletGraphRenderer forwardStageRef={forwardStageRef} />
+      <BulletRenderer forwardStageRef={forwardStageRef} />
       <Tooltip getChartContainerRef={containerRef} />
     </>
   );

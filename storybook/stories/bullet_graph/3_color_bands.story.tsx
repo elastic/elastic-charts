@@ -25,8 +25,8 @@ import React, { useCallback } from 'react';
 
 import {
   Chart,
-  BulletGraph,
-  BulletGraphSubtype,
+  Bullet,
+  BulletSubtype,
   Settings,
   BulletColorConfig,
   ColorBandSimpleConfig,
@@ -150,14 +150,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   // Other
   const debug = boolean('debug', false);
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
+  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal);
 
   const formatter = (d: number) => numeral(d).format('0.[0]');
 
   return (
     <Chart title={title} description={description}>
       <Settings debug={debug} baseTheme={useBaseTheme()} />
-      <BulletGraph
+      <Bullet
         id="bullet"
         subtype={subtype}
         colorBands={colorOptions[colorOptionIndex] as BulletColorConfig}
