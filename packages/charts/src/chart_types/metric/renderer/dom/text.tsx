@@ -167,12 +167,12 @@ export const MetricText: React.FunctionComponent<{
   datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
-  slot?: MetricSpec['slot'];
+  body?: MetricSpec['body'];
   onElementClick?: () => void;
   highContrastTextColor: Color;
   progressBarSize: 'small';
   locale: string;
-}> = ({ id, datum, panel, style, slot, onElementClick, highContrastTextColor, progressBarSize, locale }) => {
+}> = ({ id, datum, panel, style, body, onElementClick, highContrastTextColor, progressBarSize, locale }) => {
   const { extra, value } = datum;
 
   const size = findRange(WIDTH_BP, panel.width);
@@ -255,7 +255,7 @@ export const MetricText: React.FunctionComponent<{
           </p>
         )}
       </div>
-      <div className="echMetricText__gap">{slot && <div className="echMetricText__slot">{slot}</div>}</div>
+      <div className="echMetricText__gap">{body && <div className="echMetricText__body">{body}</div>}</div>
       <div>
         {visibility.extra && (
           <p className="echMetricText__extra" style={{ fontSize: `${EXTRA_FONT_SIZE[size]}px` }}>

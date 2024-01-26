@@ -92,7 +92,7 @@ export interface MetricSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Metric;
   data: (MetricDatum | undefined)[][];
-  slot?: ReactNode;
+  body?: ReactNode;
 }
 
 /** @alpha */

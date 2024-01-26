@@ -12,4 +12,4 @@ export default {
 
 export { Example as basic } from './1_basic.story';
 export { Example as grid } from './2_grid.story';
-export { Example as slot } from './3_slot.story';
+export { Example as bodyContent } from './3_body.story';

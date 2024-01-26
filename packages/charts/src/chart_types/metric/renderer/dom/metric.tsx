@@ -40,7 +40,7 @@ export const Metric: React.FunctionComponent<{
   datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
-  slot?: MetricSpec['slot'];
+  body?: MetricSpec['body'];
   backgroundColor: Color;
   contrastOptions: ColorContrastOptions;
   locale: string;
@@ -57,7 +57,7 @@ export const Metric: React.FunctionComponent<{
   datum,
   panel,
   style,
-  slot,
+  body,
   backgroundColor: chartBackgroundColor,
   contrastOptions,
   locale,
@@ -173,7 +173,7 @@ export const Metric: React.FunctionComponent<{
         datum={datumWithInteractionColor}
         panel={panel}
         style={style}
-        slot={slot}
+        body={body}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
         progressBarSize={progressBarSize}
         highContrastTextColor={finalTextColor.keyword}

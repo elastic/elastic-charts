@@ -58,8 +58,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const iconType = customKnobs.eui.getIconTypeKnob('EUI icon glyph name', 'visGauge');
   const showValueIcon = boolean('show value icon', false);
   const valueIconType = customKnobs.eui.getIconTypeKnob('EUI value icon glyph name', 'sortUp');
-  const showSlot = boolean('show slot contents', true);
-  const showSlotArea = boolean('show full slot area', false);
+  const showBody = boolean('show body contents', true);
+  const showBodyArea = boolean('show full body area', false);
   const getIcon =
     (type: string) =>
     ({ width, height, color }: { width: number; height: number; color: string }) => (
@@ -116,9 +116,9 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
       <Metric
         id="1"
         data={configuredData}
-        slot={
-          !showSlot ? null : (
-            <div className={classNames('myCustomMetricSlot', { showSlotArea })} style={{ paddingTop: 8 }}>
+        body={
+          !showBody ? null : (
+            <div className={classNames('myCustomMetricSlot', { showBodyArea })} style={{ paddingTop: 8 }}>
               <div>
                 <EuiFlexGroup wrap responsive={false} gutterSize="s">
                   <EuiFlexItem grow={false}>
@@ -144,5 +144,5 @@ Example.parameters = {
     height: '300px',
     width: '300px',
   },
-  markdown: `Warning: :warning: This feature should be used with care. The slots content to not take up space in order to preserve the rendering of elements of the Metric.`,
+  markdown: `Warning: :warning: This feature should be used with care. The body content does not take up space in order to preserve the rendering of elements of the Metric.`,
 };
