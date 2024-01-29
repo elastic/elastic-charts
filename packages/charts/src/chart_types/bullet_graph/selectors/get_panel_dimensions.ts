@@ -55,13 +55,8 @@ export const getPanelDimensions = createCustomCachedSelector(
     { bulletGraph: bulletGraphStyles },
     backgroundColor,
   ): BulletDimensions => {
-    if (shouldRenderMetric)
-      return {
-        rows: [],
-        panel: { width: 0, height: 0 },
-        layoutAlignment,
-        shouldRenderMetric,
-      };
+    // TODO: simplify color scale lookup for shouldRenderMetric case. Now we do more computations
+    // than necessary but for now this provides the same color bands / scale between Metric and bullet rendering
 
     const rows = headerLayout.map((row, rowIndex) => {
       return row.map((bulletGraph, columnIndex): BulletPanelDimensions | null => {

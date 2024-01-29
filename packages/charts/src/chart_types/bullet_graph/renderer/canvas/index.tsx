@@ -6,10 +6,6 @@
  * Side Public License, v 1.
  */
 
-/* eslint-disable-next-line eslint-comments/disable-enable-pair */
-/* eslint-disable react/no-array-index-key */
-
-import chroma from 'chroma-js';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -162,11 +158,9 @@ class Component extends React.Component<Props> {
             <AlignedGrid<BulletDatum>
               data={spec.data}
               contentComponent={({ datum, stats }) => {
-                const colorScale = chroma
-                  // TODO use colorBands in metric implementation
-                  // @ts-ignore - TODO fix when not an array
-                  .scale(Array.isArray(this.props.colorBands) ? this.props.colorBands : this.props.style.colorBands)
-                  .domain(datum.domain);
+                const colorScale =
+                  this.props.dimensions.rows[stats.rowIndex]?.[stats.columnIndex]?.colorScale ??
+                  (() => ({ hex: () => this.props.style.fallbackBandColor })); // should never happen
                 const bulletDatum: BulletMetricWProgress = {
                   value: datum.value,
                   target: datum.target,
