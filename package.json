@@ -160,7 +160,7 @@
     "semantic-release-slack-bot": "^3.5.3",
     "slugify": "^1.5.0",
     "speed-measure-webpack-plugin": "^1.5.0",
-    "ts-jest": "^29.1.1",
+    "ts-jest": "^29.1.2",
     "ts-loader": "8.4.0",
     "ts-prune": "^0.10.3",
     "typescript": "^5.3.3",
