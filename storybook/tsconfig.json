@@ -3,6 +3,6 @@
   "include": ["../packages/charts/src/**/*", "./**/*"],
   "exclude": ["../**/*.test.*"],
   "compilerOptions": {
-    "noUncheckedIndexedAccess": false
-  }
+    "noUncheckedIndexedAccess": false,
+  },
 }
