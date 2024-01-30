@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-export default {
-  title: 'Metric (@alpha)',
-};
+import { euiIconTypes } from './constants';
+import { getKnobsFnFromEnum } from './utils';
 
-export { Example as basic } from './1_basic.story';
-export { Example as grid } from './2_grid.story';
-export { Example as bodyContent } from './3_body.story';
+const getIconTypeKnob = getKnobsFnFromEnum(euiIconTypes, 'iconType', 'warning');
+
+export const euiKnobs = {
+  getIconTypeKnob,
+};

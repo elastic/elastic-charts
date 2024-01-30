@@ -1,3 +1,22 @@
+# [63.1.0](https://github.com/elastic/elastic-charts/compare/v63.0.0...v63.1.0) (2024-01-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^92.1.1 ([#2315](https://github.com/elastic/elastic-charts/issues/2315)) ([f4e4fae](https://github.com/elastic/elastic-charts/commit/f4e4fae42e5dcc1b882f0c5126c66d3c96cd2fcc))
+* **deps:** update dependency @playwright/test to ^1.41.1 ([#2316](https://github.com/elastic/elastic-charts/issues/2316)) ([e2ab527](https://github.com/elastic/elastic-charts/commit/e2ab52791baef9da628930d3e8d738ce3772c34a))
+* **styles:** isolated point style overrides ([#2278](https://github.com/elastic/elastic-charts/issues/2278)) ([3fb1df2](https://github.com/elastic/elastic-charts/commit/3fb1df21d08c441c84705bd3d5984fc07caa11be))
+
+
+### Features
+
+* **metric:** custom slot to render contents in gap ([#2303](https://github.com/elastic/elastic-charts/issues/2303)) ([3256c8c](https://github.com/elastic/elastic-charts/commit/3256c8ca14d180e4d7a483811a37612aca2691ce))
+
+
+### Performance Improvements
+
+* **tooltip:** improve placement logic ([#2310](https://github.com/elastic/elastic-charts/issues/2310)) ([cac5f49](https://github.com/elastic/elastic-charts/commit/cac5f4908a54374d114d7a11e66d648979013039))
+
 # [63.0.0](https://github.com/elastic/elastic-charts/compare/v62.0.0...v63.0.0) (2024-01-24)
 
 
