@@ -125,12 +125,11 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     if (title !== this.props.title || description !== this.props.description) {
       this.chartStore.dispatch(updateChartTitles(this.props.title, this.props.description));
     }
-    if (size !== this.props.size) {
-      const fixedSize = getFixedChartSize(this.props.size);
-      // if the size is specified in pixels then update directly the store
-      if (fixedSize) {
-        this.chartStore.dispatch(updateParentDimensions({ ...fixedSize, top: 0, left: 0 }));
-      }
+    const prevChartSize = getChartSize(size);
+    const newChartSize = getFixedChartSize(this.props.size);
+    // if the size is specified in pixels then update directly the store
+    if (newChartSize && (newChartSize.width !== prevChartSize.width || newChartSize.height !== prevChartSize.height)) {
+      this.chartStore.dispatch(updateParentDimensions({ ...newChartSize, top: 0, left: 0 }));
     }
   }
 
