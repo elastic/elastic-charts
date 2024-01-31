@@ -22,6 +22,8 @@ import {
   isDefinedFrom,
   isBetween,
   clampAll,
+  sortNumbers,
+  isSorted,
 } from './common';
 
 describe('common utilities', () => {
@@ -926,6 +928,92 @@ describe('#isUniqueArray', () => {
 
   it('should return false for complex duplicated values', () => {
     expect(isUniqueArray([{ n: 1 }, { n: 1 }, { n: 2 }], ({ n }) => n)).toBe(false);
+  });
+});
+
+describe('#sortNumbers', () => {
+  it('should sort positive values', () => {
+    expect(sortNumbers([20, 5, 0, 200])).toEqual([0, 5, 20, 200]);
+  });
+  it('should sort negative values', () => {
+    expect(sortNumbers([-20, -5, 0, -200])).toEqual([-200, -20, -5, 0]);
+  });
+  it('should sort negative values', () => {
+    expect(sortNumbers([-20, -5, 20, 5, 0, 200, 0, -200])).toEqual([-200, -20, -5, 0, 0, 5, 20, 200]);
+  });
+});
+
+describe('#isSorted', () => {
+  it('should sort empty as true', () => {
+    expect(isSorted([])).toBe(true);
+  });
+
+  it('should sort single as true', () => {
+    expect(isSorted([1])).toBe(true);
+  });
+
+  it('should sort double as true', () => {
+    expect(isSorted([1, 10])).toBe(true);
+  });
+
+  it('should sort double revered as true', () => {
+    expect(isSorted([10, 1])).toBe(true);
+  });
+
+  it('should sort many as true', () => {
+    expect(isSorted([1, 10, 100])).toBe(true);
+  });
+
+  it('should sort many revered as true', () => {
+    expect(isSorted([100, 10, 1])).toBe(true);
+  });
+
+  it('should sort many mixed as true', () => {
+    expect(isSorted([-100, -10, 1, 10, 100])).toBe(true);
+  });
+
+  it('should sort many mixed as false', () => {
+    expect(isSorted([-100, 10, 1, 10, 100])).toBe(false);
+  });
+
+  it('should sort many mixed revered as true', () => {
+    expect(isSorted([100, 10, 1, -10, -100])).toBe(true);
+  });
+
+  it('should sort many mixed revered as false', () => {
+    expect(isSorted([100, 10, 1, 10, -100])).toBe(false);
+  });
+
+  it('should sort many mixed revered as false', () => {
+    expect(isSorted([100, 10, 1, -10, -10, -100])).toBe(false);
+  });
+
+  it('should sort many mixed revered as false', () => {
+    expect(isSorted([100, 10, 1, -10, -10, -100], true)).toBe(true);
+  });
+
+  it('should sort double with dups as false', () => {
+    expect(isSorted([1, 1])).toBe(false);
+  });
+
+  it('should sort double with dups as true', () => {
+    expect(isSorted([1, 1], true)).toBe(true);
+  });
+
+  it('should sort many with dups as false', () => {
+    expect(isSorted([0, 1, 10, 10, 100])).toBe(false);
+  });
+
+  it('should sort many with dups as true', () => {
+    expect(isSorted([0, 1, 10, 10, 100], true)).toBe(true);
+  });
+
+  it('should sort many reversed with dups as false', () => {
+    expect(isSorted([100, 10, 10, 1, 0])).toBe(false);
+  });
+
+  it('should sort many reversed with dups as true', () => {
+    expect(isSorted([100, 10, 10, 1, 0], true)).toBe(true);
   });
 });
 
