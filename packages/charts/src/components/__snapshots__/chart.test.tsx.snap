@@ -17,7 +17,7 @@ exports[`Chart should render the legend name test 1`] = `
           </ChartStatusComponent>
         </Connect(ChartStatusComponent)>
         <Connect(Resizer)>
-          <Resizer resizeDebounce={10} onResize={[undefined]} updateParentDimensions={[Function (anonymous)]}>
+          <Resizer onResize={[undefined]} updateParentDimensions={[Function (anonymous)]}>
             <div className="echChartResizer" />
           </Resizer>
         </Connect(Resizer)>

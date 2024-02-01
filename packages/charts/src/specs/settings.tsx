@@ -540,6 +540,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
 
   /**
    * debounce delay used for resizing chart
+   * @deprecated currently unused
    */
   resizeDebounce?: number;
 
