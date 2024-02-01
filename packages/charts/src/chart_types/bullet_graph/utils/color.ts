@@ -60,7 +60,7 @@ export interface ColorBandSimpleConfig {
    * Distinct color classes to defined discrete color breakdown
    * Defaults to intervals between ticks
    *
-   * Number - scales colors evenly n times, does not support continuous color blending (i.e. n >> 10)
+   * Number - scales colors evenly n times, does not support continuous color blending (i.e. n \>\> 10)
    * Array of numbers - defines the color stop positions
    *
    * See https://gka.github.io/chroma.js/#scale-classes

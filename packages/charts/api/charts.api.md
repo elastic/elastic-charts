@@ -445,6 +445,11 @@ export interface BubbleSeriesStyle {
     point: PointStyle;
 }
 
+// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
+//
+// @alpha
+export const Bullet: (props: SFProps<BulletSpec, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
+
 // @public
 export type BulletColorConfig = Color[] | ColorBandSimpleConfig | ColorBandComplexConfig;
 
@@ -473,10 +478,10 @@ export interface BulletDatum {
     valueFormatter: ValueFormatter;
 }
 
-// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-incompatible-release-tags) The symbol "BulletProps" is marked as @public, but its signature references "Bullet" which is marked as @alpha
 //
-// @alpha
-export const Bullet: (props: SFProps<BulletSpec, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
+// @public (undocumented)
+export type BulletProps = ComponentProps<typeof Bullet>;
 
 // @alpha (undocumented)
 export interface BulletSpec extends Spec {
@@ -665,7 +670,7 @@ export const ChartType: Readonly<{
     Heatmap: "heatmap";
     Wordcloud: "wordcloud";
     Metric: "metric";
-    Bullet: "bullet_graph";
+    Bullet: "bullet";
 }>;
 
 // @public (undocumented)
