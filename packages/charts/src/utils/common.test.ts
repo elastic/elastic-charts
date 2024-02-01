@@ -968,6 +968,18 @@ describe('#isSorted', () => {
     expect(isSorted([100, 10, 1])).toBe(true);
   });
 
+  it('should force ascending sort', () => {
+    expect(isSorted([100, 10, 1], { order: 'ascending' })).toBe(false);
+  });
+
+  it('should force descending sort', () => {
+    expect(isSorted([1, 10, 100], { order: 'descending' })).toBe(false);
+  });
+
+  it('should sort many revered as true', () => {
+    expect(isSorted([100, 10, 1])).toBe(true);
+  });
+
   it('should sort many mixed as true', () => {
     expect(isSorted([-100, -10, 1, 10, 100])).toBe(true);
   });
@@ -989,7 +1001,7 @@ describe('#isSorted', () => {
   });
 
   it('should sort many mixed revered as false', () => {
-    expect(isSorted([100, 10, 1, -10, -10, -100], true)).toBe(true);
+    expect(isSorted([100, 10, 1, -10, -10, -100], { allowDuplicates: true })).toBe(true);
   });
 
   it('should sort double with dups as false', () => {
@@ -997,7 +1009,7 @@ describe('#isSorted', () => {
   });
 
   it('should sort double with dups as true', () => {
-    expect(isSorted([1, 1], true)).toBe(true);
+    expect(isSorted([1, 1], { allowDuplicates: true })).toBe(true);
   });
 
   it('should sort many with dups as false', () => {
@@ -1005,7 +1017,7 @@ describe('#isSorted', () => {
   });
 
   it('should sort many with dups as true', () => {
-    expect(isSorted([0, 1, 10, 10, 100], true)).toBe(true);
+    expect(isSorted([0, 1, 10, 10, 100], { allowDuplicates: true })).toBe(true);
   });
 
   it('should sort many reversed with dups as false', () => {
@@ -1013,7 +1025,7 @@ describe('#isSorted', () => {
   });
 
   it('should sort many reversed with dups as true', () => {
-    expect(isSorted([100, 10, 10, 1, 0], true)).toBe(true);
+    expect(isSorted([100, 10, 10, 1, 0], { allowDuplicates: true })).toBe(true);
   });
 });
 

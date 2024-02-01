@@ -7,6 +7,7 @@
  */
 
 import chroma from 'chroma-js';
+import { extent } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { $Values } from 'utility-types';
 
@@ -14,8 +15,9 @@ import { BaseBoundsConfig, OpenClosedBoundsConfig } from './bounds';
 import { combineColors } from '../../../common/color_calcs';
 import { RGBATupleToString, colorToRgba, getChromaColor } from '../../../common/color_library_wrappers';
 import { ChromaColorScale, Color } from '../../../common/colors';
-import { isFiniteNumber, isNil, isWithinRange, sortNumbers } from '../../../utils/common';
+import { isFiniteNumber, isNil, isSorted, isWithinRange, sortNumbers } from '../../../utils/common';
 import { ContinuousDomain, GenericDomain } from '../../../utils/domain';
+import { Logger } from '../../../utils/logger';
 
 /**
  * @public
@@ -58,8 +60,8 @@ export interface ColorBandSimpleConfig {
    * Distinct color classes to defined discrete color breakdown
    * Defaults to intervals between ticks
    *
-   * Number value scales colors evenly n times
-   * Array of numbers defines the color stop positions
+   * Number - scales colors evenly n times, does not support continuous color blending (i.e. n >> 10)
+   * Array of numbers - defines the color stop positions
    *
    * See https://gka.github.io/chroma.js/#scale-classes
    */
@@ -127,17 +129,18 @@ const getFullDomainTicks = ([min, max]: ContinuousDomain, ticks: number[]): numb
   return fullTicks;
 };
 
+interface ScaleInputs {
+  domain: ContinuousDomain;
+  colors: string[];
+  classes?: number | number[];
+}
+
 function getScaleInputs(
   baseDomain: ContinuousDomain,
   flippedDomain: boolean,
   config: BulletColorConfig,
-  fullTicks: number[],
   backgroundColor: Color,
-): {
-  domain: number[];
-  colors: string[];
-  classes?: number | number[];
-} {
+): ScaleInputs {
   if (!Array.isArray(config) || !isComplexConfig(config)) {
     const { colors: rawColors, classes }: { colors: string[]; classes?: number | number[] } = !Array.isArray(config)
       ? config
@@ -166,7 +169,7 @@ function getScaleInputs(
     return {
       domain: baseDomain,
       colors,
-      classes: classes ?? fullTicks,
+      classes,
     };
   }
 
@@ -236,7 +239,7 @@ function getScaleInputs(
       domain: [],
       colors: [],
     },
-  );
+  ) as ScaleInputs;
 }
 
 /** @internal */
@@ -244,17 +247,34 @@ export function getColorScale(
   baseDomain: ContinuousDomain,
   flippedDomain: boolean,
   config: BulletColorConfig,
-  fullTicks: number[],
   backgroundColor: Color,
   fallbackBandColor: Color,
-): ChromaColorScale {
-  const { colors, domain, classes } = getScaleInputs(baseDomain, flippedDomain, config, fullTicks, backgroundColor);
+): [ChromaColorScale, ScaleInputs] {
+  const { colors, domain, classes: userClasses } = getScaleInputs(baseDomain, flippedDomain, config, backgroundColor);
   const scale = chroma.scale(colors).mode('lab').domain(domain);
+  let classes = userClasses;
+  let scaleDomain = baseDomain;
 
-  if (classes) scale.classes(classes);
-  const isInDomain = isWithinRange(baseDomain);
+  if (classes !== undefined) {
+    if (Array.isArray(classes) && !isSorted(classes, { order: 'ascending' })) {
+      Logger.warn(
+        `Ignoring Bullet.colorBands.classes. Expected a sorted ascending array of numbers without duplicates.\n\n\tReceived:${JSON.stringify(classes)}`,
+      );
+      classes = undefined;
+    } else if (typeof classes === 'number' && classes < 1) {
+      Logger.warn(`Ignoring Bullet.colorBands.classes. Expected a positive number.\n\n\tReceived:${classes}`);
+      classes = undefined;
+    } else {
+      if (Array.isArray(classes)) {
+        const [min = NaN, max = NaN] = extent(classes);
+        scaleDomain = [min, max];
+      }
+      scale.classes(classes);
+    }
+  }
+  const isInDomain = isWithinRange(scaleDomain);
 
-  return (n) => (isInDomain(n) ? scale(n) : getChromaColor(fallbackBandColor));
+  return [(n) => (isInDomain(n) ? scale(n) : getChromaColor(fallbackBandColor)), { colors, domain, classes }];
 }
 
 /** @internal */
@@ -269,7 +289,7 @@ export type ColorTick = { color: Color } & BandPositions;
 
 // TODO memoize for duplicate calls
 /** @internal */
-export function getColorBands(
+export function getColorScaleWithBands(
   scale: ScaleLinear<number, number>,
   config: BulletColorConfig,
   ticks: number[],
@@ -281,15 +301,63 @@ export function getColorBands(
 } {
   const domain = scale.domain() as GenericDomain;
   const orderedDomain = sortNumbers(domain) as ContinuousDomain;
-  const fullTicks = getFullDomainTicks(orderedDomain, ticks);
-  const colorScale = getColorScale(
+  const [colorScale, colorScaleInputs] = getColorScale(
     orderedDomain,
     domain[0] > domain[1],
     config,
-    sortNumbers(fullTicks),
     backgroundColor,
     fallbackBandColor,
   );
+
+  return {
+    scale: colorScale,
+    bands: getColorBands(scale, colorScale, ticks, colorScaleInputs),
+  };
+}
+
+function getColorBands(
+  scale: ScaleLinear<number, number>,
+  colorScale: ChromaColorScale,
+  ticks: number[],
+  { domain, classes }: ScaleInputs,
+): ColorTick[] {
+  if (classes) {
+    if (Array.isArray(classes)) {
+      const bands: ColorTick[] = [];
+
+      for (let i = 0; i < classes.length - 1; i++) {
+        const start = classes[i]!;
+        const end = classes[i + 1]!;
+        const scaledStart = scale(start);
+        const scaledEnd = scale(end);
+
+        bands.push({
+          start: scaledStart,
+          end: scaledEnd,
+          size: Math.abs(scaledEnd - scaledStart),
+          color: colorScale(start + Math.abs(end - start) / 2).hex(),
+        });
+      }
+
+      return bands;
+    }
+    const domainDelta = Math.abs(domain[0] - domain[1]);
+    const size = domainDelta / classes;
+
+    return Array.from({ length: classes }, (_, i) => {
+      const start = scale(i * size);
+      const end = scale((i + 1) * size);
+
+      return {
+        start,
+        end,
+        color: colorScale((i + 0.5) * size).hex(),
+        size: Math.abs(end - start),
+      };
+    });
+  }
+
+  const fullTicks = getFullDomainTicks(domain, ticks);
   const scaledBandPositions = fullTicks.reduce<[pixelPosition: BandPositions, tick: number][]>((acc, start, i) => {
     const end = fullTicks[i + 1];
     if (end === undefined) return acc;
@@ -298,14 +366,14 @@ export function getColorBands(
     const size = Math.abs(scaledEnd - scaledStart);
     acc.push([
       { start: scaledStart, end: scaledEnd, size },
-      // pegs color at start of band - maybe allow control of this later
+      // pegs color at middle of band - maybe allow control of this later
       start + (end - start) / 2,
     ]);
     return acc;
   }, []);
 
   // TODO allow continuous gradients
-  const bands = scaledBandPositions.reduce<ColorTick[]>((acc, [pxPosition, tick]) => {
+  return scaledBandPositions.reduce<ColorTick[]>((acc, [pxPosition, tick]) => {
     return [
       ...acc,
       {
@@ -314,9 +382,4 @@ export function getColorBands(
       },
     ];
   }, []);
-
-  return {
-    scale: colorScale,
-    bands,
-  };
 }

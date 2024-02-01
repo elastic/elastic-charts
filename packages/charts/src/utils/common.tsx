@@ -518,17 +518,20 @@ type SortTestFn = (n1?: number, n2?: number) => boolean;
  * Returns true if array of numbers is sorted
  * @internal
  */
-export function isSorted<T extends number[]>(arr: T, allowDuplicates = false): boolean {
+export function isSorted<T extends number[]>(
+  arr: T,
+  options?: { allowDuplicates?: boolean; order?: 'ascending' | 'descending' },
+): boolean {
   if (arr.length <= 1) return true;
-  if (arr.length === 2) return allowDuplicates ? true : arr[0]! !== arr[1]!;
-  const ascending = arr[0]! < arr[1]!;
-  const isOrderedPair: SortTestFn = allowDuplicates
-    ? ascending
-      ? (n1 = NaN, n2 = NaN) => n1 <= n2
-      : (n1 = NaN, n2 = NaN) => n1 >= n2
-    : ascending
-      ? (n1 = NaN, n2 = NaN) => n1 < n2
-      : (n1 = NaN, n2 = NaN) => n1 > n2;
+  const ascending = options?.order === 'ascending' ? true : options?.order === 'descending' ? false : arr[0]! < arr[1]!;
+  const isOrderedPair: SortTestFn =
+    options?.allowDuplicates ?? false
+      ? ascending
+        ? (n1 = NaN, n2 = NaN) => n1 <= n2
+        : (n1 = NaN, n2 = NaN) => n1 >= n2
+      : ascending
+        ? (n1 = NaN, n2 = NaN) => n1 < n2
+        : (n1 = NaN, n2 = NaN) => n1 > n2;
 
   for (let i = 0; i < arr.length - 1; i++) {
     if (!isOrderedPair(arr[i], arr[i + 1])) return false;

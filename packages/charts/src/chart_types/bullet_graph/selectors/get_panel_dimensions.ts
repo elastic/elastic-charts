@@ -23,7 +23,7 @@ import { ANGULAR_TICK_INTERVAL, TICK_INTERVAL } from '../renderer/canvas/constan
 import { BulletDatum, BulletSpec, BulletSubtype } from '../spec';
 import { BulletStyle, GRAPH_PADDING } from '../theme';
 import { getAngledChartSizing, getAnglesBySize } from '../utils/angular';
-import { ColorTick, getColorBands } from '../utils/color';
+import { ColorTick, getColorScaleWithBands } from '../utils/color';
 import { TickOptions, getTicks } from '../utils/ticks';
 
 /** @internal */
@@ -124,7 +124,7 @@ function getSubtypeDimensions(
         interval: ANGULAR_TICK_INTERVAL,
       });
 
-      const { bands: colorBands, scale: colorScale } = getColorBands(
+      const { bands: colorBands, scale: colorScale } = getColorScaleWithBands(
         scale,
         colorBandsConfig ?? defaultColorBandsConfig,
         ticks,
@@ -148,7 +148,7 @@ function getSubtypeDimensions(
         interval: TICK_INTERVAL,
       });
 
-      const { bands: colorBands, scale: colorScale } = getColorBands(
+      const { bands: colorBands, scale: colorScale } = getColorScaleWithBands(
         scale,
         colorBandsConfig ?? defaultColorBandsConfig,
         ticks,
@@ -172,7 +172,7 @@ function getSubtypeDimensions(
         interval: TICK_INTERVAL,
       });
 
-      const { bands: colorBands, scale: colorScale } = getColorBands(
+      const { bands: colorBands, scale: colorScale } = getColorScaleWithBands(
         scale,
         colorBandsConfig ?? defaultColorBandsConfig,
         ticks,
