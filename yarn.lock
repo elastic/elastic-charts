@@ -3106,10 +3106,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^92.1.1":
-  version "92.1.1"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-92.1.1.tgz#f5713bfa12733a2c62df365e37f7983a7c08411e"
-  integrity sha512-kjUP+IewVcoJ59e84lHwtdy5OvGNSmlHvzn5uUmGTKnBGOxoYv5K9pyGujVWpxSCG9MNr3anMsNE7EX6usj37A==
+"@elastic/eui@^93.0.0":
+  version "93.0.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-93.0.0.tgz#43ba256d94f3d3acddee23427c9fa5285a43d7e4"
+  integrity sha512-Q5gY9roWZsB1At0rxG5d9M5P7+J4hfv8fzvuqNHoVjIxbeibHRCSq2TtOQcSUjhKE5Tu/BIZijzuYX8vITGaSQ==
   dependencies:
     "@hello-pangea/dnd" "^16.3.0"
     "@types/lodash" "^4.14.198"
@@ -11638,8 +11638,7 @@ eslint-module-utils@^2.8.0:
     debug "^3.2.7"
 
 "eslint-plugin-elastic-charts@link:./packages/eslint-plugin-elastic-charts":
-  version "0.0.0"
-  uid ""
+  version "1.0.0"
 
 eslint-plugin-eslint-comments@^3.2.0:
   version "3.2.0"
