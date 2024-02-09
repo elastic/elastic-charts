@@ -932,14 +932,32 @@ describe('#isUniqueArray', () => {
 });
 
 describe('#sortNumbers', () => {
-  it('should sort positive values', () => {
-    expect(sortNumbers([20, 5, 0, 200])).toEqual([0, 5, 20, 200]);
+  describe('ascending', () => {
+    it('should sort positive values', () => {
+      expect(sortNumbers([20, 5, 0, 200])).toEqual([0, 5, 20, 200]);
+    });
+
+    it('should sort negative values', () => {
+      expect(sortNumbers([-20, -5, 0, -200])).toEqual([-200, -20, -5, 0]);
+    });
+
+    it('should sort negative values', () => {
+      expect(sortNumbers([-20, -5, 20, 5, 0, 200, 0, -200])).toEqual([-200, -20, -5, 0, 0, 5, 20, 200]);
+    });
   });
-  it('should sort negative values', () => {
-    expect(sortNumbers([-20, -5, 0, -200])).toEqual([-200, -20, -5, 0]);
-  });
-  it('should sort negative values', () => {
-    expect(sortNumbers([-20, -5, 20, 5, 0, 200, 0, -200])).toEqual([-200, -20, -5, 0, 0, 5, 20, 200]);
+
+  describe('descending', () => {
+    it('should sort positive values', () => {
+      expect(sortNumbers([20, 5, 0, 200], true)).toEqual([200, 20, 5, 0]);
+    });
+
+    it('should sort negative values', () => {
+      expect(sortNumbers([-20, -5, 0, -200], true)).toEqual([0, -5, -20, -200]);
+    });
+
+    it('should sort negative values', () => {
+      expect(sortNumbers([-20, -5, 20, 5, 0, 200, 0, -200], true)).toEqual([200, 20, 5, 0, 0, -5, -20, -200]);
+    });
   });
 });
 
