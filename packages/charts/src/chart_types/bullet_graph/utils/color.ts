@@ -350,8 +350,7 @@ function getColorBands(
     const size = domainDelta / classes;
 
     return Array.from({ length: classes }, (_, i) => {
-      const start = scale(i * size);
-      const end = scale((i + 1) * size);
+      const [start, end] = sortNumbers([scale(i * size), scale((i + 1) * size)]);
 
       return {
         start,
@@ -369,8 +368,7 @@ function getColorBands(
     const [start, end] = bandPositions.slice(i, i + 2);
     if (start === undefined || end === undefined) continue;
 
-    const scaledStart = scale(clamp(start, min, max));
-    const scaledEnd = scale(clamp(end, min, max));
+    const [scaledStart, scaledEnd] = sortNumbers([scale(clamp(start, min, max)), scale(clamp(end, min, max))]);
     const size = Math.abs(scaledEnd - scaledStart);
     const tick = start + (end - start) / 2; // pegs color at middle of band - maybe allow control of this later
 

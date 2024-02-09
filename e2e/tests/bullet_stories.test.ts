@@ -53,6 +53,18 @@ test.describe('Bullet stories', () => {
         );
       });
 
+      test('renders color bands independent of ticks', async ({ page }) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          `http://localhost:9001/?path=/story/bullet-graph--color-bands&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Config%201%20-%20Color_Color%20Bands=RGBA(70,%20130,%2096,%201)&knob-Config%202%20-%20Steps_Color%20Bands=5&knob-Config%203%20-%20json_Color%20Bands={%22classes%22:3,%22colors%22:[%22rgb(140,%20185,%20189)%22,%22rgb(236,%20177,%2089)%22,%22rgb(182,%20115,%2082)%22]}&knob-Config%204%20-%20json_Color%20Bands=[{%22color%22:%22red%22,%22gte%22:0,%22lt%22:20},{%22color%22:%22green%22,%22gte%22:20,%22lte%22:40},{%22color%22:%22blue%22,%22gt%22:40,%22lte%22:{%22type%22:%22percentage%22,%22value%22:100}}]&knob-color%20config_Color%20Bands=3&knob-end_Domain=100&knob-start_Domain=0&knob-subtype=${subtype}&knob-target_Domain=75&knob-tick%20strategy_Ticks=auto&knob-ticks(approx.%20count)_Ticks=5&knob-ticks(placements)_Ticks[0]=-200&knob-ticks(placements)_Ticks[1]=-100&knob-ticks(placements)_Ticks[2]=0&knob-ticks(placements)_Ticks[3]=5&knob-ticks(placements)_Ticks[4]=10&knob-ticks(placements)_Ticks[5]=15&knob-ticks(placements)_Ticks[6]=20&knob-ticks(placements)_Ticks[7]=25&knob-ticks(placements)_Ticks[8]=50&knob-ticks(placements)_Ticks[9]=100&knob-ticks(placements)_Ticks[10]=200&knob-value_Domain=56&knob-Config%202%20-%20Palette_Color%20Bands=0&knob-Config%202%20-%20Reverse_Color%20Bands=&knob-niceDomain_Ticks=&knob-debug=`,
+        );
+      });
+
+      test('renders color bands independent of ticks flipped domain', async ({ page }) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(
+          `http://localhost:9001/?path=/story/bullet-graph--color-bands&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Config%201%20-%20Color_Color%20Bands=RGBA(70,%20130,%2096,%201)&knob-Config%202%20-%20Steps_Color%20Bands=5&knob-Config%203%20-%20json_Color%20Bands={%22classes%22:3,%22colors%22:[%22rgb(140,%20185,%20189)%22,%22rgb(236,%20177,%2089)%22,%22rgb(182,%20115,%2082)%22]}&knob-Config%204%20-%20json_Color%20Bands=[{%22color%22:%22red%22,%22gte%22:0,%22lt%22:20},{%22color%22:%22green%22,%22gte%22:20,%22lte%22:40},{%22color%22:%22blue%22,%22gt%22:40,%22lte%22:{%22type%22:%22percentage%22,%22value%22:100}}]&knob-color%20config_Color%20Bands=3&knob-end_Domain=0&knob-start_Domain=100&knob-subtype=${subtype}&knob-target_Domain=75&knob-tick%20strategy_Ticks=auto&knob-ticks(approx.%20count)_Ticks=5&knob-ticks(placements)_Ticks[0]=-200&knob-ticks(placements)_Ticks[1]=-100&knob-ticks(placements)_Ticks[2]=0&knob-ticks(placements)_Ticks[3]=5&knob-ticks(placements)_Ticks[4]=10&knob-ticks(placements)_Ticks[5]=15&knob-ticks(placements)_Ticks[6]=20&knob-ticks(placements)_Ticks[7]=25&knob-ticks(placements)_Ticks[8]=50&knob-ticks(placements)_Ticks[9]=100&knob-ticks(placements)_Ticks[10]=200&knob-value_Domain=56&knob-Config%202%20-%20Palette_Color%20Bands=0&knob-Config%202%20-%20Reverse_Color%20Bands=&knob-niceDomain_Ticks=&knob-debug=`,
+        );
+      });
+
       test.describe('Ticks', () => {
         test('should render with auto ticks', async ({ page }) => {
           await common.expectChartAtUrlToMatchScreenshot(page)(
