@@ -509,7 +509,7 @@ export function isUniqueArray<B, T>(arr: B[], extractor?: (value: B) => T) {
  * @internal
  */
 export function sortNumbers<T extends any[]>(arr: T, descending = false): T {
-  return arr.toSorted(descending ? (a, b) => b - a : (a, b) => a - b) as T;
+  return arr.slice().sort(descending ? (a, b) => b - a : (a, b) => a - b) as T;
 }
 
 type SortTestFn = (n1?: number, n2?: number) => boolean;
