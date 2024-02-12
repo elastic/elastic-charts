@@ -35,3 +35,9 @@ export const TICK_INTERVAL = 100;
 
 /** @internal */
 export const ANGULAR_TICK_INTERVAL = 120;
+
+/**
+ * Space between the target/value line and the tick label
+ * @internal
+ */
+export const TICK_LABEL_PADDING = 3;
