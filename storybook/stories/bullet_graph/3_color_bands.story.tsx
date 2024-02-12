@@ -97,7 +97,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const colorBands3 = object<ColorBandSimpleConfig>(
     'Config 3 - json',
     {
-      classes: 5,
+      steps: 5,
       colors: ['pink', 'yellow', 'blue'],
     },
     'Color Bands',

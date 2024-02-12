@@ -705,9 +705,9 @@ export type ColorBandConfig = OpenClosedBoundsConfig<number | ColorBandValue> & 
 
 // @public (undocumented)
 export interface ColorBandSimpleConfig {
-    classes?: number | number[];
     // (undocumented)
     colors: Color[];
+    steps?: number | number[];
 }
 
 // @public (undocumented)
