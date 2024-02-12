@@ -135,12 +135,7 @@ interface ScaleInputs {
   classes?: number | number[];
 }
 
-function getScaleInputs(
-  baseDomain: ContinuousDomain,
-  flippedDomain: boolean,
-  config: BulletColorConfig,
-  backgroundColor: Color,
-): ScaleInputs {
+function getScaleInputs(baseDomain: ContinuousDomain, config: BulletColorConfig, backgroundColor: Color): ScaleInputs {
   if (!Array.isArray(config) || !isComplexConfig(config)) {
     const { colors: rawColors, classes }: { colors: string[]; classes?: number | number[] } = !Array.isArray(config)
       ? config
@@ -159,11 +154,6 @@ function getScaleInputs(
         const blendedSecondary = combineColors(colorToRgba(secondary), colorToRgba(backgroundColor));
         colors.push(RGBATupleToString(blendedSecondary));
       }
-    }
-
-    if (flippedDomain) {
-      // Array of colors should always begin at the domain start
-      colors.reverse();
     }
 
     return {
@@ -241,16 +231,11 @@ Ranges are incompatible with each other such that there is either overlapping or
 /** @internal */
 export function getColorScale(
   baseDomain: ContinuousDomain,
-  flippedDomain: boolean,
   config: BulletColorConfig,
   backgroundColor: Color,
   fallbackBandColor: Color,
 ): [colorScale: ChromaColorScale, scaleInputs: ScaleInputs] {
-  const {
-    colors,
-    colorBandDomain,
-    classes: userClasses,
-  } = getScaleInputs(baseDomain, flippedDomain, config, backgroundColor);
+  const { colors, colorBandDomain, classes: userClasses } = getScaleInputs(baseDomain, config, backgroundColor);
   const scale = chroma
     .scale(colors)
     .mode('lab')
@@ -304,13 +289,7 @@ export function getColorScaleWithBands(
 } {
   const domain = scale.domain() as GenericDomain;
   const baseDomain = sortNumbers(domain) as ContinuousDomain;
-  const [colorScale, colorScaleInputs] = getColorScale(
-    baseDomain,
-    domain[0] > domain[1],
-    config,
-    backgroundColor,
-    fallbackBandColor,
-  );
+  const [colorScale, colorScaleInputs] = getColorScale(baseDomain, config, backgroundColor, fallbackBandColor);
 
   return {
     scale: colorScale,
@@ -333,8 +312,7 @@ function getColorBands(
       for (let i = 0; i < classes.length - 1; i++) {
         const start = classes[i]!;
         const end = classes[i + 1]!;
-        const scaledStart = scale(start);
-        const scaledEnd = scale(end);
+        const [scaledStart, scaledEnd] = sortNumbers([scale(clamp(start, min, max)), scale(clamp(end, min, max))]);
 
         bands.push({
           start: scaledStart,
@@ -350,12 +328,12 @@ function getColorBands(
     const size = domainDelta / classes;
 
     return Array.from({ length: classes }, (_, i) => {
-      const [start, end] = sortNumbers([scale(i * size), scale((i + 1) * size)]);
+      const [start, end] = sortNumbers([scale(i * size + min), scale((i + 1) * size + min)]);
 
       return {
         start,
         end,
-        color: colorScale((i + 0.5) * size).hex(),
+        color: colorScale((i + 0.5) * size + min).hex(),
         size: Math.abs(end - start),
       };
     });
