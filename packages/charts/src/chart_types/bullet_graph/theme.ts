@@ -34,7 +34,7 @@ export const LIGHT_THEME_BULLET_STYLE: BulletStyle = {
   textColor: LIGHT_BASE_COLORS.darkestShade,
   border: '#EDF0F5',
   barBackground: LIGHT_BASE_COLORS.darkestShade,
-  colorBands: ['#D9C6EF', '#AA87D1'],
+  colorBands: ['#AA87D1', '#D9C6EF'],
   nonFiniteText: 'N/A',
   minHeight: 64,
   angularTickLabelPadding: 10,
