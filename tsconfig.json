@@ -22,8 +22,8 @@
     "paths": {
       "*": ["./declarations/*", "./*"],
       "/@elastic/charts$": ["./packages/charts/src"],
-      "/@elastic/charts/src/*": ["./packages/charts/src/*"],
-    },
+      "/@elastic/charts/src/*": ["./packages/charts/src/*"]
+    }
   },
-  "exclude": ["**/tmp", "**/dist"],
+  "exclude": ["**/tmp", "**/dist"]
 }
