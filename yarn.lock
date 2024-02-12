@@ -3106,10 +3106,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^93.0.0":
-  version "93.0.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-93.0.0.tgz#43ba256d94f3d3acddee23427c9fa5285a43d7e4"
-  integrity sha512-Q5gY9roWZsB1At0rxG5d9M5P7+J4hfv8fzvuqNHoVjIxbeibHRCSq2TtOQcSUjhKE5Tu/BIZijzuYX8vITGaSQ==
+"@elastic/eui@^93.1.0":
+  version "93.1.0"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-93.1.0.tgz#814c86eb619bb77591bb8d4186a7f4da72f825a0"
+  integrity sha512-4SNNBqJYDvnHTwHObGMedkXF0Zmkj+BxoGFk9kXTuDFeoSzOKMXxcGpAGtVUN1PjvL496QOVwz1GMlR6Q/pDlw==
   dependencies:
     "@hello-pangea/dnd" "^16.3.0"
     "@types/lodash" "^4.14.198"
