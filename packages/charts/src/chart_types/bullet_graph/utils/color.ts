@@ -370,7 +370,9 @@ function getColorBands(
 
     const [scaledStart, scaledEnd] = sortNumbers([scale(clamp(start, min, max)), scale(clamp(end, min, max))]);
     const size = Math.abs(scaledEnd - scaledStart);
-    const tick = start + (end - start) / 2; // pegs color at middle of band - maybe allow control of this later
+    const tick = clamp(start + (end - start) / 2, min, max); // pegs color at middle of band - maybe allow control of this later
+
+    if (scaledStart === scaledEnd) continue;
 
     scaledColorBands.push({
       start: scaledStart,
