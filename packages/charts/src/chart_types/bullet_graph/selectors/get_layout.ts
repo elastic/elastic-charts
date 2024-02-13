@@ -8,7 +8,7 @@
 
 import { getBulletSpec } from './get_bullet_spec';
 import { getChartSize } from './get_chart_size';
-import { BulletDatum, BulletGraphSubtype } from '../../../chart_types/bullet_graph/spec';
+import { BulletDatum, BulletSubtype } from '../../../chart_types/bullet_graph/spec';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
@@ -56,7 +56,7 @@ export interface BulletLayoutAlignment {
 }
 
 /** @internal */
-export interface BulletGraphLayout {
+export interface BulletLayout {
   /** Common panel size */
   panel: Size;
   headerLayout: (BulletHeaderLayout | null)[][];
@@ -64,26 +64,26 @@ export interface BulletGraphLayout {
   shouldRenderMetric: boolean;
 }
 
-const minChartHeights: Record<BulletGraphSubtype, number> = {
-  [BulletGraphSubtype.horizontal]: 50,
-  [BulletGraphSubtype.vertical]: 100,
-  [BulletGraphSubtype.circle]: 160,
-  [BulletGraphSubtype.halfCircle]: 160,
-  [BulletGraphSubtype.twoThirdsCircle]: 160,
+const minChartHeights: Record<BulletSubtype, number> = {
+  [BulletSubtype.horizontal]: 50,
+  [BulletSubtype.vertical]: 100,
+  [BulletSubtype.circle]: 160,
+  [BulletSubtype.halfCircle]: 160,
+  [BulletSubtype.twoThirdsCircle]: 160,
 };
 
-const minChartWidths: Record<BulletGraphSubtype, number> = {
-  [BulletGraphSubtype.horizontal]: 140,
-  [BulletGraphSubtype.vertical]: 140,
-  [BulletGraphSubtype.circle]: 160,
-  [BulletGraphSubtype.halfCircle]: 160,
-  [BulletGraphSubtype.twoThirdsCircle]: 160,
+const minChartWidths: Record<BulletSubtype, number> = {
+  [BulletSubtype.horizontal]: 140,
+  [BulletSubtype.vertical]: 140,
+  [BulletSubtype.circle]: 160,
+  [BulletSubtype.halfCircle]: 160,
+  [BulletSubtype.twoThirdsCircle]: 160,
 };
 
 /** @internal */
 export const getLayout = createCustomCachedSelector(
   [getBulletSpec, getChartSize, getSettingsSpecSelector],
-  (spec, chartSize, { locale }): BulletGraphLayout => {
+  (spec, chartSize, { locale }): BulletLayout => {
     const { data } = spec;
     const rows = data.length;
     const columns = data.reduce((acc, row) => {

@@ -7,15 +7,17 @@
  */
 
 import chroma from 'chroma-js';
+import { extent } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
-import { $Values } from 'utility-types';
+import { $Values, Required } from 'utility-types';
 
 import { BaseBoundsConfig, OpenClosedBoundsConfig } from './bounds';
 import { combineColors } from '../../../common/color_calcs';
 import { RGBATupleToString, colorToRgba, getChromaColor } from '../../../common/color_library_wrappers';
-import { ChromaColorScale, Color } from '../../../common/colors';
-import { isFiniteNumber, isNil, isWithinRange, sortNumbers } from '../../../utils/common';
+import { ChromaColorScale, Color, Colors } from '../../../common/colors';
+import { clamp, isFiniteNumber, isNil, isSorted, isWithinRange, sortNumbers } from '../../../utils/common';
 import { ContinuousDomain, GenericDomain } from '../../../utils/domain';
+import { Logger } from '../../../utils/logger';
 
 /**
  * @public
@@ -55,15 +57,15 @@ export type ColorBandConfig = OpenClosedBoundsConfig<number | ColorBandValue> & 
 /** @public */
 export interface ColorBandSimpleConfig {
   /**
-   * Distinct color classes to defined discrete color breakdown
+   * Distinct color steps to defined discrete color breakdown
    * Defaults to intervals between ticks
    *
-   * Number value scales colors evenly n times
-   * Array of numbers defines the color stop positions
+   * Number - scales colors evenly n times, does not support continuous color blending (i.e. n \>\> 10)
+   * Array of numbers - defines the color stop positions
    *
    * See https://gka.github.io/chroma.js/#scale-classes
    */
-  classes?: number | number[];
+  steps?: number | number[];
   colors: Color[];
 }
 
@@ -84,7 +86,7 @@ const getValueByTypeFn = ([min, max]: ContinuousDomain) => {
     if (typeof bandValue === 'number') return bandValue + openOffsetValue;
     const { type, value } = bandValue;
     if (type === 'scale') return value + openOffsetValue;
-    if (type === 'percentage') return min + value * domainLength + openOffsetValue;
+    if (type === 'percentage') return min + (value / 100) * domainLength + openOffsetValue;
     return null;
   };
 };
@@ -110,7 +112,7 @@ const getDomainPairFn = (domain: ContinuousDomain) => {
 const isComplexConfig = (config: BulletColorConfig): config is ColorBandComplexConfig =>
   Array.isArray(config) && typeof config[0] !== 'string';
 
-const getFullDomainTicks = ([min, max]: ContinuousDomain, ticks: number[]): number[] => {
+const getColorBandsFromTicks = ([min, max]: ContinuousDomain, ticks: number[]): number[] => {
   const fullTicks = ticks.slice();
   const first = fullTicks.at(0)!;
   const last = fullTicks.at(-1)!;
@@ -124,22 +126,18 @@ const getFullDomainTicks = ([min, max]: ContinuousDomain, ticks: number[]): numb
     if (maxIndex === 0) fullTicks.unshift(max);
     else fullTicks.push(max);
   }
-  return fullTicks;
+  return fullTicks.flatMap((n, i, { length }) => (i === 0 || i === length - 1 ? [n] : [n, n]));
 };
 
-function getScaleInputs(
-  baseDomain: ContinuousDomain,
-  flippedDomain: boolean,
-  config: BulletColorConfig,
-  fullTicks: number[],
-  backgroundColor: Color,
-): {
-  domain: number[];
+interface ScaleInputs {
+  colorBandDomain?: number[];
   colors: string[];
-  classes?: number | number[];
-} {
+  steps?: number | number[];
+}
+
+function getScaleInputs(baseDomain: ContinuousDomain, config: BulletColorConfig, backgroundColor: Color): ScaleInputs {
   if (!Array.isArray(config) || !isComplexConfig(config)) {
-    const { colors: rawColors, classes }: { colors: string[]; classes?: number | number[] } = !Array.isArray(config)
+    const { colors: rawColors, steps }: { colors: string[]; steps?: number | number[] } = !Array.isArray(config)
       ? config
       : {
           colors: config,
@@ -158,21 +156,14 @@ function getScaleInputs(
       }
     }
 
-    if (flippedDomain) {
-      // Array of colors should always begin at the domain start
-      colors.reverse();
-    }
-
     return {
-      domain: baseDomain,
       colors,
-      classes: classes ?? fullTicks,
+      steps,
     };
   }
 
   if (!isComplexConfig(config)) {
     return {
-      domain: baseDomain,
       colors: config,
     };
   }
@@ -200,40 +191,38 @@ function getScaleInputs(
   );
 
   let prevMax = -Infinity;
-  return boundedDomains.reduce<{
-    domain: number[];
-    colors: string[];
-  }>(
+  return boundedDomains.reduce<Required<ScaleInputs, 'colorBandDomain'>>(
     (acc, [min, max], i) => {
+      // TODO: Add better error handling around this logic, the complex config right now assumes the following:
+      // - All ranges are ordered from min to max
+      // - All ranges are compatible with each other such that there is no overlapping or excluded ranges
+      // Ideally we validate the config and fix it the best we can based on what is provided, filling or clamping as needed
       const testMinValue = isFiniteNumber(min) ? min : isFiniteNumber(max) ? max : null;
-      if (testMinValue === null || testMinValue < prevMax) return acc;
+      if (testMinValue === null || testMinValue < prevMax) {
+        Logger.warn(`Error with ColorBandComplexConfig:
+
+Ranges are incompatible with each other such that there is either overlapping or excluded range pairs`);
+        return acc;
+      }
       const newMaxValue = isFiniteNumber(max) ? max : isFiniteNumber(min) ? min : null;
-      if (newMaxValue === null) {
-        // TODO remove this error
-        throw new Error('newMaxValue is null?????');
-      }
+      if (newMaxValue === null) return acc;
+
       prevMax = newMaxValue;
-
-      const color = colors[i];
-
-      if (!color) {
-        // TODO remove this error
-        throw new Error('color is undefined????????');
-      }
+      const color = colors[i] ?? Colors.Transparent.keyword;
 
       if (isFiniteNumber(min)) {
-        acc.domain.push(min);
+        acc.colorBandDomain.push(min);
         acc.colors.push(color);
       }
       if (isFiniteNumber(max)) {
-        acc.domain.push(max);
+        acc.colorBandDomain.push(max);
         acc.colors.push(color);
       }
 
       return acc;
     },
     {
-      domain: [],
+      colorBandDomain: [],
       colors: [],
     },
   );
@@ -242,19 +231,38 @@ function getScaleInputs(
 /** @internal */
 export function getColorScale(
   baseDomain: ContinuousDomain,
-  flippedDomain: boolean,
   config: BulletColorConfig,
-  fullTicks: number[],
   backgroundColor: Color,
   fallbackBandColor: Color,
-): ChromaColorScale {
-  const { colors, domain, classes } = getScaleInputs(baseDomain, flippedDomain, config, fullTicks, backgroundColor);
-  const scale = chroma.scale(colors).mode('lab').domain(domain);
+): [colorScale: ChromaColorScale, scaleInputs: ScaleInputs] {
+  const { colors, colorBandDomain, steps: userSteps } = getScaleInputs(baseDomain, config, backgroundColor);
+  const scale = chroma
+    .scale(colors)
+    .mode('lab')
+    .domain(colorBandDomain ?? baseDomain);
+  let steps = userSteps;
+  let scaleDomain = baseDomain;
 
-  if (classes) scale.classes(classes);
-  const isInDomain = isWithinRange(baseDomain);
+  if (steps !== undefined) {
+    if (Array.isArray(steps) && !isSorted(steps, { order: 'ascending' })) {
+      Logger.warn(
+        `Ignoring Bullet.colorBands.steps. Expected a sorted ascending array of numbers without duplicates.\n\n\tReceived:${JSON.stringify(steps)}`,
+      );
+      steps = undefined;
+    } else if (typeof steps === 'number' && steps < 1) {
+      Logger.warn(`Ignoring Bullet.colorBands.steps. Expected a positive number.\n\n\tReceived:${steps}`);
+      steps = undefined;
+    } else {
+      if (Array.isArray(steps)) {
+        const [min = NaN, max = NaN] = extent(steps);
+        scaleDomain = [min, max];
+      }
+      scale.classes(steps);
+    }
+  }
+  const isInDomain = isWithinRange(scaleDomain);
 
-  return (n) => (isInDomain(n) ? scale(n) : getChromaColor(fallbackBandColor));
+  return [(n) => (isInDomain(n) ? scale(n) : getChromaColor(fallbackBandColor)), { colors, colorBandDomain, steps }];
 }
 
 /** @internal */
@@ -269,7 +277,7 @@ export type ColorTick = { color: Color } & BandPositions;
 
 // TODO memoize for duplicate calls
 /** @internal */
-export function getColorBands(
+export function getColorScaleWithBands(
   scale: ScaleLinear<number, number>,
   config: BulletColorConfig,
   ticks: number[],
@@ -280,43 +288,77 @@ export function getColorBands(
   bands: ColorTick[];
 } {
   const domain = scale.domain() as GenericDomain;
-  const orderedDomain = sortNumbers(domain) as ContinuousDomain;
-  const fullTicks = getFullDomainTicks(orderedDomain, ticks);
-  const colorScale = getColorScale(
-    orderedDomain,
-    domain[0] > domain[1],
-    config,
-    sortNumbers(fullTicks),
-    backgroundColor,
-    fallbackBandColor,
-  );
-  const scaledBandPositions = fullTicks.reduce<[pixelPosition: BandPositions, tick: number][]>((acc, start, i) => {
-    const end = fullTicks[i + 1];
-    if (end === undefined) return acc;
-    const scaledStart = scale(start);
-    const scaledEnd = scale(end);
-    const size = Math.abs(scaledEnd - scaledStart);
-    acc.push([
-      { start: scaledStart, end: scaledEnd, size },
-      // pegs color at start of band - maybe allow control of this later
-      start + (end - start) / 2,
-    ]);
-    return acc;
-  }, []);
-
-  // TODO allow continuous gradients
-  const bands = scaledBandPositions.reduce<ColorTick[]>((acc, [pxPosition, tick]) => {
-    return [
-      ...acc,
-      {
-        ...pxPosition,
-        color: colorScale(tick).hex(),
-      },
-    ];
-  }, []);
+  const baseDomain = sortNumbers(domain) as ContinuousDomain;
+  const [colorScale, colorScaleInputs] = getColorScale(baseDomain, config, backgroundColor, fallbackBandColor);
 
   return {
     scale: colorScale,
-    bands,
+    bands: getColorBands(scale, colorScale, ticks, baseDomain, colorScaleInputs),
   };
+}
+
+function getColorBands(
+  scale: ScaleLinear<number, number>,
+  colorScale: ChromaColorScale,
+  ticks: number[],
+  baseDomain: ContinuousDomain,
+  { colorBandDomain, steps }: ScaleInputs,
+): ColorTick[] {
+  const [min, max] = baseDomain;
+  if (steps) {
+    if (Array.isArray(steps)) {
+      const bands: ColorTick[] = [];
+
+      for (let i = 0; i < steps.length - 1; i++) {
+        const start = steps[i]!;
+        const end = steps[i + 1]!;
+        const [scaledStart, scaledEnd] = sortNumbers([scale(clamp(start, min, max)), scale(clamp(end, min, max))]);
+
+        bands.push({
+          start: scaledStart,
+          end: scaledEnd,
+          size: Math.abs(scaledEnd - scaledStart),
+          color: colorScale(start + Math.abs(end - start) / 2).hex(),
+        });
+      }
+
+      return bands;
+    }
+    const domainDelta = max - min;
+    const size = domainDelta / steps;
+
+    return Array.from({ length: steps }, (_, i) => {
+      const [start, end] = sortNumbers([scale(i * size + min), scale((i + 1) * size + min)]);
+
+      return {
+        start,
+        end,
+        color: colorScale((i + 0.5) * size + min).hex(),
+        size: Math.abs(end - start),
+      };
+    });
+  }
+
+  const bandPositions = colorBandDomain ?? getColorBandsFromTicks(baseDomain, ticks);
+  const scaledColorBands: ColorTick[] = [];
+
+  for (let i = 0; i < bandPositions.length; i += 2) {
+    const [start, end] = bandPositions.slice(i, i + 2);
+    if (start === undefined || end === undefined) continue;
+
+    const [scaledStart, scaledEnd] = sortNumbers([scale(clamp(start, min, max)), scale(clamp(end, min, max))]);
+    const size = Math.abs(scaledEnd - scaledStart);
+    const tick = clamp(start + (end - start) / 2, min, max); // pegs color at middle of band - maybe allow control of this later
+
+    if (scaledStart === scaledEnd) continue;
+
+    scaledColorBands.push({
+      start: scaledStart,
+      end: scaledEnd,
+      size,
+      color: colorScale(tick).hex(),
+    });
+  }
+
+  return scaledColorBands;
 }

@@ -22,7 +22,7 @@ export const ChartType = Object.freeze({
   Heatmap: 'heatmap' as const,
   Wordcloud: 'wordcloud' as const,
   Metric: 'metric' as const,
-  BulletGraph: 'bullet_graph' as const,
+  Bullet: 'bullet' as const,
 });
 /** @public */
 export type ChartType = $Values<typeof ChartType>;

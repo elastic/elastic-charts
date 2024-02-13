@@ -15,7 +15,7 @@ import { Padding } from '../../utils/dimensions';
 import { DARK_BASE_COLORS, LIGHT_BASE_COLORS } from '../../utils/themes/base_colors';
 
 /** @public */
-export interface BulletGraphStyle {
+export interface BulletStyle {
   textColor: Color;
   border: Color;
   barBackground: Color;
@@ -30,11 +30,11 @@ export interface BulletGraphStyle {
 }
 
 /** @internal */
-export const LIGHT_THEME_BULLET_STYLE: BulletGraphStyle = {
+export const LIGHT_THEME_BULLET_STYLE: BulletStyle = {
   textColor: LIGHT_BASE_COLORS.darkestShade,
   border: '#EDF0F5',
   barBackground: LIGHT_BASE_COLORS.darkestShade,
-  colorBands: ['#D9C6EF', '#AA87D1'],
+  colorBands: ['#AA87D1', '#D9C6EF'],
   nonFiniteText: 'N/A',
   minHeight: 64,
   angularTickLabelPadding: 10,
@@ -42,7 +42,7 @@ export const LIGHT_THEME_BULLET_STYLE: BulletGraphStyle = {
 };
 
 /** @internal */
-export const DARK_THEME_BULLET_STYLE: BulletGraphStyle = {
+export const DARK_THEME_BULLET_STYLE: BulletStyle = {
   textColor: '#E0E5EE',
   border: DARK_BASE_COLORS.lightShade,
   barBackground: '#FFF',

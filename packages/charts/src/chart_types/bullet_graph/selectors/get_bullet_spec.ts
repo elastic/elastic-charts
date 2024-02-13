@@ -7,13 +7,13 @@
  */
 
 import { ChartType } from '../../../chart_types';
-import { BulletGraphSpec } from '../../../chart_types/bullet_graph/spec';
+import { BulletSpec } from '../../../chart_types/bullet_graph/spec';
 import { SpecType } from '../../../specs';
 import { GlobalChartState } from '../../../state/chart_state';
 import { getSpecFromStore } from '../../../state/utils';
 
 /** @internal */
 
-export function getBulletSpec(state: GlobalChartState): BulletGraphSpec {
-  return getSpecFromStore<BulletGraphSpec, true>(state.specs, ChartType.BulletGraph, SpecType.Series, true);
+export function getBulletSpec(state: GlobalChartState): BulletSpec {
+  return getSpecFromStore<BulletSpec, true>(state.specs, ChartType.Bullet, SpecType.Series, true);
 }

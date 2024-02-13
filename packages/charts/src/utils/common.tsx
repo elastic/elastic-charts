@@ -509,7 +509,34 @@ export function isUniqueArray<B, T>(arr: B[], extractor?: (value: B) => T) {
  * @internal
  */
 export function sortNumbers<T extends any[]>(arr: T, descending = false): T {
-  return arr.slice().sort(descending ? (a, b) => b - 1 : (a, b) => a - b) as T;
+  return arr.slice().sort(descending ? (a, b) => b - a : (a, b) => a - b) as T;
+}
+
+type SortTestFn = (n1?: number, n2?: number) => boolean;
+
+/**
+ * Returns true if array of numbers is sorted
+ * @internal
+ */
+export function isSorted<T extends number[]>(
+  arr: T,
+  options?: { allowDuplicates?: boolean; order?: 'ascending' | 'descending' },
+): boolean {
+  if (arr.length <= 1) return true;
+  const ascending = options?.order === 'ascending' ? true : options?.order === 'descending' ? false : arr[0]! < arr[1]!;
+  const isOrderedPair: SortTestFn =
+    options?.allowDuplicates ?? false
+      ? ascending
+        ? (n1 = NaN, n2 = NaN) => n1 <= n2
+        : (n1 = NaN, n2 = NaN) => n1 >= n2
+      : ascending
+        ? (n1 = NaN, n2 = NaN) => n1 < n2
+        : (n1 = NaN, n2 = NaN) => n1 > n2;
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (!isOrderedPair(arr[i], arr[i + 1])) return false;
+  }
+  return true;
 }
 
 /**

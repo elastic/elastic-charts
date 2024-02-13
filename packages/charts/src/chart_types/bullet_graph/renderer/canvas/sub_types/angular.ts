@@ -15,8 +15,8 @@ import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
 import { renderDebugPoint } from '../../../../xy_chart/renderer/canvas/utils/debug';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
-import { BulletGraphSpec } from '../../../spec';
-import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
+import { BulletSpec } from '../../../spec';
+import { BulletStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
 
@@ -24,9 +24,9 @@ import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } f
 export function angularBullet(
   ctx: CanvasRenderingContext2D,
   dimensions: BulletPanelDimensions,
-  style: BulletGraphStyle,
+  style: BulletStyle,
   backgroundColor: Color,
-  spec: BulletGraphSpec,
+  spec: BulletSpec,
   debug: boolean,
   activeValue?: ActiveValue | null,
 ) {

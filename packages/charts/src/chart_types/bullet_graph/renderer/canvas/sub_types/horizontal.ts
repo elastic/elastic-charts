@@ -13,14 +13,14 @@ import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../ut
 import { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
-import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
+import { BulletStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_LABEL_PADDING } from '../constants';
 
 /** @internal */
 export function horizontalBullet(
   ctx: CanvasRenderingContext2D,
   dimensions: BulletPanelDimensions,
-  style: BulletGraphStyle,
+  style: BulletStyle,
   backgroundColor: Color,
   activeValue?: ActiveValue | null,
 ) {
@@ -100,6 +100,6 @@ export function horizontalBullet(
       } else {
         ctx.textAlign = 'start';
       }
-      ctx.fillText(labelText, scale(tick), verticalAlignment + TARGET_SIZE / 2);
+      ctx.fillText(labelText, scale(tick), verticalAlignment + TARGET_SIZE / 2 + TICK_LABEL_PADDING);
     });
 }

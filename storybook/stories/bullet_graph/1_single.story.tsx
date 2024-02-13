@@ -10,7 +10,7 @@ import { text, number, boolean } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
+import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -27,7 +27,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const end = number('end', 100, { range: true, min: -200, max: 200 }, 'General');
   const format = text('format (numeraljs)', '0.[0]', 'General');
   const formatter = (d: number) => numeral(d).format(format);
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal, { group: 'General' });
+  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal, { group: 'General' });
 
   const niceDomain = boolean('niceDomain', false, 'Ticks');
   const tickStrategy = customKnobs.multiSelect(
@@ -52,7 +52,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   return (
     <Chart title={title} description={description}>
       <Settings debug={debug} baseTheme={useBaseTheme()} />
-      <BulletGraph
+      <Bullet
         id="bullet"
         subtype={subtype}
         data={[
