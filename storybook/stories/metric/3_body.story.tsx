@@ -76,6 +76,31 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   const numericData: MetricWProgress | MetricWNumber | MetricWTrend = {
     ...data,
+    body: !showBody ? null : (
+      <div className={classNames('myCustomMetricSlot', { showBodyArea })} style={{ paddingTop: 8 }}>
+        <div>
+          <EuiFlexGroup wrap responsive={false} gutterSize="s">
+            <EuiFlexItem grow={false}>
+              <EuiBadge color="success">Healthy</EuiBadge>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiBadge
+                onMouseDown={(e): void => {
+                  e.stopPropagation(); // stops propagation of metric onElementClick
+                }}
+                onClickAriaLabel=""
+                onClick={() => action('badge click')()}
+                color="danger"
+                iconType="warning"
+                iconSide="left"
+              >
+                13
+              </EuiBadge>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </div>
+      </div>
+    ),
     value: Number.parseFloat(value),
     valueFormatter: (d: number) => `${d}${valuePostfix}`,
     ...(progressOrTrend === 'bar' ? { domainMax: progressMax, progressBarDirection } : {}),
@@ -113,28 +138,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
         }}
         onElementOut={() => onEventOutAction('out')}
       />
-      <Metric
-        id="1"
-        data={configuredData}
-        body={
-          !showBody ? null : (
-            <div className={classNames('myCustomMetricSlot', { showBodyArea })} style={{ paddingTop: 8 }}>
-              <div>
-                <EuiFlexGroup wrap responsive={false} gutterSize="s">
-                  <EuiFlexItem grow={false}>
-                    <EuiBadge color="success">Healthy</EuiBadge>
-                  </EuiFlexItem>
-                  <EuiFlexItem grow={false}>
-                    <EuiBadge color="danger" iconType="warning" iconSide="left">
-                      13
-                    </EuiBadge>
-                  </EuiFlexItem>
-                </EuiFlexGroup>
-              </div>
-            </div>
-          )
-        }
-      />
+      <Metric id="1" data={configuredData} />
     </Chart>
   );
 };

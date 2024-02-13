@@ -31,6 +31,7 @@ export type MetricBase = {
   subtitle?: string;
   extra?: ReactElement;
   icon?: ComponentType<{ width: number; height: number; color: Color }>;
+  body?: ReactNode;
 };
 
 /** @alpha */
@@ -92,7 +93,6 @@ export interface MetricSpec extends Spec {
   specType: typeof SpecType.Series;
   chartType: typeof ChartType.Metric;
   data: (MetricDatum | undefined)[][];
-  body?: ReactNode;
 }
 
 /** @alpha */
