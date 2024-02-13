@@ -1,3 +1,25 @@
+# [64.0.0](https://github.com/elastic/elastic-charts/compare/v63.1.0...v64.0.0) (2024-02-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^93.1.0 ([#2332](https://github.com/elastic/elastic-charts/issues/2332)) ([855e357](https://github.com/elastic/elastic-charts/commit/855e357ab4433c7fc5a0e7e2c2398150ff686e41))
+* **deps:** update dependency @elastic/eui to v93 ([#2324](https://github.com/elastic/elastic-charts/issues/2324)) ([ce19379](https://github.com/elastic/elastic-charts/commit/ce1937910211f812b7a4eed371337e6498b1e6b3))
+* **deps:** update dependency @playwright/test to ^1.41.2 ([#2330](https://github.com/elastic/elastic-charts/issues/2330)) ([1f8c638](https://github.com/elastic/elastic-charts/commit/1f8c638356edebab8fc14d9ebdcaceec3e10812e))
+* **metric:** move `MetricSpec.body` to `MetricBase` ([#2336](https://github.com/elastic/elastic-charts/issues/2336)) ([3390e25](https://github.com/elastic/elastic-charts/commit/3390e251d3edc37ca68e13ff3acd8843b3b5a6ba))
+* use passed size in pixel without waiting for resizeObserver ([#2270](https://github.com/elastic/elastic-charts/issues/2270)) ([f9c11fc](https://github.com/elastic/elastic-charts/commit/f9c11fca2a284e4ca3744a02dc743d09b78f64b8))
+
+
+### chore
+
+* **bullet:** bullet improvements, bug fixes and renaming ([#2319](https://github.com/elastic/elastic-charts/issues/2319)) ([34fd38b](https://github.com/elastic/elastic-charts/commit/34fd38b77cdd060057a38e25c6197de6807839d2))
+
+
+### BREAKING CHANGES
+
+* **metric:** Moves `MetricSpec.body` to `MetricDatum.body`/`MetricBase.body`
+* **bullet:** Rename `BulletGraph` to `Bullet` and `ColorBandSimpleConfig.classes` to `steps`
+
 # [63.1.0](https://github.com/elastic/elastic-charts/compare/v63.0.0...v63.1.0) (2024-01-29)
 
 
