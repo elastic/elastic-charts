@@ -27,7 +27,7 @@ import {
 import { LayoutDirection, isNil } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { MetricSpec, MetricWNumber, isMetricWProgress, isMetricWTrend } from '../../specs';
+import { MetricWNumber, isMetricWProgress, isMetricWTrend } from '../../specs';
 
 /** @internal */
 export const Metric: React.FunctionComponent<{
@@ -40,7 +40,6 @@ export const Metric: React.FunctionComponent<{
   datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
-  body?: MetricSpec['body'];
   backgroundColor: Color;
   contrastOptions: ColorContrastOptions;
   locale: string;
@@ -57,7 +56,6 @@ export const Metric: React.FunctionComponent<{
   datum,
   panel,
   style,
-  body,
   backgroundColor: chartBackgroundColor,
   contrastOptions,
   locale,
@@ -173,7 +171,6 @@ export const Metric: React.FunctionComponent<{
         datum={datumWithInteractionColor}
         panel={panel}
         style={style}
-        body={body}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
         progressBarSize={progressBarSize}
         highContrastTextColor={finalTextColor.keyword}

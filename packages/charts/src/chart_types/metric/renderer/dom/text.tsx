@@ -17,7 +17,7 @@ import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../ut
 import { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWNumber, isMetricWProgress, MetricDatum, MetricSpec } from '../../specs';
+import { isMetricWNumber, isMetricWProgress, MetricDatum } from '../../specs';
 
 type BreakPoint = 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl';
 
@@ -167,13 +167,12 @@ export const MetricText: React.FunctionComponent<{
   datum: MetricDatum;
   panel: Size;
   style: MetricStyle;
-  body?: MetricSpec['body'];
   onElementClick?: () => void;
   highContrastTextColor: Color;
   progressBarSize: 'small';
   locale: string;
-}> = ({ id, datum, panel, style, body, onElementClick, highContrastTextColor, progressBarSize, locale }) => {
-  const { extra, value } = datum;
+}> = ({ id, datum, panel, style, onElementClick, highContrastTextColor, progressBarSize, locale }) => {
+  const { extra, value, body } = datum;
 
   const size = findRange(WIDTH_BP, panel.width);
   const hasProgressBar = isMetricWProgress(datum);
