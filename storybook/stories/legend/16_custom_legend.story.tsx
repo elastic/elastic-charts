@@ -52,7 +52,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           onClick={() => i.onItemClickAction(false)}
           style={{ display: 'block', color: i.isSeriesHidden ? 'gray' : i.color }}
         >
-          {i.label} {i.extraValue}
+          {i.label} {i.extraValue?.formatted}
         </button>
       ))}
     </div>
