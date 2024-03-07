@@ -40,7 +40,7 @@ export interface ChartDimensions {
   axisSpecs: AxisSpec[],
   smSpec: SmallMultiplesSpec | null,
 ): ChartDimensions {
-  const axesDimensions = getAxesDimensions(theme, axisTickDimensions, axesStyles, axisSpecs, smSpec);
+  const axesDimensions = getAxesDimensions(parentDimensions, theme, axisTickDimensions, axesStyles, axisSpecs, smSpec);
   const chartWidth = parentDimensions.width - axesDimensions.left - axesDimensions.right;
   const chartHeight = parentDimensions.height - axesDimensions.top - axesDimensions.bottom;
   const pad = theme.chartPaddings;

@@ -69,6 +69,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
         dimension,
         visibleTicks: ticks,
         parentSize,
+        maxLabelSize,
       } = geometry;
       const axisSpec = getSpecsById<AxisSpec>(axesSpecs, id);
 
@@ -105,6 +106,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
           debug,
           renderingArea,
           layerGirth,
+          maxLabelSize,
         },
         locale,
       );
