@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { BulletDebugState } from '../chart_types/bullet_graph/selectors/get_debug_state';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
-import { AnnotationType, BaseDatum, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
+import { AnnotationType, BaseDatum, BulletSubtype, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
 import { Accessor } from '../utils/accessor';
 import type { Datum, Position } from '../utils/common';
+import { GenericDomain } from '../utils/domain';
 import type { GeometryValue } from '../utils/geometry';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
 
@@ -116,6 +116,24 @@ export type DebugStateAnnotations = {
   domainType?: 'xDomain' | 'yDomain';
   data: LineAnnotationDatum | RectAnnotationDatum;
 };
+
+/** @public */
+export interface BulletDebugStateRow {
+  subtype: BulletSubtype;
+  target?: number;
+  value: number;
+  title: string;
+  subtitle?: string;
+  colorBands: string[];
+  ticks: number[];
+  domain: GenericDomain;
+}
+
+/** @public */
+export interface BulletDebugState {
+  rows: (BulletDebugStateRow | null)[][];
+  activeValue?: number;
+}
 
 /**
  * Describes _visible_ chart state for use in functional tests

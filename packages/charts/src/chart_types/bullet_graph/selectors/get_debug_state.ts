@@ -10,27 +10,7 @@ import { getActiveValue } from './get_active_value';
 import { getBulletSpec } from './get_bullet_spec';
 import { getPanelDimensions } from './get_panel_dimensions';
 import { createCustomCachedSelector } from '../../../state/create_selector';
-import { DebugState } from '../../../state/types';
-import { GenericDomain } from '../../../utils/domain';
-import { BulletSubtype } from '../spec';
-
-/** @internal */
-export interface BulletDebugStateRow {
-  subtype: BulletSubtype;
-  target?: number;
-  value: number;
-  title: string;
-  subtitle?: string;
-  colorBands: string[];
-  ticks: number[];
-  domain: GenericDomain;
-}
-
-/** @internal */
-export interface BulletDebugState {
-  rows: (BulletDebugStateRow | null)[][];
-  activeValue?: number;
-}
+import { BulletDebugStateRow, DebugState } from '../../../state/types';
 
 /** @internal */
 export const getDebugStateSelector = createCustomCachedSelector(
