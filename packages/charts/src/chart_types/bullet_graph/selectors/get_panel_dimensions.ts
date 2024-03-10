@@ -35,6 +35,7 @@ export type BulletPanelDimensions = {
   };
   scale: ScaleLinear<number, number>;
   ticks: number[];
+  domain: GenericDomain;
   colorScale: ChromaColorScale;
   colorBands: ColorTick[];
   panel: Rect;
@@ -109,7 +110,7 @@ function getSubtypeDimensions(
   { ticks: desiredTicks, domain, niceDomain }: BulletDatum,
   { colorBands: defaultColorBandsConfig, fallbackBandColor }: BulletStyle,
   backgroundColor: Color,
-): Pick<BulletPanelDimensions, 'scale' | 'colorScale' | 'colorBands' | 'ticks'> {
+): Pick<BulletPanelDimensions, 'scale' | 'colorScale' | 'colorBands' | 'ticks' | 'domain'> {
   switch (subtype) {
     case BulletSubtype.circle:
     case BulletSubtype.halfCircle:
@@ -134,6 +135,7 @@ function getSubtypeDimensions(
 
       return {
         scale,
+        domain: scale.domain() as GenericDomain,
         ticks,
         colorBands,
         colorScale,
@@ -158,6 +160,7 @@ function getSubtypeDimensions(
 
       return {
         scale,
+        domain: scale.domain() as GenericDomain,
         ticks,
         colorBands,
         colorScale,
@@ -182,6 +185,7 @@ function getSubtypeDimensions(
 
       return {
         scale,
+        domain: scale.domain() as GenericDomain,
         ticks,
         colorBands,
         colorScale,

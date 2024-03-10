@@ -11,17 +11,19 @@ import { getBulletSpec } from './get_bullet_spec';
 import { getPanelDimensions } from './get_panel_dimensions';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { DebugState } from '../../../state/types';
+import { GenericDomain } from '../../../utils/domain';
 import { BulletSubtype } from '../spec';
 
 /** @internal */
 export interface BulletDebugStateRow {
   subtype: BulletSubtype;
   target?: number;
-  value?: number;
+  value: number;
   title: string;
   subtitle?: string;
   colorBands: string[];
   ticks: number[];
+  domain: GenericDomain;
 }
 
 /** @internal */
@@ -40,7 +42,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
           return row.map((d): BulletDebugStateRow | null => {
             if (!d) return d;
 
-            const { datum, colorBands, ticks } = d;
+            const { datum, colorBands, ticks, domain } = d;
             const { title, subtitle, target, value } = datum;
             return {
               title,
@@ -50,6 +52,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
               subtype: spec.subtype,
               colorBands: colorBands.map((b) => b.color),
               ticks,
+              domain,
             };
           });
         }),
