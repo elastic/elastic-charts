@@ -65,11 +65,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
               domain: [start, end],
               niceDomain,
               ticks:
-                tickStrategy[0] === 'count'
-                  ? ticks
-                  : tickStrategy[0] === 'placements'
-                    ? () => tickPlacements
-                    : undefined,
+                tickStrategy[0] === 'count' ? ticks : tickStrategy[0] === 'placements' ? tickPlacements : undefined,
               valueFormatter: formatter,
               tickFormatter: formatter,
             },
