@@ -14,11 +14,13 @@ import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { customKnobs } from '../utils/knobs';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
+  const debugState = boolean('Enable debug state', false);
   const bulletTitle = text('title', 'Error rate', 'General');
   const subtitle = text('subtitle', '', 'General');
   const value = number('value', 56, { range: true, min: -200, max: 200 }, 'General');
@@ -51,7 +53,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings debug={debug} baseTheme={useBaseTheme()} />
+      <Settings
+        debug={debug}
+        onRenderChange={getDebugStateLogger(debugState)}
+        debugState={debugState}
+        baseTheme={useBaseTheme()}
+      />
       <Bullet
         id="bullet"
         subtype={subtype}

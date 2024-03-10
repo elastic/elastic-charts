@@ -10,6 +10,7 @@ import React, { RefObject } from 'react';
 
 import { BulletRenderer } from './renderer/canvas';
 import { canDisplayChartTitles } from './selectors/can_display_chart_titles';
+import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getTooltipAnchor } from './selectors/get_tooltip_anchor';
 import { getTooltipInfo } from './selectors/get_tooltip_info';
 import { isTooltipVisible } from './selectors/is_tooltip_visible';
@@ -28,7 +29,7 @@ const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 /** @internal */
 export class BulletState implements InternalChartState {
   chartType = ChartType.Bullet;
-  getChartTypeDescription = () => 'Bullet Graph';
+  getChartTypeDescription = () => 'Bullet chart';
   chartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
     <>
       <BulletRenderer forwardStageRef={forwardStageRef} />
@@ -60,7 +61,7 @@ export class BulletState implements InternalChartState {
   getProjectionContainerArea = () => ({ width: 0, height: 0, top: 0, left: 0 });
   getMainProjectionArea = () => ({ width: 0, height: 0, top: 0, left: 0 });
   getBrushArea = () => null;
-  getDebugState = () => ({});
+  getDebugState = (state: GlobalChartState) => getDebugStateSelector(state);
   getSmallMultiplesDomains() {
     return {
       smHDomain: [],

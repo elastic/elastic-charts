@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { BulletDebugState } from '../chart_types/bullet_graph/selectors/get_debug_state';
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
 import { AnnotationType, BaseDatum, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
@@ -129,9 +130,9 @@ export interface DebugState {
   lines?: DebugStateLine[];
   bars?: DebugStateBar[];
   annotations?: DebugStateAnnotations[];
-  /** Heatmap chart debug state */
   heatmap?: HeatmapDebugState;
   partition?: PartitionDebugState[];
+  bullet?: BulletDebugState;
 }
 
 /**

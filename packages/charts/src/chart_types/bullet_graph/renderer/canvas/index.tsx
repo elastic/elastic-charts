@@ -14,6 +14,7 @@ import { renderBullet } from './bullet';
 import { ColorContrastOptions } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color, Colors } from '../../../../common/colors';
+import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
 import { ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
@@ -152,7 +153,9 @@ class Component extends React.Component<Props> {
           style={size}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
-        ></canvas>
+        >
+          <ScreenReaderSummary />
+        </canvas>
         {dimensions.shouldRenderMetric && (
           <div className="echBulletAsMetric" style={{ width: '100%', height: '100%' }}>
             <AlignedGrid<BulletDatum>
