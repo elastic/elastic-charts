@@ -1,3 +1,11 @@
+## [64.0.1](https://github.com/elastic/elastic-charts/compare/v64.0.0...v64.0.1) (2024-03-10)
+
+
+### Bug Fixes
+
+* **bullet:** add a11y summary and debugState ([#2352](https://github.com/elastic/elastic-charts/issues/2352)) ([49a1b35](https://github.com/elastic/elastic-charts/commit/49a1b358b21fbda4e15a96ce984d460786396899))
+* **deps:** update dependency @elastic/eui to ^93.2.0 ([#2343](https://github.com/elastic/elastic-charts/issues/2343)) ([0701985](https://github.com/elastic/elastic-charts/commit/0701985a470ed98936439ccf4e21bb1d52df5e18))
+
 # [64.0.0](https://github.com/elastic/elastic-charts/compare/v63.1.0...v64.0.0) (2024-02-13)
 
 
