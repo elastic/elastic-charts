@@ -27,6 +27,8 @@ export {
   DebugStateAxis,
   DebugStateBase,
   DebugStateLegendItem,
+  BulletDebugState,
+  BulletDebugStateRow,
   PointerValue,
 } from './state/types';
 export { toEntries } from './utils/common';

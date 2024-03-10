@@ -478,6 +478,34 @@ export interface BulletDatum {
     valueFormatter: ValueFormatter;
 }
 
+// @public (undocumented)
+export interface BulletDebugState {
+    // (undocumented)
+    activeValue?: number;
+    // (undocumented)
+    rows: (BulletDebugStateRow | null)[][];
+}
+
+// @public (undocumented)
+export interface BulletDebugStateRow {
+    // (undocumented)
+    colorBands: string[];
+    // (undocumented)
+    domain: GenericDomain;
+    // (undocumented)
+    subtitle?: string;
+    // (undocumented)
+    subtype: BulletSubtype;
+    // (undocumented)
+    target?: number;
+    // (undocumented)
+    ticks: number[];
+    // (undocumented)
+    title: string;
+    // (undocumented)
+    value: number;
+}
+
 // Warning: (ae-incompatible-release-tags) The symbol "BulletProps" is marked as @public, but its signature references "Bullet" which is marked as @alpha
 //
 // @public (undocumented)
@@ -933,7 +961,11 @@ export interface DebugState {
     axes?: DebugStateAxes;
     // (undocumented)
     bars?: DebugStateBar[];
+    // (undocumented)
+    bullet?: BulletDebugState;
     // Warning: (ae-forgotten-export) The symbol "HeatmapDebugState" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
     heatmap?: HeatmapDebugState;
     // (undocumented)
     legend?: DebugStateLegend;

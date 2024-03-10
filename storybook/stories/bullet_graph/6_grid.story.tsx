@@ -14,10 +14,12 @@ import { Chart, Bullet, BulletSubtype, Settings, Tooltip } from '@elastic/charts
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
+  const debugState = boolean('Enable debug state', false);
   const hideTooltip = boolean('hide tooltip', false);
   const syncCursor = boolean('sync cursor', false);
   const tickSnapStep = number('active tick step', 1, { min: 0, max: 10 });
@@ -32,7 +34,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings baseTheme={useBaseTheme()} debug={debug} />
+      <Settings
+        debug={debug}
+        onRenderChange={getDebugStateLogger(debugState)}
+        debugState={debugState}
+        baseTheme={useBaseTheme()}
+      />
       <Tooltip type={hideTooltip ? 'none' : undefined} />
       <Bullet
         id="bubbles"

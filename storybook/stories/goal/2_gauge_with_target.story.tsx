@@ -16,11 +16,13 @@ import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/co
 import { Color } from '../../../packages/charts/src/common/colors';
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { getBandFillColorFn } from '../utils/utils';
 
 const subtype = GoalSubtype.Goal;
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const debugState = boolean('Enable debug state', false);
   const base = number('base', 0, { range: true, min: 0, max: 300, step: 1 });
   const target = number('target', 260, { range: true, min: 0, max: 300, step: 1 });
   const actual = number('actual', 170, { range: true, min: 0, max: 300, step: 1 });
@@ -59,7 +61,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings baseTheme={useBaseTheme()} onRenderChange={getDebugStateLogger(debugState)} debugState={debugState} />
       <Goal
         id="spec_1"
         subtype={subtype}

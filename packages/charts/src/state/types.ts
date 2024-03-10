@@ -8,9 +8,10 @@
 
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { Pixels } from '../common/geometry';
-import { AnnotationType, BaseDatum, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
+import { AnnotationType, BaseDatum, BulletSubtype, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
 import { Accessor } from '../utils/accessor';
 import type { Datum, Position } from '../utils/common';
+import { GenericDomain } from '../utils/domain';
 import type { GeometryValue } from '../utils/geometry';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
 
@@ -116,6 +117,24 @@ export type DebugStateAnnotations = {
   data: LineAnnotationDatum | RectAnnotationDatum;
 };
 
+/** @public */
+export interface BulletDebugStateRow {
+  subtype: BulletSubtype;
+  target?: number;
+  value: number;
+  title: string;
+  subtitle?: string;
+  colorBands: string[];
+  ticks: number[];
+  domain: GenericDomain;
+}
+
+/** @public */
+export interface BulletDebugState {
+  rows: (BulletDebugStateRow | null)[][];
+  activeValue?: number;
+}
+
 /**
  * Describes _visible_ chart state for use in functional tests
  *
@@ -129,9 +148,9 @@ export interface DebugState {
   lines?: DebugStateLine[];
   bars?: DebugStateBar[];
   annotations?: DebugStateAnnotations[];
-  /** Heatmap chart debug state */
   heatmap?: HeatmapDebugState;
   partition?: PartitionDebugState[];
+  bullet?: BulletDebugState;
 }
 
 /**
