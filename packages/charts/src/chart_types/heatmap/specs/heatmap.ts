@@ -101,7 +101,7 @@ export interface HeatmapSpec<D extends BaseDatum = Datum> extends Spec {
   yAxisLabelFormatter: LabelAccessor<string | number>;
 }
 
-/** @internal */
+/** @public */
 export const heatmapBuildProps = buildSFProps<HeatmapSpec>()(
   {
     chartType: ChartType.Heatmap,
