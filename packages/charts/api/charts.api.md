@@ -854,10 +854,7 @@ export interface CustomLegendProps {
         label: CategoryLabel;
         seriesType?: SeriesType;
         pointStyle?: PointStyle;
-        extraValue?: {
-            raw: PrimitiveValue;
-            formatted: string;
-        };
+        extraValue?: LegendItemValue;
         isSeriesHidden?: boolean;
         onItemOverActon: () => void;
         onItemOutAction: () => void;
@@ -3496,6 +3493,10 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
+
+// Warnings were encountered during analysis:
+//
+// src/specs/settings.tsx:394:5 - (ae-forgotten-export) The symbol "LegendItemValue" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

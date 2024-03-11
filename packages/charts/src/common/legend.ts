@@ -17,6 +17,9 @@ import { PointStyle } from '../utils/themes/theme';
 /** @internal */
 export type LegendItemChildId = CategoryKey;
 
+/** @public */
+export type LegendItemValue = { value: PrimitiveValue; label: string };
+
 /** @internal */
 export type LegendItem = {
   seriesIdentifiers: SeriesIdentifier[];
@@ -30,10 +33,7 @@ export type LegendItem = {
   label: CategoryLabel;
   isSeriesHidden?: boolean;
   isItemHidden?: boolean;
-  values: Array<{
-    raw: number | null;
-    formatted: string;
-  }>;
+  values: Array<LegendItemValue>;
   // TODO: Remove when partition layers are toggleable
   isToggleable?: boolean;
   keys: Array<string | number>;
@@ -42,4 +42,4 @@ export type LegendItem = {
 };
 
 /** @internal */
-export type LegendItemExtraValues = Map<LegendItemChildId, { raw: PrimitiveValue; formatted: string }>;
+export type LegendItemExtraValues = Map<LegendItemChildId, LegendItemValue>;

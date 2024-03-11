@@ -30,8 +30,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     ],
     "values": [
       {
-        "formatted": "2",
-        "raw": 2,
+        "label": "2",
+        "value": 2,
       },
     ],
   },
@@ -67,8 +67,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -104,8 +104,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -137,8 +137,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     ],
     "values": [
       {
-        "formatted": "2",
-        "raw": 2,
+        "label": "2",
+        "value": 2,
       },
     ],
   },
@@ -174,8 +174,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -211,8 +211,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -244,8 +244,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     ],
     "values": [
       {
-        "formatted": "2",
-        "raw": 2,
+        "label": "2",
+        "value": 2,
       },
     ],
   },
@@ -281,8 +281,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -318,8 +318,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -356,8 +356,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -393,8 +393,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -431,8 +431,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -468,8 +468,8 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
     ],
     "values": [
       {
-        "formatted": "1",
-        "raw": 1,
+        "label": "1",
+        "value": 1,
       },
     ],
   },

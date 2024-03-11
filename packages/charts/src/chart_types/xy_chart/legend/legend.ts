@@ -139,8 +139,8 @@ export function computeLegend(
         itemValue !== null
           ? [
               {
-                raw: itemValue,
-                formatted: formattedItemValue,
+                value: itemValue,
+                label: formattedItemValue,
               },
             ]
           : [],
@@ -167,8 +167,8 @@ export function computeLegend(
           bandedItemValue !== null
             ? [
                 {
-                  raw: bandedItemValue,
-                  formatted: bandedFormattedItemValue,
+                  value: bandedItemValue,
+                  label: bandedFormattedItemValue,
                 },
               ]
             : [],

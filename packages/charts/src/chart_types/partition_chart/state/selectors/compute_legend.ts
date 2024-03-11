@@ -125,8 +125,8 @@ function walkTree(
           keys: [],
           values: [
             {
-              raw: node[AGGREGATE_KEY],
-              formatted: valueFormatter(node[AGGREGATE_KEY]),
+              value: node[AGGREGATE_KEY],
+              label: valueFormatter(node[AGGREGATE_KEY]),
             },
           ],
         },

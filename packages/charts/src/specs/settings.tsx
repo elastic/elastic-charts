@@ -18,6 +18,7 @@ import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { CategoryLabel } from '../common/category';
 import { Color } from '../common/colors';
+import { LegendItemValue } from '../common/legend';
 import { SmallMultiplesDatum } from '../common/panel_utils';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
@@ -390,7 +391,7 @@ export interface CustomLegendProps {
     label: CategoryLabel;
     seriesType?: SeriesType;
     pointStyle?: PointStyle;
-    extraValue?: { raw: PrimitiveValue; formatted: string };
+    extraValue?: LegendItemValue;
     isSeriesHidden?: boolean;
     onItemOverActon: () => void;
     onItemOutAction: () => void;
