@@ -135,14 +135,15 @@ export function computeLegend(
       isSeriesHidden,
       isItemHidden: hideInLegend,
       isToggleable: true,
-      defaultExtra:
+      values:
         itemValue !== null
-          ? {
-              raw: itemValue,
-              formatted: formattedItemValue,
-              legendSizingLabel: formattedItemValue,
-            }
-          : undefined,
+          ? [
+              {
+                raw: itemValue,
+                formatted: formattedItemValue,
+              },
+            ]
+          : [],
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
       pointStyle,
@@ -162,14 +163,15 @@ export function computeLegend(
         isSeriesHidden,
         isItemHidden: hideInLegend,
         isToggleable: true,
-        defaultExtra:
+        values:
           bandedItemValue !== null
-            ? {
-                raw: bandedItemValue,
-                formatted: bandedFormattedItemValue,
-                legendSizingLabel: bandedFormattedItemValue,
-              }
-            : undefined,
+            ? [
+                {
+                  raw: bandedItemValue,
+                  formatted: bandedFormattedItemValue,
+                },
+              ]
+            : [],
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
         pointStyle,

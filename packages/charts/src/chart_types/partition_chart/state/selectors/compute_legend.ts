@@ -123,11 +123,12 @@ function walkTree(
           depth: node[DEPTH_KEY] - 1,
           seriesIdentifiers: [{ key, specId }],
           keys: [],
-          defaultExtra: {
-            raw: node[AGGREGATE_KEY],
-            formatted: valueFormatter(node[AGGREGATE_KEY]),
-            legendSizingLabel: `${node[AGGREGATE_KEY]}`,
-          },
+          values: [
+            {
+              raw: node[AGGREGATE_KEY],
+              formatted: valueFormatter(node[AGGREGATE_KEY]),
+            },
+          ],
         },
         node,
       });

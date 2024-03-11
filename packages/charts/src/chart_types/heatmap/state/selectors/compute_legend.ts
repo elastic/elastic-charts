@@ -32,6 +32,7 @@ export const computeLegendSelector = createCustomCachedSelector(
         isToggleable: true,
         path: [{ index: 0, value: label }],
         keys: [],
+        values: [],
       };
     });
   },

@@ -15,10 +15,10 @@ export function getExtra(
   item: LegendItem,
   totalItems: number,
 ): { raw: PrimitiveValue; formatted: string } | null {
-  const { seriesIdentifiers, defaultExtra, childId, path } = item;
+  const { seriesIdentifiers, values, childId, path } = item;
   // don't show extra if the legend item is associated with multiple series
   if (extraValues.size === 0 || seriesIdentifiers.length > 1 || !seriesIdentifiers[0]) {
-    return defaultExtra ? { formatted: `${defaultExtra.formatted ?? ''}`, raw: defaultExtra.raw } : null;
+    return values.length > 0 ? { formatted: `${values[0]?.formatted ?? ''}`, raw: values[0]?.raw ?? null } : null;
   }
   const [{ key }] = seriesIdentifiers;
   const extraValueKey = path.map(({ index }) => index).join('__');
@@ -26,7 +26,7 @@ export function getExtra(
   const actionExtra = childId !== undefined ? itemExtraValues?.get(childId) : undefined;
   return actionExtra
     ? actionExtra
-    : extraValues.size === totalItems && defaultExtra
-      ? { formatted: `${defaultExtra.formatted ?? ''}`, raw: defaultExtra.raw }
+    : extraValues.size === totalItems && values.length > 0
+      ? { formatted: `${values[0]?.formatted ?? ''}`, raw: values[0]?.raw ?? null }
       : null;
 }

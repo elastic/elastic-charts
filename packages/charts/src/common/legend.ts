@@ -30,11 +30,10 @@ export type LegendItem = {
   label: CategoryLabel;
   isSeriesHidden?: boolean;
   isItemHidden?: boolean;
-  defaultExtra?: {
+  values: Array<{
     raw: number | null;
-    formatted: number | string | null;
-    legendSizingLabel: number | string | null;
-  };
+    formatted: string;
+  }>;
   // TODO: Remove when partition layers are toggleable
   isToggleable?: boolean;
   keys: Array<string | number>;
