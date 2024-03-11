@@ -8,7 +8,7 @@
 
 import { getChartThemeSelector } from './get_chart_theme';
 import { getLegendConfigSelector } from './get_legend_config_selector';
-import { getLegendItemsLabelsSelector } from './get_legend_items_labels';
+import { getLegendItemsSelector } from './get_legend_items';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
@@ -35,17 +35,23 @@ export type LegendSizing = Size & {
 
 /** @internal */
 export const getLegendSizeSelector = createCustomCachedSelector(
-  [getLegendConfigSelector, getChartThemeSelector, getParentDimensionSelector, getLegendItemsLabelsSelector],
-  (legendConfig, theme, parentDimensions, labels): LegendSizing => {
-    if (!legendConfig.showLegend) {
+  [getLegendConfigSelector, getChartThemeSelector, getParentDimensionSelector, getLegendItemsSelector],
+  (
+    { showLegend, legendSize, showLegendExtra, legendPosition, legendAction },
+    theme,
+    parentDimensions,
+    items,
+  ): LegendSizing => {
+    if (!showLegend) {
       return { width: 0, height: 0, margin: 0, position: LEGEND_TO_FULL_CONFIG[Position.Right] };
     }
 
     const bbox = withTextMeasure((textMeasure) =>
-      labels.reduce(
-        (acc, { label, depth }) => {
+      items.reduce(
+        (acc, { label, depth, values }) => {
+          const itemLabel = `${label}${showLegendExtra ? values[0]?.label ?? '' : ''}`;
           const { width, height } = textMeasure(
-            label,
+            itemLabel,
             { fontFamily: DEFAULT_FONT_FAMILY, fontVariant: 'normal', fontWeight: 400, fontStyle: 'normal' },
             12,
             1.5,
@@ -58,22 +64,22 @@ export const getLegendSizeSelector = createCustomCachedSelector(
       ),
     );
 
-    const { showLegendExtra: showLegendDisplayValue, legendPosition, legendAction } = legendConfig;
     const {
       legend: { verticalWidth, spacingBuffer, margin },
     } = theme;
 
     const actionDimension = isDefined(legendAction) ? 24 : 0; // max width plus margin
-    const legendItemWidth = MARKER_WIDTH + SHARED_MARGIN + bbox.width + (showLegendDisplayValue ? SHARED_MARGIN : 0);
+    const showExtraMargin = showLegendExtra; // && items.every(({ values }) => values.length > 0); // remove unnecessary margin
+    const legendItemWidth = MARKER_WIDTH + SHARED_MARGIN + bbox.width + (showExtraMargin ? SHARED_MARGIN : 0);
 
     if (legendPosition.direction === LayoutDirection.Vertical) {
       const legendItemHeight = bbox.height + VERTICAL_PADDING * 2;
-      const legendHeight = legendItemHeight * labels.length + TOP_MARGIN;
+      const legendHeight = legendItemHeight * items.length + TOP_MARGIN;
       const scrollBarDimension = legendHeight > parentDimensions.height ? SCROLL_BAR_WIDTH : 0;
       const staticWidth = spacingBuffer + actionDimension + scrollBarDimension;
 
-      const width = Number.isFinite(legendConfig.legendSize)
-        ? Math.min(Math.max(legendConfig.legendSize, legendItemWidth * 0.3 + staticWidth), parentDimensions.width * 0.7)
+      const width = Number.isFinite(legendSize)
+        ? Math.min(Math.max(legendSize, legendItemWidth * 0.3 + staticWidth), parentDimensions.width * 0.7)
         : Math.floor(Math.min(legendItemWidth + staticWidth, verticalWidth));
 
       return {
@@ -83,9 +89,9 @@ export const getLegendSizeSelector = createCustomCachedSelector(
         position: legendPosition,
       };
     }
-    const isSingleLine = (parentDimensions.width - 20) / 200 > labels.length;
-    const height = Number.isFinite(legendConfig.legendSize)
-      ? Math.min(legendConfig.legendSize, parentDimensions.height * 0.7)
+    const isSingleLine = (parentDimensions.width - 20) / 200 > items.length;
+    const height = Number.isFinite(legendSize)
+      ? Math.min(legendSize, parentDimensions.height * 0.7)
       : isSingleLine
         ? bbox.height + 16
         : bbox.height * 2 + 24;

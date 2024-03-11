@@ -26,6 +26,7 @@ export const computeLegendSelector = createCustomCachedSelector(
       return {
         // the band label is considered unique by construction
         seriesIdentifiers: [{ key: label, specId: label }],
+        depth: 0,
         color,
         label,
         isSeriesHidden: deselectedDataSeries.some(({ key }) => key === label),

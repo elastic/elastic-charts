@@ -24,7 +24,8 @@ export type LegendItemValue = { value: PrimitiveValue; label: string };
 export type LegendItem = {
   seriesIdentifiers: SeriesIdentifier[];
   childId?: LegendItemChildId;
-  depth?: number;
+  // zero indexed
+  depth: number;
   /**
    * Path to iterm in hierarchical legend
    */

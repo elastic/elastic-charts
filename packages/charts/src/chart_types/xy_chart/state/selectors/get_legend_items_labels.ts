@@ -6,19 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { computeLegendSelector } from './compute_legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 
 /** @internal */
-export const getLegendItemsLabelsSelector = createCustomCachedSelector(
-  [computeLegendSelector, getSettingsSpecSelector],
-  (legendItems, { showLegendExtra }): LegendItemLabel[] =>
-    legendItems.map(({ label, values }) => {
-      return {
-        label: `${label}${showLegendExtra ? values[0]?.label : ''}`,
-        depth: 0,
-      };
-    }),
-);
+export const getLegendItemsLabelsSelector = createCustomCachedSelector([], (): LegendItemLabel[] => []);

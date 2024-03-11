@@ -126,6 +126,7 @@ describe('Rendering utils', () => {
     const highlightedLegendItem: LegendItem = {
       color: '',
       label: '',
+      depth: 0,
       seriesIdentifiers: [seriesIdentifier],
       isSeriesHidden: false,
       values: [],

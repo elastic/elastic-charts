@@ -128,6 +128,7 @@ export function computeLegend(
     const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
 
     legendItems.push({
+      depth: 0,
       color,
       label: banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name,
       seriesIdentifiers: [seriesIdentifier],
@@ -156,6 +157,7 @@ export function computeLegend(
 
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
       legendItems.push({
+        depth: 0,
         color,
         label: labelY0,
         seriesIdentifiers: [seriesIdentifier],

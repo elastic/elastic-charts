@@ -127,6 +127,7 @@ describe('Type Checks', () => {
       {
         color: '#1EA593',
         label: 'a',
+        depth: 0,
         seriesIdentifiers: [
           {
             key: 'specId:{bars},colors:{a}',
@@ -141,6 +142,7 @@ describe('Type Checks', () => {
       {
         color: '#2B70F7',
         label: 'b',
+        depth: 0,
         seriesIdentifiers: [
           {
             key: 'specId:{bars},colors:{b}',
@@ -160,6 +162,7 @@ describe('Type Checks', () => {
       {
         color: '#1EA593',
         label: 'a',
+        depth: 0,
         seriesIdentifiers: [
           {
             key: 'specId:{bars},colors:{a}',
@@ -174,6 +177,7 @@ describe('Type Checks', () => {
       {
         color: '#2B70F7',
         label: 'b',
+        depth: 0,
         seriesIdentifiers: [
           {
             key: 'specId:{bars},colors:{b}',
