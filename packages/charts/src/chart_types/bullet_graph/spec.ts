@@ -37,7 +37,7 @@ export interface BulletDatum {
    *
    * See https://d3js.org/d3-scale/linear#linear_ticks
    */
-  ticks?: number | ((domain: GenericDomain) => number[]);
+  ticks?: number | number[] | ((domain: GenericDomain) => number[]);
   syncCursor?: boolean;
   valueFormatter: ValueFormatter;
   targetFormatter?: ValueFormatter;
