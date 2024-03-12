@@ -1803,6 +1803,12 @@ export interface LegendColorPickerProps {
 export type LegendItemListener = (series: SeriesIdentifier[]) => void;
 
 // @public (undocumented)
+export type LegendItemValue = {
+    value: PrimitiveValue;
+    label: string;
+};
+
+// @public (undocumented)
 export interface LegendLabelOptions {
     maxLines: number;
 }
@@ -3493,10 +3499,6 @@ export interface YDomainBase {
 
 // @public (undocumented)
 export type YDomainRange = YDomainBase & DomainRange & LogScaleOptions;
-
-// Warnings were encountered during analysis:
-//
-// src/specs/settings.tsx:394:5 - (ae-forgotten-export) The symbol "LegendItemValue" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 
