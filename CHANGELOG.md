@@ -1,3 +1,12 @@
+## [64.0.2](https://github.com/elastic/elastic-charts/compare/v64.0.1...v64.0.2) (2024-03-12)
+
+
+### Bug Fixes
+
+* **bullet:** full circle overlapping tick labels ([#2350](https://github.com/elastic/elastic-charts/issues/2350)) ([edbff68](https://github.com/elastic/elastic-charts/commit/edbff681737ba319b455c81604e5ffff02b89f17))
+* **deps:** update dependency @elastic/eui to ^93.3.0 ([#2356](https://github.com/elastic/elastic-charts/issues/2356)) ([cf9ce81](https://github.com/elastic/elastic-charts/commit/cf9ce81c08b8d0ae93fce48504d2de3539d045d0))
+* **deps:** update dependency @playwright/test to ^1.42.1 ([#2354](https://github.com/elastic/elastic-charts/issues/2354)) ([03581bc](https://github.com/elastic/elastic-charts/commit/03581bc44fae02309af9fbfa42c297f7414ec156))
+
 ## [64.0.1](https://github.com/elastic/elastic-charts/compare/v64.0.0...v64.0.1) (2024-03-10)
 
 
