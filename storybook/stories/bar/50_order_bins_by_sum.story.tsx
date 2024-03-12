@@ -9,7 +9,7 @@
 import { select, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, BinAgg, Direction } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, BinAgg, Direction, LegendValue } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -69,7 +69,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             : undefined
         }
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.LastValue]}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
       />

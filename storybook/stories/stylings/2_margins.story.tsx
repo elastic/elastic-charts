@@ -9,7 +9,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LegendValue, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -57,7 +57,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={useBaseTheme()}
         debug={boolean('debug', true)}
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.LastValue]}
         legendPosition={Position.Right}
       />
       <Axis

@@ -7,7 +7,7 @@
  */
 
 import { Color } from '../../../common/colors';
-import { LegendItem } from '../../../common/legend';
+import { LegendItem, LegendValue } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { SettingsSpec } from '../../../specs';
 import { isDefined, mergePartial } from '../../../utils/common';
@@ -16,7 +16,7 @@ import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort'
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { XDomain } from '../domains/types';
 import { isDatumFilled } from '../rendering/utils';
-import { LegendValue, getLegendValue } from '../state/utils/get_last_value';
+import { getLegendValue } from '../state/utils/get_last_value';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
@@ -109,7 +109,7 @@ export function computeLegend(
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
 
-  const legendValueMode = LegendValue.LastValue;
+  const legendValueMode = settingsSpec.legendValues[0] ?? LegendValue.None;
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;

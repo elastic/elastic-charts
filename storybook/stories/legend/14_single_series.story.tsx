@@ -9,7 +9,7 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
+import { BarSeries, Chart, LegendValue, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { ChartsStory } from '../../types';
@@ -49,7 +49,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.LastValue]}
         legendPosition={customKnobs.enum.position('legend position', 'top')}
         theme={{
           legend: { labelOptions: { maxLines } },

@@ -8,14 +8,19 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description}>
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+    <Settings
+      showLegend
+      legendValues={[LegendValue.LastValue]}
+      legendPosition={Position.Right}
+      baseTheme={useBaseTheme()}
+    />
     <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
     <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

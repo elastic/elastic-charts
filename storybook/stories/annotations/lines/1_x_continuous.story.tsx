@@ -19,6 +19,7 @@ import {
   LineAnnotationStyle,
   ScaleType,
   Settings,
+  LegendValue,
 } from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
@@ -55,7 +56,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings showLegend showLegendExtra debug={debug} rotation={rotation} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValues={[LegendValue.LastValue]}
+        debug={debug}
+        rotation={rotation}
+        baseTheme={useBaseTheme()}
+      />
       <LineAnnotation
         id="annotation_1"
         domainType={AnnotationDomainType.XDomain}

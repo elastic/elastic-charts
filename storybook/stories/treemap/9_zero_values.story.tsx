@@ -8,7 +8,15 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
+import {
+  Chart,
+  Datum,
+  LegendValue,
+  Partition,
+  PartitionLayout,
+  Settings,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { ChartsStory } from '../../types';
@@ -17,7 +25,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description}>
-    <Settings baseTheme={useBaseTheme()} showLegend showLegendExtra />
+    <Settings baseTheme={useBaseTheme()} showLegend legendValues={[LegendValue.LastValue]} />
     <Partition
       id="spec_1"
       data={mocks.pie.map((d: any, i: number) => (i ? d : { ...d, exportVal: 0 }))}

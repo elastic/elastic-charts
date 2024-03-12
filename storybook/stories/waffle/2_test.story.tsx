@@ -9,7 +9,7 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
+import { Chart, Datum, LegendValue, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -26,7 +26,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={useBaseTheme()}
         showLegend
         flatLegend
-        showLegendExtra
+        legendValues={[LegendValue.LastValue]}
       />
       <Partition
         id="spec_1"

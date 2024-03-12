@@ -19,6 +19,7 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
+  LegendValue,
 } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
@@ -41,7 +42,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const y1AccessorFormat = text('y1AccessorFormat', '');
   return (
     <Chart title={title} description={description}>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValues={[LegendValue.LastValue]}
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis
         id="bottom"
         title="timestamp per 1 minute"

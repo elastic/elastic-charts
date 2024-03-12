@@ -37,7 +37,7 @@ export type LegendSizing = Size & {
 export const getLegendSizeSelector = createCustomCachedSelector(
   [getLegendConfigSelector, getChartThemeSelector, getParentDimensionSelector, getLegendItemsSelector],
   (
-    { showLegend, legendSize, showLegendExtra, legendPosition, legendAction },
+    { showLegend, legendSize, legendValues, legendPosition, legendAction },
     theme,
     parentDimensions,
     items,
@@ -49,7 +49,7 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     const bbox = withTextMeasure((textMeasure) =>
       items.reduce(
         (acc, { label, depth, values }) => {
-          const itemLabel = `${label}${showLegendExtra ? values[0]?.label ?? '' : ''}`;
+          const itemLabel = `${label}${legendValues.length > 0 ? values[0]?.label ?? '' : ''}`;
           const { width, height } = textMeasure(
             itemLabel,
             { fontFamily: DEFAULT_FONT_FAMILY, fontVariant: 'normal', fontWeight: 400, fontStyle: 'normal' },
@@ -69,7 +69,7 @@ export const getLegendSizeSelector = createCustomCachedSelector(
     } = theme;
 
     const actionDimension = isDefined(legendAction) ? 24 : 0; // max width plus margin
-    const showExtraMargin = showLegendExtra; // && items.every(({ values }) => values.length > 0); // remove unnecessary margin
+    const showExtraMargin = legendValues.length > 0; // && items.every(({ values }) => values.length > 0); // remove unnecessary margin
     const legendItemWidth = MARKER_WIDTH + SHARED_MARGIN + bbox.width + (showExtraMargin ? SHARED_MARGIN : 0);
 
     if (legendPosition.direction === LayoutDirection.Vertical) {

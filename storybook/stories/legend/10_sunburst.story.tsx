@@ -19,6 +19,7 @@ import {
   Settings,
   defaultPartitionValueFormatter,
   SeriesIdentifier,
+  LegendValue,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
@@ -101,7 +102,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        showLegendExtra={showLegendExtra}
+        legendValues={showLegendExtra ? [LegendValue.LastValue] : []}
         flatLegend={isFlatLegendSupported ? flatLegend : true}
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}

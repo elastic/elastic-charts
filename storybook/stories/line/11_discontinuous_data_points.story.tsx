@@ -9,7 +9,18 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, CurveType, LineSeries, Position, ScaleType, Settings, Fit, AreaSeries } from '@elastic/charts';
+import {
+  Axis,
+  Chart,
+  CurveType,
+  LineSeries,
+  Position,
+  ScaleType,
+  Settings,
+  Fit,
+  AreaSeries,
+  LegendValue,
+} from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -20,7 +31,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const LineOrAreaSeries = isArea ? AreaSeries : LineSeries;
   return (
     <Chart title={title} description={description}>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValues={[LegendValue.LastValue]}
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="x" position={Position.Bottom} />
       <Axis id="y" position={Position.Left} />
 

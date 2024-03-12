@@ -13,7 +13,7 @@ import { Color as ItemColor } from './color';
 import { Label as ItemLabel } from './label';
 import { getExtra } from './utils';
 import { Color } from '../../common/colors';
-import { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { LegendItem, LegendItemExtraValues, LegendValue } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
 import {
   LegendItemListener,
@@ -46,7 +46,7 @@ export interface LegendItemProps {
   totalItems: number;
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
-  showExtra: boolean;
+  legendValues: Array<LegendValue>;
   isMostlyRTL: boolean;
   labelOptions: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
@@ -171,7 +171,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     const {
       extraValues,
       item,
-      showExtra,
+      legendValues,
       colorPicker,
       totalItems,
       action: Action,
@@ -189,7 +189,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     });
     const hasColorPicker = Boolean(colorPicker);
-    const extra = showExtra ? getExtra(extraValues, item, totalItems) : null;
+    const extra = legendValues.length > 0 ? getExtra(extraValues, item, totalItems) : null;
     const style: CSSProperties = flatLegend
       ? {}
       : {

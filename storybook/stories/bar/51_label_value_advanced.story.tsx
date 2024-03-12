@@ -15,6 +15,7 @@ import {
   Chart,
   DisplayValueSpec,
   LabelOverflowConstraint,
+  LegendValue,
   PartialTheme,
   Position,
   ScaleType,
@@ -130,7 +131,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         debug={debug}
         rotation={customKnobs.enum.rotation()}
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.LastValue]}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />

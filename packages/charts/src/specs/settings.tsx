@@ -18,7 +18,7 @@ import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { CategoryLabel } from '../common/category';
 import { Color } from '../common/colors';
-import { LegendItemValue } from '../common/legend';
+import { LegendItemValue, LegendValue } from '../common/legend';
 import { SmallMultiplesDatum } from '../common/panel_utils';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
@@ -421,10 +421,10 @@ export interface LegendSpec {
    */
   legendPosition: Position | LegendPositionConfig;
   /**
-   * Show an extra parameter on each legend item defined by the chart type
-   * @defaultValue `false`
+   * Add one or more computed statistics to each legend item.
+   * The available statistics depends by chart type.
    */
-  showLegendExtra: boolean;
+  legendValues: Array<LegendValue>;
   /**
    * Limit the legend to the specified maximal depth when showing a hierarchical legend
    *

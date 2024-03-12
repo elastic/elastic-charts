@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Position, Settings, Partition, PartitionLayout } from '@elastic/charts';
+import { Chart, Position, Settings, Partition, PartitionLayout, LegendValue } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -49,7 +49,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.LastValue]}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
         {...onElementListeners}

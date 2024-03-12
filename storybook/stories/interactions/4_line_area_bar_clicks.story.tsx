@@ -9,7 +9,17 @@
 import { action } from '@storybook/addon-actions';
 import React from 'react';
 
-import { AreaSeries, Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import {
+  AreaSeries,
+  Axis,
+  BarSeries,
+  Chart,
+  LegendValue,
+  LineSeries,
+  Position,
+  ScaleType,
+  Settings,
+} from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -24,7 +34,7 @@ export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description}>
     <Settings
       showLegend
-      showLegendExtra
+      legendValues={[LegendValue.LastValue]}
       legendPosition={Position.Right}
       {...onElementListeners}
       baseTheme={useBaseTheme()}

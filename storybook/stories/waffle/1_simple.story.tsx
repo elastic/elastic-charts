@@ -9,7 +9,15 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
+import {
+  Chart,
+  Datum,
+  LegendValue,
+  Partition,
+  PartitionLayout,
+  Settings,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -36,7 +44,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         debug={showDebug}
         showLegend
         flatLegend
-        showLegendExtra
+        legendValues={[LegendValue.LastValue]}
       />
       <Partition
         id="spec_1"

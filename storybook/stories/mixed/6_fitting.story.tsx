@@ -20,6 +20,7 @@ import {
   Fit,
   SeriesType,
   RecursivePartial,
+  LegendValue,
 } from '@elastic/charts';
 
 import { ColorVariant } from '../../../packages/charts/src/utils/common';
@@ -190,7 +191,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.LastValue]}
         theme={{
           areaSeriesStyle: {
             point: {

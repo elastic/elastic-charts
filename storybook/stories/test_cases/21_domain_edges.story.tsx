@@ -19,6 +19,7 @@ import {
   Position,
   HistogramBarSeries,
   niceTimeFormatter,
+  LegendValue,
 } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -64,7 +65,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             hAlign: 'right',
             vAlign: 'top',
           }}
-          showLegendExtra
+          legendValues={[LegendValue.LastValue]}
           xDomain={xDomain}
           theme={{
             scales: {
@@ -121,7 +122,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             vAlign: 'top',
           }}
           showLegend
-          showLegendExtra
+          legendValues={[LegendValue.LastValue]}
           xDomain={xDomain}
           theme={{
             scales: {
@@ -170,7 +171,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             hAlign: 'right',
             vAlign: 'top',
           }}
-          showLegendExtra
+          legendValues={[LegendValue.LastValue]}
           xDomain={xDomain}
           theme={{
             scales: {

@@ -8,7 +8,15 @@
 
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
+import {
+  Chart,
+  Datum,
+  LegendValue,
+  Partition,
+  PartitionLayout,
+  Settings,
+  defaultPartitionValueFormatter,
+} from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -16,7 +24,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description}>
-    <Settings baseTheme={useBaseTheme()} showLegend showLegendExtra />
+    <Settings baseTheme={useBaseTheme()} showLegend legendValues={[LegendValue.LastValue]} />
     <Partition
       id="spec_1"
       data={[

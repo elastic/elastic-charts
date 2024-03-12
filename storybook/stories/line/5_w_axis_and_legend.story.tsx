@@ -11,6 +11,7 @@ import React from 'react';
 import {
   Axis,
   Chart,
+  LegendValue,
   LineSeries,
   niceTimeFormatByDay,
   Position,
@@ -27,7 +28,12 @@ const dateFormatter = timeFormatter(niceTimeFormatByDay(1));
 
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description}>
-    <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+    <Settings
+      showLegend
+      legendValues={[LegendValue.LastValue]}
+      legendPosition={Position.Right}
+      baseTheme={useBaseTheme()}
+    />
     <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
     <Axis
       id="left"

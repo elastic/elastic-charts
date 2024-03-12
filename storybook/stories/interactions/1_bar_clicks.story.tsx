@@ -14,6 +14,7 @@ import {
   Axis,
   BarSeries,
   Chart,
+  LegendValue,
   Position,
   ScaleType,
   Settings,
@@ -50,7 +51,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.LastValue]}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
         {...onElementListeners}
