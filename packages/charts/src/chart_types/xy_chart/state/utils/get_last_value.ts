@@ -89,14 +89,14 @@ export function getLegendValue(
   }
   switch (type) {
     case LegendValue.FirstNonNullValue:
-      return firstNonNull(series.data, (d) => (d.x === xDomain.dataDomain[0] ? valueAccessor(d) : null));
+      return firstNonNull(series.data, valueAccessor);
     case LegendValue.LastNonNullValue:
-      return lastNonNull(series.data, (d) => (d.x === xDomain.dataDomain[1] ? valueAccessor(d) : null));
+      return lastNonNull(series.data, valueAccessor);
     case LegendValue.FirstValue:
-      const first = series.data.at(0);
+      const first = series.data.find((d) => d.x === xDomain.dataDomain[0]);
       return first ? valueAccessor(first) : null;
     case LegendValue.LastValue:
-      const last = series.data.at(-1);
+      const last = series.data.findLast((d) => d.x === xDomain.dataDomain[1]);
       return last ? valueAccessor(last) : null;
     case LegendValue.Average:
       return average(series.data, valueAccessor);

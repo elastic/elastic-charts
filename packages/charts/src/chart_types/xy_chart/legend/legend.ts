@@ -29,6 +29,7 @@ import {
   getSeriesKey,
   getSeriesIdentifierFromDataSeries,
   isBandedSpec,
+  DataSeriesDatum,
 } from '../utils/series';
 import {
   AxisSpec,
@@ -72,6 +73,26 @@ function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefi
     return mergePartial(theme.areaSeriesStyle.point, spec.areaSeriesStyle?.point);
   }
 }
+
+const y1Accessor =
+  (stackMode?: StackMode) =>
+  (d: DataSeriesDatum): number | null => {
+    // don't consider filled in data in the calculations
+    if (isDatumFilled(d)) {
+      return null;
+    }
+    return stackMode === StackMode.Percentage ? (d.y1 === null || d.y0 === null ? null : d.y1 - d.y0) : d.initialY1;
+  };
+
+const y0Accessor =
+  (stackMode?: StackMode) =>
+  (d: DataSeriesDatum): number | null => {
+    // don't consider filled in data in the calculations
+    if (isDatumFilled(d)) {
+      return null;
+    }
+    return stackMode === StackMode.Percentage ? d.y0 : d.initialY0;
+  };
 
 /** @internal */
 export function computeLegend(
@@ -119,17 +140,7 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const itemValue = getLegendValue(series, xDomain, legendValueMode, (d) => {
-      // don't consider filled in data in the calculations
-      if (isDatumFilled(d)) {
-        return null;
-      }
-      return series.stackMode === StackMode.Percentage
-        ? d.y1 === null || d.y0 === null
-          ? null
-          : d.y1 - d.y0
-        : d.initialY1;
-    });
+    const itemValue = getLegendValue(series, xDomain, legendValueMode, y1Accessor(series.stackMode));
     const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
 
     legendItems.push({
@@ -155,9 +166,7 @@ export function computeLegend(
       pointStyle,
     });
     if (banded) {
-      const bandedItemValue = getLegendValue(series, xDomain, legendValueMode, (d) => {
-        return series.stackMode === StackMode.Percentage ? d.y0 : d.initialY0;
-      });
+      const bandedItemValue = getLegendValue(series, xDomain, legendValueMode, y0Accessor(series.stackMode));
       const bandedFormattedItemValue = bandedItemValue !== null ? formatter(bandedItemValue) : '';
 
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
