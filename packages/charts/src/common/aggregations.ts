@@ -37,7 +37,7 @@ export function median<D>(input: D[], accessor: (d: D) => number | null): number
     return acc;
   }, []);
   if (!arr.length) return NaN;
-  const s = arr.toSorted((a, b) => a - b);
+  const s = arr.slice().sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
   if (s.length % 2) {
     return s[mid] ?? NaN;
