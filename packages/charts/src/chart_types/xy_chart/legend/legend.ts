@@ -15,6 +15,7 @@ import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { XDomain } from '../domains/types';
+import { isDatumFilled } from '../rendering/utils';
 import { LegendValue, getLegendValue } from '../state/utils/get_last_value';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
@@ -119,6 +120,10 @@ export function computeLegend(
     const pointStyle = getPointStyle(spec, theme);
 
     const itemValue = getLegendValue(series, xDomain, legendValueMode, (d) => {
+      // don't consider filled in data in the calculations
+      if (isDatumFilled(d)) {
+        return null;
+      }
       return series.stackMode === StackMode.Percentage
         ? d.y1 === null || d.y0 === null
           ? null
