@@ -7,6 +7,7 @@
  */
 
 import { palettes } from './colors';
+import { DEFAULT_ANNOTATION_LINE_STYLE, DEFAULT_ANNOTATION_RECT_STYLE } from './merge_utils';
 import { Theme } from './theme';
 import {
   DEFAULT_GEOMETRY_STYLES,
@@ -445,17 +446,6 @@ export const LEGACY_LIGHT_THEME: Theme = {
       radius: 10,
     },
   },
-  lineAnnotation: {
-    line: {
-      stroke: '#777',
-      strokeWidth: 1,
-      opacity: 1,
-    },
-  },
-  rectAnnotation: {
-    stroke: '#FFEEBC',
-    strokeWidth: 0,
-    opacity: 0.25,
-    fill: '#FFEEBC',
-  },
+  lineAnnotation: DEFAULT_ANNOTATION_LINE_STYLE,
+  rectAnnotation: DEFAULT_ANNOTATION_RECT_STYLE,
 };
