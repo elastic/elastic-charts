@@ -11,7 +11,6 @@ import { ComponentProps } from 'react';
 import { ChartType } from '../..';
 import { SpecType } from '../../../specs/constants';
 import { specComponentFactory } from '../../../state/spec_factory';
-import { DEFAULT_ANNOTATION_RECT_STYLE } from '../../../utils/themes/merge_utils';
 import { RectAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType } from '../utils/specs';
 
 /** @public */
@@ -24,7 +23,6 @@ export const RectAnnotation = specComponentFactory<RectAnnotationSpec>()(
     groupId: DEFAULT_GLOBAL_ID,
     annotationType: AnnotationType.Rectangle,
     zIndex: -1,
-    style: DEFAULT_ANNOTATION_RECT_STYLE,
     outside: false,
   },
 );

@@ -8,7 +8,10 @@
 
 import { ChartBaseColors } from './theme';
 
-/** @public */
+/**
+ * Base light theme colors designed to match eui, see https://eui.elastic.co/#/theming/colors/values#shades
+ * @public
+ */
 export const LIGHT_BASE_COLORS: ChartBaseColors = {
   emptyShade: '#FFF',
   lightestShade: '#F1F4FA',
@@ -19,7 +22,10 @@ export const LIGHT_BASE_COLORS: ChartBaseColors = {
   title: '#1A1C21',
 };
 
-/** @public */
+/**
+ * Base dark theme colors designed to match eui, see https://eui.elastic.co/#/theming/colors/values#shades
+ * @public
+ */
 export const DARK_BASE_COLORS: ChartBaseColors = {
   emptyShade: '#1D1E24',
   lightestShade: '#25262E',

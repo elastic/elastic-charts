@@ -12,7 +12,6 @@ import { ChartType } from '../..';
 import { SpecType } from '../../../specs/constants';
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { stripUndefined } from '../../../utils/common';
-import { DEFAULT_ANNOTATION_LINE_STYLE } from '../../../utils/themes/merge_utils';
 import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType } from '../utils/specs';
 
 const buildProps = buildSFProps<LineAnnotationSpec>()(
@@ -23,7 +22,6 @@ const buildProps = buildSFProps<LineAnnotationSpec>()(
   {
     groupId: DEFAULT_GLOBAL_ID,
     annotationType: AnnotationType.Line,
-    style: DEFAULT_ANNOTATION_LINE_STYLE,
     hideLines: false,
     hideTooltips: false,
     hideLinesTooltips: true,

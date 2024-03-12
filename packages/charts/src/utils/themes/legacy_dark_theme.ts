@@ -446,4 +446,17 @@ export const LEGACY_DARK_THEME: Theme = {
       radius: 10,
     },
   },
+  lineAnnotation: {
+    line: {
+      stroke: '#777',
+      strokeWidth: 1,
+      opacity: 1,
+    },
+  },
+  rectAnnotation: {
+    stroke: '#FFEEBC',
+    strokeWidth: 0,
+    opacity: 0.25,
+    fill: '#FFEEBC',
+  },
 };
