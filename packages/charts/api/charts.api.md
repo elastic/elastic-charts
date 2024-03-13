@@ -886,7 +886,7 @@ export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends Seri
 // @public (undocumented)
 export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
 
-// @public (undocumented)
+// @public
 export const DARK_BASE_COLORS: ChartBaseColors;
 
 // @public (undocumented)
@@ -1074,10 +1074,10 @@ export interface DebugStateLineConfig {
 // @public (undocumented)
 export type DebugStateValue = Pick<GeometryValue, 'x' | 'y' | 'mark'>;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle;
 
-// @public (undocumented)
+// @public @deprecated (undocumented)
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle;
 
 // @public
@@ -1876,14 +1876,14 @@ export interface LegendStyle {
     verticalWidth: number;
 }
 
-// @public (undocumented)
+// @public
 export const LIGHT_BASE_COLORS: ChartBaseColors;
 
 // @public (undocumented)
 export const LIGHT_THEME: Theme;
 
 // @public
-export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, "chartType" | "specType", "style" | "zIndex" | "groupId" | "annotationType" | "hideTooltips" | "hideLines" | "hideLinesTooltips", "marker" | "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "animations" | "markerBody" | "markerDimensions" | "markerPosition" | "customTooltip" | "customTooltipDetails", "id" | "dataValues" | "domainType">) => null;
+export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "hideTooltips" | "hideLines" | "hideLinesTooltips", "style" | "marker" | "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "animations" | "markerBody" | "markerDimensions" | "markerPosition" | "customTooltip" | "customTooltipDetails", "id" | "dataValues" | "domainType">) => null;
 
 // @public
 export interface LineAnnotationDatum<D = any> {
@@ -1983,10 +1983,10 @@ export type Margins = PerSideDistance;
 export type MarkBuffer = number | ((radius: number) => number);
 
 // @public (undocumented)
-export function mergeWithDefaultAnnotationLine(config?: RecursivePartial<LineAnnotationStyle>): LineAnnotationStyle;
+export function mergeWithDefaultAnnotationLine(defaultStyles: LineAnnotationStyle, config?: RecursivePartial<LineAnnotationStyle>): LineAnnotationStyle;
 
 // @public (undocumented)
-export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle;
+export function mergeWithDefaultAnnotationRect(defaultStyles: RectAnnotationStyle, config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle;
 
 // @alpha (undocumented)
 export const Metric: FC<SFProps<MetricSpec, "chartType" | "specType", "data", never, "id">>;
@@ -2464,7 +2464,7 @@ export type Ratio = number;
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "style" | "zIndex" | "groupId" | "annotationType" | "outside", "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltip" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
+export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "outside", "style" | "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltip" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -2985,10 +2985,14 @@ export interface Theme {
     highlighter: HighlighterStyle;
     // (undocumented)
     legend: LegendStyle;
+    // (undocumented)
+    lineAnnotation: LineAnnotationStyle;
     lineSeriesStyle: LineSeriesStyle;
     markSizeRatio?: number;
     metric: MetricStyle;
     partition: PartitionStyle;
+    // (undocumented)
+    rectAnnotation: RectAnnotationStyle;
     // (undocumented)
     scales: ScalesConfig;
     // (undocumented)

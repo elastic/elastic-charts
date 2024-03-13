@@ -15,6 +15,7 @@ import { LegendItem } from '../../../../common/legend';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { AnnotationSpec, AnnotationType, AxisSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import {
   DebugState,
@@ -29,7 +30,7 @@ import {
 import { Rotation } from '../../../../utils/common';
 import { AreaGeometry, BandedAccessorType, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/merge_utils';
-import { FillStyle, Opacity, StrokeStyle, Visible } from '../../../../utils/themes/theme';
+import { FillStyle, Opacity, StrokeStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
 import { AxisGeometry } from '../../utils/axis_utils';
 import { LinesGrid } from '../../utils/grid_lines';
@@ -48,8 +49,9 @@ export const getDebugStateSelector = createCustomCachedSelector(
     getAxisSpecsSelector,
     getSettingsSpecSelector,
     getAnnotationSpecsSelector,
+    getChartThemeSelector,
   ],
-  ({ geometries }, legend, axes, gridLines, axesSpecs, { rotation, locale }, annotations): DebugState => {
+  ({ geometries }, legend, axes, gridLines, axesSpecs, { rotation, locale }, annotations, theme): DebugState => {
     const seriesNameMap = getSeriesNameMap(legend);
     return {
       legend: getLegendState(legend),
@@ -57,7 +59,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
       areas: geometries.areas.map(getAreaState(seriesNameMap)),
       lines: geometries.lines.map(getLineState(seriesNameMap)),
       bars: getBarsState(seriesNameMap, geometries.bars),
-      annotations: getAnnotationsState(annotations),
+      annotations: getAnnotationsState(theme, annotations),
     };
   },
 );
@@ -266,15 +268,18 @@ function getLegendState(legendItems: LegendItem[]): DebugStateLegend {
   return { items };
 }
 
-function getAnnotationsState(annotationSpecs: AnnotationSpec[]): DebugStateAnnotations[] {
+function getAnnotationsState(
+  { lineAnnotation, rectAnnotation }: Theme,
+  annotationSpecs: AnnotationSpec[],
+): DebugStateAnnotations[] {
   return annotationSpecs.flatMap<DebugStateAnnotations>((annotation) => {
     return annotation.dataValues.map((dataValue) => ({
       data: dataValue,
       id: annotation.id,
       style:
         annotation.annotationType === AnnotationType.Line
-          ? mergeWithDefaultAnnotationLine(annotation?.style)
-          : mergeWithDefaultAnnotationRect(annotation?.style),
+          ? mergeWithDefaultAnnotationLine(lineAnnotation, annotation?.style)
+          : mergeWithDefaultAnnotationRect(rectAnnotation, annotation?.style),
       type: annotation.annotationType,
       domainType: annotation.annotationType === AnnotationType.Line ? annotation.domainType : undefined,
     }));
