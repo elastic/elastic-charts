@@ -178,9 +178,10 @@ export type AreaFitStyle = Visible & Opacity & {
 };
 
 // Warning: (ae-forgotten-export) The symbol "SFProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps_3" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const AreaSeries: <D extends BaseDatum = any>(props: SFProps<AreaSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "hideInLegend" | "xScaleType" | "yScaleType" | "histogramModeAlignment", "name" | "color" | "fit" | "curve" | "timeZone" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "xNice" | "yNice" | "stackMode" | "areaSeriesStyle" | "markFormat" | "pointStyleAccessor", "id" | "data" | "xAccessor" | "yAccessors">) => null;
+export const AreaSeries: <D extends BaseDatum = any>(props: SFProps<AreaSeriesSpec<D>, keyof (typeof buildProps_3)['overrides'], keyof (typeof buildProps_3)['defaults'], keyof (typeof buildProps_3)['optionals'], keyof (typeof buildProps_3)['requires']>) => null;
 
 // @public (undocumented)
 export type AreaSeriesProps = ComponentProps<typeof AreaSeries>;
@@ -333,8 +334,10 @@ export interface BandFillColorAccessorInput {
     value: number;
 }
 
+// Warning: (ae-forgotten-export) The symbol "buildProps_4" needs to be exported by the entry point index.d.ts
+//
 // @public
-export const BarSeries: <D extends BaseDatum = any>(props: SFProps<BarSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "hideInLegend" | "xScaleType" | "yScaleType" | "enableHistogramMode", "name" | "color" | "timeZone" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "xNice" | "yNice" | "barSeriesStyle" | "stackMode" | "styleAccessor" | "minBarHeight", "id" | "data" | "xAccessor" | "yAccessors">) => null;
+export const BarSeries: <D extends BaseDatum = any>(props: SFProps<BarSeriesSpec<D>, keyof (typeof buildProps_4)['overrides'], keyof (typeof buildProps_4)['defaults'], keyof (typeof buildProps_4)['optionals'], keyof (typeof buildProps_4)['requires']>) => null;
 
 // @public (undocumented)
 export type BarSeriesProps = ComponentProps<typeof BarSeries>;
@@ -424,10 +427,11 @@ export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
 // @public (undocumented)
 export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
+// Warning: (ae-forgotten-export) The symbol "buildProps_5" needs to be exported by the entry point index.d.ts
 // Warning: (ae-incompatible-release-tags) The symbol "BubbleSeries" is marked as @public, but its signature references "BubbleSeriesSpec" which is marked as @alpha
 //
 // @public
-export const BubbleSeries: <D extends BaseDatum = any>(props: SFProps<BubbleSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "hideInLegend" | "xScaleType" | "yScaleType", "name" | "color" | "timeZone" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "xNice" | "yNice" | "bubbleSeriesStyle" | "markFormat" | "pointStyleAccessor", "id" | "data" | "xAccessor" | "yAccessors">) => null;
+export const BubbleSeries: <D extends BaseDatum = any>(props: SFProps<BubbleSeriesSpec<D>, keyof (typeof buildProps_5)['overrides'], keyof (typeof buildProps_5)['defaults'], keyof (typeof buildProps_5)['optionals'], keyof (typeof buildProps_5)['requires']>) => null;
 
 // @public (undocumented)
 export type BubbleSeriesProps = ComponentProps<typeof BubbleSeries>;
@@ -445,10 +449,10 @@ export interface BubbleSeriesStyle {
     point: PointStyle;
 }
 
-// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps_9" needs to be exported by the entry point index.d.ts
 //
 // @alpha
-export const Bullet: (props: SFProps<BulletSpec, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
+export const Bullet: (props: SFProps<BulletSpec, keyof (typeof buildProps_9)['overrides'], keyof (typeof buildProps_9)['defaults'], keyof (typeof buildProps_9)['optionals'], keyof (typeof buildProps_9)['requires']>) => null;
 
 // @public
 export type BulletColorConfig = Color[] | ColorBandSimpleConfig | ColorBandComplexConfig;
@@ -1249,8 +1253,10 @@ export type FitConfig = {
     endValue?: number | 'nearest';
 };
 
+// Warning: (ae-forgotten-export) The symbol "buildProps_11" needs to be exported by the entry point index.d.ts
+//
 // @public
-export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, "chartType" | "specType", "animation" | "valueFormatter" | "valueGetter" | "valueAccessor", "search" | "onSearchTextChange", "id" | "columnarData" | "controlProviderCallback">) => null;
+export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, keyof (typeof buildProps_11)['overrides'], keyof (typeof buildProps_11)['defaults'], keyof (typeof buildProps_11)['optionals'], keyof (typeof buildProps_11)['requires']>) => null;
 
 // @public (undocumented)
 export type FlameElementEvent = FlameLayerValue;
@@ -1350,10 +1356,10 @@ export type GetData = (dataDemand: DataDemand) => TimeslipDataRows;
 // @public (undocumented)
 export function getNodeName(node: ArrayNode): string;
 
-// Warning: (ae-forgotten-export) The symbol "buildProps_2" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps_10" needs to be exported by the entry point index.d.ts
 //
 // @alpha @deprecated
-export const Goal: (props: SFProps<GoalSpec, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
+export const Goal: (props: SFProps<GoalSpec, keyof (typeof buildProps_10)['overrides'], keyof (typeof buildProps_10)['defaults'], keyof (typeof buildProps_10)['optionals'], keyof (typeof buildProps_10)['requires']>) => null;
 
 // @alpha (undocumented)
 export interface GoalDomainRange {
@@ -1470,10 +1476,11 @@ export interface GroupBrushExtent {
     groupId: GroupId;
 }
 
+// Warning: (ae-forgotten-export) The symbol "buildProps_2" needs to be exported by the entry point index.d.ts
 // Warning: (ae-incompatible-release-tags) The symbol "GroupBy" is marked as @public, but its signature references "GroupBySpec" which is marked as @alpha
 //
 // @public
-export const GroupBy: <D extends BaseDatum = any>(props: SFProps<GroupBySpec<D>, "chartType" | "specType", never, "format", "id" | "by" | "sort">) => null;
+export const GroupBy: <D extends BaseDatum = any>(props: SFProps<GroupBySpec<D>, keyof (typeof buildProps_2)['overrides'], keyof (typeof buildProps_2)['defaults'], keyof (typeof buildProps_2)['optionals'], keyof (typeof buildProps_2)['requires']>) => null;
 
 // @public (undocumented)
 export type GroupByAccessor<D extends BaseDatum = any> = (spec: Spec, datum: D) => string | number;
@@ -1503,8 +1510,10 @@ export type GroupId = string;
 // @public (undocumented)
 export type GroupKeysOrKeyFn<T> = Array<keyof T> | GroupByKeyFn<T>;
 
+// Warning: (ae-forgotten-export) The symbol "heatmapBuildProps" needs to be exported by the entry point index.d.ts
+//
 // @alpha
-export const Heatmap: <D extends BaseDatum = any>(props: SFProps<HeatmapSpec<D>, "chartType" | "specType", "data" | "timeZone" | "xAccessor" | "valueFormatter" | "valueAccessor" | "yAccessor" | "xSortPredicate" | "ySortPredicate" | "xScale" | "xAxisTitle" | "xAxisLabelName" | "xAxisLabelFormatter" | "yAxisTitle" | "yAxisLabelName" | "yAxisLabelFormatter", "name" | "highlightedData", "id" | "colorScale">) => null;
+export const Heatmap: <D extends BaseDatum = any>(props: SFProps<HeatmapSpec<D>, keyof (typeof heatmapBuildProps)['overrides'], keyof (typeof heatmapBuildProps)['defaults'], keyof (typeof heatmapBuildProps)['optionals'], keyof (typeof heatmapBuildProps)['requires']>) => null;
 
 // @alpha (undocumented)
 export interface HeatmapBandsColorScale {
@@ -1677,8 +1686,10 @@ export interface HighlighterStyle {
     };
 }
 
+// Warning: (ae-forgotten-export) The symbol "buildProps_6" needs to be exported by the entry point index.d.ts
+//
 // @public
-export const HistogramBarSeries: <D extends BaseDatum = any>(props: SFProps<HistogramBarSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "hideInLegend" | "xScaleType" | "yScaleType" | "enableHistogramMode", "name" | "color" | "timeZone" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "xNice" | "yNice" | "barSeriesStyle" | "stackMode" | "styleAccessor" | "minBarHeight", "id" | "data" | "xAccessor" | "yAccessors">) => null;
+export const HistogramBarSeries: <D extends BaseDatum = any>(props: SFProps<HistogramBarSeriesSpec<D>, keyof (typeof buildProps_6)['overrides'], keyof (typeof buildProps_6)['defaults'], keyof (typeof buildProps_6)['optionals'], keyof (typeof buildProps_6)['requires']>) => null;
 
 // @public (undocumented)
 export type HistogramBarSeriesProps = ComponentProps<typeof HistogramBarSeries>;
@@ -1882,8 +1893,10 @@ export const LIGHT_BASE_COLORS: ChartBaseColors;
 // @public (undocumented)
 export const LIGHT_THEME: Theme;
 
+// Warning: (ae-forgotten-export) The symbol "buildProps_7" needs to be exported by the entry point index.d.ts
+//
 // @public
-export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "hideTooltips" | "hideLines" | "hideLinesTooltips", "style" | "marker" | "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "animations" | "markerBody" | "markerDimensions" | "markerPosition" | "customTooltip" | "customTooltipDetails", "id" | "dataValues" | "domainType">) => null;
+export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, keyof (typeof buildProps_7)['overrides'], keyof (typeof buildProps_7)['defaults'], keyof (typeof buildProps_7)['optionals'], keyof (typeof buildProps_7)['requires']>) => null;
 
 // @public
 export interface LineAnnotationDatum<D = any> {
@@ -1932,8 +1945,10 @@ export type LineFitStyle = Visible & Opacity & StrokeDashArray & {
     stroke: Color | typeof ColorVariant.Series;
 };
 
+// Warning: (ae-forgotten-export) The symbol "buildProps_8" needs to be exported by the entry point index.d.ts
+//
 // @public
-export const LineSeries: <D extends BaseDatum = any>(props: SFProps<LineSeriesSpec<D>, "chartType" | "specType" | "seriesType", "groupId" | "hideInLegend" | "xScaleType" | "yScaleType" | "histogramModeAlignment", "name" | "color" | "fit" | "curve" | "timeZone" | "useDefaultGroupDomain" | "displayValueSettings" | "y0AccessorFormat" | "y1AccessorFormat" | "filterSeriesInTooltip" | "tickFormat" | "y0Accessors" | "splitSeriesAccessors" | "stackAccessors" | "markSizeAccessor" | "xNice" | "yNice" | "lineSeriesStyle" | "markFormat" | "pointStyleAccessor", "id" | "data" | "xAccessor" | "yAccessors">) => null;
+export const LineSeries: <D extends BaseDatum = any>(props: SFProps<LineSeriesSpec<D>, keyof (typeof buildProps_8)['overrides'], keyof (typeof buildProps_8)['defaults'], keyof (typeof buildProps_8)['optionals'], keyof (typeof buildProps_8)['requires']>) => null;
 
 // @public (undocumented)
 export type LineSeriesProps = ComponentProps<typeof LineSeries>;
@@ -2171,9 +2186,10 @@ export function parentAccessor(n: ArrayEntry): ArrayNode;
 export type PartialTheme = RecursivePartial<Theme>;
 
 // Warning: (ae-forgotten-export) The symbol "PartitionSpec" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, "chartType" | "specType", "animation" | "layout" | "layers" | "valueFormatter" | "valueGetter" | "fillOutside" | "radiusOutside" | "fillRectangleWidth" | "fillRectangleHeight" | "topGroove" | "percentFormatter" | "clockwiseSectors" | "maxRowCount" | "specialFirstInnermostSector" | "valueAccessor" | "smallMultiples" | "drilldown", never, "id" | "data">) => null;
+export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, keyof (typeof buildProps)['overrides'], keyof (typeof buildProps)['defaults'], keyof (typeof buildProps)['optionals'], keyof (typeof buildProps)['requires']>) => null;
 
 // @public (undocumented)
 export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier: SeriesIdentifier];
@@ -2692,7 +2708,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuild
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "debug" | "locale" | "rotation" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "flatLegend" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaLabel" | "xDomain" | "ariaDescription" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "theme" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "customLegend" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "debug" | "locale" | "rotation" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "flatLegend" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaDescription" | "ariaLabel" | "xDomain" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "theme" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "customLegend" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -3038,10 +3054,10 @@ export interface TimeScale {
     type: typeof ScaleType.Time;
 }
 
-// Warning: (ae-forgotten-export) The symbol "buildProps_3" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "buildProps_12" needs to be exported by the entry point index.d.ts
 //
 // @public
-export const Timeslip: (props: SFProps<TimeslipSpec, keyof (typeof buildProps_3)['overrides'], keyof (typeof buildProps_3)['defaults'], keyof (typeof buildProps_3)['optionals'], keyof (typeof buildProps_3)['requires']>) => null;
+export const Timeslip: (props: SFProps<TimeslipSpec, keyof (typeof buildProps_12)['overrides'], keyof (typeof buildProps_12)['defaults'], keyof (typeof buildProps_12)['optionals'], keyof (typeof buildProps_12)['requires']>) => null;
 
 // @public
 export interface TimeslipSpec extends Spec {
@@ -3060,7 +3076,7 @@ export function toEntries<T extends Record<string, string>, S>(array: T[], acces
 export type ToggleSelectedTooltipItemCallback = (item: TooltipValue<any, SeriesIdentifier>) => any;
 
 // @public
-export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, "id" | "chartType" | "specType", "body" | "footer" | "header" | "type" | "snap" | "showNullValues" | "actions" | "actionsLoading" | "noActionsLoaded" | "actionPrompt" | "pinningPrompt" | "selectionPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "unit" | "headerFormatter" | "customTooltip" | "stickTo", never>) => null;
+export const Tooltip: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: SFProps<TooltipSpec<D, SI>, keyof (typeof tooltipBuildProps)['overrides'], keyof (typeof tooltipBuildProps)['defaults'], keyof (typeof tooltipBuildProps)['optionals'], keyof (typeof tooltipBuildProps)['requires']>) => null;
 
 // @public
 export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
