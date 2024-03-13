@@ -20,7 +20,7 @@ export const Example: ChartsStory = (_, { title, description }) => (
       baseTheme={useBaseTheme()}
       debug={boolean('Debug', true)}
       showLegend={boolean('Legend', true)}
-      legendValues={[LegendValue.LastValue]}
+      legendValues={[LegendValue.CurrentAndLastValue]}
       legendPosition={select(
         'Legend position',
         {

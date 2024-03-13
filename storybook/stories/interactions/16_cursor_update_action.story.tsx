@@ -99,7 +99,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Chart title={title} description={description} ref={ref1} size={{ height: '50%' }} id="chart1">
         <Settings
           showLegend
-          legendValues={[LegendValue.LastValue]}
+          legendValues={[LegendValue.CurrentAndLastValue]}
           baseTheme={useBaseTheme()}
           onPointerUpdate={pointerUpdate}
           pointerUpdateDebounce={debounceDelay}
@@ -130,7 +130,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Chart title={title} description={description} ref={ref2} size={{ height: '50%' }} id="chart2">
         <Settings
           showLegend
-          legendValues={[LegendValue.LastValue]}
+          legendValues={[LegendValue.CurrentAndLastValue]}
           onPointerUpdate={pointerUpdate}
           externalPointerEvents={{
             tooltip: { visible: bottomVisible, placement: bottomPlacement, boundary: 'chart' },

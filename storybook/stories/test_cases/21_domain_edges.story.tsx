@@ -65,7 +65,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             hAlign: 'right',
             vAlign: 'top',
           }}
-          legendValues={[LegendValue.LastValue]}
+          legendValues={[LegendValue.CurrentAndLastValue]}
           xDomain={xDomain}
           theme={{
             scales: {
@@ -122,7 +122,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             vAlign: 'top',
           }}
           showLegend
-          legendValues={[LegendValue.LastValue]}
+          legendValues={[LegendValue.CurrentAndLastValue]}
           xDomain={xDomain}
           theme={{
             scales: {
@@ -171,7 +171,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             hAlign: 'right',
             vAlign: 'top',
           }}
-          legendValues={[LegendValue.LastValue]}
+          legendValues={[LegendValue.CurrentAndLastValue]}
           xDomain={xDomain}
           theme={{
             scales: {

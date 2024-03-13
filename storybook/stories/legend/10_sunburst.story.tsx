@@ -102,7 +102,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        legendValues={showLegendExtra ? [LegendValue.LastValue] : []}
+        legendValues={showLegendExtra ? [LegendValue.CurrentAndLastValue] : []}
         flatLegend={isFlatLegendSupported ? flatLegend : true}
         legendStrategy={legendStrategy}
         legendMaxDepth={legendMaxDepth}

@@ -49,7 +49,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         showLegend
         theme={{ legend: { labelOptions } }}
         baseTheme={useBaseTheme()}
-        legendValues={showLegendExtra ? [LegendValue.LastValue] : []}
+        legendValues={showLegendExtra ? [LegendValue.CurrentAndLastValue] : []}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
         legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}

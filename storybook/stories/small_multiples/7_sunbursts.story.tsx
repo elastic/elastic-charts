@@ -97,7 +97,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Settings
         {...onElementListeners}
         showLegend={boolean('Show legend', true)}
-        legendValues={boolean('Show legend extra', false) ? [LegendValue.LastValue] : []}
+        legendValues={boolean('Show legend extra', false) ? [LegendValue.CurrentAndLastValue] : []}
         legendStrategy={LegendStrategy.Key}
         flatLegend={boolean('Flat legend', true)}
         theme={theme}

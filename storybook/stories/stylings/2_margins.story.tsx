@@ -57,7 +57,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={useBaseTheme()}
         debug={boolean('debug', true)}
         showLegend
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={Position.Right}
       />
       <Axis

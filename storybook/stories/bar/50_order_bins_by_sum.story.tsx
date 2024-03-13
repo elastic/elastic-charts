@@ -69,7 +69,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             : undefined
         }
         showLegend
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
       />

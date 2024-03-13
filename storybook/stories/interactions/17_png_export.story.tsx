@@ -66,7 +66,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Settings
         baseTheme={useBaseTheme()}
         showLegend={selectedChart === ChartType.XYAxis}
-        legendValues={selectedChart === ChartType.XYAxis ? [LegendValue.LastValue] : []}
+        legendValues={selectedChart === ChartType.XYAxis ? [LegendValue.CurrentAndLastValue] : []}
       />
       {selectedChart === ChartType.Partition
         ? renderPartitionChart()

@@ -32,7 +32,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Settings
         debug={debug}
         showLegend
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
       />

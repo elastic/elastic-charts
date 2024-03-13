@@ -34,7 +34,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         baseTheme={useBaseTheme()}
-        legendValues={showLegendExtra ? [LegendValue.LastValue] : []}
+        legendValues={showLegendExtra ? [LegendValue.CurrentAndLastValue] : []}
         showLegend={showLegend}
       />
       <Tooltip

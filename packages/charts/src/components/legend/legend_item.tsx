@@ -189,7 +189,15 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     });
     const hasColorPicker = Boolean(colorPicker);
-    const extra = legendValues.length > 0 ? getExtra(extraValues, item, totalItems) : null;
+
+    // only the first for now until https://github.com/elastic/elastic-charts/issues/2096
+    const legendValue =
+      legendValues[0] === LegendValue.CurrentAndLastValue
+        ? getExtra(extraValues, item, totalItems)
+        : legendValues.length > 0
+          ? item.values[0]
+          : undefined;
+
     const style: CSSProperties = flatLegend
       ? {}
       : {
@@ -224,9 +232,9 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             onToggle={this.onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
-          {extra && !isSeriesHidden && (
-            <div className="echLegendItem__extra" title={`${extra.label}`}>
-              {extra.label}
+          {legendValue && !isSeriesHidden && (
+            <div className="echLegendItem__extra" title={`${legendValue.label}`}>
+              {legendValue.label}
             </div>
           )}
           {Action && (

@@ -13,11 +13,11 @@ export function getExtra(
   extraValues: Map<string, LegendItemExtraValues>,
   item: LegendItem,
   totalItems: number,
-): LegendItemValue | null {
+): LegendItemValue | undefined {
   const { seriesIdentifiers, values, childId, path } = item;
   // don't show extra if the legend item is associated with multiple series
   if (extraValues.size === 0 || seriesIdentifiers.length > 1 || !seriesIdentifiers[0]) {
-    return values.length > 0 ? { label: `${values[0]?.label ?? ''}`, value: values[0]?.value ?? null } : null;
+    return values.length > 0 ? { label: `${values[0]?.label ?? ''}`, value: values[0]?.value ?? null } : undefined;
   }
   const [{ key }] = seriesIdentifiers;
   const extraValueKey = path.map(({ index }) => index).join('__');
@@ -27,5 +27,5 @@ export function getExtra(
     ? actionExtra
     : extraValues.size === totalItems && values.length > 0
       ? { label: `${values[0]?.label ?? ''}`, value: values[0]?.value ?? null }
-      : null;
+      : undefined;
 }

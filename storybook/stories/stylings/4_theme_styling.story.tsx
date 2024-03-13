@@ -147,7 +147,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
         showLegend
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={Position.Right}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

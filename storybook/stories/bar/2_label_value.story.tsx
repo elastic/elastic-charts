@@ -100,7 +100,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         debug={debug}
         rotation={customKnobs.enum.rotation()}
         showLegend
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={customKnobs.enum.position('legend')}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

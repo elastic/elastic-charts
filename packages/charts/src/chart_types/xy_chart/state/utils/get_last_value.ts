@@ -51,6 +51,7 @@ export function getLegendValue(
     case LegendValue.FirstValue:
       const first = series.data.find((d) => d.x === xDomain.dataDomain[0]);
       return first ? valueAccessor(first) : null;
+    case LegendValue.CurrentAndLastValue: // the current value will be passed directly to the legend component
     case LegendValue.LastValue:
       const last = series.data.findLast((d) => d.x === xDomain.dataDomain[1]);
       return last ? valueAccessor(last) : null;

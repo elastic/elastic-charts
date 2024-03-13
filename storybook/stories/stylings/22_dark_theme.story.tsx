@@ -42,7 +42,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={useBaseTheme()}
         debug={boolean('Debug', false)}
         showLegend
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
       />
       <Tooltip type={TooltipType.Crosshairs} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

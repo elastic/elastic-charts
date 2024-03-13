@@ -120,7 +120,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description} renderer="canvas">
       <Settings
         showLegend
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={Position.Right}
         theme={chartTheme}
         baseTheme={useBaseTheme()}

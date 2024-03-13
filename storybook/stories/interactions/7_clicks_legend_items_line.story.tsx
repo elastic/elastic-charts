@@ -18,7 +18,7 @@ export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description}>
     <Settings
       showLegend
-      legendValues={[LegendValue.LastValue]}
+      legendValues={[LegendValue.CurrentAndLastValue]}
       baseTheme={useBaseTheme()}
       legendPosition={Position.Right}
       onLegendItemClick={action('onLegendItemClick')}

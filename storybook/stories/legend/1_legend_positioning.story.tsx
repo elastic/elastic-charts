@@ -21,7 +21,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={customKnobs.enum.position()}
         rotation={customKnobs.enum.rotation()}
         baseTheme={useBaseTheme()}

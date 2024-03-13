@@ -119,7 +119,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         rotation={type === SeriesType.Bar ? 90 : 0}
         debugState
         showLegend={showLegend}
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
         baseTheme={useBaseTheme()}
         legendColorPicker={getColorPicker('leftCenter')}
       />

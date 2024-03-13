@@ -131,7 +131,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         debug={debug}
         rotation={customKnobs.enum.rotation()}
         showLegend
-        legendValues={[LegendValue.LastValue]}
+        legendValues={[LegendValue.CurrentAndLastValue]}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />

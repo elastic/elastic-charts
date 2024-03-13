@@ -25,6 +25,8 @@ export type LegendItemValue = { value: PrimitiveValue; label: string };
 /** @public */
 export const LegendValue = Object.freeze({
   None: 'none' as const,
+  /** Value of the bucket being hovered or last bucket value when not hovering. */
+  CurrentAndLastValue: 'currentAndLastValue' as const,
   /** Last value considering all data points in the chart */
   LastValue: 'lastValue' as const,
   /** Last non-null value */

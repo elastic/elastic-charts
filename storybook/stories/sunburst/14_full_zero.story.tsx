@@ -24,7 +24,7 @@ import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '..
 
 export const Example: ChartsStory = (_, { title, description }) => (
   <Chart title={title} description={description}>
-    <Settings baseTheme={useBaseTheme()} showLegend legendValues={[LegendValue.LastValue]} />
+    <Settings baseTheme={useBaseTheme()} showLegend legendValues={[LegendValue.CurrentAndLastValue]} />
     <Partition
       id="spec_1"
       data={[
