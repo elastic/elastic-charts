@@ -15,7 +15,7 @@ import {
   mergeWithDefaultAnnotationLine,
   mergeWithDefaultAnnotationRect,
 } from '../../../../../utils/themes/merge_utils';
-import { SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
+import { LineAnnotationStyle, RectAnnotationStyle, SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 import { AnnotationRectProps } from '../../../annotations/rect/types';
 import { AnnotationDimensions } from '../../../annotations/types';
@@ -34,6 +34,8 @@ export function renderAnnotations(
   renderingArea: Dimensions,
   sharedStyle: SharedGeometryStateStyle,
   hoveredAnnotationIds: string[],
+  lineAnnotationStyle: LineAnnotationStyle,
+  rectAnnotationStyle: RectAnnotationStyle,
   renderOnBackground: boolean = true,
 ) {
   annotationDimensions.forEach((annotation, id) => {
@@ -43,7 +45,7 @@ export function renderAnnotations(
     if (spec && isBackground === renderOnBackground) {
       const getHoverParams = getAnnotationHoverParamsFn(hoveredAnnotationIds, sharedStyle, spec.animations);
       if (isLineAnnotation(spec)) {
-        const lineStyle = mergeWithDefaultAnnotationLine(spec.style);
+        const lineStyle = mergeWithDefaultAnnotationLine(lineAnnotationStyle, spec.style);
         renderLineAnnotations(
           ctx,
           aCtx,
@@ -54,7 +56,7 @@ export function renderAnnotations(
           renderingArea,
         );
       } else if (isRectAnnotation(spec)) {
-        const rectStyle = mergeWithDefaultAnnotationRect(spec.style);
+        const rectStyle = mergeWithDefaultAnnotationRect(rectAnnotationStyle, spec.style);
         renderRectAnnotations(
           ctx,
           aCtx,

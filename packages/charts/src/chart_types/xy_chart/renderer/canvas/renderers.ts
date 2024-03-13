@@ -40,7 +40,14 @@ export function renderXYChartCanvas2d(
         rotation,
         geometries,
         geometriesIndex,
-        theme: { axes: sharedAxesStyle, sharedStyle, barSeriesStyle, background },
+        theme: {
+          axes: sharedAxesStyle,
+          sharedStyle,
+          lineAnnotation: lineAnnotationStyle,
+          rectAnnotation: rectAnnotationStyle,
+          barSeriesStyle,
+          background,
+        },
         highlightedLegendItem,
         annotationDimensions,
         annotationSpecs,
@@ -96,6 +103,8 @@ export function renderXYChartCanvas2d(
             renderingArea,
             sharedStyle,
             hoveredAnnotationIds,
+            lineAnnotationStyle,
+            rectAnnotationStyle,
             true,
           ),
 
@@ -136,6 +145,8 @@ export function renderXYChartCanvas2d(
             renderingArea,
             sharedStyle,
             hoveredAnnotationIds,
+            lineAnnotationStyle,
+            rectAnnotationStyle,
             false,
           ),
 

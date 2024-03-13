@@ -9,7 +9,10 @@
 import { LineAnnotationStyle, RectAnnotationStyle } from './theme';
 import { mergePartial, RecursivePartial } from '../common';
 
-/** @public */
+/**
+ * @public
+ * @deprecated Use `theme.lineAnnotations` instead
+ */
 export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
   line: {
     stroke: '#777',
@@ -17,7 +20,10 @@ export const DEFAULT_ANNOTATION_LINE_STYLE: LineAnnotationStyle = {
     opacity: 1,
   },
 };
-/** @public */
+/**
+ * @public
+ * @deprecated Use `theme.rectAnnotations` instead
+ */
 export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
   stroke: '#FFEEBC',
   strokeWidth: 0,
@@ -26,11 +32,17 @@ export const DEFAULT_ANNOTATION_RECT_STYLE: RectAnnotationStyle = {
 };
 
 /** @public */
-export function mergeWithDefaultAnnotationLine(config?: RecursivePartial<LineAnnotationStyle>): LineAnnotationStyle {
-  return mergePartial(DEFAULT_ANNOTATION_LINE_STYLE, config);
+export function mergeWithDefaultAnnotationLine(
+  defaultStyles: LineAnnotationStyle,
+  config: RecursivePartial<LineAnnotationStyle> = {},
+): LineAnnotationStyle {
+  return mergePartial(defaultStyles, config);
 }
 
 /** @public */
-export function mergeWithDefaultAnnotationRect(config?: RecursivePartial<RectAnnotationStyle>): RectAnnotationStyle {
-  return mergePartial(DEFAULT_ANNOTATION_RECT_STYLE, config);
+export function mergeWithDefaultAnnotationRect(
+  defaultStyles: RectAnnotationStyle,
+  config?: RecursivePartial<RectAnnotationStyle>,
+): RectAnnotationStyle {
+  return mergePartial(defaultStyles, config);
 }

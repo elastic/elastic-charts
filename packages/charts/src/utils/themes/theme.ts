@@ -520,6 +520,10 @@ export interface Theme {
   flamegraph: FlamegraphStyle;
 
   highlighter: HighlighterStyle;
+
+  lineAnnotation: LineAnnotationStyle;
+
+  rectAnnotation: RectAnnotationStyle;
 }
 
 /** @public */
