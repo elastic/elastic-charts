@@ -469,7 +469,7 @@ export interface BulletDatum {
     targetFormatter?: ValueFormatter;
     // (undocumented)
     tickFormatter: ValueFormatter;
-    ticks?: number | ((domain: GenericDomain) => number[]);
+    ticks?: number | number[] | ((domain: GenericDomain) => number[]);
     // (undocumented)
     title: string;
     // (undocumented)

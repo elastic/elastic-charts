@@ -211,6 +211,8 @@ function getScaleWithTicks(domain: GenericDomain, range: Range, tickOptions: Tic
 
   return {
     scale,
-    ticks: customRange ? ticks(updatedDomain).filter(isWithinRange(updatedDomain)) : scale.ticks(ticks),
+    ticks: customRange
+      ? (Array.isArray(ticks) ? ticks : ticks(updatedDomain)).filter(isWithinRange(updatedDomain))
+      : scale.ticks(ticks),
   };
 }
