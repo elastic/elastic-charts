@@ -15,7 +15,7 @@ import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
 import { renderDebugPoint } from '../../../../xy_chart/renderer/canvas/utils/debug';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
-import { BulletSpec } from '../../../spec';
+import { BulletSpec, BulletSubtype } from '../../../spec';
 import { BulletStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
@@ -44,7 +44,15 @@ export function angularBullet(
   // const counterClockwise = true;
   const counterClockwise = startAngle < endAngle && start > end;
   const [min, max] = sortNumbers([start, end]) as ContinuousDomain;
-  const formatterColorTicks = ticks.map((v) => ({ value: v, formattedValue: datum.tickFormatter(v) }));
+  const filteredTicks =
+    spec.subtype !== BulletSubtype.circle
+      ? ticks
+      : min === ticks.at(0) && max === ticks.at(-1)
+        ? ticks.slice(0, -1)
+        : max === ticks.at(0) && min === ticks.at(-1)
+          ? ticks.slice(1)
+          : ticks;
+  const formatterColorTicks = filteredTicks.map((v) => ({ value: v, formattedValue: datum.tickFormatter(v) }));
 
   // Color bands
   colorBands.forEach((band) => {
