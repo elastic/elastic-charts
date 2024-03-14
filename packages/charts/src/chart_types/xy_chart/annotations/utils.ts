@@ -15,7 +15,7 @@ import { Rotation, Position } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
 import { Point } from '../../../utils/point';
-import { AxisStyle } from '../../../utils/themes/theme';
+import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { getAxesSpecForSpecId } from '../state/utils/spec';
 import { ComputedGeometries } from '../state/utils/types';
 import { AnnotationDomainType, AnnotationSpec, AxisSpec, isLineAnnotation } from '../utils/specs';
@@ -117,6 +117,7 @@ export function computeAnnotationDimensions(
   { rotation: chartRotation }: Pick<SettingsSpec, 'rotation'>,
   { scales: { xScale, yScales } }: Pick<ComputedGeometries, 'scales'>,
   axesSpecs: AxisSpec[],
+  { lineAnnotation: lineAnnotationStyle }: Theme,
   isHistogramModeEnabled: boolean,
   smallMultipleScales: SmallMultipleScales,
   getAxisStyle: (id?: AxisId) => AxisStyle,
@@ -134,6 +135,7 @@ export function computeAnnotationDimensions(
         yScales,
         xScale,
         smallMultipleScales,
+        lineAnnotationStyle,
         isHistogramModeEnabled,
         annotationAxisPosition,
       );

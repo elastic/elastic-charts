@@ -441,4 +441,17 @@ export const DARK_THEME: Theme = {
       radius: 10,
     },
   },
+  lineAnnotation: {
+    line: {
+      stroke: DARK_BASE_COLORS.darkShade,
+      strokeWidth: 1,
+      opacity: 1,
+    },
+  },
+  rectAnnotation: {
+    strokeWidth: 0,
+    opacity: 0.25,
+    fill: DARK_BASE_COLORS.darkShade,
+    stroke: DARK_BASE_COLORS.darkShade,
+  },
 };

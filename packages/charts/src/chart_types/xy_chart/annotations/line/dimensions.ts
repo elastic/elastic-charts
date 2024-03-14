@@ -16,6 +16,7 @@ import { Position, Rotation } from '../../../../utils/common';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { mergeWithDefaultAnnotationLine } from '../../../../utils/themes/merge_utils';
+import { LineAnnotationStyle } from '../../../../utils/themes/theme';
 import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
 import { computeXScaleOffset } from '../../state/utils/utils';
 import { AnnotationDomainType, LineAnnotationDatum, LineAnnotationSpec } from '../../utils/specs';
@@ -24,6 +25,7 @@ function computeYDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
   yScale: ScaleContinuous,
   { vertical, horizontal }: SmallMultipleScales,
+  lineAnnotationStyle: LineAnnotationStyle,
   chartRotation: Rotation,
   axisPosition?: Position,
 ): AnnotationLineProps[] {
@@ -36,7 +38,7 @@ function computeYDomainLineAnnotationDimensions(
     markerPosition: specMarkerPosition,
     style,
   } = annotationSpec;
-  const lineStyle = mergeWithDefaultAnnotationLine(style);
+  const lineStyle = mergeWithDefaultAnnotationLine(lineAnnotationStyle, style);
   const color = lineStyle?.line?.stroke ?? Colors.Red.keyword;
   const isHorizontalChartRotation = isHorizontalRotation(chartRotation);
   // let's use a default Bottom-X/Left-Y axis orientation if we are not showing an axis
@@ -115,6 +117,7 @@ function computeXDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
   xScale: ScaleContinuous | ScaleBand,
   { vertical, horizontal }: SmallMultipleScales,
+  lineAnnotationStyle: LineAnnotationStyle,
   chartRotation: Rotation,
   isHistogramMode: boolean,
   axisPosition?: Position,
@@ -128,7 +131,7 @@ function computeXDomainLineAnnotationDimensions(
     markerPosition: specMarkerPosition,
     style,
   } = annotationSpec;
-  const lineStyle = mergeWithDefaultAnnotationLine(style);
+  const lineStyle = mergeWithDefaultAnnotationLine(lineAnnotationStyle, style);
   const color = lineStyle?.line?.stroke ?? Colors.Red.keyword;
 
   const lineProps: AnnotationLineProps[] = [];
@@ -228,6 +231,7 @@ export function computeLineAnnotationDimensions(
   yScales: Map<GroupId, ScaleContinuous>,
   xScale: ScaleContinuous | ScaleBand,
   smallMultipleScales: SmallMultipleScales,
+  lineAnnotationStyle: LineAnnotationStyle,
   isHistogramMode: boolean,
   axisPosition?: Position,
 ): AnnotationLineProps[] | null {
@@ -242,6 +246,7 @@ export function computeLineAnnotationDimensions(
       annotationSpec,
       xScale,
       smallMultipleScales,
+      lineAnnotationStyle,
       chartRotation,
       isHistogramMode,
       axisPosition,
@@ -258,6 +263,7 @@ export function computeLineAnnotationDimensions(
     annotationSpec,
     yScale,
     smallMultipleScales,
+    lineAnnotationStyle,
     chartRotation,
     axisPosition,
   );

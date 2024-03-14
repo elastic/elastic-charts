@@ -31,6 +31,7 @@ export const computeAnnotationDimensionsSelector = createCustomCachedSelector(
     getSettingsSpecSelector,
     computeSeriesGeometriesSelector,
     getAxisSpecsSelector,
+    getChartThemeSelector,
     isHistogramModeEnabledSelector,
     computeSmallMultipleScalesSelector,
     getAxisStyleGetter,
