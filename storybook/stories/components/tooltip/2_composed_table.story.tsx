@@ -10,15 +10,15 @@ import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
-  TooltipTable,
-  TooltipTableBody,
-  TooltipTableHeader,
-  TooltipTableFooter,
-  TooltipTableRow,
-  TooltipTableCell,
-  TooltipTableColorCell,
+  Table,
+  TableBody,
+  TableHeader,
+  TableFooter,
+  TableRow,
+  TableCell,
+  TableColorCell,
   TooltipSpec,
-  TooltipCellStyle,
+  TableCellStyle,
 } from '@elastic/charts';
 
 import { tableSimple } from './data';
@@ -28,38 +28,38 @@ export const Example = () => {
   const pinned = boolean('pinned', false);
   const showColor = boolean('show color', true);
   const maxHeight = number('max table height', 120);
-  const style: TooltipCellStyle = { textAlign: 'right' };
+  const style: TableCellStyle = { textAlign: 'right' };
 
   const TooltipBody: TooltipSpec['body'] = ({ items }) => {
     return (
-      <TooltipTable gridTemplateColumns={`repeat(${showColor ? 4 : 3}, auto)`} maxHeight={maxHeight}>
-        <TooltipTableHeader>
-          <TooltipTableRow>
-            {showColor && <TooltipTableColorCell />}
-            <TooltipTableCell>X Value</TooltipTableCell>
-            <TooltipTableCell>Y Value</TooltipTableCell>
-            <TooltipTableCell>Z Value</TooltipTableCell>
-          </TooltipTableRow>
-        </TooltipTableHeader>
-        <TooltipTableBody>
+      <Table gridTemplateColumns={`repeat(${showColor ? 4 : 3}, auto)`} maxHeight={maxHeight}>
+        <TableHeader>
+          <TableRow>
+            {showColor && <TableColorCell />}
+            <TableCell>X Value</TableCell>
+            <TableCell>Y Value</TableCell>
+            <TableCell>Z Value</TableCell>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {items.map(({ datum, seriesIdentifier: { key }, color }) => (
-            <TooltipTableRow key={`${key}-${datum.x}`}>
-              {showColor && <TooltipTableColorCell color={color} />}
-              <TooltipTableCell style={style}>{datum.x}</TooltipTableCell>
-              <TooltipTableCell style={style}>{datum.y}</TooltipTableCell>
-              <TooltipTableCell style={style}>{datum.z}</TooltipTableCell>
-            </TooltipTableRow>
+            <TableRow key={`${key}-${datum.x}`}>
+              {showColor && <TableColorCell color={color} />}
+              <TableCell style={style}>{datum.x}</TableCell>
+              <TableCell style={style}>{datum.y}</TableCell>
+              <TableCell style={style}>{datum.z}</TableCell>
+            </TableRow>
           ))}
-        </TooltipTableBody>
-        <TooltipTableFooter>
-          <TooltipTableRow>
-            {showColor && <TooltipTableColorCell />}
-            <TooltipTableCell style={style}>{items.reduce((s, { datum: { x } }) => s + x, 0)}</TooltipTableCell>
-            <TooltipTableCell style={style}>{items.reduce((s, { datum: { y } }) => s + y, 0)}</TooltipTableCell>
-            <TooltipTableCell style={style}>{items.reduce((s, { datum: { z } }) => s + z, 0)}</TooltipTableCell>
-          </TooltipTableRow>
-        </TooltipTableFooter>
-      </TooltipTable>
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            {showColor && <TableColorCell />}
+            <TableCell style={style}>{items.reduce((s, { datum: { x } }) => s + x, 0)}</TableCell>
+            <TableCell style={style}>{items.reduce((s, { datum: { y } }) => s + y, 0)}</TableCell>
+            <TableCell style={style}>{items.reduce((s, { datum: { z } }) => s + z, 0)}</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
     );
   };
   return <TooltipShowcase info={tableSimple} pinned={pinned} tooltip={{ body: TooltipBody }} />;

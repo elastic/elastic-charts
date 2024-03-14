@@ -9,14 +9,14 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import { useTooltipContext } from './tooltip_provider';
-import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
-import { combineColors, highContrastColor } from '../../../common/color_calcs';
-import { colorToRgba } from '../../../common/color_library_wrappers';
-import { Color, Colors } from '../../../common/colors';
+import { TableCell, TableCellProps } from './table_cell';
+import { combineColors, highContrastColor } from '../../common/color_calcs';
+import { colorToRgba } from '../../common/color_library_wrappers';
+import { Color, Colors } from '../../common/colors';
+import { useTooltipContext } from '../tooltip/components/tooltip_provider';
 
 /** @public */
-export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children' | 'width'> & {
+export type ColorStripCellProps = Omit<TableCellProps, 'children' | 'width'> & {
   color?: string;
   displayOnly?: boolean;
 };
@@ -25,7 +25,7 @@ export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children' | 'widt
  * Renders color strip column cell
  * @public
  */
-export function TooltipTableColorCell({
+export function TableColorCell({
   color,
   className,
   displayOnly,
@@ -51,9 +51,9 @@ export function TooltipTableColorCell({
 
     return (
       <>
-        <div className="echTooltip__colorStrip--bg" style={{ backgroundColor }} />
-        <div className="echTooltip__colorStrip" style={{ backgroundColor: color }}>
-          <div className="echTooltip__colorStrip--icon" style={{ fill: dotColor }}>
+        <div className="echTable__colorStrip--bg" style={{ backgroundColor }} />
+        <div className="echTable__colorStrip" style={{ backgroundColor: color }}>
+          <div className="echTable__colorStrip--icon" style={{ fill: dotColor }}>
             {/* Check svg to match eui - https://github.com/elastic/eui/blob/main/src/components/icon/svgs/check.svg?short_path=5a87b2e */}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
               <path
@@ -63,19 +63,19 @@ export function TooltipTableColorCell({
             </svg>
           </div>
         </div>
-        <div className="echTooltip__colorStrip--spacer" />
+        <div className="echTable__colorStrip--spacer" />
       </>
     );
   };
 
   return (
-    <TooltipTableCell
+    <TableCell
       {...cellProps}
-      className={classNames('echTooltip__colorCell', className, {
-        'echTooltip__colorCell--static': displayOnly,
+      className={classNames('echTable__colorCell', className, {
+        'echTable__colorCell--static': displayOnly,
       })}
     >
       {renderColorStrip()}
-    </TooltipTableCell>
+    </TableCell>
   );
 }

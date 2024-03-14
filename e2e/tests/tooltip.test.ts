@@ -46,7 +46,7 @@ test.describe('Tooltip', () => {
                 button: 'right',
               });
               // table row not visible thus not clickable by playwright
-              const items = page.locator('.echTooltip__tableRow .echTooltip__tableCell:first-of-type');
+              const items = page.locator('.echTable__tableRow .echTable__tableCell:first-of-type');
               await items.nth(5).click();
               await items.nth(0).click();
               await items.nth(2).click();
@@ -65,7 +65,7 @@ test.describe('Tooltip', () => {
                 button: 'right',
               });
               // table row not visible thus not clickable by playwright
-              const items = page.locator('.echTooltip__tableRow .echTooltip__tableCell:first-of-type');
+              const items = page.locator('.echTable__tableRow .echTable__tableCell:first-of-type');
               await items.nth(2).click();
             },
             delay,

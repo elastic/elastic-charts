@@ -16,11 +16,10 @@ import {
   TooltipDivider,
   TooltipFooter,
   TooltipHeader,
-  TooltipTable,
+  Table,
   TooltipWrapper,
 } from './components';
 import { TooltipProvider } from './components/tooltip_provider';
-import { TooltipTableColumn } from './components/types';
 import { getStylesFromPlacement } from './placement';
 import {
   PinTooltipCallback,
@@ -53,6 +52,7 @@ import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/commo
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
+import { TableColumn } from '../table/types';
 
 interface TooltipDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
@@ -173,7 +173,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
   const isMostlyRTL = hasMostlyRTLItems(info?.values?.map?.(({ label }) => label) ?? []);
   const textDirectionality = isMostlyRTL ? 'rtl' : 'ltr';
 
-  const columns: TooltipTableColumn<D, SI>[] = [
+  const columns: TableColumn<D, SI>[] = [
     {
       id: 'color',
       type: 'color',
@@ -295,7 +295,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
               {headerBottomDividerVisibility && <TooltipDivider />}
 
               {TooltipCustomBody === 'none' ? null : TooltipCustomBody === 'default' ? (
-                <TooltipTable
+                <Table
                   columns={columns}
                   items={info.values}
                   pinned={pinned}

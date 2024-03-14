@@ -9,21 +9,21 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import { TooltipTableCell } from './tooltip_table_cell';
-import { TooltipTableColorCell } from './tooltip_table_color_cell';
-import { TooltipTableRow } from './tooltip_table_row';
-import { TooltipTableColumn } from './types';
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
-import { Datum } from '../../../utils/common';
-import { PropsOrChildrenWithProps } from '../types';
+import { TableCell } from './table_cell';
+import { TableColorCell } from './table_color_cell';
+import { TableRow } from './table_row';
+import { TableColumn } from './types';
+import { SeriesIdentifier } from '../../common/series_id';
+import { BaseDatum, TooltipValue } from '../../specs';
+import { Datum } from '../../utils/common';
+import { PropsOrChildrenWithProps } from '../tooltip/types';
 
-type TooltipTableHeaderProps<
+type TableHeaderProps<
   D extends BaseDatum = Datum,
   SI extends SeriesIdentifier = SeriesIdentifier,
 > = PropsOrChildrenWithProps<
   {
-    columns: TooltipTableColumn<D, SI>[];
+    columns: TableColumn<D, SI>[];
     items: TooltipValue<D, SI>[];
   },
   {},
@@ -33,11 +33,11 @@ type TooltipTableHeaderProps<
 >;
 
 /** @public */
-export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
+export const TableHeader = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   className,
   ...props
-}: TooltipTableHeaderProps<D, SI>) => {
-  const classes = classNames('echTooltip__tableHeader', className);
+}: TableHeaderProps<D, SI>) => {
+  const classes = classNames('echTable__tableHeader', className);
   if ('children' in props) {
     return (
       <div role="rowgroup" className={classes}>
@@ -50,17 +50,17 @@ export const TooltipTableHeader = <D extends BaseDatum = Datum, SI extends Serie
 
   return (
     <div role="rowgroup" className={classes}>
-      <TooltipTableRow>
+      <TableRow>
         {props.columns.map(({ header, style, id, className: cn, type }, i) => {
           const key = id ?? `${type}-${i}`;
-          if (type === 'color') return <TooltipTableColorCell className={cn} style={style} key={key} />;
+          if (type === 'color') return <TableColorCell className={cn} style={style} key={key} />;
           return (
-            <TooltipTableCell className={cn} style={style} key={key}>
+            <TableCell className={cn} style={style} key={key}>
               {header ? (typeof header === 'string' ? header : header(props.items)) : undefined}
-            </TooltipTableCell>
+            </TableCell>
           );
         })}
-      </TooltipTableRow>
+      </TableRow>
     </div>
   );
 };

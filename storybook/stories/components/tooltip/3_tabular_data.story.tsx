@@ -9,14 +9,14 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { TooltipTable, TooltipTableColumn, XYChartSeriesIdentifier } from '@elastic/charts';
+import { Table, TableColumn, XYChartSeriesIdentifier } from '@elastic/charts';
 
 import { tableMultipleX } from './data';
 import { TooltipShowcase } from './tooltip_showcase';
 
 export const Example = () => {
   const showColor = boolean('show color', true);
-  const columns: TooltipTableColumn<any, XYChartSeriesIdentifier>[] = [
+  const columns: TableColumn<any, XYChartSeriesIdentifier>[] = [
     { type: 'number', header: 'Value A', cell: ({ datum }) => datum.x },
     { type: 'number', header: 'Value B', cell: ({ datum }) => datum.y },
     { type: 'number', header: 'sum(A,B)', cell: ({ datum }) => datum.x + datum.y },
@@ -29,7 +29,7 @@ export const Example = () => {
   return (
     <TooltipShowcase
       info={tableMultipleX}
-      tooltip={{ body: ({ items }) => <TooltipTable items={items} columns={columns} /> }}
+      tooltip={{ body: ({ items }) => <Table items={items} columns={columns} /> }}
     />
   );
 };

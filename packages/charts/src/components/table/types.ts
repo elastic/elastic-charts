@@ -8,15 +8,15 @@
 
 import { CSSProperties, ReactNode } from 'react';
 
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum } from '../../../specs';
-import { TooltipValue } from '../../../specs/tooltip';
-import { Datum } from '../../../utils/common';
+import { SeriesIdentifier } from '../../common/series_id';
+import { BaseDatum } from '../../specs';
+import { TooltipValue } from '../../specs/tooltip';
+import { Datum } from '../../utils/common';
 
 /**
  * Styles to apply to tooltip table cell
  * @public */
-export type TooltipCellStyle = Pick<
+export type TableCellStyle = Pick<
   CSSProperties,
   'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'
 >;
@@ -25,7 +25,7 @@ export type TooltipCellStyle = Pick<
  * Base table column definition
  * @alpha
  */
-export type TooltipTableColumnBase<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
+export type TableColumnBase<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> = {
   /**
    * Identifier for column to be used in callbacks if needed
    */
@@ -49,7 +49,7 @@ export type TooltipTableColumnBase<D extends BaseDatum = Datum, SI extends Serie
   /**
    * Limited styles to apply to table cells within column (i.e. `td` or `th`)
    */
-  style?: TooltipCellStyle;
+  style?: TableCellStyle;
   /**
    * truncates cell content sharing the available width with other columns.
    * Set width to control column width for truncating.
@@ -65,8 +65,8 @@ export type TooltipTableColumnBase<D extends BaseDatum = Datum, SI extends Serie
  * Table column definition for fully custom values
  * @alpha
  */
-export interface TooltipTableColumnCustom<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
-  extends TooltipTableColumnBase<D, SI> {
+export interface TableColumnCustom<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
+  extends TableColumnBase<D, SI> {
   type: 'custom';
   /**
    * Renders column cell element inside a `td` element
@@ -78,8 +78,8 @@ export interface TooltipTableColumnCustom<D extends BaseDatum = Datum, SI extend
  * Table column definition for color strip
  * @alpha
  */
-export interface TooltipTableColumnColor<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
-  extends Omit<TooltipTableColumnBase<D, SI>, 'header' | 'footer'> {
+export interface TableColumnColor<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
+  extends Omit<TableColumnBase<D, SI>, 'header' | 'footer'> {
   type: 'color';
   header?: never;
   footer?: never;
@@ -89,8 +89,8 @@ export interface TooltipTableColumnColor<D extends BaseDatum = Datum, SI extends
  * Table column definition for number values
  * @alpha
  */
-export interface TooltipTableColumnNumber<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
-  extends TooltipTableColumnBase<D, SI> {
+export interface TableColumnNumber<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
+  extends TableColumnBase<D, SI> {
   type: 'number';
   /**
    * Renders column cell element inside a `td` element
@@ -102,8 +102,8 @@ export interface TooltipTableColumnNumber<D extends BaseDatum = Datum, SI extend
  * Table column definition for text values
  * @alpha
  */
-export interface TooltipTableColumnText<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
-  extends TooltipTableColumnBase<D, SI> {
+export interface TableColumnText<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>
+  extends TableColumnBase<D, SI> {
   type: 'text';
   /**
    * Renders column cell element inside a `td` element
@@ -116,8 +116,8 @@ export interface TooltipTableColumnText<D extends BaseDatum = Datum, SI extends 
  *
  * @alpha
  */
-export type TooltipTableColumn<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> =
-  | TooltipTableColumnCustom<D, SI>
-  | TooltipTableColumnColor<D, SI>
-  | TooltipTableColumnNumber<D, SI>
-  | TooltipTableColumnText<D, SI>;
+export type TableColumn<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> =
+  | TableColumnCustom<D, SI>
+  | TableColumnColor<D, SI>
+  | TableColumnNumber<D, SI>
+  | TableColumnText<D, SI>;

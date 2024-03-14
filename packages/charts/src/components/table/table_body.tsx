@@ -9,22 +9,22 @@
 import classNames from 'classnames';
 import React, { ReactNode, useRef } from 'react';
 
-import { TooltipTableCell } from './tooltip_table_cell';
-import { TooltipTableColorCell } from './tooltip_table_color_cell';
-import { TooltipTableRow } from './tooltip_table_row';
-import { TooltipCellStyle, TooltipTableColumn } from './types';
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
-import { Datum } from '../../../utils/common';
-import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
+import { TableCell } from './table_cell';
+import { TableColorCell } from './table_color_cell';
+import { TableRow } from './table_row';
+import { TableCellStyle, TableColumn } from './types';
+import { SeriesIdentifier } from '../../common/series_id';
+import { BaseDatum, TooltipValue } from '../../specs';
+import { Datum } from '../../utils/common';
+import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../tooltip/types';
 
-type TooltipTableBodyProps<
+type TableBodyProps<
   D extends BaseDatum = Datum,
   SI extends SeriesIdentifier = SeriesIdentifier,
 > = PropsOrChildrenWithProps<
   {
     items: TooltipValue<D, SI>[];
-    columns: TooltipTableColumn<D, SI>[];
+    columns: TableColumn<D, SI>[];
     pinned?: boolean;
     onSelect?: ToggleSelectedTooltipItemCallback;
     selected: TooltipValue<D, SI>[];
@@ -36,14 +36,14 @@ type TooltipTableBodyProps<
 >;
 
 /** @public */
-export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
+export const TableBody = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   className,
   ...props
-}: TooltipTableBodyProps<D, SI>) => {
+}: TableBodyProps<D, SI>) => {
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null);
 
   if ('children' in props) {
-    const classes = classNames('echTooltip__tableBody', className);
+    const classes = classNames('echTable__tableBody', className);
     return (
       <div role="rowgroup" className={classes}>
         {props.children}
@@ -52,7 +52,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   }
 
   const { items, pinned, selected, onSelect, columns } = props;
-  const classes = classNames('echTooltip__tableBody');
+  const classes = classNames('echTable__tableBody');
   // TODO: find a better way determine this from the data
   const allHighlighted = items.every((i) => i.isHighlighted);
 
@@ -62,7 +62,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
         const { isHighlighted, isVisible, displayOnly } = item;
         if (!isVisible) return null;
         return (
-          <TooltipTableRow
+          <TableRow
             key={`${item.seriesIdentifier.key}-${item.label}-${item.value}`}
             isHighlighted={!pinned && !allHighlighted && isHighlighted}
             isSelected={pinned && selected.includes(item)}
@@ -71,7 +71,7 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
             {columns.map((column, j) => {
               return renderCellContent(item, column, column.id ?? `${column.type}-${j}`);
             })}
-          </TooltipTableRow>
+          </TableRow>
         );
       })}
     </div>
@@ -81,8 +81,8 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
 function getCellStyles<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({
   style,
   type,
-}: TooltipTableColumn<D, SI>): TooltipCellStyle {
-  const textAlign: TooltipCellStyle['textAlign'] = type === 'number' ? 'right' : type === 'text' ? 'left' : undefined;
+}: TableColumn<D, SI>): TableCellStyle {
+  const textAlign: TableCellStyle['textAlign'] = type === 'number' ? 'right' : type === 'text' ? 'left' : undefined;
 
   return {
     textAlign,
@@ -92,16 +92,16 @@ function getCellStyles<D extends BaseDatum = Datum, SI extends SeriesIdentifier 
 
 function renderCellContent<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
   item: TooltipValue<D, SI>,
-  column: TooltipTableColumn<D, SI>,
+  column: TableColumn<D, SI>,
   key: string,
 ): ReactNode {
   if (column.type === 'color') {
-    return <TooltipTableColorCell displayOnly={item.displayOnly} color={item.color} key={key} />;
+    return <TableColorCell displayOnly={item.displayOnly} color={item.color} key={key} />;
   }
 
   return (
-    <TooltipTableCell truncate={column.truncate} style={getCellStyles(column)} key={key}>
+    <TableCell truncate={column.truncate} style={getCellStyles(column)} key={key}>
       {column.cell(item)}
-    </TooltipTableCell>
+    </TableCell>
   );
 }

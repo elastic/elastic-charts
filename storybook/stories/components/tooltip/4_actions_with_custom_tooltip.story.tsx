@@ -11,12 +11,12 @@ import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
-  TooltipTable,
-  TooltipTableBody,
-  TooltipTableHeader,
-  TooltipTableRow,
-  TooltipTableCell,
-  TooltipTableColorCell,
+  Table,
+  TableBody,
+  TableHeader,
+  TableRow,
+  TableCell,
+  TableColorCell,
   TooltipAction,
   TooltipSpec,
   useTooltipContext,
@@ -47,31 +47,31 @@ export const Example = () => {
   const TooltipBody: TooltipSpec['body'] = ({ items }) => {
     const { pinned, selected, toggleSelected } = useTooltipContext();
     return (
-      <TooltipTable maxHeight={100} gridTemplateColumns="11px auto auto">
-        <TooltipTableHeader>
-          <TooltipTableRow>
-            <TooltipTableColorCell />
-            <TooltipTableCell style={{ textAlign: 'left' }}>Category</TooltipTableCell>
-            <TooltipTableCell style={{ textAlign: 'right' }}>Value</TooltipTableCell>
-          </TooltipTableRow>
-        </TooltipTableHeader>
-        <TooltipTableBody>
+      <Table maxHeight={100} gridTemplateColumns="11px auto auto">
+        <TableHeader>
+          <TableRow>
+            <TableColorCell />
+            <TableCell style={{ textAlign: 'left' }}>Category</TableCell>
+            <TableCell style={{ textAlign: 'right' }}>Value</TableCell>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {items.map((value) => {
             const onSelect = () => toggleSelected(value);
             return (
-              <TooltipTableRow
+              <TableRow
                 isSelected={pinned && selected.includes(value)}
                 onSelect={onSelect}
                 key={`${value.seriesIdentifier.key}-${value.datum.x}`}
               >
-                <TooltipTableColorCell color={value.color} />
-                <TooltipTableCell style={{ textAlign: 'left' }}>{value.label}</TooltipTableCell>
-                <TooltipTableCell style={{ textAlign: 'right' }}>{value.formattedValue}</TooltipTableCell>
-              </TooltipTableRow>
+                <TableColorCell color={value.color} />
+                <TableCell style={{ textAlign: 'left' }}>{value.label}</TableCell>
+                <TableCell style={{ textAlign: 'right' }}>{value.formattedValue}</TableCell>
+              </TableRow>
             );
           })}
-        </TooltipTableBody>
-      </TooltipTable>
+        </TableBody>
+      </Table>
     );
   };
   return (

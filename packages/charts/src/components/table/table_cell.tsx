@@ -9,29 +9,29 @@
 import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
 
-import { TooltipCellStyle } from './types';
-import { isNonNullablePrimitiveValue } from '../../../utils/common';
+import { TableCellStyle } from './types';
+import { isNonNullablePrimitiveValue } from '../../utils/common';
 
 /** @public */
-export type TooltipTableCellProps = PropsWithChildren<{
+export type TableCellProps = PropsWithChildren<{
   tagName?: 'td' | 'th';
   truncate?: boolean;
   className?: string;
   title?: string;
-  style?: TooltipCellStyle;
+  style?: TableCellStyle;
 }>;
 
 /** @public */
-export const TooltipTableCell = ({
+export const TableCell = ({
   style,
   truncate = false,
   tagName = 'td',
   className,
   children,
   title: manualTitle,
-}: TooltipTableCellProps) => {
-  const classes = classNames('echTooltip__tableCell', className, {
-    'echTooltip__tableCell--truncate': truncate,
+}: TableCellProps) => {
+  const classes = classNames('echTable__tableCell', className, {
+    'echTable__tableCell--truncate': truncate,
   });
 
   const title = manualTitle ?? (truncate && isNonNullablePrimitiveValue(children) ? `${children}` : undefined);

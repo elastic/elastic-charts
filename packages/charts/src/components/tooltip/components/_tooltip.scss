@@ -43,19 +43,19 @@ $transitionTime: 200ms;
     pointer-events: auto;
     user-select: auto;
 
-    .echTooltip__tableRow--selectable {
+    .echTable__tableRow--selectable {
       cursor: pointer;
     }
 
     .echTooltipActions {
       pointer-events: auto;
     }
-    .echTooltip__tableWrapper {
+    .echTable__tableWrapper {
       pointer-events: auto;
     }
   }
 
-  .echTooltip__tableCell--truncate {
+  .echTable__tableCell--truncate {
     @include lineClamp(2);
   }
 
@@ -63,170 +63,6 @@ $transitionTime: 200ms;
     padding: $euiSizeXS ($euiSizeXS * 2);
     display: flex;
     justify-content: space-between;
-  }
-
-  &__tableWrapper {
-    overflow: hidden;
-    @include euiScrollBar;
-    background-color: $euiColorEmptyShade;
-    &--pinned {
-      overflow: auto;
-    }
-  }
-
-  &__table {
-    display: grid;
-    width: 100%;
-
-    &--noGrid {
-      display: table;
-    }
-  }
-
-  &__tableHeader,
-  &__tableFooter {
-    .echTooltip__tableCell {
-      cursor: default;
-      font-weight: $euiFontWeightSemiBold;
-      background-color: $euiColorEmptyShade;
-      position: sticky;
-      z-index: 1;
-    }
-  }
-
-  &__tableHeader,
-  &__tableBody,
-  &__tableFooter,
-  &__tableRow {
-    // This ignores all above elements for positioning
-    // effectively spreading all children in its place
-    display: contents;
-  }
-
-  &__tableHeader {
-    margin-bottom: 0;
-    top: 0;
-
-    .echTooltip__tableCell {
-      border-bottom: $tableBorder;
-      top: 0;
-    }
-  }
-
-  &__tableFooter {
-    margin-top: 0;
-    bottom: 0;
-
-    .echTooltip__tableCell {
-      border-top: $tableBorder;
-      bottom: 0;
-    }
-  }
-
-  &__tableCell:not(.echTooltip__colorCell) {
-    padding: 4px;
-  }
-
-  &__tableBody {
-    .echTooltip__tableCell:not(.echTooltip__colorCell) {
-      padding: 2px 4px;
-      transition:
-        margin $transitionTime,
-        padding $transitionTime;
-    }
-
-    .echTooltip__tableRow--selected {
-      .echTooltip__tableCell:not(.echTooltip__colorCell),
-      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
-        background-color: $tableRowSelectedColor;
-      }
-
-      .echTooltip__colorCell + .echTooltip__tableCell {
-        margin-left: $colorStripPadding * 2;
-        padding-left: 10px;
-      }
-    }
-
-    .echTooltip__tableRow--selected:hover {
-      .echTooltip__tableCell:not(.echTooltip__colorCell),
-      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
-        background-color: $tableRowHoverSelectedColor;
-      }
-    }
-    .echTooltip__tableRow--selectable:hover {
-      .echTooltip__tableCell:not(.echTooltip__colorCell),
-      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
-        background-color: $tableRowHoverColor;
-      }
-    }
-  }
-
-  &__tableRow {
-    position: relative;
-
-    &--highlighted {
-      .echTooltip__tableCell:not(.echTooltip__colorCell),
-      .echTooltip__colorCell .echTooltip__colorStrip--spacer {
-        background-color: transparentize($euiColorLightShade, 0.5);
-      }
-    }
-
-    &--selected {
-      :not(.echTooltip__colorCell--static) .echTooltip__colorStrip {
-        width: $maxRowColorStripWidth;
-
-        &--spacer {
-          width: 0;
-          min-width: 0;
-        }
-
-        &--icon {
-          opacity: 1;
-        }
-      }
-    }
-  }
-
-  &__colorCell {
-    padding: 0;
-    height: 100%;
-    position: relative;
-    overflow: hidden; // to avoid extra height from color strip styles
-    width: $maxRowColorStripWidth;
-
-    &--static {
-      width: $rowColorStripWidth;
-    }
-  }
-
-  &__colorStrip,
-  &__colorStrip--bg,
-  &__colorStrip--spacer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: $rowColorStripWidth;
-    transition: width $transitionTime;
-  }
-
-  &__colorStrip {
-    &--icon {
-      opacity: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100%; // to center check
-      transition: opacity $transitionTime;
-      padding: 0 4px;
-    }
-
-    &--spacer {
-      left: auto;
-      right: $colorStripPadding * 2;
-      width: $maxRowColorStripWidth - $rowColorStripWidth - $colorStripPadding * 2;
-      min-width: $maxRowColorStripWidth - $rowColorStripWidth - $colorStripPadding * 2;
-    }
   }
 
   &__label {
@@ -238,14 +74,5 @@ $transitionTime: 200ms;
   &__value {
     text-align: right;
     font-feature-settings: 'tnum';
-  }
-
-  &[dir='rtl'] {
-    .echTooltip {
-      &__colorStrip {
-        left: auto;
-        right: 0;
-      }
-    }
   }
 }

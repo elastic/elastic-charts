@@ -1,0 +1,223 @@
+@import '../mixins';
+
+$borderColor: $euiColorLightShade;
+$borderWidth: 1px;
+$rowColorStripWidth: 5px;
+/**
+ * Manually synced with `COLOR_STRIP_CHECK_WIDTH` const in [`table.tsx`](packages/charts/src/components/table/table.tsx)
+ */
+$colorStripCheckWidth: 11px;
+$colorStripPadding: 5px;
+$maxRowColorStripWidth: $colorStripCheckWidth + $colorStripPadding * 2;
+
+$tableBorder: solid $borderWidth $borderColor;
+
+$tableRowHoverColor: transparentize($euiColorPrimary, 0.95);
+$tableRowSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
+$tableRowHoverSelectedColor: tintOrShade($euiFocusBackgroundColor, 0, 10%);
+
+$transitionTime: 200ms;
+
+.echTable {
+  &--pinned {
+    @include euiBottomShadowSmall;
+    pointer-events: auto;
+    user-select: auto;
+
+    .echTable__tableRow--selectable {
+      cursor: pointer;
+    }
+
+    .echTable__tableWrapper {
+      pointer-events: auto;
+    }
+  }
+
+  .echTable__tableCell--truncate {
+    @include lineClamp(2);
+  }
+
+  &__tableWrapper {
+    overflow: hidden;
+    @include euiScrollBar;
+    background-color: $euiColorEmptyShade;
+    &--pinned {
+      overflow: auto;
+    }
+  }
+
+  &__table {
+    display: grid;
+    width: 100%;
+
+    &--noGrid {
+      display: table;
+    }
+  }
+
+  &__tableHeader,
+  &__tableFooter {
+    .echTable__tableCell {
+      cursor: default;
+      font-weight: $euiFontWeightSemiBold;
+      background-color: $euiColorEmptyShade;
+      position: sticky;
+      z-index: 1;
+    }
+  }
+
+  &__tableHeader,
+  &__tableBody,
+  &__tableFooter,
+  &__tableRow {
+    // This ignores all above elements for positioning
+    // effectively spreading all children in its place
+    display: contents;
+  }
+
+  &__tableHeader {
+    margin-bottom: 0;
+    top: 0;
+
+    .echTable__tableCell {
+      border-bottom: $tableBorder;
+      top: 0;
+    }
+  }
+
+  &__tableFooter {
+    margin-top: 0;
+    bottom: 0;
+
+    .echTable__tableCell {
+      border-top: $tableBorder;
+      bottom: 0;
+    }
+  }
+
+  &__tableCell:not(.echTable__colorCell) {
+    padding: 4px;
+  }
+
+  &__tableBody {
+    .echTable__tableCell:not(.echTable__colorCell) {
+      padding: 2px 4px;
+      transition:
+        margin $transitionTime,
+        padding $transitionTime;
+    }
+
+    .echTable__tableRow--selected {
+      .echTable__tableCell:not(.echTable__colorCell),
+      .echTable__colorCell .echTable__colorStrip--spacer {
+        background-color: $tableRowSelectedColor;
+      }
+
+      .echTable__colorCell + .echTable__tableCell {
+        margin-left: $colorStripPadding * 2;
+        padding-left: 10px;
+      }
+    }
+
+    .echTable__tableRow--selected:hover {
+      .echTable__tableCell:not(.echTable__colorCell),
+      .echTable__colorCell .echTable__colorStrip--spacer {
+        background-color: $tableRowHoverSelectedColor;
+      }
+    }
+    .echTable__tableRow--selectable:hover {
+      .echTable__tableCell:not(.echTable__colorCell),
+      .echTable__colorCell .echTable__colorStrip--spacer {
+        background-color: $tableRowHoverColor;
+      }
+    }
+  }
+
+  &__tableRow {
+    position: relative;
+
+    &--highlighted {
+      .echTable__tableCell:not(.echTable__colorCell),
+      .echTable__colorCell .echTable__colorStrip--spacer {
+        background-color: transparentize($euiColorLightShade, 0.5);
+      }
+    }
+
+    &--selected {
+      :not(.echTable__colorCell--static) .echTable__colorStrip {
+        width: $maxRowColorStripWidth;
+
+        &--spacer {
+          width: 0;
+          min-width: 0;
+        }
+
+        &--icon {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &__colorCell {
+    padding: 0;
+    height: 100%;
+    position: relative;
+    overflow: hidden; // to avoid extra height from color strip styles
+    width: $maxRowColorStripWidth;
+
+    &--static {
+      width: $rowColorStripWidth;
+    }
+  }
+
+  &__colorStrip,
+  &__colorStrip--bg,
+  &__colorStrip--spacer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: $rowColorStripWidth;
+    transition: width $transitionTime;
+  }
+
+  &__colorStrip {
+    &--icon {
+      opacity: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%; // to center check
+      transition: opacity $transitionTime;
+      padding: 0 4px;
+    }
+
+    &--spacer {
+      left: auto;
+      right: $colorStripPadding * 2;
+      width: $maxRowColorStripWidth - $rowColorStripWidth - $colorStripPadding * 2;
+      min-width: $maxRowColorStripWidth - $rowColorStripWidth - $colorStripPadding * 2;
+    }
+  }
+
+  &__label {
+    min-width: 1px;
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  &__value {
+    text-align: right;
+    font-feature-settings: 'tnum';
+  }
+
+  &[dir='rtl'] {
+    .echTable {
+      &__colorStrip {
+        left: auto;
+        right: 0;
+      }
+    }
+  }
+}

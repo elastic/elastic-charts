@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { TooltipTable, TooltipTableColumn } from '@elastic/charts';
+import { Table, TableColumn } from '@elastic/charts';
 import { isDefined } from '@elastic/charts/src/utils/common';
 
 import { tableSimple, simple, long } from './data';
@@ -32,7 +32,7 @@ export const Example = () => {
     simple,
     long,
   };
-  const columns: TooltipTableColumn[] = [
+  const columns: TableColumn[] = [
     {
       id: 'label',
       type: 'custom',
@@ -84,9 +84,7 @@ export const Example = () => {
         header: boolean('show default header', true) ? 'default' : 'none',
         body: boolean('show default body', false)
           ? 'default'
-          : ({ items }) => (
-              <TooltipTable columns={columns} items={items} onSelect={(s) => action('onTooltipAction')(s)} />
-            ),
+          : ({ items }) => <Table columns={columns} items={items} onSelect={(s) => action('onTooltipAction')(s)} />,
         actions: [
           {
             label: () => 'Log storybook action',
