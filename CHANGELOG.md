@@ -1,3 +1,10 @@
+# [64.1.0](https://github.com/elastic/elastic-charts/compare/v64.0.2...v64.1.0) (2024-03-13)
+
+
+### Features
+
+* **theme:** move annotation default styles to `Theme` ([#2357](https://github.com/elastic/elastic-charts/issues/2357)) ([fe19ae2](https://github.com/elastic/elastic-charts/commit/fe19ae2cec3077ee34765d9be560935dd094a4ad))
+
 ## [64.0.2](https://github.com/elastic/elastic-charts/compare/v64.0.1...v64.0.2) (2024-03-12)
 
 
