@@ -46,8 +46,6 @@ export const addTimeToObj = (obj: DateTime, unit: CalendarUnit, count: number) =
  * @internal
  */
 export const getStartOfWeek = () => {
-  console.log('here');
-
   const firstDayOfWeek = moment.localeData().firstDayOfWeek();
   return firstDayOfWeek === 0 ? 7 : firstDayOfWeek;
 };
