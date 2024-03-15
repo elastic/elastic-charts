@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { DateTime } from 'luxon';
+import moment from 'moment';
 
 /** @internal */
 export interface CalendarObject {
@@ -33,3 +33,21 @@ export const timeObjToWeekday = (t: DateTime) => t.weekday;
 export const timeObjToYear = (t: DateTime) => t.year;
 /** @internal */
 export const addTimeToObj = (obj: DateTime, unit: CalendarUnit, count: number) => obj.plus({ [unit]: count });
+
+/**
+ * Returns start of week from moment locale data but with luxon mapping
+ *
+ * moment -> 0 is Sunday, 1 is Monday, ..., 6 is Saturday
+ * luxon -> 1 is Monday, 2 is Tuesday, ..., 6 is Saturday, 7 is Sunday
+ *
+ * See moment docs: https://momentjs.com/docs/#/customization/dow-doy/
+ * See luxon docs: https://moment.github.io/luxon/api-docs/index.html#datetime-weekday
+ *
+ * @internal
+ */
+export const getStartOfWeek = () => {
+  console.log('here');
+
+  const firstDayOfWeek = moment.localeData().firstDayOfWeek();
+  return firstDayOfWeek === 0 ? 7 : firstDayOfWeek;
+};

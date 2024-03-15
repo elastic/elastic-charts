@@ -11,6 +11,7 @@
 
 import { cachedTimeDelta, cachedZonedDateTimeFrom, TimeProp } from './chrono/cached_chrono';
 import { epochDaysInMonth, epochInSecondsToYear } from './chrono/chrono';
+import { getStartOfWeek } from './chrono/chrono_luxon/chrono_luxon';
 
 /** @public */
 export type BinUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond' | 'one';
@@ -312,12 +313,13 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
     intervals: function* (domainFrom, domainTo) {
+      const startDayOfWeek = getStartOfWeek();
       for (const { year, month, days: daysInMonth } of months.intervals(domainFrom, domainTo)) {
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
           const temporalArgs = { timeZone, year, month, day: dayOfMonth };
           const timePoint = cachedZonedDateTimeFrom(temporalArgs);
           const dayOfWeek = timePoint[TimeProp.DayOfWeek];
-          if (dayOfWeek !== 1) continue;
+          if (dayOfWeek !== startDayOfWeek) continue;
           const binStart = timePoint[TimeProp.EpochSeconds];
           if (Number.isFinite(binStart)) {
             const daysFromEnd = daysInMonth - dayOfMonth + 1;
