@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { number, select } from '@storybook/addon-knobs';
+import { number, select, date } from '@storybook/addon-knobs';
 import moment from 'moment';
 import React from 'react';
 
@@ -16,20 +16,22 @@ import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { ChartsStory } from '../../types';
 
 const rng = getRandomNumberGenerator('chart');
+const randomValues = Array.from({ length: 1000 }).map(() => rng(10, 100));
 
 const dayMapping = {
-  0: 'Sunday',
   1: 'Monday',
   2: 'Tuesday',
   3: 'Wednesday',
   4: 'Thursday',
   5: 'Friday',
   6: 'Saturday',
+  7: 'Sunday',
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const startDow = number('start dow', 0, { min: 0, max: 6, step: 1 });
-  const dataCount = number('data count', 20, { min: 0, step: 1 });
+  const startDate = date('start date', moment(1710796632334).toDate());
+  const startDow = number('start dow', 1, { min: 1, max: 7, step: 1 });
+  const dataCount = number('data count', 18, { min: 0, step: 1 });
   const dataIntervalAmount = number('data interval (amount)', 1, { min: 1, step: 1 });
   const dataIntervaUnit = select<moment.unitOfTime.Base>(
     'data interval (unit)',
@@ -40,7 +42,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   moment.updateLocale(moment.locale(), { week: { dow: startDow } });
 
   const data: { x: number; y: number }[] = [];
-  const start = moment().startOf('w');
+  const start = moment(startDate).startOf('w');
 
   for (let i = 0; i < dataCount; i++) {
     data.push({
@@ -48,14 +50,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
         .clone()
         .add(dataIntervalAmount * i, dataIntervaUnit)
         .valueOf(),
-      y: rng(10, 100),
+      y: randomValues[i],
     });
   }
 
   return (
     <>
       <Chart title={title} description={description}>
-        <Settings />
+        <Settings dow={startDow} />
         <Axis id="y" title="Count" position={Position.Left} />
         <Axis
           id="x"
@@ -95,4 +97,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
       </span>
     </>
   );
+};
+
+Example.parameters = {
+  markdown: `You can set the start day of week on the multilayer time axis by using using the \`Settings.dow\` option.
+  This expects a value between \`1\` (Monday) and \`7\` (Sunday) according to the [**ISO 8601**](https://en.wikipedia.org/wiki/ISO_week_date) specification.`,
 };

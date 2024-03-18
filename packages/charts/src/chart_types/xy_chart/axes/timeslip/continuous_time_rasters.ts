@@ -11,7 +11,6 @@
 
 import { cachedTimeDelta, cachedZonedDateTimeFrom, TimeProp } from './chrono/cached_chrono';
 import { epochDaysInMonth, epochInSecondsToYear } from './chrono/chrono';
-import { getStartOfWeek } from './chrono/chrono_luxon/chrono_luxon';
 
 /** @public */
 export type BinUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond' | 'one';
@@ -82,6 +81,7 @@ export interface AxisLayer<T extends Interval> {
 export interface RasterConfig {
   minimumTickPixelDistance: number;
   locale: string;
+  dow: number;
 }
 
 const millisecondIntervals = (rasterMs: number): IntervalIterableMaker<Interval> =>
@@ -159,7 +159,10 @@ const englishPluralRules = new Intl.PluralRules('en-US', { type: 'ordinal' });
 const englishOrdinalEnding = (signedNumber: number) => englishOrdinalEndings[englishPluralRules.select(signedNumber)];
 
 /** @internal */
-export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: RasterConfig, timeZone: string) => {
+export const continuousTimeRasters = (
+  { minimumTickPixelDistance, locale, dow: startDayOfWeek }: RasterConfig,
+  timeZone: string,
+) => {
   const minorDayBaseFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
   const minorDayFormat = (d: number) => {
     const numberString = minorDayBaseFormat(d);
@@ -313,7 +316,6 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
     labeled: true,
     minimumTickPixelDistance: minimumTickPixelDistance * 1.5,
     intervals: function* (domainFrom, domainTo) {
-      const startDayOfWeek = getStartOfWeek();
       for (const { year, month, days: daysInMonth } of months.intervals(domainFrom, domainTo)) {
         for (let dayOfMonth = 1; dayOfMonth <= 31; dayOfMonth++) {
           const temporalArgs = { timeZone, year, month, day: dayOfMonth };
@@ -321,6 +323,7 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
           const dayOfWeek = timePoint[TimeProp.DayOfWeek];
           if (dayOfWeek !== startDayOfWeek) continue;
           const binStart = timePoint[TimeProp.EpochSeconds];
+
           if (Number.isFinite(binStart)) {
             const daysFromEnd = daysInMonth - dayOfMonth + 1;
             const supremum = cachedTimeDelta(temporalArgs, 'days', 7);

@@ -220,7 +220,7 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
 );
 
 function getVisibleTickSets(
-  { rotation: chartRotation, locale }: Pick<SettingsSpec, 'rotation' | 'locale'>,
+  { rotation: chartRotation, locale, dow }: Pick<SettingsSpec, 'rotation' | 'locale' | 'dow'>,
   joinedAxesData: Map<AxisId, JoinedAxisData>,
   { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
   smScales: SmallMultipleScales,
@@ -342,6 +342,7 @@ function getVisibleTickSets(
               scale,
               getMeasuredTicks,
               locale,
+              dow,
             ),
           );
         }
