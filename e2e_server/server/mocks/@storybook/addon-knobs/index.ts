@@ -27,10 +27,10 @@ export function number(name: string, dftValue: number, options?: any, groupId?: 
   return Number.parseFloat(params.get(key) ?? `${dftValue}`);
 }
 
-export function date(name: string, dftValue: number, groupId?: string): Date {
+export function date(name: string, dftValue?: Date, groupId?: string): Date {
   const params = getParams();
   const key = getKnobKey(name, groupId);
-  return moment(params.get(key) ?? `${dftValue}`).toDate();
+  return moment(params.get(key) ?? dftValue).toDate();
 }
 
 export function radios(name: string, options: unknown, dftValue: string, groupId?: string) {
