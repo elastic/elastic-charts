@@ -36,8 +36,8 @@ function validateSpec(spec: SettingsSpec): SettingsSpec {
     spec.onPointerUpdate = debounce(spec.onPointerUpdate, delay);
   }
 
-  if (spec.dow < 1 || spec.dow > 7) {
-    Logger.warn(`Settings.dow option must be an integer from 1 to 7, received ${spec.dow}`);
+  if (spec.dow < 1 || spec.dow > 7 || !Number.isInteger(spec.dow)) {
+    Logger.warn(`Settings.dow option must be an integer from 1 to 7, received ${spec.dow}. Using default of 1.`);
 
     spec.dow = settingsBuildProps.defaults.dow;
   }
