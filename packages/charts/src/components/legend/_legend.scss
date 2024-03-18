@@ -1,4 +1,6 @@
 .echLegend {
+  z-index: 1;
+
   .echLegendList {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
