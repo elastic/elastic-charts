@@ -15,7 +15,7 @@ import { Circle, Fill, Stroke } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PointGeometry } from '../../../../utils/geometry';
-import { GeometryStateStyle } from '../../../../utils/themes/theme';
+import { GeometryStateStyle, PointShape } from '../../../../utils/themes/theme';
 
 /**
  * Renders points from single series
@@ -33,6 +33,9 @@ export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometr
         ...style.stroke,
         color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
       };
+      if (typeof style.shape === 'function') {
+        return style.shape(ctx, coordinates);
+      }
       renderShape(ctx, style.shape, coordinates, fill, stroke);
     });
 }
@@ -61,7 +64,7 @@ export function renderPointGroup(
         color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
       };
       const coordinates: Circle = { x: x + transform.x, y, radius };
-      const renderer = () => renderShape(ctx, style.shape, coordinates, fill, stroke);
+      const renderer = () => renderShape(ctx, style.shape as PointShape, coordinates, fill, stroke);
       const clippings = { area: getPanelClipping(panel, rotation), shouldClip };
       withPanelTransform(ctx, panel, rotation, renderingArea, renderer, clippings);
     });

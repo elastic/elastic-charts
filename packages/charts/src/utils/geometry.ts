@@ -14,6 +14,7 @@ import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
 import { Color } from '../common/colors';
 import { Fill, Stroke } from '../geoms/types';
+import { Coordinate } from '../common/geometry';
 
 /**
  * The accessor type
@@ -70,7 +71,7 @@ export interface PointGeometry {
 export interface PointGeometryStyle {
   fill: Fill;
   stroke: Stroke;
-  shape: PointShape;
+  shape: PointShape | ((ctx: CanvasRenderingContext2D, coordinates: { x: number; y: number }) => void);
 }
 
 /** @internal */
