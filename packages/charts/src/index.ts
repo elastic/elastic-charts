@@ -46,6 +46,7 @@ export {
 } from './chart_types/xy_chart/annotations/types';
 export { GeometryValue, BandedAccessorType } from './utils/geometry';
 export { LegendPath, LegendPathElement } from './state/actions/legend';
+export { LegendItemValue, LegendValue } from './common/legend';
 export { CategoryKey, CategoryLabel } from './common/category';
 export { Layer as PartitionLayer, PartitionProps } from './chart_types/partition_chart/specs/index';
 export { FillLabelConfig as PartitionFillLabel, PartitionStyle } from './utils/themes/partition';

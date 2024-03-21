@@ -22,8 +22,6 @@ import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_
 import { getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesType } from '../utils/specs';
 
-const nullDisplayValue = undefined;
-
 const spec1: BasicSeriesSpec = {
   chartType: ChartType.XYAxis,
   specType: SpecType.Series,
@@ -100,7 +98,7 @@ describe('Legends', () => {
       isItemHidden: false,
       isSeriesHidden: false,
       isToggleable: true,
-      defaultExtra: nullDisplayValue,
+      values: [],
       path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{}' }],
     };
     expect(legend[0]).toMatchObject(expected);
@@ -143,7 +141,7 @@ describe('Legends', () => {
         isItemHidden: false,
         isSeriesHidden: false,
         isToggleable: true,
-        defaultExtra: nullDisplayValue,
+        values: [],
         path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}' }],
       },
       {
@@ -153,7 +151,7 @@ describe('Legends', () => {
         isItemHidden: false,
         isSeriesHidden: false,
         isToggleable: true,
-        defaultExtra: nullDisplayValue,
+        values: [],
         path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g-a}' }],
       },
       {
@@ -163,7 +161,7 @@ describe('Legends', () => {
         isItemHidden: false,
         isSeriesHidden: false,
         isToggleable: true,
-        defaultExtra: nullDisplayValue,
+        values: [],
         path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}' }],
       },
       {
@@ -173,7 +171,7 @@ describe('Legends', () => {
         isItemHidden: false,
         isSeriesHidden: false,
         isToggleable: true,
-        defaultExtra: nullDisplayValue,
+        values: [],
         path: [{ index: 0, value: 'groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g-b}' }],
       },
     ];
@@ -222,7 +220,7 @@ describe('Legends', () => {
         isItemHidden: false,
         isSeriesHidden: false,
         isToggleable: true,
-        defaultExtra: nullDisplayValue,
+        values: [],
         path: [{ index: 0, value: 'groupId{__global__}spec{spec2}yAccessor{y}splitAccessors{}' }],
       },
     ];

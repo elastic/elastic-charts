@@ -83,7 +83,7 @@ describe('Settings spec component', () => {
     expect(settingSpec.animateData).toBe(true);
     expect(settingSpec.showLegend).toEqual(true);
     expect(settingSpec.legendPosition).toBe(Position.Bottom);
-    expect(settingSpec.showLegendExtra).toEqual(false);
+    expect(settingSpec.legendValues).toEqual([]);
     expect(settingSpec.debug).toBe(true);
     expect(settingSpec.xDomain).toEqual({ min: 0, max: 10 });
   });
@@ -161,7 +161,7 @@ describe('Settings spec component', () => {
       animateData: true,
       showLegend: true,
       legendPosition: Position.Bottom,
-      showLegendExtra: false,
+      legendValues: [],
       debug: true,
       xDomain: { min: 0, max: 10 },
     };

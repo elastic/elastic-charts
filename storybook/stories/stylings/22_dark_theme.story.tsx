@@ -15,6 +15,7 @@ import {
   BarSeries,
   Chart,
   CurveType,
+  LegendValue,
   LineSeries,
   Position,
   ScaleType,
@@ -37,7 +38,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings baseTheme={useBaseTheme()} debug={boolean('Debug', false)} showLegend showLegendExtra />
+      <Settings
+        baseTheme={useBaseTheme()}
+        debug={boolean('Debug', false)}
+        showLegend
+        legendValues={[LegendValue.CurrentAndLastValue]}
+      />
       <Tooltip type={TooltipType.Crosshairs} />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />

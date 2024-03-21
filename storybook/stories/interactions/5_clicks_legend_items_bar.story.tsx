@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { array, boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LegendValue, Position, ScaleType, Settings } from '@elastic/charts';
 import { BARCHART_2Y2G } from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { ChartsStory } from '../../types';
@@ -65,7 +65,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.CurrentAndLastValue]}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}
         {...onLegendItemListeners}

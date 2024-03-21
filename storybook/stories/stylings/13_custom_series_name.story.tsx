@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn, LegendValue } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { ChartsStory } from '../../types';
@@ -25,7 +25,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValues={[LegendValue.CurrentAndLastValue]}
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

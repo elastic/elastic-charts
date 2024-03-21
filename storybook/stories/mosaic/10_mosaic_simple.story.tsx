@@ -14,6 +14,7 @@ import {
   ArrayEntry,
   Chart,
   Datum,
+  LegendValue,
   Partition,
   PartitionLayout,
   Settings,
@@ -66,7 +67,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description} className="story-chart">
       <Settings
         showLegend={boolean('Show legend', true)}
-        showLegendExtra={boolean('Show legend values', true)}
+        legendValues={boolean('Show legend values', true) ? [LegendValue.CurrentAndLastValue] : []}
         flatLegend={boolean('Flat legend', false)}
         theme={{
           partition: {

@@ -9,7 +9,7 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, PartialTheme, LegendValue } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { ChartsStory } from '../../types';
@@ -64,7 +64,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description} renderer="canvas">
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} theme={theme} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValues={[LegendValue.CurrentAndLastValue]}
+        legendPosition={Position.Right}
+        theme={theme}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 

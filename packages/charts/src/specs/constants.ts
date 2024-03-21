@@ -134,7 +134,7 @@ export type TooltipStickTo = $Values<typeof TooltipStickTo>;
 export const DEFAULT_LEGEND_CONFIG = {
   showLegend: false,
   legendSize: NaN,
-  showLegendExtra: false,
+  legendValues: [],
   legendMaxDepth: Infinity,
   legendPosition: Position.Right,
   flatLegend: false,

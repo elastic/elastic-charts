@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, timeFormatter, LegendValue } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { ChartsStory } from '../../types';
@@ -32,7 +32,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const allMetrics = [...data3, ...data2, ...data1];
   return (
     <Chart title={title} description={description}>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValues={[LegendValue.CurrentAndLastValue]}
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis
         id="bottom"
         position={Position.Bottom}
