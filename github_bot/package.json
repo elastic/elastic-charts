@@ -21,7 +21,7 @@
     "axios": "^1.6.0",
     "body-parser": "^1.20.0",
     "buildkite-agent-node": "^0.0.11-pre.2",
-    "express": "^4.17.1",
+    "express": "^4.19.2",
     "express-promise-router": "^4.1.1",
     "json-schema-to-typescript": "11.0.3",
     "minimatch": "^5.0.1",
