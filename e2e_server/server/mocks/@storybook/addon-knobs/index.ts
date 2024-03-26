@@ -27,13 +27,14 @@ export function number(name: string, dftValue: number, options?: any, groupId?: 
   return Number.parseFloat(params.get(key) ?? `${dftValue}`);
 }
 
-export function date(name: string, dftValue?: Date, groupId?: string): Date {
+export function date(name: string, dftValue: Date, groupId?: string): Date {
   const params = getParams();
   const key = getKnobKey(name, groupId);
   const value = params.get(key);
   const numValue = parseInt(value ?? '');
+  const dateValue = isNaN(numValue) ? value : numValue;
 
-  return moment(isNaN(numValue) ? value : numValue ?? dftValue).toDate();
+  return dateValue ? moment(dateValue).toDate() : dftValue;
 }
 
 export function radios(name: string, options: unknown, dftValue: string, groupId?: string) {
