@@ -16,17 +16,17 @@ export const RIGHT_ANGLE = TAU / 4;
 export const GOLDEN_RATIO = 1.618;
 
 /** @public */
-export const TOP = 'top' as const;
+export const TOP = 'top';
 /** @public */
-export const BOTTOM = 'bottom' as const;
+export const BOTTOM = 'bottom';
 /** @public */
-export const LEFT = 'left' as const;
+export const LEFT = 'left';
 /** @public */
-export const RIGHT = 'right' as const;
+export const RIGHT = 'right';
 /** @public */
-export const MIDDLE = 'middle' as const;
+export const MIDDLE = 'middle';
 /** @public */
-export const CENTER = 'center' as const;
+export const CENTER = 'center';
 
 /** @internal
  * Value used to describe the secondary button (usually the right button) on a `MouseEvent.button`
