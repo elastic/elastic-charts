@@ -30,7 +30,10 @@ export function number(name: string, dftValue: number, options?: any, groupId?: 
 export function date(name: string, dftValue?: Date, groupId?: string): Date {
   const params = getParams();
   const key = getKnobKey(name, groupId);
-  return moment(params.get(key) ?? dftValue).toDate();
+  const value = params.get(key);
+  const numValue = parseInt(value ?? '');
+
+  return moment(isNaN(numValue) ? value : numValue ?? dftValue).toDate();
 }
 
 export function radios(name: string, options: unknown, dftValue: string, groupId?: string) {
