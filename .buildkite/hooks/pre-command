@@ -20,6 +20,8 @@ export FIREBASE_AUTH
 BUILDKITE_TOKEN=$(retry 5 5 vault read -field=token secret/datavis/buildkite)
 export BUILDKITE_TOKEN
 
+source .buildkite/scripts/node_setup.sh
+
 cd '.buildkite'
 
 echo '--- Installing buildkite dependencies'
