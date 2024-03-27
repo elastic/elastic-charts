@@ -8,7 +8,7 @@ on:
       - main
 
 env:
-  ECH_NODE_VERSION: '20.x'
+  ECH_NODE_VERSION: '20.11.1'
 
 jobs:
   checks:
