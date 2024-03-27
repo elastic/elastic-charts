@@ -19,6 +19,6 @@
     "playwright-merge-html-reports": "^0.2.3",
     "slugify": "^1.6.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.3"
   }
 }
