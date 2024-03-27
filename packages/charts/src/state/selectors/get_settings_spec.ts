@@ -8,9 +8,10 @@
 
 import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
-import { SpecType, DEFAULT_SETTINGS_SPEC } from '../../specs/constants';
+import { SpecType, DEFAULT_SETTINGS_SPEC, settingsBuildProps } from '../../specs/constants';
 import { SettingsSpec } from '../../specs/settings';
 import { debounce } from '../../utils/debounce';
+import { Logger } from '../../utils/logger';
 import { SpecList } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecsFromStore } from '../utils';
@@ -25,13 +26,21 @@ export const getSettingsSpecSelector = createCustomCachedSelector([getSpecs], ge
 function getSettingsSpec(specs: SpecList): SettingsSpec {
   const settingsSpecs = getSpecsFromStore<SettingsSpec>(specs, ChartType.Global, SpecType.Settings);
   const spec = settingsSpecs[0];
-  return spec ? handleListenerDebouncing(spec) : DEFAULT_SETTINGS_SPEC;
+  return spec ? validateSpec(spec) : DEFAULT_SETTINGS_SPEC;
 }
 
-function handleListenerDebouncing(settings: SettingsSpec): SettingsSpec {
-  const delay = settings.pointerUpdateDebounce ?? DEFAULT_POINTER_UPDATE_DEBOUNCE;
+function validateSpec(spec: SettingsSpec): SettingsSpec {
+  const delay = spec.pointerUpdateDebounce ?? DEFAULT_POINTER_UPDATE_DEBOUNCE;
 
-  if (settings.onPointerUpdate) settings.onPointerUpdate = debounce(settings.onPointerUpdate, delay);
+  if (spec.onPointerUpdate) {
+    spec.onPointerUpdate = debounce(spec.onPointerUpdate, delay);
+  }
 
-  return settings;
+  if (spec.dow < 1 || spec.dow > 7 || !Number.isInteger(spec.dow)) {
+    Logger.warn(`Settings.dow option must be an integer from 1 to 7, received ${spec.dow}. Using default of 1.`);
+
+    spec.dow = settingsBuildProps.defaults.dow;
+  }
+
+  return spec;
 }

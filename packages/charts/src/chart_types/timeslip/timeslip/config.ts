@@ -90,6 +90,7 @@ export interface TimeslipConfig extends TimeslipTheme, RasterConfig {
 export const rasterConfig: RasterConfig = {
   minimumTickPixelDistance: MINIMUM_TICK_PIXEL_DISTANCE,
   locale: 'en-US',
+  dow: 1,
 };
 
 /** @internal */

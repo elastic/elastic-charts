@@ -81,6 +81,7 @@ export interface AxisLayer<T extends Interval> {
 export interface RasterConfig {
   minimumTickPixelDistance: number;
   locale: string;
+  dow: number;
 }
 
 const millisecondIntervals = (rasterMs: number): IntervalIterableMaker<Interval> =>
@@ -158,7 +159,10 @@ const englishPluralRules = new Intl.PluralRules('en-US', { type: 'ordinal' });
 const englishOrdinalEnding = (signedNumber: number) => englishOrdinalEndings[englishPluralRules.select(signedNumber)];
 
 /** @internal */
-export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: RasterConfig, timeZone: string) => {
+export const continuousTimeRasters = (
+  { minimumTickPixelDistance, locale, dow: startDayOfWeek }: RasterConfig,
+  timeZone: string,
+) => {
   const minorDayBaseFormat = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone }).format;
   const minorDayFormat = (d: number) => {
     const numberString = minorDayBaseFormat(d);
@@ -317,8 +321,9 @@ export const continuousTimeRasters = ({ minimumTickPixelDistance, locale }: Rast
           const temporalArgs = { timeZone, year, month, day: dayOfMonth };
           const timePoint = cachedZonedDateTimeFrom(temporalArgs);
           const dayOfWeek = timePoint[TimeProp.DayOfWeek];
-          if (dayOfWeek !== 1) continue;
+          if (dayOfWeek !== startDayOfWeek) continue;
           const binStart = timePoint[TimeProp.EpochSeconds];
+
           if (Number.isFinite(binStart)) {
             const daysFromEnd = daysInMonth - dayOfMonth + 1;
             const supremum = cachedTimeDelta(temporalArgs, 'days', 7);

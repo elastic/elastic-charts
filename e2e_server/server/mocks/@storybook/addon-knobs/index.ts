@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import moment from 'moment';
+
 function getParams() {
   return new URL(window.location.toString()).searchParams;
 }
@@ -23,6 +25,16 @@ export function number(name: string, dftValue: number, options?: any, groupId?: 
   const params = getParams();
   const key = getKnobKey(name, groupId);
   return Number.parseFloat(params.get(key) ?? `${dftValue}`);
+}
+
+export function date(name: string, dftValue: Date, groupId?: string): Date {
+  const params = getParams();
+  const key = getKnobKey(name, groupId);
+  const value = params.get(key);
+  const numValue = parseInt(value ?? '');
+  const dateValue = isNaN(numValue) ? value : numValue;
+
+  return dateValue ? moment(dateValue).toDate() : dftValue;
 }
 
 export function radios(name: string, options: unknown, dftValue: string, groupId?: string) {

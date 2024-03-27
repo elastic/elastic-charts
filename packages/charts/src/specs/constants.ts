@@ -167,6 +167,7 @@ export const settingsBuildProps = buildSFProps<SettingsSpec>()(
     pointBuffer: 10,
     ...DEFAULT_LEGEND_CONFIG,
     locale: 'en-US',
+    dow: 1,
   },
 );
 

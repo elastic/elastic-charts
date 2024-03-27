@@ -2708,7 +2708,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuild
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "debug" | "locale" | "rotation" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "legendPosition" | "flatLegend" | "legendMaxDepth" | "legendSize" | "showLegend" | "showLegendExtra" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin", "ariaDescription" | "ariaLabel" | "xDomain" | "ariaDescribedBy" | "ariaLabelledBy" | "ariaTableCaption" | "theme" | "legendAction" | "legendColorPicker" | "legendStrategy" | "onLegendItemClick" | "customLegend" | "onLegendItemMinusClick" | "onLegendItemOut" | "onLegendItemOver" | "onLegendItemPlusClick" | "orderOrdinalBinsBy" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "noResults" | "legendSort", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "debug" | "locale" | "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "dow" | "showLegend" | "legendPosition" | "showLegendExtra" | "legendMaxDepth" | "legendSize" | "flatLegend", "ariaDescription" | "ariaLabel" | "xDomain" | "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "noResults" | "ariaLabelledBy" | "ariaDescribedBy" | "ariaTableCaption" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -2730,6 +2730,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     debug: boolean;
     // @alpha
     debugState?: boolean;
+    dow: number;
     // @alpha
     externalPointerEvents: ExternalPointerEventsSettings;
     locale: string;
