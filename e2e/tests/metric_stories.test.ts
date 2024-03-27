@@ -53,6 +53,15 @@ test.describe('Metric', () => {
     );
   });
 
+  test('should render metric body contents', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/metric-alpha--body-content',
+      {
+        maxDiffPixels: 5,
+      },
+    );
+  });
+
   pwEach.describe(['trend', 'bar', 'none'])(
     (v) => `Metric - ${v} type`,
     (type) => {
