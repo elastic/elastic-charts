@@ -65,9 +65,9 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
   const showIcon = boolean('show icon', false);
-  const iconType = text('EUI icon glyph name', 'warning');
+  const iconType = customKnobs.eui.getIconTypeKnob('EUI icon glyph name', 'warning');
   const showValueIcon = boolean('show value icon', false);
-  const valueIconType = text('EUI value icon glyph name', 'sortUp');
+  const valueIconType = customKnobs.eui.getIconTypeKnob('EUI value icon glyph name', 'sortUp');
   const useBlendingBackground = boolean('use blending background', false);
   const blendingBackground = color('blending background', 'rgba(255,255,255,1)');
   const getIcon =

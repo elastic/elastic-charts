@@ -10,15 +10,17 @@ import { text, number, boolean } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
+import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { customKnobs } from '../utils/knobs';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
+  const debugState = boolean('Enable debug state', false);
   const bulletTitle = text('title', 'Error rate', 'General');
   const subtitle = text('subtitle', '', 'General');
   const value = number('value', 56, { range: true, min: -200, max: 200 }, 'General');
@@ -27,7 +29,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const end = number('end', 100, { range: true, min: -200, max: 200 }, 'General');
   const format = text('format (numeraljs)', '0.[0]', 'General');
   const formatter = (d: number) => numeral(d).format(format);
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal, { group: 'General' });
+  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal, { group: 'General' });
 
   const niceDomain = boolean('niceDomain', false, 'Ticks');
   const tickStrategy = customKnobs.multiSelect(
@@ -51,8 +53,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings debug={debug} baseTheme={useBaseTheme()} />
-      <BulletGraph
+      <Settings
+        debug={debug}
+        onRenderChange={getDebugStateLogger(debugState)}
+        debugState={debugState}
+        baseTheme={useBaseTheme()}
+      />
+      <Bullet
         id="bullet"
         subtype={subtype}
         data={[
@@ -65,11 +72,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
               domain: [start, end],
               niceDomain,
               ticks:
-                tickStrategy[0] === 'count'
-                  ? ticks
-                  : tickStrategy[0] === 'placements'
-                    ? () => tickPlacements
-                    : undefined,
+                tickStrategy[0] === 'count' ? ticks : tickStrategy[0] === 'placements' ? tickPlacements : undefined,
               valueFormatter: formatter,
               tickFormatter: formatter,
             },

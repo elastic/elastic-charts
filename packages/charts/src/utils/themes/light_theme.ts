@@ -440,4 +440,17 @@ export const LIGHT_THEME: Theme = {
       radius: 10,
     },
   },
+  lineAnnotation: {
+    line: {
+      stroke: LIGHT_BASE_COLORS.darkShade,
+      strokeWidth: 1,
+      opacity: 1,
+    },
+  },
+  rectAnnotation: {
+    strokeWidth: 0,
+    opacity: 0.25,
+    fill: LIGHT_BASE_COLORS.darkShade,
+    stroke: LIGHT_BASE_COLORS.darkShade,
+  },
 };

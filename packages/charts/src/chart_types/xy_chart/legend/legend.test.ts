@@ -8,7 +8,6 @@
 
 import { Store } from 'redux';
 
-import { getLegendExtra } from './legend';
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
@@ -23,11 +22,7 @@ import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_
 import { getSeriesName } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesType } from '../utils/specs';
 
-const nullDisplayValue = {
-  formatted: null,
-  raw: null,
-  legendSizingLabel: null,
-};
+const nullDisplayValue = undefined;
 
 const spec1: BasicSeriesSpec = {
   chartType: ChartType.XYAxis,
@@ -401,38 +396,5 @@ describe('Legends', () => {
 
     name = getSeriesName(seriesIdentifier1, false, false, specWithSplit);
     expect(name).toBe('Spec 1 title');
-  });
-  it('should return correct legendSizingLabel with linear scale and showExtraLegend set to true', () => {
-    const formatter = (d: string | number) => `${Number(d).toFixed(2)} dogs`;
-    const lastValues = { y0: null, y1: 14 };
-    const showExtraLegend = true;
-    const xScaleIsLinear = ScaleType.Linear;
-
-    expect(getLegendExtra(showExtraLegend, xScaleIsLinear, formatter, 'y1', lastValues)).toMatchObject({
-      raw: 14,
-      formatted: '14.00 dogs',
-      legendSizingLabel: '14.00 dogs',
-    });
-  });
-  it('should return formatted to null with ordinal scale and showExtraLegend set to true', () => {
-    const formatter = (d: string | number) => `${Number(d).toFixed(2)} dogs`;
-    const lastValues = { y0: null, y1: 14 };
-
-    expect(getLegendExtra(true, ScaleType.Ordinal, formatter, 'y1', lastValues)).toMatchObject({
-      raw: 14,
-      formatted: null,
-      legendSizingLabel: '14.00 dogs',
-    });
-  });
-  it('should return legendSizingLabel null with showLegendExtra set to false', () => {
-    const formatter = (d: string | number) => `${Number(d).toFixed(2)} dogs`;
-    const lastValues = { y0: null, y1: 14 };
-    const showLegendExtra = false;
-
-    expect(getLegendExtra(showLegendExtra, ScaleType.Ordinal, formatter, 'y1', lastValues)).toMatchObject({
-      raw: null,
-      formatted: null,
-      legendSizingLabel: null,
-    });
   });
 });

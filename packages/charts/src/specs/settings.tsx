@@ -390,7 +390,7 @@ export interface CustomLegendProps {
     label: CategoryLabel;
     seriesType?: SeriesType;
     pointStyle?: PointStyle;
-    extraValue?: PrimitiveValue;
+    extraValue?: { raw: PrimitiveValue; formatted: string };
     isSeriesHidden?: boolean;
     onItemOverActon: () => void;
     onItemOutAction: () => void;
@@ -540,6 +540,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
 
   /**
    * debounce delay used for resizing chart
+   * @deprecated currently unused
    */
   resizeDebounce?: number;
 
@@ -637,6 +638,15 @@ export interface SettingsSpec extends Spec, LegendSpec {
    * Unicode Locale Identifier, default `en-US`
    */
   locale: string;
+
+  /**
+   * Refers to the first day of the week as an index.
+   * Expressed according to [**ISO 8601**](https://en.wikipedia.org/wiki/ISO_week_date)
+   * where `1` is Monday, `2` is Tuesday, ..., `6` is Saturday and `7` is Sunday
+   *
+   * @defaultValue 1 (i.e. Monday)
+   */
+  dow: number;
 }
 
 /**

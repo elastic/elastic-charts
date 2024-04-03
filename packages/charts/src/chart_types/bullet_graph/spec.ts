@@ -37,7 +37,7 @@ export interface BulletDatum {
    *
    * See https://d3js.org/d3-scale/linear#linear_ticks
    */
-  ticks?: number | ((domain: GenericDomain) => number[]);
+  ticks?: number | number[] | ((domain: GenericDomain) => number[]);
   syncCursor?: boolean;
   valueFormatter: ValueFormatter;
   targetFormatter?: ValueFormatter;
@@ -45,7 +45,7 @@ export interface BulletDatum {
 }
 
 /** @public */
-export const BulletGraphSubtype = Object.freeze({
+export const BulletSubtype = Object.freeze({
   vertical: 'vertical' as const,
   horizontal: 'horizontal' as const,
   /**
@@ -58,7 +58,7 @@ export const BulletGraphSubtype = Object.freeze({
   twoThirdsCircle: 'two-thirds-circle' as const,
 });
 /** @public */
-export type BulletGraphSubtype = $Values<typeof BulletGraphSubtype>;
+export type BulletSubtype = $Values<typeof BulletSubtype>;
 
 /** @public */
 export interface BulletValueLabels {
@@ -68,18 +68,18 @@ export interface BulletValueLabels {
 }
 
 /** @alpha */
-export interface BulletGraphSpec extends Spec {
+export interface BulletSpec extends Spec {
   specType: typeof SpecType.Series;
-  chartType: typeof ChartType.BulletGraph;
+  chartType: typeof ChartType.Bullet;
   data: (BulletDatum | undefined)[][];
-  subtype: BulletGraphSubtype;
+  subtype: BulletSubtype;
   tickSnapStep?: number;
   colorBands?: BulletColorConfig;
   valueLabels?: Optional<BulletValueLabels>;
 }
 
 /** @internal */
-export const mergeValueLabels = (labels?: BulletGraphSpec['valueLabels']) =>
+export const mergeValueLabels = (labels?: BulletSpec['valueLabels']) =>
   mergePartial<BulletValueLabels>(
     {
       active: 'Active',
@@ -89,10 +89,10 @@ export const mergeValueLabels = (labels?: BulletGraphSpec['valueLabels']) =>
     labels,
   );
 
-const buildProps = buildSFProps<BulletGraphSpec>()(
+const buildProps = buildSFProps<BulletSpec>()(
   {
     specType: SpecType.Series,
-    chartType: ChartType.BulletGraph,
+    chartType: ChartType.Bullet,
   },
   {},
 );
@@ -101,9 +101,9 @@ const buildProps = buildSFProps<BulletGraphSpec>()(
  * Add Goal spec to chart
  * @alpha
  */
-export const BulletGraph = function (
+export const Bullet = function (
   props: SFProps<
-    BulletGraphSpec,
+    BulletSpec,
     keyof (typeof buildProps)['overrides'],
     keyof (typeof buildProps)['defaults'],
     keyof (typeof buildProps)['optionals'],
@@ -113,7 +113,7 @@ export const BulletGraph = function (
   const { defaults, overrides } = buildProps;
   const constraints = {};
 
-  useSpecFactory<BulletGraphSpec>({
+  useSpecFactory<BulletSpec>({
     ...defaults,
     ...stripUndefined(props),
     ...overrides,
@@ -123,4 +123,4 @@ export const BulletGraph = function (
 };
 
 /** @public */
-export type BulletGraphProps = ComponentProps<typeof BulletGraph>;
+export type BulletProps = ComponentProps<typeof Bullet>;

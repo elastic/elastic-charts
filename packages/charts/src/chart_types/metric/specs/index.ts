@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps, ComponentType, ReactElement } from 'react';
+import { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
@@ -31,6 +31,7 @@ export type MetricBase = {
   subtitle?: string;
   extra?: ReactElement;
   icon?: ComponentType<{ width: number; height: number; color: Color }>;
+  body?: ReactNode;
 };
 
 /** @alpha */

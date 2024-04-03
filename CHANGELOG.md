@@ -1,3 +1,111 @@
+# [64.1.0](https://github.com/elastic/elastic-charts/compare/v64.0.2...v64.1.0) (2024-03-13)
+
+
+### Features
+
+* **theme:** move annotation default styles to `Theme` ([#2357](https://github.com/elastic/elastic-charts/issues/2357)) ([fe19ae2](https://github.com/elastic/elastic-charts/commit/fe19ae2cec3077ee34765d9be560935dd094a4ad))
+
+## [64.0.2](https://github.com/elastic/elastic-charts/compare/v64.0.1...v64.0.2) (2024-03-12)
+
+
+### Bug Fixes
+
+* **bullet:** full circle overlapping tick labels ([#2350](https://github.com/elastic/elastic-charts/issues/2350)) ([edbff68](https://github.com/elastic/elastic-charts/commit/edbff681737ba319b455c81604e5ffff02b89f17))
+* **deps:** update dependency @elastic/eui to ^93.3.0 ([#2356](https://github.com/elastic/elastic-charts/issues/2356)) ([cf9ce81](https://github.com/elastic/elastic-charts/commit/cf9ce81c08b8d0ae93fce48504d2de3539d045d0))
+* **deps:** update dependency @playwright/test to ^1.42.1 ([#2354](https://github.com/elastic/elastic-charts/issues/2354)) ([03581bc](https://github.com/elastic/elastic-charts/commit/03581bc44fae02309af9fbfa42c297f7414ec156))
+
+## [64.0.1](https://github.com/elastic/elastic-charts/compare/v64.0.0...v64.0.1) (2024-03-10)
+
+
+### Bug Fixes
+
+* **bullet:** add a11y summary and debugState ([#2352](https://github.com/elastic/elastic-charts/issues/2352)) ([49a1b35](https://github.com/elastic/elastic-charts/commit/49a1b358b21fbda4e15a96ce984d460786396899))
+* **deps:** update dependency @elastic/eui to ^93.2.0 ([#2343](https://github.com/elastic/elastic-charts/issues/2343)) ([0701985](https://github.com/elastic/elastic-charts/commit/0701985a470ed98936439ccf4e21bb1d52df5e18))
+
+# [64.0.0](https://github.com/elastic/elastic-charts/compare/v63.1.0...v64.0.0) (2024-02-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^93.1.0 ([#2332](https://github.com/elastic/elastic-charts/issues/2332)) ([855e357](https://github.com/elastic/elastic-charts/commit/855e357ab4433c7fc5a0e7e2c2398150ff686e41))
+* **deps:** update dependency @elastic/eui to v93 ([#2324](https://github.com/elastic/elastic-charts/issues/2324)) ([ce19379](https://github.com/elastic/elastic-charts/commit/ce1937910211f812b7a4eed371337e6498b1e6b3))
+* **deps:** update dependency @playwright/test to ^1.41.2 ([#2330](https://github.com/elastic/elastic-charts/issues/2330)) ([1f8c638](https://github.com/elastic/elastic-charts/commit/1f8c638356edebab8fc14d9ebdcaceec3e10812e))
+* **metric:** move `MetricSpec.body` to `MetricBase` ([#2336](https://github.com/elastic/elastic-charts/issues/2336)) ([3390e25](https://github.com/elastic/elastic-charts/commit/3390e251d3edc37ca68e13ff3acd8843b3b5a6ba))
+* use passed size in pixel without waiting for resizeObserver ([#2270](https://github.com/elastic/elastic-charts/issues/2270)) ([f9c11fc](https://github.com/elastic/elastic-charts/commit/f9c11fca2a284e4ca3744a02dc743d09b78f64b8))
+
+
+### chore
+
+* **bullet:** bullet improvements, bug fixes and renaming ([#2319](https://github.com/elastic/elastic-charts/issues/2319)) ([34fd38b](https://github.com/elastic/elastic-charts/commit/34fd38b77cdd060057a38e25c6197de6807839d2))
+
+
+### BREAKING CHANGES
+
+* **metric:** Moves `MetricSpec.body` to `MetricDatum.body`/`MetricBase.body`
+* **bullet:** Rename `BulletGraph` to `Bullet` and `ColorBandSimpleConfig.classes` to `steps`
+
+# [63.1.0](https://github.com/elastic/elastic-charts/compare/v63.0.0...v63.1.0) (2024-01-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^92.1.1 ([#2315](https://github.com/elastic/elastic-charts/issues/2315)) ([f4e4fae](https://github.com/elastic/elastic-charts/commit/f4e4fae42e5dcc1b882f0c5126c66d3c96cd2fcc))
+* **deps:** update dependency @playwright/test to ^1.41.1 ([#2316](https://github.com/elastic/elastic-charts/issues/2316)) ([e2ab527](https://github.com/elastic/elastic-charts/commit/e2ab52791baef9da628930d3e8d738ce3772c34a))
+* **styles:** isolated point style overrides ([#2278](https://github.com/elastic/elastic-charts/issues/2278)) ([3fb1df2](https://github.com/elastic/elastic-charts/commit/3fb1df21d08c441c84705bd3d5984fc07caa11be))
+
+
+### Features
+
+* **metric:** custom slot to render contents in gap ([#2303](https://github.com/elastic/elastic-charts/issues/2303)) ([3256c8c](https://github.com/elastic/elastic-charts/commit/3256c8ca14d180e4d7a483811a37612aca2691ce))
+
+
+### Performance Improvements
+
+* **tooltip:** improve placement logic ([#2310](https://github.com/elastic/elastic-charts/issues/2310)) ([cac5f49](https://github.com/elastic/elastic-charts/commit/cac5f4908a54374d114d7a11e66d648979013039))
+
+# [63.0.0](https://github.com/elastic/elastic-charts/compare/v62.0.0...v63.0.0) (2024-01-24)
+
+
+### Features
+
+* **legend:** expose extra raw values ([#2308](https://github.com/elastic/elastic-charts/issues/2308)) ([85bfe06](https://github.com/elastic/elastic-charts/commit/85bfe0668d66fd24e78f2bba8be4570fa926e94c))
+
+
+### BREAKING CHANGES
+
+* **legend:** The `CustomLegend.item` now exposes both the `raw` and the `formatted` version of the extra value.
+
+# [62.0.0](https://github.com/elastic/elastic-charts/compare/v61.2.0...v62.0.0) (2024-01-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^91.3.1 ([#2286](https://github.com/elastic/elastic-charts/issues/2286)) ([d4d7b5d](https://github.com/elastic/elastic-charts/commit/d4d7b5db6681ec0c65ef8b7e576f1b5fc8b5433a))
+* **deps:** update dependency @elastic/eui to v92 ([#2290](https://github.com/elastic/elastic-charts/issues/2290)) ([cc537fa](https://github.com/elastic/elastic-charts/commit/cc537faf43d88acc9abab7e0dac9360bd460b574))
+* **legend:** improve last value handling ([#2115](https://github.com/elastic/elastic-charts/issues/2115)) ([9f99447](https://github.com/elastic/elastic-charts/commit/9f9944734c4a13bfe9e4ffc9f4c0f39da5f9931f))
+
+
+### BREAKING CHANGES
+
+* **legend:** In cartesian charts, the default legend value now represents the data points that coincide with the latest datum in the X domain. Please consider passing every data point, even the empty ones (like empty buckets/bins/etc) if your x data domain doesn't fully cover a custom x domain passed to the chart configuration.
+
+# [61.2.0](https://github.com/elastic/elastic-charts/compare/v61.1.0...v61.2.0) (2023-12-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^91.1.0 ([#2267](https://github.com/elastic/elastic-charts/issues/2267)) ([308e974](https://github.com/elastic/elastic-charts/commit/308e97429c6d69fc3b902ed557c322c1d2e6bfa8))
+* **deps:** update dependency @elastic/eui to ^91.2.0 ([#2268](https://github.com/elastic/elastic-charts/issues/2268)) ([29cdcb3](https://github.com/elastic/elastic-charts/commit/29cdcb360740a535710f1a4d08a1dd44c5cb569b))
+* **metric:** background colors and sparkline rendering ([#2255](https://github.com/elastic/elastic-charts/issues/2255)) ([5abddfc](https://github.com/elastic/elastic-charts/commit/5abddfc67fe284d1a483deb4f8f6bc51e7cfedbc))
+* **partition:** rendering with small radius ([#2273](https://github.com/elastic/elastic-charts/issues/2273)) ([95a8537](https://github.com/elastic/elastic-charts/commit/95a8537248eff8e72db21f960852b20ccd64fa62))
+* **partition:** zero value sectors cause max stack call ([#2260](https://github.com/elastic/elastic-charts/issues/2260)) ([4b30db7](https://github.com/elastic/elastic-charts/commit/4b30db72981af3baed78ad72c7ab679324a767f6))
+* **theme:** legacy margins ([#2262](https://github.com/elastic/elastic-charts/issues/2262)) ([299c869](https://github.com/elastic/elastic-charts/commit/299c869fec254c16fea169cc32b319c2bc79ee71))
+
+
+### Features
+
+* increase tooltip width to 500px and truncate items to 2 lines ([#2261](https://github.com/elastic/elastic-charts/issues/2261)) ([afdef1c](https://github.com/elastic/elastic-charts/commit/afdef1c0142d954dd72a5833d6b9f0abce064f4a))
+
 # [61.1.0](https://github.com/elastic/elastic-charts/compare/v61.0.0...v61.1.0) (2023-11-20)
 
 

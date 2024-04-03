@@ -30,7 +30,7 @@ import {
 } from './types';
 import { Colors } from '../../common/colors';
 import { SeriesIdentifier } from '../../common/series_id';
-import { BaseDatum, DEFAULT_TOOLTIP_SPEC, SettingsSpec, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
+import { BaseDatum, DEFAULT_TOOLTIP_SPEC, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import {
   toggleSelectedTooltipItem as toggleSelectedTooltipItemAction,
@@ -45,8 +45,8 @@ import { getInternalIsInitializedSelector, InitStatus } from '../../state/select
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
 import { getInternalTooltipInfoSelector } from '../../state/selectors/get_internal_tooltip_info';
-import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSelectedItems } from '../../state/selectors/get_tooltip_selected_items';
+import { getTooltipSettings } from '../../state/selectors/get_tooltip_settings';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
 import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
@@ -329,19 +329,6 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
 
 TooltipComponent.displayName = 'Tooltip';
 
-function getTooltipSettings(
-  tooltip: TooltipSpec,
-  { externalPointerEvents }: SettingsSpec,
-  isExternalTooltipVisible: boolean,
-): TooltipProps {
-  if (!isExternalTooltipVisible) return tooltip;
-
-  return {
-    ...tooltip,
-    ...externalPointerEvents.tooltip,
-  };
-}
-
 const HIDDEN_TOOLTIP_PROPS: TooltipStateProps = {
   tooltip: DEFAULT_TOOLTIP_SPEC,
   zIndex: 0,
@@ -389,7 +376,7 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
         isExternal,
         isBrushing: false,
         zIndex: state.zIndex,
-        settings: getTooltipSettings(tooltip, getSettingsSpecSelector(state), isExternal),
+        settings: getTooltipSettings(state),
         tooltipTheme,
         rotation: getChartRotationSelector(state),
         chartId: state.chartId,

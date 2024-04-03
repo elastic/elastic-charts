@@ -25,8 +25,8 @@ import React, { useCallback } from 'react';
 
 import {
   Chart,
-  BulletGraph,
-  BulletGraphSubtype,
+  Bullet,
+  BulletSubtype,
   Settings,
   BulletColorConfig,
   ColorBandSimpleConfig,
@@ -40,7 +40,7 @@ import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const isDarkTheme = useThemeId().includes('dark');
-  const getPallettes = useCallback(
+  const getPalettes = useCallback(
     (steps: number) => [
       ['#164863', '#427D9D', '#9BBEC8', '#DDF2FD'],
       ['#F1EAFF', '#E5D4FF', '#DCBFFF', '#D0A2F7'],
@@ -64,7 +64,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'color config',
     {
       '1 Single Color': 1,
-      '2 Array of Colors via pallettes': 2,
+      '2 Array of Colors via palettes': 2,
       '3 Array with options': 3,
       '4 Fully custom bands': 4,
     },
@@ -97,7 +97,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const colorBands3 = object<ColorBandSimpleConfig>(
     'Config 3 - json',
     {
-      classes: 5,
+      steps: 5,
       colors: ['pink', 'yellow', 'blue'],
     },
     'Color Bands',
@@ -118,8 +118,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     ],
     'Color Bands',
   );
-  const pallette = getPallettes(colorBands2Steps)[colorBands2];
-  const colorOptions = [, [colorBands1], colorBands2Reverse ? pallette.reverse() : pallette, colorBands3, colorBands4];
+  const palette = getPalettes(colorBands2Steps)[colorBands2];
+  const colorOptions = [, [colorBands1], colorBands2Reverse ? palette.reverse() : palette, colorBands3, colorBands4];
 
   // Domain
   const start = number('start', 0, { range: true, min: -200, max: 200 }, 'Domain');
@@ -150,14 +150,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   // Other
   const debug = boolean('debug', false);
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.horizontal);
+  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.horizontal);
 
   const formatter = (d: number) => numeral(d).format('0.[0]');
 
   return (
     <Chart title={title} description={description}>
       <Settings debug={debug} baseTheme={useBaseTheme()} />
-      <BulletGraph
+      <Bullet
         id="bullet"
         subtype={subtype}
         colorBands={colorOptions[colorOptionIndex] as BulletColorConfig}

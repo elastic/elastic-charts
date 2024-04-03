@@ -172,7 +172,7 @@ export const MetricText: React.FunctionComponent<{
   progressBarSize: 'small';
   locale: string;
 }> = ({ id, datum, panel, style, onElementClick, highContrastTextColor, progressBarSize, locale }) => {
-  const { extra, value } = datum;
+  const { extra, value, body } = datum;
 
   const size = findRange(WIDTH_BP, panel.width);
   const hasProgressBar = isMetricWProgress(datum);
@@ -254,7 +254,7 @@ export const MetricText: React.FunctionComponent<{
           </p>
         )}
       </div>
-      <div className="echMetricText__gap"></div>
+      <div className="echMetricText__gap">{body && <div className="echMetricText__body">{body}</div>}</div>
       <div>
         {visibility.extra && (
           <p className="echMetricText__extra" style={{ fontSize: `${EXTRA_FONT_SIZE[size]}px` }}>

@@ -127,9 +127,6 @@ export const TooltipStickTo = Object.freeze({
 /** @public */
 export type TooltipStickTo = $Values<typeof TooltipStickTo>;
 
-/** @internal */
-export const DEFAULT_RESIZE_DEBOUNCE = 10;
-
 /**
  * Default legend config
  * @internal
@@ -154,7 +151,6 @@ export const settingsBuildProps = buildSFProps<SettingsSpec>()(
     rendering: 'canvas' as const,
     rotation: 0 as const,
     animateData: true,
-    resizeDebounce: DEFAULT_RESIZE_DEBOUNCE,
     debug: false,
     pointerUpdateTrigger: PointerUpdateTrigger.X,
     externalPointerEvents: {
@@ -171,6 +167,7 @@ export const settingsBuildProps = buildSFProps<SettingsSpec>()(
     pointBuffer: 10,
     ...DEFAULT_LEGEND_CONFIG,
     locale: 'en-US',
+    dow: 1,
   },
 );
 

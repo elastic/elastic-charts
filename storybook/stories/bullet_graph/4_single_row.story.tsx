@@ -10,7 +10,7 @@ import { boolean, text } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { Chart, BulletGraph, BulletGraphSubtype, Settings } from '@elastic/charts';
+import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -20,12 +20,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
   const format = text('format', '0');
   const formatter = (d: number) => numeral(d).format(format);
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.vertical);
+  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.vertical);
 
   return (
     <Chart title={title} description={description}>
       <Settings baseTheme={useBaseTheme()} debug={debug} />
-      <BulletGraph
+      <Bullet
         id="bubbles"
         subtype={subtype}
         data={[

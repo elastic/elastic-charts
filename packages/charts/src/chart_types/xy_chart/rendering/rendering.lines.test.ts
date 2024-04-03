@@ -360,10 +360,10 @@ describe('Rendering points - line', () => {
       expect(points.length).toBe(7);
       // all the points including null geometries
       expect(geometriesIndex.size).toEqual(9);
-      const nullIndexdGeometry = geometriesIndex.find(2, 10)!;
+      const nullIndexdGeometry = geometriesIndex.find(2, 10);
       expect(nullIndexdGeometry).toHaveLength(1);
 
-      const zeroValueIndexdGeometry = geometriesIndex.find(5, 10)!;
+      const zeroValueIndexdGeometry = geometriesIndex.find(5, 10);
       expect(zeroValueIndexdGeometry).toBeDefined();
       expect(zeroValueIndexdGeometry.length).toBe(1);
       // the zero value is scaled to NaN

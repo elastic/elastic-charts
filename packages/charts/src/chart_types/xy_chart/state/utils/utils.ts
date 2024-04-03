@@ -37,6 +37,7 @@ import { renderArea } from '../../rendering/area';
 import { renderBars } from '../../rendering/bars';
 import { renderBubble } from '../../rendering/bubble';
 import { renderLine } from '../../rendering/line';
+import { getAreaSeriesStyles, getLineSeriesStyles } from '../../rendering/line_area_style';
 import { defaultXYSeriesSort } from '../../utils/default_series_sort_fn';
 import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
@@ -432,10 +433,7 @@ function renderGeometries(
       geometriesCounts.bubbles += 1;
     } else if (isLineSeriesSpec(spec)) {
       const lineShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
-      const lineSeriesStyle = spec.lineSeriesStyle
-        ? mergePartial(chartTheme.lineSeriesStyle, spec.lineSeriesStyle)
-        : chartTheme.lineSeriesStyle;
-
+      const lineSeriesStyle = getLineSeriesStyles(chartTheme.lineSeriesStyle, spec.lineSeriesStyle);
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
 
       const renderedLines = renderLine(
@@ -467,9 +465,7 @@ function renderGeometries(
       geometriesCounts.lines += 1;
     } else if (isAreaSeriesSpec(spec)) {
       const areaShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
-      const areaSeriesStyle = spec.areaSeriesStyle
-        ? mergePartial(chartTheme.areaSeriesStyle, spec.areaSeriesStyle)
-        : chartTheme.areaSeriesStyle;
+      const areaSeriesStyle = getAreaSeriesStyles(chartTheme.areaSeriesStyle, spec.areaSeriesStyle);
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
       const renderedAreas = renderArea(
         // move the point on half of the bandwidth if we have mixed bars/lines

@@ -48,9 +48,10 @@ export function multilayerAxisEntry(
   scale: ScaleContinuous,
   getMeasuredTicks: GetMeasuredTicks,
   locale: string,
+  dow: number,
 ): Projection {
   const rasterSelector = continuousTimeRasters(
-    { minimumTickPixelDistance: MINIMUM_TICK_PIXEL_DISTANCE, locale },
+    { minimumTickPixelDistance: MINIMUM_TICK_PIXEL_DISTANCE, locale, dow },
     xDomain.timeZone,
   );
   const domainValues = xDomain.domain; // todo consider a property or object type rename
@@ -61,6 +62,7 @@ export function multilayerAxisEntry(
   const domainToS = ((Number(domainValues.at(-1)) || NaN) + domainExtension) / 1000;
   const cartesianWidth = Math.abs(range[1] - range[0]);
   const layers = rasterSelector(notTooDense(domainFromS, domainToS, binWidth, cartesianWidth, MAX_TIME_TICK_COUNT));
+
   let layerIndex = -1;
   const fillLayerTimeslip = (
     layer: number,

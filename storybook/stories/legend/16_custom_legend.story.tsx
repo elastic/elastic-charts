@@ -42,7 +42,7 @@ const allMetrics = [...data3, ...data2, ...data1];
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const customLegend: CustomLegend = ({ items, pointerValue }) => (
-    <div style={{ width: '100%', position: 'relative' }}>
+    <div style={{ width: '100%' }}>
       <p style={{ height: '1.5em' }}>{pointerValue ? moment(pointerValue?.value).format('HH:mm') : 'System Load'}</p>
       {items.map((i) => (
         <button
@@ -52,7 +52,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           onClick={() => i.onItemClickAction(false)}
           style={{ display: 'block', color: i.isSeriesHidden ? 'gray' : i.color }}
         >
-          {i.label} {i.extraValue}
+          {i.label} {i.extraValue?.formatted}
         </button>
       ))}
     </div>

@@ -488,6 +488,7 @@ module.exports = {
         // see https://github.com/benmosher/eslint-plugin-import/issues/1174
         'import/no-extraneous-dependencies': 0,
         '@typescript-eslint/no-loss-of-precision': 0,
+        '@typescript-eslint/no-floating-promises': 0, // rule has false positive on it
       },
     },
     {

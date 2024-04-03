@@ -46,6 +46,7 @@ const storiesToSkip: Map<string, string[]> = new Map(
   Object.entries({
     'Test Cases': ['noSeries'],
     Interactions: ['multiChartCursorSync'],
+    'Metric (@alpha)': ['bodyContent'],
   }),
 );
 
@@ -137,9 +138,13 @@ export const eachTheme = {
   describe(
     fn: (params: Omit<EachThemeCbParams, 'page'>) => any,
     titleFn: (theme: string) => string = (t) => `theme - ${t}`,
+    config?: Parameters<typeof test.describe.configure>[0],
   ) {
     themeIds.forEach((theme) => {
-      test.describe(titleFn(theme), () => fn({ theme, urlParam: `globals=theme:${theme}` }));
+      test.describe(titleFn(theme), () => {
+        if (config) test.describe.configure(config);
+        fn({ theme, urlParam: `globals=theme:${theme}` });
+      });
     });
   },
 };
@@ -166,14 +171,17 @@ export const pwEach = {
   /**
    * Similar to jest's `describe.each` for playwright
    */
-  describe<T>(values: T[]) {
+  describe<T>(values: T[], config?: Parameters<typeof test.describe.configure>[0]) {
     const titles = new Set();
     return (titleFn: (value: T) => string, fn: (value: T) => any) => {
       values.forEach((value) => {
         const title = titleFn(value);
         if (titles.has(title)) throw new Error('Each describe within `each.describe` block must have a unique title.');
         titles.add(title);
-        test.describe(title, () => fn(value));
+        test.describe(title, () => {
+          if (config) test.describe.configure(config);
+          fn(value);
+        });
       });
     };
   },

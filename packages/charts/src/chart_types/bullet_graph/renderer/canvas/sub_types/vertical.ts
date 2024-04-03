@@ -12,14 +12,14 @@ import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../ut
 import { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
-import { BulletGraphStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
-import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
+import { BulletStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
+import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_LABEL_PADDING } from '../constants';
 
 /** @internal */
 export function verticalBullet(
   ctx: CanvasRenderingContext2D,
   dimensions: BulletPanelDimensions,
-  style: BulletGraphStyle,
+  style: BulletStyle,
   backgroundColor: Color,
   activeValue?: ActiveValue | null,
 ) {
@@ -113,6 +113,10 @@ export function verticalBullet(
         ctx.textBaseline = 'bottom';
       }
 
-      ctx.fillText(labelText, graphArea.size.width / 2 - TARGET_SIZE / 2 - 6, graphPaddedHeight - scale(tick));
+      ctx.fillText(
+        labelText,
+        graphArea.size.width / 2 - TARGET_SIZE / 2 - TICK_LABEL_PADDING,
+        graphPaddedHeight - scale(tick),
+      );
     });
 }

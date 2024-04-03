@@ -100,7 +100,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Settings debug={debug} showLegend={showLegend} rotation={rotation} baseTheme={useBaseTheme()} />
       <Axis
         id="count"
-        integersOnly
+        maximumFractionDigits={0}
         tickFormat={looseFormatter}
         position={side === Position.Right ? Position.Right : Position.Left}
         style={{ tickLine: { padding: isVerticalSide ? padding : undefined } }}

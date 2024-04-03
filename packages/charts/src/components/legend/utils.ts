@@ -6,18 +6,27 @@
  * Side Public License, v 1.
  */
 
+import { PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendItemExtraValues, LegendItem } from '../../common/legend';
 
 /** @internal */
-export function getExtra(extraValues: Map<string, LegendItemExtraValues>, item: LegendItem, totalItems: number) {
+export function getExtra(
+  extraValues: Map<string, LegendItemExtraValues>,
+  item: LegendItem,
+  totalItems: number,
+): { raw: PrimitiveValue; formatted: string } | null {
   const { seriesIdentifiers, defaultExtra, childId, path } = item;
   // don't show extra if the legend item is associated with multiple series
   if (extraValues.size === 0 || seriesIdentifiers.length > 1 || !seriesIdentifiers[0]) {
-    return defaultExtra?.formatted ?? '';
+    return defaultExtra ? { formatted: `${defaultExtra.formatted ?? ''}`, raw: defaultExtra.raw } : null;
   }
   const [{ key }] = seriesIdentifiers;
   const extraValueKey = path.map(({ index }) => index).join('__');
   const itemExtraValues = extraValues.has(extraValueKey) ? extraValues.get(extraValueKey) : extraValues.get(key);
-  const actionExtra = childId !== undefined && itemExtraValues?.get(childId);
-  return actionExtra ?? (extraValues.size === totalItems ? defaultExtra?.formatted : null) ?? '';
+  const actionExtra = childId !== undefined ? itemExtraValues?.get(childId) : undefined;
+  return actionExtra
+    ? actionExtra
+    : extraValues.size === totalItems && defaultExtra
+      ? { formatted: `${defaultExtra.formatted ?? ''}`, raw: defaultExtra.raw }
+      : null;
 }

@@ -12,12 +12,13 @@
     "playwright": "playwright"
   },
   "dependencies": {
-    "@playwright/test": "^1.23.0",
+    "@playwright/test": "^1.42.1",
+    "@types/node": "^20.10.0",
     "change-case": "^4.1.2",
     "expect-playwright": "^0.8.0",
     "playwright-merge-html-reports": "^0.2.3",
     "slugify": "^1.6.5",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.3.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.3"
   }
 }

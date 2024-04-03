@@ -10,21 +10,23 @@ import { boolean, number, text } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { Chart, BulletGraph, BulletGraphSubtype, Settings, Tooltip } from '@elastic/charts';
+import { Chart, Bullet, BulletSubtype, Settings, Tooltip } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const debug = boolean('debug', false);
+  const debugState = boolean('Enable debug state', false);
   const hideTooltip = boolean('hide tooltip', false);
   const syncCursor = boolean('sync cursor', false);
   const tickSnapStep = number('active tick step', 1, { min: 0, max: 10 });
   const valueFormat = text('valueFormat', '0');
   const targetFormat = text('targetFormat', '');
   const tickFormat = text('tickFormat', '0[.]00');
-  const subtype = getKnobFromEnum('subtype', BulletGraphSubtype, BulletGraphSubtype.vertical);
+  const subtype = getKnobFromEnum('subtype', BulletSubtype, BulletSubtype.vertical);
 
   const valueFormatter = (d: number) => numeral(d).format(valueFormat);
   const targetFormatter = targetFormat ? (d: number) => numeral(d).format(targetFormat) : undefined;
@@ -32,9 +34,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings baseTheme={useBaseTheme()} debug={debug} />
+      <Settings
+        debug={debug}
+        onRenderChange={getDebugStateLogger(debugState)}
+        debugState={debugState}
+        baseTheme={useBaseTheme()}
+      />
       <Tooltip type={hideTooltip ? 'none' : undefined} />
-      <BulletGraph
+      <Bullet
         id="bubbles"
         subtype={subtype}
         tickSnapStep={tickSnapStep}

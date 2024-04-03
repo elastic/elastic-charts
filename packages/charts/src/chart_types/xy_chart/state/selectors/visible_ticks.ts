@@ -220,7 +220,7 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
 );
 
 function getVisibleTickSets(
-  { rotation: chartRotation, locale }: Pick<SettingsSpec, 'rotation' | 'locale'>,
+  { rotation: chartRotation, locale, dow }: Pick<SettingsSpec, 'rotation' | 'locale' | 'dow'>,
   joinedAxesData: Map<AxisId, JoinedAxisData>,
   { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
   smScales: SmallMultipleScales,
@@ -232,12 +232,14 @@ function getVisibleTickSets(
     const panel = getPanelSize(smScales);
     return [...joinedAxesData].reduce(
       (acc, [axisId, { axisSpec, axesStyle, gridLine, isXAxis, labelFormatter: userProvidedLabelFormatter }]) => {
-        const { groupId, integersOnly, timeAxisLayerCount } = axisSpec;
+        const { groupId, integersOnly, maximumFractionDigits: mfd, timeAxisLayerCount } = axisSpec;
         const yDomain = yDomains.find((yd) => yd.groupId === groupId);
         const domain = isXAxis ? xDomain : yDomain;
         const range = axisMinMax(axisSpec.position, chartRotation, panel);
         const maxTickCount = domain?.desiredTickCount ?? 0;
         const isMultilayerTimeAxis = domain?.type === ScaleType.Time && timeAxisLayerCount > 0;
+        // TODO: remove this fallback when integersOnly is removed
+        const maximumFractionDigits = mfd ?? (integersOnly ? 0 : undefined);
 
         const getMeasuredTicks = (
           scale: ScaleBand | ScaleContinuous,
@@ -276,9 +278,10 @@ function getVisibleTickSets(
                 range,
                 barsPadding,
                 enableHistogramMode,
-                integersOnly,
+                maximumFractionDigits,
               })
-            : yDomain && new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, integersOnly });
+            : yDomain &&
+              new ScaleContinuous({ ...yDomain, range }, { ...yDomain, desiredTickCount, maximumFractionDigits });
 
         const fillLayer = (maxTickCountForLayer: number) => {
           let fallbackAskedTickCount = 2;
@@ -339,6 +342,7 @@ function getVisibleTickSets(
               scale,
               getMeasuredTicks,
               locale,
+              dow,
             ),
           );
         }

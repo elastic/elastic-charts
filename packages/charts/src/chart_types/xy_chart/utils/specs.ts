@@ -749,8 +749,15 @@ export interface AxisSpec extends Spec {
   style?: RecursivePartial<Omit<AxisStyle, 'gridLine'>>;
   /** If specified, it constrains the domain for these values */
   domain?: YDomainRange;
-  /** Show only integar values * */
+  /**
+   * Show only integar values
+   * @deprecated use `maximumFractionDigits` instead
+   */
   integersOnly?: boolean;
+  /**
+   * Max fractional digit to limit precision of number ticks
+   */
+  maximumFractionDigits?: number;
   /**
    * Show duplicated ticks
    * @defaultValue `false`

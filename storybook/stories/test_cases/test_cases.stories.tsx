@@ -20,4 +20,5 @@ export { Example as rtlText } from './7_rtl_text.story';
 export { Example as testPointsOutsideOfDomain } from './8_test_points_outside_of_domain.story';
 export { Example as duplicateLabelsInPartitionLegend } from './9_duplicate_labels_in_partition_legend.story';
 export { Example as highlighterZIndex } from './10_highlighter_z_index.story';
-export { Example as resizeDebounce } from './11_resize_debounce.story';
+export { Example as domainEdges } from './21_domain_edges.story';
+export { Example as startDayOfWeek } from './11_start_day_of_week.story';

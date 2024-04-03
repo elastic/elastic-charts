@@ -1,7 +1,7 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "61.1.0",
+  "version": "64.1.0",
   "author": "Elastic DataVis",
   "license": "SEE LICENSE IN LICENSE.txt",
   "main": "dist/index.js",
@@ -47,7 +47,6 @@
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
     "reselect": "^4.0.0",
-    "resize-observer-polyfill": "^1.5.1",
     "ts-debounce": "^4.0.0",
     "utility-types": "^3.10.0",
     "uuid": "^9",

@@ -8,12 +8,7 @@
 
 import { DARK_THEME } from './dark_theme';
 import { LIGHT_THEME } from './light_theme';
-import {
-  DEFAULT_ANNOTATION_LINE_STYLE,
-  DEFAULT_ANNOTATION_RECT_STYLE,
-  mergeWithDefaultAnnotationLine,
-  mergeWithDefaultAnnotationRect,
-} from './merge_utils';
+import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from './merge_utils';
 import { LineAnnotationStyle, Theme } from './theme';
 
 describe('Theme', () => {
@@ -33,10 +28,10 @@ describe('Theme', () => {
 
   describe('mergeWithDefaultAnnotationLine', () => {
     it('should merge custom and default annotation line configs', () => {
-      expect(mergeWithDefaultAnnotationLine()).toEqual(DEFAULT_ANNOTATION_LINE_STYLE);
+      expect(mergeWithDefaultAnnotationLine(LIGHT_THEME.lineAnnotation)).toEqual(LIGHT_THEME.lineAnnotation);
 
       const customLineConfig = {
-        stroke: 'foo',
+        stroke: 'red',
         strokeWidth: 50,
         opacity: 1,
       };
@@ -44,14 +39,16 @@ describe('Theme', () => {
       const expectedMergedCustomLineConfig: LineAnnotationStyle = {
         line: customLineConfig,
       };
-      const mergedCustomLineConfig = mergeWithDefaultAnnotationLine({ line: customLineConfig });
+      const mergedCustomLineConfig = mergeWithDefaultAnnotationLine(LIGHT_THEME.lineAnnotation, {
+        line: customLineConfig,
+      });
       expect(mergedCustomLineConfig).toEqual(expectedMergedCustomLineConfig);
     });
   });
 
   describe('mergeWithDefaultAnnotationRect', () => {
     it('should merge custom and default rect annotation style', () => {
-      expect(mergeWithDefaultAnnotationRect()).toEqual(DEFAULT_ANNOTATION_RECT_STYLE);
+      expect(mergeWithDefaultAnnotationRect(LIGHT_THEME.rectAnnotation)).toEqual(LIGHT_THEME.rectAnnotation);
 
       const customConfig = {
         stroke: 'customStroke',
@@ -65,7 +62,7 @@ describe('Theme', () => {
         strokeWidth: 0,
       };
 
-      expect(mergeWithDefaultAnnotationRect(customConfig)).toEqual(expectedMergedConfig);
+      expect(mergeWithDefaultAnnotationRect(LIGHT_THEME.rectAnnotation, customConfig)).toEqual(expectedMergedConfig);
     });
   });
 });
