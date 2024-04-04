@@ -2048,7 +2048,7 @@ export interface MetricSpec extends Spec {
     specType: typeof SpecType.Series;
 }
 
-// @alpha (undocumented)
+// @alpha
 export type MetricSpecProps = ComponentProps<typeof Metric>;
 
 // @public (undocumented)
@@ -2316,7 +2316,7 @@ export const Placement: Readonly<{
     AutoEnd: "auto-end";
 }>;
 
-// @public
+// @public (undocumented)
 export type Placement = $Values<typeof Placement>;
 
 // @public (undocumented)
