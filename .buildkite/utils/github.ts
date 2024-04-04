@@ -448,7 +448,7 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
       return `${finalMessage.trim()}\n\ncc: @nickofthyme`;
     }
 
-    const buildText = !buildUrl ? '' : ` ([build#${buildUrl.split("/").pop()}](${buildUrl}))`;
+    const buildText = !buildUrl ? '' : ` ([build#${buildUrl.split('/').pop()}](${buildUrl}))`;
 
     if (state === 'pending') {
       const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';

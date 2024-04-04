@@ -430,6 +430,12 @@ module.exports = {
       },
     },
     {
+      files: ['docs/**/*'],
+      rules: {
+        'react/react-in-jsx-scope': 0,
+      },
+    },
+    {
       files: ['.*.js', './*.config.js'], // dot(.) and root config files
       rules: {
         'header/header': 0,
