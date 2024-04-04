@@ -24,7 +24,6 @@ export interface UpdateDeploymentCommentOptions {
   previousSha?: string;
   errorCmd?: string;
   errorMsg?: string;
-  buildUrl?: string;
   jobLink?: string;
   preDeploy?: boolean;
 }
@@ -73,7 +72,14 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
 
   const deploymentUrl = options.deploymentUrl ?? (await getOrCreateDeploymentUrl());
   const previousSha = options.previousSha ?? (await getMetadata(MetaDataKeys.deploymentPreviousSha));
-  const commentBody = getComment('deployment', { ...options, state, preDeploy, sha, deploymentUrl, previousSha });
+  const commentBody = getComment('deployment', {
+    ...options,
+    state,
+    preDeploy,
+    sha,
+    deploymentUrl,
+    previousSha,
+  });
 
   const {
     data: { id },

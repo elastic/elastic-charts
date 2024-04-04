@@ -422,7 +422,6 @@ export const comments = {
     errorCmd,
     errorMsg,
     jobLink,
-    buildUrl,
     preDeploy = false,
   }: UpdateDeploymentCommentOptions) {
     console.log(`DEPLOYMENT STATUS - ${state} - preDeploy: ${preDeploy}`);
@@ -448,6 +447,7 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
       return `${finalMessage.trim()}\n\ncc: @nickofthyme`;
     }
 
+    const buildUrl = bkEnv.buildUrl;
     const buildText = !buildUrl ? '' : ` ([build#${buildUrl.split('/').pop()}](${buildUrl}))`;
 
     if (state === 'pending') {
