@@ -2048,7 +2048,7 @@ export interface MetricSpec extends Spec {
     specType: typeof SpecType.Series;
 }
 
-// @alpha
+// @alpha @deprecated (undocumented)
 export type MetricSpecProps = ComponentProps<typeof Metric>;
 
 // @public (undocumented)

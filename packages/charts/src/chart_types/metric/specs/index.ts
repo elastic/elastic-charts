@@ -108,7 +108,7 @@ export const Metric = specComponentFactory<MetricSpec>()(
 
 // TODO: Remove this for overall spec prop consistency as this does not refer to the spec props but the metric component props that are defined by the spec
 /**
- * @depreceted in favor of MetricProps
+ * @deprecated in favor of MetricProps
  * @alpha
  */
 export type MetricSpecProps = ComponentProps<typeof Metric>;
