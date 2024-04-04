@@ -55,6 +55,7 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
       if (bkEnv.isPullRequest) {
         await createOrUpdateDeploymentComment({
           state: 'failure',
+          buildUrl: bkEnv.buildUrl,
           jobLink: bkEnv.jobUrl,
           errorCmd: err.command,
           errorMsg: err.message,
@@ -79,6 +80,7 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
     if (bkEnv.isPullRequest) {
       await createOrUpdateDeploymentComment({
         state: 'success',
+        buildUrl: bkEnv.buildUrl,
         preDeploy: opt.preDeploy,
         deploymentUrl,
       });

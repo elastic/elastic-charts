@@ -422,6 +422,7 @@ export const comments = {
     errorCmd,
     errorMsg,
     jobLink,
+    buildUrl,
     preDeploy = false,
   }: UpdateDeploymentCommentOptions) {
     console.log(`DEPLOYMENT STATUS - ${state} - preDeploy: ${preDeploy}`);
@@ -447,11 +448,14 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
       return `${finalMessage.trim()}\n\ncc: @nickofthyme`;
     }
 
+    const buildText = !buildUrl ? '' : ` ([build#${buildUrl.split("/").pop()}](${buildUrl}))`;
+
     if (state === 'pending') {
       const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';
       const deploymentMsg =
         previousSha && deploymentUrl
           ? `### Old deployment - ${previousSha}
+
 - [Docs](${deploymentUrl})
 - [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
@@ -459,12 +463,12 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
           : `- ⏳ Storybook
 - ⏳ e2e server
 - ⏳ Playwright report`;
-      return `## ⏳ Pending Deployment - ${sha}${updateComment}
+      return `## ⏳ Pending Deployment${buildText} - ${sha}${updateComment}
 
 ${deploymentMsg}`;
     }
 
-    return `## ✅ Successful ${preDeploy ? 'Preliminary ' : ''}Deployment - ${sha}
+    return `## ✅ Successful ${preDeploy ? 'Preliminary ' : ''}Deployment${buildText} - ${sha}
 
 - [Docs](${deploymentUrl})
 - [Storybook](${deploymentUrl}/storybook)

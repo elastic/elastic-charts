@@ -24,6 +24,7 @@ export interface UpdateDeploymentCommentOptions {
   previousSha?: string;
   errorCmd?: string;
   errorMsg?: string;
+  buildUrl?: string;
   jobLink?: string;
   preDeploy?: boolean;
 }
