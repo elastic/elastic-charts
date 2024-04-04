@@ -12,7 +12,7 @@
     ]
   },
   "scripts": {
-    "postinstall": "cd ./e2e && yarn install && cd ../.buildkite && yarn install && cd ../github_bot && yarn install",
+    "postinstall": "cd ./e2e && yarn install && cd ../docs && yarn install && cd ../.buildkite && yarn install && cd ../github_bot && yarn install",
     "run:bk:step": "cd .buildkite && yarn run:step",
     "prepack": "echo 'This package is not published, see pacakges/*' && exit 1",
     "autoprefix:css": "lerna run --loglevel=silent --scope @elastic/charts autoprefix:css --stream --no-prefix",
@@ -55,8 +55,9 @@
     "test:e2e:server:build": "export NODE_OPTIONS=--openssl-legacy-provider; cd e2e_server/server && webpack build",
     "typecheck:base": "tsc -p ./tsconfig.base.json --noEmit",
     "typecheck:src": "lerna run --loglevel=silent --scope @elastic/charts typecheck --stream --no-prefix",
+    "typecheck:docs": "lerna run --loglevel=silent --scope elastic-charts-docs typecheck --stream --no-prefix",
     "typecheck:storybook": "lerna run --loglevel=silent --scope charts-storybook typecheck --stream --no-prefix",
-    "typecheck:all": "yarn typecheck:base && yarn typecheck:src && yarn typecheck:storybook",
+    "typecheck:all": "yarn typecheck:base && yarn typecheck:src && yarn typecheck:docs && yarn typecheck:storybook",
     "typedoc": "typedoc",
     "ts:prune": "ts-prune"
   },
