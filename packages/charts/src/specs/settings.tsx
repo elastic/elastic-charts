@@ -467,6 +467,8 @@ export interface LegendSpec {
    * Override the legend with a custom component.
    */
   customLegend?: CustomLegend;
+
+  showAllLegendItems?: boolean;
 }
 
 /**

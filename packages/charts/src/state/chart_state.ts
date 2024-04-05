@@ -21,6 +21,7 @@ import { interactionsReducer } from './reducers/interactions';
 import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
 import { getLegendItemsSelector } from './selectors/get_legend_items';
 import { LegendItemLabel } from './selectors/get_legend_items_labels';
+import { getSettingsSpecSelector } from './selectors/get_settings_spec';
 import { DebugState } from './types';
 import { getInitialPointerState, getInitialTooltipState } from './utils';
 import { ChartType } from '../chart_types';
@@ -359,7 +360,8 @@ export const chartStoreReducer = (chartId: string, title?: string, description?:
           specsInitialized: false,
           chartRendered: false,
         };
-      case UPSERT_SPEC:
+      case UPSERT_SPEC: {
+        const clearSelectedLegendItems = getSettingsSpecSelector(state).showAllLegendItems;
         return {
           ...state,
           specsInitialized: false,
@@ -368,7 +370,12 @@ export const chartStoreReducer = (chartId: string, title?: string, description?:
           specs: state.specParsing
             ? { ...state.specs, [action.spec.id]: action.spec }
             : { [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC, [action.spec.id]: action.spec },
+          interactions: {
+            ...state.interactions,
+            deselectedDataSeries: clearSelectedLegendItems ? [] : state.interactions.deselectedDataSeries,
+          },
         };
+      }
       case REMOVE_SPEC:
         const { [action.id]: specToRemove, ...rest } = state.specs;
         return {
