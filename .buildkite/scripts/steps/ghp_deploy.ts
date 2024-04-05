@@ -14,7 +14,7 @@ import { downloadArtifacts, startGroup, decompress, ghpDeploy } from '../../util
 void (async () => {
   const outDir = '.out';
 
-  const docsSrc = '.buildkite/artifacts/docs/github.gz';
+  const docsSrc = '.buildkite/artifacts/docs.gz';
   await downloadArtifacts(docsSrc, 'build_docs');
   await decompress({
     src: docsSrc,

@@ -37,7 +37,7 @@ void (async () => {
 
   await compress({
     src: outDir,
-    dest: '.buildkite/artifacts/docs/firebase.gz',
+    dest: '.buildkite/artifacts/docs.gz',
   });
 
   if (bkEnv.isMainBranch) {

@@ -24,7 +24,7 @@ void (async () => {
 
   const outDir = 'e2e_server/public';
 
-  const docsSrc = '.buildkite/artifacts/docs/firebase.gz';
+  const docsSrc = '.buildkite/artifacts/docs.gz';
   await downloadArtifacts(docsSrc, 'build_docs');
   await decompress({
     src: docsSrc,
