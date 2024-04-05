@@ -19,11 +19,18 @@ void (async () => {
 
   const outDir = 'e2e_server/public';
 
+  const docsSrc = '.buildkite/artifacts/docs/firebase.gz';
+  await downloadArtifacts(docsSrc, 'build_docs');
+  await decompress({
+    src: docsSrc,
+    dest: outDir,
+  });
+
   const storybookSrc = '.buildkite/artifacts/storybook.gz';
   await downloadArtifacts(storybookSrc, 'build_storybook');
   await decompress({
     src: storybookSrc,
-    dest: outDir,
+    dest: path.join(outDir, 'storybook'),
   });
 
   const e2eSrc = '.buildkite/artifacts/e2e_server.gz';
@@ -42,10 +49,12 @@ void (async () => {
 
   startGroup('Check deployment files');
 
-  const hasStorybookIndex = fs.existsSync('./e2e_server/public/index.html');
+  const hasDocsIndex = fs.existsSync('./e2e_server/public/index.html');
+  const hasStorybookIndex = fs.existsSync('./e2e_server/public/storybook/index.html');
   const hasE2EIndex = fs.existsSync('./e2e_server/public/e2e/index.html');
   const hasE2EReportIndex = fs.existsSync('./e2e_server/public/e2e-report/index.html');
   const missingFiles = [
+    ['docs', hasDocsIndex],
     ['storybook', hasStorybookIndex],
     ['e2e server', hasE2EIndex],
     ['e2e report', hasE2EReportIndex],

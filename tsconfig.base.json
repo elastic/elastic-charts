@@ -1,4 +1,4 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["**/tmp", "**/dist", "./playground", "./storybook", "./packages/charts"]
+  "exclude": ["**/tmp", "**/dist", "./playground", "./docs", "./storybook", "./packages/charts"]
 }

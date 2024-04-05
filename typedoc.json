@@ -1,0 +1,14 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["packages/charts/src/index.ts"],
+  "exclude": [
+    "packages/charts/src/utils/data_generators/data_generator.ts",
+    "packages/charts/src/components/chart.tsx"
+  ],
+  "readme": "none",
+  "plugin": ["typedoc-plugin-markdown"],
+  "tsconfig": "packages/charts/tsconfig.src.json",
+  "excludeInternal": true,
+  "outputFileStrategy": "members",
+  "out": "docs/docs/all-types"
+}

@@ -12,6 +12,7 @@ export * from './api_check';
 export * from './type_check';
 export * from './prettier';
 export * from './playwright';
+export * from './docs';
 export * from './storybook';
 export * from './e2e_server';
 export * from './firebase_pre_deploy';

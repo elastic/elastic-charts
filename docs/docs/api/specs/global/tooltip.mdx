@@ -1,0 +1,145 @@
+---
+id: Tooltip
+sidebar_position: 2
+sidebar_label: Tooltip
+---
+
+# `Tooltip` Spec
+
+Defines settings for chart tooltip.
+
+:::info
+Only a single `Tooltip` spec can be defined, if more than one is provided, only the last one will be used.
+:::
+
+
+## Compatible Specs
+
+`Tooltip` is available for all charts excluding `Metric` and `Wordcloud`.
+
+## Overrides
+
+- `id` -> `'__global__tooltip___'`
+- `chartType` -> `ChartType.Global`
+- `specType` -> `SpecType.SmallMultiples`
+
+## Props {#props}
+
+All props can be found via [`GroupByProps`](/all-types/type-aliases/GroupByProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`Spec`](../types/Spec) Props
+
+Inherits [`Spec`](../types/Spec) props
+
+### [`TooltipPortalSettings`](/all-types/interfaces/TooltipPortalSettings) Props
+
+Inherits [`TooltipPortalSettings`](/all-types/interfaces/TooltipPortalSettings) props
+
+### `type`
+- Type: <code>type: TooltipType</code>
+- Default: `TooltipType.Vertical`
+
+The type of the tooltip
+
+### `snap`
+- Type: <code>snap: boolean</code>
+- Default: `true`
+
+Whenever the tooltip needs to snap to the x/band position or not
+
+### `headerFormatter`
+- Type: <code>headerFormatter?: TooltipHeaderFormatter\<D\></code>
+
+A formatter for the header value. Ignored when `header` is defined.
+
+### `unit`
+- Type: <code>unit?: string</code>
+- Tag: `@alpha`
+
+Unit for event (i.e. `time`, `feet`, `count`, etc.).
+
+### `customTooltip`
+- Type: <code>customTooltip?: CustomTooltip\<D, SI\></code>
+
+Render custom tooltip given header and values.
+
+### `stickTo`
+- Type: <code>stickTo?: TooltipStickTo</code>
+- Default: `mousePosition`
+
+Stick the tooltip to a specific position within the current cursor
+
+### `showNullValues`
+- Type: <code>showNullValues: boolean</code>
+- Default: `false`
+
+Show null values on the tooltip
+
+### `header`
+- Type: <code>header: 'default' | 'none' | ComponentType\<\{ items: TooltipValue\<D, SI\>[]; header: PointerValue\<D\> | null \}\></code>
+
+Custom header for tooltip. Ignored when used with `customTooltip`.
+
+:::note
+This is not the table headers but spans the entire tooltip.
+:::
+
+### `body`
+- Type: <code>body: 'default' | 'none' | ComponentType\<\{ items: TooltipValue\<D, SI\>[]; header: PointerValue\<D\> | null \}\></code>
+
+Custom body for tooltip. Ignored when used with `customTooltip`.
+
+
+:::note
+This is not the table body but spans the entire tooltip.
+:::
+
+### `footer`
+- Type: <code>footer: 'default' | 'none' | ComponentType\<\{ items: TooltipValue\<D, SI\>[]; header: PointerValue\<D\> | null \}\></code>
+
+Custom footer for tooltip. Ignored when used with `customTooltip`.
+
+:::note
+This is not the table footers but spans the entire tooltip.
+:::
+
+### `actions`
+- Type: <code>TooltipAction\<D, SI\>[] | ((selected: TooltipValue\<D, SI\>[]) => Promise\<TooltipAction\<D, SI\>[]\> | TooltipAction\<D, SI\>[])</code>
+
+Actions to enable tooltip selection
+
+### `actionsLoading`
+- Type: <code>actionsLoading: string | ComponentType\<\{ selected: TooltipValue\<D, SI\>[] \}\></code>
+
+Shown in place of actions UI while loading async actions
+
+### `noActionsLoaded`
+- Type: <code>noActionsLoaded: string | ComponentType\<\{ selected: TooltipValue\<D, SI\>[] \}\></code>
+
+Shown in place of actions UI after loading async actions and finding none
+
+### `actionPrompt`
+- Type: <code>actionPrompt: string</code>
+
+Prompt displayed to indicate user can right-click for contextual menu
+
+### `pinningPrompt`
+- Type: <code>pinningPrompt: string</code>
+
+Prompt displayed to indicate user can right-click for contextual menu
+
+### `selectionPrompt`
+- Type: <code>selectionPrompt: string</code>
+
+Prompt displayed when tooltip is pinned but all actions are hidden
+
+### `maxTooltipItems`
+- Type: <code>maxTooltipItems: number</code>
+
+Max number of tooltip items before showing only highlighted values
+
+### `maxVisibleTooltipItems`
+- Type: <code>maxVisibleTooltipItems: number</code>
+
+Max number of visible tooltip items before scrolling. Does not apply to custom tooltips

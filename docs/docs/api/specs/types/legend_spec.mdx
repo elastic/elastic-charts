@@ -1,0 +1,96 @@
+---
+id: LegendSpec
+sidebar_label: LegendSpec
+---
+
+# `LegendSpec`
+
+Defines legend settings for all chart types
+
+## Props
+
+### `showLegend`
+- Type: <code>showLegend: boolean</code>
+- Default: `false`
+
+Show the legend
+
+### `legendPosition`
+- Type: <code>legendPosition: Position | LegendPositionConfig</code>
+- Default: `Position.Right`
+
+Set legend position
+
+### `showLegendExtra`
+- Type: <code>showLegendExtra: boolean</code>
+- Default: `false`
+
+Show an extra parameter on each legend item defined by the chart type
+
+### `legendMaxDepth`
+- Type: <code>legendMaxDepth: number</code>
+
+Limit the legend to the specified maximal depth when showing a hierarchical legend
+
+:::info
+This is not the max depth, but the number of level shown: 0 none, 1 first, 2 up to the second etc. See [#1981](https://github.com/elastic/elastic-charts/issues/1981) for details
+:::
+
+### `legendSize`
+- Type: <code>legendSize: number</code>
+- Unit: `pixel`
+
+Sets the exact legend width (vertical) or height (horizontal).
+
+:::info
+All legends limited to max of 70% of the chart container dimension. Vertical legends limited to min of 30% of computed width
+:::
+
+### `flatLegend`
+- Type: <code>flatLegend?: boolean</code>
+- Default: `false`
+
+Display the legend as a flat list.
+
+:::info
+This option only applies to hierarchical legend such as a multi-layer `Partition` spec.
+:::
+
+### `legendStrategy`
+- Type: <code>legendStrategy?: LegendStrategy</code>
+- Default: `LegendStrategy.Path`
+
+Choose a partition highlighting strategy for hovering over legend items.
+
+### `onLegendItemOver`
+- Type: <code>onLegendItemOver?: LegendItemListener</code>
+
+### `onLegendItemOut`
+- Type: <code>onLegendItemOut?: BasicListener</code>
+
+### `onLegendItemClick`
+- Type: <code>onLegendItemClick?: LegendItemListener</code>
+
+### `onLegendItemPlusClick`
+- Type: <code>onLegendItemPlusClick?: LegendItemListener</code>
+
+### `onLegendItemMinusClick`
+- Type: <code>onLegendItemMinusClick?: LegendItemListener</code>
+
+### `legendAction`
+- Type: <code>legendAction?: LegendAction</code>
+
+Render slot to render action for legend.
+
+### `legendColorPicker`
+- Type: <code>legendColorPicker?: LegendColorPicker</code>
+
+### `legendSort`
+- Type: <code>legendSort?: SeriesCompareFn</code>
+
+A SeriesSortFn to sort the legend values (top-bottom)
+
+### `customLegend`
+- Type: <code>customLegend?: CustomLegend</code>
+
+Override the legend with a custom component.

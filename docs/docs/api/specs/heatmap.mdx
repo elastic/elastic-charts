@@ -1,0 +1,101 @@
+---
+id: Heatmap
+sidebar_position: 5
+sidebar_label: Heatmap
+---
+
+# `Heatmap` Spec
+
+Defines a word cloud chart.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+`Heatmap` is a standalone spec and cannot be combined with other specs except for supported global specs.
+
+:::warning
+The `Heatmap` spec is **NOT** compatible with the [`Axis`](./xy/Axis) spec, it currently uses it's own internal axis implentation. The only axis controls are listed in the [`Props`](#props) below.
+:::
+
+## Overrides
+
+- `specType` -> `SpecType.Series`
+- `chartType` -> `ChartType.Heatmap`
+
+## Props {#props}
+
+All props can be found via [`HeatmapProps`](/all-types/type-aliases/HeatmapProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`Spec`](./types/Spec) Props
+
+Inherits [`Spec`](./types/Spec) props
+
+### `data`
+- Type: <code>data: D[]</code>
+
+### `colorScale`
+- Type: <code>colorScale: HeatmapBandsColorScale</code>
+
+### `xAccessor`
+- Type: <code>xAccessor: Accessor\<D\> | AccessorFn\<D\></code>
+- Default: `(d) => d?.x`
+
+### `yAccessor`
+- Type: <code>yAccessor: Accessor\<D\> | AccessorFn\<D\></code>
+- Default: `(d) => d?.y`
+
+### `valueAccessor`
+- Type: <code>valueAccessor: Accessor\<never\> | AccessorFn</code>
+- Default: `({ value }) => value`
+
+### `valueFormatter`
+- Type: <code>valueFormatter: ValueFormatter</code>
+- Default: <code>(value) => `${value}`</code>
+
+### `xSortPredicate`
+- Type: <code>xSortPredicate: Predicate</code>
+- Default: `Predicate.AlphaAsc`
+
+### `ySortPredicate`
+- Type: <code>ySortPredicate: Predicate</code>
+- Default: `Predicate.AlphaAsc`
+
+### `xScale`
+- Type: <code>xScale: RasterTimeScale | OrdinalScale | LinearScale</code>
+- Default: `{ type: X_SCALE_DEFAULT.type }`
+
+### `highlightedData`
+- Type: <code>highlightedData?: HeatmapHighlightedData</code>
+
+### `name`
+- Type: <code>name?: string</code>
+
+### `timeZone`
+- Type: <code>timeZone: string</code>
+- Default: `'UTC'`
+
+### `xAxisTitle`
+- Type: <code>xAxisTitle: string</code>
+- Default: `''`
+
+### `xAxisLabelName`
+- Type: <code>xAxisLabelName: string</code>
+- Default: `'X Value'`
+
+### `xAxisLabelFormatter`
+- Type: <code>xAxisLabelFormatter: LabelAccessor\<string | number\></code>
+- Default: `String`
+
+### `yAxisTitle`
+- Type: <code>yAxisTitle: string</code>
+- Default: `''`
+
+### `yAxisLabelName`
+- Type: <code>yAxisLabelName: string</code>
+- Default: `'Y Value'`
+
+### `yAxisLabelFormatter`
+- Type: <code>yAxisLabelFormatter: LabelAccessor\<string | number\></code>
+- Default: `String`

@@ -106,8 +106,15 @@ export const Metric = specComponentFactory<MetricSpec>()(
   },
 );
 
-/** @alpha */
+// TODO: Remove this for overall spec prop consistency as this does not refer to the spec props but the metric component props that are defined by the spec
+/**
+ * @deprecated in favor of MetricProps
+ * @alpha
+ */
 export type MetricSpecProps = ComponentProps<typeof Metric>;
+
+/**@alpha */
+export type MetricProps = ComponentProps<typeof Metric>;
 
 /** @internal */
 export function isBulletMetric(datum: MetricDatum): datum is BulletMetricWProgress {

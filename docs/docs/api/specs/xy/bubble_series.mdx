@@ -1,0 +1,56 @@
+---
+id: BubbleSeries
+sidebar_position: 0
+sidebar_label: BubbleSeries
+---
+
+# `BubbleSeries` Spec
+
+Defines a bubble series in the chart.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+{/* TODO find a better way to present this idea of incompatible specs */}
+
+`BubbleSeries` spec can be used multiple times along with any of the following specs:
+
+### Global Specs
+
+- [`Settings`](/api/specs/global/Settings)
+- [`Tooltip`](/api/specs/global/Tooltip)
+- [`GroupBy`](/api/specs/global/GroupBy)
+- [`SmallMultiples`](/api/specs/global/SmallMultiples)
+
+### Specs
+
+- [`Axis`](./Axis)
+- [`AreaSeries`](./AreaSeries)
+- [`LineSeries`](./LineSeries)
+- [`BarSeries`](./BarSeries)
+- `BubbleSeries`
+- [`HistogramBarSeries`](./HistogramBarSeries)
+- [`LineAnnotation`](./LineAnnotation)
+- [`RectAnnotation`](./RectAnnotation)
+
+## Overrides
+
+- `seriesType` -> `SeriesType.Bubble`
+
+## Props {#props}
+
+All props can be found via [`LineSeriesProps`](/all-types/type-aliases/LineSeriesProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`BasicSeriesSpec`](../types/BasicSeriesSpec) Props
+
+Inherits [`BasicSeriesSpec`](../types/BasicSeriesSpec) props
+
+### `bubbleSeriesStyle`
+- Type: <code>bubbleSeriesStyle?: RecursivePartial\<BubbleSeriesStyle\></code>
+
+### `pointStyleAccessor`
+- Type: <code>pointStyleAccessor?: PointStyleAccessor</code>
+
+An optional functional accessor to return custom color or style for point datum

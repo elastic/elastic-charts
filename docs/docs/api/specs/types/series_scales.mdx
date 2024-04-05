@@ -1,0 +1,41 @@
+---
+id: SeriesScales
+sidebar_label: SeriesScales
+---
+
+# `SeriesScales`
+
+Defines scale parameters for series of chart.
+
+## Props
+
+### `xScaleType`
+- Type: <code>xScaleType: XScaleType</code>
+- Default: `ScaleType.Ordinal`
+
+The x axis scale type
+
+### `yScaleType`
+- Type: <code>yScaleType: ScaleContinuousType</code>
+- Default: `ScaleType.Linear`
+
+The y axis scale type.
+
+### `xNice`
+- Type: <code>xNice?: boolean</code>
+- Default: `false`
+
+Extends the x domain so that it starts and ends on nice round values.
+
+### `yNice`
+- Type: <code>yNice?: boolean</code>
+- Default: `false`
+
+Extends the y domain so that it starts and ends on nice round values.
+
+### `timeZone`
+- Type: <code>timeZone?: string</code>
+- Default: `'local'`
+
+If using a `ScaleType.Time` this timezone identifier is required to compute a nice set of xScale ticks. Can be any IANA zone supported by the host environment, or a fixed-offset name of the form 'utc+3', or the strings 'local' or 'utc'.
+

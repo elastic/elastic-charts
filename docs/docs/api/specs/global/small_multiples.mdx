@@ -1,0 +1,62 @@
+---
+id: SmallMultiples
+sidebar_position: 4
+sidebar_label: SmallMultiples
+---
+
+# `SmallMultiples` Spec
+
+Defines dimesions of faceted charts.
+
+## Compatible Specs
+
+`SmallMultiples` goes hand-in-hand with `GroupBy` spec to define a faceted chart.
+
+Supported chart types include:
+
+- All Cartesian/XY Charts
+  - [`AreaSeries`](../xy/AreaSeries)
+  - [`LineSeries`](../xy/LineSeries)
+  - [`BarSeries`](../xy/BarSeries)
+  - [`BubbleSeries`](../xy/BubbleSeries)
+  - [`HistogramBarSeries`](../xy/HistogramBarSeries)
+- [`Partition`](../Partition) Charts
+- [`Heatmap`](../Heatmap) Charts
+
+## Overrides
+
+- `chartType` -> `ChartType.Global`
+- `specType` -> `SpecType.SmallMultiples`
+
+## Props {#props}
+
+All props can be found via [`GroupByProps`](/all-types/type-aliases/GroupByProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`Spec`](../types/Spec) Props
+
+Inherits [`Spec`](../types/Spec) props
+
+### `id`
+- From [`Spec`](../types/Spec)
+- Default: `'__global__small_multiples___'`
+
+### `splitHorizontally`
+- Type: <code>splitHorizontally?: string</code>
+
+Identifies the `<GroupBy id="foo">` referenced by `splitHorizontally="foo"`, specifying horizontal tiling.
+
+### `splitVertically`
+- Type: <code>splitVertically?: string</code>
+
+Identifies the `<GroupBy id="bar">` referenced by `splitVertically="bar"`, specifying vertical tiling.
+
+### `splitZigzag`
+- Type: <code>splitZigzag?: string</code>
+
+Identifies the `<GroupBy id="baz">` referenced by `splitVertically="baz"`, specifying space-filling tiling in a Z pattern.
+
+### `style`
+- Type: <code>style?: Partial\<SmallMultiplesStyle\></code>
+
+Specifies styling and layout properties of the tiling, such as paddings between and outside panels.

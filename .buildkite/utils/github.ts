@@ -447,25 +447,31 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
       return `${finalMessage.trim()}\n\ncc: @nickofthyme`;
     }
 
+    const buildUrl = bkEnv.buildUrl;
+    const buildText = !buildUrl ? '' : ` ([build#${buildUrl.split('/').pop()}](${buildUrl}))`;
+
     if (state === 'pending') {
       const updateComment = previousSha ? `\n> 🚧 Updating deployment from ${previousSha}` : '';
       const deploymentMsg =
         previousSha && deploymentUrl
           ? `### Old deployment - ${previousSha}
-- [Storybook](${deploymentUrl})
+
+- [Docs](${deploymentUrl})
+- [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
 - ([Playwright report](${deploymentUrl}/e2e-report)`
           : `- ⏳ Storybook
 - ⏳ e2e server
 - ⏳ Playwright report`;
-      return `## ⏳ Pending Deployment - ${sha}${updateComment}
+      return `## ⏳ Pending Deployment${buildText} - ${sha}${updateComment}
 
 ${deploymentMsg}`;
     }
 
-    return `## ✅ Successful ${preDeploy ? 'Preliminary ' : ''}Deployment - ${sha}
+    return `## ✅ Successful ${preDeploy ? 'Preliminary ' : ''}Deployment${buildText} - ${sha}
 
-- [Storybook](${deploymentUrl})
+- [Docs](${deploymentUrl})
+- [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
 ${preDeploy ? '- ⏳ Playwright report - Running e2e tests' : `- [Playwright report](${deploymentUrl}/e2e-report)`}`;
   },

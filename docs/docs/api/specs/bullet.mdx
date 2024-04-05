@@ -1,0 +1,44 @@
+---
+id: BulletGraph
+sidebar_position: 7
+sidebar_label: BulletGraph
+---
+
+# `BulletGraph` Spec
+
+Defines a simple bullet chart.
+
+## Overview {#overview}
+
+## Compatible Specs
+
+`BulletGraph` is a standalone spec and cannot be combined with other specs except the `Settings` specs.
+
+## Overrides
+
+- `specType` -> `SpecType.Series`
+- `chartType` -> `ChartType.BulletGraph`
+
+## Props {#props}
+
+All props can be found via [`BulletGraphProps`](/all-types/type-aliases/BulletGraphProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`Spec`](./types/Spec) Props
+
+Inherits [`Spec`](./types/Spec) props
+
+### `data`
+- Type: <code>data: ([BulletDatum](/all-types/interfaces/BulletDatum) | undefined)[][]</code>
+
+### `subtype`
+- Type: <code>subtype: BulletGraphSubtype</code>
+
+### `tickSnapStep`
+- Type: <code>tickSnapStep?: number</code>
+
+### `colorBands`
+- Type: <code>colorBands?: BulletColorConfig</code>
+
+### `valueLabels`
+- Type: <code>valueLabels?: Optional\<BulletValueLabels\></code>

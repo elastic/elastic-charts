@@ -1,0 +1,96 @@
+---
+id: Goal
+sidebar_position: 8
+sidebar_label: Goal
+---
+
+# `Goal` Spec
+
+Defines a simple goal/guage/bullet chart.
+
+:::danger
+This spec has been deprecated and replaced by the [`BulletGraph`](./BulletGraph) spec. This will eventually be entirely removed from the library in future versions.
+:::
+
+## Overview {#overview}
+
+## Compatible Specs
+
+`Goal` is a standalone spec and cannot be combined with other specs except the `Settings` specs.
+
+## Overrides
+
+- `specType` -> `SpecType.Series`
+- `chartType` -> `ChartType.Goal`
+
+## Props {#props}
+
+All props can be found via [`GoalProps`](/all-types/type-aliases/GoalProps) type.
+
+{/* TODO find a better way to represent these inherited props */}
+### [`Spec`](./types/Spec) Props
+
+Inherits [`Spec`](./types/Spec) props
+
+### `specType`
+- Type: <code>specType: typeof SpecType.Series</code>
+
+### `chartType`
+- Type: <code>chartType: typeof ChartType.Goal</code>
+
+### `subtype`
+- Type: <code>subtype: GoalSubtype</code>
+
+### `base`
+- Type: <code>base: number</code>
+
+### `target`
+- Type: <code>target?: number</code>
+
+### `actual`
+- Type: <code>actual: number</code>
+
+### `bands`
+- Type: <code>bands?: number | number[]</code>
+
+Array of discrete band intervals or approximate number of desired bands
+
+### `ticks`
+- Type: <code>ticks?: number | number[]</code>
+
+Array of discrete tick values or approximate number of desired ticks
+
+### `domain`
+- Type: <code>domain: GoalDomainRange</code>
+
+Domain of goal charts. Limits every value to within domain.
+
+### `bandFillColor`
+- Type: <code>bandFillColor: BandFillColorAccessor</code>
+
+### `tickValueFormatter`
+- Type: <code>tickValueFormatter: GoalLabelAccessor</code>
+
+### `labelMajor`
+- Type: <code>labelMajor: string | GoalLabelAccessor</code>
+
+### `labelMinor`
+- Type: <code>labelMinor: string | GoalLabelAccessor</code>
+
+### `centralMajor`
+- Type: <code>centralMajor: string | GoalLabelAccessor</code>
+
+### `centralMinor`
+- Type: <code>centralMinor: string | GoalLabelAccessor</code>
+
+### `angleStart`
+- Type: <code>angleStart: number</code>
+
+### `angleEnd`
+- Type: <code>angleEnd: number</code>
+
+### `bandLabels`
+- Type: <code>bandLabels: string[]</code>
+
+### `tooltipValueFormatter`
+- Type: <code>tooltipValueFormatter: ValueFormatter</code>

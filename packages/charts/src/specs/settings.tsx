@@ -561,7 +561,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
   pointerUpdateTrigger: PointerUpdateTrigger;
 
   /**
-   * Block the brush tool on a specific axis: x, y or both.
+   * Defines which axes are able to be brushed.
    * @defaultValue `x` {@link (BrushAxis:type) | BrushAxis.X}
    */
   brushAxis?: BrushAxis;
@@ -605,7 +605,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
   noResults?: ComponentType | ReactChild;
   /**
    * User can specify the heading level for the label
-   * @defaultValue 'h2'
+   * @defaultValue 'p'
    */
   ariaLabelHeadingLevel: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p';
   /**
@@ -635,7 +635,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
   ariaTableCaption?: string;
 
   /**
-   * Unicode Locale Identifier, default `en`
+   * Unicode Locale Identifier, default `en-US`
    */
   locale: string;
 

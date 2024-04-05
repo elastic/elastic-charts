@@ -22,6 +22,5 @@ packages/charts/src/utils/d3-delaunay
 
 # auto generated directories
 **/tmp
-docs/
 .buildkite/buildkite.d.ts
 e2e/reports/

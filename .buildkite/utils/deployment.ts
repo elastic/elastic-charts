@@ -13,7 +13,7 @@ import { Optional } from 'utility-types';
 import { bkEnv, getPreviousDeployCommitSha } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
-import { getDeploymentUrl } from './firebase';
+import { getOrCreateDeploymentUrl } from './firebase';
 import { octokit, defaultGHOptions, getComment, commentByKey } from './github';
 import { OctokitParameters } from './types';
 
@@ -70,9 +70,16 @@ export async function createOrUpdateDeploymentComment(options: UpdateDeploymentC
     });
   }
 
-  const deploymentUrl = options.deploymentUrl ?? (await getDeploymentUrl());
+  const deploymentUrl = options.deploymentUrl ?? (await getOrCreateDeploymentUrl());
   const previousSha = options.previousSha ?? (await getMetadata(MetaDataKeys.deploymentPreviousSha));
-  const commentBody = getComment('deployment', { ...options, state, preDeploy, sha, deploymentUrl, previousSha });
+  const commentBody = getComment('deployment', {
+    ...options,
+    state,
+    preDeploy,
+    sha,
+    deploymentUrl,
+    previousSha,
+  });
 
   const {
     data: { id },
