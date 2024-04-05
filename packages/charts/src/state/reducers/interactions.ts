@@ -274,47 +274,54 @@ function toggleDeselectedDataSeries(
 
   const alreadyDeselected = actionSeriesKeys.every((key) => deselectedDataSeriesKeys.has(key));
 
+  const keepOnlyNonActionSeries = ({ key }: SeriesIdentifier) => !actionSeriesKeys.includes(key);
+
   // curret behaviour
   // @ts-expect-error we know this is a valid value
   if (window.clickMode === 'click-to-exclude') {
     if (negate) {
       return alreadyDeselected || deselectedDataSeries.length !== legendItemsKeys.length - 1
-        ? legendItems
-            .flatMap(({ seriesIdentifiers }) => seriesIdentifiers)
-            .filter(({ key }) => !actionSeriesKeys.includes(key))
+        ? legendItemsKeys.flat().filter(keepOnlyNonActionSeries)
         : legendItemIds;
-    } else {
-      return alreadyDeselected
-        ? deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key))
-        : deselectedDataSeries.concat(legendItemIds);
     }
+    return alreadyDeselected
+      ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
+      : deselectedDataSeries.concat(legendItemIds);
   }
   // flip the logic
   // @ts-expect-error we know this is a valid value
   if (window.clickMode === 'click-to-include') {
     if (negate) {
       return alreadyDeselected
-        ? deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key))
+        ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
         : deselectedDataSeries.concat(legendItemIds);
     }
     return alreadyDeselected || deselectedDataSeries.length !== legendItemsKeys.length - 1
-      ? legendItems
-          .flatMap(({ seriesIdentifiers }) => seriesIdentifiers)
-          .filter(({ key }) => !actionSeriesKeys.includes(key))
+      ? legendItemsKeys.flat().filter(keepOnlyNonActionSeries)
       : legendItemIds;
   }
 
   // slight tweak on the click to include
   // @ts-expect-error we know this is a valid value
-  if (window.clickMode === 'click-to-include-only-on-hide') {
+  if (window.clickMode === 'click-to-include-only-on-visible') {
     if (!negate && alreadyDeselected) {
-      return deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key));
+      return deselectedDataSeries.filter(keepOnlyNonActionSeries);
     }
     return alreadyDeselected || deselectedDataSeries.length !== legendItemsKeys.length - 1
-      ? legendItems
-          .flatMap(({ seriesIdentifiers }) => seriesIdentifiers)
-          .filter(({ key }) => !actionSeriesKeys.includes(key))
+      ? legendItemsKeys.flat().filter(keepOnlyNonActionSeries)
       : legendItemIds;
+  }
+
+  // @ts-expect-error we know this is a valid value
+  if (window.clickMode === 'click-to-include-hide-on-shift') {
+    if (negate) {
+      return alreadyDeselected
+        ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
+        : deselectedDataSeries.concat(legendItemIds);
+    }
+    return !alreadyDeselected && deselectedDataSeries.length === legendItemsKeys.length - 1
+      ? []
+      : legendItemsKeys.flat().filter(keepOnlyNonActionSeries);
   }
 
   return legendItemIds;
