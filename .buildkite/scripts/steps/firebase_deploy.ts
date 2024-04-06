@@ -49,10 +49,10 @@ void (async () => {
 
   startGroup('Check deployment files');
 
-  const hasDocsIndex = fs.existsSync('./e2e_server/public/index.html');
-  const hasStorybookIndex = fs.existsSync('./e2e_server/public/storybook/index.html');
-  const hasE2EIndex = fs.existsSync('./e2e_server/public/e2e/index.html');
-  const hasE2EReportIndex = fs.existsSync('./e2e_server/public/e2e-report/index.html');
+  const hasDocsIndex = fs.existsSync(path.join(outDir, 'index.html'));
+  const hasStorybookIndex = fs.existsSync(path.join(outDir, 'storybook/index.html'));
+  const hasE2EIndex = fs.existsSync(path.join(outDir, 'e2e/index.html'));
+  const hasE2EReportIndex = fs.existsSync(path.join(outDir, 'e2e-report/index.html'));
   const missingFiles = [
     ['docs', hasDocsIndex],
     ['storybook', hasStorybookIndex],
