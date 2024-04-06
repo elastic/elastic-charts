@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkelastic_charts_docs=self.webpackChunkelastic_charts_docs||[]).push([[38408],{57259:e=>{e.exports=JSON.parse('{"title":"Specs","slug":"/category/specs","permalink":"/category/specs","navigation":{"previous":{"title":"Chart","permalink":"/api/Chart"},"next":{"title":"Global","permalink":"/category/global"}}}')}}]);
