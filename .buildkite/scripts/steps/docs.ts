@@ -37,7 +37,7 @@ void (async () => {
 
   await compress({
     src: outDir,
-    dest: '.buildkite/artifacts/docs.gz',
+    dest: '.buildkite/artifacts/docs/firebase.gz',
   });
 
   if (bkEnv.isMainBranch) {
@@ -46,7 +46,7 @@ void (async () => {
       cwd: 'docs',
       env: {
         DOCUSAURUS_URL: 'https://elastic.github.io',
-        DOCUSAURUS_BASE_URL: '/elastic-charts/',
+        DOCUSAURUS_BASE_URL: '/elastic-charts',
         NODE_ENV: 'production',
         NODE_OPTIONS: '--openssl-legacy-provider',
       },
