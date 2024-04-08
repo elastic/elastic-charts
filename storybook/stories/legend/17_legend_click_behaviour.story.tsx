@@ -18,7 +18,13 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example: ChartsStory = (_, { title, description }) => {
   const clickMode = select(
     'Legend click behaviour',
-    ['click-to-exclude', 'click-to-include', 'click-to-include-only-on-visible', 'click-to-include-hide-on-shift'],
+    [
+      'click-to-exclude',
+      'click-to-include',
+      'click-to-include-only-on-visible',
+      'click-to-include-hide-on-shift',
+      'click-to-include-v5',
+    ],
     'click-to-exclude',
   );
   const showLegend = boolean('Show legend', true);
@@ -70,5 +76,6 @@ Example.parameters = {
 * \`click-to-include\`: on click focus on the series (visible -> focus on clicked series -> unfocus from clicked series) - the only way to get back all series is to use the "CTRL + click" feature
 * \`click-to-include-only-on-visible\`: on click focus on the series if visible, restore it back if non-visible (visible -> focus on clicked series -> unfocus from clicked series -> visible all series)
 * \`click-to-include-hide-on-shift\`: on click focus on the series if visible, restore back all other non-visible series on second click (use shift for the toggle behaviour)
+* \`click-to-include-v5\`: on click focus on the series if visible, restore back all other non-visible series on second click (hidden series gets restored on click. SHIFT click toggles visibility)
   `,
 };
