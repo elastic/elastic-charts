@@ -273,19 +273,19 @@ function toggleDeselectedDataSeries(
   const legendItemsKeys = legendItems.map(({ seriesIdentifiers }) => seriesIdentifiers);
 
   const alreadyDeselected = actionSeriesKeys.every((key) => deselectedDataSeriesKeys.has(key));
+  const keepOnlyNonActionSeries = ({ key }: SeriesIdentifier) => !actionSeriesKeys.includes(key);
 
-  // todo consider branch simplifications
   if (negate) {
-    return alreadyDeselected || deselectedDataSeries.length !== legendItemsKeys.length - 1
-      ? legendItems
-          .flatMap(({ seriesIdentifiers }) => seriesIdentifiers)
-          .filter(({ key }) => !actionSeriesKeys.includes(key))
-      : legendItemIds;
-  } else {
     return alreadyDeselected
-      ? deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key))
-      : [...deselectedDataSeries, ...legendItemIds];
+      ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
+      : deselectedDataSeries.concat(legendItemIds);
   }
+  if (alreadyDeselected) {
+    return deselectedDataSeries.filter(keepOnlyNonActionSeries);
+  }
+  return deselectedDataSeries.length === legendItemsKeys.length - 1
+    ? []
+    : legendItemsKeys.flat().filter(keepOnlyNonActionSeries);
 }
 
 function getDrilldownData(globalState: GlobalChartState) {
