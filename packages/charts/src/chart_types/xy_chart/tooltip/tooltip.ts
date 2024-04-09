@@ -29,7 +29,7 @@ export function getLegendItemExtraValues(tooltipValues: TooltipValue[]): Map<Ser
   tooltipValues.forEach(({ formattedValue, value, seriesIdentifier, valueAccessor }) => {
     const current: LegendItemExtraValues = seriesTooltipValues.get(seriesIdentifier.key) ?? new Map();
     if (valueAccessor === BandedAccessorType.Y0 || valueAccessor === BandedAccessorType.Y1) {
-      current.set(valueAccessor, { formatted: formattedValue, raw: value });
+      current.set(valueAccessor, { label: formattedValue, value });
     }
     seriesTooltipValues.set(seriesIdentifier.key, current);
   });

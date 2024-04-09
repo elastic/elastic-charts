@@ -9,7 +9,7 @@
 import { color } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LegendValue, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { ChartsStory } from '../../types';
@@ -35,7 +35,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.CurrentAndLastValue]}
         theme={customPartialTheme}
         baseTheme={useBaseTheme()}
         legendPosition={Position.Right}

@@ -6,19 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { LegendItemExtraValues, LegendItem } from '../../common/legend';
+import { LegendItemExtraValues, LegendItem, LegendItemValue } from '../../common/legend';
 
 /** @internal */
 export function getExtra(
   extraValues: Map<string, LegendItemExtraValues>,
   item: LegendItem,
   totalItems: number,
-): { raw: PrimitiveValue; formatted: string } | null {
-  const { seriesIdentifiers, defaultExtra, childId, path } = item;
+): LegendItemValue | undefined {
+  const { seriesIdentifiers, values, childId, path } = item;
   // don't show extra if the legend item is associated with multiple series
   if (extraValues.size === 0 || seriesIdentifiers.length > 1 || !seriesIdentifiers[0]) {
-    return defaultExtra ? { formatted: `${defaultExtra.formatted ?? ''}`, raw: defaultExtra.raw } : null;
+    return values.length > 0 ? { label: `${values[0]?.label ?? ''}`, value: values[0]?.value ?? null } : undefined;
   }
   const [{ key }] = seriesIdentifiers;
   const extraValueKey = path.map(({ index }) => index).join('__');
@@ -26,7 +25,7 @@ export function getExtra(
   const actionExtra = childId !== undefined ? itemExtraValues?.get(childId) : undefined;
   return actionExtra
     ? actionExtra
-    : extraValues.size === totalItems && defaultExtra
-      ? { formatted: `${defaultExtra.formatted ?? ''}`, raw: defaultExtra.raw }
-      : null;
+    : extraValues.size === totalItems && values.length > 0
+      ? { label: `${values[0]?.label ?? ''}`, value: values[0]?.value ?? null }
+      : undefined;
 }

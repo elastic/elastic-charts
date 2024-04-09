@@ -20,6 +20,7 @@ import {
   Axis,
   Position,
   SeriesNameFn,
+  LegendValue,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -50,7 +51,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         debug={debug}
         debugState={debugState}
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.CurrentAndLastValue]}
         baseTheme={useBaseTheme()}
       />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />

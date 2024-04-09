@@ -18,6 +18,7 @@ import {
   Settings,
   LineSeriesStyle,
   RecursivePartial,
+  LegendValue,
 } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
@@ -87,7 +88,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description} renderer="canvas">
       <Settings
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={Position.Right}
         theme={chartTheme}
         baseTheme={useBaseTheme()}

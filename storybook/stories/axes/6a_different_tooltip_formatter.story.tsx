@@ -10,13 +10,14 @@ import { text, boolean } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React from 'react';
 
-import { Axis, Chart, LineSeries, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
+import { Axis, Chart, LineSeries, Position, ScaleType, Settings, Tooltip, LegendValue } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const showLegend = boolean('Show legend', true, 'Y axis');
+  const showLegend = boolean('Show legend', true);
+  const showLegendExtra = boolean('Show legend values', true);
   const disableYAxisFormat = boolean('Disable Axis tickFormat', false, 'Y axis');
   const yAxisFormat = text('Axis value format', '0[.]0', 'Y axis');
   const yAxisUnit = text('Axis unit', 'pets', 'Y axis');
@@ -31,7 +32,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings baseTheme={useBaseTheme()} showLegendExtra showLegend={showLegend} />
+      <Settings
+        baseTheme={useBaseTheme()}
+        legendValues={showLegendExtra ? [LegendValue.CurrentAndLastValue] : []}
+        showLegend={showLegend}
+      />
       <Tooltip
         headerFormatter={
           disableHeaderFormat ? undefined : ({ value }) => `${value}${headerUnit ? ` ${headerUnit}` : ''}`

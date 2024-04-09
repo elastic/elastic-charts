@@ -7,7 +7,7 @@
  */
 
 import { Color } from '../../../common/colors';
-import { LegendItem } from '../../../common/legend';
+import { LegendItem, LegendValue } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { SettingsSpec } from '../../../specs';
 import { isDefined, mergePartial } from '../../../utils/common';
@@ -15,7 +15,8 @@ import { BandedAccessorType } from '../../../utils/geometry';
 import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { XDomain } from '../domains/types';
-import { LegendValue, getLegendValue } from '../state/utils/get_last_value';
+import { isDatumFilled } from '../rendering/utils';
+import { getLegendValue } from '../state/utils/get_last_value';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
@@ -28,6 +29,7 @@ import {
   getSeriesKey,
   getSeriesIdentifierFromDataSeries,
   isBandedSpec,
+  DataSeriesDatum,
 } from '../utils/series';
 import {
   AxisSpec,
@@ -72,6 +74,26 @@ function getPointStyle(spec: BasicSeriesSpec, theme: Theme): PointStyle | undefi
   }
 }
 
+const y1Accessor =
+  (stackMode?: StackMode) =>
+  (d: DataSeriesDatum): number | null => {
+    // don't consider filled in data in the calculations
+    if (isDatumFilled(d)) {
+      return null;
+    }
+    return stackMode === StackMode.Percentage ? (d.y1 === null || d.y0 === null ? null : d.y1 - d.y0) : d.initialY1;
+  };
+
+const y0Accessor =
+  (stackMode?: StackMode) =>
+  (d: DataSeriesDatum): number | null => {
+    // don't consider filled in data in the calculations
+    if (isDatumFilled(d)) {
+      return null;
+    }
+    return stackMode === StackMode.Percentage ? d.y0 : d.initialY0;
+  };
+
 /** @internal */
 export function computeLegend(
   xDomain: XDomain,
@@ -87,7 +109,7 @@ export function computeLegend(
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
 
-  const legendValueMode = LegendValue.LastValue;
+  const legendValueMode = settingsSpec.legendValues[0] ?? LegendValue.None;
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
@@ -118,16 +140,11 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const itemValue = getLegendValue(series, xDomain, legendValueMode, (d) => {
-      return series.stackMode === StackMode.Percentage
-        ? d.y1 === null || d.y0 === null
-          ? null
-          : d.y1 - d.y0
-        : d.initialY1;
-    });
+    const itemValue = getLegendValue(series, xDomain, legendValueMode, y1Accessor(series.stackMode));
     const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
 
     legendItems.push({
+      depth: 0,
       color,
       label: banded ? getBandedLegendItemLabel(name, BandedAccessorType.Y1, postFixes) : name,
       seriesIdentifiers: [seriesIdentifier],
@@ -135,26 +152,26 @@ export function computeLegend(
       isSeriesHidden,
       isItemHidden: hideInLegend,
       isToggleable: true,
-      defaultExtra:
+      values:
         itemValue !== null
-          ? {
-              raw: itemValue,
-              formatted: formattedItemValue,
-              legendSizingLabel: formattedItemValue,
-            }
-          : undefined,
+          ? [
+              {
+                value: itemValue,
+                label: formattedItemValue,
+              },
+            ]
+          : [],
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
       pointStyle,
     });
     if (banded) {
-      const bandedItemValue = getLegendValue(series, xDomain, legendValueMode, (d) => {
-        return series.stackMode === StackMode.Percentage ? d.y0 : d.initialY0;
-      });
+      const bandedItemValue = getLegendValue(series, xDomain, legendValueMode, y0Accessor(series.stackMode));
       const bandedFormattedItemValue = bandedItemValue !== null ? formatter(bandedItemValue) : '';
 
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
       legendItems.push({
+        depth: 0,
         color,
         label: labelY0,
         seriesIdentifiers: [seriesIdentifier],
@@ -162,14 +179,15 @@ export function computeLegend(
         isSeriesHidden,
         isItemHidden: hideInLegend,
         isToggleable: true,
-        defaultExtra:
+        values:
           bandedItemValue !== null
-            ? {
-                raw: bandedItemValue,
-                formatted: bandedFormattedItemValue,
-                legendSizingLabel: bandedFormattedItemValue,
-              }
-            : undefined,
+            ? [
+                {
+                  value: bandedItemValue,
+                  label: bandedFormattedItemValue,
+                },
+              ]
+            : [],
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
         pointStyle,

@@ -10,7 +10,7 @@ import { DateTime } from 'luxon';
 import moment from 'moment';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn, LegendValue } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -55,7 +55,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings showLegend showLegendExtra legendPosition={Position.Right} baseTheme={useBaseTheme()} />
+      <Settings
+        showLegend
+        legendValues={[LegendValue.CurrentAndLastValue]}
+        legendPosition={Position.Right}
+        baseTheme={useBaseTheme()}
+      />
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" showOverlappingTicks />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 

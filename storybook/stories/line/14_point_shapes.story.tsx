@@ -12,6 +12,7 @@ import React from 'react';
 import {
   Axis,
   Chart,
+  LegendValue,
   LIGHT_THEME,
   LineSeries,
   niceTimeFormatByDay,
@@ -38,7 +39,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
         legendColorPicker={showColorPicker ? getColorPicker('leftCenter') : undefined}
