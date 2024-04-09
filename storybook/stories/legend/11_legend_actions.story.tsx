@@ -41,6 +41,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const showColorPicker = !boolean('Hide color picker', true, 'Legend');
   const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
   const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
+  const legendValues = customKnobs.multiSelect(
+    'LegendValue',
+    LegendValue,
+    LegendValue.CurrentAndLastValue,
+    'multi-select',
+    'Legend',
+  );
   const labelOptions = getLabelOptionKnobs();
 
   return (
@@ -49,7 +56,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         showLegend
         theme={{ legend: { labelOptions } }}
         baseTheme={useBaseTheme()}
-        legendValues={showLegendExtra ? [LegendValue.CurrentAndLastValue] : []}
+        legendValues={showLegendExtra ? legendValues : []}
         legendPosition={legendPosition}
         legendAction={hideActions ? undefined : getLegendAction(euiPopoverPosition)}
         legendColorPicker={showColorPicker ? getColorPicker(euiPopoverPosition) : undefined}
