@@ -12,7 +12,6 @@ import { computeLegendSelector } from './selectors/compute_legend';
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
-import { getLegendItemsExtra } from './selectors/get_legend_items_extra';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
@@ -21,12 +20,16 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 import { ChartType } from '../..';
+import { LegendItemExtraValues } from '../../../common/legend';
+import { SeriesKey } from '../../../common/series_id';
 import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { render } from '../renderer/dom/layered_partition_chart';
+
+const EMPTY_MAP = new Map<SeriesKey, LegendItemExtraValues>();
 
 /** @internal */
 export class PartitionState implements InternalChartState {
@@ -71,8 +74,8 @@ export class PartitionState implements InternalChartState {
     return computeLegendSelector(globalState);
   }
 
-  getLegendExtraValues(globalState: GlobalChartState) {
-    return getLegendItemsExtra(globalState);
+  getLegendExtraValues() {
+    return EMPTY_MAP;
   }
 
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {

@@ -5,11 +5,6 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
   {
     "childId": "A",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "2",
-      "legendSizingLabel": "2",
-      "raw": 2,
-    },
     "depth": 0,
     "keys": [],
     "label": "A",
@@ -33,15 +28,16 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "2",
+        "value": 2,
+      },
+    ],
   },
   {
     "childId": "A",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 1,
     "keys": [],
     "label": "A",
@@ -69,15 +65,16 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
+      },
+    ],
   },
   {
     "childId": "B",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 1,
     "keys": [],
     "label": "B",
@@ -105,15 +102,16 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
+      },
+    ],
   },
   {
     "childId": "B",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "2",
-      "legendSizingLabel": "2",
-      "raw": 2,
-    },
     "depth": 0,
     "keys": [],
     "label": "B",
@@ -137,15 +135,16 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "2",
+        "value": 2,
+      },
+    ],
   },
   {
     "childId": "A",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 1,
     "keys": [],
     "label": "A",
@@ -173,15 +172,16 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
+      },
+    ],
   },
   {
     "childId": "B",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 1,
     "keys": [],
     "label": "B",
@@ -207,17 +207,18 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
       {
         "key": "B",
         "specId": "spec1",
+      },
+    ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
       },
     ],
   },
   {
     "childId": "C",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "2",
-      "legendSizingLabel": "2",
-      "raw": 2,
-    },
     "depth": 0,
     "keys": [],
     "label": "C",
@@ -241,15 +242,16 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "2",
+        "value": 2,
+      },
+    ],
   },
   {
     "childId": "A",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 1,
     "keys": [],
     "label": "A",
@@ -277,15 +279,16 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
+      },
+    ],
   },
   {
     "childId": "B",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 1,
     "keys": [],
     "label": "B",
@@ -311,6 +314,12 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
       {
         "key": "B",
         "specId": "spec1",
+      },
+    ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
       },
     ],
   },
@@ -322,11 +331,6 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
   {
     "childId": "A",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 0,
     "keys": [],
     "label": "A",
@@ -350,15 +354,16 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
+      },
+    ],
   },
   {
     "childId": "A",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 1,
     "keys": [],
     "label": "A",
@@ -386,6 +391,12 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
+      },
+    ],
   },
 ]
 `;
@@ -395,11 +406,6 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
   {
     "childId": "C",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 0,
     "keys": [],
     "label": "C",
@@ -423,15 +429,16 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
         "specId": "spec1",
       },
     ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
+      },
+    ],
   },
   {
     "childId": "B",
     "color": "rgba(128, 0, 0, 0.5)",
-    "defaultExtra": {
-      "formatted": "1",
-      "legendSizingLabel": "1",
-      "raw": 1,
-    },
     "depth": 1,
     "keys": [],
     "label": "B",
@@ -457,6 +464,12 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
       {
         "key": "B",
         "specId": "spec1",
+      },
+    ],
+    "values": [
+      {
+        "label": "1",
+        "value": 1,
       },
     ],
   },

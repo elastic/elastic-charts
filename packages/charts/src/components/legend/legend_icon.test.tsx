@@ -10,6 +10,7 @@ import { mount } from 'enzyme';
 import React from 'react';
 
 import { LegendIcon } from './legend_icon';
+import { LegendValue } from '../../common/legend';
 import { ScaleType } from '../../scales/constants';
 import { Settings, LineSeries, AreaSeries } from '../../specs';
 import { Chart } from '../chart';
@@ -18,7 +19,7 @@ describe('Legend icons', () => {
   it('should test default dot icons', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend showLegendExtra />
+        <Settings showLegend legendValues={[LegendValue.LastValue]} />
         <LineSeries
           id="areas"
           name="area"
@@ -39,7 +40,7 @@ describe('Legend icons', () => {
   it('should align styles - stroke', () => {
     const wrapperColorChange = mount(
       <Chart>
-        <Settings showLegend showLegendExtra />
+        <Settings showLegend legendValues={[LegendValue.LastValue]} />
         <AreaSeries
           id="areas"
           name="area"

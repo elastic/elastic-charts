@@ -10,11 +10,10 @@ import classNames from 'classnames';
 import React, { Component, createRef, MouseEventHandler, CSSProperties } from 'react';
 
 import { Color as ItemColor } from './color';
-import { renderExtra } from './extra';
 import { Label as ItemLabel } from './label';
 import { getExtra } from './utils';
 import { Color } from '../../common/colors';
-import { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { LegendItem, LegendItemExtraValues, LegendValue } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
 import {
   LegendItemListener,
@@ -47,7 +46,7 @@ export interface LegendItemProps {
   totalItems: number;
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
-  showExtra: boolean;
+  legendValues: Array<LegendValue>;
   isMostlyRTL: boolean;
   labelOptions: LegendLabelOptions;
   colorPicker?: LegendColorPicker;
@@ -172,7 +171,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
     const {
       extraValues,
       item,
-      showExtra,
+      legendValues,
       colorPicker,
       totalItems,
       action: Action,
@@ -190,7 +189,15 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
     });
     const hasColorPicker = Boolean(colorPicker);
-    const extra = showExtra ? getExtra(extraValues, item, totalItems) : null;
+
+    // only the first for now until https://github.com/elastic/elastic-charts/issues/2096
+    const legendValue =
+      legendValues[0] === LegendValue.CurrentAndLastValue
+        ? getExtra(extraValues, item, totalItems)
+        : legendValues.length > 0
+          ? item.values[0]
+          : undefined;
+
     const style: CSSProperties = flatLegend
       ? {}
       : {
@@ -225,7 +232,11 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             onToggle={this.onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
           />
-          {extra && !isSeriesHidden && renderExtra(extra.formatted)}
+          {legendValue && !isSeriesHidden && (
+            <div className="echLegendItem__extra" title={`${legendValue.label}`}>
+              {legendValue.label}
+            </div>
+          )}
           {Action && (
             <div className="echLegendItem__action">
               <Action series={seriesIdentifiers} color={color} label={label} />

@@ -19,6 +19,7 @@ import {
   timeFormatter,
   CustomLegend,
   Tooltip,
+  LegendValue,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -52,7 +53,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           onClick={() => i.onItemClickAction(false)}
           style={{ display: 'block', color: i.isSeriesHidden ? 'gray' : i.color }}
         >
-          {i.label} {i.extraValue?.formatted}
+          {i.label} {i.extraValue?.label}
         </button>
       ))}
     </div>
@@ -62,7 +63,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        showLegendExtra
+        legendValues={[LegendValue.CurrentAndLastValue]}
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
         customLegend={customLegend}

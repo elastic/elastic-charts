@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Partition - Legend item extra values should return all extra values in nested legend 1`] = `{}`;
-
-exports[`Partition - Legend item extra values should return extra values in nested legend within max depth of 1 1`] = `{}`;
-
-exports[`Partition - Legend item extra values should return extra values in nested legend within max depth of 2 1`] = `{}`;
