@@ -339,6 +339,24 @@ function toggleDeselectedDataSeries(
       : legendItemsKeys.flat().filter(keepOnlyNonActionSeries);
   }
 
+  // @ts-expect-error we know this is a valid value
+  if (window.clickMode === 'click-to-include-v6') {
+    if (negate) {
+      return alreadyDeselected
+        ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
+        : deselectedDataSeries.concat(legendItemIds);
+    }
+    if (alreadyDeselected) {
+      return deselectedDataSeries.filter(keepOnlyNonActionSeries);
+    }
+    if (deselectedDataSeries.length === legendItemsKeys.length - 1) {
+      return [];
+    }
+    return deselectedDataSeries.length
+      ? deselectedDataSeries.concat(legendItemIds)
+      : legendItemsKeys.flat().filter(keepOnlyNonActionSeries);
+  }
+
   return legendItemIds;
 
   // todo consider branch simplifications

@@ -24,6 +24,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       'click-to-include-only-on-visible',
       'click-to-include-hide-on-shift',
       'click-to-include-v5',
+      'click-to-include-v6',
     ],
     'click-to-exclude',
   );
@@ -77,5 +78,6 @@ Example.parameters = {
 * \`click-to-include-only-on-visible\`: on click focus on the series if visible, restore it back if non-visible (visible -> focus on clicked series -> unfocus from clicked series -> visible all series)
 * \`click-to-include-hide-on-shift\`: on click focus on the series if visible, restore back all other non-visible series on second click (use shift for the toggle behaviour)
 * \`click-to-include-v5\`: on click focus on the series if visible, restore back all other non-visible series on second click (hidden series gets restored on click. SHIFT click toggles visibility)
+* \`click-to-include-v6\`: focus mode when all series are visible, or toggle mode when some are hidden. SHIFT click always toggles.
   `,
 };
