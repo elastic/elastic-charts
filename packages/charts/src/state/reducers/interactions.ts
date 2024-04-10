@@ -288,7 +288,6 @@ function toggleDeselectedDataSeries(
   return deselectedDataSeries.length
     ? deselectedDataSeries.concat(legendItemIds)
     : legendItemsKeys.flat().filter(keepOnlyNonActionSeries);
-  }
 }
 
 function getDrilldownData(globalState: GlobalChartState) {
