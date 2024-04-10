@@ -274,6 +274,8 @@ function toggleDeselectedDataSeries(
 
   const alreadyDeselected = actionSeriesKeys.every((key) => deselectedDataSeriesKeys.has(key));
 
+  const keepOnlyNonActionSeries = ({ key }: SeriesIdentifier) => !actionSeriesKeys.includes(key);
+
   if (negate) {
     return alreadyDeselected
       ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
