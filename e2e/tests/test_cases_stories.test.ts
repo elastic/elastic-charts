@@ -115,4 +115,28 @@ test.describe('Test cases stories', () => {
       );
     });
   });
+
+  test.describe('Log scales', () => {
+    test('should correctly render negative values from baseline when banded', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/test-cases--log-with-negative-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=true&knob-Nice y ticks=true&knob-Scale Type=log&knob-Series Type=bar&knob-Show positive data=&knob-Stacked=&knob-logMinLimit=1&knob-Split=',
+      );
+    });
+
+    test('should correctly render tooltip values for banded bars', async ({ page }) => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/test-cases--log-with-negative-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=true&knob-Nice y ticks=true&knob-Scale Type=log&knob-Series Type=bar&knob-Show positive data=&knob-Stacked=&knob-logMinLimit=1&knob-Split=',
+        {
+          top: 240,
+          right: 240,
+        },
+      );
+    });
+
+    test('should correctly render negative values from baseline when stacked', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/test-cases--log-with-negative-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=&knob-Nice y ticks=true&knob-Scale Type=log&knob-Series Type=bar&knob-Show positive data=&knob-Stacked=true&knob-logMinLimit=1&knob-Split=true',
+      );
+    });
+  });
 });

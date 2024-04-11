@@ -393,6 +393,7 @@ function renderGeometries(
         chartRotation,
         spec.minBarHeight ?? 0,
         color,
+        isBandedSpec(spec),
         barSeriesStyle,
         displayValueSettings,
         spec.styleAccessor,

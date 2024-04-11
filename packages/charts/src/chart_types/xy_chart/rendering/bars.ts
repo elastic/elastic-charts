@@ -7,9 +7,9 @@
  */
 
 import { getDatumYValue } from './points';
+import { getY0ScaledValueFn, getY1ScaledValueFn } from './utils';
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
-import { ScaleType } from '../../../scales/constants';
 import { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
@@ -43,6 +43,7 @@ export function renderBars(
   chartRotation: number,
   minBarHeight: number,
   color: Color,
+  isBandedSpec: boolean,
   sharedSeriesStyle: BarSeriesStyle,
   displayValueSettings?: DisplayValueSpec,
   styleAccessor?: BarStyleAccessor,
@@ -50,33 +51,29 @@ export function renderBars(
 ): BarTuple {
   const { fontSize, fontFamily } = sharedSeriesStyle.displayValue;
   const initialBarTuple: BarTuple = { barGeometries: [], indexedGeometryMap: new IndexedGeometryMap() } as BarTuple;
-  const isLogY = yScale.type === ScaleType.Log;
-  const isInvertedY = yScale.isInverted;
+  const y1Fn = getY1ScaledValueFn(yScale);
+  const y0Fn = getY0ScaledValueFn(yScale);
+
   return dataSeries.data.reduce((barTuple: BarTuple, datum) => {
     const xScaled = xScale.scale(datum.x);
     if (!xScale.isValueInDomain(datum.x) || Number.isNaN(xScaled)) {
       return barTuple; // don't create a bar if not within the xScale domain
     }
     const { barGeometries, indexedGeometryMap } = barTuple;
-    const { y0, y1, initialY1, filled } = datum;
-    const rawY = isLogY && (y1 === 0 || y1 === null) ? yScale.range[0] : yScale.scale(y1);
+    const { y1, initialY1, filled } = datum;
 
-    const y0Scaled = isLogY
-      ? y0 === 0 || y0 === null
-        ? yScale.range[isInvertedY ? 1 : 0]
-        : yScale.scale(y0)
-      : yScale.scale(y0 === null ? 0 : y0);
+    const y1Scaled = y1Fn(datum);
+    const y0Scaled = y0Fn(datum);
 
-    const finiteHeight = y0Scaled - rawY || 0;
+    const finiteHeight = y0Scaled - y1Scaled || 0;
     const absHeight = Math.abs(finiteHeight);
     const height = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
     const heightExtension = height - absHeight;
     const isUpsideDown = finiteHeight < 0;
-    const finiteY = Number.isNaN(y0Scaled + rawY) ? 0 : rawY;
+    const finiteY = Number.isNaN(y0Scaled + y1Scaled) ? 0 : y1Scaled;
     const y = isUpsideDown ? finiteY - height + heightExtension : finiteY - heightExtension;
 
     const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-
     const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
 
     const maxPixelWidth = clamp(seriesStyle.rect.widthRatio ?? 1, 0, 1) * xScale.bandwidth;
@@ -85,7 +82,7 @@ export function renderBars(
     const width = clamp(seriesStyle.rect.widthPixel ?? xScale.bandwidth, minPixelWidth, maxPixelWidth);
     const x = xScaled + xScale.bandwidth * orderIndex + xScale.bandwidth / 2 - width / 2;
 
-    const y1Value = getDatumYValue(datum, false, false, stackMode);
+    const y1Value = getDatumYValue(datum, false, isBandedSpec, stackMode);
     const formattedDisplayValue = displayValueSettings?.valueFormatter?.(y1Value);
 
     // only show displayValue for even bars if showOverlappingValue
