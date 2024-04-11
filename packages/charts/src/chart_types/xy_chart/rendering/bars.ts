@@ -142,6 +142,20 @@ export function renderBars(
     };
     indexedGeometryMap.set(barGeometry);
 
+    if (isBandedSpec) {
+      indexedGeometryMap.set({
+        ...barGeometry,
+        y: y0Scaled,
+        value: {
+          x: datum.x,
+          y: getDatumYValue(datum, true, isBandedSpec, stackMode),
+          mark: null,
+          accessor: BandedAccessorType.Y0,
+          datum: datum.datum,
+        },
+      });
+    }
+
     if (y1 !== null && initialY1 !== null && filled?.y1 === undefined) {
       barGeometries.push(barGeometry);
     }
