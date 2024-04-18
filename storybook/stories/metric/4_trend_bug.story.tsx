@@ -49,7 +49,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     if (alignSeriesGaps && datumIndex % nSeries) {
       return y;
     }
-    if (datumIndex % (nSeries + 3)) {
+    if (datumIndex % (seriesIndex + 3)) {
       return y;
     }
     return canHaveNullValues ? null : 0;
