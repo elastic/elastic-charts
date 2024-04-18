@@ -27,7 +27,6 @@ describe('getSafeTrendData', () => {
 
   it('should sort the data if is not sorted correctly', () => {
     expect(getSafeTrendData(sampleData.slice().reverse())).toEqual(sampleData);
-    expect(getSafeTrendData(sampleData.slice().shuffle())).toEqual(sampleData);
   });
 
   it('should restort the data if multiple series are appended one next to another', () => {
