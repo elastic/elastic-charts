@@ -20,9 +20,10 @@ const sampleDataWithNull = [
   { x: 1, y: null },
   { x: 2, y: 3 },
 ];
+
 describe('getSafeTrendData', () => {
   it('should avoid to process the data if already sorted', () => {
-    expect(getSafeTrendData(sampleData)).toEqual(sampleData);
+    expect(getSafeTrendData(sampleData)).toBe(sampleData);
   });
 
   it('should sort the data if is not sorted correctly', () => {
@@ -39,7 +40,6 @@ describe('getSafeTrendData', () => {
 
   it('should handle null values correctly when multiple series are appended one next to another', () => {
     expect(getSafeTrendData([...sampleDataWithNull, ...sampleDataWithNull] as MetricWTrend['trend'])).toEqual(
-      // eslint-disable-next-line eqeqeq
       sampleDataWithNull.flatMap((d) => [d, d]),
     );
   });

@@ -21,21 +21,20 @@ export const getSparkLineColor = (color: MetricWTrend['color']) => {
   return hslToColor(h, s, l >= 0.8 ? l - 0.1 : l + 0.1, a);
 };
 
-// Sometimes the trend data arrives with multiple series
-// appended one on top of each other. This function makes
 /**
- * sure to realign all the histograms and implicitly stack them
+ * Aligns and implicitly stacks all histogram trend data.
+ *
+ * Sometimes the trend data arrives with multiple series
+ * appended one on top of each other.
+ *
  * @internal
  */
 export const getSafeTrendData = (trend: MetricWTrend['trend']) => {
   let lastX = trend[0]?.x;
-  // Skip all the work asap if trend is already sorted
   const shouldBeSorted =
-    // eslint-disable-next-line eqeqeq
-    lastX != null &&
+    lastX !== undefined &&
     trend.some(({ x }) => {
-      // eslint-disable-next-line eqeqeq
-      if (lastX == null) {
+      if (lastX === undefined) {
         return false;
       }
       if (lastX > x) {
@@ -47,7 +46,6 @@ export const getSafeTrendData = (trend: MetricWTrend['trend']) => {
     return trend;
   }
   return trend.toSorted((a, b) => {
-    // make null behave like 0
     return a.x - b.x || +a.y - b.y;
   });
 };
