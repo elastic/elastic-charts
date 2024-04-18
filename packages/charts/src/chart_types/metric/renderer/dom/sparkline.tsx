@@ -48,7 +48,7 @@ export const getSafeTrendData = (trend: MetricWTrend['trend']) => {
   }
   return trend.toSorted((a, b) => {
     // make null behave like 0
-    return a.x - b.x || a.y - b.y;
+    return a.x - b.x || +a.y - b.y;
   });
 };
 
