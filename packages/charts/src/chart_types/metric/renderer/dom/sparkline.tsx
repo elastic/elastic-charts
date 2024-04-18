@@ -46,25 +46,10 @@ export const getSafeTrendData = (trend: MetricWTrend['trend']) => {
   if (!shouldBeSorted) {
     return trend;
   }
-  // Group by x and sum all the y values
-  return Object.entries(
-    trend.reduce(
-      (memo, { x, y }) => {
-        // eslint-disable-next-line eqeqeq
-        if (memo[x] == null) {
-          memo[x] = 0;
-        }
-        // eslint-disable-next-line eqeqeq
-        if (y != null) {
-          memo[x] += y;
-        }
-        return memo;
-      },
-      {} as Record<number, number>,
-    ),
-  )
-    .map(([x, y]) => ({ x: Number(x), y }))
-    .sort((a, b) => a.x - b.x);
+  return trend.toSorted((a, b) => {
+    // make null behave like 0
+    return a.x - b.x || a.y - b.y;
+  });
 };
 
 /** @internal */
