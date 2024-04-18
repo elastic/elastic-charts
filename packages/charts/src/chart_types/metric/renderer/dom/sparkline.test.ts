@@ -27,10 +27,11 @@ describe('getSafeTrendData', () => {
 
   it('should sort the data if is not sorted correctly', () => {
     expect(getSafeTrendData(sampleData.slice().reverse())).toEqual(sampleData);
+    expect(getSafeTrendData(sampleData.slice().shuffle())).toEqual(sampleData);
   });
 
-  it('should rework the data if multiple series are appended one next to another', () => {
-    expect(getSafeTrendData([...sampleData, ...sampleData])).toEqual(sampleData.map(({ x, y }) => ({ x, y: y * 2 })));
+  it('should restort the data if multiple series are appended one next to another', () => {
+    expect(getSafeTrendData([...sampleData, ...sampleData])).toEqual(sampleData.flatMap((d) => [d, d]));
   });
 
   it('should handle null values correctly', () => {
@@ -40,7 +41,7 @@ describe('getSafeTrendData', () => {
   it('should handle null values correctly when multiple series are appended one next to another', () => {
     expect(getSafeTrendData([...sampleDataWithNull, ...sampleDataWithNull] as MetricWTrend['trend'])).toEqual(
       // eslint-disable-next-line eqeqeq
-      sampleDataWithNull.map(({ x, y }) => ({ x, y: y == null ? 0 : y * 2 })),
+      sampleDataWithNull.flatMap((d) => [d, d]),
     );
   });
 });
