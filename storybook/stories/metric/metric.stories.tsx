@@ -13,3 +13,4 @@ export default {
 export { Example as basic } from './1_basic.story';
 export { Example as grid } from './2_grid.story';
 export { Example as bodyContent } from './3_body.story';
+export { Example as trendMultipleData } from './4_trend_bug.story';
