@@ -12,7 +12,7 @@ import { retry } from '@octokit/plugin-retry';
 import { Octokit } from '@octokit/rest';
 import { getMetadata } from 'buildkite-agent-node';
 import ghpages from 'gh-pages';
-import minimatch, { IOptions as MinimatchOptions } from 'minimatch';
+import { minimatch, MinimatchOptions } from 'minimatch';
 import { Optional } from 'utility-types';
 
 import { getJobCheckName } from './build';
