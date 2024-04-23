@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { getSafeTrendData } from './sparkline';
+import { getSortedData } from './sparkline';
 import { MetricWTrend } from '../../specs';
 
 const sampleData = [
@@ -21,25 +21,25 @@ const sampleDataWithNull = [
   { x: 2, y: 3 },
 ];
 
-describe('getSafeTrendData', () => {
+describe('getSortedData', () => {
   it('should avoid to process the data if already sorted', () => {
-    expect(getSafeTrendData(sampleData)).toBe(sampleData);
+    expect(getSortedData(sampleData)).toBe(sampleData);
   });
 
   it('should sort the data if is not sorted correctly', () => {
-    expect(getSafeTrendData(sampleData.slice().reverse())).toEqual(sampleData);
+    expect(getSortedData(sampleData.slice().reverse())).toEqual(sampleData);
   });
 
   it('should restort the data if multiple series are appended one next to another', () => {
-    expect(getSafeTrendData([...sampleData, ...sampleData])).toEqual(sampleData.flatMap((d) => [d, d]));
+    expect(getSortedData([...sampleData, ...sampleData])).toEqual(sampleData.flatMap((d) => [d, d]));
   });
 
   it('should handle null values correctly', () => {
-    expect(getSafeTrendData([...sampleDataWithNull] as MetricWTrend['trend'])).toEqual(sampleDataWithNull);
+    expect(getSortedData([...sampleDataWithNull] as MetricWTrend['trend'])).toEqual(sampleDataWithNull);
   });
 
   it('should handle null values correctly when multiple series are appended one next to another', () => {
-    expect(getSafeTrendData([...sampleDataWithNull, ...sampleDataWithNull] as MetricWTrend['trend'])).toEqual(
+    expect(getSortedData([...sampleDataWithNull, ...sampleDataWithNull] as MetricWTrend['trend'])).toEqual(
       sampleDataWithNull.flatMap((d) => [d, d]),
     );
   });
