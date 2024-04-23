@@ -21,6 +21,30 @@ export const getSparkLineColor = (color: MetricWTrend['color']) => {
   return hslToColor(h, s, l >= 0.8 ? l - 0.1 : l + 0.1, a);
 };
 
+/**
+ * Aligns and implicitly stacks all histogram trend data.
+ *
+ * Sometimes the trend data arrives with multiple series
+ * appended one on top of each other.
+ *
+ * @internal
+ */
+export const getSortedData = (trend: MetricWTrend['trend']) => {
+  const shouldBeSorted = trend.some(({ x }, i) => {
+    if (i === 0) {
+      return false;
+    }
+    const prevItem = trend[i - 1];
+    return Boolean(prevItem ? x < prevItem.x : true);
+  });
+  if (!shouldBeSorted) {
+    return trend;
+  }
+  return trend.toSorted((a, b) => {
+    return a.x - b.x || +a.y - b.y;
+  });
+};
+
 /** @internal */
 export const SparkLine: FunctionComponent<{
   id: string;
@@ -29,8 +53,9 @@ export const SparkLine: FunctionComponent<{
   if (!trend) {
     return null;
   }
-  const [xMin, xMax] = extent(trend.map((d) => d.x));
-  const [, yMax] = extent(trend.map((d) => d.y));
+  const sortedTrendData = getSortedData(trend);
+  const [xMin, xMax] = [sortedTrendData.at(0)!.x, sortedTrendData.at(-1)!.x];
+  const [, yMax] = extent(sortedTrendData.map((d) => d.y));
   const xScale = (value: number) => (value - xMin) / (xMax - xMin);
   const yScale = (value: number) => value / yMax;
 
@@ -65,7 +90,7 @@ export const SparkLine: FunctionComponent<{
         <rect x={0} y={0} width={1} height={1} fill={color} />
 
         <path
-          d={path.area(trend)}
+          d={path.area(sortedTrendData)}
           transform="translate(0, 0.5),scale(1,0.5)"
           fill={getSparkLineColor(color)}
           stroke="none"
