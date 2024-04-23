@@ -29,19 +29,14 @@ export const getSparkLineColor = (color: MetricWTrend['color']) => {
  *
  * @internal
  */
-export const getSafeTrendData = (trend: MetricWTrend['trend']) => {
-  let lastX = trend[0]?.x;
-  const shouldBeSorted =
-    lastX !== undefined &&
-    trend.some(({ x }) => {
-      if (lastX === undefined) {
-        return false;
-      }
-      if (lastX > x) {
-        return true;
-      }
-      lastX = x;
-    });
+export const getSortedData = (trend: MetricWTrend['trend']) => {
+  const shouldBeSorted = trend.some(({ x }, i) => {
+    if (i === 0) {
+      return false;
+    }
+    const prevItem = trend[i - 1];
+    return Boolean(prevItem ? x < prevItem.x : true);
+  });
   if (!shouldBeSorted) {
     return trend;
   }
@@ -58,9 +53,9 @@ export const SparkLine: FunctionComponent<{
   if (!trend) {
     return null;
   }
-  const groupedTrendData = getSafeTrendData(trend);
-  const [xMin, xMax] = extent(groupedTrendData.map((d) => d.x));
-  const [, yMax] = extent(groupedTrendData.map((d) => d.y));
+  const sortedTrendData = getSortedData(trend);
+  const [xMin, xMax] = [sortedTrendData.at(0)!.x, sortedTrendData.at(-1)!.x];
+  const [, yMax] = extent(sortedTrendData.map((d) => d.y));
   const xScale = (value: number) => (value - xMin) / (xMax - xMin);
   const yScale = (value: number) => value / yMax;
 
@@ -95,7 +90,7 @@ export const SparkLine: FunctionComponent<{
         <rect x={0} y={0} width={1} height={1} fill={color} />
 
         <path
-          d={path.area(groupedTrendData)}
+          d={path.area(sortedTrendData)}
           transform="translate(0, 0.5),scale(1,0.5)"
           fill={getSparkLineColor(color)}
           stroke="none"
