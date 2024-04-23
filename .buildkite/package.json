@@ -20,7 +20,7 @@
     "@types/tmp": "^0.2.3",
     "axios": "^1.6.0",
     "buildkite-agent-node": "^0.0.11-pre.2",
-    "gh-pages": "^3.2.3",
+    "gh-pages": "^5.0.0",
     "json-schema-to-typescript": "14.0.0",
     "minimatch": "^9.0.4",
     "targz": "^1.0.1",
