@@ -49,7 +49,7 @@
       "matchPackageNames": ["prettier", "pretty-quick"],
       "excludePackagePatterns": [".*typescript.*", "^@typescript-eslint/.+"],
       "automerge": true,
-      "enabled": true
+      "enabled": false
     },
     {
       "groupName": "jest",
