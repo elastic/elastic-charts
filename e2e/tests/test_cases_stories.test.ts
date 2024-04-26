@@ -119,13 +119,13 @@ test.describe('Test cases stories', () => {
   test.describe('Log scales', () => {
     test('should correctly render negative values from baseline when banded', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/test-cases--log-with-negative-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=true&knob-Nice y ticks=true&knob-Scale Type=log&knob-Series Type=bar&knob-Show positive data=&knob-Stacked=&knob-logMinLimit=1&knob-Split=',
+        'http://localhost:9001/?path=/story/test-cases--log-with-negative-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Show legend=&knob-Scale Type=log&knob-Series Type=bar&knob-logMinLimit=1&knob-Nice y ticks=&knob-Banded=true&knob-Split=&knob-Stacked=false&knob-Show positive data=',
       );
     });
 
     test('should correctly render tooltip values for banded bars', async ({ page }) => {
       await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/test-cases--log-with-negative-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=true&knob-Nice y ticks=true&knob-Scale Type=log&knob-Series Type=bar&knob-Show positive data=&knob-Stacked=&knob-logMinLimit=1&knob-Split=',
+        'http://localhost:9001/?path=/story/test-cases--log-with-negative-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Show legend=&knob-Scale Type=log&knob-Series Type=bar&knob-logMinLimit=1&knob-Nice y ticks=&knob-Banded=true&knob-Split=&knob-Stacked=false&knob-Show positive data=',
         {
           top: 240,
           right: 240,
@@ -135,7 +135,7 @@ test.describe('Test cases stories', () => {
 
     test('should correctly render negative values from baseline when stacked', async ({ page }) => {
       await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/test-cases--log-with-negative-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=&knob-Nice y ticks=true&knob-Scale Type=log&knob-Series Type=bar&knob-Show positive data=&knob-Stacked=true&knob-logMinLimit=1&knob-Split=true',
+        'http://localhost:9001/?path=/story/test-cases--log-with-negative-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Show legend=&knob-Scale Type=log&knob-Series Type=bar&knob-logMinLimit=1&knob-Nice y ticks=&knob-Banded=&knob-Split=true&knob-Stacked=true&knob-Show positive data=',
       );
     });
   });
