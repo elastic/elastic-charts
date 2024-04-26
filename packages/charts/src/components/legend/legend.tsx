@@ -111,6 +111,13 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     action: config.legendAction,
     labelOptions: legend.labelOptions,
     flatLegend: config.flatLegend ?? DEFAULT_LEGEND_CONFIG.flatLegend,
+    interactionLabels: config.legendItemLabels
+      ? {
+          helpText: config.legendItemLabels?.interactionHelp,
+          ariaLabelShow: config.legendItemLabels?.onVisibleAriaLabel,
+          ariaLabelHide: config.legendItemLabels?.onHiddenAriaLabel,
+        }
+      : undefined,
   };
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   return (

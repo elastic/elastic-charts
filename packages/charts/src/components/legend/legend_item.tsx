@@ -60,6 +60,12 @@ export interface LegendItemProps {
   setTemporaryColorAction: typeof setTemporaryColorAction;
   setPersistedColorAction: typeof setPersistedColorAction;
   toggleDeselectSeriesAction: typeof onToggleDeselectSeriesAction;
+  interactionLabels?: {
+    onShownClick?: string;
+    onHiddenClick?: string;
+    onShownShiftClick?: string;
+    onHiddenShiftClick?: string;
+  };
 }
 
 interface LegendItemState {
@@ -231,6 +237,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             isToggleable={totalItems > 1 && item.isToggleable}
             onToggle={this.onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
+            interactionLabels={this.props.interactionLabels}
           />
           {legendValue && !isSeriesHidden && (
             <div className="echLegendItem__extra" title={`${legendValue.label}`}>

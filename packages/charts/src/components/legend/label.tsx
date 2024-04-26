@@ -18,13 +18,24 @@ interface LabelProps {
   isToggleable?: boolean;
   onToggle?: (negate: boolean) => void;
   options: LegendLabelOptions;
+  interactionLabels?: {
+    onShownClick?: string;
+    onHiddenClick?: string;
+    onShownShiftClick?: string;
+    onHiddenShiftClick?: string;
+  };
 }
+
+const onShownItemClickLabel = 'Click: isolate series';
+const onHiddenItemClickLabel = 'Click: show all series';
+const onShownItemShiftClickLabel = 'SHIFT + click: show series';
+const onHiddenItemShiftClickLabel = 'SHIFT click: hide series';
 
 /**
  * Label component used to display text in legend item
  * @internal
  */
-export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }: LabelProps) {
+export function Label({ label, isToggleable, onToggle, isSeriesHidden, options, interactionLabels }: LabelProps) {
   const maxLines = Math.abs(options.maxLines);
   const labelClassNames = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(onToggle),
@@ -44,6 +55,14 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }
   const title = options.maxLines > 0 ? label : ''; // full text already visible
   const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
 
+  const interactionsGuidanceText = isSeriesHidden
+    ? `
+${interactionLabels?.onShownClick ?? onShownItemClickLabel}
+${interactionLabels?.onShownShiftClick ?? onShownItemShiftClickLabel}`
+    : `
+${interactionLabels?.onHiddenClick ?? onHiddenItemClickLabel}
+${interactionLabels?.onShownShiftClick ?? onHiddenItemShiftClickLabel}`;
+
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
     // https://stackoverflow.com/questions/68673034/webkit-line-clamp-does-not-apply-to-buttons
@@ -52,14 +71,12 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }
       tabIndex={0}
       dir={dir}
       className={labelClassNames}
-      title={title}
+      title={`${title}${interactionsGuidanceText}`}
       onClick={onClick}
       onKeyDown={onKeyDown}
       aria-pressed={isSeriesHidden}
       style={clampStyles}
-      aria-label={
-        isSeriesHidden ? `${label}; Activate to show series in graph` : `${label}; Activate to hide series in graph`
-      }
+      aria-label={`${label}; ${interactionsGuidanceText}`}
     >
       {label}
     </div>
