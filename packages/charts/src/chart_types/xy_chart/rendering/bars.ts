@@ -11,7 +11,7 @@ import { getY0ScaledValueFn, getY1ScaledValueFn } from './utils';
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { clamp, mergePartial } from '../../../utils/common';
+import { clamp, isWithinRange, mergePartial } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
 import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
@@ -60,19 +60,26 @@ export function renderBars(
       return barTuple; // don't create a bar if not within the xScale domain
     }
     const { barGeometries, indexedGeometryMap } = barTuple;
-    const { y1, initialY1, filled } = datum;
+    const { y0, y1, initialY1, filled } = datum;
 
     const y1Scaled = y1Fn(datum);
     const y0Scaled = y0Fn(datum);
 
     const finiteHeight = y0Scaled - y1Scaled || 0;
     const absHeight = Math.abs(finiteHeight);
-    const adjustedHeight = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
-    const heightExtension = adjustedHeight - absHeight;
+    const crossesZero = y0 && y1 && isWithinRange([y0, y1])(0);
+    const adjustedHeight =
+      absHeight === 0
+        ? absHeight
+        : // extends nonzero bar height - doubled for bars crossing 0
+          Math.max((crossesZero ? 2 : 1) * minBarHeight, absHeight);
+    const y1Extension = (adjustedHeight - absHeight) / (crossesZero ? 2 : 1);
+    const y0Extension = crossesZero ? y1Extension : 0;
     const isUpsideDown = finiteHeight < 0;
     const height = isUpsideDown ? -adjustedHeight : adjustedHeight;
     const finiteY = Number.isNaN(y0Scaled + y1Scaled) ? 0 : y1Scaled;
-    const y = finiteY - heightExtension;
+    const finalY1 = isUpsideDown ? finiteY + y1Extension : finiteY - y1Extension;
+    const finalY0 = isUpsideDown ? y0Scaled - y0Extension : y0Scaled + y0Extension;
 
     const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
     const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
@@ -131,7 +138,7 @@ export function renderBars(
     const barGeometry: BarGeometry = {
       displayValue,
       x,
-      y,
+      y: finalY1,
       transform: { x: 0, y: 0 },
       width,
       height,
@@ -145,7 +152,7 @@ export function renderBars(
     if (isBandedSpec) {
       indexedGeometryMap.set({
         ...barGeometry,
-        y: y0Scaled,
+        y: finalY0,
         value: {
           x: datum.x,
           y: getDatumYValue(datum, true, isBandedSpec, stackMode),
@@ -153,10 +160,10 @@ export function renderBars(
           accessor: BandedAccessorType.Y0,
           datum: datum.datum,
         },
-        bandedY: y,
+        bandedY: finalY1,
       });
 
-      barGeometry.bandedY = y0Scaled;
+      barGeometry.bandedY = finalY0;
     }
 
     indexedGeometryMap.set(barGeometry);
