@@ -129,58 +129,63 @@ function getTooltipAndHighlightFromValue(
   const highlightedGeometries: IndexedGeometry[] = [];
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
-  const values = matchingGeoms.reduce<TooltipValue[]>((acc, indexedGeometry) => {
-    if (hideNullValues && indexedGeometry.value.y === null) {
-      return acc;
-    }
-    const {
-      seriesIdentifier: { specId },
-    } = indexedGeometry;
-    const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, specId);
+  const values = matchingGeoms
+    .toSorted((a, b) => {
+      // presort matchingGeoms to group by series then y value to prevent flipping
+      return b.seriesIdentifier.key.localeCompare(a.seriesIdentifier.key) || b.value.y - a.value.y;
+    })
+    .reduce<TooltipValue[]>((acc, indexedGeometry) => {
+      if (hideNullValues && indexedGeometry.value.y === null) {
+        return acc;
+      }
+      const {
+        seriesIdentifier: { specId },
+      } = indexedGeometry;
+      const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, specId);
 
-    // safe guard check
-    if (!spec) {
-      return acc;
-    }
-    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
+      // safe guard check
+      if (!spec) {
+        return acc;
+      }
+      const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId, chartRotation);
 
-    // yScales is ensured by the enclosing if
-    const yScale = scales.yScales.get(getSpecDomainGroupId(spec));
-    if (!yScale) {
-      return acc;
-    }
+      // yScales is ensured by the enclosing if
+      const yScale = scales.yScales.get(getSpecDomainGroupId(spec));
+      if (!yScale) {
+        return acc;
+      }
 
-    // check if the pointer is on the geometry (avoid checking if using external pointer event)
-    let isHighlighted = false;
-    if (
-      (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
-      isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
-    ) {
-      isHighlighted = true;
-      highlightedGeometries.push(indexedGeometry);
-    }
+      // check if the pointer is on the geometry (avoid checking if using external pointer event)
+      let isHighlighted = false;
+      if (
+        (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
+        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer, isBandedSpec(spec))
+      ) {
+        isHighlighted = true;
+        highlightedGeometries.push(indexedGeometry);
+      }
 
-    // format the tooltip values
-    const formattedTooltip = formatTooltipValue(
-      indexedGeometry,
-      spec,
-      isHighlighted,
-      hasSingleSeries,
-      isBandedSpec(spec),
-      yAxis,
-    );
+      // format the tooltip values
+      const formattedTooltip = formatTooltipValue(
+        indexedGeometry,
+        spec,
+        isHighlighted,
+        hasSingleSeries,
+        isBandedSpec(spec),
+        yAxis,
+      );
 
-    // format only one time the x value
-    if (!header) {
-      // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-      const formatterAxis = tooltip.headerFormatter ? undefined : xAxis;
-      header = formatTooltipHeader(indexedGeometry, spec, formatterAxis);
-    }
+      // format only one time the x value
+      if (!header) {
+        // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
+        const formatterAxis = tooltip.headerFormatter ? undefined : xAxis;
+        header = formatTooltipHeader(indexedGeometry, spec, formatterAxis);
+      }
 
-    xValues.add(indexedGeometry.value.x);
+      xValues.add(indexedGeometry.value.x);
 
-    return [...acc, formattedTooltip];
-  }, []);
+      return [...acc, formattedTooltip];
+    }, []);
 
   if (values.length > 1 && xValues.size === values.length) {
     // TODO: remove after tooltip redesign
