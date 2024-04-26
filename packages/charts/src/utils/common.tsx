@@ -733,6 +733,32 @@ export const isWithinRange = (range: [number, number], exclusive = false) => {
 };
 
 /**
+ * Returns utilities for a given range from start to end
+ * @internal
+ */
+export const inRange = (start: number, end: number, exclusive = false) => {
+  const diff = Math.abs(start - end);
+  const [min, max] = sortNumbers([start, end]);
+  const isHalfFromMin = isBetween(min, max - diff / 2, exclusive);
+  const isHalfFromMax = isBetween(min + diff / 2, max, exclusive);
+
+  return {
+    /**
+     * Returns true if values are within the first half of range, from start halfway to end
+     */
+    firstHalf: (n: number) => {
+      return start === min ? isHalfFromMin(n) : isHalfFromMax(n);
+    },
+    /**
+     * Returns true if values are within the last half of range, from end halfway to start
+     */
+    lastHalf: (n: number) => {
+      return end === max ? isHalfFromMax(n) : isHalfFromMin(n);
+    },
+  };
+};
+
+/**
  * Returns `Array.reduce` callback to clamp values and remove duplicates
  * @internal
  */

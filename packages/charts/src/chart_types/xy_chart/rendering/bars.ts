@@ -67,11 +67,12 @@ export function renderBars(
 
     const finiteHeight = y0Scaled - y1Scaled || 0;
     const absHeight = Math.abs(finiteHeight);
-    const height = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
-    const heightExtension = height - absHeight;
+    const adjustedHeight = absHeight === 0 ? absHeight : Math.max(minBarHeight, absHeight); // extend nonzero bars
+    const heightExtension = adjustedHeight - absHeight;
     const isUpsideDown = finiteHeight < 0;
+    const height = isUpsideDown ? -adjustedHeight : adjustedHeight;
     const finiteY = Number.isNaN(y0Scaled + y1Scaled) ? 0 : y1Scaled;
-    const y = isUpsideDown ? finiteY - height + heightExtension : finiteY - heightExtension;
+    const y = finiteY - heightExtension;
 
     const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
     const seriesStyle = getBarStyleOverrides(datum, seriesIdentifier, sharedSeriesStyle, styleAccessor);
@@ -140,7 +141,6 @@ export function renderBars(
       seriesStyle,
       panel,
     };
-    indexedGeometryMap.set(barGeometry);
 
     if (isBandedSpec) {
       indexedGeometryMap.set({
@@ -153,8 +153,13 @@ export function renderBars(
           accessor: BandedAccessorType.Y0,
           datum: datum.datum,
         },
+        bandedY: y,
       });
+
+      barGeometry.bandedY = y0Scaled;
     }
+
+    indexedGeometryMap.set(barGeometry);
 
     if (y1 !== null && initialY1 !== null && filled?.y1 === undefined) {
       barGeometries.push(barGeometry);
