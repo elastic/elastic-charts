@@ -35,6 +35,7 @@ const data = new Array(20).fill(1).flatMap((_, x) =>
 );
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const showLegend = boolean('Show legend', false);
   const yScaleType = customKnobs.enum.scaleType('Scale Type', ScaleType.Log, { include: ['Linear', 'Log'] });
   const [Series] = customKnobs.enum.xySeries('Series Type', 'bar', { exclude: ['bubble'] });
   const logMinLimit = number('logMinLimit', 1, { min: 0 });
@@ -46,7 +47,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
   return (
     <Chart title={title} description={description}>
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings baseTheme={useBaseTheme()} showLegend={showLegend} legendValues={['currentAndLastValue']} />
       <Axis id="bottom" title="x" position={Position.Bottom} ticks={20} />
       <Axis id="left" title="y" position={Position.Left} domain={{ min: NaN, max: NaN, logMinLimit }} />
       <Series

@@ -179,26 +179,10 @@ export function isYValueDefinedFn(yScale: ScaleContinuous, xScale: ScaleBand | S
 }
 
 /** @internal */
-export const CHROME_PINCH_BUG_EPSILON = 0.5;
-
-/**
- * Temporary fix for Chromium bug
- * Shift a small pixel value when pixel diff is <= 0.5px
- * https://github.com/elastic/elastic-charts/issues/1053
- * https://bugs.chromium.org/p/chromium/issues/detail?id=1163912
- */
-function chromeRenderBugBuffer(y1: number, y0: number): number {
-  return Math.abs(y1 - y0) <= CHROME_PINCH_BUG_EPSILON ? 0.5 : 0;
-}
-
-/** @internal */
 export function getY1ScaledValueFn(yScale: ScaleContinuous): (datum: DataSeriesDatum) => number {
   const datumAccessor = getYDatumValueFn();
-  const scaleY0Value = getY0ScaledValueFn(yScale);
   return (datum) => {
-    const y1Value = yScale.scale(datumAccessor(datum));
-    const y0Value = scaleY0Value(datum);
-    return y1Value - chromeRenderBugBuffer(y1Value, y0Value);
+    return yScale.scale(datumAccessor(datum));
   };
 }
 
