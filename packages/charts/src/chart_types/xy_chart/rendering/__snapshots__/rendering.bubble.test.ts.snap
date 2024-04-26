@@ -771,7 +771,7 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
       "y": 0,
     },
     "x": 0,
-    "y": 99.5,
+    "y": 100,
   },
   {
     "color": "red",
