@@ -10,12 +10,26 @@ import { text } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Axis, BarSeries, Chart, LegendValue, Position, ScaleType, Settings } from '@elastic/charts';
-import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const data: Array<[number, string, number]> = [
+    [2010, 'Apple', 10],
+    [2010, 'Orange', 6],
+    [2010, 'Banana', 4],
+    [2011, 'Apple', 9],
+    [2011, 'Orange', 6],
+    [2011, 'Banana', 2],
+    [2012, 'Apple', 7],
+    [2012, 'Orange', 3],
+    [2012, 'Banana', 3],
+    [2013, 'Apple', 12],
+    [2013, 'Orange', 10],
+    [2013, 'Banana', 5],
+  ];
+
   const onShownClickText = text('onShownClickLabel', 'Click: isolate series');
   const onHiddenClickText = text('onHiddenClickLabel', 'Click: show all series');
   const onShownShiftClickText = text('onShownShiftClickLabel', 'SHIFT + click: hide series');
@@ -25,7 +39,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Settings
         showLegend
         legendValues={[LegendValue.CurrentAndLastValue]}
-        legendPosition={Position.Top}
         legendItemLabels={{
           onShownClick: onShownClickText,
           onHiddenClick: onHiddenClickText,
@@ -39,11 +52,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
       <BarSeries
         id="bars"
-        xScaleType={ScaleType.Linear}
+        xScaleType={ScaleType.Ordinal}
         yScaleType={ScaleType.Linear}
-        xAccessor="x"
-        yAccessors={['y1', 'y2']}
-        data={TestDatasets.BARCHART_2Y2G}
+        xAccessor={0}
+        yAccessors={[2]}
+        splitSeriesAccessors={[1]}
+        stackAccessors={[0]}
+        data={data}
+        yNice
       />
     </Chart>
   );
