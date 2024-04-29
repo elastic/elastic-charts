@@ -29,7 +29,7 @@ interface LabelProps {
 const onShownItemClickLabel = 'Click: isolate series';
 const onHiddenItemClickLabel = 'Click: show all series';
 const onShownItemShiftClickLabel = 'SHIFT + click: show series';
-const onHiddenItemShiftClickLabel = 'SHIFT click: hide series';
+const onHiddenItemShiftClickLabel = 'SHIFT + click: hide series';
 
 /**
  * Label component used to display text in legend item
@@ -55,7 +55,7 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options, 
   const title = options.maxLines > 0 ? label : ''; // full text already visible
   const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
 
-  const interactionsGuidanceText = isSeriesHidden
+  const interactionsGuidanceText = !isSeriesHidden
     ? `
 ${interactionLabels?.onShownClick ?? onShownItemClickLabel}
 ${interactionLabels?.onShownShiftClick ?? onShownItemShiftClickLabel}`
@@ -76,7 +76,7 @@ ${interactionLabels?.onShownShiftClick ?? onHiddenItemShiftClickLabel}`;
       onKeyDown={onKeyDown}
       aria-pressed={isSeriesHidden}
       style={clampStyles}
-      aria-label={`${label}; ${interactionsGuidanceText}`}
+      aria-label={`${label}; ${interactionsGuidanceText.replace('\n', '')}`} // put it in a single line
     >
       {label}
     </div>
