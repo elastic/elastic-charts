@@ -182,12 +182,39 @@ test.describe('Legend stories', () => {
         Array.from(document.getElementsByClassName('echLegendItem'), (e) => e.outerHTML),
       );
       (await labels).forEach((label, index) => {
-        const ariaInteractionLabel = label.split(';')[1];
-        if (ariaInteractionLabel && ariaInteractionLabel.length > 1) {
+        const ariaInteractionLabel = label.split('; ')[1];
+        if (ariaInteractionLabel && /show/.test(ariaInteractionLabel)) {
           hiddenResults.push(index);
         }
       });
       expect(hiddenResults).toEqual([1]);
+    });
+
+    test('should apply passed aria label to hidden when clicked', async ({ page }) => {
+      await common.loadElementFromURL(page)(
+        'http://localhost:9001/?path=/story/legend--legend-item-interaction-help&knob-onHiddenClickLabel=hello&knob-onShownClickLabel=world',
+        '.echLegendItem__label',
+      );
+      await common.clickMouseRelativeToDOMElement(page)(
+        {
+          bottom: 180,
+          left: 330,
+        },
+        '.echChartStatus[data-ech-render-complete=true]',
+      );
+      // Make the first index legend item hidden
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Enter');
+
+      // Filter the labels
+      const labels = page.evaluate(() =>
+        Array.from(document.getElementsByClassName('echLegendItem'), (e) => e.outerHTML),
+      );
+
+      const legendItemLabels = (await labels).map((label) => label.split('; ')[1]);
+      expect(legendItemLabels.filter((label) => label === 'hello').length).toBe(1);
+      expect(legendItemLabels.filter((label) => label === 'world').length).toBe(7);
     });
   });
 
