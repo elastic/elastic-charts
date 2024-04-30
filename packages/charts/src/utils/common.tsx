@@ -741,6 +741,7 @@ export const inRange = (start: number, end: number, exclusive = false) => {
   const [min, max] = sortNumbers([start, end]);
   const isHalfFromMin = isBetween(min, max - diff / 2, exclusive);
   const isHalfFromMax = isBetween(min + diff / 2, max, exclusive);
+  const isWithin = isBetween(min, max, exclusive);
 
   return {
     /**
@@ -754,6 +755,12 @@ export const inRange = (start: number, end: number, exclusive = false) => {
      */
     lastHalf: (n: number) => {
       return end === max ? isHalfFromMax(n) : isHalfFromMin(n);
+    },
+    /**
+     * Returns true if value is within the entire range
+     */
+    within: (n: number) => {
+      return isWithin(n);
     },
   };
 };

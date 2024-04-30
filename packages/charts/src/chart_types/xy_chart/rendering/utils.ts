@@ -137,19 +137,14 @@ export function isPointOnGeometry(
 
     return distance <= radius + radiusBuffer;
   }
-  const {
-    width,
-    height,
-    bandedY,
-    value: { accessor },
-  } = indexedGeometry;
+  const { width, height, bandedY } = indexedGeometry;
   if (!isWithinRange([x, x + width])(xCoordinate)) return false;
 
   if (isBandedSpec) {
     if (bandedY === undefined) return false;
 
     const rangeUtils = inRange(y, bandedY);
-    return accessor === 'y0' ? rangeUtils.firstHalf(yCoordinate) : rangeUtils.firstHalf(yCoordinate);
+    return rangeUtils.firstHalf(yCoordinate);
   }
 
   return isWithinRange([y, y + height])(yCoordinate);
