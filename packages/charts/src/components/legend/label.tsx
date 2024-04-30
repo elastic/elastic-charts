@@ -28,8 +28,8 @@ interface LabelProps {
 
 const onShownItemClickLabel = 'Click: isolate series';
 const onHiddenItemClickLabel = 'Click: show all series';
-const onShownItemShiftClickLabel = 'SHIFT + click: show series';
-const onHiddenItemShiftClickLabel = 'SHIFT + click: hide series';
+const onShownItemShiftClickLabel = 'SHIFT + click: hide series';
+const onHiddenItemShiftClickLabel = 'SHIFT + click: show series';
 
 /**
  * Label component used to display text in legend item
@@ -61,7 +61,7 @@ ${interactionLabels?.onShownClick ?? onShownItemClickLabel}
 ${interactionLabels?.onShownShiftClick ?? onShownItemShiftClickLabel}`
     : `
 ${interactionLabels?.onHiddenClick ?? onHiddenItemClickLabel}
-${interactionLabels?.onShownShiftClick ?? onHiddenItemShiftClickLabel}`;
+${interactionLabels?.onHiddenShiftClick ?? onHiddenItemShiftClickLabel}`;
 
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
