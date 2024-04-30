@@ -1,134 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Rendering bars Can render two bars within domain 1`] = `
-[
-  {
-    "color": "red",
-    "displayValue": undefined,
-    "height": 100,
-    "panel": {
-      "height": 100,
-      "left": 0,
-      "top": 0,
-      "width": 100,
-    },
-    "seriesIdentifier": {
-      "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": [
-        1,
-      ],
-      "specId": "spec_1",
-      "splitAccessors": Map {},
-      "xAccessor": 0,
-      "yAccessor": 1,
-    },
-    "seriesStyle": {
-      "displayValue": {
-        "alignment": {
-          "horizontal": "center",
-          "vertical": "middle",
-        },
-        "fill": {
-          "textBorder": 0,
-        },
-        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
-        "fontSize": 10,
-        "fontStyle": "normal",
-        "offsetX": 0,
-        "offsetY": 0,
-        "padding": 0,
-      },
-      "rect": {
-        "opacity": 1,
-      },
-      "rectBorder": {
-        "strokeWidth": 1,
-        "visible": false,
-      },
-    },
-    "transform": {
-      "x": 0,
-      "y": 0,
-    },
-    "value": {
-      "accessor": "y1",
-      "datum": [
-        0,
-        10,
-      ],
-      "mark": null,
-      "x": 0,
-      "y": 10,
-    },
-    "width": 50,
-    "x": 0,
-    "y": 0,
-  },
-  {
-    "color": "red",
-    "displayValue": undefined,
-    "height": 50,
-    "panel": {
-      "height": 100,
-      "left": 0,
-      "top": 0,
-      "width": 100,
-    },
-    "seriesIdentifier": {
-      "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
-      "seriesKeys": [
-        1,
-      ],
-      "specId": "spec_1",
-      "splitAccessors": Map {},
-      "xAccessor": 0,
-      "yAccessor": 1,
-    },
-    "seriesStyle": {
-      "displayValue": {
-        "alignment": {
-          "horizontal": "center",
-          "vertical": "middle",
-        },
-        "fill": {
-          "textBorder": 0,
-        },
-        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
-        "fontSize": 10,
-        "fontStyle": "normal",
-        "offsetX": 0,
-        "offsetY": 0,
-        "padding": 0,
-      },
-      "rect": {
-        "opacity": 1,
-      },
-      "rectBorder": {
-        "strokeWidth": 1,
-        "visible": false,
-      },
-    },
-    "transform": {
-      "x": 0,
-      "y": 0,
-    },
-    "value": {
-      "accessor": "y1",
-      "datum": [
-        1,
-        5,
-      ],
-      "mark": null,
-      "x": 1,
-      "y": 5,
-    },
-    "width": 50,
-    "x": 50,
-    "y": 50,
-  },
-]
-`;
-
 exports[`Rendering bars Multi series bar chart - ordinal can render first spec bars 1`] = `
 [
   {
@@ -382,6 +253,2491 @@ exports[`Rendering bars Multi series bar chart - ordinal can render second spec 
     },
     "width": 25,
     "x": 75,
+    "y": 50,
+  },
+]
+`;
+
+exports[`Rendering bars Negative, minBarHeight, flipped and banded datasets should render bars with alternating value labels 1`] = `
+IndexedGeometryMap {
+  "linearMap": IndexedGeometryLinearMap {
+    "map": Map {
+      1 => [
+        {
+          "bandedY": 100,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -50,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              1,
+              -1000,
+              0,
+            ],
+            "mark": null,
+            "x": 1,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 0.6944444444444429,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -50,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              1,
+              -1000,
+              0,
+            ],
+            "mark": null,
+            "x": 1,
+            "y": -1000,
+          },
+          "width": 4.166666666666666,
+          "x": 0.6944444444444429,
+          "y": 100,
+        },
+      ],
+      2 => [
+        {
+          "bandedY": 55.00000000000001,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -5.000000000000007,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              2,
+              -100,
+              0,
+            ],
+            "mark": null,
+            "x": 2,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 6.249999999999999,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -5.000000000000007,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              2,
+              -100,
+              0,
+            ],
+            "mark": null,
+            "x": 2,
+            "y": -100,
+          },
+          "width": 4.166666666666666,
+          "x": 6.249999999999999,
+          "y": 55.00000000000001,
+        },
+      ],
+      3 => [
+        {
+          "bandedY": 50.5,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -0.5,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              3,
+              -10,
+              0,
+            ],
+            "mark": null,
+            "x": 3,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 11.805555555555554,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -0.5,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              3,
+              -10,
+              0,
+            ],
+            "mark": null,
+            "x": 3,
+            "y": -10,
+          },
+          "width": 4.166666666666666,
+          "x": 11.805555555555554,
+          "y": 50.5,
+        },
+      ],
+      4.5 => [
+        {
+          "bandedY": 50.5,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -1,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              4.5,
+              -10,
+              10,
+            ],
+            "mark": null,
+            "x": 4.5,
+            "y": 10,
+          },
+          "width": 4.166666666666666,
+          "x": 17.361111111111107,
+          "y": 49.5,
+        },
+        {
+          "bandedY": 49.5,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -1,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              4.5,
+              -10,
+              10,
+            ],
+            "mark": null,
+            "x": 4.5,
+            "y": -10,
+          },
+          "width": 4.166666666666666,
+          "x": 17.361111111111107,
+          "y": 50.5,
+        },
+      ],
+      5 => [
+        {
+          "bandedY": 50.05,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -0.04999999999999716,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              5,
+              -1,
+              0,
+            ],
+            "mark": null,
+            "x": 5,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 22.916666666666664,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -0.04999999999999716,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              5,
+              -1,
+              0,
+            ],
+            "mark": null,
+            "x": 5,
+            "y": -1,
+          },
+          "width": 4.166666666666666,
+          "x": 22.916666666666664,
+          "y": 50.05,
+        },
+      ],
+      6 => [
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              6,
+              0,
+              0,
+            ],
+            "mark": null,
+            "x": 6,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 28.47222222222222,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              6,
+              0,
+              0,
+            ],
+            "mark": null,
+            "x": 6,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 28.47222222222222,
+          "y": 50,
+        },
+      ],
+      7 => [
+        {
+          "bandedY": 50.05,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -0.04999999999999716,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              7,
+              -1,
+              0,
+            ],
+            "mark": null,
+            "x": 7,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 34.02777777777777,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -0.04999999999999716,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              7,
+              -1,
+              0,
+            ],
+            "mark": null,
+            "x": 7,
+            "y": -1,
+          },
+          "width": 4.166666666666666,
+          "x": 34.02777777777777,
+          "y": 50.05,
+        },
+      ],
+      8 => [
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              8,
+              0,
+              0,
+            ],
+            "mark": null,
+            "x": 8,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 39.58333333333333,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              8,
+              0,
+              0,
+            ],
+            "mark": null,
+            "x": 8,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 39.58333333333333,
+          "y": 50,
+        },
+      ],
+      9 => [
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              9,
+              0,
+              0,
+            ],
+            "mark": null,
+            "x": 9,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 45.138888888888886,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              9,
+              0,
+              0,
+            ],
+            "mark": null,
+            "x": 9,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 45.138888888888886,
+          "y": 50,
+        },
+      ],
+      10 => [
+        {
+          "bandedY": 49.75000000000001,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -0.2500000000000071,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              10,
+              5,
+              10,
+            ],
+            "mark": null,
+            "x": 10,
+            "y": 10,
+          },
+          "width": 4.166666666666666,
+          "x": 50.69444444444444,
+          "y": 49.5,
+        },
+        {
+          "bandedY": 49.5,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -0.2500000000000071,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              10,
+              5,
+              10,
+            ],
+            "mark": null,
+            "x": 10,
+            "y": 5,
+          },
+          "width": 4.166666666666666,
+          "x": 50.69444444444444,
+          "y": 49.75000000000001,
+        },
+      ],
+      11 => [
+        {
+          "bandedY": 49.95,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0.5499999999999972,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              11,
+              1,
+              -10,
+            ],
+            "mark": null,
+            "x": 11,
+            "y": -10,
+          },
+          "width": 4.166666666666666,
+          "x": 56.25,
+          "y": 50.5,
+        },
+        {
+          "bandedY": 50.5,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0.5499999999999972,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              11,
+              1,
+              -10,
+            ],
+            "mark": null,
+            "x": 11,
+            "y": 1,
+          },
+          "width": 4.166666666666666,
+          "x": 56.25,
+          "y": 49.95,
+        },
+      ],
+      12 => [
+        {
+          "bandedY": 49.95,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0.04999999999999716,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              12,
+              1,
+              0,
+            ],
+            "mark": null,
+            "x": 12,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 61.80555555555555,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0.04999999999999716,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              12,
+              1,
+              0,
+            ],
+            "mark": null,
+            "x": 12,
+            "y": 1,
+          },
+          "width": 4.166666666666666,
+          "x": 61.80555555555555,
+          "y": 49.95,
+        },
+      ],
+      13 => [
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              13,
+              0,
+              0,
+            ],
+            "mark": null,
+            "x": 13,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 67.3611111111111,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              13,
+              0,
+              0,
+            ],
+            "mark": null,
+            "x": 13,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 67.3611111111111,
+          "y": 50,
+        },
+      ],
+      14 => [
+        {
+          "bandedY": 49.95,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0.04999999999999716,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              14,
+              1,
+              0,
+            ],
+            "mark": null,
+            "x": 14,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 72.91666666666666,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0.04999999999999716,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              14,
+              1,
+              0,
+            ],
+            "mark": null,
+            "x": 14,
+            "y": 1,
+          },
+          "width": 4.166666666666666,
+          "x": 72.91666666666666,
+          "y": 49.95,
+        },
+      ],
+      15 => [
+        {
+          "bandedY": 49.5,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 1,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              15,
+              10,
+              -10,
+            ],
+            "mark": null,
+            "x": 15,
+            "y": -10,
+          },
+          "width": 4.166666666666666,
+          "x": 78.47222222222221,
+          "y": 50.5,
+        },
+        {
+          "bandedY": 50.5,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 1,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              15,
+              10,
+              -10,
+            ],
+            "mark": null,
+            "x": 15,
+            "y": 10,
+          },
+          "width": 4.166666666666666,
+          "x": 78.47222222222221,
+          "y": 49.5,
+        },
+      ],
+      16 => [
+        {
+          "bandedY": 49.5,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0.5,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              16,
+              10,
+              0,
+            ],
+            "mark": null,
+            "x": 16,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 84.02777777777777,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 0.5,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              16,
+              10,
+              0,
+            ],
+            "mark": null,
+            "x": 16,
+            "y": 10,
+          },
+          "width": 4.166666666666666,
+          "x": 84.02777777777777,
+          "y": 49.5,
+        },
+      ],
+      17 => [
+        {
+          "bandedY": 44.99999999999999,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 5.000000000000007,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              17,
+              100,
+              0,
+            ],
+            "mark": null,
+            "x": 17,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 89.58333333333333,
+          "y": 50,
+        },
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": 5.000000000000007,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              17,
+              100,
+              0,
+            ],
+            "mark": null,
+            "x": 17,
+            "y": 100,
+          },
+          "width": 4.166666666666666,
+          "x": 89.58333333333333,
+          "y": 44.99999999999999,
+        },
+      ],
+      18 => [
+        {
+          "bandedY": 50,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -50,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y0",
+            "datum": [
+              18,
+              0,
+              1000,
+            ],
+            "mark": null,
+            "x": 18,
+            "y": 1000,
+          },
+          "width": 4.166666666666666,
+          "x": 95.13888888888889,
+          "y": 0,
+        },
+        {
+          "bandedY": 0,
+          "color": "#54B399",
+          "displayValue": undefined,
+          "height": -50,
+          "panel": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+          },
+          "seriesIdentifier": {
+            "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+            "seriesKeys": [
+              1,
+            ],
+            "specId": "spec_1",
+            "splitAccessors": Map {},
+            "xAccessor": 0,
+            "yAccessor": 1,
+          },
+          "seriesStyle": {
+            "displayValue": {
+              "alignment": {
+                "horizontal": "center",
+                "vertical": "middle",
+              },
+              "fill": {
+                "textBorder": 0,
+              },
+              "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+              "fontSize": 10,
+              "fontStyle": "normal",
+              "offsetX": 0,
+              "offsetY": 0,
+              "padding": 0,
+            },
+            "rect": {
+              "opacity": 1,
+            },
+            "rectBorder": {
+              "strokeWidth": 1,
+              "visible": false,
+            },
+          },
+          "transform": {
+            "x": 0,
+            "y": 0,
+          },
+          "value": {
+            "accessor": "y1",
+            "datum": [
+              18,
+              0,
+              1000,
+            ],
+            "mark": null,
+            "x": 18,
+            "y": 0,
+          },
+          "width": 4.166666666666666,
+          "x": 95.13888888888889,
+          "y": 50,
+        },
+      ],
+    },
+  },
+  "spatialMap": IndexedGeometrySpatialMap {
+    "map": null,
+    "maxRadius": -Infinity,
+    "pointGeometries": [],
+    "points": [],
+    "searchStartIndex": 0,
+  },
+}
+`;
+
+exports[`Rendering bars should render two bars within domain 1`] = `
+[
+  {
+    "color": "red",
+    "displayValue": undefined,
+    "height": 100,
+    "panel": {
+      "height": 100,
+      "left": 0,
+      "top": 0,
+      "width": 100,
+    },
+    "seriesIdentifier": {
+      "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+      "seriesKeys": [
+        1,
+      ],
+      "specId": "spec_1",
+      "splitAccessors": Map {},
+      "xAccessor": 0,
+      "yAccessor": 1,
+    },
+    "seriesStyle": {
+      "displayValue": {
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
+        "fontStyle": "normal",
+        "offsetX": 0,
+        "offsetY": 0,
+        "padding": 0,
+      },
+      "rect": {
+        "opacity": 1,
+      },
+      "rectBorder": {
+        "strokeWidth": 1,
+        "visible": false,
+      },
+    },
+    "transform": {
+      "x": 0,
+      "y": 0,
+    },
+    "value": {
+      "accessor": "y1",
+      "datum": [
+        0,
+        10,
+      ],
+      "mark": null,
+      "x": 0,
+      "y": 10,
+    },
+    "width": 50,
+    "x": 0,
+    "y": 0,
+  },
+  {
+    "color": "red",
+    "displayValue": undefined,
+    "height": 50,
+    "panel": {
+      "height": 100,
+      "left": 0,
+      "top": 0,
+      "width": 100,
+    },
+    "seriesIdentifier": {
+      "key": "groupId{group_1}spec{spec_1}yAccessor{1}splitAccessors{}",
+      "seriesKeys": [
+        1,
+      ],
+      "specId": "spec_1",
+      "splitAccessors": Map {},
+      "xAccessor": 0,
+      "yAccessor": 1,
+    },
+    "seriesStyle": {
+      "displayValue": {
+        "alignment": {
+          "horizontal": "center",
+          "vertical": "middle",
+        },
+        "fill": {
+          "textBorder": 0,
+        },
+        "fontFamily": "Inter, BlinkMacSystemFont, Helvetica, Arial, sans-serif",
+        "fontSize": 10,
+        "fontStyle": "normal",
+        "offsetX": 0,
+        "offsetY": 0,
+        "padding": 0,
+      },
+      "rect": {
+        "opacity": 1,
+      },
+      "rectBorder": {
+        "strokeWidth": 1,
+        "visible": false,
+      },
+    },
+    "transform": {
+      "x": 0,
+      "y": 0,
+    },
+    "value": {
+      "accessor": "y1",
+      "datum": [
+        1,
+        5,
+      ],
+      "mark": null,
+      "x": 1,
+      "y": 5,
+    },
+    "width": 50,
+    "x": 50,
     "y": 50,
   },
 ]
