@@ -18,24 +18,18 @@ interface LabelProps {
   isToggleable?: boolean;
   onToggle?: (negate: boolean) => void;
   options: LegendLabelOptions;
-  interactionLabels?: {
-    onShownClick?: string;
-    onHiddenClick?: string;
-    onShownShiftClick?: string;
-    onHiddenShiftClick?: string;
-  };
 }
 
 const onShownItemClickLabel = 'Click: isolate series';
 const onHiddenItemClickLabel = 'Click: show all series';
-const onShownItemShiftClickLabel = 'SHIFT + click: hide series';
-const onHiddenItemShiftClickLabel = 'SHIFT + click: show series';
+const onShownItemMetaKeyClickLabel = 'SHIFT + click: hide series';
+const onHiddenItemMetaKeyClickLabel = 'SHIFT + click: show series';
 
 /**
  * Label component used to display text in legend item
  * @internal
  */
-export function Label({ label, isToggleable, onToggle, isSeriesHidden, options, interactionLabels }: LabelProps) {
+export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }: LabelProps) {
   const maxLines = Math.abs(options.maxLines);
   const labelClassNames = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(onToggle),
@@ -57,11 +51,11 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options, 
 
   const interactionsGuidanceText = !isSeriesHidden
     ? `
-${interactionLabels?.onShownClick ?? onShownItemClickLabel}
-${interactionLabels?.onShownShiftClick ?? onShownItemShiftClickLabel}`
+${onShownItemClickLabel}
+${onShownItemMetaKeyClickLabel}`
     : `
-${interactionLabels?.onHiddenClick ?? onHiddenItemClickLabel}
-${interactionLabels?.onHiddenShiftClick ?? onHiddenItemShiftClickLabel}`;
+${onHiddenItemClickLabel}
+${onHiddenItemMetaKeyClickLabel}`;
 
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met

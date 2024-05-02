@@ -26,7 +26,7 @@ exports[`Chart should render the legend name test 1`] = `
             <div className="echLegend echLegend--debug echLegend--vertical echLegend--right echLegend--top" style={{...}} dir="ltr">
               <div style={{...}} className="echLegendListContainer">
                 <ul style={{...}} className="echLegendList">
-                  <LegendItem item={{...}} positionConfig={{...}} isMostlyRTL={false} totalItems={1} extraValues={{...}} legendValues={{...}} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[undefined]} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[undefined]} action={[undefined]} labelOptions={{...}} flatLegend={false} interactionLabels={[undefined]}>
+                  <LegendItem item={{...}} positionConfig={{...}} isMostlyRTL={false} totalItems={1} extraValues={{...}} legendValues={{...}} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[undefined]} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[undefined]} action={[undefined]} labelOptions={{...}} flatLegend={false}>
                     <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="test">
                       <div className="background" />
                       <div className="colorWrapper">
@@ -42,7 +42,7 @@ exports[`Chart should render the legend name test 1`] = `
                           </div>
                         </ForwardRef>
                       </div>
-                      <Label label="test" options={{...}} isToggleable={false} onToggle={[undefined]} isSeriesHidden={false} interactionLabels={[undefined]}>
+                      <Label label="test" options={{...}} isToggleable={false} onToggle={[undefined]} isSeriesHidden={false}>
                         <div dir="ltr" className="echLegendItem__label echLegendItem__label--singleline" title="test" style={{...}}>
                           test
                         </div>

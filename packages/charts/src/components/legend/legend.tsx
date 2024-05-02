@@ -111,7 +111,6 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     action: config.legendAction,
     labelOptions: legend.labelOptions,
     flatLegend: config.flatLegend ?? DEFAULT_LEGEND_CONFIG.flatLegend,
-    interactionLabels: config.legendItemLabels,
   };
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
   return (
