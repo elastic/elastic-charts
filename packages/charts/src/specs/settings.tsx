@@ -468,16 +468,6 @@ export interface LegendSpec {
    * Override the legend with a custom component.
    */
   customLegend?: CustomLegend;
-  /**
-   * Provide a custom help labels for legend items to guide users in different interactions.
-   */
-  legendItemLabels?: {
-    // Describe what happens on single click. Default: "isolate series"
-    onShownClick?: string;
-    onHiddenClick?: string;
-    onShownShiftClick?: string;
-    onHiddenShiftClick?: string;
-  };
 }
 
 /**
