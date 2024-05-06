@@ -103,7 +103,6 @@ export interface BarGeometry {
   value: GeometryValue;
   seriesStyle: BarSeriesStyle;
   panel: Dimensions;
-  bandedY?: number;
 }
 
 /** @internal */

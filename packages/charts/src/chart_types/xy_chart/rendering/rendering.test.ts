@@ -60,13 +60,13 @@ describe('Rendering utils', () => {
       height: 10,
       seriesStyle,
     });
-    expect(isPointOnGeometry(0, 0, geometry, MIN_DISTANCE_BUFFER, false)).toBe(true);
-    expect(isPointOnGeometry(10, 10, geometry, MIN_DISTANCE_BUFFER, false)).toBe(true);
-    expect(isPointOnGeometry(0, 10, geometry, MIN_DISTANCE_BUFFER, false)).toBe(true);
-    expect(isPointOnGeometry(10, 0, geometry, MIN_DISTANCE_BUFFER, false)).toBe(true);
-    expect(isPointOnGeometry(-10, 0, geometry, MIN_DISTANCE_BUFFER, false)).toBe(false);
-    expect(isPointOnGeometry(-11, 0, geometry, MIN_DISTANCE_BUFFER, false)).toBe(false);
-    expect(isPointOnGeometry(11, 11, geometry, MIN_DISTANCE_BUFFER, false)).toBe(false);
+    expect(isPointOnGeometry(0, 0, geometry, MIN_DISTANCE_BUFFER)).toBe(true);
+    expect(isPointOnGeometry(10, 10, geometry, MIN_DISTANCE_BUFFER)).toBe(true);
+    expect(isPointOnGeometry(0, 10, geometry, MIN_DISTANCE_BUFFER)).toBe(true);
+    expect(isPointOnGeometry(10, 0, geometry, MIN_DISTANCE_BUFFER)).toBe(true);
+    expect(isPointOnGeometry(-10, 0, geometry, MIN_DISTANCE_BUFFER)).toBe(false);
+    expect(isPointOnGeometry(-11, 0, geometry, MIN_DISTANCE_BUFFER)).toBe(false);
+    expect(isPointOnGeometry(11, 11, geometry, MIN_DISTANCE_BUFFER)).toBe(false);
   });
   test('check if point is on point geometry', () => {
     const geometry = MockPointGeometry.default({
@@ -95,23 +95,23 @@ describe('Rendering utils', () => {
       radius: 10,
     });
     // with buffer
-    expect(isPointOnGeometry(10, 10, geometry, 10, false)).toBe(true);
-    expect(isPointOnGeometry(20, 20, geometry, 5, false)).toBe(false);
+    expect(isPointOnGeometry(10, 10, geometry, 10)).toBe(true);
+    expect(isPointOnGeometry(20, 20, geometry, 5)).toBe(false);
 
     // without buffer
-    expect(isPointOnGeometry(0, 0, geometry, 0, false)).toBe(true);
-    expect(isPointOnGeometry(0, 10, geometry, 0, false)).toBe(true);
-    expect(isPointOnGeometry(10, 0, geometry, 0, false)).toBe(true);
-    expect(isPointOnGeometry(11, 11, geometry, 0, false)).toBe(false);
-    expect(isPointOnGeometry(-10, 0, geometry, 0, false)).toBe(true);
-    expect(isPointOnGeometry(-11, 0, geometry, 0, false)).toBe(false);
-    expect(isPointOnGeometry(11, 11, geometry, 0, false)).toBe(false);
+    expect(isPointOnGeometry(0, 0, geometry, 0)).toBe(true);
+    expect(isPointOnGeometry(0, 10, geometry, 0)).toBe(true);
+    expect(isPointOnGeometry(10, 0, geometry, 0)).toBe(true);
+    expect(isPointOnGeometry(11, 11, geometry, 0)).toBe(false);
+    expect(isPointOnGeometry(-10, 0, geometry, 0)).toBe(true);
+    expect(isPointOnGeometry(-11, 0, geometry, 0)).toBe(false);
+    expect(isPointOnGeometry(11, 11, geometry, 0)).toBe(false);
 
     // should use radial check
-    expect(isPointOnGeometry(9, 9, geometry, 0, false)).toBe(false);
-    expect(isPointOnGeometry(-9, 9, geometry, 0, false)).toBe(false);
-    expect(isPointOnGeometry(9, -9, geometry, 0, false)).toBe(false);
-    expect(isPointOnGeometry(-9, -9, geometry, 0, false)).toBe(false);
+    expect(isPointOnGeometry(9, 9, geometry, 0)).toBe(false);
+    expect(isPointOnGeometry(-9, 9, geometry, 0)).toBe(false);
+    expect(isPointOnGeometry(9, -9, geometry, 0)).toBe(false);
+    expect(isPointOnGeometry(-9, -9, geometry, 0)).toBe(false);
   });
 
   describe('should get common geometry style dependent on legend item highlight state', () => {

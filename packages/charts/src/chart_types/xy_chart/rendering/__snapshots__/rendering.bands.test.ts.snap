@@ -593,7 +593,6 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
 exports[`Rendering bands - areas Single series band bar chart - ordinal Can render two bars 1`] = `
 [
   {
-    "bandedY": 80,
     "color": "red",
     "displayValue": undefined,
     "height": 80,
@@ -657,7 +656,6 @@ exports[`Rendering bands - areas Single series band bar chart - ordinal Can rend
     "y": 0,
   },
   {
-    "bandedY": 70,
     "color": "red",
     "displayValue": undefined,
     "height": 20,
@@ -721,7 +719,6 @@ exports[`Rendering bands - areas Single series band bar chart - ordinal Can rend
     "y": 50,
   },
   {
-    "bandedY": 60,
     "color": "red",
     "displayValue": undefined,
     "height": 40,

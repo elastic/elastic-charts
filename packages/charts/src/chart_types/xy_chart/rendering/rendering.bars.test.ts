@@ -223,9 +223,6 @@ describe('Rendering bars', () => {
       const indexedBarGeometries = geometriesIndex.getMergeData().linearGeometries as BarGeometry[][];
 
       expect(indexedBarGeometries).toSatisfyAll<BarGeometry[][]>(({ length }) => length === 2);
-      indexedBarGeometries.forEach(([upper, lower]) => {
-        return upper!.y === lower!.bandedY && lower!.y === upper!.bandedY;
-      });
       expect(geometriesIndex).toMatchSnapshot();
     });
   });

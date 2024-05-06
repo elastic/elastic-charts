@@ -159,7 +159,7 @@ function getTooltipAndHighlightFromValue(
       let isHighlighted = false;
       if (
         (!externalPointerEvent || isPointerOutEvent(externalPointerEvent)) &&
-        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer, isBandedSpec(spec))
+        isPointOnGeometry(x, y, indexedGeometry, settings.pointBuffer)
       ) {
         isHighlighted = true;
         highlightedGeometries.push(indexedGeometry);

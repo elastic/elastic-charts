@@ -71,10 +71,7 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
         </defs>
 
         {highlightedGeometries.map((geom, i) => {
-          const {
-            panel,
-            value: { accessor },
-          } = geom;
+          const { panel } = geom;
           const x = geom.x + geom.transform.x;
           const y = geom.y + geom.transform.y;
           const geomTransform = getTransformForPanel(panel, chartRotation, chartDimensions);
@@ -108,9 +105,9 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
             <rect
               key={i}
               x={x}
-              y={geom.height < 0 ? (accessor === 'y1' ? y + geom.height : y) : accessor === 'y1' ? y : y - geom.height}
+              y={geom.y}
               width={geom.width}
-              height={Math.abs(geom.height)}
+              height={geom.height}
               transform={geomTransform}
               className="echHighlighterOverlay__fill"
               clipPath={`url(#${clipPathId})`}

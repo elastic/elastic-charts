@@ -264,10 +264,9 @@ IndexedGeometryMap {
     "map": Map {
       1 => [
         {
-          "bandedY": 100,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -50,
+          "height": 50,
           "panel": {
             "height": 100,
             "left": 0,
@@ -328,10 +327,9 @@ IndexedGeometryMap {
           "y": 50,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -50,
+          "height": 50,
           "panel": {
             "height": 100,
             "left": 0,
@@ -389,15 +387,14 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 0.6944444444444429,
-          "y": 100,
+          "y": 50,
         },
       ],
       2 => [
         {
-          "bandedY": 55.00000000000001,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -5.000000000000007,
+          "height": 5.000000000000007,
           "panel": {
             "height": 100,
             "left": 0,
@@ -458,10 +455,9 @@ IndexedGeometryMap {
           "y": 50,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -5.000000000000007,
+          "height": 5.000000000000007,
           "panel": {
             "height": 100,
             "left": 0,
@@ -519,15 +515,14 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 6.249999999999999,
-          "y": 55.00000000000001,
+          "y": 50,
         },
       ],
       3 => [
         {
-          "bandedY": 50.5,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -0.5,
+          "height": 0.5,
           "panel": {
             "height": 100,
             "left": 0,
@@ -588,10 +583,9 @@ IndexedGeometryMap {
           "y": 50,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -0.5,
+          "height": 0.5,
           "panel": {
             "height": 100,
             "left": 0,
@@ -649,15 +643,14 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 11.805555555555554,
-          "y": 50.5,
+          "y": 50,
         },
       ],
       4.5 => [
         {
-          "bandedY": 50.5,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -1,
+          "height": 1,
           "panel": {
             "height": 100,
             "left": 0,
@@ -718,10 +711,9 @@ IndexedGeometryMap {
           "y": 49.5,
         },
         {
-          "bandedY": 49.5,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -1,
+          "height": 1,
           "panel": {
             "height": 100,
             "left": 0,
@@ -779,15 +771,14 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 17.361111111111107,
-          "y": 50.5,
+          "y": 49.5,
         },
       ],
       5 => [
         {
-          "bandedY": 50.05,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -0.04999999999999716,
+          "height": 0.04999999999999716,
           "panel": {
             "height": 100,
             "left": 0,
@@ -848,10 +839,9 @@ IndexedGeometryMap {
           "y": 50,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -0.04999999999999716,
+          "height": 0.04999999999999716,
           "panel": {
             "height": 100,
             "left": 0,
@@ -909,12 +899,11 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 22.916666666666664,
-          "y": 50.05,
+          "y": 50,
         },
       ],
       6 => [
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0,
@@ -978,7 +967,6 @@ IndexedGeometryMap {
           "y": 50,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0,
@@ -1044,10 +1032,9 @@ IndexedGeometryMap {
       ],
       7 => [
         {
-          "bandedY": 50.05,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -0.04999999999999716,
+          "height": 0.04999999999999716,
           "panel": {
             "height": 100,
             "left": 0,
@@ -1108,10 +1095,9 @@ IndexedGeometryMap {
           "y": 50,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -0.04999999999999716,
+          "height": 0.04999999999999716,
           "panel": {
             "height": 100,
             "left": 0,
@@ -1169,12 +1155,11 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 34.02777777777777,
-          "y": 50.05,
+          "y": 50,
         },
       ],
       8 => [
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0,
@@ -1238,7 +1223,6 @@ IndexedGeometryMap {
           "y": 50,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0,
@@ -1304,7 +1288,6 @@ IndexedGeometryMap {
       ],
       9 => [
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0,
@@ -1368,7 +1351,6 @@ IndexedGeometryMap {
           "y": 50,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0,
@@ -1434,10 +1416,9 @@ IndexedGeometryMap {
       ],
       10 => [
         {
-          "bandedY": 49.75000000000001,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -0.2500000000000071,
+          "height": 0.2500000000000071,
           "panel": {
             "height": 100,
             "left": 0,
@@ -1498,10 +1479,9 @@ IndexedGeometryMap {
           "y": 49.5,
         },
         {
-          "bandedY": 49.5,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -0.2500000000000071,
+          "height": 0.2500000000000071,
           "panel": {
             "height": 100,
             "left": 0,
@@ -1559,12 +1539,11 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 50.69444444444444,
-          "y": 49.75000000000001,
+          "y": 49.5,
         },
       ],
       11 => [
         {
-          "bandedY": 49.95,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0.5499999999999972,
@@ -1625,10 +1604,9 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 56.25,
-          "y": 50.5,
+          "y": 49.95,
         },
         {
-          "bandedY": 50.5,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0.5499999999999972,
@@ -1694,7 +1672,6 @@ IndexedGeometryMap {
       ],
       12 => [
         {
-          "bandedY": 49.95,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0.04999999999999716,
@@ -1755,10 +1732,9 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 61.80555555555555,
-          "y": 50,
+          "y": 49.95,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0.04999999999999716,
@@ -1824,7 +1800,6 @@ IndexedGeometryMap {
       ],
       13 => [
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0,
@@ -1888,7 +1863,6 @@ IndexedGeometryMap {
           "y": 50,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0,
@@ -1954,7 +1928,6 @@ IndexedGeometryMap {
       ],
       14 => [
         {
-          "bandedY": 49.95,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0.04999999999999716,
@@ -2015,10 +1988,9 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 72.91666666666666,
-          "y": 50,
+          "y": 49.95,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0.04999999999999716,
@@ -2084,7 +2056,6 @@ IndexedGeometryMap {
       ],
       15 => [
         {
-          "bandedY": 49.5,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 1,
@@ -2145,10 +2116,9 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 78.47222222222221,
-          "y": 50.5,
+          "y": 49.5,
         },
         {
-          "bandedY": 50.5,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 1,
@@ -2214,7 +2184,6 @@ IndexedGeometryMap {
       ],
       16 => [
         {
-          "bandedY": 49.5,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0.5,
@@ -2275,10 +2244,9 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 84.02777777777777,
-          "y": 50,
+          "y": 49.5,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 0.5,
@@ -2344,7 +2312,6 @@ IndexedGeometryMap {
       ],
       17 => [
         {
-          "bandedY": 44.99999999999999,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 5.000000000000007,
@@ -2405,10 +2372,9 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 89.58333333333333,
-          "y": 50,
+          "y": 44.99999999999999,
         },
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
           "height": 5.000000000000007,
@@ -2474,10 +2440,9 @@ IndexedGeometryMap {
       ],
       18 => [
         {
-          "bandedY": 50,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -50,
+          "height": 50,
           "panel": {
             "height": 100,
             "left": 0,
@@ -2538,10 +2503,9 @@ IndexedGeometryMap {
           "y": 0,
         },
         {
-          "bandedY": 0,
           "color": "#54B399",
           "displayValue": undefined,
-          "height": -50,
+          "height": 50,
           "panel": {
             "height": 100,
             "left": 0,
@@ -2599,7 +2563,7 @@ IndexedGeometryMap {
           },
           "width": 4.166666666666666,
           "x": 95.13888888888889,
-          "y": 50,
+          "y": 0,
         },
       ],
     },

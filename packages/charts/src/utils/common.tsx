@@ -727,8 +727,8 @@ export const isBetween = (min: number, max: number, exclusive = false): ((n: num
  * Returns `Array.filter` callback for values between two unordered values
  * @internal
  */
-export const isWithinRange = (range: [number, number], exclusive = false) => {
-  const [min, max] = sortNumbers(range);
+export const isWithinRange = (r: [number, number], exclusive = false) => {
+  const [min, max] = sortNumbers(r);
   return isBetween(min, max, exclusive);
 };
 
