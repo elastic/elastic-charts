@@ -68,7 +68,7 @@ export function renderBars(
     // orientation independent height
     const yDiff = Math.abs(y1Scaled - y0Scaled);
     // amount required to reach the minBarHeight requested
-    const addedMinBarHeight = yDiff >= minBarHeight ? 0 : minBarHeight - yDiff;
+    const addedMinBarHeight = yDiff === 0 || yDiff >= minBarHeight ? 0 : minBarHeight - yDiff;
 
     // the y coordinate in screen-space.
     const yScreenSpaceCoord =
@@ -153,7 +153,6 @@ export function renderBars(
         ...barGeometry,
         value: {
           x: datum.x,
-
           y: getDatumYValue(datum, true, isBandedSpec, stackMode),
           mark: null,
           accessor: BandedAccessorType.Y0,
