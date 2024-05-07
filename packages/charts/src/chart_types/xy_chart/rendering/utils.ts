@@ -10,7 +10,7 @@ import { LegendItem } from '../../../common/legend';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isLogarithmicScale } from '../../../scales/types';
 import { MarkBuffer } from '../../../specs';
-import { getDistance } from '../../../utils/common';
+import { getDistance, isWithinRange } from '../../../utils/common';
 import { BarGeometry, ClippedRanges, isPointGeometry, PointGeometry } from '../../../utils/geometry';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
 import { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
@@ -137,7 +137,8 @@ export function isPointOnGeometry(
     return distance <= radius + radiusBuffer;
   }
   const { width, height } = indexedGeometry;
-  return yCoordinate >= y && yCoordinate <= y + height && xCoordinate >= x && xCoordinate <= x + width;
+  if (!isWithinRange([x, x + width])(xCoordinate)) return false;
+  return isWithinRange([y, y + height])(yCoordinate);
 }
 
 const getScaleTypeValueValidator = (yScale: ScaleContinuous): ((n: number) => boolean) => {

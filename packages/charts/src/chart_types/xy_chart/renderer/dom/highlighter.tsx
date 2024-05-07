@@ -17,7 +17,7 @@ import { InitStatus, getInternalIsInitializedSelector } from '../../../../state/
 import { isBrushingSelector } from '../../../../state/selectors/is_brushing';
 import { getColorFromVariant, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
-import { isPointGeometry, IndexedGeometry, PointGeometry } from '../../../../utils/geometry';
+import { isPointGeometry, IndexedGeometry, PointGeometry, isBarGeometry } from '../../../../utils/geometry';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { HighlighterStyle } from '../../../../utils/themes/theme';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
@@ -57,11 +57,20 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
   static displayName = 'Highlighter';
 
   render() {
-    const { highlightedGeometries, chartDimensions, chartRotation, chartId, zIndex, isBrushing, style } = this.props;
+    const { chartDimensions, chartRotation, chartId, zIndex, isBrushing, style } = this.props;
     if (isBrushing) return null;
     const clipWidth = [90, -90].includes(chartRotation) ? chartDimensions.height : chartDimensions.width;
     const clipHeight = [90, -90].includes(chartRotation) ? chartDimensions.width : chartDimensions.height;
     const clipPathId = `echHighlighterClipPath__${chartId}`;
+
+    const seenBarSeries = new Set<string>();
+    const highlightedGeometries = this.props.highlightedGeometries.filter((geom) => {
+      if (!isBarGeometry(geom)) return true;
+      const seen = seenBarSeries.has(geom.seriesIdentifier.key);
+      seenBarSeries.add(geom.seriesIdentifier.key);
+      return !seen;
+    });
+
     return (
       <svg className="echHighlighter" style={{ zIndex }}>
         <defs>
@@ -100,11 +109,12 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
               </g>
             );
           }
+
           return (
             <rect
               key={i}
               x={x}
-              y={y}
+              y={geom.y}
               width={geom.width}
               height={geom.height}
               transform={geomTransform}

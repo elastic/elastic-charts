@@ -9,13 +9,14 @@
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
+import { BarGeometry } from '../../../utils/geometry';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';
 
 describe('Rendering bars', () => {
-  test('Can render two bars within domain', () => {
+  it('should render two bars within domain', () => {
     const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
     const spec = MockSeriesSpec.bar({
       id: SPEC_ID,
@@ -40,7 +41,7 @@ describe('Rendering bars', () => {
   });
 
   describe('Single series bar chart - ordinal', () => {
-    test('Can render bars with value labels', () => {
+    it('should render bars with value labels', () => {
       const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
       MockStore.addSpecs(
         [
@@ -70,7 +71,7 @@ describe('Rendering bars', () => {
       expect(geometries.bars[0]?.value[0]?.displayValue).toBeDefined();
     });
 
-    test('Can hide value labels if no formatter or showValueLabels is false/undefined', () => {
+    it('should hide value labels if no formatter or showValueLabels is false/undefined', () => {
       const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
       MockStore.addSpecs(
         [
@@ -100,7 +101,7 @@ describe('Rendering bars', () => {
       expect(geometries.bars[0]?.value[0]?.displayValue).toBeUndefined();
     });
 
-    test('Can render bars with alternating value labels', () => {
+    it('should render bars with alternating value labels', () => {
       const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
       MockStore.addSpecs(
         [
@@ -178,6 +179,51 @@ describe('Rendering bars', () => {
     });
     test('can render second spec bars', () => {
       expect(bars[1]?.value).toMatchSnapshot();
+    });
+  });
+
+  describe('Negative, minBarHeight, flipped and banded datasets', () => {
+    it('should render bars with alternating value labels', () => {
+      const store = MockStore.default({ width: 100, height: 100, top: 0, left: 0 });
+      MockStore.addSpecs(
+        [
+          MockSeriesSpec.bar({
+            id: SPEC_ID,
+            groupId: GROUP_ID,
+            xScaleType: ScaleType.Ordinal,
+            yScaleType: ScaleType.Linear,
+            xAccessor: 0,
+            yAccessors: [1],
+            y0Accessors: [2],
+            data: [
+              [1, -1000, 0],
+              [2, -100, 0],
+              [3, -10, 0],
+              [4.5, -10, 10],
+              [5, -1, 0],
+              [6, 0, 0],
+              [7, -1, 0],
+              [8, 0, 0],
+              [9, 0, 0],
+              [10, 5, 10],
+              [11, 1, -10],
+              [12, 1, 0],
+              [13, 0, 0],
+              [14, 1, 0],
+              [15, 10, -10],
+              [16, 10, 0],
+              [17, 100, 0],
+              [18, 0, 1000],
+            ],
+          }),
+        ],
+        store,
+      );
+      const { geometriesIndex } = computeSeriesGeometriesSelector(store.getState());
+      const indexedBarGeometries = geometriesIndex.getMergeData().linearGeometries as BarGeometry[][];
+
+      expect(indexedBarGeometries).toSatisfyAll<BarGeometry[][]>(({ length }) => length === 2);
+      expect(geometriesIndex).toMatchSnapshot();
     });
   });
 });
