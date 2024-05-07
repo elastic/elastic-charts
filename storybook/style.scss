@@ -108,7 +108,7 @@ html {
       background: blanchedalmond !important;
     }
 
-    #story-header {
+    .story-header {
       display: none;
     }
 
@@ -164,8 +164,8 @@ body {
   }
 }
 
-#story-header {
-  padding: 20px 40px 16px;
+.story-header {
+  padding: 20px 40px 16px !important;
 }
 
 .sb-show-main {
@@ -178,6 +178,10 @@ body {
 
 .echInvisible {
   visibility: hidden;
+}
+
+.markdown {
+  padding: 24px !important;
 }
 
 #story-root + div table {
