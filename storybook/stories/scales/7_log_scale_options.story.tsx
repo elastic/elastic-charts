@@ -10,17 +10,7 @@ import { boolean, number, select } from '@storybook/addon-knobs';
 import { range } from 'lodash';
 import React from 'react';
 
-import {
-  Chart,
-  Axis,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-  AreaSeries,
-  YDomainBase,
-  LogScaleOptions,
-} from '@elastic/charts';
+import { Chart, Axis, Position, ScaleType, Settings, YDomainBase, LogScaleOptions } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -83,21 +73,6 @@ const getDataValue = (type: string, v: number, i: number, length: number) => {
   }
 };
 
-const seriesMap = {
-  line: LineSeries,
-  area: AreaSeries,
-};
-
-const getSeriesType = () =>
-  select<keyof typeof seriesMap>(
-    'Series Type',
-    {
-      Line: 'line',
-      Area: 'area',
-    },
-    'line',
-  );
-
 const getInitalData = (rows: number) => {
   const quart = Math.round(rows / 4);
   return [...range(quart, -quart, -1), ...range(-quart, quart + 1, 1)];
@@ -118,9 +93,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const yLogKnobs = getLogKnobs(false);
   const xLogKnobs = getLogKnobs(true);
   const data = getData(rows, yLogKnobs, xLogKnobs);
-  const type = getSeriesType();
+  const [Series] = customKnobs.enum.xySeries('Series Type', 'line', { exclude: ['bubble', 'bar'] });
   const curve = customKnobs.enum.curve('Curve type');
-  const Series = seriesMap[type];
 
   return (
     <Chart title={title} description={description}>

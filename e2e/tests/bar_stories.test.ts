@@ -256,4 +256,10 @@ test.describe('Bar series stories', () => {
       );
     });
   });
+
+  test('should not render min bar heights for log scale values at baseline', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/bar-chart--min-height&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=true&knob-Custom No Results message=No Results&knob-Nice y ticks=true&knob-Scale Type=linear&knob-Series Type=bar&knob-Show positive data=true&knob-Split=true&knob-logMinLimit=1&knob-minBarHeight=5&knob-scale=log&knob-scaleType=log',
+    );
+  });
 });

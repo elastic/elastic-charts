@@ -24,6 +24,7 @@ import {
   clampAll,
   sortNumbers,
   isSorted,
+  inRange,
 } from './common';
 
 describe('common utilities', () => {
@@ -1161,6 +1162,50 @@ describe('#isDefinedFrom', () => {
     });
     it('should clamp array values and remove duplicates', () => {
       expect([0, 100, 200, 300, 400].reduce(...clampAll(100, 300))).toEqual([100, 200, 300]);
+    });
+  });
+
+  describe('#inRange', () => {
+    describe('#firstHalf', () => {
+      it.each<{ start: number; end: number; value: number; expected: boolean; exclusive?: boolean }>([
+        { start: 0, end: 100, value: 25, expected: true },
+        { start: 0, end: 100, value: 75, expected: false },
+        { start: 100, end: 0, value: 25, expected: false },
+        { start: 100, end: 0, value: 75, expected: true },
+        { start: -10, end: 100, value: 0, expected: true },
+        { start: -100, end: 100, value: 50, expected: false },
+        { start: -100, end: 100, value: -50, expected: true },
+        { start: -100, end: 100, value: -110, expected: false },
+        { start: 100, end: -100, value: 110, expected: false },
+        { start: 10, end: 20, value: 10, expected: false, exclusive: true },
+        { start: 10, end: 20, value: 15, expected: false, exclusive: true },
+      ])(
+        'should return $expected for $value, given a range of [$start, $end]',
+        ({ start, end, value, expected, exclusive }) => {
+          expect(inRange(start, end, exclusive).firstHalf(value)).toBe(expected);
+        },
+      );
+    });
+    describe('#lastHalf', () => {
+      it.each<{ start: number; end: number; value: number; expected: boolean; exclusive?: boolean }>([
+        { start: 0, end: 100, value: 25, expected: false },
+        { start: 0, end: 100, value: 75, expected: true },
+        { start: 100, end: 0, value: 25, expected: true },
+        { start: 100, end: 0, value: 75, expected: false },
+        { start: 100, end: 10, value: 0, expected: false },
+        { start: -100, end: 10, value: 0, expected: true },
+        { start: -100, end: 100, value: 50, expected: true },
+        { start: -100, end: 100, value: -50, expected: false },
+        { start: -100, end: 100, value: 110, expected: false },
+        { start: 100, end: -100, value: -110, expected: false },
+        { start: 10, end: 20, value: 20, expected: false, exclusive: true },
+        { start: 10, end: 20, value: 15, expected: false, exclusive: true },
+      ])(
+        'should return $expected for $value, given a range of [$start, $end]',
+        ({ start, end, value, expected, exclusive }) => {
+          expect(inRange(start, end, exclusive).lastHalf(value)).toBe(expected);
+        },
+      );
     });
   });
 });
