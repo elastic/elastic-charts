@@ -47,7 +47,7 @@ interface LegendItemOutAction {
 export interface ToggleDeselectSeriesAction {
   type: typeof ON_TOGGLE_DESELECT_SERIES;
   legendItemIds: SeriesIdentifier[];
-  negate: boolean;
+  metaKey: boolean;
 }
 
 /** @internal */
@@ -63,9 +63,9 @@ export function onLegendItemOutAction(): LegendItemOutAction {
 /** @internal */
 export function onToggleDeselectSeriesAction(
   legendItemIds: SeriesIdentifier[],
-  negate = false,
+  metaKey = false,
 ): ToggleDeselectSeriesAction {
-  return { type: ON_TOGGLE_DESELECT_SERIES, legendItemIds, negate };
+  return { type: ON_TOGGLE_DESELECT_SERIES, legendItemIds, metaKey };
 }
 
 /** @internal */

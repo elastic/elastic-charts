@@ -32,10 +32,10 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }
     'echLegendItem__label--multiline': maxLines > 1,
   });
 
-  const onClick: MouseEventHandler = useCallback(({ shiftKey }) => onToggle?.(shiftKey), [onToggle]);
+  const onClick: MouseEventHandler = useCallback(({ metaKey }) => onToggle?.(metaKey), [onToggle]);
   const onKeyDown: KeyboardEventHandler = useCallback(
-    ({ key, shiftKey }) => {
-      if (key === ' ' || key === 'Enter') onToggle?.(shiftKey);
+    ({ key, metaKey }) => {
+      if (key === ' ' || key === 'Enter') onToggle?.(metaKey);
     },
     [onToggle],
   );
