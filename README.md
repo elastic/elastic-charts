@@ -51,7 +51,7 @@ yarn start
 ```
 
 We use [storybook](https://storybook.js.org) to document API, edge-cases, and the usage of the library.
-A hosted version is available at [https://elastic.github.io/elastic-charts][docs].
+A hosted version is available at [https://elastic.github.io/elastic-charts/storybook][docs].
 
 ## Goals
 
@@ -80,7 +80,7 @@ You can find documentation around creating and submitting new features in [contr
 [license]: LICENSE.txt
 [wikiroot]: https://github.com/elastic/elastic-charts/wiki
 [faq]: https://github.com/elastic/elastic-charts/wiki/FAQ
-[docs]: https://elastic.github.io/elastic-charts/
+[docs]: https://elastic.github.io/elastic-charts/storybook/
 [consuming]: https://github.com/elastic/elastic-charts/wiki/Consuming-@elastic-charts
 [overview]: https://github.com/elastic/elastic-charts/wiki/Overview
 [theming]: https://github.com/elastic/elastic-charts/wiki/Theming
