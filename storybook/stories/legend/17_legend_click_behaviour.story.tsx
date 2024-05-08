@@ -19,14 +19,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const clickMode = select(
     'Legend click behaviour',
     [
-      'click-to-exclude',
-      'click-to-include',
-      'click-to-include-only-on-visible',
-      'click-to-include-hide-on-shift',
-      'click-to-include-v5',
-      'click-to-include-v6',
+      'original',
+      'variant-1',
+      'variant-2',
+      'variant-3',
     ],
-    'click-to-exclude',
+    'original',
   );
   const showLegend = boolean('Show legend', true);
 
@@ -73,11 +71,9 @@ Example.parameters = {
 **Available behaviours**  
 ---
 
-* \`click-to-exclude\`: on click toggle the series visibility (visible -> non visible -> visible)
-* \`click-to-include\`: on click focus on the series (visible -> focus on clicked series -> unfocus from clicked series) - the only way to get back all series is to use the "CTRL + click" feature
-* \`click-to-include-only-on-visible\`: on click focus on the series if visible, restore it back if non-visible (visible -> focus on clicked series -> unfocus from clicked series -> visible all series)
-* \`click-to-include-hide-on-shift\`: on click focus on the series if visible, restore back all other non-visible series on second click (use shift for the toggle behaviour)
-* \`click-to-include-v5\`: on click focus on the series if visible, restore back all other non-visible series on second click (hidden series gets restored on click. SHIFT click toggles visibility)
-* \`click-to-include-v6\`: focus mode when all series are visible, or toggle mode when some are hidden. SHIFT click always toggles.
+* \`original\`: on click toggle the series visibility (visible -> non visible -> visible)
+* \`variant-1\`: on click focus on the series if visible, restore back all other non-visible series on second click (use shift for the toggle behaviour)
+* \`variant-2\`: on click focus on the series if visible, restore back all other non-visible series on second click (hidden series gets restored on click. SHIFT click toggles visibility)
+* \`variant-3\`: focus mode when all series are visible, or toggle mode when some are hidden. SHIFT click always toggles.
   `,
 };

@@ -278,7 +278,7 @@ function toggleDeselectedDataSeries(
 
   // curret behaviour
   // @ts-expect-error we know this is a valid value
-  if (window.clickMode === 'click-to-exclude') {
+  if (window.clickMode === 'original') {
     if (negate) {
       return alreadyDeselected || deselectedDataSeries.length !== legendItemsKeys.length - 1
         ? legendItemsKeys.flat().filter(keepOnlyNonActionSeries)
@@ -313,7 +313,7 @@ function toggleDeselectedDataSeries(
   }
 
   // @ts-expect-error we know this is a valid value
-  if (window.clickMode === 'click-to-include-hide-on-shift') {
+  if (window.clickMode === 'variant-1') {
     if (negate) {
       return alreadyDeselected
         ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
@@ -325,7 +325,7 @@ function toggleDeselectedDataSeries(
   }
 
   // @ts-expect-error we know this is a valid value
-  if (window.clickMode === 'click-to-include-v5') {
+  if (window.clickMode === 'variant-2') {
     if (negate) {
       return alreadyDeselected
         ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
@@ -340,7 +340,7 @@ function toggleDeselectedDataSeries(
   }
 
   // @ts-expect-error we know this is a valid value
-  if (window.clickMode === 'click-to-include-v6') {
+  if (window.clickMode === 'variant-3') {
     if (negate) {
       return alreadyDeselected
         ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
