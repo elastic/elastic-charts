@@ -8,7 +8,7 @@
   </a>
   <a href="https://www.npmjs.com/@elastic/charts"><img alt="NPM version" src="https://img.shields.io/npm/v/@elastic/charts.svg"></a>
   <a href="http://commitizen.github.io/cz-cli/"><img alt="Commitizen friendly" src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg"></a>
-  <a href="https://elastic.github.io/elastic-charts">
+  <a href="https://elastic.github.io/elastic-charts/storybook">
     <img src="https://img.shields.io/static/v1?label=examples&message=storybook&color=ff4685">
   </a>
 </p>
