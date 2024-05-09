@@ -186,7 +186,8 @@ test.describe('Legend stories', () => {
           hiddenResults.push(index);
         }
       });
-      expect(hiddenResults).toEqual([1]);
+      // with the new behaviour everything is hidden but the clicked series
+      expect(hiddenResults).toEqual([1, 2, 3, 4, 5, 6, 7]);
     });
   });
 
