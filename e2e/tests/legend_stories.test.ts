@@ -187,7 +187,7 @@ test.describe('Legend stories', () => {
         }
       });
       // with the new behaviour everything is hidden but the clicked series
-      expect(hiddenResults).toEqual([1, 2, 3, 4, 5, 6, 7]);
+      expect(hiddenResults).toEqual([0, 2, 3, 4, 5, 6, 7]);
     });
   });
 
