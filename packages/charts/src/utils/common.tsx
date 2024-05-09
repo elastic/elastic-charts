@@ -444,7 +444,7 @@ export function mergePartial<T>(
 }
 
 /** @public */
-export type ValueFormatter = (value: number) => string;
+export type ValueFormatter<T = number> = (value: T) => string;
 /** @public */
 export type ValueAccessor<D extends BaseDatum = Datum> = (d: D) => AdditiveNumber;
 /** @public */

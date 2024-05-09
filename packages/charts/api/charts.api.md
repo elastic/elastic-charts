@@ -2059,7 +2059,7 @@ export type MetricBase = {
 };
 
 // @alpha (undocumented)
-export type MetricDatum = MetricWNumber | MetricWText | MetricWProgress | MetricWTrend;
+export type MetricDatum = MetricWNumber | MetricWText | MetricWNumberArrayValues | MetricWStringArrayValues | MetricWProgress | MetricWTrend;
 
 // @public
 export type MetricElementEvent = {
@@ -2119,9 +2119,20 @@ export type MetricWNumber = MetricBase & {
 };
 
 // @alpha (undocumented)
+export type MetricWNumberArrayValues = MetricBase & {
+    values: Array<number>;
+    valueFormatter: ValueFormatter<number>;
+};
+
+// @alpha (undocumented)
 export type MetricWProgress = MetricWNumber & {
     domainMax: number;
     progressBarDirection: LayoutDirection;
+};
+
+// @alpha (undocumented)
+export type MetricWStringArrayValues = MetricBase & {
+    values: Array<string>;
 };
 
 // @alpha (undocumented)
@@ -2130,7 +2141,7 @@ export type MetricWText = MetricBase & {
 };
 
 // @alpha (undocumented)
-export type MetricWTrend = (MetricWNumber | MetricWText) & {
+export type MetricWTrend = (MetricWNumber | MetricWText | MetricWNumberArrayValues | MetricWStringArrayValues) & {
     trend: {
         x: number;
         y: number;
@@ -3407,7 +3418,7 @@ export const useTooltipContext: <D extends BaseDatum = any, SI extends SeriesIde
 export type ValueAccessor<D extends BaseDatum = Datum> = (d: D) => AdditiveNumber;
 
 // @public (undocumented)
-export type ValueFormatter = (value: number) => string;
+export type ValueFormatter<T = number> = (value: T) => string;
 
 // Warning: (ae-forgotten-export) The symbol "ValueGetterName" needs to be exported by the entry point index.d.ts
 //
