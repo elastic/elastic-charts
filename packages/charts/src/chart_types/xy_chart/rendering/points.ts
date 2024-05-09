@@ -42,7 +42,7 @@ export function renderPoints(
   color: Color,
   pointStyle: PointStyle,
   isolatedPointThemeStyle: PointStyle,
-  isBandChart: boolean,
+  isBandedSpec: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
   allowIsolated: boolean,
@@ -74,12 +74,12 @@ export function renderPoints(
     if (Number.isNaN(x)) return acc;
 
     const points: PointGeometry[] = [];
-    const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandChart ? ['y0', 'y1'] : ['y1'];
+    const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
       const valueAccessor = getYDatumValueFn(yDatumKeyName);
       const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-      const originalY = getDatumYValue(datum, keyIndex === 0, isBandChart, dataSeries.stackMode);
+      const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
       const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
@@ -102,7 +102,7 @@ export function renderPoints(
           x: xValue,
           y: originalY,
           mark,
-          accessor: isBandChart && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
+          accessor: isBandedSpec && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
           datum: datum.datum,
         },
         transform: {
@@ -157,17 +157,17 @@ export function getPointStyleOverrides(
  * Get the original/initial Y value from the datum
  * @param datum a DataSeriesDatum
  * @param lookingForY0 if we are interested in the y0 value, false for y1
- * @param isBandChart if the chart is a band chart
+ * @param isBandedSpec if the chart is a band chart
  * @param stackMode an optional stack mode
  * @internal
  */
 export function getDatumYValue(
   { y1, y0, initialY1, initialY0 }: DataSeriesDatum,
   lookingForY0: boolean,
-  isBandChart: boolean,
+  isBandedSpec: boolean,
   stackMode?: StackMode,
 ) {
-  if (isBandChart) {
+  if (isBandedSpec) {
     // on band stacked charts in percentage mode, the values I'm looking for are the percentage value
     // that are already computed and available on y0 and y1
     // in all other cases for band charts, I want to get back the original/initial value of y0 and y1

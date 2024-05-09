@@ -46,7 +46,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
         <BackgroundIdProvider value={backgroundId}>
           <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
             {showHeader && !showChartTitle && !showChartDescription && (
-              <EuiFlexItem id="story-header" grow={false}>
+              <EuiFlexItem className="story-header" grow={false}>
                 <EuiFlexGroup gutterSize="none" direction="column" responsive={false}>
                   <EuiFlexItem>
                     <EuiText>
@@ -83,7 +83,7 @@ export const StoryWrapper: DecoratorFunction<JSX.Element> = (Story, context) => 
               </div>
             </EuiFlexItem>
             {markdown && (
-              <EuiFlexItem style={{ padding: 24 }}>
+              <EuiFlexItem className="markdown">
                 <EuiMarkdownFormat>{markdown}</EuiMarkdownFormat>
               </EuiFlexItem>
             )}
