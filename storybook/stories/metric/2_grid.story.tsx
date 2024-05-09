@@ -11,7 +11,7 @@ import { action } from '@storybook/addon-actions';
 import { select, number, boolean, button, color } from '@storybook/addon-knobs';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { Chart, isMetricElementEvent, Metric, MetricDatum, Settings } from '@elastic/charts';
+import { Chart, getMetricValue, isMetricElementEvent, Metric, MetricDatum, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -208,7 +208,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       {debugRandomizedData &&
         chartData
           .flat()
-          .map((d) => `[${d?.value}]`)
+          .map((d) => `[${getMetricValue(d)}]`)
           .join(' ')}
       <Chart title={title} description={description}>
         <Settings
@@ -224,7 +224,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
                   if (isMetricElementEvent(d)) {
                     const { rowIndex, columnIndex } = d;
                     onEventClickAction(
-                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.value}`,
+                      `row:${rowIndex} col:${columnIndex} value:${getMetricValue(chartData[rowIndex][columnIndex])}`,
                     );
                   }
                 }
@@ -233,7 +233,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
           onElementOver={([d]) => {
             if (isMetricElementEvent(d)) {
               const { rowIndex, columnIndex } = d;
-              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.value}`);
+              onEventOverAction(
+                `row:${rowIndex} col:${columnIndex} value:${getMetricValue(chartData[rowIndex][columnIndex])}`,
+              );
             }
           }}
           onElementOut={() => onEventOutAction('out')}

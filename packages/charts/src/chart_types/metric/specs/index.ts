@@ -112,6 +112,12 @@ export interface MetricSpec extends Spec {
   data: (MetricDatum | undefined)[][];
 }
 
+/**
+ * Returns value from metric datum
+ * @alpha
+ */
+export const getMetricValue = (d: MetricDatum | undefined) => (!d ? undefined : 'value' in d ? d.value : d.values);
+
 /** @alpha */
 export const Metric = specComponentFactory<MetricSpec>()(
   {

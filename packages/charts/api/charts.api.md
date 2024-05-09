@@ -1350,6 +1350,9 @@ export interface GeometryValue {
 // @public
 export type GetData = (dataDemand: DataDemand) => TimeslipDataRows;
 
+// @alpha
+export const getMetricValue: (d: MetricDatum | undefined) => string | number | number[] | string[] | undefined;
+
 // @public (undocumented)
 export function getNodeName(node: ArrayNode): string;
 
