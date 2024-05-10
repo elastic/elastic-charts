@@ -285,13 +285,13 @@ function toggleDeselectedDataSeries(
   if (alreadyDeselected) {
     return deselectedDataSeries.filter(keepOnlyNonActionSeries);
   }
-  // prevent the user from hiding all series by clicking on the last visible one
+  // if the clicked item is the only visible series, make all series visible (reset)
   if (deselectedDataSeries.length === legendItemsKeys.length - 1) {
     return [];
   }
-  // at this point we know the clicked item is visible
-  // if there are already hidden series, add the clicked one to the hidden list
-  // otherwise make all series visible (kind of visibility reset)
+  // at this point either a visible series was clicked:
+  // * if there's at least one hidden series => add it to the hidden list
+  // * otherwise hide everything but the clicked item (isolate it)
   return deselectedDataSeries.length
     ? deselectedDataSeries.concat(legendItemIds)
     : legendItemsKeys.flat().filter(keepOnlyNonActionSeries);
