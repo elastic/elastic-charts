@@ -160,6 +160,13 @@ test.describe('Legend stories', () => {
       );
     });
     test('should change aria label to hidden when clicked', async ({ page }) => {
+      // in this specific tests we need to detect the OS specific (mostly if it's Mac or not)
+      // as "Control" key has a different behaviour there vs others
+      const isMac: string = String(
+        await page.evaluate(() => {
+          return navigator.userAgent.includes('Mac');
+        }),
+      );
       await common.loadElementFromURL(page)(
         'http://localhost:9001/?path=/story/legend--positioning&knob-position=right',
         '.echLegendItem__label',
@@ -174,6 +181,8 @@ test.describe('Legend stories', () => {
       // Make the first index legend item hidden
       await page.keyboard.press('Tab');
       await page.keyboard.press('Tab');
+      // hold the meta/control key to hide rather than isolate
+      await page.keyboard.down(isMac ? 'Meta' : 'Control');
       await page.keyboard.press('Enter');
 
       const hiddenResults: number[] = [];
@@ -186,8 +195,7 @@ test.describe('Legend stories', () => {
           hiddenResults.push(index);
         }
       });
-      // with the new behaviour everything is hidden but the clicked series
-      expect(hiddenResults).toEqual([0, 2, 3, 4, 5, 6, 7]);
+      expect(hiddenResults).toEqual([1]);
     });
   });
 
