@@ -295,20 +295,7 @@ describe('Legends', () => {
     const visibility = legend.map((item) => !item.isSeriesHidden);
     expect(visibility).toEqual([true, true, false]);
   });
-  it('makes it visible when a hidden series is clicked', () => {
-    addBarSeries(3);
-    const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
-    // click the first item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
-    const { key: otherKey, specId: otherSpecId } = computeSeriesDomainsSelector(store.getState())
-      .formattedDataSeries[1]!;
-    // now click the second item (now hidden)
-    store.dispatch(onToggleDeselectSeriesAction([{ key: otherKey, specId: otherSpecId }]));
-    const legend = computeLegendSelector(store.getState());
-    const visibility = legend.map((item) => !item.isSeriesHidden);
-    expect(visibility).toEqual([true, true, false]);
-  });
-  it('makes it visible when a hidden series is clicked', () => {
+  it('makes it hidden the clicked series if there are more than one series visible', () => {
     addBarSeries(3);
     const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
     // click the first item
