@@ -314,29 +314,29 @@ export const MetricText: React.FunctionComponent<{
 };
 
 function getTextParts(datum: MetricDatum, style: MetricStyle): TextParts[] {
-  if ('value' in datum) {
-    return isMetricWNumber(datum)
-      ? isFiniteNumber(datum.value)
-        ? splitNumericSuffixPrefix(datum.valueFormatter(datum.value))
-        : [{ emphasis: 'normal', text: style.nonFiniteText }]
-      : [{ emphasis: 'normal', text: datum.value }];
+  if (isMetricWStringArrayValues(datum)) return [{ emphasis: 'normal', text: `[${datum.value.join(', ')}]` }];
+
+  if (isMetricWNumberArrayValues(datum)) {
+    const numericValueParts = datum.value.reduce<TextParts[]>(
+      (acc, value, i, { length }) => {
+        const parts: TextParts[] = isFiniteNumber(value)
+          ? splitNumericSuffixPrefix(datum.valueFormatter(value))
+          : [{ emphasis: 'normal', text: style.nonFiniteText }];
+        if (i < length - 1) {
+          parts.push({ emphasis: 'normal', text: ', ' });
+        }
+        return [...acc, ...parts];
+      },
+      [{ emphasis: 'normal', text: '[' }],
+    );
+    return [...numericValueParts, { emphasis: 'normal', text: ']' }];
   }
 
-  if (isMetricWStringArrayValues(datum)) return [{ emphasis: 'normal', text: `[${datum.values.join(', ')}]` }];
-
-  const numericValueParts = datum.values.reduce<TextParts[]>(
-    (acc, value, i, { length }) => {
-      const parts: TextParts[] = isFiniteNumber(value)
-        ? splitNumericSuffixPrefix(datum.valueFormatter(value))
-        : [{ emphasis: 'normal', text: style.nonFiniteText }];
-      if (i < length - 1) {
-        parts.push({ emphasis: 'normal', text: ', ' });
-      }
-      return [...acc, ...parts];
-    },
-    [{ emphasis: 'normal', text: '[' }],
-  );
-  return [...numericValueParts, { emphasis: 'normal', text: ']' }];
+  return isMetricWNumber(datum)
+    ? isFiniteNumber(datum.value)
+      ? splitNumericSuffixPrefix(datum.valueFormatter(datum.value))
+      : [{ emphasis: 'normal', text: style.nonFiniteText }]
+    : [{ emphasis: 'normal', text: datum.value }];
 }
 
 function splitNumericSuffixPrefix(text: string): TextParts[] {

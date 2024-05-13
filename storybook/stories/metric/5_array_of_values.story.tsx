@@ -11,7 +11,6 @@ import { number, boolean, button, color } from '@storybook/addon-knobs';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { Chart, isMetricElementEvent, Metric, MetricDatum, Settings } from '@elastic/charts';
-import { MetricWNumberArrayValues, MetricWStringArrayValues } from '@elastic/charts/src/chart_types/metric/specs';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -42,14 +41,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
   const emptyBackground = color('empty background', 'transparent');
 
-  const data = useMemo<(MetricWStringArrayValues | MetricWNumberArrayValues | undefined)[]>(
+  const data = useMemo<(MetricDatum | undefined)[]>(
     () => [
       {
         color: '#3c3c3c',
         title: 'Top machines',
         subtitle: 'Greatest throughput by ip',
-        values: ['28.86.156.19', '', '103.23.205.126'],
-        valueFormatter: (d) => `${d}`,
+        value: ['28.86.156.19', '', '103.23.205.126'],
         trend: KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
         trendShape: 'area',
       },
@@ -57,14 +55,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
         color: '#FF7E62',
         title: 'Memory Usage',
         subtitle: 'Overall percentages',
-        values: [33.57],
+        value: [33.57],
         valueFormatter: (d) => `${d}%`,
       },
       {
         color: '#5e5e5e',
         title: 'Disk I/O',
         subtitle: 'Write',
-        values: [4, 9],
+        value: [4, 9],
         valueFormatter: (d) => `${d} Mb/s`,
         extra: (
           <span>
@@ -81,7 +79,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             last <b>5m</b>
           </span>
         ),
-        values: [3, 1],
+        value: [3, 1],
         valueFormatter: (d) => `${d}KBps`,
       },
       undefined,
@@ -94,7 +92,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             This Year <b>10M</b>
           </span>
         ),
-        values: [32, NaN, 2],
+        value: [32, NaN, 2],
         valueFormatter: (d) => `$${d}k`,
         trend: KIBANA_METRICS.metrics.kibana_os_load.v3.data.slice(0, maxDataPoints).map(([x, y]) => ({ x, y })),
         trendShape: 'bars',
@@ -153,7 +151,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       {debugRandomizedData &&
         chartData
           .flat()
-          .map((d) => `[${d?.values}]`)
+          .map((d) => `[${d?.value}]`)
           .join(' ')}
       <Chart title={title} description={description}>
         <Settings
@@ -169,7 +167,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
                   if (isMetricElementEvent(d)) {
                     const { rowIndex, columnIndex } = d;
                     onEventClickAction(
-                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.values}`,
+                      `row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.value}`,
                     );
                   }
                 }
@@ -178,7 +176,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           onElementOver={([d]) => {
             if (isMetricElementEvent(d)) {
               const { rowIndex, columnIndex } = d;
-              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.values}`);
+              onEventOverAction(`row:${rowIndex} col:${columnIndex} value:${chartData[rowIndex][columnIndex]?.value}`);
             }
           }}
           onElementOut={() => onEventOutAction('out')}

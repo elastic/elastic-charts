@@ -37,17 +37,19 @@ export type MetricBase = {
 /** @alpha */
 export type MetricWText = MetricBase & {
   value: string;
+  valueFormatter?: never;
 };
 
 /** @alpha */
 export type MetricWNumberArrayValues = MetricBase & {
-  values: Array<number>;
+  value: Array<number>;
   valueFormatter: ValueFormatter<number>;
 };
 
 /** @alpha */
 export type MetricWStringArrayValues = MetricBase & {
-  values: Array<string>;
+  value: Array<string>;
+  valueFormatter?: never;
 };
 
 /** @alpha */
@@ -112,12 +114,6 @@ export interface MetricSpec extends Spec {
   data: (MetricDatum | undefined)[][];
 }
 
-/**
- * Returns value from metric datum
- * @alpha
- */
-export const getMetricValue = (d: MetricDatum | undefined) => (!d ? undefined : 'value' in d ? d.value : d.values);
-
 /** @alpha */
 export const Metric = specComponentFactory<MetricSpec>()(
   {
@@ -146,12 +142,12 @@ export function isBulletMetric(datum: MetricDatum): datum is BulletMetricWProgre
 
 /** @internal */
 export function isMetricWNumberArrayValues(datum: MetricDatum): datum is MetricWNumberArrayValues {
-  return 'values' in datum && typeof datum.values[0] === 'number' && datum.hasOwnProperty('valueFormatter');
+  return Array.isArray(datum.value) && typeof datum.value[0] === 'number' && datum.hasOwnProperty('valueFormatter');
 }
 
 /** @internal */
 export function isMetricWStringArrayValues(datum: MetricDatum): datum is MetricWStringArrayValues {
-  return 'values' in datum && typeof datum.values[0] !== 'number';
+  return Array.isArray(datum.value) && typeof datum.value[0] !== 'number';
 }
 
 /** @internal */

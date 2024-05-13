@@ -48,7 +48,6 @@ export {
   MetricWTrend,
   MetricTrendShape,
   MetricDatum,
-  getMetricValue,
 } from './metric/specs';
 
 export { Bullet, BulletProps, BulletSpec, BulletDatum, BulletSubtype, BulletValueLabels } from './bullet_graph/spec';

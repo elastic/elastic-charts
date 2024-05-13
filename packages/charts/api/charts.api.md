@@ -1350,9 +1350,6 @@ export interface GeometryValue {
 // @public
 export type GetData = (dataDemand: DataDemand) => TimeslipDataRows;
 
-// @alpha
-export const getMetricValue: (d: MetricDatum | undefined) => string | number | number[] | string[] | undefined;
-
 // @public (undocumented)
 export function getNodeName(node: ArrayNode): string;
 
@@ -2123,7 +2120,7 @@ export type MetricWNumber = MetricBase & {
 
 // @alpha (undocumented)
 export type MetricWNumberArrayValues = MetricBase & {
-    values: Array<number>;
+    value: Array<number>;
     valueFormatter: ValueFormatter<number>;
 };
 
@@ -2135,12 +2132,14 @@ export type MetricWProgress = MetricWNumber & {
 
 // @alpha (undocumented)
 export type MetricWStringArrayValues = MetricBase & {
-    values: Array<string>;
+    value: Array<string>;
+    valueFormatter?: never;
 };
 
 // @alpha (undocumented)
 export type MetricWText = MetricBase & {
     value: string;
+    valueFormatter?: never;
 };
 
 // @alpha (undocumented)
