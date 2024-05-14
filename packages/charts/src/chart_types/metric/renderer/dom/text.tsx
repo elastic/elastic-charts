@@ -17,13 +17,7 @@ import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../ut
 import { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import {
-  isMetricWNumber,
-  isMetricWNumberArrayValues,
-  isMetricWProgress,
-  isMetricWStringArrayValues,
-  MetricDatum,
-} from '../../specs';
+import { isMetricWNumber, isMetricWNumberArrayValues, isMetricWProgress, MetricDatum } from '../../specs';
 
 type BreakPoint = 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl';
 
@@ -314,29 +308,26 @@ export const MetricText: React.FunctionComponent<{
 };
 
 function getTextParts(datum: MetricDatum, style: MetricStyle): TextParts[] {
-  if (isMetricWStringArrayValues(datum)) return [{ emphasis: 'normal', text: `[${datum.value.join(', ')}]` }];
+  const values = Array.isArray(datum.value) ? datum.value : [datum.value];
+  const textParts = values.reduce<TextParts[]>((acc, value, i, { length }) => {
+    const valueFormatter =
+      isMetricWNumber(datum) || isMetricWNumberArrayValues(datum) ? datum.valueFormatter : (v: number) => `${v}`;
+    const parts: TextParts[] =
+      typeof value === 'number'
+        ? isFiniteNumber(value)
+          ? splitNumericSuffixPrefix(valueFormatter(value))
+          : [{ emphasis: 'normal', text: style.nonFiniteText }]
+        : [{ emphasis: 'normal', text: value }];
 
-  if (isMetricWNumberArrayValues(datum)) {
-    const numericValueParts = datum.value.reduce<TextParts[]>(
-      (acc, value, i, { length }) => {
-        const parts: TextParts[] = isFiniteNumber(value)
-          ? splitNumericSuffixPrefix(datum.valueFormatter(value))
-          : [{ emphasis: 'normal', text: style.nonFiniteText }];
-        if (i < length - 1) {
-          parts.push({ emphasis: 'normal', text: ', ' });
-        }
-        return [...acc, ...parts];
-      },
-      [{ emphasis: 'normal', text: '[' }],
-    );
-    return [...numericValueParts, { emphasis: 'normal', text: ']' }];
-  }
+    if (i < length - 1) {
+      parts.push({ emphasis: 'normal', text: ', ' });
+    }
+    return [...acc, ...parts];
+  }, []);
 
-  return isMetricWNumber(datum)
-    ? isFiniteNumber(datum.value)
-      ? splitNumericSuffixPrefix(datum.valueFormatter(datum.value))
-      : [{ emphasis: 'normal', text: style.nonFiniteText }]
-    : [{ emphasis: 'normal', text: datum.value }];
+  if (!Array.isArray(datum.value)) return textParts;
+
+  return [{ emphasis: 'normal', text: '[' }, ...textParts, { emphasis: 'normal', text: ']' }];
 }
 
 function splitNumericSuffixPrefix(text: string): TextParts[] {

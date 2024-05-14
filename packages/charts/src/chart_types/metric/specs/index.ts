@@ -147,7 +147,7 @@ export function isMetricWNumberArrayValues(datum: MetricDatum): datum is MetricW
 
 /** @internal */
 export function isMetricWStringArrayValues(datum: MetricDatum): datum is MetricWStringArrayValues {
-  return Array.isArray(datum.value) && typeof datum.value[0] !== 'number';
+  return Array.isArray(datum.value) && typeof datum.value[0] === 'string';
 }
 
 /** @internal */
