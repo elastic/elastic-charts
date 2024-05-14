@@ -217,7 +217,7 @@ test.describe('Mixed series stories', () => {
               test('should show area chart with toggled series and mouse over', async ({ page }) => {
                 const action = async () => {
                   // hold the meta/control key to hide rather than isolate
-                  await page.keyboard.down((await common.isMacOs(page)()) ? 'Meta' : 'Control');
+                  await page.keyboard.down(await common.getModifierKey(page)());
                   await page.click('.echLegendItem:nth-child(2) .echLegendItem__label');
                 };
                 await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(

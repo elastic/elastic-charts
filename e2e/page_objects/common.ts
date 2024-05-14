@@ -217,10 +217,11 @@ export class CommonPage {
     ];
   }
 
-  isMacOs = (page: Page) => async () => {
-    return await page.evaluate(() => {
+  getModifierKey = (page: Page) => async () => {
+    const isMac = await page.evaluate(() => {
       return navigator.userAgent.includes('Mac');
     });
+    return isMac ? 'Meta' : 'Control';
   };
 
   /**

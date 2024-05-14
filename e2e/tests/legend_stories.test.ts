@@ -153,14 +153,13 @@ test.describe('Legend stories', () => {
             count: 2,
           },
           {
-            key: `${(await common.isMacOs(page)()) ? 'Meta' : 'Control'}+Enter`,
+            key: `${await common.getModifierKey(page)()}+Enter`,
             count: 1,
           },
         ],
       );
     });
     test('should change aria label to hidden when clicked', async ({ page }) => {
-      const isMac = await common.isMacOs(page)();
       await common.loadElementFromURL(page)(
         'http://localhost:9001/?path=/story/legend--positioning&knob-position=right',
         '.echLegendItem__label',
@@ -175,7 +174,7 @@ test.describe('Legend stories', () => {
       // Make the first index legend item hidden
       await page.keyboard.press('Tab');
       await page.keyboard.press('Tab');
-      await page.keyboard.press(`${isMac ? 'Meta' : 'Control'}+Enter`);
+      await page.keyboard.press(`${await common.getModifierKey(page)()}+Enter`);
 
       const hiddenResults: number[] = [];
       // Filter the labels
