@@ -44,10 +44,10 @@ interface ElementBBox {
   height: number;
 }
 
-interface KeyboardKey {
+type KeyboardKey = {
   key: string;
   count: number;
-}
+};
 
 interface ClickOptions {
   /**
@@ -217,6 +217,13 @@ export class CommonPage {
     ];
   }
 
+  getModifierKey = (page: Page) => async () => {
+    const isMac = await page.evaluate(() => {
+      return navigator.userAgent.includes('Mac');
+    });
+    return isMac ? 'Meta' : 'Control';
+  };
+
   /**
    * Toggle element visibility
    * @param selector
@@ -351,18 +358,12 @@ export class CommonPage {
    */
   // eslint-disable-next-line class-methods-use-this
   pressKey = (page: Page) => async (key: string, count: number) => {
-    if (key === 'tab') {
-      let i = 0;
-      while (i < count) {
-        await page.keyboard.press('Tab');
-        i++;
-      }
-    } else if (key === 'enter') {
-      let i = 0;
-      while (i < count) {
-        await page.keyboard.press('Enter');
-        i++;
-      }
+    // capitalize some keys
+    const keyName = ['tab', 'enter'].includes(key) ? `${key.charAt(0).toUpperCase()}${key.slice(1)}` : key;
+    let i = 0;
+    while (i < count) {
+      await page.keyboard.press(keyName);
+      i++;
     }
   };
 
