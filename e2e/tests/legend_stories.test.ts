@@ -153,11 +153,7 @@ test.describe('Legend stories', () => {
             count: 2,
           },
           {
-            key: (await common.isMacOs(page)()) ? 'Meta' : 'Control',
-            hold: true,
-          },
-          {
-            key: 'enter',
+            key: `${(await common.isMacOs(page)()) ? 'Meta' : 'Control'}+Enter`,
             count: 1,
           },
         ],
@@ -179,9 +175,7 @@ test.describe('Legend stories', () => {
       // Make the first index legend item hidden
       await page.keyboard.press('Tab');
       await page.keyboard.press('Tab');
-      // hold the meta/control key to hide rather than isolate
-      await page.keyboard.down(isMac ? 'Meta' : 'Control');
-      await page.keyboard.press('Enter');
+      await page.keyboard.press(`${isMac ? 'Meta' : 'Control'}+Enter`);
 
       const hiddenResults: number[] = [];
       // Filter the labels

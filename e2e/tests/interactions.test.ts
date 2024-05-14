@@ -347,11 +347,7 @@ test.describe('Interactions', () => {
             count: 2,
           },
           {
-            key: (await common.isMacOs(page)()) ? 'Meta' : 'Control',
-            hold: true,
-          },
-          {
-            key: 'enter',
+            key: `${(await common.isMacOs(page)()) ? 'Meta' : 'Control'}+Enter`,
             count: 1,
           },
         ],

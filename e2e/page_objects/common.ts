@@ -44,21 +44,10 @@ interface ElementBBox {
   height: number;
 }
 
-type KeyboardKey =
-  /**
-   * Press key `count` times
-   */
-  | {
-      key: string;
-      count: number;
-    }
-  /**
-   * Hold the key to activate special behaviour (i.e. CTRL/CMD + Enter)
-   */
-  | {
-      key: string;
-      hold: boolean;
-    };
+type KeyboardKey = {
+  key: string;
+  count: number;
+};
 
 interface ClickOptions {
   /**
@@ -368,18 +357,12 @@ export class CommonPage {
    */
   // eslint-disable-next-line class-methods-use-this
   pressKey = (page: Page) => async (key: string, count: number) => {
-    if (key === 'tab') {
-      let i = 0;
-      while (i < count) {
-        await page.keyboard.press('Tab');
-        i++;
-      }
-    } else if (key === 'enter') {
-      let i = 0;
-      while (i < count) {
-        await page.keyboard.press('Enter');
-        i++;
-      }
+    // capitalize some keys
+    const keyName = ['tab', 'enter'].includes(key) ? `${key.charAt(0).toUpperCase()}${key.slice(1)}` : key;
+    let i = 0;
+    while (i < count) {
+      await page.keyboard.press(keyName);
+      i++;
     }
   };
 
@@ -527,7 +510,7 @@ export class CommonPage {
         await this.clickMouseRelativeToDOMElement(page)({ top: 0, left: 0 }, this.chartSelector);
         // eslint-disable-next-line no-restricted-syntax
         for (const actions of keyboardEvents) {
-          await ('hold' in actions ? page.keyboard.down(actions.key) : this.pressKey(page)(actions.key, actions.count));
+          await this.pressKey(page)(actions.key, actions.count);
         }
         await this.moveMouseRelativeToDOMElement(page)({ top: 0, left: 0 }, this.chartSelector);
       };

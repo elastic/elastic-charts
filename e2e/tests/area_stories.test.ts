@@ -64,8 +64,6 @@ test.describe('Area series stories', () => {
 
     test('shows only positive values when hiding negative one', async ({ page }) => {
       const action = async () => {
-        // hold the meta/control key to hide rather than isolate
-        await page.keyboard.down((await common.isMacOs(page)()) ? 'Meta' : 'Control');
         await page.click('.echLegendItem:nth-child(2) .echLegendItem__label');
       };
       await common.expectChartAtUrlToMatchScreenshot(page)(
@@ -76,8 +74,6 @@ test.describe('Area series stories', () => {
 
     test('shows only negative values when hiding positive one', async ({ page }) => {
       const action = async () => {
-        // hold the meta/control key to hide rather than isolate
-        await page.keyboard.down((await common.isMacOs(page)()) ? 'Meta' : 'Control');
         await page.click('.echLegendItem:nth-child(1) .echLegendItem__label');
       };
       await common.expectChartAtUrlToMatchScreenshot(page)(
