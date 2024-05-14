@@ -44,10 +44,21 @@ interface ElementBBox {
   height: number;
 }
 
-interface KeyboardKey {
-  key: string;
-  count: number;
-}
+type KeyboardKey =
+  /**
+   * Press key `count` times
+   */
+  | {
+      key: string;
+      count: number;
+    }
+  /**
+   * Hold the key to activate special behaviour (i.e. CTRL/CMD + Enter)
+   */
+  | {
+      key: string;
+      hold: boolean;
+    };
 
 interface ClickOptions {
   /**
@@ -216,6 +227,12 @@ export class CommonPage {
       `${formattedSegments.at(-1)}.png`,
     ];
   }
+
+  isMacOs = (page: Page) => async () => {
+    return await page.evaluate(() => {
+      return navigator.userAgent.includes('Mac');
+    });
+  };
 
   /**
    * Toggle element visibility
@@ -510,7 +527,7 @@ export class CommonPage {
         await this.clickMouseRelativeToDOMElement(page)({ top: 0, left: 0 }, this.chartSelector);
         // eslint-disable-next-line no-restricted-syntax
         for (const actions of keyboardEvents) {
-          await this.pressKey(page)(actions.key, actions.count);
+          await (actions.hold ? page.keyboard.down(actions.key) : this.pressKey(page)(actions.key, actions.count));
         }
         await this.moveMouseRelativeToDOMElement(page)({ top: 0, left: 0 }, this.chartSelector);
       };

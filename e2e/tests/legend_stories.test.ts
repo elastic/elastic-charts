@@ -153,6 +153,10 @@ test.describe('Legend stories', () => {
             count: 2,
           },
           {
+            key: (await common.isMacOs(page)()) ? 'Meta' : 'Control',
+            hold: true,
+          },
+          {
             key: 'enter',
             count: 1,
           },
@@ -160,9 +164,7 @@ test.describe('Legend stories', () => {
       );
     });
     test('should change aria label to hidden when clicked', async ({ page }) => {
-      const isMac = await page.evaluate(() => {
-        return navigator.userAgent.includes('Mac');
-      });
+      const isMac = await common.isMacOs(page)();
       await common.loadElementFromURL(page)(
         'http://localhost:9001/?path=/story/legend--positioning&knob-position=right',
         '.echLegendItem__label',
