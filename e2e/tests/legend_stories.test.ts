@@ -13,6 +13,16 @@ import { pwEach } from '../helpers';
 import { common } from '../page_objects';
 
 test.describe('Legend stories', () => {
+  let isMac: boolean = false;
+  test.beforeEach(async ({ page }) => {
+    await page.goto('http://localhost:9001/?path=/story/legend--changing-specs');
+    // in this specific tests we need to detect the OS specific (mostly if it's Mac or not)
+    // as "Control" key has a different behaviour there vs others
+    isMac = await page.evaluate(() => {
+      return navigator.userAgent.includes('Mac');
+    });
+  });
+
   test('should render non-split series', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/legend--changing-specs&knob-split series=',
@@ -175,7 +185,7 @@ test.describe('Legend stories', () => {
       await page.keyboard.press('Tab');
       await page.keyboard.press('Tab');
       // hold the meta/control key to hide rather than isolate
-      await page.keyboard.down('ControlOrMeta');
+      await page.keyboard.down(isMac ? 'Meta' : 'Control');
       await page.keyboard.press('Enter');
 
       const hiddenResults: number[] = [];
