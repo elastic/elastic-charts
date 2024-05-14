@@ -527,7 +527,7 @@ export class CommonPage {
         await this.clickMouseRelativeToDOMElement(page)({ top: 0, left: 0 }, this.chartSelector);
         // eslint-disable-next-line no-restricted-syntax
         for (const actions of keyboardEvents) {
-          await (actions.hold ? page.keyboard.down(actions.key) : this.pressKey(page)(actions.key, actions.count));
+          await ('hold' in actions ? page.keyboard.down(actions.key) : this.pressKey(page)(actions.key, actions.count));
         }
         await this.moveMouseRelativeToDOMElement(page)({ top: 0, left: 0 }, this.chartSelector);
       };
