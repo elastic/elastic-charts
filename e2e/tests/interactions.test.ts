@@ -347,7 +347,7 @@ test.describe('Interactions', () => {
             count: 2,
           },
           {
-            key: 'enter',
+            key: `${await common.getModifierKey(page)()}+Enter`,
             count: 1,
           },
         ],
