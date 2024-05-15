@@ -19,25 +19,26 @@ import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWNumber, isMetricWProgress, MetricDatum } from '../../specs';
 
-type BreakPoint = 's' | 'm' | 'l' | 'xl' | 'xxl' | 'xxxl';
+type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
 
-const WIDTH_BP: [number, number, BreakPoint][] = [
-  [0, 180, 's'],
-  [180, 250, 'm'],
-  [250, 600, 'l'],
-  [600, 1000, 'xl'],
-  [1000, 2000, 'xxl'],
-  [2000, Infinity, 'xxxl'],
+const HEIGHT_BP: [number, number, BreakPoint][] = [
+  [0, 200, 'xs'],
+  [200, 300, 's'],
+  [300, 400, 'm'],
+  [400, 500, 'l'],
+  [500, 600, 'xl'],
+  [600, Infinity, 'xxl'],
 ];
 
 const PADDING = 8;
 const LINE_HEIGHT = 1.2; // aligned with our CSS
-const ICON_SIZE: Record<BreakPoint, number> = { s: 16, m: 16, l: 24, xl: 36, xxl: 44, xxxl: 64 };
-const TITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 12, m: 16, l: 16, xl: 24, xxl: 32, xxxl: 42 };
-const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14, xl: 20, xxl: 26, xxxl: 26 };
-const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { s: 10, m: 14, l: 14, xl: 20, xxl: 26, xxxl: 26 };
-const VALUE_FONT_SIZE: Record<BreakPoint, number> = { s: 22, m: 27, l: 34, xl: 56, xxl: 88, xxxl: 140 };
-const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { s: 16, m: 20, l: 24, xl: 40, xxl: 68, xxxl: 110 };
+const ICON_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+
+const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
+const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
+const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 72, xl: 104, xxl: 170 };
+const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
 
 const TITLE_FONT: Font = {
   fontStyle: 'normal',
@@ -173,8 +174,7 @@ export const MetricText: React.FunctionComponent<{
   locale: string;
 }> = ({ id, datum, panel, style, onElementClick, highContrastTextColor, progressBarSize, locale }) => {
   const { extra, value, body } = datum;
-
-  const size = findRange(WIDTH_BP, panel.width);
+  const size = findRange(HEIGHT_BP, panel.height);
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
   const containerClassName = classNames('echMetricText', {
@@ -185,7 +185,7 @@ export const MetricText: React.FunctionComponent<{
 
   const visibility = elementVisibility(datum, panel, size, locale);
 
-  const titleWidthMaxSize = size === 's' ? '100%' : '80%';
+  const titleWidthMaxSize = '95%';
   const titlesWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
 
   const isNumericalMetric = isMetricWNumber(datum);
