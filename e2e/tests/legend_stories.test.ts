@@ -189,6 +189,49 @@ test.describe('Legend stories', () => {
       });
       expect(hiddenResults).toEqual([1]);
     });
+
+    test('title interactive help should change according to the legend context for the item', async ({ page }) => {
+      await common.loadElementFromURL(page)(
+        'http://localhost:9001/?path=/story/legend--positioning&knob-position=right',
+        '.echLegendItem__label',
+      );
+
+      // check that the first item has a "isolate" title as second line
+      const initialLabels = await page.evaluate(() =>
+        Array.from(document.getElementsByClassName('echLegendItem__label'), (e) => e.getAttribute('title')),
+      );
+
+      expect(initialLabels.map((label) => (label ? label.split('\n')[1] : ''))).toEqual(
+        new Array(initialLabels.length).fill('Click: isolate series'),
+      );
+
+      // click on the first item
+      await page.keyboard.press('Tab');
+      await page.keyboard.press(`Enter`);
+
+      // now check that it has a "show all" title this time
+      // check that all the other items (hidden) have a "show" title
+      const secondRoundLabels = await page.evaluate(() =>
+        Array.from(document.getElementsByClassName('echLegendItem__label'), (e) => e.getAttribute('title')),
+      );
+      expect(secondRoundLabels.map((label) => (label ? label.split('\n')[1] : ''))).toEqual(
+        ['Click: show all series'].concat(new Array(secondRoundLabels.length - 1).fill('Click: show series')),
+      );
+
+      // now click on the second item (hidden)
+      await page.keyboard.press('Tab');
+      await page.keyboard.press(`Enter`);
+
+      // check that the first two items have a "hide" title and the rest have a "show" title
+      const thirdRoundLabels = await page.evaluate(() =>
+        Array.from(document.getElementsByClassName('echLegendItem__label'), (e) => e.getAttribute('title')),
+      );
+      expect(thirdRoundLabels.map((label) => (label ? label.split('\n')[1] : ''))).toEqual(
+        ['Click: hide series', 'Click: hide series'].concat(
+          new Array(secondRoundLabels.length - 2).fill('Click: show series'),
+        ),
+      );
+    });
   });
 
   test.describe('Extra values', () => {
