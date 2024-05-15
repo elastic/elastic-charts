@@ -18,7 +18,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
       </ForwardRef>
     </div>
     <Label label="splita" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splita\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splita; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splita\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splita; Click: isolate series\\nCtrl + click: hide series">
         splita
       </div>
     </Label>
@@ -40,7 +40,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
       </ForwardRef>
     </div>
     <Label label="splitb" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitb\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitb; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitb\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitb; Click: isolate series\\nCtrl + click: hide series">
         splitb
       </div>
     </Label>
@@ -62,7 +62,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
       </ForwardRef>
     </div>
     <Label label="splitc" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitc\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitc; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitc\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitc; Click: isolate series\\nCtrl + click: hide series">
         splitc
       </div>
     </Label>
@@ -84,7 +84,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
       </ForwardRef>
     </div>
     <Label label="splitd" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitd\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitd; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitd\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitd; Click: isolate series\\nCtrl + click: hide series">
         splitd
       </div>
     </Label>
@@ -110,7 +110,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
       </ForwardRef>
     </div>
     <Label label="splita" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splita\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splita; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splita\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splita; Click: isolate series\\nCtrl + click: hide series">
         splita
       </div>
     </Label>
@@ -132,7 +132,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
       </ForwardRef>
     </div>
     <Label label="splitb" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitb\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitb; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitb\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitb; Click: isolate series\\nCtrl + click: hide series">
         splitb
       </div>
     </Label>
@@ -154,7 +154,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
       </ForwardRef>
     </div>
     <Label label="splitc" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitc\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitc; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitc\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitc; Click: isolate series\\nCtrl + click: hide series">
         splitc
       </div>
     </Label>
@@ -176,7 +176,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
       </ForwardRef>
     </div>
     <Label label="splitd" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitd\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitd; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitd\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitd; Click: isolate series\\nCtrl + click: hide series">
         splitd
       </div>
     </Label>
@@ -216,7 +216,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
       </ForwardRef>
     </div>
     <Label label="splita" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splita\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splita; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splita\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splita; Click: isolate series\\nCtrl + click: hide series">
         splita
       </div>
     </Label>
@@ -251,7 +251,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
       </ForwardRef>
     </div>
     <Label label="splitb" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitb\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitb; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitb\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitb; Click: isolate series\\nCtrl + click: hide series">
         splitb
       </div>
     </Label>
@@ -273,7 +273,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
       </ForwardRef>
     </div>
     <Label label="splitc" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitc\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitc; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitc\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitc; Click: isolate series\\nCtrl + click: hide series">
         splitc
       </div>
     </Label>
@@ -295,7 +295,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
       </ForwardRef>
     </div>
     <Label label="splitd" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false}>
-      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitd\\nClick: isolate series\\nSHIFT + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitd; Click: isolate series\\nSHIFT + click: hide series">
+      <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitd\\nClick: isolate series\\nCtrl + click: hide series" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitd; Click: isolate series\\nCtrl + click: hide series">
         splitd
       </div>
     </Label>
