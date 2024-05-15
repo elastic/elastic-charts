@@ -727,9 +727,42 @@ export const isBetween = (min: number, max: number, exclusive = false): ((n: num
  * Returns `Array.filter` callback for values between two unordered values
  * @internal
  */
-export const isWithinRange = (range: [number, number], exclusive = false) => {
-  const [min, max] = sortNumbers(range);
+export const isWithinRange = (r: [number, number], exclusive = false) => {
+  const [min, max] = sortNumbers(r);
   return isBetween(min, max, exclusive);
+};
+
+/**
+ * Returns utilities for a given range from start to end
+ * @internal
+ */
+export const inRange = (start: number, end: number, exclusive = false) => {
+  const diff = Math.abs(start - end);
+  const [min, max] = sortNumbers([start, end]);
+  const isHalfFromMin = isBetween(min, max - diff / 2, exclusive);
+  const isHalfFromMax = isBetween(min + diff / 2, max, exclusive);
+  const isWithin = isBetween(min, max, exclusive);
+
+  return {
+    /**
+     * Returns true if values are within the first half of range, from start halfway to end
+     */
+    firstHalf: (n: number) => {
+      return start === min ? isHalfFromMin(n) : isHalfFromMax(n);
+    },
+    /**
+     * Returns true if values are within the last half of range, from end halfway to start
+     */
+    lastHalf: (n: number) => {
+      return end === max ? isHalfFromMax(n) : isHalfFromMin(n);
+    },
+    /**
+     * Returns true if value is within the entire range
+     */
+    within: (n: number) => {
+      return isWithin(n);
+    },
+  };
 };
 
 /**

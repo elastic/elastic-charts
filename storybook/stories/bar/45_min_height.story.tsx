@@ -13,9 +13,13 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+import { customKnobs } from '../utils/knobs';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const minBarHeight = number('minBarHeight', 5);
+  const yScaleType = customKnobs.enum.scaleType(undefined, 'linear', {
+    include: ['LinearBinary', 'Linear', 'Time', 'Log', 'Sqrt'],
+  });
   const data = [
     [1, 100000],
     [2, 10000],
@@ -35,7 +39,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <BarSeries
         id="bars"
         xScaleType={ScaleType.Linear}
-        yScaleType={ScaleType.Linear}
+        yScaleType={yScaleType}
         xAccessor={0}
         yAccessors={[1]}
         data={data}

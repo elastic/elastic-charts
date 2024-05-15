@@ -42,12 +42,12 @@ export function formatTooltipValue(
   spec: BasicSeriesSpec,
   isHighlighted: boolean,
   hasSingleSeries: boolean,
-  isBanded: boolean,
+  isBandedSpec: boolean,
   axisSpec?: AxisSpec,
 ): TooltipValue {
   let label = getSeriesName(seriesIdentifier, hasSingleSeries, true, spec);
 
-  if (isBanded && (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))) {
+  if (isBandedSpec && (isAreaSeriesSpec(spec) || isBarSeriesSpec(spec))) {
     const { y0AccessorFormat = Y0_ACCESSOR_POSTFIX, y1AccessorFormat = Y1_ACCESSOR_POSTFIX } = spec;
     const formatter = accessor === BandedAccessorType.Y0 ? y0AccessorFormat : y1AccessorFormat;
     label = getAccessorFormatLabel(formatter, label);

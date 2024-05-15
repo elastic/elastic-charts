@@ -20,10 +20,12 @@ interface LabelProps {
   options: LegendLabelOptions;
 }
 
+const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
+const modifierKey = isAppleDevice ? '⌘ (Command)' : 'Ctrl';
 const onShownItemClickLabel = 'Click: isolate series';
 const onHiddenItemClickLabel = 'Click: show all series';
-const onShownItemMetaKeyClickLabel = 'SHIFT + click: hide series';
-const onHiddenItemMetaKeyClickLabel = 'SHIFT + click: show series';
+const onShownItemMetaKeyClickLabel = `${modifierKey} + click: hide series`;
+const onHiddenItemMetaKeyClickLabel = `${modifierKey} + click: show series`;
 
 /**
  * Label component used to display text in legend item
@@ -37,10 +39,13 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }
     'echLegendItem__label--multiline': maxLines > 1,
   });
 
-  const onClick: MouseEventHandler = useCallback(({ shiftKey }) => onToggle?.(shiftKey), [onToggle]);
+  const onClick: MouseEventHandler = useCallback(
+    ({ metaKey, ctrlKey }) => onToggle?.(isAppleDevice ? metaKey : ctrlKey),
+    [onToggle],
+  );
   const onKeyDown: KeyboardEventHandler = useCallback(
-    ({ key, shiftKey }) => {
-      if (key === ' ' || key === 'Enter') onToggle?.(shiftKey);
+    ({ key, metaKey, ctrlKey }) => {
+      if (key === ' ' || key === 'Enter') onToggle?.(isAppleDevice ? metaKey : ctrlKey);
     },
     [onToggle],
   );

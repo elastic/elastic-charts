@@ -149,7 +149,7 @@ exports[`XYChart - debug state line chart rotation: -90 1`] = `
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,181.5L72.8,127.39999999999999L182,0",
+      "path": "M0,182L72.8,127.39999999999999L182,0",
       "points": [
         {
           "mark": null,
@@ -323,7 +323,7 @@ exports[`XYChart - debug state line chart rotation: 0 1`] = `
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,181.5L72.8,127.39999999999999L182,0",
+      "path": "M0,182L72.8,127.39999999999999L182,0",
       "points": [
         {
           "mark": null,
@@ -497,7 +497,7 @@ exports[`XYChart - debug state line chart rotation: 90 1`] = `
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,181.5L72.8,127.39999999999999L182,0",
+      "path": "M0,182L72.8,127.39999999999999L182,0",
       "points": [
         {
           "mark": null,
@@ -671,7 +671,7 @@ exports[`XYChart - debug state line chart rotation: 180 1`] = `
       "color": "#54B399",
       "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{}",
       "name": "spec1",
-      "path": "M0,181.5L72.8,127.39999999999999L182,0",
+      "path": "M0,182L72.8,127.39999999999999L182,0",
       "points": [
         {
           "mark": null,

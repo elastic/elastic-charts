@@ -153,7 +153,7 @@ test.describe('Legend stories', () => {
             count: 2,
           },
           {
-            key: 'enter',
+            key: `${await common.getModifierKey(page)()}+Enter`,
             count: 1,
           },
         ],
@@ -174,7 +174,7 @@ test.describe('Legend stories', () => {
       // Make the first index legend item hidden
       await page.keyboard.press('Tab');
       await page.keyboard.press('Tab');
-      await page.keyboard.press('Enter');
+      await page.keyboard.press(`${await common.getModifierKey(page)()}+Enter`);
 
       const hiddenResults: number[] = [];
       // Filter the labels
