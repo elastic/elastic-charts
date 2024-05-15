@@ -18,20 +18,52 @@ interface LabelProps {
   isToggleable?: boolean;
   onToggle?: (negate: boolean) => void;
   options: LegendLabelOptions;
+  hiddenSeriesCount: number;
+  totalSeriesCount: number;
 }
 
 const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
+
 const modifierKey = isAppleDevice ? '⌘ (Command)' : 'Ctrl';
-const onShownItemClickLabel = 'Click: isolate series';
-const onHiddenItemClickLabel = 'Click: show all series';
-const onShownItemMetaKeyClickLabel = `${modifierKey} + click: hide series`;
-const onHiddenItemMetaKeyClickLabel = `${modifierKey} + click: show series`;
+const isolateSeriesMessage = 'isolate series';
+const showAllSeriesMessage = 'show all series';
+const showSeriesMessage = 'show series';
+const hideSeriesMessage = 'hide series';
+
+function getInteractivityTitle(isSeriesVisible: boolean, hiddenSeries: number, allSeries: number) {
+  if (isSeriesVisible) {
+    if (allSeries - hiddenSeries === 1) {
+      return `
+Click: ${showAllSeriesMessage}
+${modifierKey} + click: ${hideSeriesMessage}`;
+    }
+    if (hiddenSeries > 0) {
+      return `
+Click: ${hideSeriesMessage}
+${modifierKey} + click: ${hideSeriesMessage}`;
+    }
+    return `
+Click: ${isolateSeriesMessage}
+${modifierKey} + click: ${hideSeriesMessage}`;
+  }
+  return `
+Click: ${showSeriesMessage}
+${modifierKey} + click: ${showSeriesMessage}`;
+}
 
 /**
  * Label component used to display text in legend item
  * @internal
  */
-export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }: LabelProps) {
+export function Label({
+  label,
+  isToggleable,
+  onToggle,
+  isSeriesHidden,
+  options,
+  hiddenSeriesCount,
+  totalSeriesCount,
+}: LabelProps) {
   const maxLines = Math.abs(options.maxLines);
   const labelClassNames = classNames('echLegendItem__label', {
     'echLegendItem__label--clickable': Boolean(onToggle),
@@ -54,13 +86,7 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }
   const title = options.maxLines > 0 ? label : ''; // full text already visible
   const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
 
-  const interactionsGuidanceText = !isSeriesHidden
-    ? `
-${onShownItemClickLabel}
-${onShownItemMetaKeyClickLabel}`
-    : `
-${onHiddenItemClickLabel}
-${onHiddenItemMetaKeyClickLabel}`;
+  const interactionsGuidanceText = getInteractivityTitle(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount);
 
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met

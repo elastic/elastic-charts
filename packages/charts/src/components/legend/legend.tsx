@@ -96,6 +96,7 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     positionConfig,
     isMostlyRTL,
     totalItems: items.length,
+    hiddenItems: items.filter(({ isSeriesHidden }) => isSeriesHidden).length,
     extraValues: props.extraValues,
     legendValues: config.legendValues,
     onMouseOut: config.onLegendItemOut,
