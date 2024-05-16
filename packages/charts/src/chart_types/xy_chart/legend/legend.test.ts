@@ -78,31 +78,6 @@ describe('Legends', () => {
   beforeEach(() => {
     store = MockStore.default();
   });
-
-  function addBarSeries(n: number) {
-    const colors = ['red', 'blue', 'green', 'violet', 'orange', 'yellow', 'brown', 'black', 'white', 'gray'];
-    MockStore.addSpecs(
-      [
-        ...Array.from({ length: n }, (_, i) =>
-          MockSeriesSpec.bar({
-            id: `spec${i + 1}`,
-            data: [
-              {
-                x: 0,
-                y: 1,
-              },
-            ],
-          }),
-        ),
-        MockGlobalSpec.settings({
-          showLegend: true,
-          theme: { colors: { vizColors: colors.slice(0, n) } },
-        }),
-      ],
-      store,
-    );
-  }
-
   it('compute legend for a single series', () => {
     MockStore.addSpecs(
       [
@@ -254,72 +229,73 @@ describe('Legends', () => {
   });
 
   it('default all series legend items to visible when deselectedDataSeries is null', () => {
-    addBarSeries(3);
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec2',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockGlobalSpec.settings({
+          showLegend: true,
+          theme: { colors: { vizColors: ['red', 'blue'] } },
+        }),
+      ],
+      store,
+    );
     const legend = computeLegendSelector(store.getState());
 
     const visibility = legend.map((item) => !item.isSeriesHidden);
 
-    expect(visibility).toEqual([true, true, true]);
+    expect(visibility).toEqual([true, true]);
   });
   it('selectively sets series to visible when there are deselectedDataSeries items', () => {
-    addBarSeries(3);
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          id: 'spec1',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockSeriesSpec.bar({
+          id: 'spec2',
+          data: [
+            {
+              x: 0,
+              y: 1,
+            },
+          ],
+        }),
+        MockGlobalSpec.settings({
+          showLegend: true,
+          theme: { colors: { vizColors: ['red', 'blue'] } },
+        }),
+      ],
+      store,
+    );
     const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
 
     store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
     const legend = computeLegendSelector(store.getState());
     const visibility = legend.map((item) => !item.isSeriesHidden);
-    // only the clicked item should be visible
-    expect(visibility).toEqual([true, false, false]);
-  });
-  it('resets all series to be visible when clicking again the only visible item', () => {
-    addBarSeries(3);
-    const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
-    // click the first item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
-    // now click again the same item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
-    const legend = computeLegendSelector(store.getState());
-    const visibility = legend.map((item) => !item.isSeriesHidden);
-    expect(visibility).toEqual([true, true, true]);
-  });
-  it('makes it visible when a hidden series is clicked', () => {
-    addBarSeries(3);
-    const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
-    // click the first item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
-    const { key: otherKey, specId: otherSpecId } = computeSeriesDomainsSelector(store.getState())
-      .formattedDataSeries[1]!;
-    // now click the second item (now hidden)
-    store.dispatch(onToggleDeselectSeriesAction([{ key: otherKey, specId: otherSpecId }]));
-    const legend = computeLegendSelector(store.getState());
-    const visibility = legend.map((item) => !item.isSeriesHidden);
-    expect(visibility).toEqual([true, true, false]);
-  });
-  it('makes it hidden the clicked series if there are more than one series visible', () => {
-    addBarSeries(3);
-    const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
-    // click the first item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
-    const { key: otherKey, specId: otherSpecId } = computeSeriesDomainsSelector(store.getState())
-      .formattedDataSeries[1]!;
-    // now click the second item (now hidden)
-    store.dispatch(onToggleDeselectSeriesAction([{ key: otherKey, specId: otherSpecId }]));
-    // ...and click again this second item to make it hidden
-    store.dispatch(onToggleDeselectSeriesAction([{ key: otherKey, specId: otherSpecId }]));
-    const legend = computeLegendSelector(store.getState());
-    const visibility = legend.map((item) => !item.isSeriesHidden);
-    expect(visibility).toEqual([true, false, false]);
-  });
-  it('make it possible to hide all series using meta key on the only visible item', () => {
-    addBarSeries(3);
-    const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
-    // click the first item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
-    // now click again with the meta key enabled
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }], true));
-    const legend = computeLegendSelector(store.getState());
-    const visibility = legend.map((item) => !item.isSeriesHidden);
-    expect(visibility).toEqual([false, false, false]);
+    expect(visibility).toEqual([false, true]);
   });
   it('returns the right series name for a color series', () => {
     const seriesIdentifier1 = {
