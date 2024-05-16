@@ -264,7 +264,7 @@ export function interactionsReducer(
  */
 
 function toggleDeselectedDataSeries(
-  { legendItemIds, metaKey }: ToggleDeselectSeriesAction,
+  { legendItemIds, negate }: ToggleDeselectSeriesAction,
   deselectedDataSeries: SeriesIdentifier[],
   legendItems: LegendItem[],
 ) {
@@ -273,28 +273,19 @@ function toggleDeselectedDataSeries(
   const legendItemsKeys = legendItems.map(({ seriesIdentifiers }) => seriesIdentifiers);
 
   const alreadyDeselected = actionSeriesKeys.every((key) => deselectedDataSeriesKeys.has(key));
-  const keepOnlyNonActionSeries = ({ key }: SeriesIdentifier) => !actionSeriesKeys.includes(key);
 
-  // when a meta key (CTRL or Mac Cmd ⌘) add or remove the clicked item from the visible list
-  if (metaKey) {
+  // todo consider branch simplifications
+  if (negate) {
+    return alreadyDeselected || deselectedDataSeries.length !== legendItemsKeys.length - 1
+      ? legendItems
+          .flatMap(({ seriesIdentifiers }) => seriesIdentifiers)
+          .filter(({ key }) => !actionSeriesKeys.includes(key))
+      : legendItemIds;
+  } else {
     return alreadyDeselected
-      ? deselectedDataSeries.filter(keepOnlyNonActionSeries)
-      : deselectedDataSeries.concat(legendItemIds);
+      ? deselectedDataSeries.filter(({ key }) => !actionSeriesKeys.includes(key))
+      : [...deselectedDataSeries, ...legendItemIds];
   }
-  // when a hidden series is clicked, make it visible
-  if (alreadyDeselected) {
-    return deselectedDataSeries.filter(keepOnlyNonActionSeries);
-  }
-  // if the clicked item is the only visible series, make all series visible (reset)
-  if (deselectedDataSeries.length === legendItemsKeys.length - 1) {
-    return [];
-  }
-  // at this point either a visible series was clicked:
-  // * if there's at least one hidden series => add it to the hidden list
-  // * otherwise hide everything but the clicked item (isolate it)
-  return deselectedDataSeries.length
-    ? deselectedDataSeries.concat(legendItemIds)
-    : legendItemsKeys.flat().filter(keepOnlyNonActionSeries);
 }
 
 function getDrilldownData(globalState: GlobalChartState) {
