@@ -309,9 +309,9 @@ export const MetricText: React.FunctionComponent<{
 
 function getTextParts(datum: MetricDatum, style: MetricStyle): TextParts[] {
   const values = Array.isArray(datum.value) ? datum.value : [datum.value];
+  const valueFormatter =
+    isMetricWNumber(datum) || isMetricWNumberArrayValues(datum) ? datum.valueFormatter : (v: number) => `${v}`;
   const textParts = values.reduce<TextParts[]>((acc, value, i, { length }) => {
-    const valueFormatter =
-      isMetricWNumber(datum) || isMetricWNumberArrayValues(datum) ? datum.valueFormatter : (v: number) => `${v}`;
     const parts: TextParts[] =
       typeof value === 'number'
         ? isFiniteNumber(value)
