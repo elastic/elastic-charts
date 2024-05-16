@@ -335,6 +335,9 @@ export interface MetricStyle {
   blendingBackground?: Color;
   nonFiniteText: string;
   minHeight: Pixels;
+  value: {
+    fontSize: 'default' | 'auto' | number;
+  };
 }
 
 /** @alpha */

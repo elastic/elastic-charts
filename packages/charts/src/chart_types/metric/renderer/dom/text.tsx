@@ -52,9 +52,30 @@ const SUBTITLE_FONT: Font = {
   fontWeight: 'normal',
 };
 
-function findRange(ranges: [number, number, BreakPoint][], value: number): BreakPoint {
+interface Sizes {
+  iconSize: number;
+  titleFontSize: number;
+  subtitleFontSize: number;
+  extraFontSize: number;
+  valueFontSize: number;
+  valuePartFontSize: number;
+}
+
+function getFontSizes(ranges: [number, number, BreakPoint][], value: number, style: MetricStyle): Sizes {
   const range = ranges.find(([min, max]) => min <= value && value < max);
-  return range ? range[2] : ranges[0]?.[2] ?? 's';
+  const size = range ? range[2] : ranges[0]?.[2] ?? 's';
+  const valueFontSize = typeof style.value.fontSize === 'number' ? style.value.fontSize : VALUE_FONT_SIZE[size];
+  const valuePartFontSize =
+    typeof style.value.fontSize === 'number' ? Math.ceil(valueFontSize / 1.5) : VALUE_PART_FONT_SIZE[size];
+
+  return {
+    iconSize: ICON_SIZE[size],
+    titleFontSize: TITLE_FONT_SIZE[size],
+    subtitleFontSize: SUBTITLE_FONT_SIZE[size],
+    extraFontSize: EXTRA_FONT_SIZE[size],
+    valueFontSize,
+    valuePartFontSize,
+  };
 }
 
 type ElementVisibility = {
@@ -68,18 +89,17 @@ type ElementVisibility = {
 function elementVisibility(
   datum: MetricDatum,
   panel: Size,
-  size: BreakPoint,
+  sizes: Sizes,
   locale: string,
 ): ElementVisibility & { titleLines: string[]; subtitleLines: string[] } {
   const LEFT_RIGHT_PADDING = 16;
-  const maxTitlesWidth = (size === 's' ? 1 : 0.8) * panel.width - (datum.icon ? 24 : 0) - LEFT_RIGHT_PADDING;
+  const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - LEFT_RIGHT_PADDING;
 
   const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
     return datum.title
       ? PADDING +
-          wrapText(datum.title, TITLE_FONT, TITLE_FONT_SIZE[size], maxTitlesWidth, maxLines, textMeasure, locale)
-            .length *
-            TITLE_FONT_SIZE[size] *
+          wrapText(datum.title, TITLE_FONT, sizes.titleFontSize, maxTitlesWidth, maxLines, textMeasure, locale).length *
+            sizes.titleFontSize *
             LINE_HEIGHT
       : 0;
   };
@@ -87,22 +107,15 @@ function elementVisibility(
   const subtitleHeight = (maxLines: number, textMeasure: TextMeasure) => {
     return datum.subtitle
       ? PADDING +
-          wrapText(
-            datum.subtitle,
-            SUBTITLE_FONT,
-            SUBTITLE_FONT_SIZE[size],
-            maxTitlesWidth,
-            maxLines,
-            textMeasure,
-            locale,
-          ).length *
-            SUBTITLE_FONT_SIZE[size] *
+          wrapText(datum.subtitle, SUBTITLE_FONT, sizes.subtitleFontSize, maxTitlesWidth, maxLines, textMeasure, locale)
+            .length *
+            sizes.subtitleFontSize *
             LINE_HEIGHT
       : 0;
   };
 
-  const extraHeight = EXTRA_FONT_SIZE[size] * LINE_HEIGHT;
-  const valueHeight = VALUE_FONT_SIZE[size] * LINE_HEIGHT + PADDING;
+  const extraHeight = sizes.extraFontSize * LINE_HEIGHT;
+  const valueHeight = sizes.valueFontSize * LINE_HEIGHT + PADDING;
 
   const responsiveBreakPoints: Array<ElementVisibility> = [
     { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
@@ -132,7 +145,7 @@ function elementVisibility(
       titleLines: wrapText(
         datum.title ?? '',
         TITLE_FONT,
-        TITLE_FONT_SIZE[size],
+        sizes.titleFontSize,
         maxTitlesWidth,
         visibilityBreakpoint.titleMaxLines,
         textMeasure,
@@ -141,7 +154,7 @@ function elementVisibility(
       subtitleLines: wrapText(
         datum.subtitle ?? '',
         SUBTITLE_FONT,
-        SUBTITLE_FONT_SIZE[size],
+        sizes.subtitleFontSize,
         maxTitlesWidth,
         visibilityBreakpoint.subtitleMaxLines,
         textMeasure,
@@ -174,7 +187,7 @@ export const MetricText: React.FunctionComponent<{
   locale: string;
 }> = ({ id, datum, panel, style, onElementClick, highContrastTextColor, progressBarSize, locale }) => {
   const { extra, value, body } = datum;
-  const size = findRange(HEIGHT_BP, panel.height);
+  const sizes = getFontSizes(HEIGHT_BP, panel.height, style);
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
   const containerClassName = classNames('echMetricText', {
@@ -183,7 +196,7 @@ export const MetricText: React.FunctionComponent<{
     'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
 
-  const visibility = elementVisibility(datum, panel, size, locale);
+  const visibility = elementVisibility(datum, panel, sizes, locale);
 
   const titleWidthMaxSize = '95%';
   const titlesWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
@@ -197,7 +210,7 @@ export const MetricText: React.FunctionComponent<{
   const TitleElement = () => (
     <span
       style={{
-        fontSize: `${TITLE_FONT_SIZE[size]}px`,
+        fontSize: sizes.titleFontSize,
         whiteSpace: 'pre-wrap',
         width: titlesWidth,
         ...lineClamp(visibility.titleLines.length),
@@ -231,8 +244,8 @@ export const MetricText: React.FunctionComponent<{
         {datum.icon && (
           <div className="echMetricText__icon">
             {renderWithProps(datum.icon, {
-              width: ICON_SIZE[size],
-              height: ICON_SIZE[size],
+              width: sizes.iconSize,
+              height: sizes.iconSize,
               color: highContrastTextColor,
             })}
           </div>
@@ -243,7 +256,7 @@ export const MetricText: React.FunctionComponent<{
           <p
             className="echMetricText__subtitle"
             style={{
-              fontSize: `${SUBTITLE_FONT_SIZE[size]}px`,
+              fontSize: sizes.subtitleFontSize,
               width: titlesWidth,
               whiteSpace: 'pre-wrap',
               ...lineClamp(visibility.subtitleLines.length),
@@ -257,7 +270,7 @@ export const MetricText: React.FunctionComponent<{
       <div className="echMetricText__gap">{body && <div className="echMetricText__body">{body}</div>}</div>
       <div>
         {visibility.extra && (
-          <p className="echMetricText__extra" style={{ fontSize: `${EXTRA_FONT_SIZE[size]}px` }}>
+          <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
             {extra}
           </p>
         )}
@@ -266,9 +279,9 @@ export const MetricText: React.FunctionComponent<{
         <p
           className="echMetricText__value"
           style={{
-            fontSize: `${VALUE_FONT_SIZE[size]}px`,
+            fontSize: sizes.valueFontSize,
             textOverflow: isNumericalMetric ? undefined : 'ellipsis',
-            marginRight: datum.valueIcon ? ICON_SIZE[size] + 8 : undefined,
+            marginRight: datum.valueIcon ? sizes.iconSize + 8 : undefined,
             color: datum.valueColor,
           }}
           title={textParts.map(({ text }) => text).join('')}
@@ -278,7 +291,9 @@ export const MetricText: React.FunctionComponent<{
               <span
                 key={`${text}${i}`}
                 className="echMetricText__part"
-                style={{ fontSize: `${VALUE_PART_FONT_SIZE[size]}px` }}
+                style={{
+                  fontSize: sizes.valuePartFontSize,
+                }}
               >
                 {text}
               </span>
@@ -290,11 +305,11 @@ export const MetricText: React.FunctionComponent<{
         {datum.valueIcon && (
           <p
             className="echMetricText__valueIcon"
-            style={{ fontSize: `${VALUE_FONT_SIZE[size]}px`, color: datum.valueColor ?? highContrastTextColor }}
+            style={{ fontSize: sizes.valueFontSize, color: datum.valueColor ?? highContrastTextColor }}
           >
             {renderWithProps(datum.valueIcon, {
-              width: VALUE_PART_FONT_SIZE[size],
-              height: VALUE_PART_FONT_SIZE[size],
+              width: sizes.valuePartFontSize,
+              height: sizes.valuePartFontSize,
               color: datum.valueColor ?? highContrastTextColor,
               verticalAlign: 'middle',
             })}

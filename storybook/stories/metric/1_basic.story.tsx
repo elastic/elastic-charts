@@ -70,6 +70,16 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const valueIconType = customKnobs.eui.getIconTypeKnob('EUI value icon glyph name', 'sortUp');
   const useBlendingBackground = boolean('use blending background', false);
   const blendingBackground = color('blending background', 'rgba(255,255,255,1)');
+  const valueFontSizeMode = select(
+    'value font mode',
+    {
+      Default: 'default',
+      Auto: 'auto',
+      Custom: 'custom',
+    },
+    'default',
+  );
+  const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
   const getIcon =
     (type: string) =>
     ({ width, height, color }: { width: number; height: number; color: string }) => (
@@ -124,6 +134,9 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
         theme={{
           metric: {
             blendingBackground: useBlendingBackground ? blendingBackground : undefined,
+            value: {
+              fontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
+            },
           },
         }}
         baseTheme={useBaseTheme()}

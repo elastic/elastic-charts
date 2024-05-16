@@ -413,6 +413,9 @@ export const DARK_THEME: Theme = {
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
+    value: {
+      fontSize: 'default',
+    },
   },
   bulletGraph: DARK_THEME_BULLET_STYLE,
   tooltip: {
