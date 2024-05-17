@@ -20,6 +20,8 @@ interface LabelProps {
   options: LegendLabelOptions;
 }
 
+const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
+
 /**
  * Label component used to display text in legend item
  * @internal
@@ -32,10 +34,13 @@ export function Label({ label, isToggleable, onToggle, isSeriesHidden, options }
     'echLegendItem__label--multiline': maxLines > 1,
   });
 
-  const onClick: MouseEventHandler = useCallback(({ shiftKey }) => onToggle?.(shiftKey), [onToggle]);
+  const onClick: MouseEventHandler = useCallback(
+    ({ metaKey, ctrlKey }) => onToggle?.(isAppleDevice ? metaKey : ctrlKey),
+    [onToggle],
+  );
   const onKeyDown: KeyboardEventHandler = useCallback(
-    ({ key, shiftKey }) => {
-      if (key === ' ' || key === 'Enter') onToggle?.(shiftKey);
+    ({ key, metaKey, ctrlKey }) => {
+      if (key === ' ' || key === 'Enter') onToggle?.(isAppleDevice ? metaKey : ctrlKey);
     },
     [onToggle],
   );
