@@ -37,6 +37,19 @@ export type MetricBase = {
 /** @alpha */
 export type MetricWText = MetricBase & {
   value: string;
+  valueFormatter?: never;
+};
+
+/** @alpha */
+export type MetricWNumberArrayValues = MetricBase & {
+  value: Array<number>;
+  valueFormatter: ValueFormatter<number>;
+};
+
+/** @alpha */
+export type MetricWStringArrayValues = MetricBase & {
+  value: Array<string>;
+  valueFormatter?: never;
 };
 
 /** @alpha */
@@ -78,7 +91,7 @@ export const MetricTrendShape = Object.freeze({
 export type MetricTrendShape = $Values<typeof MetricTrendShape>;
 
 /** @alpha */
-export type MetricWTrend = (MetricWNumber | MetricWText) & {
+export type MetricWTrend = (MetricWNumber | MetricWText | MetricWNumberArrayValues | MetricWStringArrayValues) & {
   trend: { x: number; y: number }[];
   trendShape: MetricTrendShape;
   trendA11yTitle?: string;
@@ -86,7 +99,13 @@ export type MetricWTrend = (MetricWNumber | MetricWText) & {
 };
 
 /** @alpha */
-export type MetricDatum = MetricWNumber | MetricWText | MetricWProgress | MetricWTrend;
+export type MetricDatum =
+  | MetricWNumber
+  | MetricWText
+  | MetricWNumberArrayValues
+  | MetricWStringArrayValues
+  | MetricWProgress
+  | MetricWTrend;
 
 /** @alpha */
 export interface MetricSpec extends Spec {
@@ -122,12 +141,23 @@ export function isBulletMetric(datum: MetricDatum): datum is BulletMetricWProgre
 }
 
 /** @internal */
-export function isMetricWNumber(datum: MetricDatum): datum is MetricWNumber {
-  return typeof datum.value === 'number' && datum.hasOwnProperty('valueFormatter');
+export function isMetricWNumberArrayValues(datum: MetricDatum): datum is MetricWNumberArrayValues {
+  return Array.isArray(datum.value) && typeof datum.value[0] === 'number' && datum.hasOwnProperty('valueFormatter');
 }
+
+/** @internal */
+export function isMetricWStringArrayValues(datum: MetricDatum): datum is MetricWStringArrayValues {
+  return Array.isArray(datum.value) && typeof datum.value[0] === 'string';
+}
+
+/** @internal */
+export function isMetricWNumber(datum: MetricDatum): datum is MetricWNumber {
+  return 'value' in datum && typeof datum.value === 'number' && datum.hasOwnProperty('valueFormatter');
+}
+
 /** @internal */
 export function isMetricWText(datum: MetricDatum): datum is MetricWNumber {
-  return typeof datum.value === 'string';
+  return 'value' in datum && typeof datum.value === 'string';
 }
 
 /** @internal */
@@ -141,7 +171,10 @@ export function isMetricWProgress(datum: MetricDatum): datum is MetricWProgress 
 /** @internal */
 export function isMetricWTrend(datum: MetricDatum): datum is MetricWTrend {
   return (
-    (isMetricWNumber(datum) || isMetricWText(datum)) &&
+    (isMetricWNumber(datum) ||
+      isMetricWText(datum) ||
+      isMetricWNumberArrayValues(datum) ||
+      isMetricWStringArrayValues(datum)) &&
     datum.hasOwnProperty('trend') &&
     !datum.hasOwnProperty('domainMax')
   );
