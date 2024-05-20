@@ -1,3 +1,40 @@
+# [65.0.0](https://github.com/elastic/elastic-charts/compare/v64.1.0...v65.0.0) (2024-05-20)
+
+
+### Bug Fixes
+
+* **barSeries:** error rendering bars with negative log scale ([#2407](https://github.com/elastic/elastic-charts/issues/2407)) ([4ab6d8f](https://github.com/elastic/elastic-charts/commit/4ab6d8f39c7ca8f895724f6df6c17373fa975896))
+* **deps:** update dependency @elastic/eui to ^93.5.1 ([#2375](https://github.com/elastic/elastic-charts/issues/2375)) ([35ed956](https://github.com/elastic/elastic-charts/commit/35ed956265225337a3102cea7d388601705fc883))
+* **deps:** update dependency @elastic/eui to ^93.5.2 ([#2386](https://github.com/elastic/elastic-charts/issues/2386)) ([e26c6dd](https://github.com/elastic/elastic-charts/commit/e26c6ddccf871b859c056b11e6ed483a1cea6cf2))
+* **deps:** update dependency @elastic/eui to ^93.6.0 ([#2393](https://github.com/elastic/elastic-charts/issues/2393)) ([40f2b7b](https://github.com/elastic/elastic-charts/commit/40f2b7b00b8dedbe6765bc8db3aa71d43cf64685))
+* **deps:** update dependency @elastic/eui to ^94.3.0 ([#2424](https://github.com/elastic/elastic-charts/issues/2424)) ([cff5181](https://github.com/elastic/elastic-charts/commit/cff5181a1d2a67307768ede1dceecfc439861687))
+* **deps:** update dependency @elastic/eui to v94 ([#2409](https://github.com/elastic/elastic-charts/issues/2409)) ([67c814f](https://github.com/elastic/elastic-charts/commit/67c814f02f310df3850680e3f859f286885ab1cb))
+* **deps:** update dependency @playwright/test to ^1.43.0 ([#2388](https://github.com/elastic/elastic-charts/issues/2388)) ([42f86d7](https://github.com/elastic/elastic-charts/commit/42f86d727b3ff245b25d9e707b9cfc1df12dc0df))
+* **deps:** update dependency @playwright/test to ^1.43.1 ([#2413](https://github.com/elastic/elastic-charts/issues/2413)) ([79b1c7f](https://github.com/elastic/elastic-charts/commit/79b1c7f4137c53cb3ebaa9c8a3ba23e3ff7b5b6c))
+* **deps:** update dependency json-schema-to-typescript to v14 ([#2414](https://github.com/elastic/elastic-charts/issues/2414)) ([785f635](https://github.com/elastic/elastic-charts/commit/785f6351737e1df6798d93200584646d49b83bae))
+* **deps:** update dependency json-schema-to-typescript to v14.0.4 ([#2421](https://github.com/elastic/elastic-charts/issues/2421)) ([790170a](https://github.com/elastic/elastic-charts/commit/790170a5ab764f5d2f63de92d634962bbaed7317))
+* **legend:** custom legend covered by background ([#2366](https://github.com/elastic/elastic-charts/issues/2366)) ([5b9ffac](https://github.com/elastic/elastic-charts/commit/5b9ffac3e32b22360cd0245ae58aa0efe048afec))
+
+
+### Features
+
+* add support for start day of week on MLT axis ([#2362](https://github.com/elastic/elastic-charts/issues/2362)) ([3aac1f0](https://github.com/elastic/elastic-charts/commit/3aac1f03ec2079324fa4def0c1d24b027f2555e9))
+* **Legend:** change click on item behaviour ([#2427](https://github.com/elastic/elastic-charts/issues/2427)) ([b1c72df](https://github.com/elastic/elastic-charts/commit/b1c72df8698e15230f5f55c38f1a94d337e51c04))
+* **legend:** change click on item behaviour ([#2431](https://github.com/elastic/elastic-charts/issues/2431)) ([b03bdd0](https://github.com/elastic/elastic-charts/commit/b03bdd0e702aed1c069be4c7230cd6634307a4c5))
+* **legend:** Improve interactions legend labels ([#2418](https://github.com/elastic/elastic-charts/issues/2418)) ([384baac](https://github.com/elastic/elastic-charts/commit/384baace93f0f542d55f3d145006f7a51eb873b0))
+* **legend:** select legend statistic value ([#2355](https://github.com/elastic/elastic-charts/issues/2355)) ([a602838](https://github.com/elastic/elastic-charts/commit/a602838462721b6de3643da8263beab46508ac0d))
+* **metric:** support array of values ([#2428](https://github.com/elastic/elastic-charts/issues/2428)) ([e448bd7](https://github.com/elastic/elastic-charts/commit/e448bd7acf0247865ecf7e1f1e14cadd1d580bef))
+
+
+### Reverts
+
+* **legend:** change click on item behaviour ([#2429](https://github.com/elastic/elastic-charts/issues/2429)) ([cc438a1](https://github.com/elastic/elastic-charts/commit/cc438a1b1b360e9892717c0f7207677078afb167)), closes [#2427](https://github.com/elastic/elastic-charts/issues/2427)
+
+
+### BREAKING CHANGES
+
+* **legend:** The legend modifier key has been changed to CTRL (or CMD on Mac) from SHIFT. The SHIFT key will no longer have any effect on click.
+
 # [64.1.0](https://github.com/elastic/elastic-charts/compare/v64.0.2...v64.1.0) (2024-03-13)
 
 
