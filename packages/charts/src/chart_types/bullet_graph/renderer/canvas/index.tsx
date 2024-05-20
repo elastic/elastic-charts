@@ -28,10 +28,12 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { mergePartial } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
+import { MetricStyle } from '../../../../utils/themes/theme';
 import { Metric } from '../../../metric/renderer/dom/metric';
 import { BulletMetricWProgress, MetricDatum } from '../../../metric/specs';
 import { ActiveValue, getActiveValues } from '../../selectors/get_active_values';
@@ -40,7 +42,7 @@ import { getChartSize } from '../../selectors/get_chart_size';
 import { BulletDimensions, getPanelDimensions } from '../../selectors/get_panel_dimensions';
 import { hasChartTitles } from '../../selectors/has_chart_titles';
 import { BulletDatum, BulletSpec, BulletSubtype, mergeValueLabels } from '../../spec';
-import { BulletStyle, LIGHT_THEME_BULLET_STYLE } from '../../theme';
+import { BulletStyle } from '../../theme';
 import { BulletColorConfig } from '../../utils/color';
 
 interface StateProps {
@@ -58,7 +60,7 @@ interface StateProps {
   locale: string;
   pointerPosition?: Point;
   colorBands: BulletColorConfig;
-  contrastOptions: ColorContrastOptions;
+  metricStyle: MetricStyle;
   onElementOver?: ElementOverListener;
 }
 
@@ -129,9 +131,13 @@ class Component extends React.Component<Props> {
       style,
       backgroundColor,
       locale,
-      contrastOptions,
+      metricStyle,
     } = this.props;
     /* eslint-enable prettier/prettier */
+    const contrastOptions: ColorContrastOptions = {
+      lightColor: colorToRgba(metricStyle.text.lightColor),
+      darkColor: colorToRgba(metricStyle.text.darkColor),
+    };
 
     if (!initialized || size.width === 0 || size.height === 0 || !spec) {
       return null;
@@ -193,7 +199,7 @@ class Component extends React.Component<Props> {
                     totalColumns={stats.columns}
                     columnIndex={stats.columnIndex}
                     rowIndex={stats.rowIndex}
-                    style={{
+                    style={mergePartial(metricStyle, {
                       barBackground: colorScale(datum.value).hex(),
                       emptyBackground: Colors.Transparent.keyword,
                       border: 'gray',
@@ -203,7 +209,7 @@ class Component extends React.Component<Props> {
                         darkColor: 'black',
                       },
                       nonFiniteText: 'N/A',
-                    }}
+                    })}
                     locale={locale}
                     backgroundColor={backgroundColor}
                     contrastOptions={contrastOptions}
@@ -246,11 +252,11 @@ const DEFAULT_PROPS: StateProps = {
     shouldRenderMetric: false,
   },
   activeValues: [],
-  style: LIGHT_THEME_BULLET_STYLE,
+  style: LIGHT_THEME.bulletGraph,
+  metricStyle: LIGHT_THEME.metric,
   backgroundColor: LIGHT_THEME.background.color,
   locale: settingsBuildProps.defaults.locale,
   colorBands: LIGHT_THEME.bulletGraph.colorBands,
-  contrastOptions: {},
 };
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
@@ -276,10 +282,7 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
     backgroundColor: getResolvedBackgroundColorSelector(state),
     colorBands: style.colorBands,
     onElementOver,
-    contrastOptions: {
-      lightColor: colorToRgba(metricStyle.text.lightColor),
-      darkColor: colorToRgba(metricStyle.text.darkColor),
-    },
+    metricStyle,
   };
 };
 
