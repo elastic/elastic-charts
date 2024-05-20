@@ -44,6 +44,7 @@ export interface LegendItemProps {
   item: LegendItem;
   flatLegend: boolean;
   totalItems: number;
+  hiddenItems: number;
   positionConfig: LegendPositionConfig;
   extraValues: Map<string, LegendItemExtraValues>;
   legendValues: Array<LegendValue>;
@@ -174,6 +175,7 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
       legendValues,
       colorPicker,
       totalItems,
+      hiddenItems,
       action: Action,
       positionConfig,
       labelOptions,
@@ -231,6 +233,8 @@ export class LegendListItem extends Component<LegendItemProps, LegendItemState> 
             isToggleable={totalItems > 1 && item.isToggleable}
             onToggle={this.onLabelToggle(seriesIdentifiers)}
             isSeriesHidden={isSeriesHidden}
+            totalSeriesCount={totalItems}
+            hiddenSeriesCount={hiddenItems}
           />
           {legendValue && !isSeriesHidden && (
             <div className="echLegendItem__extra" title={`${legendValue.label}`}>
