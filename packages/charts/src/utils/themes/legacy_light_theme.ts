@@ -413,15 +413,16 @@ export const LEGACY_LIGHT_THEME: Theme = {
     text: {
       lightColor: '#E0E5EE',
       darkColor: '#343741',
+      valueFontSize: 'default',
+      titlesTextAlign: 'left',
+      valuesTextAlign: 'right',
+      iconAlign: 'left',
     },
     border: '#EDF0F5',
     barBackground: '#EDF0F5',
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
-    value: {
-      fontSize: 'default',
-    },
   },
   bulletGraph: LIGHT_THEME_BULLET_STYLE,
   tooltip: {

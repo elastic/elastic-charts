@@ -406,15 +406,16 @@ export const LIGHT_THEME: Theme = {
     text: {
       lightColor: '#E0E5EE', // LIGHT_BASE_COLORS.title,
       darkColor: LIGHT_BASE_COLORS.darkestShade,
+      valueFontSize: 'default',
+      titlesTextAlign: 'left',
+      valuesTextAlign: 'right',
+      iconAlign: 'left',
     },
     border: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
     barBackground: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
-    value: {
-      fontSize: 'default',
-    },
   },
   bulletGraph: LIGHT_THEME_BULLET_STYLE,
   tooltip: {

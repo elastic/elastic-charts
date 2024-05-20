@@ -414,15 +414,16 @@ export const LEGACY_DARK_THEME: Theme = {
     text: {
       lightColor: '#E0E5EE',
       darkColor: '#343741',
+      valueFontSize: 'default',
+      titlesTextAlign: 'left',
+      valuesTextAlign: 'right',
+      iconAlign: 'left',
     },
     border: '#343741',
     barBackground: '#343741',
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
-    value: {
-      fontSize: 'default',
-    },
   },
   bulletGraph: DARK_THEME_BULLET_STYLE,
   tooltip: {

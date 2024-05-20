@@ -407,15 +407,16 @@ export const DARK_THEME: Theme = {
     text: {
       lightColor: '#E0E5EE', //DARK_BASE_COLORS.title,
       darkColor: DARK_BASE_COLORS.lightShade,
+      valueFontSize: 'default',
+      titlesTextAlign: 'left',
+      valuesTextAlign: 'right',
+      iconAlign: 'left',
     },
     border: DARK_BASE_COLORS.lightShade,
     barBackground: DARK_BASE_COLORS.lightShade,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
-    value: {
-      fontSize: 'default',
-    },
   },
   bulletGraph: DARK_THEME_BULLET_STYLE,
   tooltip: {

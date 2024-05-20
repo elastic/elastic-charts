@@ -64,9 +64,9 @@ interface Sizes {
 function getFontSizes(ranges: [number, number, BreakPoint][], value: number, style: MetricStyle): Sizes {
   const range = ranges.find(([min, max]) => min <= value && value < max);
   const size = range ? range[2] : ranges[0]?.[2] ?? 's';
-  const valueFontSize = typeof style.value.fontSize === 'number' ? style.value.fontSize : VALUE_FONT_SIZE[size];
+  const valueFontSize = typeof style.text.valueFontSize === 'number' ? style.text.valueFontSize : VALUE_FONT_SIZE[size];
   const valuePartFontSize =
-    typeof style.value.fontSize === 'number' ? Math.ceil(valueFontSize / 1.5) : VALUE_PART_FONT_SIZE[size];
+    typeof style.text.valueFontSize === 'number' ? Math.ceil(valueFontSize / 1.5) : VALUE_PART_FONT_SIZE[size];
 
   return {
     iconSize: ICON_SIZE[size],
@@ -92,9 +92,7 @@ function elementVisibility(
   sizes: Sizes,
   locale: string,
 ): ElementVisibility & { titleLines: string[]; subtitleLines: string[] } {
-  const LEFT_RIGHT_PADDING = 16;
-  const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - LEFT_RIGHT_PADDING;
-
+  const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
   const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
     return datum.title
       ? PADDING +
@@ -172,6 +170,7 @@ function lineClamp(maxLines: number): CSSProperties {
     lineClamp: maxLines,
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
+    whiteSpace: 'pre-wrap',
   };
 }
 
@@ -197,10 +196,6 @@ export const MetricText: React.FunctionComponent<{
   });
 
   const visibility = elementVisibility(datum, panel, sizes, locale);
-
-  const titleWidthMaxSize = '95%';
-  const titlesWidth = `min(${titleWidthMaxSize}, calc(${titleWidthMaxSize} - ${datum.icon ? '24px' : '0px'}))`;
-
   const isNumericalMetric = isMetricWNumber(datum);
   const textParts = isNumericalMetric
     ? isFiniteNumber(value)
@@ -211,8 +206,7 @@ export const MetricText: React.FunctionComponent<{
     <span
       style={{
         fontSize: sizes.titleFontSize,
-        whiteSpace: 'pre-wrap',
-        width: titlesWidth,
+        textAlign: style.text.titlesTextAlign,
         ...lineClamp(visibility.titleLines.length),
       }}
       title={datum.title}
@@ -222,7 +216,22 @@ export const MetricText: React.FunctionComponent<{
   );
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
-      <div>
+      <div
+        className={classNames(
+          'echMetricText__titlesBlock',
+          `echMetricText__titlesBlock--${style.text.titlesTextAlign}`,
+        )}
+        style={
+          datum.icon && {
+            marginLeft:
+              'center' === style.text.titlesTextAlign || style.text.iconAlign === 'left' ? sizes.iconSize + PADDING : 0,
+            marginRight:
+              'center' === style.text.titlesTextAlign || style.text.iconAlign === 'right'
+                ? sizes.iconSize + PADDING
+                : 0,
+          }
+        }
+      >
         {visibility.title && (
           <h2 id={id} className="echMetricText__title">
             {onElementClick ? (
@@ -241,24 +250,11 @@ export const MetricText: React.FunctionComponent<{
             )}
           </h2>
         )}
-        {datum.icon && (
-          <div className="echMetricText__icon">
-            {renderWithProps(datum.icon, {
-              width: sizes.iconSize,
-              height: sizes.iconSize,
-              color: highContrastTextColor,
-            })}
-          </div>
-        )}
-      </div>
-      <div>
         {visibility.subtitle && (
           <p
             className="echMetricText__subtitle"
             style={{
               fontSize: sizes.subtitleFontSize,
-              width: titlesWidth,
-              whiteSpace: 'pre-wrap',
               ...lineClamp(visibility.subtitleLines.length),
             }}
             title={datum.subtitle}
@@ -267,54 +263,76 @@ export const MetricText: React.FunctionComponent<{
           </p>
         )}
       </div>
-      <div className="echMetricText__gap">{body && <div className="echMetricText__body">{body}</div>}</div>
-      <div>
-        {visibility.extra && (
-          <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
-            {extra}
-          </p>
-        )}
-      </div>
-      <div>
-        <p
-          className="echMetricText__value"
-          style={{
-            fontSize: sizes.valueFontSize,
-            textOverflow: isNumericalMetric ? undefined : 'ellipsis',
-            marginRight: datum.valueIcon ? sizes.iconSize + 8 : undefined,
-            color: datum.valueColor,
-          }}
-          title={textParts.map(({ text }) => text).join('')}
-        >
-          {textParts.map(({ emphasis, text }, i) => {
-            return emphasis === 'small' ? (
-              <span
-                key={`${text}${i}`}
-                className="echMetricText__part"
-                style={{
-                  fontSize: sizes.valuePartFontSize,
-                }}
-              >
-                {text}
-              </span>
-            ) : (
-              text
-            );
+
+      {datum.icon && (
+        <div className={classNames('echMetricText__icon', `echMetricText__icon--${style.text.iconAlign}`)}>
+          {renderWithProps(datum.icon, {
+            width: sizes.iconSize,
+            height: sizes.iconSize,
+            color: highContrastTextColor,
           })}
-        </p>
-        {datum.valueIcon && (
+        </div>
+      )}
+
+      <div className="echMetricText__gap">{body && <div className="echMetricText__body">{body}</div>}</div>
+
+      <div
+        className={classNames(
+          'echMetricText__valuesBlock',
+          `echMetricText__valuesBlock--${style.text.valuesTextAlign}`,
+        )}
+      >
+        <div>
+          {visibility.extra && (
+            <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
+              {extra}
+            </p>
+          )}
+        </div>
+        <div className="echMetricText__valueGroup">
           <p
-            className="echMetricText__valueIcon"
-            style={{ fontSize: sizes.valueFontSize, color: datum.valueColor ?? highContrastTextColor }}
+            className="echMetricText__value"
+            style={{
+              fontSize: sizes.valueFontSize,
+              textOverflow: isNumericalMetric ? undefined : 'ellipsis',
+              color: datum.valueColor,
+            }}
+            title={textParts.map(({ text }) => text).join('')}
           >
-            {renderWithProps(datum.valueIcon, {
-              width: sizes.valuePartFontSize,
-              height: sizes.valuePartFontSize,
-              color: datum.valueColor ?? highContrastTextColor,
-              verticalAlign: 'middle',
+            {textParts.map(({ emphasis, text }, i) => {
+              return emphasis === 'small' ? (
+                <span
+                  key={`${text}${i}`}
+                  className="echMetricText__part"
+                  style={{
+                    fontSize: sizes.valuePartFontSize,
+                  }}
+                >
+                  {text}
+                </span>
+              ) : (
+                text
+              );
             })}
           </p>
-        )}
+          {datum.valueIcon && (
+            <p
+              className="echMetricText__valueIcon"
+              style={{
+                fontSize: sizes.valueFontSize,
+                color: datum.valueColor ?? highContrastTextColor,
+                marginRight: style.text.valuesTextAlign === 'center' ? -(sizes.valuePartFontSize + PADDING) : undefined,
+              }}
+            >
+              {renderWithProps(datum.valueIcon, {
+                width: sizes.valuePartFontSize,
+                height: sizes.valuePartFontSize,
+                color: datum.valueColor ?? highContrastTextColor,
+                verticalAlign: 'middle',
+              })}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

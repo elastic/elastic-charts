@@ -28,6 +28,18 @@ import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
+type TextAlign = 'left' | 'center' | 'right';
+const getTextAlignKnob = (name: string, defaultValue: TextAlign): TextAlign =>
+  select(
+    name,
+    {
+      Left: 'left',
+      Center: 'center',
+      Right: 'right',
+    },
+    defaultValue,
+  );
+
 export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const title = text('title', '21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9');
   const subtitle = text('subtitle', 'Cluster CPU usage');
@@ -80,6 +92,16 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     'default',
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
+  const titlesTextAlign = getTextAlignKnob('title text-align', 'left');
+  const valuesTextAlign = getTextAlignKnob('values text-align', 'right');
+  const iconAlign = select(
+    'icon align',
+    {
+      Left: 'left',
+      Right: 'right',
+    },
+    'right',
+  );
   const getIcon =
     (type: string) =>
     ({ width, height, color }: { width: number; height: number; color: string }) => (
@@ -134,8 +156,11 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
         theme={{
           metric: {
             blendingBackground: useBlendingBackground ? blendingBackground : undefined,
-            value: {
-              fontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
+            text: {
+              valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
+              titlesTextAlign,
+              valuesTextAlign,
+              iconAlign,
             },
           },
         }}

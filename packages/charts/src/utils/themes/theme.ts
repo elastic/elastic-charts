@@ -325,6 +325,10 @@ export interface MetricStyle {
   text: {
     darkColor: Color;
     lightColor: Color;
+    valueFontSize: 'default' | 'auto' | number;
+    titlesTextAlign: 'left' | 'center' | 'right';
+    valuesTextAlign: 'left' | 'center' | 'right';
+    iconAlign: 'left' | 'right';
   };
   border: Color;
   barBackground: Color;
@@ -335,9 +339,6 @@ export interface MetricStyle {
   blendingBackground?: Color;
   nonFiniteText: string;
   minHeight: Pixels;
-  value: {
-    fontSize: 'default' | 'auto' | number;
-  };
 }
 
 /** @alpha */
