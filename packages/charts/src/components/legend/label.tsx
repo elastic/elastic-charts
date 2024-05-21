@@ -34,7 +34,7 @@ function getInteractivityTitle(isSeriesVisible: boolean, hiddenSeries: number, a
     if (allSeries - hiddenSeries === 1) {
       return `
 Click ${showAllSeriesMessage}
-${modifierKey} + click ${hideSeriesMessage}`;
+${modifierKey} + Click ${hideSeriesMessage}`;
     }
     if (hiddenSeries > 0) {
       return `
