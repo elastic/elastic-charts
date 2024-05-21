@@ -42,7 +42,7 @@ Click ${hideSeriesMessage}`;
     }
     return `
 Click ${showSeriesMessage}
-${modifierKey} + click ${hideSeriesMessage}`;
+${modifierKey} + Click ${hideSeriesMessage}`;
   }
   return `
 Click ${showSeriesMessage}`;
@@ -52,17 +52,17 @@ function getInteractivityAriaLabel(isSeriesVisible: boolean, hiddenSeries: numbe
   if (isSeriesVisible) {
     if (allSeries - hiddenSeries === 1) {
       return `
-Click: ${showAllSeriesMessage}, ${modifierKey} + click: ${hideSeriesMessage}`;
+Click: ${showAllSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
     }
     if (hiddenSeries > 0) {
       return `
-Click: ${hideSeriesMessage}, ${modifierKey} + click: ${hideSeriesMessage}`;
+Click: ${hideSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
     }
     return `
-Click: ${showSeriesMessage}, ${modifierKey} + click: ${hideSeriesMessage}`;
+Click: ${showSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
   }
   return `
-Click: ${showSeriesMessage}, ${modifierKey} + click: ${showSeriesMessage}`;
+Click: ${showSeriesMessage}, ${modifierKey} + Click: ${showSeriesMessage}`;
 }
 
 /**
