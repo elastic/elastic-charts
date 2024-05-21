@@ -58,6 +58,10 @@
     "react": "^16.12 || ^17.0 || ^18.0",
     "react-dom": "^16.12 || ^17.0 || ^18.0"
   },
+  "devDependencies": {
+    "@types/react": "^16",
+    "@types/react-dom": "^16"
+  },
   "browserslist": [
     "last 2 versions",
     "ie 11"
