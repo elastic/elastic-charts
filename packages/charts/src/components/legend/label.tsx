@@ -24,31 +24,45 @@ interface LabelProps {
 
 const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
 
-const modifierKey = isAppleDevice ? '⌘ (Command)' : 'Ctrl';
-const isolateSeriesMessage = 'isolate series';
-const showAllSeriesMessage = 'show all series';
-const showSeriesMessage = 'show series';
-const hideSeriesMessage = 'hide series';
+const modifierKey = isAppleDevice ? '⌘' : 'Ctrl';
+const showAllSeriesMessage = 'to show all';
+const showSeriesMessage = 'to show';
+const hideSeriesMessage = 'to hide';
 
 function getInteractivityTitle(isSeriesVisible: boolean, hiddenSeries: number, allSeries: number) {
   if (isSeriesVisible) {
     if (allSeries - hiddenSeries === 1) {
       return `
-Click: ${showAllSeriesMessage}
-${modifierKey} + click: ${hideSeriesMessage}`;
+Click ${showAllSeriesMessage}
+${modifierKey} + click ${hideSeriesMessage}`;
     }
     if (hiddenSeries > 0) {
       return `
-Click: ${hideSeriesMessage}
-${modifierKey} + click: ${hideSeriesMessage}`;
+Click ${hideSeriesMessage}`;
     }
     return `
-Click: ${isolateSeriesMessage}
-${modifierKey} + click: ${hideSeriesMessage}`;
+Click ${showSeriesMessage}
+${modifierKey} + click ${hideSeriesMessage}`;
   }
   return `
-Click: ${showSeriesMessage}
-${modifierKey} + click: ${showSeriesMessage}`;
+Click ${showSeriesMessage}`;
+}
+
+function getInteractivityAriaLabel(isSeriesVisible: boolean, hiddenSeries: number, allSeries: number) {
+  if (isSeriesVisible) {
+    if (allSeries - hiddenSeries === 1) {
+      return `
+Click: ${showAllSeriesMessage}, ${modifierKey} + click: ${hideSeriesMessage}`;
+    }
+    if (hiddenSeries > 0) {
+      return `
+Click: ${hideSeriesMessage}, ${modifierKey} + click: ${hideSeriesMessage}`;
+    }
+    return `
+Click: ${showSeriesMessage}, ${modifierKey} + click: ${hideSeriesMessage}`;
+  }
+  return `
+Click: ${showSeriesMessage}, ${modifierKey} + click: ${showSeriesMessage}`;
 }
 
 /**
@@ -86,8 +100,6 @@ export function Label({
   const title = options.maxLines > 0 ? label : ''; // full text already visible
   const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
 
-  const interactionsGuidanceText = getInteractivityTitle(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount);
-
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
     // https://stackoverflow.com/questions/68673034/webkit-line-clamp-does-not-apply-to-buttons
@@ -96,12 +108,12 @@ export function Label({
       tabIndex={0}
       dir={dir}
       className={labelClassNames}
-      title={`${title}${interactionsGuidanceText}`}
+      title={`${title}${getInteractivityTitle(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
       onClick={onClick}
       onKeyDown={onKeyDown}
       aria-pressed={isSeriesHidden}
       style={clampStyles}
-      aria-label={`${label}; ${interactionsGuidanceText.replace('\n', '')}`} // put it in a single line
+      aria-label={`${label}; ${getInteractivityAriaLabel(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
     >
       {label}
     </div>
