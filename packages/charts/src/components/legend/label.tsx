@@ -51,18 +51,14 @@ Click ${showSeriesMessage}`;
 function getInteractivityAriaLabel(isSeriesVisible: boolean, hiddenSeries: number, allSeries: number) {
   if (isSeriesVisible) {
     if (allSeries - hiddenSeries === 1) {
-      return `
-Click: ${showAllSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
+      return `Click: ${showAllSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
     }
     if (hiddenSeries > 0) {
-      return `
-Click: ${hideSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
+      return `Click: ${hideSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
     }
-    return `
-Click: ${showSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
+    return `Click: ${showSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
   }
-  return `
-Click: ${showSeriesMessage}, ${modifierKey} + Click: ${showSeriesMessage}`;
+  return `Click: ${showSeriesMessage}, ${modifierKey} + Click: ${showSeriesMessage}`;
 }
 
 /**
