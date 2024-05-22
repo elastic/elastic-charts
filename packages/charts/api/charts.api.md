@@ -639,7 +639,7 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
         browser: 'IE11' | 'other';
     } | null;
     // (undocumented)
-    render(): JSX.Element;
+    render(): React_2.JSX.Element;
 }
 
 // @public
@@ -3139,7 +3139,7 @@ export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | '
 // @public (undocumented)
 export const TooltipContainer: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>(props: PropsWithChildren_2<{
     className?: string;
-}>) => JSX.Element;
+}>) => React_2.JSX.Element;
 
 // @public (undocumented)
 export interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {
@@ -3172,15 +3172,15 @@ export interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesId
 // Warning: (ae-forgotten-export) The symbol "TooltipDividerProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipDivider: ({ margin }: TooltipDividerProps) => JSX.Element;
+export const TooltipDivider: ({ margin }: TooltipDividerProps) => React_2.JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipFooterProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipFooter: ({ children }: TooltipFooterProps) => JSX.Element;
+export const TooltipFooter: ({ children }: TooltipFooterProps) => React_2.JSX.Element;
 
 // @public (undocumented)
-export const TooltipHeader: <D extends BaseDatum = any>(props: TooltipHeaderProps<D>) => JSX.Element | null;
+export const TooltipHeader: <D extends BaseDatum = any>(props: TooltipHeaderProps<D>) => React_2.JSX.Element | null;
 
 // @public
 export type TooltipHeaderFormatter<D extends BaseDatum = Datum> = (data: PointerValue<D>) => JSX.Element | string;
@@ -3200,7 +3200,7 @@ export interface TooltipInfo<D extends BaseDatum = Datum, SI extends SeriesIdent
 // Warning: (ae-forgotten-export) The symbol "TooltipMetricRowProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipMetricRow: React_2.MemoExoticComponent<({ label, metric }: TooltipMetricRowProps) => JSX.Element>;
+export const TooltipMetricRow: React_2.MemoExoticComponent<({ label, metric }: TooltipMetricRowProps) => React_2.JSX.Element>;
 
 // @public
 export interface TooltipPortalSettings<B = never> {
@@ -3274,15 +3274,15 @@ export interface TooltipStyle {
 // Warning: (ae-forgotten-export) The symbol "TooltipTableProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTable: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableProps<D, SI>) => JSX.Element;
+export const TooltipTable: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableProps<D, SI>) => React_2.JSX.Element;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableBodyProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableBody: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableBodyProps<D, SI>) => JSX.Element;
+export const TooltipTableBody: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableBodyProps<D, SI>) => React_2.JSX.Element;
 
 // @public (undocumented)
-export const TooltipTableCell: ({ style, truncate, tagName, className, children, title: manualTitle, }: TooltipTableCellProps) => JSX.Element;
+export const TooltipTableCell: ({ style, truncate, tagName, className, children, title: manualTitle, }: TooltipTableCellProps) => React_2.JSX.Element;
 
 // @public (undocumented)
 export type TooltipTableCellProps = PropsWithChildren_2<{
@@ -3345,17 +3345,17 @@ export interface TooltipTableColumnText<D extends BaseDatum = Datum, SI extends 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableFooterProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableFooter: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableFooterProps<D, SI>) => JSX.Element | null;
+export const TooltipTableFooter: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableFooterProps<D, SI>) => React_2.JSX.Element | null;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableHeaderProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableHeader: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableHeaderProps<D, SI>) => JSX.Element | null;
+export const TooltipTableHeader: <D extends BaseDatum = any, SI extends SeriesIdentifier = SeriesIdentifier>({ className, ...props }: TooltipTableHeaderProps<D, SI>) => React_2.JSX.Element | null;
 
 // Warning: (ae-forgotten-export) The symbol "TooltipTableRowProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const TooltipTableRow: ({ id, isHighlighted, isSelected, children, onSelect, className, }: TooltipTableRowProps) => JSX.Element;
+export const TooltipTableRow: ({ id, isHighlighted, isSelected, children, onSelect, className, }: TooltipTableRowProps) => React_2.JSX.Element;
 
 // @public
 export const TooltipType: Readonly<{
