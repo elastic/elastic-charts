@@ -108,7 +108,7 @@ export function Label({
       tabIndex={0}
       dir={dir}
       className={labelClassNames}
-      title={`${title}${getInteractivityTitle(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
+      title={`${title}\n${getInteractivityTitle(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
       onClick={onClick}
       onKeyDown={onKeyDown}
       aria-pressed={isSeriesHidden}
