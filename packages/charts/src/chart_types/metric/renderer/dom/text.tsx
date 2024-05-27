@@ -216,6 +216,9 @@ export const MetricText: React.FunctionComponent<{
           <h2 id={id} className="echMetricText__title">
             {onElementClick ? (
               <button
+                // ".echMetric" displays an outline halo;
+                // inline styles protect us from unintended overrides of these styles.
+                style={{ outline: 'none' }}
                 onMouseDown={(e) => e.stopPropagation()}
                 onMouseUp={(e) => e.stopPropagation()}
                 onClick={(e) => {
