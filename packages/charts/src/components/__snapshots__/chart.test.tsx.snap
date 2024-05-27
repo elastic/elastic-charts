@@ -26,10 +26,10 @@ exports[`Chart should render the legend name test 1`] = `
             <div className="echLegend echLegend--debug echLegend--vertical echLegend--right echLegend--top" style={{...}} dir="ltr">
               <div style={{...}} className="echLegendListContainer">
                 <ul style={{...}} className="echLegendList">
-                  <LegendItem item={{...}} positionConfig={{...}} isMostlyRTL={false} totalItems={1} hiddenItems={0} extraValues={{...}} legendValues={{...}} onMouseOut={[undefined]} onMouseOver={[undefined]} onClick={[undefined]} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} mouseOutAction={[Function (anonymous)]} mouseOverAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[undefined]} action={[undefined]} labelOptions={{...}} flatLegend={false}>
-                    <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="test">
+                  <LegendListItem item={{...}} positionConfig={{...}} isMostlyRTL={false} totalItems={1} hiddenItems={0} extraValues={{...}} legendValues={{...}} onLegendItemMouseOver={[Function (anonymous)]} onLegendItemMouseOut={[Function (anonymous)]} onClick={[undefined]} clearTemporaryColorsAction={[Function (anonymous)]} setPersistedColorAction={[Function (anonymous)]} setTemporaryColorAction={[Function (anonymous)]} toggleDeselectSeriesAction={[Function (anonymous)]} colorPicker={[undefined]} action={[undefined]} labelOptions={{...}} flatLegend={false} legendTitle={[undefined]}>
+                    <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="test">
                       <div className="background" />
-                      <div className="colorWrapper">
+                      <div className="echLegend__colorWrapper">
                         <ForwardRef color="#54B399" seriesName="test" isSeriesHidden={false} hasColorPicker={false} onClick={[undefined]} pointStyle={[undefined]}>
                           <div className="echLegendItem__color" title="series color">
                             <LegendIcon pointStyle={[undefined]} color="#54B399" ariaLabel="series color: #54B399">
@@ -42,13 +42,13 @@ exports[`Chart should render the legend name test 1`] = `
                           </div>
                         </ForwardRef>
                       </div>
-                      <Label label="test" options={{...}} isToggleable={false} onToggle={[undefined]} isSeriesHidden={false} totalSeriesCount={1} hiddenSeriesCount={0}>
-                        <div dir="ltr" className="echLegendItem__label echLegendItem__label--singleline" title="test" style={{...}}>
+                      <Label label="test" options={{...}} isToggleable={false} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={1} hiddenSeriesCount={0}>
+                        <div dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="test" style={{...}}>
                           test
                         </div>
                       </Label>
                     </li>
-                  </LegendItem>
+                  </LegendListItem>
                 </ul>
               </div>
             </div>
