@@ -11,6 +11,8 @@ import React, { Component } from 'react';
 
 import { Legend } from './legend';
 import { LegendListItem } from './legend_item';
+import { LegendTable } from './legend_table';
+import { LegendTableRow } from './legend_table/legend_table_row';
 import { LegendValue } from '../../common/legend';
 import { SeededDataGenerator } from '../../mocks/utils';
 import { ScaleType } from '../../scales/constants';
@@ -23,7 +25,7 @@ describe('Legend', () => {
   it('shall render the all the series names', () => {
     const wrapper = mount(
       <Chart>
-        <Settings showLegend legendValues={[LegendValue.LastValue]} />
+        <Settings showLegend legendValues={[LegendValue.CurrentAndLastValue]} />
         <BarSeries
           id="areas"
           name="area"
@@ -91,7 +93,7 @@ describe('Legend', () => {
       <Chart>
         <Settings
           showLegend
-          legendValues={[LegendValue.LastValue]}
+          legendValues={[LegendValue.CurrentAndLastValue]}
           onLegendItemOver={onLegendItemOver}
           onLegendItemOut={onLegendItemOut}
         />
@@ -123,7 +125,7 @@ describe('Legend', () => {
     const data = dg.generateGroupedSeries(10, numberOfSeries, 'split');
     const wrapper = mount(
       <Chart>
-        <Settings showLegend legendValues={[LegendValue.LastValue]} onLegendItemClick={onLegendItemClick} />
+        <Settings showLegend legendValues={[LegendValue.CurrentAndLastValue]} onLegendItemClick={onLegendItemClick} />
         <BarSeries
           id="areas"
           xScaleType={ScaleType.Linear}
@@ -289,7 +291,7 @@ describe('Legend', () => {
       const data = [{ x: 2, y: 5 }];
       const wrapper = mount(
         <Chart>
-          <Settings showLegend legendValues={[LegendValue.LastValue]} onLegendItemClick={onLegendItemClick} />
+          <Settings showLegend legendValues={[LegendValue.CurrentAndLastValue]} onLegendItemClick={onLegendItemClick} />
           <BarSeries
             id="areas"
             xScaleType={ScaleType.Linear}
@@ -306,6 +308,39 @@ describe('Legend', () => {
         // the click is only enabled on the title
         legendItem.find('.echLegendItem__label').simulate('click');
         expect(onLegendItemClick).toHaveBeenCalledTimes(0);
+      });
+    });
+  });
+  describe('legend table', () => {
+    it('should render legend table when there is a legend value that is not CurrentAndLastValue', () => {
+      const wrapper = mount(
+        <Chart>
+          <Settings showLegend legendValues={[LegendValue.Min]} />
+          <BarSeries
+            id="areas"
+            name="area"
+            xScaleType={ScaleType.Linear}
+            yScaleType={ScaleType.Linear}
+            xAccessor={0}
+            yAccessors={[1]}
+            splitSeriesAccessors={[2]}
+            data={[
+              [0, 123, 'group0'],
+              [0, 123, 'group1'],
+              [0, 123, 'group2'],
+              [0, 123, 'group3'],
+            ]}
+          />
+        </Chart>,
+      );
+      const legendTable = wrapper.find(LegendTable);
+      expect(legendTable.exists).toBeTruthy();
+      const legendRows = legendTable.find(LegendTableRow);
+      expect(legendRows.exists).toBeTruthy();
+      expect(legendRows).toHaveLength(5);
+      const expected = ['Min', 'group0123', 'group1123', 'group2123', 'group3123'];
+      legendRows.forEach((row, i) => {
+        expect(row.text()).toBe(expected[i]);
       });
     });
   });

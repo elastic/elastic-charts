@@ -9,7 +9,9 @@
 import { getChartThemeSelector } from './get_chart_theme';
 import { getLegendConfigSelector } from './get_legend_config_selector';
 import { getLegendItemsSelector } from './get_legend_items';
+import { getLegendTableSize } from './get_legend_table_size';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
+import { shouldDisplayTable } from '../../common/legend';
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
 import { LegendPositionConfig } from '../../specs/settings';
@@ -21,29 +23,32 @@ import { createCustomCachedSelector } from '../create_selector';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;
 
-const SCROLL_BAR_WIDTH = 16; // ~1em
-const MARKER_WIDTH = 16;
+/** @internal */
+export const SCROLL_BAR_WIDTH = 16; // ~1em
+/** @internal */
+export const MARKER_WIDTH = 16;
 const SHARED_MARGIN = 4;
 const VERTICAL_PADDING = 4;
-const TOP_MARGIN = 2;
+/** @internal */
+export const TOP_MARGIN = 2;
 
 /** @internal */
 export type LegendSizing = Size & {
   margin: number;
   position: LegendPositionConfig;
+  seriesWidth?: number;
 };
 
 /** @internal */
 export const getLegendSizeSelector = createCustomCachedSelector(
   [getLegendConfigSelector, getChartThemeSelector, getParentDimensionSelector, getLegendItemsSelector],
-  (
-    { showLegend, legendSize, legendValues, legendPosition, legendAction },
-    theme,
-    parentDimensions,
-    items,
-  ): LegendSizing => {
+  (config, theme, parentDimensions, items): LegendSizing => {
+    const { showLegend, legendSize, legendValues, legendPosition, legendAction } = config;
     if (!showLegend) {
       return { width: 0, height: 0, margin: 0, position: LEGEND_TO_FULL_CONFIG[Position.Right] };
+    }
+    if (shouldDisplayTable(legendValues)) {
+      return withTextMeasure((textMeasure) => getLegendTableSize(config, theme, parentDimensions, items, textMeasure));
     }
 
     const bbox = withTextMeasure((textMeasure) =>
