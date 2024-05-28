@@ -15,7 +15,7 @@ import { SharedLegendItemProps } from './types';
 import { getExtra } from './utils';
 import { LegendItem, LegendItemExtraValues, LegendValue } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
-import { LayoutDirection } from '../../utils/common';
+import { LayoutDirection, isDefined } from '../../utils/common';
 
 /** @internal */
 export const LEGEND_HIERARCHY_MARGIN = 10;
@@ -23,10 +23,6 @@ export const LEGEND_HIERARCHY_MARGIN = 10;
 /** @internal */
 export interface LegendItemProps extends SharedLegendItemProps {
   item: LegendItem;
-}
-
-function nonNullable<T>(v: T): v is NonNullable<T> {
-  return v !== null || v !== undefined;
 }
 
 /** @internal */
@@ -43,7 +39,7 @@ export const prepareLegendValues = (
       }
       return item.values.find(({ type }) => type === legendValue);
     })
-    .filter(nonNullable);
+    .filter(isDefined);
 };
 
 /** @internal */
