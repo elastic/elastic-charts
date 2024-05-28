@@ -248,7 +248,7 @@ test.describe('Legend stories', () => {
       (l) => `should display nested legend extra values on ${l}`,
       async (page, layout) => {
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/legend--piechart&knob-Partition Layout=${layout}&knob-flatLegend=false&knob-showLegendExtra=true&knob-legendMaxDepth=2`,
+          `http://localhost:9001/?path=/story/legend--piechart&knob-flatLegend=false&knob-showLegendExtra=true&knob-legendMaxDepth=2`,
         );
       },
     );
@@ -331,6 +331,54 @@ test.describe('Legend stories', () => {
         test('should set exact size of legend within constraints', async ({ page }) => {
           await common.expectChartAtUrlToMatchScreenshot(page)(getUrl(position, isVertical ? 400 : 300));
         });
+      },
+    );
+  });
+  test.describe('Legend tabular data', () => {
+    const datasetKnob = (p1: string, p2: string) => `&globals=&knob-Dataset_Legend=${p1}&knob-dataset=${p2}`;
+    const getDatasetUrl = (p1: string, p2: string, others = '') => {
+      return `http://localhost:9001/?path=/story/legend--tabular-data${datasetKnob(p1, p2)}${others}`;
+    };
+
+    const legendPositionKnob = (position: string) => `&knob-Legend position_Legend=${position}`;
+
+    const getPositionUrl = (p1: string, others = '') => {
+      return `http://localhost:9001/?path=/story/legend--tabular-data${legendPositionKnob(p1)}${others}`;
+    };
+
+    const legendValueKnob = (values: string[]) => values.map((v, i) => `&knob-Legend Value_Legend[${i}]=${v}`).join('');
+    const getlegendValueUrl = (values: string[], others = '') => {
+      return `http://localhost:9001/?path=/story/legend--tabular-data${legendValueKnob(values)}${others}`;
+    };
+
+    pwEach.test<[string, string]>([
+      ['shortCopyDataset', 'short copy'],
+      ['longCopyDataset', 'long copy'],
+      ['defaultDataset', 'default'],
+    ])(
+      ([p2]) => `should correctly display ${p2} dataset`,
+      async (page, [p1, p2]) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(getDatasetUrl(p1, p2));
+      },
+    );
+
+    pwEach.test<string>(['right', 'left', 'top', 'bottom'])(
+      (p) => `should correctly display ${p} positon`,
+      async (page, p) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(getPositionUrl(p));
+      },
+    );
+
+    pwEach.test<string[]>([
+      ['median'],
+      ['currentAndLastValue', 'median'],
+      ['median', 'max', 'min', 'average', 'firstNonNullValue'],
+
+      ['median', 'max', 'min', 'average', 'firstNonNullValue', 'stdDeviation', 'firstValue', 'currentAndLastValue'],
+    ])(
+      (p) => `should correctly display ${p} values`,
+      async (page, p) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(getlegendValueUrl(p));
       },
     );
   });
