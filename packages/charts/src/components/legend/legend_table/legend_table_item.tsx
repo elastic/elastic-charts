@@ -91,12 +91,8 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
           />
         </LegendTableCell>
 
-        {legendValueItems?.map((l, i) => {
-          return (
-            <LegendTableCell key={l?.type || i}>
-              <LegendValueComponent {...l} />
-            </LegendTableCell>
-          );
+        {legendValueItems.map((l, i) => {
+          return <LegendTableCell key={l?.type || i}>{l && <LegendValueComponent {...l} />}</LegendTableCell>;
         })}
         {ActionComponent && (
           <LegendTableCell>

@@ -32,14 +32,12 @@ export const prepareLegendValues = (
   totalItems: number,
   extraValues: Map<string, LegendItemExtraValues>,
 ) => {
-  return legendValues
-    .map((legendValue) => {
-      if (legendValue === LegendValue.Value || legendValue === LegendValue.CurrentAndLastValue) {
-        return getExtra(extraValues, item, totalItems);
-      }
-      return item.values.find(({ type }) => type === legendValue);
-    })
-    .filter(isDefined);
+  return legendValues.map((legendValue) => {
+    if (legendValue === LegendValue.Value || legendValue === LegendValue.CurrentAndLastValue) {
+      return getExtra(extraValues, item, totalItems);
+    }
+    return item.values.find(({ type }) => type === legendValue);
+  });
 };
 
 /** @internal */
@@ -67,7 +65,7 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
     'echLegendItem--vertical': positionConfig.direction === LayoutDirection.Vertical,
   });
 
-  const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues);
+  const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues).filter(isDefined);
 
   const style: CSSProperties = flatLegend
     ? {}
@@ -116,12 +114,15 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
           totalSeriesCount={totalItems}
           hiddenSeriesCount={hiddenItems}
         />
-        {!isSeriesHidden &&
-          legendValueItems.map((legendValueItem) => (
-            <div key={legendValueItem.label} className="echLegendItem__legendValue">
-              {legendValueItem.label}
-            </div>
-          ))}
+        {!isSeriesHidden
+          ? legendValueItems.map((legendValueItem) =>
+              legendValueItem.label !== '' ? (
+                <div key={legendValueItem.label} className="echLegendItem__legendValue">
+                  {legendValueItem.label}
+                </div>
+              ) : null,
+            )
+          : null}
         {Action && (
           <div className="echLegendItem__action">
             <Action series={seriesIdentifiers} color={color} label={label} />
