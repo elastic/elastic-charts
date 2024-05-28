@@ -248,7 +248,7 @@ test.describe('Legend stories', () => {
       (l) => `should display nested legend extra values on ${l}`,
       async (page, layout) => {
         await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/legend--piechart&knob-flatLegend=false&knob-showLegendExtra=true&knob-legendMaxDepth=2`,
+          `http://localhost:9001/?path=/story/legend--piechart&knob-Partition Layout=${layout}&knob-flatLegend=false&knob-showLegendExtra=true&knob-legendMaxDepth=2`,
         );
       },
     );
