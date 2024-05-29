@@ -7,7 +7,7 @@
  */
 
 import { isMosaic, isSunburst, isTreemap, isWaffle } from './viewmodel';
-import { LegendItemExtraValues } from '../../../../common/legend';
+import { LegendItemExtraValues, LegendValue } from '../../../../common/legend';
 import { SeriesKey } from '../../../../common/series_id';
 import { Relation } from '../../../../common/text_utils';
 import { LegendPath } from '../../../../state/actions/legend';
@@ -118,7 +118,7 @@ export function getExtraValueMap(
     const { value, path, [CHILDREN_KEY]: children } = arrayNode;
     const values: LegendItemExtraValues = new Map();
     const label = valueFormatter ? valueFormatter(value) : `${value}`;
-    values.set(key, { label, value });
+    values.set(key, { label, value, type: LegendValue.Value });
     keys.set(path.map(({ index }) => index).join('__'), values);
     if (depth < maxDepth) getExtraValueMap(layers, valueFormatter, children, maxDepth, depth + 1, keys);
   }

@@ -1,7 +1,7 @@
 {
   "name": "@elastic/charts",
   "description": "Elastic-Charts data visualization library",
-  "version": "65.0.0",
+  "version": "65.1.0",
   "author": "Elastic DataVis",
   "license": "SEE LICENSE IN LICENSE.txt",
   "main": "dist/index.js",
@@ -57,6 +57,10 @@
     "moment-timezone": "^0.5.32",
     "react": "^16.12 || ^17.0 || ^18.0",
     "react-dom": "^16.12 || ^17.0 || ^18.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16",
+    "@types/react-dom": "^16"
   },
   "browserslist": [
     "last 2 versions",

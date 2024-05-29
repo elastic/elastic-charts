@@ -26,6 +26,29 @@ import { LegendValue } from '../../../../common/legend';
 import { ScaleType } from '../../../../scales/constants';
 import { XDomain } from '../../domains/types';
 import { DataSeries, DataSeriesDatum } from '../../utils/series';
+import { TickFormatter } from '../../utils/specs';
+
+/**
+ * This method return legend values from a DataSeries that correspond to the type of value requested.
+ * It in general compute the last, min, max, avg, sum of the value in a series.
+ * @internal
+ */
+export function getLegendValues(
+  series: DataSeries,
+  xDomain: XDomain,
+  types: LegendValue[],
+  valueAccessor: (d: DataSeriesDatum) => number | null,
+  formatter: TickFormatter<any> | ((tick: unknown) => string),
+) {
+  return types.map((type) => {
+    const value = getLegendValue(series, xDomain, type, valueAccessor);
+    return {
+      type,
+      label: typeof value === 'number' ? formatter(value) : '',
+      value,
+    };
+  });
+}
 
 /**
  * This method return a value from a DataSeries that correspond to the type of value requested.
@@ -80,7 +103,6 @@ export function getLegendValue(
     case LegendValue.DifferencePercent:
       return differencePercent(series.data, valueAccessor);
     default:
-    case LegendValue.None:
       return null;
   }
 }

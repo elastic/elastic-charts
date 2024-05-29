@@ -31,6 +31,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     "values": [
       {
         "label": "2",
+        "type": "value",
         "value": 2,
       },
     ],
@@ -68,6 +69,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],
@@ -105,6 +107,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],
@@ -138,6 +141,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     "values": [
       {
         "label": "2",
+        "type": "value",
         "value": 2,
       },
     ],
@@ -175,6 +179,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],
@@ -212,6 +217,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],
@@ -245,6 +251,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     "values": [
       {
         "label": "2",
+        "type": "value",
         "value": 2,
       },
     ],
@@ -282,6 +289,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],
@@ -319,6 +327,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems all distinct 
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],
@@ -357,6 +366,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],
@@ -394,6 +404,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],
@@ -432,6 +443,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],
@@ -469,6 +481,7 @@ exports[`Retain hierarchy even with arbitrary names getLegendItems special case:
     "values": [
       {
         "label": "1",
+        "type": "value",
         "value": 1,
       },
     ],

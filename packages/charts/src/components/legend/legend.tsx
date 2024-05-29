@@ -7,21 +7,24 @@
  */
 
 import classNames from 'classnames';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
 import { CustomLegend } from './custom_legend';
 import { LegendItemProps, LegendListItem } from './legend_item';
+import { LegendTable } from './legend_table';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
-import { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { LegendItem, LegendItemExtraValues, shouldDisplayTable } from '../../common/legend';
+import { SeriesIdentifier } from '../../common/series_id';
 import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 import {
   onToggleDeselectSeriesAction,
   onLegendItemOutAction,
   onLegendItemOverAction,
+  LegendPath,
 } from '../../state/actions/legend';
 import { GlobalChartState } from '../../state/chart_state';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
@@ -45,7 +48,7 @@ interface LegendStateProps {
   chartDimensions: Dimensions;
   containerDimensions: Dimensions;
   chartTheme: Theme;
-  size: Size;
+  size: Size & { seriesWidth?: number };
   config: LegendSpec;
   items: LegendItem[];
   extraValues: Map<string, LegendItemExtraValues>;
@@ -71,6 +74,28 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     containerDimensions,
     config,
   } = props;
+
+  const { onLegendItemOut, onLegendItemOver } = config;
+  const { onItemOutAction, onItemOverAction } = props;
+
+  const onLegendItemMouseOver = useCallback(
+    (seriesIdentifiers: SeriesIdentifier[], path: LegendPath) => {
+      // call the settings listener directly if available
+      if (onLegendItemOver) {
+        onLegendItemOver(seriesIdentifiers);
+      }
+      onItemOverAction(path);
+    },
+    [onItemOverAction, onLegendItemOver],
+  );
+
+  const onLegendItemMouseOut = useCallback(() => {
+    // call the settings listener directly if available
+    if (onLegendItemOut) {
+      onLegendItemOut();
+    }
+    onItemOutAction();
+  }, [onLegendItemOut, onItemOutAction]);
 
   if (items.every(({ isItemHidden }) => isItemHidden)) {
     return null;
@@ -99,21 +124,23 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
     hiddenItems: items.filter(({ isSeriesHidden }) => isSeriesHidden).length,
     extraValues: props.extraValues,
     legendValues: config.legendValues,
-    onMouseOut: config.onLegendItemOut,
-    onMouseOver: config.onLegendItemOver,
+    onLegendItemMouseOver,
+    onLegendItemMouseOut,
     onClick: config.onLegendItemClick,
     clearTemporaryColorsAction: props.clearTemporaryColors,
     setPersistedColorAction: props.setPersistedColor,
     setTemporaryColorAction: props.setTemporaryColor,
-    mouseOutAction: props.onItemOutAction,
-    mouseOverAction: props.onItemOverAction,
     toggleDeselectSeriesAction: props.onToggleDeselectSeriesAction,
     colorPicker: config.legendColorPicker,
     action: config.legendAction,
     labelOptions: legend.labelOptions,
     flatLegend: config.flatLegend ?? DEFAULT_LEGEND_CONFIG.flatLegend,
+    legendTitle: config.legendTitle,
   };
+
   const positionStyle = legendPositionStyle(config, size, chartDimensions, containerDimensions);
+  const isTableView = shouldDisplayTable(itemProps.legendValues);
+
   return (
     <div className={legendClasses} style={positionStyle} dir={isMostlyRTL ? 'rtl' : 'ltr'}>
       {config.customLegend ? (
@@ -125,11 +152,15 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
               seriesIdentifiers,
               path,
               extraValue: itemProps.extraValues.get(seriesIdentifiers[0]?.key ?? '')?.get(childId ?? ''),
-              onItemOutAction: itemProps.mouseOutAction,
-              onItemOverActon: () => itemProps.mouseOverAction(path),
+              onItemOutAction,
+              onItemOverActon: () => onItemOverAction(path),
               onItemClickAction: (negate: boolean) => itemProps.toggleDeselectSeriesAction(seriesIdentifiers, negate),
             }))}
           />
+        </div>
+      ) : isTableView ? (
+        <div style={containerStyle} className="echLegendTable__container">
+          <LegendTable items={items} {...itemProps} seriesWidth={size.seriesWidth} />
         </div>
       ) : (
         <div style={containerStyle} className="echLegendListContainer">

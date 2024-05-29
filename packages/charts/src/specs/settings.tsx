@@ -468,6 +468,10 @@ export interface LegendSpec {
    * Override the legend with a custom component.
    */
   customLegend?: CustomLegend;
+  /**
+   * a title for the table legend
+   */
+  legendTitle?: string;
 }
 
 /**

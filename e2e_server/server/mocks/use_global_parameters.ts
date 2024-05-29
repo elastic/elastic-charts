@@ -7,10 +7,10 @@
  */
 
 import { useMemo, useState } from 'react';
+import { BackgroundParameter } from 'storybook-addon-background-toggle';
+import { ThemeParameter } from 'storybook-addon-theme-toggle';
 
 import type { StoryGlobals, StoryParameters } from './../../../storybook/types';
-import { BackgroundParameter } from '../../../storybook/node_modules/storybook-addon-background-toggle';
-import { ThemeParameter } from '../../../storybook/node_modules/storybook-addon-theme-toggle';
 import { storybookParameters as globalParams } from '../../../storybook/parameters';
 import { ThemeId } from '../../../storybook/use_base_theme';
 

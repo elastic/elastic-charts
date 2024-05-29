@@ -67,19 +67,14 @@ function getInteractivityAriaLabel(isSeriesVisible: boolean, hiddenSeries: numbe
  */
 export function Label({
   label,
-  isToggleable,
   onToggle,
+  isToggleable,
   isSeriesHidden,
   options,
   hiddenSeriesCount,
   totalSeriesCount,
 }: LabelProps) {
-  const maxLines = Math.abs(options.maxLines);
-  const labelClassNames = classNames('echLegendItem__label', {
-    'echLegendItem__label--clickable': Boolean(onToggle),
-    'echLegendItem__label--singleline': maxLines === 1,
-    'echLegendItem__label--multiline': maxLines > 1,
-  });
+  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle);
 
   const onClick: MouseEventHandler = useCallback(
     ({ metaKey, ctrlKey }) => onToggle?.(isAppleDevice ? metaKey : ctrlKey),
@@ -92,9 +87,7 @@ export function Label({
     [onToggle],
   );
 
-  const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
   const title = options.maxLines > 0 ? label : ''; // full text already visible
-  const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
 
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
@@ -114,8 +107,32 @@ export function Label({
       {label}
     </div>
   ) : (
-    <div dir={dir} className={labelClassNames} title={label} style={clampStyles}>
+    <div dir={dir} className={className} title={label} style={clampStyles}>
       {label}
     </div>
   );
+}
+
+/** @internal */
+export function NonInteractiveLabel({ label, options }: { label: string; options: LegendLabelOptions }) {
+  const { className, dir, clampStyles } = getSharedProps(label, options);
+  return (
+    <div dir={dir} className={className} title={label} style={clampStyles}>
+      {label}
+    </div>
+  );
+}
+
+function getSharedProps(label: string, options: LegendLabelOptions, isToggleable?: boolean) {
+  const maxLines = Math.abs(options.maxLines);
+  const className = classNames('echLegendItem__label', {
+    'echLegendItem__label--clickable': Boolean(isToggleable),
+    'echLegendItem__label--singleline': maxLines === 1,
+    'echLegendItem__label--multiline': maxLines > 1,
+  });
+
+  const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
+  const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
+
+  return { className, dir, clampStyles };
 }

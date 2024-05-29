@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { LegendItemExtraValues } from '../../../common/legend';
+import { LegendItemExtraValues, LegendValue } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { TooltipValue } from '../../../specs';
 import { PointerValue } from '../../../state/types';
@@ -29,7 +29,7 @@ export function getLegendItemExtraValues(tooltipValues: TooltipValue[]): Map<Ser
   tooltipValues.forEach(({ formattedValue, value, seriesIdentifier, valueAccessor }) => {
     const current: LegendItemExtraValues = seriesTooltipValues.get(seriesIdentifier.key) ?? new Map();
     if (valueAccessor === BandedAccessorType.Y0 || valueAccessor === BandedAccessorType.Y1) {
-      current.set(valueAccessor, { label: formattedValue, value });
+      current.set(valueAccessor, { label: formattedValue, value, type: LegendValue.CurrentAndLastValue });
     }
     seriesTooltipValues.set(seriesIdentifier.key, current);
   });
