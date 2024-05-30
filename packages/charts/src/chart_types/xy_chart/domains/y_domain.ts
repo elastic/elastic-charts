@@ -55,7 +55,7 @@ function mergeYDomainForGroup(
   hasZeroBaselineSpecs: boolean,
   yScaleConfig: ScaleConfigs['y'],
 ): YDomain | null {
-  const dataSeries = [...stacked, ...nonStacked];
+  const dataSeries = stacked.concat(nonStacked);
   if (!dataSeries[0]) return null;
 
   const [{ isStacked, stackMode, spec }] = dataSeries;

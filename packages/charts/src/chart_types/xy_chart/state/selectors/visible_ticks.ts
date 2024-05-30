@@ -154,8 +154,8 @@ function getVisibleTicks(
   const bypassOverlapCheck = showOverlappingLabels || isMultilayerTimeAxis;
   return bypassOverlapCheck
     ? allTicks
-    : [...allTicks]
-        .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
+    : allTicks
+        .toSorted((a: AxisTick, b: AxisTick) => a.position - b.position)
         .reduce(
           (prev, tick) => {
             const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;

@@ -155,7 +155,7 @@ export function computeRectAnnotationDimensions(
         duplicated.push({ ...props, panel, id });
       });
     });
-    return [...acc, ...duplicated];
+    return acc.concat(duplicated);
   }, []);
 }
 

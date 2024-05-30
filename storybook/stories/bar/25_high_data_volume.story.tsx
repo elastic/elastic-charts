@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
@@ -25,7 +25,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Axis id="bottom" position={Position.Bottom} title="Bottom axis" />
       <Axis id="left2" title="Left axis" position={Position.Left} tickFormat={(d: any) => Number(d).toFixed(2)} />
 
-      <BarSeries
+      <LineSeries
         id="bars"
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
