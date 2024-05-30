@@ -50,7 +50,7 @@ export const SparkLine: FunctionComponent<{
   id: string;
   datum: MetricWTrend;
 }> = ({ id, datum: { color, trend, trendA11yTitle, trendA11yDescription, trendShape } }) => {
-  if (!trend) {
+  if (!trend?.length) {
     return null;
   }
   const sortedTrendData = getSortedData(trend);
