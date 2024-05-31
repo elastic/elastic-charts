@@ -53,12 +53,12 @@ export const SparkLine: FunctionComponent<{
   const sortedTrendData = getSortedData(trend);
   const xMin = sortedTrendData.at(0)?.x ?? NaN;
   const xMax = sortedTrendData.at(-1)?.x ?? NaN;
-  const [, yMax] = extent(sortedTrendData.map((d) => d.y));
+  const [yMin, yMax] = extent(sortedTrendData.map((d) => d.y));
   const xScale = (value: number) => (value - xMin) / (xMax - xMin);
   const yScale = (value: number) => value / yMax;
 
-  // path only makes sense for finite values on the x and y axes
-  const shouldVisualizePath = Boolean(xMax - xMin) && yMax && Number.isFinite(yMax);
+  // diff between min and max values should be a finite value
+  const shouldVisualizePath = Math.abs(xMax - xMin) && Math.abs(yMax - yMin);
 
   const path = shouldVisualizePath
     ? areaGenerator<{ x: number; y: number }>(
