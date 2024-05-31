@@ -50,11 +50,9 @@ export const SparkLine: FunctionComponent<{
   id: string;
   datum: MetricWTrend;
 }> = ({ id, datum: { color, trend, trendA11yTitle, trendA11yDescription, trendShape } }) => {
-  if (!trend?.length) {
-    return null;
-  }
   const sortedTrendData = getSortedData(trend);
-  const [xMin, xMax] = [sortedTrendData.at(0)!.x, sortedTrendData.at(-1)!.x];
+  const xMin = sortedTrendData.at(0)?.x ?? NaN;
+  const xMax = sortedTrendData.at(-1)?.x ?? NaN;
   const [, yMax] = extent(sortedTrendData.map((d) => d.y));
   const xScale = (value: number) => (value - xMin) / (xMax - xMin);
   const yScale = (value: number) => value / yMax;
