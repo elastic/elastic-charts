@@ -58,7 +58,7 @@ export const SparkLine: FunctionComponent<{
   const yScale = (value: number) => value / yMax;
 
   // path only makes sense for finite values on the x and y axes
-  const shouldVisualizePath = Boolean(xMax - xMin) && yMax > 0;
+  const shouldVisualizePath = Boolean(xMax - xMin) && yMax && Number.isFinite(yMax);
 
   const path = shouldVisualizePath
     ? areaGenerator<{ x: number; y: number }>(
