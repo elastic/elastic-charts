@@ -57,13 +57,18 @@ export const SparkLine: FunctionComponent<{
   const xScale = (value: number) => (value - xMin) / (xMax - xMin);
   const yScale = (value: number) => value / yMax;
 
-  const path = areaGenerator<{ x: number; y: number }>(
-    (d) => xScale(d.x),
-    () => 1,
-    (d) => 1 - yScale(d.y),
-    (d) => isFiniteNumber(d.x) && isFiniteNumber(d.y),
-    trendShape === MetricTrendShape.Bars ? CurveType.CURVE_STEP_AFTER : CurveType.LINEAR,
-  );
+  // path only makes sense for finite values on the x and y axes
+  const shouldVisualizePath = Boolean(xMax - xMin) && yMax;
+
+  const path = shouldVisualizePath
+    ? areaGenerator<{ x: number; y: number }>(
+        (d) => xScale(d.x),
+        () => 1,
+        (d) => 1 - yScale(d.y),
+        (d) => isFiniteNumber(d.x) && isFiniteNumber(d.y),
+        trendShape === MetricTrendShape.Bars ? CurveType.CURVE_STEP_AFTER : CurveType.LINEAR,
+      )
+    : undefined;
 
   const titleId = `${id}-trend-title`;
   const descriptionId = `${id}-trend-description`;
@@ -87,13 +92,15 @@ export const SparkLine: FunctionComponent<{
 
         <rect x={0} y={0} width={1} height={1} fill={color} />
 
-        <path
-          d={path.area(sortedTrendData)}
-          transform="translate(0, 0.5),scale(1,0.5)"
-          fill={getSparkLineColor(color)}
-          stroke="none"
-          strokeWidth={0}
-        />
+        {path && (
+          <path
+            d={path.area(sortedTrendData)}
+            transform="translate(0, 0.5),scale(1,0.5)"
+            fill={getSparkLineColor(color)}
+            stroke="none"
+            strokeWidth={0}
+          />
+        )}
       </svg>
     </div>
   );
