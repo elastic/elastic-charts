@@ -132,7 +132,7 @@ export function splitSeriesDataByAccessors(
   } = spec;
   const dataSeries = new Map<SeriesKey, DataSeries>();
   const xValues: Array<string | number> = [];
-  const nonNumericValues: any[] = [];
+  const nonNumericValues: Map<unknown, number> = new Map();
 
   if (isStacked && Boolean(y0Accessors?.length)) {
     Logger.warn(
@@ -215,10 +215,12 @@ export function splitSeriesDataByAccessors(
     });
   }
 
-  if (nonNumericValues.length > 0) {
+  if (nonNumericValues.size > 0) {
+    const values = [...nonNumericValues.entries()];
+    const total = values.reduce((sum, [, v]) => sum + v, 0);
     Logger.warn(
-      `Found non-numeric y value${nonNumericValues.length > 1 ? 's' : ''} in dataset for spec "${specId}"`,
-      `(${nonNumericValues.map((v) => JSON.stringify(v)).join(', ')})`,
+      `Found ${total} non-numeric y value${total > 1 ? 's' : ''} in dataset for spec "${specId}"`,
+      `(${values.map(([k, v]) => `${v}: ${JSON.stringify(k)}`).join(', ')})`,
     );
   }
   return {
@@ -281,7 +283,7 @@ function getSplitAccessors<D extends BaseDatum>(
 export function extractYAndMarkFromDatum<D extends BaseDatum>(
   datum: D,
   yAccessor: Accessor<D> | AccessorFn<D>,
-  nonNumericValues: any[],
+  nonNumericValues: Map<unknown, number>,
   bandedSpec: boolean,
   y0Accessor?: Accessor<D> | AccessorFn<D>,
   markSizeAccessor?: Accessor<D> | AccessorFn<D>,
@@ -294,10 +296,13 @@ export function extractYAndMarkFromDatum<D extends BaseDatum>(
   return { y1, datum, y0: bandedSpec ? y0 : null, mark, initialY0: y0, initialY1: y1 };
 }
 
-function finiteOrNull(value: unknown, nonNumericValues: unknown[]): number | null {
+function finiteOrNull(value: unknown, nonNumericValues: Map<unknown, number>): number | null {
   const candidateNumber = Number(value ?? undefined);
   const finite = Number.isFinite(candidateNumber);
-  if (!finite) nonNumericValues.push(value);
+  if (!finite) {
+    const val = nonNumericValues.get(value) ?? 0;
+    nonNumericValues.set(value, val + 1);
+  }
   return finite ? candidateNumber : null;
 }
 
