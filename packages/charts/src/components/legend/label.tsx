@@ -96,7 +96,7 @@ export function Label({
       role="button"
       tabIndex={0}
       dir={dir}
-      className={labelClassNames}
+      className={className}
       title={`${title}\n${getInteractivityTitle(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
       onClick={onClick}
       onKeyDown={onKeyDown}
