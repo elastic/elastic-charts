@@ -23,7 +23,7 @@
     "buildkite-agent-node": "^0.0.11-pre.2",
     "express": "^4.19.2",
     "express-promise-router": "^4.1.1",
-    "json-schema-to-typescript": "14.0.4",
+    "json-schema-to-typescript": "14.0.5",
     "probot": "^12.3.3",
     "winston": "^3.3.3"
   },
