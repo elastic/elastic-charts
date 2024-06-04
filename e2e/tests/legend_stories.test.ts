@@ -196,13 +196,13 @@ test.describe('Legend stories', () => {
         '.echLegendItem__label',
       );
 
-      // check that the first item has a "isolate" title as second line
+      // check that the first item has a "show" title as third line
       const initialLabels = await page.evaluate(() =>
         Array.from(document.getElementsByClassName('echLegendItem__label'), (e) => e.getAttribute('title')),
       );
 
-      expect(initialLabels.map((label) => (label ? label.split('\n')[1] : ''))).toEqual(
-        new Array(initialLabels.length).fill('Click: isolate series'),
+      expect(initialLabels.map((label) => (label ? label.split('\n')[2] : ''))).toEqual(
+        new Array(initialLabels.length).fill('Click to show'),
       );
 
       // click on the first item
@@ -214,8 +214,8 @@ test.describe('Legend stories', () => {
       const secondRoundLabels = await page.evaluate(() =>
         Array.from(document.getElementsByClassName('echLegendItem__label'), (e) => e.getAttribute('title')),
       );
-      expect(secondRoundLabels.map((label) => (label ? label.split('\n')[1] : ''))).toEqual(
-        ['Click: show all series'].concat(new Array(secondRoundLabels.length - 1).fill('Click: show series')),
+      expect(secondRoundLabels.map((label) => (label ? label.split('\n')[2] : ''))).toEqual(
+        ['Click to show all'].concat(new Array(secondRoundLabels.length - 1).fill('Click to show')),
       );
 
       // now click on the second item (hidden)
@@ -226,10 +226,8 @@ test.describe('Legend stories', () => {
       const thirdRoundLabels = await page.evaluate(() =>
         Array.from(document.getElementsByClassName('echLegendItem__label'), (e) => e.getAttribute('title')),
       );
-      expect(thirdRoundLabels.map((label) => (label ? label.split('\n')[1] : ''))).toEqual(
-        ['Click: hide series', 'Click: hide series'].concat(
-          new Array(secondRoundLabels.length - 2).fill('Click: show series'),
-        ),
+      expect(thirdRoundLabels.map((label) => (label ? label.split('\n')[2] : ''))).toEqual(
+        ['Click to hide', 'Click to hide'].concat(new Array(secondRoundLabels.length - 2).fill('Click to show')),
       );
     });
   });
