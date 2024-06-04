@@ -13,6 +13,13 @@ import { eachRotation, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
 test.describe('Test cases stories', () => {
+  // See https://github.com/elastic/elastic-charts/issues/2456
+  test('should render sunburst as full circle', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/sunburst--single-slice&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=true&knob-EUI%20icon%20glyph%20name=warning&knob-EUI%20value%20icon%20glyph%20name=sortUp&knob-Scale%20Type=log&knob-Series%20Type=bar&knob-Split=true&knob-Stacked=true&knob-Trend%20length=0&knob-Trend%20length%20x=3&knob-attach%20click%20handler=true&knob-blending%20background=rgba(255,255,255,1)&knob-brush%20axis=x&knob-chartRotation=90&knob-custom%20value=678&knob-use%20custom%20value=',
+    );
+  });
+
   test('should render custom no results component', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
       'http://localhost:9001/?path=/story/test-cases--no-series&knob-Show custom no results=true',
