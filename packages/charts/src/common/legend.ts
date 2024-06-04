@@ -20,11 +20,10 @@ import { PointStyle } from '../utils/themes/theme';
 export type LegendItemChildId = CategoryKey;
 
 /** @public */
-export type LegendItemValue = { value: PrimitiveValue; label: string };
+export type LegendItemValue = { value: PrimitiveValue; label: string; type: LegendValue };
 
 /** @public */
 export const LegendValue = Object.freeze({
-  None: 'none' as const,
   /** Value of the bucket being hovered or last bucket value when not hovering. */
   CurrentAndLastValue: 'currentAndLastValue' as const,
   /** Last value considering all data points in the chart */
@@ -81,7 +80,7 @@ export type LegendItem = {
   label: CategoryLabel;
   isSeriesHidden?: boolean;
   isItemHidden?: boolean;
-  values: Array<LegendItemValue>;
+  values: LegendItemValue[];
   // TODO: Remove when partition layers are toggleable
   isToggleable?: boolean;
   keys: Array<string | number>;
@@ -91,3 +90,32 @@ export type LegendItem = {
 
 /** @internal */
 export type LegendItemExtraValues = Map<LegendItemChildId, LegendItemValue>;
+
+/** @internal */
+export const shouldDisplayTable = (legendValues: LegendValue[]) =>
+  legendValues.some((v) => v !== LegendValue.CurrentAndLastValue && v !== LegendValue.Value);
+/**
+ * todo: i18n
+ * @internal
+ */
+export const legendValueTitlesMap = {
+  [LegendValue.CurrentAndLastValue]: 'Value',
+  [LegendValue.Value]: 'Value',
+  [LegendValue.Percent]: 'Percent',
+  [LegendValue.LastValue]: 'Last',
+  [LegendValue.LastNonNullValue]: 'Last non-null',
+  [LegendValue.FirstValue]: 'First',
+  [LegendValue.FirstNonNullValue]: 'First non-null',
+  [LegendValue.Average]: 'Avg',
+  [LegendValue.Median]: 'Mid',
+  [LegendValue.Min]: 'Min',
+  [LegendValue.Max]: 'Max',
+  [LegendValue.Total]: 'Total',
+  [LegendValue.Count]: 'Count',
+  [LegendValue.DistinctCount]: 'Dist Count',
+  [LegendValue.Variance]: 'Variance',
+  [LegendValue.StdDeviation]: 'Std dev',
+  [LegendValue.Range]: 'Range',
+  [LegendValue.Difference]: 'Diff',
+  [LegendValue.DifferencePercent]: 'Diff %',
+};

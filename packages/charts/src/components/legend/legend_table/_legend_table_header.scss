@@ -1,0 +1,12 @@
+@import '../variables';
+
+.echLegendTable__header {
+  cursor: default;
+  font-weight: $euiFontWeightSemiBold;
+  background-color: $euiColorEmptyShade;
+  font-size: $euiFontSizeXS;
+
+  .echLegendTable__cell {
+    border-bottom: $tableOutsideBorder;
+  }
+}

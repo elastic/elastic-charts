@@ -196,13 +196,13 @@ test.describe('Legend stories', () => {
         '.echLegendItem__label',
       );
 
-      // check that the first item has a "isolate" title as second line
+      // check that the first item has a "show" title as third line
       const initialLabels = await page.evaluate(() =>
         Array.from(document.getElementsByClassName('echLegendItem__label'), (e) => e.getAttribute('title')),
       );
 
-      expect(initialLabels.map((label) => (label ? label.split('\n')[1] : ''))).toEqual(
-        new Array(initialLabels.length).fill('Click: isolate series'),
+      expect(initialLabels.map((label) => (label ? label.split('\n')[2] : ''))).toEqual(
+        new Array(initialLabels.length).fill('Click to show'),
       );
 
       // click on the first item
@@ -214,8 +214,8 @@ test.describe('Legend stories', () => {
       const secondRoundLabels = await page.evaluate(() =>
         Array.from(document.getElementsByClassName('echLegendItem__label'), (e) => e.getAttribute('title')),
       );
-      expect(secondRoundLabels.map((label) => (label ? label.split('\n')[1] : ''))).toEqual(
-        ['Click: show all series'].concat(new Array(secondRoundLabels.length - 1).fill('Click: show series')),
+      expect(secondRoundLabels.map((label) => (label ? label.split('\n')[2] : ''))).toEqual(
+        ['Click to show all'].concat(new Array(secondRoundLabels.length - 1).fill('Click to show')),
       );
 
       // now click on the second item (hidden)
@@ -226,10 +226,8 @@ test.describe('Legend stories', () => {
       const thirdRoundLabels = await page.evaluate(() =>
         Array.from(document.getElementsByClassName('echLegendItem__label'), (e) => e.getAttribute('title')),
       );
-      expect(thirdRoundLabels.map((label) => (label ? label.split('\n')[1] : ''))).toEqual(
-        ['Click: hide series', 'Click: hide series'].concat(
-          new Array(secondRoundLabels.length - 2).fill('Click: show series'),
-        ),
+      expect(thirdRoundLabels.map((label) => (label ? label.split('\n')[2] : ''))).toEqual(
+        ['Click to hide', 'Click to hide'].concat(new Array(secondRoundLabels.length - 2).fill('Click to show')),
       );
     });
   });
@@ -331,6 +329,54 @@ test.describe('Legend stories', () => {
         test('should set exact size of legend within constraints', async ({ page }) => {
           await common.expectChartAtUrlToMatchScreenshot(page)(getUrl(position, isVertical ? 400 : 300));
         });
+      },
+    );
+  });
+  test.describe('Legend tabular data', () => {
+    const datasetKnob = (p1: string, p2: string) => `&globals=&knob-Dataset_Legend=${p1}&knob-dataset=${p2}`;
+    const getDatasetUrl = (p1: string, p2: string, others = '') => {
+      return `http://localhost:9001/?path=/story/legend--tabular-data${datasetKnob(p1, p2)}${others}`;
+    };
+
+    const legendPositionKnob = (position: string) => `&knob-Legend position_Legend=${position}`;
+
+    const getPositionUrl = (p1: string, others = '') => {
+      return `http://localhost:9001/?path=/story/legend--tabular-data${legendPositionKnob(p1)}${others}`;
+    };
+
+    const legendValueKnob = (values: string[]) => values.map((v, i) => `&knob-Legend Value_Legend[${i}]=${v}`).join('');
+    const getlegendValueUrl = (values: string[], others = '') => {
+      return `http://localhost:9001/?path=/story/legend--tabular-data${legendValueKnob(values)}${others}`;
+    };
+
+    pwEach.test<[string, string]>([
+      ['shortCopyDataset', 'short copy'],
+      ['longCopyDataset', 'long copy'],
+      ['defaultDataset', 'default'],
+    ])(
+      ([p2]) => `should correctly display ${p2} dataset`,
+      async (page, [p1, p2]) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(getDatasetUrl(p1, p2));
+      },
+    );
+
+    pwEach.test<string>(['right', 'left', 'top', 'bottom'])(
+      (p) => `should correctly display ${p} positon`,
+      async (page, p) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(getPositionUrl(p));
+      },
+    );
+
+    pwEach.test<string[]>([
+      ['median'],
+      ['currentAndLastValue', 'median'],
+      ['median', 'max', 'min', 'average', 'firstNonNullValue'],
+
+      ['median', 'max', 'min', 'average', 'firstNonNullValue', 'stdDeviation', 'firstValue', 'currentAndLastValue'],
+    ])(
+      (p) => `should correctly display ${p} values`,
+      async (page, p) => {
+        await common.expectChartAtUrlToMatchScreenshot(page)(getlegendValueUrl(p));
       },
     );
   });

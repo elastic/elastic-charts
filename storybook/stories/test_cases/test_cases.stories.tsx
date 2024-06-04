@@ -21,5 +21,6 @@ export { Example as testPointsOutsideOfDomain } from './8_test_points_outside_of
 export { Example as duplicateLabelsInPartitionLegend } from './9_duplicate_labels_in_partition_legend.story';
 export { Example as highlighterZIndex } from './10_highlighter_z_index.story';
 export { Example as domainEdges } from './21_domain_edges.story';
+export { Example as metricTrendLength } from './22_metric_trend_length.story';
 export { Example as startDayOfWeek } from './11_start_day_of_week.story';
 export { Example as logWithNegativeValues } from './12_log_with_negative_values.story';

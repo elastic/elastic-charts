@@ -50,22 +50,24 @@ export const SparkLine: FunctionComponent<{
   id: string;
   datum: MetricWTrend;
 }> = ({ id, datum: { color, trend, trendA11yTitle, trendA11yDescription, trendShape } }) => {
-  if (!trend) {
-    return null;
-  }
   const sortedTrendData = getSortedData(trend);
-  const [xMin, xMax] = [sortedTrendData.at(0)!.x, sortedTrendData.at(-1)!.x];
+  const xMin = sortedTrendData.at(0)?.x ?? NaN;
+  const xMax = sortedTrendData.at(-1)?.x ?? NaN;
   const [, yMax] = extent(sortedTrendData.map((d) => d.y));
   const xScale = (value: number) => (value - xMin) / (xMax - xMin);
   const yScale = (value: number) => value / yMax;
 
-  const path = areaGenerator<{ x: number; y: number }>(
-    (d) => xScale(d.x),
-    () => 1,
-    (d) => 1 - yScale(d.y),
-    (d) => isFiniteNumber(d.x) && isFiniteNumber(d.y),
-    trendShape === MetricTrendShape.Bars ? CurveType.CURVE_STEP_AFTER : CurveType.LINEAR,
-  );
+  const shouldVisualizePath = Boolean(xMax - xMin) && yMax;
+
+  const path = shouldVisualizePath
+    ? areaGenerator<{ x: number; y: number }>(
+        (d) => xScale(d.x),
+        () => 1,
+        (d) => 1 - yScale(d.y),
+        (d) => isFiniteNumber(d.x) && isFiniteNumber(d.y),
+        trendShape === MetricTrendShape.Bars ? CurveType.CURVE_STEP_AFTER : CurveType.LINEAR,
+      )
+    : undefined;
 
   const titleId = `${id}-trend-title`;
   const descriptionId = `${id}-trend-description`;
@@ -89,13 +91,15 @@ export const SparkLine: FunctionComponent<{
 
         <rect x={0} y={0} width={1} height={1} fill={color} />
 
-        <path
-          d={path.area(sortedTrendData)}
-          transform="translate(0, 0.5),scale(1,0.5)"
-          fill={getSparkLineColor(color)}
-          stroke="none"
-          strokeWidth={0}
-        />
+        {path && (
+          <path
+            d={path.area(sortedTrendData)}
+            transform="translate(0, 0.5),scale(1,0.5)"
+            fill={getSparkLineColor(color)}
+            stroke="none"
+            strokeWidth={0}
+          />
+        )}
       </svg>
     </div>
   );

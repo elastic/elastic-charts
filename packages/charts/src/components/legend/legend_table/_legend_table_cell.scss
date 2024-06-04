@@ -1,0 +1,27 @@
+@import '../variables';
+@import '../../mixins';
+
+.echLegendTable__cell {
+  @include euiFontSizeXS;
+  align-content: baseline;
+  border-bottom: $tableBorder;
+  padding: $euiSizeXS ($euiSizeXS * 2);
+
+  &--truncate {
+    @include lineClamp(1);
+  }
+}
+
+.echLegendTable__colorCell {
+  padding-right: 0;
+  padding-left: $euiSizeXS / 2;
+
+  &.echLegend__colorWrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 1;
+  }
+}

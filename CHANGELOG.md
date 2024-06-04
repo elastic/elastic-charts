@@ -1,3 +1,35 @@
+# [65.2.0](https://github.com/elastic/elastic-charts/compare/v65.1.0...v65.2.0) (2024-06-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^94.5.2 ([#2450](https://github.com/elastic/elastic-charts/issues/2450)) ([26b425c](https://github.com/elastic/elastic-charts/commit/26b425cb6962f1edf82e2e4032d7bf4d5cdb21a8))
+* **deps:** update dependency @elastic/eui to ^94.6.0 ([#2454](https://github.com/elastic/elastic-charts/issues/2454)) ([6759469](https://github.com/elastic/elastic-charts/commit/67594696135f0300fc771cdc919c0c2638e887cd))
+* **deps:** update dependency @playwright/test to ^1.44.1 ([#2451](https://github.com/elastic/elastic-charts/issues/2451)) ([158b4c2](https://github.com/elastic/elastic-charts/commit/158b4c20ab590eea3d2c5e0f1096294f364ae6e6))
+* **deps:** update dependency json-schema-to-typescript to v14.0.5 ([#2452](https://github.com/elastic/elastic-charts/issues/2452)) ([7947e17](https://github.com/elastic/elastic-charts/commit/7947e172bb460c42659da5d0d88f8eec1a408c2b))
+* **metric:** chart not rendered when the trend is empty ([#2447](https://github.com/elastic/elastic-charts/issues/2447)) ([6042cc8](https://github.com/elastic/elastic-charts/commit/6042cc8bac220a0d2e3939bccb8ab026adb2b7c8))
+* **sunburst:** rendering for full sections ([#2457](https://github.com/elastic/elastic-charts/issues/2457)) ([58c2721](https://github.com/elastic/elastic-charts/commit/58c27211066e60150184392c41197a8c6184a8a0))
+
+
+### Features
+
+* **legend:** improve tooltip wording ([#2439](https://github.com/elastic/elastic-charts/issues/2439)) ([27c04f4](https://github.com/elastic/elastic-charts/commit/27c04f49600cc88c237c1e50a7ec77f797f0bb40))
+
+# [65.1.0](https://github.com/elastic/elastic-charts/compare/v65.0.0...v65.1.0) (2024-05-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^94.5.0 ([#2433](https://github.com/elastic/elastic-charts/issues/2433)) ([b13ded9](https://github.com/elastic/elastic-charts/commit/b13ded98da16780f8c0b3c08a02ac5bdd532d709))
+* **deps:** update dependency @playwright/test to ^1.44.0 ([#2434](https://github.com/elastic/elastic-charts/issues/2434)) ([faf36aa](https://github.com/elastic/elastic-charts/commit/faf36aaf1e1527c105da614907ca853198d0c1cf))
+* **Metric:** should only show one focus halo on `::focus` event ([#2441](https://github.com/elastic/elastic-charts/issues/2441)) ([96b0779](https://github.com/elastic/elastic-charts/commit/96b0779cc3c9a7bd31b55286a140488bbf82ef5f))
+* react component type errors ([#2440](https://github.com/elastic/elastic-charts/issues/2440)) ([f0b3a00](https://github.com/elastic/elastic-charts/commit/f0b3a008e76da2f9edd366fc7e56a2749291338c))
+
+
+### Features
+
+* **legend:** add legend stats (table view) ([#2426](https://github.com/elastic/elastic-charts/issues/2426)) ([c22f767](https://github.com/elastic/elastic-charts/commit/c22f7673c89f516fde9e1d56d77873de6b36600d))
+
 # [65.0.0](https://github.com/elastic/elastic-charts/compare/v64.1.0...v65.0.0) (2024-05-20)
 
 

@@ -10,7 +10,7 @@ import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
-import { LegendItem } from '../../../../common/legend';
+import { LegendItem, LegendValue } from '../../../../common/legend';
 import { SeriesIdentifier } from '../../../../common/series_id';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLegendConfigSelector } from '../../../../state/selectors/get_legend_config_selector';
@@ -127,6 +127,7 @@ function walkTree(
             {
               value: node[AGGREGATE_KEY],
               label: valueFormatter(node[AGGREGATE_KEY]),
+              type: LegendValue.Value,
             },
           ],
         },

@@ -1,0 +1,76 @@
+@import '../variables';
+@import '../../mixins';
+
+.echLegendTable__item {
+  color: $euiTextColor;
+
+  .echLegendItem__action {
+    padding-top: $euiSizeXS / 2;
+    max-width: 16px;
+    height: $echLegendRowHeight;
+    &:empty {
+      width: 0;
+    }
+  }
+
+  &:last-child .echLegendTable__cell {
+    border-bottom: $tableOutsideBorder;
+  }
+
+  &:not([dir='rtl']) .echLegendTable__cell:last-child {
+    padding-right: $euiSizeXS/2;
+  }
+
+  &[dir='rtl'] {
+    .echLegendTable__cell:last-child {
+      padding-left: $euiSizeXS/2;
+    }
+
+    .echLegendItem {
+      &__label {
+        text-align: right;
+      }
+    }
+    .echLegend__legendValue {
+      text-align: left;
+    }
+  }
+
+  &--highlightable {
+    .echLegendTable__cell:hover {
+      background-color: $tableRowHoverColor;
+    }
+
+    .echLegendTable__cell:hover ~ .echLegendTable__cell {
+      background-color: $tableRowHoverColor;
+    }
+
+    .echLegendTable__cell:has(~ .echLegendTable__cell:hover) {
+      background-color: $tableRowHoverColor;
+    }
+  }
+
+  &:not(&--hidden) {
+    .echLegendSingleItem__color--changable {
+      cursor: pointer;
+    }
+  }
+
+  &--vertical {
+    padding-top: $legendItemVerticalPadding / 2;
+    padding-bottom: $legendItemVerticalPadding / 2;
+  }
+
+  &--hidden {
+    color: $euiColorDarkShade;
+  }
+
+  .echLegend__legendValue {
+    @include euiFontSizeXS;
+    text-align: right;
+    font-feature-settings: 'tnum';
+    letter-spacing: unset;
+    direction: ltr;
+    white-space: nowrap;
+  }
+}
