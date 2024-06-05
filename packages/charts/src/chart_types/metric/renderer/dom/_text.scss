@@ -10,7 +10,8 @@ $padding: 8px;
   grid-template-rows: min-content auto min-content;
   line-height: 1.2;
 
-  &__valuesBlock, &__titlesBlock {
+  &__valuesBlock,
+  &__titlesBlock {
     display: flex;
     flex-direction: column;
 
