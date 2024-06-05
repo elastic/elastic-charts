@@ -12,7 +12,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   position: relative;
 
   // wrapper is needed to isolate color icon when wrapped or not
-  .colorWrapper > *:first-of-type {
+  .echLegend__colorWrapper > *:first-of-type {
     // euiPopover adds a div with height of 19px otherwise
     // this prevents color dot from shifting when wrapped
     height: $legendItemHeight;
@@ -21,7 +21,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   &:not([dir='rtl']) > *:not(.background) {
     margin-left: $euiSizeXS;
 
-    &:last-child:not(.echLegendItem__extra) {
+    &:last-child:not(.echLegendItem__legendValue) {
       margin-right: $euiSizeXS;
     }
   }
@@ -29,7 +29,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
   &[dir='rtl'] > *:not(.background) {
     margin-right: $euiSizeXS;
 
-    &:last-child:not(.echLegendItem__extra) {
+    &:last-child:not(.echLegendItem__legendValue) {
       margin-left: $euiSizeXS;
     }
   }
@@ -103,7 +103,7 @@ $legendItemHeight: #{$euiFontSizeXS * $euiLineHeight};
     }
   }
 
-  &__extra {
+  &__legendValue {
     @include euiFontSizeXS;
     text-align: right;
     flex: 0 0 auto;

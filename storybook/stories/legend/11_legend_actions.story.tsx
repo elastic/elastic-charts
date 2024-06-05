@@ -42,7 +42,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const legendPosition = customKnobs.enum.position('Legend position', undefined, { group: 'Legend' });
   const euiPopoverPosition = customKnobs.enum.euiPopoverPosition(undefined, undefined, { group: 'Legend' });
   const legendValues = customKnobs.multiSelect(
-    'LegendValue',
+    'Legend Value',
     LegendValue,
     LegendValue.CurrentAndLastValue,
     'multi-select',

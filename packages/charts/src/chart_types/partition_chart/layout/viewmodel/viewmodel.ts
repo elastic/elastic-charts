@@ -245,7 +245,10 @@ const rawChildNodes = (
   switch (partitionLayout) {
     case PartitionLayout.sunburst:
       const sunburstValueToAreaScale = TAU / totalValue;
-      const sunburstAreaAccessor = (e: ArrayEntry) => sunburstValueToAreaScale * mapEntryValue(e);
+      const sunburstAreaAccessor = (e: ArrayEntry) => {
+        const value = mapEntryValue(e);
+        return value === totalValue ? TAU : sunburstValueToAreaScale * value;
+      };
       return sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
 
     case PartitionLayout.treemap:

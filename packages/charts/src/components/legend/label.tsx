@@ -24,31 +24,41 @@ interface LabelProps {
 
 const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
 
-const modifierKey = isAppleDevice ? '⌘ (Command)' : 'Ctrl';
-const isolateSeriesMessage = 'isolate series';
-const showAllSeriesMessage = 'show all series';
-const showSeriesMessage = 'show series';
-const hideSeriesMessage = 'hide series';
+const modifierKey = isAppleDevice ? '⌘' : 'Ctrl';
+const showAllSeriesMessage = 'to show all';
+const showSeriesMessage = 'to show';
+const hideSeriesMessage = 'to hide';
 
 function getInteractivityTitle(isSeriesVisible: boolean, hiddenSeries: number, allSeries: number) {
   if (isSeriesVisible) {
     if (allSeries - hiddenSeries === 1) {
       return `
-Click: ${showAllSeriesMessage}
-${modifierKey} + click: ${hideSeriesMessage}`;
+Click ${showAllSeriesMessage}
+${modifierKey} + Click ${hideSeriesMessage}`;
     }
     if (hiddenSeries > 0) {
       return `
-Click: ${hideSeriesMessage}
-${modifierKey} + click: ${hideSeriesMessage}`;
+Click ${hideSeriesMessage}`;
     }
     return `
-Click: ${isolateSeriesMessage}
-${modifierKey} + click: ${hideSeriesMessage}`;
+Click ${showSeriesMessage}
+${modifierKey} + Click ${hideSeriesMessage}`;
   }
   return `
-Click: ${showSeriesMessage}
-${modifierKey} + click: ${showSeriesMessage}`;
+Click ${showSeriesMessage}`;
+}
+
+function getInteractivityAriaLabel(isSeriesVisible: boolean, hiddenSeries: number, allSeries: number) {
+  if (isSeriesVisible) {
+    if (allSeries - hiddenSeries === 1) {
+      return `Click: ${showAllSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
+    }
+    if (hiddenSeries > 0) {
+      return `Click: ${hideSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
+    }
+    return `Click: ${showSeriesMessage}, ${modifierKey} + Click: ${hideSeriesMessage}`;
+  }
+  return `Click: ${showSeriesMessage}, ${modifierKey} + Click: ${showSeriesMessage}`;
 }
 
 /**
@@ -57,19 +67,14 @@ ${modifierKey} + click: ${showSeriesMessage}`;
  */
 export function Label({
   label,
-  isToggleable,
   onToggle,
+  isToggleable,
   isSeriesHidden,
   options,
   hiddenSeriesCount,
   totalSeriesCount,
 }: LabelProps) {
-  const maxLines = Math.abs(options.maxLines);
-  const labelClassNames = classNames('echLegendItem__label', {
-    'echLegendItem__label--clickable': Boolean(onToggle),
-    'echLegendItem__label--singleline': maxLines === 1,
-    'echLegendItem__label--multiline': maxLines > 1,
-  });
+  const { className, dir, clampStyles } = getSharedProps(label, options, !!onToggle);
 
   const onClick: MouseEventHandler = useCallback(
     ({ metaKey, ctrlKey }) => onToggle?.(isAppleDevice ? metaKey : ctrlKey),
@@ -82,11 +87,7 @@ export function Label({
     [onToggle],
   );
 
-  const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
   const title = options.maxLines > 0 ? label : ''; // full text already visible
-  const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
-
-  const interactionsGuidanceText = getInteractivityTitle(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount);
 
   return isToggleable ? (
     // This div is required to allow multiline text truncation, all ARIA requirements are still met
@@ -95,19 +96,43 @@ export function Label({
       role="button"
       tabIndex={0}
       dir={dir}
-      className={labelClassNames}
-      title={`${title}${interactionsGuidanceText}`}
+      className={className}
+      title={`${title}\n${getInteractivityTitle(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
       onClick={onClick}
       onKeyDown={onKeyDown}
       aria-pressed={isSeriesHidden}
       style={clampStyles}
-      aria-label={`${label}; ${interactionsGuidanceText.replace('\n', '')}`} // put it in a single line
+      aria-label={`${label}; ${getInteractivityAriaLabel(!isSeriesHidden, hiddenSeriesCount, totalSeriesCount)}`}
     >
       {label}
     </div>
   ) : (
-    <div dir={dir} className={labelClassNames} title={label} style={clampStyles}>
+    <div dir={dir} className={className} title={label} style={clampStyles}>
       {label}
     </div>
   );
+}
+
+/** @internal */
+export function NonInteractiveLabel({ label, options }: { label: string; options: LegendLabelOptions }) {
+  const { className, dir, clampStyles } = getSharedProps(label, options);
+  return (
+    <div dir={dir} className={className} title={label} style={clampStyles}>
+      {label}
+    </div>
+  );
+}
+
+function getSharedProps(label: string, options: LegendLabelOptions, isToggleable?: boolean) {
+  const maxLines = Math.abs(options.maxLines);
+  const className = classNames('echLegendItem__label', {
+    'echLegendItem__label--clickable': Boolean(isToggleable),
+    'echLegendItem__label--singleline': maxLines === 1,
+    'echLegendItem__label--multiline': maxLines > 1,
+  });
+
+  const dir = isRTLString(label) ? 'rtl' : 'ltr'; // forced for individual labels in case mixed charset
+  const clampStyles = maxLines > 1 ? { WebkitLineClamp: maxLines } : {};
+
+  return { className, dir, clampStyles };
 }

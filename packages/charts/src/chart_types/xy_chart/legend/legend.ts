@@ -7,7 +7,7 @@
  */
 
 import { Color } from '../../../common/colors';
-import { LegendItem, LegendValue } from '../../../common/legend';
+import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { SettingsSpec } from '../../../specs';
 import { isDefined, mergePartial } from '../../../utils/common';
@@ -16,7 +16,7 @@ import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort'
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { XDomain } from '../domains/types';
 import { isDatumFilled } from '../rendering/utils';
-import { getLegendValue } from '../state/utils/get_last_value';
+import { getLegendValues } from '../state/utils/get_legend_values';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
@@ -109,7 +109,7 @@ export function computeLegend(
   const legendItems: LegendItem[] = [];
   const defaultColor = theme.colors.defaultVizColor;
 
-  const legendValueMode = settingsSpec.legendValues[0] ?? LegendValue.None;
+  const legendValues = settingsSpec.legendValues ?? [];
 
   dataSeries.forEach((series) => {
     const { specId, yAccessor } = series;
@@ -140,8 +140,7 @@ export function computeLegend(
 
     const pointStyle = getPointStyle(spec, theme);
 
-    const itemValue = getLegendValue(series, xDomain, legendValueMode, y1Accessor(series.stackMode));
-    const formattedItemValue = itemValue !== null ? formatter(itemValue) : '';
+    const legendValuesItems = getLegendValues(series, xDomain, legendValues, y1Accessor(series.stackMode), formatter);
 
     legendItems.push({
       depth: 0,
@@ -152,22 +151,19 @@ export function computeLegend(
       isSeriesHidden,
       isItemHidden: hideInLegend,
       isToggleable: true,
-      values:
-        itemValue !== null
-          ? [
-              {
-                value: itemValue,
-                label: formattedItemValue,
-              },
-            ]
-          : [],
+      values: legendValuesItems,
       path: [{ index: 0, value: seriesIdentifier.key }],
       keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
       pointStyle,
     });
     if (banded) {
-      const bandedItemValue = getLegendValue(series, xDomain, legendValueMode, y0Accessor(series.stackMode));
-      const bandedFormattedItemValue = bandedItemValue !== null ? formatter(bandedItemValue) : '';
+      const bandedLegendValuesItems = getLegendValues(
+        series,
+        xDomain,
+        legendValues,
+        y0Accessor(series.stackMode),
+        formatter,
+      );
 
       const labelY0 = getBandedLegendItemLabel(name, BandedAccessorType.Y0, postFixes);
       legendItems.push({
@@ -179,15 +175,7 @@ export function computeLegend(
         isSeriesHidden,
         isItemHidden: hideInLegend,
         isToggleable: true,
-        values:
-          bandedItemValue !== null
-            ? [
-                {
-                  value: bandedItemValue,
-                  label: bandedFormattedItemValue,
-                },
-              ]
-            : [],
+        values: bandedLegendValuesItems,
         path: [{ index: 0, value: seriesIdentifier.key }],
         keys: [specId, spec.groupId, yAccessor, ...series.splitAccessors.values()],
         pointStyle,
@@ -201,7 +189,6 @@ export function computeLegend(
     return defaultXYLegendSeriesSort(aDs, bDs);
   });
   const sortFn: SeriesCompareFn = settingsSpec.legendSort ?? legendSortFn;
-
   return groupBy(
     legendItems.sort((a, b) =>
       a.seriesIdentifiers[0] && b.seriesIdentifiers[0] ? sortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0]) : 0,

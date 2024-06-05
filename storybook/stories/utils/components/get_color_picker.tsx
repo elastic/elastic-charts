@@ -28,6 +28,7 @@ export const getColorPicker =
       closePopover={onClose}
       panelStyle={{ padding: 16 }}
       anchorPosition={anchorPosition}
+      className="echColorPickerPopover"
       ownFocus
     >
       <EuiColorPicker display="inline" color={color} onChange={onChange} />

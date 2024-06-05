@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Datum, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
@@ -15,25 +16,33 @@ import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 
-export const Example: ChartsStory = (_, { title, description }) => (
-  <Chart title={title} description={description}>
-    <Settings baseTheme={useBaseTheme()} />
-    <Partition
-      id="spec_1"
-      data={mocks.pie.slice(0, 1)}
-      layout={PartitionLayout.sunburst}
-      valueAccessor={(d: Datum) => d.exportVal as number}
-      valueFormatter={(d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`}
-      layers={[
-        {
-          groupByRollup: (d: Datum) => d.sitc1,
-          nodeLabel: (d: Datum) => productLookup[d].name,
-          shape: {
-            fillColor: (key, sortIndex, node, tree) =>
-              indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, sortIndex, tree),
+export const Example: ChartsStory = (_, { title, description }) => {
+  const useCustomValue = boolean('use custom value', false);
+  const customValue = number('custom value', 678);
+  return (
+    <Chart title={title} description={description}>
+      <Settings baseTheme={useBaseTheme()} />
+      <Partition
+        id="spec_1"
+        data={useCustomValue ? [{ sitc1: '7', exportVal: customValue }] : mocks.pie.slice(0, 1)}
+        layout={PartitionLayout.sunburst}
+        valueAccessor={(d: Datum) => d.exportVal as number}
+        valueFormatter={
+          useCustomValue
+            ? String
+            : (d: number) => `$${defaultPartitionValueFormatter(Math.round(d / 1000000000))}\u00A0Bn`
+        }
+        layers={[
+          {
+            groupByRollup: (d: Datum) => d.sitc1,
+            nodeLabel: (d: Datum) => productLookup[d].name,
+            shape: {
+              fillColor: (key, sortIndex, node, tree) =>
+                indexInterpolatedFillColor(interpolatorCET2s(0.8))(null, sortIndex, tree),
+            },
           },
-        },
-      ]}
-    />
-  </Chart>
-);
+        ]}
+      />
+    </Chart>
+  );
+};
