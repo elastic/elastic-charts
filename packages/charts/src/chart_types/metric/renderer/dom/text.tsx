@@ -44,6 +44,7 @@ const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l
 const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
 const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 72, xl: 104, xxl: 170 };
 const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
+const VALUE_PART_FONT_RATIO = 1.3;
 
 const TITLE_FONT: Font = {
   fontStyle: 'normal',
@@ -52,6 +53,7 @@ const TITLE_FONT: Font = {
   fontWeight: 'bold',
   textColor: 'black',
 };
+const VALUE_FONT = TITLE_FONT;
 const SUBTITLE_FONT: Font = {
   ...TITLE_FONT,
   fontWeight: 'normal',
@@ -71,7 +73,9 @@ function getFontSizes(ranges: [number, number, BreakPoint][], value: number, sty
   const size = range ? range[2] : ranges[0]?.[2] ?? 's';
   const valueFontSize = typeof style.text.valueFontSize === 'number' ? style.text.valueFontSize : VALUE_FONT_SIZE[size];
   const valuePartFontSize =
-    typeof style.text.valueFontSize === 'number' ? Math.ceil(valueFontSize / 1.5) : VALUE_PART_FONT_SIZE[size];
+    typeof style.text.valueFontSize === 'number'
+      ? Math.ceil(valueFontSize / VALUE_PART_FONT_RATIO)
+      : VALUE_PART_FONT_SIZE[size];
 
   return {
     iconSize: ICON_SIZE[size],
@@ -96,7 +100,11 @@ function elementVisibility(
   panel: Size,
   sizes: Sizes,
   locale: string,
-): ElementVisibility & { titleLines: string[]; subtitleLines: string[] } {
+): ElementVisibility & {
+  titleLines: string[];
+  subtitleLines: string[];
+  gapHeight: number;
+} {
   const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
   const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
     return datum.title
@@ -118,7 +126,7 @@ function elementVisibility(
   };
 
   const extraHeight = sizes.extraFontSize * LINE_HEIGHT;
-  const valueHeight = sizes.valueFontSize * LINE_HEIGHT + PADDING;
+  const valueHeight = sizes.valueFontSize * LINE_HEIGHT;
 
   const responsiveBreakPoints: Array<ElementVisibility> = [
     { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
@@ -130,21 +138,25 @@ function elementVisibility(
     { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
   ];
 
-  const isVisible = (
+  const getCombinedHeight = (
     { titleMaxLines, subtitleMaxLines, title, subtitle, extra }: ElementVisibility,
     measure: TextMeasure,
   ) =>
     (title && titleMaxLines > 0 ? titleHeight(titleMaxLines, measure) : 0) +
-      (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
-      (extra ? extraHeight : 0) +
-      valueHeight <
-    panel.height;
+    (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
+    (extra ? extraHeight : 0) +
+    valueHeight +
+    PADDING;
+
+  const isVisible = (ev: ElementVisibility, measure: TextMeasure) => getCombinedHeight(ev, measure) < panel.height;
 
   return withTextMeasure((textMeasure) => {
     const visibilityBreakpoint =
       responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
+
     return {
       ...visibilityBreakpoint,
+      gapHeight: Math.max(0, panel.height - getCombinedHeight(visibilityBreakpoint, textMeasure)),
       titleLines: wrapText(
         datum.title ?? '',
         TITLE_FONT,
@@ -165,6 +177,31 @@ function elementVisibility(
       ),
     };
   });
+}
+
+function getAutoValueFontSize(
+  valueFontSize: number,
+  maxWidth: number,
+  gapHeight: number,
+  textParts: TextParts[],
+  hasIcon: boolean,
+) {
+  const widthConstrainedSize = withTextMeasure((textMeasure) => {
+    const textWidth =
+      textParts.reduce((sum, { text, emphasis }) => {
+        const fontSize = emphasis === 'small' ? valueFontSize / VALUE_PART_FONT_RATIO : valueFontSize;
+        return sum + textMeasure(text, VALUE_FONT, fontSize).width;
+      }, 0) + (hasIcon ? valueFontSize + PADDING : 0);
+    const ratio = maxWidth / textWidth;
+    return ratio * valueFontSize;
+  });
+  const heightConstrainedSize = valueFontSize + gapHeight;
+  const autoValueFontSize = Math.min(heightConstrainedSize, widthConstrainedSize);
+
+  return {
+    valueFontSize: autoValueFontSize,
+    valuePartFontSize: autoValueFontSize / VALUE_PART_FONT_RATIO,
+  };
 }
 
 function lineClamp(maxLines: number): CSSProperties {
@@ -203,6 +240,16 @@ export const MetricText: React.FunctionComponent<{
   const visibility = elementVisibility(datum, panel, sizes, locale);
   const isNumericalMetric = isMetricWNumber(datum) || isMetricWNumberArrayValues(datum);
   const textParts = getTextParts(datum, style);
+  const { valueFontSize, valuePartFontSize } =
+    style.text.valueFontSize !== 'auto'
+      ? sizes
+      : getAutoValueFontSize(
+          sizes.valueFontSize,
+          panel.width - 2 * PADDING,
+          visibility.gapHeight,
+          textParts,
+          datum.valueIcon !== undefined,
+        );
 
   const TitleElement = () => (
     <span
@@ -294,11 +341,12 @@ export const MetricText: React.FunctionComponent<{
             </p>
           )}
         </div>
+
         <div className="echMetricText__valueGroup">
           <p
             className="echMetricText__value"
             style={{
-              fontSize: sizes.valueFontSize,
+              fontSize: valueFontSize,
               textOverflow: isNumericalMetric ? undefined : 'ellipsis',
               color: datum.valueColor,
             }}
@@ -310,7 +358,7 @@ export const MetricText: React.FunctionComponent<{
                   key={`${text}${i}`}
                   className="echMetricText__part"
                   style={{
-                    fontSize: sizes.valuePartFontSize,
+                    fontSize: valuePartFontSize,
                   }}
                 >
                   {text}
@@ -324,14 +372,14 @@ export const MetricText: React.FunctionComponent<{
             <p
               className="echMetricText__valueIcon"
               style={{
-                fontSize: sizes.valueFontSize,
+                fontSize: valueFontSize,
                 color: datum.valueColor ?? highContrastTextColor,
-                marginRight: style.text.valuesTextAlign === 'center' ? -(sizes.valuePartFontSize + PADDING) : undefined,
+                marginRight: style.text.valuesTextAlign === 'center' ? -(valuePartFontSize + PADDING) : undefined,
               }}
             >
               {renderWithProps(datum.valueIcon, {
-                width: sizes.valuePartFontSize,
-                height: sizes.valuePartFontSize,
+                width: valuePartFontSize,
+                height: valuePartFontSize,
                 color: datum.valueColor ?? highContrastTextColor,
                 verticalAlign: 'middle',
               })}
