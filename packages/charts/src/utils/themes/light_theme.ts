@@ -407,6 +407,7 @@ export const LIGHT_THEME: Theme = {
       lightColor: '#E0E5EE', // LIGHT_BASE_COLORS.title,
       darkColor: LIGHT_BASE_COLORS.darkestShade,
       valueFontSize: 'default',
+      minValueFontSize: 12,
       titlesTextAlign: 'left',
       valuesTextAlign: 'right',
       iconAlign: 'left',

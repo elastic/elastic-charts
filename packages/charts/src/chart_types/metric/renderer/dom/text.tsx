@@ -184,6 +184,7 @@ function getAutoValueFontSize(
   maxWidth: number,
   gapHeight: number,
   textParts: TextParts[],
+  minValueFontSize: number,
   hasIcon: boolean,
 ) {
   const widthConstrainedSize = withTextMeasure((textMeasure) => {
@@ -196,7 +197,7 @@ function getAutoValueFontSize(
     return ratio * valueFontSize;
   });
   const heightConstrainedSize = valueFontSize + gapHeight;
-  const autoValueFontSize = Math.min(heightConstrainedSize, widthConstrainedSize);
+  const autoValueFontSize = Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
 
   return {
     valueFontSize: autoValueFontSize,
@@ -248,6 +249,7 @@ export const MetricText: React.FunctionComponent<{
           panel.width - 2 * PADDING,
           visibility.gapHeight,
           textParts,
+          style.text.minValueFontSize,
           datum.valueIcon !== undefined,
         );
 

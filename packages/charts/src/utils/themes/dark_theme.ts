@@ -408,6 +408,7 @@ export const DARK_THEME: Theme = {
       lightColor: '#E0E5EE', //DARK_BASE_COLORS.title,
       darkColor: DARK_BASE_COLORS.lightShade,
       valueFontSize: 'default',
+      minValueFontSize: 12,
       titlesTextAlign: 'left',
       valuesTextAlign: 'right',
       iconAlign: 'left',

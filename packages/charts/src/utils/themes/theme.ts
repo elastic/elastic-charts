@@ -326,6 +326,7 @@ export interface MetricStyle {
     darkColor: Color;
     lightColor: Color;
     valueFontSize: 'default' | 'auto' | number;
+    minValueFontSize: number;
     titlesTextAlign: 'left' | 'center' | 'right';
     valuesTextAlign: 'left' | 'center' | 'right';
     iconAlign: 'left' | 'right';

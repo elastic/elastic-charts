@@ -415,6 +415,7 @@ export const LEGACY_DARK_THEME: Theme = {
       lightColor: '#E0E5EE',
       darkColor: '#343741',
       valueFontSize: 'default',
+      minValueFontSize: 12,
       titlesTextAlign: 'left',
       valuesTextAlign: 'right',
       iconAlign: 'left',
