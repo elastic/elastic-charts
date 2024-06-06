@@ -100,6 +100,7 @@ function elementVisibility(
   panel: Size,
   sizes: Sizes,
   locale: string,
+  fit: boolean,
 ): ElementVisibility & {
   titleLines: string[];
   subtitleLines: string[];
@@ -151,8 +152,9 @@ function elementVisibility(
   const isVisible = (ev: ElementVisibility, measure: TextMeasure) => getCombinedHeight(ev, measure) < panel.height;
 
   return withTextMeasure((textMeasure) => {
-    const visibilityBreakpoint =
-      responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
+    const visibilityBreakpoint = fit
+      ? responsiveBreakPoints.at(0)!
+      : responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
 
     return {
       ...visibilityBreakpoint,
@@ -179,7 +181,7 @@ function elementVisibility(
   });
 }
 
-function getAutoValueFontSize(
+function getFitValueFontSize(
   valueFontSize: number,
   maxWidth: number,
   gapHeight: number,
@@ -197,11 +199,11 @@ function getAutoValueFontSize(
     return ratio * valueFontSize;
   });
   const heightConstrainedSize = valueFontSize + gapHeight;
-  const autoValueFontSize = Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
+  const fitValueFontSize = Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
 
   return {
-    valueFontSize: autoValueFontSize,
-    valuePartFontSize: autoValueFontSize / VALUE_PART_FONT_RATIO,
+    valueFontSize: fitValueFontSize,
+    valuePartFontSize: fitValueFontSize / VALUE_PART_FONT_RATIO,
   };
 }
 
@@ -238,13 +240,13 @@ export const MetricText: React.FunctionComponent<{
     'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
 
-  const visibility = elementVisibility(datum, panel, sizes, locale);
+  const visibility = elementVisibility(datum, panel, sizes, locale, style.text.valueFontSize === 'fit');
   const isNumericalMetric = isMetricWNumber(datum) || isMetricWNumberArrayValues(datum);
   const textParts = getTextParts(datum, style);
   const { valueFontSize, valuePartFontSize } =
     style.text.valueFontSize !== 'fit'
       ? sizes
-      : getAutoValueFontSize(
+      : getFitValueFontSize(
           sizes.valueFontSize,
           panel.width - 2 * PADDING,
           visibility.gapHeight,
