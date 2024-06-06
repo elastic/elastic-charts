@@ -44,7 +44,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'value font mode',
     {
       Default: 'default',
-      Auto: 'auto',
+      Fit: 'fit',
       Custom: 'custom',
     },
     'default',

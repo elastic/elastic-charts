@@ -86,7 +86,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     'value font mode',
     {
       Default: 'default',
-      Auto: 'auto',
+      Fit: 'fit',
       Custom: 'custom',
     },
     'default',

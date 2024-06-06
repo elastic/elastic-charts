@@ -242,7 +242,7 @@ export const MetricText: React.FunctionComponent<{
   const isNumericalMetric = isMetricWNumber(datum) || isMetricWNumberArrayValues(datum);
   const textParts = getTextParts(datum, style);
   const { valueFontSize, valuePartFontSize } =
-    style.text.valueFontSize !== 'auto'
+    style.text.valueFontSize !== 'fit'
       ? sizes
       : getAutoValueFontSize(
           sizes.valueFontSize,
