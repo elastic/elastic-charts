@@ -195,7 +195,7 @@ function getFitValueFontSize(
         const fontSize = emphasis === 'small' ? valueFontSize / VALUE_PART_FONT_RATIO : valueFontSize;
         return sum + textMeasure(text, VALUE_FONT, fontSize).width;
       }, 0) + (hasIcon ? valueFontSize + PADDING : 0);
-    const ratio = maxWidth / textWidth;
+    const ratio = (maxWidth * 0.95) / textWidth; // approx ratio, so use 95% of width to avoid clipping
     return ratio * valueFontSize;
   });
   const heightConstrainedSize = valueFontSize + gapHeight;
