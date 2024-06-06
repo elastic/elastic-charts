@@ -13,11 +13,17 @@ import { Color } from '../../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
 import { Font } from '../../../../common/text_utils';
 import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../utils/common';
+import { isFiniteNumber, isNil, LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWNumber, isMetricWNumberArrayValues, isMetricWProgress, MetricDatum } from '../../specs';
+import {
+  isMetricWNumber,
+  isMetricWNumberArrayValues,
+  isMetricWProgress,
+  MetricDatum,
+  MetricWNumber,
+} from '../../specs';
 
 interface TextParts {
   emphasis: 'small' | 'normal';
@@ -25,6 +31,10 @@ interface TextParts {
 }
 
 type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+
+// synced with scss variables
+const PROGRESS_BAR_WIDTH = 10;
+const PROGRESS_BAR_TARGET_WIDTH = 4;
 
 const HEIGHT_BP: [number, number, BreakPoint][] = [
   [0, 200, 'xs'],
@@ -181,6 +191,11 @@ function elementVisibility(
   });
 }
 
+/**
+ * Approximate font size to fit given available space
+ *
+ * @note This is does not account for the change in icon size due to the computed ratio
+ */
 function getFitValueFontSize(
   valueFontSize: number,
   maxWidth: number,
@@ -233,7 +248,12 @@ export const MetricText: React.FunctionComponent<{
   const { extra, body } = datum;
   const sizes = getFontSizes(HEIGHT_BP, panel.height, style);
   const hasProgressBar = isMetricWProgress(datum);
+  const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
+  const progressBarWidth =
+    hasProgressBar && progressBarDirection === LayoutDirection.Vertical
+      ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
+      : 0;
   const containerClassName = classNames('echMetricText', {
     [`echMetricText--${progressBarSize}`]: hasProgressBar,
     'echMetricText--vertical': progressBarDirection === LayoutDirection.Vertical,
@@ -248,7 +268,7 @@ export const MetricText: React.FunctionComponent<{
       ? sizes
       : getFitValueFontSize(
           sizes.valueFontSize,
-          panel.width - 2 * PADDING,
+          panel.width - progressBarWidth - 2 * PADDING,
           visibility.gapHeight,
           textParts,
           style.text.minValueFontSize,
