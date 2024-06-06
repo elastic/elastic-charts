@@ -193,8 +193,6 @@ function elementVisibility(
 
 /**
  * Approximate font size to fit given available space
- *
- * @note This is does not account for the change in icon size due to the computed ratio
  */
 function getFitValueFontSize(
   valueFontSize: number,
@@ -205,13 +203,13 @@ function getFitValueFontSize(
   hasIcon: boolean,
 ) {
   const widthConstrainedSize = withTextMeasure((textMeasure) => {
-    const textWidth =
-      textParts.reduce((sum, { text, emphasis }) => {
-        const fontSize = emphasis === 'small' ? valueFontSize / VALUE_PART_FONT_RATIO : valueFontSize;
-        return sum + textMeasure(text, VALUE_FONT, fontSize).width;
-      }, 0) + (hasIcon ? valueFontSize + PADDING : 0);
-    const ratio = (maxWidth * 0.95) / textWidth; // approx ratio, so use 95% of width to avoid clipping
-    return ratio * valueFontSize;
+    const iconMultiplier = hasIcon ? 1 : 0;
+    const textWidth = textParts.reduce((sum, { text, emphasis }) => {
+      const fontSize = emphasis === 'small' ? valueFontSize / VALUE_PART_FONT_RATIO : valueFontSize;
+      return sum + textMeasure(text, VALUE_FONT, fontSize).width;
+    }, 0);
+    const ratio = textWidth / valueFontSize;
+    return (maxWidth - iconMultiplier * PADDING) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
   });
   const heightConstrainedSize = valueFontSize + gapHeight;
   const fitValueFontSize = Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
@@ -268,7 +266,7 @@ export const MetricText: React.FunctionComponent<{
       ? sizes
       : getFitValueFontSize(
           sizes.valueFontSize,
-          panel.width - progressBarWidth - 2 * PADDING,
+          (panel.width - progressBarWidth - 2 * PADDING) * 0.98, // small buffer to prevent clipping
           visibility.gapHeight,
           textParts,
           style.text.minValueFontSize,
