@@ -122,7 +122,7 @@ function getBarsState(
 ): DebugStateBar[] {
   const buckets = new Map<string, DebugStateBar>();
   const bars = barGeometries.reduce<BarGeometry[]>((acc, { value }) => {
-    return [...acc, ...value];
+    return acc.concat(value);
   }, []);
   bars.forEach(
     ({

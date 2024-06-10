@@ -55,7 +55,7 @@ export function getGridLines(
         return linesAcc;
       }
       const linesForSpec = getGridLinesForAxis(axisSpec, visibleTicks, themeAxisStyle, panelSize);
-      return linesForSpec.length === 0 ? linesAcc : [...linesAcc, ...linesForSpec];
+      return linesForSpec.length === 0 ? linesAcc : linesAcc.concat(linesForSpec);
     }, []);
     return { lineGroups: lines };
   });

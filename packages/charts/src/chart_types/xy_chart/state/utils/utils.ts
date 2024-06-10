@@ -178,7 +178,7 @@ function getAnnotationYValueMap(
         : []
       : spec.dataValues.flatMap(({ coordinates: { y0, y1 } }) => [y0, y1]);
     const groupValues = acc.get(spec.groupId) ?? [];
-    return acc.set(spec.groupId, [...groupValues, ...yValues.filter(isFiniteNumber)]);
+    return acc.set(spec.groupId, groupValues.concat(yValues.filter(isFiniteNumber)));
   }, new Map<GroupId, number[]>());
 }
 

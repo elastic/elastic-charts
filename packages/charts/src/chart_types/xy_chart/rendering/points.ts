@@ -60,8 +60,7 @@ export function renderPoints(
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
   const yDefined = isYValueDefinedFn(yScale, xScale);
-
-  const pointGeometries = dataSeries.data.reduce((acc, datum, dataIndex) => {
+  const pointGeometries = dataSeries.data.reduce<PointGeometry[]>((acc, datum, dataIndex) => {
     const { x: xValue, mark } = datum;
     const prev = dataSeries.data[dataIndex - 1];
     const next = dataSeries.data[dataIndex + 1];
@@ -73,7 +72,6 @@ export function renderPoints(
 
     if (Number.isNaN(x)) return acc;
 
-    const points: PointGeometry[] = [];
     const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
 
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
@@ -121,11 +119,11 @@ export function renderPoints(
         yScale.isValueInDomain(valueAccessor(datum)) &&
         !isDatumFilled(datum)
       ) {
-        points.push(pointGeometry);
+        acc.push(pointGeometry);
       }
     });
-    return [...acc, ...points];
-  }, [] as PointGeometry[]);
+    return acc;
+  }, []);
   return {
     pointGeometries,
     indexedGeometryMap,
