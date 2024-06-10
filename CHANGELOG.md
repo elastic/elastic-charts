@@ -1,3 +1,20 @@
+# [66.0.0](https://github.com/elastic/elastic-charts/compare/v65.2.0...v66.0.0) (2024-06-10)
+
+
+### Features
+
+* **Metric:** style enhancements ([#2437](https://github.com/elastic/elastic-charts/issues/2437)) ([0686596](https://github.com/elastic/elastic-charts/commit/0686596b44fd9cac00955478179597c5b4bd9d91))
+
+
+### Performance Improvements
+
+* replace spread with concat where useful ([#2446](https://github.com/elastic/elastic-charts/issues/2446)) ([078b490](https://github.com/elastic/elastic-charts/commit/078b4905131fcf368a25bcadcb53e414d634daea))
+
+
+### BREAKING CHANGES
+
+* **Metric:** The `MetricStyle.text.darkColor` and `MetricStyle.text.lightColor` are now `MetricStyle.textDarkColor` and `MetricStyle.textLightColor`, respectively. This PR also includes minor overall style changes to the text breakpoints of the `Metric` chart.
+
 # [65.2.0](https://github.com/elastic/elastic-charts/compare/v65.1.0...v65.2.0) (2024-06-04)
 
 
