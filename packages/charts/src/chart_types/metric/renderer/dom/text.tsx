@@ -259,7 +259,6 @@ export const MetricText: React.FunctionComponent<{
   });
 
   const visibility = elementVisibility(datum, panel, sizes, locale, style.valueFontSize === 'fit');
-  const isNumericalMetric = isMetricWNumber(datum) || isMetricWNumberArrayValues(datum);
   const textParts = getTextParts(datum, style);
   const { valueFontSize, valuePartFontSize } =
     style.valueFontSize !== 'fit'
@@ -358,7 +357,7 @@ export const MetricText: React.FunctionComponent<{
             className="echMetricText__value"
             style={{
               fontSize: valueFontSize,
-              textOverflow: isNumericalMetric ? undefined : 'ellipsis',
+              textOverflow: isMetricWNumber(datum) ? undefined : 'ellipsis',
               color: datum.valueColor,
             }}
             title={textParts.map(({ text }) => text).join('')}
