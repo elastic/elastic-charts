@@ -322,10 +322,13 @@ export interface HeatmapStyle {
 
 /** @public */
 export interface MetricStyle {
-  text: {
-    darkColor: Color;
-    lightColor: Color;
-  };
+  textDarkColor: Color;
+  textLightColor: Color;
+  valueFontSize: 'default' | 'fit' | number;
+  minValueFontSize: number;
+  titlesTextAlign: 'left' | 'center' | 'right';
+  valuesTextAlign: 'left' | 'center' | 'right';
+  iconAlign: 'left' | 'right';
   border: Color;
   barBackground: Color;
   emptyBackground: Color;

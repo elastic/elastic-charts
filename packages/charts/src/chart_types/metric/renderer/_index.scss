@@ -1,3 +1,8 @@
+$progress-bar-width: 10px;
+$progress-bar-height: 10px;
+$progress-bar-target-width: 4px;
+$progress-bar-target-height: 2px;
+
 .echMetricContainer {
   display: grid;
   width: 100%;
@@ -47,13 +52,13 @@
     // TODO: find a better way to style based on sizes (i.e. sass functions)
     &.echMetric--withProgressBar {
       &--small {
-        padding-left: 10px;
+        padding-left: $progress-bar-width;
       }
     }
 
     &.echMetric--withTargetProgressBar {
       &--small {
-        padding-left: 14px;
+        padding-left: $progress-bar-width + $progress-bar-target-width;
       }
     }
   }
@@ -61,13 +66,13 @@
   &--horizontal {
     &.echMetric--withProgressBar {
       &--small {
-        padding-bottom: 10px;
+        padding-bottom: $progress-bar-height;
       }
     }
 
     &.echMetric--withTargetProgressBar {
       &--small {
-        padding-bottom: 12px;
+        padding-bottom: $progress-bar-height + $progress-bar-target-height;
       }
     }
   }

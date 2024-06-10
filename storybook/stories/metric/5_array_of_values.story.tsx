@@ -7,7 +7,7 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import { number, boolean, button, color } from '@storybook/addon-knobs';
+import { number, boolean, button, color, select } from '@storybook/addon-knobs';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { Chart, isMetricElementEvent, Metric, MetricDatum, Settings } from '@elastic/charts';
@@ -40,6 +40,16 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const addMetricClick = boolean('attach click handler', true);
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
   const emptyBackground = color('empty background', 'transparent');
+  const valueFontSizeMode = select(
+    'value font mode',
+    {
+      Default: 'default',
+      Fit: 'fit',
+      Custom: 'custom',
+    },
+    'default',
+  );
+  const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
 
   const data = useMemo<(MetricDatum | undefined)[]>(
     () => [
@@ -158,6 +168,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           theme={{
             metric: {
               emptyBackground,
+              valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
             },
           }}
           baseTheme={useBaseTheme()}

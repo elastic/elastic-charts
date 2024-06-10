@@ -410,10 +410,13 @@ export const LEGACY_LIGHT_THEME: Theme = {
     },
   },
   metric: {
-    text: {
-      lightColor: '#E0E5EE',
-      darkColor: '#343741',
-    },
+    textLightColor: '#E0E5EE',
+    textDarkColor: '#343741',
+    valueFontSize: 'default',
+    minValueFontSize: 12,
+    titlesTextAlign: 'left',
+    valuesTextAlign: 'right',
+    iconAlign: 'left',
     border: '#EDF0F5',
     barBackground: '#EDF0F5',
     emptyBackground: Colors.Transparent.keyword,

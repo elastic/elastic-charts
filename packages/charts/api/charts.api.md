@@ -2092,14 +2092,23 @@ export interface MetricStyle {
     // (undocumented)
     emptyBackground: Color;
     // (undocumented)
+    iconAlign: 'left' | 'right';
+    // (undocumented)
     minHeight: Pixels;
+    // (undocumented)
+    minValueFontSize: number;
     // (undocumented)
     nonFiniteText: string;
     // (undocumented)
-    text: {
-        darkColor: Color;
-        lightColor: Color;
-    };
+    textDarkColor: Color;
+    // (undocumented)
+    textLightColor: Color;
+    // (undocumented)
+    titlesTextAlign: 'left' | 'center' | 'right';
+    // (undocumented)
+    valueFontSize: 'default' | 'fit' | number;
+    // (undocumented)
+    valuesTextAlign: 'left' | 'center' | 'right';
 }
 
 // @alpha (undocumented)

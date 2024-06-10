@@ -97,8 +97,8 @@ class Component extends React.Component<StateProps & DispatchProps> {
 
     const panel = { width: width / maxColumns, height: height / totalRows };
     const contrastOptions: ColorContrastOptions = {
-      lightColor: colorToRgba(style.text.lightColor),
-      darkColor: colorToRgba(style.text.darkColor),
+      lightColor: colorToRgba(style.textLightColor),
+      darkColor: colorToRgba(style.textDarkColor),
     };
 
     const emptyBackgroundRGBA = combineColors(colorToRgba(style.emptyBackground), colorToRgba(backgroundColor));
