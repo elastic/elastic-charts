@@ -135,8 +135,8 @@ class Component extends React.Component<Props> {
     } = this.props;
     /* eslint-enable prettier/prettier */
     const contrastOptions: ColorContrastOptions = {
-      lightColor: colorToRgba(metricStyle.text.lightColor),
-      darkColor: colorToRgba(metricStyle.text.darkColor),
+      lightColor: colorToRgba(metricStyle.textLightColor),
+      darkColor: colorToRgba(metricStyle.textDarkColor),
     };
 
     if (!initialized || size.width === 0 || size.height === 0 || !spec) {
@@ -204,10 +204,8 @@ class Component extends React.Component<Props> {
                       emptyBackground: Colors.Transparent.keyword,
                       border: 'gray',
                       minHeight: 0,
-                      text: {
-                        lightColor: 'white',
-                        darkColor: 'black',
-                      },
+                      textLightColor: 'white',
+                      textDarkColor: 'black',
                       nonFiniteText: 'N/A',
                     })}
                     locale={locale}

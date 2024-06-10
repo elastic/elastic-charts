@@ -81,9 +81,9 @@ interface Sizes {
 function getFontSizes(ranges: [number, number, BreakPoint][], value: number, style: MetricStyle): Sizes {
   const range = ranges.find(([min, max]) => min <= value && value < max);
   const size = range ? range[2] : ranges[0]?.[2] ?? 's';
-  const valueFontSize = typeof style.text.valueFontSize === 'number' ? style.text.valueFontSize : VALUE_FONT_SIZE[size];
+  const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : VALUE_FONT_SIZE[size];
   const valuePartFontSize =
-    typeof style.text.valueFontSize === 'number'
+    typeof style.valueFontSize === 'number'
       ? Math.ceil(valueFontSize / VALUE_PART_FONT_RATIO)
       : VALUE_PART_FONT_SIZE[size];
 
@@ -258,18 +258,18 @@ export const MetricText: React.FunctionComponent<{
     'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
 
-  const visibility = elementVisibility(datum, panel, sizes, locale, style.text.valueFontSize === 'fit');
+  const visibility = elementVisibility(datum, panel, sizes, locale, style.valueFontSize === 'fit');
   const isNumericalMetric = isMetricWNumber(datum) || isMetricWNumberArrayValues(datum);
   const textParts = getTextParts(datum, style);
   const { valueFontSize, valuePartFontSize } =
-    style.text.valueFontSize !== 'fit'
+    style.valueFontSize !== 'fit'
       ? sizes
       : getFitValueFontSize(
           sizes.valueFontSize,
           (panel.width - progressBarWidth - 2 * PADDING) * 0.98, // small buffer to prevent clipping
           visibility.gapHeight,
           textParts,
-          style.text.minValueFontSize,
+          style.minValueFontSize,
           datum.valueIcon !== undefined,
         );
 
@@ -277,7 +277,7 @@ export const MetricText: React.FunctionComponent<{
     <span
       style={{
         fontSize: sizes.titleFontSize,
-        textAlign: style.text.titlesTextAlign,
+        textAlign: style.titlesTextAlign,
         ...lineClamp(visibility.titleLines.length),
       }}
       title={datum.title}
@@ -288,18 +288,12 @@ export const MetricText: React.FunctionComponent<{
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor }}>
       <div
-        className={classNames(
-          'echMetricText__titlesBlock',
-          `echMetricText__titlesBlock--${style.text.titlesTextAlign}`,
-        )}
+        className={classNames('echMetricText__titlesBlock', `echMetricText__titlesBlock--${style.titlesTextAlign}`)}
         style={
           datum.icon && {
-            marginLeft:
-              'center' === style.text.titlesTextAlign || style.text.iconAlign === 'left' ? sizes.iconSize + PADDING : 0,
+            marginLeft: 'center' === style.titlesTextAlign || style.iconAlign === 'left' ? sizes.iconSize + PADDING : 0,
             marginRight:
-              'center' === style.text.titlesTextAlign || style.text.iconAlign === 'right'
-                ? sizes.iconSize + PADDING
-                : 0,
+              'center' === style.titlesTextAlign || style.iconAlign === 'right' ? sizes.iconSize + PADDING : 0,
           }
         }
       >
@@ -339,7 +333,7 @@ export const MetricText: React.FunctionComponent<{
       </div>
 
       {datum.icon && (
-        <div className={classNames('echMetricText__icon', `echMetricText__icon--${style.text.iconAlign}`)}>
+        <div className={classNames('echMetricText__icon', `echMetricText__icon--${style.iconAlign}`)}>
           {renderWithProps(datum.icon, {
             width: sizes.iconSize,
             height: sizes.iconSize,
@@ -350,12 +344,7 @@ export const MetricText: React.FunctionComponent<{
 
       <div className="echMetricText__gap">{body && <div className="echMetricText__body">{body}</div>}</div>
 
-      <div
-        className={classNames(
-          'echMetricText__valuesBlock',
-          `echMetricText__valuesBlock--${style.text.valuesTextAlign}`,
-        )}
-      >
+      <div className={classNames('echMetricText__valuesBlock', `echMetricText__valuesBlock--${style.valuesTextAlign}`)}>
         <div>
           {visibility.extra && (
             <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
@@ -396,7 +385,7 @@ export const MetricText: React.FunctionComponent<{
               style={{
                 fontSize: valueFontSize,
                 color: datum.valueColor ?? highContrastTextColor,
-                marginRight: style.text.valuesTextAlign === 'center' ? -(valuePartFontSize + PADDING) : undefined,
+                marginRight: style.valuesTextAlign === 'center' ? -(valuePartFontSize + PADDING) : undefined,
               }}
             >
               {renderWithProps(datum.valueIcon, {
