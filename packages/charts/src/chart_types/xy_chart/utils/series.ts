@@ -309,7 +309,7 @@ const getSortedDataSeries = (
 ): DataSeries[] =>
   dataSeries.map(({ data, ...rest }) => ({
     ...rest,
-    data: [...data].sort(datumXSortPredicate(xScaleType, [...xValues.values()])),
+    data: data.toSorted(datumXSortPredicate(xScaleType, [...xValues.values()])),
   }));
 
 /** @internal */
