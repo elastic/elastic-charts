@@ -156,12 +156,10 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
         theme={{
           metric: {
             blendingBackground: useBlendingBackground ? blendingBackground : undefined,
-            text: {
-              valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
-              titlesTextAlign,
-              valuesTextAlign,
-              iconAlign,
-            },
+            valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
+            titlesTextAlign,
+            valuesTextAlign,
+            iconAlign,
           },
         }}
         baseTheme={useBaseTheme()}

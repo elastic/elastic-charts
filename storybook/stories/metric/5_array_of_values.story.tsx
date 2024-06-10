@@ -168,9 +168,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           theme={{
             metric: {
               emptyBackground,
-              text: {
-                valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
-              },
+              valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
             },
           }}
           baseTheme={useBaseTheme()}
