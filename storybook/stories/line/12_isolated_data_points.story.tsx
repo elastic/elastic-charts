@@ -38,7 +38,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     step: 1,
   });
   const overridePointRadius = boolean('override radius for isolated points', false);
-  const radius = number('isolated point radius', 5, {
+  const radius = number('isolated point radius', 2, {
     range: true,
     min: 0,
     max: 10,
