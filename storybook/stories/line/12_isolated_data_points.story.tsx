@@ -31,12 +31,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
     max: 10,
     step: 1,
   });
-  const radius = number('isolated point radius', 2, {
-    range: true,
-    min: 0,
-    max: 10,
-    step: 1,
-  });
   const overrideRadius = number('override point radius', 0, {
     range: true,
     min: 0,
@@ -44,6 +38,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
     step: 1,
   });
   const overridePointRadius = boolean('override radius for isolated points', false);
+  const radius = number('isolated point radius', 5, {
+    range: true,
+    min: 0,
+    max: 10,
+    step: 1,
+  });
 
   return (
     <Chart title={title} description={description}>
@@ -77,7 +77,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         id="x"
         position={Position.Bottom}
         style={{
-          tickLine: { size: 0.0001, padding: 4 },
+          tickLine: { size: 0, padding: 4 },
           tickLabel: {
             alignment: { horizontal: Position.Left, vertical: Position.Bottom },
             padding: 0,

@@ -82,7 +82,7 @@ export function renderPoints(
       const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
       const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
       const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
-      const isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle);
+      const isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle, styleOverrides);
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
       const radius = isPointIsolated
         ? isolatedPointThemeStyle.radius
