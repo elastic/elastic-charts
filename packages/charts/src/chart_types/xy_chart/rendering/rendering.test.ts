@@ -323,28 +323,28 @@ describe('Rendering utils', () => {
     });
 
     it('should return undefined if no pointStyleAccessor is passed', () => {
-      const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier);
+      const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, false);
 
       expect(styleOverrides).toBeUndefined();
     });
 
     it('should return undefined if pointStyleAccessor returns null', () => {
       mockAccessor.mockReturnValue(null);
-      const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, mockAccessor);
+      const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, false, mockAccessor);
 
       expect(styleOverrides).toBeUndefined();
     });
 
-    it('should call pointStyleAccessor with datum and seriesIdentifier', () => {
-      getPointStyleOverrides(datum, seriesIdentifier, mockAccessor);
+    it('should call pointStyleAccessor with datum, seriesIdentifier and isolatedPoint', () => {
+      getPointStyleOverrides(datum, seriesIdentifier, true, mockAccessor);
 
-      expect(mockAccessor).toHaveBeenCalledWith(datum, seriesIdentifier);
+      expect(mockAccessor).toHaveBeenCalledWith(datum, seriesIdentifier, true);
     });
 
     it('should return seriesStyle with updated stroke color', () => {
       const stroke = 'blue';
       mockAccessor.mockReturnValue(stroke);
-      const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, mockAccessor);
+      const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, false, mockAccessor);
       const expectedStyles: Partial<PointStyle> = {
         stroke,
       };

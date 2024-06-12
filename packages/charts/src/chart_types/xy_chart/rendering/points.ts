@@ -79,9 +79,9 @@ export function renderPoints(
       const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
       const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-      const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, styleAccessor);
-      const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
       const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
+      const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
       const isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle, styleOverrides);
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
       const radius = isPointIsolated
@@ -134,9 +134,10 @@ export function renderPoints(
 export function getPointStyleOverrides(
   datum: DataSeriesDatum,
   seriesIdentifier: XYChartSeriesIdentifier,
+  isolatedPoint: boolean,
   pointStyleAccessor?: PointStyleAccessor,
 ): Partial<PointStyle> | undefined {
-  const styleOverride = pointStyleAccessor && pointStyleAccessor(datum, seriesIdentifier);
+  const styleOverride = pointStyleAccessor && pointStyleAccessor(datum, seriesIdentifier, isolatedPoint);
 
   if (!styleOverride) {
     return;
