@@ -1,3 +1,15 @@
+## [66.0.1](https://github.com/elastic/elastic-charts/compare/v66.0.0...v66.0.1) (2024-06-12)
+
+
+### Bug Fixes
+
+* point style accessor for isolated points ([#2464](https://github.com/elastic/elastic-charts/issues/2464)) ([ee7f529](https://github.com/elastic/elastic-charts/commit/ee7f5299ea1088f447a3139ed6aceed54386a562))
+
+
+### Reverts
+
+* github issue template changes ([501781b](https://github.com/elastic/elastic-charts/commit/501781bf8eda3adcdbc6eeb67646164a28561b89))
+
 # [66.0.0](https://github.com/elastic/elastic-charts/compare/v65.2.0...v66.0.0) (2024-06-10)
 
 
