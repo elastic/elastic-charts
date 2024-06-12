@@ -12,12 +12,14 @@ import { axisSpecsLookupSelector } from './get_specs';
 import { getVisibleTickSetsSelector } from './visible_ticks';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
+import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getAxesGeometries } from '../../utils/axis_utils';
 
 /** @internal */
 export const computeAxesGeometriesSelector = createCustomCachedSelector(
   [
+    getChartContainerDimensionsSelector,
     computeChartDimensionsSelector,
     getChartThemeSelector,
     axisSpecsLookupSelector,
