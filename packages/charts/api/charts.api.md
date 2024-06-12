@@ -2446,7 +2446,7 @@ export interface PointStyle {
 }
 
 // @public
-export type PointStyleAccessor = (datum: DataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier) => PointStyleOverride;
+export type PointStyleAccessor = (datum: DataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier, isolatedPoint: boolean) => PointStyleOverride;
 
 // @public (undocumented)
 export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;

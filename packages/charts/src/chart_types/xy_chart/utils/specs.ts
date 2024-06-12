@@ -101,6 +101,7 @@ export type BarStyleAccessor = (datum: DataSeriesDatum, seriesIdentifier: XYChar
 export type PointStyleAccessor = (
   datum: DataSeriesDatum,
   seriesIdentifier: XYChartSeriesIdentifier,
+  isolatedPoint: boolean,
 ) => PointStyleOverride;
 
 /**
