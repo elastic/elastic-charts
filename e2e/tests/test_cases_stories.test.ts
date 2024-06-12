@@ -146,4 +146,24 @@ test.describe('Test cases stories', () => {
       );
     });
   });
+
+  test.describe('Isolated point styles', () => {
+    test('should override theme point and iso point styles with series styles', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/test-cases--point-style-overrides&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-isolatedPoint.stroke - series level=orange&knob-isolatedPoint.stroke - theme level=green&knob-point.stroke - series level=blue&knob-point.stroke - theme level=red&knob-series type=line&knob-stroke - pointStyleAccessor=black&knob-use point style overrides=false&knob-use series iso overrides=false&knob-use series overrides=true',
+      );
+    });
+
+    test('should override theme and series point styles with iso point styles', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/test-cases--point-style-overrides&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-isolatedPoint.stroke - series level=orange&knob-isolatedPoint.stroke - theme level=green&knob-point.stroke - series level=blue&knob-point.stroke - theme level=red&knob-series type=line&knob-stroke - pointStyleAccessor=black&knob-use point style overrides=false&knob-use series iso overrides=true&knob-use series overrides=true',
+      );
+    });
+
+    test('should override all point styles with point accessor styles', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/test-cases--point-style-overrides&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-isolatedPoint.stroke - series level=orange&knob-isolatedPoint.stroke - theme level=green&knob-point.stroke - series level=blue&knob-point.stroke - theme level=red&knob-series type=line&knob-stroke - pointStyleAccessor=black&knob-use point style overrides=true&knob-use series iso overrides=true&knob-use series overrides=true',
+      );
+    });
+  });
 });
