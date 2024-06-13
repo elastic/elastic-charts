@@ -1,14 +1,13 @@
-## [66.0.1](https://github.com/elastic/elastic-charts/compare/v66.0.0...v66.0.1) (2024-06-12)
+## [66.0.2](https://github.com/elastic/elastic-charts/compare/v66.0.0...v66.0.1) (2024-06-12)
 
 
 ### Bug Fixes
 
 * point style accessor for isolated points ([#2464](https://github.com/elastic/elastic-charts/issues/2464)) ([ee7f529](https://github.com/elastic/elastic-charts/commit/ee7f5299ea1088f447a3139ed6aceed54386a562))
 
+## 66.0.1 (2024-06-12)
 
-### Reverts
-
-* github issue template changes ([501781b](https://github.com/elastic/elastic-charts/commit/501781bf8eda3adcdbc6eeb67646164a28561b89))
+Failed publish to npm, re-published as `66.0.2`
 
 # [66.0.0](https://github.com/elastic/elastic-charts/compare/v65.2.0...v66.0.0) (2024-06-10)
 
@@ -1342,7 +1341,7 @@ Co-authored-by: Nick Partridge <nick.ryan.partridge@gmail.com>
 * **cartesian:** - `TextStyle.fontStyle` is no longer a `string`, it's the more specific `FontStyle`
 - For symmetry, `fontStyle` in word cloud is also switching from `string` to `FontStyle`
 - Certain text configurations included both `fill` and `textColor` for the text color; `fill` got removed, because `textColor` is part of the public `Font` type, and because `textColor` has clearer meaning than `fill`. Yet, some of the code used the `fill` property and/or made the `fill` property also mandatory. So, userland code needs to remove some `fill` property, and might need to ensure that the correct value is going into `textColor`
-- `getRadians` got unpublished 
+- `getRadians` got unpublished
 - No attempt to draw a rect border if there's not enough width/height for at least the specified border width (ie. width/height being at least twice the border width)
 
 ## [33.2.4](https://github.com/elastic/elastic-charts/compare/v33.2.3...v33.2.4) (2021-08-16)
