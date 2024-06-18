@@ -1,3 +1,10 @@
+## [66.0.3](https://github.com/elastic/elastic-charts/compare/v66.0.2...v66.0.3) (2024-06-18)
+
+
+### Bug Fixes
+
+* correct median copy in legend values ([#2467](https://github.com/elastic/elastic-charts/issues/2467)) ([0476a64](https://github.com/elastic/elastic-charts/commit/0476a644592d0f6e7abe4a4fde5392a76c67ee9a))
+
 ## [66.0.2](https://github.com/elastic/elastic-charts/compare/v66.0.0...v66.0.1) (2024-06-12)
 
 
