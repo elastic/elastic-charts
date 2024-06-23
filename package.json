@@ -36,7 +36,7 @@
     "lint:fix:it": "yarn lint:it --fix",
     "prettier:check": "prettier --check \"**/*.{json,html,css,scss}\"",
     "prettier:fix": "prettier --w \"**/*.{json,html,css,scss}\"",
-    "playground": "cd playground && RNG_SEED='elastic-charts' webpack serve",
+    "playground": "export NODE_OPTIONS=--openssl-legacy-provider; cd playground && RNG_SEED='elastic-charts' webpack serve",
     "pq": "pretty-quick",
     "semantic-release": "semantic-release --debug",
     "start": "yarn storybook",

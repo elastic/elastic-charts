@@ -21,6 +21,7 @@ const vGroups = {
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const useGroupIds = boolean('use groupIds', false, 'Annotations');
   const debug = boolean('debug', false);
   const rotation = customKnobs.enum.rotation();
   const tickSize = number('Tick size', 10, { min: 0, max: 20, step: 1 });
@@ -51,35 +52,52 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={useBaseTheme()}
       />
 
-      <Axis
-        id="left"
-        hide={hideAxes}
-        groupId={isVert ? undefined : vGroups.Primary}
-        position={Position.Left}
-        title={isVert ? 'Left' : 'Primary - Left'}
-      />
-      {!isVert && (
-        <Axis
-          id="right"
-          hide={hideAxes}
-          groupId={vGroups.Secondary}
-          position={Position.Right}
-          title="Secondary - Right"
-        />
+      {useGroupIds && (
+        <>
+          <Axis
+            id="left"
+            hide={hideAxes}
+            groupId={isVert ? undefined : vGroups.Primary}
+            position={Position.Left}
+            title={isVert ? 'Left' : 'Primary - Left'}
+          />
+          {!isVert && (
+            <Axis
+              id="right"
+              hide={hideAxes}
+              groupId={vGroups.Secondary}
+              position={Position.Right}
+              title="Secondary - Right"
+            />
+          )}
+          <Axis
+            id="bottom"
+            hide={hideAxes}
+            groupId={isVert ? vGroups.Primary : undefined}
+            position={Position.Bottom}
+            title={isVert ? 'Primary - Bottom' : 'Bottom'}
+          />
+          {isVert && (
+            <Axis
+              id="top"
+              hide={hideAxes}
+              groupId={vGroups.Secondary}
+              position={Position.Top}
+              title="Secondary - Top"
+            />
+          )}
+        </>
       )}
-      <Axis
-        id="bottom"
-        hide={hideAxes}
-        groupId={isVert ? vGroups.Primary : undefined}
-        position={Position.Bottom}
-        title={isVert ? 'Primary - Bottom' : 'Bottom'}
-      />
-      {isVert && (
-        <Axis id="top" hide={hideAxes} groupId={vGroups.Secondary} position={Position.Top} title="Secondary - Top" />
+
+      {!useGroupIds && (
+        <>
+          <Axis id="left" hide={hideAxes} position={Position.Left} title="Left" />
+          <Axis id="bottom" hide={hideAxes} position={Position.Bottom} title="Bottom" />
+        </>
       )}
 
       <RectAnnotation
-        groupId={redGroupId}
+        groupId={useGroupIds ? redGroupId : undefined}
         dataValues={[
           {
             coordinates: isX
@@ -112,7 +130,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         outsideDimension={outsideDimension}
       />
       <RectAnnotation
-        groupId={blueGroupId}
+        groupId={useGroupIds ? blueGroupId : undefined}
         dataValues={[
           {
             coordinates: isX
@@ -147,7 +165,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
 
       <LineSeries
         id="lines1"
-        groupId={isX ? undefined : vGroups.Primary}
+        groupId={useGroupIds && !isX ? vGroups.Primary : undefined}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
@@ -161,7 +179,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       />
       <LineSeries
         id="lines2"
-        groupId={isX ? undefined : vGroups.Secondary}
+        groupId={useGroupIds && !isX ? vGroups.Secondary : undefined}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
