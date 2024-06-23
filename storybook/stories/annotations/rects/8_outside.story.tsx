@@ -21,7 +21,7 @@ const vGroups = {
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const useGroupIds = boolean('use groupIds', false, 'Annotations');
+  const useGroupIds = boolean('use groupIds', true, 'Annotations');
   const debug = boolean('debug', false);
   const rotation = customKnobs.enum.rotation();
   const tickSize = number('Tick size', 10, { min: 0, max: 20, step: 1 });
