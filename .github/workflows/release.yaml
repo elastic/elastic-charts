@@ -21,31 +21,31 @@ jobs:
     # if: needs.status.outputs.allSuccess
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.7
         with:
           persist-credentials: false
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
 
       # TODO: fix unnecessary yarn installs
       - name: Install node_modules
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.10.2
         with:
           useRollingCache: true
       - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.10.2
         with:
           working-directory: e2e
           useRollingCache: true
       - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.10.2
         with:
           working-directory: .buildkite
           useRollingCache: true
       - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.10.2
         with:
           working-directory: github_bot
           useRollingCache: true
@@ -71,16 +71,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.7
         with:
           persist-credentials: false
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{ env.ECH_NODE_VERSION }}
 
       - name: Install node_modules
-        uses: bahmutov/npm-install@v1
+        uses: bahmutov/npm-install@v1.10.2
         with:
           useRollingCache: true
 
