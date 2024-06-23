@@ -44,6 +44,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
       opacity: 1,
     },
     isolatedPoint: {
+      enabled: true,
       visible: true,
       stroke: ColorVariant.Series,
       strokeWidth: 1,
@@ -88,6 +89,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
       opacity: 1,
     },
     isolatedPoint: {
+      enabled: true,
       visible: true,
       stroke: ColorVariant.Series,
       strokeWidth: 1,

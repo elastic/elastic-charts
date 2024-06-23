@@ -82,7 +82,7 @@ export function renderArea(
     isBandedSpec,
     markSizeOptions,
     false,
-    true,
+    style.isolatedPoint.enabled,
     pointStyleAccessor,
   );
 

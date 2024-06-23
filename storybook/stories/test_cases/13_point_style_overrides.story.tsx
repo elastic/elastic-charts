@@ -26,6 +26,7 @@ const defaultlineStyles = {
 };
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const enablePointStyles = !boolean('disable isolated point styles', false);
   const [Series] = customKnobs.enum.xySeries('series type', 'line', { exclude: ['bar', 'bubble'] });
   const themeLevelStroke = color('point.stroke - theme level', 'red');
   const themeLevelStrokeIso = color('isolatedPoint.stroke - theme level', 'green');
@@ -51,6 +52,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             isolatedPoint: {
               stroke: themeLevelStrokeIso,
               ...defaultPointStyles,
+              enabled: enablePointStyles,
             },
           },
           lineSeriesStyle: {
@@ -63,6 +65,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             isolatedPoint: {
               stroke: themeLevelStrokeIso,
               ...defaultPointStyles,
+              enabled: enablePointStyles,
             },
           },
         }}
