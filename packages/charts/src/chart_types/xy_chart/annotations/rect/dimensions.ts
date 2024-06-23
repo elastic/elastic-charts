@@ -106,10 +106,7 @@ export function computeRectAnnotationDimensions(
         Logger.warn(
           `The RectAnnotation (${annotationSpecId}) was defined as outside but has both x and y values defined.`,
         );
-        return;
-      }
-
-      if (hasXValues) {
+      } else if (hasXValues) {
         const rectDimensions: Rect = {
           ...xAndWidth,
           ...getXOutsideAnnotationDimensions(panelSize, chartRotation, xAxis?.position ?? 'bottom', outsideDim),
@@ -146,7 +143,9 @@ export function computeRectAnnotationDimensions(
       ...xAndWidth,
       y: scaledY1,
       height,
-      ...(outside && getYOutsideAnnotationDimensions(panelSize, chartRotation, yAxis?.position ?? 'left', outsideDim)),
+      ...(outside &&
+        !(hasXValues && hasYValues) &&
+        getYOutsideAnnotationDimensions(panelSize, chartRotation, yAxis?.position ?? 'left', outsideDim)),
     };
 
     rectsProps.push({
