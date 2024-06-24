@@ -31,7 +31,7 @@ export function renderLine(
   curve: CurveType,
   hasY0Accessors: boolean,
   xScaleOffset: number,
-  seriesStyle: LineSeriesStyle,
+  style: LineSeriesStyle,
   markSizeOptions: MarkSizeOptions,
   hasFit: boolean,
   pointStyleAccessor?: PointStyleAccessor,
@@ -56,12 +56,12 @@ export function renderLine(
     yScale,
     panel,
     color,
-    seriesStyle.point,
-    seriesStyle.isolatedPoint,
+    style.point,
+    style.isolatedPoint,
     hasY0Accessors,
     markSizeOptions,
     false,
-    true,
+    style.isolatedPoint.enabled,
     pointStyleAccessor,
   );
 
@@ -77,7 +77,7 @@ export function renderLine(
       y: 0,
     },
     seriesIdentifier: getSeriesIdentifierFromDataSeries(dataSeries),
-    style: seriesStyle,
+    style,
     clippedRanges,
     shouldClip: hasFit,
   };
