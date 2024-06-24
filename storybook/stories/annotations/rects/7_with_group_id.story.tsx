@@ -14,6 +14,7 @@ import { Position } from '@elastic/charts/src/utils/common';
 
 import { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
+import { customKnobs } from '../../utils/knobs';
 
 const getKnobs = () => {
   const enabled = boolean('enable annotation', true);
@@ -35,6 +36,7 @@ const getKnobs = () => {
     x1,
     y0: yDefined ? number('y0', 0) : undefined,
     y1: yDefined ? number('y1', 3) : undefined,
+    outside: boolean('outside', false),
   };
 };
 export const Example: ChartsStory = (_, { title, description }) => {
@@ -48,9 +50,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
           id="x axis"
           dataValues={[{ coordinates: xAxisKnobs }]}
           style={{ fill: 'red' }}
+          outside={xAxisKnobs.outside}
+          outsideDimension={5}
         />
       )}
-      <Settings baseTheme={useBaseTheme()} />
+      <Settings baseTheme={useBaseTheme()} rotation={customKnobs.enum.rotation()} />
       <Axis id="bottom" groupId="group2" position={Position.Bottom} title="Bottom (groupId=group2)" />
       <Axis id="left" groupId="group1" position={Position.Left} title="Left (groupId=group1)" />
       <Axis id="top" groupId="group1" position={Position.Top} title="Top (groupId=group1)" />

@@ -35,10 +35,17 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const xAxisKnobs = getKnobs();
   // only show the fit enable or disable if relevant
   const fit = xAxisKnobs.minY === xAxisKnobs.maxY ? boolean('fit to the domain', false) : undefined;
+  const outside = boolean('render outside', false);
 
   return (
     <Chart title={title} description={description}>
-      <RectAnnotation id="rect" dataValues={[{ coordinates: xAxisKnobs }]} style={{ fill: 'red' }} />
+      <RectAnnotation
+        id="rect"
+        dataValues={[{ coordinates: xAxisKnobs, details: 'My Annotation' }]}
+        style={{ fill: 'red' }}
+        outside={outside}
+        outsideDimension={4}
+      />
       <Settings baseTheme={useBaseTheme()} />
       <Axis id="bottom" position={Position.Bottom} title="x-domain axis" />
       <Axis

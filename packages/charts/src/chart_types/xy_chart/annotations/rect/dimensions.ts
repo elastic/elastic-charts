@@ -8,14 +8,17 @@
 
 import { AnnotationRectProps } from './types';
 import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_utils';
+import { Rect } from '../../../../geoms/types';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import { isDefined, isNil, Position, Rotation } from '../../../../utils/common';
+import { Size } from '../../../../utils/dimensions';
 import { AxisId, GroupId } from '../../../../utils/ids';
+import { Logger } from '../../../../utils/logger';
 import { Point } from '../../../../utils/point';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
+import { isHorizontalRotation } from '../../state/utils/common';
 import { getAxesSpecForSpecId } from '../../state/utils/spec';
 import { AxisSpec, RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
 import { Bounds } from '../types';
@@ -40,7 +43,7 @@ export function computeRectAnnotationDimensions(
   isHistogram: boolean = false,
 ): AnnotationRectProps[] | null {
   const { dataValues, groupId, outside, id: annotationSpecId } = annotationSpec;
-  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId);
+  const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, groupId, chartRotation);
   const yScale = yScales.get(groupId);
   const rectsProps: Omit<AnnotationRectProps, 'id' | 'panel'>[] = [];
   const panelSize = getPanelSize(smallMultiplesScales);
@@ -72,25 +75,19 @@ export function computeRectAnnotationDimensions(
       return;
     }
 
+    const hasYValues = isDefined(initialY0) || isDefined(initialY1);
+    const outsideDim = annotationSpec.outsideDimension ?? getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id));
+
     if (!yScale) {
-      if (!isDefined(initialY0) && !isDefined(initialY1)) {
-        const isLeftSide =
-          (chartRotation === 0 && xAxis?.position === Position.Bottom) ||
-          (chartRotation === 180 && xAxis?.position === Position.Top) ||
-          (chartRotation === -90 && yAxis?.position === Position.Right) ||
-          (chartRotation === 90 && yAxis?.position === Position.Left);
-        const orthoDimension = isHorizontalRotation(chartRotation) ? panelSize.height : panelSize.width;
-        const outsideDim = annotationSpec.outsideDimension ?? getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id));
-        const rectDimensions = {
+      if (!hasYValues) {
+        // only x values present, just fill full height of chart space
+        const rectDimensions: Rect = {
           ...xAndWidth,
           ...(outside
-            ? {
-                y: isLeftSide ? orthoDimension : -outsideDim,
-                height: outsideDim,
-              }
+            ? getXOutsideAnnotationDimensions(panelSize, chartRotation, xAxis?.position ?? 'bottom', outsideDim)
             : {
                 y: 0,
-                height: orthoDimension,
+                height: isHorizontalRotation(chartRotation) ? panelSize.height : panelSize.width,
               }),
         };
         rectsProps.push({
@@ -99,10 +96,33 @@ export function computeRectAnnotationDimensions(
           datum,
         });
       }
-      return;
+      return; // cannot scale y values without a scale
+    }
+
+    const hasXValues = isDefined(initialX0) || isDefined(initialX1);
+
+    if (outside) {
+      if (hasXValues && hasYValues) {
+        Logger.warn(
+          `The RectAnnotation (${annotationSpecId}) was defined as outside but has both x and y values defined.`,
+        );
+      } else if (hasXValues) {
+        const rectDimensions: Rect = {
+          ...xAndWidth,
+          ...getXOutsideAnnotationDimensions(panelSize, chartRotation, xAxis?.position ?? 'bottom', outsideDim),
+        };
+
+        rectsProps.push({
+          specId: annotationSpecId,
+          rect: rectDimensions,
+          datum,
+        });
+        return;
+      }
     }
 
     const [y0, y1] = limitValueToDomainRange(yScale, initialY0, initialY1);
+
     // something is wrong with the data types, don't draw this annotation
     if (!Number.isFinite(y0) || !Number.isFinite(y1)) return;
 
@@ -111,29 +131,21 @@ export function computeRectAnnotationDimensions(
     if (Number.isNaN(scaledY1) || Number.isNaN(scaledY0)) return;
 
     height = Math.abs(scaledY0 - scaledY1);
-    // if the annotation height is 0 override it with the height from chart dimension and if the values in the domain are the same
+
+    // if the annotation height is 0, override it with the height from chart dimension and if the values in the domain are the same
     if (height === 0 && yScale.domain.length === 2 && yScale.domain[0] === yScale.domain[1]) {
       // eslint-disable-next-line prefer-destructuring
       height = panelSize.height;
       scaledY1 = 0;
     }
 
-    const orthoDimension = isVerticalRotation(chartRotation) ? panelSize.height : panelSize.width;
-    const isLeftSide =
-      (chartRotation === 0 && yAxis?.position === Position.Left) ||
-      (chartRotation === 180 && yAxis?.position === Position.Right) ||
-      (chartRotation === -90 && xAxis?.position === Position.Bottom) ||
-      (chartRotation === 90 && xAxis?.position === Position.Top);
-    const outsideDim = annotationSpec.outsideDimension ?? getOutsideDimension(getAxisStyle(xAxis?.id ?? yAxis?.id));
-    const rectDimensions = {
-      ...(!isDefined(initialX0) && !isDefined(initialX1) && outside
-        ? {
-            x: isLeftSide ? -outsideDim : orthoDimension,
-            width: outsideDim,
-          }
-        : xAndWidth),
+    const rectDimensions: Rect = {
+      ...xAndWidth,
       y: scaledY1,
       height,
+      ...(outside &&
+        !(hasXValues && hasYValues) &&
+        getYOutsideAnnotationDimensions(panelSize, chartRotation, yAxis?.position ?? 'left', outsideDim)),
     };
 
     rectsProps.push({
@@ -244,7 +256,7 @@ function maxOf(base: number, value: number | string | null | undefined): number 
 }
 
 function getOutsideDimension({ tickLine: { visible, size } }: AxisStyle): number {
-  return visible ? size : 0;
+  return visible ? size : 1;
 }
 
 /**
@@ -258,4 +270,70 @@ export function getAnnotationRectPropsId(
   horizontalValue: number | string,
 ) {
   return [specId, verticalValue, horizontalValue, ...Object.values(datum.coordinates), datum.details, index].join('__');
+}
+
+function getXOutsideAnnotationDimensions(
+  panelSize: Size,
+  rotation: Rotation,
+  axisPosition: Position,
+  thickness: number,
+): Pick<Rect, 'y' | 'height'> {
+  const { height, width } = panelSize;
+
+  switch (axisPosition) {
+    case Position.Top:
+      return {
+        y: rotation === 180 ? height : rotation === 90 ? width : -thickness,
+        height: thickness,
+      };
+    case Position.Bottom:
+      return {
+        y: rotation === 0 ? height : rotation === 90 ? width : -thickness,
+        height: thickness,
+      };
+    case Position.Left:
+      return {
+        y: rotation === -90 ? -thickness : width,
+        height: thickness,
+      };
+    case Position.Right:
+    default:
+      return {
+        y: rotation === -90 ? width : -thickness,
+        height: thickness,
+      };
+  }
+}
+
+function getYOutsideAnnotationDimensions(
+  panelSize: Size,
+  rotation: Rotation,
+  axisPosition: Position,
+  thickness: number,
+): Pick<Rect, 'x' | 'width'> {
+  const { height, width } = panelSize;
+
+  switch (axisPosition) {
+    case Position.Left:
+      return {
+        x: rotation === 180 ? width : rotation === 90 ? height : -thickness,
+        width: thickness,
+      };
+    case Position.Right:
+      return {
+        x: rotation === 0 ? width : rotation === 90 ? height : -thickness,
+        width: thickness,
+      };
+    case Position.Top:
+      return {
+        x: rotation === -90 ? height : -thickness,
+        width: thickness,
+      };
+    case Position.Bottom:
+    default:
+      return {
+        x: rotation === -90 ? -thickness : height,
+        width: thickness,
+      };
+  }
 }

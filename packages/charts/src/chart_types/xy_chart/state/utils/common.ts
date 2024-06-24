@@ -26,6 +26,7 @@ export function isHorizontalRotation(chartRotation: Rotation) {
 export function isVerticalRotation(chartRotation: Rotation) {
   return chartRotation === -90 || chartRotation === 90;
 }
+
 /**
  * Check if a specs map contains only line or area specs
  * @param specs Map<SpecId, BasicSeriesSpec>

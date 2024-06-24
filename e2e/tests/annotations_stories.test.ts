@@ -195,5 +195,11 @@ test.describe('Annotations stories', () => {
         'http://localhost:9001/?path=/story/annotations-rects--outside&knob-debug=&knob-chartRotation=0&knob-Tick size=10&knob-Hide all axes=true&knob-Domain axis_Annotations=x&knob-Render outside chart_Annotations=true&knob-Outside dimension_Annotations=5&knob-Red groupId_Annotations=primary&knob-Blue groupId_Annotations=secondary',
       );
     });
+
+    test('should render outside annotations with no groupIds', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/annotations-rects--outside&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-disable isolated point styles=true&knob-isolatedPoint.stroke - series level=orange&knob-isolatedPoint.stroke - theme level=green&knob-point.stroke - series level=blue&knob-point.stroke - theme level=red&knob-series type=line&knob-stroke - pointStyleAccessor=black&knob-use series iso overrides=true&knob-use series overrides=true&knob-use groupIds_Annotations=false&knob-debug=&knob-chartRotation=0&knob-Tick size=10&knob-Hide all axes=&knob-Domain axis_Annotations=x&knob-Render outside chart_Annotations=true&knob-Outside dimension_Annotations=5&knob-Red groupId_Annotations=primary&knob-Blue groupId_Annotations=secondary',
+      );
+    });
   });
 });

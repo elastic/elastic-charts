@@ -18,7 +18,7 @@ export function getSpecsById<T extends Spec>(specs: T[], id: string): T | undefi
 }
 
 /** @internal */
-export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId, chartRotation: Rotation = 0) {
+export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId, chartRotation: Rotation) {
   return axesSpecs.reduce<{ xAxis?: AxisSpec; yAxis?: AxisSpec }>((result, spec) => {
     if (spec.groupId === groupId && isXDomain(spec.position, chartRotation)) result.xAxis = spec;
     else if (spec.groupId === groupId && !isXDomain(spec.position, chartRotation)) result.yAxis = spec;
