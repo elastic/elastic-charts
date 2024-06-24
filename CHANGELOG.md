@@ -1,3 +1,12 @@
+## [66.0.4](https://github.com/elastic/elastic-charts/compare/v66.0.3...v66.0.4) (2024-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v95 ([#2462](https://github.com/elastic/elastic-charts/issues/2462)) ([040c354](https://github.com/elastic/elastic-charts/commit/040c354d349127697c0ac1a60f4cb103db600535))
+* option to disable the isolated point styles on line and area charts ([#2472](https://github.com/elastic/elastic-charts/issues/2472)) ([ae16815](https://github.com/elastic/elastic-charts/commit/ae1681516ac43fd6b9aca851635483c9ed6e9512))
+* outside rect annotation placement and group relations ([#2471](https://github.com/elastic/elastic-charts/issues/2471)) ([d46fb41](https://github.com/elastic/elastic-charts/commit/d46fb410ac1459ca7d943620ab830ce1924d76ab))
+
 ## [66.0.3](https://github.com/elastic/elastic-charts/compare/v66.0.2...v66.0.3) (2024-06-18)
 
 
