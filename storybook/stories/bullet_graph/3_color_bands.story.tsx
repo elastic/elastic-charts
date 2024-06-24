@@ -15,8 +15,8 @@ import {
   euiPaletteForStatus,
   euiPaletteForTemperature,
   euiPaletteGray,
-  euiPaletteNegative,
-  euiPalettePositive,
+  euiPaletteRed,
+  euiPaletteGreen,
   euiPaletteWarm,
 } from '@elastic/eui';
 import { number, boolean, object, color } from '@storybook/addon-knobs';
@@ -50,8 +50,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
       euiPaletteForTemperature(steps),
       euiPaletteForStatus(steps),
       euiPaletteComplementary(steps),
-      euiPaletteNegative(steps),
-      euiPalettePositive(steps),
+      euiPaletteRed(steps),
+      euiPaletteGreen(steps),
       euiPaletteCool(steps),
       euiPaletteWarm(steps),
       euiPaletteGray(steps),
