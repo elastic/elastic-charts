@@ -206,7 +206,9 @@ export interface AreaSeriesStyle {
         area: AreaFitStyle;
     };
     // (undocumented)
-    isolatedPoint: PointStyle;
+    isolatedPoint: {
+        enabled: boolean;
+    } & PointStyle;
     // (undocumented)
     line: LineStyle;
     // (undocumented)
@@ -2000,7 +2002,9 @@ export interface LineSeriesStyle {
         line: LineFitStyle;
     };
     // (undocumented)
-    isolatedPoint: PointStyle;
+    isolatedPoint: {
+        enabled: boolean;
+    } & PointStyle;
     // (undocumented)
     line: LineStyle;
     // (undocumented)
