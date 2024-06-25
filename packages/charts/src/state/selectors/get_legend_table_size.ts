@@ -21,7 +21,7 @@ import { isDefined, LayoutDirection } from '../../utils/common';
 import { Dimensions } from '../../utils/dimensions';
 import { Theme } from '../../utils/themes/theme';
 
-const MONO_LETTER_WIDTH = 7.8;
+const MONO_LETTER_WIDTH = 8.5;
 const MONO_SEPARATOR_WIDTH = 4.5;
 
 const SCROLL_BAR_WIDTH = 16; // ~1em
@@ -74,7 +74,7 @@ export function getLegendTableSize(
   const { legendSize, legendValues, legendPosition, legendAction } = config;
 
   const { width: titleWidth, height } = textMeasure(config.legendTitle || '', ...headerFontArgs);
-  const valuesTitlesWidth = legendValues.map((v) => textMeasure(legendValueTitlesMap[v], ...fontArgs).width);
+  const valuesTitlesWidth = legendValues.map((v) => textMeasure(legendValueTitlesMap[v], ...headerFontArgs).width);
 
   const widestLabelWidth = items.reduce(
     (acc, { label }) => Math.max(acc, textMeasure(label, ...fontArgs).width),

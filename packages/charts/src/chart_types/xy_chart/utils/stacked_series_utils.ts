@@ -47,7 +47,8 @@ export function formatStackedDataSeriesValues(
   seriesType: SeriesType,
   stackMode?: StackMode,
 ): DataSeries[] {
-  const dataSeriesMap = dataSeries.reduce<Map<SeriesKey, DataSeries>>((acc, curr) => {
+  const sortedDataSeries = dataSeries.reverse().sort(({ isFiltered }) => (isFiltered ? 1 : -1));
+  const dataSeriesMap = sortedDataSeries.reduce<Map<SeriesKey, DataSeries>>((acc, curr) => {
     return acc.set(curr.key, curr);
   }, new Map());
   let hasNegative = false;
@@ -57,8 +58,7 @@ export function formatStackedDataSeriesValues(
   const xMap: XValueMap = new Map();
   [...xValues].forEach((xValue) => {
     const seriesMap = new Map<SeriesKey, DataSeriesDatum>();
-    dataSeries.forEach(({ key, data, isFiltered }) => {
-      if (isFiltered) return;
+    sortedDataSeries.forEach(({ key, data }) => {
       const datum = data.find(({ x }) => x === xValue);
       if (!datum) return;
       const y1 = datum.y1 ?? 0;

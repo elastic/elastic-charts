@@ -53,6 +53,7 @@ const datasets: Record<'defaultDataset' | 'shortCopyDataset' | 'longCopyDataset'
   },
   longCopyDataset: {
     ...defaultDataset,
+    stackAccessors: ['x'],
     data: TestDatasets.LONG_NAMES_BARCHART_2Y2G,
   },
 };
