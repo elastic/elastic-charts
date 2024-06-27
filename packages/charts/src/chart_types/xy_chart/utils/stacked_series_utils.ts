@@ -56,16 +56,17 @@ export function formatStackedDataSeriesValues(
   // group data series by x values
   const xMap: XValueMap = new Map();
   [...xValues].forEach((xValue) => {
-    const seriesMap = new Map<SeriesKey, DataSeriesDatum>();
+    const seriesMap = new Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>();
     dataSeries.forEach(({ key, data, isFiltered }) => {
-      if (isFiltered) return;
+      // if (isFiltered) return;
       const datum = data.find(({ x }) => x === xValue);
       if (!datum) return;
       const y1 = datum.y1 ?? 0;
       if (hasPositive || y1 > 0) hasPositive = true;
       if (hasNegative || y1 < 0) hasNegative = true;
-      seriesMap.set(`${key}-y0`, datum);
-      seriesMap.set(key, datum);
+      const newDatum = Object.assign(datum, { isFiltered });
+      seriesMap.set(`${key}-y0`, newDatum);
+      seriesMap.set(key, newDatum);
     });
     xMap.set(xValue, seriesMap);
   });
@@ -82,7 +83,7 @@ export function formatStackedDataSeriesValues(
     .keys(keys)
     .value(([, indexMap], key) => {
       const datum = indexMap.get(key);
-      if (!datum) return 0; // hides filtered series while maintaining their existence
+      if (!datum || datum.isFiltered) return 0; // hides filtered series while maintaining their existence
       return key.endsWith('-y0') ? datum.y0 ?? 0 : datum.y1 ?? 0;
     })
     .order(stackOrderNone)
