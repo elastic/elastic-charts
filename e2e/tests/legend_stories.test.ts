@@ -332,6 +332,22 @@ test.describe('Legend stories', () => {
       },
     );
   });
+
+  test('should all values in stacked chart with filtered series - nick', async ({ page }) => {
+    const action = async () => {
+      await page.locator(':nth-match(.echLegendItem__label, 3)').click();
+      await page.locator(':nth-match(.echLegendItem__label, 4)').click();
+      await page.locator(':nth-match(.echLegendItem__label, 6)').click();
+      await page.locator(':nth-match(.echLegendItem__label, 8)').click();
+    };
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/legend--tabular-data&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Blue groupId_Annotations=primary&knob-Dataset_Legend=defaultDataset&knob-Domain axis_Annotations=y&knob-Enable debug state=true&knob-FadeOnFocusingOthers_Animations=true&knob-Hide color picker_Legend=true&knob-Legend Value_Legend[0]=median&knob-Legend Value_Legend[1]=min&knob-Legend Value_Legend[2]=max&knob-Legend position_Legend=right&knob-Number formatting precision_Legend=2&knob-Outside dimension_Annotations=4&knob-Popover position_Legend=leftCenter&knob-Red groupId_Annotations=primary&knob-Render outside chart_Annotations=true&knob-Scale type=linear&knob-SeriesType=bar&knob-Tick size=10&knob-annotation count_Styles=6&knob-annotation opacity_Styles=0.5&knob-annotation zIndex_Styles=0&knob-chartRotation=180&knob-data polarity=Mixed&knob-delay (ms)_Animations=50&knob-duration (ms)_Animations=250&knob-enable y0 and y1 values=true&knob-enabled_Animations=true&knob-max label lines_Label options=1&knob-stackMode=wiggle&knob-stacked=true&knob-Hide legend action_Legend=&knob-Hide legend extra_Legend=&knob-Legend title_Legend=&knob-enable legend size=',
+      {
+        action,
+      },
+    );
+  });
+
   test.describe('Legend tabular data', () => {
     const datasetKnob = (p1: string, p2: string) => `&globals=&knob-Dataset_Legend=${p1}&knob-dataset=${p2}`;
     const getDatasetUrl = (p1: string, p2: string, others = '') => {
