@@ -27,7 +27,7 @@ import { DataSeriesDatum } from './series';
 import { SeriesKey } from '../../../common/series_id';
 
 type XValue = string | number;
-type SeriesValueMap = Map<SeriesKey, DataSeriesDatum>;
+type SeriesValueMap = Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>;
 
 /** @internal */
 export type XValueMap = Map<XValue, SeriesValueMap>;

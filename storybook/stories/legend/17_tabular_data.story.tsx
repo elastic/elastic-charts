@@ -87,6 +87,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
     'Legend',
   );
 
+  const stacked = boolean('stacked', false);
+
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -108,7 +110,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
         tickFormat={(d) => Number(d).toFixed(numberFormattingPrecision)}
       />
 
-      <BarSeries id="bars" xScaleType={ScaleType.Linear} yScaleType={ScaleType.Linear} {...datasets[datasetSelect]} />
+      <BarSeries
+        id="bars"
+        xScaleType={ScaleType.Linear}
+        yScaleType={ScaleType.Linear}
+        stackAccessors={stacked ? [''] : []}
+        {...datasets[datasetSelect]}
+      />
     </Chart>
   );
 };
