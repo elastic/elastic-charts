@@ -1,3 +1,10 @@
+## [66.0.5](https://github.com/elastic/elastic-charts/compare/v66.0.4...v66.0.5) (2024-07-01)
+
+
+### Bug Fixes
+
+* (Legend values) percentage formatter should be distict from tick formatter ([#2474](https://github.com/elastic/elastic-charts/issues/2474)) ([b5bd998](https://github.com/elastic/elastic-charts/commit/b5bd998f23ffa4a9032442728dae8fbcf49604eb))
+
 ## [66.0.4](https://github.com/elastic/elastic-charts/compare/v66.0.3...v66.0.4) (2024-06-24)
 
 
