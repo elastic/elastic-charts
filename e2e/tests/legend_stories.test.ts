@@ -385,6 +385,8 @@ test.describe('Legend stories', () => {
 
     pwEach.test<string[]>([
       ['median'],
+      ['differencePercent'],
+      ['lastNonNullValue'],
       ['currentAndLastValue', 'median'],
       ['median', 'max', 'min', 'average', 'firstNonNullValue'],
 

@@ -38,16 +38,24 @@ export function getLegendValues(
   xDomain: XDomain,
   types: LegendValue[],
   valueAccessor: (d: DataSeriesDatum) => number | null,
-  formatter: TickFormatter<any> | ((tick: unknown) => string),
+  tickFormatter: TickFormatter<any> | ((tick: unknown) => string),
 ) {
   return types.map((type) => {
     const value = getLegendValue(series, xDomain, type, valueAccessor);
+    const formatter =
+      type === LegendValue.Percent || type === LegendValue.DifferencePercent ? percentFormatter : tickFormatter;
+    const label = typeof value === 'number' && isFinite(value) ? formatter(value) : '';
+
     return {
       type,
-      label: typeof value === 'number' ? formatter(value) : '',
+      label,
       value,
     };
   });
+}
+
+function percentFormatter(value: number) {
+  return `${(value * 100).toFixed(1)}%`;
 }
 
 /**
