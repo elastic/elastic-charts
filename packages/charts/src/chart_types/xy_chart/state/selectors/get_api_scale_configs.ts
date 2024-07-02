@@ -99,7 +99,7 @@ export function getScaleConfigsFromSpecs(
       };
     }
 
-    acc[groupId]!.desiredTickCount = Math.max(
+    acc[groupId].desiredTickCount = Math.max(
       acc[groupId]?.desiredTickCount ?? Number.NEGATIVE_INFINITY,
       desiredTickCount,
     );
