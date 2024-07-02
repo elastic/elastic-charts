@@ -727,6 +727,7 @@ class FlameComponent extends React.Component<FlameProps> {
     let x1 = -Infinity;
     let y0 = Infinity;
     let y1 = -Infinity;
+
     // todo unify with matcher loop and setup in focusOnHit
     for (let i = 0; i < datumCount; i++) {
       const label = this.caseSensitive ? labels[i] : labels[i]?.toLowerCase();
@@ -736,8 +737,8 @@ class FlameComponent extends React.Component<FlameProps> {
         x1 = Math.max(x1, (position[2 * i] ?? 0) + (size[i] ?? 0));
         y0 = Math.min(y0, position[2 * i + 1] ?? 0);
         y1 = Math.max(y1, (position[2 * i + 1] ?? 0) + rowHeight);
-      } else {
-        this.currentColor[4 * i + 3] *= 0.25; // multiply alpha
+      } else if (this.currentColor[4 * i + 3] !== undefined) {
+        this.currentColor[4 * i + 3]! *= 0.25; // multiply alpha
       }
     }
 
