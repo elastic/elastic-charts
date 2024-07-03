@@ -28,7 +28,7 @@ html {
   font-size: 14px !important;
   &.light-theme {
     @import '~@elastic/eui/dist/eui_theme_light';
-    @import '~@elastic/charts/src/theme_light';
+    @import '~@elastic/charts/src/theme_only_light';
 
     &:not(.legacy) {
       @import '~@elastic/eui/src/themes/amsterdam/colors_light';
@@ -47,7 +47,7 @@ html {
 
   &.dark-theme {
     @import '~@elastic/eui/dist/eui_theme_dark';
-    @import '~@elastic/charts/src/theme_dark';
+    @import '~@elastic/charts/src/theme_only_dark';
 
     &:not(.legacy) {
       @import '~@elastic/eui/src/themes/amsterdam/colors_dark';
