@@ -52,6 +52,16 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const progressBarDirection = select('progress bar direction', ['horizontal', 'vertical'], 'vertical');
   const maxDataPoints = number('max trend data points', 30, { min: 0, max: 50, step: 1 });
   const emptyBackground = color('empty background', 'transparent');
+  const valueFontSizeMode = select(
+    'value font mode',
+    {
+      Default: 'default',
+      Fit: 'fit',
+      Custom: 'custom',
+    },
+    'default',
+  );
+  const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
 
   const data: (MetricDatum | undefined)[] = useMemo(
     () => [
@@ -215,6 +225,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           theme={{
             metric: {
               emptyBackground,
+              valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
             },
           }}
           baseTheme={useBaseTheme()}
