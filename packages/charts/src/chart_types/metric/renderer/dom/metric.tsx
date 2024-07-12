@@ -63,7 +63,7 @@ export const Metric: React.FunctionComponent<{
   onElementClick,
   onElementOver,
   onElementOut,
-  fittedValueFontSize
+  fittedValueFontSize,
 }) => {
   const progressBarSize = 'small'; // currently we provide only the small progress bar;
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');

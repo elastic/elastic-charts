@@ -207,11 +207,13 @@ class Component extends React.Component<Props> {
                       textLightColor: 'white',
                       textDarkColor: 'black',
                       nonFiniteText: 'N/A',
+                      valueFontSize: 'default', // bullet does not support fit mode
                     })}
                     locale={locale}
                     backgroundColor={backgroundColor}
                     contrastOptions={contrastOptions}
                     panel={{ width: size.width / stats.columns, height: size.height / stats.rows }}
+                    fittedValueFontSize={NaN}
                   />
                 );
               }}
