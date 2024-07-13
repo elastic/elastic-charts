@@ -62,6 +62,12 @@ test.describe('Metric', () => {
     );
   });
 
+  test('should render metric value fit font size', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/metric-alpha--array-of-values&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Blue groupId_Annotations=primary&knob-Dataset_Legend=shortCopyDataset&knob-Domain axis_Annotations=y&knob-EUI icon glyph name=warning&knob-EUI value icon glyph name=sortUp&knob-Enable debug state=true&knob-FadeOnFocusingOthers_Animations=true&knob-Hide color picker_Legend=true&knob-Legend Value_Legend=median,min,max&knob-Legend position_Legend=right&knob-Number formatting precision_Legend=2&knob-Outside dimension_Annotations=4&knob-Popover position_Legend=leftCenter&knob-Red groupId_Annotations=primary&knob-Render outside chart_Annotations=true&knob-Scale type=linear&knob-Series type=area&knob-SeriesType=bar&knob-Tick size=10&knob-annotation count_Styles=6&knob-annotation opacity_Styles=0.5&knob-annotation zIndex_Styles=0&knob-attach click handler=true&knob-blending background=rgba(255,255,255,1)&knob-chartRotation=180&knob-empty background=transparent&knob-max trend data points=30&knob-number of columns=3&knob-value font mode=fit&knob-value font size (px)=40&knob-show grid border=&knob-debug randomized data=',
+    );
+  });
+
   pwEach.describe(['trend', 'bar', 'none'])(
     (v) => `Metric - ${v} type`,
     (type) => {
