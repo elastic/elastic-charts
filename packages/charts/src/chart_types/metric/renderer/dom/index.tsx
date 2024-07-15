@@ -10,16 +10,17 @@
 /* eslint-disable react/no-array-index-key */
 
 import classNames from 'classnames';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
+import { getFitValueFontSize, getMetricTextPartDimensions } from './text';
 import { ColorContrastOptions, combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
 import { BasicListener, ElementClickListener, ElementOverListener, settingsBuildProps } from '../../../../specs';
-import { onChartRendered } from '../../../../state/actions/chart';
+import { onChartRendered as onChartRenderedAction } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
   A11ySettings,
@@ -56,134 +57,154 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  onChartRendered: typeof onChartRendered;
+  onChartRendered: typeof onChartRenderedAction;
 }
 
-class Component extends React.Component<StateProps & DispatchProps> {
-  static displayName = 'Metric';
-  componentDidMount() {
-    this.props.onChartRendered();
+function Component({
+  chartId,
+  hasTitles,
+  initialized,
+  size: { width, height },
+  a11y,
+  specs: [spec],
+  style,
+  backgroundColor,
+  onElementClick,
+  onElementOut,
+  onElementOver,
+  locale,
+  onChartRendered,
+}: StateProps & DispatchProps) {
+  useEffect(() => {
+    onChartRendered();
+  });
+
+  if (!initialized || !spec || width === 0 || height === 0) {
+    return null;
   }
 
-  componentDidUpdate() {
-    this.props.onChartRendered();
-  }
+  const { data } = spec;
 
-  render() {
-    const {
-      chartId,
-      hasTitles,
-      initialized,
-      size: { width, height },
-      a11y,
-      specs: [spec], // ignoring other specs
-      style,
-      backgroundColor,
-      onElementClick,
-      onElementOut,
-      onElementOver,
-      locale,
-    } = this.props;
-    if (!initialized || !spec || width === 0 || height === 0) {
-      return null;
-    }
+  const totalRows = data.length;
+  const maxColumns = data.reduce((acc, row) => {
+    return Math.max(acc, row.length);
+  }, 0);
 
-    const { data } = spec;
+  const panel = { width: width / maxColumns, height: height / totalRows };
+  const contrastOptions: ColorContrastOptions = {
+    lightColor: colorToRgba(style.textLightColor),
+    darkColor: colorToRgba(style.textDarkColor),
+  };
 
-    const totalRows = data.length;
-    const maxColumns = data.reduce((acc, row) => {
-      return Math.max(acc, row.length);
-    }, 0);
+  const emptyBackgroundRGBA = combineColors(colorToRgba(style.emptyBackground), colorToRgba(backgroundColor));
+  const emptyBackground = RGBATupleToString(emptyBackgroundRGBA);
+  const { color: emptyForegroundColor } = highContrastColor(emptyBackgroundRGBA, undefined, contrastOptions);
 
-    const panel = { width: width / maxColumns, height: height / totalRows };
-    const contrastOptions: ColorContrastOptions = {
-      lightColor: colorToRgba(style.textLightColor),
-      darkColor: colorToRgba(style.textDarkColor),
-    };
+  const fittedValueFontSize =
+    style.valueFontSize !== 'fit'
+      ? NaN
+      : data
+          .flat()
+          .filter((d) => d !== undefined)
+          .reduce((acc, datum) => {
+            const { sizes, progressBarWidth, visibility, textParts } = getMetricTextPartDimensions(
+              datum,
+              panel,
+              style,
+              locale,
+            );
+            const fontSize = getFitValueFontSize(
+              sizes.valueFontSize,
+              panel.width - progressBarWidth,
+              visibility.gapHeight,
+              textParts,
+              style.minValueFontSize,
+              datum.valueIcon !== undefined,
+            );
+            return Math.min(acc, fontSize);
+          }, Number.MAX_SAFE_INTEGER);
 
-    const emptyBackgroundRGBA = combineColors(colorToRgba(style.emptyBackground), colorToRgba(backgroundColor));
-    const emptyBackground = RGBATupleToString(emptyBackgroundRGBA);
-    const { color: emptyForegroundColor } = highContrastColor(emptyBackgroundRGBA, undefined, contrastOptions);
-
-    return (
-      // eslint-disable-next-line jsx-a11y/no-redundant-roles
-      <ul
-        role="list"
-        className="echMetricContainer"
-        aria-labelledby={a11y.labelId}
-        aria-describedby={a11y.descriptionId}
-        style={{
-          gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr)`,
-          gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr)`,
-        }}
-      >
-        {data.flatMap((columns, rowIndex) => {
-          return [
-            ...columns.map((datum, columnIndex) => {
-              // fill undefined with empty panels
-              const emptyMetricClassName = classNames('echMetric', {
-                'echMetric--rightBorder': columnIndex < maxColumns - 1,
-                'echMetric--bottomBorder': rowIndex < totalRows - 1,
-                'echMetric--topBorder': hasTitles && rowIndex === 0,
-              });
-              return !datum ? (
-                <li key={`${columnIndex}-${rowIndex}`} role="presentation">
-                  <div
-                    className={emptyMetricClassName}
-                    style={{ borderColor: style.border, backgroundColor: emptyBackground }}
-                  >
-                    <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor.keyword }}></div>
-                  </div>
-                </li>
-              ) : (
-                <li key={`${columnIndex}-${rowIndex}`}>
-                  <MetricComponent
-                    chartId={chartId}
-                    hasTitles={hasTitles}
-                    datum={datum}
-                    totalRows={totalRows}
-                    totalColumns={maxColumns}
-                    rowIndex={rowIndex}
-                    columnIndex={columnIndex}
-                    panel={panel}
-                    style={style}
-                    backgroundColor={backgroundColor}
-                    contrastOptions={contrastOptions}
-                    onElementClick={onElementClick}
-                    onElementOut={onElementOut}
-                    onElementOver={onElementOver}
-                    locale={locale}
-                  />
-                </li>
-              );
-            }),
-            // fill the grid row with empty panels
-            ...Array.from({ length: maxColumns - columns.length }, (_, zeroBasedColumnIndex) => {
-              const columnIndex = zeroBasedColumnIndex + columns.length;
-              const emptyMetricClassName = classNames('echMetric', {
-                'echMetric--bottomBorder': rowIndex < totalRows - 1,
-                'echMetric--topBorder': hasTitles && rowIndex === 0,
-              });
-              return (
-                <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
-                  <div
-                    className={emptyMetricClassName}
-                    style={{ borderColor: style.border, backgroundColor: emptyBackground }}
-                  ></div>
-                </li>
-              );
-            }),
-          ];
-        })}
-      </ul>
-    );
-  }
+  return (
+    // eslint-disable-next-line jsx-a11y/no-redundant-roles
+    <ul
+      role="list"
+      className="echMetricContainer"
+      aria-labelledby={a11y.labelId}
+      aria-describedby={a11y.descriptionId}
+      style={{
+        gridTemplateColumns: `repeat(${maxColumns}, minmax(0, 1fr)`,
+        gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr)`,
+      }}
+    >
+      {data.flatMap((columns, rowIndex) => {
+        return [
+          ...columns.map((datum, columnIndex) => {
+            // fill undefined with empty panels
+            const emptyMetricClassName = classNames('echMetric', {
+              'echMetric--rightBorder': columnIndex < maxColumns - 1,
+              'echMetric--bottomBorder': rowIndex < totalRows - 1,
+              'echMetric--topBorder': hasTitles && rowIndex === 0,
+            });
+            return !datum ? (
+              <li key={`${columnIndex}-${rowIndex}`} role="presentation">
+                <div
+                  className={emptyMetricClassName}
+                  style={{ borderColor: style.border, backgroundColor: emptyBackground }}
+                >
+                  <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor.keyword }}></div>
+                </div>
+              </li>
+            ) : (
+              <li key={`${columnIndex}-${rowIndex}`}>
+                <MetricComponent
+                  chartId={chartId}
+                  hasTitles={hasTitles}
+                  datum={datum}
+                  totalRows={totalRows}
+                  totalColumns={maxColumns}
+                  rowIndex={rowIndex}
+                  columnIndex={columnIndex}
+                  panel={panel}
+                  style={style}
+                  backgroundColor={backgroundColor}
+                  contrastOptions={contrastOptions}
+                  onElementClick={onElementClick}
+                  onElementOut={onElementOut}
+                  onElementOver={onElementOver}
+                  locale={locale}
+                  fittedValueFontSize={fittedValueFontSize}
+                />
+              </li>
+            );
+          }),
+          // fill the grid row with empty panels
+          ...Array.from({ length: maxColumns - columns.length }, (_, zeroBasedColumnIndex) => {
+            const columnIndex = zeroBasedColumnIndex + columns.length;
+            const emptyMetricClassName = classNames('echMetric', {
+              'echMetric--bottomBorder': rowIndex < totalRows - 1,
+              'echMetric--topBorder': hasTitles && rowIndex === 0,
+            });
+            return (
+              <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
+                <div
+                  className={emptyMetricClassName}
+                  style={{ borderColor: style.border, backgroundColor: emptyBackground }}
+                ></div>
+              </li>
+            );
+          }),
+        ];
+      })}
+    </ul>
+  );
 }
+
+Component.displayName = 'Metric';
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
   bindActionCreators(
     {
-      onChartRendered,
+      onChartRendered: onChartRenderedAction,
     },
     dispatch,
   );

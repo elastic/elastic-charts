@@ -191,35 +191,6 @@ function elementVisibility(
   });
 }
 
-/**
- * Approximate font size to fit given available space
- */
-function getFitValueFontSize(
-  valueFontSize: number,
-  maxWidth: number,
-  gapHeight: number,
-  textParts: TextParts[],
-  minValueFontSize: number,
-  hasIcon: boolean,
-) {
-  const widthConstrainedSize = withTextMeasure((textMeasure) => {
-    const iconMultiplier = hasIcon ? 1 : 0;
-    const textWidth = textParts.reduce((sum, { text, emphasis }) => {
-      const fontSize = emphasis === 'small' ? valueFontSize / VALUE_PART_FONT_RATIO : valueFontSize;
-      return sum + textMeasure(text, VALUE_FONT, fontSize).width;
-    }, 0);
-    const ratio = textWidth / valueFontSize;
-    return (maxWidth - iconMultiplier * PADDING) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
-  });
-  const heightConstrainedSize = valueFontSize + gapHeight;
-  const fitValueFontSize = Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
-
-  return {
-    valueFontSize: fitValueFontSize,
-    valuePartFontSize: fitValueFontSize / VALUE_PART_FONT_RATIO,
-  };
-}
-
 function lineClamp(maxLines: number): CSSProperties {
   return {
     textOverflow: 'ellipsis',
@@ -241,36 +212,39 @@ export const MetricText: React.FunctionComponent<{
   onElementClick?: () => void;
   highContrastTextColor: Color;
   progressBarSize: 'small';
+  fittedValueFontSize: number;
   locale: string;
-}> = ({ id, datum, panel, style, onElementClick, highContrastTextColor, progressBarSize, locale }) => {
+}> = ({
+  id,
+  datum,
+  panel,
+  style,
+  onElementClick,
+  highContrastTextColor,
+  progressBarSize,
+  locale,
+  fittedValueFontSize,
+}) => {
+  const { sizes, hasProgressBar, progressBarDirection, visibility, textParts } = getMetricTextPartDimensions(
+    datum,
+    panel,
+    style,
+    locale,
+  );
   const { extra, body } = datum;
-  const sizes = getFontSizes(HEIGHT_BP, panel.height, style);
-  const hasProgressBar = isMetricWProgress(datum);
-  const hasTarget = !isNil((datum as MetricWNumber)?.target);
-  const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
-  const progressBarWidth =
-    hasProgressBar && progressBarDirection === LayoutDirection.Vertical
-      ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
-      : 0;
   const containerClassName = classNames('echMetricText', {
     [`echMetricText--${progressBarSize}`]: hasProgressBar,
     'echMetricText--vertical': progressBarDirection === LayoutDirection.Vertical,
     'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
 
-  const visibility = elementVisibility(datum, panel, sizes, locale, style.valueFontSize === 'fit');
-  const textParts = getTextParts(datum, style);
   const { valueFontSize, valuePartFontSize } =
-    style.valueFontSize !== 'fit'
-      ? sizes
-      : getFitValueFontSize(
-          sizes.valueFontSize,
-          (panel.width - progressBarWidth - 2 * PADDING) * 0.98, // small buffer to prevent clipping
-          visibility.gapHeight,
-          textParts,
-          style.minValueFontSize,
-          datum.valueIcon !== undefined,
-        );
+    style.valueFontSize === 'fit'
+      ? {
+          valueFontSize: fittedValueFontSize,
+          valuePartFontSize: fittedValueFontSize / VALUE_PART_FONT_RATIO,
+        }
+      : sizes;
 
   const TitleElement = () => (
     <span
@@ -440,4 +414,51 @@ function splitNumericSuffixPrefix(text: string): TextParts[] {
       emphasis,
       text: textParts.join(''),
     }));
+}
+
+/**
+ * Approximate font size to fit given available space
+ * @internal
+ */
+export function getFitValueFontSize(
+  valueFontSize: number,
+  width: number,
+  gapHeight: number,
+  textParts: TextParts[],
+  minValueFontSize: number,
+  hasIcon: boolean,
+): number {
+  const maxWidth = (width - 2 * PADDING) * 0.98; // small buffer to prevent clipping
+  const widthConstrainedSize = withTextMeasure((textMeasure) => {
+    const iconMultiplier = hasIcon ? 1 : 0;
+    const textWidth = textParts.reduce((sum, { text, emphasis }) => {
+      const fontSize = emphasis === 'small' ? valueFontSize / VALUE_PART_FONT_RATIO : valueFontSize;
+      return sum + textMeasure(text, VALUE_FONT, fontSize).width;
+    }, 0);
+    const ratio = textWidth / valueFontSize;
+    return (maxWidth - iconMultiplier * PADDING) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
+  });
+  const heightConstrainedSize = valueFontSize + gapHeight;
+
+  return Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
+}
+
+/** @internal */
+export function getMetricTextPartDimensions(datum: MetricDatum, panel: Size, style: MetricStyle, locale: string) {
+  const sizes = getFontSizes(HEIGHT_BP, panel.height, style);
+  const hasProgressBar = isMetricWProgress(datum);
+  const hasTarget = !isNil((datum as MetricWNumber)?.target);
+  const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
+
+  return {
+    sizes,
+    hasProgressBar,
+    progressBarDirection,
+    progressBarWidth:
+      hasProgressBar && progressBarDirection === LayoutDirection.Vertical
+        ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
+        : 0,
+    visibility: elementVisibility(datum, panel, sizes, locale, style.valueFontSize === 'fit'),
+    textParts: getTextParts(datum, style),
+  };
 }
