@@ -1,3 +1,10 @@
+## [66.0.6](https://github.com/elastic/elastic-charts/compare/v66.0.5...v66.0.6) (2024-07-15)
+
+
+### Bug Fixes
+
+* **metric:** icon alignment defaults ([#2489](https://github.com/elastic/elastic-charts/issues/2489)) [66.0.x] ([#2490](https://github.com/elastic/elastic-charts/issues/2490)) ([68acfda](https://github.com/elastic/elastic-charts/commit/68acfdab4da4f9decf16fa176f94cadbbb7251d9))
+
 ## [66.0.5](https://github.com/elastic/elastic-charts/compare/v66.0.4...v66.0.5) (2024-07-01)
 
 
