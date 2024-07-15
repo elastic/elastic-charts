@@ -1,3 +1,19 @@
+# [66.1.0](https://github.com/elastic/elastic-charts/compare/v66.0.5...v66.1.0) (2024-07-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^95.3.0 ([#2479](https://github.com/elastic/elastic-charts/issues/2479)) ([d8c8a6a](https://github.com/elastic/elastic-charts/commit/d8c8a6a555752b38bb5596c6a90db01616a08ff2))
+* **deps:** update dependency @playwright/test to ^1.45.0 ([#2480](https://github.com/elastic/elastic-charts/issues/2480)) ([6b9935c](https://github.com/elastic/elastic-charts/commit/6b9935c127e8c2c7d16358a955b8c2e2ab222353))
+* **deps:** update dependency @playwright/test to ^1.45.1 ([#2485](https://github.com/elastic/elastic-charts/issues/2485)) ([8fe29f5](https://github.com/elastic/elastic-charts/commit/8fe29f5e1909933779f02fa7f669d44a4b77943b))
+* **deps:** update dependency json-schema-to-typescript to v14.1.0 ([#2481](https://github.com/elastic/elastic-charts/issues/2481)) ([b459a76](https://github.com/elastic/elastic-charts/commit/b459a760fd87f06edb54afcf78bad9761ffb2eac))
+* **metric:** icon alignment defaults ([#2489](https://github.com/elastic/elastic-charts/issues/2489)) ([bba76fa](https://github.com/elastic/elastic-charts/commit/bba76fa652db3cc8b2fbf884bdede913ddce1b71))
+
+
+### Features
+
+* **metric:** make value fit logic uniform across panels ([#2484](https://github.com/elastic/elastic-charts/issues/2484)) ([991347d](https://github.com/elastic/elastic-charts/commit/991347d91e2dd80bf68fe044688050eeae6d8680))
+
 ## [66.0.5](https://github.com/elastic/elastic-charts/compare/v66.0.4...v66.0.5) (2024-07-01)
 
 
