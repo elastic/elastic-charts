@@ -418,7 +418,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     minValueFontSize: 12,
     titlesTextAlign: 'left',
     valuesTextAlign: 'right',
-    iconAlign: 'left',
+    iconAlign: 'right',
     border: '#EDF0F5',
     barBackground: '#EDF0F5',
     emptyBackground: Colors.Transparent.keyword,

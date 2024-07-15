@@ -412,7 +412,7 @@ export const DARK_THEME: Theme = {
     minValueFontSize: 12,
     titlesTextAlign: 'left',
     valuesTextAlign: 'right',
-    iconAlign: 'left',
+    iconAlign: 'right',
     border: DARK_BASE_COLORS.lightShade,
     barBackground: DARK_BASE_COLORS.lightShade,
     emptyBackground: Colors.Transparent.keyword,
