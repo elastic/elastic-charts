@@ -411,7 +411,7 @@ export const LIGHT_THEME: Theme = {
     minValueFontSize: 12,
     titlesTextAlign: 'left',
     valuesTextAlign: 'right',
-    iconAlign: 'left',
+    iconAlign: 'right',
     border: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
     barBackground: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
     emptyBackground: Colors.Transparent.keyword,
