@@ -231,7 +231,7 @@ export const DARK_THEME: Theme = {
       visible: true,
       stroke: DARK_BASE_COLORS.darkShade,
       strokeWidth: 1,
-      dash: [4, 4],
+      dash: [0, 0],
     },
   },
   background: {
