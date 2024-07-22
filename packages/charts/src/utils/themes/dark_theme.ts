@@ -198,7 +198,7 @@ export const DARK_THEME: Theme = {
         stroke: DARK_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
-        dash: [4, 4],
+        dash: [0, 0],
       },
       lumaSteps: [63, 103, 159, 191, 223, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255],
     },
@@ -231,7 +231,7 @@ export const DARK_THEME: Theme = {
       visible: true,
       stroke: DARK_BASE_COLORS.darkShade,
       strokeWidth: 1,
-      dash: [0, 0],
+      dash: [4, 4],
     },
   },
   background: {
