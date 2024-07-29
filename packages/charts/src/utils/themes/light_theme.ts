@@ -188,17 +188,17 @@ export const LIGHT_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
+        stroke: '#E9EDF3',
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
+        stroke: '#E9EDF3',
         strokeWidth: 1,
         opacity: 1,
-        dash: [4, 4],
+        dash: [0, 0],
       },
       lumaSteps: [224, 184, 128, 96, 64, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0],
     },
