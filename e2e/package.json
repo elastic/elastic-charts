@@ -12,7 +12,7 @@
     "playwright": "playwright"
   },
   "dependencies": {
-    "@playwright/test": "^1.45.1",
+    "@playwright/test": "^1.45.3",
     "@types/node": "^20.10.0",
     "change-case": "^4.1.2",
     "expect-playwright": "^0.8.0",
