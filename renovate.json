@@ -1,6 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "schedule:weekends", ":dependencyDashboard"],
+  "extends": [
+    "config:recommended",
+    "schedule:weekends",
+    ":dependencyDashboard"
+  ],
   "ignorePaths": ["./.github/**"],
   "enabledManagers": ["npm"],
   "baseBranches": ["main"],
@@ -17,7 +21,13 @@
   "packageRules": [
     {
       "matchPackagePatterns": [".*"],
-      "excludePackageNames": ["@elastic/eui", "@elastic/datemath", "prettier", "pretty-quick", "@playwright/test"],
+      "excludePackageNames": [
+        "@elastic/eui",
+        "@elastic/datemath",
+        "prettier",
+        "pretty-quick",
+        "@playwright/test"
+      ],
       "excludePackagePatterns": [
         ".*typescript.*",
         "ts-.+",
@@ -38,8 +48,17 @@
     },
     {
       "groupName": "typescript",
-      "matchPackagePatterns": [".*typescript.*", "ts-.+", "^@typescript-eslint/.+", "^@microsoft/api-.+"],
-      "excludePackageNames": ["ts-jest", "ts-loader", "json-schema-to-typescript"],
+      "matchPackagePatterns": [
+        ".*typescript.*",
+        "ts-.+",
+        "^@typescript-eslint/.+",
+        "^@microsoft/api-.+"
+      ],
+      "excludePackageNames": [
+        "ts-jest",
+        "ts-loader",
+        "json-schema-to-typescript"
+      ],
       "automerge": true,
       "enabled": true
     },
