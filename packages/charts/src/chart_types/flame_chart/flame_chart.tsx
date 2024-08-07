@@ -64,15 +64,6 @@ const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? (positi
 const initialPixelRowPitch = () => 16;
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
 
-// Not cached to avoid holding a reference to the `window` object
-const getVisualViewportScale = (): number => {
-  let rootWindow = window;
-  while (window.parent && window.parent.window !== rootWindow) rootWindow = rootWindow.parent.window;
-
-  // we might be in an iframe, and `visualViewport` is toplevel only
-  return window !== rootWindow ? 1 : rootWindow.visualViewport?.scale ?? 1;
-};
-
 const columnToRowPositions = ({ position1, size1 }: FlameSpec['columnarData'], i: number) => ({
   x0: position1[i * 2] ?? 0,
   x1: (position1[i * 2] ?? 0) + (size1[i] ?? 0),
@@ -263,7 +254,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
     // browser pinch zoom handling
     this.pinchZoomSetInterval = NaN;
-    this.pinchZoomScale = getVisualViewportScale();
+    this.pinchZoomScale = 1; // we set this to the accurate value next
     this.setupViewportScaleChangeListener();
 
     // search
@@ -375,9 +366,12 @@ class FlameComponent extends React.Component<FlameProps> {
   };
 
   private setupViewportScaleChangeListener = () => {
+    // we might be in an iframe, and `visualViewport` is toplevel only
+    if (window !== window.parent) return; // Do not setup interval if inside iframe
+
     window.clearInterval(this.pinchZoomSetInterval);
     this.pinchZoomSetInterval = window.setInterval(() => {
-      const pinchZoomScale = getVisualViewportScale();
+      const pinchZoomScale = window.visualViewport?.scale ?? 1;
       if (pinchZoomScale !== this.pinchZoomScale) {
         this.pinchZoomScale = pinchZoomScale;
         this.setState({});
