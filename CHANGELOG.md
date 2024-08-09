@@ -1,3 +1,13 @@
+## [66.1.1](https://github.com/elastic/elastic-charts/compare/v66.1.0...v66.1.1) (2024-08-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^95.5.0 ([#2496](https://github.com/elastic/elastic-charts/issues/2496)) ([803a56a](https://github.com/elastic/elastic-charts/commit/803a56aa9361b3bfaf3356fa5151f201667031e8))
+* **deps:** update dependency @playwright/test to ^1.45.3 ([#2495](https://github.com/elastic/elastic-charts/issues/2495)) ([4b82ee2](https://github.com/elastic/elastic-charts/commit/4b82ee222daad53b3aa95c4444f5a52cd4d22892))
+* **deps:** update dependency json-schema-to-typescript to v15 ([#2497](https://github.com/elastic/elastic-charts/issues/2497)) ([d635ebb](https://github.com/elastic/elastic-charts/commit/d635ebb3e350a636c293ac821f8f8423cb92533b))
+* **flame:** failure when accessing `visualViewport.visualViewport` from within `iFrame` ([#2502](https://github.com/elastic/elastic-charts/issues/2502)) ([84f5328](https://github.com/elastic/elastic-charts/commit/84f53281782c78d1f85a0e0dd7f1a0aa4952d7a3))
+
 # [66.1.0](https://github.com/elastic/elastic-charts/compare/v66.0.5...v66.1.0) (2024-07-15)
 
 
