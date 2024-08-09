@@ -63,8 +63,12 @@ const NODE_TWEEN_DURATION_MS = 500;
 const unitRowPitch = (position: Float32Array) => (position.length >= 4 ? (position[1] ?? 0) - (position[3] ?? 0) : 1);
 const initialPixelRowPitch = () => 16;
 const specValueFormatter = (d: number) => d; // fixme use the formatter from the spec
+
+/**
+ * Returns top-level `window` when inside iframe
+ */
 const browserRootWindow = () => {
-  let rootWindow = window; // we might be in an iframe, and visualViewport.scale is toplevel only
+  let rootWindow = window;
   while (window.parent && window.parent.window !== rootWindow) rootWindow = rootWindow.parent.window;
   return rootWindow;
 };
@@ -182,7 +186,7 @@ class FlameComponent extends React.Component<FlameProps> {
 
   // native browser pinch zoom handling
   private pinchZoomSetInterval: number = NaN;
-  private pinchZoomScale: number;
+  private pinchZoomScale: number = 1;
 
   // mouse coordinates for the tooltip
   private pointerX: number = NaN;
@@ -258,8 +262,6 @@ class FlameComponent extends React.Component<FlameProps> {
     this.navigator = new NavButtonControlledZoomPanHistory({ ...this.getFocusOnRoot(), index: 0 });
 
     // browser pinch zoom handling
-    this.pinchZoomSetInterval = NaN;
-    this.pinchZoomScale = browserRootWindow().visualViewport?.scale ?? 1;
     this.setupViewportScaleChangeListener();
 
     // search
@@ -370,15 +372,26 @@ class FlameComponent extends React.Component<FlameProps> {
     );
   };
 
+  /**
+   * Setup interval to update pinch zoom scale factor
+   */
   private setupViewportScaleChangeListener = () => {
-    window.clearInterval(this.pinchZoomSetInterval);
-    this.pinchZoomSetInterval = window.setInterval(() => {
-      const pinchZoomScale = browserRootWindow().visualViewport?.scale ?? 1; // not cached, to avoid holding a reference to a `window` object
-      if (pinchZoomScale !== this.pinchZoomScale) {
-        this.pinchZoomScale = pinchZoomScale;
-        this.setState({});
+    try {
+      // if in an iframe we need the top-level `visualViewport`
+      if (browserRootWindow().visualViewport) {
+        // Only setup listener if access to `visualViewport` is allowed
+        window.clearInterval(this.pinchZoomSetInterval);
+        this.pinchZoomSetInterval = window.setInterval(() => {
+          const pinchZoomScale = browserRootWindow().visualViewport?.scale ?? 1;
+          if (pinchZoomScale !== this.pinchZoomScale) {
+            this.pinchZoomScale = pinchZoomScale;
+            this.setState({});
+          }
+        }, PINCH_ZOOM_CHECK_INTERVAL_MS);
       }
-    }, PINCH_ZOOM_CHECK_INTERVAL_MS);
+    } catch {
+      // unable to access `window.visualViewport`
+    }
   };
 
   componentDidMount = () => {
