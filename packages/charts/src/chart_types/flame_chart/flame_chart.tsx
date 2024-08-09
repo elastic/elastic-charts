@@ -262,17 +262,7 @@ class FlameComponent extends React.Component<FlameProps> {
     this.navigator = new NavButtonControlledZoomPanHistory({ ...this.getFocusOnRoot(), index: 0 });
 
     // browser pinch zoom handling
-    this.pinchZoomSetInterval = NaN;
-
-    try {
-      // if in an iframe we need the top-level `visualViewport`
-      if (browserRootWindow().visualViewport) {
-        // Only setup listener if access to `visualViewport` is allowed
-        this.setupViewportScaleChangeListener();
-      }
-    } catch {
-      // unable to access `window.visualViewport`
-    }
+    this.setupViewportScaleChangeListener();
 
     // search
     this.currentColor = columns.color;
@@ -384,18 +374,24 @@ class FlameComponent extends React.Component<FlameProps> {
 
   /**
    * Setup interval to update pinch zoom scale factor
-   *
-   * Note: method accesses `window.visualViewport`
    */
   private setupViewportScaleChangeListener = () => {
-    window.clearInterval(this.pinchZoomSetInterval);
-    this.pinchZoomSetInterval = window.setInterval(() => {
-      const pinchZoomScale = browserRootWindow().visualViewport?.scale ?? 1;
-      if (pinchZoomScale !== this.pinchZoomScale) {
-        this.pinchZoomScale = pinchZoomScale;
-        this.setState({});
+    try {
+      // if in an iframe we need the top-level `visualViewport`
+      if (browserRootWindow().visualViewport) {
+        // Only setup listener if access to `visualViewport` is allowed
+        window.clearInterval(this.pinchZoomSetInterval);
+        this.pinchZoomSetInterval = window.setInterval(() => {
+          const pinchZoomScale = browserRootWindow().visualViewport?.scale ?? 1;
+          if (pinchZoomScale !== this.pinchZoomScale) {
+            this.pinchZoomScale = pinchZoomScale;
+            this.setState({});
+          }
+        }, PINCH_ZOOM_CHECK_INTERVAL_MS);
       }
-    }, PINCH_ZOOM_CHECK_INTERVAL_MS);
+    } catch {
+      // unable to access `window.visualViewport`
+    }
   };
 
   componentDidMount = () => {
