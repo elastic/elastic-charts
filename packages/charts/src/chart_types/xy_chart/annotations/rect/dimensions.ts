@@ -21,6 +21,7 @@ import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_r
 import { isHorizontalRotation } from '../../state/utils/common';
 import { getAxesSpecForSpecId } from '../../state/utils/spec';
 import { AxisSpec, RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
+import { getAnnotationXScaledValue } from '../scale_utils';
 import { Bounds } from '../types';
 
 /** @internal */
@@ -211,14 +212,10 @@ function scaleXonContinuousScale(
   if (typeof x1 !== 'number' || typeof x0 !== 'number') {
     return null;
   }
-  const scaledX0 = xScale.scale(x0);
-  const scaledX1 =
-    xScale.totalBarsInCluster > 0 && !isHistogramModeEnabled ? xScale.scale(x1 + xScale.minInterval) : xScale.scale(x1);
-  // the width needs to be computed before adjusting the x anchor
+  const scaledX0 = getAnnotationXScaledValue(xScale, x0, isHistogramModeEnabled) ?? NaN;
+  const scaledX1 = getAnnotationXScaledValue(xScale, x1, isHistogramModeEnabled) ?? NaN;
   const width = Math.abs(scaledX1 - scaledX0);
-  return Number.isNaN(width)
-    ? null
-    : { width, x: scaledX0 - (xScale.bandwidthPadding / 2) * xScale.totalBarsInCluster };
+  return Number.isNaN(width) ? null : { width, x: scaledX0 };
 }
 
 /**
