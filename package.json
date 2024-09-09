@@ -52,7 +52,7 @@
     "test:e2e:generate:examples": "./e2e_server/scripts/extract_examples.sh",
     "test:e2e:generate:page": "./e2e_server/scripts/compile_vrt_page.sh",
     "test:e2e:server": "export NODE_OPTIONS=--openssl-legacy-provider; sh ./e2e_server/scripts/start.sh",
-    "test:e2e:server:build": "export NODE_OPTIONS=--openssl-legacy-provider; cd e2e_server/server && webpack build",
+    "test:e2e:server:build": "export NODE_OPTIONS=--openssl-legacy-provider; cd e2e_server/server && webpack build && cp ../../public/data.json ../../.out/",
     "typecheck:base": "tsc -p ./tsconfig.base.json --noEmit",
     "typecheck:src": "lerna run --loglevel=silent --scope @elastic/charts typecheck --stream --no-prefix",
     "typecheck:docs": "lerna run --loglevel=silent --scope elastic-charts-docs typecheck --stream --no-prefix",
