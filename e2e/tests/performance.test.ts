@@ -35,6 +35,6 @@ test.describe('Performance', () => {
     const getAllMeasures = await JSON.parse(getAllMeasuresJson);
     console.log('window.performance.getEntriesByType("measure")', getAllMeasures);
     await browser.stopTracing();
-    expect(getAllMeasures[0].duration).toBeLessThan(800);
+    expect(getAllMeasures[0].duration).toBeLessThan(500);
   });
 });

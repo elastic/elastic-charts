@@ -22,6 +22,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     async function fetchData() {
       const response = await fetch('data.json');
       const d: Array<Record<string, unknown>> = await response.json();
+      window.performance.mark('Perf:Started');
       setData(d);
     }
     fetchData().catch(() => {});
@@ -30,7 +31,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   if (data.length === 0) {
     return <div>no data</div>;
   }
-  window.performance.mark('Perf:Started');
+
   return (
     <Chart title={title} description={description}>
       <Settings
