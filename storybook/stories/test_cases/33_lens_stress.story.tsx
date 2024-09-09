@@ -17,15 +17,14 @@ import { useBaseTheme } from '../../use_base_theme';
 const dateFormatter = timeFormatter('HH:mm');
 
 export const Example: ChartsStory = (_, { title, description }) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Array<Record<string, unknown>>>([]);
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch('./public/data.json');
-      const data = await response.json();
-      console.log(data);
-      setData(data);
+      const response = await fetch('data.json');
+      const d: Array<Record<string, unknown>> = await response.json();
+      setData(d);
     }
-    fetchData();
+    fetchData().catch(() => {});
   }, []);
   const theme = useBaseTheme();
   if (data.length === 0) {
@@ -41,7 +40,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
         baseTheme={theme}
         onRenderChange={(isRendered) => {
           if (isRendered) {
-            console.profileEnd('chart');
             window.performance.mark('Perf:Ended');
           }
         }}
