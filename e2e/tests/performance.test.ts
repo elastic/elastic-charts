@@ -33,7 +33,9 @@ test.describe('Performance', () => {
       const getAllMeasures = await JSON.parse(getAllMeasuresJson);
       console.log('window.performance.getEntriesByType("measure")', getAllMeasures);
       await browser.stopTracing();
-      expect(getAllMeasures[0].duration).toBeLessThan(2500);
+      // using these two values as min/max to understand if we are increasing or decreasing the rendering speed.
+      expect(getAllMeasures[0].duration).toBeLessThan(2200);
+      expect(getAllMeasures[0].duration).toBeGreaterThan(2000);
     });
   }
 });
