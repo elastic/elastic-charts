@@ -664,6 +664,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/lodash@^4.17.7":
+  version "4.17.7"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.17.7.tgz#2f776bcb53adc9e13b2c0dfd493dfcbd7de43612"
+  integrity sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==
+
 "@types/long@^4.0.0", "@types/long@^4.0.1":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.2.tgz#b74129719fc8d11c01868010082d483b7545591a"
@@ -2293,13 +2298,14 @@ json-parse-better-errors@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-schema-to-typescript@15.0.1:
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/json-schema-to-typescript/-/json-schema-to-typescript-15.0.1.tgz#646829fd3dae1909d697dc48c5decf903b811884"
-  integrity sha512-gSSg20skxv+ZQqR8Y8itZt+2iYFGNgneuTgf/Va0TBw+zo6JsykDG1bqhkhMs5g/vIdqmZx55oQJLbgOEuxPJw==
+json-schema-to-typescript@15.0.2:
+  version "15.0.2"
+  resolved "https://registry.yarnpkg.com/json-schema-to-typescript/-/json-schema-to-typescript-15.0.2.tgz#afd87ba8d3140bc8c1822fcbd1f94dc10c1bd034"
+  integrity sha512-+cRBw+bBJ3k783mZroDIgz1pLNPB4hvj6nnbHTWwEVl0dkW8qdZ+M9jWhBb+Y0FAdHvNsXACga3lewGO8lktrw==
   dependencies:
     "@apidevtools/json-schema-ref-parser" "^11.5.5"
     "@types/json-schema" "^7.0.15"
+    "@types/lodash" "^4.17.7"
     glob "^10.3.12"
     is-glob "^4.0.3"
     js-yaml "^4.1.0"
