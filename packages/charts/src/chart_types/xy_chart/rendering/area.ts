@@ -19,6 +19,7 @@ import {
 } from './utils';
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
+import { isBandScale } from '../../../scales/types';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
 import { AreaGeometry } from '../../../utils/geometry';
@@ -101,6 +102,7 @@ export function renderArea(
     clippedRanges,
     shouldClip: hasFit,
     hasFit,
+    minPointDistance: isBandScale(xScale) ? xScale.bandwidth : xScale.scale(xScale.domain[0] + xScale.minInterval),
   };
   return {
     areaGeometry,
