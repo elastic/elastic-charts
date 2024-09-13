@@ -28,6 +28,7 @@ export { Example as clusteredWithAxisAndLegend } from './13_clustered.story';
 export { Example as clusteredMultipleSeriesSpecs } from './14_clustered_multiple.story';
 export { Example as timeClusteredUsingVariousSpecs } from './15_time_clustered.story';
 export { Example as timeStackedUsingVariousSpecs } from './17_time_stacked.story';
+export { Example as renderingSort } from './10a_rendering_sort.story';
 export { Example as barChart1y0g } from './18_bar_chart_1y0g.story';
 export { Example as barChart1y1g } from './19_bar_chart_1y1g.story';
 

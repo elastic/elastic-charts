@@ -20,6 +20,7 @@ import { CustomTooltip } from '../components/tooltip';
 import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
 import { PointerValue } from '../state/types';
 import { Datum, stripUndefined } from '../utils/common';
+import { SeriesCompareFn } from '../utils/series_sort';
 
 /**
  * This interface describe the properties of single value shown in the tooltip
@@ -230,6 +231,11 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
    * Max number of visible tooltip items before scrolling. Does not apply to custom tooltips
    */
   maxVisibleTooltipItems: number;
+
+  /**
+   * A SeriesSortFn to sort the tooltip values (top-bottom)
+   */
+  sort?: SeriesCompareFn;
 }
 
 /**

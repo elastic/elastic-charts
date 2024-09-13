@@ -21,6 +21,7 @@ import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor'
 import { Datum, isNil, stripUndefined } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
+import { SeriesCompareFn } from '../../../utils/series_sort';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { groupSeriesByYGroup, isStackedSpec } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
@@ -74,6 +75,7 @@ export type DataSeries<D extends BaseDatum = Datum> = XYChartSeriesIdentifier<D>
   isStacked: boolean;
   stackMode: StackMode | undefined;
   spec: Exclude<BasicSeriesSpec, 'data'>;
+  sortOrder: number;
   insertIndex: number;
   isFiltered: boolean;
 };
@@ -207,6 +209,7 @@ export function splitSeriesDataByAccessors(
           spec,
           // current default to 0, will be correctly computed on a later stage
           insertIndex: 0,
+          sortOrder: 0,
           isFiltered: false,
         });
       }
@@ -356,6 +359,7 @@ export function getDataSeriesFromSpecs(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
   orderOrdinalBinsBy?: OrderBy,
+  seriesSort?: SeriesCompareFn,
   groupBySpec?: SmallMultiplesGroupBy,
 ): {
   dataSeries: DataSeries[];
@@ -431,10 +435,16 @@ export function getDataSeriesFromSpecs(
           }),
         );
 
-  const dataSeries = globalDataSeries.map((d, i) => ({
-    ...d,
-    insertIndex: i,
-  }));
+  const dataSeries = globalDataSeries
+    .map((d, i) => ({
+      ...d,
+      insertIndex: i, // capture original insert order for coloring
+    }))
+    .toSorted(seriesSort)
+    .map((d, i) => ({
+      ...d,
+      sortOrder: i,
+    }));
 
   const smallMultipleUniqueValues = dataSeries.reduce<{
     smVValues: Set<string | number>;
@@ -587,9 +597,8 @@ export function getSeriesColors(
 ): Map<SeriesKey, Color> {
   const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
-  const sortedDataSeries = [...dataSeries].sort((a, b) => a.insertIndex - b.insertIndex);
   groupBy(
-    sortedDataSeries,
+    dataSeries.toSorted((a, b) => a.insertIndex - b.insertIndex),
     (ds) => {
       return [ds.specId, ds.groupId, ds.yAccessor, ...ds.splitAccessors.values()].join('__');
     },

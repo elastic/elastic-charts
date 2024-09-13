@@ -29,7 +29,8 @@ export class MockSeriesIdentifier {
     const { dataSeries } = getDataSeriesFromSpecs(specs);
 
     return dataSeries.map(
-      ({ groupId, seriesType, data, isStacked, stackMode, spec, insertIndex, isFiltered, ...rest }) => rest,
+      // eslint-disable-next-line object-curly-newline
+      ({ groupId, seriesType, data, isStacked, stackMode, spec, insertIndex, sortOrder, isFiltered, ...rest }) => rest,
     );
   }
 

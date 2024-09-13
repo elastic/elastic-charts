@@ -35,7 +35,7 @@ import { isNil, Rotation } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
-import { getTooltipCompareFn } from '../../../../utils/series_sort';
+import { defaultSeriesSort, SeriesCompareFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
@@ -89,7 +89,7 @@ function getTooltipAndHighlightFromValue(
   hasSingleSeries: boolean,
   scales: ComputedScales,
   matchingGeoms: IndexedGeometry[],
-  serialIdentifierDataSeriesMap: Record<string, DataSeries>,
+  seriesIdentifierDataSeriesMap: Record<string, DataSeries>,
   externalPointerEvent: PointerEvent | null,
   tooltip: TooltipSpec,
 ): TooltipAndHighlightedGeoms {
@@ -192,15 +192,24 @@ function getTooltipAndHighlightFromValue(
     header = null;
   }
 
-  const tooltipSortFn = getTooltipCompareFn((a, b) => {
-    const aDs = serialIdentifierDataSeriesMap[a.key];
-    const bDs = serialIdentifierDataSeriesMap[b.key];
+  const baseTooltipSortFn: SeriesCompareFn = (a, b) => {
+    const aDs = seriesIdentifierDataSeriesMap[a.key];
+    const bDs = seriesIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
-  });
+  };
 
-  const sortedTooltipValues = values.sort((a, b) => {
-    return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
-  });
+  const tooltipSortFn = tooltip.sort ?? settings.legendSort;
+  const sortedTooltipValues = values
+    .sort((a, b) => {
+      return baseTooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
+    })
+    .sort(
+      tooltipSortFn
+        ? (a, b) => {
+            return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
+          }
+        : defaultSeriesSort,
+    );
 
   return {
     tooltip: {

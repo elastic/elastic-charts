@@ -16,13 +16,5 @@ import { SeriesIdentifier } from '../common/series_id';
  */
 export type SeriesCompareFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
 
-const DEFAULT_SORTING_FN = () => 0; // this should cause no reorder, as [].sort is now a stable sort in browsers
-
 /** @internal */
-export const getRenderingCompareFn = (defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN) => defaultSortFn;
-
-/** @internal */
-export const getLegendCompareFn = (defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN) => defaultSortFn;
-
-/** @internal */
-export const getTooltipCompareFn = (defaultSortFn: SeriesCompareFn = DEFAULT_SORTING_FN) => defaultSortFn;
+export const defaultSeriesSort = () => 0; // this should cause no reorder, as [].sort is now a stable sort in browsers

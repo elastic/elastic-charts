@@ -12,7 +12,7 @@ import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
 import { SettingsSpec } from '../../../specs';
 import { isDefined, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
-import { getLegendCompareFn, SeriesCompareFn } from '../../../utils/series_sort';
+import { SeriesCompareFn } from '../../../utils/series_sort';
 import { PointStyle, Theme } from '../../../utils/themes/theme';
 import { XDomain } from '../domains/types';
 import { isDatumFilled } from '../rendering/utils';
@@ -102,7 +102,7 @@ export function computeLegend(
   specs: BasicSeriesSpec[],
   axesSpecs: AxisSpec[],
   settingsSpec: SettingsSpec,
-  serialIdentifierDataSeriesMap: Record<string, DataSeries>,
+  seriesIdentifierDataSeriesMap: Record<string, DataSeries>,
   theme: Theme,
   deselectedDataSeries: SeriesIdentifier[] = [],
 ): LegendItem[] {
@@ -183,16 +183,24 @@ export function computeLegend(
     }
   });
 
-  const legendSortFn = getLegendCompareFn((a, b) => {
-    const aDs = serialIdentifierDataSeriesMap[a.key];
-    const bDs = serialIdentifierDataSeriesMap[b.key];
+  const baseLegendSortFn: SeriesCompareFn = (a, b) => {
+    const aDs = seriesIdentifierDataSeriesMap[a.key];
+    const bDs = seriesIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
-  });
-  const sortFn: SeriesCompareFn = settingsSpec.legendSort ?? legendSortFn;
+  };
+
   return groupBy(
-    legendItems.sort((a, b) =>
-      a.seriesIdentifiers[0] && b.seriesIdentifiers[0] ? sortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0]) : 0,
-    ),
+    legendItems
+      .sort((a, b) =>
+        a.seriesIdentifiers[0] && b.seriesIdentifiers[0]
+          ? baseLegendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])
+          : 0,
+      )
+      .sort((a, b) =>
+        settingsSpec.legendSort && a.seriesIdentifiers[0] && b.seriesIdentifiers[0]
+          ? settingsSpec.legendSort(a.seriesIdentifiers[0], b.seriesIdentifiers[0])
+          : 0,
+      ),
     ({ keys, childId }) => {
       return [...keys, childId].join('__'); // childId is used for band charts
     },
