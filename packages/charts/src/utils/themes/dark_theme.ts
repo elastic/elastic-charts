@@ -23,7 +23,7 @@ export const DARK_THEME: Theme = {
   lineSeriesStyle: {
     line: {
       visible: true,
-      strokeWidth: 1,
+      strokeWidth: 2,
       opacity: 1,
     },
     point: {
@@ -69,7 +69,7 @@ export const DARK_THEME: Theme = {
     },
     line: {
       visible: true,
-      strokeWidth: 1,
+      strokeWidth: 2,
       opacity: 1,
     },
     point: {
