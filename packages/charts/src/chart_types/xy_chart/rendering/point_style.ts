@@ -26,5 +26,6 @@ export function buildPointGeometryStyles(
       width: pointStyle.strokeWidth,
     },
     shape: pointStyle.shape ?? PointShape.Circle,
+    radius: pointStyle.radius,
   };
 }

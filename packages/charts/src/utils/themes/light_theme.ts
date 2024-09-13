@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { LIGHT_BASE_COLORS } from './base_colors';
+import { GRID_LABEL_LIGHT_COLORS, GRID_LIGHT_COLORS, LIGHT_BASE_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -23,24 +23,24 @@ export const LIGHT_THEME: Theme = {
   lineSeriesStyle: {
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1,
       opacity: 1,
     },
     point: {
-      visible: true,
-      strokeWidth: 2,
+      visible: 'auto',
+      strokeWidth: 0,
       stroke: ColorVariant.Series,
-      fill: LIGHT_BASE_COLORS.emptyShade,
+      fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
     },
     isolatedPoint: {
       enabled: true,
-      visible: true,
+      visible: 'auto',
       stroke: ColorVariant.Series,
       strokeWidth: 1,
-      fill: Colors.White.keyword,
-      radius: 2,
+      fill: ColorVariant.Series,
+      radius: 1.5,
       opacity: 1,
     },
     fit: {
@@ -51,12 +51,13 @@ export const LIGHT_THEME: Theme = {
         stroke: ColorVariant.Series,
       },
     },
+    pointVisibilityMinDistance: 40,
   },
   bubbleSeriesStyle: {
     point: {
-      visible: true,
-      strokeWidth: 1,
-      fill: Colors.White.keyword,
+      visible: 'always',
+      strokeWidth: 0,
+      fill: ColorVariant.Series,
       radius: 2,
       opacity: 1,
     },
@@ -68,24 +69,24 @@ export const LIGHT_THEME: Theme = {
     },
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1,
       opacity: 1,
     },
     point: {
-      visible: false,
+      visible: 'never',
       stroke: ColorVariant.Series,
-      strokeWidth: 2,
-      fill: LIGHT_BASE_COLORS.emptyShade,
+      strokeWidth: 1,
+      fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
     },
     isolatedPoint: {
       enabled: true,
-      visible: true,
+      visible: 'auto',
       stroke: ColorVariant.Series,
-      strokeWidth: 1,
-      fill: Colors.White.keyword,
-      radius: 2,
+      strokeWidth: 0,
+      fill: ColorVariant.Series,
+      radius: 1.5,
       opacity: 1,
     },
     fit: {
@@ -101,6 +102,7 @@ export const LIGHT_THEME: Theme = {
         fill: ColorVariant.Series,
       },
     },
+    pointVisibilityMinDistance: 40,
   },
   barSeriesStyle: {
     rect: {
@@ -157,7 +159,7 @@ export const LIGHT_THEME: Theme = {
     },
     axisLine: {
       visible: true,
-      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
+      stroke: GRID_LIGHT_COLORS,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -165,7 +167,7 @@ export const LIGHT_THEME: Theme = {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
+      fill: GRID_LABEL_LIGHT_COLORS,
       padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
@@ -180,7 +182,7 @@ export const LIGHT_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
+      stroke: GRID_LIGHT_COLORS,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -188,14 +190,14 @@ export const LIGHT_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: '#E9EDF3',
+        stroke: GRID_LIGHT_COLORS,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: '#E9EDF3',
+        stroke: GRID_LIGHT_COLORS,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
@@ -379,7 +381,7 @@ export const LIGHT_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: 'gray',
+        color: GRID_LIGHT_COLORS,
       },
     },
     cell: {
@@ -400,7 +402,7 @@ export const LIGHT_THEME: Theme = {
       },
       border: {
         strokeWidth: 1,
-        stroke: 'gray',
+        stroke: GRID_LIGHT_COLORS,
       },
     },
   },
@@ -438,11 +440,11 @@ export const LIGHT_THEME: Theme = {
   },
   highlighter: {
     point: {
-      opacity: 1,
-      fill: ColorVariant.None,
-      stroke: ColorVariant.Series,
-      strokeWidth: 4,
-      radius: 10,
+      opacity: 0.5,
+      fill: ColorVariant.Series,
+      stroke: ColorVariant.None,
+      strokeWidth: 0,
+      radius: 5,
     },
   },
   lineAnnotation: {

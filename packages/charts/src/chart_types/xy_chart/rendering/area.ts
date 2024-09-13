@@ -100,6 +100,7 @@ export function renderArea(
     isStacked,
     clippedRanges,
     shouldClip: hasFit,
+    hasFit,
   };
   return {
     areaGeometry,

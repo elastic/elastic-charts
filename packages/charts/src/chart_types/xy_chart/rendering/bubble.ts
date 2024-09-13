@@ -44,7 +44,7 @@ export function renderBubble(
     color,
     seriesStyle.point,
     // there is no concept of isolated point in bubble chart, so we mark it as invisible
-    { ...seriesStyle.point, visible: false },
+    { ...seriesStyle.point, visible: 'never' },
     hasY0Accessors,
     markSizeOptions,
     !isMixedChart,

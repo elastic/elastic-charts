@@ -568,8 +568,8 @@ export type PointShape = $Values<typeof PointShape>;
 
 /** @public */
 export interface PointStyle {
-  /** is the point visible or hidden */
-  visible: boolean;
+  /** is the point visible or hidden  or shown depending on the chart size*/
+  visible: 'never' | 'always' | 'auto';
   /** a static stroke color if defined, if not it will use the color of the series */
   stroke?: Color | ColorVariant;
   /** the stroke width of the point */
@@ -739,6 +739,7 @@ export interface LineSeriesStyle {
   fit: {
     line: LineFitStyle;
   };
+  pointVisibilityMinDistance: Pixels;
 }
 
 /** @public */
@@ -751,6 +752,7 @@ export interface AreaSeriesStyle {
     line: LineFitStyle;
     area: AreaFitStyle;
   };
+  pointVisibilityMinDistance: Pixels;
 }
 
 /** @public */

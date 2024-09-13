@@ -71,6 +71,7 @@ export interface PointGeometryStyle {
   fill: Fill;
   stroke: Stroke;
   shape: PointShape;
+  radius: number;
 }
 
 /** @internal */
@@ -121,6 +122,8 @@ export interface LineGeometry {
    */
   clippedRanges: ClippedRanges;
   shouldClip: boolean;
+  hasFit: boolean;
+  minPointDistance: number;
 }
 
 /** @internal */
@@ -141,6 +144,8 @@ export interface AreaGeometry {
    */
   clippedRanges: ClippedRanges;
   shouldClip: boolean;
+  hasFit: boolean;
+  minPointDistance: number;
 }
 
 /** @internal */

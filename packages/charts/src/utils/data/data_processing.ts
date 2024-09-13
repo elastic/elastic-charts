@@ -51,3 +51,30 @@ export function computeRatioByGroups<T extends Record<string, unknown>>(
     });
   });
 }
+
+/** @internal */
+export type SortedArray<T> = Array<T>;
+
+/** @internal */
+export function inplaceInsertInSortedArray<T>(
+  arr: SortedArray<T>,
+  obj: T,
+  accessor: (element?: T) => number,
+): SortedArray<T> {
+  let left = 0;
+  let right = arr.length - 1;
+  const value = accessor(obj);
+
+  // Perform a binary search to find the correct insertion index
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (accessor(arr[mid]) < value) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+  // Insert the object at the found index
+  arr.splice(left, 0, obj);
+  return arr;
+}

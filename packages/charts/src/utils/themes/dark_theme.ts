@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { DARK_BASE_COLORS } from './base_colors';
+import { DARK_BASE_COLORS, GRID_DARK_COLORS, GRID_LABEL_DARK_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -23,24 +23,24 @@ export const DARK_THEME: Theme = {
   lineSeriesStyle: {
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1,
       opacity: 1,
     },
     point: {
-      visible: true,
+      visible: 'auto',
       stroke: ColorVariant.Series,
-      strokeWidth: 2,
-      fill: DARK_BASE_COLORS.emptyShade,
+      strokeWidth: 0,
+      fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
     },
     isolatedPoint: {
       enabled: true,
-      visible: true,
+      visible: 'auto',
       stroke: ColorVariant.Series,
-      strokeWidth: 1,
-      fill: Colors.Black.keyword,
-      radius: 2,
+      strokeWidth: 0,
+      fill: ColorVariant.Series,
+      radius: 1.5,
       opacity: 1,
     },
     fit: {
@@ -51,10 +51,11 @@ export const DARK_THEME: Theme = {
         opacity: 1,
       },
     },
+    pointVisibilityMinDistance: 40,
   },
   bubbleSeriesStyle: {
     point: {
-      visible: true,
+      visible: 'always',
       strokeWidth: 1,
       fill: Colors.Black.keyword,
       radius: 2,
@@ -68,11 +69,11 @@ export const DARK_THEME: Theme = {
     },
     line: {
       visible: true,
-      strokeWidth: 2,
+      strokeWidth: 1,
       opacity: 1,
     },
     point: {
-      visible: false,
+      visible: 'never',
       stroke: ColorVariant.Series,
       strokeWidth: 2,
       fill: DARK_BASE_COLORS.emptyShade,
@@ -81,7 +82,7 @@ export const DARK_THEME: Theme = {
     },
     isolatedPoint: {
       enabled: true,
-      visible: true,
+      visible: 'auto',
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.Black.keyword,
@@ -101,6 +102,7 @@ export const DARK_THEME: Theme = {
         fill: ColorVariant.Series,
       },
     },
+    pointVisibilityMinDistance: 40,
   },
   barSeriesStyle: {
     rect: {
@@ -157,7 +159,7 @@ export const DARK_THEME: Theme = {
     },
     axisLine: {
       visible: true,
-      stroke: DARK_BASE_COLORS.lightShade,
+      stroke: GRID_DARK_COLORS,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -165,7 +167,7 @@ export const DARK_THEME: Theme = {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: '#81858f',
+      fill: GRID_LABEL_DARK_COLORS,
       padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
@@ -180,7 +182,7 @@ export const DARK_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: DARK_BASE_COLORS.lightShade,
+      stroke: GRID_DARK_COLORS,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -188,14 +190,14 @@ export const DARK_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: DARK_BASE_COLORS.lightShade,
+        stroke: GRID_DARK_COLORS,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: DARK_BASE_COLORS.lightShade,
+        stroke: GRID_DARK_COLORS,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
@@ -380,7 +382,7 @@ export const DARK_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: 'snow',
+        color: GRID_DARK_COLORS,
       },
     },
     cell: {
@@ -401,7 +403,7 @@ export const DARK_THEME: Theme = {
       },
       border: {
         strokeWidth: 1,
-        stroke: 'snow',
+        stroke: GRID_DARK_COLORS,
       },
     },
   },
@@ -439,11 +441,11 @@ export const DARK_THEME: Theme = {
   },
   highlighter: {
     point: {
-      opacity: 1,
-      fill: ColorVariant.None,
-      stroke: ColorVariant.Series,
-      strokeWidth: 4,
-      radius: 10,
+      opacity: 0.5,
+      fill: ColorVariant.Series,
+      stroke: ColorVariant.None,
+      strokeWidth: 0,
+      radius: 5,
     },
   },
   lineAnnotation: {

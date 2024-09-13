@@ -19,6 +19,7 @@ import {
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isFiniteNumber, isNil } from '../../../utils/common';
+import { inplaceInsertInSortedArray, SortedArray } from '../../../utils/data/data_processing';
 import { Dimensions } from '../../../utils/dimensions';
 import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
 import { PointStyle } from '../../../utils/themes/theme';
@@ -60,7 +61,14 @@ export function renderPoints(
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
   const yDefined = isYValueDefinedFn(yScale, xScale);
-  const pointGeometries = dataSeries.data.reduce<PointGeometry[]>((acc, datum, dataIndex) => {
+
+  const needSorting = !markSizeOptions.enabled;
+
+  let style = buildPointGeometryStyles(color, pointStyle);
+  let isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle);
+  let styleOverrides: Partial<PointStyle> | undefined = undefined;
+
+  const pointGeometries = dataSeries.data.reduce<SortedArray<PointGeometry>>((acc, datum, dataIndex) => {
     const { x: xValue, mark } = datum;
     const prev = dataSeries.data[dataIndex - 1];
     const next = dataSeries.data[dataIndex + 1];
@@ -73,19 +81,21 @@ export function renderPoints(
     if (Number.isNaN(x)) return acc;
 
     const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
-
+    const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
+    const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+    if (styleAccessor) {
+      styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
+      style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
+      isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle, styleOverrides);
+    }
     yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
       const valueAccessor = getYDatumValueFn(yDatumKeyName);
       const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
       const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
-      const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-      const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
-      const styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
-      const style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-      const isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle, styleOverrides);
+
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
       const radius = isPointIsolated
-        ? isolatedPointThemeStyle.radius
+        ? isolatedPointStyle.radius
         : markSizeOptions.enabled
           ? Math.max(getRadius(mark), pointStyle.radius)
           : styleOverrides?.radius ?? pointStyle.radius;
@@ -95,7 +105,7 @@ export function renderPoints(
         y: y === null ? NaN : y,
         radius,
         color,
-        style: isolatedPointThemeStyle.visible && isPointIsolated ? isolatedPointStyle : style,
+        style: isPointIsolated ? isolatedPointStyle : style,
         value: {
           x: xValue,
           y: originalY,
@@ -119,7 +129,11 @@ export function renderPoints(
         yScale.isValueInDomain(valueAccessor(datum)) &&
         !isDatumFilled(datum)
       ) {
-        acc.push(pointGeometry);
+        if (needSorting) {
+          inplaceInsertInSortedArray(acc, pointGeometry, (p) => p?.radius ?? NaN);
+        } else {
+          acc.push(pointGeometry);
+        }
       }
     });
     return acc;
