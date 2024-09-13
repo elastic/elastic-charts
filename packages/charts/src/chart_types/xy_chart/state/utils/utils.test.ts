@@ -567,7 +567,7 @@ describe('Chart State utils', () => {
         fill: 'green', // the override strokeWidth
         opacity: 1,
         radius: 3,
-        stroke: ColorVariant.Series,
+        stroke: ColorVariant.None,
         strokeWidth: 0,
       });
     });
@@ -633,7 +633,7 @@ describe('Chart State utils', () => {
         fill: 'point-fill-custom-color', // the override strokeWidth
         opacity: 1,
         radius: 3,
-        stroke: ColorVariant.Series,
+        stroke: ColorVariant.None,
         strokeWidth: 0,
       });
     });

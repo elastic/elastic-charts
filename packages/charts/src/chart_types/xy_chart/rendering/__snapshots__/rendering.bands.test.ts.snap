@@ -26,78 +26,21 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
+      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
-      },
-    },
-    "transform": {
-      "x": 25,
-      "y": 0,
-    },
-    "value": {
-      "accessor": "y0",
-      "datum": [
-        0,
-        2,
-        10,
-      ],
-      "mark": null,
-      "x": 0,
-      "y": 2,
-    },
-    "x": 0,
-    "y": 80,
-  },
-  {
-    "color": "red",
-    "isolated": false,
-    "panel": {
-      "height": 100,
-      "left": 0,
-      "top": 0,
-      "width": 100,
-    },
-    "radius": 3,
-    "seriesIdentifier": {
-      "key": "groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}",
-      "seriesKeys": [
-        2,
-      ],
-      "specId": "spec_1",
-      "splitAccessors": Map {},
-      "xAccessor": 0,
-      "yAccessor": 2,
-    },
-    "style": {
-      "fill": {
-        "color": [
-          255,
-          255,
-          255,
-          1,
-        ],
-      },
-      "shape": "circle",
-      "stroke": {
-        "color": [
-          255,
-          0,
-          0,
-          1,
-        ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -107,16 +50,16 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        2,
-        10,
+        1,
+        3,
+        5,
       ],
       "mark": null,
-      "x": 0,
-      "y": 10,
+      "x": 1,
+      "y": 5,
     },
-    "x": 0,
-    "y": 0,
+    "x": 50,
+    "y": 50,
   },
   {
     "color": "red",
@@ -142,20 +85,21 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
+      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -200,20 +144,21 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
+      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -223,16 +168,75 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        3,
-        5,
+        0,
+        2,
+        10,
       ],
       "mark": null,
-      "x": 1,
-      "y": 5,
+      "x": 0,
+      "y": 10,
     },
-    "x": 50,
-    "y": 50,
+    "x": 0,
+    "y": 0,
+  },
+  {
+    "color": "red",
+    "isolated": false,
+    "panel": {
+      "height": 100,
+      "left": 0,
+      "top": 0,
+      "width": 100,
+    },
+    "radius": 3,
+    "seriesIdentifier": {
+      "key": "groupId{__global__}spec{spec_1}yAccessor{2}splitAccessors{}",
+      "seriesKeys": [
+        2,
+      ],
+      "specId": "spec_1",
+      "splitAccessors": Map {},
+      "xAccessor": 0,
+      "yAccessor": 2,
+    },
+    "style": {
+      "fill": {
+        "color": [
+          255,
+          0,
+          0,
+          1,
+        ],
+      },
+      "radius": 3,
+      "shape": "circle",
+      "stroke": {
+        "color": [
+          0,
+          0,
+          0,
+          0,
+        ],
+        "width": 0,
+      },
+    },
+    "transform": {
+      "x": 25,
+      "y": 0,
+    },
+    "value": {
+      "accessor": "y0",
+      "datum": [
+        0,
+        2,
+        10,
+      ],
+      "mark": null,
+      "x": 0,
+      "y": 2,
+    },
+    "x": 0,
+    "y": 80,
   },
 ]
 `;
@@ -248,7 +252,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 2,
+    "radius": 1.5,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -263,11 +267,12 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
+      "radius": 1.5,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -276,65 +281,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           0,
           1,
         ],
-        "width": 1,
-      },
-    },
-    "transform": {
-      "x": 12.5,
-      "y": 0,
-    },
-    "value": {
-      "accessor": "y0",
-      "datum": [
-        0,
-        2,
-        10,
-      ],
-      "mark": null,
-      "x": 0,
-      "y": 2,
-    },
-    "x": 0,
-    "y": 80,
-  },
-  {
-    "color": "red",
-    "isolated": true,
-    "panel": {
-      "height": 100,
-      "left": 0,
-      "top": 0,
-      "width": 100,
-    },
-    "radius": 2,
-    "seriesIdentifier": {
-      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
-      "seriesKeys": [
-        2,
-      ],
-      "specId": "spec_1",
-      "splitAccessors": Map {},
-      "xAccessor": 0,
-      "yAccessor": 2,
-    },
-    "style": {
-      "fill": {
-        "color": [
-          255,
-          255,
-          255,
-          1,
-        ],
-      },
-      "shape": "circle",
-      "stroke": {
-        "color": [
-          255,
-          0,
-          0,
-          1,
-        ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -357,14 +304,14 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
   },
   {
     "color": "red",
-    "isolated": false,
+    "isolated": true,
     "panel": {
       "height": 100,
       "left": 0,
       "top": 0,
       "width": 100,
     },
-    "radius": 3,
+    "radius": 1.5,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -379,11 +326,12 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
+      "radius": 1.5,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -392,7 +340,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           0,
           1,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -402,16 +350,16 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
     "value": {
       "accessor": "y0",
       "datum": [
+        0,
         2,
-        3,
-        5,
+        10,
       ],
       "mark": null,
-      "x": 2,
-      "y": 3,
+      "x": 0,
+      "y": 2,
     },
-    "x": 50,
-    "y": 70,
+    "x": 0,
+    "y": 80,
   },
   {
     "color": "red",
@@ -437,20 +385,21 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
+      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -460,15 +409,15 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
     "value": {
       "accessor": "y1",
       "datum": [
-        2,
+        3,
         3,
         5,
       ],
       "mark": null,
-      "x": 2,
+      "x": 3,
       "y": 5,
     },
-    "x": 50,
+    "x": 75,
     "y": 50,
   },
   {
@@ -495,20 +444,21 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
+      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -553,20 +503,21 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
+      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -576,16 +527,75 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
     "value": {
       "accessor": "y1",
       "datum": [
-        3,
+        2,
         3,
         5,
       ],
       "mark": null,
-      "x": 3,
+      "x": 2,
       "y": 5,
     },
-    "x": 75,
+    "x": 50,
     "y": 50,
+  },
+  {
+    "color": "red",
+    "isolated": false,
+    "panel": {
+      "height": 100,
+      "left": 0,
+      "top": 0,
+      "width": 100,
+    },
+    "radius": 3,
+    "seriesIdentifier": {
+      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
+      "seriesKeys": [
+        2,
+      ],
+      "specId": "spec_1",
+      "splitAccessors": Map {},
+      "xAccessor": 0,
+      "yAccessor": 2,
+    },
+    "style": {
+      "fill": {
+        "color": [
+          255,
+          0,
+          0,
+          1,
+        ],
+      },
+      "radius": 3,
+      "shape": "circle",
+      "stroke": {
+        "color": [
+          0,
+          0,
+          0,
+          0,
+        ],
+        "width": 0,
+      },
+    },
+    "transform": {
+      "x": 12.5,
+      "y": 0,
+    },
+    "value": {
+      "accessor": "y0",
+      "datum": [
+        2,
+        3,
+        5,
+      ],
+      "mark": null,
+      "x": 2,
+      "y": 3,
+    },
+    "x": 50,
+    "y": 70,
   },
 ]
 `;
