@@ -30,7 +30,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
     <Chart title={title} description={description}>
       <Settings
         showLegend
-        theme={{ areaSeriesStyle: { point: { visible: true } }, lineSeriesStyle: { point: { visible: false } } }}
+        theme={{ areaSeriesStyle: { point: { visible: 'always' } }, lineSeriesStyle: { point: { visible: 'never' } } }}
         baseTheme={useBaseTheme()}
         xDomain={{
           min: NaN,

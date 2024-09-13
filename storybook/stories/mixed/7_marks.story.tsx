@@ -56,7 +56,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           markSizeRatio,
           areaSeriesStyle: {
             point: {
-              visible: true,
+              visible: 'always',
             },
           },
         }}

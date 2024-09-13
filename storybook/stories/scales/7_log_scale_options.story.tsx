@@ -113,7 +113,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         yAccessors={['y']}
         yScaleType={yLogKnobs.scaleType}
         xScaleType={xLogKnobs.scaleType}
-        areaSeriesStyle={{ point: { visible: true } }}
+        areaSeriesStyle={{ point: { visible: 'always' } }}
         data={data}
       />
     </Chart>

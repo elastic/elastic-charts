@@ -107,7 +107,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         theme={{
           lineSeriesStyle: {
             point: {
-              visible: false,
+              visible: 'never',
             },
           },
         }}

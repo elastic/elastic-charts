@@ -38,7 +38,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         yAccessors={['y']}
         xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Log}
-        areaSeriesStyle={{ point: { visible: true } }}
+        areaSeriesStyle={{ point: { visible: 'always' } }}
         data={[
           { x: 1, y: 100 },
           { x: 2, y: 0 },
