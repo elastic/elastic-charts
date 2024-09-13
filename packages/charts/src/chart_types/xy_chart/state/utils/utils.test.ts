@@ -563,12 +563,12 @@ describe('Chart State utils', () => {
         opacity: 1,
       });
       expect(geometries.geometries.lines[0]?.value.style.point).toEqual({
-        visible: true,
+        visible: 'auto',
         fill: 'green', // the override strokeWidth
         opacity: 1,
         radius: 3,
         stroke: ColorVariant.Series,
-        strokeWidth: 2,
+        strokeWidth: 0,
       });
     });
     test('can compute area geometries with custom style', () => {
@@ -629,12 +629,12 @@ describe('Chart State utils', () => {
         opacity: 1,
       });
       expect(geometries.geometries.areas[0]?.value.style.point).toEqual({
-        visible: false,
+        visible: 'never',
         fill: 'point-fill-custom-color', // the override strokeWidth
         opacity: 1,
         radius: 3,
         stroke: ColorVariant.Series,
-        strokeWidth: 2,
+        strokeWidth: 0,
       });
     });
     test('can compute bars geometries counts', () => {

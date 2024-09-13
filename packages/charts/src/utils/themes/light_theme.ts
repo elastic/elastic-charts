@@ -29,7 +29,7 @@ export const LIGHT_THEME: Theme = {
     point: {
       visible: 'auto',
       strokeWidth: 0,
-      stroke: ColorVariant.Series,
+      stroke: ColorVariant.None,
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
@@ -74,8 +74,8 @@ export const LIGHT_THEME: Theme = {
     },
     point: {
       visible: 'never',
-      stroke: ColorVariant.Series,
-      strokeWidth: 1,
+      strokeWidth: 0,
+      stroke: ColorVariant.None,
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
