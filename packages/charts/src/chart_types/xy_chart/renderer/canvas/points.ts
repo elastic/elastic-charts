@@ -28,27 +28,25 @@ export function renderPoints(
   { opacity }: GeometryStateStyle,
   pointStyle: PointStyle,
   isolatedPointStyle: PointStyle,
-  pointInterval: number,
-  minDistanceBetweenPoints = 100,
-  isolatedPointConnectingLine = false,
+  minDistanceBetweenPoints: number,
+  minDistanceToShowPoints: number,
+  hasConnectingLine: boolean,
 ) {
-  const showDataPoints =
-    pointStyle.visible === 'always' || (pointStyle.visible === 'auto' && pointInterval > minDistanceBetweenPoints);
+  const isHiddenOnAuto = pointStyle.visible === 'auto' && minDistanceBetweenPoints < minDistanceToShowPoints;
+  const hideDataPoints = pointStyle.visible === 'never' || isHiddenOnAuto;
+  const hideIsolatedDataPoints = hasConnectingLine && hideDataPoints;
 
-  const hideIsolatedDataPoints =
-    isolatedPointConnectingLine &&
-    (pointStyle.visible === 'never' || (pointStyle.visible === 'auto' && pointInterval < minDistanceBetweenPoints));
-  const isolatedPointSizeBig = !hideIsolatedDataPoints && showDataPoints;
+  const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
 
   points.forEach(({ x, y, radius, transform, style, isolated }) => {
-    if ((isolated && hideIsolatedDataPoints) || (!isolated && !showDataPoints)) {
+    if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
       return;
     }
 
     const coordinates = {
       x: x + transform.x,
       y: y + transform.y,
-      radius: isolated ? (isolatedPointSizeBig ? pointStyle.radius : isolatedPointStyle.radius) : radius,
+      radius: isolated ? (useIsolatedPointRadius ? isolatedPointStyle.radius : pointStyle.radius) : radius,
     };
     const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
     const stroke = {
