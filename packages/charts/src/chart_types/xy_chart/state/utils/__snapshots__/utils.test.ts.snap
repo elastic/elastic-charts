@@ -70,6 +70,7 @@ exports[`Chart State utils should compute and format specifications for non stac
       "y",
     ],
     "seriesType": "line",
+    "sortOrder": 0,
     "spec": {
       "chartType": "xy_axis",
       "data": [
@@ -177,6 +178,7 @@ exports[`Chart State utils should compute and format specifications for non stac
       "y",
     ],
     "seriesType": "line",
+    "sortOrder": 1,
     "spec": {
       "chartType": "xy_axis",
       "data": [

@@ -50,6 +50,7 @@ exports[`Series #getSeriesNameKeys Shall ignore undefined values on splitSeriesA
         "y1": 1,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{2-a}",
     "seriesKeys": [
       "a",
@@ -110,6 +111,7 @@ exports[`Series #getSeriesNameKeys Shall ignore undefined values on splitSeriesA
         "y1": 1,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{2-b}",
     "seriesKeys": [
       "b",
@@ -186,6 +188,7 @@ exports[`Series Can split dataset into 1Y0G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{}",
     "seriesKeys": [
       "y",
@@ -263,6 +266,7 @@ exports[`Series Can split dataset into 1Y1G series 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -338,6 +342,7 @@ exports[`Series Can split dataset into 1Y1G series 1`] = `
         "y1": 5,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -422,6 +427,7 @@ exports[`Series Can split dataset into 1Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g1-a|g2-s}",
     "seriesKeys": [
       "a",
@@ -503,6 +509,7 @@ exports[`Series Can split dataset into 1Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g1-a|g2-p}",
     "seriesKeys": [
       "a",
@@ -584,6 +591,7 @@ exports[`Series Can split dataset into 1Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g1-b|g2-s}",
     "seriesKeys": [
       "b",
@@ -665,6 +673,7 @@ exports[`Series Can split dataset into 1Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g1-b|g2-p}",
     "seriesKeys": [
       "b",
@@ -747,6 +756,7 @@ exports[`Series Can split dataset into 2Y0G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{}",
     "seriesKeys": [
       "y1",
@@ -819,6 +829,7 @@ exports[`Series Can split dataset into 2Y0G series 1`] = `
         "y1": 10,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{}",
     "seriesKeys": [
       "y2",
@@ -900,6 +911,7 @@ exports[`Series Can split dataset into 2Y1G series 1`] = `
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -979,6 +991,7 @@ exports[`Series Can split dataset into 2Y1G series 1`] = `
         "y1": 3,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -1058,6 +1071,7 @@ exports[`Series Can split dataset into 2Y1G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -1137,6 +1151,7 @@ exports[`Series Can split dataset into 2Y1G series 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -1242,6 +1257,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cdn.google.com|g2-direct-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -1344,6 +1360,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 3,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cdn.google.com|g2-direct-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -1446,6 +1463,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cdn.google.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -1548,6 +1566,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 3,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cdn.google.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -1650,6 +1669,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cloudflare.com|g2-direct-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -1752,6 +1772,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cloudflare.com|g2-direct-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -1854,6 +1875,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cloudflare.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -1956,6 +1978,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cloudflare.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -11978,6 +12001,7 @@ exports[`Series Can stack high volume of dataseries 1`] = `
         "y1": 999,
       },
     ],
+    "insertIndex": 0,
     "key": "a",
     "seriesKeys": [
       "a",
@@ -21990,6 +22014,7 @@ exports[`Series Can stack high volume of dataseries 1`] = `
         "y1": 1998,
       },
     ],
+    "insertIndex": 0,
     "key": "b",
     "seriesKeys": [
       "b",
@@ -22047,6 +22072,7 @@ exports[`Series Can stack multiple dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "a",
     "seriesKeys": [
       "a",
@@ -22099,6 +22125,7 @@ exports[`Series Can stack multiple dataseries 1`] = `
         "y1": 8,
       },
     ],
+    "insertIndex": 0,
     "key": "b",
     "seriesKeys": [
       "b",
@@ -22172,6 +22199,7 @@ exports[`Series Can stack multiple dataseries with scale to extent 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22243,6 +22271,7 @@ exports[`Series Can stack multiple dataseries with scale to extent 1`] = `
         "y1": 8,
       },
     ],
+    "insertIndex": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -22314,6 +22343,7 @@ exports[`Series Can stack multiple dataseries with scale to extent 1`] = `
         "y1": 12,
       },
     ],
+    "insertIndex": 2,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-c}",
     "seriesKeys": [
       "c",
@@ -22385,6 +22415,7 @@ exports[`Series Can stack multiple dataseries with scale to extent 1`] = `
         "y1": 16,
       },
     ],
+    "insertIndex": 3,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-d}",
     "seriesKeys": [
       "d",
@@ -22459,6 +22490,7 @@ exports[`Series Can stack simple dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22526,6 +22558,7 @@ exports[`Series Can stack simple dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -22600,6 +22633,7 @@ exports[`Series Can stack simple dataseries with scale to extent 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22667,6 +22701,7 @@ exports[`Series Can stack simple dataseries with scale to extent 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -22744,6 +22779,7 @@ exports[`Series Can stack simple dataseries with scale to extent with y0 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22819,6 +22855,7 @@ exports[`Series Can stack simple dataseries with scale to extent with y0 1`] = `
         "y1": 8,
       },
     ],
+    "insertIndex": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -22896,6 +22933,7 @@ exports[`Series Can stack simple dataseries with y0 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22971,6 +23009,7 @@ exports[`Series Can stack simple dataseries with y0 1`] = `
         "y1": 8,
       },
     ],
+    "insertIndex": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -23045,6 +23084,7 @@ exports[`Series Can stack unsorted dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -23112,6 +23152,7 @@ exports[`Series Can stack unsorted dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -23302,6 +23343,7 @@ exports[`Series functional accessors Can use default custom xAccessor 1`] = `
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -23487,6 +23529,7 @@ exports[`Series functional accessors Can use default custom xAccessor 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -23677,6 +23720,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor 1`] 
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -23862,6 +23906,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor 1`] 
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -24052,6 +24097,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor with
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{custom name-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -24237,6 +24283,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor with
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{custom name-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -24427,6 +24474,7 @@ exports[`Series functional accessors Can use functional xAccessor 1`] = `
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -24612,6 +24660,7 @@ exports[`Series functional accessors Can use functional xAccessor 1`] = `
         "y1": 3,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -24797,6 +24846,7 @@ exports[`Series functional accessors Can use functional xAccessor 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -24982,6 +25032,7 @@ exports[`Series functional accessors Can use functional xAccessor 1`] = `
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -26802,6 +26853,7 @@ exports[`Series functional accessors Can use functional y0Accessor 1`] = `
         "y1": 14.1953125,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:0)}splitAccessors{}",
     "seriesKeys": [
       "(index:0)",
@@ -26989,6 +27041,7 @@ exports[`Series functional accessors Can use functional yAccessor 1`] = `
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:0)}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27174,6 +27227,7 @@ exports[`Series functional accessors Can use functional yAccessor 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:0)}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -27364,6 +27418,7 @@ exports[`Series functional accessors Can use functional yAccessor with fieldName
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{custom name}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27549,6 +27604,7 @@ exports[`Series functional accessors Can use functional yAccessor with fieldName
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{custom name}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -27654,6 +27710,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cdn.google.com|g2-direct-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27756,6 +27813,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 3,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:1)}splitAccessors{(index:0)-cdn.google.com|g2-direct-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27858,6 +27916,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 7,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cdn.google.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27960,6 +28019,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 3,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:1)}splitAccessors{(index:0)-cdn.google.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -28062,6 +28122,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cloudflare.com|g2-direct-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -28164,6 +28225,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:1)}splitAccessors{(index:0)-cloudflare.com|g2-direct-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -28266,6 +28328,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cloudflare.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -28368,6 +28431,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 4,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:1)}splitAccessors{(index:0)-cloudflare.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -28446,6 +28510,7 @@ exports[`Series should compute data series for stacked specs 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 1,
     "key": "groupId{group2}spec{spec2}yAccessor{y1}splitAccessors{}",
     "seriesKeys": [
       "y1",
@@ -28514,6 +28579,7 @@ exports[`Series should compute data series for stacked specs 1`] = `
         "y1": 16,
       },
     ],
+    "insertIndex": 2,
     "key": "groupId{group2}spec{spec2}yAccessor{y2}splitAccessors{}",
     "seriesKeys": [
       "y2",
@@ -28582,6 +28648,7 @@ exports[`Series should compute data series for stacked specs 1`] = `
         "y1": 6,
       },
     ],
+    "insertIndex": 0,
     "key": "groupId{group}spec{spec1}yAccessor{y}splitAccessors{}",
     "seriesKeys": [
       "y",
@@ -28664,6 +28731,7 @@ exports[`Series should split an array of specs into data series 1`] = `
       "y",
     ],
     "seriesType": "line",
+    "sortOrder": 0,
     "spec": {
       "chartType": "xy_axis",
       "data": [
@@ -28779,6 +28847,7 @@ exports[`Series should split an array of specs into data series 2`] = `
       "y1",
     ],
     "seriesType": "line",
+    "sortOrder": 1,
     "spec": {
       "chartType": "xy_axis",
       "data": [
@@ -28897,6 +28966,7 @@ exports[`Series should split an array of specs into data series 2`] = `
       "y2",
     ],
     "seriesType": "line",
+    "sortOrder": 2,
     "spec": {
       "chartType": "xy_axis",
       "data": [

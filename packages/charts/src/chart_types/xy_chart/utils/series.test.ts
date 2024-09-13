@@ -47,6 +47,7 @@ function matchOnlyDataSeriesLegacySnapshot(d: DataSeries) {
     smHorizontalAccessorValue,
     stackMode,
     insertIndex,
+    sortOrder,
     isFiltered,
     ...rest
   } = d;
