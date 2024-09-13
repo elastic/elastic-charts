@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { DARK_BASE_COLORS, GRID_DARK_COLORS, GRID_LABEL_DARK_COLORS } from './base_colors';
+import { DARK_BASE_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -159,7 +159,7 @@ export const DARK_THEME: Theme = {
     },
     axisLine: {
       visible: true,
-      stroke: GRID_DARK_COLORS,
+      stroke: DARK_BASE_COLORS.lightShade,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -167,7 +167,7 @@ export const DARK_THEME: Theme = {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: GRID_LABEL_DARK_COLORS,
+      fill: '#81858f',
       padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
@@ -182,7 +182,7 @@ export const DARK_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: GRID_DARK_COLORS,
+      stroke: DARK_BASE_COLORS.lightShade,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -190,14 +190,14 @@ export const DARK_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: GRID_DARK_COLORS,
+        stroke: DARK_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: GRID_DARK_COLORS,
+        stroke: DARK_BASE_COLORS.lightShade,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
@@ -382,7 +382,7 @@ export const DARK_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: GRID_DARK_COLORS,
+        color: 'snow',
       },
     },
     cell: {
@@ -403,7 +403,7 @@ export const DARK_THEME: Theme = {
       },
       border: {
         strokeWidth: 1,
-        stroke: GRID_DARK_COLORS,
+        stroke: 'snow',
       },
     },
   },

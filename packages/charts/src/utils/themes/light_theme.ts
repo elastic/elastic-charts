@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { GRID_LABEL_LIGHT_COLORS, GRID_LIGHT_COLORS, LIGHT_BASE_COLORS } from './base_colors';
+import { LIGHT_BASE_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -159,7 +159,7 @@ export const LIGHT_THEME: Theme = {
     },
     axisLine: {
       visible: true,
-      stroke: GRID_LIGHT_COLORS,
+      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -167,7 +167,7 @@ export const LIGHT_THEME: Theme = {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: GRID_LABEL_LIGHT_COLORS,
+      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
       padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
@@ -182,7 +182,7 @@ export const LIGHT_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: GRID_LIGHT_COLORS,
+      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -190,14 +190,14 @@ export const LIGHT_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: GRID_LIGHT_COLORS,
+        stroke: '#E9EDF3',
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: GRID_LIGHT_COLORS,
+        stroke: '#E9EDF3',
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
@@ -381,7 +381,7 @@ export const LIGHT_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: GRID_LIGHT_COLORS,
+        color: 'gray',
       },
     },
     cell: {
@@ -402,7 +402,7 @@ export const LIGHT_THEME: Theme = {
       },
       border: {
         strokeWidth: 1,
-        stroke: GRID_LIGHT_COLORS,
+        stroke: 'gray',
       },
     },
   },
