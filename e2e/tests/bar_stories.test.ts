@@ -262,4 +262,16 @@ test.describe('Bar series stories', () => {
       'http://localhost:9001/?path=/story/bar-chart--min-height&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Banded=true&knob-Custom No Results message=No Results&knob-Nice y ticks=true&knob-Scale Type=linear&knob-Series Type=bar&knob-Show positive data=true&knob-Split=true&knob-logMinLimit=1&knob-minBarHeight=5&knob-scale=log&knob-scaleType=log',
     );
   });
+
+  test('should use consistent colors with render sorting', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/bar-chart--rendering-sort&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-use default color palette=true&knob-stacked=true&knob-enable sorting_Render=true&knob-reverse sort order_Render=&knob-order_Render[0]=debug&knob-order_Render[1]=info&knob-order_Render[2]=notice&knob-order_Render[3]=warn&knob-order_Render[4]=error&knob-order_Render[5]=crit&knob-order_Render[6]=alert&knob-order_Render[7]=emerg&knob-order_Render[8]=other&knob-enable sorting_Legend=true&knob-reverse sort order_Legend=&knob-order_Legend[0]=debug&knob-order_Legend[1]=info&knob-order_Legend[2]=notice&knob-order_Legend[3]=warn&knob-order_Legend[4]=error&knob-order_Legend[5]=crit&knob-order_Legend[6]=alert&knob-order_Legend[7]=emerg&knob-order_Legend[8]=other&knob-enable sorting_Tooltip=&knob-reverse sort order_Tooltip=&knob-order_Tooltip[0]=debug&knob-order_Tooltip[1]=info&knob-order_Tooltip[2]=notice&knob-order_Tooltip[3]=warn&knob-order_Tooltip[4]=error&knob-order_Tooltip[5]=crit&knob-order_Tooltip[6]=alert&knob-order_Tooltip[7]=emerg&knob-order_Tooltip[8]=other',
+    );
+  });
+
+  test('should use consistent colors with no render sorting', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/bar-chart--rendering-sort&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-use default color palette=true&knob-stacked=true&knob-enable sorting_Render=false&knob-reverse sort order_Render=&knob-order_Render[0]=debug&knob-order_Render[1]=info&knob-order_Render[2]=notice&knob-order_Render[3]=warn&knob-order_Render[4]=error&knob-order_Render[5]=crit&knob-order_Render[6]=alert&knob-order_Render[7]=emerg&knob-order_Render[8]=other&knob-enable sorting_Legend=true&knob-reverse sort order_Legend=&knob-order_Legend[0]=debug&knob-order_Legend[1]=info&knob-order_Legend[2]=notice&knob-order_Legend[3]=warn&knob-order_Legend[4]=error&knob-order_Legend[5]=crit&knob-order_Legend[6]=alert&knob-order_Legend[7]=emerg&knob-order_Legend[8]=other&knob-enable sorting_Tooltip=&knob-reverse sort order_Tooltip=&knob-order_Tooltip[0]=debug&knob-order_Tooltip[1]=info&knob-order_Tooltip[2]=notice&knob-order_Tooltip[3]=warn&knob-order_Tooltip[4]=error&knob-order_Tooltip[5]=crit&knob-order_Tooltip[6]=alert&knob-order_Tooltip[7]=emerg&knob-order_Tooltip[8]=other',
+    );
+  });
 });
