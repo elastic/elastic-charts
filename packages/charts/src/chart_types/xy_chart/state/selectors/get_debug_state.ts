@@ -294,14 +294,7 @@ function hasVisibleStyle({
   visible = true,
   fill = '#fff',
   stroke = '#fff',
-  strokeWidth = 1,
   opacity = 1,
 }: Partial<StrokeStyle & (Visible | { visible: 'auto' | 'never' | 'always' }) & FillStyle & Opacity>): boolean {
-  return Boolean(
-    (visible === 'always' || visible === 'auto' || visible === true) &&
-      opacity > 0 &&
-      // strokeWidth > 0 &&
-      fill &&
-      stroke,
-  );
+  return Boolean((visible === 'always' || visible === 'auto' || visible === true) && opacity > 0 && fill && stroke);
 }
