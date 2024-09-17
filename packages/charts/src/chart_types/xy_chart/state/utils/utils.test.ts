@@ -136,15 +136,15 @@ describe('Chart State utils', () => {
     );
     expect(domains.yDomains).toEqual([
       MockYDomain.fromScaleType(ScaleType.Log, {
-        domain: [0, 5],
-        groupId: 'group1',
+        domain: [0, 9],
+        groupId: 'group2',
         isBandScale: false,
         logBase: undefined,
         logMinLimit: undefined,
       }),
       MockYDomain.fromScaleType(ScaleType.Log, {
-        domain: [0, 9],
-        groupId: 'group2',
+        domain: [0, 5],
+        groupId: 'group1',
         isBandScale: false,
         logBase: undefined,
         logMinLimit: undefined,
