@@ -19,7 +19,7 @@ import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { computeLegendSelector } from '../state/selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
-import { getSeriesName } from '../utils/series';
+import { getSeriesName, XYChartSeriesIdentifier } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec, SeriesType } from '../utils/specs';
 
 const spec1: BasicSeriesSpec = {
@@ -203,6 +203,92 @@ describe('Legends', () => {
     expect(legend).toHaveLength(4);
     expect(legend).toMatchObject(expected);
   });
+
+  it('should order legend values by default sort when no legend sort defined', () => {
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          yAccessors: ['y1'],
+          splitSeriesAccessors: ['g'],
+          data: [
+            {
+              x: 0,
+              y1: 1,
+              g: 'c',
+            },
+            {
+              x: 0,
+              y1: 1,
+              g: 'b',
+            },
+            {
+              x: 0,
+              y1: 1,
+              g: 'a',
+            },
+          ],
+        }),
+        MockGlobalSpec.settings({
+          showLegend: true,
+          theme: { colors: { vizColors: ['red', 'blue', 'violet', 'green'] } },
+          renderingSort: (a: XYChartSeriesIdentifier, b: XYChartSeriesIdentifier) => {
+            const aG = a.splitAccessors.get('g') as string;
+            const bG = b.splitAccessors.get('g') as string;
+
+            return aG.localeCompare(bG);
+          },
+        }),
+      ],
+      store,
+    );
+    const legend = computeLegendSelector(store.getState());
+
+    expect(legend).toMatchObject([{ label: 'a' }, { label: 'b' }, { label: 'c' }]);
+  });
+
+  it('should order legend values by legend sort over render sort', () => {
+    const sort = (order: 'asc' | 'desc') => (a: XYChartSeriesIdentifier, b: XYChartSeriesIdentifier) => {
+      const aG = a.splitAccessors.get('g') as string;
+      const bG = b.splitAccessors.get('g') as string;
+      return aG.localeCompare(bG) * (order === 'asc' ? 1 : -1);
+    };
+    MockStore.addSpecs(
+      [
+        MockSeriesSpec.bar({
+          yAccessors: ['y1'],
+          splitSeriesAccessors: ['g'],
+          data: [
+            {
+              x: 0,
+              y1: 1,
+              g: 'c',
+            },
+            {
+              x: 0,
+              y1: 1,
+              g: 'b',
+            },
+            {
+              x: 0,
+              y1: 1,
+              g: 'a',
+            },
+          ],
+        }),
+        MockGlobalSpec.settings({
+          showLegend: true,
+          theme: { colors: { vizColors: ['red', 'blue', 'violet', 'green'] } },
+          renderingSort: sort('asc'),
+          legendSort: sort('desc'),
+        }),
+      ],
+      store,
+    );
+    const legend = computeLegendSelector(store.getState());
+
+    expect(legend).toMatchObject([{ label: 'c' }, { label: 'b' }, { label: 'a' }]);
+  });
+
   it('compute legend for multiple specs', () => {
     MockStore.addSpecs(
       [

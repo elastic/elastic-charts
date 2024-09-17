@@ -214,7 +214,6 @@ function getTooltipAndHighlightFromValue(
   return {
     tooltip: {
       header,
-      // to avoid creating a breaking change because of a different sorting order on tooltip
       values: sortedTooltipValues,
     },
     highlightedGeometries,
