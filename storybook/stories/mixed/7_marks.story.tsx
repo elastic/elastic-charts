@@ -59,6 +59,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
               visible: 'always',
             },
           },
+          lineSeriesStyle: {
+            point: {
+              visible: 'always',
+            },
+          },
         }}
         baseTheme={useBaseTheme()}
         debug={boolean('debug', false)}
