@@ -44,6 +44,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
         legendColorPicker={showColorPicker ? getColorPicker('leftCenter') : undefined}
+        theme={{
+          lineSeriesStyle: {
+            point: {
+              visible: 'always',
+            },
+          },
+        }}
       />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis
@@ -62,7 +69,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
             xAccessor={0}
             yAccessors={[1]}
             lineSeriesStyle={{
-              point: { shape, radius: 10, fill: ColorVariant.Series, stroke: ColorVariant.Series, strokeWidth: 2 },
+              point: {
+                shape,
+                radius: 10,
+                fill: ColorVariant.Series,
+                stroke: ColorVariant.Series,
+                strokeWidth: 2,
+              },
             }}
             data={data.map(([x, y]) => [x, y + 10 * i])}
           />
