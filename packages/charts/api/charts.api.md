@@ -211,6 +211,8 @@ export interface AreaSeriesStyle {
     line: LineStyle;
     // (undocumented)
     point: PointStyle;
+    // (undocumented)
+    pointVisibilityMinDistance: Pixels;
 }
 
 // @public (undocumented)
@@ -2007,6 +2009,8 @@ export interface LineSeriesStyle {
     line: LineStyle;
     // (undocumented)
     point: PointStyle;
+    // (undocumented)
+    pointVisibilityMinDistance: Pixels;
 }
 
 // @public (undocumented)
@@ -2444,14 +2448,14 @@ export interface PointStyle {
     shape?: PointShape;
     stroke?: Color | ColorVariant;
     strokeWidth: number;
-    visible: boolean;
+    visible: 'never' | 'always' | 'auto';
 }
 
 // @public
 export type PointStyleAccessor = (datum: DataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier, isolatedPoint: boolean) => PointStyleOverride;
 
 // @public (undocumented)
-export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
+export type PointStyleOverride = RecursivePartial<Omit<PointStyle, 'visible'>> | Color | null;
 
 // @public (undocumented)
 export const Position: Readonly<{
