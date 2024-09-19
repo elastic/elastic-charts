@@ -194,24 +194,18 @@ export type AreaSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'ar
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
 };
 
-// @public (undocumented)
+// @public
 export interface AreaSeriesStyle {
-    // (undocumented)
     area: AreaStyle;
-    // (undocumented)
     fit: {
         line: LineFitStyle;
         area: AreaFitStyle;
     };
-    // (undocumented)
     isolatedPoint: {
         enabled: boolean;
     } & PointStyle;
-    // (undocumented)
     line: LineStyle;
-    // (undocumented)
     point: PointStyle;
-    // (undocumented)
     pointVisibilityMinDistance: Pixels;
 }
 
@@ -1995,21 +1989,16 @@ export type LineSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'li
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
 };
 
-// @public (undocumented)
+// @public
 export interface LineSeriesStyle {
-    // (undocumented)
     fit: {
         line: LineFitStyle;
     };
-    // (undocumented)
     isolatedPoint: {
         enabled: boolean;
     } & PointStyle;
-    // (undocumented)
     line: LineStyle;
-    // (undocumented)
     point: PointStyle;
-    // (undocumented)
     pointVisibilityMinDistance: Pixels;
 }
 
