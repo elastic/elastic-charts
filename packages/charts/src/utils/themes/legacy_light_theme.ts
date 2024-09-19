@@ -36,7 +36,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
       opacity: 1,
     },
     point: {
-      visible: 'auto',
+      visible: 'always',
       strokeWidth: 1,
       stroke: ColorVariant.Series,
       fill: Colors.White.keyword,
@@ -45,7 +45,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     },
     isolatedPoint: {
       enabled: true,
-      visible: 'auto',
+      visible: 'always',
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.White.keyword,
@@ -91,7 +91,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     },
     isolatedPoint: {
       enabled: true,
-      visible: 'auto',
+      visible: 'always',
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.White.keyword,
@@ -111,7 +111,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
         fill: ColorVariant.Series,
       },
     },
-    pointVisibilityMinDistance: 40,
+    pointVisibilityMinDistance: 20,
   },
   barSeriesStyle: {
     rect: {
