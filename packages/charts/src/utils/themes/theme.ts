@@ -731,27 +731,50 @@ export interface BubbleSeriesStyle {
   point: PointStyle;
 }
 
-/** @public */
+/**
+ * Styles for line chart
+ * @public
+ */
 export interface LineSeriesStyle {
+  /** Style for the line  */
   line: LineStyle;
+  /** Style for the points  */
   point: PointStyle;
+  /** Style for the isolated points  */
   isolatedPoint: { enabled: boolean } & PointStyle;
+  /** Style for the fitted line  */
   fit: {
     line: LineFitStyle;
   };
+  /**
+   * The minimum distance in pixels between consecutive points before hiding them
+   * when the points are configured as visible: "auto"
+   */
   pointVisibilityMinDistance: Pixels;
 }
 
-/** @public */
+/**
+ * Styles for area chart
+ * @public
+ */
 export interface AreaSeriesStyle {
+  /** Style for the area  */
   area: AreaStyle;
+  /** Style for the area line contour  */
   line: LineStyle;
+  /** Style for the points  */
   point: PointStyle;
+  /** Style for the isolated points  */
   isolatedPoint: { enabled: boolean } & PointStyle;
+  /** Style for the fitted area  */
   fit: {
     line: LineFitStyle;
     area: AreaFitStyle;
   };
+  /**
+   * The minimum distance in pixels between consecutive points before hiding them
+   * when the points are configured as visible: "auto"
+   */
   pointVisibilityMinDistance: Pixels;
 }
 
