@@ -102,7 +102,7 @@ export const DARK_THEME: Theme = {
         fill: ColorVariant.Series,
       },
     },
-    pointVisibilityMinDistance: 40,
+    pointVisibilityMinDistance: 20,
   },
   barSeriesStyle: {
     rect: {
