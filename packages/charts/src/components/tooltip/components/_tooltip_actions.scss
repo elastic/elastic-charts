@@ -43,7 +43,7 @@
 
     &[disabled] {
       cursor: default;
-      color: $euiButtonColorDisabledText;
+      color: $euiColorDisabledText;
       &:hover,
       &:focus {
         text-decoration: none;
