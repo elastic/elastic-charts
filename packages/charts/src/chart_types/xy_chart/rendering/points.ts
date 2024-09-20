@@ -34,6 +34,11 @@ import {
 import { PointStyleAccessor, StackMode } from '../utils/specs';
 
 /** @internal */
+export function isolatedPointRadius(lineStrokeWidth: number) {
+  return lineStrokeWidth + 0.5;
+}
+
+/** @internal */
 export function renderPoints(
   shift: number,
   dataSeries: DataSeries,
@@ -96,7 +101,7 @@ export function renderPoints(
 
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
       const radius = isPointIsolated
-        ? lineStrokeWidth + 0.5
+        ? isolatedPointRadius(lineStrokeWidth)
         : markSizeOptions.enabled
           ? Math.max(getRadius(mark), pointStyle.radius)
           : styleOverrides?.radius ?? pointStyle.radius;

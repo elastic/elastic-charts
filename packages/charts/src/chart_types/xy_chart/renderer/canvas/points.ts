@@ -16,6 +16,7 @@ import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PointGeometry } from '../../../../utils/geometry';
 import { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
+import { isolatedPointRadius } from '../../rendering/points';
 
 /**
  * Renders points from single series
@@ -46,7 +47,7 @@ export function renderPoints(
     const coordinates = {
       x: x + transform.x,
       y: y + transform.y,
-      radius: isolated ? (useIsolatedPointRadius ? lineStrokeWidth + 0.5 : pointStyle.radius) : radius,
+      radius: isolated ? (useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : pointStyle.radius) : radius,
     };
     const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
     const stroke = {

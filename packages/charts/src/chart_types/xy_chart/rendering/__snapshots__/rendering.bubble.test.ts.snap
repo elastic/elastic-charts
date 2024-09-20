@@ -31,7 +31,6 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -89,7 +88,6 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -152,7 +150,6 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -210,7 +207,6 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -273,7 +269,6 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -331,7 +326,6 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -394,7 +388,6 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -452,7 +445,6 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -515,7 +507,6 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -573,7 +564,6 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -636,7 +626,6 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -694,7 +683,6 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -757,7 +745,6 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -815,7 +802,6 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -878,7 +864,6 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -936,7 +921,6 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -999,7 +983,6 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -1057,7 +1040,6 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -1120,7 +1102,6 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -1178,7 +1159,6 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
           1,
         ],
       },
-      "radius": 2,
       "shape": "circle",
       "stroke": {
         "color": [

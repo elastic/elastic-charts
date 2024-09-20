@@ -31,7 +31,6 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -90,7 +89,6 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -149,7 +147,6 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -208,7 +205,6 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -252,7 +248,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 1.5,
+    "radius": 2.5,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -272,7 +268,6 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           1,
         ],
       },
-      "radius": 1.5,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -311,7 +306,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 1.5,
+    "radius": 2.5,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -331,7 +326,6 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           1,
         ],
       },
-      "radius": 1.5,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -390,7 +384,6 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -449,7 +442,6 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -508,7 +500,6 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -567,7 +558,6 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [

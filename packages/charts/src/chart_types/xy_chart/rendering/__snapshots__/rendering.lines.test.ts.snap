@@ -31,7 +31,6 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -89,7 +88,6 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -152,7 +150,6 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -210,7 +207,6 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -273,7 +269,6 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -331,7 +326,6 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -394,7 +388,6 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -452,7 +445,6 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -515,7 +507,6 @@ exports[`Rendering points - line Multi series line chart - time can render first
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -573,7 +564,6 @@ exports[`Rendering points - line Multi series line chart - time can render first
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -636,7 +626,6 @@ exports[`Rendering points - line Multi series line chart - time can render secon
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -694,7 +683,6 @@ exports[`Rendering points - line Multi series line chart - time can render secon
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -757,7 +745,6 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -815,7 +802,6 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -878,7 +864,6 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -936,7 +921,6 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -999,7 +983,6 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -1057,7 +1040,6 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -1120,7 +1102,6 @@ exports[`Rendering points - line Single series line chart - time Can render two 
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -1178,7 +1159,6 @@ exports[`Rendering points - line Single series line chart - time Can render two 
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [

@@ -31,7 +31,6 @@ exports[`Rendering points - areas Multi series area chart - linear can render fi
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -89,7 +88,6 @@ exports[`Rendering points - areas Multi series area chart - linear can render fi
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -152,7 +150,6 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -210,7 +207,6 @@ exports[`Rendering points - areas Multi series area chart - linear can render se
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -273,7 +269,6 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render f
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -331,7 +326,6 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render f
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -394,7 +388,6 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -452,7 +445,6 @@ exports[`Rendering points - areas Multi series area chart - ordinal can render s
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -515,7 +507,6 @@ exports[`Rendering points - areas Multi series area chart - time can render firs
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -573,7 +564,6 @@ exports[`Rendering points - areas Multi series area chart - time can render firs
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -636,7 +626,6 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -694,7 +683,6 @@ exports[`Rendering points - areas Multi series area chart - time can render seco
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -757,7 +745,6 @@ exports[`Rendering points - areas Single series area chart - linear Can render t
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -815,7 +802,6 @@ exports[`Rendering points - areas Single series area chart - linear Can render t
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -878,7 +864,6 @@ exports[`Rendering points - areas Single series area chart - ordinal Can render 
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -936,7 +921,6 @@ exports[`Rendering points - areas Single series area chart - ordinal Can render 
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -999,7 +983,6 @@ exports[`Rendering points - areas Single series area chart - time Can render two
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
@@ -1057,7 +1040,6 @@ exports[`Rendering points - areas Single series area chart - time Can render two
           1,
         ],
       },
-      "radius": 3,
       "shape": "circle",
       "stroke": {
         "color": [
