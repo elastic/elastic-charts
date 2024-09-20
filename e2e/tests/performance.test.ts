@@ -30,8 +30,8 @@ test.describe('Performance', () => {
       // eslint-disable-next-line no-console
       console.log('window.performance.getEntriesByType("measure")', getAllMeasures);
       // using these two values as min/max to understand if we are increasing or decreasing the rendering speed.
-      expect(getAllMeasures[0].duration).toBeLessThan(2200);
-      expect(getAllMeasures[0].duration).toBeGreaterThan(2000);
+      expect(getAllMeasures[0].duration).toBeLessThan(1500);
+      expect(getAllMeasures[0].duration).toBeGreaterThan(1800);
     });
   }
 });
