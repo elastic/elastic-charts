@@ -12,8 +12,7 @@ import { common, CommonPage } from '../page_objects';
 
 test.describe('Performance', () => {
   for (let i = 0; i < 10; i++) {
-    test(`Get performance metrics ${i}`, async ({ page, browser }) => {
-      await browser.startTracing(page, { path: 'perfTraces.json', screenshots: true });
+    test(`Get performance metrics ${i}`, async ({ page }) => {
       const url = CommonPage.parseUrl('http://localhost:9001/?path=/story/test-cases--lens-stress-test');
       await page.goto(url);
       await common.waitForElement(page)(common.chartWaitSelector);
@@ -30,7 +29,6 @@ test.describe('Performance', () => {
       const getAllMeasures = await JSON.parse(getAllMeasuresJson);
       // eslint-disable-next-line no-console
       console.log('window.performance.getEntriesByType("measure")', getAllMeasures);
-      await browser.stopTracing();
       // using these two values as min/max to understand if we are increasing or decreasing the rendering speed.
       expect(getAllMeasures[0].duration).toBeLessThan(2200);
       expect(getAllMeasures[0].duration).toBeGreaterThan(2000);
