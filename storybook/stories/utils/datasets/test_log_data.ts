@@ -6,10 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { shuffle } from 'lodash';
 import moment from 'moment';
 
-import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
+import { getRandomNumberGenerator, shuffle } from '@elastic/charts/src/mocks/utils';
 
 const logLevels = ['debug', 'info', 'notice', 'warn', 'error', 'crit', 'alert', 'emerg', 'other'] as const;
 export type LogLevel = (typeof logLevels)[number];
