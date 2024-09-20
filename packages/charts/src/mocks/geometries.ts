@@ -28,7 +28,6 @@ export class MockPointGeometry {
       shape: PointShape.Circle,
       fill: { color: Colors.White.rgba },
       stroke: { color: Colors.Red.rgba, width: 1 },
-      radius: 3,
     },
     value: { accessor: 'y0', x: 0, y: 0, mark: null, datum: { x: 0, y: 0 } },
     transform: { x: 0, y: 0 },

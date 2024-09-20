@@ -59,6 +59,7 @@ export function renderLine(
     color,
     style.point,
     style.isolatedPoint,
+    style.line.strokeWidth,
     hasY0Accessors,
     markSizeOptions,
     false,

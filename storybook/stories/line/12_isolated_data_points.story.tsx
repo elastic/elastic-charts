@@ -32,13 +32,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
     step: 0.5,
   });
 
-  const isolatedPointRadius = number('isolated point radius', LIGHT_THEME.lineSeriesStyle.isolatedPoint.radius, {
-    range: true,
-    min: 0,
-    max: 10,
-    step: 0.5,
-  });
-
   const pointVisibility = select('point visibility', { never: 'never', always: 'always', auto: 'auto' }, 'always');
 
   const minPointVisibilityDistance = number(
@@ -64,7 +57,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
             },
             isolatedPoint: {
               shape: customKnobs.enum.pointShape(),
-              radius: isolatedPointRadius,
             },
             fit: {
               line: {
@@ -80,7 +72,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
             },
             isolatedPoint: {
               shape: customKnobs.enum.pointShape(),
-              radius: isolatedPointRadius,
             },
             fit: {
               line: {

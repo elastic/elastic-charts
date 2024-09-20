@@ -203,7 +203,7 @@ export interface AreaSeriesStyle {
     };
     isolatedPoint: {
         enabled: boolean;
-    } & PointStyle;
+    } & Omit<PointStyle, 'radius'>;
     line: LineStyle;
     point: PointStyle;
     pointVisibilityMinDistance: Pixels;
@@ -1996,7 +1996,7 @@ export interface LineSeriesStyle {
     };
     isolatedPoint: {
         enabled: boolean;
-    } & PointStyle;
+    } & Omit<PointStyle, 'radius'>;
     line: LineStyle;
     point: PointStyle;
     pointVisibilityMinDistance: Pixels;

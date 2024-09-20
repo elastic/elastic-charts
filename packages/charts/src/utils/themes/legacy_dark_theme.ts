@@ -49,7 +49,6 @@ export const LEGACY_DARK_THEME: Theme = {
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.Black.keyword,
-      radius: 2,
       opacity: 1,
     },
     fit: {
@@ -95,7 +94,6 @@ export const LEGACY_DARK_THEME: Theme = {
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.Black.keyword,
-      radius: 2,
       opacity: 1,
     },
     fit: {

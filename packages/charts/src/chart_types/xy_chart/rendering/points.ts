@@ -42,7 +42,8 @@ export function renderPoints(
   panel: Dimensions,
   color: Color,
   pointStyle: PointStyle,
-  isolatedPointThemeStyle: PointStyle,
+  isolatedPointThemeStyle: Omit<PointStyle, 'radius'>,
+  lineStrokeWidth: number,
   isBandedSpec: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
@@ -95,7 +96,7 @@ export function renderPoints(
 
       // if radius is defined with the mark, limit the minimum radius to the theme radius value
       const radius = isPointIsolated
-        ? isolatedPointStyle.radius
+        ? lineStrokeWidth + 0.5
         : markSizeOptions.enabled
           ? Math.max(getRadius(mark), pointStyle.radius)
           : styleOverrides?.radius ?? pointStyle.radius;

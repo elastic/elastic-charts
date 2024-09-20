@@ -71,7 +71,6 @@ export interface PointGeometryStyle {
   fill: Fill;
   stroke: Stroke;
   shape: PointShape;
-  radius: number;
 }
 
 /** @internal */

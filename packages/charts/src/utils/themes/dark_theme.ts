@@ -40,7 +40,6 @@ export const DARK_THEME: Theme = {
       strokeWidth: 0,
       stroke: ColorVariant.None,
       fill: ColorVariant.Series,
-      radius: 1.5,
       opacity: 1,
     },
     fit: {
@@ -86,7 +85,6 @@ export const DARK_THEME: Theme = {
       stroke: ColorVariant.None,
       strokeWidth: 0,
       fill: ColorVariant.Series,
-      radius: 1.5,
       opacity: 1,
     },
     fit: {

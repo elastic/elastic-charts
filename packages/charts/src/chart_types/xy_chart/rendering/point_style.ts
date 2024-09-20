@@ -14,7 +14,7 @@ import { PointShape, PointStyle } from '../../../utils/themes/theme';
 /** @internal */
 export function buildPointGeometryStyles(
   color: string,
-  themePointStyle: PointStyle,
+  themePointStyle: Omit<PointStyle, 'radius'>,
   overrides?: Partial<PointStyle>,
 ): PointGeometryStyle {
   const pointStyle = mergePartial(themePointStyle, overrides);
@@ -26,6 +26,5 @@ export function buildPointGeometryStyles(
       width: pointStyle.strokeWidth,
     },
     shape: pointStyle.shape ?? PointShape.Circle,
-    radius: pointStyle.radius,
   };
 }

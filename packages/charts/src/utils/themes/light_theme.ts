@@ -40,7 +40,6 @@ export const LIGHT_THEME: Theme = {
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: ColorVariant.Series,
-      radius: 1.5,
       opacity: 1,
     },
     fit: {
@@ -86,7 +85,6 @@ export const LIGHT_THEME: Theme = {
       stroke: ColorVariant.Series,
       strokeWidth: 0,
       fill: ColorVariant.Series,
-      radius: 1.5,
       opacity: 1,
     },
     fit: {

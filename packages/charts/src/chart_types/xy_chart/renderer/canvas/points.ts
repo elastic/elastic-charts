@@ -27,7 +27,7 @@ export function renderPoints(
   points: PointGeometry[],
   { opacity }: GeometryStateStyle,
   pointStyle: PointStyle,
-  isolatedPointStyle: PointStyle,
+  lineStrokeWidth: number,
   minDistanceBetweenPoints: number,
   minDistanceToShowPoints: number,
   hasConnectingLine: boolean,
@@ -46,7 +46,7 @@ export function renderPoints(
     const coordinates = {
       x: x + transform.x,
       y: y + transform.y,
-      radius: isolated ? (useIsolatedPointRadius ? isolatedPointStyle.radius : pointStyle.radius) : radius,
+      radius: isolated ? (useIsolatedPointRadius ? lineStrokeWidth + 0.5 : pointStyle.radius) : radius,
     };
     const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
     const stroke = {
