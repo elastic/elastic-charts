@@ -89,7 +89,7 @@ export const Example: ChartsStory = (_, { title, description }) => (
       data={KIBANA_METRICS.metrics.kibana_os_load.v3.data}
       lineSeriesStyle={{
         point: {
-          visible: false,
+          visible: 'never',
         },
       }}
     />
@@ -105,7 +105,7 @@ export const Example: ChartsStory = (_, { title, description }) => (
       data={KIBANA_METRICS.metrics.kibana_os_load.v2.data}
       lineSeriesStyle={{
         point: {
-          visible: false,
+          visible: 'never',
         },
       }}
     />
@@ -121,7 +121,7 @@ export const Example: ChartsStory = (_, { title, description }) => (
       data={KIBANA_METRICS.metrics.kibana_os_load.v1.data}
       lineSeriesStyle={{
         point: {
-          visible: false,
+          visible: 'never',
         },
       }}
     />

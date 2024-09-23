@@ -46,7 +46,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           markSizeRatio,
           bubbleSeriesStyle: {
             point: {
-              fill: 'transparent',
+              opacity: 0.6,
             },
           },
         }}

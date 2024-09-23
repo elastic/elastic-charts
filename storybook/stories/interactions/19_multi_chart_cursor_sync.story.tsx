@@ -92,7 +92,7 @@ export const Example: ChartsStory = () => {
           theme={{
             chartPaddings: { top: 0, bottom: 0, left: 0, right: 0 },
             chartMargins: { top: 0, bottom: 0, left: 16, right: 0 },
-            lineSeriesStyle: { point: { visible: false } },
+            lineSeriesStyle: { point: { visible: 'never' } },
           }}
           pointerUpdateDebounce={0}
           onPointerUpdate={pointerUpdate}
@@ -149,7 +149,7 @@ export const Example: ChartsStory = () => {
           theme={{
             chartPaddings: { top: 0, bottom: 0, left: 0, right: 0 },
             chartMargins: { top: 0, bottom: 0, left: 16, right: 0 },
-            lineSeriesStyle: { point: { visible: false } },
+            lineSeriesStyle: { point: { visible: 'never' } },
           }}
         />
         <Tooltip type={TooltipType.VerticalCursor} placement={Placement.Left} stickTo={Position.Top} />

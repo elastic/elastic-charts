@@ -121,6 +121,8 @@ export interface LineGeometry {
    */
   clippedRanges: ClippedRanges;
   shouldClip: boolean;
+  hasFit: boolean;
+  minPointDistance: number;
 }
 
 /** @internal */
@@ -141,6 +143,8 @@ export interface AreaGeometry {
    */
   clippedRanges: ClippedRanges;
   shouldClip: boolean;
+  hasFit: boolean;
+  minPointDistance: number;
 }
 
 /** @internal */

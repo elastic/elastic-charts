@@ -29,7 +29,7 @@ export const Example: ChartsStory = (_, { title, description }) => (
       splitSeriesAccessors={['col-1-6']}
       stackAccessors={['col-1-6']}
       areaSeriesStyle={{
-        point: { visible: true },
+        point: { visible: 'always' },
       }}
     />
   </Chart>

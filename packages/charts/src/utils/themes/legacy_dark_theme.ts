@@ -36,7 +36,7 @@ export const LEGACY_DARK_THEME: Theme = {
       opacity: 1,
     },
     point: {
-      visible: true,
+      visible: 'always',
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.Black.keyword,
@@ -45,11 +45,10 @@ export const LEGACY_DARK_THEME: Theme = {
     },
     isolatedPoint: {
       enabled: true,
-      visible: true,
+      visible: 'always',
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.Black.keyword,
-      radius: 2,
       opacity: 1,
     },
     fit: {
@@ -60,10 +59,11 @@ export const LEGACY_DARK_THEME: Theme = {
         opacity: 1,
       },
     },
+    pointVisibilityMinDistance: 20,
   },
   bubbleSeriesStyle: {
     point: {
-      visible: true,
+      visible: 'always',
       strokeWidth: 1,
       fill: Colors.Black.keyword,
       radius: 2,
@@ -81,7 +81,7 @@ export const LEGACY_DARK_THEME: Theme = {
       opacity: 1,
     },
     point: {
-      visible: false,
+      visible: 'never',
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.Black.keyword,
@@ -90,11 +90,10 @@ export const LEGACY_DARK_THEME: Theme = {
     },
     isolatedPoint: {
       enabled: true,
-      visible: true,
+      visible: 'always',
       stroke: ColorVariant.Series,
       strokeWidth: 1,
       fill: Colors.Black.keyword,
-      radius: 2,
       opacity: 1,
     },
     fit: {
@@ -110,6 +109,7 @@ export const LEGACY_DARK_THEME: Theme = {
         fill: ColorVariant.Series,
       },
     },
+    pointVisibilityMinDistance: 20,
   },
   barSeriesStyle: {
     rect: {

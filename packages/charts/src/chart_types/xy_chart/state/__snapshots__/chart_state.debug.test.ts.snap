@@ -153,8 +153,8 @@ exports[`XYChart - debug state line chart rotation: -90 1`] = `
       "points": [
         {
           "mark": null,
-          "x": 0,
-          "y": 0,
+          "x": 10,
+          "y": 10,
         },
         {
           "mark": null,
@@ -163,8 +163,8 @@ exports[`XYChart - debug state line chart rotation: -90 1`] = `
         },
         {
           "mark": null,
-          "x": 10,
-          "y": 10,
+          "x": 0,
+          "y": 0,
         },
       ],
       "visible": true,
@@ -327,8 +327,8 @@ exports[`XYChart - debug state line chart rotation: 0 1`] = `
       "points": [
         {
           "mark": null,
-          "x": 0,
-          "y": 0,
+          "x": 10,
+          "y": 10,
         },
         {
           "mark": null,
@@ -337,8 +337,8 @@ exports[`XYChart - debug state line chart rotation: 0 1`] = `
         },
         {
           "mark": null,
-          "x": 10,
-          "y": 10,
+          "x": 0,
+          "y": 0,
         },
       ],
       "visible": true,
@@ -501,8 +501,8 @@ exports[`XYChart - debug state line chart rotation: 90 1`] = `
       "points": [
         {
           "mark": null,
-          "x": 0,
-          "y": 0,
+          "x": 10,
+          "y": 10,
         },
         {
           "mark": null,
@@ -511,8 +511,8 @@ exports[`XYChart - debug state line chart rotation: 90 1`] = `
         },
         {
           "mark": null,
-          "x": 10,
-          "y": 10,
+          "x": 0,
+          "y": 0,
         },
       ],
       "visible": true,
@@ -675,8 +675,8 @@ exports[`XYChart - debug state line chart rotation: 180 1`] = `
       "points": [
         {
           "mark": null,
-          "x": 0,
-          "y": 0,
+          "x": 10,
+          "y": 10,
         },
         {
           "mark": null,
@@ -685,8 +685,8 @@ exports[`XYChart - debug state line chart rotation: 180 1`] = `
         },
         {
           "mark": null,
-          "x": 10,
-          "y": 10,
+          "x": 0,
+          "y": 0,
         },
       ],
       "visible": true,

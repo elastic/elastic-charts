@@ -26,8 +26,8 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -39,7 +39,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -49,15 +49,15 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        10,
+        1,
+        5,
       ],
       "mark": null,
-      "x": 0,
-      "y": 10,
+      "x": 1,
+      "y": 5,
     },
-    "x": 0,
-    "y": 50,
+    "x": 100,
+    "y": 75,
   },
   {
     "color": "red",
@@ -83,8 +83,8 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -96,7 +96,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -106,15 +106,15 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        5,
+        0,
+        10,
       ],
       "mark": null,
-      "x": 1,
-      "y": 5,
+      "x": 0,
+      "y": 10,
     },
-    "x": 100,
-    "y": 75,
+    "x": 0,
+    "y": 50,
   },
 ]
 `;
@@ -144,8 +144,8 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -158,7 +158,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
           255,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -168,15 +168,15 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        20,
+        1,
+        10,
       ],
       "mark": null,
-      "x": 0,
-      "y": 20,
+      "x": 1,
+      "y": 10,
     },
-    "x": 0,
-    "y": 0,
+    "x": 100,
+    "y": 50,
   },
   {
     "color": "blue",
@@ -201,8 +201,8 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -215,7 +215,7 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
           255,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -225,15 +225,15 @@ exports[`Rendering points - bubble Multi series bubble chart - linear can render
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        10,
+        0,
+        20,
       ],
       "mark": null,
-      "x": 1,
-      "y": 10,
+      "x": 0,
+      "y": 20,
     },
-    "x": 100,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -264,8 +264,8 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -277,7 +277,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -287,15 +287,15 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        10,
+        1,
+        5,
       ],
       "mark": null,
-      "x": 0,
-      "y": 10,
+      "x": 1,
+      "y": 5,
     },
-    "x": 0,
-    "y": 50,
+    "x": 50,
+    "y": 75,
   },
   {
     "color": "red",
@@ -321,8 +321,8 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -334,7 +334,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -344,15 +344,15 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        5,
+        0,
+        10,
       ],
       "mark": null,
-      "x": 1,
-      "y": 5,
+      "x": 0,
+      "y": 10,
     },
-    "x": 50,
-    "y": 75,
+    "x": 0,
+    "y": 50,
   },
 ]
 `;
@@ -382,8 +382,8 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -396,7 +396,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
           255,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -406,15 +406,15 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        20,
+        1,
+        10,
       ],
       "mark": null,
-      "x": 0,
-      "y": 20,
+      "x": 1,
+      "y": 10,
     },
-    "x": 0,
-    "y": 0,
+    "x": 50,
+    "y": 50,
   },
   {
     "color": "blue",
@@ -439,8 +439,8 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -453,7 +453,7 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
           255,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -463,15 +463,15 @@ exports[`Rendering points - bubble Multi series bubble chart - ordinal can rende
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        10,
+        0,
+        20,
       ],
       "mark": null,
-      "x": 1,
-      "y": 10,
+      "x": 0,
+      "y": 20,
     },
-    "x": 50,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -502,8 +502,8 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -515,7 +515,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -525,15 +525,15 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
     "value": {
       "accessor": "y1",
       "datum": [
-        1546300800000,
-        10,
+        1546387200000,
+        5,
       ],
       "mark": null,
-      "x": 1546300800000,
-      "y": 10,
+      "x": 1546387200000,
+      "y": 5,
     },
-    "x": 0,
-    "y": 50,
+    "x": 100,
+    "y": 75,
   },
   {
     "color": "red",
@@ -559,8 +559,8 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -572,7 +572,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -582,15 +582,15 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render f
     "value": {
       "accessor": "y1",
       "datum": [
-        1546387200000,
-        5,
+        1546300800000,
+        10,
       ],
       "mark": null,
-      "x": 1546387200000,
-      "y": 5,
+      "x": 1546300800000,
+      "y": 10,
     },
-    "x": 100,
-    "y": 75,
+    "x": 0,
+    "y": 50,
   },
 ]
 `;
@@ -620,8 +620,8 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -634,7 +634,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
           255,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -644,15 +644,15 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
     "value": {
       "accessor": "y1",
       "datum": [
-        1546300800000,
-        20,
+        1546387200000,
+        10,
       ],
       "mark": null,
-      "x": 1546300800000,
-      "y": 20,
+      "x": 1546387200000,
+      "y": 10,
     },
-    "x": 0,
-    "y": 0,
+    "x": 100,
+    "y": 50,
   },
   {
     "color": "blue",
@@ -677,8 +677,8 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -691,7 +691,7 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
           255,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -701,15 +701,15 @@ exports[`Rendering points - bubble Multi series bubble chart - time can render s
     "value": {
       "accessor": "y1",
       "datum": [
-        1546387200000,
-        10,
+        1546300800000,
+        20,
       ],
       "mark": null,
-      "x": 1546387200000,
-      "y": 10,
+      "x": 1546300800000,
+      "y": 20,
     },
-    "x": 100,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -740,8 +740,8 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -753,7 +753,7 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -763,15 +763,15 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        0,
+        1,
+        1,
       ],
       "mark": null,
-      "x": 0,
-      "y": 0,
+      "x": 1,
+      "y": 1,
     },
-    "x": 0,
-    "y": 100,
+    "x": 50,
+    "y": 0,
   },
   {
     "color": "red",
@@ -797,8 +797,8 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -810,7 +810,7 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -820,15 +820,15 @@ exports[`Rendering points - bubble Remove points datum is not in domain Should r
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        1,
+        0,
+        0,
       ],
       "mark": null,
-      "x": 1,
-      "y": 1,
+      "x": 0,
+      "y": 0,
     },
-    "x": 50,
-    "y": 0,
+    "x": 0,
+    "y": 100,
   },
 ]
 `;
@@ -859,8 +859,8 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -872,7 +872,7 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -882,15 +882,15 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        10,
+        1,
+        5,
       ],
       "mark": null,
-      "x": 0,
-      "y": 10,
+      "x": 1,
+      "y": 5,
     },
-    "x": 0,
-    "y": 0,
+    "x": 100,
+    "y": 50,
   },
   {
     "color": "red",
@@ -916,8 +916,8 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -929,7 +929,7 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -939,15 +939,15 @@ exports[`Rendering points - bubble Single series bubble chart - linear Can rende
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        5,
+        0,
+        10,
       ],
       "mark": null,
-      "x": 1,
-      "y": 5,
+      "x": 0,
+      "y": 10,
     },
-    "x": 100,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -978,8 +978,8 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -991,7 +991,7 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -1001,15 +1001,15 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        10,
+        1,
+        5,
       ],
       "mark": null,
-      "x": 0,
-      "y": 10,
+      "x": 1,
+      "y": 5,
     },
-    "x": 0,
-    "y": 0,
+    "x": 50,
+    "y": 50,
   },
   {
     "color": "red",
@@ -1035,8 +1035,8 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -1048,7 +1048,7 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -1058,15 +1058,15 @@ exports[`Rendering points - bubble Single series bubble chart - ordinal Can rend
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        5,
+        0,
+        10,
       ],
       "mark": null,
-      "x": 1,
-      "y": 5,
+      "x": 0,
+      "y": 10,
     },
-    "x": 50,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -1097,8 +1097,8 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -1110,7 +1110,7 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -1120,15 +1120,15 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
     "value": {
       "accessor": "y1",
       "datum": [
-        1546300800000,
-        10,
+        1546387200000,
+        5,
       ],
       "mark": null,
-      "x": 1546300800000,
-      "y": 10,
+      "x": 1546387200000,
+      "y": 5,
     },
-    "x": 0,
-    "y": 0,
+    "x": 100,
+    "y": 50,
   },
   {
     "color": "red",
@@ -1154,8 +1154,8 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
@@ -1167,7 +1167,7 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
           0,
           1,
         ],
-        "width": 1,
+        "width": 0,
       },
     },
     "transform": {
@@ -1177,15 +1177,15 @@ exports[`Rendering points - bubble Single series bubble chart - time Can render 
     "value": {
       "accessor": "y1",
       "datum": [
-        1546387200000,
-        5,
+        1546300800000,
+        10,
       ],
       "mark": null,
-      "x": 1546387200000,
-      "y": 5,
+      "x": 1546300800000,
+      "y": 10,
     },
-    "x": 100,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;

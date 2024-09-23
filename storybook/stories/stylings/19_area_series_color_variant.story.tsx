@@ -19,7 +19,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const customTheme: PartialTheme = {
     areaSeriesStyle: {
       point: {
-        visible: true,
+        visible: 'always',
         radius: 10,
         fill: ColorVariant.Series,
         stroke: ColorVariant.None,

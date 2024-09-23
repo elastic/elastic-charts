@@ -51,7 +51,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         theme={{
           areaSeriesStyle: {
             point: {
-              visible: true,
+              visible: 'always',
             },
           },
         }}

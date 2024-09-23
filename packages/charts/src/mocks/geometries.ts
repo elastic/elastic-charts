@@ -74,6 +74,8 @@ export class MockLineGeometry {
     style: lineSeriesStyle,
     clippedRanges: [],
     shouldClip: false,
+    hasFit: false,
+    minPointDistance: 40,
   };
 
   static default(partial?: RecursivePartial<LineGeometry>) {
@@ -94,6 +96,8 @@ export class MockAreaGeometry {
     isStacked: false,
     clippedRanges: [],
     shouldClip: false,
+    hasFit: false,
+    minPointDistance: 40,
   };
 
   static default(partial?: RecursivePartial<AreaGeometry>) {

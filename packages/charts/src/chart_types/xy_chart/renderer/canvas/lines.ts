@@ -34,9 +34,8 @@ export function renderLines(
 ) {
   withContext(ctx, () => {
     lines.forEach(({ panel, value: line }) => {
-      const { style, points } = line;
       const clippings = getPanelClipping(panel, rotation);
-      if (style.line.visible) {
+      if (line.style.line.visible) {
         withPanelTransform(
           ctx,
           panel,
@@ -46,18 +45,23 @@ export function renderLines(
           { area: clippings, shouldClip: true },
         );
       }
-
-      const visiblePoints = style.point.visible ? points : points.filter(({ isolated }) => isolated);
-      if (visiblePoints.length === 0) {
-        return;
-      }
       const geometryStyle = getGeometryStateStyle(line.seriesIdentifier, sharedStyle, highlightedLegendItem);
       withPanelTransform(
         ctx,
         panel,
         rotation,
         renderingArea,
-        () => renderPoints(ctx, visiblePoints, geometryStyle),
+        () =>
+          renderPoints(
+            ctx,
+            line.points,
+            geometryStyle,
+            line.style.point,
+            line.style.line.strokeWidth,
+            line.minPointDistance,
+            line.style.pointVisibilityMinDistance,
+            line.hasFit,
+          ),
         // TODO: add padding over clipping
         { area: clippings, shouldClip: line.points[0]?.value.mark !== null },
       );
