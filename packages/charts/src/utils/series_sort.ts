@@ -15,6 +15,3 @@ import { SeriesIdentifier } from '../common/series_id';
  * @public
  */
 export type SeriesCompareFn = (siA: SeriesIdentifier, siB: SeriesIdentifier) => number;
-
-/** @internal */
-export const defaultSeriesSort = () => 0; // this should cause no reorder, as [].sort is now a stable sort in browsers

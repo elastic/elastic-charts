@@ -188,19 +188,12 @@ export function computeLegend(
     const bDs = seriesIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
   };
+  const legendSort = settingsSpec.legendSort ?? baseLegendSortFn;
 
   return groupBy(
-    legendItems
-      .sort((a, b) =>
-        a.seriesIdentifiers[0] && b.seriesIdentifiers[0]
-          ? baseLegendSortFn(a.seriesIdentifiers[0], b.seriesIdentifiers[0])
-          : 0,
-      )
-      .sort((a, b) =>
-        settingsSpec.legendSort && a.seriesIdentifiers[0] && b.seriesIdentifiers[0]
-          ? settingsSpec.legendSort(a.seriesIdentifiers[0], b.seriesIdentifiers[0])
-          : 0,
-      ),
+    legendItems.sort((a, b) =>
+      a.seriesIdentifiers[0] && b.seriesIdentifiers[0] ? legendSort(a.seriesIdentifiers[0], b.seriesIdentifiers[0]) : 0,
+    ),
     ({ keys, childId }) => {
       return [...keys, childId].join('__'); // childId is used for band charts
     },

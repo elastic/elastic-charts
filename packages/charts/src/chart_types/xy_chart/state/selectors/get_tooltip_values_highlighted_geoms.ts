@@ -35,7 +35,7 @@ import { isNil, Rotation } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
-import { defaultSeriesSort, SeriesCompareFn } from '../../../../utils/series_sort';
+import { SeriesCompareFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
@@ -197,19 +197,10 @@ function getTooltipAndHighlightFromValue(
     const bDs = seriesIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
   };
-
-  const tooltipSortFn = tooltip.sort ?? settings.legendSort;
-  const sortedTooltipValues = values
-    .sort((a, b) => {
-      return baseTooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
-    })
-    .sort(
-      tooltipSortFn
-        ? (a, b) => {
-            return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
-          }
-        : defaultSeriesSort,
-    );
+  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? baseTooltipSortFn;
+  const sortedTooltipValues = values.sort((a, b) => {
+    return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
+  });
 
   return {
     tooltip: {
