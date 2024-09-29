@@ -76,7 +76,6 @@ export type DataSeries<D extends BaseDatum = Datum> = XYChartSeriesIdentifier<D>
   stackMode: StackMode | undefined;
   spec: Exclude<BasicSeriesSpec, 'data'>;
   sortOrder: number;
-  insertIndex: number;
   isFiltered: boolean;
 };
 
@@ -207,8 +206,6 @@ export function splitSeriesDataByAccessors(
           key: seriesKey,
           data: [newDatum],
           spec,
-          // current default to 0, will be correctly computed on a later stage
-          insertIndex: 0,
           sortOrder: 0,
           isFiltered: false,
         });
@@ -435,16 +432,10 @@ export function getDataSeriesFromSpecs(
           }),
         );
 
-  const dataSeries = globalDataSeries
-    .map((d, i) => ({
-      ...d,
-      insertIndex: i, // capture original insert order for coloring
-    }))
-    .toSorted(seriesSort)
-    .map((d, i) => ({
-      ...d,
-      sortOrder: i,
-    }));
+  const dataSeries = globalDataSeries.toSorted(seriesSort).map((d, i) => ({
+    ...d,
+    sortOrder: i,
+  }));
 
   const smallMultipleUniqueValues = dataSeries.reduce<{
     smVValues: Set<string | number>;
@@ -598,7 +589,7 @@ export function getSeriesColors(
   const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
   groupBy(
-    dataSeries.toSorted((a, b) => a.insertIndex - b.insertIndex),
+    dataSeries,
     (ds) => {
       return [ds.specId, ds.groupId, ds.yAccessor, ...ds.splitAccessors.values()].join('__');
     },

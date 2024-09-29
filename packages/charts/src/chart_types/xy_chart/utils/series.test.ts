@@ -46,7 +46,6 @@ function matchOnlyDataSeriesLegacySnapshot(d: DataSeries) {
     smVerticalAccessorValue,
     smHorizontalAccessorValue,
     stackMode,
-    insertIndex,
     sortOrder,
     isFiltered,
     ...rest
@@ -537,17 +536,14 @@ describe('Series', () => {
         MockDataSeries.default({
           specId: 'spec1',
           sortOrder: 1,
-          insertIndex: 1,
         }),
         MockDataSeries.default({
           specId: 'spec2',
           sortOrder: 2,
-          insertIndex: 2,
         }),
         MockDataSeries.default({
           specId: 'spec3',
           sortOrder: 3,
-          insertIndex: 3,
         }),
       ];
       const withoutSorting = getSeriesColors(mockSeries, chartColors, emptyCustomColors, emptyColorOverrides);
@@ -1047,10 +1043,8 @@ describe('Sorting', () => {
       }),
     ]);
     expect([...splitSeries.dataSeries.values()].length).toBe(5);
-    const insertIndices = [...splitSeries.dataSeries.values()].map((d) => d.insertIndex);
     const sortOrders = [...splitSeries.dataSeries.values()].map((d) => d.sortOrder);
-    expect(insertIndices).toEqual([0, 1, 2, 3, 4]);
-    expect(insertIndices).toEqual(sortOrders);
+    expect(sortOrders).toEqual([0, 1, 2, 3, 4]);
   });
 
   test('should set sortOrder and insertIndex when seriesSort is provided', () => {

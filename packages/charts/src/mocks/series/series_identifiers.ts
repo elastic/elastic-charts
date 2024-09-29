@@ -30,7 +30,7 @@ export class MockSeriesIdentifier {
 
     return dataSeries.map(
       // eslint-disable-next-line object-curly-newline
-      ({ groupId, seriesType, data, isStacked, stackMode, spec, insertIndex, sortOrder, isFiltered, ...rest }) => rest,
+      ({ groupId, seriesType, data, isStacked, stackMode, spec, sortOrder, isFiltered, ...rest }) => rest,
     );
   }
 
