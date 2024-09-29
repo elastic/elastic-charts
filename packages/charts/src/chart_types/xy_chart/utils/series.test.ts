@@ -1033,7 +1033,7 @@ describe('functional accessors', () => {
 });
 
 describe('Sorting', () => {
-  test('should set sortOrder and insertIndex when no seriesSort is provided', () => {
+  test('should set sortOrder when no seriesSort is provided', () => {
     const splitSeries = getDataSeriesFromSpecs([
       MockSeriesSpec.bar({
         data: TestDataset.BARCHART_2Y2G,
@@ -1047,7 +1047,7 @@ describe('Sorting', () => {
     expect(sortOrders).toEqual([0, 1, 2, 3, 4]);
   });
 
-  test('should set sortOrder and insertIndex when seriesSort is provided', () => {
+  test('should set sortOrder when seriesSort is provided', () => {
     const splitSeries = getDataSeriesFromSpecs(
       [
         MockSeriesSpec.bar({
@@ -1067,9 +1067,6 @@ describe('Sorting', () => {
       },
     );
     expect([...splitSeries.dataSeries.values()].length).toBe(5);
-    const insertIndices = [...splitSeries.dataSeries.values()].map((d) => d.insertIndex);
-    const sortOrders = [...splitSeries.dataSeries.values()].map((d) => d.sortOrder);
-    expect(insertIndices).not.toEqual(sortOrders); // not always but for this dataset
     expect([...splitSeries.dataSeries.values()].map((d) => d.splitAccessors.get('y2'))).toEqual([1, 3, 4, 5, 6]);
   });
 });
