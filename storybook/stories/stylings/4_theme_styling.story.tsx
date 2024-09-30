@@ -74,7 +74,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         visible: boolean('lineVisible', true, 'line'),
       },
       point: {
-        visible: boolean('linePointVisible', true, 'line'),
+        visible: boolean('linePointVisible', true, 'line') ? 'always' : 'never',
         radius: range('linePointRadius', 0, 20, 1, 'line', 0.5),
         fill: color('linePointFill', 'white', 'line'),
         stroke: customizePointStroke ? color('customLinePointStroke', 'red', 'line') : undefined,
@@ -94,7 +94,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         visible: boolean('aLineVisible', true, 'area'),
       },
       point: {
-        visible: boolean('aPointVisible', true, 'area'),
+        visible: boolean('aPointVisible', true, 'area') ? 'always' : 'never',
         fill: color('aPointFill', 'white', 'area'),
         radius: range('aPointRadius', 0, 20, 1, 'area'),
         stroke: color('aPointStroke', 'white', 'area'),

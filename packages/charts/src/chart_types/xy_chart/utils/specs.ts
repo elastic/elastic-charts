@@ -44,7 +44,7 @@ import {
 /** @public */
 export type BarStyleOverride = RecursivePartial<BarSeriesStyle> | Color | null;
 /** @public */
-export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
+export type PointStyleOverride = RecursivePartial<Omit<PointStyle, 'visible'>> | Color | null;
 
 /** @public */
 export const SeriesType = Object.freeze({

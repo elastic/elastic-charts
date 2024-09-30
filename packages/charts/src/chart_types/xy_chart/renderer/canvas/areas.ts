@@ -35,44 +35,48 @@ export function renderAreas(
 ) {
   withContext(ctx, () => {
     // first render all the areas and lines
-    areas.forEach(({ panel, value: area }) => {
-      const { style } = area;
+    areas.forEach(({ panel, value: geom }) => {
       const clippings = getPanelClipping(panel, rotation);
-      if (style.area.visible) {
+      if (geom.style.area.visible) {
         withPanelTransform(
           ctx,
           panel,
           rotation,
           renderingArea,
-          () => renderArea(ctx, imgCanvas, area, sharedStyle, clippings, highlightedLegendItem),
+          () => renderArea(ctx, imgCanvas, geom, sharedStyle, clippings, highlightedLegendItem),
           { area: clippings, shouldClip: true },
         );
       }
-      if (style.line.visible) {
+      if (geom.style.line.visible) {
         withPanelTransform(
           ctx,
           panel,
           rotation,
           renderingArea,
-          () => renderAreaLines(ctx, area, sharedStyle, clippings, highlightedLegendItem),
+          () => renderAreaLines(ctx, geom, sharedStyle, clippings, highlightedLegendItem),
           { area: clippings, shouldClip: true },
         );
       }
     });
     // now we can render the visible points on top of each the areas/lines
-    areas.forEach(({ panel, value: area }) => {
-      const { style, seriesIdentifier, points } = area;
-      const visiblePoints = style.point.visible ? points : points.filter(({ isolated }) => isolated);
-      if (visiblePoints.length === 0) {
-        return;
-      }
-      const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
+    areas.forEach(({ panel, value: { style, seriesIdentifier, points, hasFit, minPointDistance } }) => {
+      const geometryStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
       withPanelTransform(
         ctx,
         panel,
         rotation,
         renderingArea,
-        () => renderPoints(ctx, visiblePoints, geometryStateStyle),
+        () =>
+          renderPoints(
+            ctx,
+            points,
+            geometryStyle,
+            style.point,
+            style.line.strokeWidth,
+            minPointDistance,
+            style.pointVisibilityMinDistance,
+            hasFit,
+          ),
         { area: getPanelClipping(panel, rotation), shouldClip: points[0]?.value.mark !== null },
       );
     });

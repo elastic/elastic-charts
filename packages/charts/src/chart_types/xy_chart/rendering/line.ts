@@ -12,6 +12,7 @@ import { renderPoints } from './points';
 import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn, MarkSizeOptions } from './utils';
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
+import { isBandScale } from '../../../scales/types';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
 import { LineGeometry } from '../../../utils/geometry';
@@ -58,6 +59,7 @@ export function renderLine(
     color,
     style.point,
     style.isolatedPoint,
+    style.line.strokeWidth,
     hasY0Accessors,
     markSizeOptions,
     false,
@@ -80,6 +82,8 @@ export function renderLine(
     style,
     clippedRanges,
     shouldClip: hasFit,
+    hasFit,
+    minPointDistance: isBandScale(xScale) ? xScale.bandwidth : xScale.scale(xScale.domain[0] + xScale.minInterval),
   };
   return {
     lineGeometry,

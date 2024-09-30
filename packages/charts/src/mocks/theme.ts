@@ -44,7 +44,7 @@ export class MockStyles {
 
   static point(partial: RecursivePartial<PointStyle> = {}): PointStyle {
     return mergePartial(
-      { visible: true, stroke: 'blue', strokeWidth: 1, fill: 'blue', opacity: 1, radius: 10 },
+      { visible: 'always', stroke: 'blue', strokeWidth: 1, fill: 'blue', opacity: 1, radius: 10 },
       partial,
     );
   }

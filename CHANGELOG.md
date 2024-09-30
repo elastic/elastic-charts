@@ -1,3 +1,22 @@
+# [67.0.0](https://github.com/elastic/elastic-charts/compare/v66.1.1...v67.0.0) (2024-09-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to ^95.8.0 ([#2504](https://github.com/elastic/elastic-charts/issues/2504)) ([1ca5dd9](https://github.com/elastic/elastic-charts/commit/1ca5dd90a4cf3c9174ae780cfb6c78c042059d65))
+* **deps:** update dependency @playwright/test to ^1.46.1 ([#2511](https://github.com/elastic/elastic-charts/issues/2511)) ([b99b3e6](https://github.com/elastic/elastic-charts/commit/b99b3e600c094c512b0464f2cf5348ec1a4a2ef7))
+* **deps:** update dependency json-schema-to-typescript to v15.0.1 ([#2510](https://github.com/elastic/elastic-charts/issues/2510)) ([a606d72](https://github.com/elastic/elastic-charts/commit/a606d7293f82f2ceafae62ad461d46f61392c3da))
+
+
+### Styles
+
+* **theme:** change point and isolated point style and visibility ([#2525](https://github.com/elastic/elastic-charts/issues/2525)) ([87de6c2](https://github.com/elastic/elastic-charts/commit/87de6c295909cb84c87130957d27b26bbfbd02b9))
+
+
+### BREAKING CHANGES
+
+* **theme:** the `isolatedPoint` style doesn't contain the `radius` parameter anymore. The radius is derived from the `line.strokeWidth` parameter.
+
 ## [66.1.1](https://github.com/elastic/elastic-charts/compare/v66.1.0...v66.1.1) (2024-08-09)
 
 

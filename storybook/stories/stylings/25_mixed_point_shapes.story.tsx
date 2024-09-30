@@ -61,6 +61,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             shape: shapeKnobArea,
             stroke: strokeKnobArea,
             fill: fillKnobArea,
+            strokeWidth: 1,
           },
         }}
         xAccessor="x"
@@ -82,6 +83,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             shape: shapeKnobLine,
             stroke: strokeKnobLine,
             fill: fillKnobLine,
+            strokeWidth: 1,
           },
         }}
         xAccessor="x"
@@ -103,6 +105,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             shape: shapeKnobBubble,
             stroke: strokeKnobBubble,
             fill: fillKnobBubble,
+            strokeWidth: 1,
           },
         }}
         xAccessor="x"

@@ -98,17 +98,11 @@ export function getGeometryStateStyle(
   sharedGeometryStyle: SharedGeometryStateStyle,
   highlightedLegendItem?: LegendItem,
 ): GeometryStateStyle {
-  const { default: defaultStyles, highlighted, unhighlighted } = sharedGeometryStyle;
-
   if (highlightedLegendItem) {
-    const isPartOfHighlightedSeries = highlightedLegendItem.seriesIdentifiers.some(
-      ({ key }) => key === seriesIdentifier.key,
-    );
-
-    return isPartOfHighlightedSeries ? highlighted : unhighlighted;
+    const isHighlighted = highlightedLegendItem.seriesIdentifiers.some((si) => si.key === seriesIdentifier.key);
+    return isHighlighted ? sharedGeometryStyle.highlighted : sharedGeometryStyle.unhighlighted;
   }
-
-  return defaultStyles;
+  return sharedGeometryStyle.default;
 }
 
 /** @internal */

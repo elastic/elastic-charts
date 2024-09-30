@@ -12,6 +12,7 @@ import React from 'react';
 import {
   Axis,
   Chart,
+  ColorVariant,
   LegendValue,
   LIGHT_THEME,
   LineSeries,
@@ -43,6 +44,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
         legendPosition={Position.Right}
         baseTheme={useBaseTheme()}
         legendColorPicker={showColorPicker ? getColorPicker('leftCenter') : undefined}
+        theme={{
+          lineSeriesStyle: {
+            point: {
+              visible: 'always',
+            },
+          },
+        }}
       />
       <Axis id="bottom" position={Position.Bottom} showOverlappingTicks tickFormat={dateFormatter} />
       <Axis
@@ -60,7 +68,15 @@ export const Example: ChartsStory = (_, { title, description }) => {
             yScaleType={ScaleType.Linear}
             xAccessor={0}
             yAccessors={[1]}
-            lineSeriesStyle={{ point: { shape, radius: 10 } }}
+            lineSeriesStyle={{
+              point: {
+                shape,
+                radius: 10,
+                fill: ColorVariant.Series,
+                stroke: ColorVariant.Series,
+                strokeWidth: 2,
+              },
+            }}
             data={data.map(([x, y]) => [x, y + 10 * i])}
           />
         );
@@ -79,8 +95,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             opacity: 0.9,
             radius: 5,
             stroke: LIGHT_THEME.colors.vizColors[datum.datum[2] % LIGHT_THEME.colors.vizColors.length],
-            strokeWidth: 1,
-            visible: true,
+            strokeWidth: 2,
           };
         }}
         data={data.map(([x, y], i) => [x, y + 60, i])}

@@ -15,26 +15,47 @@ import { Circle, Fill, Stroke } from '../../../../geoms/types';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { PointGeometry } from '../../../../utils/geometry';
-import { GeometryStateStyle } from '../../../../utils/themes/theme';
+import { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
+import { isolatedPointRadius } from '../../rendering/points';
 
 /**
  * Renders points from single series
  *
  * @internal
  */
-export function renderPoints(ctx: CanvasRenderingContext2D, points: PointGeometry[], { opacity }: GeometryStateStyle) {
-  points
-    .slice()
-    .sort(({ radius: a }, { radius: b }) => b - a)
-    .forEach(({ x, y, radius, transform, style }) => {
-      const coordinates = { x: x + transform.x, y: y + transform.y, radius };
-      const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
-      const stroke = {
-        ...style.stroke,
-        color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
-      };
-      renderShape(ctx, style.shape, coordinates, fill, stroke);
-    });
+export function renderPoints(
+  ctx: CanvasRenderingContext2D,
+  points: PointGeometry[],
+  { opacity }: GeometryStateStyle,
+  pointStyle: PointStyle,
+  lineStrokeWidth: number,
+  minDistanceBetweenPoints: number,
+  minDistanceToShowPoints: number,
+  hasConnectingLine: boolean,
+) {
+  const isHiddenOnAuto = pointStyle.visible === 'auto' && minDistanceBetweenPoints < minDistanceToShowPoints;
+  const hideDataPoints = pointStyle.visible === 'never' || isHiddenOnAuto;
+  const hideIsolatedDataPoints = hasConnectingLine && hideDataPoints;
+
+  const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
+
+  points.forEach(({ x, y, radius, transform, style, isolated }) => {
+    if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
+      return;
+    }
+
+    const coordinates = {
+      x: x + transform.x,
+      y: y + transform.y,
+      radius: isolated ? (useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : pointStyle.radius) : radius,
+    };
+    const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
+    const stroke = {
+      ...style.stroke,
+      color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
+    };
+    renderShape(ctx, style.shape, coordinates, fill, stroke);
+  });
 }
 
 /**

@@ -57,7 +57,7 @@ function generateLineAndPointSeriesStyleKnobs(
       opacity: range(`line.opacity (${tag})`, 0, 1, 1, groupName, 0.01),
     },
     point: {
-      visible: boolean(`point.visible (${tag})`, true, groupName),
+      visible: boolean(`point.visible (${tag})`, true, groupName) ? 'always' : 'never',
       radius: range(`point.radius (${tag})`, 0, 20, pointRadius || 5, groupName, 0.5),
       opacity: range(`point.opacity (${tag})`, 0, 1, 1, groupName, 0.01),
       stroke: color(`point.stroke (${tag})`, pointStroke || 'black', groupName),

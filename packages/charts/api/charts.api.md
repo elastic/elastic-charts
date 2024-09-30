@@ -194,23 +194,19 @@ export type AreaSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'ar
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
 };
 
-// @public (undocumented)
+// @public
 export interface AreaSeriesStyle {
-    // (undocumented)
     area: AreaStyle;
-    // (undocumented)
     fit: {
         line: LineFitStyle;
         area: AreaFitStyle;
     };
-    // (undocumented)
     isolatedPoint: {
         enabled: boolean;
-    } & PointStyle;
-    // (undocumented)
+    } & Omit<PointStyle, 'radius'>;
     line: LineStyle;
-    // (undocumented)
     point: PointStyle;
+    pointVisibilityMinDistance: Pixels;
 }
 
 // @public (undocumented)
@@ -1993,20 +1989,17 @@ export type LineSeriesSpec<D extends BaseDatum = Datum> = BasicSeriesSpec<D, 'li
     fit?: Exclude<Fit, 'explicit'> | FitConfig;
 };
 
-// @public (undocumented)
+// @public
 export interface LineSeriesStyle {
-    // (undocumented)
     fit: {
         line: LineFitStyle;
     };
-    // (undocumented)
     isolatedPoint: {
         enabled: boolean;
-    } & PointStyle;
-    // (undocumented)
+    } & Omit<PointStyle, 'radius'>;
     line: LineStyle;
-    // (undocumented)
     point: PointStyle;
+    pointVisibilityMinDistance: Pixels;
 }
 
 // @public (undocumented)
@@ -2444,14 +2437,14 @@ export interface PointStyle {
     shape?: PointShape;
     stroke?: Color | ColorVariant;
     strokeWidth: number;
-    visible: boolean;
+    visible: 'never' | 'always' | 'auto';
 }
 
 // @public
 export type PointStyleAccessor = (datum: DataSeriesDatum, seriesIdentifier: XYChartSeriesIdentifier, isolatedPoint: boolean) => PointStyleOverride;
 
 // @public (undocumented)
-export type PointStyleOverride = RecursivePartial<PointStyle> | Color | null;
+export type PointStyleOverride = RecursivePartial<Omit<PointStyle, 'visible'>> | Color | null;
 
 // @public (undocumented)
 export const Position: Readonly<{

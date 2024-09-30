@@ -45,7 +45,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           areaSeriesStyle: {
             line: defaultlineStyles,
             point: {
-              visible: true,
+              visible: 'always',
               stroke: themeLevelStroke,
               ...defaultPointStyles,
             },
@@ -58,7 +58,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           lineSeriesStyle: {
             line: defaultlineStyles,
             point: {
-              visible: true,
+              visible: 'always',
               stroke: themeLevelStroke,
               ...defaultPointStyles,
             },
