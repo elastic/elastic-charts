@@ -15,6 +15,8 @@ import { DEFAULT_SETTINGS_SPEC } from './constants';
 import { SpecsParser } from './specs_parser';
 import { BarSeries } from '../chart_types/specs';
 import { BarSeriesSpec } from '../chart_types/xy_chart/utils/specs';
+import { ChartContainer } from '../components/chart_container';
+import { updateParentDimensions } from '../state/actions/chart_settings';
 import { chartStoreReducer } from '../state/chart_state';
 
 describe('Specs parser', () => {
@@ -169,5 +171,45 @@ describe('Specs parser', () => {
     );
     component.unmount();
     expect(chartStore.getState().specsInitialized).toBe(false);
+  });
+
+  test('correctly set the rendered status', () => {
+    const storeReducer = chartStoreReducer('chart_id');
+    const chartStore = createStore(storeReducer);
+
+    expect(chartStore.getState().specsInitialized).toBe(false);
+    const chartContainerRef: React.RefObject<HTMLDivElement> = React.createRef();
+    const getChartContainerRef = () => chartContainerRef;
+    const chartStageRef: React.RefObject<HTMLCanvasElement> = React.createRef();
+
+    const component = (
+      <Provider store={chartStore}>
+        <SpecsParser>
+          <BarSeries
+            id="bars"
+            xAccessor={0}
+            yAccessors={[1]}
+            data={[
+              [0, 1],
+              [1, 2],
+            ]}
+          />
+        </SpecsParser>
+        <ChartContainer getChartContainerRef={getChartContainerRef} forwardStageRef={chartStageRef} />
+      </Provider>
+    );
+    mount(component);
+    const state = chartStore.getState();
+    expect(state.specsInitialized).toBe(true);
+    expect(state.parentDimensions).toEqual({ width: 0, height: 0, top: 0, left: 0 });
+    chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
+    expect(chartStore.getState().parentDimensions).toEqual({ width: 100, height: 100, top: 0, left: 0 });
+    // passing the same parent dimmesion again can be triggered by the ResizeObserver
+    chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
+    expect(chartStore.getState().chartRendered).toBe(true);
+
+    // trigger also with just differences in top/left
+    chartStore.dispatch(updateParentDimensions({ width: 100, height: 100, top: 1, left: 1 }));
+    expect(chartStore.getState().chartRendered).toBe(true);
   });
 });
