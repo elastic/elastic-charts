@@ -43,6 +43,7 @@ import { TooltipInfo } from '../components/tooltip/types';
 import { DEFAULT_SETTINGS_SPEC, PointerEvent, Spec, TooltipValue } from '../specs';
 import { keepDistinct } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
+import { deepEqual } from '../utils/fast_deep_equal';
 import { Logger } from '../utils/logger';
 import { Point } from '../utils/point';
 
@@ -388,6 +389,9 @@ export const chartStoreReducer = (chartId: string, title?: string, description?:
           chartRenderedCount,
         };
       case UPDATE_PARENT_DIMENSION:
+        if (deepEqual(action.dimensions, state.parentDimensions)) {
+          return state;
+        }
         return {
           ...state,
           interactions: {
