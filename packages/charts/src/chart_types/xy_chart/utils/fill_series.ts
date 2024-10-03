@@ -24,10 +24,7 @@ export function fillSeries(
 
     const noFillRequired = isXFillNotRequired(spec, groupScaleType, isStacked);
     if (data.length === xValues.size || noFillRequired) {
-      return {
-        ...series,
-        data,
-      };
+      return series;
     }
     const filledData: typeof data = [];
     const missingValues = new Set(xValues);
