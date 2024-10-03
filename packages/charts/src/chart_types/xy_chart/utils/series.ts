@@ -115,6 +115,7 @@ export function splitSeriesDataByAccessors(
   isBanded = false,
   stackMode?: StackMode,
   groupBySpec?: SmallMultiplesGroupBy,
+  deselectedDataSeries: SeriesIdentifier[] = [],
 ): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
@@ -207,7 +208,7 @@ export function splitSeriesDataByAccessors(
           spec,
           // current default to 0, will be correctly computed on a later stage
           insertIndex: 0,
-          isFiltered: false,
+          isFiltered: deselectedDataSeries.some(({ key: deselectedKey }) => seriesKey === deselectedKey),
         });
       }
 
@@ -364,7 +365,7 @@ export function getDataSeriesFromSpecs(
   smHValues: Set<string | number>;
   fallbackScale?: XScaleType;
 } {
-  let globalDataSeries: DataSeries[] = [];
+  const globalDataSeries: DataSeries[] = [];
   const mutatedXValueSums = new Map<string | number, number>();
 
   // the unique set of values along the x axis
@@ -394,23 +395,16 @@ export function getDataSeriesFromSpecs(
       isBanded,
       specGroup?.stackMode,
       groupBySpec,
+      deselectedDataSeries,
     );
 
-    // filter deselected DataSeries
-    let filteredDataSeries: DataSeries[] = [...dataSeries.values()];
-    if (deselectedDataSeries.length > 0) {
-      filteredDataSeries = filteredDataSeries.map((series) => ({
-        ...series,
-        isFiltered: deselectedDataSeries.some(({ key: deselectedKey }) => series.key === deselectedKey),
-      }));
+    for (const [, ds] of dataSeries) {
+      globalDataSeries.push(ds);
     }
-
-    globalDataSeries = [...globalDataSeries, ...filteredDataSeries];
 
     // check the nature of the x values. If all of them are numbers
     // we can use a continuous scale, if not we should use an ordinal scale.
     // The xValue is already casted to be a valid number or a string
-    // eslint-disable-next-line no-restricted-syntax
     for (const xValue of xValues) {
       if (isNumberArray && typeof xValue !== 'number') {
         isNumberArray = false;
