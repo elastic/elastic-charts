@@ -145,7 +145,6 @@ export function computeSeriesDomains(
 
   const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.type);
   const annotationYValueMap = getAnnotationYValueMap(annotations, scaleConfigs.y);
-
   // let's compute the yDomains after computing all stacked values
   const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, annotationYValueMap);
 

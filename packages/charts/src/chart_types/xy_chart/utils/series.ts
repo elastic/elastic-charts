@@ -75,6 +75,7 @@ export type DataSeries<D extends BaseDatum = Datum> = XYChartSeriesIdentifier<D>
   isStacked: boolean;
   stackMode: StackMode | undefined;
   spec: Exclude<BasicSeriesSpec, 'data'>;
+  insertOrder: number;
   sortOrder: number;
   isFiltered: boolean;
 };
@@ -112,6 +113,7 @@ export function getAccessorFieldName<D extends BaseDatum>(
 export function splitSeriesDataByAccessors(
   spec: BasicSeriesSpec,
   xValueSums: Map<string | number, number>,
+  insertOrder: number,
   isStacked = false,
   isBanded = false,
   stackMode?: StackMode,
@@ -206,6 +208,7 @@ export function splitSeriesDataByAccessors(
           key: seriesKey,
           data: [newDatum],
           spec,
+          insertOrder: insertOrder + dataSeries.size,
           sortOrder: 0,
           isFiltered: false,
         });
@@ -375,7 +378,7 @@ export function getDataSeriesFromSpecs(
   let isOrdinalScale = false;
 
   const specsByYGroup = groupSeriesByYGroup(seriesSpecs);
-
+  let insertOrder = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const spec of seriesSpecs) {
     // check scale type and cast to Ordinal if we found at least one series
@@ -391,11 +394,14 @@ export function getDataSeriesFromSpecs(
     const { dataSeries, xValues } = splitSeriesDataByAccessors(
       spec,
       mutatedXValueSums,
+      insertOrder,
       isStacked,
       isBanded,
       specGroup?.stackMode,
       groupBySpec,
     );
+
+    insertOrder += dataSeries.size;
 
     // filter deselected DataSeries
     let filteredDataSeries: DataSeries[] = [...dataSeries.values()];
@@ -432,12 +438,12 @@ export function getDataSeriesFromSpecs(
           }),
         );
 
-  const dataSeries = globalDataSeries.toSorted(seriesSort).map((d, i) => ({
-    ...d,
-    sortOrder: i,
-  }));
+  globalDataSeries.sort(seriesSort).map((d, i) => {
+    d.sortOrder = i;
+    return d;
+  });
 
-  const smallMultipleUniqueValues = dataSeries.reduce<{
+  const smallMultipleUniqueValues = globalDataSeries.reduce<{
     smVValues: Set<string | number>;
     smHValues: Set<string | number>;
   }>(
@@ -457,7 +463,7 @@ export function getDataSeriesFromSpecs(
   );
 
   return {
-    dataSeries,
+    dataSeries: globalDataSeries,
     // keep the user order for ordinal scales
     xValues,
     ...smallMultipleUniqueValues,

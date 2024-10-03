@@ -14,8 +14,11 @@ import { DataSeries } from './series';
  * @internal
  */
 export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
+  if (a.seriesType !== b.seriesType) {
+    return 0;
+  }
   if (a.groupId !== b.groupId) {
-    return a.sortOrder - b.sortOrder;
+    return a.insertOrder - b.insertOrder;
   }
 
   if (a.isStacked && !b.isStacked) {
@@ -24,7 +27,7 @@ export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
   if (!a.isStacked && b.isStacked) {
     return 1; // b first then a
   }
-  return a.sortOrder - b.sortOrder;
+  return a.insertOrder - b.insertOrder;
 }
 
 /**
@@ -36,7 +39,7 @@ export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
 export function defaultXYLegendSeriesSort(a?: DataSeries, b?: DataSeries) {
   if (!a || !b) return 0;
   if (a.groupId !== b.groupId) {
-    return a.sortOrder - b.sortOrder;
+    return a.insertOrder - b.insertOrder;
   }
 
   if (a.isStacked && !b.isStacked) {
@@ -45,5 +48,5 @@ export function defaultXYLegendSeriesSort(a?: DataSeries, b?: DataSeries) {
   if (!a.isStacked && b.isStacked) {
     return 1; // b first then a
   }
-  return a.sortOrder - b.sortOrder;
+  return a.insertOrder - b.insertOrder;
 }
