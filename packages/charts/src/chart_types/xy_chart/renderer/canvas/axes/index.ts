@@ -30,6 +30,7 @@ export interface AxisProps {
   debug: boolean;
   renderingArea: Dimensions;
   layerGirth: number;
+  maxLabelSize: number;
 }
 
 /** @internal */
