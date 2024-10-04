@@ -351,7 +351,7 @@ export function getFormattedDataSeries(
   // get already fitted non stacked dataSeries
   const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !isStackedSpec(spec));
 
-  return [...fittedAndStackedDataSeries, ...nonStackedDataSeries];
+  return [...fittedAndStackedDataSeries, ...nonStackedDataSeries].sort((a, b) => a.insertOrder - b.insertOrder);
 }
 
 /** @internal */
