@@ -974,6 +974,7 @@ describe('functional accessors', () => {
         stackAccessors: ['yes'],
       }),
       new Map(),
+      0,
       true,
       true,
     );

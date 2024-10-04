@@ -113,7 +113,7 @@ export function getAccessorFieldName<D extends BaseDatum>(
 export function splitSeriesDataByAccessors(
   spec: BasicSeriesSpec,
   xValueSums: Map<string | number, number>,
-  insertOrder: number,
+  insertOrder = 0,
   isStacked = false,
   isBanded = false,
   stackMode?: StackMode,
