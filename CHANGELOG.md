@@ -1,3 +1,10 @@
+## [67.0.1](https://github.com/elastic/elastic-charts/compare/v67.0.0...v67.0.1) (2024-10-03)
+
+
+### Bug Fixes
+
+* **ChartStatus:** render complete if same parent size is dispatched ([#2534](https://github.com/elastic/elastic-charts/issues/2534)) ([c3aba88](https://github.com/elastic/elastic-charts/commit/c3aba885b92f898ef59f452d3fed7812584d48b0))
+
 # [67.0.0](https://github.com/elastic/elastic-charts/compare/v66.1.1...v67.0.0) (2024-09-23)
 
 
