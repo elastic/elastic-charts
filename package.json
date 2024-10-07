@@ -160,7 +160,7 @@
     "slugify": "^1.5.0",
     "speed-measure-webpack-plugin": "^1.5.0",
     "ts-jest": "^29.2.5",
-    "ts-loader": "8.4.0",
+    "ts-loader": "9.5.1",
     "ts-prune": "^0.10.3",
     "typedoc": "^0.25.4",
     "typedoc-plugin-markdown": "^4.0.0-next.36",
