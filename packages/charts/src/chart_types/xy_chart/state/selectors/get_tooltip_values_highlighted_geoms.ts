@@ -35,7 +35,7 @@ import { isNil, Rotation } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
 import { IndexedGeometry } from '../../../../utils/geometry';
 import { Point } from '../../../../utils/point';
-import { getTooltipCompareFn } from '../../../../utils/series_sort';
+import { SeriesCompareFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
@@ -89,7 +89,7 @@ function getTooltipAndHighlightFromValue(
   hasSingleSeries: boolean,
   scales: ComputedScales,
   matchingGeoms: IndexedGeometry[],
-  serialIdentifierDataSeriesMap: Record<string, DataSeries>,
+  seriesIdentifierDataSeriesMap: Record<string, DataSeries>,
   externalPointerEvent: PointerEvent | null,
   tooltip: TooltipSpec,
 ): TooltipAndHighlightedGeoms {
@@ -192,12 +192,12 @@ function getTooltipAndHighlightFromValue(
     header = null;
   }
 
-  const tooltipSortFn = getTooltipCompareFn((a, b) => {
-    const aDs = serialIdentifierDataSeriesMap[a.key];
-    const bDs = serialIdentifierDataSeriesMap[b.key];
+  const baseTooltipSortFn: SeriesCompareFn = (a, b) => {
+    const aDs = seriesIdentifierDataSeriesMap[a.key];
+    const bDs = seriesIdentifierDataSeriesMap[b.key];
     return defaultXYLegendSeriesSort(aDs, bDs);
-  });
-
+  };
+  const tooltipSortFn = tooltip.sort ?? settings.legendSort ?? baseTooltipSortFn;
   const sortedTooltipValues = values.sort((a, b) => {
     return tooltipSortFn(a.seriesIdentifier, b.seriesIdentifier);
   });
@@ -205,7 +205,6 @@ function getTooltipAndHighlightFromValue(
   return {
     tooltip: {
       header,
-      // to avoid creating a breaking change because of a different sorting order on tooltip
       values: sortedTooltipValues,
     },
     highlightedGeometries,

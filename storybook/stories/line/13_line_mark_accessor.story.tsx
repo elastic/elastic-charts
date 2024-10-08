@@ -30,8 +30,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
     step: 1,
   });
 
-  const visible = boolean('show line points', true);
-
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -40,7 +38,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           markSizeRatio,
           lineSeriesStyle: {
             point: {
-              visible,
+              visible: boolean('show line points', true) ? 'always' : 'never',
             },
           },
         }}

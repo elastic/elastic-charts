@@ -1,130 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Series #getSeriesNameKeys Shall ignore undefined values on splitSeriesAccessors 1`] = `
-[
-  {
-    "data": [
-      {
-        "datum": [
-          0,
-          1,
-          "a",
-        ],
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 0,
-        "y0": null,
-        "y1": 1,
-      },
-      {
-        "datum": [
-          1,
-          1,
-          "a",
-        ],
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 1,
-        "y0": null,
-        "y1": 1,
-      },
-      {
-        "datum": [
-          2,
-          1,
-          "a",
-        ],
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 2,
-        "y0": null,
-        "y1": 1,
-      },
-    ],
-    "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{2-a}",
-    "seriesKeys": [
-      "a",
-      1,
-    ],
-    "specId": "spec1",
-    "splitAccessors": Map {
-      2 => "a",
-    },
-    "xAccessor": 0,
-    "yAccessor": 1,
-  },
-  {
-    "data": [
-      {
-        "datum": [
-          0,
-          1,
-          "b",
-        ],
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 0,
-        "y0": null,
-        "y1": 1,
-      },
-      {
-        "datum": [
-          1,
-          1,
-          "b",
-        ],
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 1,
-        "y0": null,
-        "y1": 1,
-      },
-      {
-        "datum": [
-          2,
-          1,
-          "b",
-        ],
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 2,
-        "y0": null,
-        "y1": 1,
-      },
-    ],
-    "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{2-b}",
-    "seriesKeys": [
-      "b",
-      1,
-    ],
-    "specId": "spec1",
-    "splitAccessors": Map {
-      2 => "b",
-    },
-    "xAccessor": 0,
-    "yAccessor": 1,
-  },
-]
-`;
-
 exports[`Series Can split dataset into 1Y0G series 1`] = `
 [
   {
@@ -186,6 +61,7 @@ exports[`Series Can split dataset into 1Y0G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{}",
     "seriesKeys": [
       "y",
@@ -263,6 +139,7 @@ exports[`Series Can split dataset into 1Y1G series 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -338,6 +215,7 @@ exports[`Series Can split dataset into 1Y1G series 1`] = `
         "y1": 5,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -422,6 +300,7 @@ exports[`Series Can split dataset into 1Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g1-a|g2-s}",
     "seriesKeys": [
       "a",
@@ -503,6 +382,7 @@ exports[`Series Can split dataset into 1Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g1-a|g2-p}",
     "seriesKeys": [
       "a",
@@ -584,6 +464,7 @@ exports[`Series Can split dataset into 1Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 2,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g1-b|g2-s}",
     "seriesKeys": [
       "b",
@@ -665,6 +546,7 @@ exports[`Series Can split dataset into 1Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 3,
     "key": "groupId{__global__}spec{spec1}yAccessor{y}splitAccessors{g1-b|g2-p}",
     "seriesKeys": [
       "b",
@@ -747,6 +629,7 @@ exports[`Series Can split dataset into 2Y0G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{}",
     "seriesKeys": [
       "y1",
@@ -819,6 +702,7 @@ exports[`Series Can split dataset into 2Y0G series 1`] = `
         "y1": 10,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{}",
     "seriesKeys": [
       "y2",
@@ -900,6 +784,7 @@ exports[`Series Can split dataset into 2Y1G series 1`] = `
         "y1": 7,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -979,6 +864,7 @@ exports[`Series Can split dataset into 2Y1G series 1`] = `
         "y1": 3,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -1058,6 +944,7 @@ exports[`Series Can split dataset into 2Y1G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 2,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -1137,6 +1024,7 @@ exports[`Series Can split dataset into 2Y1G series 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 3,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -1242,6 +1130,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 7,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cdn.google.com|g2-direct-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -1344,6 +1233,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 3,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cdn.google.com|g2-direct-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -1446,6 +1336,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 7,
       },
     ],
+    "insertOrder": 2,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cdn.google.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -1548,6 +1439,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 3,
       },
     ],
+    "insertOrder": 3,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cdn.google.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -1650,6 +1542,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 4,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cloudflare.com|g2-direct-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -1752,6 +1645,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 5,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cloudflare.com|g2-direct-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -1854,6 +1748,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 6,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cloudflare.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -1956,6 +1851,7 @@ exports[`Series Can split dataset into 2Y2G series 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 7,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cloudflare.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -11978,6 +11874,7 @@ exports[`Series Can stack high volume of dataseries 1`] = `
         "y1": 999,
       },
     ],
+    "insertOrder": 0,
     "key": "a",
     "seriesKeys": [
       "a",
@@ -21990,6 +21887,7 @@ exports[`Series Can stack high volume of dataseries 1`] = `
         "y1": 1998,
       },
     ],
+    "insertOrder": 0,
     "key": "b",
     "seriesKeys": [
       "b",
@@ -22047,6 +21945,7 @@ exports[`Series Can stack multiple dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 0,
     "key": "a",
     "seriesKeys": [
       "a",
@@ -22099,6 +21998,7 @@ exports[`Series Can stack multiple dataseries 1`] = `
         "y1": 8,
       },
     ],
+    "insertOrder": 0,
     "key": "b",
     "seriesKeys": [
       "b",
@@ -22172,6 +22072,7 @@ exports[`Series Can stack multiple dataseries with scale to extent 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22243,6 +22144,7 @@ exports[`Series Can stack multiple dataseries with scale to extent 1`] = `
         "y1": 8,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -22314,6 +22216,7 @@ exports[`Series Can stack multiple dataseries with scale to extent 1`] = `
         "y1": 12,
       },
     ],
+    "insertOrder": 2,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-c}",
     "seriesKeys": [
       "c",
@@ -22385,6 +22288,7 @@ exports[`Series Can stack multiple dataseries with scale to extent 1`] = `
         "y1": 16,
       },
     ],
+    "insertOrder": 3,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-d}",
     "seriesKeys": [
       "d",
@@ -22459,6 +22363,7 @@ exports[`Series Can stack simple dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22526,6 +22431,7 @@ exports[`Series Can stack simple dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -22600,6 +22506,7 @@ exports[`Series Can stack simple dataseries with scale to extent 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22667,6 +22574,7 @@ exports[`Series Can stack simple dataseries with scale to extent 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -22744,6 +22652,7 @@ exports[`Series Can stack simple dataseries with scale to extent with y0 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22819,6 +22728,7 @@ exports[`Series Can stack simple dataseries with scale to extent with y0 1`] = `
         "y1": 8,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -22896,6 +22806,7 @@ exports[`Series Can stack simple dataseries with y0 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -22971,6 +22882,7 @@ exports[`Series Can stack simple dataseries with y0 1`] = `
         "y1": 8,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -23045,6 +22957,7 @@ exports[`Series Can stack unsorted dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-a}",
     "seriesKeys": [
       "a",
@@ -23112,6 +23025,7 @@ exports[`Series Can stack unsorted dataseries 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g-b}",
     "seriesKeys": [
       "b",
@@ -23127,7 +23041,701 @@ exports[`Series Can stack unsorted dataseries 1`] = `
 ]
 `;
 
-exports[`Series functional accessors Can use default custom xAccessor 1`] = `
+exports[`Series should compute data series for stacked specs 1`] = `
+[
+  {
+    "data": [
+      {
+        "datum": {
+          "x": 0,
+          "y": 1,
+        },
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 0,
+        "y0": null,
+        "y1": 1,
+      },
+      {
+        "datum": {
+          "x": 1,
+          "y": 2,
+        },
+        "initialY0": null,
+        "initialY1": 2,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 1,
+        "y0": null,
+        "y1": 2,
+      },
+      {
+        "datum": {
+          "x": 2,
+          "y": 10,
+        },
+        "initialY0": null,
+        "initialY1": 10,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 2,
+        "y0": null,
+        "y1": 10,
+      },
+      {
+        "datum": {
+          "x": 3,
+          "y": 6,
+        },
+        "initialY0": null,
+        "initialY1": 6,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 3,
+        "y0": null,
+        "y1": 6,
+      },
+    ],
+    "insertOrder": 0,
+    "key": "groupId{group}spec{spec1}yAccessor{y}splitAccessors{}",
+    "seriesKeys": [
+      "y",
+    ],
+    "specId": "spec1",
+    "splitAccessors": Map {},
+    "xAccessor": "x",
+    "yAccessor": "y",
+  },
+  {
+    "data": [
+      {
+        "datum": {
+          "x": 0,
+          "y1": 1,
+          "y2": 3,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "x": 0,
+        "y0": 0,
+        "y1": 1,
+      },
+      {
+        "datum": {
+          "x": 1,
+          "y1": 2,
+          "y2": 7,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 2,
+        "mark": null,
+        "x": 1,
+        "y0": 0,
+        "y1": 2,
+      },
+      {
+        "datum": {
+          "x": 2,
+          "y1": 1,
+          "y2": 2,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "x": 2,
+        "y0": 0,
+        "y1": 1,
+      },
+      {
+        "datum": {
+          "x": 3,
+          "y1": 6,
+          "y2": 10,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 6,
+        "mark": null,
+        "x": 3,
+        "y0": 0,
+        "y1": 6,
+      },
+    ],
+    "insertOrder": 1,
+    "key": "groupId{group2}spec{spec2}yAccessor{y1}splitAccessors{}",
+    "seriesKeys": [
+      "y1",
+    ],
+    "specId": "spec2",
+    "splitAccessors": Map {},
+    "xAccessor": "x",
+    "yAccessor": "y1",
+  },
+  {
+    "data": [
+      {
+        "datum": {
+          "x": 0,
+          "y1": 1,
+          "y2": 3,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 3,
+        "mark": null,
+        "x": 0,
+        "y0": 1,
+        "y1": 4,
+      },
+      {
+        "datum": {
+          "x": 1,
+          "y1": 2,
+          "y2": 7,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 7,
+        "mark": null,
+        "x": 1,
+        "y0": 2,
+        "y1": 9,
+      },
+      {
+        "datum": {
+          "x": 2,
+          "y1": 1,
+          "y2": 2,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 2,
+        "mark": null,
+        "x": 2,
+        "y0": 1,
+        "y1": 3,
+      },
+      {
+        "datum": {
+          "x": 3,
+          "y1": 6,
+          "y2": 10,
+        },
+        "filled": undefined,
+        "initialY0": null,
+        "initialY1": 10,
+        "mark": null,
+        "x": 3,
+        "y0": 6,
+        "y1": 16,
+      },
+    ],
+    "insertOrder": 2,
+    "key": "groupId{group2}spec{spec2}yAccessor{y2}splitAccessors{}",
+    "seriesKeys": [
+      "y2",
+    ],
+    "specId": "spec2",
+    "splitAccessors": Map {},
+    "xAccessor": "x",
+    "yAccessor": "y2",
+  },
+]
+`;
+
+exports[`Series should ignore undefined values on splitSeriesAccessors 1`] = `
+[
+  {
+    "data": [
+      {
+        "datum": [
+          0,
+          1,
+          "a",
+        ],
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 0,
+        "y0": null,
+        "y1": 1,
+      },
+      {
+        "datum": [
+          1,
+          1,
+          "a",
+        ],
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 1,
+        "y0": null,
+        "y1": 1,
+      },
+      {
+        "datum": [
+          2,
+          1,
+          "a",
+        ],
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 2,
+        "y0": null,
+        "y1": 1,
+      },
+    ],
+    "insertOrder": 0,
+    "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{2-a}",
+    "seriesKeys": [
+      "a",
+      1,
+    ],
+    "specId": "spec1",
+    "splitAccessors": Map {
+      2 => "a",
+    },
+    "xAccessor": 0,
+    "yAccessor": 1,
+  },
+  {
+    "data": [
+      {
+        "datum": [
+          0,
+          1,
+          "b",
+        ],
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 0,
+        "y0": null,
+        "y1": 1,
+      },
+      {
+        "datum": [
+          1,
+          1,
+          "b",
+        ],
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 1,
+        "y0": null,
+        "y1": 1,
+      },
+      {
+        "datum": [
+          2,
+          1,
+          "b",
+        ],
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 2,
+        "y0": null,
+        "y1": 1,
+      },
+    ],
+    "insertOrder": 1,
+    "key": "groupId{__global__}spec{spec1}yAccessor{1}splitAccessors{2-b}",
+    "seriesKeys": [
+      "b",
+      1,
+    ],
+    "specId": "spec1",
+    "splitAccessors": Map {
+      2 => "b",
+    },
+    "xAccessor": 0,
+    "yAccessor": 1,
+  },
+]
+`;
+
+exports[`Series should split an array of specs into data series 1`] = `
+[
+  {
+    "data": [
+      {
+        "datum": {
+          "x": 0,
+          "y": 1,
+        },
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 0,
+        "y0": null,
+        "y1": 1,
+      },
+      {
+        "datum": {
+          "x": 1,
+          "y": 2,
+        },
+        "initialY0": null,
+        "initialY1": 2,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 1,
+        "y0": null,
+        "y1": 2,
+      },
+      {
+        "datum": {
+          "x": 2,
+          "y": 10,
+        },
+        "initialY0": null,
+        "initialY1": 10,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 2,
+        "y0": null,
+        "y1": 10,
+      },
+      {
+        "datum": {
+          "x": 3,
+          "y": 6,
+        },
+        "initialY0": null,
+        "initialY1": 6,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 3,
+        "y0": null,
+        "y1": 6,
+      },
+    ],
+    "groupId": "group",
+    "insertOrder": 0,
+    "isFiltered": false,
+    "isStacked": false,
+    "key": "groupId{group}spec{spec1}yAccessor{y}splitAccessors{}",
+    "seriesKeys": [
+      "y",
+    ],
+    "seriesType": "line",
+    "sortOrder": 0,
+    "spec": {
+      "chartType": "xy_axis",
+      "data": [
+        {
+          "x": 0,
+          "y": 1,
+        },
+        {
+          "x": 1,
+          "y": 2,
+        },
+        {
+          "x": 2,
+          "y": 10,
+        },
+        {
+          "x": 3,
+          "y": 6,
+        },
+      ],
+      "groupId": "group",
+      "hideInLegend": false,
+      "id": "spec1",
+      "seriesType": "line",
+      "specType": "series",
+      "xAccessor": "x",
+      "xScaleType": "linear",
+      "yAccessors": [
+        "y",
+      ],
+      "yScaleType": "log",
+    },
+    "specId": "spec1",
+    "splitAccessors": Map {},
+    "stackMode": undefined,
+    "xAccessor": "x",
+    "yAccessor": "y",
+  },
+]
+`;
+
+exports[`Series should split an array of specs into data series 2`] = `
+[
+  {
+    "data": [
+      {
+        "datum": {
+          "x": 0,
+          "y1": 1,
+          "y2": 3,
+        },
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 0,
+        "y0": null,
+        "y1": 1,
+      },
+      {
+        "datum": {
+          "x": 1,
+          "y1": 2,
+          "y2": 7,
+        },
+        "initialY0": null,
+        "initialY1": 2,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 1,
+        "y0": null,
+        "y1": 2,
+      },
+      {
+        "datum": {
+          "x": 2,
+          "y1": 1,
+          "y2": 2,
+        },
+        "initialY0": null,
+        "initialY1": 1,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 2,
+        "y0": null,
+        "y1": 1,
+      },
+      {
+        "datum": {
+          "x": 3,
+          "y1": 6,
+          "y2": 10,
+        },
+        "initialY0": null,
+        "initialY1": 6,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 3,
+        "y0": null,
+        "y1": 6,
+      },
+    ],
+    "groupId": "group2",
+    "insertOrder": 1,
+    "isFiltered": false,
+    "isStacked": true,
+    "key": "groupId{group2}spec{spec2}yAccessor{y1}splitAccessors{}",
+    "seriesKeys": [
+      "y1",
+    ],
+    "seriesType": "line",
+    "sortOrder": 1,
+    "spec": {
+      "chartType": "xy_axis",
+      "data": [
+        {
+          "x": 0,
+          "y1": 1,
+          "y2": 3,
+        },
+        {
+          "x": 1,
+          "y1": 2,
+          "y2": 7,
+        },
+        {
+          "x": 2,
+          "y1": 1,
+          "y2": 2,
+        },
+        {
+          "x": 3,
+          "y1": 6,
+          "y2": 10,
+        },
+      ],
+      "groupId": "group2",
+      "hideInLegend": false,
+      "id": "spec2",
+      "seriesType": "line",
+      "specType": "series",
+      "stackAccessors": [
+        "x",
+      ],
+      "xAccessor": "x",
+      "xScaleType": "linear",
+      "yAccessors": [
+        "y1",
+        "y2",
+      ],
+      "yScaleType": "log",
+    },
+    "specId": "spec2",
+    "splitAccessors": Map {},
+    "stackMode": undefined,
+    "xAccessor": "x",
+    "yAccessor": "y1",
+  },
+  {
+    "data": [
+      {
+        "datum": {
+          "x": 0,
+          "y1": 1,
+          "y2": 3,
+        },
+        "initialY0": null,
+        "initialY1": 3,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 0,
+        "y0": null,
+        "y1": 3,
+      },
+      {
+        "datum": {
+          "x": 1,
+          "y1": 2,
+          "y2": 7,
+        },
+        "initialY0": null,
+        "initialY1": 7,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 1,
+        "y0": null,
+        "y1": 7,
+      },
+      {
+        "datum": {
+          "x": 2,
+          "y1": 1,
+          "y2": 2,
+        },
+        "initialY0": null,
+        "initialY1": 2,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 2,
+        "y0": null,
+        "y1": 2,
+      },
+      {
+        "datum": {
+          "x": 3,
+          "y1": 6,
+          "y2": 10,
+        },
+        "initialY0": null,
+        "initialY1": 10,
+        "mark": null,
+        "smH": undefined,
+        "smV": undefined,
+        "x": 3,
+        "y0": null,
+        "y1": 10,
+      },
+    ],
+    "groupId": "group2",
+    "insertOrder": 2,
+    "isFiltered": false,
+    "isStacked": true,
+    "key": "groupId{group2}spec{spec2}yAccessor{y2}splitAccessors{}",
+    "seriesKeys": [
+      "y2",
+    ],
+    "seriesType": "line",
+    "sortOrder": 2,
+    "spec": {
+      "chartType": "xy_axis",
+      "data": [
+        {
+          "x": 0,
+          "y1": 1,
+          "y2": 3,
+        },
+        {
+          "x": 1,
+          "y1": 2,
+          "y2": 7,
+        },
+        {
+          "x": 2,
+          "y1": 1,
+          "y2": 2,
+        },
+        {
+          "x": 3,
+          "y1": 6,
+          "y2": 10,
+        },
+      ],
+      "groupId": "group2",
+      "hideInLegend": false,
+      "id": "spec2",
+      "seriesType": "line",
+      "specType": "series",
+      "stackAccessors": [
+        "x",
+      ],
+      "xAccessor": "x",
+      "xScaleType": "linear",
+      "yAccessors": [
+        "y1",
+        "y2",
+      ],
+      "yScaleType": "log",
+    },
+    "specId": "spec2",
+    "splitAccessors": Map {},
+    "stackMode": undefined,
+    "xAccessor": "x",
+    "yAccessor": "y2",
+  },
+]
+`;
+
+exports[`functional accessors Can use default custom xAccessor 1`] = `
 [
   {
     "data": [
@@ -23302,6 +23910,7 @@ exports[`Series functional accessors Can use default custom xAccessor 1`] = `
         "y1": 7,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -23487,6 +24096,7 @@ exports[`Series functional accessors Can use default custom xAccessor 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -23502,7 +24112,7 @@ exports[`Series functional accessors Can use default custom xAccessor 1`] = `
 ]
 `;
 
-exports[`Series functional accessors Can use functional splitSeriesAccessor 1`] = `
+exports[`functional accessors Can use functional splitSeriesAccessor 1`] = `
 [
   {
     "data": [
@@ -23677,6 +24287,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor 1`] 
         "y1": 7,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -23862,6 +24473,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor 1`] 
         "y1": 6,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -23877,7 +24489,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor 1`] 
 ]
 `;
 
-exports[`Series functional accessors Can use functional splitSeriesAccessor with fieldName 1`] = `
+exports[`functional accessors Can use functional splitSeriesAccessor with fieldName 1`] = `
 [
   {
     "data": [
@@ -24052,6 +24664,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor with
         "y1": 7,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{custom name-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -24237,6 +24850,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor with
         "y1": 6,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{custom name-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -24252,7 +24866,7 @@ exports[`Series functional accessors Can use functional splitSeriesAccessor with
 ]
 `;
 
-exports[`Series functional accessors Can use functional xAccessor 1`] = `
+exports[`functional accessors Can use functional xAccessor 1`] = `
 [
   {
     "data": [
@@ -24427,6 +25041,7 @@ exports[`Series functional accessors Can use functional xAccessor 1`] = `
         "y1": 7,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -24612,6 +25227,7 @@ exports[`Series functional accessors Can use functional xAccessor 1`] = `
         "y1": 3,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -24797,6 +25413,7 @@ exports[`Series functional accessors Can use functional xAccessor 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 2,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -24982,6 +25599,7 @@ exports[`Series functional accessors Can use functional xAccessor 1`] = `
         "y1": 4,
       },
     ],
+    "insertOrder": 3,
     "key": "groupId{__global__}spec{spec1}yAccessor{y2}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -24997,7 +25615,7 @@ exports[`Series functional accessors Can use functional xAccessor 1`] = `
 ]
 `;
 
-exports[`Series functional accessors Can use functional y0Accessor 1`] = `
+exports[`functional accessors Can use functional y0Accessor 1`] = `
 [
   {
     "data": [
@@ -26802,6 +27420,7 @@ exports[`Series functional accessors Can use functional y0Accessor 1`] = `
         "y1": 14.1953125,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:0)}splitAccessors{}",
     "seriesKeys": [
       "(index:0)",
@@ -26814,7 +27433,7 @@ exports[`Series functional accessors Can use functional y0Accessor 1`] = `
 ]
 `;
 
-exports[`Series functional accessors Can use functional yAccessor 1`] = `
+exports[`functional accessors Can use functional yAccessor 1`] = `
 [
   {
     "data": [
@@ -26989,6 +27608,7 @@ exports[`Series functional accessors Can use functional yAccessor 1`] = `
         "y1": 7,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:0)}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27174,6 +27794,7 @@ exports[`Series functional accessors Can use functional yAccessor 1`] = `
         "y1": 6,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:0)}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -27189,7 +27810,7 @@ exports[`Series functional accessors Can use functional yAccessor 1`] = `
 ]
 `;
 
-exports[`Series functional accessors Can use functional yAccessor with fieldName 1`] = `
+exports[`functional accessors Can use functional yAccessor with fieldName 1`] = `
 [
   {
     "data": [
@@ -27364,6 +27985,7 @@ exports[`Series functional accessors Can use functional yAccessor with fieldName
         "y1": 7,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{custom name}splitAccessors{g1-cdn.google.com}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27549,6 +28171,7 @@ exports[`Series functional accessors Can use functional yAccessor with fieldName
         "y1": 6,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{custom name}splitAccessors{g1-cloudflare.com}",
     "seriesKeys": [
       "cloudflare.com",
@@ -27564,7 +28187,7 @@ exports[`Series functional accessors Can use functional yAccessor with fieldName
 ]
 `;
 
-exports[`Series functional accessors Can use multiple functional/static accessors 1`] = `
+exports[`functional accessors Can use multiple functional/static accessors 1`] = `
 [
   {
     "data": [
@@ -27654,6 +28277,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 7,
       },
     ],
+    "insertOrder": 0,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cdn.google.com|g2-direct-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27756,6 +28380,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 3,
       },
     ],
+    "insertOrder": 1,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:1)}splitAccessors{(index:0)-cdn.google.com|g2-direct-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27858,6 +28483,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 7,
       },
     ],
+    "insertOrder": 2,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cdn.google.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -27960,6 +28586,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 3,
       },
     ],
+    "insertOrder": 3,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:1)}splitAccessors{(index:0)-cdn.google.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cdn.google.com",
@@ -28062,6 +28689,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 6,
       },
     ],
+    "insertOrder": 4,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cloudflare.com|g2-direct-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -28164,6 +28792,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 4,
       },
     ],
+    "insertOrder": 5,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:1)}splitAccessors{(index:0)-cloudflare.com|g2-direct-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -28266,6 +28895,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 6,
       },
     ],
+    "insertOrder": 6,
     "key": "groupId{__global__}spec{spec1}yAccessor{y1}splitAccessors{(index:0)-cloudflare.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -28368,6 +28998,7 @@ exports[`Series functional accessors Can use multiple functional/static accessor
         "y1": 4,
       },
     ],
+    "insertOrder": 7,
     "key": "groupId{__global__}spec{spec1}yAccessor{(index:1)}splitAccessors{(index:0)-cloudflare.com|g2-indirect-cdn}",
     "seriesKeys": [
       "cloudflare.com",
@@ -28381,567 +29012,6 @@ exports[`Series functional accessors Can use multiple functional/static accessor
     },
     "xAccessor": "(index:0)",
     "yAccessor": "(index:1)",
-  },
-]
-`;
-
-exports[`Series should compute data series for stacked specs 1`] = `
-[
-  {
-    "data": [
-      {
-        "datum": {
-          "x": 0,
-          "y1": 1,
-          "y2": 3,
-        },
-        "filled": undefined,
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "x": 0,
-        "y0": 0,
-        "y1": 1,
-      },
-      {
-        "datum": {
-          "x": 1,
-          "y1": 2,
-          "y2": 7,
-        },
-        "filled": undefined,
-        "initialY0": null,
-        "initialY1": 2,
-        "mark": null,
-        "x": 1,
-        "y0": 0,
-        "y1": 2,
-      },
-      {
-        "datum": {
-          "x": 2,
-          "y1": 1,
-          "y2": 2,
-        },
-        "filled": undefined,
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "x": 2,
-        "y0": 0,
-        "y1": 1,
-      },
-      {
-        "datum": {
-          "x": 3,
-          "y1": 6,
-          "y2": 10,
-        },
-        "filled": undefined,
-        "initialY0": null,
-        "initialY1": 6,
-        "mark": null,
-        "x": 3,
-        "y0": 0,
-        "y1": 6,
-      },
-    ],
-    "key": "groupId{group2}spec{spec2}yAccessor{y1}splitAccessors{}",
-    "seriesKeys": [
-      "y1",
-    ],
-    "specId": "spec2",
-    "splitAccessors": Map {},
-    "xAccessor": "x",
-    "yAccessor": "y1",
-  },
-  {
-    "data": [
-      {
-        "datum": {
-          "x": 0,
-          "y1": 1,
-          "y2": 3,
-        },
-        "filled": undefined,
-        "initialY0": null,
-        "initialY1": 3,
-        "mark": null,
-        "x": 0,
-        "y0": 1,
-        "y1": 4,
-      },
-      {
-        "datum": {
-          "x": 1,
-          "y1": 2,
-          "y2": 7,
-        },
-        "filled": undefined,
-        "initialY0": null,
-        "initialY1": 7,
-        "mark": null,
-        "x": 1,
-        "y0": 2,
-        "y1": 9,
-      },
-      {
-        "datum": {
-          "x": 2,
-          "y1": 1,
-          "y2": 2,
-        },
-        "filled": undefined,
-        "initialY0": null,
-        "initialY1": 2,
-        "mark": null,
-        "x": 2,
-        "y0": 1,
-        "y1": 3,
-      },
-      {
-        "datum": {
-          "x": 3,
-          "y1": 6,
-          "y2": 10,
-        },
-        "filled": undefined,
-        "initialY0": null,
-        "initialY1": 10,
-        "mark": null,
-        "x": 3,
-        "y0": 6,
-        "y1": 16,
-      },
-    ],
-    "key": "groupId{group2}spec{spec2}yAccessor{y2}splitAccessors{}",
-    "seriesKeys": [
-      "y2",
-    ],
-    "specId": "spec2",
-    "splitAccessors": Map {},
-    "xAccessor": "x",
-    "yAccessor": "y2",
-  },
-  {
-    "data": [
-      {
-        "datum": {
-          "x": 0,
-          "y": 1,
-        },
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 0,
-        "y0": null,
-        "y1": 1,
-      },
-      {
-        "datum": {
-          "x": 1,
-          "y": 2,
-        },
-        "initialY0": null,
-        "initialY1": 2,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 1,
-        "y0": null,
-        "y1": 2,
-      },
-      {
-        "datum": {
-          "x": 2,
-          "y": 10,
-        },
-        "initialY0": null,
-        "initialY1": 10,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 2,
-        "y0": null,
-        "y1": 10,
-      },
-      {
-        "datum": {
-          "x": 3,
-          "y": 6,
-        },
-        "initialY0": null,
-        "initialY1": 6,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 3,
-        "y0": null,
-        "y1": 6,
-      },
-    ],
-    "key": "groupId{group}spec{spec1}yAccessor{y}splitAccessors{}",
-    "seriesKeys": [
-      "y",
-    ],
-    "specId": "spec1",
-    "splitAccessors": Map {},
-    "xAccessor": "x",
-    "yAccessor": "y",
-  },
-]
-`;
-
-exports[`Series should split an array of specs into data series 1`] = `
-[
-  {
-    "data": [
-      {
-        "datum": {
-          "x": 0,
-          "y": 1,
-        },
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 0,
-        "y0": null,
-        "y1": 1,
-      },
-      {
-        "datum": {
-          "x": 1,
-          "y": 2,
-        },
-        "initialY0": null,
-        "initialY1": 2,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 1,
-        "y0": null,
-        "y1": 2,
-      },
-      {
-        "datum": {
-          "x": 2,
-          "y": 10,
-        },
-        "initialY0": null,
-        "initialY1": 10,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 2,
-        "y0": null,
-        "y1": 10,
-      },
-      {
-        "datum": {
-          "x": 3,
-          "y": 6,
-        },
-        "initialY0": null,
-        "initialY1": 6,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 3,
-        "y0": null,
-        "y1": 6,
-      },
-    ],
-    "groupId": "group",
-    "insertIndex": 0,
-    "isFiltered": false,
-    "isStacked": false,
-    "key": "groupId{group}spec{spec1}yAccessor{y}splitAccessors{}",
-    "seriesKeys": [
-      "y",
-    ],
-    "seriesType": "line",
-    "spec": {
-      "chartType": "xy_axis",
-      "data": [
-        {
-          "x": 0,
-          "y": 1,
-        },
-        {
-          "x": 1,
-          "y": 2,
-        },
-        {
-          "x": 2,
-          "y": 10,
-        },
-        {
-          "x": 3,
-          "y": 6,
-        },
-      ],
-      "groupId": "group",
-      "hideInLegend": false,
-      "id": "spec1",
-      "seriesType": "line",
-      "specType": "series",
-      "xAccessor": "x",
-      "xScaleType": "linear",
-      "yAccessors": [
-        "y",
-      ],
-      "yScaleType": "log",
-    },
-    "specId": "spec1",
-    "splitAccessors": Map {},
-    "stackMode": undefined,
-    "xAccessor": "x",
-    "yAccessor": "y",
-  },
-]
-`;
-
-exports[`Series should split an array of specs into data series 2`] = `
-[
-  {
-    "data": [
-      {
-        "datum": {
-          "x": 0,
-          "y1": 1,
-          "y2": 3,
-        },
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 0,
-        "y0": null,
-        "y1": 1,
-      },
-      {
-        "datum": {
-          "x": 1,
-          "y1": 2,
-          "y2": 7,
-        },
-        "initialY0": null,
-        "initialY1": 2,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 1,
-        "y0": null,
-        "y1": 2,
-      },
-      {
-        "datum": {
-          "x": 2,
-          "y1": 1,
-          "y2": 2,
-        },
-        "initialY0": null,
-        "initialY1": 1,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 2,
-        "y0": null,
-        "y1": 1,
-      },
-      {
-        "datum": {
-          "x": 3,
-          "y1": 6,
-          "y2": 10,
-        },
-        "initialY0": null,
-        "initialY1": 6,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 3,
-        "y0": null,
-        "y1": 6,
-      },
-    ],
-    "groupId": "group2",
-    "insertIndex": 1,
-    "isFiltered": false,
-    "isStacked": true,
-    "key": "groupId{group2}spec{spec2}yAccessor{y1}splitAccessors{}",
-    "seriesKeys": [
-      "y1",
-    ],
-    "seriesType": "line",
-    "spec": {
-      "chartType": "xy_axis",
-      "data": [
-        {
-          "x": 0,
-          "y1": 1,
-          "y2": 3,
-        },
-        {
-          "x": 1,
-          "y1": 2,
-          "y2": 7,
-        },
-        {
-          "x": 2,
-          "y1": 1,
-          "y2": 2,
-        },
-        {
-          "x": 3,
-          "y1": 6,
-          "y2": 10,
-        },
-      ],
-      "groupId": "group2",
-      "hideInLegend": false,
-      "id": "spec2",
-      "seriesType": "line",
-      "specType": "series",
-      "stackAccessors": [
-        "x",
-      ],
-      "xAccessor": "x",
-      "xScaleType": "linear",
-      "yAccessors": [
-        "y1",
-        "y2",
-      ],
-      "yScaleType": "log",
-    },
-    "specId": "spec2",
-    "splitAccessors": Map {},
-    "stackMode": undefined,
-    "xAccessor": "x",
-    "yAccessor": "y1",
-  },
-  {
-    "data": [
-      {
-        "datum": {
-          "x": 0,
-          "y1": 1,
-          "y2": 3,
-        },
-        "initialY0": null,
-        "initialY1": 3,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 0,
-        "y0": null,
-        "y1": 3,
-      },
-      {
-        "datum": {
-          "x": 1,
-          "y1": 2,
-          "y2": 7,
-        },
-        "initialY0": null,
-        "initialY1": 7,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 1,
-        "y0": null,
-        "y1": 7,
-      },
-      {
-        "datum": {
-          "x": 2,
-          "y1": 1,
-          "y2": 2,
-        },
-        "initialY0": null,
-        "initialY1": 2,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 2,
-        "y0": null,
-        "y1": 2,
-      },
-      {
-        "datum": {
-          "x": 3,
-          "y1": 6,
-          "y2": 10,
-        },
-        "initialY0": null,
-        "initialY1": 10,
-        "mark": null,
-        "smH": undefined,
-        "smV": undefined,
-        "x": 3,
-        "y0": null,
-        "y1": 10,
-      },
-    ],
-    "groupId": "group2",
-    "insertIndex": 2,
-    "isFiltered": false,
-    "isStacked": true,
-    "key": "groupId{group2}spec{spec2}yAccessor{y2}splitAccessors{}",
-    "seriesKeys": [
-      "y2",
-    ],
-    "seriesType": "line",
-    "spec": {
-      "chartType": "xy_axis",
-      "data": [
-        {
-          "x": 0,
-          "y1": 1,
-          "y2": 3,
-        },
-        {
-          "x": 1,
-          "y1": 2,
-          "y2": 7,
-        },
-        {
-          "x": 2,
-          "y1": 1,
-          "y2": 2,
-        },
-        {
-          "x": 3,
-          "y1": 6,
-          "y2": 10,
-        },
-      ],
-      "groupId": "group2",
-      "hideInLegend": false,
-      "id": "spec2",
-      "seriesType": "line",
-      "specType": "series",
-      "stackAccessors": [
-        "x",
-      ],
-      "xAccessor": "x",
-      "xScaleType": "linear",
-      "yAccessors": [
-        "y1",
-        "y2",
-      ],
-      "yScaleType": "log",
-    },
-    "specId": "spec2",
-    "splitAccessors": Map {},
-    "stackMode": undefined,
-    "xAccessor": "x",
-    "yAccessor": "y2",
   },
 ]
 `;

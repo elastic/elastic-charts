@@ -26,20 +26,20 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -49,15 +49,15 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        10,
+        1,
+        5,
       ],
       "mark": null,
-      "x": 0,
-      "y": 10,
+      "x": 1,
+      "y": 5,
     },
-    "x": 0,
-    "y": 50,
+    "x": 100,
+    "y": 75,
   },
   {
     "color": "red",
@@ -83,20 +83,20 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -106,15 +106,15 @@ exports[`Rendering points - line Multi series line chart - linear can render fir
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        5,
+        0,
+        10,
       ],
       "mark": null,
-      "x": 1,
-      "y": 5,
+      "x": 0,
+      "y": 10,
     },
-    "x": 100,
-    "y": 75,
+    "x": 0,
+    "y": 50,
   },
 ]
 `;
@@ -144,8 +144,8 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -155,10 +155,10 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
         "color": [
           0,
           0,
-          255,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -168,15 +168,15 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        20,
+        1,
+        10,
       ],
       "mark": null,
-      "x": 0,
-      "y": 20,
+      "x": 1,
+      "y": 10,
     },
-    "x": 0,
-    "y": 0,
+    "x": 100,
+    "y": 50,
   },
   {
     "color": "blue",
@@ -201,8 +201,8 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -212,10 +212,10 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
         "color": [
           0,
           0,
-          255,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -225,15 +225,15 @@ exports[`Rendering points - line Multi series line chart - linear can render sec
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        10,
+        0,
+        20,
       ],
       "mark": null,
-      "x": 1,
-      "y": 10,
+      "x": 0,
+      "y": 20,
     },
-    "x": 100,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -264,20 +264,20 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -287,15 +287,15 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        10,
+        1,
+        5,
       ],
       "mark": null,
-      "x": 0,
-      "y": 10,
+      "x": 1,
+      "y": 5,
     },
-    "x": 0,
-    "y": 50,
+    "x": 50,
+    "y": 75,
   },
   {
     "color": "red",
@@ -321,20 +321,20 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -344,15 +344,15 @@ exports[`Rendering points - line Multi series line chart - ordinal can render fi
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        5,
+        0,
+        10,
       ],
       "mark": null,
-      "x": 1,
-      "y": 5,
+      "x": 0,
+      "y": 10,
     },
-    "x": 50,
-    "y": 75,
+    "x": 0,
+    "y": 50,
   },
 ]
 `;
@@ -382,8 +382,8 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -393,10 +393,10 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
         "color": [
           0,
           0,
-          255,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -406,15 +406,15 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        20,
+        1,
+        10,
       ],
       "mark": null,
-      "x": 0,
-      "y": 20,
+      "x": 1,
+      "y": 10,
     },
-    "x": 0,
-    "y": 0,
+    "x": 50,
+    "y": 50,
   },
   {
     "color": "blue",
@@ -439,8 +439,8 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -450,10 +450,10 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
         "color": [
           0,
           0,
-          255,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -463,15 +463,15 @@ exports[`Rendering points - line Multi series line chart - ordinal can render se
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        10,
+        0,
+        20,
       ],
       "mark": null,
-      "x": 1,
-      "y": 10,
+      "x": 0,
+      "y": 20,
     },
-    "x": 50,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -502,20 +502,20 @@ exports[`Rendering points - line Multi series line chart - time can render first
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -525,15 +525,15 @@ exports[`Rendering points - line Multi series line chart - time can render first
     "value": {
       "accessor": "y1",
       "datum": [
-        1546300800000,
-        10,
+        1546387200000,
+        5,
       ],
       "mark": null,
-      "x": 1546300800000,
-      "y": 10,
+      "x": 1546387200000,
+      "y": 5,
     },
-    "x": 0,
-    "y": 50,
+    "x": 100,
+    "y": 75,
   },
   {
     "color": "red",
@@ -559,20 +559,20 @@ exports[`Rendering points - line Multi series line chart - time can render first
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -582,15 +582,15 @@ exports[`Rendering points - line Multi series line chart - time can render first
     "value": {
       "accessor": "y1",
       "datum": [
-        1546387200000,
-        5,
+        1546300800000,
+        10,
       ],
       "mark": null,
-      "x": 1546387200000,
-      "y": 5,
+      "x": 1546300800000,
+      "y": 10,
     },
-    "x": 100,
-    "y": 75,
+    "x": 0,
+    "y": 50,
   },
 ]
 `;
@@ -620,8 +620,8 @@ exports[`Rendering points - line Multi series line chart - time can render secon
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -631,10 +631,10 @@ exports[`Rendering points - line Multi series line chart - time can render secon
         "color": [
           0,
           0,
-          255,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -644,15 +644,15 @@ exports[`Rendering points - line Multi series line chart - time can render secon
     "value": {
       "accessor": "y1",
       "datum": [
-        1546300800000,
-        20,
+        1546387200000,
+        10,
       ],
       "mark": null,
-      "x": 1546300800000,
-      "y": 20,
+      "x": 1546387200000,
+      "y": 10,
     },
-    "x": 0,
-    "y": 0,
+    "x": 100,
+    "y": 50,
   },
   {
     "color": "blue",
@@ -677,8 +677,8 @@ exports[`Rendering points - line Multi series line chart - time can render secon
     "style": {
       "fill": {
         "color": [
-          255,
-          255,
+          0,
+          0,
           255,
           1,
         ],
@@ -688,10 +688,10 @@ exports[`Rendering points - line Multi series line chart - time can render secon
         "color": [
           0,
           0,
-          255,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -701,15 +701,15 @@ exports[`Rendering points - line Multi series line chart - time can render secon
     "value": {
       "accessor": "y1",
       "datum": [
-        1546387200000,
-        10,
+        1546300800000,
+        20,
       ],
       "mark": null,
-      "x": 1546387200000,
-      "y": 10,
+      "x": 1546300800000,
+      "y": 20,
     },
-    "x": 100,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -740,20 +740,20 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -763,15 +763,15 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        0,
+        1,
+        1,
       ],
       "mark": null,
-      "x": 0,
-      "y": 0,
+      "x": 1,
+      "y": 1,
     },
-    "x": 0,
-    "y": 100,
+    "x": 50,
+    "y": 0,
   },
   {
     "color": "red",
@@ -797,20 +797,20 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -820,15 +820,15 @@ exports[`Rendering points - line Removing out-of-domain points should render 3 p
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        1,
+        0,
+        0,
       ],
       "mark": null,
-      "x": 1,
-      "y": 1,
+      "x": 0,
+      "y": 0,
     },
-    "x": 50,
-    "y": 0,
+    "x": 0,
+    "y": 100,
   },
 ]
 `;
@@ -859,20 +859,20 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -882,15 +882,15 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        10,
+        1,
+        5,
       ],
       "mark": null,
-      "x": 0,
-      "y": 10,
+      "x": 1,
+      "y": 5,
     },
-    "x": 0,
-    "y": 0,
+    "x": 100,
+    "y": 50,
   },
   {
     "color": "red",
@@ -916,20 +916,20 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -939,15 +939,15 @@ exports[`Rendering points - line Single series line chart - linear Can render tw
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        5,
+        0,
+        10,
       ],
       "mark": null,
-      "x": 1,
-      "y": 5,
+      "x": 0,
+      "y": 10,
     },
-    "x": 100,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -978,20 +978,20 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -1001,15 +1001,15 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
     "value": {
       "accessor": "y1",
       "datum": [
-        0,
-        10,
+        1,
+        5,
       ],
       "mark": null,
-      "x": 0,
-      "y": 10,
+      "x": 1,
+      "y": 5,
     },
-    "x": 0,
-    "y": 0,
+    "x": 50,
+    "y": 50,
   },
   {
     "color": "red",
@@ -1035,20 +1035,20 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -1058,15 +1058,15 @@ exports[`Rendering points - line Single series line chart - ordinal Can render t
     "value": {
       "accessor": "y1",
       "datum": [
-        1,
-        5,
+        0,
+        10,
       ],
       "mark": null,
-      "x": 1,
-      "y": 5,
+      "x": 0,
+      "y": 10,
     },
-    "x": 50,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;
@@ -1097,20 +1097,20 @@ exports[`Rendering points - line Single series line chart - time Can render two 
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -1120,15 +1120,15 @@ exports[`Rendering points - line Single series line chart - time Can render two 
     "value": {
       "accessor": "y1",
       "datum": [
-        1546300800000,
-        10,
+        1546387200000,
+        5,
       ],
       "mark": null,
-      "x": 1546300800000,
-      "y": 10,
+      "x": 1546387200000,
+      "y": 5,
     },
-    "x": 0,
-    "y": 0,
+    "x": 100,
+    "y": 50,
   },
   {
     "color": "red",
@@ -1154,20 +1154,20 @@ exports[`Rendering points - line Single series line chart - time Can render two 
       "fill": {
         "color": [
           255,
-          255,
-          255,
+          0,
+          0,
           1,
         ],
       },
       "shape": "circle",
       "stroke": {
         "color": [
-          255,
           0,
           0,
-          1,
+          0,
+          0,
         ],
-        "width": 2,
+        "width": 0,
       },
     },
     "transform": {
@@ -1177,15 +1177,15 @@ exports[`Rendering points - line Single series line chart - time Can render two 
     "value": {
       "accessor": "y1",
       "datum": [
-        1546387200000,
-        5,
+        1546300800000,
+        10,
       ],
       "mark": null,
-      "x": 1546387200000,
-      "y": 5,
+      "x": 1546300800000,
+      "y": 10,
     },
-    "x": 100,
-    "y": 50,
+    "x": 0,
+    "y": 0,
   },
 ]
 `;

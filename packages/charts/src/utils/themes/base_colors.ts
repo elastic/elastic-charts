@@ -22,6 +22,15 @@ export const LIGHT_BASE_COLORS: ChartBaseColors = {
   title: '#1A1C21',
 };
 
+/** @internal */
+export const GRID_LIGHT_COLORS = '#E1E6EE';
+/** @internal */
+export const GRID_LABEL_LIGHT_COLORS = '#626D7E';
+/** @internal */
+export const GRID_DARK_COLORS = '#303845';
+/** @internal */
+export const GRID_LABEL_DARK_COLORS = '#A7B0BF';
+
 /**
  * Base dark theme colors designed to match eui, see https://eui.elastic.co/#/theming/colors/values#shades
  * @public

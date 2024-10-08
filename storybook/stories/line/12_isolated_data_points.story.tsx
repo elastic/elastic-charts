@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, CurveType, Position, ScaleType, Settings, Fit } from '@elastic/charts';
+import { Axis, Chart, CurveType, Position, ScaleType, Settings, Fit, LIGHT_THEME } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import { ChartsStory } from '../../types';
@@ -25,25 +25,25 @@ export const Example: ChartsStory = (_, { title, description }) => {
     max: KIBANA_METRICS.metrics.kibana_os_load.v1.data.length,
     step: 1,
   });
-  const pointRadius = number('default point radius', 0, {
+  const pointRadius = number('default point radius', LIGHT_THEME.lineSeriesStyle.point.radius, {
     range: true,
     min: 0,
     max: 10,
-    step: 1,
+    step: 0.5,
   });
-  const overrideRadius = number('override point radius', 0, {
-    range: true,
-    min: 0,
-    max: 10,
-    step: 1,
-  });
-  const overridePointRadius = boolean('override radius for isolated points', false);
-  const radius = number('isolated point radius', 2, {
-    range: true,
-    min: 0,
-    max: 10,
-    step: 1,
-  });
+
+  const pointVisibility = select('point visibility', { never: 'never', always: 'always', auto: 'auto' }, 'always');
+
+  const minPointVisibilityDistance = number(
+    'point visibility min distance',
+    LIGHT_THEME.lineSeriesStyle.pointVisibilityMinDistance,
+    {
+      range: true,
+      min: 0,
+      max: 100,
+      step: 1,
+    },
+  );
 
   return (
     <Chart title={title} description={description}>
@@ -52,23 +52,33 @@ export const Example: ChartsStory = (_, { title, description }) => {
         theme={{
           areaSeriesStyle: {
             point: {
-              visible: true,
+              visible: pointVisibility,
               radius: pointRadius,
             },
             isolatedPoint: {
-              radius,
               shape: customKnobs.enum.pointShape(),
             },
+            fit: {
+              line: {
+                dash: [0, 0],
+              },
+            },
+            pointVisibilityMinDistance: minPointVisibilityDistance,
           },
           lineSeriesStyle: {
             point: {
-              visible: true,
+              visible: pointVisibility,
               radius: pointRadius,
             },
             isolatedPoint: {
-              radius,
               shape: customKnobs.enum.pointShape(),
             },
+            fit: {
+              line: {
+                dash: [0, 0],
+              },
+            },
+            pointVisibilityMinDistance: minPointVisibilityDistance,
           },
         }}
         baseTheme={useBaseTheme()}
@@ -98,36 +108,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xAccessor={0}
         yAccessors={[1]}
         splitSeriesAccessors={[2]}
-        areaSeriesStyle={
-          overrideRadius > 0
-            ? {
-                point: {
-                  visible: true,
-                  radius: overrideRadius,
-                },
-                isolatedPoint: overridePointRadius
-                  ? {
-                      radius,
-                    }
-                  : {},
-              }
-            : {}
-        }
-        lineSeriesStyle={
-          overrideRadius > 0
-            ? {
-                point: {
-                  visible: true,
-                  radius: overrideRadius,
-                },
-                isolatedPoint: overridePointRadius
-                  ? {
-                      radius,
-                    }
-                  : {},
-              }
-            : {}
-        }
         data={[
           ...KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, maxDataPoints).map((d, i) => {
             if ([1, 10, 12, 20, 22, 24, 28].includes(i)) {

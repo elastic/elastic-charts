@@ -82,3 +82,18 @@ export const getRandomEntryFn = (seed = getRNGSeed()) => {
     return entries[key];
   };
 };
+
+export function shuffle<T>(arr: T[]): T[] {
+  const rng = getRandomNumberGenerator();
+  const newArr = [...arr];
+
+  for (let index = 0; index < arr.length; index++) {
+    const randomIndex = rng(0, arr.length);
+    // And swap current index value with random index value
+    const swapValue = newArr[randomIndex];
+    newArr[randomIndex] = newArr[index]!;
+    newArr[index] = swapValue!;
+  }
+
+  return newArr;
+}

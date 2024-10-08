@@ -21,7 +21,7 @@ import { isFiniteNumber } from '@elastic/charts/src/utils/common';
  */
 export function getArrayKnob(
   name: string,
-  values: (string | number)[],
+  values: (string | number)[] | ReadonlyArray<string | number>,
   separator?: string,
   group?: string,
 ): (string | number)[] {

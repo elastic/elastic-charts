@@ -605,6 +605,12 @@ export interface SettingsSpec extends Spec, LegendSpec {
    */
   orderOrdinalBinsBy?: OrderBy;
   /**
+   * A SeriesSortFn to sort the rendering order of series.
+   * Left/right for cluster, bottom-up for stacked.
+   * Currently available only on XY charts
+   */
+  renderingSort?: SeriesCompareFn;
+  /**
    * Render component for no results UI
    */
   noResults?: ComponentType | ReactChild;

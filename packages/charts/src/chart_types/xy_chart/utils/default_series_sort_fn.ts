@@ -14,8 +14,11 @@ import { DataSeries } from './series';
  * @internal
  */
 export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
+  if (a.seriesType !== b.seriesType) {
+    return 0;
+  }
   if (a.groupId !== b.groupId) {
-    return a.insertIndex - b.insertIndex;
+    return a.insertOrder - b.insertOrder;
   }
 
   if (a.isStacked && !b.isStacked) {
@@ -24,19 +27,20 @@ export function defaultXYSeriesSort(a: DataSeries, b: DataSeries) {
   if (!a.isStacked && b.isStacked) {
     return 1; // b first then a
   }
-  return a.insertIndex - b.insertIndex;
+  return a.insertOrder - b.insertOrder;
 }
 
 /**
  * Return the default sorting used for XY series.
- * Ordered by group insert order, then first stacked, after non stacked.
- * Stacked series are sorted by their insert order
+ * Requires a sortOrder is already applied at the DataSeries level.
+ * Ordered by group sort order, then first stacked, after non stacked.
+ * Stacked series are sorted by their sortOrder
  * @internal
  */
 export function defaultXYLegendSeriesSort(a?: DataSeries, b?: DataSeries) {
   if (!a || !b) return 0;
   if (a.groupId !== b.groupId) {
-    return a.insertIndex - b.insertIndex;
+    return a.sortOrder - b.sortOrder;
   }
 
   if (a.isStacked && !b.isStacked) {
@@ -45,5 +49,5 @@ export function defaultXYLegendSeriesSort(a?: DataSeries, b?: DataSeries) {
   if (!a.isStacked && b.isStacked) {
     return 1; // b first then a
   }
-  return a.insertIndex - b.insertIndex;
+  return a.sortOrder - b.sortOrder;
 }

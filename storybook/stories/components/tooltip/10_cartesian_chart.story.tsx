@@ -79,7 +79,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             },
           },
           lineSeriesStyle: {
-            point: { visible: false },
+            point: { visible: 'never' },
           },
         }}
       />

@@ -568,8 +568,8 @@ export type PointShape = $Values<typeof PointShape>;
 
 /** @public */
 export interface PointStyle {
-  /** is the point visible or hidden */
-  visible: boolean;
+  /** is the point visible or hidden  or shown depending on the chart size*/
+  visible: 'never' | 'always' | 'auto';
   /** a static stroke color if defined, if not it will use the color of the series */
   stroke?: Color | ColorVariant;
   /** the stroke width of the point */
@@ -731,26 +731,51 @@ export interface BubbleSeriesStyle {
   point: PointStyle;
 }
 
-/** @public */
+/**
+ * Styles for line chart
+ * @public
+ */
 export interface LineSeriesStyle {
+  /** Style for the line  */
   line: LineStyle;
+  /** Style for the points  */
   point: PointStyle;
-  isolatedPoint: { enabled: boolean } & PointStyle;
+  /** Style for the isolated points  */
+  isolatedPoint: { enabled: boolean } & Omit<PointStyle, 'radius'>;
+  /** Style for the fitted line  */
   fit: {
     line: LineFitStyle;
   };
+  /**
+   * The minimum distance in pixels between consecutive points before hiding them
+   * when the points are configured as visible: "auto"
+   */
+  pointVisibilityMinDistance: Pixels;
 }
 
-/** @public */
+/**
+ * Styles for area chart
+ * @public
+ */
 export interface AreaSeriesStyle {
+  /** Style for the area  */
   area: AreaStyle;
+  /** Style for the area line contour  */
   line: LineStyle;
+  /** Style for the points  */
   point: PointStyle;
-  isolatedPoint: { enabled: boolean } & PointStyle;
+  /** Style for the isolated points  */
+  isolatedPoint: { enabled: boolean } & Omit<PointStyle, 'radius'>;
+  /** Style for the fitted area  */
   fit: {
     line: LineFitStyle;
     area: AreaFitStyle;
   };
+  /**
+   * The minimum distance in pixels between consecutive points before hiding them
+   * when the points are configured as visible: "auto"
+   */
+  pointVisibilityMinDistance: Pixels;
 }
 
 /** @public */
