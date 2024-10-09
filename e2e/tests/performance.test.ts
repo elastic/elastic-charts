@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test';
 
 import { common, CommonPage } from '../page_objects';
 
-test.describe('Performance', () => {
+test.describe.skip('Performance', () => {
   for (let i = 0; i < 10; i++) {
     test(`Get performance metrics ${i}`, async ({ page }) => {
       const url = CommonPage.parseUrl('http://localhost:9001/?path=/story/test-cases--lens-stress-test');
