@@ -35,7 +35,7 @@ import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { Metric } from '../../../metric/renderer/dom/metric';
-import { BulletMetricWProgress, MetricDatum } from '../../../metric/specs';
+import { BulletMetricWProgress } from '../../../metric/specs';
 import { ActiveValue, getActiveValues } from '../../selectors/get_active_values';
 import { getBulletSpec } from '../../selectors/get_bullet_spec';
 import { getChartSize } from '../../selectors/get_chart_size';
@@ -192,8 +192,8 @@ class Component extends React.Component<Props> {
 
                 return (
                   <Metric
-                    chartId="XX"
-                    datum={bulletDatum as MetricDatum} // forcing internal type use
+                    chartId={`${this.props.chartId}-${stats.rowIndex}-${stats.columnIndex}`}
+                    datum={bulletDatum}
                     hasTitles={this.props.hasTitles}
                     totalRows={stats.rows}
                     totalColumns={stats.columns}
