@@ -10,11 +10,17 @@ import {
   PADDING,
   VALUE_PART_FONT_RATIO,
   VALUE_FONT,
-  getFontSizes,
   HEIGHT_BP,
   PROGRESS_BAR_WIDTH,
   PROGRESS_BAR_TARGET_WIDTH,
   elementVisibility,
+  BreakPoint,
+  EXTRA_FONT_SIZE,
+  ICON_SIZE,
+  SUBTITLE_FONT_SIZE,
+  TITLE_FONT_SIZE,
+  VALUE_FONT_SIZE,
+  VALUE_PART_FONT_SIZE,
 } from './text';
 import { getTextParts, TextParts } from './text_processing';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
@@ -22,6 +28,16 @@ import { isNil, LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { MetricDatum, isMetricWProgress, MetricWNumber } from '../../specs';
+
+/** @internal */
+export interface Sizes {
+  iconSize: number;
+  titleFontSize: number;
+  subtitleFontSize: number;
+  extraFontSize: number;
+  valueFontSize: number;
+  valuePartFontSize: number;
+}
 
 /**
  * Approximate font size to fit given available space
@@ -68,5 +84,25 @@ export function getMetricTextPartDimensions(datum: MetricDatum, panel: Size, sty
         : 0,
     visibility: elementVisibility(datum, panel, sizes, locale, style.valueFontSize === 'fit'),
     textParts: getTextParts(datum, style),
+  };
+}
+
+/** @internal */
+function getFontSizes(ranges: [number, number, BreakPoint][], value: number, style: MetricStyle): Sizes {
+  const range = ranges.find(([min, max]) => min <= value && value < max);
+  const size = range ? range[2] : ranges[0]?.[2] ?? 's';
+  const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : VALUE_FONT_SIZE[size];
+  const valuePartFontSize =
+    typeof style.valueFontSize === 'number'
+      ? Math.ceil(valueFontSize / VALUE_PART_FONT_RATIO)
+      : VALUE_PART_FONT_SIZE[size];
+
+  return {
+    iconSize: ICON_SIZE[size],
+    titleFontSize: TITLE_FONT_SIZE[size],
+    subtitleFontSize: SUBTITLE_FONT_SIZE[size],
+    extraFontSize: EXTRA_FONT_SIZE[size],
+    valueFontSize,
+    valuePartFontSize,
   };
 }

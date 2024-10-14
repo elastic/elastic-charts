@@ -9,7 +9,7 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { getMetricTextPartDimensions } from './text_measurements';
+import { getMetricTextPartDimensions, Sizes } from './text_measurements';
 import { Color } from '../../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
 import { Font } from '../../../../common/text_utils';
@@ -20,7 +20,8 @@ import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWNumber, MetricDatum } from '../../specs';
 
-type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+/** @internal */
+export type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
 
 /**
  * synced with scss variables
@@ -43,13 +44,19 @@ export const HEIGHT_BP: [number, number, BreakPoint][] = [
 /** @internal */
 export const PADDING = 8;
 const LINE_HEIGHT = 1.2; // aligned with our CSS
-const ICON_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+/** @internal */
+export const ICON_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
 
-const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
-const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
-const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
-const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 72, xl: 104, xxl: 170 };
-const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
+/** @internal */
+export const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+/** @internal */
+export const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
+/** @internal */
+export const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
+/** @internal */
+export const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 72, xl: 104, xxl: 170 };
+/** @internal */
+export const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
 /** @internal */
 export const VALUE_PART_FONT_RATIO = 1.3;
 
@@ -66,35 +73,6 @@ const SUBTITLE_FONT: Font = {
   ...TITLE_FONT,
   fontWeight: 'normal',
 };
-
-interface Sizes {
-  iconSize: number;
-  titleFontSize: number;
-  subtitleFontSize: number;
-  extraFontSize: number;
-  valueFontSize: number;
-  valuePartFontSize: number;
-}
-
-/** @internal */
-export function getFontSizes(ranges: [number, number, BreakPoint][], value: number, style: MetricStyle): Sizes {
-  const range = ranges.find(([min, max]) => min <= value && value < max);
-  const size = range ? range[2] : ranges[0]?.[2] ?? 's';
-  const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : VALUE_FONT_SIZE[size];
-  const valuePartFontSize =
-    typeof style.valueFontSize === 'number'
-      ? Math.ceil(valueFontSize / VALUE_PART_FONT_RATIO)
-      : VALUE_PART_FONT_SIZE[size];
-
-  return {
-    iconSize: ICON_SIZE[size],
-    titleFontSize: TITLE_FONT_SIZE[size],
-    subtitleFontSize: SUBTITLE_FONT_SIZE[size],
-    extraFontSize: EXTRA_FONT_SIZE[size],
-    valueFontSize,
-    valuePartFontSize,
-  };
-}
 
 type ElementVisibility = {
   titleMaxLines: number;
