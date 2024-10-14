@@ -12,6 +12,7 @@ import React, { CSSProperties, useState } from 'react';
 import { ProgressBar } from './progress';
 import { SparkLine, getSparkLineColor } from './sparkline';
 import { MetricText } from './text';
+import { MetricTextDimensions } from './text_measurements';
 import { ColorContrastOptions, combineColors } from '../../../../common/color_calcs';
 import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
@@ -25,7 +26,6 @@ import {
   MetricElementEvent,
 } from '../../../../specs';
 import { LayoutDirection, isNil } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { MetricWNumber, isMetricWProgress, isMetricWTrend } from '../../specs';
 
@@ -38,11 +38,10 @@ export const Metric: React.FunctionComponent<{
   totalColumns: number;
   totalRows: number;
   datum: MetricDatum;
-  panel: Size;
   style: MetricStyle;
   backgroundColor: Color;
   contrastOptions: ColorContrastOptions;
-  locale: string;
+  textDimensions: MetricTextDimensions;
   fittedValueFontSize: number;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
@@ -55,11 +54,10 @@ export const Metric: React.FunctionComponent<{
   totalColumns,
   totalRows,
   datum,
-  panel,
   style,
   backgroundColor: chartBackgroundColor,
   contrastOptions,
-  locale,
+  textDimensions,
   onElementClick,
   onElementOver,
   onElementOut,
@@ -168,13 +166,12 @@ export const Metric: React.FunctionComponent<{
       <MetricText
         id={metricHTMLId}
         datum={datumWithInteractionColor}
-        panel={panel}
         style={style}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
         progressBarSize={progressBarSize}
         highContrastTextColor={finalTextColor.keyword}
-        locale={locale}
         fittedValueFontSize={fittedValueFontSize}
+        textDimensions={textDimensions}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (

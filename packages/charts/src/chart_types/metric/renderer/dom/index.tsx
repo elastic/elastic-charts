@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
-import { getFitValueFontSize, getMetricTextPartDimensions } from './text_measurements';
+import { getFitValueFontSize, getMetricTextPartDimensions, MetricTextDimensions } from './text_measurements';
 import { ColorContrastOptions, combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
@@ -33,7 +33,7 @@ import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { MetricSpec } from '../../specs';
+import { MetricDatum, MetricSpec } from '../../specs';
 import { chartSize } from '../../state/selectors/chart_size';
 import { getMetricSpecs } from '../../state/selectors/data';
 import { hasChartTitles } from '../../state/selectors/has_chart_titles';
@@ -124,6 +124,49 @@ function Component({
             return Math.min(acc, fontSize);
           }, Number.MAX_SAFE_INTEGER);
 
+  const metricsConfigs: Array<
+    | { key: string; className: string; type: 'left' | 'right' }
+    | { key: string; rowIndex: number; columnIndex: number; textDimensions: MetricTextDimensions; datum: MetricDatum }
+  > = data.flatMap((columns, rowIndex) => {
+    return [
+      ...columns.map((datum, columnIndex) => {
+        const key = `${columnIndex}-${rowIndex}`;
+        if (!datum) {
+          return {
+            key,
+            type: 'left' as const,
+            // fill undefined with empty panels
+            className: classNames('echMetric', {
+              'echMetric--rightBorder': columnIndex < maxColumns - 1,
+              'echMetric--bottomBorder': rowIndex < totalRows - 1,
+              'echMetric--topBorder': hasTitles && rowIndex === 0,
+            }),
+          };
+        }
+        const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
+        return {
+          key,
+          datum,
+          columnIndex,
+          rowIndex,
+          textDimensions,
+        };
+      }),
+      // fill the grid row with empty panels
+      ...Array.from({ length: maxColumns - columns.length }, (_, zeroBasedColumnIndex) => {
+        const columnIndex = zeroBasedColumnIndex + columns.length;
+        return {
+          key: `missing-${columnIndex}-${rowIndex}`,
+          type: 'right' as const,
+          className: classNames('echMetric', {
+            'echMetric--bottomBorder': rowIndex < totalRows - 1,
+            'echMetric--topBorder': hasTitles && rowIndex === 0,
+          }),
+        };
+      }),
+    ];
+  });
+
   return (
     // eslint-disable-next-line jsx-a11y/no-redundant-roles
     <ul
@@ -136,64 +179,36 @@ function Component({
         gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr)`,
       }}
     >
-      {data.flatMap((columns, rowIndex) => {
-        return [
-          ...columns.map((datum, columnIndex) => {
-            // fill undefined with empty panels
-            const emptyMetricClassName = classNames('echMetric', {
-              'echMetric--rightBorder': columnIndex < maxColumns - 1,
-              'echMetric--bottomBorder': rowIndex < totalRows - 1,
-              'echMetric--topBorder': hasTitles && rowIndex === 0,
-            });
-            return !datum ? (
-              <li key={`${columnIndex}-${rowIndex}`} role="presentation">
-                <div
-                  className={emptyMetricClassName}
-                  style={{ borderColor: style.border, backgroundColor: emptyBackground }}
-                >
-                  <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor.keyword }}></div>
-                </div>
-              </li>
-            ) : (
-              <li key={`${columnIndex}-${rowIndex}`}>
-                <MetricComponent
-                  chartId={chartId}
-                  hasTitles={hasTitles}
-                  datum={datum}
-                  totalRows={totalRows}
-                  totalColumns={maxColumns}
-                  rowIndex={rowIndex}
-                  columnIndex={columnIndex}
-                  panel={panel}
-                  style={style}
-                  backgroundColor={backgroundColor}
-                  contrastOptions={contrastOptions}
-                  onElementClick={onElementClick}
-                  onElementOut={onElementOut}
-                  onElementOver={onElementOver}
-                  locale={locale}
-                  fittedValueFontSize={fittedValueFontSize}
-                />
-              </li>
-            );
-          }),
-          // fill the grid row with empty panels
-          ...Array.from({ length: maxColumns - columns.length }, (_, zeroBasedColumnIndex) => {
-            const columnIndex = zeroBasedColumnIndex + columns.length;
-            const emptyMetricClassName = classNames('echMetric', {
-              'echMetric--bottomBorder': rowIndex < totalRows - 1,
-              'echMetric--topBorder': hasTitles && rowIndex === 0,
-            });
-            return (
-              <li key={`missing-${columnIndex}-${rowIndex}`} role="presentation">
-                <div
-                  className={emptyMetricClassName}
-                  style={{ borderColor: style.border, backgroundColor: emptyBackground }}
-                ></div>
-              </li>
-            );
-          }),
-        ];
+      {metricsConfigs.map((config) => {
+        return 'type' in config ? (
+          <li key={config.key} role="presentation">
+            <div className={config.className} style={{ borderColor: style.border, backgroundColor: emptyBackground }}>
+              {config.type === 'left' && (
+                <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor.keyword }}></div>
+              )}
+            </div>
+          </li>
+        ) : (
+          <li key={config.key}>
+            <MetricComponent
+              chartId={chartId}
+              hasTitles={hasTitles}
+              datum={config.datum}
+              totalRows={totalRows}
+              totalColumns={maxColumns}
+              rowIndex={config.rowIndex}
+              columnIndex={config.columnIndex}
+              style={style}
+              backgroundColor={backgroundColor}
+              contrastOptions={contrastOptions}
+              onElementClick={onElementClick}
+              onElementOut={onElementOut}
+              onElementOver={onElementOver}
+              textDimensions={config.textDimensions}
+              fittedValueFontSize={fittedValueFontSize}
+            />
+          </li>
+        );
       })}
     </ul>
   );

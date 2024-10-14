@@ -102,7 +102,26 @@ export function getFitValueFontSize(
 }
 
 /** @internal */
-export function getMetricTextPartDimensions(datum: MetricDatum, panel: Size, style: MetricStyle, locale: string) {
+export interface MetricTextDimensions {
+  sizes: Sizes;
+  hasProgressBar: boolean;
+  progressBarDirection: LayoutDirection | undefined;
+  progressBarWidth: number;
+  visibility: ElementVisibility & {
+    titleLines: string[];
+    subtitleLines: string[];
+    gapHeight: number;
+  };
+  textParts: TextParts[];
+}
+
+/** @internal */
+export function getMetricTextPartDimensions(
+  datum: MetricDatum,
+  panel: Size,
+  style: MetricStyle,
+  locale: string,
+): MetricTextDimensions {
   const sizes = getFontSizes(HEIGHT_BP, panel.height, style);
   const hasProgressBar = isMetricWProgress(datum);
   const hasTarget = !isNil((datum as MetricWNumber)?.target);

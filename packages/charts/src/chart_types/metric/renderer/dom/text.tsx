@@ -9,10 +9,9 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { getMetricTextPartDimensions, PADDING, VALUE_PART_FONT_RATIO } from './text_measurements';
+import { MetricTextDimensions, PADDING, VALUE_PART_FONT_RATIO } from './text_measurements';
 import { Color } from '../../../../common/colors';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWNumber, MetricDatum } from '../../specs';
 
@@ -32,31 +31,25 @@ function lineClamp(maxLines: number): CSSProperties {
 export const MetricText: React.FunctionComponent<{
   id: string;
   datum: MetricDatum;
-  panel: Size;
   style: MetricStyle;
   onElementClick?: () => void;
   highContrastTextColor: Color;
   progressBarSize: 'small';
   fittedValueFontSize: number;
-  locale: string;
+  textDimensions: MetricTextDimensions;
 }> = ({
   id,
   datum,
-  panel,
   style,
   onElementClick,
   highContrastTextColor,
   progressBarSize,
-  locale,
+  textDimensions,
   fittedValueFontSize,
 }) => {
-  const { sizes, hasProgressBar, progressBarDirection, visibility, textParts } = getMetricTextPartDimensions(
-    datum,
-    panel,
-    style,
-    locale,
-  );
+  const { sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
   const { extra, body } = datum;
+
   const containerClassName = classNames('echMetricText', {
     [`echMetricText--${progressBarSize}`]: hasProgressBar,
     'echMetricText--vertical': progressBarDirection === LayoutDirection.Vertical,
