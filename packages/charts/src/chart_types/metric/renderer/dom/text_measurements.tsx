@@ -6,16 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { VALUE_FONT, elementVisibility } from './text';
 import { getTextParts, TextParts } from './text_processing';
-import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
+import { Font } from '../../../../common/text_utils';
+import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isNil, LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
+import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { MetricDatum, isMetricWProgress, MetricWNumber } from '../../specs';
 
-/** @internal */
-export interface Sizes {
+interface Sizes {
   iconSize: number;
   titleFontSize: number;
   subtitleFontSize: number;
@@ -25,13 +26,22 @@ export interface Sizes {
 }
 
 type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+
+type ElementVisibility = {
+  titleMaxLines: number;
+  subtitleMaxLines: number;
+  title: boolean;
+  subtitle: boolean;
+  extra: boolean;
+};
 /**
  * synced with scss variables
- *
  */
 const PROGRESS_BAR_WIDTH = 10;
-
 const PROGRESS_BAR_TARGET_WIDTH = 4;
+const LINE_HEIGHT = 1.2; // aligned with our CSS
+/** @internal */
+export const PADDING = 8;
 
 const HEIGHT_BP: [number, number, BreakPoint][] = [
   [0, 200, 'xs'],
@@ -41,10 +51,6 @@ const HEIGHT_BP: [number, number, BreakPoint][] = [
   [500, 600, 'xl'],
   [600, Infinity, 'xxl'],
 ];
-/** @internal */
-export const PADDING = 8;
-/** @internal */
-export const LINE_HEIGHT = 1.2; // aligned with our CSS
 
 const ICON_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
 const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
@@ -54,6 +60,19 @@ const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 7
 const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
 /** @internal */
 export const VALUE_PART_FONT_RATIO = 1.3;
+
+const TITLE_FONT: Font = {
+  fontStyle: 'normal',
+  fontFamily: DEFAULT_FONT_FAMILY,
+  fontVariant: 'normal',
+  fontWeight: 'bold',
+  textColor: 'black',
+};
+const VALUE_FONT = TITLE_FONT;
+const SUBTITLE_FONT: Font = {
+  ...TITLE_FONT,
+  fontWeight: 'normal',
+};
 
 /**
  * Approximate font size to fit given available space
@@ -120,4 +139,91 @@ function getFontSizes(ranges: [number, number, BreakPoint][], value: number, sty
     valueFontSize,
     valuePartFontSize,
   };
+}
+
+/** @internal */
+export function elementVisibility(
+  datum: MetricDatum,
+  panel: Size,
+  sizes: Sizes,
+  locale: string,
+  fit: boolean,
+): ElementVisibility & {
+  titleLines: string[];
+  subtitleLines: string[];
+  gapHeight: number;
+} {
+  const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
+  const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
+    return datum.title
+      ? PADDING +
+          wrapText(datum.title, TITLE_FONT, sizes.titleFontSize, maxTitlesWidth, maxLines, textMeasure, locale).length *
+            sizes.titleFontSize *
+            LINE_HEIGHT
+      : 0;
+  };
+
+  const subtitleHeight = (maxLines: number, textMeasure: TextMeasure) => {
+    return datum.subtitle
+      ? PADDING +
+          wrapText(datum.subtitle, SUBTITLE_FONT, sizes.subtitleFontSize, maxTitlesWidth, maxLines, textMeasure, locale)
+            .length *
+            sizes.subtitleFontSize *
+            LINE_HEIGHT
+      : 0;
+  };
+
+  const extraHeight = sizes.extraFontSize * LINE_HEIGHT;
+  const valueHeight = sizes.valueFontSize * LINE_HEIGHT;
+
+  const responsiveBreakPoints: Array<ElementVisibility> = [
+    { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 3, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 2, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 1, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
+    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
+    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
+    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
+  ];
+
+  const getCombinedHeight = (
+    { titleMaxLines, subtitleMaxLines, title, subtitle, extra }: ElementVisibility,
+    measure: TextMeasure,
+  ) =>
+    (title && titleMaxLines > 0 ? titleHeight(titleMaxLines, measure) : 0) +
+    (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
+    (extra ? extraHeight : 0) +
+    valueHeight +
+    PADDING;
+
+  const isVisible = (ev: ElementVisibility, measure: TextMeasure) => getCombinedHeight(ev, measure) < panel.height;
+
+  return withTextMeasure((textMeasure) => {
+    const visibilityBreakpoint = fit
+      ? responsiveBreakPoints.at(0)!
+      : responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
+
+    return {
+      ...visibilityBreakpoint,
+      gapHeight: Math.max(0, panel.height - getCombinedHeight(visibilityBreakpoint, textMeasure)),
+      titleLines: wrapText(
+        datum.title ?? '',
+        TITLE_FONT,
+        sizes.titleFontSize,
+        maxTitlesWidth,
+        visibilityBreakpoint.titleMaxLines,
+        textMeasure,
+        locale,
+      ),
+      subtitleLines: wrapText(
+        datum.subtitle ?? '',
+        SUBTITLE_FONT,
+        sizes.subtitleFontSize,
+        maxTitlesWidth,
+        visibilityBreakpoint.subtitleMaxLines,
+        textMeasure,
+        locale,
+      ),
+    };
+  });
 }

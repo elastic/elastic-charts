@@ -9,125 +9,12 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { getMetricTextPartDimensions, LINE_HEIGHT, PADDING, Sizes, VALUE_PART_FONT_RATIO } from './text_measurements';
+import { getMetricTextPartDimensions, PADDING, VALUE_PART_FONT_RATIO } from './text_measurements';
 import { Color } from '../../../../common/colors';
-import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
-import { Font } from '../../../../common/text_utils';
-import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
-import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWNumber, MetricDatum } from '../../specs';
-
-const TITLE_FONT: Font = {
-  fontStyle: 'normal',
-  fontFamily: DEFAULT_FONT_FAMILY,
-  fontVariant: 'normal',
-  fontWeight: 'bold',
-  textColor: 'black',
-};
-/** @internal */
-export const VALUE_FONT = TITLE_FONT;
-const SUBTITLE_FONT: Font = {
-  ...TITLE_FONT,
-  fontWeight: 'normal',
-};
-
-type ElementVisibility = {
-  titleMaxLines: number;
-  subtitleMaxLines: number;
-  title: boolean;
-  subtitle: boolean;
-  extra: boolean;
-};
-
-/** @internal */
-export function elementVisibility(
-  datum: MetricDatum,
-  panel: Size,
-  sizes: Sizes,
-  locale: string,
-  fit: boolean,
-): ElementVisibility & {
-  titleLines: string[];
-  subtitleLines: string[];
-  gapHeight: number;
-} {
-  const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
-  const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
-    return datum.title
-      ? PADDING +
-          wrapText(datum.title, TITLE_FONT, sizes.titleFontSize, maxTitlesWidth, maxLines, textMeasure, locale).length *
-            sizes.titleFontSize *
-            LINE_HEIGHT
-      : 0;
-  };
-
-  const subtitleHeight = (maxLines: number, textMeasure: TextMeasure) => {
-    return datum.subtitle
-      ? PADDING +
-          wrapText(datum.subtitle, SUBTITLE_FONT, sizes.subtitleFontSize, maxTitlesWidth, maxLines, textMeasure, locale)
-            .length *
-            sizes.subtitleFontSize *
-            LINE_HEIGHT
-      : 0;
-  };
-
-  const extraHeight = sizes.extraFontSize * LINE_HEIGHT;
-  const valueHeight = sizes.valueFontSize * LINE_HEIGHT;
-
-  const responsiveBreakPoints: Array<ElementVisibility> = [
-    { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 3, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 2, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-  ];
-
-  const getCombinedHeight = (
-    { titleMaxLines, subtitleMaxLines, title, subtitle, extra }: ElementVisibility,
-    measure: TextMeasure,
-  ) =>
-    (title && titleMaxLines > 0 ? titleHeight(titleMaxLines, measure) : 0) +
-    (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
-    (extra ? extraHeight : 0) +
-    valueHeight +
-    PADDING;
-
-  const isVisible = (ev: ElementVisibility, measure: TextMeasure) => getCombinedHeight(ev, measure) < panel.height;
-
-  return withTextMeasure((textMeasure) => {
-    const visibilityBreakpoint = fit
-      ? responsiveBreakPoints.at(0)!
-      : responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
-
-    return {
-      ...visibilityBreakpoint,
-      gapHeight: Math.max(0, panel.height - getCombinedHeight(visibilityBreakpoint, textMeasure)),
-      titleLines: wrapText(
-        datum.title ?? '',
-        TITLE_FONT,
-        sizes.titleFontSize,
-        maxTitlesWidth,
-        visibilityBreakpoint.titleMaxLines,
-        textMeasure,
-        locale,
-      ),
-      subtitleLines: wrapText(
-        datum.subtitle ?? '',
-        SUBTITLE_FONT,
-        sizes.subtitleFontSize,
-        maxTitlesWidth,
-        visibilityBreakpoint.subtitleMaxLines,
-        textMeasure,
-        locale,
-      ),
-    };
-  });
-}
 
 function lineClamp(maxLines: number): CSSProperties {
   return {
