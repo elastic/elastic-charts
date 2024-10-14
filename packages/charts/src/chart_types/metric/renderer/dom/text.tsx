@@ -9,7 +9,7 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { getMetricTextPartDimensions, Sizes } from './text_measurements';
+import { getMetricTextPartDimensions, LINE_HEIGHT, PADDING, Sizes, VALUE_PART_FONT_RATIO } from './text_measurements';
 import { Color } from '../../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
 import { Font } from '../../../../common/text_utils';
@@ -19,46 +19,6 @@ import { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { isMetricWNumber, MetricDatum } from '../../specs';
-
-/** @internal */
-export type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
-
-/**
- * synced with scss variables
- * @internal
- */
-export const PROGRESS_BAR_WIDTH = 10;
-/** @internal */
-export const PROGRESS_BAR_TARGET_WIDTH = 4;
-
-/** @internal */
-export const HEIGHT_BP: [number, number, BreakPoint][] = [
-  [0, 200, 'xs'],
-  [200, 300, 's'],
-  [300, 400, 'm'],
-  [400, 500, 'l'],
-  [500, 600, 'xl'],
-  [600, Infinity, 'xxl'],
-];
-
-/** @internal */
-export const PADDING = 8;
-const LINE_HEIGHT = 1.2; // aligned with our CSS
-/** @internal */
-export const ICON_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
-
-/** @internal */
-export const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
-/** @internal */
-export const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
-/** @internal */
-export const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
-/** @internal */
-export const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 72, xl: 104, xxl: 170 };
-/** @internal */
-export const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
-/** @internal */
-export const VALUE_PART_FONT_RATIO = 1.3;
 
 const TITLE_FONT: Font = {
   fontStyle: 'normal',

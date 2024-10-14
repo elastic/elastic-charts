@@ -6,22 +6,7 @@
  * Side Public License, v 1.
  */
 
-import {
-  PADDING,
-  VALUE_PART_FONT_RATIO,
-  VALUE_FONT,
-  HEIGHT_BP,
-  PROGRESS_BAR_WIDTH,
-  PROGRESS_BAR_TARGET_WIDTH,
-  elementVisibility,
-  BreakPoint,
-  EXTRA_FONT_SIZE,
-  ICON_SIZE,
-  SUBTITLE_FONT_SIZE,
-  TITLE_FONT_SIZE,
-  VALUE_FONT_SIZE,
-  VALUE_PART_FONT_SIZE,
-} from './text';
+import { VALUE_FONT, elementVisibility } from './text';
 import { getTextParts, TextParts } from './text_processing';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isNil, LayoutDirection } from '../../../../utils/common';
@@ -39,11 +24,41 @@ export interface Sizes {
   valuePartFontSize: number;
 }
 
+type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+/**
+ * synced with scss variables
+ *
+ */
+const PROGRESS_BAR_WIDTH = 10;
+
+const PROGRESS_BAR_TARGET_WIDTH = 4;
+
+const HEIGHT_BP: [number, number, BreakPoint][] = [
+  [0, 200, 'xs'],
+  [200, 300, 's'],
+  [300, 400, 'm'],
+  [400, 500, 'l'],
+  [500, 600, 'xl'],
+  [600, Infinity, 'xxl'],
+];
+/** @internal */
+export const PADDING = 8;
+/** @internal */
+export const LINE_HEIGHT = 1.2; // aligned with our CSS
+
+const ICON_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
+const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
+const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 72, xl: 104, xxl: 170 };
+const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
+/** @internal */
+export const VALUE_PART_FONT_RATIO = 1.3;
+
 /**
  * Approximate font size to fit given available space
  * @internal
  */
-
 export function getFitValueFontSize(
   valueFontSize: number,
   width: number,
@@ -66,8 +81,8 @@ export function getFitValueFontSize(
 
   return Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
 }
-/** @internal */
 
+/** @internal */
 export function getMetricTextPartDimensions(datum: MetricDatum, panel: Size, style: MetricStyle, locale: string) {
   const sizes = getFontSizes(HEIGHT_BP, panel.height, style);
   const hasProgressBar = isMetricWProgress(datum);
