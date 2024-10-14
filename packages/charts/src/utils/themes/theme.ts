@@ -324,7 +324,7 @@ export interface HeatmapStyle {
 export interface MetricStyle {
   textDarkColor: Color;
   textLightColor: Color;
-  valueFontSize: 'default' | 'fit' | number;
+  valueFontSize: 'default' | 'fit' | 'snap' | number;
   minValueFontSize: number;
   titlesTextAlign: 'left' | 'center' | 'right';
   valuesTextAlign: 'left' | 'center' | 'right';

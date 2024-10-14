@@ -16,10 +16,11 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
 import {
+  getFittedFontSizes,
   getFitValueFontSize,
   getMetricTextPartDimensions,
+  getSnappedFontSizes,
   MetricTextDimensions,
-  VALUE_PART_FONT_RATIO,
 } from './text_measurements';
 import { ColorContrastOptions, combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
@@ -128,7 +129,7 @@ function Component({
           }
           const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
           // compute the global fittedValueFontSize
-          if (style.valueFontSize === 'fit') {
+          if (style.valueFontSize === 'fit' || style.valueFontSize === 'snap') {
             const fontSize = getFitValueFontSize(
               textDimensions.sizes.valueFontSize,
               panel.width - textDimensions.progressBarWidth,
@@ -167,11 +168,16 @@ function Component({
   );
 
   // update the configs with the fitted valueFontSize
-  if (style.valueFontSize === 'fit') {
+  if (style.valueFontSize === 'fit' || style.valueFontSize === 'snap') {
+    const { valueFontSize, valuePartFontSize } =
+      style.valueFontSize === 'snap'
+        ? getSnappedFontSizes(metricsConfigs.fittedValueFontSize)
+        : getFittedFontSizes(metricsConfigs.fittedValueFontSize);
+
     metricsConfigs.configs.forEach((config) => {
       if (!('type' in config)) {
-        config.textDimensions.sizes.valueFontSize = metricsConfigs.fittedValueFontSize;
-        config.textDimensions.sizes.valuePartFontSize = metricsConfigs.fittedValueFontSize / VALUE_PART_FONT_RATIO;
+        config.textDimensions.sizes.valueFontSize = valueFontSize;
+        config.textDimensions.sizes.valuePartFontSize = valuePartFontSize;
       }
     });
   }

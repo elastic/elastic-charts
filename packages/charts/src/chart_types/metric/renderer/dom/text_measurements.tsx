@@ -25,7 +25,7 @@ interface Sizes {
   valuePartFontSize: number;
 }
 
-type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
+type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
 
 type ElementVisibility = {
   titleMaxLines: number;
@@ -44,7 +44,9 @@ const LINE_HEIGHT = 1.2; // aligned with our CSS
 export const PADDING = 8;
 
 const HEIGHT_BP: [number, number, BreakPoint][] = [
-  [0, 200, 'xs'],
+  [0, 50, 'xxxs'],
+  [50, 100, 'xxs'],
+  [100, 200, 'xs'],
   [200, 300, 's'],
   [300, 400, 'm'],
   [400, 500, 'l'],
@@ -52,14 +54,50 @@ const HEIGHT_BP: [number, number, BreakPoint][] = [
   [600, Infinity, 'xxl'],
 ];
 
-const ICON_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
-const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
-const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
-const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
-const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 72, xl: 104, xxl: 170 };
-const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
-/** @internal */
-export const VALUE_PART_FONT_RATIO = 1.3;
+const ICON_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
+const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
+  xxxs: 14,
+  xxs: 14,
+  xs: 14,
+  s: 14,
+  m: 16,
+  l: 20,
+  xl: 26,
+  xxl: 36,
+};
+const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xxxs: 14, xxs: 14, xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
+const VALUE_FONT_SIZE: Record<BreakPoint, number> = {
+  xxxs: 16,
+  xxs: 26,
+  xs: 36,
+  s: 48,
+  m: 56,
+  l: 72,
+  xl: 104,
+  xxl: 170,
+};
+const VALUE_FONT_SIZE_VALUES = [
+  VALUE_FONT_SIZE.xxxs,
+  VALUE_FONT_SIZE.xxs,
+  VALUE_FONT_SIZE.xs,
+  VALUE_FONT_SIZE.s,
+  VALUE_FONT_SIZE.m,
+  VALUE_FONT_SIZE.l,
+  VALUE_FONT_SIZE.xl,
+];
+const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = {
+  xxxs: 14,
+  xxs: 18,
+  xs: 24,
+  s: 36,
+  m: 42,
+  l: 56,
+  xl: 80,
+  xxl: 110,
+};
+
+const VALUE_PART_FONT_RATIO = 1.3;
 
 const TITLE_FONT: Font = {
   fontStyle: 'normal',
@@ -147,7 +185,7 @@ function getFontSizes(ranges: [number, number, BreakPoint][], value: number, sty
   const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : VALUE_FONT_SIZE[size];
   const valuePartFontSize =
     typeof style.valueFontSize === 'number'
-      ? Math.ceil(valueFontSize / VALUE_PART_FONT_RATIO)
+      ? Math.ceil(style.valueFontSize / VALUE_PART_FONT_RATIO)
       : VALUE_PART_FONT_SIZE[size];
 
   return {
@@ -157,6 +195,26 @@ function getFontSizes(ranges: [number, number, BreakPoint][], value: number, sty
     extraFontSize: EXTRA_FONT_SIZE[size],
     valueFontSize,
     valuePartFontSize,
+  };
+}
+
+/** @internal */
+export function getFittedFontSizes(fittedValueFontSize: number): Pick<Sizes, 'valueFontSize' | 'valuePartFontSize'> {
+  return {
+    valueFontSize: fittedValueFontSize,
+    valuePartFontSize: fittedValueFontSize / VALUE_PART_FONT_RATIO,
+  };
+}
+
+/** @internal */
+export function getSnappedFontSizes(fittedValueFontSize: number): Pick<Sizes, 'valueFontSize' | 'valuePartFontSize'> {
+  const fontSize =
+    VALUE_FONT_SIZE_VALUES.findLast((value) => {
+      return value <= fittedValueFontSize;
+    }) ?? (fittedValueFontSize > VALUE_FONT_SIZE.xxl ? VALUE_FONT_SIZE.xxl : VALUE_FONT_SIZE.xxxs);
+  return {
+    valueFontSize: fontSize,
+    valuePartFontSize: fontSize / VALUE_PART_FONT_RATIO,
   };
 }
 
