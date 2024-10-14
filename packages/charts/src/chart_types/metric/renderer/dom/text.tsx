@@ -14,17 +14,11 @@ import { Color } from '../../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
 import { Font } from '../../../../common/text_utils';
 import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../utils/common';
+import { LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWNumber, isMetricWNumberArrayValues, MetricDatum } from '../../specs';
-
-/** @internal */
-export interface TextParts {
-  emphasis: 'small' | 'normal';
-  text: string;
-}
+import { isMetricWNumber, MetricDatum } from '../../specs';
 
 type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
 
@@ -380,45 +374,3 @@ export const MetricText: React.FunctionComponent<{
     </div>
   );
 };
-
-/** @internal */
-export function getTextParts(datum: MetricDatum, style: MetricStyle): TextParts[] {
-  const values = Array.isArray(datum.value) ? datum.value : [datum.value];
-  const valueFormatter =
-    isMetricWNumber(datum) || isMetricWNumberArrayValues(datum) ? datum.valueFormatter : (v: number) => `${v}`;
-  const textParts = values.reduce<TextParts[]>((acc, value, i, { length }) => {
-    const parts: TextParts[] =
-      typeof value === 'number'
-        ? isFiniteNumber(value)
-          ? splitNumericSuffixPrefix(valueFormatter(value))
-          : [{ emphasis: 'normal', text: style.nonFiniteText }]
-        : [{ emphasis: 'normal', text: value }];
-
-    if (i < length - 1) {
-      parts.push({ emphasis: 'normal', text: ', ' });
-    }
-    return [...acc, ...parts];
-  }, []);
-
-  if (!Array.isArray(datum.value)) return textParts;
-
-  return [{ emphasis: 'normal', text: '[' }, ...textParts, { emphasis: 'normal', text: ']' }];
-}
-
-function splitNumericSuffixPrefix(text: string): TextParts[] {
-  return text
-    .split('')
-    .reduce<{ emphasis: 'normal' | 'small'; textParts: string[] }[]>((acc, curr) => {
-      const emphasis = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'normal' : 'small';
-      if (acc.length > 0 && acc.at(-1)?.emphasis === emphasis) {
-        acc.at(-1)?.textParts.push(curr);
-      } else {
-        acc.push({ emphasis, textParts: [curr] });
-      }
-      return acc;
-    }, [])
-    .map(({ emphasis, textParts }) => ({
-      emphasis,
-      text: textParts.join(''),
-    }));
-}

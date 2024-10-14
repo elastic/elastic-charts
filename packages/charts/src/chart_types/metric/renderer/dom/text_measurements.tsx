@@ -7,7 +7,6 @@
  */
 
 import {
-  TextParts,
   PADDING,
   VALUE_PART_FONT_RATIO,
   VALUE_FONT,
@@ -16,8 +15,8 @@ import {
   PROGRESS_BAR_WIDTH,
   PROGRESS_BAR_TARGET_WIDTH,
   elementVisibility,
-  getTextParts,
 } from './text';
+import { getTextParts, TextParts } from './text_processing';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isNil, LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
