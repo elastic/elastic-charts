@@ -2101,7 +2101,7 @@ export interface MetricStyle {
     // (undocumented)
     titlesTextAlign: 'left' | 'center' | 'right';
     // (undocumented)
-    valueFontSize: 'default' | 'fit' | number;
+    valueFontSize: 'default' | 'fit' | 'snap' | number;
     // (undocumented)
     valuesTextAlign: 'left' | 'center' | 'right';
 }
