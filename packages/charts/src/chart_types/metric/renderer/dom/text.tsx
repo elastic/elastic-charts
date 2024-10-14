@@ -9,7 +9,7 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
-import { MetricTextDimensions, PADDING, VALUE_PART_FONT_RATIO } from './text_measurements';
+import { MetricTextDimensions, PADDING } from './text_measurements';
 import { Color } from '../../../../common/colors';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { MetricStyle } from '../../../../utils/themes/theme';
@@ -35,18 +35,8 @@ export const MetricText: React.FunctionComponent<{
   onElementClick?: () => void;
   highContrastTextColor: Color;
   progressBarSize: 'small';
-  fittedValueFontSize: number;
   textDimensions: MetricTextDimensions;
-}> = ({
-  id,
-  datum,
-  style,
-  onElementClick,
-  highContrastTextColor,
-  progressBarSize,
-  textDimensions,
-  fittedValueFontSize,
-}) => {
+}> = ({ id, datum, style, onElementClick, highContrastTextColor, progressBarSize, textDimensions }) => {
   const { sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
   const { extra, body } = datum;
 
@@ -55,14 +45,6 @@ export const MetricText: React.FunctionComponent<{
     'echMetricText--vertical': progressBarDirection === LayoutDirection.Vertical,
     'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
-
-  const { valueFontSize, valuePartFontSize } =
-    style.valueFontSize === 'fit'
-      ? {
-          valueFontSize: fittedValueFontSize,
-          valuePartFontSize: fittedValueFontSize / VALUE_PART_FONT_RATIO,
-        }
-      : sizes;
 
   const TitleElement = () => (
     <span
@@ -148,7 +130,7 @@ export const MetricText: React.FunctionComponent<{
           <p
             className="echMetricText__value"
             style={{
-              fontSize: valueFontSize,
+              fontSize: sizes.valueFontSize,
               textOverflow: isMetricWNumber(datum) ? undefined : 'ellipsis',
               color: datum.valueColor,
             }}
@@ -160,7 +142,7 @@ export const MetricText: React.FunctionComponent<{
                   key={`${text}${i}`}
                   className="echMetricText__part"
                   style={{
-                    fontSize: valuePartFontSize,
+                    fontSize: sizes.valuePartFontSize,
                   }}
                 >
                   {text}
@@ -174,14 +156,14 @@ export const MetricText: React.FunctionComponent<{
             <p
               className="echMetricText__valueIcon"
               style={{
-                fontSize: valueFontSize,
+                fontSize: sizes.valueFontSize,
                 color: datum.valueColor ?? highContrastTextColor,
-                marginRight: style.valuesTextAlign === 'center' ? -(valuePartFontSize + PADDING) : undefined,
+                marginRight: style.valuesTextAlign === 'center' ? -(sizes.valuePartFontSize + PADDING) : undefined,
               }}
             >
               {renderWithProps(datum.valueIcon, {
-                width: valuePartFontSize,
-                height: valuePartFontSize,
+                width: sizes.valuePartFontSize,
+                height: sizes.valuePartFontSize,
                 color: datum.valueColor ?? highContrastTextColor,
                 verticalAlign: 'middle',
               })}

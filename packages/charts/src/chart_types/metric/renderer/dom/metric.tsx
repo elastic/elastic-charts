@@ -42,7 +42,6 @@ export const Metric: React.FunctionComponent<{
   backgroundColor: Color;
   contrastOptions: ColorContrastOptions;
   textDimensions: MetricTextDimensions;
-  fittedValueFontSize: number;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
   onElementOut?: BasicListener;
@@ -61,7 +60,6 @@ export const Metric: React.FunctionComponent<{
   onElementClick,
   onElementOver,
   onElementOut,
-  fittedValueFontSize,
 }) => {
   const progressBarSize = 'small'; // currently we provide only the small progress bar;
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
@@ -170,7 +168,6 @@ export const Metric: React.FunctionComponent<{
         onElementClick={onElementClick ? onElementClickHandler : undefined}
         progressBarSize={progressBarSize}
         highContrastTextColor={finalTextColor.keyword}
-        fittedValueFontSize={fittedValueFontSize}
         textDimensions={textDimensions}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}

@@ -15,7 +15,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
-import { getFitValueFontSize, getMetricTextPartDimensions, MetricTextDimensions } from './text_measurements';
+import {
+  getFitValueFontSize,
+  getMetricTextPartDimensions,
+  MetricTextDimensions,
+  VALUE_PART_FONT_RATIO,
+} from './text_measurements';
 import { ColorContrastOptions, combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
@@ -86,9 +91,7 @@ function Component({
   const { data } = spec;
 
   const totalRows = data.length;
-  const maxColumns = data.reduce((acc, row) => {
-    return Math.max(acc, row.length);
-  }, 0);
+  const maxColumns = data.reduce((acc, row) => Math.max(acc, row.length), 0);
 
   const panel = { width: width / maxColumns, height: height / totalRows };
   const contrastOptions: ColorContrastOptions = {
@@ -98,74 +101,80 @@ function Component({
 
   const emptyBackgroundRGBA = combineColors(colorToRgba(style.emptyBackground), colorToRgba(backgroundColor));
   const emptyBackground = RGBATupleToString(emptyBackgroundRGBA);
-  const { color: emptyForegroundColor } = highContrastColor(emptyBackgroundRGBA, undefined, contrastOptions);
+  const emptyForegroundColor = highContrastColor(emptyBackgroundRGBA, undefined, contrastOptions).color;
 
-  const fittedValueFontSize =
-    style.valueFontSize !== 'fit'
-      ? NaN
-      : data
-          .flat()
-          .filter((d) => d !== undefined)
-          .reduce((acc, datum) => {
-            const { sizes, progressBarWidth, visibility, textParts } = getMetricTextPartDimensions(
-              datum,
-              panel,
-              style,
-              locale,
-            );
+  const metricsConfigs = data.reduce<{
+    fittedValueFontSize: number;
+    configs: Array<
+      | { key: string; className: string; type: 'left' | 'right' }
+      | { key: string; rowIndex: number; columnIndex: number; textDimensions: MetricTextDimensions; datum: MetricDatum }
+    >;
+  }>(
+    (acc, columns, rowIndex) => {
+      acc.configs = acc.configs.concat(
+        columns.map((datum, columnIndex) => {
+          const key = `${columnIndex}-${rowIndex}`;
+          if (!datum) {
+            // fill with empty panels at the beginning of the row
+            return {
+              key,
+              type: 'left' as const,
+              className: classNames('echMetric', {
+                'echMetric--rightBorder': columnIndex < maxColumns - 1,
+                'echMetric--bottomBorder': rowIndex < totalRows - 1,
+                'echMetric--topBorder': hasTitles && rowIndex === 0,
+              }),
+            };
+          }
+          const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
+          // compute the global fittedValueFontSize
+          if (style.valueFontSize === 'fit') {
             const fontSize = getFitValueFontSize(
-              sizes.valueFontSize,
-              panel.width - progressBarWidth,
-              visibility.gapHeight,
-              textParts,
+              textDimensions.sizes.valueFontSize,
+              panel.width - textDimensions.progressBarWidth,
+              textDimensions.visibility.gapHeight,
+              textDimensions.textParts,
               style.minValueFontSize,
               datum.valueIcon !== undefined,
             );
-            return Math.min(acc, fontSize);
-          }, Number.MAX_SAFE_INTEGER);
-
-  const metricsConfigs: Array<
-    | { key: string; className: string; type: 'left' | 'right' }
-    | { key: string; rowIndex: number; columnIndex: number; textDimensions: MetricTextDimensions; datum: MetricDatum }
-  > = data.flatMap((columns, rowIndex) => {
-    return [
-      ...columns.map((datum, columnIndex) => {
-        const key = `${columnIndex}-${rowIndex}`;
-        if (!datum) {
+            acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, fontSize);
+          }
           return {
             key,
-            type: 'left' as const,
-            // fill undefined with empty panels
+            datum,
+            columnIndex,
+            rowIndex,
+            textDimensions,
+          };
+        }),
+        // adding all missing panels to fill up the row
+        Array.from({ length: maxColumns - columns.length }, (_, zeroBasedColumnIndex) => {
+          const columnIndex = zeroBasedColumnIndex + columns.length;
+          return {
+            key: `missing-${columnIndex}-${rowIndex}`,
+            type: 'right' as const,
             className: classNames('echMetric', {
-              'echMetric--rightBorder': columnIndex < maxColumns - 1,
               'echMetric--bottomBorder': rowIndex < totalRows - 1,
               'echMetric--topBorder': hasTitles && rowIndex === 0,
             }),
           };
-        }
-        const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
-        return {
-          key,
-          datum,
-          columnIndex,
-          rowIndex,
-          textDimensions,
-        };
-      }),
-      // fill the grid row with empty panels
-      ...Array.from({ length: maxColumns - columns.length }, (_, zeroBasedColumnIndex) => {
-        const columnIndex = zeroBasedColumnIndex + columns.length;
-        return {
-          key: `missing-${columnIndex}-${rowIndex}`,
-          type: 'right' as const,
-          className: classNames('echMetric', {
-            'echMetric--bottomBorder': rowIndex < totalRows - 1,
-            'echMetric--topBorder': hasTitles && rowIndex === 0,
-          }),
-        };
-      }),
-    ];
-  });
+        }),
+      );
+
+      return acc;
+    },
+    { configs: [], fittedValueFontSize: Number.MAX_SAFE_INTEGER },
+  );
+
+  // update the configs with the fitted valueFontSize
+  if (style.valueFontSize === 'fit') {
+    metricsConfigs.configs.forEach((config) => {
+      if (!('type' in config)) {
+        config.textDimensions.sizes.valueFontSize = metricsConfigs.fittedValueFontSize;
+        config.textDimensions.sizes.valuePartFontSize = metricsConfigs.fittedValueFontSize / VALUE_PART_FONT_RATIO;
+      }
+    });
+  }
 
   return (
     // eslint-disable-next-line jsx-a11y/no-redundant-roles
@@ -179,7 +188,7 @@ function Component({
         gridTemplateRows: `repeat(${totalRows}, minmax(${style.minHeight}px, 1fr)`,
       }}
     >
-      {metricsConfigs.map((config) => {
+      {metricsConfigs.configs.map((config) => {
         return 'type' in config ? (
           <li key={config.key} role="presentation">
             <div className={config.className} style={{ borderColor: style.border, backgroundColor: emptyBackground }}>
@@ -205,7 +214,6 @@ function Component({
               onElementOut={onElementOut}
               onElementOver={onElementOver}
               textDimensions={config.textDimensions}
-              fittedValueFontSize={fittedValueFontSize}
             />
           </li>
         );
