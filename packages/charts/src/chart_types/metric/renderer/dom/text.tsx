@@ -9,34 +9,35 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
+import { getMetricTextPartDimensions } from './text_measurements';
 import { Color } from '../../../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
 import { Font } from '../../../../common/text_utils';
 import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isFiniteNumber, isNil, LayoutDirection, renderWithProps } from '../../../../utils/common';
+import { isFiniteNumber, LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import {
-  isMetricWNumber,
-  isMetricWNumberArrayValues,
-  isMetricWProgress,
-  MetricDatum,
-  MetricWNumber,
-} from '../../specs';
+import { isMetricWNumber, isMetricWNumberArrayValues, MetricDatum } from '../../specs';
 
-interface TextParts {
+/** @internal */
+export interface TextParts {
   emphasis: 'small' | 'normal';
   text: string;
 }
 
 type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
 
-// synced with scss variables
-const PROGRESS_BAR_WIDTH = 10;
-const PROGRESS_BAR_TARGET_WIDTH = 4;
+/**
+ * synced with scss variables
+ * @internal
+ */
+export const PROGRESS_BAR_WIDTH = 10;
+/** @internal */
+export const PROGRESS_BAR_TARGET_WIDTH = 4;
 
-const HEIGHT_BP: [number, number, BreakPoint][] = [
+/** @internal */
+export const HEIGHT_BP: [number, number, BreakPoint][] = [
   [0, 200, 'xs'],
   [200, 300, 's'],
   [300, 400, 'm'],
@@ -45,7 +46,8 @@ const HEIGHT_BP: [number, number, BreakPoint][] = [
   [600, Infinity, 'xxl'],
 ];
 
-const PADDING = 8;
+/** @internal */
+export const PADDING = 8;
 const LINE_HEIGHT = 1.2; // aligned with our CSS
 const ICON_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
 
@@ -54,7 +56,8 @@ const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l
 const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
 const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 72, xl: 104, xxl: 170 };
 const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
-const VALUE_PART_FONT_RATIO = 1.3;
+/** @internal */
+export const VALUE_PART_FONT_RATIO = 1.3;
 
 const TITLE_FONT: Font = {
   fontStyle: 'normal',
@@ -63,7 +66,8 @@ const TITLE_FONT: Font = {
   fontWeight: 'bold',
   textColor: 'black',
 };
-const VALUE_FONT = TITLE_FONT;
+/** @internal */
+export const VALUE_FONT = TITLE_FONT;
 const SUBTITLE_FONT: Font = {
   ...TITLE_FONT,
   fontWeight: 'normal',
@@ -78,7 +82,8 @@ interface Sizes {
   valuePartFontSize: number;
 }
 
-function getFontSizes(ranges: [number, number, BreakPoint][], value: number, style: MetricStyle): Sizes {
+/** @internal */
+export function getFontSizes(ranges: [number, number, BreakPoint][], value: number, style: MetricStyle): Sizes {
   const range = ranges.find(([min, max]) => min <= value && value < max);
   const size = range ? range[2] : ranges[0]?.[2] ?? 's';
   const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : VALUE_FONT_SIZE[size];
@@ -105,7 +110,8 @@ type ElementVisibility = {
   extra: boolean;
 };
 
-function elementVisibility(
+/** @internal */
+export function elementVisibility(
   datum: MetricDatum,
   panel: Size,
   sizes: Sizes,
@@ -375,7 +381,8 @@ export const MetricText: React.FunctionComponent<{
   );
 };
 
-function getTextParts(datum: MetricDatum, style: MetricStyle): TextParts[] {
+/** @internal */
+export function getTextParts(datum: MetricDatum, style: MetricStyle): TextParts[] {
   const values = Array.isArray(datum.value) ? datum.value : [datum.value];
   const valueFormatter =
     isMetricWNumber(datum) || isMetricWNumberArrayValues(datum) ? datum.valueFormatter : (v: number) => `${v}`;
@@ -414,51 +421,4 @@ function splitNumericSuffixPrefix(text: string): TextParts[] {
       emphasis,
       text: textParts.join(''),
     }));
-}
-
-/**
- * Approximate font size to fit given available space
- * @internal
- */
-export function getFitValueFontSize(
-  valueFontSize: number,
-  width: number,
-  gapHeight: number,
-  textParts: TextParts[],
-  minValueFontSize: number,
-  hasIcon: boolean,
-): number {
-  const maxWidth = (width - 2 * PADDING) * 0.98; // small buffer to prevent clipping
-  const widthConstrainedSize = withTextMeasure((textMeasure) => {
-    const iconMultiplier = hasIcon ? 1 : 0;
-    const textWidth = textParts.reduce((sum, { text, emphasis }) => {
-      const fontSize = emphasis === 'small' ? valueFontSize / VALUE_PART_FONT_RATIO : valueFontSize;
-      return sum + textMeasure(text, VALUE_FONT, fontSize).width;
-    }, 0);
-    const ratio = textWidth / valueFontSize;
-    return (maxWidth - iconMultiplier * PADDING) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
-  });
-  const heightConstrainedSize = valueFontSize + gapHeight;
-
-  return Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
-}
-
-/** @internal */
-export function getMetricTextPartDimensions(datum: MetricDatum, panel: Size, style: MetricStyle, locale: string) {
-  const sizes = getFontSizes(HEIGHT_BP, panel.height, style);
-  const hasProgressBar = isMetricWProgress(datum);
-  const hasTarget = !isNil((datum as MetricWNumber)?.target);
-  const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
-
-  return {
-    sizes,
-    hasProgressBar,
-    progressBarDirection,
-    progressBarWidth:
-      hasProgressBar && progressBarDirection === LayoutDirection.Vertical
-        ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
-        : 0,
-    visibility: elementVisibility(datum, panel, sizes, locale, style.valueFontSize === 'fit'),
-    textParts: getTextParts(datum, style),
-  };
 }

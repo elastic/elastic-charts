@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
-import { getFitValueFontSize, getMetricTextPartDimensions } from './text';
+import { getFitValueFontSize, getMetricTextPartDimensions } from './text_measurements';
 import { ColorContrastOptions, combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
