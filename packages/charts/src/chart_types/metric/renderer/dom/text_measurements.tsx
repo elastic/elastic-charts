@@ -44,8 +44,8 @@ const LINE_HEIGHT = 1.2; // aligned with our CSS
 export const PADDING = 8;
 
 const HEIGHT_BP: [number, number, BreakPoint][] = [
-  [0, 50, 'xxxs'],
-  [50, 100, 'xxs'],
+  [0, 100, 'xxxs'],
+  [100, 150, 'xxs'],
   [100, 200, 'xs'],
   [200, 300, 's'],
   [300, 400, 'm'],
@@ -71,7 +71,7 @@ const VALUE_FONT_SIZE: Record<BreakPoint, number> = {
   xxxs: 16,
   xxs: 26,
   xs: 36,
-  s: 48,
+  s: 42,
   m: 56,
   l: 72,
   xl: 104,
@@ -90,7 +90,7 @@ const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = {
   xxxs: 14,
   xxs: 18,
   xs: 24,
-  s: 36,
+  s: 32,
   m: 42,
   l: 56,
   xl: 80,
