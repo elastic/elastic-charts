@@ -10,7 +10,7 @@ import { getTextParts, TextParts } from './text_processing';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
 import { Font } from '../../../../common/text_utils';
 import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isNil, LayoutDirection } from '../../../../utils/common';
+import { clamp, isNil, LayoutDirection } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
@@ -207,11 +207,18 @@ export function getFittedFontSizes(fittedValueFontSize: number): Pick<Sizes, 'va
 }
 
 /** @internal */
-export function getSnappedFontSizes(fittedValueFontSize: number): Pick<Sizes, 'valueFontSize' | 'valuePartFontSize'> {
-  const fontSize =
-    VALUE_FONT_SIZE_VALUES.findLast((value) => {
-      return value <= fittedValueFontSize;
-    }) ?? (fittedValueFontSize > VALUE_FONT_SIZE.xxl ? VALUE_FONT_SIZE.xxl : VALUE_FONT_SIZE.xxxs);
+export function getSnappedFontSizes(
+  fittedValueFontSize: number,
+  panelHeight: number,
+  style: MetricStyle,
+): Pick<Sizes, 'valueFontSize' | 'valuePartFontSize'> {
+  const sizes = getFontSizes(HEIGHT_BP, panelHeight, style);
+  const minFontSize = Math.min(fittedValueFontSize, sizes.valueFontSize);
+  const fontSize = clamp(
+    VALUE_FONT_SIZE_VALUES.findLast((value) => value <= minFontSize) ?? minFontSize,
+    VALUE_FONT_SIZE.xxxs,
+    VALUE_FONT_SIZE.xxl,
+  );
   return {
     valueFontSize: fontSize,
     valuePartFontSize: fontSize / VALUE_PART_FONT_RATIO,

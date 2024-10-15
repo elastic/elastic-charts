@@ -171,7 +171,7 @@ function Component({
   if (style.valueFontSize === 'fit' || style.valueFontSize === 'snap') {
     const { valueFontSize, valuePartFontSize } =
       style.valueFontSize === 'snap'
-        ? getSnappedFontSizes(metricsConfigs.fittedValueFontSize)
+        ? getSnappedFontSizes(metricsConfigs.fittedValueFontSize, panel.height, style)
         : getFittedFontSizes(metricsConfigs.fittedValueFontSize);
 
     metricsConfigs.configs.forEach((config) => {

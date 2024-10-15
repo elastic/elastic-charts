@@ -35,7 +35,7 @@ import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { Metric } from '../../../metric/renderer/dom/metric';
-import { getMetricTextPartDimensions } from '../../../metric/renderer/dom/text_measurements';
+import { getMetricTextPartDimensions, getSnappedFontSizes } from '../../../metric/renderer/dom/text_measurements';
 import { BulletMetricWProgress } from '../../../metric/specs';
 import { ActiveValue, getActiveValues } from '../../selectors/get_active_values';
 import { getBulletSpec } from '../../selectors/get_bullet_spec';
@@ -199,8 +199,19 @@ class Component extends React.Component<Props> {
                   textLightColor: 'white',
                   textDarkColor: 'black',
                   nonFiniteText: 'N/A',
-                  valueFontSize: 'default', // bullet does not support fit mode
+                  valueFontSize: 'snap',
                 });
+                const panel = { width: size.width / stats.columns, height: size.height / stats.rows };
+
+                const textDimensions = getMetricTextPartDimensions(bulletDatum, panel, bulletToMetricStyle, locale);
+                const sizes = getSnappedFontSizes(
+                  textDimensions.sizes.valueFontSize,
+                  panel.height,
+                  bulletToMetricStyle,
+                );
+                textDimensions.sizes.valueFontSize = sizes.valueFontSize;
+                textDimensions.sizes.valuePartFontSize = sizes.valuePartFontSize;
+
                 return (
                   <Metric
                     chartId={`${this.props.chartId}-${stats.rowIndex}-${stats.columnIndex}`}
@@ -213,12 +224,7 @@ class Component extends React.Component<Props> {
                     style={bulletToMetricStyle}
                     backgroundColor={backgroundColor}
                     contrastOptions={contrastOptions}
-                    textDimensions={getMetricTextPartDimensions(
-                      bulletDatum,
-                      { width: size.width / stats.columns, height: size.height / stats.rows },
-                      bulletToMetricStyle,
-                      locale,
-                    )}
+                    textDimensions={textDimensions}
                   />
                 );
               }}
