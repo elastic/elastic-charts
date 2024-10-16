@@ -1,8 +1,3 @@
-// Used as base reset used with EuiProvider. TODO: remove need for this file export.
-// https://github.com/elastic/eui/blob/main/src/global_styling/reset/reset.ts
-
-@import '../../../node_modules/@elastic/eui/src/themes/legacy/reset';
-
 /* Chrome has an issue around RTL languages in SVGs when letter-spacing is negative
  * https://bugs.chromium.org/p/chromium/issues/detail?id=966480
  */
