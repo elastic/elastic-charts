@@ -37,7 +37,7 @@ export const MetricText: React.FunctionComponent<{
   progressBarSize: 'small';
   textDimensions: MetricTextDimensions;
 }> = ({ id, datum, style, onElementClick, highContrastTextColor, progressBarSize, textDimensions }) => {
-  const { sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
+  const { heightBasedSizes: sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
   const { extra, body } = datum;
 
   const containerClassName = classNames('echMetricText', {

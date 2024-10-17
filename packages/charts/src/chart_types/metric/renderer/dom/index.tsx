@@ -130,7 +130,7 @@ function Component({
           const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
 
           const fontSize = getFitValueFontSize(
-            textDimensions.sizes.valueFontSize,
+            textDimensions.heightBasedSizes.valueFontSize,
             panel.width - textDimensions.progressBarWidth,
             textDimensions.visibility.gapHeight,
             textDimensions.textParts,
@@ -174,8 +174,8 @@ function Component({
 
   metricsConfigs.configs.forEach((config) => {
     if (!('type' in config)) {
-      config.textDimensions.sizes.valueFontSize = valueFontSize;
-      config.textDimensions.sizes.valuePartFontSize = valuePartFontSize;
+      config.textDimensions.heightBasedSizes.valueFontSize = valueFontSize;
+      config.textDimensions.heightBasedSizes.valuePartFontSize = valuePartFontSize;
     }
   });
 

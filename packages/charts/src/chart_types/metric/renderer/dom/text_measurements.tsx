@@ -16,7 +16,7 @@ import { wrapText } from '../../../../utils/text/wrap';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { MetricDatum, isMetricWProgress, MetricWNumber } from '../../specs';
 
-interface Sizes {
+interface HeightBasedSizes {
   iconSize: number;
   titleFontSize: number;
   subtitleFontSize: number;
@@ -129,7 +129,7 @@ export function getFitValueFontSize(
 
 /** @internal */
 export interface MetricTextDimensions {
-  sizes: Sizes;
+  heightBasedSizes: HeightBasedSizes;
   hasProgressBar: boolean;
   progressBarDirection: LayoutDirection | undefined;
   progressBarWidth: number;
@@ -148,26 +148,30 @@ export function getMetricTextPartDimensions(
   style: MetricStyle,
   locale: string,
 ): MetricTextDimensions {
-  const sizes = getFontSizes(HEIGHT_BP, panel.height, style);
+  const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, panel.height, style);
   const hasProgressBar = isMetricWProgress(datum);
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
 
   return {
-    sizes,
+    heightBasedSizes,
     hasProgressBar,
     progressBarDirection,
     progressBarWidth:
       hasProgressBar && progressBarDirection === LayoutDirection.Vertical
         ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
         : 0,
-    visibility: elementVisibility(datum, panel, sizes, locale, style.valueFontSize === 'fit'),
+    visibility: elementVisibility(datum, panel, heightBasedSizes, locale, style.valueFontSize === 'fit'),
     textParts: getTextParts(datum, style),
   };
 }
 
 /** @internal */
-function getFontSizes(ranges: [number, number, BreakPoint][], value: number, style: MetricStyle): Sizes {
+function getHeightBasedFontSizes(
+  ranges: [number, number, BreakPoint][],
+  value: number,
+  style: MetricStyle,
+): HeightBasedSizes {
   const range = ranges.find(([min, max]) => min <= value && value < max);
   const size = range ? range[2] : ranges[0]?.[2] ?? 's';
   const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : VALUE_FONT_SIZE[size];
@@ -184,7 +188,9 @@ function getFontSizes(ranges: [number, number, BreakPoint][], value: number, sty
 }
 
 /** @internal */
-export function getFittedFontSizes(fittedValueFontSize: number): Pick<Sizes, 'valueFontSize' | 'valuePartFontSize'> {
+export function getFittedFontSizes(
+  fittedValueFontSize: number,
+): Pick<HeightBasedSizes, 'valueFontSize' | 'valuePartFontSize'> {
   return {
     valueFontSize: fittedValueFontSize,
     valuePartFontSize: fittedValueFontSize / VALUE_PART_FONT_RATIO,
@@ -196,8 +202,8 @@ export function getSnappedFontSizes(
   fittedValueFontSize: number,
   panelHeight: number,
   style: MetricStyle,
-): Pick<Sizes, 'valueFontSize' | 'valuePartFontSize'> {
-  const sizes = getFontSizes(HEIGHT_BP, panelHeight, style);
+): Pick<HeightBasedSizes, 'valueFontSize' | 'valuePartFontSize'> {
+  const sizes = getHeightBasedFontSizes(HEIGHT_BP, panelHeight, style);
   const minFontSize = Math.min(fittedValueFontSize, sizes.valueFontSize);
   const fontSize = clamp(
     VALUE_FONT_SIZE_VALUES.findLast((value) => value <= minFontSize) ?? minFontSize,
@@ -214,7 +220,7 @@ export function getSnappedFontSizes(
 export function elementVisibility(
   datum: MetricDatum,
   panel: Size,
-  sizes: Sizes,
+  sizes: HeightBasedSizes,
   locale: string,
   fit: boolean,
 ): ElementVisibility & {

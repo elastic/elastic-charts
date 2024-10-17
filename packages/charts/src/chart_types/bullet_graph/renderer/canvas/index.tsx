@@ -205,12 +205,12 @@ class Component extends React.Component<Props> {
 
                 const textDimensions = getMetricTextPartDimensions(bulletDatum, panel, bulletToMetricStyle, locale);
                 const sizes = getSnappedFontSizes(
-                  textDimensions.sizes.valueFontSize,
+                  textDimensions.heightBasedSizes.valueFontSize,
                   panel.height,
                   bulletToMetricStyle,
                 );
-                textDimensions.sizes.valueFontSize = sizes.valueFontSize;
-                textDimensions.sizes.valuePartFontSize = sizes.valuePartFontSize;
+                textDimensions.heightBasedSizes.valueFontSize = sizes.valueFontSize;
+                textDimensions.heightBasedSizes.valuePartFontSize = sizes.valuePartFontSize;
 
                 return (
                   <Metric
