@@ -44,8 +44,6 @@ const LINE_HEIGHT = 1.2; // aligned with our CSS
 export const PADDING = 8;
 
 const HEIGHT_BP: [number, number, BreakPoint][] = [
-  [0, 100, 'xxxs'],
-  [100, 150, 'xxs'],
   [100, 200, 'xs'],
   [200, 300, 's'],
   [300, 400, 'm'],
@@ -86,16 +84,6 @@ const VALUE_FONT_SIZE_VALUES = [
   VALUE_FONT_SIZE.l,
   VALUE_FONT_SIZE.xl,
 ];
-const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = {
-  xxxs: 14,
-  xxs: 18,
-  xs: 24,
-  s: 32,
-  m: 42,
-  l: 56,
-  xl: 80,
-  xxl: 110,
-};
 
 const VALUE_PART_FONT_RATIO = 1.3;
 
@@ -136,7 +124,7 @@ export function getFitValueFontSize(
   });
   const heightConstrainedSize = valueFontSize + gapHeight;
 
-  return Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
+  return Math.floor(Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize));
 }
 
 /** @internal */
@@ -183,10 +171,7 @@ function getFontSizes(ranges: [number, number, BreakPoint][], value: number, sty
   const range = ranges.find(([min, max]) => min <= value && value < max);
   const size = range ? range[2] : ranges[0]?.[2] ?? 's';
   const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : VALUE_FONT_SIZE[size];
-  const valuePartFontSize =
-    typeof style.valueFontSize === 'number'
-      ? Math.ceil(style.valueFontSize / VALUE_PART_FONT_RATIO)
-      : VALUE_PART_FONT_SIZE[size];
+  const valuePartFontSize = Math.floor(valueFontSize / VALUE_PART_FONT_RATIO);
 
   return {
     iconSize: ICON_SIZE[size],
