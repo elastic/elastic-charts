@@ -1,3 +1,22 @@
+# [68.0.0](https://github.com/elastic/elastic-charts/compare/v67.0.1...v68.0.0) (2024-10-08)
+
+
+### Features
+
+* **xy:** render sorting ([#2524](https://github.com/elastic/elastic-charts/issues/2524)) ([c514571](https://github.com/elastic/elastic-charts/commit/c5145713025cfa3d48cb526d2fcad884a036d393))
+
+
+### BREAKING CHANGES
+
+* **xy:** The way mixed stacked/nonstacked series are colored now is different from the previous behaviour. Now we color them not by their insert index but by the way we display them in the rendering: from the left to right, bottom top, stacked, nonstacked. This align correctly also the legend colors by default. This does **not** affect colors assigned via a `SeriesColorAccessor`.
+
+## [67.0.1](https://github.com/elastic/elastic-charts/compare/v67.0.0...v67.0.1) (2024-10-03)
+
+
+### Bug Fixes
+
+* **ChartStatus:** render complete if same parent size is dispatched ([#2534](https://github.com/elastic/elastic-charts/issues/2534)) ([c3aba88](https://github.com/elastic/elastic-charts/commit/c3aba885b92f898ef59f452d3fed7812584d48b0))
+
 # [67.0.0](https://github.com/elastic/elastic-charts/compare/v66.1.1...v67.0.0) (2024-09-23)
 
 

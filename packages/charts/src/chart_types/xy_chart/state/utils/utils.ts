@@ -28,7 +28,7 @@ import {
   PointGeometry,
 } from '../../../../utils/geometry';
 import { GroupId, SpecId } from '../../../../utils/ids';
-import { getRenderingCompareFn } from '../../../../utils/series_sort';
+import { SeriesCompareFn } from '../../../../utils/series_sort';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
 import { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
@@ -120,15 +120,21 @@ export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   scaleConfigs: ScaleConfigs,
   annotations: AnnotationSpec[],
-  settingsSpec: Pick<SettingsSpec, 'orderOrdinalBinsBy' | 'locale'>,
+  settingsSpec: Pick<SettingsSpec, 'orderOrdinalBinsBy' | 'locale' | 'renderingSort'>,
   deselectedDataSeries: SeriesIdentifier[] = [],
   smallMultiples?: SmallMultiplesGroupBy,
 ): SeriesDomainsAndData {
-  const { orderOrdinalBinsBy, locale } = settingsSpec;
+  const { orderOrdinalBinsBy, locale, renderingSort } = settingsSpec;
+  const renderingSortFn: SeriesCompareFn =
+    renderingSort ??
+    ((a, b) => {
+      return defaultXYSeriesSort(a as DataSeries, b as DataSeries);
+    });
   const { dataSeries, xValues, fallbackScale, smHValues, smVValues } = getDataSeriesFromSpecs(
     seriesSpecs,
     deselectedDataSeries,
     orderOrdinalBinsBy,
+    renderingSortFn,
     smallMultiples,
   );
   // compute the x domain merging any custom domain
@@ -137,15 +143,8 @@ export function computeSeriesDomains(
   // fill series with missing x values
   const filledDataSeries = fillSeries(dataSeries, xValues, xDomain.type);
 
-  const seriesSortFn = getRenderingCompareFn((a: SeriesIdentifier, b: SeriesIdentifier) => {
-    return defaultXYSeriesSort(a as DataSeries, b as DataSeries);
-  });
-
-  const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.type).sort(
-    seriesSortFn,
-  );
+  const formattedDataSeries = getFormattedDataSeries(seriesSpecs, filledDataSeries, xValues, xDomain.type);
   const annotationYValueMap = getAnnotationYValueMap(annotations, scaleConfigs.y);
-
   // let's compute the yDomains after computing all stacked values
   const yDomains = mergeYDomain(scaleConfigs.y, formattedDataSeries, annotationYValueMap);
 

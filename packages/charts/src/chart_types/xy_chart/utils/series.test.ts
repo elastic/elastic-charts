@@ -46,7 +46,7 @@ function matchOnlyDataSeriesLegacySnapshot(d: DataSeries) {
     smVerticalAccessorValue,
     smHorizontalAccessorValue,
     stackMode,
-    insertIndex,
+    sortOrder,
     isFiltered,
     ...rest
   } = d;
@@ -496,8 +496,8 @@ describe('Series', () => {
     const seriesKey = 'groupId{group1}spec{spec1}yAccessor{y1}splitAccessors{}';
 
     const chartColors: ColorConfig = {
-      vizColors: ['elastic_charts_c1', 'elastic_charts_c2'],
-      defaultVizColor: 'elastic_charts',
+      vizColors: ['color-1', 'color-2', 'color-3'],
+      defaultVizColor: 'default-color',
     };
 
     const seriesColors = [
@@ -510,7 +510,7 @@ describe('Series', () => {
       }),
     ];
 
-    const emptyCustomColors = new Map();
+    const emptyCustomColors = new Map<string, string>();
     const persistedColor = 'persisted_color';
     const customColor = 'custom_color';
     const customColors: Map<string, string> = new Map();
@@ -524,11 +524,38 @@ describe('Series', () => {
       temporary: {},
     };
 
-    it('should return deafult color', () => {
+    it('should return default color', () => {
       const result = getSeriesColors(seriesColors, chartColors, emptyCustomColors, emptyColorOverrides);
       const expected = new Map();
-      expected.set(seriesKey, 'elastic_charts_c1');
+      expected.set(seriesKey, 'color-1');
       expect(result).toEqual(expected);
+    });
+
+    it('should return the same color assignments with or without sorting applied', () => {
+      const mockSeries = [
+        MockDataSeries.default({
+          specId: 'spec1',
+          sortOrder: 1,
+        }),
+        MockDataSeries.default({
+          specId: 'spec2',
+          sortOrder: 2,
+        }),
+        MockDataSeries.default({
+          specId: 'spec3',
+          sortOrder: 3,
+        }),
+      ];
+      const withoutSorting = getSeriesColors(mockSeries, chartColors, emptyCustomColors, emptyColorOverrides);
+      const withSorting = getSeriesColors(
+        mockSeries.map((s, i, { length }) => ({ ...s, sortOrder: length - i })),
+        chartColors,
+        emptyCustomColors,
+        emptyColorOverrides,
+      );
+
+      expect(withoutSorting.size).toBe(3);
+      expect([...withoutSorting.entries()]).toIncludeAllMembers([...withSorting.entries()]);
     });
 
     it('should return persisted color', () => {
@@ -833,176 +860,214 @@ describe('Series', () => {
         expect(actual).toBe('a - y');
       });
     });
-
-    test('Shall ignore undefined values on splitSeriesAccessors', () => {
-      const spec = MockSeriesSpec.bar({
-        data: [
-          [0, 1, 'a'],
-          [1, 1, 'a'],
-          [2, 1, 'a'],
-          [0, 1, 'b'],
-          [1, 1, 'b'],
-          [2, 1, 'b'],
-          [0, 1],
-          [1, 1],
-          [2, 1],
-        ],
-        xAccessor: 0,
-        yAccessors: [1],
-        splitSeriesAccessors: [2],
-      });
-      const splitSeries = splitSeriesDataByAccessors(spec, new Map());
-      expect([...splitSeries.dataSeries.values()].length).toBe(2);
-      expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-    });
-    test('Should ignore series if splitSerie§sAccessors are defined but not contained in any datum', () => {
-      const spec = MockSeriesSpec.bar({
-        data: [
-          [0, 1],
-          [1, 1],
-          [2, 1],
-        ],
-        xAccessor: 0,
-        yAccessors: [1],
-        splitSeriesAccessors: [2],
-      });
-      const splitSeries = splitSeriesDataByAccessors(spec, new Map());
-      expect([...splitSeries.dataSeries.values()].length).toBe(0);
-    });
   });
 
-  describe('functional accessors', () => {
-    test('Can use functional xAccessor', () => {
-      const xAccessor: AccessorFn = (d) => d.x;
-      const splitSeries = splitSeriesDataByAccessors(
-        MockSeriesSpec.bar({
-          data: TestDataset.BARCHART_2Y2G,
-          xAccessor,
-          yAccessors: ['y1', 'y2'],
-          splitSeriesAccessors: ['g1'],
-        }),
-        new Map(),
-      );
-      expect([...splitSeries.dataSeries.values()].length).toBe(4);
-      expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  test('should ignore undefined values on splitSeriesAccessors', () => {
+    const spec = MockSeriesSpec.bar({
+      data: [
+        [0, 1, 'a'],
+        [1, 1, 'a'],
+        [2, 1, 'a'],
+        [0, 1, 'b'],
+        [1, 1, 'b'],
+        [2, 1, 'b'],
+        [0, 1],
+        [1, 1],
+        [2, 1],
+      ],
+      xAccessor: 0,
+      yAccessors: [1],
+      splitSeriesAccessors: [2],
     });
+    const splitSeries = splitSeriesDataByAccessors(spec, new Map());
+    expect([...splitSeries.dataSeries.values()].length).toBe(2);
+    expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+  test('Should ignore series if splitSerie§sAccessors are defined but not contained in any datum', () => {
+    const spec = MockSeriesSpec.bar({
+      data: [
+        [0, 1],
+        [1, 1],
+        [2, 1],
+      ],
+      xAccessor: 0,
+      yAccessors: [1],
+      splitSeriesAccessors: [2],
+    });
+    const splitSeries = splitSeriesDataByAccessors(spec, new Map());
+    expect([...splitSeries.dataSeries.values()].length).toBe(0);
+  });
+});
 
-    test('Can use default custom xAccessor', () => {
-      const xAccessor: AccessorFn = () => '_all';
-      const splitSeries = splitSeriesDataByAccessors(
+describe('functional accessors', () => {
+  test('Can use functional xAccessor', () => {
+    const xAccessor: AccessorFn = (d) => d.x;
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.bar({
+        data: TestDataset.BARCHART_2Y2G,
+        xAccessor,
+        yAccessors: ['y1', 'y2'],
+        splitSeriesAccessors: ['g1'],
+      }),
+      new Map(),
+    );
+    expect([...splitSeries.dataSeries.values()].length).toBe(4);
+    expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+
+  test('Can use default custom xAccessor', () => {
+    const xAccessor: AccessorFn = () => '_all';
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.bar({
+        data: TestDataset.BARCHART_2Y2G,
+        xAccessor,
+        yAccessors: ['y1'],
+        splitSeriesAccessors: ['g1'],
+      }),
+      new Map(),
+    );
+    expect([...splitSeries.dataSeries.values()].length).toBe(2);
+    expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+
+  test('Can use functional yAccessor', () => {
+    const yAccessor: AccessorFn = (d) => d.y1;
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.bar({
+        data: TestDataset.BARCHART_2Y2G,
+        yAccessors: [yAccessor],
+        splitSeriesAccessors: ['g1'],
+      }),
+      new Map(),
+    );
+    expect([...splitSeries.dataSeries.values()].map(({ yAccessor }) => yAccessor)).toEqualArrayOf('(index:0)');
+    expect([...splitSeries.dataSeries.values()].length).toBe(2);
+    expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+
+  test('Can use functional yAccessor with fieldName', () => {
+    const yAccessor: AccessorFn = (d) => d.y1;
+    yAccessor.fieldName = 'custom name';
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.bar({
+        data: TestDataset.BARCHART_2Y2G,
+        yAccessors: [yAccessor],
+        splitSeriesAccessors: ['g1'],
+      }),
+      new Map(),
+    );
+    expect([...splitSeries.dataSeries.values()].map(({ yAccessor }) => yAccessor)).toEqualArrayOf(yAccessor.fieldName);
+    expect([...splitSeries.dataSeries.values()].length).toBe(2);
+    expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+
+  test('Can use functional y0Accessor', () => {
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.bar({
+        data: KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d: any) => ({
+          x: d[0],
+          max: d[1] + 4 + 4 * getRandomNumber(),
+          min: d[1] - 4 - 4 * getRandomNumber(),
+        })),
+        yAccessors: [(d) => d.max],
+        y0Accessors: [(d) => d.min],
+        stackAccessors: ['yes'],
+      }),
+      new Map(),
+      0,
+      true,
+      true,
+    );
+    expect([...splitSeries.dataSeries.values()].map(({ yAccessor }) => yAccessor)).toEqualArrayOf('(index:0)');
+    expect([...splitSeries.dataSeries.values()].length).toBe(1);
+    expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+
+  test('Can use functional splitSeriesAccessor', () => {
+    const splitSeriesAccessor: AccessorFn = (d) => d.g1;
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.bar({
+        data: TestDataset.BARCHART_2Y2G,
+        yAccessors: ['y1'],
+        splitSeriesAccessors: [splitSeriesAccessor],
+      }),
+      new Map(),
+    );
+    expect(
+      flatten([...splitSeries.dataSeries.values()].map(({ splitAccessors }) => [...splitAccessors.keys()])),
+    ).toEqualArrayOf('(index:0)');
+    expect([...splitSeries.dataSeries.values()].length).toBe(2);
+    expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+
+  test('Can use functional splitSeriesAccessor with fieldName', () => {
+    const splitSeriesAccessor: AccessorFn = (d) => d.g1;
+    splitSeriesAccessor.fieldName = 'custom name';
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.bar({
+        data: TestDataset.BARCHART_2Y2G,
+        yAccessors: ['y1'],
+        splitSeriesAccessors: [splitSeriesAccessor],
+      }),
+      new Map(),
+    );
+    expect(
+      flatten([...splitSeries.dataSeries.values()].map(({ splitAccessors }) => [...splitAccessors.keys()])),
+    ).toEqualArrayOf(splitSeriesAccessor.fieldName);
+    expect([...splitSeries.dataSeries.values()].length).toBe(2);
+    expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+
+  test('Can use multiple functional/static accessors', () => {
+    const splitSeries = splitSeriesDataByAccessors(
+      MockSeriesSpec.bar({
+        data: TestDataset.BARCHART_2Y2G,
+        xAccessor: (d) => d.y1,
+        yAccessors: ['y1', (d) => d.y2],
+        splitSeriesAccessors: [(d) => d.g1, 'g2'],
+      }),
+      new Map(),
+    );
+    expect([...splitSeries.dataSeries.values()].length).toBe(8);
+    expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
+  });
+});
+
+describe('Sorting', () => {
+  test('should set sortOrder when no seriesSort is provided', () => {
+    const splitSeries = getDataSeriesFromSpecs([
+      MockSeriesSpec.bar({
+        data: TestDataset.BARCHART_2Y2G,
+        xAccessor: 'x',
+        yAccessors: ['y1'],
+        splitSeriesAccessors: ['y2'], // easy to compare numerical values
+      }),
+    ]);
+    expect([...splitSeries.dataSeries.values()].length).toBe(5);
+    const sortOrders = [...splitSeries.dataSeries.values()].map((d) => d.sortOrder);
+    expect(sortOrders).toEqual([0, 1, 2, 3, 4]);
+  });
+
+  test('should set sortOrder when seriesSort is provided', () => {
+    const splitSeries = getDataSeriesFromSpecs(
+      [
         MockSeriesSpec.bar({
           data: TestDataset.BARCHART_2Y2G,
-          xAccessor,
+          xAccessor: 'x',
           yAccessors: ['y1'],
-          splitSeriesAccessors: ['g1'],
+          splitSeriesAccessors: ['y2'], // easy to compare numerical values
         }),
-        new Map(),
-      );
-      expect([...splitSeries.dataSeries.values()].length).toBe(2);
-      expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-    });
+      ],
+      undefined,
+      undefined,
+      (a, b) => {
+        const aY2 = Number((a as XYChartSeriesIdentifier).splitAccessors.get('y2') ?? Infinity);
+        const bY2 = Number((b as XYChartSeriesIdentifier).splitAccessors.get('y2') ?? Infinity);
 
-    test('Can use functional yAccessor', () => {
-      const yAccessor: AccessorFn = (d) => d.y1;
-      const splitSeries = splitSeriesDataByAccessors(
-        MockSeriesSpec.bar({
-          data: TestDataset.BARCHART_2Y2G,
-          yAccessors: [yAccessor],
-          splitSeriesAccessors: ['g1'],
-        }),
-        new Map(),
-      );
-      expect([...splitSeries.dataSeries.values()].map(({ yAccessor }) => yAccessor)).toEqualArrayOf('(index:0)');
-      expect([...splitSeries.dataSeries.values()].length).toBe(2);
-      expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-    });
-
-    test('Can use functional yAccessor with fieldName', () => {
-      const yAccessor: AccessorFn = (d) => d.y1;
-      yAccessor.fieldName = 'custom name';
-      const splitSeries = splitSeriesDataByAccessors(
-        MockSeriesSpec.bar({
-          data: TestDataset.BARCHART_2Y2G,
-          yAccessors: [yAccessor],
-          splitSeriesAccessors: ['g1'],
-        }),
-        new Map(),
-      );
-      expect([...splitSeries.dataSeries.values()].map(({ yAccessor }) => yAccessor)).toEqualArrayOf(
-        yAccessor.fieldName,
-      );
-      expect([...splitSeries.dataSeries.values()].length).toBe(2);
-      expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-    });
-
-    test('Can use functional y0Accessor', () => {
-      const splitSeries = splitSeriesDataByAccessors(
-        MockSeriesSpec.bar({
-          data: KIBANA_METRICS.metrics.kibana_os_load.v1.data.map((d: any) => ({
-            x: d[0],
-            max: d[1] + 4 + 4 * getRandomNumber(),
-            min: d[1] - 4 - 4 * getRandomNumber(),
-          })),
-          yAccessors: [(d) => d.max],
-          y0Accessors: [(d) => d.min],
-          stackAccessors: ['yes'],
-        }),
-        new Map(),
-        true,
-        true,
-      );
-      expect([...splitSeries.dataSeries.values()].map(({ yAccessor }) => yAccessor)).toEqualArrayOf('(index:0)');
-      expect([...splitSeries.dataSeries.values()].length).toBe(1);
-      expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-    });
-
-    test('Can use functional splitSeriesAccessor', () => {
-      const splitSeriesAccessor: AccessorFn = (d) => d.g1;
-      const splitSeries = splitSeriesDataByAccessors(
-        MockSeriesSpec.bar({
-          data: TestDataset.BARCHART_2Y2G,
-          yAccessors: ['y1'],
-          splitSeriesAccessors: [splitSeriesAccessor],
-        }),
-        new Map(),
-      );
-      expect(
-        flatten([...splitSeries.dataSeries.values()].map(({ splitAccessors }) => [...splitAccessors.keys()])),
-      ).toEqualArrayOf('(index:0)');
-      expect([...splitSeries.dataSeries.values()].length).toBe(2);
-      expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-    });
-
-    test('Can use functional splitSeriesAccessor with fieldName', () => {
-      const splitSeriesAccessor: AccessorFn = (d) => d.g1;
-      splitSeriesAccessor.fieldName = 'custom name';
-      const splitSeries = splitSeriesDataByAccessors(
-        MockSeriesSpec.bar({
-          data: TestDataset.BARCHART_2Y2G,
-          yAccessors: ['y1'],
-          splitSeriesAccessors: [splitSeriesAccessor],
-        }),
-        new Map(),
-      );
-      expect(
-        flatten([...splitSeries.dataSeries.values()].map(({ splitAccessors }) => [...splitAccessors.keys()])),
-      ).toEqualArrayOf(splitSeriesAccessor.fieldName);
-      expect([...splitSeries.dataSeries.values()].length).toBe(2);
-      expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-    });
-
-    test('Can use multiple functional/static accessors', () => {
-      const splitSeries = splitSeriesDataByAccessors(
-        MockSeriesSpec.bar({
-          data: TestDataset.BARCHART_2Y2G,
-          xAccessor: (d) => d.y1,
-          yAccessors: ['y1', (d) => d.y2],
-          splitSeriesAccessors: [(d) => d.g1, 'g2'],
-        }),
-        new Map(),
-      );
-      expect([...splitSeries.dataSeries.values()].length).toBe(8);
-      expect([...splitSeries.dataSeries.values()].map(matchOnlyDataSeriesLegacySnapshot)).toMatchSnapshot();
-    });
+        return Math.sign(aY2 - bY2) * 1;
+      },
+    );
+    expect([...splitSeries.dataSeries.values()].length).toBe(5);
+    expect([...splitSeries.dataSeries.values()].map((d) => d.splitAccessors.get('y2'))).toEqual([1, 3, 4, 5, 6]);
   });
 });

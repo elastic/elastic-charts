@@ -21,6 +21,7 @@ import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor'
 import { Datum, isNil, stripUndefined } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
+import { SeriesCompareFn } from '../../../utils/series_sort';
 import { ColorConfig } from '../../../utils/themes/theme';
 import { groupSeriesByYGroup, isStackedSpec } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
@@ -74,7 +75,8 @@ export type DataSeries<D extends BaseDatum = Datum> = XYChartSeriesIdentifier<D>
   isStacked: boolean;
   stackMode: StackMode | undefined;
   spec: Exclude<BasicSeriesSpec, 'data'>;
-  insertIndex: number;
+  insertOrder: number;
+  sortOrder: number;
   isFiltered: boolean;
 };
 
@@ -111,10 +113,12 @@ export function getAccessorFieldName<D extends BaseDatum>(
 export function splitSeriesDataByAccessors(
   spec: BasicSeriesSpec,
   xValueSums: Map<string | number, number>,
+  insertOrder = 0,
   isStacked = false,
   isBanded = false,
   stackMode?: StackMode,
   groupBySpec?: SmallMultiplesGroupBy,
+  deselectedDataSeries: SeriesIdentifier[] = [],
 ): {
   dataSeries: Map<SeriesKey, DataSeries>;
   xValues: Array<string | number>;
@@ -205,9 +209,9 @@ export function splitSeriesDataByAccessors(
           key: seriesKey,
           data: [newDatum],
           spec,
-          // current default to 0, will be correctly computed on a later stage
-          insertIndex: 0,
-          isFiltered: false,
+          insertOrder: insertOrder + dataSeries.size,
+          sortOrder: 0,
+          isFiltered: deselectedDataSeries.some(({ key: deselectedKey }) => seriesKey === deselectedKey),
         });
       }
 
@@ -348,7 +352,7 @@ export function getFormattedDataSeries(
   // get already fitted non stacked dataSeries
   const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !isStackedSpec(spec));
 
-  return [...fittedAndStackedDataSeries, ...nonStackedDataSeries];
+  return [...fittedAndStackedDataSeries, ...nonStackedDataSeries].sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 /** @internal */
@@ -356,6 +360,7 @@ export function getDataSeriesFromSpecs(
   seriesSpecs: BasicSeriesSpec[],
   deselectedDataSeries: SeriesIdentifier[] = [],
   orderOrdinalBinsBy?: OrderBy,
+  seriesSort?: SeriesCompareFn,
   groupBySpec?: SmallMultiplesGroupBy,
 ): {
   dataSeries: DataSeries[];
@@ -364,7 +369,7 @@ export function getDataSeriesFromSpecs(
   smHValues: Set<string | number>;
   fallbackScale?: XScaleType;
 } {
-  let globalDataSeries: DataSeries[] = [];
+  const globalDataSeries: DataSeries[] = [];
   const mutatedXValueSums = new Map<string | number, number>();
 
   // the unique set of values along the x axis
@@ -374,7 +379,7 @@ export function getDataSeriesFromSpecs(
   let isOrdinalScale = false;
 
   const specsByYGroup = groupSeriesByYGroup(seriesSpecs);
-
+  let insertOrder = 0;
   // eslint-disable-next-line no-restricted-syntax
   for (const spec of seriesSpecs) {
     // check scale type and cast to Ordinal if we found at least one series
@@ -390,27 +395,23 @@ export function getDataSeriesFromSpecs(
     const { dataSeries, xValues } = splitSeriesDataByAccessors(
       spec,
       mutatedXValueSums,
+      insertOrder,
       isStacked,
       isBanded,
       specGroup?.stackMode,
       groupBySpec,
+      deselectedDataSeries,
     );
 
-    // filter deselected DataSeries
-    let filteredDataSeries: DataSeries[] = [...dataSeries.values()];
-    if (deselectedDataSeries.length > 0) {
-      filteredDataSeries = filteredDataSeries.map((series) => ({
-        ...series,
-        isFiltered: deselectedDataSeries.some(({ key: deselectedKey }) => series.key === deselectedKey),
-      }));
-    }
+    insertOrder += dataSeries.size;
 
-    globalDataSeries = [...globalDataSeries, ...filteredDataSeries];
+    for (const [, ds] of dataSeries) {
+      globalDataSeries.push(ds);
+    }
 
     // check the nature of the x values. If all of them are numbers
     // we can use a continuous scale, if not we should use an ordinal scale.
     // The xValue is already casted to be a valid number or a string
-    // eslint-disable-next-line no-restricted-syntax
     for (const xValue of xValues) {
       if (isNumberArray && typeof xValue !== 'number') {
         isNumberArray = false;
@@ -431,12 +432,12 @@ export function getDataSeriesFromSpecs(
           }),
         );
 
-  const dataSeries = globalDataSeries.map((d, i) => ({
-    ...d,
-    insertIndex: i,
-  }));
+  globalDataSeries.sort(seriesSort).map((d, i) => {
+    d.sortOrder = i;
+    return d;
+  });
 
-  const smallMultipleUniqueValues = dataSeries.reduce<{
+  const smallMultipleUniqueValues = globalDataSeries.reduce<{
     smVValues: Set<string | number>;
     smHValues: Set<string | number>;
   }>(
@@ -456,7 +457,7 @@ export function getDataSeriesFromSpecs(
   );
 
   return {
-    dataSeries,
+    dataSeries: globalDataSeries,
     // keep the user order for ordinal scales
     xValues,
     ...smallMultipleUniqueValues,
@@ -587,9 +588,8 @@ export function getSeriesColors(
 ): Map<SeriesKey, Color> {
   const seriesColorMap = new Map<SeriesKey, Color>();
   let counter = 0;
-  const sortedDataSeries = [...dataSeries].sort((a, b) => a.insertIndex - b.insertIndex);
   groupBy(
-    sortedDataSeries,
+    dataSeries,
     (ds) => {
       return [ds.specId, ds.groupId, ds.yAccessor, ...ds.splitAccessors.values()].join('__');
     },

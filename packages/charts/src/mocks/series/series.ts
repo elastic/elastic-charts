@@ -40,7 +40,8 @@ export class MockDataSeries {
     stackMode: undefined,
     spec: MockSeriesSpec.bar(),
     isStacked: false,
-    insertIndex: 0,
+    sortOrder: 0,
+    insertOrder: 0,
     isFiltered: false,
   };
 

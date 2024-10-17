@@ -62,7 +62,7 @@ exports[`Chart State utils should compute and format specifications for non stac
       },
     ],
     "groupId": "group1",
-    "insertIndex": 0,
+    "insertOrder": 0,
     "isFiltered": false,
     "isStacked": false,
     "key": "groupId{group1}spec{spec1}yAccessor{y}splitAccessors{}",
@@ -70,6 +70,7 @@ exports[`Chart State utils should compute and format specifications for non stac
       "y",
     ],
     "seriesType": "line",
+    "sortOrder": 0,
     "spec": {
       "chartType": "xy_axis",
       "data": [
@@ -169,7 +170,7 @@ exports[`Chart State utils should compute and format specifications for non stac
       },
     ],
     "groupId": "group2",
-    "insertIndex": 1,
+    "insertOrder": 1,
     "isFiltered": false,
     "isStacked": false,
     "key": "groupId{group2}spec{spec2}yAccessor{y}splitAccessors{}",
@@ -177,6 +178,7 @@ exports[`Chart State utils should compute and format specifications for non stac
       "y",
     ],
     "seriesType": "line",
+    "sortOrder": 1,
     "spec": {
       "chartType": "xy_axis",
       "data": [
@@ -281,7 +283,7 @@ exports[`Chart State utils should compute and format specifications for stacked 
       },
     ],
     "groupId": "group2",
-    "insertIndex": 2,
+    "insertOrder": 2,
     "isFiltered": false,
     "isStacked": true,
     "key": "groupId{group2}spec{spec2}yAccessor{y}splitAccessors{g-a}",
@@ -290,6 +292,7 @@ exports[`Chart State utils should compute and format specifications for stacked 
       "y",
     ],
     "seriesType": "line",
+    "sortOrder": 2,
     "spec": {
       "chartType": "xy_axis",
       "data": [
@@ -421,7 +424,7 @@ exports[`Chart State utils should compute and format specifications for stacked 
       },
     ],
     "groupId": "group2",
-    "insertIndex": 3,
+    "insertOrder": 3,
     "isFiltered": false,
     "isStacked": true,
     "key": "groupId{group2}spec{spec2}yAccessor{y}splitAccessors{g-b}",
@@ -430,6 +433,7 @@ exports[`Chart State utils should compute and format specifications for stacked 
       "y",
     ],
     "seriesType": "line",
+    "sortOrder": 3,
     "spec": {
       "chartType": "xy_axis",
       "data": [
@@ -570,7 +574,7 @@ exports[`Chart State utils should compute and format specifications for stacked 
       },
     ],
     "groupId": "group1",
-    "insertIndex": 0,
+    "insertOrder": 0,
     "isFiltered": false,
     "isStacked": false,
     "key": "groupId{group1}spec{spec1}yAccessor{y}splitAccessors{g-a}",
@@ -579,6 +583,7 @@ exports[`Chart State utils should compute and format specifications for stacked 
       "y",
     ],
     "seriesType": "line",
+    "sortOrder": 0,
     "spec": {
       "chartType": "xy_axis",
       "data": [
@@ -711,7 +716,7 @@ exports[`Chart State utils should compute and format specifications for stacked 
       },
     ],
     "groupId": "group1",
-    "insertIndex": 1,
+    "insertOrder": 1,
     "isFiltered": false,
     "isStacked": false,
     "key": "groupId{group1}spec{spec1}yAccessor{y}splitAccessors{g-b}",
@@ -720,6 +725,7 @@ exports[`Chart State utils should compute and format specifications for stacked 
       "y",
     ],
     "seriesType": "line",
+    "sortOrder": 1,
     "spec": {
       "chartType": "xy_axis",
       "data": [

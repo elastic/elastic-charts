@@ -2756,7 +2756,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuild
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "debug" | "locale" | "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend", "ariaDescription" | "ariaLabel" | "xDomain" | "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "noResults" | "ariaLabelledBy" | "ariaDescribedBy" | "ariaTableCaption" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "debug" | "locale" | "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend", "ariaDescription" | "ariaLabel" | "xDomain" | "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "renderingSort" | "noResults" | "ariaLabelledBy" | "ariaDescribedBy" | "ariaTableCaption" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -2810,6 +2810,7 @@ export interface SettingsSpec extends Spec, LegendSpec {
     pointerUpdateTrigger: PointerUpdateTrigger;
     // (undocumented)
     rendering: Rendering;
+    renderingSort?: SeriesCompareFn;
     // @deprecated
     resizeDebounce?: number;
     // (undocumented)
@@ -3136,7 +3137,7 @@ export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifi
 };
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "body" | "footer" | "header" | "type" | "snap" | "showNullValues" | "actions" | "actionsLoading" | "noActionsLoaded" | "actionPrompt" | "pinningPrompt" | "selectionPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "unit" | "headerFormatter" | "customTooltip" | "stickTo", never>;
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "body" | "footer" | "header" | "type" | "snap" | "showNullValues" | "actions" | "actionsLoading" | "noActionsLoaded" | "actionPrompt" | "pinningPrompt" | "selectionPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "unit" | "headerFormatter" | "customTooltip" | "stickTo", never>;
 
 // @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
@@ -3251,6 +3252,7 @@ export interface TooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdent
     selectionPrompt: string;
     showNullValues: boolean;
     snap: boolean;
+    sort?: SeriesCompareFn;
     stickTo?: TooltipStickTo;
     type: TooltipType;
     // @alpha
