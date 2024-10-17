@@ -199,7 +199,7 @@ class Component extends React.Component<Props> {
                   textLightColor: 'white',
                   textDarkColor: 'black',
                   nonFiniteText: 'N/A',
-                  valueFontSize: 'snap',
+                  valueFontSize: 'default',
                 });
                 const panel = { width: size.width / stats.columns, height: size.height / stats.rows };
 

@@ -88,7 +88,6 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
       Default: 'default',
       Fit: 'fit',
       Custom: 'custom',
-      Snap: 'snap',
     },
     'default',
   );

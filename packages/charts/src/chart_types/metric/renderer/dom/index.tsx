@@ -128,18 +128,17 @@ function Component({
             };
           }
           const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
-          // compute the global fittedValueFontSize
-          if (style.valueFontSize === 'fit' || style.valueFontSize === 'snap') {
-            const fontSize = getFitValueFontSize(
-              textDimensions.sizes.valueFontSize,
-              panel.width - textDimensions.progressBarWidth,
-              textDimensions.visibility.gapHeight,
-              textDimensions.textParts,
-              style.minValueFontSize,
-              datum.valueIcon !== undefined,
-            );
-            acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, fontSize);
-          }
+
+          const fontSize = getFitValueFontSize(
+            textDimensions.sizes.valueFontSize,
+            panel.width - textDimensions.progressBarWidth,
+            textDimensions.visibility.gapHeight,
+            textDimensions.textParts,
+            style.minValueFontSize,
+            datum.valueIcon !== undefined,
+          );
+          acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, fontSize);
+
           return {
             key,
             datum,
@@ -167,20 +166,18 @@ function Component({
     { configs: [], fittedValueFontSize: Number.MAX_SAFE_INTEGER },
   );
 
-  // update the configs with the fitted valueFontSize
-  if (style.valueFontSize === 'fit' || style.valueFontSize === 'snap') {
-    const { valueFontSize, valuePartFontSize } =
-      style.valueFontSize === 'snap'
-        ? getSnappedFontSizes(metricsConfigs.fittedValueFontSize, panel.height, style)
-        : getFittedFontSizes(metricsConfigs.fittedValueFontSize);
+  // update the configs with the globally aligned valueFontSize
+  const { valueFontSize, valuePartFontSize } =
+    style.valueFontSize === 'default'
+      ? getSnappedFontSizes(metricsConfigs.fittedValueFontSize, panel.height, style)
+      : getFittedFontSizes(metricsConfigs.fittedValueFontSize);
 
-    metricsConfigs.configs.forEach((config) => {
-      if (!('type' in config)) {
-        config.textDimensions.sizes.valueFontSize = valueFontSize;
-        config.textDimensions.sizes.valuePartFontSize = valuePartFontSize;
-      }
-    });
-  }
+  metricsConfigs.configs.forEach((config) => {
+    if (!('type' in config)) {
+      config.textDimensions.sizes.valueFontSize = valueFontSize;
+      config.textDimensions.sizes.valuePartFontSize = valuePartFontSize;
+    }
+  });
 
   return (
     // eslint-disable-next-line jsx-a11y/no-redundant-roles
