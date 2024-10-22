@@ -34,15 +34,13 @@ type ElementVisibility = {
   subtitle: boolean;
   extra: boolean;
 };
-/**
- * synced with scss variables
- */
-const PROGRESS_BAR_WIDTH = 10;
-const PROGRESS_BAR_TARGET_WIDTH = 4;
-const LINE_HEIGHT = 1.2; // aligned with our CSS
+
 /** @internal */
 export const PADDING = 8;
 
+const PROGRESS_BAR_WIDTH = 10; // synced with scss variables
+const PROGRESS_BAR_TARGET_WIDTH = 4;
+const LINE_HEIGHT = 1.2; // aligned with our CSS
 const HEIGHT_BP: [number, number, BreakPoint][] = [
   [100, 200, 'xs'],
   [200, 300, 's'],
@@ -51,7 +49,6 @@ const HEIGHT_BP: [number, number, BreakPoint][] = [
   [500, 600, 'xl'],
   [600, Infinity, 'xxl'],
 ];
-
 const ICON_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
 const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xxxs: 16, xxs: 16, xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
 const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = {
@@ -84,9 +81,7 @@ const VALUE_FONT_SIZE_VALUES = [
   VALUE_FONT_SIZE.l,
   VALUE_FONT_SIZE.xl,
 ];
-
 const VALUE_PART_FONT_RATIO = 1.3;
-
 const TITLE_FONT: Font = {
   fontStyle: 'normal',
   fontFamily: DEFAULT_FONT_FAMILY,
