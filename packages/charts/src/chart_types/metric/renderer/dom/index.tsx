@@ -18,6 +18,7 @@ import { Metric as MetricComponent } from './metric';
 import {
   getFittedFontSizes,
   getFitValueFontSize,
+  getFixedFontSizes,
   getMetricTextPartDimensions,
   getSnappedFontSizes,
   MetricTextDimensions,
@@ -107,8 +108,15 @@ function Component({
   const metricsConfigs = data.reduce<{
     fittedValueFontSize: number;
     configs: Array<
-      | { key: string; className: string; type: 'left' | 'right' }
-      | { key: string; rowIndex: number; columnIndex: number; textDimensions: MetricTextDimensions; datum: MetricDatum }
+      | { key: string; className: string; type: 'left-empty' | 'right-empty' }
+      | {
+          key: string;
+          rowIndex: number;
+          type: 'metric';
+          columnIndex: number;
+          textDimensions: MetricTextDimensions;
+          datum: MetricDatum;
+        }
     >;
   }>(
     (acc, columns, rowIndex) => {
@@ -119,7 +127,7 @@ function Component({
             // fill with empty panels at the beginning of the row
             return {
               key,
-              type: 'left' as const,
+              type: 'left-empty',
               className: classNames('echMetric', {
                 'echMetric--rightBorder': columnIndex < maxColumns - 1,
                 'echMetric--bottomBorder': rowIndex < totalRows - 1,
@@ -140,6 +148,7 @@ function Component({
           acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, fontSize);
 
           return {
+            type: 'metric',
             key,
             datum,
             columnIndex,
@@ -152,7 +161,7 @@ function Component({
           const columnIndex = zeroBasedColumnIndex + columns.length;
           return {
             key: `missing-${columnIndex}-${rowIndex}`,
-            type: 'right' as const,
+            type: 'right-empty',
             className: classNames('echMetric', {
               'echMetric--bottomBorder': rowIndex < totalRows - 1,
               'echMetric--topBorder': hasTitles && rowIndex === 0,
@@ -168,12 +177,14 @@ function Component({
 
   // update the configs with the globally aligned valueFontSize
   const { valueFontSize, valuePartFontSize } =
-    style.valueFontSize === 'default'
-      ? getSnappedFontSizes(metricsConfigs.fittedValueFontSize, panel.height, style)
-      : getFittedFontSizes(metricsConfigs.fittedValueFontSize);
+    typeof style.valueFontSize === 'number'
+      ? getFixedFontSizes(style.valueFontSize)
+      : style.valueFontSize === 'default'
+        ? getSnappedFontSizes(metricsConfigs.fittedValueFontSize, panel.height, style)
+        : getFittedFontSizes(metricsConfigs.fittedValueFontSize);
 
   metricsConfigs.configs.forEach((config) => {
-    if (!('type' in config)) {
+    if (config.type === 'metric') {
       config.textDimensions.heightBasedSizes.valueFontSize = valueFontSize;
       config.textDimensions.heightBasedSizes.valuePartFontSize = valuePartFontSize;
     }
@@ -192,10 +203,10 @@ function Component({
       }}
     >
       {metricsConfigs.configs.map((config) => {
-        return 'type' in config ? (
+        return config.type !== 'metric' ? (
           <li key={config.key} role="presentation">
             <div className={config.className} style={{ borderColor: style.border, backgroundColor: emptyBackground }}>
-              {config.type === 'left' && (
+              {config.type === 'left-empty' && (
                 <div className="echMetricEmpty" style={{ borderColor: emptyForegroundColor.keyword }}></div>
               )}
             </div>

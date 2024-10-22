@@ -111,7 +111,7 @@ export function getFitValueFontSize(
   const widthConstrainedSize = withTextMeasure((textMeasure) => {
     const iconMultiplier = hasIcon ? 1 : 0;
     const textWidth = textParts.reduce((sum, { text, emphasis }) => {
-      const fontSize = emphasis === 'small' ? valueFontSize / VALUE_PART_FONT_RATIO : valueFontSize;
+      const fontSize = emphasis === 'small' ? Math.floor(valueFontSize / VALUE_PART_FONT_RATIO) : valueFontSize;
       return sum + textMeasure(text, VALUE_FONT, fontSize).width;
     }, 0);
     const ratio = textWidth / valueFontSize;
@@ -188,7 +188,16 @@ export function getFittedFontSizes(
 ): Pick<HeightBasedSizes, 'valueFontSize' | 'valuePartFontSize'> {
   return {
     valueFontSize: fittedValueFontSize,
-    valuePartFontSize: fittedValueFontSize / VALUE_PART_FONT_RATIO,
+    valuePartFontSize: Math.floor(fittedValueFontSize / VALUE_PART_FONT_RATIO),
+  };
+}
+/** @internal */
+export function getFixedFontSizes(
+  fixedFontSize: number,
+): Pick<HeightBasedSizes, 'valueFontSize' | 'valuePartFontSize'> {
+  return {
+    valueFontSize: fixedFontSize,
+    valuePartFontSize: Math.floor(fixedFontSize / VALUE_PART_FONT_RATIO),
   };
 }
 
@@ -207,7 +216,7 @@ export function getSnappedFontSizes(
   );
   return {
     valueFontSize: fontSize,
-    valuePartFontSize: fontSize / VALUE_PART_FONT_RATIO,
+    valuePartFontSize: Math.floor(fontSize / VALUE_PART_FONT_RATIO),
   };
 }
 
