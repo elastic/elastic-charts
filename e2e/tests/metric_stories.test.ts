@@ -70,7 +70,7 @@ test.describe('Metric', () => {
 
   test('small size with fixed font size', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      `http://localhost:9001/?path=/story/metric-alpha--basic&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-title=21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9&knob-subtitle=Cluster CPU usage&knob-progress or trend=trend&knob-progress bar direction=vertical&knob-trend data points=30&knob-trend shape=area&knob-trend a11y title=The Cluster CPU Usage trend&knob-trend a11y description=The trend shows a peak of CPU usage in the last 5 minutes&knob-extra=last <b>5m</b>&knob-progress max=100&knob-is numeric metric=true&knob-value=55.23&knob-value prefix=&knob-value postfix= %&knob-color=#3c3c3c&knob-use value color=&knob-value color=#3c3c3c&knob-show icon=&knob-EUI icon glyph name=warning&knob-show value icon=&knob-EUI value icon glyph name=sortUp&knob-use blending background=&knob-blending background=rgba(255,255,255,1)&knob-value font mode=custom&knob-value font size (px)=100&knob-title text-align=left&knob-values text-align=right&knob-icon align=right`,
+      `http://localhost:9001/?path=/story/metric-alpha--basic&knob-value%20font%20mode=custom&knob-value%20font%20size%20(px)=100`,
       {
         action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
       },
@@ -78,7 +78,7 @@ test.describe('Metric', () => {
   });
   test('small size with fit font size', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      `http://localhost:9001/?path=/story/metric-alpha--basic&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-title=21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9&knob-subtitle=Cluster CPU usage&knob-progress or trend=trend&knob-progress bar direction=vertical&knob-trend data points=30&knob-trend shape=area&knob-trend a11y title=The Cluster CPU Usage trend&knob-trend a11y description=The trend shows a peak of CPU usage in the last 5 minutes&knob-extra=last <b>5m</b>&knob-progress max=100&knob-is numeric metric=true&knob-value=55.23&knob-value prefix=&knob-value postfix= %&knob-color=#3c3c3c&knob-use value color=&knob-value color=#3c3c3c&knob-show icon=&knob-EUI icon glyph name=warning&knob-show value icon=&knob-EUI value icon glyph name=sortUp&knob-use blending background=&knob-blending background=rgba(255,255,255,1)&knob-value font mode=fit&knob-value font size (px)=100&knob-title text-align=left&knob-values text-align=right&knob-icon align=right`,
+      `http://localhost:9001/?path=/story/metric-alpha--basic&knob-value%20font%20mode=fit&knob-value%20font%20size%20(px)=100`,
       {
         action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
       },
@@ -86,7 +86,7 @@ test.describe('Metric', () => {
   });
   test('small size with default font size', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(
-      `http://localhost:9001/?path=/story/metric-alpha--basic&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-title=21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9&knob-subtitle=Cluster CPU usage&knob-progress or trend=trend&knob-progress bar direction=vertical&knob-trend data points=30&knob-trend shape=area&knob-trend a11y title=The Cluster CPU Usage trend&knob-trend a11y description=The trend shows a peak of CPU usage in the last 5 minutes&knob-extra=last <b>5m</b>&knob-progress max=100&knob-is numeric metric=true&knob-value=55.23&knob-value prefix=&knob-value postfix= %&knob-color=#3c3c3c&knob-use value color=&knob-value color=#3c3c3c&knob-show icon=&knob-EUI icon glyph name=warning&knob-show value icon=&knob-EUI value icon glyph name=sortUp&knob-use blending background=&knob-blending background=rgba(255,255,255,1)&knob-value font mode=default&knob-value font size (px)=100&knob-title text-align=left&knob-values text-align=right&knob-icon align=right`,
+      `http://localhost:9001/?path=/story/metric-alpha--basic&knob-value%20font%20mode=default&knob-value%20font%20size%20(px)=100`,
       {
         action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
       },
