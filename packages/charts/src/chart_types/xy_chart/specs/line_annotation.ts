@@ -24,7 +24,6 @@ const buildProps = buildSFProps<LineAnnotationSpec>()(
     annotationType: AnnotationType.Line,
     hideLines: false,
     hideTooltips: false,
-    hideLinesTooltips: true,
     zIndex: 1,
   },
 );
