@@ -9,187 +9,11 @@
 import classNames from 'classnames';
 import React, { CSSProperties } from 'react';
 
+import { MetricTextDimensions, PADDING } from './text_measurements';
 import { Color } from '../../../../common/colors';
-import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
-import { Font } from '../../../../common/text_utils';
-import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isFiniteNumber, isNil, LayoutDirection, renderWithProps } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
-import { wrapText } from '../../../../utils/text/wrap';
+import { LayoutDirection, renderWithProps } from '../../../../utils/common';
 import { MetricStyle } from '../../../../utils/themes/theme';
-import {
-  isMetricWNumber,
-  isMetricWNumberArrayValues,
-  isMetricWProgress,
-  MetricDatum,
-  MetricWNumber,
-} from '../../specs';
-
-interface TextParts {
-  emphasis: 'small' | 'normal';
-  text: string;
-}
-
-type BreakPoint = 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
-
-// synced with scss variables
-const PROGRESS_BAR_WIDTH = 10;
-const PROGRESS_BAR_TARGET_WIDTH = 4;
-
-const HEIGHT_BP: [number, number, BreakPoint][] = [
-  [0, 200, 'xs'],
-  [200, 300, 's'],
-  [300, 400, 'm'],
-  [400, 500, 'l'],
-  [500, 600, 'xl'],
-  [600, Infinity, 'xxl'],
-];
-
-const PADDING = 8;
-const LINE_HEIGHT = 1.2; // aligned with our CSS
-const ICON_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
-
-const TITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 16, s: 16, m: 24, l: 24, xl: 32, xxl: 42 };
-const SUBTITLE_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
-const EXTRA_FONT_SIZE: Record<BreakPoint, number> = { xs: 14, s: 14, m: 16, l: 20, xl: 26, xxl: 36 };
-const VALUE_FONT_SIZE: Record<BreakPoint, number> = { xs: 36, s: 36, m: 56, l: 72, xl: 104, xxl: 170 };
-const VALUE_PART_FONT_SIZE: Record<BreakPoint, number> = { xs: 24, s: 24, m: 42, l: 56, xl: 80, xxl: 130 };
-const VALUE_PART_FONT_RATIO = 1.3;
-
-const TITLE_FONT: Font = {
-  fontStyle: 'normal',
-  fontFamily: DEFAULT_FONT_FAMILY,
-  fontVariant: 'normal',
-  fontWeight: 'bold',
-  textColor: 'black',
-};
-const VALUE_FONT = TITLE_FONT;
-const SUBTITLE_FONT: Font = {
-  ...TITLE_FONT,
-  fontWeight: 'normal',
-};
-
-interface Sizes {
-  iconSize: number;
-  titleFontSize: number;
-  subtitleFontSize: number;
-  extraFontSize: number;
-  valueFontSize: number;
-  valuePartFontSize: number;
-}
-
-function getFontSizes(ranges: [number, number, BreakPoint][], value: number, style: MetricStyle): Sizes {
-  const range = ranges.find(([min, max]) => min <= value && value < max);
-  const size = range ? range[2] : ranges[0]?.[2] ?? 's';
-  const valueFontSize = typeof style.valueFontSize === 'number' ? style.valueFontSize : VALUE_FONT_SIZE[size];
-  const valuePartFontSize =
-    typeof style.valueFontSize === 'number'
-      ? Math.ceil(valueFontSize / VALUE_PART_FONT_RATIO)
-      : VALUE_PART_FONT_SIZE[size];
-
-  return {
-    iconSize: ICON_SIZE[size],
-    titleFontSize: TITLE_FONT_SIZE[size],
-    subtitleFontSize: SUBTITLE_FONT_SIZE[size],
-    extraFontSize: EXTRA_FONT_SIZE[size],
-    valueFontSize,
-    valuePartFontSize,
-  };
-}
-
-type ElementVisibility = {
-  titleMaxLines: number;
-  subtitleMaxLines: number;
-  title: boolean;
-  subtitle: boolean;
-  extra: boolean;
-};
-
-function elementVisibility(
-  datum: MetricDatum,
-  panel: Size,
-  sizes: Sizes,
-  locale: string,
-  fit: boolean,
-): ElementVisibility & {
-  titleLines: string[];
-  subtitleLines: string[];
-  gapHeight: number;
-} {
-  const maxTitlesWidth = 0.95 * panel.width - (datum.icon ? 24 : 0) - 2 * PADDING;
-  const titleHeight = (maxLines: number, textMeasure: TextMeasure) => {
-    return datum.title
-      ? PADDING +
-          wrapText(datum.title, TITLE_FONT, sizes.titleFontSize, maxTitlesWidth, maxLines, textMeasure, locale).length *
-            sizes.titleFontSize *
-            LINE_HEIGHT
-      : 0;
-  };
-
-  const subtitleHeight = (maxLines: number, textMeasure: TextMeasure) => {
-    return datum.subtitle
-      ? PADDING +
-          wrapText(datum.subtitle, SUBTITLE_FONT, sizes.subtitleFontSize, maxTitlesWidth, maxLines, textMeasure, locale)
-            .length *
-            sizes.subtitleFontSize *
-            LINE_HEIGHT
-      : 0;
-  };
-
-  const extraHeight = sizes.extraFontSize * LINE_HEIGHT;
-  const valueHeight = sizes.valueFontSize * LINE_HEIGHT;
-
-  const responsiveBreakPoints: Array<ElementVisibility> = [
-    { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 3, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 2, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-  ];
-
-  const getCombinedHeight = (
-    { titleMaxLines, subtitleMaxLines, title, subtitle, extra }: ElementVisibility,
-    measure: TextMeasure,
-  ) =>
-    (title && titleMaxLines > 0 ? titleHeight(titleMaxLines, measure) : 0) +
-    (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
-    (extra ? extraHeight : 0) +
-    valueHeight +
-    PADDING;
-
-  const isVisible = (ev: ElementVisibility, measure: TextMeasure) => getCombinedHeight(ev, measure) < panel.height;
-
-  return withTextMeasure((textMeasure) => {
-    const visibilityBreakpoint = fit
-      ? responsiveBreakPoints.at(0)!
-      : responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
-
-    return {
-      ...visibilityBreakpoint,
-      gapHeight: Math.max(0, panel.height - getCombinedHeight(visibilityBreakpoint, textMeasure)),
-      titleLines: wrapText(
-        datum.title ?? '',
-        TITLE_FONT,
-        sizes.titleFontSize,
-        maxTitlesWidth,
-        visibilityBreakpoint.titleMaxLines,
-        textMeasure,
-        locale,
-      ),
-      subtitleLines: wrapText(
-        datum.subtitle ?? '',
-        SUBTITLE_FONT,
-        sizes.subtitleFontSize,
-        maxTitlesWidth,
-        visibilityBreakpoint.subtitleMaxLines,
-        textMeasure,
-        locale,
-      ),
-    };
-  });
-}
+import { isMetricWNumber, MetricDatum } from '../../specs';
 
 function lineClamp(maxLines: number): CSSProperties {
   return {
@@ -207,44 +31,20 @@ function lineClamp(maxLines: number): CSSProperties {
 export const MetricText: React.FunctionComponent<{
   id: string;
   datum: MetricDatum;
-  panel: Size;
   style: MetricStyle;
   onElementClick?: () => void;
   highContrastTextColor: Color;
   progressBarSize: 'small';
-  fittedValueFontSize: number;
-  locale: string;
-}> = ({
-  id,
-  datum,
-  panel,
-  style,
-  onElementClick,
-  highContrastTextColor,
-  progressBarSize,
-  locale,
-  fittedValueFontSize,
-}) => {
-  const { sizes, hasProgressBar, progressBarDirection, visibility, textParts } = getMetricTextPartDimensions(
-    datum,
-    panel,
-    style,
-    locale,
-  );
+  textDimensions: MetricTextDimensions;
+}> = ({ id, datum, style, onElementClick, highContrastTextColor, progressBarSize, textDimensions }) => {
+  const { heightBasedSizes: sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
   const { extra, body } = datum;
+
   const containerClassName = classNames('echMetricText', {
     [`echMetricText--${progressBarSize}`]: hasProgressBar,
     'echMetricText--vertical': progressBarDirection === LayoutDirection.Vertical,
     'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
-
-  const { valueFontSize, valuePartFontSize } =
-    style.valueFontSize === 'fit'
-      ? {
-          valueFontSize: fittedValueFontSize,
-          valuePartFontSize: fittedValueFontSize / VALUE_PART_FONT_RATIO,
-        }
-      : sizes;
 
   const TitleElement = () => (
     <span
@@ -330,7 +130,7 @@ export const MetricText: React.FunctionComponent<{
           <p
             className="echMetricText__value"
             style={{
-              fontSize: valueFontSize,
+              fontSize: sizes.valueFontSize,
               textOverflow: isMetricWNumber(datum) ? undefined : 'ellipsis',
               color: datum.valueColor,
             }}
@@ -342,7 +142,7 @@ export const MetricText: React.FunctionComponent<{
                   key={`${text}${i}`}
                   className="echMetricText__part"
                   style={{
-                    fontSize: valuePartFontSize,
+                    fontSize: sizes.valuePartFontSize,
                   }}
                 >
                   {text}
@@ -356,14 +156,14 @@ export const MetricText: React.FunctionComponent<{
             <p
               className="echMetricText__valueIcon"
               style={{
-                fontSize: valueFontSize,
+                fontSize: sizes.valueFontSize,
                 color: datum.valueColor ?? highContrastTextColor,
-                marginRight: style.valuesTextAlign === 'center' ? -(valuePartFontSize + PADDING) : undefined,
+                marginRight: style.valuesTextAlign === 'center' ? -(sizes.valuePartFontSize + PADDING) : undefined,
               }}
             >
               {renderWithProps(datum.valueIcon, {
-                width: valuePartFontSize,
-                height: valuePartFontSize,
+                width: sizes.valuePartFontSize,
+                height: sizes.valuePartFontSize,
                 color: datum.valueColor ?? highContrastTextColor,
                 verticalAlign: 'middle',
               })}
@@ -374,91 +174,3 @@ export const MetricText: React.FunctionComponent<{
     </div>
   );
 };
-
-function getTextParts(datum: MetricDatum, style: MetricStyle): TextParts[] {
-  const values = Array.isArray(datum.value) ? datum.value : [datum.value];
-  const valueFormatter =
-    isMetricWNumber(datum) || isMetricWNumberArrayValues(datum) ? datum.valueFormatter : (v: number) => `${v}`;
-  const textParts = values.reduce<TextParts[]>((acc, value, i, { length }) => {
-    const parts: TextParts[] =
-      typeof value === 'number'
-        ? isFiniteNumber(value)
-          ? splitNumericSuffixPrefix(valueFormatter(value))
-          : [{ emphasis: 'normal', text: style.nonFiniteText }]
-        : [{ emphasis: 'normal', text: value }];
-
-    if (i < length - 1) {
-      parts.push({ emphasis: 'normal', text: ', ' });
-    }
-    return [...acc, ...parts];
-  }, []);
-
-  if (!Array.isArray(datum.value)) return textParts;
-
-  return [{ emphasis: 'normal', text: '[' }, ...textParts, { emphasis: 'normal', text: ']' }];
-}
-
-function splitNumericSuffixPrefix(text: string): TextParts[] {
-  return text
-    .split('')
-    .reduce<{ emphasis: 'normal' | 'small'; textParts: string[] }[]>((acc, curr) => {
-      const emphasis = curr === '.' || curr === ',' || isFiniteNumber(Number.parseInt(curr)) ? 'normal' : 'small';
-      if (acc.length > 0 && acc.at(-1)?.emphasis === emphasis) {
-        acc.at(-1)?.textParts.push(curr);
-      } else {
-        acc.push({ emphasis, textParts: [curr] });
-      }
-      return acc;
-    }, [])
-    .map(({ emphasis, textParts }) => ({
-      emphasis,
-      text: textParts.join(''),
-    }));
-}
-
-/**
- * Approximate font size to fit given available space
- * @internal
- */
-export function getFitValueFontSize(
-  valueFontSize: number,
-  width: number,
-  gapHeight: number,
-  textParts: TextParts[],
-  minValueFontSize: number,
-  hasIcon: boolean,
-): number {
-  const maxWidth = (width - 2 * PADDING) * 0.98; // small buffer to prevent clipping
-  const widthConstrainedSize = withTextMeasure((textMeasure) => {
-    const iconMultiplier = hasIcon ? 1 : 0;
-    const textWidth = textParts.reduce((sum, { text, emphasis }) => {
-      const fontSize = emphasis === 'small' ? valueFontSize / VALUE_PART_FONT_RATIO : valueFontSize;
-      return sum + textMeasure(text, VALUE_FONT, fontSize).width;
-    }, 0);
-    const ratio = textWidth / valueFontSize;
-    return (maxWidth - iconMultiplier * PADDING) / (ratio + iconMultiplier / VALUE_PART_FONT_RATIO);
-  });
-  const heightConstrainedSize = valueFontSize + gapHeight;
-
-  return Math.max(Math.min(heightConstrainedSize, widthConstrainedSize), minValueFontSize);
-}
-
-/** @internal */
-export function getMetricTextPartDimensions(datum: MetricDatum, panel: Size, style: MetricStyle, locale: string) {
-  const sizes = getFontSizes(HEIGHT_BP, panel.height, style);
-  const hasProgressBar = isMetricWProgress(datum);
-  const hasTarget = !isNil((datum as MetricWNumber)?.target);
-  const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
-
-  return {
-    sizes,
-    hasProgressBar,
-    progressBarDirection,
-    progressBarWidth:
-      hasProgressBar && progressBarDirection === LayoutDirection.Vertical
-        ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
-        : 0,
-    visibility: elementVisibility(datum, panel, sizes, locale, style.valueFontSize === 'fit'),
-    textParts: getTextParts(datum, style),
-  };
-}

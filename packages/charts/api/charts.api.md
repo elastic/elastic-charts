@@ -1952,7 +1952,6 @@ export type LineAnnotationSpec<D = any> = BaseAnnotationSpec<typeof AnnotationTy
     };
     markerPosition?: Position;
     hideLines?: boolean;
-    hideLinesTooltips?: boolean;
     zIndex?: number;
 };
 
