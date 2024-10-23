@@ -75,7 +75,8 @@ export function renderAreas(
             style.line.strokeWidth,
             minPointDistance,
             style.pointVisibilityMinDistance,
-            hasFit,
+            // has a connecting line only if is fit and there are more than one point on the chart
+            hasFit && points.length > 1,
           ),
         { area: getPanelClipping(panel, rotation), shouldClip: points[0]?.value.mark !== null },
       );
