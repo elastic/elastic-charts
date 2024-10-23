@@ -12,6 +12,7 @@ import React, { CSSProperties, useState } from 'react';
 import { ProgressBar } from './progress';
 import { SparkLine, getSparkLineColor } from './sparkline';
 import { MetricText } from './text';
+import { MetricTextDimensions } from './text_measurements';
 import { ColorContrastOptions, combineColors } from '../../../../common/color_calcs';
 import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
@@ -25,7 +26,6 @@ import {
   MetricElementEvent,
 } from '../../../../specs';
 import { LayoutDirection, isNil } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { MetricWNumber, isMetricWProgress, isMetricWTrend } from '../../specs';
 
@@ -38,12 +38,10 @@ export const Metric: React.FunctionComponent<{
   totalColumns: number;
   totalRows: number;
   datum: MetricDatum;
-  panel: Size;
   style: MetricStyle;
   backgroundColor: Color;
   contrastOptions: ColorContrastOptions;
-  locale: string;
-  fittedValueFontSize: number;
+  textDimensions: MetricTextDimensions;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
   onElementOut?: BasicListener;
@@ -55,15 +53,13 @@ export const Metric: React.FunctionComponent<{
   totalColumns,
   totalRows,
   datum,
-  panel,
   style,
   backgroundColor: chartBackgroundColor,
   contrastOptions,
-  locale,
+  textDimensions,
   onElementClick,
   onElementOver,
   onElementOut,
-  fittedValueFontSize,
 }) => {
   const progressBarSize = 'small'; // currently we provide only the small progress bar;
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
@@ -96,10 +92,7 @@ export const Metric: React.FunctionComponent<{
     combineColors(colorToRgba(interactionColor), blendingBackgroundColor),
   );
 
-  const datumWithInteractionColor: MetricDatum = {
-    ...datum,
-    color: blendedInteractionColor,
-  };
+  const datumWithInteractionColor: MetricDatum = { ...datum, color: blendedInteractionColor };
 
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
@@ -132,7 +125,7 @@ export const Metric: React.FunctionComponent<{
   }
 
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
-
+  const hasMouseEventsHandler = onElementOut || onElementOver || onElementClick;
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions,jsx-a11y/click-events-have-key-events
     <div
@@ -141,28 +134,28 @@ export const Metric: React.FunctionComponent<{
       className={containerClassName}
       style={containerStyle}
       onMouseLeave={() => {
-        if (onElementOut || onElementOver || onElementClick) setMouseState('leave');
+        if (hasMouseEventsHandler) setMouseState('leave');
         if (onElementOut) onElementOut();
       }}
       onMouseEnter={() => {
-        if (onElementOut || onElementOver || onElementClick) setMouseState('enter');
+        if (hasMouseEventsHandler) setMouseState('enter');
         if (onElementOver) onElementOver([event]);
       }}
       onMouseDown={() => {
-        if (onElementOut || onElementOver || onElementClick) setMouseState('down');
+        if (hasMouseEventsHandler) setMouseState('down');
         setLastMouseDownTimestamp(Date.now());
       }}
       onMouseUp={() => {
-        if (onElementOut || onElementOver || onElementClick) setMouseState('enter');
+        if (hasMouseEventsHandler) setMouseState('enter');
         if (Date.now() - lastMouseDownTimestamp < 200 && onElementClick) {
           onElementClickHandler();
         }
       }}
       onFocus={() => {
-        if (onElementOut || onElementOver || onElementClick) setMouseState('enter');
+        if (hasMouseEventsHandler) setMouseState('enter');
       }}
       onBlur={() => {
-        if (onElementOut || onElementOver || onElementClick) setMouseState('leave');
+        if (hasMouseEventsHandler) setMouseState('leave');
       }}
       onClick={(e) => {
         e.stopPropagation();
@@ -171,13 +164,11 @@ export const Metric: React.FunctionComponent<{
       <MetricText
         id={metricHTMLId}
         datum={datumWithInteractionColor}
-        panel={panel}
         style={style}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
         progressBarSize={progressBarSize}
         highContrastTextColor={finalTextColor.keyword}
-        locale={locale}
-        fittedValueFontSize={fittedValueFontSize}
+        textDimensions={textDimensions}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (

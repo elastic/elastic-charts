@@ -68,6 +68,31 @@ test.describe('Metric', () => {
     );
   });
 
+  test('small size with fixed font size', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/metric-alpha--basic&knob-value%20font%20mode=custom&knob-value%20font%20size%20(px)=100`,
+      {
+        action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
+      },
+    );
+  });
+  test('small size with fit font size', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/metric-alpha--basic&knob-value%20font%20mode=fit&knob-value%20font%20size%20(px)=100`,
+      {
+        action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
+      },
+    );
+  });
+  test('small size with default font size', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      `http://localhost:9001/?path=/story/metric-alpha--basic&knob-value%20font%20mode=default&knob-value%20font%20size%20(px)=100`,
+      {
+        action: async () => await common.setResizeDimensions(page)({ height: 180, width: 180 }),
+      },
+    );
+  });
+
   pwEach.describe(['trend', 'bar', 'none'])(
     (v) => `Metric - ${v} type`,
     (type) => {

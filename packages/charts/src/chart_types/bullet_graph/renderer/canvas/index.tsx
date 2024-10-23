@@ -35,7 +35,8 @@ import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { Metric } from '../../../metric/renderer/dom/metric';
-import { BulletMetricWProgress, MetricDatum } from '../../../metric/specs';
+import { getMetricTextPartDimensions, getSnappedFontSizes } from '../../../metric/renderer/dom/text_measurements';
+import { BulletMetricWProgress } from '../../../metric/specs';
 import { ActiveValue, getActiveValues } from '../../selectors/get_active_values';
 import { getBulletSpec } from '../../selectors/get_bullet_spec';
 import { getChartSize } from '../../selectors/get_chart_size';
@@ -190,30 +191,40 @@ class Component extends React.Component<Props> {
                   ) : undefined,
                 };
 
+                const bulletToMetricStyle = mergePartial(metricStyle, {
+                  barBackground: colorScale(datum.value).hex(),
+                  emptyBackground: Colors.Transparent.keyword,
+                  border: 'gray',
+                  minHeight: 0,
+                  textLightColor: 'white',
+                  textDarkColor: 'black',
+                  nonFiniteText: 'N/A',
+                  valueFontSize: 'default',
+                });
+                const panel = { width: size.width / stats.columns, height: size.height / stats.rows };
+
+                const textDimensions = getMetricTextPartDimensions(bulletDatum, panel, bulletToMetricStyle, locale);
+                const sizes = getSnappedFontSizes(
+                  textDimensions.heightBasedSizes.valueFontSize,
+                  panel.height,
+                  bulletToMetricStyle,
+                );
+                textDimensions.heightBasedSizes.valueFontSize = sizes.valueFontSize;
+                textDimensions.heightBasedSizes.valuePartFontSize = sizes.valuePartFontSize;
+
                 return (
                   <Metric
-                    chartId="XX"
-                    datum={bulletDatum as MetricDatum} // forcing internal type use
+                    chartId={`${this.props.chartId}-${stats.rowIndex}-${stats.columnIndex}`}
+                    datum={bulletDatum}
                     hasTitles={this.props.hasTitles}
                     totalRows={stats.rows}
                     totalColumns={stats.columns}
                     columnIndex={stats.columnIndex}
                     rowIndex={stats.rowIndex}
-                    style={mergePartial(metricStyle, {
-                      barBackground: colorScale(datum.value).hex(),
-                      emptyBackground: Colors.Transparent.keyword,
-                      border: 'gray',
-                      minHeight: 0,
-                      textLightColor: 'white',
-                      textDarkColor: 'black',
-                      nonFiniteText: 'N/A',
-                      valueFontSize: 'default', // bullet does not support fit mode
-                    })}
-                    locale={locale}
+                    style={bulletToMetricStyle}
                     backgroundColor={backgroundColor}
                     contrastOptions={contrastOptions}
-                    panel={{ width: size.width / stats.columns, height: size.height / stats.rows }}
-                    fittedValueFontSize={NaN}
+                    textDimensions={textDimensions}
                   />
                 );
               }}
