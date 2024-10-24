@@ -1,3 +1,10 @@
+## [68.0.2](https://github.com/elastic/elastic-charts/compare/v68.0.1...v68.0.2) (2024-10-24)
+
+
+### Bug Fixes
+
+* **xy:** single point visibility ([#2557](https://github.com/elastic/elastic-charts/issues/2557)) ([e16c902](https://github.com/elastic/elastic-charts/commit/e16c902dd5c73ae130a0b472f88e7d5fda5b9e0f))
+
 ## [68.0.1](https://github.com/elastic/elastic-charts/compare/v68.0.0...v68.0.1) (2024-10-23)
 
 
