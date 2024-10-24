@@ -32,3 +32,4 @@ export { Example as steppedArea } from './20_stepped_area.story';
 export { Example as testLinear } from './11_test_linear.story';
 export { Example as testTime } from './12_test_time.story';
 export { Example as testStackedWithMissingValues } from './16_test_stacked_with_missing.story';
+export { Example as testSinglePoint } from './22_single_point_test.story';
