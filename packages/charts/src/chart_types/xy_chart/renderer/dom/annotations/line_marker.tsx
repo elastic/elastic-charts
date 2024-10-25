@@ -119,6 +119,8 @@ export function LineMarker({
 
   void popper?.current?.update?.();
 
+  const ariaLabel = datum.ariaLabel ?? datum.details ?? datum.header ?? `line annotation ${datum.dataValue}`;
+
   // want it to be tabbable if interactive if there is a click handler
   return clickable ? (
     <button
@@ -135,6 +137,7 @@ export function LineMarker({
       onClick={onDOMElementClick}
       style={{ ...markerStyle, ...transform }}
       type="button"
+      aria-label={ariaLabel}
     >
       <div ref={iconRef} className="echAnnotation__icon">
         {renderWithProps(icon, datum)}
