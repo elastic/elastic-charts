@@ -56,7 +56,7 @@ export function useSpecFactory<Props extends Spec>(props: Props) {
  * ```
  *
  * > IMPORTANT: Both `overrides` and `defaults` should __NOT__ have explicit types.
- * > The types are determined automatically from thier implicitly defined types, while still
+ * > The types are determined automatically from their implicitly defined types, while still
  * > enforing that the types are derived from the defined `Spec`.
  * @internal
  */
@@ -89,7 +89,7 @@ export const specComponentFactory =
  * ```
  *
  * > IMPORTANT: Both `overrides` and `defaults` should __NOT__ have explicit types.
- * > The types are determined automatically from thier implicitly defined types, while still
+ * > The types are determined automatically from their implicitly defined types, while still
  * > enforing that the types are derived from the defined `Spec`.
  * @internal
  */
