@@ -1927,6 +1927,7 @@ export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, key
 
 // @public
 export interface LineAnnotationDatum<D = any> {
+    ariaLabel?: string;
     dataValue: D;
     details?: string;
     header?: string;
