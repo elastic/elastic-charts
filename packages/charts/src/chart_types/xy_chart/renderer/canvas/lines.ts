@@ -60,7 +60,8 @@ export function renderLines(
             line.style.line.strokeWidth,
             line.minPointDistance,
             line.style.pointVisibilityMinDistance,
-            line.hasFit,
+            // has a connecting line only if is fit and there are more than one point on the chart
+            line.hasFit && line.points.length > 1,
           ),
         // TODO: add padding over clipping
         { area: clippings, shouldClip: line.points[0]?.value.mark !== null },

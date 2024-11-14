@@ -1,3 +1,18 @@
+## [68.0.2](https://github.com/elastic/elastic-charts/compare/v68.0.1...v68.0.2) (2024-10-24)
+
+
+### Bug Fixes
+
+* **xy:** single point visibility ([#2557](https://github.com/elastic/elastic-charts/issues/2557)) ([e16c902](https://github.com/elastic/elastic-charts/commit/e16c902dd5c73ae130a0b472f88e7d5fda5b9e0f))
+
+## [68.0.1](https://github.com/elastic/elastic-charts/compare/v68.0.0...v68.0.1) (2024-10-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @playwright/test to ^1.47.2 ([#2539](https://github.com/elastic/elastic-charts/issues/2539)) ([10d5f40](https://github.com/elastic/elastic-charts/commit/10d5f40f992df92d2ab7a7083e28232ccf26c572))
+* **Metric:** improve default font-sizing ([#2548](https://github.com/elastic/elastic-charts/issues/2548)) ([2e1178d](https://github.com/elastic/elastic-charts/commit/2e1178da38b93ef57011440bb75d260290ddd06e))
+
 # [68.0.0](https://github.com/elastic/elastic-charts/compare/v67.0.1...v68.0.0) (2024-10-08)
 
 
