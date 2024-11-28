@@ -1,3 +1,10 @@
+## [68.0.3](https://github.com/elastic/elastic-charts/compare/v68.0.2...v68.0.3) (2024-11-28)
+
+
+### Bug Fixes
+
+* **xy:** line annotation marker aria label fix ([#2558](https://github.com/elastic/elastic-charts/issues/2558)) ([3b056c3](https://github.com/elastic/elastic-charts/commit/3b056c395c5ff87044ea989a3b737022cea20509))
+
 ## [68.0.2](https://github.com/elastic/elastic-charts/compare/v68.0.1...v68.0.2) (2024-10-24)
 
 
