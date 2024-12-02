@@ -13,6 +13,7 @@ import { BarSeriesStyle, PointStyle, PointShape, LineSeriesStyle, AreaSeriesStyl
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
 import { Color } from '../common/colors';
+import { Pixels } from '../common/geometry';
 import { Fill, Stroke } from '../geoms/types';
 
 /**
@@ -122,7 +123,7 @@ export interface LineGeometry {
   clippedRanges: ClippedRanges;
   shouldClip: boolean;
   hasFit: boolean;
-  minPointDistance: number;
+  minPointDistance: Pixels;
 }
 
 /** @internal */
@@ -144,7 +145,7 @@ export interface AreaGeometry {
   clippedRanges: ClippedRanges;
   shouldClip: boolean;
   hasFit: boolean;
-  minPointDistance: number;
+  minPointDistance: Pixels;
 }
 
 /** @internal */

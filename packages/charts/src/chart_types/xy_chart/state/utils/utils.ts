@@ -19,14 +19,7 @@ import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator'
 import { isFiniteNumber, isNil, isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
 import { Dimensions, Size } from '../../../../utils/dimensions';
-import {
-  AreaGeometry,
-  BarGeometry,
-  BubbleGeometry,
-  LineGeometry,
-  PerPanel,
-  PointGeometry,
-} from '../../../../utils/geometry';
+import { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
 import { GroupId, SpecId } from '../../../../utils/ids';
 import { SeriesCompareFn } from '../../../../utils/series_sort';
 import { ColorConfig, Theme } from '../../../../utils/themes/theme';
@@ -307,7 +300,6 @@ function renderGeometries(
   fallBackTickFormatter: TickFormatter,
   measureText: TextMeasure,
 ): Omit<ComputedGeometries, 'scales'> {
-  const points: PointGeometry[] = [];
   const bars: Array<PerPanel<BarGeometry[]>> = [];
   const areas: Array<PerPanel<AreaGeometry>> = [];
   const lines: Array<PerPanel<LineGeometry>> = [];
@@ -325,7 +317,7 @@ function renderGeometries(
     bubblePoints: 0,
   };
   const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
-
+  let globalMinPointsDistance = Infinity;
   dataSeries.forEach((ds) => {
     const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, ds.specId);
     if (spec === undefined) {
@@ -463,11 +455,12 @@ function renderGeometries(
       });
       geometriesCounts.linePoints += renderedLines.lineGeometry.points.length;
       geometriesCounts.lines += 1;
+      globalMinPointsDistance = Math.min(globalMinPointsDistance, renderedLines.lineGeometry.minPointDistance);
     } else if (isAreaSeriesSpec(spec)) {
       const areaShift = barIndexOrder && barIndexOrder.length > 0 ? barIndexOrder.length : 1;
       const areaSeriesStyle = getAreaSeriesStyles(chartTheme.areaSeriesStyle, spec.areaSeriesStyle);
       const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
-      const renderedAreas = renderArea(
+      const renderedArea = renderArea(
         // move the point on half of the bandwidth if we have mixed bars/lines
         (xScale.bandwidth * areaShift) / 2,
         ds,
@@ -487,22 +480,30 @@ function renderGeometries(
         hasFitFnConfigured(spec.fit),
         spec.pointStyleAccessor,
       );
-      geometriesIndex.merge(renderedAreas.indexedGeometryMap);
+      geometriesIndex.merge(renderedArea.indexedGeometryMap);
       areas.push({
         panel,
-        value: renderedAreas.areaGeometry,
+        value: renderedArea.areaGeometry,
       });
-      geometriesCounts.areasPoints += renderedAreas.areaGeometry.points.length;
+      geometriesCounts.areasPoints += renderedArea.areaGeometry.points.length;
       geometriesCounts.areas += 1;
+      globalMinPointsDistance = Math.min(globalMinPointsDistance, renderedArea.areaGeometry.minPointDistance);
     }
   });
 
+  globalMinPointsDistance = isFiniteNumber(globalMinPointsDistance) ? globalMinPointsDistance : 0;
+
   return {
     geometries: {
-      points,
       bars,
-      areas,
-      lines,
+      areas: areas.map((a) => {
+        a.value.minPointDistance = globalMinPointsDistance;
+        return a;
+      }),
+      lines: lines.map((l) => {
+        l.value.minPointDistance = globalMinPointsDistance;
+        return l;
+      }),
       bubbles,
     },
     geometriesIndex,

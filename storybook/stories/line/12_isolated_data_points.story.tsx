@@ -15,6 +15,7 @@ import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_data
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
+import { getMultiSelectKnob } from '../utils/knobs/custom';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const fitEnabled = boolean('enable fit function', false);
@@ -44,6 +45,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
       step: 1,
     },
   );
+
+  const visibleSeries = getMultiSelectKnob('visible series', { A: 'A', B: 'B', C: 'C', D: 'D' }, ['A', 'B', 'C', 'D']);
 
   return (
     <Chart title={title} description={description}>
@@ -127,7 +130,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
             }
             return [...d, 'C'];
           }),
-        ]}
+          ...KIBANA_METRICS.metrics.kibana_os_load.v3.data.slice(0, maxDataPoints).map((d, i) => {
+            if (i % 5 !== 0) {
+              return [d[0], null, 'D'];
+            }
+            return [d[0], i % 2 === 0 ? 2 : 4, 'D'];
+          }),
+        ].filter((d) => visibleSeries.includes(d[2] as unknown as 'A' | 'B' | 'C' | 'D'))}
         fit={fitEnabled ? Fit.Linear : undefined}
         curve={CurveType.CURVE_MONOTONE_X}
       />
