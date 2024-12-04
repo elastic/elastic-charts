@@ -317,6 +317,8 @@ function renderGeometries(
     bubblePoints: 0,
   };
   const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
+  // This var remains Infinity if we don't have points, or we just have a single point per series.
+  // In this case the point should be visible if the visibility style is set to `auto`
   let globalMinPointsDistance = Infinity;
   dataSeries.forEach((ds) => {
     const spec = getSpecsById<BasicSeriesSpec>(seriesSpecs, ds.specId);
@@ -490,8 +492,6 @@ function renderGeometries(
       globalMinPointsDistance = Math.min(globalMinPointsDistance, renderedArea.areaGeometry.minPointDistance);
     }
   });
-
-  globalMinPointsDistance = isFiniteNumber(globalMinPointsDistance) ? globalMinPointsDistance : 0;
 
   return {
     geometries: {

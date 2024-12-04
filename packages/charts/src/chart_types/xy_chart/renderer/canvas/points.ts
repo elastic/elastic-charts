@@ -33,6 +33,8 @@ export function renderPoints(
   pointsDistanceVisibilityThreshold: number,
   hasConnectingLine: boolean,
 ) {
+  // seriesMinPointDistance could be Infinity if we don't have points, or we just have a single point per series.
+  // In this case the point should be visible if the visibility style is set to `auto`
   const isHiddenOnAuto = pointStyle.visible === 'auto' && seriesMinPointDistance < pointsDistanceVisibilityThreshold;
   const hideDataPoints = pointStyle.visible === 'never' || isHiddenOnAuto;
   const hideIsolatedDataPoints = hasConnectingLine && hideDataPoints;
