@@ -159,7 +159,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   }
 
   render() {
-    console.log(`render chart, legend direction ${this.state.legendDirection}`);
     const { size, className } = this.props;
     const containerSizeStyle = getChartSize(size);
     const chartContentClassNames = classNames('echChartContent', className, {
