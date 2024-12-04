@@ -12,7 +12,6 @@ import { renderPoints } from './points';
 import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn, MarkSizeOptions } from './utils';
 import { Color } from '../../../common/colors';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
-import { isBandScale } from '../../../scales/types';
 import { CurveType, getCurveFactory } from '../../../utils/curves';
 import { Dimensions } from '../../../utils/dimensions';
 import { LineGeometry } from '../../../utils/geometry';
@@ -50,7 +49,7 @@ export function renderLine(
     .defined((datum) => definedFn(datum, y1Accessor))
     .curve(getCurveFactory(curve));
 
-  const { pointGeometries, indexedGeometryMap } = renderPoints(
+  const { pointGeometries, indexedGeometryMap, minDistanceBetweenPoints } = renderPoints(
     shift - xScaleOffset,
     dataSeries,
     xScale,
@@ -70,7 +69,7 @@ export function renderLine(
   // TODO we can probably avoid computing the clipped ranges if no fit function is applied.
   const clippedRanges = getClippedRanges(dataSeries.data, xScale, xScaleOffset);
 
-  const lineGeometry = {
+  const lineGeometry: LineGeometry = {
     line: pathGenerator(dataSeries.data) || '',
     points: pointGeometries,
     color,
@@ -83,10 +82,7 @@ export function renderLine(
     clippedRanges,
     shouldClip: hasFit,
     hasFit,
-    minPointDistance: isBandScale(xScale) ? xScale.bandwidth : xScale.scale(xScale.domain[0] + xScale.minInterval),
+    minPointDistance: minDistanceBetweenPoints,
   };
-  return {
-    lineGeometry,
-    indexedGeometryMap,
-  };
+  return { lineGeometry, indexedGeometryMap };
 }

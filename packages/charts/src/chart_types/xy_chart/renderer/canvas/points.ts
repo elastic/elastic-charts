@@ -29,11 +29,13 @@ export function renderPoints(
   { opacity }: GeometryStateStyle,
   pointStyle: PointStyle,
   lineStrokeWidth: number,
-  minDistanceBetweenPoints: number,
-  minDistanceToShowPoints: number,
+  seriesMinPointDistance: number,
+  pointsDistanceVisibilityThreshold: number,
   hasConnectingLine: boolean,
 ) {
-  const isHiddenOnAuto = pointStyle.visible === 'auto' && minDistanceBetweenPoints < minDistanceToShowPoints;
+  // seriesMinPointDistance could be Infinity if we don't have points, or we just have a single point per series.
+  // In this case the point should be visible if the visibility style is set to `auto`
+  const isHiddenOnAuto = pointStyle.visible === 'auto' && seriesMinPointDistance < pointsDistanceVisibilityThreshold;
   const hideDataPoints = pointStyle.visible === 'never' || isHiddenOnAuto;
   const hideIsolatedDataPoints = hasConnectingLine && hideDataPoints;
 

@@ -58,4 +58,16 @@ test.describe('Line series stories', () => {
       );
     });
   });
+  test.describe('Points auto visibility', () => {
+    test('show points when space between point is enough', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/line-chart--isolated-data-points&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-default point radius=3&knob-enable fit function=true&knob-max data points=25&knob-point shape=circle&knob-point visibility=auto&knob-point visibility min distance=20&knob-series type=line&knob-visible series[0]=A&knob-visible series[1]=B&knob-visible series[2]=C&knob-visible series[3]=D',
+      );
+    });
+    test('hide points when space between point is small', async ({ page }) => {
+      await common.expectChartAtUrlToMatchScreenshot(page)(
+        'http://localhost:9001/?path=/story/line-chart--isolated-data-points&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-default point radius=3&knob-enable fit function=true&knob-max data points=60&knob-point shape=circle&knob-point visibility=auto&knob-point visibility min distance=20&knob-series type=line&knob-visible series[0]=A&knob-visible series[1]=B&knob-visible series[2]=C&knob-visible series[3]=D',
+      );
+    });
+  });
 });
