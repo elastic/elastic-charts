@@ -90,9 +90,9 @@ export function renderPoints(
       // don't create the point if it that point was filled
       const x = xScale.scale(xValue);
 
-      if (Number.isNaN(x)) return acc;
+      if (!isFiniteNumber(x)) return acc;
 
-      if (isFiniteNumber(acc.prevX) && !datum.filled) {
+      if (isFiniteNumber(acc.prevX) && !isDatumFilled(datum)) {
         acc.minDistanceBetweenPoints = Math.min(acc.minDistanceBetweenPoints, Math.abs(x - acc.prevX));
       }
       acc.prevX = x;
