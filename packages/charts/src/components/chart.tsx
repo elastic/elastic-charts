@@ -27,11 +27,11 @@ import { updateChartTitles, updateParentDimensions } from '../state/actions/char
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
 import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
-import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
+import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
-import { getLegendConfigSelector } from '../state/selectors/get_legend_config_selector';
 import { ChartSize, getChartSize, getFixedChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
+import { deepEqual } from '../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 
 /** @public */
@@ -90,20 +90,9 @@ export class Chart extends React.Component<ChartProps, ChartState> {
         return;
       }
 
-      const {
-        legendPosition: { direction },
-      } = getLegendConfigSelector(state);
-      if (this.state.legendDirection !== direction) {
-        this.setState({
-          legendDirection: direction,
-        });
-      }
-      const theme = getChartThemeSelector(state);
-      this.setState({
-        paddingLeft: theme.chartMargins.left,
-        paddingRight: theme.chartMargins.right,
-        displayTitles: state.internalChartState?.canDisplayChartTitles(state) ?? true,
-      });
+      const newState = getChartContainerUpdateStateSelector(state);
+      if (!deepEqual(this.state, newState)) this.setState(newState);
+
       if (state.internalChartState) {
         state.internalChartState.eventCallbacks(state);
       }
