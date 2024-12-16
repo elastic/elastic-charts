@@ -79,7 +79,7 @@ export function clampWithOffset(value: number, lowerBound: number, upperBound: n
 export function shapeViewModel<D extends BaseDatum = Datum>(
   textMeasure: TextMeasure,
   spec: HeatmapSpec<D>,
-  { heatmap: heatmapTheme, axes: { axisTitle, axisPanelTitle }, background }: Theme,
+  { heatmap: heatmapTheme, axes: { axisTitle, axisPanelTitle }, background, chartMargins, chartPaddings }: Theme,
   { chartDimensions }: ChartDimensions,
   elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,
@@ -504,7 +504,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
                 elementSizes.xAxis.height +
                 axisPanelTitleHeight +
                 innerPad(axisTitle.padding) / 2 +
-                axisTitle.fontSize / 2,
+                axisTitle.fontSize / 2 -
+                chartPaddings.top +
+                chartPaddings.bottom -
+                chartMargins.top,
             },
             ...axisTitleFont,
             text: spec.xAxisTitle,
@@ -515,8 +518,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         if (spec.yAxisTitle) {
           titles.push({
             origin: {
-              x: -chartDimensions.left + axisTitle.fontSize / 2,
-              y: chartDimensions.top + chartDimensions.height / 2,
+              x: -chartDimensions.left + axisTitle.fontSize / 2 + chartMargins.left,
+              y: chartDimensions.top + chartDimensions.height / 2 - chartMargins.top - chartPaddings.top,
             },
             ...axisTitleFont,
             text: spec.yAxisTitle,

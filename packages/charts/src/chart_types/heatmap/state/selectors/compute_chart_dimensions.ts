@@ -29,22 +29,29 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
       axesSizes.legendHeight -
       heatmap.grid.stroke.width / 2;
 
-    const { chartWidth } = axesSizes;
+    const chartWidth =
+      parentDimensions.width -
+      axesSizes.yAxisTitleHorizontalSize -
+      axesSizes.yAxisPanelTitleHorizontalSize -
+      axesSizes.yAxis.width -
+      axesSizes.legendWidth -
+      heatmap.grid.stroke.width / 2;
+
+    // Calculate dimensions after applying paddings
+    const paddedTop = parentDimensions.top + heatmap.grid.stroke.width / 2 + chartPaddings.top;
+    const paddedLeft = parentDimensions.left + axesSizes.xAxis.left + chartPaddings.left;
+    const paddedWidth = chartWidth - chartPaddings.left - chartPaddings.right;
+    const paddedHeight = chartHeight - chartPaddings.top - chartPaddings.bottom;
+
+    // Calculate dimensions after applying margins
+    const top = paddedTop + chartMargins.top;
+    const left = paddedLeft + chartMargins.left;
+    const width = Math.max(0, paddedWidth - chartMargins.left - chartMargins.right);
+    const height = Math.max(0, paddedHeight - chartMargins.bottom - chartMargins.top);
 
     return {
       leftMargin: NaN, // not used
-      chartDimensions: {
-        top: parentDimensions.top + heatmap.grid.stroke.width / 2 + chartPaddings.top + chartMargins.top,
-        left: parentDimensions.left + axesSizes.xAxis.left + chartMargins.left + chartPaddings.left,
-        width: Math.max(
-          0,
-          chartWidth - chartPaddings.left - chartPaddings.right - chartMargins.left - chartMargins.right,
-        ),
-        height: Math.max(
-          0,
-          chartHeight - chartPaddings.top - chartPaddings.bottom - chartMargins.top - chartMargins.bottom,
-        ),
-      },
+      chartDimensions: { top, left, width, height },
     };
   },
 );

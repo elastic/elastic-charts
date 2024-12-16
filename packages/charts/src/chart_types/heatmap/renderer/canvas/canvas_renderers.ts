@@ -170,8 +170,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
           .filter(({ titles }) => titles.length > 0)
           .forEach(({ titles, gridOrigin: { x, y } }) => {
             withContext(ctx, () => {
-              ctx.translate(x + chartMargins.left, y - chartMargins.top - chartPaddings.top + chartPaddings.bottom);
-
+              ctx.translate(x, y);
               titles
                 .filter((t) => t.visible && t.text !== '')
                 .forEach((title) => {
