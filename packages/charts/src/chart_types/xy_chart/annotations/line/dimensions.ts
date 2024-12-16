@@ -11,15 +11,14 @@ import { Colors } from '../../../../common/colors';
 import { SmallMultipleScales, getPanelSize } from '../../../../common/panel_utils';
 import { Line } from '../../../../geoms/types';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
-import { isBandScale, isContinuousScale } from '../../../../scales/types';
 import { Position, Rotation } from '../../../../utils/common';
 import { Dimensions, Size } from '../../../../utils/dimensions';
 import { GroupId } from '../../../../utils/ids';
 import { mergeWithDefaultAnnotationLine } from '../../../../utils/themes/merge_utils';
 import { LineAnnotationStyle } from '../../../../utils/themes/theme';
 import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
-import { computeXScaleOffset } from '../../state/utils/utils';
 import { AnnotationDomainType, LineAnnotationDatum, LineAnnotationSpec } from '../../utils/specs';
+import { getAnnotationXScaledValue } from '../scale_utils';
 
 function computeYDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,
@@ -140,36 +139,7 @@ function computeXDomainLineAnnotationDimensions(
 
   dataValues.forEach((datum: LineAnnotationDatum, i) => {
     const { dataValue } = datum;
-    let annotationValueXPosition = xScale.scale(dataValue);
-    if (Number.isNaN(annotationValueXPosition)) {
-      return;
-    }
-    if (isContinuousScale(xScale) && typeof dataValue === 'number') {
-      const [minDomain, scaleMaxDomain] = xScale.domain;
-      const maxDomain = isHistogramMode ? scaleMaxDomain + xScale.minInterval : scaleMaxDomain;
-      if (dataValue < minDomain || dataValue > maxDomain) {
-        return;
-      }
-      if (isHistogramMode) {
-        const offset = computeXScaleOffset(xScale, true);
-        const pureScaledValue = xScale.pureScale(dataValue);
-        if (!Number.isNaN(pureScaledValue)) {
-          // Number.isFinite is regrettably not a type guard yet https://github.com/microsoft/TypeScript/issues/10038#issuecomment-924115831
-          annotationValueXPosition = pureScaledValue - offset;
-        }
-      } else {
-        annotationValueXPosition += (xScale.bandwidth * xScale.totalBarsInCluster) / 2;
-      }
-    } else if (isBandScale(xScale)) {
-      annotationValueXPosition += isHistogramMode
-        ? -(xScale.step - xScale.originalBandwidth) / 2
-        : xScale.originalBandwidth / 2;
-    } else {
-      return;
-    }
-    if (!isFinite(annotationValueXPosition)) {
-      return;
-    }
+    const annotationValueXPosition = getAnnotationXScaledValue(xScale, dataValue, isHistogramMode);
 
     vertical.domain.forEach((verticalValue) => {
       horizontal.domain.forEach((horizontalValue) => {
