@@ -20,7 +20,7 @@ const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
  */
 export const computeChartDimensionsSelector = createCustomCachedSelector(
   [getParentDimension, computeAxesSizesSelector, getChartThemeSelector],
-  (parentDimensions, axesSizes, { heatmap, chartPaddings }): ChartDimensions => {
+  (parentDimensions, axesSizes, { heatmap, chartPaddings, chartMargins }): ChartDimensions => {
     const chartHeight =
       parentDimensions.height -
       axesSizes.xAxisTitleVerticalSize -
@@ -34,10 +34,16 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     return {
       leftMargin: NaN, // not used
       chartDimensions: {
-        top: parentDimensions.top + heatmap.grid.stroke.width / 2 + chartPaddings.top,
-        left: parentDimensions.left + axesSizes.xAxis.left + chartPaddings.left,
-        width: Math.max(0, chartWidth - chartPaddings.left - chartPaddings.right),
-        height: Math.max(0, chartHeight - chartPaddings.top - chartPaddings.bottom),
+        top: parentDimensions.top + heatmap.grid.stroke.width / 2 + chartPaddings.top + chartMargins.top,
+        left: parentDimensions.left + axesSizes.xAxis.left + chartMargins.left + chartPaddings.left,
+        width: Math.max(
+          0,
+          chartWidth - chartPaddings.left - chartPaddings.right - chartMargins.left - chartMargins.right,
+        ),
+        height: Math.max(
+          0,
+          chartHeight - chartPaddings.top - chartPaddings.bottom - chartMargins.top - chartMargins.bottom,
+        ),
       },
     };
   },

@@ -20,7 +20,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
   const { theme } = props.geometries;
   const { heatmapViewModels } = props.geometries;
   const {
-    theme: { sharedStyle: sharedGeometryStyle },
+    theme: { sharedStyle: sharedGeometryStyle, chartPaddings, chartMargins },
     background,
     elementSizes,
     highlightedLegendBands,
@@ -104,7 +104,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
 
         heatmapViewModels.forEach(({ yValues, gridOrigin: { x, y } }) => {
           withContext(ctx, () => {
-            ctx.translate(x, y);
+            ctx.translate(x - chartPaddings.left, y);
             const font: TextFont = {
               ...theme.yAxisLabel,
               baseline: 'middle' /* fixed */,
@@ -135,7 +135,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
 
         heatmapViewModels.forEach(({ xValues, gridOrigin: { x, y } }) => {
           withContext(ctx, () => {
-            ctx.translate(x, y + elementSizes.xAxis.top);
+            ctx.translate(x, y + elementSizes.xAxis.top - chartMargins.top - chartPaddings.top + chartPaddings.bottom);
             xValues
               .filter((_, i) => i % elementSizes.xAxisTickCadence === 0)
               .forEach(({ x, y, text, align }) => {
@@ -170,7 +170,8 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
           .filter(({ titles }) => titles.length > 0)
           .forEach(({ titles, gridOrigin: { x, y } }) => {
             withContext(ctx, () => {
-              ctx.translate(x, y);
+              ctx.translate(x + chartMargins.left, y - chartMargins.top - chartPaddings.top + chartPaddings.bottom);
+
               titles
                 .filter((t) => t.visible && t.text !== '')
                 .forEach((title) => {
