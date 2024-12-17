@@ -537,7 +537,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
               chartDimensions.height +
               elementSizes.xAxis.height +
               innerPad(axisPanelTitle.padding) +
-              axisPanelTitle.fontSize / 2,
+              axisPanelTitle.fontSize / 2 -
+              chartPaddings.top +
+              chartPaddings.bottom -
+              chartMargins.top,
           },
           ...axisPanelTitleFont,
           text: getPanelTitle(false, v, h, groupBySpec),
@@ -549,8 +552,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         const axisTitleWidth = axisTitle.visible ? axisTitle.fontSize + innerPad(axisTitle.padding) : 0;
         titles.push({
           origin: {
-            x: -chartDimensions.left + axisTitleWidth + axisPanelTitle.fontSize / 2,
-            y: chartDimensions.top + panelSize.height / 2,
+            x: -chartDimensions.left + axisTitleWidth + axisPanelTitle.fontSize / 2 / 2 + chartMargins.left,
+            y: chartDimensions.top + panelSize.height / 2 - chartMargins.top - chartPaddings.top,
           },
           ...axisPanelTitleFont,
           text: getPanelTitle(true, v, h, groupBySpec),
