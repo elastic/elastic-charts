@@ -88,27 +88,15 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         ],
       );
 
-      // TODO simplify this width calculation
-      const chartWidth = getXAxisSize(
-        !isRasterTimeScale(xScale),
-        heatmap.xAxisLabel,
-        xAxisLabelFormatter,
-        xValues,
-        textMeasure,
-        container.width - legendWidth - heatmap.grid.stroke.width / 2, // we should consider also the grid width
-        [
-          yAxisTitleHorizontalSize + yAxisPanelTitleHorizontalSize + yAxis.width,
-          0, // this can be used if we have a right Y axis
-        ],
-      ).width;
-
       return {
         yAxis,
         xAxis,
         legendHeight,
+        legendWidth,
         xAxisTitleVerticalSize,
         xAxisPanelTitleVerticalSize,
-        chartWidth,
+        yAxisTitleHorizontalSize,
+        yAxisPanelTitleHorizontalSize,
       };
     });
   },
