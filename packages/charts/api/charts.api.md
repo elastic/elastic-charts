@@ -1340,6 +1340,15 @@ export interface GeometryValue {
     y: any;
 }
 
+// @public
+export function getChartsTheme({ name, darkMode }: {
+    name: string;
+    darkMode: boolean;
+}): Theme;
+
+// @public
+export function getChartsTheme(themeName: string, colorMode: 'DARK' | 'LIGHT'): Theme;
+
 // Warning: (ae-forgotten-export) The symbol "DataDemand" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "TimeslipDataRows" needs to be exported by the entry point index.d.ts
 //
@@ -1927,6 +1936,7 @@ export const LineAnnotation: <D = any>(props: SFProps<LineAnnotationSpec<D>, key
 
 // @public
 export interface LineAnnotationDatum<D = any> {
+    ariaLabel?: string;
     dataValue: D;
     details?: string;
     header?: string;

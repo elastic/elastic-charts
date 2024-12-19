@@ -823,6 +823,10 @@ export interface LineAnnotationDatum<D = any> {
    * An header of the annotation. If undefined, than the formatted dataValue will be used
    */
   header?: string;
+  /**
+   * Aria label for the annotation
+   */
+  ariaLabel?: string;
 }
 
 /** @public */

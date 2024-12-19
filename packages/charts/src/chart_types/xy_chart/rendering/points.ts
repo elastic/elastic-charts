@@ -56,6 +56,7 @@ export function renderPoints(
   styleAccessor?: PointStyleAccessor,
 ): {
   pointGeometries: PointGeometry[];
+  minDistanceBetweenPoints: number;
   indexedGeometryMap: IndexedGeometryMap;
 } {
   const indexedGeometryMap = new IndexedGeometryMap();
@@ -74,78 +75,91 @@ export function renderPoints(
   let isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle);
   let styleOverrides: Partial<PointStyle> | undefined = undefined;
 
-  const pointGeometries = dataSeries.data.reduce<SortedArray<PointGeometry>>((acc, datum, dataIndex) => {
-    const { x: xValue, mark } = datum;
-    const prev = dataSeries.data[dataIndex - 1];
-    const next = dataSeries.data[dataIndex + 1];
-    // don't create the point if not within the xScale domain
-    if (!xScale.isValueInDomain(xValue)) return acc;
+  const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
+    pointGeometries: SortedArray<PointGeometry>;
+    minDistanceBetweenPoints: number;
+    prevX: number | undefined;
+  }>(
+    (acc, datum, dataIndex) => {
+      const { x: xValue, mark } = datum;
+      const prev = dataSeries.data[dataIndex - 1];
+      const next = dataSeries.data[dataIndex + 1];
+      // don't create the point if not within the xScale domain
+      if (!xScale.isValueInDomain(xValue)) return acc;
 
-    // don't create the point if it that point was filled
-    const x = xScale.scale(xValue);
+      // don't create the point if it that point was filled
+      const x = xScale.scale(xValue);
 
-    if (Number.isNaN(x)) return acc;
+      if (!isFiniteNumber(x)) return acc;
 
-    const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
-    const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-    const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
-    if (styleAccessor) {
-      styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
-      style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-      isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle, styleOverrides);
-    }
-    yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
-      const valueAccessor = getYDatumValueFn(yDatumKeyName);
-      const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
-      const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
-
-      // if radius is defined with the mark, limit the minimum radius to the theme radius value
-      const radius = isPointIsolated
-        ? isolatedPointRadius(lineStrokeWidth)
-        : markSizeOptions.enabled
-          ? Math.max(getRadius(mark), pointStyle.radius)
-          : styleOverrides?.radius ?? pointStyle.radius;
-
-      const pointGeometry: PointGeometry = {
-        x,
-        y: y === null ? NaN : y,
-        radius,
-        color,
-        style: isPointIsolated ? isolatedPointStyle : style,
-        value: {
-          x: xValue,
-          y: originalY,
-          mark,
-          accessor: isBandedSpec && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
-          datum: datum.datum,
-        },
-        transform: {
-          x: shift,
-          y: 0,
-        },
-        seriesIdentifier,
-        panel,
-        isolated: isPointIsolated,
-      };
-      indexedGeometryMap.set(pointGeometry, geometryType);
-      // use the geometry only if the yDatum in contained in the current yScale domain
-      if (
-        isFiniteNumber(y) &&
-        yDefined(datum, valueAccessor) &&
-        yScale.isValueInDomain(valueAccessor(datum)) &&
-        !isDatumFilled(datum)
-      ) {
-        if (needSorting) {
-          inplaceInsertInSortedArray(acc, pointGeometry, (p) => p?.radius ?? NaN);
-        } else {
-          acc.push(pointGeometry);
-        }
+      if (isFiniteNumber(acc.prevX) && !isDatumFilled(datum)) {
+        acc.minDistanceBetweenPoints = Math.min(acc.minDistanceBetweenPoints, Math.abs(x - acc.prevX));
       }
-    });
-    return acc;
-  }, []);
+      acc.prevX = x;
+
+      const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
+      const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
+      const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      if (styleAccessor) {
+        styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
+        style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
+        isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle, styleOverrides);
+      }
+      yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
+        const valueAccessor = getYDatumValueFn(yDatumKeyName);
+        const y = yDatumKeyName === 'y1' ? y1Fn(datum) : y0Fn(datum);
+        const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
+
+        // if radius is defined with the mark, limit the minimum radius to the theme radius value
+        const radius = isPointIsolated
+          ? isolatedPointRadius(lineStrokeWidth)
+          : markSizeOptions.enabled
+            ? Math.max(getRadius(mark), pointStyle.radius)
+            : styleOverrides?.radius ?? pointStyle.radius;
+
+        const pointGeometry: PointGeometry = {
+          x,
+          y: y === null ? NaN : y,
+          radius,
+          color,
+          style: isPointIsolated ? isolatedPointStyle : style,
+          value: {
+            x: xValue,
+            y: originalY,
+            mark,
+            accessor: isBandedSpec && keyIndex === 0 ? BandedAccessorType.Y0 : BandedAccessorType.Y1,
+            datum: datum.datum,
+          },
+          transform: {
+            x: shift,
+            y: 0,
+          },
+          seriesIdentifier,
+          panel,
+          isolated: isPointIsolated,
+        };
+        indexedGeometryMap.set(pointGeometry, geometryType);
+        // use the geometry only if the yDatum in contained in the current yScale domain
+        if (
+          isFiniteNumber(y) &&
+          yDefined(datum, valueAccessor) &&
+          yScale.isValueInDomain(valueAccessor(datum)) &&
+          !isDatumFilled(datum)
+        ) {
+          if (needSorting) {
+            inplaceInsertInSortedArray(acc.pointGeometries, pointGeometry, (p) => p?.radius ?? NaN);
+          } else {
+            acc.pointGeometries.push(pointGeometry);
+          }
+        }
+      });
+      return acc;
+    },
+    { pointGeometries: [], minDistanceBetweenPoints: Infinity, prevX: undefined },
+  );
   return {
     pointGeometries,
+    minDistanceBetweenPoints,
     indexedGeometryMap,
   };
 }
