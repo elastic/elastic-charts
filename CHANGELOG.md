@@ -1,3 +1,15 @@
+## [68.0.4](https://github.com/elastic/elastic-charts/compare/v68.0.3...v68.0.4) (2024-12-11)
+
+
+### Bug Fixes
+
+* **xy:** compute per series and global minPointsDistance ([#2571](https://github.com/elastic/elastic-charts/issues/2571)) ([8dae2c1](https://github.com/elastic/elastic-charts/commit/8dae2c1f4c99146aa757b2d3eec9d72846248cc7))
+
+
+### Performance Improvements
+
+* fix unnecessary re-render ([#2573](https://github.com/elastic/elastic-charts/issues/2573)) ([feacfd6](https://github.com/elastic/elastic-charts/commit/feacfd6247b9580a8d32bc5d6284329b2035c1ba))
+
 ## [68.0.3](https://github.com/elastic/elastic-charts/compare/v68.0.2...v68.0.3) (2024-11-28)
 
 

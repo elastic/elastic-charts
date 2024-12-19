@@ -76,6 +76,7 @@ export {
 // theme
 export * from './utils/themes/theme';
 export * from './utils/themes/theme_common';
+export { getChartsTheme } from './utils/themes/get_charts_theme';
 export { LIGHT_THEME } from './utils/themes/light_theme';
 export { DARK_THEME } from './utils/themes/dark_theme';
 export { LIGHT_BASE_COLORS, DARK_BASE_COLORS } from './utils/themes/base_colors';
