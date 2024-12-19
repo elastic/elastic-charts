@@ -51,7 +51,7 @@ export type CustomGroupStep = Omit<GroupStep, 'steps'> & {
    * TODO: fix this to be accounted for in main logic
    */
   ignoreForced?: boolean;
-  steps: CustomCommandStep[];
+  steps: [CustomCommandStep, ...CustomCommandStep[]];
 };
 
 // Only current supported steps
