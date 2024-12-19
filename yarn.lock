@@ -3113,10 +3113,10 @@
   dependencies:
     tslib "^1.9.3"
 
-"@elastic/eui@^97.1.0":
-  version "97.1.0"
-  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-97.1.0.tgz#dc11e1190e108554a8cca2d5fd98f27e394d4b48"
-  integrity sha512-FsN4+2m4TBcI6+8neEHvRCfRlsjriLbwUilvHdjJfirFHVHFIounHIYQ+PToZXK0jdMYg0qQW+nLb1ll77fmng==
+"@elastic/eui@^98.2.1":
+  version "98.2.1"
+  resolved "https://registry.yarnpkg.com/@elastic/eui/-/eui-98.2.1.tgz#d40bfc7b06ad4a964e3c0a192d90614cbcdee0ed"
+  integrity sha512-I1C2okBDVlcmSJAgGX4E1N7fBIJPdG9/8Am7S/aJsd4LlB2MnWN47M6SdSH9BJQpVeLKSHyiVCQl4pKwXxOB5w==
   dependencies:
     "@hello-pangea/dnd" "^16.6.0"
     "@types/lodash" "^4.14.202"
