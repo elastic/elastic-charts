@@ -29,7 +29,10 @@ export interface ColorDefinition {
 }
 
 /** @internal */
-export const Colors: Record<'Red' | 'White' | 'Black' | 'Transparent' | 'DarkOpaqueRed', ColorDefinition> = {
+export const Colors: Record<
+  'Red' | 'White' | 'Black' | 'Transparent' | 'DarkOpaqueRed' | 'Violet' | 'LightBlue' | 'Yellow' | 'Green',
+  ColorDefinition
+> = {
   Red: {
     keyword: 'red',
     rgba: [255, 0, 0, 1],
@@ -49,5 +52,21 @@ export const Colors: Record<'Red' | 'White' | 'Black' | 'Transparent' | 'DarkOpa
   Transparent: {
     keyword: 'transparent',
     rgba: [0, 0, 0, 0],
+  },
+  Violet: {
+    keyword: 'violet',
+    rgba: [238, 130, 238, 0.2],
+  },
+  LightBlue: {
+    keyword: 'lightBlue',
+    rgba: [173, 216, 230, 0.2],
+  },
+  Yellow: {
+    keyword: 'yellow',
+    rgba: [216, 191, 216, 0.5],
+  },
+  Green: {
+    keyword: 'green',
+    rgba: [152, 251, 152, 0.5],
   },
 };
