@@ -7,13 +7,15 @@
  */
 
 import { ReactiveChartStateProps } from './connected_component';
+import { renderChartContainerDimensions, renderChartDimensions } from './dimensions';
+import { renderMargins, renderPaddings } from './theme';
 import { getColorBandStyle, getGeometryStateStyle } from './utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
+import { renderRect } from '../../../../renderers/canvas/primitives/rect';
+import { renderText, TextFont, wrapLines } from '../../../../renderers/canvas/primitives/text';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
-import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
-import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
-import { renderText, TextFont, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 
 /** @internal */
 export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, props: ReactiveChartStateProps) {
@@ -24,6 +26,9 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
     background,
     elementSizes,
     highlightedLegendBands,
+    chartContainerDimensions,
+    chartDimensions,
+    debug,
   } = props;
   if (heatmapViewModels.length === 0) return;
 
@@ -104,7 +109,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
 
         heatmapViewModels.forEach(({ yValues, gridOrigin: { x, y } }) => {
           withContext(ctx, () => {
-            ctx.translate(x - chartPaddings.left, y);
+            ctx.translate(x, y);
             const font: TextFont = {
               ...theme.yAxisLabel,
               baseline: 'middle' /* fixed */,
@@ -135,7 +140,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
 
         heatmapViewModels.forEach(({ xValues, gridOrigin: { x, y } }) => {
           withContext(ctx, () => {
-            ctx.translate(x, y + elementSizes.xAxis.top - chartMargins.top - chartPaddings.top + chartPaddings.bottom);
+            ctx.translate(x, y + elementSizes.xAxis.top);
             xValues
               .filter((_, i) => i % elementSizes.xAxisTickCadence === 0)
               .forEach(({ x, y, text, align }) => {
@@ -188,6 +193,11 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
                 });
             });
           }),
+
+      () => debug && renderMargins(ctx, chartContainerDimensions, chartMargins),
+      () => debug && renderPaddings(ctx, chartContainerDimensions, chartDimensions, chartMargins, chartPaddings),
+      () => debug && renderChartContainerDimensions(ctx, chartContainerDimensions),
+      () => debug && renderChartDimensions(ctx, chartDimensions),
     ]);
   });
 }

@@ -36,7 +36,7 @@ export const getBrushAreaSelector = createCustomCachedSelector(
 
     const start = {
       x: mouseDownPosition.position.x - chartDimensions.left,
-      y: mouseDownPosition.position.y,
+      y: mouseDownPosition.position.y - chartDimensions.top,
     };
 
     const clampedEndY = clamp(end.y, 0, chartDimensions.height);
@@ -46,14 +46,14 @@ export const getBrushAreaSelector = createCustomCachedSelector(
           top: start.y,
           left: start.x,
           width: end.x - start.x - chartDimensions.left,
-          height: clampedEndY - start.y,
+          height: clampedEndY - start.y - chartDimensions.top,
         };
       default:
         return {
           top: start.y,
           left: start.x,
           width: end.x - start.x - chartDimensions.left,
-          height: clampedEndY - start.y,
+          height: clampedEndY - start.y - chartDimensions.top,
         };
     }
   },

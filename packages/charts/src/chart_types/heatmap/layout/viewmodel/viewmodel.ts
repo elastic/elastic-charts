@@ -8,7 +8,6 @@
 
 import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
-import { BaseDatum } from './../../../xy_chart/utils/specs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { ColorScale } from '../../../../common/colors';
 import { fillTextColor } from '../../../../common/fill_text_color';
@@ -25,7 +24,7 @@ import {
 } from '../../../../common/panel_utils';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
-import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
+import { LinearScale, OrdinalScale, RasterTimeScale, BaseDatum } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, Datum, isFiniteNumber, isNil } from '../../../../utils/common';
@@ -33,8 +32,8 @@ import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { ChartDimensions } from '../../../xy_chart/utils/dimensions';
 import { HeatmapSpec } from '../../specs';
+import { ChartDimensions } from '../../state/selectors/compute_chart_dimensions';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import { HeatmapTable } from '../../state/selectors/get_heatmap_table';
 import {
@@ -121,7 +120,14 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const cellHeight = yScale.bandwidth();
 
   // compute the position of each column label
-  const textXValues = getXTicks(spec, heatmapTheme.xAxisLabel, xScale, heatmapTable.xValues);
+  const textXValues = getXTicks(
+    spec,
+    heatmapTheme.xAxisLabel,
+    xScale,
+    heatmapTable.xValues,
+    chartMargins,
+    chartPaddings,
+  );
 
   const { padding } = heatmapTheme.yAxisLabel;
 
@@ -130,7 +136,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return {
       ...d,
       // position of the Y labels
-      x: -pad(padding, 'right'),
+      x: -pad(padding, 'right') - chartPaddings.left,
       y: cellHeight / 2 + (yScale(d.value) || 0),
       align: 'right',
     };
@@ -224,7 +230,11 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   };
 
   const getPanelPointCoordinates = (x: Pixels, y: Pixels) => {
-    const { category: v, panelValue: panelY, panelOffset: panelOffsetY } = getPanelPointCoordinate(y, 'vertical');
+    const {
+      category: v,
+      panelValue: panelY,
+      panelOffset: panelOffsetY,
+    } = getPanelPointCoordinate(y - chartDimensions.top, 'vertical');
     const {
       category: h,
       panelValue: panelX,
@@ -265,14 +275,15 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    * @param y
    */
   const pickQuads = (x: Pixels, y: Pixels): Array<Cell> | TextBox => {
+    // TODO: make it more precise
     if (
-      x > 0 &&
-      x < chartDimensions.left &&
+      x > chartMargins.left &&
+      x < chartDimensions.left - chartPaddings.left &&
       y > chartDimensions.top &&
       y < chartDimensions.top + chartDimensions.height
     ) {
       // look up for a Y axis elements
-      const { y: yLabelKey } = getPanelPointCoordinates(x - chartDimensions.left, y);
+      const { y: yLabelKey } = getPanelPointCoordinates(x, y);
       const yLabelValue = textYValues.find((v) => v.value === yLabelKey);
       if (yLabelValue) {
         return yLabelValue;
@@ -313,7 +324,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       'horizontal',
     );
     const { category: smVerticalAccessorValue, panelOffset: verticalPanelOffset } = getPanelPointCoordinate(
-      start.y,
+      start.y - chartDimensions.top,
       'vertical',
     );
 
@@ -615,6 +626,8 @@ function getXTicks(
   style: HeatmapStyle['xAxisLabel'],
   scale: ScaleBand<NonNullable<PrimitiveValue>>,
   values: NonNullable<PrimitiveValue>[],
+  chartMargins: Theme['chartMargins'],
+  chartPaddings: Theme['chartPaddings'],
 ): Array<TextBox> {
   const isTimeScale = isRasterTimeScale(spec.xScale);
   const isRotated = style.rotation !== 0;
@@ -624,7 +637,7 @@ function getXTicks(
       value,
       isValue: false,
       ...style,
-      y: style.fontSize / 2 + pad(style.padding, 'top'),
+      y: style.fontSize / 2 + pad(style.padding, 'top') - chartMargins.top - chartPaddings.top + chartPaddings.bottom,
       x: (scale(value) ?? 0) + (isTimeScale ? 0 : scale.bandwidth() / 2),
       align: isRotated ? 'right' : isTimeScale ? 'left' : 'center',
     };

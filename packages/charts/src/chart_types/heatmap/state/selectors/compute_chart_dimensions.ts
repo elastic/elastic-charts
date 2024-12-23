@@ -10,7 +10,19 @@ import { computeAxesSizesSelector } from './compute_axes_sizes';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { ChartDimensions } from '../../../xy_chart/utils/dimensions';
+import { Dimensions } from '../../../../utils/dimensions';
+
+/** @internal **/
+export interface ChartDimensions {
+  /**
+   * Dimensions relative to canvas element
+   */
+  chartDimensions: Dimensions;
+  /**
+   * Margin to account for ending text overflow
+   */
+  leftMargin: number;
+}
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 

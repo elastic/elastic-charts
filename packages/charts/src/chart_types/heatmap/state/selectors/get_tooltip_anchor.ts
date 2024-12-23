@@ -43,7 +43,7 @@ export const getTooltipAnchorSelector = createCustomCachedSelector(
       return {
         x: x + chartDimensions.left + panelXOffset,
         width,
-        y: y - chartDimensions.top + panelYOffset + heatmap.grid.stroke.width,
+        y: y + chartDimensions.top + panelYOffset,
         height,
       };
     }
