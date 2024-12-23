@@ -28,6 +28,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const debug = boolean('Debug', false);
   const debugState = boolean('Enable debug state', true);
 
   const axes: RecursivePartial<AxisStyle> = {
@@ -125,6 +126,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         debugState={debugState}
         theme={{ axes, heatmap, chartMargins, chartPaddings }}
         baseTheme={useBaseTheme()}
+        debug={debug}
       />
       <Heatmap
         id="heatmap1"

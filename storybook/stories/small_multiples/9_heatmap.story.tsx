@@ -137,6 +137,20 @@ export const Example: ChartsStory = (_, { title, description }) => {
     clearSelection();
   }, [clearSelection, vSplit, hSplit, vSplitCount, hSplitCount, categories, density, xScaleType]);
 
+  const chartMargins: Margins = {
+    left: number('chart margin left', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    right: number('chart margin right', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    top: number('chart margin top', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    bottom: number('chart margin bottom', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+  };
+
+  const chartPaddings: Margins = {
+    left: number('chart padding left', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    right: number('chart padding right', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    top: number('chart padding top', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    bottom: number('chart padding bottom', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+  };
+
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -177,6 +191,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
               },
             },
           },
+          chartMargins,
+          chartPaddings,
         }}
         onBrushEnd={onBrushEnd}
       />
