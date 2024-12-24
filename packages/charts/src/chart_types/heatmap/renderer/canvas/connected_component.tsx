@@ -13,7 +13,6 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { renderHeatmapCanvas2d } from './canvas_renderers';
 import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
-import { SmallMultiplesSpec } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {

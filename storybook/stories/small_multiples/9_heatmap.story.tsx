@@ -21,6 +21,7 @@ import {
   timeFormatter,
   Heatmap,
   SmallMultiplesStyle,
+  Margins,
 } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
