@@ -9,7 +9,7 @@
 import { action } from '@storybook/addon-actions';
 import React, { ReactNode } from 'react';
 
-import { Chart, Heatmap, Settings, Tooltip, TooltipValue } from '@elastic/charts';
+import { Chart, DEFAULT_CHART_MARGINS, Heatmap, Settings, Tooltip, TooltipValue } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
 import { ChartsStory } from '../../../types';
@@ -40,7 +40,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Settings
         onElementClick={action('onElementClick')}
         brushAxis="both"
-        baseTheme={useBaseTheme()}
+        baseTheme={{ ...useBaseTheme(), chartMargins: DEFAULT_CHART_MARGINS }}
         theme={{
           heatmap: {
             grid: {

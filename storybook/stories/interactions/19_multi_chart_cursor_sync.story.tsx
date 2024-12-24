@@ -21,6 +21,7 @@ import {
   LineSeries,
   Heatmap,
   Tooltip,
+  DEFAULT_CHART_MARGINS,
 } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
@@ -82,7 +83,7 @@ export const Example: ChartsStory = () => {
       ref3.current.dispatchExternalPointerEvent(event);
     }
   };
-  const baseTheme = useBaseTheme();
+  const baseTheme = { ...useBaseTheme(), chartMargins: DEFAULT_CHART_MARGINS };
 
   return (
     <>
