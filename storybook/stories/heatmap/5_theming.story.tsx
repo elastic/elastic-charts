@@ -12,6 +12,7 @@ import React from 'react';
 
 import {
   Chart,
+  DEFAULT_CHART_MARGINS,
   Heatmap,
   HeatmapStyle,
   Margins,
@@ -125,7 +126,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xDomain={{ min: 1572868800000, max: 1572912000000, minInterval: 1800000 }}
         debugState={debugState}
         theme={{ axes, heatmap, chartMargins, chartPaddings }}
-        baseTheme={useBaseTheme()}
+        baseTheme={{ ...useBaseTheme(), chartMargins: DEFAULT_CHART_MARGINS }}
         debug={debug}
       />
       <Heatmap

@@ -12,6 +12,7 @@ import React, { useMemo } from 'react';
 
 import {
   Chart,
+  DEFAULT_CHART_MARGINS,
   Heatmap,
   HeatmapStyle,
   niceTimeFormatter,
@@ -83,7 +84,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xDomain={{ min: 1572825600000, max: 1572912000000 }}
         debugState={debugState}
         theme={{ heatmap }}
-        baseTheme={useBaseTheme()}
+        baseTheme={{ ...useBaseTheme(), chartMargins: DEFAULT_CHART_MARGINS }}
         onBrushEnd={onBrushEnd}
       />
       <Heatmap

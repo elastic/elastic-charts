@@ -11,7 +11,7 @@ import { extent } from 'd3-array';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { Chart, Heatmap, PartialTheme, ScaleType, Settings } from '@elastic/charts';
+import { Chart, DEFAULT_CHART_MARGINS, Heatmap, PartialTheme, ScaleType, Settings } from '@elastic/charts';
 
 import { ColorBand } from '../../../packages/charts/src/chart_types/heatmap/specs/heatmap';
 import {
@@ -81,7 +81,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
         {`${dataset.interval.type}: ${dataset.interval.value}${dataset.interval.unit} points:${dataset.data.length}`}
       </div>
       <Chart title={title} description={description} className="story-chart">
-        <Settings theme={theme} baseTheme={useBaseTheme()} xDomain={dataset.domain} />
+        <Settings
+          theme={theme}
+          baseTheme={{ ...useBaseTheme(), chartMargins: DEFAULT_CHART_MARGINS }}
+          xDomain={dataset.domain}
+        />
         <Heatmap
           id="heatmap1"
           colorScale={{

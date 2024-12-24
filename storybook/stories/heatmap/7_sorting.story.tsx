@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Heatmap, Predicate, ScaleType, Settings } from '@elastic/charts';
+import { Chart, DEFAULT_CHART_MARGINS, Heatmap, Predicate, ScaleType, Settings } from '@elastic/charts';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -24,7 +24,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   return (
     <Chart title={title} description={description} size={[200, 200]}>
       <Settings
-        baseTheme={useBaseTheme()}
+        baseTheme={{ ...useBaseTheme(), chartMargins: DEFAULT_CHART_MARGINS }}
         onPointerUpdate={action('onPointerUpdate')}
         pointerUpdateTrigger="both"
         theme={{
