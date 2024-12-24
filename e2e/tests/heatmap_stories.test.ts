@@ -87,6 +87,12 @@ test.describe('Heatmap stories', () => {
     );
   });
 
+  test('render table with margins and paddings', async ({ page }) => {
+    await common.expectChartAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/heatmap-alpha--theming&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Debug=true&knob-Enable debug state=true&knob-axisTitle fontSize_Axis Title=12&knob-axisTitle inner pad_Axis Title=8&knob-axisTitle outer pad_Axis Title=8&knob-axisTitle textColor_Axis Title=black&knob-border stroke color_Theme=gray&knob-border strokeWidth_Theme=0&knob-brushArea fill_Theme=black&knob-brushArea strokeWidth_Theme=2&knob-brushArea stroke_Theme=#69707D&knob-yAxisLabel width type_Theme=auto&knob-yAxisLabel width max/static_Theme=100&knob-brushArea visible_Theme=true&knob-brushMask visible_Theme=true&knob-brushMask fill_Theme=rgb(115 115 115 / 50%)&knob-brushTool visible_Theme=&knob-brushTool fill color_Theme=gray&knob-xAxisLabel visible_Theme=true&knob-xAxisLabel fontSize_Theme=12&knob-xAxisLabel textColor_Theme=black&knob-xAxisLabel padding_Theme=6&knob-yAxisLabel visible_Theme=true&knob-yAxisLabel fontSize_Theme=12&knob-yAxisLabel textColor_Theme=black&knob-yAxisLabel padding_Theme=5&knob-grid stroke color_Theme=gray&knob-grid stroke width_Theme=1&knob-cell label visible_Theme=&knob-cell label textColor_Theme=black&knob-cell label use global min fontSize_Theme=true&knob-cell label min fontSize_Theme=6&knob-cell label max fontSize_Theme=12&knob-chart margin left_Chart Margins and Paddings=50&knob-chart margin right_Chart Margins and Paddings=50&knob-chart margin top_Chart Margins and Paddings=50&knob-chart margin bottom_Chart Margins and Paddings=50&knob-chart padding left_Chart Margins and Paddings=50&knob-chart padding right_Chart Margins and Paddings=50&knob-chart padding top_Chart Margins and Paddings=50&knob-chart padding bottom_Chart Margins and Paddings=50&knob-xAxisTitle_Axis Title=xAxis&knob-yAxisTitle_Axis Title=yAxis',
+    );
+  });
+
   test.describe('Small multiples', () => {
     const titleOptions = {
       panel: ' without panel titles',
