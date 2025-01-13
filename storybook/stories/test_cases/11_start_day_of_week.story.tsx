@@ -59,23 +59,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Chart title={title} description={description}>
         <Settings dow={startDow} />
         <Axis id="y" title="Count" position={Position.Left} />
-        <Axis
-          id="x"
-          title="Time"
-          position={Position.Bottom}
-          tickFormat={(d) => moment(d).format('llll')}
-          style={{
-            tickLine: { visible: true, padding: 0 },
-            tickLabel: {
-              alignment: {
-                horizontal: Position.Left,
-                vertical: Position.Bottom,
-              },
-              padding: 0,
-              offset: { x: 0, y: 0 },
-            },
-          }}
-        />
+        <Axis id="x" title="Time" position={Position.Bottom} tickFormat={(d) => moment(d).format('llll')} />
         <BarSeries
           enableHistogramMode
           id="bars"

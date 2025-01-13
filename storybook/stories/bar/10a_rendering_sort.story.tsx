@@ -77,20 +77,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         legendSort={legendSortFn as SeriesCompareFn}
       />
       <Tooltip sort={tooltipSortFn as SeriesCompareFn} />
-      <Axis
-        id="x"
-        title="@timestamp"
-        position={Position.Bottom}
-        tickFormat={(d) => moment(d).format('lll')}
-        style={{
-          tickLine: { size: 4, padding: 4, visible: true },
-          tickLabel: {
-            alignment: { horizontal: Position.Left, vertical: Position.Bottom },
-            padding: 0,
-            offset: { x: 0, y: 0 },
-          },
-        }}
-      />
+      <Axis id="x" title="@timestamp" position={Position.Bottom} tickFormat={(d) => moment(d).format('lll')} />
       <Axis id="y" title="Count" position={Position.Left} maximumFractionDigits={0} />
 
       <HistogramBarSeries
