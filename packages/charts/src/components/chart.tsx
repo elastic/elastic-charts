@@ -17,7 +17,6 @@ import { ChartBackground } from './chart_background';
 import { ChartContainer } from './chart_container';
 import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
-import { ErrorBoundary } from './error_boundary';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
 import { Colors } from '../common/colors';
@@ -180,13 +179,10 @@ export class Chart extends React.Component<ChartProps, ChartState> {
             <ChartStatus />
             <ChartResizer />
             <Legend />
-            {/* TODO: Add renderFn to error boundary */}
-            <ErrorBoundary>
-              <SpecsParser>{this.props.children}</SpecsParser>
-              <div className="echContainer" ref={this.chartContainerRef}>
-                <ChartContainer getChartContainerRef={this.getChartContainerRef} forwardStageRef={this.chartStageRef} />
-              </div>
-            </ErrorBoundary>
+            <SpecsParser>{this.props.children}</SpecsParser>
+            <div className="echContainer" ref={this.chartContainerRef}>
+              <ChartContainer getChartContainerRef={this.getChartContainerRef} forwardStageRef={this.chartStageRef} />
+            </div>
           </div>
         </div>
       </Provider>
