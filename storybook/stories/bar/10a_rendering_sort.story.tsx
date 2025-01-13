@@ -90,7 +90,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
             offset: { x: 0, y: 0 },
           },
         }}
-        timeAxisLayerCount={2}
       />
       <Axis id="y" title="Count" position={Position.Left} maximumFractionDigits={0} />
 

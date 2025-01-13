@@ -86,7 +86,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           tickFormat={tickFormat}
           position={Position.Bottom}
           gridLine={{ visible: true }}
-          timeAxisLayerCount={2}
           style={{
             tickLabel: {
               alignment: { horizontal: 'left' },
@@ -136,7 +135,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           tickFormat={tickFormat}
           position={Position.Bottom}
           gridLine={{ visible: true }}
-          timeAxisLayerCount={2}
           style={{
             tickLabel: {
               alignment: { horizontal: 'left' },
@@ -184,7 +182,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           id="x"
           position={Position.Bottom}
           gridLine={{ visible: true }}
-          timeAxisLayerCount={2}
           style={{
             tickLabel: {
               alignment: { horizontal: 'center' },

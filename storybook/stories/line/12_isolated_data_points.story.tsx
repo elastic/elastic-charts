@@ -97,7 +97,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
             offset: { x: 0, y: 0 },
           },
         }}
-        timeAxisLayerCount={2}
         gridLine={{
           visible: true,
         }}

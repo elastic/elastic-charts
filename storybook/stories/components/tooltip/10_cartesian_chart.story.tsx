@@ -104,7 +104,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           },
         }}
         tickFormat={tooltipDateFormatter}
-        timeAxisLayerCount={2}
       />
       <Axis
         id="left"

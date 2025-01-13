@@ -102,7 +102,6 @@ export const Example: ChartsStory = () => {
         <Axis
           id="bottom"
           position={Position.Bottom}
-          timeAxisLayerCount={2}
           tickFormat={(v) => DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm:ss', { timeZone: 'Europe/Rome' })}
           style={{
             tickLine: { size: 0.0001, padding: 4 },
@@ -156,7 +155,6 @@ export const Example: ChartsStory = () => {
         <Axis
           id="bottom"
           position={Position.Bottom}
-          timeAxisLayerCount={2}
           tickFormat={(v) => DateTime.fromMillis(v as number).toFormat('dd MMMM HH:mm:ss', { timeZone: 'Europe/Rome' })}
           style={{
             tickLine: { size: 0.0001, padding: 4 },
