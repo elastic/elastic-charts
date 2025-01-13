@@ -89,14 +89,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Axis
         id="x"
         position={Position.Bottom}
-        style={{
-          tickLine: { size: 0, padding: 4 },
-          tickLabel: {
-            alignment: { horizontal: Position.Left, vertical: Position.Bottom },
-            padding: 0,
-            offset: { x: 0, y: 0 },
-          },
-        }}
         gridLine={{
           visible: true,
         }}
