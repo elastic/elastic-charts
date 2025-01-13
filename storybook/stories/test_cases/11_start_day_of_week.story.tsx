@@ -63,7 +63,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
           id="x"
           title="Time"
           position={Position.Bottom}
-          timeAxisLayerCount={2}
           tickFormat={(d) => moment(d).format('llll')}
           style={{
             tickLine: { visible: true, padding: 0 },

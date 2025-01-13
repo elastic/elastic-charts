@@ -53,7 +53,6 @@ export const Example: ChartsStory = (_, { title, description }) => (
       position={Position.Bottom}
       showOverlappingTicks
       tickFormat={dateFormatter}
-      timeAxisLayerCount={2}
       gridLine={{
         visible: true,
       }}

@@ -764,7 +764,7 @@ describe('Chart state pointer interactions', () => {
           showOverlappingLabels: false,
           showOverlappingTicks: false,
           style,
-          timeAxisLayerCount: 0,
+          timeAxisLayerCount: 2,
         };
         bottomAxis = {
           chartType: ChartType.XYAxis,
@@ -777,7 +777,7 @@ describe('Chart state pointer interactions', () => {
           showOverlappingLabels: false,
           showOverlappingTicks: false,
           style,
-          timeAxisLayerCount: 0,
+          timeAxisLayerCount: 2,
         };
         currentSettingSpec = getSettingsSpecSelector(store.getState());
       });
