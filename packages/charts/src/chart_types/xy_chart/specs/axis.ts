@@ -11,8 +11,27 @@ import { ComponentProps } from 'react';
 import { ChartType } from '../..';
 import { SpecType } from '../../../specs/constants';
 import { specComponentFactory } from '../../../state/spec_factory';
-import { Position } from '../../../utils/common';
+import { Position, type RecursivePartial } from '../../../utils/common';
+import type { AxisStyle } from '../../../utils/themes/theme';
 import { AxisSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
+
+/** @internal */
+const MULTILAYER_TIME_AXIS_STYLE: RecursivePartial<AxisStyle> = {
+  tickLabel: {
+    visible: true,
+    padding: 0,
+    rotation: 0,
+    alignment: {
+      vertical: Position.Bottom,
+      horizontal: Position.Left,
+    },
+  },
+  tickLine: {
+    visible: true,
+    size: 0,
+    padding: 4,
+  },
+};
 
 /**
  * Add axis spec to chart
@@ -29,7 +48,8 @@ export const Axis = specComponentFactory<AxisSpec>()(
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
-    timeAxisLayerCount: 0,
+    style: MULTILAYER_TIME_AXIS_STYLE,
+    timeAxisLayerCount: 2,
   },
 );
 
