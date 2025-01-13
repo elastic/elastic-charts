@@ -1,3 +1,10 @@
+# [68.1.0](https://github.com/elastic/elastic-charts/compare/v68.0.4...v68.1.0) (2025-01-13)
+
+
+### Features
+
+* remove error boundary in favor of external boundary ([#2580](https://github.com/elastic/elastic-charts/issues/2580)) ([b84f9bf](https://github.com/elastic/elastic-charts/commit/b84f9bf3d7a2e28d36ea68879c9d0d8090ac98c9))
+
 ## [68.0.4](https://github.com/elastic/elastic-charts/compare/v68.0.3...v68.0.4) (2024-12-11)
 
 
