@@ -35,18 +35,16 @@ const MULTILAYER_TIME_AXIS_STYLE: RecursivePartial<AxisStyle> = {
 export const getAxesStylesSelector = createCustomCachedSelector(
   [getAxisSpecsSelector, getChartThemeSelector],
   (axesSpecs, { axes: sharedAxesStyle }): Map<AxisId, AxisStyle | null> =>
-    axesSpecs.reduce((axesStyles, { id, style, gridLine, position, timeAxisLayerCount }) => {
-      const timeAxisStyle = timeAxisLayerCount > 0 ? MULTILAYER_TIME_AXIS_STYLE : undefined;
-      const gridStyle = gridLine && { gridLine: { [isVerticalAxis(position) ? 'vertical' : 'horizontal']: gridLine } };
-      return axesStyles.set(
-        id,
-        style || timeAxisStyle
-          ? mergePartial(sharedAxesStyle, {
-              ...(style ? style : {}),
-              ...(timeAxisStyle ? timeAxisStyle : {}),
-              ...gridStyle,
-            })
-          : null,
-      );
-    }, new Map()),
+    axesSpecs.reduce(
+      (axesStyles, { id, style, gridLine, position, timeAxisLayerCount }) =>
+        axesStyles.set(
+          id,
+          mergePartial(sharedAxesStyle, {
+            ...(style ? style : {}),
+            ...(timeAxisLayerCount > 0 ? MULTILAYER_TIME_AXIS_STYLE : {}),
+            ...(gridLine ? { gridLine: { [isVerticalAxis(position) ? 'vertical' : 'horizontal']: gridLine } } : {}),
+          }),
+        ),
+      new Map(),
+    ),
 );
