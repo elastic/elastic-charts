@@ -921,12 +921,12 @@ describe('Axis computational utils', () => {
 
     const expectedTopAxisPosition = {
       dimensions: {
-        height: 48 || axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
+        height: 58 || axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
         width: 100,
         left: 0,
         top: cumTopSum + LIGHT_THEME.chartMargins.top,
       },
-      topIncrement: 48,
+      topIncrement: 58,
       bottomIncrement: 0,
       leftIncrement: 0,
       rightIncrement: 0,
@@ -955,13 +955,13 @@ describe('Axis computational utils', () => {
 
     const expectedBottomAxisPosition = {
       dimensions: {
-        height: 48,
+        height: 58,
         width: 100,
         left: 0,
         top: 110,
       },
       topIncrement: 0,
-      bottomIncrement: 48,
+      bottomIncrement: 58,
       leftIncrement: 0,
       rightIncrement: 0,
     };
@@ -1744,12 +1744,12 @@ describe('Axis computational utils', () => {
 
         const expectedTopAxisPosition = {
           dimensions: {
-            height: title ? 64 : 44,
+            height: title ? 74 : 54,
             width: 100,
             left: 0,
             top: 10,
           },
-          topIncrement: title ? 64 : 44,
+          topIncrement: title ? 74 : 54,
           bottomIncrement: 0,
           leftIncrement: 0,
           rightIncrement: 0,
@@ -1772,13 +1772,13 @@ describe('Axis computational utils', () => {
 
         const expectedBottomAxisPosition = {
           dimensions: {
-            height: title ? 64 : 44,
+            height: title ? 74 : 54,
             width: 100,
             left: 0,
             top: 110,
           },
           topIncrement: 0,
-          bottomIncrement: title ? 64 : 44,
+          bottomIncrement: title ? 74 : 54,
           leftIncrement: 0,
           rightIncrement: 0,
         };
