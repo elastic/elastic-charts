@@ -39,7 +39,7 @@ export const getAxesStylesSelector = createCustomCachedSelector(
   [getAxisSpecsSelector, getChartThemeSelector, getScaleConfigsFromSpecsSelector, getSettingsSpecSelector],
   (axesSpecs, { axes: sharedAxesStyle }, scaleConfigs, settingsSpec): Map<AxisId, AxisStyle | null> =>
     axesSpecs.reduce((axesStyles, { id, chartType, style, gridLine, position, timeAxisLayerCount }) => {
-      let mergedStyle = sharedAxesStyle;
+      let mergedStyle: AxisStyle | null = null;
 
       // apply multilayer time axis style to xy charts with time on the x axis.
       if (
@@ -48,14 +48,14 @@ export const getAxesStylesSelector = createCustomCachedSelector(
         isXDomain(position, settingsSpec.rotation) &&
         scaleConfigs.x.type === 'time'
       ) {
-        mergedStyle = mergePartial(mergedStyle, MULTILAYER_TIME_AXIS_STYLE);
+        mergedStyle = mergePartial(sharedAxesStyle, MULTILAYER_TIME_AXIS_STYLE);
       }
 
       if (style) {
         const gridStyle = gridLine && {
           gridLine: { [isVerticalAxis(position) ? 'vertical' : 'horizontal']: gridLine },
         };
-        mergedStyle = mergePartial(sharedAxesStyle, { ...style, ...gridStyle });
+        mergedStyle = mergePartial(mergedStyle ?? sharedAxesStyle, { ...style, ...gridStyle });
       }
 
       return axesStyles.set(id, mergedStyle);
