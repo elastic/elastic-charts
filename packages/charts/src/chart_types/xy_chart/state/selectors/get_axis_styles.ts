@@ -6,13 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getAxisSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { mergePartial, Position, type RecursivePartial } from '../../../../utils/common';
 import { AxisId } from '../../../../utils/ids';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
+import { isXDomain } from '../../utils/axis_utils';
 
 const MULTILAYER_TIME_AXIS_STYLE: RecursivePartial<AxisStyle> = {
   tickLabel: {
@@ -33,18 +36,28 @@ const MULTILAYER_TIME_AXIS_STYLE: RecursivePartial<AxisStyle> = {
 
 /** @internal */
 export const getAxesStylesSelector = createCustomCachedSelector(
-  [getAxisSpecsSelector, getChartThemeSelector],
-  (axesSpecs, { axes: sharedAxesStyle }): Map<AxisId, AxisStyle | null> =>
-    axesSpecs.reduce(
-      (axesStyles, { id, style, gridLine, position, timeAxisLayerCount }) =>
-        axesStyles.set(
-          id,
-          mergePartial(sharedAxesStyle, {
-            ...(style ? style : {}),
-            ...(timeAxisLayerCount > 0 ? MULTILAYER_TIME_AXIS_STYLE : {}),
-            ...(gridLine ? { gridLine: { [isVerticalAxis(position) ? 'vertical' : 'horizontal']: gridLine } } : {}),
-          }),
-        ),
-      new Map(),
-    ),
+  [getAxisSpecsSelector, getChartThemeSelector, getScaleConfigsFromSpecsSelector, getSettingsSpecSelector],
+  (axesSpecs, { axes: sharedAxesStyle }, scaleConfigs, settingsSpec): Map<AxisId, AxisStyle | null> =>
+    axesSpecs.reduce((axesStyles, { id, chartType, style, gridLine, position, timeAxisLayerCount }) => {
+      let mergedStyle = sharedAxesStyle;
+
+      // apply multilayer time axis style to xy charts with time on the x axis.
+      if (
+        chartType === 'xy_axis' &&
+        timeAxisLayerCount > 0 &&
+        isXDomain(position, settingsSpec.rotation) &&
+        scaleConfigs.x.type === 'time'
+      ) {
+        mergedStyle = mergePartial(mergedStyle, MULTILAYER_TIME_AXIS_STYLE);
+      }
+
+      if (style) {
+        const gridStyle = gridLine && {
+          gridLine: { [isVerticalAxis(position) ? 'vertical' : 'horizontal']: gridLine },
+        };
+        mergedStyle = mergePartial(sharedAxesStyle, { ...style, ...gridStyle });
+      }
+
+      return axesStyles.set(id, mergedStyle);
+    }, new Map()),
 );
