@@ -7,6 +7,7 @@
  */
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
+import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { axisSpecsLookupSelector } from './get_specs';
 import { getVisibleTickSetsSelector } from './visible_ticks';
@@ -24,6 +25,7 @@ export const computeAxesGeometriesSelector = createCustomCachedSelector(
     getAxesStylesSelector,
     computeSmallMultipleScalesSelector,
     getVisibleTickSetsSelector,
+    getScaleConfigsFromSpecsSelector,
   ],
   getAxesGeometries,
 );

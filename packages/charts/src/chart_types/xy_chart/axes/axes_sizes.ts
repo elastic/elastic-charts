@@ -12,6 +12,7 @@ import { innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
+import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { getSpecsById } from '../state/utils/spec';
 import { isHorizontalAxis, isVerticalAxis } from '../utils/axis_type_utils';
 import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks, TickLabelBounds } from '../utils/axis_utils';
@@ -23,11 +24,13 @@ const getAxisSizeForLabel = (
   axesStyles: Map<AxisId, AxisStyle | null>,
   { maxLabelBboxWidth = 0, maxLabelBboxHeight = 0 }: TickLabelBounds,
   smSpec: SmallMultiplesSpec | null,
+  scaleConfigs: ScaleConfigs,
 ) => {
   const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(axisSpec.id) ?? sharedAxesStyles;
-  const horizontal = isHorizontalAxis(axisSpec.position);
-  const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, horizontal);
+  const isHorizontal = isHorizontalAxis(axisSpec.position);
+  const isTime = scaleConfigs.x.type === 'time';
+  const maxLabelBoxGirth = isHorizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
+  const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, isHorizontal, isTime);
   const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
   const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const titleDimension = axisSpec.title ? getTitleDimension(axisTitle) : 0;
@@ -42,7 +45,7 @@ const getAxisSizeForLabel = (
     : axisSpec.timeAxisLayerCount > 0
       ? 0
       : maxLabelBboxWidth / 2;
-  return horizontal
+  return isHorizontal
     ? {
         top: axisSpec.position === Position.Top ? maxAxisGirth + chartMargins.top : 0,
         bottom: axisSpec.position === Position.Bottom ? maxAxisGirth + chartMargins.bottom : 0,
@@ -64,13 +67,21 @@ export function getAxesDimensions(
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
   smSpec: SmallMultiplesSpec | null,
+  scaleConfigs: ScaleConfigs,
 ): PerSideDistance & { margin: { left: number } } {
   const sizes = [...axisDimensions].reduce(
     (acc, [id, tickLabelBounds]) => {
       const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
       if (tickLabelBounds.isHidden || !axisSpec) return acc;
       // TODO use first and last labels
-      const { top, bottom, left, right } = getAxisSizeForLabel(axisSpec, theme, axesStyles, tickLabelBounds, smSpec);
+      const { top, bottom, left, right } = getAxisSizeForLabel(
+        axisSpec,
+        theme,
+        axesStyles,
+        tickLabelBounds,
+        smSpec,
+        scaleConfigs,
+      );
       if (isVerticalAxis(axisSpec.position)) {
         acc.axisLabelOverflow.top = Math.max(acc.axisLabelOverflow.top, top);
         acc.axisLabelOverflow.bottom = Math.max(acc.axisLabelOverflow.bottom, bottom);
