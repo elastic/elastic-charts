@@ -32,6 +32,7 @@ import { OrdinalDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { AxisStyle, TextOffset } from '../../../utils/themes/theme';
+import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 /*
 import { computeAxesGeometriesSelector } from '../state/selectors/compute_axes_geometries';
 import {
@@ -50,6 +51,16 @@ const layer = 0;
 const detailedLayer = 0;
 
 // const NO_ROTATION = 0;
+
+const getScaleConfigs = (): ScaleConfigs => ({
+  x: {
+    type: ScaleType.Linear,
+    nice: true,
+    desiredTickCount: 10,
+    isBandScale: false,
+  },
+  y: {},
+});
 
 const getCustomStyle = (rotation = 0, padding = 10): AxisStyle =>
   mergePartial(LIGHT_THEME.axes, {
@@ -849,6 +860,7 @@ describe('Axis computational utils', () => {
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+      getScaleConfigs(),
     );
     const expectedLeftAxisPosition = {
       dimensions: {
@@ -882,6 +894,7 @@ describe('Axis computational utils', () => {
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+      getScaleConfigs(),
     );
 
     const expectedRightAxisPosition = {
@@ -916,17 +929,18 @@ describe('Axis computational utils', () => {
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+      getScaleConfigs(),
     );
     const { size: tickSize, padding: tickPadding } = LIGHT_THEME.axes.tickLine;
 
     const expectedTopAxisPosition = {
       dimensions: {
-        height: 58 || axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
+        height: 48 || axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
         width: 100,
         left: 0,
         top: cumTopSum + LIGHT_THEME.chartMargins.top,
       },
-      topIncrement: 58,
+      topIncrement: 48,
       bottomIncrement: 0,
       leftIncrement: 0,
       rightIncrement: 0,
@@ -951,17 +965,18 @@ describe('Axis computational utils', () => {
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+      getScaleConfigs(),
     );
 
     const expectedBottomAxisPosition = {
       dimensions: {
-        height: 58,
+        height: 48,
         width: 100,
         left: 0,
         top: 110,
       },
       topIncrement: 0,
-      bottomIncrement: 58,
+      bottomIncrement: 48,
       leftIncrement: 0,
       rightIncrement: 0,
     };
@@ -1684,6 +1699,7 @@ describe('Axis computational utils', () => {
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+          getScaleConfigs(),
         );
 
         const expectedLeftAxisPosition = {
@@ -1712,6 +1728,7 @@ describe('Axis computational utils', () => {
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+          getScaleConfigs(),
         );
 
         const expectedRightAxisPosition = {
@@ -1740,16 +1757,17 @@ describe('Axis computational utils', () => {
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+          getScaleConfigs(),
         );
 
         const expectedTopAxisPosition = {
           dimensions: {
-            height: title ? 74 : 54,
+            height: title ? 64 : 44,
             width: 100,
             left: 0,
             top: 10,
           },
-          topIncrement: title ? 74 : 54,
+          topIncrement: title ? 64 : 44,
           bottomIncrement: 0,
           leftIncrement: 0,
           rightIncrement: 0,
@@ -1768,17 +1786,18 @@ describe('Axis computational utils', () => {
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+          getScaleConfigs(),
         );
 
         const expectedBottomAxisPosition = {
           dimensions: {
-            height: title ? 74 : 54,
+            height: title ? 64 : 44,
             width: 100,
             left: 0,
             top: 110,
           },
           topIncrement: 0,
-          bottomIncrement: title ? 74 : 54,
+          bottomIncrement: title ? 64 : 44,
           leftIncrement: 0,
           rightIncrement: 0,
         };
