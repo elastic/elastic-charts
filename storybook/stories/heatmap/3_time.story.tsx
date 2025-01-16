@@ -10,15 +10,7 @@ import { number } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React, { useMemo } from 'react';
 
-import {
-  Chart,
-  Heatmap,
-  RecursivePartial,
-  ScaleType,
-  Settings,
-  HeatmapStyle,
-  DEFAULT_CHART_MARGINS,
-} from '@elastic/charts';
+import { Chart, Heatmap, RecursivePartial, ScaleType, Settings, HeatmapStyle } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
 import { ChartsStory } from '../../types';
@@ -94,7 +86,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
             max: end.toMillis() + endTimeOffset,
           }}
           theme={{ heatmap }}
-          baseTheme={{ ...useBaseTheme(), chartMargins: DEFAULT_CHART_MARGINS }}
+          baseTheme={useBaseTheme()}
         />
         <Heatmap
           id="heatmap1"

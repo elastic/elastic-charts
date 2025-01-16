@@ -10,7 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, DEFAULT_CHART_MARGINS, Heatmap, Settings } from '@elastic/charts';
+import { Chart, Heatmap, Settings } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
 import { ChartsStory } from '../../types';
@@ -36,7 +36,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         showLegend
         legendPosition="right"
         brushAxis="both"
-        baseTheme={{ ...useBaseTheme(), chartMargins: DEFAULT_CHART_MARGINS }}
+        baseTheme={useBaseTheme()}
         theme={{
           heatmap: {
             grid: {

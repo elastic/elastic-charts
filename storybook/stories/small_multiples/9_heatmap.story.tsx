@@ -22,7 +22,6 @@ import {
   Heatmap,
   SmallMultiplesStyle,
   Margins,
-  DEFAULT_CHART_MARGINS,
 } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
@@ -161,7 +160,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         onRenderChange={getDebugStateLogger(debugState)}
         onElementClick={onElementClick}
         showLegend={showLegend}
-        baseTheme={{ ...useBaseTheme(), chartMargins: DEFAULT_CHART_MARGINS }}
+        baseTheme={useBaseTheme()}
         theme={{
           axes: {
             axisTitle: {
