@@ -8,6 +8,7 @@
 
 import { renderText, TextFont } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
+import { ScaleType } from '../../../../../scales/constants';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
 import { innerPad, outerPad } from '../../../../../utils/dimensions';
@@ -17,7 +18,10 @@ import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisProps } from '../axes';
 
-type PanelTitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
+type PanelTitleProps = Pick<
+  AxisProps,
+  'panelTitle' | 'axisSpec' | 'axisStyle' | 'scaleType' | 'size' | 'dimension' | 'debug'
+>;
 type TitleProps = PanelTitleProps & { anchorPoint: Point };
 
 const titleFontDefaults: Omit<TextFont, 'fontFamily' | 'textColor' | 'fontSize'> = {
@@ -37,6 +41,7 @@ export function renderTitle(
     dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
     axisSpec: { position, hide: hideAxis, title, timeAxisLayerCount },
     axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
+    scaleType,
     panelTitle,
     debug,
     anchorPoint,
@@ -50,34 +55,35 @@ export function renderTitle(
   }
   const otherAxisTitleToUse = panel ? axisTitle : axisPanelTitle;
   const otherTitle = panel ? title : panelTitle;
-  const horizontal = isHorizontalAxis(position);
+  const isHorizontal = isHorizontalAxis(position);
+  const isTimeScale = scaleType === ScaleType.Time;
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
-  const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, horizontal);
+  const maxLabelBoxGirth = isHorizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
+  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, isHorizontal, isTimeScale);
   const labelPaddingSum = innerPad(tickLabel.padding) + outerPad(tickLabel.padding);
   const labelSize = tickLabel.visible ? allLayersGirth + labelPaddingSum : 0;
   const otherTitleDimension = otherTitle ? getTitleDimension(otherAxisTitleToUse) : 0;
   const titlePadding = panel || (axisTitleToUse.visible && title) ? axisTitleToUse.padding : 0;
-  const rotation = horizontal ? 0 : -90;
+  const rotation = isHorizontal ? 0 : -90;
   const offset =
     position === Position.Left || position === Position.Top
       ? outerPad(titlePadding) + (panel ? otherTitleDimension : 0)
       : tickDimension + labelSize + innerPad(titlePadding) + (panel ? 0 : otherTitleDimension);
-  const x = anchorPoint.x + (horizontal ? 0 : offset);
-  const y = anchorPoint.y + (horizontal ? offset : height);
-  const textX = horizontal ? width / 2 + (panel ? 0 : x) : font.fontSize / 2 + (panel ? offset : x);
-  const textY = horizontal ? font.fontSize / 2 + (panel ? offset : y) : (panel ? height : -height + 2 * y) / 2;
+  const x = anchorPoint.x + (isHorizontal ? 0 : offset);
+  const y = anchorPoint.y + (isHorizontal ? offset : height);
+  const textX = isHorizontal ? width / 2 + (panel ? 0 : x) : font.fontSize / 2 + (panel ? offset : x);
+  const textY = isHorizontal ? font.fontSize / 2 + (panel ? offset : y) : (panel ? height : -height + 2 * y) / 2;
   const wrappedText = wrapText(
     titleToRender ?? '',
     font,
     font.fontSize,
-    horizontal ? width : height,
+    isHorizontal ? width : height,
     1,
     measureText(ctx),
     locale,
   );
   if (!wrappedText[0]) return;
-  if (debug) renderDebugRect(ctx, { x, y, width: horizontal ? width : height, height: font.fontSize }, rotation);
+  if (debug) renderDebugRect(ctx, { x, y, width: isHorizontal ? width : height, height: font.fontSize }, rotation);
   renderText(ctx, { x: textX, y: textY }, wrappedText[0], font, rotation);
 }

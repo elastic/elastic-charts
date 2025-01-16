@@ -34,7 +34,7 @@ export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: 
 }
 
 function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps, locale: string) {
-  const { size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary } = props;
+  const { size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary, scaleType } = props;
   const { position } = axisSpec;
   const x = anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x;
   const y = anchorPoint.y + (position === Position.Bottom ? -1 : 1) * panelAnchor.y;
@@ -48,7 +48,7 @@ function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps, locale: st
       renderTitle(
         ctx,
         true,
-        { panelTitle, axisSpec, axisStyle, size, dimension, debug, anchorPoint: { x: 0, y: 0 } },
+        { panelTitle, axisSpec, axisStyle, size, scaleType, dimension, debug, anchorPoint: { x: 0, y: 0 } },
         locale,
       ); // TODO: should we use the axisSpec/Style for the title of small multiple or use their own style?
     }
@@ -63,7 +63,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
   perPanelAxisGeoms.forEach(({ axesGeoms, panelAnchor }) => {
     axesGeoms.forEach((geometry) => {
       const {
-        axis: { panelTitle, id, position, secondary },
+        axis: { panelTitle, id, position, secondary, scaleType },
         anchorPoint,
         size,
         dimension,
@@ -83,7 +83,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
         renderTitle(
           ctx,
           false,
-          { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec },
+          { size: parentSize, debug, panelTitle, anchorPoint, dimension, axisStyle, axisSpec, scaleType },
           locale,
         );
       }
@@ -101,6 +101,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
           size,
           dimension,
           ticks,
+          scaleType,
           axisStyle,
           debug,
           renderingArea,
