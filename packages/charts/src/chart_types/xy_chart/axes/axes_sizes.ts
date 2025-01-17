@@ -27,10 +27,10 @@ const getAxisSizeForLabel = (
   scaleConfigs: ScaleConfigs,
 ) => {
   const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(axisSpec.id) ?? sharedAxesStyles;
-  const isHorizontal = isHorizontalAxis(axisSpec.position);
-  const isTime = scaleConfigs.x.type === 'time';
-  const maxLabelBoxGirth = isHorizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, isHorizontal, isTime);
+  const horizontal = isHorizontalAxis(axisSpec.position);
+  const timeScale = scaleConfigs.x.type === 'time';
+  const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
+  const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, horizontal, timeScale);
   const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
   const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const titleDimension = axisSpec.title ? getTitleDimension(axisTitle) : 0;
@@ -45,7 +45,7 @@ const getAxisSizeForLabel = (
     : axisSpec.timeAxisLayerCount > 0
       ? 0
       : maxLabelBboxWidth / 2;
-  return isHorizontal
+  return horizontal
     ? {
         top: axisSpec.position === Position.Top ? maxAxisGirth + chartMargins.top : 0,
         bottom: axisSpec.position === Position.Bottom ? maxAxisGirth + chartMargins.bottom : 0,
