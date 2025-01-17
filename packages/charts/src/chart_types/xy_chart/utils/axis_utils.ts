@@ -276,12 +276,12 @@ export function getPosition(
   const tickDimension = shouldShowTicks(tickLine, hide) ? tickLine.size + tickLine.padding : 0;
   const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
   const titleDimension = title ? getTitleDimension(axisTitle) : 0;
-  const isVertical = isVerticalAxis(position);
+  const vertical = isVerticalAxis(position);
   const timeScale = scaleConfigs.x.type === 'time';
-  const scaleBand = isVertical ? smScales.vertical : smScales.horizontal;
+  const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
-  const maxLabelBboxGirth = tickLabel.visible ? (isVertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
-  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, !isVertical, timeScale);
+  const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
+  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, !vertical, timeScale);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
     leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
@@ -297,8 +297,8 @@ export function getPosition(
         position === Position.Top
           ? chartMargins.top + cumTopSum
           : chartDimensions.top + (position === Position.Bottom ? chartDimensions.height + cumBottomSum : 0),
-      width: isVertical ? parallelSize : chartDimensions.width,
-      height: isVertical ? chartDimensions.height : parallelSize,
+      width: vertical ? parallelSize : chartDimensions.width,
+      height: vertical ? chartDimensions.height : parallelSize,
     },
   };
 }
