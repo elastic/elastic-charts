@@ -333,6 +333,7 @@ export function getAxesGeometries(
   smScales: SmallMultipleScales,
   visibleTicksSet: Map<AxisId, Projection>,
   scaleConfigs: ScaleConfigs,
+  settingsSpec: SettingsSpec,
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
   return [...visibleTicksSet].reduce(
@@ -340,7 +341,7 @@ export function getAxesGeometries(
       const axisSpec = axisSpecs.get(axisId);
       if (axisSpec) {
         const vertical = isVerticalAxis(axisSpec.position);
-        const xDomain = isXDomain(axisSpec.position, 0);
+        const xDomain = isXDomain(axisSpec.position, settingsSpec.rotation);
         const scaleType = xDomain ? scaleConfigs.x.type : undefined;
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
         const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getPosition(
