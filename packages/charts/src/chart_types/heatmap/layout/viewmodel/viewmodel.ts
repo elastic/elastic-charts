@@ -251,6 +251,13 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     };
   };
 
+  // TODO: Make this method more precise to avoid Y title
+  const isPointWithinYLabelArea = (x: Pixels, y: Pixels) =>
+    x > chartMargins.left &&
+    x < chartDimensions.left - chartPaddings.left &&
+    y > chartDimensions.top &&
+    y < chartDimensions.top + chartDimensions.height;
+
   /**
    * Returns the corresponding x & y values of grid cell from the x & y positions
    * @param x
@@ -275,13 +282,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    * @param y
    */
   const pickQuads = (x: Pixels, y: Pixels): Array<Cell> | TextBox => {
-    // TODO: make it more precise
-    if (
-      x > chartMargins.left &&
-      x < chartDimensions.left - chartPaddings.left &&
-      y > chartDimensions.top &&
-      y < chartDimensions.top + chartDimensions.height
-    ) {
+    if (isPointWithinYLabelArea(x, y)) {
       // look up for a Y axis elements
       const { y: yLabelKey } = getPanelPointCoordinates(x, y);
       const yLabelValue = textYValues.find((v) => v.value === yLabelKey);
