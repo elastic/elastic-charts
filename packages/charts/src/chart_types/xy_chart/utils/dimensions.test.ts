@@ -10,6 +10,7 @@ import { TickLabelBounds } from './axis_utils';
 import { computeChartDimensions } from './dimensions';
 import { AxisSpec } from './specs';
 import { ChartType } from '../..';
+import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/constants';
 import { Position } from '../../../utils/common';
 import { Margins } from '../../../utils/dimensions';
@@ -17,6 +18,17 @@ import { AxisId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LegendStyle } from '../../../utils/themes/theme';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
+import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
+
+const getScaleConfigs = (): ScaleConfigs => ({
+  x: {
+    type: ScaleType.Linear,
+    nice: true,
+    desiredTickCount: 10,
+    isBandScale: false,
+  },
+  y: {},
+});
 
 describe('Computed chart dimensions', () => {
   const parentDim = {
@@ -82,7 +94,15 @@ describe('Computed chart dimensions', () => {
     const axisDims: AxesTicksDimensions = new Map();
     const axisStyles = new Map();
     const axisSpecs: AxisSpec[] = [];
-    const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisStyles, axisSpecs, null);
+    const { chartDimensions } = computeChartDimensions(
+      parentDim,
+      chartTheme,
+      axisDims,
+      axisStyles,
+      axisSpecs,
+      null,
+      getScaleConfigs(),
+    );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
     expect(chartDimensions).toMatchSnapshot();
@@ -94,7 +114,15 @@ describe('Computed chart dimensions', () => {
     const axisStyles = new Map();
     const axisSpecs = [axisLeftSpec];
     axisDims.set('axis_1', axis1Dims);
-    const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisStyles, axisSpecs, null);
+    const { chartDimensions } = computeChartDimensions(
+      parentDim,
+      chartTheme,
+      axisDims,
+      axisStyles,
+      axisSpecs,
+      null,
+      getScaleConfigs(),
+    );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
     expect(chartDimensions).toMatchSnapshot();
@@ -106,7 +134,15 @@ describe('Computed chart dimensions', () => {
     const axisStyles = new Map();
     const axisSpecs = [{ ...axisLeftSpec, position: Position.Right }];
     axisDims.set('axis_1', axis1Dims);
-    const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisStyles, axisSpecs, null);
+    const { chartDimensions } = computeChartDimensions(
+      parentDim,
+      chartTheme,
+      axisDims,
+      axisStyles,
+      axisSpecs,
+      null,
+      getScaleConfigs(),
+    );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
     expect(chartDimensions).toMatchSnapshot();
@@ -123,7 +159,15 @@ describe('Computed chart dimensions', () => {
       },
     ];
     axisDims.set('axis_1', axis1Dims);
-    const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisStyles, axisSpecs, null);
+    const { chartDimensions } = computeChartDimensions(
+      parentDim,
+      chartTheme,
+      axisDims,
+      axisStyles,
+      axisSpecs,
+      null,
+      getScaleConfigs(),
+    );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
     expect(chartDimensions).toMatchSnapshot();
@@ -140,7 +184,15 @@ describe('Computed chart dimensions', () => {
       },
     ];
     axisDims.set('axis_1', axis1Dims);
-    const { chartDimensions } = computeChartDimensions(parentDim, chartTheme, axisDims, axisStyles, axisSpecs, null);
+    const { chartDimensions } = computeChartDimensions(
+      parentDim,
+      chartTheme,
+      axisDims,
+      axisStyles,
+      axisSpecs,
+      null,
+      getScaleConfigs(),
+    );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
     expect(chartDimensions).toMatchSnapshot();
@@ -155,7 +207,15 @@ describe('Computed chart dimensions', () => {
       },
     ];
     axisDims.set('foo', axis1Dims);
-    const chartDimensions = computeChartDimensions(parentDim, chartTheme, axisDims, axisStyles, axisSpecs, null);
+    const chartDimensions = computeChartDimensions(
+      parentDim,
+      chartTheme,
+      axisDims,
+      axisStyles,
+      axisSpecs,
+      null,
+      getScaleConfigs(),
+    );
 
     const expectedDims = {
       chartDimensions: {
@@ -184,6 +244,7 @@ describe('Computed chart dimensions', () => {
       axisStyles,
       axisSpecs,
       null,
+      getScaleConfigs(),
     );
 
     expect(hiddenAxisChartDimensions).toEqual(expectedDims);
