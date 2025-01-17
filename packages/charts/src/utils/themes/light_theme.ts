@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { LIGHT_BASE_COLORS } from './base_colors';
+import { LIGHT_BASE_COLORS, PRIMITIVE_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -143,7 +143,7 @@ export const LIGHT_THEME: Theme = {
         inner: 10,
         outer: 0,
       },
-      fill: LIGHT_BASE_COLORS.darkestShade,
+      fill: PRIMITIVE_COLORS.blueGrey130,
     },
     axisPanelTitle: {
       visible: true,
@@ -153,11 +153,11 @@ export const LIGHT_THEME: Theme = {
         inner: 8,
         outer: 0,
       },
-      fill: '#333', // LIGHT_BASE_COLORS.darkestShade,
+      fill: PRIMITIVE_COLORS.blueGrey130,
     },
     axisLine: {
       visible: true,
-      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
+      stroke: PRIMITIVE_COLORS.blueGrey20,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -165,7 +165,7 @@ export const LIGHT_THEME: Theme = {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
+      fill: PRIMITIVE_COLORS.blueGrey95,
       padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
@@ -180,7 +180,7 @@ export const LIGHT_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
+      stroke: PRIMITIVE_COLORS.blueGrey20,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -188,14 +188,14 @@ export const LIGHT_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: '#E9EDF3',
+        stroke: PRIMITIVE_COLORS.blueGrey20,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: '#E9EDF3',
+        stroke: PRIMITIVE_COLORS.blueGrey20,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],

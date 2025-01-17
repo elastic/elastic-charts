@@ -44,3 +44,13 @@ export const DARK_BASE_COLORS: ChartBaseColors = {
   darkestShade: '#D4DAE5',
   title: '#DFE5EF',
 };
+
+/** @internal */
+export const PRIMITIVE_COLORS = {
+  blueGrey20: '#E3E8F2',
+  blueGrey30: '#CAD3E2',
+  blueGrey60: '#8E9FBC',
+  blueGrey95: '#516381',
+  blueGrey120: '#2B394F',
+  blueGrey130: '#1D2A3E',
+};
