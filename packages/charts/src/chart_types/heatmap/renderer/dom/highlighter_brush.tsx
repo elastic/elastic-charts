@@ -41,13 +41,13 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
   if (dragShape) {
     dragShape = {
       ...dragShape,
-      y: dragShape.y + chartMargins.top + chartPaddings.top,
+      y: dragShape.y + chartMargins.top + chartPaddings.top + grid.stroke.width / 2,
     };
   }
 
   const brushMaskRect = {
     x: 0,
-    y: canvasDimension.top - grid.stroke.width / 2,
+    y: canvasDimension.top,
     width: canvasDimension.width + canvasDimension.left,
     height: canvasDimension.height,
   };
