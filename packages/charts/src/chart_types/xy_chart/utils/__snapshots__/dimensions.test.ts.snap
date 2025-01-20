@@ -12,9 +12,9 @@ exports[`Computed chart dimensions should be equal to parent dimension with no a
 exports[`Computed chart dimensions should be padded by a bottom axis 1`] = `
 {
   "height": 32,
-  "left": 20,
+  "left": 25,
   "top": 20,
-  "width": 60,
+  "width": 50,
 }
 `;
 
@@ -39,8 +39,8 @@ exports[`Computed chart dimensions should be padded by a right axis 1`] = `
 exports[`Computed chart dimensions should be padded by a top axis 1`] = `
 {
   "height": 32,
-  "left": 20,
+  "left": 25,
   "top": 48,
-  "width": 60,
+  "width": 50,
 }
 `;
