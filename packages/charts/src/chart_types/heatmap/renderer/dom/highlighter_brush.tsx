@@ -32,7 +32,25 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
   const { chartId } = state;
   const geoms = getPerPanelHeatmapGeometries(state);
   const canvasDimension = computeChartDimensionsSelector(state).chartDimensions;
-  const { brushMask, brushArea } = getChartThemeSelector(state).heatmap;
+  const {
+    chartMargins,
+    chartPaddings,
+    heatmap: { brushMask: brushMaskStyle, brushArea, grid },
+  } = getChartThemeSelector(state);
+
+  if (dragShape) {
+    dragShape = {
+      ...dragShape,
+      y: dragShape.y + chartMargins.top + chartPaddings.top,
+    };
+  }
+
+  const brushMaskRect = {
+    x: 0,
+    y: canvasDimension.top - grid.stroke.width / 2,
+    width: canvasDimension.width + canvasDimension.left,
+    height: canvasDimension.height,
+  };
 
   return {
     chartId,
@@ -40,7 +58,8 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
     canvasDimension,
     geometries: geoms,
     dragShape,
-    brushMask,
+    brushMaskRect,
+    brushMaskStyle,
     brushArea,
   };
 };

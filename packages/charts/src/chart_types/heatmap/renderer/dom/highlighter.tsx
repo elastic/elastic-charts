@@ -8,6 +8,7 @@
 
 import React, { FC } from 'react';
 
+import { Rect } from '../../../../geoms/types';
 import { Dimensions } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { HeatmapStyle } from '../../../../utils/themes/theme';
@@ -20,7 +21,8 @@ export interface HighlighterCellsProps {
   canvasDimension: Dimensions;
   geometries: ShapeViewModel;
   dragShape: DragShape | null;
-  brushMask: HeatmapStyle['brushMask'];
+  brushMaskRect: Rect;
+  brushMaskStyle: HeatmapStyle['brushMask'];
   brushArea: HeatmapStyle['brushArea'];
 }
 
@@ -34,8 +36,9 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
   dragShape,
   chartId,
   canvasDimension,
+  brushMaskRect,
+  brushMaskStyle,
   brushArea,
-  brushMask,
 }) => {
   if (!initialized || dragShape === null) return null;
 
@@ -44,12 +47,12 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
       <defs>
         <mask id={`echHighlighterMask__${chartId}`}>
           {/* the entire chart */}
-          {brushMask.visible && (
+          {brushMaskStyle.visible && (
             <rect
-              x={0}
-              y={0}
-              width={canvasDimension.width + canvasDimension.left}
-              height={canvasDimension.height}
+              x={brushMaskRect.x}
+              y={brushMaskRect.y}
+              width={brushMaskRect.width}
+              height={brushMaskRect.height}
               fill="#eee"
             />
           )}
@@ -77,14 +80,14 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
       </defs>
       <g>
         {/* the entire chart */}
-        {brushMask.visible && (
+        {brushMaskStyle.visible && (
           <rect
-            x={0}
-            y={0}
-            width={canvasDimension.width + canvasDimension.left}
-            height={canvasDimension.height}
+            x={brushMaskRect.x}
+            y={brushMaskRect.y}
+            width={brushMaskRect.width}
+            height={brushMaskRect.height}
             mask={`url(#echHighlighterMask__${chartId})`}
-            fill={brushMask.fill}
+            fill={brushMaskStyle.fill}
           />
         )}
         {brushArea.visible && (
@@ -136,14 +139,10 @@ export const HighlighterCellsComponent: FC<HighlighterCellsProps> = ({
 export const DEFAULT_PROPS: HighlighterCellsProps = {
   chartId: 'empty',
   initialized: false,
-  canvasDimension: {
-    width: 0,
-    height: 0,
-    left: 0,
-    top: 0,
-  },
+  canvasDimension: { width: 0, height: 0, left: 0, top: 0 },
   geometries: nullShapeViewModel(),
   dragShape: { x: 0, y: 0, height: 0, width: 0 },
+  brushMaskRect: { x: 0, y: 0, width: 0, height: 0 },
+  brushMaskStyle: LIGHT_THEME.heatmap.brushMask,
   brushArea: LIGHT_THEME.heatmap.brushArea,
-  brushMask: LIGHT_THEME.heatmap.brushMask,
 };
