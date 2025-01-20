@@ -219,17 +219,17 @@ export const DARK_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: '#2a2b33', // DARK_BASE_COLORS.lightestShade,
+      fill: PRIMITIVE_COLORS.plainLightAlpha8,
     },
     line: {
       visible: true,
-      stroke: DARK_BASE_COLORS.darkShade,
+      stroke: PRIMITIVE_COLORS.blueGrey100,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: DARK_BASE_COLORS.darkShade,
+      stroke: PRIMITIVE_COLORS.blueGrey100,
       strokeWidth: 1,
       dash: [4, 4],
     },

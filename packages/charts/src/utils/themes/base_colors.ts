@@ -51,6 +51,10 @@ export const PRIMITIVE_COLORS = {
   blueGrey30: '#CAD3E2',
   blueGrey60: '#8E9FBC',
   blueGrey95: '#516381',
+  blueGrey100: '#485975',
   blueGrey120: '#2B394F',
   blueGrey130: '#1D2A3E',
+  primary100: '#1750BA',
+  primary100Alpha4: 'rgba(23	80	186 / 0.04)',
+  plainLightAlpha8: 'rgba(255 255 255 / 0.08)',
 };

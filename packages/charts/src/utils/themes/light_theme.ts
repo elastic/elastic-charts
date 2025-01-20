@@ -219,17 +219,17 @@ export const LIGHT_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: LIGHT_BASE_COLORS.lightestShade,
+      fill: PRIMITIVE_COLORS.primary100Alpha4,
     },
     line: {
       visible: true,
-      stroke: LIGHT_BASE_COLORS.darkShade,
+      stroke: PRIMITIVE_COLORS.blueGrey100,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: LIGHT_BASE_COLORS.darkShade,
+      stroke: PRIMITIVE_COLORS.blueGrey100,
       strokeWidth: 1,
       dash: [4, 4],
     },
