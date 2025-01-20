@@ -237,7 +237,7 @@ function getVisibleTickSets(
         const domain = isXAxis ? xDomain : yDomain;
         const range = axisMinMax(axisSpec.position, chartRotation, panel);
         const maxTickCount = domain?.desiredTickCount ?? 0;
-        const isMultilayerTimeAxis = domain?.type === ScaleType.Time && timeAxisLayerCount > 0;
+        const isMultilayerTimeAxis = domain?.type === ScaleType.Time && timeAxisLayerCount > 0 && chartRotation === 0;
         // TODO: remove this fallback when integersOnly is removed
         const maximumFractionDigits = mfd ?? (integersOnly ? 0 : undefined);
 

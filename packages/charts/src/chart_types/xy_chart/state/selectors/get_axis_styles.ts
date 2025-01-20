@@ -46,6 +46,7 @@ export const getAxesStylesSelector = createCustomCachedSelector(
         chartType === 'xy_axis' &&
         timeAxisLayerCount > 0 &&
         isXDomain(position, settingsSpec.rotation) &&
+        settingsSpec.rotation === 0 &&
         scaleConfigs.x.type === 'time'
       ) {
         mergedStyle = mergePartial(sharedAxesStyle, MULTILAYER_TIME_AXIS_STYLE);
