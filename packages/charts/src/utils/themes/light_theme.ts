@@ -357,9 +357,9 @@ export const LIGHT_THEME: Theme = {
     xAxisLabel: {
       visible: true,
       fontSize: 12,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.Black.keyword,
+      textColor: PRIMITIVE_COLORS.blueGrey95,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -369,9 +369,9 @@ export const LIGHT_THEME: Theme = {
       visible: true,
       width: 'auto',
       fontSize: 12,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.Black.keyword,
+      textColor: PRIMITIVE_COLORS.blueGrey95,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -379,7 +379,7 @@ export const LIGHT_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: 'gray',
+        color: PRIMITIVE_COLORS.blueGrey20,
       },
     },
     cell: {
@@ -400,7 +400,7 @@ export const LIGHT_THEME: Theme = {
       },
       border: {
         strokeWidth: 1,
-        stroke: 'gray',
+        stroke: PRIMITIVE_COLORS.blueGrey20,
       },
     },
   },

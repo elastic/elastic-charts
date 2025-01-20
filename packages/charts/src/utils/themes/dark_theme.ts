@@ -360,7 +360,7 @@ export const DARK_THEME: Theme = {
       fontSize: 12,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.White.keyword,
+      textColor: PRIMITIVE_COLORS.blueGrey60,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -372,7 +372,7 @@ export const DARK_THEME: Theme = {
       fontSize: 12,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.White.keyword,
+      textColor: PRIMITIVE_COLORS.blueGrey60,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -380,7 +380,7 @@ export const DARK_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: 'snow',
+        color: PRIMITIVE_COLORS.blueGrey120,
       },
     },
     cell: {
@@ -401,7 +401,7 @@ export const DARK_THEME: Theme = {
       },
       border: {
         strokeWidth: 1,
-        stroke: 'snow',
+        stroke: PRIMITIVE_COLORS.blueGrey120,
       },
     },
   },
