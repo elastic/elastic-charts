@@ -8,9 +8,10 @@
 
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { computeXScale, computeYScales } from './scales';
-import { XScaleType } from './specs';
+import { ChartType } from '../../../chart_types';
 import { SmallMultipleScales, hasSMDomain, getPanelSize } from '../../../common/panel_utils';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
+import { ScaleType } from '../../../scales/constants';
 import { AxisSpec, SettingsSpec } from '../../../specs';
 import {
   degToRad,
@@ -255,10 +256,9 @@ export function getTitleDimension({
 export const getAllAxisLayersGirth = (
   timeAxisLayerCount: number,
   maxLabelBoxGirth: number,
-  axisHorizontal: boolean,
-  axisTimeScale: boolean,
+  isMultilayerTimeAxis: boolean,
 ) => {
-  const axisLayerCount = timeAxisLayerCount > 0 && axisHorizontal && axisTimeScale ? timeAxisLayerCount : 1;
+  const axisLayerCount = timeAxisLayerCount > 0 && isMultilayerTimeAxis ? timeAxisLayerCount : 1;
   return axisLayerCount * maxLabelBoxGirth;
 };
 
@@ -267,21 +267,22 @@ export function getPosition(
   { chartDimensions }: { chartDimensions: Dimensions },
   chartMargins: PerSideDistance,
   { axisTitle, axisPanelTitle, tickLine, tickLabel }: AxisStyle,
-  { title, position, hide, timeAxisLayerCount }: AxisSpec,
+  axisSpec: AxisSpec,
   { maxLabelBboxHeight, maxLabelBboxWidth }: TickLabelBounds,
   smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
   scaleConfigs: ScaleConfigs,
 ) {
+  const { title, position, hide, timeAxisLayerCount } = axisSpec;
   const tickDimension = shouldShowTicks(tickLine, hide) ? tickLine.size + tickLine.padding : 0;
   const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
   const titleDimension = title ? getTitleDimension(axisTitle) : 0;
   const vertical = isVerticalAxis(position);
-  const timeScale = scaleConfigs.x.type === 'time';
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
   const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
-  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, !vertical, timeScale);
+  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: 0 });
+  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, isMultilayerTimeAxis);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
     leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
@@ -304,6 +305,27 @@ export function getPosition(
 }
 
 /** @internal */
+export function isMultilayerTimeAxisFn({
+  axisSpec,
+  scaleConfigs,
+  rotation,
+}: {
+  axisSpec: AxisSpec;
+  scaleConfigs: ScaleConfigs;
+  rotation: Rotation;
+}) {
+  const { chartType, timeAxisLayerCount, position } = axisSpec;
+
+  return (
+    chartType === ChartType.XYAxis &&
+    timeAxisLayerCount > 0 &&
+    isXDomain(position, rotation) &&
+    rotation === 0 &&
+    scaleConfigs.x.type === ScaleType.Time
+  );
+}
+
+/** @internal */
 export function shouldShowTicks({ visible }: AxisStyle['tickLine'], axisHidden: boolean): boolean {
   return !axisHidden && visible;
 }
@@ -318,7 +340,7 @@ export interface AxisGeometry {
     position: Position;
     panelTitle?: string; // defined later per panel
     secondary?: boolean; // defined later per panel
-    scaleType?: XScaleType;
+    scaleConfigs: ScaleConfigs;
   };
   dimension: TickLabelBounds;
   visibleTicks: AxisTick[];
@@ -333,7 +355,6 @@ export function getAxesGeometries(
   smScales: SmallMultipleScales,
   visibleTicksSet: Map<AxisId, Projection>,
   scaleConfigs: ScaleConfigs,
-  settingsSpec: SettingsSpec,
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
   return [...visibleTicksSet].reduce(
@@ -341,8 +362,6 @@ export function getAxesGeometries(
       const axisSpec = axisSpecs.get(axisId);
       if (axisSpec) {
         const vertical = isVerticalAxis(axisSpec.position);
-        const xDomain = isXDomain(axisSpec.position, settingsSpec.rotation);
-        const scaleType = xDomain ? scaleConfigs.x.type : undefined;
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
         const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getPosition(
           chartDims,
@@ -359,7 +378,7 @@ export function getAxesGeometries(
         acc.left += leftIncrement;
         acc.right += rightIncrement;
         acc.geoms.push({
-          axis: { id: axisSpec.id, position: axisSpec.position, scaleType },
+          axis: { id: axisSpec.id, position: axisSpec.position, scaleConfigs },
           anchorPoint: { x: dimensions.left, y: dimensions.top },
           dimension: labelBox,
           visibleTicks: ticks,

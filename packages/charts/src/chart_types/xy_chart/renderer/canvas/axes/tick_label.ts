@@ -8,7 +8,7 @@
 
 import { AxisProps } from '.';
 import { Position } from '../../../../../utils/common';
-import { AxisTick, getTickLabelPosition } from '../../../utils/axis_utils';
+import { AxisTick, getTickLabelPosition, isMultilayerTimeAxisFn } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
 
@@ -19,9 +19,10 @@ export function renderTickLabel(
   ctx: CanvasRenderingContext2D,
   tick: AxisTick,
   showTicks: boolean,
-  { axisSpec: { position, timeAxisLayerCount }, dimension, size, debug, axisStyle }: AxisProps,
+  { axisSpec, dimension, size, debug, axisStyle, scaleConfigs }: AxisProps,
   layerGirth: number,
 ) {
+  const { position } = axisSpec;
   const labelStyle = axisStyle.tickLabel;
   const tickLabelProps = getTickLabelPosition(
     axisStyle,
@@ -47,7 +48,8 @@ export function renderTickLabel(
     }
   }
 
-  const tickOnTheSide = timeAxisLayerCount > 0 && Number.isFinite(tick.layer);
+  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: 0 });
+  const tickOnTheSide = isMultilayerTimeAxis && Number.isFinite(tick.layer);
 
   renderText(
     ctx,
