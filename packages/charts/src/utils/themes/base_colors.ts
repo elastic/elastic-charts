@@ -22,15 +22,6 @@ export const LIGHT_BASE_COLORS: ChartBaseColors = {
   title: '#1A1C21',
 };
 
-/** @internal */
-export const GRID_LIGHT_COLORS = '#E1E6EE';
-/** @internal */
-export const GRID_LABEL_LIGHT_COLORS = '#626D7E';
-/** @internal */
-export const GRID_DARK_COLORS = '#303845';
-/** @internal */
-export const GRID_LABEL_DARK_COLORS = '#A7B0BF';
-
 /**
  * Base dark theme colors designed to match eui, see https://eui.elastic.co/#/theming/colors/values#shades
  * @public
@@ -53,4 +44,35 @@ export const PRIMITIVE_COLORS = {
   blueGrey95: '#516381',
   blueGrey120: '#2B394F',
   blueGrey130: '#1D2A3E',
+};
+
+/** @internal */
+export const SEMANTIC_COLORS = {
+  shade20: PRIMITIVE_COLORS.blueGrey20,
+  shade30: PRIMITIVE_COLORS.blueGrey30,
+  shade60: PRIMITIVE_COLORS.blueGrey60,
+  shade95: PRIMITIVE_COLORS.blueGrey95,
+  shade120: PRIMITIVE_COLORS.blueGrey120,
+  shade130: PRIMITIVE_COLORS.blueGrey130,
+};
+
+/** @internal */
+export const DARK_BORDER_COLORS = {
+  borderBaseSubdued: SEMANTIC_COLORS.shade120,
+};
+
+/** @internal */
+export const LIGHT_BORDER_COLORS = {
+  borderBaseSubdued: SEMANTIC_COLORS.shade20,
+};
+
+/** @internal */
+export const DARK_TEXT_COLORS = {
+  textParagraph: SEMANTIC_COLORS.shade30,
+  textSubdued: SEMANTIC_COLORS.shade60,
+};
+/** @internal */
+export const LIGHT_TEXT_COLORS = {
+  textParagraph: SEMANTIC_COLORS.shade130,
+  textSubdued: SEMANTIC_COLORS.shade95,
 };
