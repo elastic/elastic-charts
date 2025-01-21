@@ -272,6 +272,7 @@ export function getPosition(
   smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
   scaleConfigs: ScaleConfigs,
+  settingsSpec: SettingsSpec,
 ) {
   const { title, position, hide, timeAxisLayerCount } = axisSpec;
   const tickDimension = shouldShowTicks(tickLine, hide) ? tickLine.size + tickLine.padding : 0;
@@ -281,7 +282,7 @@ export function getPosition(
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
   const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
-  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: 0 });
+  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation });
   const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, isMultilayerTimeAxis);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
@@ -306,7 +307,7 @@ export function getPosition(
 
 /** @internal */
 export function isMultilayerTimeAxisFn({
-  axisSpec,
+  axisSpec: { chartType, timeAxisLayerCount, position },
   scaleConfigs,
   rotation,
 }: {
@@ -314,8 +315,6 @@ export function isMultilayerTimeAxisFn({
   scaleConfigs: ScaleConfigs;
   rotation: Rotation;
 }) {
-  const { chartType, timeAxisLayerCount, position } = axisSpec;
-
   return (
     chartType === ChartType.XYAxis &&
     timeAxisLayerCount > 0 &&
@@ -341,6 +340,7 @@ export interface AxisGeometry {
     panelTitle?: string; // defined later per panel
     secondary?: boolean; // defined later per panel
     scaleConfigs: ScaleConfigs;
+    settingsSpec: SettingsSpec;
   };
   dimension: TickLabelBounds;
   visibleTicks: AxisTick[];
@@ -355,6 +355,7 @@ export function getAxesGeometries(
   smScales: SmallMultipleScales,
   visibleTicksSet: Map<AxisId, Projection>,
   scaleConfigs: ScaleConfigs,
+  settingsSpec: SettingsSpec,
 ): AxisGeometry[] {
   const panel = getPanelSize(smScales);
   return [...visibleTicksSet].reduce(
@@ -372,13 +373,14 @@ export function getAxesGeometries(
           smScales,
           acc,
           scaleConfigs,
+          settingsSpec,
         );
         acc.top += topIncrement;
         acc.bottom += bottomIncrement;
         acc.left += leftIncrement;
         acc.right += rightIncrement;
         acc.geoms.push({
-          axis: { id: axisSpec.id, position: axisSpec.position, scaleConfigs },
+          axis: { id: axisSpec.id, position: axisSpec.position, scaleConfigs, settingsSpec },
           anchorPoint: { x: dimensions.left, y: dimensions.top },
           dimension: labelBox,
           visibleTicks: ticks,

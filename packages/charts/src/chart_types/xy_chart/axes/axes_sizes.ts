@@ -7,6 +7,7 @@
  */
 
 import { SmallMultiplesSpec } from '../../../specs';
+import { SettingsSpec } from '../../../specs/settings';
 import { Position } from '../../../utils/common';
 import { innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
@@ -31,11 +32,12 @@ const getAxisSizeForLabel = (
   { maxLabelBboxWidth = 0, maxLabelBboxHeight = 0 }: TickLabelBounds,
   smSpec: SmallMultiplesSpec | null,
   scaleConfigs: ScaleConfigs,
+  { rotation }: SettingsSpec,
 ) => {
   const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(axisSpec.id) ?? sharedAxesStyles;
   const horizontal = isHorizontalAxis(axisSpec.position);
   const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: 0 });
+  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation });
   const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, isMultilayerTimeAxis);
   const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
   const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
@@ -74,6 +76,7 @@ export function getAxesDimensions(
   axisSpecs: AxisSpec[],
   smSpec: SmallMultiplesSpec | null,
   scaleConfigs: ScaleConfigs,
+  settingsSpec: SettingsSpec,
 ): PerSideDistance & { margin: { left: number } } {
   const sizes = [...axisDimensions].reduce(
     (acc, [id, tickLabelBounds]) => {
@@ -87,6 +90,7 @@ export function getAxesDimensions(
         tickLabelBounds,
         smSpec,
         scaleConfigs,
+        settingsSpec,
       );
       if (isVerticalAxis(axisSpec.position)) {
         acc.axisLabelOverflow.top = Math.max(acc.axisLabelOverflow.top, top);
