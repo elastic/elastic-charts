@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { EuiErrorBoundary } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
@@ -15,6 +14,31 @@ import { Chart, Settings, Axis, Position, BarSeries, ScaleType } from '@elastic/
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
+
+class SimpleErrorBoundary extends React.Component<{ onError?: (error: Error) => void }, { hasError: boolean }> {
+  onError?: (error: Error) => void;
+  constructor(props: { onError: (error: Error) => void }) {
+    super(props);
+    this.onError = props.onError;
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error): void {
+    this.onError?.(error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <div id="simple-error">Error occurred</div>;
+    }
+
+    return this.props.children;
+  }
+}
 
 /**
  * Should render no data value
@@ -44,13 +68,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
   };
 
   return (
-    <EuiErrorBoundary onError={action('onError')}>
+    <SimpleErrorBoundary onError={action('onError')}>
       <Chart title={title} description={description}>
         <Axis id="count" title="count" position={Position.Left} />
         <Axis id="x" title="goods" position={Position.Bottom} />
         <Settings baseTheme={useBaseTheme()} />
         <Series />
       </Chart>
-    </EuiErrorBoundary>
+    </SimpleErrorBoundary>
   );
 };
