@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { ScaleType } from '../../../scales/constants';
 import { SmallMultiplesSpec } from '../../../specs';
 import { Position } from '../../../utils/common';
 import { innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
@@ -16,7 +15,13 @@ import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimen
 import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { getSpecsById } from '../state/utils/spec';
 import { isHorizontalAxis, isVerticalAxis } from '../utils/axis_type_utils';
-import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks, TickLabelBounds } from '../utils/axis_utils';
+import {
+  getAllAxisLayersGirth,
+  getTitleDimension,
+  isMultilayerTimeAxisFn,
+  shouldShowTicks,
+  TickLabelBounds,
+} from '../utils/axis_utils';
 import { AxisSpec } from '../utils/specs';
 
 const getAxisSizeForLabel = (
@@ -29,9 +34,9 @@ const getAxisSizeForLabel = (
 ) => {
   const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(axisSpec.id) ?? sharedAxesStyles;
   const horizontal = isHorizontalAxis(axisSpec.position);
-  const timeScale = scaleConfigs.x.type === ScaleType.Time;
   const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, horizontal, timeScale);
+  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: 0 });
+  const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, isMultilayerTimeAxis);
   const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
   const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const titleDimension = axisSpec.title ? getTitleDimension(axisTitle) : 0;
@@ -43,7 +48,7 @@ const getAxisSizeForLabel = (
   // don't overflow when the multiTimeAxis layer is used.
   const maxLabelBoxHalfLength = isVerticalAxis(axisSpec.position)
     ? maxLabelBboxHeight / 2
-    : axisSpec.timeAxisLayerCount > 0 && horizontal && timeScale
+    : isMultilayerTimeAxis
       ? 0
       : maxLabelBboxWidth / 2;
   return horizontal

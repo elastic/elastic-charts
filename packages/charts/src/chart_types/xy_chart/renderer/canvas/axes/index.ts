@@ -9,11 +9,11 @@
 import { renderAxisLine } from './line';
 import { renderTicks } from './tick';
 import { renderTickLabel } from './tick_label';
-import { ScaleType } from '../../../../../scales/constants';
 import { Dimensions, Size } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
 import { AxisStyle } from '../../../../../utils/themes/theme';
 import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
+import { ScaleConfigs } from '../../../state/selectors/get_api_scale_configs';
 import { AxisTick, TickLabelBounds, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisSpec } from '../../../utils/specs';
 
@@ -24,7 +24,7 @@ export interface AxisProps {
   panelAnchor: Point;
   axisStyle: AxisStyle; // todo rename to just style (it's in Axis... already)
   axisSpec: AxisSpec; // todo rename to just spec (it's in Axis... already)
-  scaleType?: ScaleType;
+  scaleConfigs: ScaleConfigs;
   size: Size;
   anchorPoint: Point;
   dimension: TickLabelBounds;

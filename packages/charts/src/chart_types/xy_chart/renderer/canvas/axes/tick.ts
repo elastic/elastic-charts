@@ -12,7 +12,7 @@ import { Line } from '../../../../../geoms/types';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import { AxisTick } from '../../../utils/axis_utils';
+import { AxisTick, isMultilayerTimeAxisFn } from '../../../utils/axis_utils';
 import { HIDE_MINOR_TIME_GRID, OUTSIDE_RANGE_TOLERANCE } from '../../../utils/grid_lines';
 
 const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the bottom alignment; todo consider measuring
@@ -32,15 +32,12 @@ export function renderTicks(ctx: CanvasRenderingContext2D, ticks: AxisTick[], ax
 
 function getTickLineCoordinates(
   { position, domainClampedPosition: tickPosition, layer, detailedLayer }: AxisTick,
-  {
-    axisSpec: { position: axisPosition, timeAxisLayerCount },
-    size: { width, height },
-    axisStyle: { tickLine },
-    layerGirth,
-  }: AxisProps,
+  { axisSpec, size: { width, height }, axisStyle: { tickLine }, layerGirth, scaleConfigs }: AxisProps,
 ): Line | undefined {
+  const { position: axisPosition } = axisSpec;
   if (Math.abs(tickPosition - position) > OUTSIDE_RANGE_TOLERANCE) return;
-  const tickOnTheSide = timeAxisLayerCount > 0 && typeof layer === 'number';
+  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: 0 });
+  const tickOnTheSide = isMultilayerTimeAxis && typeof layer === 'number';
   const extensionLayer = tickOnTheSide ? layer + 1 : 0;
   const tickSize =
     tickLine.size +

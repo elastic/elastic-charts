@@ -8,19 +8,23 @@
 
 import { renderText, TextFont } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
-import { ScaleType } from '../../../../../scales/constants';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
 import { innerPad, outerPad } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
 import { wrapText } from '../../../../../utils/text/wrap';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
+import {
+  getAllAxisLayersGirth,
+  getTitleDimension,
+  isMultilayerTimeAxisFn,
+  shouldShowTicks,
+} from '../../../utils/axis_utils';
 import { AxisProps } from '../axes';
 
 type PanelTitleProps = Pick<
   AxisProps,
-  'panelTitle' | 'axisSpec' | 'axisStyle' | 'scaleType' | 'size' | 'dimension' | 'debug'
+  'panelTitle' | 'axisSpec' | 'axisStyle' | 'scaleConfigs' | 'size' | 'dimension' | 'debug'
 >;
 type TitleProps = PanelTitleProps & { anchorPoint: Point };
 
@@ -39,15 +43,16 @@ export function renderTitle(
   {
     size: { width, height },
     dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
-    axisSpec: { position, hide: hideAxis, title, timeAxisLayerCount },
+    axisSpec,
     axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
-    scaleType,
+    scaleConfigs,
     panelTitle,
     debug,
     anchorPoint,
   }: TitleProps,
   locale: string,
 ) {
+  const { position, hide: hideAxis, title, timeAxisLayerCount } = axisSpec;
   const titleToRender = panel ? panelTitle : title;
   const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
   if (!titleToRender || !axisTitleToUse.visible) {
@@ -56,11 +61,11 @@ export function renderTitle(
   const otherAxisTitleToUse = panel ? axisTitle : axisPanelTitle;
   const otherTitle = panel ? title : panelTitle;
   const horizontal = isHorizontalAxis(position);
-  const timeScale = scaleType === ScaleType.Time;
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, horizontal, timeScale);
+  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: 0 });
+  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, isMultilayerTimeAxis);
   const labelPaddingSum = innerPad(tickLabel.padding) + outerPad(tickLabel.padding);
   const labelSize = tickLabel.visible ? allLayersGirth + labelPaddingSum : 0;
   const otherTitleDimension = otherTitle ? getTitleDimension(otherAxisTitleToUse) : 0;

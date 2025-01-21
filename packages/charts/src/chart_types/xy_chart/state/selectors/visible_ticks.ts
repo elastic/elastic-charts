@@ -10,6 +10,7 @@ import { AxisLabelFormatter } from './axis_tick_formatter';
 import { getJoinedVisibleAxesData, getLabelBox, JoinedAxisData } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
+import { getScaleConfigsFromSpecsSelector, ScaleConfigs } from './get_api_scale_configs';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_utils';
@@ -26,7 +27,7 @@ import { Size } from '../../../../utils/dimensions';
 import { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import { AxisTick, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
+import { isMultilayerTimeAxisFn, AxisTick, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
 import { computeXScale } from '../../utils/scales';
 import { SeriesDomainsAndData } from '../utils/types';
 
@@ -209,6 +210,7 @@ function getVisibleTickSet(
 export const getVisibleTickSetsSelector = createCustomCachedSelector(
   [
     getSettingsSpecSelector,
+    getScaleConfigsFromSpecsSelector,
     getJoinedVisibleAxesData,
     computeSeriesDomainsSelector,
     computeSmallMultipleScalesSelector,
@@ -221,6 +223,7 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
 
 function getVisibleTickSets(
   { rotation: chartRotation, locale, dow }: Pick<SettingsSpec, 'rotation' | 'locale' | 'dow'>,
+  scaleConfigs: ScaleConfigs,
   joinedAxesData: Map<AxisId, JoinedAxisData>,
   { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
   smScales: SmallMultipleScales,
@@ -237,7 +240,7 @@ function getVisibleTickSets(
         const domain = isXAxis ? xDomain : yDomain;
         const range = axisMinMax(axisSpec.position, chartRotation, panel);
         const maxTickCount = domain?.desiredTickCount ?? 0;
-        const isMultilayerTimeAxis = domain?.type === ScaleType.Time && timeAxisLayerCount > 0 && chartRotation === 0;
+        const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: chartRotation });
         // TODO: remove this fallback when integersOnly is removed
         const maximumFractionDigits = mfd ?? (integersOnly ? 0 : undefined);
 
@@ -262,7 +265,7 @@ function getVisibleTickSets(
               detailedLayer,
               ticks,
               labelFormatter,
-              isMultilayerTimeAxis,
+              isXAxis && isMultilayerTimeAxis,
               showGrid,
             ),
             labelBox,
