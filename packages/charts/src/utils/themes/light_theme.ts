@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { LIGHT_BASE_COLORS, PRIMITIVE_COLORS } from './base_colors';
+import { LIGHT_BASE_COLORS, LIGHT_BORDER_COLORS, LIGHT_TEXT_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -143,7 +143,7 @@ export const LIGHT_THEME: Theme = {
         inner: 10,
         outer: 0,
       },
-      fill: PRIMITIVE_COLORS.blueGrey130,
+      fill: LIGHT_TEXT_COLORS.textParagraph,
     },
     axisPanelTitle: {
       visible: true,
@@ -153,11 +153,11 @@ export const LIGHT_THEME: Theme = {
         inner: 8,
         outer: 0,
       },
-      fill: PRIMITIVE_COLORS.blueGrey130,
+      fill: LIGHT_TEXT_COLORS.textParagraph,
     },
     axisLine: {
       visible: true,
-      stroke: PRIMITIVE_COLORS.blueGrey20,
+      stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -165,7 +165,7 @@ export const LIGHT_THEME: Theme = {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: PRIMITIVE_COLORS.blueGrey95,
+      fill: LIGHT_TEXT_COLORS.textSubdued,
       padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
@@ -180,7 +180,7 @@ export const LIGHT_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: PRIMITIVE_COLORS.blueGrey20,
+      stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -188,14 +188,14 @@ export const LIGHT_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: PRIMITIVE_COLORS.blueGrey20,
+        stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: PRIMITIVE_COLORS.blueGrey20,
+        stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
