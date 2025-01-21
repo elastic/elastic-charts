@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { LIGHT_BASE_COLORS, LIGHT_BORDER_COLORS, LIGHT_TEXT_COLORS } from './base_colors';
+import { LIGHT_BACKGROUND_COLORS, LIGHT_BASE_COLORS, LIGHT_BORDER_COLORS, LIGHT_TEXT_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -219,17 +219,17 @@ export const LIGHT_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: PRIMITIVE_COLORS.primary100Alpha4,
+      fill: LIGHT_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
     },
     line: {
       visible: true,
-      stroke: PRIMITIVE_COLORS.blueGrey100,
+      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: PRIMITIVE_COLORS.blueGrey100,
+      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
       strokeWidth: 1,
       dash: [4, 4],
     },

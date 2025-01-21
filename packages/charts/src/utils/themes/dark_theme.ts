@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { DARK_BASE_COLORS, DARK_TEXT_COLORS, DARK_BORDER_COLORS } from './base_colors';
+import { DARK_BASE_COLORS, DARK_TEXT_COLORS, DARK_BORDER_COLORS, DARK_BACKGROUND_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -219,17 +219,17 @@ export const DARK_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: PRIMITIVE_COLORS.plainLightAlpha8,
+      fill: DARK_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
     },
     line: {
       visible: true,
-      stroke: PRIMITIVE_COLORS.blueGrey100,
+      stroke: DARK_BORDER_COLORS.borderBasePlain,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: PRIMITIVE_COLORS.blueGrey100,
+      stroke: DARK_BORDER_COLORS.borderBasePlain,
       strokeWidth: 1,
       dash: [4, 4],
     },
