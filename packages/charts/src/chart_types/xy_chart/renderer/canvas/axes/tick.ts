@@ -32,11 +32,18 @@ export function renderTicks(ctx: CanvasRenderingContext2D, ticks: AxisTick[], ax
 
 function getTickLineCoordinates(
   { position, domainClampedPosition: tickPosition, layer, detailedLayer }: AxisTick,
-  { axisSpec, size: { width, height }, axisStyle: { tickLine }, layerGirth, scaleConfigs }: AxisProps,
+  {
+    axisSpec,
+    size: { width, height },
+    axisStyle: { tickLine },
+    layerGirth,
+    scaleConfigs,
+    settingsSpec: { rotation },
+  }: AxisProps,
 ): Line | undefined {
-  const { position: axisPosition } = axisSpec;
   if (Math.abs(tickPosition - position) > OUTSIDE_RANGE_TOLERANCE) return;
-  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: 0 });
+  const { position: axisPosition } = axisSpec;
+  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation });
   const tickOnTheSide = isMultilayerTimeAxis && typeof layer === 'number';
   const extensionLayer = tickOnTheSide ? layer + 1 : 0;
   const tickSize =

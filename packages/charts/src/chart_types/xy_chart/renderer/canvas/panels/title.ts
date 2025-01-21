@@ -24,7 +24,7 @@ import { AxisProps } from '../axes';
 
 type PanelTitleProps = Pick<
   AxisProps,
-  'panelTitle' | 'axisSpec' | 'axisStyle' | 'scaleConfigs' | 'size' | 'dimension' | 'debug'
+  'panelTitle' | 'axisSpec' | 'axisStyle' | 'scaleConfigs' | 'settingsSpec' | 'size' | 'dimension' | 'debug'
 >;
 type TitleProps = PanelTitleProps & { anchorPoint: Point };
 
@@ -46,6 +46,7 @@ export function renderTitle(
     axisSpec,
     axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
     scaleConfigs,
+    settingsSpec: { rotation: chartRotation },
     panelTitle,
     debug,
     anchorPoint,
@@ -64,7 +65,7 @@ export function renderTitle(
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: 0 });
+  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: chartRotation });
   const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, isMultilayerTimeAxis);
   const labelPaddingSum = innerPad(tickLabel.padding) + outerPad(tickLabel.padding);
   const labelSize = tickLabel.visible ? allLayersGirth + labelPaddingSum : 0;

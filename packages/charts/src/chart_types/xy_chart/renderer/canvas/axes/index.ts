@@ -9,6 +9,7 @@
 import { renderAxisLine } from './line';
 import { renderTicks } from './tick';
 import { renderTickLabel } from './tick_label';
+import { SettingsSpec } from '../../../../../specs/settings';
 import { Dimensions, Size } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
 import { AxisStyle } from '../../../../../utils/themes/theme';
@@ -25,6 +26,7 @@ export interface AxisProps {
   axisStyle: AxisStyle; // todo rename to just style (it's in Axis... already)
   axisSpec: AxisSpec; // todo rename to just spec (it's in Axis... already)
   scaleConfigs: ScaleConfigs;
+  settingsSpec: SettingsSpec;
   size: Size;
   anchorPoint: Point;
   dimension: TickLabelBounds;

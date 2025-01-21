@@ -8,6 +8,7 @@
 
 import { AxisSpec } from './specs';
 import { SmallMultiplesSpec } from '../../../specs';
+import { SettingsSpec } from '../../../specs/settings';
 import { ChartDimensions, Dimensions } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Theme, AxisStyle } from '../../../utils/themes/theme';
@@ -27,8 +28,17 @@ import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
   axisSpecs: AxisSpec[],
   smSpec: SmallMultiplesSpec | null,
   scaleConfigs: ScaleConfigs,
+  settingsSpec: SettingsSpec,
 ): ChartDimensions {
-  const axesDimensions = getAxesDimensions(theme, axisTickDimensions, axesStyles, axisSpecs, smSpec, scaleConfigs);
+  const axesDimensions = getAxesDimensions(
+    theme,
+    axisTickDimensions,
+    axesStyles,
+    axisSpecs,
+    smSpec,
+    scaleConfigs,
+    settingsSpec,
+  );
   const chartWidth = parentDimensions.width - axesDimensions.left - axesDimensions.right;
   const chartHeight = parentDimensions.height - axesDimensions.top - axesDimensions.bottom;
   const pad = theme.chartPaddings;
