@@ -6,16 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getAxisSpecsSelector } from './get_specs';
+import { isMultilayerTimeAxisSelector } from './is_multilayer_time_axis';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { mergePartial, Position, type RecursivePartial } from '../../../../utils/common';
 import { AxisId } from '../../../../utils/ids';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
-import { isXDomain } from '../../utils/axis_utils';
 
 const MULTILAYER_TIME_AXIS_STYLE: RecursivePartial<AxisStyle> = {
   tickLabel: {
@@ -36,19 +34,13 @@ const MULTILAYER_TIME_AXIS_STYLE: RecursivePartial<AxisStyle> = {
 
 /** @internal */
 export const getAxesStylesSelector = createCustomCachedSelector(
-  [getAxisSpecsSelector, getChartThemeSelector, getScaleConfigsFromSpecsSelector, getSettingsSpecSelector],
-  (axesSpecs, { axes: sharedAxesStyle }, scaleConfigs, settingsSpec): Map<AxisId, AxisStyle | null> =>
-    axesSpecs.reduce((axesStyles, { id, chartType, style, gridLine, position, timeAxisLayerCount }) => {
+  [getAxisSpecsSelector, getChartThemeSelector, isMultilayerTimeAxisSelector],
+  (axesSpecs, { axes: sharedAxesStyle }, isMultilayerTimeAxis): Map<AxisId, AxisStyle | null> =>
+    axesSpecs.reduce((axesStyles, { id, style, gridLine, position }) => {
       let mergedStyle: AxisStyle | null = null;
 
       // apply multilayer time axis style to xy charts with time on the x axis.
-      if (
-        chartType === 'xy_axis' &&
-        timeAxisLayerCount > 0 &&
-        isXDomain(position, settingsSpec.rotation) &&
-        settingsSpec.rotation === 0 &&
-        scaleConfigs.x.type === 'time'
-      ) {
+      if (isMultilayerTimeAxis) {
         mergedStyle = mergePartial(sharedAxesStyle, MULTILAYER_TIME_AXIS_STYLE);
       }
 
