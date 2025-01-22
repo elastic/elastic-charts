@@ -12,7 +12,14 @@ import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { Pixels } from '../../common/geometry';
 import { Font } from '../../common/text_utils';
 import { Padding } from '../../utils/dimensions';
-import { DARK_BASE_COLORS, LIGHT_BASE_COLORS } from '../../utils/themes/base_colors';
+import {
+  DARK_BACKGROUND_COLORS,
+  DARK_BORDER_COLORS,
+  DARK_TEXT_COLORS,
+  LIGHT_BACKGROUND_COLORS,
+  LIGHT_BORDER_COLORS,
+  LIGHT_TEXT_COLORS,
+} from '../../utils/themes/base_colors';
 
 /** @public */
 export interface BulletStyle {
@@ -31,26 +38,26 @@ export interface BulletStyle {
 
 /** @internal */
 export const LIGHT_THEME_BULLET_STYLE: BulletStyle = {
-  textColor: LIGHT_BASE_COLORS.darkestShade,
-  border: '#EDF0F5',
-  barBackground: LIGHT_BASE_COLORS.darkestShade,
+  textColor: LIGHT_TEXT_COLORS.textParagraph,
+  border: LIGHT_BORDER_COLORS.borderBaseSubdued,
+  barBackground: LIGHT_TEXT_COLORS.textParagraph,
   colorBands: ['#AA87D1', '#D9C6EF'],
   nonFiniteText: 'N/A',
   minHeight: 64,
   angularTickLabelPadding: 10,
-  fallbackBandColor: LIGHT_BASE_COLORS.mediumShade,
+  fallbackBandColor: LIGHT_BACKGROUND_COLORS.backgroundBaseDisabled,
 };
 
 /** @internal */
 export const DARK_THEME_BULLET_STYLE: BulletStyle = {
-  textColor: '#E0E5EE',
-  border: DARK_BASE_COLORS.lightShade,
-  barBackground: '#FFF',
+  textColor: DARK_TEXT_COLORS.textParagraph,
+  border: DARK_BORDER_COLORS.borderBaseSubdued,
+  barBackground: DARK_TEXT_COLORS.textParagraph,
   colorBands: ['#6092C0', '#3F4E61'],
   nonFiniteText: 'N/A',
   minHeight: 64,
   angularTickLabelPadding: 10,
-  fallbackBandColor: DARK_BASE_COLORS.mediumShade,
+  fallbackBandColor: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
 };
 
 /** @internal */
