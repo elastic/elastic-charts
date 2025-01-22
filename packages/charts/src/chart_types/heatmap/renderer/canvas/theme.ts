@@ -8,27 +8,21 @@
 
 import { RgbaTuple } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
-import { withContext } from '../../../../renderers/canvas';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
 
-const greenSemiTransparent = [...Colors.Green.rgba.slice(0, 3), 0.5] as RgbaTuple;
-const lightBlueSemiTransparent = [...Colors.LightBlue.rgba.slice(0, 3), 0.5] as RgbaTuple;
-
 /** @internal */
-export const renderMargins = (
-  ctx: CanvasRenderingContext2D,
-  chartContainerDimensions: Dimensions,
-  chartMargins: PerSideDistance,
-) => {
+export const renderMargins = (ctx: CanvasRenderingContext2D, container: Dimensions, margins: PerSideDistance) => {
+  const greenSemiTransparent: RgbaTuple = [...(Colors.Green.rgba.slice(0, 3) as [number, number, number]), 0.5];
+
   // left
   renderDebugRect(
     ctx,
     {
-      x: chartContainerDimensions.left,
-      y: chartContainerDimensions.top,
-      width: chartMargins.left,
-      height: chartContainerDimensions.height,
+      x: container.left,
+      y: container.top,
+      width: margins.left,
+      height: container.height,
     },
     0,
     { color: greenSemiTransparent },
@@ -37,10 +31,10 @@ export const renderMargins = (
   renderDebugRect(
     ctx,
     {
-      x: chartContainerDimensions.left + chartContainerDimensions.width - chartMargins.right,
-      y: chartContainerDimensions.top,
-      width: chartMargins.right,
-      height: chartContainerDimensions.height,
+      x: container.left + container.width - margins.right,
+      y: container.top,
+      width: margins.right,
+      height: container.height,
     },
     0,
     { color: greenSemiTransparent },
@@ -49,10 +43,10 @@ export const renderMargins = (
   renderDebugRect(
     ctx,
     {
-      x: chartContainerDimensions.left,
-      y: chartContainerDimensions.top,
-      width: chartContainerDimensions.width,
-      height: chartMargins.top,
+      x: container.left,
+      y: container.top,
+      width: container.width,
+      height: margins.top,
     },
     0,
     { color: greenSemiTransparent },
@@ -61,10 +55,10 @@ export const renderMargins = (
   renderDebugRect(
     ctx,
     {
-      x: chartContainerDimensions.left,
-      y: chartContainerDimensions.top + chartContainerDimensions.height - chartMargins.bottom,
-      width: chartContainerDimensions.width,
-      height: chartMargins.bottom,
+      x: container.left,
+      y: container.top + container.height - margins.bottom,
+      width: container.width,
+      height: margins.bottom,
     },
     0,
     { color: greenSemiTransparent },
@@ -74,19 +68,24 @@ export const renderMargins = (
 /** @internal */
 export const renderPaddings = (
   ctx: CanvasRenderingContext2D,
-  chartContainerDimensions: Dimensions,
-  chartDimensions: Dimensions,
-  chartMargins: PerSideDistance,
-  chartPaddings: PerSideDistance,
+  conatiner: Dimensions,
+  chart: Dimensions,
+  margins: PerSideDistance,
+  paddings: PerSideDistance,
 ) => {
+  const lightBlueSemiTransparent: RgbaTuple = [
+    ...(Colors.LightBlue.rgba.slice(0, 3) as [number, number, number]),
+    0.5,
+  ] as RgbaTuple;
+
   // left
   renderDebugRect(
     ctx,
     {
-      x: chartDimensions.left - chartPaddings.left,
-      y: chartContainerDimensions.top + chartPaddings.top + chartMargins.top,
-      width: chartPaddings.left,
-      height: chartDimensions.height,
+      x: chart.left - paddings.left,
+      y: conatiner.top + paddings.top + margins.top,
+      width: paddings.left,
+      height: chart.height,
     },
     0,
     { color: lightBlueSemiTransparent },
@@ -95,10 +94,10 @@ export const renderPaddings = (
   renderDebugRect(
     ctx,
     {
-      x: chartContainerDimensions.left + chartContainerDimensions.width - chartPaddings.right - chartMargins.right,
-      y: chartContainerDimensions.top + chartPaddings.top + chartMargins.top,
-      width: chartPaddings.right,
-      height: chartDimensions.height,
+      x: conatiner.left + conatiner.width - paddings.right - margins.right,
+      y: conatiner.top + paddings.top + margins.top,
+      width: paddings.right,
+      height: chart.height,
     },
     0,
     { color: lightBlueSemiTransparent },
@@ -107,10 +106,10 @@ export const renderPaddings = (
   renderDebugRect(
     ctx,
     {
-      x: chartDimensions.left,
-      y: chartContainerDimensions.top + chartMargins.top,
-      width: chartDimensions.width,
-      height: chartPaddings.top,
+      x: chart.left,
+      y: conatiner.top + margins.top,
+      width: chart.width,
+      height: paddings.top,
     },
     0,
     { color: lightBlueSemiTransparent },
@@ -119,10 +118,10 @@ export const renderPaddings = (
   renderDebugRect(
     ctx,
     {
-      x: chartDimensions.left,
-      y: chartContainerDimensions.top + chartDimensions.height + chartMargins.top + chartPaddings.top,
-      width: chartDimensions.width,
-      height: chartPaddings.bottom,
+      x: chart.left,
+      y: conatiner.top + chart.height + margins.top + paddings.top,
+      width: chart.width,
+      height: paddings.bottom,
     },
     0,
     { color: lightBlueSemiTransparent },

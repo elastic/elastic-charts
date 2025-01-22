@@ -11,17 +11,17 @@ import { Colors } from '../../../../common/colors';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { Dimensions } from '../../../../utils/dimensions';
 
-const graySemiTransparent = [...Colors.Gray.rgba.slice(0, 3), 0.2] as RgbaTuple;
-
 /** @internal */
-export const renderChartContainerDimensions = (ctx: CanvasRenderingContext2D, chartContainerDimensions: Dimensions) => {
+export const renderChartContainerDimensions = (ctx: CanvasRenderingContext2D, container: Dimensions) => {
+  const graySemiTransparent: RgbaTuple = [...(Colors.Gray.rgba.slice(0, 3) as [number, number, number]), 0.5];
+
   renderDebugRect(
     ctx,
     {
-      x: chartContainerDimensions.left,
-      y: chartContainerDimensions.top,
-      width: chartContainerDimensions.width,
-      height: chartContainerDimensions.height,
+      x: container.left,
+      y: container.top,
+      width: container.width,
+      height: container.height,
     },
     0,
     { color: graySemiTransparent },
@@ -29,14 +29,14 @@ export const renderChartContainerDimensions = (ctx: CanvasRenderingContext2D, ch
 };
 
 /** @internal */
-export const renderChartDimensions = (ctx: CanvasRenderingContext2D, chartDimensions: Dimensions) => {
+export const renderChartDimensions = (ctx: CanvasRenderingContext2D, chart: Dimensions) => {
   renderDebugRect(
     ctx,
     {
-      x: chartDimensions.left,
-      y: chartDimensions.top,
-      width: chartDimensions.width,
-      height: chartDimensions.height,
+      x: chart.left,
+      y: chart.top,
+      width: chart.width,
+      height: chart.height,
     },
     0,
     { color: Colors.Transparent.rgba },
