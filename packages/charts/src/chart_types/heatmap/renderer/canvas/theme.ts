@@ -21,56 +21,54 @@ export const renderMargins = (
   chartContainerDimensions: Dimensions,
   chartMargins: PerSideDistance,
 ) => {
-  withContext(ctx, () => {
-    // left
-    renderDebugRect(
-      ctx,
-      {
-        x: chartContainerDimensions.left,
-        y: chartContainerDimensions.top,
-        width: chartMargins.left,
-        height: chartContainerDimensions.height,
-      },
-      0,
-      { color: greenSemiTransparent },
-    );
-    // right
-    renderDebugRect(
-      ctx,
-      {
-        x: chartContainerDimensions.left + chartContainerDimensions.width - chartMargins.right,
-        y: chartContainerDimensions.top,
-        width: chartMargins.right,
-        height: chartContainerDimensions.height,
-      },
-      0,
-      { color: greenSemiTransparent },
-    );
-    // top
-    renderDebugRect(
-      ctx,
-      {
-        x: chartContainerDimensions.left,
-        y: chartContainerDimensions.top,
-        width: chartContainerDimensions.width,
-        height: chartMargins.top,
-      },
-      0,
-      { color: greenSemiTransparent },
-    );
-    // bottom
-    renderDebugRect(
-      ctx,
-      {
-        x: chartContainerDimensions.left,
-        y: chartContainerDimensions.top + chartContainerDimensions.height - chartMargins.bottom,
-        width: chartContainerDimensions.width,
-        height: chartMargins.bottom,
-      },
-      0,
-      { color: greenSemiTransparent },
-    );
-  });
+  // left
+  renderDebugRect(
+    ctx,
+    {
+      x: chartContainerDimensions.left,
+      y: chartContainerDimensions.top,
+      width: chartMargins.left,
+      height: chartContainerDimensions.height,
+    },
+    0,
+    { color: greenSemiTransparent },
+  );
+  // right
+  renderDebugRect(
+    ctx,
+    {
+      x: chartContainerDimensions.left + chartContainerDimensions.width - chartMargins.right,
+      y: chartContainerDimensions.top,
+      width: chartMargins.right,
+      height: chartContainerDimensions.height,
+    },
+    0,
+    { color: greenSemiTransparent },
+  );
+  // top
+  renderDebugRect(
+    ctx,
+    {
+      x: chartContainerDimensions.left,
+      y: chartContainerDimensions.top,
+      width: chartContainerDimensions.width,
+      height: chartMargins.top,
+    },
+    0,
+    { color: greenSemiTransparent },
+  );
+  // bottom
+  renderDebugRect(
+    ctx,
+    {
+      x: chartContainerDimensions.left,
+      y: chartContainerDimensions.top + chartContainerDimensions.height - chartMargins.bottom,
+      width: chartContainerDimensions.width,
+      height: chartMargins.bottom,
+    },
+    0,
+    { color: greenSemiTransparent },
+  );
 };
 
 /** @internal */
@@ -81,54 +79,52 @@ export const renderPaddings = (
   chartMargins: PerSideDistance,
   chartPaddings: PerSideDistance,
 ) => {
-  withContext(ctx, () => {
-    // left
-    renderDebugRect(
-      ctx,
-      {
-        x: chartDimensions.left - chartPaddings.left,
-        y: chartContainerDimensions.top + chartPaddings.top + chartMargins.top,
-        width: chartPaddings.left,
-        height: chartDimensions.height,
-      },
-      0,
-      { color: lightBlueSemiTransparent },
-    );
-    // right
-    renderDebugRect(
-      ctx,
-      {
-        x: chartContainerDimensions.left + chartContainerDimensions.width - chartPaddings.right - chartMargins.right,
-        y: chartContainerDimensions.top + chartPaddings.top + chartMargins.top,
-        width: chartPaddings.right,
-        height: chartDimensions.height,
-      },
-      0,
-      { color: lightBlueSemiTransparent },
-    );
-    // top
-    renderDebugRect(
-      ctx,
-      {
-        x: chartDimensions.left,
-        y: chartContainerDimensions.top + chartMargins.top,
-        width: chartDimensions.width,
-        height: chartPaddings.top,
-      },
-      0,
-      { color: lightBlueSemiTransparent },
-    );
-    // bottom
-    renderDebugRect(
-      ctx,
-      {
-        x: chartDimensions.left,
-        y: chartContainerDimensions.top + chartDimensions.height + chartMargins.top + chartPaddings.top,
-        width: chartDimensions.width,
-        height: chartPaddings.bottom,
-      },
-      0,
-      { color: lightBlueSemiTransparent },
-    );
-  });
+  // left
+  renderDebugRect(
+    ctx,
+    {
+      x: chartDimensions.left - chartPaddings.left,
+      y: chartContainerDimensions.top + chartPaddings.top + chartMargins.top,
+      width: chartPaddings.left,
+      height: chartDimensions.height,
+    },
+    0,
+    { color: lightBlueSemiTransparent },
+  );
+  // right
+  renderDebugRect(
+    ctx,
+    {
+      x: chartContainerDimensions.left + chartContainerDimensions.width - chartPaddings.right - chartMargins.right,
+      y: chartContainerDimensions.top + chartPaddings.top + chartMargins.top,
+      width: chartPaddings.right,
+      height: chartDimensions.height,
+    },
+    0,
+    { color: lightBlueSemiTransparent },
+  );
+  // top
+  renderDebugRect(
+    ctx,
+    {
+      x: chartDimensions.left,
+      y: chartContainerDimensions.top + chartMargins.top,
+      width: chartDimensions.width,
+      height: chartPaddings.top,
+    },
+    0,
+    { color: lightBlueSemiTransparent },
+  );
+  // bottom
+  renderDebugRect(
+    ctx,
+    {
+      x: chartDimensions.left,
+      y: chartContainerDimensions.top + chartDimensions.height + chartMargins.top + chartPaddings.top,
+      width: chartDimensions.width,
+      height: chartPaddings.bottom,
+    },
+    0,
+    { color: lightBlueSemiTransparent },
+  );
 };
