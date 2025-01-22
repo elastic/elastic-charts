@@ -33,17 +33,8 @@ const brushMapStateToProps = (state: GlobalChartState): HighlighterCellsProps =>
   const geoms = getPerPanelHeatmapGeometries(state);
   const canvasDimension = computeChartDimensionsSelector(state).chartDimensions;
   const {
-    chartMargins,
-    chartPaddings,
-    heatmap: { brushMask: brushMaskStyle, brushArea, grid },
+    heatmap: { brushMask: brushMaskStyle, brushArea },
   } = getChartThemeSelector(state);
-
-  if (dragShape) {
-    dragShape = {
-      ...dragShape,
-      y: dragShape.y + chartMargins.top + chartPaddings.top + grid.stroke.width / 2,
-    };
-  }
 
   const brushMaskRect = {
     x: 0,

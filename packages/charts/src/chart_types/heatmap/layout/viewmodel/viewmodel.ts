@@ -416,7 +416,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       );
     return {
       x: xStart,
-      y: yStart,
+      y: yStart + chartMargins.top + chartPaddings.top + gridStrokeWidth / 2,
       width,
       height: totalHeight,
     };
