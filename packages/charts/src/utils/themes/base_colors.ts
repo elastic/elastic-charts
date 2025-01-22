@@ -42,6 +42,7 @@ export const DARK_BASE_COLORS: ChartBaseColors = {
 export const PRIMITIVE_COLORS = {
   white: '#FFFFFF',
   blue100: '#1750BA',
+  blueGrey15: '#ECF1F9',
   blueGrey20: '#E3E8F2',
   blueGrey30: '#CAD3E2',
   blueGrey60: '#8E9FBC',
@@ -55,6 +56,7 @@ export const PRIMITIVE_COLORS = {
 /** @internal */
 export const SEMANTIC_COLORS = {
   plainLight: PRIMITIVE_COLORS.white,
+  shade15: PRIMITIVE_COLORS.blueGrey15,
   shade20: PRIMITIVE_COLORS.blueGrey20,
   shade30: PRIMITIVE_COLORS.blueGrey30,
   shade60: PRIMITIVE_COLORS.blueGrey60,
@@ -102,10 +104,12 @@ export const LIGHT_TEXT_COLORS = {
 
 /** @internal */
 export const LIGHT_BACKGROUND_COLORS = {
+  backgroundBaseDisabled: SEMANTIC_COLORS.shade15,
   backgroundBaseInteractiveHover: SEMANTIC_ALPHA_COLORS.primary100Alpha4,
 };
 
 /** @internal */
 export const DARK_BACKGROUND_COLORS = {
+  backgroundBaseDisabled: SEMANTIC_COLORS.shade130,
   backgroundBaseInteractiveHover: SEMANTIC_ALPHA_COLORS.plainLightAlpha8,
 };
