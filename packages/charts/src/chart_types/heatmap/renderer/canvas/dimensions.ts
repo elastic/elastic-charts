@@ -6,9 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { RgbaTuple } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { Dimensions } from '../../../../utils/dimensions';
+
+const graySemiTransparent = [...Colors.Gray.rgba.slice(0, 3), 0.2] as RgbaTuple;
 
 /** @internal */
 export const renderChartContainerDimensions = (ctx: CanvasRenderingContext2D, chartContainerDimensions: Dimensions) => {
@@ -21,7 +24,7 @@ export const renderChartContainerDimensions = (ctx: CanvasRenderingContext2D, ch
       height: chartContainerDimensions.height,
     },
     0,
-    { color: Colors.Gray.rgba },
+    { color: graySemiTransparent },
   );
 };
 

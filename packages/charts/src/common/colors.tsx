@@ -55,22 +55,22 @@ export const Colors: Record<
   },
   Violet: {
     keyword: 'violet',
-    rgba: [238, 130, 238, 0.2],
+    rgba: [238, 130, 238, 1],
   },
   LightBlue: {
-    keyword: 'lightBlue',
-    rgba: [173, 216, 230, 0.2],
+    keyword: 'lightblue',
+    rgba: [173, 216, 230, 1],
   },
   Yellow: {
     keyword: 'yellow',
-    rgba: [216, 191, 216, 0.5],
+    rgba: [255, 255, 0, 1],
   },
   Green: {
     keyword: 'green',
-    rgba: [152, 251, 152, 0.5],
+    rgba: [0, 128, 0, 1],
   },
   Gray: {
     keyword: 'gray',
-    rgba: [120, 120, 120, 0.1],
+    rgba: [128, 128, 128, 1],
   },
 };

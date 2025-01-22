@@ -6,10 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { RgbaTuple } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { withContext } from '../../../../renderers/canvas';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
+
+const greenSemiTransparent = [...Colors.Green.rgba.slice(0, 3), 0.5] as RgbaTuple;
+const lightBlueSemiTransparent = [...Colors.LightBlue.rgba.slice(0, 3), 0.5] as RgbaTuple;
 
 /** @internal */
 export const renderMargins = (
@@ -28,7 +32,7 @@ export const renderMargins = (
         height: chartContainerDimensions.height,
       },
       0,
-      { color: Colors.Green.rgba },
+      { color: greenSemiTransparent },
     );
     // right
     renderDebugRect(
@@ -40,7 +44,7 @@ export const renderMargins = (
         height: chartContainerDimensions.height,
       },
       0,
-      { color: Colors.Green.rgba },
+      { color: greenSemiTransparent },
     );
     // top
     renderDebugRect(
@@ -52,7 +56,7 @@ export const renderMargins = (
         height: chartMargins.top,
       },
       0,
-      { color: Colors.Green.rgba },
+      { color: greenSemiTransparent },
     );
     // bottom
     renderDebugRect(
@@ -64,7 +68,7 @@ export const renderMargins = (
         height: chartMargins.bottom,
       },
       0,
-      { color: Colors.Green.rgba },
+      { color: greenSemiTransparent },
     );
   });
 };
@@ -88,7 +92,7 @@ export const renderPaddings = (
         height: chartDimensions.height,
       },
       0,
-      { color: Colors.LightBlue.rgba },
+      { color: lightBlueSemiTransparent },
     );
     // right
     renderDebugRect(
@@ -100,7 +104,7 @@ export const renderPaddings = (
         height: chartDimensions.height,
       },
       0,
-      { color: Colors.LightBlue.rgba },
+      { color: lightBlueSemiTransparent },
     );
     // top
     renderDebugRect(
@@ -112,7 +116,7 @@ export const renderPaddings = (
         height: chartPaddings.top,
       },
       0,
-      { color: Colors.LightBlue.rgba },
+      { color: lightBlueSemiTransparent },
     );
     // bottom
     renderDebugRect(
@@ -124,7 +128,7 @@ export const renderPaddings = (
         height: chartPaddings.bottom,
       },
       0,
-      { color: Colors.LightBlue.rgba },
+      { color: lightBlueSemiTransparent },
     );
   });
 };
