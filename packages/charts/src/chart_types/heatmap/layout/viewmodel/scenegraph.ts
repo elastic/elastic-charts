@@ -9,11 +9,11 @@
 import { ColorScale } from '../../../../common/colors';
 import { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../common/panel_utils';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { ChartDimensions } from '../../../../utils/dimensions';
 import { Theme } from '../../../../utils/themes/theme';
 import { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
 import { HeatmapSpec } from '../../specs';
-import { ChartDimensions } from '../../state/selectors/compute_chart_dimensions';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import { HeatmapTable } from '../../state/selectors/get_heatmap_table';
 
