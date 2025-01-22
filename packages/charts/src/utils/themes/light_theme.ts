@@ -419,7 +419,7 @@ export const LIGHT_THEME: Theme = {
     valuesTextAlign: 'right',
     iconAlign: 'right',
     border: LIGHT_BORDER_COLORS.borderBaseSubdued,
-    barBackground: '#EDF0F5', // merge main to get the backgroun color
+    barBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,

@@ -420,7 +420,7 @@ export const DARK_THEME: Theme = {
     valuesTextAlign: 'right',
     iconAlign: 'right',
     border: DARK_BORDER_COLORS.borderBaseSubdued,
-    barBackground: DARK_BASE_COLORS.lightShade, // merge main to get the backgroun color
+    barBackground: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
