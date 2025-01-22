@@ -1,3 +1,22 @@
+# [68.1.0](https://github.com/elastic/elastic-charts/compare/v68.0.4...v68.1.0) (2025-01-13)
+
+
+### Features
+
+* remove error boundary in favor of external boundary ([#2580](https://github.com/elastic/elastic-charts/issues/2580)) ([b84f9bf](https://github.com/elastic/elastic-charts/commit/b84f9bf3d7a2e28d36ea68879c9d0d8090ac98c9))
+
+## [68.0.4](https://github.com/elastic/elastic-charts/compare/v68.0.3...v68.0.4) (2024-12-11)
+
+
+### Bug Fixes
+
+* **xy:** compute per series and global minPointsDistance ([#2571](https://github.com/elastic/elastic-charts/issues/2571)) ([8dae2c1](https://github.com/elastic/elastic-charts/commit/8dae2c1f4c99146aa757b2d3eec9d72846248cc7))
+
+
+### Performance Improvements
+
+* fix unnecessary re-render ([#2573](https://github.com/elastic/elastic-charts/issues/2573)) ([feacfd6](https://github.com/elastic/elastic-charts/commit/feacfd6247b9580a8d32bc5d6284329b2035c1ba))
+
 ## [68.0.3](https://github.com/elastic/elastic-charts/compare/v68.0.2...v68.0.3) (2024-11-28)
 
 

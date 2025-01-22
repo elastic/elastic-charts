@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-/* @internal */
-export { ErrorBoundary } from './error_boundary';
-/* @internal */
-export * from './errors';
+import { GlobalChartState } from '../chart_state';
+
+/** @internal */
+export const getInternalCanDisplayChartTitles = (state: GlobalChartState): boolean =>
+  state.internalChartState?.canDisplayChartTitles(state) ?? true;

@@ -54,78 +54,76 @@ exports[`Chart should render the legend name test 1`] = `
             </div>
           </LegendComponent>
         </Connect(LegendComponent)>
-        <ErrorBoundary>
-          <Connect(SpecsParserComponent)>
-            <SpecsParserComponent specParsed={[Function (anonymous)]} specUnmounted={[Function (anonymous)]}>
-              <Settings debug={true} rendering="svg" showLegend={true} />
-              <BarSeries id="test" data={{...}} xAccessor="x" yAccessors={{...}} />
-            </SpecsParserComponent>
-          </Connect(SpecsParserComponent)>
-          <div className="echContainer">
-            <Connect(ChartContainer) getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}}>
-              <ChartContainer getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}} status="Initialized" initialized={true} tooltipState={{...}} isChartEmpty={false} canPinTooltip={false} pointerCursor={[undefined]} isBrushingAvailable={false} isBrushing={false} internalChartRenderer={[Function: chartRenderer]} settings={{...}} tooltip={{...}} disableInteractions={false} onPointerMove={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onKeyPress={[Function (anonymous)]} pinTooltip={[Function (anonymous)]}>
-                <div className="echChartPointerContainer" style={{...}} onMouseMove={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onContextMenu={[undefined]}>
-                  <Connect(CursorBand)>
-                    <CursorBand isBrushing={false} theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType="vertical" fromExternalEvent={[undefined]} tooltipState={{...}} dispatch={[Function: dispatch]} />
-                  </Connect(CursorBand)>
-                  <Connect(XYChart) forwardCanvasRef={{...}}>
-                    <XYChart forwardCanvasRef={{...}} locale="en-US" isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} hoveredAnnotationIds={{...}} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
-                      <figure aria-labelledby={[undefined]} aria-describedby="chart1--defaultSummary">
-                        <canvas dir="ltr" className="echCanvasRenderer" width={170} height={200} style={{...}} role="presentation" />
-                      </figure>
-                      <Connect(ScreenReaderSummaryComponent)>
-                        <ScreenReaderSummaryComponent chartTypeDescription="bar chart" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
-                          <div className="echScreenReaderOnly">
-                            <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} goalChartLabels={{...}} />
-                            <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} />
-                            <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} chartTypeDescription="bar chart" goalChartData={{...}}>
-                              <dl>
-                                <dt>
-                                  Chart type:
-                                </dt>
-                                <dd id="chart1--defaultSummary">
-                                  bar chart
-                                </dd>
-                              </dl>
-                            </ScreenReaderTypes>
-                          </div>
-                        </ScreenReaderSummaryComponent>
-                      </Connect(ScreenReaderSummaryComponent)>
-                    </XYChart>
-                  </Connect(XYChart)>
-                  <Connect(CursorLine)>
-                    <CursorLine isBrushing={false} theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType="vertical" fromExternalEvent={[undefined]} isLine={false} tooltipState={{...}} dispatch={[Function: dispatch]} />
-                  </Connect(CursorLine)>
-                  <Connect(CursorCrossLine)>
-                    <CursorCrossLine theme={{...}} chartRotation={0} cursorCrossLinePosition={[undefined]} tooltipType="vertical" dispatch={[Function: dispatch]} />
-                  </Connect(CursorCrossLine)>
-                  <Connect(Tooltip) getChartContainerRef={[Function (anonymous)]}>
-                    <Tooltip getChartContainerRef={[Function (anonymous)]} tooltip={{...}} isExternal={false} isBrushing={false} zIndex={0} settings={{...}} tooltipTheme={{...}} rotation={0} chartId="chart1" backgroundColor="#FFF" visible={false} position={{...}} info={{...}} pinned={false} selected={{...}} canPinTooltip={false} onPointerMove={[Function (anonymous)]} toggleSelectedTooltipItem={[Function (anonymous)]} setSelectedTooltipItems={[Function (anonymous)]} pinTooltip={[Function (anonymous)]} />
-                  </Connect(Tooltip)>
-                  <Connect(Annotations) getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}}>
-                    <Annotations getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}} isChartEmpty={false} chartDimensions={{...}} sharedStyle={{...}} annotationDimensions={{...}} annotationSpecs={{...}} tooltipState={{...}} chartId="chart1" zIndex={0} hoveredAnnotationIds={{...}} clickable={false} onPointerMove={[Function (anonymous)]} onDOMElementLeave={[Function (anonymous)]} onDOMElementEnter={[Function (anonymous)]} onDOMElementClick={[Function (anonymous)]}>
-                      <AnnotationTooltip chartId="chart1" zIndex={0} state={{...}} chartRef={{...}} onScroll={[Function (anonymous)]} />
-                    </Annotations>
-                  </Connect(Annotations)>
-                  <Connect(Highlighter)>
-                    <Highlighter initialized={true} chartId="chart1" zIndex={0} isBrushing={false} highlightedGeometries={{...}} chartTransform={{...}} chartDimensions={{...}} chartRotation={0} style={{...}} dispatch={[Function: dispatch]}>
-                      <svg className="echHighlighter" style={{...}}>
-                        <defs>
-                          <clipPath id="echHighlighterClipPath__chart1">
-                            <rect x="0" y="0" width={170} height={200} />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                    </Highlighter>
-                  </Connect(Highlighter)>
-                  <Connect(BrushTool)>
-                    <BrushTool initialized={true} projectionContainer={{...}} mainProjectionArea={{...}} isBrushAvailable={false} isBrushing={false} brushEvent={{...}} zIndex={0} dispatch={[Function: dispatch]} />
-                  </Connect(BrushTool)>
-                </div>
-              </ChartContainer>
-            </Connect(ChartContainer)>
-          </div>
-        </ErrorBoundary>
+        <Connect(SpecsParserComponent)>
+          <SpecsParserComponent specParsed={[Function (anonymous)]} specUnmounted={[Function (anonymous)]}>
+            <Settings debug={true} rendering="svg" showLegend={true} />
+            <BarSeries id="test" data={{...}} xAccessor="x" yAccessors={{...}} />
+          </SpecsParserComponent>
+        </Connect(SpecsParserComponent)>
+        <div className="echContainer">
+          <Connect(ChartContainer) getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}}>
+            <ChartContainer getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}} status="Initialized" initialized={true} tooltipState={{...}} isChartEmpty={false} canPinTooltip={false} pointerCursor={[undefined]} isBrushingAvailable={false} isBrushing={false} internalChartRenderer={[Function: chartRenderer]} settings={{...}} tooltip={{...}} disableInteractions={false} onPointerMove={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onKeyPress={[Function (anonymous)]} pinTooltip={[Function (anonymous)]}>
+              <div className="echChartPointerContainer" style={{...}} onMouseMove={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onContextMenu={[undefined]}>
+                <Connect(CursorBand)>
+                  <CursorBand isBrushing={false} theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType="vertical" fromExternalEvent={[undefined]} tooltipState={{...}} dispatch={[Function: dispatch]} />
+                </Connect(CursorBand)>
+                <Connect(XYChart) forwardCanvasRef={{...}}>
+                  <XYChart forwardCanvasRef={{...}} locale="en-US" isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} hoveredAnnotationIds={{...}} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
+                    <figure aria-labelledby={[undefined]} aria-describedby="chart1--defaultSummary">
+                      <canvas dir="ltr" className="echCanvasRenderer" width={170} height={200} style={{...}} role="presentation" />
+                    </figure>
+                    <Connect(ScreenReaderSummaryComponent)>
+                      <ScreenReaderSummaryComponent chartTypeDescription="bar chart" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function: dispatch]}>
+                        <div className="echScreenReaderOnly">
+                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} goalChartLabels={{...}} />
+                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} />
+                          <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} chartTypeDescription="bar chart" goalChartData={{...}}>
+                            <dl>
+                              <dt>
+                                Chart type:
+                              </dt>
+                              <dd id="chart1--defaultSummary">
+                                bar chart
+                              </dd>
+                            </dl>
+                          </ScreenReaderTypes>
+                        </div>
+                      </ScreenReaderSummaryComponent>
+                    </Connect(ScreenReaderSummaryComponent)>
+                  </XYChart>
+                </Connect(XYChart)>
+                <Connect(CursorLine)>
+                  <CursorLine isBrushing={false} theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType="vertical" fromExternalEvent={[undefined]} isLine={false} tooltipState={{...}} dispatch={[Function: dispatch]} />
+                </Connect(CursorLine)>
+                <Connect(CursorCrossLine)>
+                  <CursorCrossLine theme={{...}} chartRotation={0} cursorCrossLinePosition={[undefined]} tooltipType="vertical" dispatch={[Function: dispatch]} />
+                </Connect(CursorCrossLine)>
+                <Connect(Tooltip) getChartContainerRef={[Function (anonymous)]}>
+                  <Tooltip getChartContainerRef={[Function (anonymous)]} tooltip={{...}} isExternal={false} isBrushing={false} zIndex={0} settings={{...}} tooltipTheme={{...}} rotation={0} chartId="chart1" backgroundColor="#FFF" visible={false} position={{...}} info={{...}} pinned={false} selected={{...}} canPinTooltip={false} onPointerMove={[Function (anonymous)]} toggleSelectedTooltipItem={[Function (anonymous)]} setSelectedTooltipItems={[Function (anonymous)]} pinTooltip={[Function (anonymous)]} />
+                </Connect(Tooltip)>
+                <Connect(Annotations) getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}}>
+                  <Annotations getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}} isChartEmpty={false} chartDimensions={{...}} sharedStyle={{...}} annotationDimensions={{...}} annotationSpecs={{...}} tooltipState={{...}} chartId="chart1" zIndex={0} hoveredAnnotationIds={{...}} clickable={false} onPointerMove={[Function (anonymous)]} onDOMElementLeave={[Function (anonymous)]} onDOMElementEnter={[Function (anonymous)]} onDOMElementClick={[Function (anonymous)]}>
+                    <AnnotationTooltip chartId="chart1" zIndex={0} state={{...}} chartRef={{...}} onScroll={[Function (anonymous)]} />
+                  </Annotations>
+                </Connect(Annotations)>
+                <Connect(Highlighter)>
+                  <Highlighter initialized={true} chartId="chart1" zIndex={0} isBrushing={false} highlightedGeometries={{...}} chartTransform={{...}} chartDimensions={{...}} chartRotation={0} style={{...}} dispatch={[Function: dispatch]}>
+                    <svg className="echHighlighter" style={{...}}>
+                      <defs>
+                        <clipPath id="echHighlighterClipPath__chart1">
+                          <rect x="0" y="0" width={170} height={200} />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                  </Highlighter>
+                </Connect(Highlighter)>
+                <Connect(BrushTool)>
+                  <BrushTool initialized={true} projectionContainer={{...}} mainProjectionArea={{...}} isBrushAvailable={false} isBrushing={false} brushEvent={{...}} zIndex={0} dispatch={[Function: dispatch]} />
+                </Connect(BrushTool)>
+              </div>
+            </ChartContainer>
+          </Connect(ChartContainer)>
+        </div>
       </div>
     </div>
   </Provider>

@@ -13,6 +13,13 @@ import { eachRotation, pwEach } from '../helpers';
 import { common } from '../page_objects';
 
 test.describe('Test cases stories', () => {
+  test('should render EuiErrorBoundary when error is thrown is chart', async ({ page }) => {
+    await common.expectElementAtUrlToMatchScreenshot(page)(
+      'http://localhost:9001/?path=/story/test-cases--error-boundary&knob-throws error=true',
+      '#story-root',
+    );
+  });
+
   // See https://github.com/elastic/elastic-charts/issues/2456
   test('should render sunburst as full circle', async ({ page }) => {
     await common.expectChartAtUrlToMatchScreenshot(page)(

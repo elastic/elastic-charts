@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { LIGHT_BASE_COLORS } from './base_colors';
+import { LIGHT_BACKGROUND_COLORS, LIGHT_BASE_COLORS, LIGHT_BORDER_COLORS, LIGHT_TEXT_COLORS } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -143,7 +143,7 @@ export const LIGHT_THEME: Theme = {
         inner: 10,
         outer: 0,
       },
-      fill: LIGHT_BASE_COLORS.darkestShade,
+      fill: LIGHT_TEXT_COLORS.textParagraph,
     },
     axisPanelTitle: {
       visible: true,
@@ -153,11 +153,11 @@ export const LIGHT_THEME: Theme = {
         inner: 8,
         outer: 0,
       },
-      fill: '#333', // LIGHT_BASE_COLORS.darkestShade,
+      fill: LIGHT_TEXT_COLORS.textParagraph,
     },
     axisLine: {
       visible: true,
-      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
+      stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
       strokeWidth: 1,
     },
     tickLabel: {
@@ -165,7 +165,7 @@ export const LIGHT_THEME: Theme = {
       fontSize: 10,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
+      fill: LIGHT_TEXT_COLORS.textSubdued,
       padding: { outer: 8, inner: 10 },
       rotation: 0,
       offset: {
@@ -180,7 +180,7 @@ export const LIGHT_THEME: Theme = {
     },
     tickLine: {
       visible: false,
-      stroke: '#eaedf3', // LIGHT_BASE_COLORS.lightShade,
+      stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
       strokeWidth: 1,
       size: 10,
       padding: 10,
@@ -188,14 +188,14 @@ export const LIGHT_THEME: Theme = {
     gridLine: {
       horizontal: {
         visible: true,
-        stroke: '#E9EDF3',
+        stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
       },
       vertical: {
         visible: true,
-        stroke: '#E9EDF3',
+        stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
         strokeWidth: 1,
         opacity: 1,
         dash: [0, 0],
@@ -219,17 +219,17 @@ export const LIGHT_THEME: Theme = {
   crosshair: {
     band: {
       visible: true,
-      fill: LIGHT_BASE_COLORS.lightestShade,
+      fill: LIGHT_BACKGROUND_COLORS.backgroundBaseInteractiveHover,
     },
     line: {
       visible: true,
-      stroke: LIGHT_BASE_COLORS.darkShade,
+      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
       strokeWidth: 1,
       dash: [4, 4],
     },
     crossLine: {
       visible: true,
-      stroke: LIGHT_BASE_COLORS.darkShade,
+      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
       strokeWidth: 1,
       dash: [4, 4],
     },
