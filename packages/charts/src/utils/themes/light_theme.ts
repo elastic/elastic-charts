@@ -379,7 +379,7 @@ export const LIGHT_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: PRIMITIVE_COLORS.blueGrey20,
+        color: LIGHT_BORDER_COLORS.borderBaseSubdued,
       },
     },
     cell: {
@@ -400,7 +400,7 @@ export const LIGHT_THEME: Theme = {
       },
       border: {
         strokeWidth: 1,
-        stroke: PRIMITIVE_COLORS.blueGrey20,
+        stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
       },
     },
   },

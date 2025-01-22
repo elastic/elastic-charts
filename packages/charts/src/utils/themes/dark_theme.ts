@@ -380,7 +380,7 @@ export const DARK_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: PRIMITIVE_COLORS.blueGrey120,
+        color: DARK_BORDER_COLORS.borderBaseSubdued,
       },
     },
     cell: {
@@ -401,7 +401,7 @@ export const DARK_THEME: Theme = {
       },
       border: {
         strokeWidth: 1,
-        stroke: PRIMITIVE_COLORS.blueGrey120,
+        stroke: DARK_BORDER_COLORS.borderBaseSubdued,
       },
     },
   },
