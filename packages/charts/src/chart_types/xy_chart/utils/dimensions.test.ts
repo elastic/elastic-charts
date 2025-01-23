@@ -11,6 +11,7 @@ import { computeChartDimensions } from './dimensions';
 import { AxisSpec } from './specs';
 import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
+import { SettingsSpec } from '../../../specs';
 import { SpecType } from '../../../specs/constants';
 import { Position } from '../../../utils/common';
 import { Margins } from '../../../utils/dimensions';
@@ -29,6 +30,8 @@ const getScaleConfigs = (): ScaleConfigs => ({
   },
   y: {},
 });
+
+const getSettingsSpec = (): SettingsSpec => ({ rotation: 0 }) as unknown as SettingsSpec;
 
 describe('Computed chart dimensions', () => {
   const parentDim = {
@@ -102,6 +105,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
+      getSettingsSpec(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -122,6 +126,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
+      getSettingsSpec(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -142,6 +147,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
+      getSettingsSpec(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -167,6 +173,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
+      getSettingsSpec(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -192,6 +199,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
+      getSettingsSpec(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -215,6 +223,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
+      getSettingsSpec(),
     );
 
     const expectedDims = {
@@ -245,6 +254,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
+      getSettingsSpec(),
     );
 
     expect(hiddenAxisChartDimensions).toEqual(expectedDims);

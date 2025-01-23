@@ -25,6 +25,7 @@ import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs'
 // import { MockStore } from '../../../mocks/store/store';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
+import { SettingsSpec } from '../../../specs';
 import { getScale } from '../../../state/selectors/compute_small_multiple_scales';
 import { Position, mergePartial, HorizontalAlignment, VerticalAlignment } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
@@ -61,6 +62,8 @@ const getScaleConfigs = (): ScaleConfigs => ({
   },
   y: {},
 });
+
+const getSettingsSpec = (): SettingsSpec => ({ rotation: 0 }) as unknown as SettingsSpec;
 
 const getCustomStyle = (rotation = 0, padding = 10): AxisStyle =>
   mergePartial(LIGHT_THEME.axes, {
@@ -861,6 +864,7 @@ describe('Axis computational utils', () => {
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
       getScaleConfigs(),
+      getSettingsSpec(),
     );
     const expectedLeftAxisPosition = {
       dimensions: {
@@ -895,6 +899,7 @@ describe('Axis computational utils', () => {
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
       getScaleConfigs(),
+      getSettingsSpec(),
     );
 
     const expectedRightAxisPosition = {
@@ -930,6 +935,7 @@ describe('Axis computational utils', () => {
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
       getScaleConfigs(),
+      getSettingsSpec(),
     );
     const { size: tickSize, padding: tickPadding } = LIGHT_THEME.axes.tickLine;
 
@@ -966,6 +972,7 @@ describe('Axis computational utils', () => {
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
       getScaleConfigs(),
+      getSettingsSpec(),
     );
 
     const expectedBottomAxisPosition = {
@@ -1700,6 +1707,7 @@ describe('Axis computational utils', () => {
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
           getScaleConfigs(),
+          getSettingsSpec(),
         );
 
         const expectedLeftAxisPosition = {
@@ -1729,6 +1737,7 @@ describe('Axis computational utils', () => {
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
           getScaleConfigs(),
+          getSettingsSpec(),
         );
 
         const expectedRightAxisPosition = {
@@ -1758,6 +1767,7 @@ describe('Axis computational utils', () => {
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
           getScaleConfigs(),
+          getSettingsSpec(),
         );
 
         const expectedTopAxisPosition = {
@@ -1787,6 +1797,7 @@ describe('Axis computational utils', () => {
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
           getScaleConfigs(),
+          getSettingsSpec(),
         );
 
         const expectedBottomAxisPosition = {
