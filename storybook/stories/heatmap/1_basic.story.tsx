@@ -20,6 +20,7 @@ import {
   ScaleType,
   Settings,
 } from '@elastic/charts';
+import { SEVERITY_COLORS } from '@elastic/charts/src/utils/themes/base_colors';
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
 import { ChartsStory } from '../../types';
@@ -43,12 +44,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
     const styles: RecursivePartial<HeatmapStyle> = {
       brushTool: {
         visible: showBrushTool,
-      },
-      grid: {
-        stroke: {
-          width: 0.5,
-          color: '#bababa',
-        },
       },
       cell: {
         maxWidth: 'fill',
@@ -91,11 +86,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
         colorScale={{
           type: 'bands',
           bands: [
-            { start: -Infinity, end: 3.5, color: '#d2e9f7' },
-            { start: 3.5, end: 25, color: '#8bc8fb' },
-            { start: 25, end: 50, color: '#fdec25' },
-            { start: 50, end: 75, color: '#fba740' },
-            { start: 75, end: Infinity, color: '#fe5050' },
+            { start: -Infinity, end: 3.5, color: SEVERITY_COLORS.euiColorSeverity5 },
+            { start: 3.5, end: 25, color: SEVERITY_COLORS.euiColorSeverity7 },
+            { start: 25, end: 50, color: SEVERITY_COLORS.euiColorSeverity10 },
+            { start: 50, end: 75, color: SEVERITY_COLORS.euiColorSeverity12 },
+            { start: 75, end: Infinity, color: SEVERITY_COLORS.euiColorSeverity14 },
           ],
         }}
         data={DATA_6.data}

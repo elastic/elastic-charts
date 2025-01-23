@@ -11,6 +11,7 @@ import {
   DARK_TEXT_COLORS,
   DARK_BORDER_COLORS,
   DARK_BACKGROUND_COLORS,
+  DARK_BACKGROUND_COLORS_CUSTOM,
   LIGHT_TEXT_COLORS,
 } from './base_colors';
 import { palettes } from './colors';
@@ -349,16 +350,16 @@ export const DARK_THEME: Theme = {
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: '#D3DAE6', // DARK_BASE_COLORS.darkestShade,
+      stroke: DARK_BORDER_COLORS.borderBasePlain,
       strokeWidth: 2,
     },
     brushMask: {
       visible: true,
-      fill: '#8c8c8c80',
+      fill: DARK_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
     brushTool: {
       visible: false,
-      fill: 'snow',
+      fill: DARK_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
 
     xAxisLabel: {
@@ -366,7 +367,7 @@ export const DARK_THEME: Theme = {
       fontSize: 12,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.White.keyword,
+      textColor: DARK_TEXT_COLORS.textSubdued,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -378,7 +379,7 @@ export const DARK_THEME: Theme = {
       fontSize: 12,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.White.keyword,
+      textColor: DARK_TEXT_COLORS.textSubdued,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -386,7 +387,7 @@ export const DARK_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: 'snow',
+        color: DARK_BORDER_COLORS.borderBaseSubdued,
       },
     },
     cell: {
@@ -406,8 +407,8 @@ export const DARK_THEME: Theme = {
         useGlobalMinFontSize: true,
       },
       border: {
-        strokeWidth: 1,
-        stroke: 'snow',
+        strokeWidth: 0,
+        stroke: DARK_BORDER_COLORS.borderBaseSubdued,
       },
     },
   },

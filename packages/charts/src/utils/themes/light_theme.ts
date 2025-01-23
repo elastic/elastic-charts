@@ -9,6 +9,7 @@
 import {
   DARK_TEXT_COLORS,
   LIGHT_BACKGROUND_COLORS,
+  LIGHT_BACKGROUND_COLORS_CUSTOM,
   LIGHT_BASE_COLORS,
   LIGHT_BORDER_COLORS,
   LIGHT_TEXT_COLORS,
@@ -349,23 +350,23 @@ export const LIGHT_THEME: Theme = {
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: LIGHT_BASE_COLORS.darkShade,
+      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
       strokeWidth: 2,
     },
     brushMask: {
       visible: true,
-      fill: '#73737380',
+      fill: LIGHT_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
     brushTool: {
       visible: false,
-      fill: 'gray',
+      fill: LIGHT_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
     xAxisLabel: {
       visible: true,
       fontSize: 12,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.Black.keyword,
+      textColor: LIGHT_TEXT_COLORS.textSubdued,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -375,9 +376,9 @@ export const LIGHT_THEME: Theme = {
       visible: true,
       width: 'auto',
       fontSize: 12,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.Black.keyword,
+      textColor: LIGHT_TEXT_COLORS.textSubdued,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -385,7 +386,7 @@ export const LIGHT_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: 'gray',
+        color: LIGHT_BORDER_COLORS.borderBaseSubdued,
       },
     },
     cell: {
@@ -405,8 +406,8 @@ export const LIGHT_THEME: Theme = {
         useGlobalMinFontSize: true,
       },
       border: {
-        strokeWidth: 1,
-        stroke: 'gray',
+        strokeWidth: 0,
+        stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
       },
     },
   },
