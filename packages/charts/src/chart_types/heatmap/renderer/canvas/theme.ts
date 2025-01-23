@@ -13,7 +13,10 @@ import { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
 
 /** @internal */
 export const renderMargins = (ctx: CanvasRenderingContext2D, container: Dimensions, margins: PerSideDistance) => {
-  const greenSemiTransparent: RgbaTuple = [...(Colors.Green.rgba.slice(0, 3) as [number, number, number]), 0.5];
+  const greenSemiTransparent = [
+    ...(Colors.Green.rgba.slice(0, 3) as [number, number, number]),
+    0.5,
+  ] satisfies RgbaTuple;
 
   // left
   renderDebugRect(
@@ -73,10 +76,10 @@ export const renderPaddings = (
   margins: PerSideDistance,
   paddings: PerSideDistance,
 ) => {
-  const lightBlueSemiTransparent: RgbaTuple = [
+  const lightBlueSemiTransparent = [
     ...(Colors.LightBlue.rgba.slice(0, 3) as [number, number, number]),
     0.5,
-  ] as RgbaTuple;
+  ] satisfies RgbaTuple;
 
   // left
   renderDebugRect(

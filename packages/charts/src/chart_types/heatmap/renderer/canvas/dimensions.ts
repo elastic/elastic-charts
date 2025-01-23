@@ -13,7 +13,7 @@ import { Dimensions } from '../../../../utils/dimensions';
 
 /** @internal */
 export const renderChartContainerDimensions = (ctx: CanvasRenderingContext2D, container: Dimensions) => {
-  const graySemiTransparent: RgbaTuple = [...(Colors.Gray.rgba.slice(0, 3) as [number, number, number]), 0.5];
+  const graySemiTransparent = [...(Colors.Gray.rgba.slice(0, 3) as [number, number, number]), 0.5] satisfies RgbaTuple;
 
   renderDebugRect(
     ctx,
