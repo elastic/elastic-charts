@@ -407,7 +407,7 @@ export const DARK_THEME: Theme = {
         useGlobalMinFontSize: true,
       },
       border: {
-        strokeWidth: 1,
+        strokeWidth: 0,
         stroke: DARK_BORDER_COLORS.borderBaseSubdued,
       },
     },

@@ -406,7 +406,7 @@ export const LIGHT_THEME: Theme = {
         useGlobalMinFontSize: true,
       },
       border: {
-        strokeWidth: 1,
+        strokeWidth: 0,
         stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
       },
     },

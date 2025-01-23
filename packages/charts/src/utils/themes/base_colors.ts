@@ -55,6 +55,10 @@ export const PRIMITIVE_COLORS = {
   blueGrey140: '#111C2C',
   blueGrey145: '#0B1628',
   primary100: '#1750BA',
+  red50: '#FC9188',
+  red70: '#EE4C48',
+  red90: '#C61E25',
+  yellow30: '#FCD883',
 };
 
 /** @internal */
@@ -73,6 +77,10 @@ export const SEMANTIC_COLORS = {
   primary30: PRIMITIVE_COLORS.blue30,
   primary100: PRIMITIVE_COLORS.blue100,
   primary120: PRIMITIVE_COLORS.blue120,
+  danger50: PRIMITIVE_COLORS.red50,
+  danger70: PRIMITIVE_COLORS.red70,
+  danger90: PRIMITIVE_COLORS.red90,
+  warning30: PRIMITIVE_COLORS.yellow30,
 };
 
 const primary100RGB = chroma(SEMANTIC_COLORS.primary100).rgb().join(' ');
@@ -136,4 +144,13 @@ export const LIGHT_BACKGROUND_COLORS_CUSTOM = {
 /** @internal */
 export const DARK_BACKGROUND_COLORS_CUSTOM = {
   backgroundBasePlainAlpha70: SEMANTIC_ALPHA_COLORS.shade145Alpha70,
+};
+
+/** @internal */
+export const SEVERITY_COLORS = {
+  euiColorSeverity5: SEMANTIC_COLORS.shade30,
+  euiColorSeverity7: SEMANTIC_COLORS.warning30,
+  euiColorSeverity10: SEMANTIC_COLORS.danger50,
+  euiColorSeverity12: SEMANTIC_COLORS.danger70,
+  euiColorSeverity14: SEMANTIC_COLORS.danger90,
 };
