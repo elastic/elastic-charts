@@ -52,6 +52,7 @@ export const PRIMITIVE_COLORS = {
   blueGrey100: '#485975',
   blueGrey120: '#2B394F',
   blueGrey130: '#1D2A3E',
+  blueGrey140: '#111C2C',
   blueGrey145: '#0B1628',
   primary100: '#1750BA',
 };
@@ -67,6 +68,7 @@ export const SEMANTIC_COLORS = {
   shade100: PRIMITIVE_COLORS.blueGrey100,
   shade120: PRIMITIVE_COLORS.blueGrey120,
   shade130: PRIMITIVE_COLORS.blueGrey130,
+  shade140: PRIMITIVE_COLORS.blueGrey140,
   shade145: PRIMITIVE_COLORS.blueGrey145,
   primary30: PRIMITIVE_COLORS.blue30,
   primary100: PRIMITIVE_COLORS.blue100,
@@ -102,11 +104,13 @@ export const LIGHT_BORDER_COLORS = {
 /** @internal */
 export const DARK_TEXT_COLORS = {
   textParagraph: SEMANTIC_COLORS.shade30,
+  textHeading: SEMANTIC_COLORS.shade20,
   textSubdued: SEMANTIC_COLORS.shade60,
 };
 /** @internal */
 export const LIGHT_TEXT_COLORS = {
   textParagraph: SEMANTIC_COLORS.shade130,
+  textHeading: SEMANTIC_COLORS.shade140,
   textSubdued: SEMANTIC_COLORS.shade95,
 };
 

@@ -12,6 +12,7 @@ import {
   DARK_BORDER_COLORS,
   DARK_BACKGROUND_COLORS,
   DARK_BACKGROUND_COLORS_CUSTOM,
+  LIGHT_TEXT_COLORS,
 } from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
@@ -412,15 +413,15 @@ export const DARK_THEME: Theme = {
     },
   },
   metric: {
-    textLightColor: '#E0E5EE', //DARK_BASE_COLORS.title,
-    textDarkColor: DARK_BASE_COLORS.lightShade,
+    textLightColor: DARK_TEXT_COLORS.textHeading,
+    textDarkColor: LIGHT_TEXT_COLORS.textHeading,
     valueFontSize: 'default',
     minValueFontSize: 12,
     titlesTextAlign: 'left',
     valuesTextAlign: 'right',
     iconAlign: 'right',
-    border: DARK_BASE_COLORS.lightShade,
-    barBackground: DARK_BASE_COLORS.lightShade,
+    border: DARK_BORDER_COLORS.borderBaseSubdued,
+    barBackground: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
