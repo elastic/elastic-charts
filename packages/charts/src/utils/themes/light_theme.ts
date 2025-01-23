@@ -6,7 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { LIGHT_BACKGROUND_COLORS, LIGHT_BASE_COLORS, LIGHT_BORDER_COLORS, LIGHT_TEXT_COLORS } from './base_colors';
+import {
+  LIGHT_BACKGROUND_COLORS,
+  LIGHT_BACKGROUND_COLORS_CUSTOM,
+  LIGHT_BASE_COLORS,
+  LIGHT_BORDER_COLORS,
+  LIGHT_TEXT_COLORS,
+} from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -343,16 +349,16 @@ export const LIGHT_THEME: Theme = {
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: LIGHT_BASE_COLORS.darkShade,
+      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
       strokeWidth: 2,
     },
     brushMask: {
       visible: true,
-      fill: '#73737380',
+      fill: LIGHT_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
     brushTool: {
       visible: false,
-      fill: 'gray',
+      fill: LIGHT_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
     xAxisLabel: {
       visible: true,

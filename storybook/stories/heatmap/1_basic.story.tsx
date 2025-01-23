@@ -47,7 +47,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
       grid: {
         stroke: {
           width: 0.5,
-          color: '#bababa',
         },
       },
       cell: {

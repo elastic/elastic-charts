@@ -6,7 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { DARK_BASE_COLORS, DARK_TEXT_COLORS, DARK_BORDER_COLORS, DARK_BACKGROUND_COLORS } from './base_colors';
+import {
+  DARK_BASE_COLORS,
+  DARK_TEXT_COLORS,
+  DARK_BORDER_COLORS,
+  DARK_BACKGROUND_COLORS,
+  DARK_BACKGROUND_COLORS_CUSTOM,
+} from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -343,16 +349,16 @@ export const DARK_THEME: Theme = {
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: '#D3DAE6', // DARK_BASE_COLORS.darkestShade,
+      stroke: DARK_BORDER_COLORS.borderBasePlain,
       strokeWidth: 2,
     },
     brushMask: {
       visible: true,
-      fill: '#8c8c8c80',
+      fill: DARK_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
     brushTool: {
       visible: false,
-      fill: 'snow',
+      fill: DARK_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
 
     xAxisLabel: {
