@@ -6,7 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { LIGHT_BACKGROUND_COLORS, LIGHT_BASE_COLORS, LIGHT_BORDER_COLORS, LIGHT_TEXT_COLORS } from './base_colors';
+import {
+  DARK_TEXT_COLORS,
+  LIGHT_BACKGROUND_COLORS,
+  LIGHT_BASE_COLORS,
+  LIGHT_BORDER_COLORS,
+  LIGHT_TEXT_COLORS,
+} from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -405,15 +411,15 @@ export const LIGHT_THEME: Theme = {
     },
   },
   metric: {
-    textLightColor: '#E0E5EE', // LIGHT_BASE_COLORS.title,
-    textDarkColor: LIGHT_BASE_COLORS.darkestShade,
+    textLightColor: DARK_TEXT_COLORS.textHeading,
+    textDarkColor: LIGHT_TEXT_COLORS.textHeading,
     valueFontSize: 'default',
     minValueFontSize: 12,
     titlesTextAlign: 'left',
     valuesTextAlign: 'right',
     iconAlign: 'right',
-    border: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
-    barBackground: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
+    border: LIGHT_BORDER_COLORS.borderBaseSubdued,
+    barBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
