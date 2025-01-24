@@ -318,7 +318,6 @@ export function isMultilayerTimeAxisFn({
   scaleConfigs,
   rotation,
 }: IsMultilayerTimeAxisFnOptions) {
-rotation });
   return (
     chartType === ChartType.XYAxis &&
     timeAxisLayerCount > 0 &&
