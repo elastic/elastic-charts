@@ -306,15 +306,19 @@ export function getPosition(
 }
 
 /** @internal */
+export interface IsMultilayerTimeAxisFnOptions {
+  axisSpec: AxisSpec;
+  scaleConfigs: ScaleConfigs;
+  rotation: Rotation;
+}
+
+/** @internal */
 export function isMultilayerTimeAxisFn({
   axisSpec: { chartType, timeAxisLayerCount, position },
   scaleConfigs,
   rotation,
-}: {
-  axisSpec: AxisSpec;
-  scaleConfigs: ScaleConfigs;
-  rotation: Rotation;
-}) {
+}: IsMultilayerTimeAxisFnOptions) {
+rotation });
   return (
     chartType === ChartType.XYAxis &&
     timeAxisLayerCount > 0 &&
