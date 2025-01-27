@@ -242,8 +242,8 @@ export const LIGHT_THEME: Theme = {
     },
   },
   background: {
-    color: LIGHT_BASE_COLORS.emptyShade,
-    fallbackColor: LIGHT_BASE_COLORS.emptyShade,
+    color: LIGHT_BACKGROUND_COLORS.backgroundBasePlain,
+    fallbackColor: LIGHT_BACKGROUND_COLORS.backgroundBasePlain,
   },
   goal: {
     minFontSize: 8,
