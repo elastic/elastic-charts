@@ -308,7 +308,7 @@ export const DARK_THEME: Theme = {
     horizontalTextEnforcer: 1,
     fillLabel: {
       textColor: ColorVariant.Adaptive,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
       fontVariant: 'normal',
       fontWeight: 400,
@@ -322,7 +322,7 @@ export const DARK_THEME: Theme = {
     },
     linkLabel: {
       maximumSection: 10,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontSize: 11,
       fontStyle: 'normal',
       fontVariant: 'normal',
@@ -334,7 +334,7 @@ export const DARK_THEME: Theme = {
       lineWidth: 1,
       maxCount: 5,
       maxTextLength: 100,
-      textColor: DARK_BASE_COLORS.title,
+      textColor: DARK_TEXT_COLORS.textParagraph,
       minimumStemLength: 0,
       stemAngle: TAU / 8,
       padding: 0,
@@ -345,7 +345,7 @@ export const DARK_THEME: Theme = {
       },
     },
     sectorLineWidth: 1.5,
-    sectorLineStroke: DARK_BASE_COLORS.emptyShade,
+    sectorLineStroke: DARK_BACKGROUND_COLORS.backgroundBasePlain,
   },
   heatmap: {
     brushArea: {
