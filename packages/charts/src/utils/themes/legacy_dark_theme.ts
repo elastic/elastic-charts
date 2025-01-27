@@ -442,6 +442,7 @@ export const LEGACY_DARK_THEME: Theme = {
     },
     scrollbarThumb: 'rgb(223, 229, 239)',
     scrollbarTrack: 'rgb(52, 55, 65)',
+    minimapFocusBorder: 'mangenta',
   },
   highlighter: {
     point: {

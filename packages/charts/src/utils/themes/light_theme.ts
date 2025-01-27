@@ -434,14 +434,15 @@ export const LIGHT_THEME: Theme = {
   // TODO map colors to base color mappings
   flamegraph: {
     navigation: {
-      textColor: LIGHT_BASE_COLORS.darkestShade,
-      buttonTextColor: '#0061A6',
-      buttonDisabledTextColor: '#A2ABBA',
-      buttonBackgroundColor: '#CCE4F5',
-      buttonDisabledBackgroundColor: '#D3DAE626',
+      textColor: LIGHT_TEXT_COLORS.textHeading,
+      buttonTextColor: LIGHT_TEXT_COLORS.textInverse,
+      buttonDisabledTextColor: LIGHT_TEXT_COLORS.textDisabled,
+      buttonBackgroundColor: LIGHT_BACKGROUND_COLORS.backgroundFilledPrimary,
+      buttonDisabledBackgroundColor: LIGHT_BACKGROUND_COLORS.backgroundBaseDisabled,
     },
-    scrollbarThumb: LIGHT_BASE_COLORS.darkestShade,
-    scrollbarTrack: LIGHT_BASE_COLORS.lightShade,
+    scrollbarThumb: LIGHT_BACKGROUND_COLORS.backgroundFilledText,
+    scrollbarTrack: LIGHT_BACKGROUND_COLORS.backgroundBaseDisabled,
+    minimapFocusBorder: LIGHT_BACKGROUND_COLORS.backgroundFilledAccent,
   },
   highlighter: {
     point: {
