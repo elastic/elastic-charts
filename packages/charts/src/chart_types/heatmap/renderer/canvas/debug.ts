@@ -12,7 +12,7 @@ import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
 
 /** @internal */
-export const renderMargins = (ctx: CanvasRenderingContext2D, container: Dimensions, margins: PerSideDistance) => {
+export const renderDebugMargins = (ctx: CanvasRenderingContext2D, container: Dimensions, margins: PerSideDistance) => {
   const greenSemiTransparent = [
     ...(Colors.Green.rgba.slice(0, 3) as [number, number, number]),
     0.5,
@@ -69,7 +69,7 @@ export const renderMargins = (ctx: CanvasRenderingContext2D, container: Dimensio
 };
 
 /** @internal */
-export const renderPaddings = (
+export const renderDebugPaddings = (
   ctx: CanvasRenderingContext2D,
   conatiner: Dimensions,
   chart: Dimensions,

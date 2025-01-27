@@ -7,13 +7,15 @@
  */
 
 import { ReactiveChartStateProps } from './connected_component';
-import { renderChartContainerDimensions, renderChartDimensions } from './dimensions';
-import { renderMargins, renderPaddings } from './theme';
+import { renderDebugMargins, renderDebugPaddings } from './debug';
 import { getColorBandStyle, getGeometryStateStyle } from './utils';
+import { RgbaTuple } from '../../../../common/color_library_wrappers';
+import { Colors } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
 import { renderRect } from '../../../../renderers/canvas/primitives/rect';
 import { renderText, TextFont, wrapLines } from '../../../../renderers/canvas/primitives/text';
+import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
 
@@ -194,10 +196,22 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
             });
           }),
 
-      () => debug && renderMargins(ctx, chartContainerDimensions, chartMargins),
-      () => debug && renderPaddings(ctx, chartContainerDimensions, chartDimensions, chartMargins, chartPaddings),
-      () => debug && renderChartContainerDimensions(ctx, chartContainerDimensions),
-      () => debug && renderChartDimensions(ctx, chartDimensions),
+      () => debug && renderDebugMargins(ctx, chartContainerDimensions, chartMargins),
+      () => debug && renderDebugPaddings(ctx, chartContainerDimensions, chartDimensions, chartMargins, chartPaddings),
+      () =>
+        debug &&
+        renderDebugRect(
+          ctx,
+          {
+            x: chartDimensions.left,
+            y: chartDimensions.top,
+            width: chartDimensions.width,
+            height: chartDimensions.height,
+          },
+          0,
+          { color: Colors.Transparent.rgba },
+          { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
+        ),
     ]);
   });
 }
