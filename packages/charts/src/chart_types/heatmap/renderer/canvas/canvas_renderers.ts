@@ -9,7 +9,6 @@
 import { ReactiveChartStateProps } from './connected_component';
 import { renderDebugMargins, renderDebugPaddings } from './debug';
 import { getColorBandStyle, getGeometryStateStyle } from './utils';
-import { RgbaTuple } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
