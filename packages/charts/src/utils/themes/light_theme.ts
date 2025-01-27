@@ -6,7 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { LIGHT_BACKGROUND_COLORS, LIGHT_BASE_COLORS, LIGHT_BORDER_COLORS, LIGHT_TEXT_COLORS } from './base_colors';
+import {
+  DARK_TEXT_COLORS,
+  LIGHT_BACKGROUND_COLORS,
+  LIGHT_BACKGROUND_COLORS_CUSTOM,
+  LIGHT_BASE_COLORS,
+  LIGHT_BORDER_COLORS,
+  LIGHT_TEXT_COLORS,
+} from './base_colors';
 import { palettes } from './colors';
 import { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
@@ -301,7 +308,7 @@ export const LIGHT_THEME: Theme = {
     horizontalTextEnforcer: 1,
     fillLabel: {
       textColor: ColorVariant.Adaptive,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
       fontVariant: 'normal',
       fontWeight: 400,
@@ -315,7 +322,7 @@ export const LIGHT_THEME: Theme = {
     },
     linkLabel: {
       maximumSection: 10,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontSize: 11,
       fontStyle: 'normal',
       fontVariant: 'normal',
@@ -327,7 +334,7 @@ export const LIGHT_THEME: Theme = {
       lineWidth: 1,
       maxCount: 5,
       maxTextLength: 100,
-      textColor: LIGHT_BASE_COLORS.darkestShade,
+      textColor: LIGHT_TEXT_COLORS.textParagraph,
       minimumStemLength: 0,
       stemAngle: TAU / 8,
       padding: 0,
@@ -338,28 +345,28 @@ export const LIGHT_THEME: Theme = {
       },
     },
     sectorLineWidth: 1.5,
-    sectorLineStroke: LIGHT_BASE_COLORS.emptyShade,
+    sectorLineStroke: LIGHT_BACKGROUND_COLORS.backgroundBasePlain,
   },
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: LIGHT_BASE_COLORS.darkShade,
+      stroke: LIGHT_BORDER_COLORS.borderBasePlain,
       strokeWidth: 2,
     },
     brushMask: {
       visible: true,
-      fill: '#73737380',
+      fill: LIGHT_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
     brushTool: {
       visible: false,
-      fill: 'gray',
+      fill: LIGHT_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
     xAxisLabel: {
       visible: true,
       fontSize: 12,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.Black.keyword,
+      textColor: LIGHT_TEXT_COLORS.textSubdued,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -369,9 +376,9 @@ export const LIGHT_THEME: Theme = {
       visible: true,
       width: 'auto',
       fontSize: 12,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.Black.keyword,
+      textColor: LIGHT_TEXT_COLORS.textSubdued,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -379,7 +386,7 @@ export const LIGHT_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: 'gray',
+        color: LIGHT_BORDER_COLORS.borderBaseSubdued,
       },
     },
     cell: {
@@ -399,21 +406,21 @@ export const LIGHT_THEME: Theme = {
         useGlobalMinFontSize: true,
       },
       border: {
-        strokeWidth: 1,
-        stroke: 'gray',
+        strokeWidth: 0,
+        stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
       },
     },
   },
   metric: {
-    textLightColor: '#E0E5EE', // LIGHT_BASE_COLORS.title,
-    textDarkColor: LIGHT_BASE_COLORS.darkestShade,
+    textLightColor: DARK_TEXT_COLORS.textHeading,
+    textDarkColor: LIGHT_TEXT_COLORS.textHeading,
     valueFontSize: 'default',
     minValueFontSize: 12,
     titlesTextAlign: 'left',
     valuesTextAlign: 'right',
     iconAlign: 'right',
-    border: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
-    barBackground: '#EDF0F5', // LIGHT_BASE_COLORS.lightShade,
+    border: LIGHT_BORDER_COLORS.borderBaseSubdued,
+    barBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseDisabled,
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
