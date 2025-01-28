@@ -1,3 +1,21 @@
+# [69.0.0](https://github.com/elastic/elastic-charts/compare/v68.1.0...v69.0.0) (2025-01-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @elastic/eui to v99 ([#2567](https://github.com/elastic/elastic-charts/issues/2567)) ([f397987](https://github.com/elastic/elastic-charts/commit/f3979877ae3ec86a36ab494c7601fcc559a000a0))
+* **style:** align xy axis style to borealis ([#2584](https://github.com/elastic/elastic-charts/issues/2584)) ([9486374](https://github.com/elastic/elastic-charts/commit/9486374376c676550d185be008cecb9804a60bb9))
+
+
+### Styles
+
+* **theme:** cleanup remaining theme changes ([#2602](https://github.com/elastic/elastic-charts/issues/2602)) ([beb4cf1](https://github.com/elastic/elastic-charts/commit/beb4cf108abbd6451bd252b5a33d87cae1d6aaef)), closes [#2601](https://github.com/elastic/elastic-charts/issues/2601)
+
+
+### BREAKING CHANGES
+
+* **theme:** the light and dark themes follow the EUI Borealis theme.
+
 # [68.1.0](https://github.com/elastic/elastic-charts/compare/v68.0.4...v68.1.0) (2025-01-13)
 
 
