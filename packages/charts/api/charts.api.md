@@ -1260,6 +1260,8 @@ export type FlameGlobalControl = () => void;
 // @alpha (undocumented)
 export interface FlamegraphStyle {
     // (undocumented)
+    minimapFocusBorder: Color;
+    // (undocumented)
     navigation: {
         textColor: Color;
         buttonTextColor: Color;

@@ -71,7 +71,7 @@ export const drawFrame =
 
     const fullFocus: [number, number, number, number] = [0, 1, 0, 1];
 
-    const { scrollbarThumb, scrollbarTrack } = theme;
+    const { scrollbarThumb, scrollbarTrack, minimapFocusBorder } = theme;
 
     const drawFocusLayer = (pickLayer: boolean) =>
       drawWebgl(
@@ -297,7 +297,7 @@ export const drawFrame =
       dpr,
       currentFocus,
       '',
-      'magenta',
+      minimapFocusBorder,
       MINIMAP_FOCUS_BOX_LINE_WIDTH,
     );
 
