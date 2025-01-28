@@ -29,6 +29,7 @@ import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { ChartElementSizes, computeChartElementSizesSelector } from '../../state/selectors/compute_chart_element_sizes';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
 import { getHighlightedLegendBandsSelector } from '../../state/selectors/get_highlighted_legend_bands';
@@ -45,6 +46,7 @@ export interface ReactiveChartStateProps {
   background: Color;
   elementSizes: ChartElementSizes;
   debug: boolean;
+  chartDimensions: Dimensions;
 }
 
 interface ReactiveChartDispatchProps {
@@ -151,12 +153,7 @@ const mapDispatchToProps = (dispatch: Dispatch): ReactiveChartDispatchProps =>
 const DEFAULT_PROPS: ReactiveChartStateProps = {
   initialized: false,
   geometries: nullShapeViewModel(),
-  chartContainerDimensions: {
-    width: 0,
-    height: 0,
-    left: 0,
-    top: 0,
-  },
+  chartContainerDimensions: { width: 0, height: 0, left: 0, top: 0 },
   theme: LIGHT_THEME,
   highlightedLegendBands: [],
   a11ySettings: DEFAULT_A11Y_SETTINGS,
@@ -168,6 +165,7 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
     xLabelRotation: 0,
   },
   debug: false,
+  chartDimensions: { top: 0, left: 0, width: 0, height: 0 },
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
@@ -184,6 +182,7 @@ const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
     background: getChartThemeSelector(state).background.color,
     elementSizes: computeChartElementSizesSelector(state),
     debug: getSettingsSpecSelector(state).debug,
+    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
   };
 };
 

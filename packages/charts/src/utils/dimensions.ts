@@ -74,3 +74,15 @@ export const horizontalPad = (padding: number | Padding, minPadding = 0) =>
 /** @internal */
 export const pad = (padding: number | Padding, direction: keyof Padding, minPadding = 0) =>
   Math.max(minPadding, typeof padding === 'number' ? padding : padding[direction]);
+
+/** @internal **/
+export interface ChartDimensions {
+  /**
+   * Dimensions relative to canvas element
+   */
+  chartDimensions: Dimensions;
+  /**
+   * Margin to account for ending text overflow
+   */
+  leftMargin: number;
+}

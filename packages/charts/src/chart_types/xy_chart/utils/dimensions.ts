@@ -8,25 +8,11 @@
 
 import { AxisSpec } from './specs';
 import { SmallMultiplesSpec } from '../../../specs';
-import { Dimensions } from '../../../utils/dimensions';
+import { ChartDimensions, Dimensions } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Theme, AxisStyle } from '../../../utils/themes/theme';
 import { getAxesDimensions } from '../axes/axes_sizes';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
-
-/**
- * @internal
- */
-export interface ChartDimensions {
-  /**
-   * Dimensions relative to canvas element
-   */
-  chartDimensions: Dimensions;
-  /**
-   * Margin to account for ending text overflow
-   */
-  leftMargin: number;
-} /**/
 
 /**
  * Compute the chart dimensions. It's computed removing from the parent dimensions

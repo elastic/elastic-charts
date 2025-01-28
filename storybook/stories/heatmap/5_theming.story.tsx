@@ -14,6 +14,7 @@ import {
   Chart,
   Heatmap,
   HeatmapStyle,
+  Margins,
   niceTimeFormatter,
   RecursivePartial,
   ScaleType,
@@ -27,7 +28,9 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const debug = boolean('Debug', false);
   const debugState = boolean('Enable debug state', true);
+
   const axes: RecursivePartial<AxisStyle> = {
     axisTitle: {
       fontSize: number('axisTitle fontSize', 12, { range: true, min: 5, max: 20 }, 'Axis Title'),
@@ -97,6 +100,20 @@ export const Example: ChartsStory = (_, { title, description }) => {
     },
   };
 
+  const chartMargins: Margins = {
+    left: number('chart margin left', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    right: number('chart margin right', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    top: number('chart margin top', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    bottom: number('chart margin bottom', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+  };
+
+  const chartPaddings: Margins = {
+    left: number('chart padding left', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    right: number('chart padding right', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    top: number('chart padding top', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+    bottom: number('chart padding bottom', 0, { range: true, min: 0, max: 50 }, 'Chart Margins and Paddings'),
+  };
+
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -107,8 +124,9 @@ export const Example: ChartsStory = (_, { title, description }) => {
         brushAxis="both"
         xDomain={{ min: 1572868800000, max: 1572912000000, minInterval: 1800000 }}
         debugState={debugState}
-        theme={{ axes, heatmap }}
+        theme={{ axes, heatmap, chartMargins, chartPaddings }}
         baseTheme={useBaseTheme()}
+        debug={debug}
       />
       <Heatmap
         id="heatmap1"

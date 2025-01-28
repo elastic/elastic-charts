@@ -40,7 +40,7 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
     container,
     legendSize,
     { yValues, xValues },
-    { heatmap, axes: { axisTitle: axisTitleStyle, axisPanelTitle: axisPanelTitleStyle } },
+    { heatmap, axes: { axisTitle: axisTitleStyle, axisPanelTitle: axisPanelTitleStyle }, chartMargins, chartPaddings },
     { xAxisTitle, yAxisTitle, xAxisLabelFormatter, yAxisLabelFormatter, xScale },
     smSpec,
     { smHDomain },
@@ -81,34 +81,22 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
         xAxisLabelFormatter,
         xValues,
         textMeasure,
-        panelWidth - legendWidth - heatmap.grid.stroke.width / 2, // we should consider also the grid width
+        panelWidth - legendWidth - heatmap.grid.stroke.width / 2 - chartPaddings.right - chartMargins.right,
         [
           yAxisTitleHorizontalSize + yAxisPanelTitleHorizontalSize + yAxis.width,
           0, // this can be used if we have a right Y axis
         ],
       );
 
-      // TODO simplify this width calculation
-      const chartWidth = getXAxisSize(
-        !isRasterTimeScale(xScale),
-        heatmap.xAxisLabel,
-        xAxisLabelFormatter,
-        xValues,
-        textMeasure,
-        container.width - legendWidth - heatmap.grid.stroke.width / 2, // we should consider also the grid width
-        [
-          yAxisTitleHorizontalSize + yAxisPanelTitleHorizontalSize + yAxis.width,
-          0, // this can be used if we have a right Y axis
-        ],
-      ).width;
-
       return {
         yAxis,
         xAxis,
         legendHeight,
+        legendWidth,
         xAxisTitleVerticalSize,
         xAxisPanelTitleVerticalSize,
-        chartWidth,
+        yAxisTitleHorizontalSize,
+        yAxisPanelTitleHorizontalSize,
       };
     });
   },
