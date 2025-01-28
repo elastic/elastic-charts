@@ -638,24 +638,6 @@ export class Chart extends React_2.Component<ChartProps, ChartState> {
     render(): React_2.JSX.Element;
 }
 
-// @public
-export interface ChartBaseColors {
-    // (undocumented)
-    darkestShade: string;
-    // (undocumented)
-    darkShade: string;
-    // (undocumented)
-    emptyShade: string;
-    // (undocumented)
-    lightestShade: string;
-    // (undocumented)
-    lightShade: string;
-    // (undocumented)
-    mediumShade: string;
-    // (undocumented)
-    title: string;
-}
-
 // @public (undocumented)
 export interface ChartProps {
     // (undocumented)
@@ -882,9 +864,6 @@ export interface CustomTooltipProps<D extends BaseDatum = Datum, SI extends Seri
 
 // @public (undocumented)
 export type CustomXDomain = (DomainRange & Pick<LogScaleOptions, 'logBase'>) | OrdinalDomain;
-
-// @public
-export const DARK_BASE_COLORS: ChartBaseColors;
 
 // @public (undocumented)
 export const DARK_THEME: Theme;
@@ -1924,9 +1903,6 @@ export const LegendValue: Readonly<{
 
 // @public (undocumented)
 export type LegendValue = $Values<typeof LegendValue>;
-
-// @public
-export const LIGHT_BASE_COLORS: ChartBaseColors;
 
 // @public (undocumented)
 export const LIGHT_THEME: Theme;

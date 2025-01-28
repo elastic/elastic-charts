@@ -7,7 +7,6 @@
  */
 
 import {
-  DARK_BASE_COLORS,
   DARK_TEXT_COLORS,
   DARK_BORDER_COLORS,
   DARK_BACKGROUND_COLORS,
@@ -242,8 +241,8 @@ export const DARK_THEME: Theme = {
     },
   },
   background: {
-    color: DARK_BASE_COLORS.emptyShade,
-    fallbackColor: DARK_BASE_COLORS.emptyShade,
+    color: DARK_BACKGROUND_COLORS.backgroundBasePlain,
+    fallbackColor: DARK_BACKGROUND_COLORS.backgroundBasePlain,
   },
   goal: {
     minFontSize: 8,
@@ -267,7 +266,7 @@ export const DARK_THEME: Theme = {
     majorLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: DARK_BASE_COLORS.title,
+      fill: '#DFE5EF',
     },
     minorLabel: {
       fontStyle: 'normal',
@@ -277,7 +276,7 @@ export const DARK_THEME: Theme = {
     majorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: DARK_BASE_COLORS.title,
+      fill: '#DFE5EF',
     },
     minorCenterLabel: {
       fontStyle: 'normal',
@@ -288,7 +287,7 @@ export const DARK_THEME: Theme = {
       stroke: '#D4DAE5',
     },
     tickLine: {
-      stroke: DARK_BASE_COLORS.mediumShade,
+      stroke: '#535966',
     },
     progressLine: {
       stroke: '#D4DAE5',
@@ -456,7 +455,7 @@ export const DARK_THEME: Theme = {
   },
   lineAnnotation: {
     line: {
-      stroke: DARK_BASE_COLORS.darkShade,
+      stroke: '#98A2B3',
       strokeWidth: 1,
       opacity: 1,
     },
@@ -464,7 +463,7 @@ export const DARK_THEME: Theme = {
   rectAnnotation: {
     strokeWidth: 0,
     opacity: 0.25,
-    fill: DARK_BASE_COLORS.darkShade,
-    stroke: DARK_BASE_COLORS.darkShade,
+    fill: '#98A2B3',
+    stroke: '#98A2B3',
   },
 };
