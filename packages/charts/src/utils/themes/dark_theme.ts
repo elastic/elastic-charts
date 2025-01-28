@@ -11,6 +11,7 @@ import {
   DARK_TEXT_COLORS,
   DARK_BORDER_COLORS,
   DARK_BACKGROUND_COLORS,
+  DARK_BACKGROUND_COLORS_CUSTOM,
   LIGHT_TEXT_COLORS,
 } from './base_colors';
 import { palettes } from './colors';
@@ -307,7 +308,7 @@ export const DARK_THEME: Theme = {
     horizontalTextEnforcer: 1,
     fillLabel: {
       textColor: ColorVariant.Adaptive,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
       fontVariant: 'normal',
       fontWeight: 400,
@@ -321,7 +322,7 @@ export const DARK_THEME: Theme = {
     },
     linkLabel: {
       maximumSection: 10,
-      fontFamily: 'Sans-Serif',
+      fontFamily: DEFAULT_FONT_FAMILY,
       fontSize: 11,
       fontStyle: 'normal',
       fontVariant: 'normal',
@@ -333,7 +334,7 @@ export const DARK_THEME: Theme = {
       lineWidth: 1,
       maxCount: 5,
       maxTextLength: 100,
-      textColor: DARK_BASE_COLORS.title,
+      textColor: DARK_TEXT_COLORS.textParagraph,
       minimumStemLength: 0,
       stemAngle: TAU / 8,
       padding: 0,
@@ -344,21 +345,21 @@ export const DARK_THEME: Theme = {
       },
     },
     sectorLineWidth: 1.5,
-    sectorLineStroke: DARK_BASE_COLORS.emptyShade,
+    sectorLineStroke: DARK_BACKGROUND_COLORS.backgroundBasePlain,
   },
   heatmap: {
     brushArea: {
       visible: true,
-      stroke: '#D3DAE6', // DARK_BASE_COLORS.darkestShade,
+      stroke: DARK_BORDER_COLORS.borderBasePlain,
       strokeWidth: 2,
     },
     brushMask: {
       visible: true,
-      fill: '#8c8c8c80',
+      fill: DARK_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
     brushTool: {
       visible: false,
-      fill: 'snow',
+      fill: DARK_BACKGROUND_COLORS_CUSTOM.backgroundBasePlainAlpha70,
     },
 
     xAxisLabel: {
@@ -366,7 +367,7 @@ export const DARK_THEME: Theme = {
       fontSize: 12,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.White.keyword,
+      textColor: DARK_TEXT_COLORS.textSubdued,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -378,7 +379,7 @@ export const DARK_THEME: Theme = {
       fontSize: 12,
       fontFamily: DEFAULT_FONT_FAMILY,
       fontStyle: 'normal',
-      textColor: Colors.White.keyword,
+      textColor: DARK_TEXT_COLORS.textSubdued,
       fontVariant: 'normal',
       fontWeight: 'normal',
       padding: { top: 5, bottom: 5, left: 5, right: 5 },
@@ -386,7 +387,7 @@ export const DARK_THEME: Theme = {
     grid: {
       stroke: {
         width: 1,
-        color: 'snow',
+        color: DARK_BORDER_COLORS.borderBaseSubdued,
       },
     },
     cell: {
@@ -406,8 +407,8 @@ export const DARK_THEME: Theme = {
         useGlobalMinFontSize: true,
       },
       border: {
-        strokeWidth: 1,
-        stroke: 'snow',
+        strokeWidth: 0,
+        stroke: DARK_BORDER_COLORS.borderBaseSubdued,
       },
     },
   },
@@ -434,14 +435,15 @@ export const DARK_THEME: Theme = {
   // TODO map colors to base color mappings
   flamegraph: {
     navigation: {
-      textColor: DARK_BASE_COLORS.title,
-      buttonTextColor: '#36A2EF',
-      buttonDisabledTextColor: '#515761',
-      buttonBackgroundColor: '#36A2EF33',
-      buttonDisabledBackgroundColor: '#34374126',
+      textColor: DARK_TEXT_COLORS.textHeading,
+      buttonTextColor: DARK_TEXT_COLORS.textInverse,
+      buttonDisabledTextColor: DARK_TEXT_COLORS.textDisabled,
+      buttonBackgroundColor: DARK_BACKGROUND_COLORS.backgroundFilledPrimary,
+      buttonDisabledBackgroundColor: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
     },
-    scrollbarThumb: DARK_BASE_COLORS.title,
-    scrollbarTrack: DARK_BASE_COLORS.lightShade,
+    scrollbarThumb: DARK_BACKGROUND_COLORS.backgroundFilledText,
+    scrollbarTrack: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
+    minimapFocusBorder: DARK_BACKGROUND_COLORS.backgroundFilledAccent,
   },
   highlighter: {
     point: {
