@@ -351,6 +351,7 @@ export interface FlamegraphStyle {
   };
   scrollbarTrack: Color;
   scrollbarThumb: Color;
+  minimapFocusBorder: Color;
 }
 
 /** @public */

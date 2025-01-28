@@ -435,14 +435,15 @@ export const DARK_THEME: Theme = {
   // TODO map colors to base color mappings
   flamegraph: {
     navigation: {
-      textColor: DARK_BASE_COLORS.title,
-      buttonTextColor: '#36A2EF',
-      buttonDisabledTextColor: '#515761',
-      buttonBackgroundColor: '#36A2EF33',
-      buttonDisabledBackgroundColor: '#34374126',
+      textColor: DARK_TEXT_COLORS.textHeading,
+      buttonTextColor: DARK_TEXT_COLORS.textInverse,
+      buttonDisabledTextColor: DARK_TEXT_COLORS.textDisabled,
+      buttonBackgroundColor: DARK_BACKGROUND_COLORS.backgroundFilledPrimary,
+      buttonDisabledBackgroundColor: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
     },
-    scrollbarThumb: DARK_BASE_COLORS.title,
-    scrollbarTrack: DARK_BASE_COLORS.lightShade,
+    scrollbarThumb: DARK_BACKGROUND_COLORS.backgroundFilledText,
+    scrollbarTrack: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,
+    minimapFocusBorder: DARK_BACKGROUND_COLORS.backgroundFilledAccent,
   },
   highlighter: {
     point: {
