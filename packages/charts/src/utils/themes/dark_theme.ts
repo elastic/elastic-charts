@@ -242,8 +242,8 @@ export const DARK_THEME: Theme = {
     },
   },
   background: {
-    color: DARK_BASE_COLORS.emptyShade,
-    fallbackColor: DARK_BASE_COLORS.emptyShade,
+    color: DARK_BACKGROUND_COLORS.backgroundBasePlain,
+    fallbackColor: DARK_BACKGROUND_COLORS.backgroundBasePlain,
   },
   goal: {
     minFontSize: 8,
