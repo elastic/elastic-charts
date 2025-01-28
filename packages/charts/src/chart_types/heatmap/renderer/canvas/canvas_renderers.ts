@@ -7,14 +7,12 @@
  */
 
 import { ReactiveChartStateProps } from './connected_component';
-import { renderDebugMargins, renderDebugPaddings } from './debug';
+import { renderHeatmapDebugElements } from './debug';
 import { getColorBandStyle, getGeometryStateStyle } from './utils';
-import { Colors } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
 import { renderRect } from '../../../../renderers/canvas/primitives/rect';
 import { renderText, TextFont, wrapLines } from '../../../../renderers/canvas/primitives/text';
-import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
 
@@ -23,12 +21,12 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
   const { theme } = props.geometries;
   const { heatmapViewModels } = props.geometries;
   const {
-    theme: { sharedStyle: sharedGeometryStyle, chartPaddings, chartMargins },
+    theme: { sharedStyle: sharedGeometryStyle, chartPaddings: paddings, chartMargins: margins },
     background,
     elementSizes,
     highlightedLegendBands,
-    chartContainerDimensions,
-    chartDimensions,
+    chartContainerDimensions: container,
+    chartDimensions: chart,
     debug,
   } = props;
   if (heatmapViewModels.length === 0) return;
@@ -195,22 +193,7 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
             });
           }),
 
-      () => debug && renderDebugMargins(ctx, chartContainerDimensions, chartMargins),
-      () => debug && renderDebugPaddings(ctx, chartContainerDimensions, chartDimensions, chartMargins, chartPaddings),
-      () =>
-        debug &&
-        renderDebugRect(
-          ctx,
-          {
-            x: chartDimensions.left,
-            y: chartDimensions.top,
-            width: chartDimensions.width,
-            height: chartDimensions.height,
-          },
-          0,
-          { color: Colors.Transparent.rgba },
-          { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
-        ),
+      () => debug && renderHeatmapDebugElements({ ctx, container, chart, margins, paddings }),
     ]);
   });
 }

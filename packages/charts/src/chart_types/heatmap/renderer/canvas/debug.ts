@@ -11,8 +11,7 @@ import { Colors } from '../../../../common/colors';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
 
-/** @internal */
-export const renderDebugMargins = (ctx: CanvasRenderingContext2D, container: Dimensions, margins: PerSideDistance) => {
+const renderDebugMargins = (ctx: CanvasRenderingContext2D, container: Dimensions, margins: PerSideDistance) => {
   const greenSemiTransparent = [
     ...(Colors.Green.rgba.slice(0, 3) as [number, number, number]),
     0.5,
@@ -68,8 +67,7 @@ export const renderDebugMargins = (ctx: CanvasRenderingContext2D, container: Dim
   );
 };
 
-/** @internal */
-export const renderDebugPaddings = (
+const renderDebugPaddings = (
   ctx: CanvasRenderingContext2D,
   conatiner: Dimensions,
   chart: Dimensions,
@@ -128,5 +126,30 @@ export const renderDebugPaddings = (
     },
     0,
     { color: lightBlueSemiTransparent },
+  );
+};
+
+/** @internal */
+export const renderHeatmapDebugElements = ({
+  ctx,
+  container,
+  chart,
+  margins,
+  paddings,
+}: {
+  ctx: CanvasRenderingContext2D;
+  container: Dimensions;
+  chart: Dimensions;
+  margins: PerSideDistance;
+  paddings: PerSideDistance;
+}) => {
+  renderDebugMargins(ctx, container, margins);
+  renderDebugPaddings(ctx, container, chart, margins, paddings);
+  renderDebugRect(
+    ctx,
+    { x: chart.left, y: chart.top, width: chart.width, height: chart.height },
+    0,
+    { color: Colors.Transparent.rgba },
+    { color: Colors.Red.rgba, width: 4, dash: [4, 4] },
   );
 };
