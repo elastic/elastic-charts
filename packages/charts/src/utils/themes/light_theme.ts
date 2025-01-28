@@ -10,7 +10,6 @@ import {
   DARK_TEXT_COLORS,
   LIGHT_BACKGROUND_COLORS,
   LIGHT_BACKGROUND_COLORS_CUSTOM,
-  LIGHT_BASE_COLORS,
   LIGHT_BORDER_COLORS,
   LIGHT_TEXT_COLORS,
 } from './base_colors';
@@ -262,36 +261,36 @@ export const LIGHT_THEME: Theme = {
     tickLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
+      fill: '#646a77',
     },
     majorLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: LIGHT_BASE_COLORS.darkestShade,
+      fill: '#343741',
     },
     minorLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
+      fill: '#646a77',
     },
     majorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: LIGHT_BASE_COLORS.darkestShade,
+      fill: '#343741',
     },
     minorCenterLabel: {
       fontStyle: 'normal',
       fontFamily: DEFAULT_FONT_FAMILY,
-      fill: '#646a77', // LIGHT_BASE_COLORS.darkShade,
+      fill: '#646a77',
     },
     targetLine: {
-      stroke: LIGHT_BASE_COLORS.darkestShade,
+      stroke: '#343741',
     },
     tickLine: {
-      stroke: LIGHT_BASE_COLORS.mediumShade,
+      stroke: '#98A2B3',
     },
     progressLine: {
-      stroke: LIGHT_BASE_COLORS.darkestShade,
+      stroke: '#343741',
     },
   },
   partition: {
@@ -455,7 +454,7 @@ export const LIGHT_THEME: Theme = {
   },
   lineAnnotation: {
     line: {
-      stroke: LIGHT_BASE_COLORS.darkShade,
+      stroke: '#69707D',
       strokeWidth: 1,
       opacity: 1,
     },
@@ -463,7 +462,7 @@ export const LIGHT_THEME: Theme = {
   rectAnnotation: {
     strokeWidth: 0,
     opacity: 0.25,
-    fill: LIGHT_BASE_COLORS.darkShade,
-    stroke: LIGHT_BASE_COLORS.darkShade,
+    fill: '#69707D',
+    stroke: '#69707D',
   },
 };
