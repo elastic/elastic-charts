@@ -7,34 +7,12 @@
  */
 
 import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
-import { Fill, Stroke, Rect } from '../../../../../geoms/types';
+import { Rect } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
+import { renderRect } from '../../../../../renderers/canvas/primitives/rect';
+import { DEFAULT_DEBUG_FILL, DEFAULT_DEBUG_STROKE } from '../../../../../renderers/canvas/utils/debug';
 import { degToRad } from '../../../../../utils/common';
 import { Point } from '../../../../../utils/point';
-import { renderRect } from '../primitives/rect';
-
-const DEFAULT_DEBUG_FILL: Fill = {
-  color: [238, 130, 238, 0.2], // violet
-};
-const DEFAULT_DEBUG_STROKE: Stroke = {
-  color: [0, 0, 0, 0.2],
-  width: 1,
-};
-
-/** @internal */
-export function renderDebugRect(
-  ctx: CanvasRenderingContext2D,
-  rect: Rect,
-  rotation = 0,
-  fill = DEFAULT_DEBUG_FILL,
-  stroke = DEFAULT_DEBUG_STROKE,
-) {
-  withContext(ctx, () => {
-    ctx.translate(rect.x, rect.y);
-    ctx.rotate(degToRad(rotation));
-    renderRect(ctx, { ...rect, x: 0, y: 0 }, fill, stroke, true);
-  });
-}
 
 /** @internal */
 export function renderDebugRectCenterRotated(

@@ -7,10 +7,10 @@
  */
 
 import { getPanelClipping } from './panel_clipping';
-import { renderRect } from './primitives/rect';
 import { buildBarStyle } from './styles/bar';
 import { withPanelTransform } from './utils/panel_transform';
 import { LegendItem } from '../../../../common/legend';
+import { renderRect } from '../../../../renderers/canvas/primitives/rect';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { BarGeometry, PerPanel } from '../../../../utils/geometry';

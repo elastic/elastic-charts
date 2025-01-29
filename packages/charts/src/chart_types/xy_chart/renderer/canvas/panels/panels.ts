@@ -9,6 +9,8 @@
 import { renderTitle } from './title';
 import { Colors } from '../../../../../common/colors';
 import { withContext } from '../../../../../renderers/canvas';
+import { renderRect } from '../../../../../renderers/canvas/primitives/rect';
+import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
 import { PanelGeoms } from '../../../../../state/selectors/compute_panels';
 import { Position } from '../../../../../utils/common';
 import { AxisId } from '../../../../../utils/ids';
@@ -16,8 +18,6 @@ import { Point } from '../../../../../utils/point';
 import { getSpecsById } from '../../../state/utils/spec';
 import { AxisSpec } from '../../../utils/specs';
 import { AxesProps, AxisProps, renderAxis } from '../axes';
-import { renderRect } from '../primitives/rect';
-import { renderDebugRect } from '../utils/debug';
 
 /** @internal */
 export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: chartY }: Point, panels: PanelGeoms) {

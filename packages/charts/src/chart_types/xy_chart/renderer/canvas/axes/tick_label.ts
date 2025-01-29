@@ -7,9 +7,9 @@
  */
 
 import { AxisProps } from '.';
+import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { Position } from '../../../../../utils/common';
 import { AxisTick, getTickLabelPosition } from '../../../utils/axis_utils';
-import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
 
 const TICK_TO_LABEL_GAP = 2;
