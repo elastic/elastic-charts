@@ -7,11 +7,11 @@
  */
 
 import { AxisProps } from '.';
-import { colorToRgba, RgbaTuple } from '../../../../../common/color_library_wrappers';
+import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { AxisTick } from '../../../utils/axis_utils';
-import { HIDE_MINOR_TIME_GRID, HIERARCHICAL_GRID_WIDTH, OUTSIDE_RANGE_TOLERANCE } from '../../../utils/grid_lines';
+import { HIDE_MINOR_TIME_GRID, OUTSIDE_RANGE_TOLERANCE } from '../../../utils/grid_lines';
 import { renderMultiLine } from '../primitives/line';
 
 const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the bottom alignment; todo consider measuring
@@ -23,7 +23,7 @@ export function renderTick(
   {
     axisSpec: { position: axisPosition, timeAxisLayerCount },
     size: { width, height },
-    axisStyle: { tickLine, gridLine },
+    axisStyle: { tickLine },
     layerGirth,
   }: AxisProps,
 ) {
@@ -46,9 +46,5 @@ export function renderTick(
         y2: tickPosition,
         ...(axisPosition === Position.Left ? { x1: width, x2: width - tickSize } : { x1: 0, x2: tickSize }),
       };
-  const layered = typeof layer === 'number';
-  const multilayerLuma = gridLine.lumaSteps[detailedLayer] ?? NaN;
-  const strokeWidth = layered ? HIERARCHICAL_GRID_WIDTH : tickLine.strokeWidth;
-  const color: RgbaTuple = layered ? [multilayerLuma, multilayerLuma, multilayerLuma, 1] : colorToRgba(tickLine.stroke);
-  renderMultiLine(ctx, [xy], { color, width: strokeWidth });
+  renderMultiLine(ctx, [xy], { color: colorToRgba(tickLine.stroke), width: tickLine.strokeWidth });
 }
