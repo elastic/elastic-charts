@@ -47,10 +47,10 @@ export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
   const { ticks, axisStyle, axisSpec, secondary, layerGirth } = props;
   const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
 
-  renderAxisLine(ctx, props); // render the axis line
   if (!secondary && showTicks) {
     renderTicks(ctx, ticks, props);
   }
   if (!secondary && axisStyle.tickLabel.visible)
     ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props, layerGirth ?? 0));
+  renderAxisLine(ctx, props); // render the axis line
 }
