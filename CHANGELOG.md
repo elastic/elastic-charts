@@ -1,3 +1,10 @@
+## [69.0.1](https://github.com/elastic/elastic-charts/compare/v69.0.0...v69.0.1) (2025-01-29)
+
+
+### Bug Fixes
+
+* **themes:** reintroduce Amsterdam colors ([#2604](https://github.com/elastic/elastic-charts/issues/2604)) [69.0.x] ([#2605](https://github.com/elastic/elastic-charts/issues/2605)) ([1b057d7](https://github.com/elastic/elastic-charts/commit/1b057d75dbedc0a5e0faa25052a3b6cf1033a483))
+
 # [69.0.0](https://github.com/elastic/elastic-charts/compare/v68.1.0...v69.0.0) (2025-01-28)
 
 
