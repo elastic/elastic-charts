@@ -8,6 +8,7 @@
 
 import { AxisProps } from '.';
 import { colorToRgba } from '../../../../../common/color_library_wrappers';
+import { Line } from '../../../../../geoms/types';
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { AxisTick } from '../../../utils/axis_utils';
@@ -17,8 +18,30 @@ import { renderMultiLine } from '../primitives/line';
 const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the bottom alignment; todo consider measuring
 
 /** @internal */
-export function renderTick(
-  ctx: CanvasRenderingContext2D,
+export function renderTick(ctx: CanvasRenderingContext2D, tick: AxisTick, axisProps: AxisProps) {
+  const line = getTickLineCoordinages(tick, axisProps);
+  renderMultiLine(ctx, line ? [line] : [], {
+    color: colorToRgba(axisProps.axisStyle.tickLine.stroke),
+    width: axisProps.axisStyle.tickLine.strokeWidth,
+  });
+}
+
+/** @internal */
+export function renderTicks(ctx: CanvasRenderingContext2D, ticks: AxisTick[], axisProps: AxisProps) {
+  const tickLines = ticks.reduce<Line[]>((acc, tick) => {
+    const coords = getTickLineCoordinages(tick, axisProps);
+    if (coords) {
+      acc.push(coords);
+    }
+    return acc;
+  }, []);
+  renderMultiLine(ctx, tickLines, {
+    color: colorToRgba(axisProps.axisStyle.tickLine.stroke),
+    width: axisProps.axisStyle.tickLine.strokeWidth,
+  });
+}
+
+function getTickLineCoordinages(
   { position, domainClampedPosition: tickPosition, layer, detailedLayer }: AxisTick,
   {
     axisSpec: { position: axisPosition, timeAxisLayerCount },
@@ -35,7 +58,7 @@ export function renderTick(
     (tickOnTheSide && (detailedLayer > 0 || !HIDE_MINOR_TIME_GRID)
       ? extensionLayer * layerGirth + (extensionLayer < 1 ? 0 : tickLine.padding - BASELINE_CORRECTION)
       : 0);
-  const xy = isHorizontalAxis(axisPosition)
+  return isHorizontalAxis(axisPosition)
     ? {
         x1: tickPosition,
         x2: tickPosition,
@@ -46,5 +69,4 @@ export function renderTick(
         y2: tickPosition,
         ...(axisPosition === Position.Left ? { x1: width, x2: width - tickSize } : { x1: 0, x2: tickSize }),
       };
-  renderMultiLine(ctx, [xy], { color: colorToRgba(tickLine.stroke), width: tickLine.strokeWidth });
 }

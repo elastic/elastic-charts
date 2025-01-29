@@ -97,6 +97,15 @@ function getGridLinesForAxis(
     return acc;
   }, new Map());
 
+  const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
+    gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
+  );
+  const stroke: Stroke = {
+    color: strokeColor,
+    width: gridLineStyles.strokeWidth,
+    dash: gridLineStyles.dash,
+  };
+
   return [...visibleTicksPerLayer]
     .sort(([k1], [k2]) => (k1 ?? 0) - (k2 ?? 0)) // increasing layer order
     .map(([, visibleTicksOfLayer]) => {
@@ -105,15 +114,7 @@ function getGridLinesForAxis(
           ? getGridLineForVerticalAxisAt(tick.position, panelSize)
           : getGridLineForHorizontalAxisAt(tick.position, panelSize),
       );
-      const strokeColor = overrideOpacity(colorToRgba(gridLineStyles.stroke), (strokeColorOpacity) =>
-        gridLineStyles.opacity !== undefined ? strokeColorOpacity * gridLineStyles.opacity : strokeColorOpacity,
-      );
 
-      const stroke: Stroke = {
-        color: strokeColor,
-        width: gridLineStyles.strokeWidth,
-        dash: gridLineStyles.dash,
-      };
       return { lines, stroke, axisId: axisSpec.id };
     });
 }

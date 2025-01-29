@@ -7,7 +7,7 @@
  */
 
 import { renderAxisLine } from './line';
-import { renderTick } from './tick';
+import { renderTicks } from './tick';
 import { renderTickLabel } from './tick_label';
 import { Dimensions, Size } from '../../../../../utils/dimensions';
 import { Point } from '../../../../../utils/point';
@@ -48,7 +48,9 @@ export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
   const showTicks = shouldShowTicks(axisStyle.tickLine, axisSpec.hide);
 
   renderAxisLine(ctx, props); // render the axis line
-  if (!secondary && showTicks) ticks.forEach((tick) => renderTick(ctx, tick, props));
+  if (!secondary && showTicks) {
+    renderTicks(ctx, ticks, props);
+  }
   if (!secondary && axisStyle.tickLabel.visible)
     ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props, layerGirth ?? 0));
 }
