@@ -26,6 +26,7 @@ export interface DebugStateAxis {
     y: number;
     x: number;
   }[];
+  rotation?: number;
 }
 
 /** @public */

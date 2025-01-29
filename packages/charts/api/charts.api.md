@@ -993,6 +993,8 @@ export interface DebugStateAxis {
     // (undocumented)
     position: Position;
     // (undocumented)
+    rotation?: number;
+    // (undocumented)
     title?: string;
     // (undocumented)
     values: any[];

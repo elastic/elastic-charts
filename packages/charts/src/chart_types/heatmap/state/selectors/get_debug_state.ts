@@ -57,6 +57,7 @@ export const getDebugStateSelector = createCustomCachedSelector(
             // vertical lines
             gridlines: (heatmapViewModel?.gridLines?.x ?? []).map((line) => ({ x: line.x1, y: line.y2 })),
             ...(xAxisTitle ? { title: xAxisTitle } : {}),
+            rotation: heatmap.xAxisLabel.rotation,
           },
         ],
         y: [
