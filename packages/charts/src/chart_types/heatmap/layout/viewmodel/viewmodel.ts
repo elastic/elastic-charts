@@ -8,7 +8,6 @@
 
 import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
 
-import { BaseDatum } from './../../../xy_chart/utils/specs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { ColorScale } from '../../../../common/colors';
 import { fillTextColor } from '../../../../common/fill_text_color';
@@ -25,15 +24,14 @@ import {
 } from '../../../../common/panel_utils';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
-import { LinearScale, OrdinalScale, RasterTimeScale } from '../../../../specs';
+import { LinearScale, OrdinalScale, RasterTimeScale, BaseDatum } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, Datum, isFiniteNumber, isNil } from '../../../../utils/common';
-import { innerPad, pad } from '../../../../utils/dimensions';
+import { innerPad, pad, ChartDimensions } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { ChartDimensions } from '../../../xy_chart/utils/dimensions';
 import { HeatmapSpec } from '../../specs';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import { HeatmapTable } from '../../state/selectors/get_heatmap_table';
@@ -79,7 +77,7 @@ export function clampWithOffset(value: number, lowerBound: number, upperBound: n
 export function shapeViewModel<D extends BaseDatum = Datum>(
   textMeasure: TextMeasure,
   spec: HeatmapSpec<D>,
-  { heatmap: heatmapTheme, axes: { axisTitle, axisPanelTitle }, background }: Theme,
+  { heatmap: heatmapTheme, axes: { axisTitle, axisPanelTitle }, background, chartMargins, chartPaddings }: Theme,
   { chartDimensions }: ChartDimensions,
   elementSizes: ChartElementSizes,
   heatmapTable: HeatmapTable,
@@ -121,7 +119,14 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   const cellHeight = yScale.bandwidth();
 
   // compute the position of each column label
-  const textXValues = getXTicks(spec, heatmapTheme.xAxisLabel, xScale, heatmapTable.xValues);
+  const textXValues = getXTicks(
+    spec,
+    heatmapTheme.xAxisLabel,
+    xScale,
+    heatmapTable.xValues,
+    chartMargins,
+    chartPaddings,
+  );
 
   const { padding } = heatmapTheme.yAxisLabel;
 
@@ -130,7 +135,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
     return {
       ...d,
       // position of the Y labels
-      x: -pad(padding, 'right'),
+      x: -pad(padding, 'right') - chartPaddings.left,
       y: cellHeight / 2 + (yScale(d.value) || 0),
       align: 'right',
     };
@@ -224,7 +229,11 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
   };
 
   const getPanelPointCoordinates = (x: Pixels, y: Pixels) => {
-    const { category: v, panelValue: panelY, panelOffset: panelOffsetY } = getPanelPointCoordinate(y, 'vertical');
+    const {
+      category: v,
+      panelValue: panelY,
+      panelOffset: panelOffsetY,
+    } = getPanelPointCoordinate(y - chartDimensions.top, 'vertical');
     const {
       category: h,
       panelValue: panelX,
@@ -240,6 +249,13 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       panelOffsetX,
     };
   };
+
+  // TODO: Make this method more precise to avoid Y title
+  const isPointWithinYLabelArea = (x: Pixels, y: Pixels) =>
+    x > chartMargins.left &&
+    x < chartDimensions.left - chartPaddings.left &&
+    y > chartDimensions.top &&
+    y < chartDimensions.top + chartDimensions.height;
 
   /**
    * Returns the corresponding x & y values of grid cell from the x & y positions
@@ -265,14 +281,9 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
    * @param y
    */
   const pickQuads = (x: Pixels, y: Pixels): Array<Cell> | TextBox => {
-    if (
-      x > 0 &&
-      x < chartDimensions.left &&
-      y > chartDimensions.top &&
-      y < chartDimensions.top + chartDimensions.height
-    ) {
+    if (isPointWithinYLabelArea(x, y)) {
       // look up for a Y axis elements
-      const { y: yLabelKey } = getPanelPointCoordinates(x - chartDimensions.left, y);
+      const { y: yLabelKey } = getPanelPointCoordinates(x, y);
       const yLabelValue = textYValues.find((v) => v.value === yLabelKey);
       if (yLabelValue) {
         return yLabelValue;
@@ -313,7 +324,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       'horizontal',
     );
     const { category: smVerticalAccessorValue, panelOffset: verticalPanelOffset } = getPanelPointCoordinate(
-      start.y,
+      start.y - chartDimensions.top,
       'vertical',
     );
 
@@ -405,7 +416,7 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
       );
     return {
       x: xStart,
-      y: yStart,
+      y: yStart + chartMargins.top + chartPaddings.top + gridStrokeWidth / 2,
       width,
       height: totalHeight,
     };
@@ -504,7 +515,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
                 elementSizes.xAxis.height +
                 axisPanelTitleHeight +
                 innerPad(axisTitle.padding) / 2 +
-                axisTitle.fontSize / 2,
+                axisTitle.fontSize / 2 -
+                chartPaddings.top +
+                chartPaddings.bottom -
+                chartMargins.top,
             },
             ...axisTitleFont,
             text: spec.xAxisTitle,
@@ -515,8 +529,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         if (spec.yAxisTitle) {
           titles.push({
             origin: {
-              x: -chartDimensions.left + axisTitle.fontSize / 2,
-              y: chartDimensions.top + chartDimensions.height / 2,
+              x: -chartDimensions.left + axisTitle.fontSize / 2 + chartMargins.left,
+              y: chartDimensions.top + chartDimensions.height / 2 - chartMargins.top - chartPaddings.top,
             },
             ...axisTitleFont,
             text: spec.yAxisTitle,
@@ -534,7 +548,10 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
               chartDimensions.height +
               elementSizes.xAxis.height +
               innerPad(axisPanelTitle.padding) +
-              axisPanelTitle.fontSize / 2,
+              axisPanelTitle.fontSize / 2 -
+              chartPaddings.top +
+              chartPaddings.bottom -
+              chartMargins.top,
           },
           ...axisPanelTitleFont,
           text: getPanelTitle(false, v, h, groupBySpec),
@@ -546,8 +563,8 @@ export function shapeViewModel<D extends BaseDatum = Datum>(
         const axisTitleWidth = axisTitle.visible ? axisTitle.fontSize + innerPad(axisTitle.padding) : 0;
         titles.push({
           origin: {
-            x: -chartDimensions.left + axisTitleWidth + axisPanelTitle.fontSize / 2,
-            y: chartDimensions.top + panelSize.height / 2,
+            x: -chartDimensions.left + axisTitleWidth + axisPanelTitle.fontSize / 2 + chartMargins.left,
+            y: chartDimensions.top + panelSize.height / 2 - chartMargins.top - chartPaddings.top,
           },
           ...axisPanelTitleFont,
           text: getPanelTitle(true, v, h, groupBySpec),
@@ -609,6 +626,8 @@ function getXTicks(
   style: HeatmapStyle['xAxisLabel'],
   scale: ScaleBand<NonNullable<PrimitiveValue>>,
   values: NonNullable<PrimitiveValue>[],
+  chartMargins: Theme['chartMargins'],
+  chartPaddings: Theme['chartPaddings'],
 ): Array<TextBox> {
   const isTimeScale = isRasterTimeScale(spec.xScale);
   const isRotated = style.rotation !== 0;
@@ -618,7 +637,7 @@ function getXTicks(
       value,
       isValue: false,
       ...style,
-      y: style.fontSize / 2 + pad(style.padding, 'top'),
+      y: style.fontSize / 2 + pad(style.padding, 'top') - chartMargins.top - chartPaddings.top + chartPaddings.bottom,
       x: (scale(value) ?? 0) + (isTimeScale ? 0 : scale.bandwidth() / 2),
       align: isRotated ? 'right' : isTimeScale ? 'left' : 'center',
     };

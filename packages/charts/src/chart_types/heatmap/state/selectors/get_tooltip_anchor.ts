@@ -23,7 +23,7 @@ export const getTooltipAnchorSelector = createCustomCachedSelector(
     computeSmallMultipleScalesSelector,
     getChartThemeSelector,
   ],
-  (shapes, { chartDimensions }, position, smScales, { heatmap }): AnchorPosition => {
+  (shapes, { chartDimensions }, position, smScales): AnchorPosition => {
     const shape = Array.isArray(shapes) && shapes[0];
     if (shape) {
       const {
@@ -43,7 +43,7 @@ export const getTooltipAnchorSelector = createCustomCachedSelector(
       return {
         x: x + chartDimensions.left + panelXOffset,
         width,
-        y: y - chartDimensions.top + panelYOffset + heatmap.grid.stroke.width,
+        y: y + chartDimensions.top + panelYOffset,
         height,
       };
     }

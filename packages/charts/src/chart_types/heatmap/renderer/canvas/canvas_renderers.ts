@@ -7,23 +7,27 @@
  */
 
 import { ReactiveChartStateProps } from './connected_component';
+import { renderHeatmapDebugElements } from './debug';
 import { getColorBandStyle, getGeometryStateStyle } from './utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
+import { renderRect } from '../../../../renderers/canvas/primitives/rect';
+import { renderText, TextFont, wrapLines } from '../../../../renderers/canvas/primitives/text';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
-import { renderMultiLine } from '../../../xy_chart/renderer/canvas/primitives/line';
-import { renderRect } from '../../../xy_chart/renderer/canvas/primitives/rect';
-import { renderText, TextFont, wrapLines } from '../../../xy_chart/renderer/canvas/primitives/text';
 
 /** @internal */
 export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, props: ReactiveChartStateProps) {
   const { theme } = props.geometries;
   const { heatmapViewModels } = props.geometries;
   const {
-    theme: { sharedStyle: sharedGeometryStyle },
+    theme: { sharedStyle: sharedGeometryStyle, chartPaddings: paddings, chartMargins: margins },
     background,
     elementSizes,
     highlightedLegendBands,
+    chartContainerDimensions: container,
+    chartDimensions: chart,
+    debug,
   } = props;
   if (heatmapViewModels.length === 0) return;
 
@@ -188,6 +192,8 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
                 });
             });
           }),
+
+      () => debug && renderHeatmapDebugElements({ ctx, container, chart, margins, paddings }),
     ]);
   });
 }

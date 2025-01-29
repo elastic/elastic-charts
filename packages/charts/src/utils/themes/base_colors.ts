@@ -8,37 +8,10 @@
 
 import chroma from 'chroma-js';
 
-import { ChartBaseColors } from './theme';
-
 /**
- * Base light theme colors designed to match eui, see https://eui.elastic.co/#/theming/colors/values#shades
- * @public
+ * Primitive colors from EUI theme Borealis https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_primitive_colors.ts
+ * @internal
  */
-export const LIGHT_BASE_COLORS: ChartBaseColors = {
-  emptyShade: '#FFF',
-  lightestShade: '#F1F4FA',
-  lightShade: '#D3DAE6',
-  mediumShade: '#98A2B3',
-  darkShade: '#69707D',
-  darkestShade: '#343741',
-  title: '#1A1C21',
-};
-
-/**
- * Base dark theme colors designed to match eui, see https://eui.elastic.co/#/theming/colors/values#shades
- * @public
- */
-export const DARK_BASE_COLORS: ChartBaseColors = {
-  emptyShade: '#1D1E24',
-  lightestShade: '#25262E',
-  lightShade: '#343741',
-  mediumShade: '#535966',
-  darkShade: '#98A2B3',
-  darkestShade: '#D4DAE5',
-  title: '#DFE5EF',
-};
-
-/** @internal */
 export const PRIMITIVE_COLORS = {
   white: '#FFFFFF',
   blueBlack: '#07101F',
@@ -69,7 +42,10 @@ export const PRIMITIVE_COLORS = {
   pink90: '#BC1E70',
 };
 
-/** @internal */
+/**
+ * Semantic colors from EUI theme Borealis https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_semantic_colors.ts
+ * @internal
+ */
 export const SEMANTIC_COLORS = {
   plainLight: PRIMITIVE_COLORS.white,
   plainDark: PRIMITIVE_COLORS.blueBlack,
@@ -103,7 +79,11 @@ const primary100RGB = chroma(SEMANTIC_COLORS.primary100).rgb().join(' ');
 const plainLightRGB = chroma(SEMANTIC_COLORS.plainLight).rgb().join(' ');
 const shade145RGB = chroma(SEMANTIC_COLORS.shade145).rgb().join(' ');
 
-/** @internal */
+/**
+ * Semantic colors from EUI theme Borealis https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_semantic_colors.ts
+ *
+ * @internal
+ */
 export const SEMANTIC_ALPHA_COLORS = {
   primary100Alpha4: `rgba(${primary100RGB} / 0.04)`,
   plainLightAlpha8: `rgba(${plainLightRGB} / 0.08)`,
@@ -111,21 +91,30 @@ export const SEMANTIC_ALPHA_COLORS = {
   shade145Alpha70: `rgba(${shade145RGB} / 0.7)`,
 };
 
-/** @internal */
+/**
+ * Colors from https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_colors_dark.ts
+ * @internal
+ */
 export const DARK_BORDER_COLORS = {
   borderBaseSubdued: SEMANTIC_COLORS.shade120,
   borderBasePlain: SEMANTIC_COLORS.shade100,
   borderBasePrimary: SEMANTIC_COLORS.primary120,
 };
 
-/** @internal */
+/**
+ * Colors from https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_colors_light.ts
+ * @internal
+ */
 export const LIGHT_BORDER_COLORS = {
   borderBaseSubdued: SEMANTIC_COLORS.shade20,
   borderBasePlain: SEMANTIC_COLORS.shade30,
   borderBasePrimary: SEMANTIC_COLORS.primary30,
 };
 
-/** @internal */
+/**
+ * Colors from https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_colors_dark.ts
+ * @internal
+ */
 export const DARK_TEXT_COLORS = {
   textParagraph: SEMANTIC_COLORS.shade30,
   textHeading: SEMANTIC_COLORS.shade20,
@@ -133,7 +122,11 @@ export const DARK_TEXT_COLORS = {
   textDisabled: SEMANTIC_COLORS.shade80,
   textInverse: SEMANTIC_COLORS.plainDark,
 };
-/** @internal */
+
+/**
+ * Colors from https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_colors_light.ts
+ * @internal
+ */
 export const LIGHT_TEXT_COLORS = {
   textParagraph: SEMANTIC_COLORS.shade130,
   textHeading: SEMANTIC_COLORS.shade140,
@@ -142,17 +135,10 @@ export const LIGHT_TEXT_COLORS = {
   textInverse: SEMANTIC_COLORS.plainLight,
 };
 
-/** @internal */
-export const LIGHT_BACKGROUND_COLORS = {
-  backgroundBasePlain: SEMANTIC_COLORS.plainLight,
-  backgroundBaseDisabled: SEMANTIC_COLORS.shade15,
-  backgroundBaseInteractiveHover: SEMANTIC_ALPHA_COLORS.primary100Alpha4,
-  backgroundFilledPrimary: SEMANTIC_COLORS.primary90,
-  backgroundFilledText: SEMANTIC_COLORS.shade60,
-  backgroundFilledAccent: SEMANTIC_COLORS.accent90,
-};
-
-/** @internal */
+/**
+ * Colors from https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_colors_dark.ts
+ * @internal
+ */
 export const DARK_BACKGROUND_COLORS = {
   backgroundBasePlain: SEMANTIC_COLORS.shade145,
   backgroundBaseDisabled: SEMANTIC_COLORS.shade130,
@@ -162,17 +148,39 @@ export const DARK_BACKGROUND_COLORS = {
   backgroundFilledAccent: SEMANTIC_COLORS.accent60,
 };
 
-/** @internal */
+/**
+ * Colors from https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_colors_light.ts
+ * @internal
+ */
+export const LIGHT_BACKGROUND_COLORS = {
+  backgroundBasePlain: SEMANTIC_COLORS.plainLight,
+  backgroundBaseDisabled: SEMANTIC_COLORS.shade15,
+  backgroundBaseInteractiveHover: SEMANTIC_ALPHA_COLORS.primary100Alpha4,
+  backgroundFilledPrimary: SEMANTIC_COLORS.primary90,
+  backgroundFilledText: SEMANTIC_COLORS.shade60,
+  backgroundFilledAccent: SEMANTIC_COLORS.accent90,
+};
+
+/**
+ * Custom light colors specific for charts
+ * @internal
+ */
 export const LIGHT_BACKGROUND_COLORS_CUSTOM = {
   backgroundBasePlainAlpha70: SEMANTIC_ALPHA_COLORS.plainLightAlpha70,
 };
 
-/** @internal */
+/**
+ * Custom dark colors specific for charts
+ * @internal
+ */
 export const DARK_BACKGROUND_COLORS_CUSTOM = {
   backgroundBasePlainAlpha70: SEMANTIC_ALPHA_COLORS.shade145Alpha70,
 };
 
-/** @internal */
+/**
+ * Severity colors from EUI https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_colors_vis.ts
+ * @internal
+ */
 export const SEVERITY_COLORS = {
   euiColorSeverity5: SEMANTIC_COLORS.shade30,
   euiColorSeverity7: SEMANTIC_COLORS.warning30,
