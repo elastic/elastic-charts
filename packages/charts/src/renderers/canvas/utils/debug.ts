@@ -7,6 +7,7 @@
  */
 
 import { withContext } from '../';
+import { overrideOpacity } from '../../../common/color_library_wrappers';
 import { Colors } from '../../../common/colors';
 import { Fill, Stroke, Rect } from '../../../geoms/types';
 import { renderRect } from '../../../renderers/canvas/primitives/rect';
@@ -14,7 +15,7 @@ import { degToRad } from '../../../utils/common';
 
 /** @internal */
 export const DEFAULT_DEBUG_FILL: Fill = {
-  color: Colors.Violet.rgba,
+  color: overrideOpacity(Colors.Violet.rgba, 0.2),
 };
 
 /** @internal */

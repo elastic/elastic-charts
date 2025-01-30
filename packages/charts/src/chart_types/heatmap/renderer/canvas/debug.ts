@@ -6,16 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { RgbaTuple } from '../../../../common/color_library_wrappers';
+import { type RgbaTuple, overrideOpacity } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
 
 const renderDebugMargins = (ctx: CanvasRenderingContext2D, container: Dimensions, margins: PerSideDistance) => {
-  const greenSemiTransparent = [
-    ...(Colors.Green.rgba.slice(0, 3) as [number, number, number]),
-    0.5,
-  ] satisfies RgbaTuple;
+  const greenSemiTransparent = overrideOpacity(Colors.Green.rgba, 0.5);
 
   // left
   renderDebugRect(
@@ -74,10 +71,7 @@ const renderDebugPaddings = (
   margins: PerSideDistance,
   paddings: PerSideDistance,
 ) => {
-  const lightBlueSemiTransparent = [
-    ...(Colors.LightBlue.rgba.slice(0, 3) as [number, number, number]),
-    0.5,
-  ] satisfies RgbaTuple;
+  const lightBlueSemiTransparent = overrideOpacity(Colors.LightBlue.rgba, 0.5);
 
   // left
   renderDebugRect(
