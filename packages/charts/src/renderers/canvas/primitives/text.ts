@@ -14,6 +14,9 @@ import { degToRad } from '../../../utils/common';
 import { Point } from '../../../utils/point';
 
 /** @internal */
+export type TextDirection = 'rtl' | 'ltr'; // TODO: export this
+
+/** @internal */
 export type TextFont = Font & {
   fontSize: number;
   align: TextAlign;
