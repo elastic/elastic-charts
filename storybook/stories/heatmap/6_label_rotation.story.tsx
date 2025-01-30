@@ -33,6 +33,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
   };
   const useCategoricalDataset = boolean('Use categorical data', false);
   const dataset = useCategoricalDataset ? ECOMMERCE_DATA : DATA_1.data;
+  const debugState = boolean('Enable debug state', true);
+
   return (
     <Chart title={title} description={description}>
       <Settings
@@ -42,6 +44,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         brushAxis="both"
         theme={{ heatmap }}
         baseTheme={useBaseTheme()}
+        debugState={debugState}
       />
       <Heatmap<{ x: number | string; y: string; value: number }>
         id="heatmap2"

@@ -6,26 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { AMSTERDAM_DARK_THEME } from './amsterdam_dark_theme';
+import { AMSTERDAM_LIGHT_THEME } from './amsterdam_light_theme';
 import { DARK_THEME } from './dark_theme';
 import { LIGHT_THEME } from './light_theme';
 import { Theme } from './theme';
-import { mergePartial } from '../common';
-
-const lightBackground = '#FFFFFF'; // euiColorEmptyShade
-const darkBackground = '#0B1628'; // euiColorEmptyShade
-
-const BOREALIS_LIGHT_THEME = mergePartial(LIGHT_THEME, {
-  background: {
-    color: lightBackground,
-    fallbackColor: lightBackground,
-  },
-});
-const BOREALIS_DARK_THEME = mergePartial(DARK_THEME, {
-  background: {
-    color: darkBackground,
-    fallbackColor: darkBackground,
-  },
-});
 
 /**
  * Returns charts `Theme` given theme `name` and `darkMode`
@@ -46,7 +31,6 @@ export function getChartsTheme(
   colorMode?: 'DARK' | 'LIGHT',
 ): Theme {
   const { name, darkMode } = typeof theme !== 'string' ? theme : { name: theme, darkMode: colorMode === 'DARK' };
-  if (name !== 'amsterdam' && name !== 'EUI_THEME_AMSTERDAM')
-    return darkMode ? BOREALIS_DARK_THEME : BOREALIS_LIGHT_THEME;
+  if (name.toLowerCase().includes('amsterdam')) return darkMode ? AMSTERDAM_DARK_THEME : AMSTERDAM_LIGHT_THEME;
   return darkMode ? DARK_THEME : LIGHT_THEME;
 }
