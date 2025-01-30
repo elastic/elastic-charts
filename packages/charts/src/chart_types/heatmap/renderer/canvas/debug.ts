@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { type RgbaTuple, overrideOpacity } from '../../../../common/color_library_wrappers';
+import { overrideOpacity } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 import { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
