@@ -49,6 +49,12 @@ export const AGGREGATE_KEY = "value";
 export function aggregateAccessor(n: ArrayEntry): number;
 
 // @public (undocumented)
+export const AMSTERDAM_DARK_THEME: Theme;
+
+// @public (undocumented)
+export const AMSTERDAM_LIGHT_THEME: Theme;
+
+// @public (undocumented)
 export interface AngleFromTo {
     // Warning: (ae-forgotten-export) The symbol "Radian" needs to be exported by the entry point index.d.ts
     //
@@ -992,6 +998,8 @@ export interface DebugStateAxis {
     labels: string[];
     // (undocumented)
     position: Position;
+    // (undocumented)
+    rotation?: number;
     // (undocumented)
     title?: string;
     // (undocumented)

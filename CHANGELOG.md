@@ -1,3 +1,17 @@
+# [69.1.0](https://github.com/elastic/elastic-charts/compare/v69.0.0...v69.1.0) (2025-01-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency json-schema-to-typescript to v15.0.4 ([#2522](https://github.com/elastic/elastic-charts/issues/2522)) ([2d4b650](https://github.com/elastic/elastic-charts/commit/2d4b6505db822b1c9f6e7779978375630f96e2aa))
+* **heatmap:** respect margins and paddings ([#2577](https://github.com/elastic/elastic-charts/issues/2577)) ([c24566d](https://github.com/elastic/elastic-charts/commit/c24566d491d472caa0298a440d681e48fbf54992))
+* **themes:** reintroduce Amsterdam colors ([#2604](https://github.com/elastic/elastic-charts/issues/2604)) ([8c9913d](https://github.com/elastic/elastic-charts/commit/8c9913d2ec6b6594e0e6a89e03f047c45a894b22))
+
+
+### Features
+
+* **heatmap:** add rotation in heatmap debug state ([#2594](https://github.com/elastic/elastic-charts/issues/2594)) ([9047bd2](https://github.com/elastic/elastic-charts/commit/9047bd25583161eb80a58f45dd1f278e763acabb))
+
 # [69.0.0](https://github.com/elastic/elastic-charts/compare/v68.1.0...v69.0.0) (2025-01-28)
 
 
