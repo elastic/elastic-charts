@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { configureStore } from '@reduxjs/toolkit';
 import classNames from 'classnames';
 import React, { CSSProperties, ReactNode, createRef } from 'react';
 import { Provider } from 'react-redux';
-import { createStore, Store, Unsubscribe } from 'redux';
+import { Store, Unsubscribe } from 'redux';
 import { OptionalKeys } from 'utility-types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -76,7 +77,9 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
     const id = props.id ?? uuidv4();
     const storeReducer = chartStoreReducer(id, props.title, props.description);
-    this.chartStore = createStore(storeReducer);
+    this.chartStore = configureStore({
+      reducer: storeReducer,
+    });
     this.state = {
       legendDirection: LayoutDirection.Vertical,
       paddingLeft: LIGHT_THEME.chartMargins.left,
