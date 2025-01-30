@@ -19,20 +19,13 @@ const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the 
 
 /** @internal */
 export function renderTick(ctx: CanvasRenderingContext2D, tick: AxisTick, axisProps: AxisProps) {
-  const line = getTickLineCoordinages(tick, axisProps);
-  renderMultiLine(ctx, line ? [line] : [], {
-    color: colorToRgba(axisProps.axisStyle.tickLine.stroke),
-    width: axisProps.axisStyle.tickLine.strokeWidth,
-  });
+  renderTicks(ctx, [tick], axisProps);
 }
-
 /** @internal */
 export function renderTicks(ctx: CanvasRenderingContext2D, ticks: AxisTick[], axisProps: AxisProps) {
   const tickLines = ticks.reduce<Line[]>((acc, tick) => {
-    const coords = getTickLineCoordinages(tick, axisProps);
-    if (coords) {
-      acc.push(coords);
-    }
+    const line = getTickLineCoordinates(tick, axisProps);
+    if (line) acc.push(line);
     return acc;
   }, []);
   renderMultiLine(ctx, tickLines, {
@@ -41,7 +34,7 @@ export function renderTicks(ctx: CanvasRenderingContext2D, ticks: AxisTick[], ax
   });
 }
 
-function getTickLineCoordinages(
+function getTickLineCoordinates(
   { position, domainClampedPosition: tickPosition, layer, detailedLayer }: AxisTick,
   {
     axisSpec: { position: axisPosition, timeAxisLayerCount },
@@ -49,7 +42,7 @@ function getTickLineCoordinages(
     axisStyle: { tickLine },
     layerGirth,
   }: AxisProps,
-) {
+): Line | undefined {
   if (Math.abs(tickPosition - position) > OUTSIDE_RANGE_TOLERANCE) return;
   const tickOnTheSide = timeAxisLayerCount > 0 && typeof layer === 'number';
   const extensionLayer = tickOnTheSide ? layer + 1 : 0;
