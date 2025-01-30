@@ -104,7 +104,7 @@ export class XYAxisChartState implements InternalChartState {
   }
 
   getLegendItemsLabels(globalState: GlobalChartState) {
-    return getLegendItemsLabelsSelector(globalState);
+    return getLegendItemsLabelsSelector(globalState as unknown as never);
   }
 
   getLegendItems(globalState: GlobalChartState) {

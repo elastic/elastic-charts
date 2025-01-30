@@ -81,16 +81,16 @@ export const globalSelectorCache = new GlobalSelectorCache();
 
 /**
  * Wrapper around `createCachedSelector` to provide `keySelector` and `cacheObject`
- * for all selector instances in on place. This should be used in place of `createCachedSelector`.
+ * for all selector instances in one place. This should be used in place of `createCachedSelector`.
  *
  * The types defining `createCachedSelector` are very complex and essentially hardcoded overloads for having any
- * number of selector inputs up to about 20 with genetic types. Thus the types are extremely hard to duplciate.
+ * number of selector inputs up to about 20 with generic types. Thus the types are extremely hard to duplciate.
  * To fix this I used the type of `createSelector` which is what is the same as that of `createCachedSelector`
  * method with the added curring for the cached options which this wrapper handles.
  *
  * @internal
  */
-export const createCustomCachedSelector: typeof createSelector = (...args: any[]) => {
+export const createCustomCachedSelector = ((...args: any[]) => {
   // @ts-ignore - forced types to simplify usage. All types align correctly
   return createCachedSelector(...args)(globalSelectorCache.getNewOptions());
-};
+}) as unknown as typeof createSelector;
