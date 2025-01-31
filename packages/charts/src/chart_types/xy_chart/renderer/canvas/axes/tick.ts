@@ -18,10 +18,6 @@ import { renderMultiLine } from '../primitives/line';
 const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the bottom alignment; todo consider measuring
 
 /** @internal */
-export function renderTick(ctx: CanvasRenderingContext2D, tick: AxisTick, axisProps: AxisProps) {
-  renderTicks(ctx, [tick], axisProps);
-}
-/** @internal */
 export function renderTicks(ctx: CanvasRenderingContext2D, ticks: AxisTick[], axisProps: AxisProps) {
   const tickLines = ticks.reduce<Line[]>((acc, tick) => {
     const line = getTickLineCoordinates(tick, axisProps);
