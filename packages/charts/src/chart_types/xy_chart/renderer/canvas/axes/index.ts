@@ -52,5 +52,5 @@ export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {
   }
   if (!secondary && axisStyle.tickLabel.visible)
     ticks.forEach((tick) => renderTickLabel(ctx, tick, showTicks, props, layerGirth ?? 0));
-  renderAxisLine(ctx, props); // render the axis line
+  renderAxisLine(ctx, props);
 }
