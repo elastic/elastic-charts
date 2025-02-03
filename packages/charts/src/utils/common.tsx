@@ -13,9 +13,9 @@ import { v1 as uuidv1 } from 'uuid';
 import { AdditiveNumber } from './accessor';
 import { Point } from './point';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { BaseDatum } from '../chart_types/specs';
 import { Color, Colors } from '../common/colors';
 import { Degrees, Radian } from '../common/geometry';
-import { BaseDatum } from '../specs';
 
 /** @public */
 export const Position = Object.freeze({
@@ -635,15 +635,6 @@ export function getPercentageValue<T>(ratio: string | number, relativeValue: num
 }
 
 /**
- * Predicate function, eg. to be called with [].filter, to keep distinct values
- * @example [1, 2, 4, 2, 4, 0, 3, 2].filter(keepDistinct) ==> [1, 2, 4, 0, 3]
- * @internal
- */
-export function keepDistinct<T>(d: T, i: number, a: T[]): boolean {
-  return a.indexOf(d) === i;
-}
-
-/**
  * Return an object which keys are values of an object and the value is the
  * static one provided
  * @public
@@ -699,21 +690,6 @@ export function isFiniteNumber(value: unknown): value is number {
 /** @internal */
 export function isNonNullablePrimitiveValue(value: unknown): value is NonNullable<PrimitiveValue> {
   return typeof value === 'string' || typeof value === 'number';
-}
-
-/**
- * Strips all undefined properties from object
- * @internal
- */
-export function stripUndefined<R extends Record<string, unknown>>(source: R): R {
-  return Object.keys(source).reduce((acc, key) => {
-    const val = source[key];
-    if (val !== undefined) {
-      // @ts-ignore - building new R from {}
-      acc[key] = val;
-    }
-    return acc;
-  }, {} as R);
 }
 
 /**

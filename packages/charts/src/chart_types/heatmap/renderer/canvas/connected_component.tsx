@@ -14,7 +14,7 @@ import { renderHeatmapCanvas2d } from './canvas_renderers';
 import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,

@@ -8,8 +8,8 @@
 
 import { DateTime } from 'luxon';
 
-import { ScaleContinuous } from '.';
 import { ScaleType } from './constants';
+import { ScaleContinuous } from './scale_continuous';
 
 describe('[Scale Time] - timezones', () => {
   describe('timezone checks', () => {

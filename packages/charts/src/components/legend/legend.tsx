@@ -18,7 +18,8 @@ import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
 import { LegendItem, LegendItemExtraValues, shouldDisplayTable } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
-import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
+import { DEFAULT_LEGEND_CONFIG } from '../../specs/default_legend_config';
+import { LegendSpec } from '../../specs/settings';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 import {
   onToggleDeselectSeriesAction,
@@ -26,7 +27,7 @@ import {
   onLegendItemOverAction,
   LegendPath,
 } from '../../state/actions/legend';
-import { GlobalChartState } from '../../state/chart_state';
+import { GlobalChartState } from '../../state/global_chart_state';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';

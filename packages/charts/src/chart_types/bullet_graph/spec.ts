@@ -10,12 +10,15 @@ import { ComponentProps } from 'react';
 import { $Values, Optional } from 'utility-types';
 
 import { BulletColorConfig } from './utils/color';
-import { ChartType } from '../../chart_types/index';
-import { Spec } from '../../specs';
-import { SpecType } from '../../specs/constants';
-import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
-import { mergePartial, stripUndefined, ValueFormatter } from '../../utils/common';
+import { ChartType } from '../../chart_types/chart_type';
+import { Spec } from '../../specs/spec';
+import { SpecType } from '../../specs/spec_type';
+import { SFProps } from '../../state/build_props_types';
+import { buildSFProps } from '../../state/build_sf_props';
+import { useSpecFactory } from '../../state/spec_factory';
+import { mergePartial, ValueFormatter } from '../../utils/common';
 import { GenericDomain } from '../../utils/domain';
+import { stripUndefined } from '../../utils/strip_undefined';
 
 /** @public */
 export interface BulletDatum {

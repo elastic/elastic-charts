@@ -6,14 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { configureStore } from '@reduxjs/toolkit';
 import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore, Store } from 'redux';
+import { Store } from 'redux';
 
 import { Settings, SettingsSpec } from './settings';
 import { SpecsParser } from './specs_parser';
-import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
+import { chartSlice } from '../state/chart_state';
+import { GlobalChartState } from '../state/global_chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { Position, Rendering, Rotation } from '../utils/common';
@@ -35,8 +37,10 @@ describe('Settings spec component', () => {
   let chartStore: Store<GlobalChartState>;
   let SettingsProxy: ({ settings }: { settings?: Partial<SettingsSpec> }) => JSX.Element;
   beforeEach(() => {
-    const storeReducer = chartStoreReducer('chart_id');
-    chartStore = createStore(storeReducer);
+    chartStore = configureStore({
+      reducer: chartSlice.reducer,
+    });
+
     expect(chartStore.getState().specsInitialized).toBe(false);
     SettingsProxy = getProxy(chartStore);
   });

@@ -9,7 +9,7 @@
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { Color } from '../../../../common/colors';
 import { SeriesKey } from '../../../../common/series_id';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSeriesColors } from '../../utils/series';

@@ -10,7 +10,8 @@ import { mount } from 'enzyme';
 import React from 'react';
 
 import { Chart } from './chart';
-import { Settings, BarSeries } from '../specs';
+import { BarSeries } from '../chart_types/specs';
+import { Settings } from '../specs/settings';
 
 interface Datum {
   x: number;

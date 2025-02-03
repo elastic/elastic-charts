@@ -13,7 +13,7 @@ import { renderRect } from '../../chart_types/xy_chart/renderer/canvas/primitive
 import { RgbaTuple } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
-import { GlobalChartState } from '../../state/chart_state';
+import { GlobalChartState } from '../../state/global_chart_state';
 import { getInternalBrushAreaSelector } from '../../state/selectors/get_internal_brush_area';
 import { getInternalIsBrushingSelector } from '../../state/selectors/get_internal_is_brushing';
 import { getInternalIsBrushingAvailableSelector } from '../../state/selectors/get_internal_is_brushing_available';

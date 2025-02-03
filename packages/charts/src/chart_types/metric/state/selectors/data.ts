@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../..';
-import { SpecType } from '../../../../specs';
+import { SpecType } from '../../../../specs/spec_type';
 import { getSpecsByType } from '../../../../state/selectors/get_specs_by_type';
+import { ChartType } from '../../../chart_type';
 import { MetricSpec } from '../../specs';
 
 /** @internal */

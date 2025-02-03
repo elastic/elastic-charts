@@ -7,7 +7,7 @@
  */
 
 import { TooltipInfo } from '../../components/tooltip/types';
-import { GlobalChartState } from '../chart_state';
+import { GlobalChartState } from '../global_chart_state';
 
 /** @internal */
 export const getInternalTooltipInfoSelector = (state: GlobalChartState): TooltipInfo | undefined => {

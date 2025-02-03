@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { BasicSeriesSpec } from '../../chart_types/specs';
 import { getDataSeriesFromSpecs, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
-import { BasicSeriesSpec } from '../../specs';
 import { mergePartial } from '../../utils/common';
 
 /** @internal */

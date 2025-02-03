@@ -8,11 +8,14 @@
 
 import { ComponentProps } from 'react';
 
-import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
-import { SFProps, buildSFProps, useSpecFactory } from '../../../state/spec_factory';
-import { Datum, stripUndefined } from '../../../utils/common';
+import { SpecType } from '../../../specs/spec_type';
+import { SFProps } from '../../../state/build_props_types';
+import { buildSFProps } from '../../../state/build_sf_props';
+import { useSpecFactory } from '../../../state/spec_factory';
+import { Datum } from '../../../utils/common';
+import { stripUndefined } from '../../../utils/strip_undefined';
+import { ChartType } from '../../chart_type';
 import { LineSeriesSpec, DEFAULT_GLOBAL_ID, HistogramModeAlignments, SeriesType, BaseDatum } from '../utils/specs';
 
 const buildProps = buildSFProps<LineSeriesSpec>()(

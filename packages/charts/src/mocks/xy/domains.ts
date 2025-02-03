@@ -15,8 +15,8 @@ import {
 } from '../../chart_types/xy_chart/scales/get_api_scales';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../chart_types/xy_chart/scales/scale_defaults';
 import { DEFAULT_GLOBAL_ID, XScaleType } from '../../chart_types/xy_chart/utils/specs';
-import { ScaleContinuousType } from '../../scales';
 import { ScaleType } from '../../scales/constants';
+import { ScaleContinuousType } from '../../scales/scale_continuous_type';
 import { mergePartial, RecursivePartial } from '../../utils/common';
 
 /** @internal */

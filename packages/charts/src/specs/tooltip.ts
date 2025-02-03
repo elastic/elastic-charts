@@ -8,19 +8,23 @@
 
 import { ComponentType, ReactNode } from 'react';
 
-import { SpecType, TooltipStickTo, TooltipType } from './constants';
-import { Spec } from './index';
+import { TooltipStickTo, TooltipType } from './constants';
 import { SettingsSpec } from './settings';
-import { ChartType } from '../chart_types';
+import { Spec } from './spec';
+import { SpecType } from './spec_type';
+import { ChartType } from '../chart_types/chart_type';
 import { BaseDatum } from '../chart_types/specs';
 import { Color } from '../common/colors';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components/portal';
 import { CustomTooltip } from '../components/tooltip';
-import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
+import { SFProps } from '../state/build_props_types';
+import { buildSFProps } from '../state/build_sf_props';
+import { useSpecFactory } from '../state/spec_factory';
 import { PointerValue } from '../state/types';
-import { Datum, stripUndefined } from '../utils/common';
+import { Datum } from '../utils/common';
 import { SeriesCompareFn } from '../utils/series_sort';
+import { stripUndefined } from '../utils/strip_undefined';
 
 /**
  * This interface describe the properties of single value shown in the tooltip

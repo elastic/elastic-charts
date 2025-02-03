@@ -22,11 +22,11 @@ import {
   BasicListener,
   ElementClickListener,
   ElementOverListener,
-  MetricDatum,
   MetricElementEvent,
-} from '../../../../specs';
+} from '../../../../specs/settings';
 import { LayoutDirection, isNil } from '../../../../utils/common';
 import { MetricStyle } from '../../../../utils/themes/theme';
+import { MetricDatum } from '../../../specs';
 import { MetricWNumber, isMetricWProgress, isMetricWTrend } from '../../specs';
 
 /** @internal */

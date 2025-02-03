@@ -7,14 +7,14 @@
  */
 
 import { formatTooltipHeader, formatTooltipValue } from './tooltip';
-import { ChartType } from '../..';
 import { MockBarGeometry } from '../../../mocks';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
+import { SpecType } from '../../../specs/spec_type';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { BarGeometry } from '../../../utils/geometry';
 import { AxisStyle } from '../../../utils/themes/theme';
+import { ChartType } from '../../chart_type';
 import { AxisSpec, BarSeriesSpec, TickFormatter } from '../utils/specs';
 
 const style: RecursivePartial<AxisStyle> = {

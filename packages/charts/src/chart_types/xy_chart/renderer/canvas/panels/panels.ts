@@ -15,7 +15,8 @@ import { AxisId } from '../../../../../utils/ids';
 import { Point } from '../../../../../utils/point';
 import { getSpecsById } from '../../../state/utils/spec';
 import { AxisSpec } from '../../../utils/specs';
-import { AxesProps, AxisProps, renderAxis } from '../axes';
+import { renderAxis } from '../axes';
+import { AxesProps, AxisProps } from '../axes/axis_props';
 import { renderRect } from '../primitives/rect';
 import { renderDebugRect } from '../utils/debug';
 

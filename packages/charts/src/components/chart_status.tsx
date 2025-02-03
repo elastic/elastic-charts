@@ -9,9 +9,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { RenderChangeListener, WillRenderListener } from '../specs';
-import { GlobalChartState } from '../state/chart_state';
+import { RenderChangeListener, WillRenderListener } from '../specs/settings';
 import { globalSelectorCache } from '../state/create_selector';
+import { GlobalChartState } from '../state/global_chart_state';
 import { getDebugStateSelector } from '../state/selectors/get_debug_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { DebugState } from '../state/types';

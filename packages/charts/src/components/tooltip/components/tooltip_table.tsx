@@ -14,8 +14,9 @@ import { TooltipTableBody } from './tooltip_table_body';
 import { TooltipTableFooter } from './tooltip_table_footer';
 import { TooltipTableHeader } from './tooltip_table_header';
 import { TooltipTableColumn } from './types';
+import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
+import { TooltipValue } from '../../../specs/tooltip';
 import { Datum, isNil } from '../../../utils/common';
 import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
 

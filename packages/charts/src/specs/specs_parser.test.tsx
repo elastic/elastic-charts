@@ -6,23 +6,24 @@
  * Side Public License, v 1.
  */
 
+import { configureStore } from '@reduxjs/toolkit';
 import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
 
-import { DEFAULT_SETTINGS_SPEC } from './constants';
+import { DEFAULT_SETTINGS_SPEC } from './default_settings_spec';
 import { SpecsParser } from './specs_parser';
 import { BarSeries } from '../chart_types/specs';
 import { BarSeriesSpec } from '../chart_types/xy_chart/utils/specs';
 import { ChartContainer } from '../components/chart_container';
 import { updateParentDimensions } from '../state/actions/chart_settings';
-import { chartStoreReducer } from '../state/chart_state';
+import { chartSlice } from '../state/chart_state';
 
 describe('Specs parser', () => {
   test('can mount the spec parser', () => {
-    const storeReducer = chartStoreReducer('chart_id');
-    const chartStore = createStore(storeReducer);
+    const chartStore = configureStore({
+      reducer: chartSlice.reducer,
+    });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -34,8 +35,9 @@ describe('Specs parser', () => {
     expect(chartStore.getState().specsInitialized).toBe(true);
   });
   test('can parse few components', () => {
-    const storeReducer = chartStoreReducer('chart_id');
-    const chartStore = createStore(storeReducer);
+    const chartStore = configureStore({
+      reducer: chartSlice.reducer,
+    });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -79,8 +81,9 @@ describe('Specs parser', () => {
     expect(state.specs.bars2).toBeDefined();
   });
   test('can update a component', () => {
-    const storeReducer = chartStoreReducer('chart_id');
-    const chartStore = createStore(storeReducer);
+    const chartStore = configureStore({
+      reducer: chartSlice.reducer,
+    });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -119,8 +122,9 @@ describe('Specs parser', () => {
     expect((state.specs.bars as BarSeriesSpec).xAccessor).toBe(1);
   });
   test('should remove a spec when replaced with a new', () => {
-    const storeReducer = chartStoreReducer('chart_id');
-    const chartStore = createStore(storeReducer);
+    const chartStore = configureStore({
+      reducer: chartSlice.reducer,
+    });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -162,8 +166,9 @@ describe('Specs parser', () => {
     expect(state.specs.two).toBeDefined();
   });
   test('set initialization to false on unmount', () => {
-    const storeReducer = chartStoreReducer('chart_id');
-    const chartStore = createStore(storeReducer);
+    const chartStore = configureStore({
+      reducer: chartSlice.reducer,
+    });
     const component = mount(
       <Provider store={chartStore}>
         <SpecsParser />
@@ -174,8 +179,9 @@ describe('Specs parser', () => {
   });
 
   test('correctly set the rendered status', () => {
-    const storeReducer = chartStoreReducer('chart_id');
-    const chartStore = createStore(storeReducer);
+    const chartStore = configureStore({
+      reducer: chartSlice.reducer,
+    });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const chartContainerRef: React.RefObject<HTMLDivElement> = React.createRef();

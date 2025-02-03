@@ -28,16 +28,18 @@ import {
   ToggleSelectedTooltipItemCallback,
   TooltipInfo,
 } from './types';
+import { BaseDatum } from '../../chart_types/specs';
 import { Colors } from '../../common/colors';
 import { SeriesIdentifier } from '../../common/series_id';
-import { BaseDatum, DEFAULT_TOOLTIP_SPEC, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
+import { DEFAULT_TOOLTIP_SPEC, TooltipProps, TooltipSpec, TooltipValue } from '../../specs/tooltip';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import {
   toggleSelectedTooltipItem as toggleSelectedTooltipItemAction,
   setSelectedTooltipItems as setSelectedTooltipItemsAction,
   pinTooltip as pinTooltipAction,
 } from '../../state/actions/tooltip';
-import { BackwardRef, GlobalChartState } from '../../state/chart_state';
+import { GlobalChartState } from '../../state/global_chart_state';
+import { BackwardRef } from '../../state/internal_chart_state';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';

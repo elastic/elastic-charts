@@ -10,19 +10,15 @@ import { Selector } from 'reselect';
 
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedGridCell } from './picked_shapes';
-import { ChartType } from '../../..';
-import {
-  PointerEvent,
-  PointerEventType,
-  PointerOverEvent,
-  PointerUpdateTrigger,
-  SettingsSpec,
-} from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { PointerUpdateTrigger } from '../../../../specs/pointer_update_trigger';
+import { SettingsSpec } from '../../../../specs/settings';
+import { PointerEvent, PointerEventType, PointerOverEvent } from '../../../../specs/settings_types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { ChartType } from '../../../chart_type';
 
 function isSameEventValue(a: PointerOverEvent, b: PointerOverEvent, changeTrigger: PointerUpdateTrigger) {
   const checkX = changeTrigger === PointerUpdateTrigger.X || changeTrigger === PointerUpdateTrigger.Both;

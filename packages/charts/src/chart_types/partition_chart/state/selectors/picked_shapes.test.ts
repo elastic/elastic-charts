@@ -6,25 +6,30 @@
  * Side Public License, v 1.
  */
 
-import { createStore, Store } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { Store } from 'redux';
 
 import { partitionMultiGeometries } from './geometries';
 import { createOnElementClickCaller } from './on_element_click_caller';
 import { GOLDEN_RATIO } from '../../../../common/constants';
 import { Predicate } from '../../../../common/predicate';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
-import { SettingsSpec, GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
+import { GroupBySpec } from '../../../../specs/group_by';
+import { SettingsSpec } from '../../../../specs/settings';
+import { SmallMultiplesSpec } from '../../../../specs/small_multiples';
 import { updateParentDimensions } from '../../../../state/actions/chart_settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../../state/actions/specs';
-import { chartStoreReducer, GlobalChartState } from '../../../../state/chart_state';
+import { chartSlice } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { Datum } from '../../../../utils/common';
 import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs';
 
 function initStore() {
-  const storeReducer = chartStoreReducer('chartId');
-  return createStore(storeReducer);
+  return configureStore({
+    reducer: chartSlice.reducer,
+  });
 }
 
 describe('Picked shapes selector', () => {

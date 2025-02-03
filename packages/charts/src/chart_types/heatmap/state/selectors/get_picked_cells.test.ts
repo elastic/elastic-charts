@@ -13,7 +13,7 @@ import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../../state/actions/mouse';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 
 describe('Heatmap picked cells', () => {
   let store: Store<GlobalChartState>;

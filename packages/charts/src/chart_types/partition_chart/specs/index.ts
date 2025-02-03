@@ -8,22 +8,19 @@
 
 import { ComponentProps } from 'react';
 
-import { ChartType } from '../..';
+import { BaseDatum } from '../../../chart_types/specs';
 import { LegacyAnimationConfig } from '../../../common/animation';
 import { Distance, Pixels, Radius } from '../../../common/geometry';
-import { BaseDatum, Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
+import { Spec } from '../../../specs/spec';
+import { SpecType } from '../../../specs/spec_type'; // kept as unshortened import on separate line otherwise import circularity emerges
+import { SFProps } from '../../../state/build_props_types';
+import { buildSFProps } from '../../../state/build_sf_props';
+import { useSpecFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
-import {
-  Datum,
-  LabelAccessor,
-  ShowAccessor,
-  ValueAccessor,
-  ValueFormatter,
-  stripUndefined,
-} from '../../../utils/common';
+import { Datum, LabelAccessor, ShowAccessor, ValueAccessor, ValueFormatter } from '../../../utils/common';
+import { stripUndefined } from '../../../utils/strip_undefined';
 import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
+import { ChartType } from '../../chart_type';
 import { percentFormatter } from '../layout/config';
 import { PartitionLayout } from '../layout/types/config_types';
 import { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';

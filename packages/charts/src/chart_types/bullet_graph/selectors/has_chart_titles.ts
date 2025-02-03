@@ -7,7 +7,7 @@
  */
 
 import { canDisplayChartTitles } from './can_display_chart_titles';
-import { GlobalChartState } from '../../../state/chart_state';
+import { GlobalChartState } from '../../../state/global_chart_state';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 
 const getChartTitleOrDescription = ({ title, description }: GlobalChartState) => Boolean(title || description);

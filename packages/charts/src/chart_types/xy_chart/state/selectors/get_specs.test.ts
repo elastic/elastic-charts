@@ -8,7 +8,7 @@
 
 import { getSeriesSpecsSelector } from './get_specs';
 import { MockSeriesSpec } from '../../../../mocks/specs';
-import { getInitialState } from '../../../../state/chart_state';
+import { getInitialState } from '../../../../state/get_initial_state';
 
 describe('selector - get_specs', () => {
   const state = getInitialState('chartId1');

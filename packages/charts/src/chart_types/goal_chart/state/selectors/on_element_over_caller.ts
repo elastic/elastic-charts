@@ -10,12 +10,12 @@ import { Selector } from 'react-redux';
 
 import { getGoalSpecSelector } from './get_goal_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
-import { ChartType } from '../../..';
 import { getOnElementOverSelector } from '../../../../common/event_handler_selectors';
-import { LayerValue } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { LayerValue } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { ChartType } from '../../../chart_type';
 
 /**
  * Will call the onElementOver listener every time the following preconditions are met:

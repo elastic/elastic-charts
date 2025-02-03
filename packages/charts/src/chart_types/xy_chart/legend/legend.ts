@@ -9,7 +9,7 @@
 import { Color } from '../../../common/colors';
 import { LegendItem } from '../../../common/legend';
 import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
-import { SettingsSpec } from '../../../specs';
+import { SettingsSpec } from '../../../specs/settings';
 import { isDefined, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
 import { SeriesCompareFn } from '../../../utils/series_sort';

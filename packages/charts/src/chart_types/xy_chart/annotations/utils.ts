@@ -10,7 +10,7 @@ import { computeLineAnnotationDimensions } from './line/dimensions';
 import { computeRectAnnotationDimensions } from './rect/dimensions';
 import { AnnotationDimensions } from './types';
 import { SmallMultipleScales } from '../../../common/panel_utils';
-import { SettingsSpec } from '../../../specs';
+import { SettingsSpec } from '../../../specs/settings';
 import { Rotation, Position } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';

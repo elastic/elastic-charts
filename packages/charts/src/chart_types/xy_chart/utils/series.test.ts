@@ -20,18 +20,18 @@ import {
 } from './series';
 import { BasicSeriesSpec, LineSeriesSpec, SeriesType, AreaSeriesSpec } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
-import { ChartType } from '../..';
 import { MockDataSeries } from '../../../mocks/series';
 import { MockSeriesIdentifier } from '../../../mocks/series/series_identifiers';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { SeededDataGenerator, getRandomNumberGenerator } from '../../../mocks/utils';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
+import { SpecType } from '../../../specs/spec_type';
 import { AccessorFn } from '../../../utils/accessor';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
 import { KIBANA_METRICS } from '../../../utils/data_samples/test_dataset_kibana';
 import { ColorConfig } from '../../../utils/themes/theme';
+import { ChartType } from '../../chart_type';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 
 const dg = new SeededDataGenerator();

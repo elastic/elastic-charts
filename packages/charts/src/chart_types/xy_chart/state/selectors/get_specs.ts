@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../..';
-import { SpecType } from '../../../../specs/constants';
+import { SpecType } from '../../../../specs/spec_type';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSpecs } from '../../../../state/selectors/get_specs';
-import { getSpecsFromStore } from '../../../../state/utils';
+import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
+import { ChartType } from '../../../chart_type';
 import { AnnotationSpec, AxisSpec, BasicSeriesSpec } from '../../utils/specs';
 
 /** @internal */

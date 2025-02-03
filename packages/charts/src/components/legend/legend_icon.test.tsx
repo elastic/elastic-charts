@@ -10,9 +10,10 @@ import { mount } from 'enzyme';
 import React from 'react';
 
 import { LegendIcon } from './legend_icon';
+import { LineSeries, AreaSeries } from '../../chart_types/specs';
 import { LegendValue } from '../../common/legend';
 import { ScaleType } from '../../scales/constants';
-import { Settings, LineSeries, AreaSeries } from '../../specs';
+import { Settings } from '../../specs/settings';
 import { Chart } from '../chart';
 
 describe('Legend icons', () => {

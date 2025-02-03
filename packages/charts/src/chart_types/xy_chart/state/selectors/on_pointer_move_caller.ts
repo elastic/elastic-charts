@@ -12,14 +12,14 @@ import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
 import { PointerPosition } from './get_projected_pointer_position';
-import { ChartType } from '../../..';
-import { PointerEvent, PointerOverEvent, PointerUpdateTrigger } from '../../../../specs';
-import { PointerEventType } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { PointerUpdateTrigger } from '../../../../specs/pointer_update_trigger';
+import { PointerEventType, PointerEvent, PointerOverEvent } from '../../../../specs/settings_types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
+import { ChartType } from '../../../chart_type';
 import { ComputedScales } from '../utils/types';
 
 const getPointerEventSelector = createCustomCachedSelector(

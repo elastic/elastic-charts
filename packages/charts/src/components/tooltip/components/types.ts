@@ -8,8 +8,8 @@
 
 import { CSSProperties, ReactNode } from 'react';
 
+import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum } from '../../../specs';
 import { TooltipValue } from '../../../specs/tooltip';
 import { Datum } from '../../../utils/common';
 

@@ -6,18 +6,7 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export const Z_INDEX_EVENT = 'Z_INDEX_EVENT';
-
-interface ZIndexEvent {
-  type: typeof Z_INDEX_EVENT;
-  zIndex: number;
-}
+import { createAction } from '@reduxjs/toolkit';
 
 /** @internal */
-export function onComputedZIndex(zIndex: number): ZIndexEvent {
-  return { type: Z_INDEX_EVENT, zIndex };
-}
-
-/** @internal */
-export type ZIndexActions = ZIndexEvent;
+export const onComputedZIndex = createAction<number>('Z_INDEX_EVENT');

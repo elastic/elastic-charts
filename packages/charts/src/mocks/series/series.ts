@@ -9,9 +9,9 @@
 import { shuffle } from 'lodash';
 
 import { fitFunctionData } from './data';
+import { SeriesType } from '../../chart_types/specs';
 import { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 import { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
-import { SeriesType } from '../../specs';
 import { mergePartial } from '../../utils/common';
 import { MockSeriesSpec } from '../specs';
 import { getRandomNumberGenerator } from '../utils';

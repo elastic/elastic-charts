@@ -16,9 +16,10 @@ import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
-import { ElementOverListener, settingsBuildProps } from '../../../../specs';
+import { settingsBuildProps } from '../../../../specs/default_settings_spec';
+import { ElementOverListener } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,

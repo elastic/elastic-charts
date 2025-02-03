@@ -11,7 +11,7 @@ import { Store } from 'redux';
 import { getScreenReaderDataSelector } from './get_screen_reader_data';
 import { MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
 
 describe('Get screen reader data', () => {

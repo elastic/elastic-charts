@@ -9,7 +9,7 @@
 import { CSSProperties } from 'react';
 
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import { GlobalChartState } from '../chart_state';
+import { GlobalChartState } from '../global_chart_state';
 
 /** @internal */
 export const getInternalPointerCursor = (state: GlobalChartState): CSSProperties['cursor'] => {

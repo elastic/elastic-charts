@@ -14,7 +14,7 @@ import { getTooltipInfoSelector } from './get_tooltip_values_highlighted_geoms';
 import { TooltipPortalSettings } from '../../../../components/portal/types';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import { DOMElement } from '../../../../state/actions/dom_element';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { Rotation } from '../../../../utils/common';

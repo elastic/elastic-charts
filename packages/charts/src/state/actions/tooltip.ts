@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { TooltipValue } from '../../specs';
+import { TooltipValue } from '../../specs/tooltip';
 
 /** @internal */
 export const PIN_TOOLTIP = 'PIN_TOOLTIP';

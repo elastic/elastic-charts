@@ -13,7 +13,7 @@ import { partitionMultiGeometries } from './state/selectors/geometries';
 import { getLegendItemsLabels } from './state/selectors/get_legend_items_labels';
 import { MockGlobalSpec, MockSeriesSpec } from '../../mocks/specs';
 import { MockStore } from '../../mocks/store';
-import { GlobalChartState } from '../../state/chart_state';
+import { GlobalChartState } from '../../state/global_chart_state';
 import { LegendItemLabel } from '../../state/selectors/get_legend_items_labels';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 

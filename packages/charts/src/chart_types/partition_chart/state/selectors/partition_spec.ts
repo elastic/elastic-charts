@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../..';
-import { SpecType } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { getSpecsFromStore, getSpecFromStore } from '../../../../state/utils';
+import { SpecType } from '../../../../specs/spec_type';
+import { GlobalChartState } from '../../../../state/global_chart_state';
+import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';
+import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
+import { ChartType } from '../../../chart_type';
 import { PartitionSpec } from '../../specs';
 
 /** @internal */

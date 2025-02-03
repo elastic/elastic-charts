@@ -9,13 +9,13 @@
 import { TickLabelBounds } from './axis_utils';
 import { computeChartDimensions } from './dimensions';
 import { AxisSpec } from './specs';
-import { ChartType } from '../..';
-import { SpecType } from '../../../specs/constants';
+import { SpecType } from '../../../specs/spec_type';
 import { Position } from '../../../utils/common';
 import { Margins } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LegendStyle } from '../../../utils/themes/theme';
+import { ChartType } from '../../chart_type';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 
 describe('Computed chart dimensions', () => {

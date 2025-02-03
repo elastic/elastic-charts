@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { SmallMultiplesSpec } from '../../../specs';
+import { SmallMultiplesSpec } from '../../../specs/small_multiples';
 import { Position } from '../../../utils/common';
 import { innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';

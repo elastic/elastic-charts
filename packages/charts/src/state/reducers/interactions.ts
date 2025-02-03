@@ -7,7 +7,7 @@
  */
 
 import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
-import { ChartType } from '../../chart_types';
+import { ChartType } from '../../chart_types/chart_type';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
 import { LegendItem } from '../../common/legend';
@@ -29,10 +29,12 @@ import {
   TooltipActions,
   SET_SELECTED_TOOLTIP_ITEMS,
 } from '../actions/tooltip';
-import { GlobalChartState, InteractionsState } from '../chart_state';
+import { GlobalChartState } from '../global_chart_state';
+import { InteractionsState } from '../interactions_state';
 import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
-import { getInitialPointerState, getInitialTooltipState } from '../utils';
+import { getInitialPointerState } from '../utils/get_initial_pointer_state';
+import { getInitialTooltipState } from '../utils/get_initial_tooltip_state';
 
 /**
  * The minimum number of pixel between two pointer positions to consider for dragging purposes

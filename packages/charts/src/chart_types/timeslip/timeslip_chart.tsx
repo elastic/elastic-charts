@@ -12,16 +12,19 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { timeslipRender } from './timeslip/timeslip_render';
 import { TimeslipSpec, GetData } from './timeslip_api';
-import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import { SettingsSpec, SpecType, TooltipType } from '../../specs';
+import { TooltipType } from '../../specs/constants';
+import { SettingsSpec } from '../../specs/settings';
+import { SpecType } from '../../specs/spec_type';
 import { onChartRendered } from '../../state/actions/chart';
-import { BackwardRef, GlobalChartState } from '../../state/chart_state';
+import { GlobalChartState } from '../../state/global_chart_state';
+import { BackwardRef } from '../../state/internal_chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
-import { getSpecsFromStore } from '../../state/utils';
+import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import { Size } from '../../utils/dimensions';
+import { ChartType } from '../chart_type';
 import { roundUpSize } from '../flame_chart/render/common';
 // @ts-ignore until it becomes TS
 

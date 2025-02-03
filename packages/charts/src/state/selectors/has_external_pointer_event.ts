@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { PointerEventType } from '../../specs';
-import { GlobalChartState } from '../chart_state';
+import { PointerEventType } from '../../specs/settings_types';
+import { GlobalChartState } from '../global_chart_state';
 
 /** @internal */
 export const hasExternalEventSelector = ({ externalEvents: { pointer } }: GlobalChartState) =>

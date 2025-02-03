@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { BasicSeriesSpec, DEFAULT_GLOBAL_ID, Spec } from '../../../../specs';
+import { Spec } from '../../../../specs/spec';
 import { Rotation } from '../../../../utils/common';
 import { GroupId } from '../../../../utils/ids';
+import { BasicSeriesSpec, DEFAULT_GLOBAL_ID } from '../../../specs';
 import { isXDomain } from '../../utils/axis_utils';
 import { AxisSpec } from '../../utils/specs';
 
