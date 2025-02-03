@@ -8,7 +8,7 @@
 
 import { SmallMultiplesSpec } from '../../../specs';
 import { Position } from '../../../utils/common';
-import { innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
+import { Dimensions, innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
@@ -37,11 +37,7 @@ const getAxisSizeForLabel = (
   const maxAxisGirth = axisDimension + (tickLabel.visible ? allLayersGirth : 0);
   // gives space to longer labels: if vertical use half of the label height, if horizontal, use half of the max label (not ideal)
   // don't overflow when the multiTimeAxis layer is used.
-  const maxLabelBoxHalfLength = isVerticalAxis(axisSpec.position)
-    ? maxLabelBboxHeight / 2
-    : axisSpec.timeAxisLayerCount > 0
-      ? 0
-      : maxLabelBboxWidth / 2;
+  const maxLabelBoxHalfLength = isVerticalAxis(axisSpec.position) ? maxLabelBboxHeight / 2 : 0;
   return horizontal
     ? {
         top: axisSpec.position === Position.Top ? maxAxisGirth + chartMargins.top : 0,
@@ -59,12 +55,17 @@ const getAxisSizeForLabel = (
 
 /** @internal */
 export function getAxesDimensions(
+  parentDimensions: Dimensions,
   theme: Theme,
   axisDimensions: AxesTicksDimensions,
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
   smSpec: SmallMultiplesSpec | null,
 ): PerSideDistance & { margin: { left: number } } {
+  const verticalAxesCount =
+    axisSpecs.reduce((count, spec) => {
+      return count + (isVerticalAxis(spec.position) ? 1 : 0);
+    }, 0) * 2;
   const sizes = [...axisDimensions].reduce(
     (acc, [id, tickLabelBounds]) => {
       const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
@@ -74,8 +75,8 @@ export function getAxesDimensions(
       if (isVerticalAxis(axisSpec.position)) {
         acc.axisLabelOverflow.top = Math.max(acc.axisLabelOverflow.top, top);
         acc.axisLabelOverflow.bottom = Math.max(acc.axisLabelOverflow.bottom, bottom);
-        acc.axisMainSize.left += left;
-        acc.axisMainSize.right += right;
+        acc.axisMainSize.left += Math.min(left, parentDimensions.width / verticalAxesCount);
+        acc.axisMainSize.right += Math.min(right, parentDimensions.width / verticalAxesCount);
       } else {
         // find the max half label size to accommodate the left/right labels
         acc.axisMainSize.top += top;

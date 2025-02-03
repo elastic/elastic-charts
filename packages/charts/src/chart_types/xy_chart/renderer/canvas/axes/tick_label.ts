@@ -7,7 +7,9 @@
  */
 
 import { AxisProps } from '.';
+import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
+import { wrapText } from '../../../../../utils/text/wrap';
 import { AxisTick, getTickLabelPosition } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';
 import { renderDebugRectCenterRotated } from '../utils/debug';
@@ -19,7 +21,7 @@ export function renderTickLabel(
   ctx: CanvasRenderingContext2D,
   tick: AxisTick,
   showTicks: boolean,
-  { axisSpec: { position, timeAxisLayerCount }, dimension, size, debug, axisStyle }: AxisProps,
+  { axisSpec: { position, timeAxisLayerCount }, dimension, size, debug, axisStyle, maxLabelSize }: AxisProps,
   layerGirth: number,
 ) {
   const labelStyle = axisStyle.tickLabel;
@@ -36,7 +38,22 @@ export function renderTickLabel(
   );
 
   const center = { x: tickLabelProps.x + tickLabelProps.offsetX, y: tickLabelProps.y + tickLabelProps.offsetY };
-
+  const textMeasure = measureText(ctx);
+  const wrappedText = wrapText(
+    tick.label,
+    {
+      fontFamily: labelStyle.fontFamily,
+      fontStyle: labelStyle.fontStyle ?? 'normal',
+      fontVariant: 'normal',
+      fontWeight: 'normal',
+      textColor: labelStyle.fill,
+    },
+    labelStyle.fontSize,
+    maxLabelSize,
+    1,
+    textMeasure,
+    'en', // TODO
+  );
   if (debug) {
     const { maxLabelBboxWidth, maxLabelBboxHeight, maxLabelTextWidth: width, maxLabelTextHeight: height } = dimension;
     // full text container
@@ -52,7 +69,7 @@ export function renderTickLabel(
   renderText(
     ctx,
     center,
-    tick.label,
+    wrappedText[0] ?? '',
     {
       fontFamily: labelStyle.fontFamily,
       fontStyle: labelStyle.fontStyle ?? 'normal',

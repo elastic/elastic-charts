@@ -10,6 +10,7 @@ import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { computeXScale, computeYScales } from './scales';
 import { SmallMultipleScales, hasSMDomain, getPanelSize } from '../../../common/panel_utils';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
+import { isContinuousScale } from '../../../scales/types';
 import { AxisSpec, SettingsSpec } from '../../../specs';
 import {
   degToRad,
@@ -261,6 +262,7 @@ export const getAllAxisLayersGirth = (
 
 /** @internal */
 export function getPosition(
+  parentDimension: Dimensions,
   { chartDimensions }: { chartDimensions: Dimensions },
   chartMargins: PerSideDistance,
   { axisTitle, axisPanelTitle, tickLine, tickLabel }: AxisStyle,
@@ -268,6 +270,7 @@ export function getPosition(
   { maxLabelBboxHeight, maxLabelBboxWidth }: TickLabelBounds,
   smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
+  verticalAxisCount: number,
 ) {
   const tickDimension = shouldShowTicks(tickLine, hide) ? tickLine.size + tickLine.padding : 0;
   const labelPaddingSum = tickLabel.visible ? innerPad(tickLabel.padding) + outerPad(tickLabel.padding) : 0;
@@ -276,7 +279,8 @@ export function getPosition(
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
   const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
-  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, !vertical);
+  const layerGrith = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, !vertical);
+  const shownLabelSize = vertical ? Math.min(parentDimension.width / (verticalAxisCount * 2), layerGrith) : layerGrith;
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
     leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
@@ -316,10 +320,12 @@ export interface AxisGeometry {
   };
   dimension: TickLabelBounds;
   visibleTicks: AxisTick[];
+  maxLabelSize: number;
 }
 
 /** @internal */
 export function getAxesGeometries(
+  parentDimension: Dimensions,
   chartDims: { chartDimensions: Dimensions; leftMargin: number },
   { chartPaddings, chartMargins, axes: sharedAxesStyle }: Theme,
   axisSpecs: Map<AxisId, AxisSpec>,
@@ -327,14 +333,18 @@ export function getAxesGeometries(
   smScales: SmallMultipleScales,
   visibleTicksSet: Map<AxisId, Projection>,
 ): AxisGeometry[] {
+  const verticalAxesCount = [...axisSpecs.values()].reduce((count, spec) => {
+    return count + (isVerticalAxis(spec.position) ? 1 : 0);
+  }, 0);
   const panel = getPanelSize(smScales);
   return [...visibleTicksSet].reduce(
-    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, { ticks, labelBox }]: [AxisId, Projection]) => {
+    (acc: PerSideDistance & { geoms: AxisGeometry[] }, [axisId, { ticks, labelBox, scale }]: [AxisId, Projection]) => {
       const axisSpec = axisSpecs.get(axisId);
       if (axisSpec) {
         const vertical = isVerticalAxis(axisSpec.position);
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
         const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getPosition(
+          parentDimension,
           chartDims,
           chartMargins,
           axisStyle,
@@ -342,6 +352,7 @@ export function getAxesGeometries(
           labelBox,
           smScales,
           acc,
+          verticalAxesCount,
         );
         acc.top += topIncrement;
         acc.bottom += bottomIncrement;
@@ -357,6 +368,12 @@ export function getAxesGeometries(
             width: labelBox.isHidden ? 0 : vertical ? dimensions.width : panel.width,
             height: labelBox.isHidden ? 0 : vertical ? panel.height : dimensions.height,
           },
+          maxLabelSize:
+            vertical && !isContinuousScale(scale)
+              ? parentDimension.width / (verticalAxesCount * 2)
+              : isContinuousScale(scale)
+                ? Infinity
+                : scale.step,
         });
       } else {
         throw new Error(`Cannot compute scale for axis spec ${axisId}`); // todo move this feedback as upstream as possible
