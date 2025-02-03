@@ -7,7 +7,7 @@
  */
 
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from './scale_defaults';
-import { ScaleContinuousType } from '../../../scales';
+import { ScaleContinuousType } from '../../../scales/scale_continuous_type';
 import { BasicSeriesSpec, XScaleType } from '../utils/specs';
 
 /** @internal */

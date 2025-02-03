@@ -21,7 +21,7 @@ import {
   SizeRatio,
 } from '../../../../common/geometry';
 import { Font, HorizontalAlignment, VerticalAlignments } from '../../../../common/text_utils';
-import { GroupByAccessor } from '../../../../specs';
+import { GroupByAccessor } from '../../../../specs/group_by';
 import { LegendPath } from '../../../../state/actions/legend';
 import { Size } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';

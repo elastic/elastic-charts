@@ -8,7 +8,7 @@
 
 import { getGreensColorScale } from '../../../../common/color_library_wrappers';
 import { Pixels, PointObject } from '../../../../common/geometry';
-import { SpecType } from '../../../../specs/constants';
+import { SpecType } from '../../../../specs/spec_type';
 import { ValueFormatter } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Theme } from '../../../../utils/themes/theme';

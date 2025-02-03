@@ -10,8 +10,9 @@ import { mount } from 'enzyme';
 import React from 'react';
 
 import { LegendTable } from './legend_table';
+import { BarSeries } from '../../../chart_types/specs';
 import { ScaleType } from '../../../scales/constants';
-import { Settings, BarSeries } from '../../../specs';
+import { Settings } from '../../../specs/settings';
 import { Chart } from '../../chart';
 import { LegendTableRow } from '../legend_table/legend_table_row';
 

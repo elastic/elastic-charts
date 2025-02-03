@@ -8,8 +8,8 @@
 
 import { DateTime } from 'luxon';
 
-import { ScaleBand } from '.';
 import { ScaleType } from './constants';
+import { ScaleBand } from './scale_band';
 import { limitLogScaleDomain, ScaleContinuous } from './scale_continuous';
 
 describe('Scale Test', () => {

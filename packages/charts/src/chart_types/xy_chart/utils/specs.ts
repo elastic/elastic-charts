@@ -11,13 +11,14 @@ import { $Values } from 'utility-types';
 
 import { AnimationOptions } from './../renderer/canvas/animations/animation';
 import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
-import { ChartType } from '../../../chart_types';
+import { ChartType } from '../../../chart_types/chart_type';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal/types';
-import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants';
+import { ScaleContinuousType } from '../../../scales/scale_continuous_type';
+import { LogScaleOptions } from '../../../scales/types';
+import { Spec } from '../../../specs/spec';
+import { SpecType } from '../../../specs/spec_type';
 import { AccessorFormat, AccessorFn, Accessor } from '../../../utils/accessor';
 import { RecursivePartial, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';

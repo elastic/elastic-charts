@@ -10,7 +10,7 @@ import { getLegendConfigSelector } from './get_legend_config_selector';
 import { getLegendSizeSelector } from './get_legend_size';
 import { LayoutDirection } from '../../utils/common';
 import { Dimensions } from '../../utils/dimensions';
-import { GlobalChartState } from '../chart_state';
+import { GlobalChartState } from '../global_chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;

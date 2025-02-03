@@ -7,9 +7,9 @@
  */
 
 import { geometries } from './geometries';
-import { LayerValue } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { LayerValue } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { WordcloudViewModel } from '../../layout/types/viewmodel_types';
 
 function getCurrentPointerPosition(state: GlobalChartState) {

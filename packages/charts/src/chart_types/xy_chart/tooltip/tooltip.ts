@@ -8,7 +8,7 @@
 
 import { LegendItemExtraValues, LegendValue } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
-import { TooltipValue } from '../../../specs';
+import { TooltipValue } from '../../../specs/tooltip';
 import { PointerValue } from '../../../state/types';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
 import { isDefined } from '../../../utils/common';

@@ -14,7 +14,7 @@ import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 
 describe('Categorical heatmap brush', () => {
   let store: Store<GlobalChartState>;

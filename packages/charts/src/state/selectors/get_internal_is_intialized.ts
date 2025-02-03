@@ -8,7 +8,7 @@
 
 import { $Values } from 'utility-types';
 
-import { GlobalChartState } from '../chart_state';
+import { GlobalChartState } from '../global_chart_state';
 
 /** @internal */
 export const InitStatus = Object.freeze({

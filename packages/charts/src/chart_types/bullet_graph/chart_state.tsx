@@ -14,11 +14,12 @@ import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getTooltipAnchor } from './selectors/get_tooltip_anchor';
 import { getTooltipInfo } from './selectors/get_tooltip_info';
 import { isTooltipVisible } from './selectors/is_tooltip_visible';
-import { ChartType } from '../../chart_types';
+import { ChartType } from '../../chart_types/chart_type';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../common/legend';
 import { Tooltip } from '../../components/tooltip/tooltip';
-import { BackwardRef, GlobalChartState, InternalChartState } from '../../state/chart_state';
+import { GlobalChartState } from '../../state/global_chart_state';
+import { BackwardRef, InternalChartState } from '../../state/internal_chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { EMPTY_LEGEND_ITEM_LIST } from '../../state/selectors/get_legend_items_labels';
 

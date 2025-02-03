@@ -10,8 +10,9 @@ import React, { ComponentType, useEffect, useState } from 'react';
 
 import { TooltipDivider } from './tooltip_divider';
 import { useTooltipContext } from './tooltip_provider';
+import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipAction, TooltipSpec, TooltipValue } from '../../../specs';
+import { TooltipAction, TooltipSpec, TooltipValue } from '../../../specs/tooltip';
 import { Datum, renderWithProps } from '../../../utils/common';
 
 /** @internal */

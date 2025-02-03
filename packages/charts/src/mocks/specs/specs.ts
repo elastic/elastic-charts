@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../chart_types';
+import { ChartType } from '../../chart_types/chart_type';
 import { X_SCALE_DEFAULT } from '../../chart_types/heatmap/specs/scale_defaults';
 import { percentFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
 import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
 import { AGGREGATE_KEY, PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../chart_types/partition_chart/specs';
+import { HeatmapSpec } from '../../chart_types/specs';
 import { isHorizontalRotation } from '../../chart_types/xy_chart/state/utils/common';
 import {
   SeriesSpecs,
@@ -33,17 +34,13 @@ import {
 } from '../../chart_types/xy_chart/utils/specs';
 import { Predicate } from '../../common/predicate';
 import { ScaleType } from '../../scales/constants';
-import {
-  SettingsSpec,
-  SpecType,
-  DEFAULT_SETTINGS_SPEC,
-  SmallMultiplesSpec,
-  GroupBySpec,
-  Spec,
-  HeatmapSpec,
-  TooltipSpec,
-  DEFAULT_TOOLTIP_SPEC,
-} from '../../specs';
+import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
+import { GroupBySpec } from '../../specs/group_by';
+import { SettingsSpec } from '../../specs/settings';
+import { SmallMultiplesSpec } from '../../specs/small_multiples';
+import { Spec } from '../../specs/spec';
+import { SpecType } from '../../specs/spec_type';
+import { TooltipSpec, DEFAULT_TOOLTIP_SPEC } from '../../specs/tooltip';
 import { Datum, mergePartial, Position, RecursivePartial, Rotation } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 

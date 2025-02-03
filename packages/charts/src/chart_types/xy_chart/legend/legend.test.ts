@@ -8,15 +8,15 @@
 
 import { Store } from 'redux';
 
-import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
+import { SpecType } from '../../../specs/spec_type';
 import { onToggleDeselectSeriesAction } from '../../../state/actions/legend';
-import { GlobalChartState } from '../../../state/chart_state';
+import { GlobalChartState } from '../../../state/global_chart_state';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
+import { ChartType } from '../../chart_type';
 import { computeLegendSelector } from '../state/selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 import { getSeriesName, XYChartSeriesIdentifier } from '../utils/series';

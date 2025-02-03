@@ -8,10 +8,10 @@
 
 import { ComponentProps } from 'react';
 
-import { ChartType } from '../..';
-import { Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants';
+import { Spec } from '../../../specs/spec';
+import { SpecType } from '../../../specs/spec_type';
 import { specComponentFactory } from '../../../state/spec_factory';
+import { ChartType } from '../../chart_type';
 import { defaultWordcloudSpec, WordcloudViewModel } from '../layout/types/viewmodel_types';
 
 /** @alpha */

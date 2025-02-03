@@ -8,7 +8,7 @@
 
 import { getChartIdSelector } from './get_chart_id';
 import { getSettingsSpecSelector } from './get_settings_spec';
-import { DEFAULT_SETTINGS_SPEC } from '../../specs/constants';
+import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
 import { SettingsSpec } from '../../specs/settings';
 import { isDefined } from '../../utils/common';
 import { createCustomCachedSelector } from '../create_selector';

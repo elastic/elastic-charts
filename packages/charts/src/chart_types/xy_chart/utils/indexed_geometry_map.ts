@@ -10,7 +10,7 @@ import { $Values } from 'utility-types';
 
 import { IndexedGeometryLinearMap } from './indexed_geometry_linear_map';
 import { IndexedGeometrySpatialMap } from './indexed_geometry_spatial_map';
-import { MarkBuffer } from '../../../specs';
+import { MarkBuffer } from '../../../specs/settings';
 import { isNil } from '../../../utils/common';
 import { Bounds } from '../../../utils/d3-delaunay';
 import { IndexedGeometry, isPointGeometry } from '../../../utils/geometry';

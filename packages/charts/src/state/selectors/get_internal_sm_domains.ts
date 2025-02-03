@@ -7,7 +7,7 @@
  */
 
 import { SmallMultiplesSeriesDomains } from '../../common/panel_utils';
-import { GlobalChartState } from '../chart_state';
+import { GlobalChartState } from '../global_chart_state';
 
 /** @internal */
 export const getInternalSmallMultiplesDomains = (state: GlobalChartState): SmallMultiplesSeriesDomains => {

@@ -6,12 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '..';
+import { BaseDatum } from '../../chart_types/specs';
 import { LegacyAnimationConfig } from '../../common/animation';
-import { BaseDatum, Spec } from '../../specs';
-import { SpecType } from '../../specs/constants'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
-import { Datum, stripUndefined, ValueAccessor, ValueFormatter } from '../../utils/common';
+import { Spec } from '../../specs/spec';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { SFProps } from '../../state/build_props_types';
+import { buildSFProps } from '../../state/build_sf_props';
+import { useSpecFactory } from '../../state/spec_factory';
+import { Datum, ValueAccessor, ValueFormatter } from '../../utils/common';
+import { stripUndefined } from '../../utils/strip_undefined';
+import { ChartType } from '../chart_type';
 
 /**
  * Control function for resetting chart focus

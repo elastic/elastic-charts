@@ -11,9 +11,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { NoResults } from './no_results';
-import { ChartType } from '../chart_types';
+import { ChartType } from '../chart_types/chart_type';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
-import { SettingsSpec, TooltipSpec } from '../specs';
+import { SettingsSpec } from '../specs/settings';
+import { TooltipSpec } from '../specs/tooltip';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';
 import {
   onMouseUp as onMouseUpAction,
@@ -21,7 +22,9 @@ import {
   onPointerMove as onPointerMoveAction,
 } from '../state/actions/mouse';
 import { pinTooltip as pinTooltipAction } from '../state/actions/tooltip';
-import { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
+import { GlobalChartState } from '../state/global_chart_state';
+import { TooltipInteractionState } from '../state/interactions_state';
+import { BackwardRef } from '../state/internal_chart_state';
 import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';

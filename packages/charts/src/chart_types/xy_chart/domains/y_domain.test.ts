@@ -7,14 +7,14 @@
  */
 
 import { coerceYScaleTypes, groupSeriesByYGroup } from './y_domain';
-import { ChartType } from '../..';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { MockYDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
+import { SpecType } from '../../../specs/spec_type';
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import { Logger } from '../../../utils/logger';
+import { ChartType } from '../../chart_type';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 import { BasicSeriesSpec, SeriesType, DEFAULT_GLOBAL_ID, StackMode } from '../utils/specs';
 

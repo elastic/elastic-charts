@@ -9,14 +9,17 @@
 import { ComponentProps } from 'react';
 
 import { GoalSubtype } from './constants';
-import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { TAU } from '../../../common/constants';
-import { Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants';
-import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
-import { LabelAccessor, round, stripUndefined, ValueFormatter } from '../../../utils/common';
+import { Spec } from '../../../specs/spec';
+import { SpecType } from '../../../specs/spec_type';
+import { SFProps } from '../../../state/build_props_types';
+import { buildSFProps } from '../../../state/build_sf_props';
+import { useSpecFactory } from '../../../state/spec_factory';
+import { LabelAccessor, round, ValueFormatter } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';
+import { stripUndefined } from '../../../utils/strip_undefined';
+import { ChartType } from '../../chart_type';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 
 /** @alpha */

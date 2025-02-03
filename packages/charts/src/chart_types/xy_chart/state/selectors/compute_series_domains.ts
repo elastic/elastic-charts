@@ -8,8 +8,8 @@
 
 import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getAnnotationSpecsSelector, getSeriesSpecsSelector } from './get_specs';
-import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
 import { computeSeriesDomains } from '../utils/utils';

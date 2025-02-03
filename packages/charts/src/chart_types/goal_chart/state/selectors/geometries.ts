@@ -7,13 +7,13 @@
  */
 
 import { render } from './scenegraph';
-import { ChartType } from '../../..';
-import { SpecType } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { SpecType } from '../../../../specs/spec_type';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecs } from '../../../../state/selectors/get_specs';
-import { getSpecFromStore } from '../../../../state/utils';
+import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';
+import { ChartType } from '../../../chart_type';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geoms, Mark } from '../../layout/viewmodel/geoms';
 import { GoalSpec } from '../../specs';

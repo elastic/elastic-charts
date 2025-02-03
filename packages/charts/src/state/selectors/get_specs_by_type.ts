@@ -6,11 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../chart_types';
-import { Spec, SpecType } from '../../specs';
-import { GlobalChartState } from '../chart_state';
+import { ChartType } from '../../chart_types/chart_type';
+import { Spec } from '../../specs/spec';
+import { SpecType } from '../../specs/spec_type';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSpecsFromStore } from '../utils';
+import { GlobalChartState } from '../global_chart_state';
+import { getSpecsFromStore } from '../utils/get_specs_from_store';
 
 /** @internal */
 export const getSpecsByType = <S extends Spec>(chartType: ChartType, specType: SpecType) =>

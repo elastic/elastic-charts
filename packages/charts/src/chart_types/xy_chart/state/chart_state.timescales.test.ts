@@ -6,22 +6,25 @@
  * Side Public License, v 1.
  */
 
+import { configureStore } from '@reduxjs/toolkit';
 import { DateTime } from 'luxon';
-import { createStore, Store } from 'redux';
+import { Store } from 'redux';
 
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getComputedScalesSelector } from './selectors/get_computed_scales';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
-import { ChartType } from '../..';
 import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { SettingsSpec } from '../../../specs';
-import { SpecType, DEFAULT_SETTINGS_SPEC } from '../../../specs/constants';
+import { DEFAULT_SETTINGS_SPEC } from '../../../specs/default_settings_spec';
+import { SettingsSpec } from '../../../specs/settings';
+import { SpecType } from '../../../specs/spec_type';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
+import { chartSlice } from '../../../state/chart_state';
+import { GlobalChartState } from '../../../state/global_chart_state';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { ChartType } from '../../chart_type';
 import { LineSeriesSpec, SeriesType } from '../utils/specs';
 
 describe('Render chart', () => {
@@ -31,8 +34,9 @@ describe('Render chart', () => {
     const day2 = day1 + 1000 * 60 * 60 * 24;
     const day3 = day2 + 1000 * 60 * 60 * 24;
     beforeEach(() => {
-      const storeReducer = chartStoreReducer('chartId');
-      store = createStore(storeReducer);
+      store = configureStore({
+        reducer: chartSlice.reducer,
+      });
 
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
@@ -104,8 +108,9 @@ describe('Render chart', () => {
     const date2 = date1 + 1000 * 60 * 5;
     const date3 = date2 + 1000 * 60 * 5;
     beforeEach(() => {
-      const storeReducer = chartStoreReducer('chartId');
-      store = createStore(storeReducer);
+      store = configureStore({
+        reducer: chartSlice.reducer,
+      });
 
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
@@ -176,8 +181,9 @@ describe('Render chart', () => {
     const date2 = date1 + 1000 * 60 * 5;
     const date3 = date2 + 1000 * 60 * 5;
     beforeEach(() => {
-      const storeReducer = chartStoreReducer('chartId');
-      store = createStore(storeReducer);
+      store = configureStore({
+        reducer: chartSlice.reducer,
+      });
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
         specType: SpecType.Series,

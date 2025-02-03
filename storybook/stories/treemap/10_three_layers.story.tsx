@@ -19,7 +19,7 @@ import {
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
-import { keepDistinct } from '@elastic/charts/src/utils/common';
+import { keepDistinct } from '@elastic/charts/src/utils/keep_distinct';
 
 import { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';

@@ -10,15 +10,15 @@ import { mount } from 'enzyme';
 import React from 'react';
 
 import { AnnotationLineProps } from './types';
-import { ChartType } from '../../..';
 import { Chart } from '../../../../components/chart';
 import { MockAnnotationLineProps, MockAnnotationRectProps } from '../../../../mocks/annotations/annotations';
 import { ScaleType } from '../../../../scales/constants';
-import { SpecType } from '../../../../specs/constants';
 import { Settings } from '../../../../specs/settings';
+import { SpecType } from '../../../../specs/spec_type';
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationId } from '../../../../utils/ids';
+import { ChartType } from '../../../chart_type';
 import { LineAnnotation } from '../../specs/line_annotation';
 import { LineSeries } from '../../specs/line_series';
 import { AnnotationDomainType, AnnotationType, RectAnnotationSpec } from '../../utils/specs';

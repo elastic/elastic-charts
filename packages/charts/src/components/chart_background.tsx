@@ -10,7 +10,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Colors } from '../common/colors';
-import { GlobalChartState } from '../state/chart_state';
+import { GlobalChartState } from '../state/global_chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 

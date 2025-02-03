@@ -10,9 +10,9 @@ import { Selector } from 'react-redux';
 
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
-import { ChartType } from '../../..';
+import { ChartType } from '../../../chart_type';
 import { SeriesIdentifier } from '../../../../common/series_id';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';

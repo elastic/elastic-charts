@@ -18,7 +18,7 @@ import {
   GoalChartData,
   GoalChartLabels,
 } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
-import { GlobalChartState } from '../../state/chart_state';
+import { GlobalChartState } from '../../state/global_chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,

@@ -15,9 +15,9 @@ import { renderXYChartCanvas2d } from './renderers';
 import { hasMostlyRTL } from './utils/has_mostly_rtl';
 import { LegendItem } from '../../../../common/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
-import { settingsBuildProps } from '../../../../specs';
+import { settingsBuildProps } from '../../../../specs/default_settings_spec';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { computePanelsSelectors, PanelGeoms } from '../../../../state/selectors/compute_panels';
 import {
   A11ySettings,

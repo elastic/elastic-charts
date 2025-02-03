@@ -8,8 +8,8 @@
 
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
-import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
+import { ScaleContinuousType } from '../../../scales/scale_continuous_type';
 import { PointGeometry } from '../../../utils/geometry';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';

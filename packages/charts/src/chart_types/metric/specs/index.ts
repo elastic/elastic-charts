@@ -9,14 +9,14 @@
 import { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
-import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
-import { Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants';
+import { Spec } from '../../../specs/spec';
+import { SpecType } from '../../../specs/spec_type';
 import { specComponentFactory } from '../../../state/spec_factory';
 import { LayoutDirection, ValueFormatter } from '../../../utils/common';
 import { GenericDomain } from '../../../utils/domain';
 import { BulletValueLabels } from '../../bullet_graph/spec';
+import { ChartType } from '../../chart_type';
 
 /** @alpha */
 export type MetricBase = {

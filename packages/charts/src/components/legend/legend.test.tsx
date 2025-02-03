@@ -13,10 +13,11 @@ import { Legend } from './legend';
 import { LegendListItem } from './legend_item';
 import { LegendTable } from './legend_table';
 import { LegendTableRow } from './legend_table/legend_table_row';
+import { BarSeries } from '../../chart_types/specs';
 import { LegendValue } from '../../common/legend';
 import { SeededDataGenerator } from '../../mocks/utils';
 import { ScaleType } from '../../scales/constants';
-import { Settings, BarSeries, LegendColorPicker } from '../../specs';
+import { Settings, LegendColorPicker } from '../../specs/settings';
 import { Chart } from '../chart';
 
 const dg = new SeededDataGenerator();

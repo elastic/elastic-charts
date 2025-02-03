@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../..';
+import { ChartType } from '../../../chart_type';
 import { Color } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
 import { PerPanelMap } from '../../../../common/panel_utils';

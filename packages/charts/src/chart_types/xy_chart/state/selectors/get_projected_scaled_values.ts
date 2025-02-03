@@ -9,7 +9,7 @@
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
-import { ProjectedValues } from '../../../../specs/settings';
+import { ProjectedValues } from '../../../../specs/settings_types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { isNil } from '../../../../utils/common';
 

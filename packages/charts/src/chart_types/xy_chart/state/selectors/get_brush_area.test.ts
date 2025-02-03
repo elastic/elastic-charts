@@ -10,7 +10,7 @@ import { getBrushAreaSelector } from './get_brush_area';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
-import { BrushAxis } from '../../../../specs/constants';
+import { BrushAxis } from '../../../../specs/brush_axis';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 
 describe('getBrushArea selector', () => {

@@ -12,8 +12,8 @@ import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { TooltipActions } from './tooltip_actions';
 import { TooltipPrompt } from './tooltip_prompt';
 import { useTooltipContext } from './tooltip_provider';
+import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum } from '../../../specs';
 import { TooltipSpec } from '../../../specs/tooltip';
 import { Datum } from '../../../utils/common';
 

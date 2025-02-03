@@ -8,9 +8,9 @@
 
 import { getTooltipSpecSelector } from './get_tooltip_spec';
 import { isExternalTooltipVisibleSelector } from './is_external_tooltip_visible';
-import { ChartType } from '../../chart_types';
+import { ChartType } from '../../chart_types/chart_type';
 import { getTooltipInfoAndGeomsSelector } from '../../chart_types/xy_chart/state/selectors/get_tooltip_values_highlighted_geoms';
-import { GlobalChartState } from '../chart_state';
+import { GlobalChartState } from '../global_chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 /**

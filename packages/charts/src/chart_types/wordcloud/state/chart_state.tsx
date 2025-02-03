@@ -9,14 +9,15 @@
 import React from 'react';
 
 import { getWordcloudSpecSelector } from './selectors/wordcloud_spec';
-import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES, EMPTY_LEGEND_LIST } from '../../../common/legend';
-import { InternalChartState, GlobalChartState } from '../../../state/chart_state';
+import { GlobalChartState } from '../../../state/global_chart_state';
+import { InternalChartState } from '../../../state/internal_chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
+import { ChartType } from '../../chart_type';
 import { Wordcloud } from '../renderer/svg/connected_component';
 
 const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });

@@ -10,9 +10,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Rect } from '../../../../geoms/types';
-import { getTooltipType } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { getTooltipType } from '../../../../specs/tooltip';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';

@@ -10,13 +10,14 @@ import { OutputSelector } from 'reselect';
 
 import { getPickedCells } from './get_picked_cells';
 import { isBrushEndProvided } from './is_brush_available';
-import { ChartType } from '../../..';
 import { HeatmapBrushEvent, SettingsSpec } from '../../../../specs/settings';
-import { DragState, GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { GlobalChartState } from '../../../../state/global_chart_state';
+import { DragState } from '../../../../state/pointer_states';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { DragCheckProps, hasDragged } from '../../../../utils/events';
+import { ChartType } from '../../../chart_type';
 
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:

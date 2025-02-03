@@ -7,12 +7,16 @@
  */
 
 import { Cancelable } from 'lodash';
-import { createStore, Store } from 'redux';
+import { Store } from 'redux';
 
-import { DEFAULT_SETTINGS_SPEC, SettingsSpec, Spec, SpecType } from '../../specs';
+import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
+import { SettingsSpec } from '../../specs/settings';
+import { Spec } from '../../specs/spec';
+import { SpecType } from '../../specs/spec_type';
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
-import { chartStoreReducer, GlobalChartState } from '../../state/chart_state';
+import { chartStore, initialize } from '../../state/chart_state';
+import { GlobalChartState } from '../../state/global_chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../utils/common';
 
@@ -22,10 +26,9 @@ export class MockStore {
     { width, height, top, left } = { width: 100, height: 100, top: 0, left: 0 },
     chartId = 'chartId',
   ): Store<GlobalChartState> {
-    const storeReducer = chartStoreReducer(chartId);
-    const store = createStore(storeReducer);
-    store.dispatch(updateParentDimensions({ width, height, top, left }));
-    return store;
+    chartStore.dispatch(initialize({ id: chartId }));
+    chartStore.dispatch(updateParentDimensions({ width, height, top, left }));
+    return chartStore;
   }
 
   static addSpecs(specs: Spec | Array<Spec>, store: Store<GlobalChartState>) {

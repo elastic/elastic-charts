@@ -43,6 +43,7 @@
     "d3-interpolate": "^3.0.1",
     "d3-scale": "^3.3.0",
     "d3-shape": "^2.0.0",
+    "immer": "^9.0.21",
     "prop-types": "^15.7.2",
     "re-reselect": "^3.4.0",
     "react-redux": "^7.2.8",

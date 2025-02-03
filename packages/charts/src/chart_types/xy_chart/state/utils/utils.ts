@@ -9,12 +9,13 @@
 import { isHorizontalRotation } from './common';
 import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
 import { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';
+import { TickFormatter } from '../../../../chart_types/specs';
 import { Color } from '../../../../common/colors';
 import { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../common/panel_utils';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
-import { SettingsSpec, TickFormatter } from '../../../../specs';
+import { SettingsSpec } from '../../../../specs/settings';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isFiniteNumber, isNil, isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';

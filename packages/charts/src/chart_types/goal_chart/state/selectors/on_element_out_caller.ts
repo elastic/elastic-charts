@@ -10,9 +10,9 @@ import { Selector } from 'react-redux';
 
 import { getGoalSpecSelector } from './get_goal_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
-import { ChartType } from '../../..';
+import { ChartType } from '../../../chart_type';
 import { getOnElementOutSelector } from '../../../../common/event_handler_selectors';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/global_chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 
