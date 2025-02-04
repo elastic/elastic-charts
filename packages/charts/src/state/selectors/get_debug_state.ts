@@ -7,7 +7,7 @@
  */
 
 import { getChartContainerDimensionsSelector } from './get_chart_container_dimensions';
-import { GlobalChartState } from '../global_chart_state';
+import { GlobalChartState } from '../chart_state';
 import { DebugState } from '../types';
 
 /** @internal */

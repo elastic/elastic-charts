@@ -14,7 +14,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { SettingsSpec, WordCloudElementEvent } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/global_chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,

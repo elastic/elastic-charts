@@ -7,8 +7,8 @@
  */
 
 import { TooltipValue } from '../../specs/tooltip';
+import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
-import { GlobalChartState } from '../global_chart_state';
 
 /** @internal */
 export const getTooltipToggledItems = (state: GlobalChartState) => state.interactions.tooltip.selected;

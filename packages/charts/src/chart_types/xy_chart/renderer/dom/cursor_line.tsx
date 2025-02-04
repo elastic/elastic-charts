@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { Rect } from '../../../../geoms/types';
 import { TooltipType } from '../../../../specs/constants';
 import { getTooltipType } from '../../../../specs/tooltip';
-import { GlobalChartState } from '../../../../state/global_chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { TooltipInteractionState } from '../../../../state/interactions_state';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';

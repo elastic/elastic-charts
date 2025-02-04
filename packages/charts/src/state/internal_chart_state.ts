@@ -8,7 +8,7 @@
 
 import { CSSProperties, RefObject } from 'react';
 
-import { GlobalChartState } from './global_chart_state';
+import { GlobalChartState } from './chart_state';
 import { InitStatus } from './selectors/get_internal_is_intialized';
 import { LegendItemLabel } from './selectors/get_legend_items_labels';
 import { DebugState } from './types';

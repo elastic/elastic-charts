@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../../chart_type';
 import { Color } from '../../../../common/colors';
 import { Pixels } from '../../../../common/geometry';
 import { PerPanelMap } from '../../../../common/panel_utils';
@@ -16,6 +15,7 @@ import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Visible, HeatmapStyle } from '../../../../utils/themes/theme';
+import { ChartType } from '../../../chart_type';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
 

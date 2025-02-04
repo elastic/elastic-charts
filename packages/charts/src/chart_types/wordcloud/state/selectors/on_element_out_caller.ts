@@ -10,11 +10,11 @@ import { Selector } from 'react-redux';
 
 import { getPickedShapesLayerValues } from './picked_shapes';
 import { getWordcloudSpecSelector } from './wordcloud_spec';
-import { ChartType } from '../../../chart_type';
 import { getOnElementOutSelector } from '../../../../common/event_handler_selectors';
-import { GlobalChartState } from '../../../../state/global_chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { ChartType } from '../../../chart_type';
 
 /**
  * Will call the onElementOut listener every time the following preconditions are met:

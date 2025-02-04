@@ -7,7 +7,7 @@
  */
 
 import { computeAxesSizesSelector } from './compute_axes_sizes';
-import { GlobalChartState } from '../../../../state/global_chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { ChartDimensions } from '../../../../utils/dimensions';

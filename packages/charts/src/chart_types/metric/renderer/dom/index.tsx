@@ -29,7 +29,7 @@ import { Color } from '../../../../common/colors';
 import { settingsBuildProps } from '../../../../specs/default_settings_spec';
 import { BasicListener, ElementClickListener, ElementOverListener } from '../../../../specs/settings';
 import { onChartRendered as onChartRenderedAction } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/global_chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,

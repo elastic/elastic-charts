@@ -12,8 +12,8 @@ import { getPartitionSpec } from './partition_spec';
 import { getPickedShapesLayerValues } from './picked_shapes';
 import { getOnElementOverSelector } from '../../../../common/event_handler_selectors';
 import { LayerValue } from '../../../../specs/settings';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { ChartType } from '../../../chart_type';
 

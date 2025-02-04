@@ -22,7 +22,7 @@ import {
   onPointerMove as onPointerMoveAction,
 } from '../state/actions/mouse';
 import { pinTooltip as pinTooltipAction } from '../state/actions/tooltip';
-import { GlobalChartState } from '../state/global_chart_state';
+import { GlobalChartState } from '../state/chart_state';
 import { TooltipInteractionState } from '../state/interactions_state';
 import { BackwardRef } from '../state/internal_chart_state';
 import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';

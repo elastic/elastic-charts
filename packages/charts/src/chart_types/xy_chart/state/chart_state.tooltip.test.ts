@@ -16,7 +16,7 @@ import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { chartSlice } from '../../../state/chart_state';
-import { GlobalChartState } from '../../../state/global_chart_state';
+import { GlobalChartState } from '../../../state/chart_state';
 
 describe('XYChart - State tooltips', () => {
   let store: Store<GlobalChartState>;

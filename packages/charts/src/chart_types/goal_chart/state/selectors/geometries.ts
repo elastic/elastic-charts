@@ -8,8 +8,8 @@
 
 import { render } from './scenegraph';
 import { SpecType } from '../../../../specs/spec_type';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';

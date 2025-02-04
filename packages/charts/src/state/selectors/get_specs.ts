@@ -8,7 +8,7 @@
 
 import { Selector } from 're-reselect';
 
-import { GlobalChartState } from '../global_chart_state';
+import { GlobalChartState } from '../chart_state';
 import { SpecList } from '../spec_list';
 
 /**

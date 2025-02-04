@@ -28,7 +28,7 @@ import { SpecType } from '../../specs/spec_type';
 import { TooltipValue } from '../../specs/tooltip';
 import { onChartRendered } from '../../state/actions/chart';
 import { onPointerMove } from '../../state/actions/mouse';
-import { GlobalChartState } from '../../state/global_chart_state';
+import { GlobalChartState } from '../../state/chart_state';
 import { BackwardRef } from '../../state/internal_chart_state';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';

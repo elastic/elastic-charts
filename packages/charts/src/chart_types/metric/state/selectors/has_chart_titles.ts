@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from './../../../../state/global_chart_state';
+import { GlobalChartState } from './../../../../state/chart_state';
 import { canDisplayChartTitles } from './can_display_chart_titles';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 

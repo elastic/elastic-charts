@@ -10,7 +10,7 @@ import { Store } from 'redux';
 
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store/store';
-import { GlobalChartState } from '../../../state/global_chart_state';
+import { GlobalChartState } from '../../../state/chart_state';
 import { DEFAULT_A11Y_SETTINGS } from '../../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 

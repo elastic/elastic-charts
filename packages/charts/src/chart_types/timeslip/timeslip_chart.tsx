@@ -17,7 +17,7 @@ import { TooltipType } from '../../specs/constants';
 import { SettingsSpec } from '../../specs/settings';
 import { SpecType } from '../../specs/spec_type';
 import { onChartRendered } from '../../state/actions/chart';
-import { GlobalChartState } from '../../state/global_chart_state';
+import { GlobalChartState } from '../../state/chart_state';
 import { BackwardRef } from '../../state/internal_chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';

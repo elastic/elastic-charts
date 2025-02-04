@@ -9,8 +9,8 @@
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getBrushedHighlightedShapesSelector } from './get_brushed_highlighted_shapes';
 import { BrushAxis } from '../../../../specs/brush_axis';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isBrushingSelector } from '../../../../state/selectors/is_brushing';

@@ -18,7 +18,7 @@ import { LegendPositionConfig } from '../../specs/settings';
 import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { isDefined, LayoutDirection, Position } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
-import { GlobalChartState } from '../global_chart_state';
+import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;

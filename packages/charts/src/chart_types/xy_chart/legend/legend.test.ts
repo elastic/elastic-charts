@@ -13,7 +13,7 @@ import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/spec_type';
 import { onToggleDeselectSeriesAction } from '../../../state/actions/legend';
-import { GlobalChartState } from '../../../state/global_chart_state';
+import { GlobalChartState } from '../../../state/chart_state';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { ChartType } from '../../chart_type';

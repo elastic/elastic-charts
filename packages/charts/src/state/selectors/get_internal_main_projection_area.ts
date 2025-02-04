@@ -7,7 +7,7 @@
  */
 
 import { Dimensions } from '../../utils/dimensions';
-import { GlobalChartState } from '../global_chart_state';
+import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalMainProjectionAreaSelector = (state: GlobalChartState): Dimensions => {

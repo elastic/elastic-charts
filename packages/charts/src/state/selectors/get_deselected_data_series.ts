@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../global_chart_state';
+import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;

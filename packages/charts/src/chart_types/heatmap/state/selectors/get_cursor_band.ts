@@ -11,8 +11,8 @@ import { getTooltipAnchorSelector } from './get_tooltip_anchor';
 import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
 import { Rect } from '../../../../geoms/types';
 import { isPointerOverEvent } from '../../../../specs/settings';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getInternalIsBrushingSelector } from '../../../../state/selectors/get_internal_is_brushing';
 import { isNil } from '../../../../utils/common';
 
