@@ -11,15 +11,11 @@ import React from 'react';
 import { canDisplayChartTitles } from './selectors/can_display_chart_titles';
 import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
-import { LegendItem } from '../../../common/legend';
+import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
 import { GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
+import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
 import { Metric } from '../renderer/dom';
-
-const EMPTY_MAP = new Map();
-const EMPTY_LEGEND_LIST: LegendItem[] = [];
-const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /** @internal */
 export class MetricState implements InternalChartState {
@@ -32,7 +28,7 @@ export class MetricState implements InternalChartState {
   isChartEmpty = () => false;
   getLegendItems = () => EMPTY_LEGEND_LIST;
   getLegendItemsLabels = () => EMPTY_LEGEND_ITEM_LIST;
-  getLegendExtraValues = () => EMPTY_MAP;
+  getLegendExtraValues = () => EMPTY_LEGEND_ITEM_EXTRA_VALUES;
   getPointerCursor = () => DEFAULT_CSS_CURSOR;
   isTooltipVisible = () => ({
     visible: false,
