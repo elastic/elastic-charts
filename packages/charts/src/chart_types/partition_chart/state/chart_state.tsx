@@ -20,16 +20,13 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 import { ChartType } from '../..';
-import { LegendItemExtraValues } from '../../../common/legend';
-import { SeriesKey } from '../../../common/series_id';
+import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
 import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { render } from '../renderer/dom/layered_partition_chart';
-
-const EMPTY_MAP = new Map<SeriesKey, LegendItemExtraValues>();
 
 /** @internal */
 export class PartitionState implements InternalChartState {
@@ -75,7 +72,7 @@ export class PartitionState implements InternalChartState {
   }
 
   getLegendExtraValues() {
-    return EMPTY_MAP;
+    return EMPTY_LEGEND_ITEM_EXTRA_VALUES;
   }
 
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {

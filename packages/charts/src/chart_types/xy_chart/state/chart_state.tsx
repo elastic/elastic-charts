@@ -16,7 +16,6 @@ import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_desc
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getLegendItemExtraValuesSelector } from './selectors/get_legend_item_extra_values';
-import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
 import { getSeriesSpecsSelector } from './selectors/get_specs';
 import { getTooltipAnchorPositionSelector } from './selectors/get_tooltip_anchor_position';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
@@ -37,6 +36,7 @@ import { Tooltip } from '../../../components/tooltip/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
+import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 import { htmlIdGenerator } from '../../../utils/common';
 import { XYChart } from '../renderer/canvas/xy_chart';
@@ -103,8 +103,8 @@ export class XYAxisChartState implements InternalChartState {
     return getBrushAreaSelector(globalState);
   }
 
-  getLegendItemsLabels(globalState: GlobalChartState) {
-    return getLegendItemsLabelsSelector(globalState as unknown as never);
+  getLegendItemsLabels() {
+    return EMPTY_LEGEND_ITEM_LIST;
   }
 
   getLegendItems(globalState: GlobalChartState) {
