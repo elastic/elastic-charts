@@ -17,7 +17,7 @@ import { SFProps } from '../state/build_props_types';
 import { buildSFProps } from '../state/build_sf_props';
 import { useSpecFactory } from '../state/spec_factory';
 import { Datum } from '../utils/common';
-import { stripUndefined } from '../utils/strip_undefined';
+import { stripUndefined } from '../utils/common';
 
 /** @public */
 export type GroupByAccessor<D extends BaseDatum = any> = (spec: Spec, datum: D) => string | number;

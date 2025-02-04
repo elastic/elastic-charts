@@ -13,7 +13,7 @@ import { SpecType } from '../../specs/spec_type'; // kept as long-winded import 
 import { SFProps } from '../../state/build_props_types';
 import { buildSFProps } from '../../state/build_sf_props';
 import { useSpecFactory } from '../../state/spec_factory';
-import { stripUndefined } from '../../utils/strip_undefined';
+import { stripUndefined } from '../../utils/common';
 import { ChartType } from '../chart_type';
 
 /**

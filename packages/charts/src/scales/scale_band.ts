@@ -8,8 +8,8 @@
 
 import { scaleBand, scaleQuantize } from 'd3-scale';
 
+import { ScaleBandType } from '.';
 import { ScaleType } from './constants';
-import { ScaleBandType } from './scale_band_type';
 import { Ratio } from '../common/geometry';
 import { RelativeBandsPadding } from '../specs/small_multiples';
 import { clamp } from '../utils/common';

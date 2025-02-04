@@ -20,7 +20,7 @@ import {
 } from './build_props_types';
 import { Spec } from '../specs/spec';
 import { upsertSpec, removeSpec } from '../state/actions/specs';
-import { stripUndefined } from '../utils/strip_undefined';
+import { stripUndefined } from '../utils/common';
 
 /**
  * Used inside custom spec component to link component to state as new spec

@@ -25,25 +25,11 @@ export {
   RectAnnotationProps,
 } from './xy_chart/specs';
 
-export {
-  DEFAULT_GLOBAL_ID,
-  AnnotationDomainType,
-  AnnotationType,
-  AnnotationSpec,
-  AxisSpec,
-  BarStyleOverride,
-  BaseDatum,
-  BasicSeriesSpec,
-  CustomXDomain,
-  DomainPaddingUnit,
-  LineAnnotationDatum,
-  RectAnnotationDatum,
-  SeriesSpecs,
-  SeriesType,
-  TickFormatter,
-  XScaleType,
-  YDomainRange,
-} from './xy_chart/utils/specs';
+export * from './xy_chart/utils/specs';
+
+export * from './wordcloud/specs';
+
+export * from './goal_chart/specs';
 
 export { Partition } from './partition_chart/specs';
 

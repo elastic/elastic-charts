@@ -16,9 +16,8 @@ import { SpecType } from '../../specs/spec_type';
 import { SFProps } from '../../state/build_props_types';
 import { buildSFProps } from '../../state/build_sf_props';
 import { useSpecFactory } from '../../state/spec_factory';
-import { mergePartial, ValueFormatter } from '../../utils/common';
+import { mergePartial, ValueFormatter, stripUndefined } from '../../utils/common';
 import { GenericDomain } from '../../utils/domain';
-import { stripUndefined } from '../../utils/strip_undefined';
 
 /** @public */
 export interface BulletDatum {
