@@ -9,8 +9,8 @@
 import { ChartType } from '../../chart_types/chart_type';
 import { Spec } from '../../specs/spec';
 import { SpecType } from '../../specs/spec_type';
+import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
-import { GlobalChartState } from '../global_chart_state';
 import { getSpecsFromStore } from '../utils/get_specs_from_store';
 
 /** @internal */

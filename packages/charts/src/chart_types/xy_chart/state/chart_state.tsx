@@ -32,7 +32,7 @@ import { LegendItemExtraValues } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { BrushTool } from '../../../components/brush/brush';
 import { Tooltip } from '../../../components/tooltip/tooltip';
-import { GlobalChartState } from '../../../state/global_chart_state';
+import { GlobalChartState } from '../../../state/chart_state';
 import { InternalChartState, BackwardRef } from '../../../state/internal_chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';

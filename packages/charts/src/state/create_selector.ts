@@ -10,7 +10,7 @@
 import createCachedSelector, { ICacheObject, Options } from 're-reselect';
 import { createSelector } from 'reselect';
 
-import { GlobalChartState } from './global_chart_state';
+import { GlobalChartState } from './chart_state';
 
 /**
  * Custom object cache

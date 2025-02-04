@@ -12,7 +12,7 @@ import { Dispatch, bindActionCreators } from 'redux';
 
 import { ResizeListener } from '../specs/settings';
 import { updateParentDimensions } from '../state/actions/chart_settings';
-import { GlobalChartState } from '../state/global_chart_state';
+import { GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 
 interface ResizerStateProps {

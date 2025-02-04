@@ -15,7 +15,7 @@ import { Store } from 'redux';
 import { Settings, SettingsSpec } from './settings';
 import { SpecsParser } from './specs_parser';
 import { chartSlice } from '../state/chart_state';
-import { GlobalChartState } from '../state/global_chart_state';
+import { GlobalChartState } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { Position, Rendering, Rotation } from '../utils/common';

@@ -10,7 +10,7 @@ import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annota
 import { getAnnotationSpecsSelector } from './get_specs';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { DOMElementType } from '../../../../state/actions/dom_element';
-import { GlobalChartState } from '../../../../state/global_chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { AnnotationType } from '../../utils/specs';
 

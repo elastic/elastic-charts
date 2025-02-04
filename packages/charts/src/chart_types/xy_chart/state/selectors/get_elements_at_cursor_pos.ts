@@ -14,8 +14,8 @@ import { getOrientedProjectedPointerPositionSelector } from './get_oriented_proj
 import { PointerPosition } from './get_projected_pointer_position';
 import { SettingsSpec } from '../../../../specs/settings';
 import { PointerEvent } from '../../../../specs/settings_types';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { GlobalChartState } from '../../../../state/global_chart_state';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
 import { ChartDimensions } from '../../../../utils/dimensions';

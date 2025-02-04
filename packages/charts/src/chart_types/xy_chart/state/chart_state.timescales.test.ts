@@ -22,7 +22,7 @@ import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { chartSlice } from '../../../state/chart_state';
-import { GlobalChartState } from '../../../state/global_chart_state';
+import { GlobalChartState } from '../../../state/chart_state';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { ChartType } from '../../chart_type';
 import { LineSeriesSpec, SeriesType } from '../utils/specs';

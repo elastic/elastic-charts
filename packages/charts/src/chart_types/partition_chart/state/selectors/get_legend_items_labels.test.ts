@@ -11,7 +11,7 @@ import { Store } from 'redux';
 import { getLegendItemsLabels } from './get_legend_items_labels';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../../mocks/specs';
 import { MockStore } from '../../../../mocks/store';
-import { GlobalChartState } from '../../../../state/global_chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { PrimitiveValue } from '../../layout/utils/group_by_rollup';
 
 describe('Partition - Legend items labels', () => {

@@ -16,7 +16,7 @@ import { SpecType } from '../../specs/spec_type';
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
 import { chartStore, initialize } from '../../state/chart_state';
-import { GlobalChartState } from '../../state/global_chart_state';
+import { GlobalChartState } from '../../state/chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../utils/common';
 

@@ -18,7 +18,7 @@ import { getTooltipInfoSelector } from './selectors/tooltip';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
 import { Tooltip } from '../../../components/tooltip/tooltip';
-import { GlobalChartState } from '../../../state/global_chart_state';
+import { GlobalChartState } from '../../../state/chart_state';
 import { InternalChartState, BackwardRef, TooltipVisibility } from '../../../state/internal_chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';

@@ -7,7 +7,7 @@
  */
 
 import { LegendItem, EMPTY_LEGEND_LIST } from '../../common/legend';
-import { GlobalChartState } from '../global_chart_state';
+import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getLegendItemsSelector = (state: GlobalChartState): LegendItem[] => {

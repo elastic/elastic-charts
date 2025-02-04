@@ -11,7 +11,7 @@ import { Store } from 'redux';
 import { MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { removeSpec, upsertSpec, specParsed } from '../../../state/actions/specs';
-import { GlobalChartState } from '../../../state/global_chart_state';
+import { GlobalChartState } from '../../../state/chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { getLegendItemsSelector } from '../../../state/selectors/get_legend_items';
 

@@ -7,7 +7,7 @@
  */
 
 import { AnchorPosition } from '../../components/portal/types';
-import { GlobalChartState } from '../global_chart_state';
+import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalTooltipAnchorPositionSelector = (state: GlobalChartState): AnchorPosition | null => {

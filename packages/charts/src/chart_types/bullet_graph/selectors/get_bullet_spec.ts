@@ -9,7 +9,7 @@
 import { BulletSpec } from '../../../chart_types/bullet_graph/spec';
 import { ChartType } from '../../../chart_types/chart_type';
 import { SpecType } from '../../../specs/spec_type';
-import { GlobalChartState } from '../../../state/global_chart_state';
+import { GlobalChartState } from '../../../state/chart_state';
 import { getSpecFromStore } from '../../../state/utils/get_spec_from_store';
 
 /** @internal */
