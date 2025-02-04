@@ -133,8 +133,8 @@ export function LineMarker({
           datum,
         });
       }}
-      onMouseLeave={onDOMElementLeave}
-      onClick={onDOMElementClick}
+      onMouseLeave={() => onDOMElementLeave()}
+      onClick={() => onDOMElementClick()}
       style={{ ...markerStyle, ...transform }}
       type="button"
       aria-label={ariaLabel}
@@ -159,7 +159,7 @@ export function LineMarker({
           datum,
         });
       }}
-      onMouseLeave={onDOMElementLeave}
+      onMouseLeave={() => onDOMElementLeave()}
       style={{ ...markerStyle, ...transform }}
     >
       <div ref={iconRef} className="echAnnotation__icon">

@@ -36,12 +36,12 @@ describe('Highlight points', () => {
       );
     });
     it('On ordinal area chart, it should correctly highlight points', () => {
-      store.dispatch(onPointerMove({ x: 50, y: 100 }, 0));
+      store.dispatch(onPointerMove({ position: { x: 50, y: 100 }, time: 0 }));
       const { highlightedGeometries } = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(highlightedGeometries).toHaveLength(1);
     });
     it('On ordinal area chart, it should not highlight points if not within the buffer', () => {
-      store.dispatch(onPointerMove({ x: 5, y: 100 }, 0));
+      store.dispatch(onPointerMove({ position: { x: 5, y: 100 }, time: 0 }));
       const { highlightedGeometries } = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(highlightedGeometries).toHaveLength(0);
     });

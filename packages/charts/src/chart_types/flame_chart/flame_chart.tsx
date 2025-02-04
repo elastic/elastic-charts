@@ -27,7 +27,7 @@ import { SettingsSpec } from '../../specs/settings';
 import { SpecType } from '../../specs/spec_type';
 import { TooltipValue } from '../../specs/tooltip';
 import { onChartRendered } from '../../state/actions/chart';
-import { ON_POINTER_MOVE } from '../../state/actions/mouse';
+import { onPointerMove } from '../../state/actions/mouse';
 import { GlobalChartState } from '../../state/global_chart_state';
 import { BackwardRef } from '../../state/internal_chart_state';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
@@ -276,8 +276,8 @@ class FlameComponent extends React.Component<FlameProps> {
       columns.position0 === columns.position1 && columns.size0 === columns.size1 ? -Infinity : Infinity; // if nothing to tween, then skip it
   }
 
-  private pinTooltip = (pinned: boolean): void => {
-    if (!pinned) {
+  private pinTooltip = (payload: { pinned: boolean }): void => {
+    if (!payload.pinned) {
       this.unpinTooltip(true);
       return;
     }
@@ -613,7 +613,7 @@ class FlameComponent extends React.Component<FlameProps> {
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('click', this.handleUnpinningTooltip);
     window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
-    this.pinTooltip(true);
+    this.pinTooltip({ pinned: true });
     this.setState({}); // updates cursor
   };
 
@@ -654,7 +654,7 @@ class FlameComponent extends React.Component<FlameProps> {
     window.removeEventListener('keyup', this.handleKeyUp);
     window.removeEventListener('click', this.handleUnpinningTooltip);
     window.removeEventListener('visibilitychange', this.handleUnpinningTooltip);
-    this.pinTooltip(false);
+    this.pinTooltip({ pinned: false });
   };
 
   static watchedKeys: KeyboardEvent['key'][] = ['Escape'];
@@ -1164,7 +1164,8 @@ class FlameComponent extends React.Component<FlameProps> {
         </div>
         <BasicTooltip
           canPinTooltip={canPinTooltip}
-          onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
+          // @ts-ignore redux-toolkit complains about this
+          onPointerMove={() => onPointerMove({ position: { x: NaN, y: NaN }, time: NaN })}
           position={
             this.tooltipPinned
               ? { x: this.pinnedPointerX, y: this.pinnedPointerY, width: 0, height: 0 }

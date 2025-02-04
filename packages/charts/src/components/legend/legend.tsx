@@ -155,7 +155,8 @@ function LegendComponent(props: LegendStateProps & LegendDispatchProps) {
               extraValue: itemProps.extraValues.get(seriesIdentifiers[0]?.key ?? '')?.get(childId ?? ''),
               onItemOutAction,
               onItemOverActon: () => onItemOverAction(path),
-              onItemClickAction: (negate: boolean) => itemProps.toggleDeselectSeriesAction(seriesIdentifiers, negate),
+              onItemClickAction: (negate: boolean) =>
+                itemProps.toggleDeselectSeriesAction({ legendItemIds: seriesIdentifiers, metaKey: negate }),
             }))}
           />
         </div>

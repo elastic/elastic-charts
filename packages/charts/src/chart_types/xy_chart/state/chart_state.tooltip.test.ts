@@ -46,7 +46,7 @@ describe('XYChart - State tooltips', () => {
       [TooltipType.VerticalCursor, 1, false, 1],
       [TooltipType.Crosshairs, 1, false, 1],
     ])('tooltip type %s', (tooltipType, expectedHgeomsLength, expectHeader, expectedTooltipValuesLength) => {
-      store.dispatch(onPointerMove({ x: 25, y: 50 }, 0));
+      store.dispatch(onPointerMove({ position: { x: 25, y: 50 }, time: 0 }));
       store.dispatch(
         upsertSpec(
           MockGlobalSpec.tooltip({

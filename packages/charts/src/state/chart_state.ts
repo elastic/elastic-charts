@@ -17,9 +17,13 @@ import { ChartSliceState } from './chart_slice_state';
 import { chartTypeFromSpecs } from './chart_type_from_specs';
 import { getInitialState } from './get_initial_state';
 import { newInternalState } from './new_internal_state';
-import { interactionsReducer } from './reducers/interactions';
-import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
-import { getLegendItemsSelector } from './selectors/get_legend_items';
+import {
+  handleKeyActions,
+  handleMouseActions,
+  handleLegendActions,
+  handleDOMElementActions,
+  handleTooltipActions,
+} from './reducers/interactions';
 import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
 import { Color } from '../common/colors';
@@ -153,12 +157,12 @@ export const chartSlice = createSlice({
     handleSpecsActions(builder);
     handleZIndexActions(builder);
 
-    // Equivalent to default case in legacy reducer with switch statement
-    builder.addDefaultCase((state, action) => {
-      if (getInternalIsInitializedSelector(state) === InitStatus.Initialized) {
-        state.interactions = interactionsReducer(state, action, getLegendItemsSelector(state));
-      }
-    });
+    // interactions
+    handleKeyActions(builder);
+    handleMouseActions(builder);
+    handleLegendActions(builder);
+    handleDOMElementActions(builder);
+    handleTooltipActions(builder);
   },
 });
 
