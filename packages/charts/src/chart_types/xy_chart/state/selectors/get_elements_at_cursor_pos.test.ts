@@ -41,14 +41,14 @@ describe('getElementAtCursorPositionSelector', () => {
     });
 
     it('should correctly sort matched points near y = 2', () => {
-      store.dispatch(onPointerMove({ x: 0, y: 100 }, 0));
+      store.dispatch(onPointerMove({ position: { x: 0, y: 100 }, time: 0 }));
       const elements = getElementAtCursorPositionSelector(store.getState());
       expect(elements).toHaveLength(2);
       expect(elements.map(({ value }) => value.datum.y)).toEqual([2, 2.2]);
     });
 
     it('should correctly sort matched points near y = 2.2', () => {
-      store.dispatch(onPointerMove({ x: 0, y: 80 }, 0));
+      store.dispatch(onPointerMove({ position: { x: 0, y: 80 }, time: 0 }));
       const elements = getElementAtCursorPositionSelector(store.getState());
       expect(elements).toHaveLength(2);
       expect(elements.map(({ value }) => value.datum.y)).toEqual([2.2, 2]);
@@ -71,14 +71,14 @@ describe('getElementAtCursorPositionSelector', () => {
     });
 
     it('should correctly sort matched points near y = 2', () => {
-      store.dispatch(onPointerMove({ x: 0, y: 100 }, 0));
+      store.dispatch(onPointerMove({ position: { x: 0, y: 100 }, time: 0 }));
       const elements = getElementAtCursorPositionSelector(store.getState());
       expect(elements).toHaveLength(3);
       expect(elements.map(({ value }) => value.datum.y)).toEqual([2, 2.2, 2]);
     });
 
     it('should correctly sort matched points near y = 2.2', () => {
-      store.dispatch(onPointerMove({ x: 0, y: 80 }, 0));
+      store.dispatch(onPointerMove({ position: { x: 0, y: 80 }, time: 0 }));
       const elements = getElementAtCursorPositionSelector(store.getState());
       expect(elements).toHaveLength(4);
       expect(elements.map(({ value }) => value.datum.y)).toEqual([2.2, 2, 2, 3]);

@@ -135,8 +135,8 @@ export type Neverify<T extends Record<string, unknown>> = {
 };
 
 /** @public */
-export type ToggleSelectedTooltipItemCallback = (item: TooltipValue<any, SeriesIdentifier>) => any;
+export type ToggleSelectedTooltipItemCallback = (item: TooltipValue<any, SeriesIdentifier>) => void;
 /** @public */
-export type SetSelectedTooltipItemsCallback = (items: TooltipValue<any, SeriesIdentifier>[]) => any;
+export type SetSelectedTooltipItemsCallback = (items: TooltipValue<any, SeriesIdentifier>[]) => void;
 /** @public */
-export type PinTooltipCallback = (pinned: boolean, resetPointer?: boolean) => any;
+export type PinTooltipCallback = (payload: { pinned: boolean; resetPointer?: boolean }) => void;

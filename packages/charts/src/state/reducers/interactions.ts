@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
+
 import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 import { ChartType } from '../../chart_types/chart_type';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
@@ -13,26 +15,22 @@ import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/st
 import { LegendItem } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
 import { getDelta } from '../../utils/point';
-import { DOMElementActions, ON_DOM_ELEMENT_ENTER, ON_DOM_ELEMENT_LEAVE } from '../actions/dom_element';
-import { KeyActions, ON_KEY_UP } from '../actions/key';
+import { onDOMElementEnter, onDOMElementLeave } from '../actions/dom_element';
+import { onKeyPress } from '../actions/key';
 import {
-  LegendActions,
-  ON_LEGEND_ITEM_OUT,
-  ON_LEGEND_ITEM_OVER,
-  ON_TOGGLE_DESELECT_SERIES,
+  onLegendItemOutAction,
+  onLegendItemOverAction,
+  onToggleDeselectSeriesAction,
   ToggleDeselectSeriesAction,
 } from '../actions/legend';
-import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../actions/mouse';
-import {
-  TOGGLE_SELECTED_TOOLTIP_ITEM,
-  PIN_TOOLTIP,
-  TooltipActions,
-  SET_SELECTED_TOOLTIP_ITEMS,
-} from '../actions/tooltip';
+import { onMouseDown, onMouseUp, onPointerMove } from '../actions/mouse';
+import { toggleSelectedTooltipItem, pinTooltip, setSelectedTooltipItems } from '../actions/tooltip';
+import { ChartSliceState } from '../chart_slice_state';
 import { GlobalChartState } from '../global_chart_state';
-import { InteractionsState } from '../interactions_state';
+import { getInternalIsInitializedSelector, InitStatus } from '../selectors/get_internal_is_intialized';
 import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
+import { getLegendItemsSelector } from '../selectors/get_legend_items';
 import { getInitialPointerState } from '../utils/get_initial_pointer_state';
 import { getInitialTooltipState } from '../utils/get_initial_tooltip_state';
 
@@ -42,224 +40,192 @@ import { getInitialTooltipState } from '../utils/get_initial_tooltip_state';
 const DRAG_DETECTION_PIXEL_DELTA = 4;
 
 /** @internal */
-export function interactionsReducer(
-  globalState: GlobalChartState,
-  action: LegendActions | MouseActions | KeyActions | DOMElementActions | TooltipActions,
-  legendItems: LegendItem[],
-): InteractionsState {
-  const { interactions: state } = globalState;
-  switch (action.type) {
-    case ON_KEY_UP:
-      if (action.key === 'Escape') {
-        if (state.tooltip.pinned) {
-          return {
-            ...state,
-            pointer: getInitialPointerState(),
-            tooltip: getInitialTooltipState(),
-          };
-        }
+export const handleKeyActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder.addCase(onKeyPress, (state, action) => {
+    if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
 
-        return {
-          ...state,
-          pointer: getInitialPointerState(),
-        };
+    if (action.payload === 'Escape') {
+      if (state.interactions.tooltip.pinned) {
+        state.interactions.pointer = getInitialPointerState();
+        state.interactions.tooltip = getInitialTooltipState();
+        return;
       }
 
-      return state;
+      state.interactions.pointer = getInitialPointerState();
+    }
+  });
+};
 
-    case ON_POINTER_MOVE:
+/** @internal */
+export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder
+    .addCase(onPointerMove, (state, action) => {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+
       // The dragging is enabled when the delta between down and move positions is greater than a constant.
       // After this initial threshold, the dragging still enabled until the mouse up event
       const dragging =
-        state.pointer.dragging ||
-        (!!state.pointer.down && getDelta(state.pointer.down.position, action.position) > DRAG_DETECTION_PIXEL_DELTA);
-      return {
-        ...state,
-        pointer: {
-          ...state.pointer,
-          dragging,
-          current: {
-            position: {
-              ...action.position,
-            },
-            time: action.time,
-          },
-        },
-      };
+        state.interactions.pointer.dragging ||
+        (!!state.interactions.pointer.down &&
+          getDelta(state.interactions.pointer.down.position, action.payload.position) > DRAG_DETECTION_PIXEL_DELTA);
 
-    case ON_MOUSE_DOWN:
-      return {
-        ...state,
-        drilldown: getDrilldownData(globalState),
-        prevDrilldown: state.drilldown,
-        pointer: {
-          ...state.pointer,
-          dragging: false,
-          up: null,
-          down: {
-            position: {
-              ...action.position,
-            },
-            time: action.time,
-          },
-        },
-      };
+      state.interactions.pointer.dragging = dragging;
+      state.interactions.pointer.current.position = action.payload.position;
+      state.interactions.pointer.current.time = action.payload.time;
+    })
+    .addCase(onMouseDown, (state, action) => {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
 
-    case ON_MOUSE_UP: {
-      return {
-        ...state,
-        pointer: {
-          ...state.pointer,
-          lastDrag:
-            state.pointer.down && state.pointer.dragging
-              ? {
-                  start: {
-                    position: {
-                      ...state.pointer.down.position,
-                    },
-                    time: state.pointer.down.time,
-                  },
-                  end: {
-                    position: {
-                      ...state.pointer.current.position,
-                    },
-                    time: action.time,
-                  },
-                }
-              : null,
-          lastClick:
-            state.pointer.down && !state.pointer.dragging
-              ? {
-                  position: {
-                    ...action.position,
-                  },
-                  time: action.time,
-                }
-              : null,
-          dragging: false,
-          down: null,
-          up: {
-            position: {
-              ...action.position,
-            },
-            time: action.time,
-          },
-        },
+      state.interactions.prevDrilldown = state.interactions.drilldown;
+      state.interactions.drilldown = getDrilldownData(state);
+      state.interactions.pointer.dragging = false;
+      state.interactions.pointer.up = null;
+      state.interactions.pointer.down = {
+        position: action.payload.position,
+        time: action.payload.time,
       };
-    }
+    })
+    .addCase(onMouseUp, (state, action) => {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
 
-    case ON_LEGEND_ITEM_OUT:
-      return {
-        ...state,
-        highlightedLegendPath: [],
-      };
-
-    case ON_LEGEND_ITEM_OVER:
-      const { legendPath: highlightedLegendPath } = action;
-      return {
-        ...state,
-        highlightedLegendPath,
-      };
-
-    case ON_TOGGLE_DESELECT_SERIES:
-      return {
-        ...state,
-        deselectedDataSeries: toggleDeselectedDataSeries(action, state.deselectedDataSeries, legendItems),
-      };
-
-    case ON_DOM_ELEMENT_ENTER:
-      return {
-        ...state,
-        hoveredDOMElement: action.element,
-      };
-
-    case ON_DOM_ELEMENT_LEAVE:
-      return {
-        ...state,
-        hoveredDOMElement: null,
-      };
-
-    case PIN_TOOLTIP: {
-      if (!action.pinned) {
-        return {
-          ...state,
-          pointer: action.resetPointer
-            ? getInitialPointerState()
-            : {
-                ...state.pointer,
-                pinned: null,
+      state.interactions.pointer.lastDrag =
+        state.interactions.pointer.down && state.interactions.pointer.dragging
+          ? {
+              start: {
+                position: {
+                  ...state.interactions.pointer.down.position,
+                },
+                time: state.interactions.pointer.down.time,
               },
-          tooltip: getInitialTooltipState(),
-        };
+              end: {
+                position: {
+                  ...state.interactions.pointer.current.position,
+                },
+                time: action.payload.time,
+              },
+            }
+          : null;
+
+      state.interactions.pointer.lastClick =
+        state.interactions.pointer.down && !state.interactions.pointer.dragging
+          ? {
+              position: {
+                ...action.payload.position,
+              },
+              time: action.payload.time,
+            }
+          : null;
+
+      state.interactions.pointer.dragging = false;
+      state.interactions.pointer.down = null;
+      state.interactions.pointer.up = {
+        position: action.payload.position,
+        time: action.payload.time,
+      };
+    });
+};
+
+/** @internal */
+export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder.addCase(onLegendItemOutAction, (state) => {
+    if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+
+    state.interactions.highlightedLegendPath = [];
+  });
+
+  builder.addCase(onLegendItemOverAction, (state, action) => {
+    if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+
+    state.interactions.highlightedLegendPath = action.payload;
+  });
+
+  builder.addCase(onToggleDeselectSeriesAction, (state, action) => {
+    if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+
+    state.interactions.deselectedDataSeries = toggleDeselectedDataSeries(
+      action.payload,
+      state.interactions.deselectedDataSeries,
+      getLegendItemsSelector(state),
+    );
+  });
+};
+
+/** @internal */
+export const handleDOMElementActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder
+    .addCase(onDOMElementEnter, (state, action) => {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+
+      state.interactions.hoveredDOMElement = action.payload;
+    })
+    .addCase(onDOMElementLeave, (state) => {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+
+      state.interactions.hoveredDOMElement = null;
+    });
+};
+
+/** @internal */
+export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder
+    .addCase(pinTooltip, (state, action) => {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+
+      if (!action.payload.pinned) {
+        if (action.payload.resetPointer) {
+          state.interactions.pointer = getInitialPointerState();
+        } else {
+          state.interactions.pointer.pinned = null;
+        }
+        state.interactions.tooltip = getInitialTooltipState();
+        return;
       }
 
-      const { isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(globalState);
+      const { isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(state);
 
       if (!isPinnable || displayOnly) {
-        return state;
+        return;
       }
 
-      const tooltipSpec = getTooltipSpecSelector(globalState);
+      const tooltipSpec = getTooltipSpecSelector(state);
       const getSelectedValues = () => {
-        const values = getInternalTooltipInfoSelector(globalState)?.values ?? [];
-        if (globalState.chartType === ChartType.Heatmap) return values.slice(0, 1); // just use the x value
+        const values = getInternalTooltipInfoSelector(state)?.values ?? [];
+        if (state.chartType === ChartType.Heatmap) return values.slice(0, 1); // just use the x value
         return values.filter((v) =>
           // TODO find a better way to distinguish these two
-          globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
+          state.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
         );
       };
       const selected =
         // don't pre-populate selection when values are not actionable
         Array.isArray(tooltipSpec.actions) && tooltipSpec.actions.length === 0 ? [] : getSelectedValues();
 
-      return {
-        ...state,
-        tooltip: {
-          ...state.tooltip,
-          pinned: true,
-          selected,
-        },
-        pointer: {
-          ...state.pointer,
-          pinned: state.pointer.current,
-        },
-      };
-    }
+      state.interactions.tooltip.pinned = true;
+      state.interactions.tooltip.selected = selected;
+      state.interactions.pointer.pinned = state.interactions.pointer.current;
+    })
+    .addCase(toggleSelectedTooltipItem, (state, action) => {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
 
-    case TOGGLE_SELECTED_TOOLTIP_ITEM: {
-      if (!state.tooltip.pinned) return state;
-      let updatedItems = [...state.tooltip.selected];
-      if (updatedItems.includes(action.item)) {
-        updatedItems = updatedItems.filter((item) => item !== action.item);
+      if (!state.interactions.tooltip.pinned) return;
+
+      let updatedItems = [...state.interactions.tooltip.selected];
+      if (updatedItems.includes(action.payload)) {
+        updatedItems = updatedItems.filter((item) => item !== action.payload);
       } else {
-        updatedItems.push(action.item);
+        updatedItems.push(action.payload);
       }
 
-      return {
-        ...state,
-        tooltip: {
-          ...state.tooltip,
-          selected: updatedItems,
-        },
-      };
-    }
+      state.interactions.tooltip.selected = updatedItems;
+    })
+    .addCase(setSelectedTooltipItems, (state, action) => {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
 
-    case SET_SELECTED_TOOLTIP_ITEMS: {
-      if (!state.tooltip.pinned) return state;
+      if (!state.interactions.tooltip.pinned) return;
 
-      return {
-        ...state,
-        tooltip: {
-          ...state.tooltip,
-          selected: action.items,
-        },
-      };
-    }
-
-    default:
-      return state;
-  }
-}
+      state.interactions.tooltip.selected = action.payload;
+    });
+};
 
 /**
  * Helper functions that currently depend on chart type eg. xy or partition
