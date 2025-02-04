@@ -9,8 +9,7 @@
 import { $Values } from 'utility-types';
 
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { ScaleOrdinalType } from '../scales/scale_band_type';
-import { ScaleContinuousType } from '../scales/scale_continuous_type';
+import { ScaleOrdinalType, ScaleContinuousType } from '../scales';
 
 /** @public */
 export const PointerEventType = Object.freeze({

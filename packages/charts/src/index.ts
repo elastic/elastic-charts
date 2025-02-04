@@ -13,19 +13,7 @@ export { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
 export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 
 // Everything related to the specs types and react-components
-export * from './specs/brush_axis';
-export * from './specs/constants';
-export * from './specs/default_legend_config';
-export * from './specs/default_settings_spec';
-export * from './specs/group_by';
-export * from './specs/pointer_update_trigger';
-export * from './specs/settings_types';
-export * from './specs/settings';
-export * from './specs/small_multiples';
-export * from './specs/spec_type';
-export * from './specs/spec';
-export * from './specs/specs_parser';
-export * from './specs/tooltip';
+export * from './specs';
 export {
   DebugState,
   DebugStateLine,
@@ -76,9 +64,7 @@ export * from './components/tooltip';
 
 // scales
 export { ScaleType } from './scales/constants';
-export { ScaleContinuousType } from './scales/scale_continuous_type';
-export { LogScaleOptions } from './scales';
-export { ScaleBandType, ScaleOrdinalType } from './scales/scale_band_type';
+export { ScaleContinuousType, ScaleOrdinalType, ScaleBandType, LogScaleOptions } from './scales';
 
 // TODO move animation to its own package
 export {

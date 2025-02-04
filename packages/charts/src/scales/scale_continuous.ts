@@ -20,8 +20,8 @@ import {
 } from 'd3-scale';
 import { Required } from 'utility-types';
 
+import { ScaleContinuousType } from '.';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
-import { ScaleContinuousType } from './scale_continuous_type';
 import { LogScaleOptions } from './types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';

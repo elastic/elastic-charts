@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ScaleContinuousType } from '../../../scales/scale_continuous_type';
+import { ScaleContinuousType } from '../../../scales';
 import { LogScaleOptions } from '../../../scales/types';
 import { OrdinalDomain, ContinuousDomain } from '../../../utils/domain';
 import { GroupId } from '../../../utils/ids';

@@ -23,8 +23,8 @@ import { buildSFProps } from '../state/build_sf_props';
 import { useSpecFactory } from '../state/spec_factory';
 import { PointerValue } from '../state/types';
 import { Datum } from '../utils/common';
+import { stripUndefined } from '../utils/common';
 import { SeriesCompareFn } from '../utils/series_sort';
-import { stripUndefined } from '../utils/strip_undefined';
 
 /**
  * This interface describe the properties of single value shown in the tooltip

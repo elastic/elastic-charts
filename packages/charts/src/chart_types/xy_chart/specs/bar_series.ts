@@ -14,7 +14,7 @@ import { SFProps } from '../../../state/build_props_types';
 import { buildSFProps } from '../../../state/build_sf_props';
 import { useSpecFactory } from '../../../state/spec_factory';
 import { Datum } from '../../../utils/common';
-import { stripUndefined } from '../../../utils/strip_undefined';
+import { stripUndefined } from '../../../utils/common';
 import { ChartType } from '../../chart_type';
 import { BarSeriesSpec, BaseDatum, DEFAULT_GLOBAL_ID, SeriesType } from '../utils/specs';
 

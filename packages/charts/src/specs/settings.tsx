@@ -39,11 +39,11 @@ import {
   Rotation,
   VerticalAlignment,
 } from '../utils/common';
+import { stripUndefined } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';
 import { SeriesCompareFn } from '../utils/series_sort';
-import { stripUndefined } from '../utils/strip_undefined';
 import { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
 
 /** @public */
