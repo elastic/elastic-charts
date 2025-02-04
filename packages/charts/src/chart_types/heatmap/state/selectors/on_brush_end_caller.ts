@@ -27,7 +27,7 @@ import { DragCheckProps, hasDragged } from '../../../../utils/events';
 export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
   let prevProps: DragCheckProps | null = null;
   let selector: OutputSelector<
-    [(state: GlobalChartState) => GlobalChartState],
+    Array<(state: GlobalChartState) => GlobalChartState>,
     void,
     (res1: DragState | null, res3: SettingsSpec, res4: HeatmapBrushEvent | null) => void
   > | null = null;
