@@ -23,6 +23,11 @@ describe('Specs parser', () => {
   test('can mount the spec parser', () => {
     const chartStore = configureStore({
       reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
     });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
@@ -37,6 +42,11 @@ describe('Specs parser', () => {
   test('can parse few components', () => {
     const chartStore = configureStore({
       reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
     });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
@@ -83,6 +93,11 @@ describe('Specs parser', () => {
   test('can update a component', () => {
     const chartStore = configureStore({
       reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
     });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
@@ -124,6 +139,11 @@ describe('Specs parser', () => {
   test('should remove a spec when replaced with a new', () => {
     const chartStore = configureStore({
       reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
     });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
@@ -181,6 +201,11 @@ describe('Specs parser', () => {
   test('correctly set the rendered status', () => {
     const chartStore = configureStore({
       reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
     });
 
     expect(chartStore.getState().specsInitialized).toBe(false);

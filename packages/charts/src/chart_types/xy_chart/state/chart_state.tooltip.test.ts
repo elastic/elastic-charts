@@ -15,14 +15,18 @@ import { TooltipType } from '../../../specs';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { chartSlice } from '../../../state/chart_state';
-import { GlobalChartState } from '../../../state/chart_state';
+import { chartSlice, GlobalChartState } from '../../../state/chart_state';
 
 describe('XYChart - State tooltips', () => {
   let store: Store<GlobalChartState>;
   beforeEach(() => {
     store = configureStore({
       reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
     });
     store.dispatch(
       upsertSpec(

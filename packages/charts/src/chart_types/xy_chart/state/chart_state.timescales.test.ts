@@ -35,6 +35,11 @@ describe('Render chart', () => {
     beforeEach(() => {
       store = configureStore({
         reducer: chartSlice.reducer,
+        middleware: (getDefaultMiddleware) =>
+          getDefaultMiddleware({
+            // TODO https://github.com/elastic/elastic-charts/issues/2078
+            serializableCheck: false,
+          }),
       });
 
       const lineSeries: LineSeriesSpec = {
@@ -109,6 +114,11 @@ describe('Render chart', () => {
     beforeEach(() => {
       store = configureStore({
         reducer: chartSlice.reducer,
+        middleware: (getDefaultMiddleware) =>
+          getDefaultMiddleware({
+            // TODO https://github.com/elastic/elastic-charts/issues/2078
+            serializableCheck: false,
+          }),
       });
 
       const lineSeries: LineSeriesSpec = {
@@ -182,6 +192,11 @@ describe('Render chart', () => {
     beforeEach(() => {
       store = configureStore({
         reducer: chartSlice.reducer,
+        middleware: (getDefaultMiddleware) =>
+          getDefaultMiddleware({
+            // TODO https://github.com/elastic/elastic-charts/issues/2078
+            serializableCheck: false,
+          }),
       });
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
