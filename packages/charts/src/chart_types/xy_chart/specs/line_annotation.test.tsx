@@ -47,6 +47,11 @@ describe('Line annotation', () => {
   it('Should always be available on the on every render', () => {
     const chartStore = configureStore({
       reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
     });
     const wrapper = mount(<LineAnnotationChart chartStore={chartStore} />);
     expect(chartStore.getState().specs.threshold).toBeDefined();

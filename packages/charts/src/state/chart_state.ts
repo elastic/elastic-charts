@@ -172,6 +172,11 @@ export const { initialize } = chartSlice.actions;
 /** @internal */
 export const chartStore = configureStore({
   reducer: chartSlice.reducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      // TODO https://github.com/elastic/elastic-charts/issues/2078
+      serializableCheck: false,
+    }),
 });
 
 // Infer the `GlobalChartState` and `AppDispatch` types from the store itself

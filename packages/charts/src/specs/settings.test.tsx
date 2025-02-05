@@ -14,8 +14,7 @@ import { Store } from 'redux';
 
 import { Settings, SettingsSpec } from './settings';
 import { SpecsParser } from './specs_parser';
-import { chartSlice } from '../state/chart_state';
-import { GlobalChartState } from '../state/chart_state';
+import { chartSlice, GlobalChartState } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { Position, Rendering, Rotation } from '../utils/common';
@@ -39,6 +38,11 @@ describe('Settings spec component', () => {
   beforeEach(() => {
     chartStore = configureStore({
       reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
     });
 
     expect(chartStore.getState().specsInitialized).toBe(false);
