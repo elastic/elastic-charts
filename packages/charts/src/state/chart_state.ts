@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { configureStore, createSlice, ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 
 import { onChartRendered } from './actions/chart';
 import { updateParentDimensions, updateChartTitles } from './actions/chart_settings';
@@ -169,26 +169,10 @@ export const chartSlice = createSlice({
 /** @internal */
 export const { initialize } = chartSlice.actions;
 
-/** @internal */
-export const chartStore = configureStore({
-  reducer: chartSlice.reducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      // TODO https://github.com/elastic/elastic-charts/issues/2078
-      serializableCheck: false,
-    }),
-});
-
 // Infer the `GlobalChartState` and `AppDispatch` types from the store itself
 
 /**
  * Inferred state type
  * @internal
  */
-export type GlobalChartState = ReturnType<typeof chartStore.getState>;
-
-/**
- * Inferred dispatch type: Dispatch & ThunkDispatch<RootState, undefined, UnknownAction>
- * @internal
- */
-export type AppDispatch = typeof chartStore.dispatch;
+export type GlobalChartState = ChartSliceState;

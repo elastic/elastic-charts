@@ -10,9 +10,9 @@ import { getPartitionSpecs } from './get_partition_specs';
 import { ChartType } from '../../..';
 import { getPredicateFn } from '../../../../common/predicate';
 import {
+  DEFAULT_SM_PANEL_PADDING,
   GroupByAccessor,
   GroupBySpec,
-  DEFAULT_SM_PANEL_PADDING,
   SmallMultiplesSpec,
   SmallMultiplesStyle,
 } from '../../../../specs';

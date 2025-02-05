@@ -14,7 +14,7 @@ import { createOnElementClickCaller } from './on_element_click_caller';
 import { GOLDEN_RATIO } from '../../../../common/constants';
 import { Predicate } from '../../../../common/predicate';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
-import { GroupBySpec, SettingsSpec, SmallMultiplesSpec } from '../../../../specs';
+import { SettingsSpec, GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
 import { updateParentDimensions } from '../../../../state/actions/chart_settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../../state/actions/specs';

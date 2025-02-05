@@ -7,7 +7,7 @@
  */
 
 import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { SeriesType } from '../../../../chart_types/specs';
+import { SeriesType } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { groupBy } from '../../utils/group_data_series';
 import { getBarIndexKey } from '../utils/utils';

@@ -12,11 +12,11 @@ import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedGridCell } from './picked_shapes';
 import { ChartType } from '../../..';
 import {
-  PointerUpdateTrigger,
-  SettingsSpec,
   PointerEvent,
   PointerEventType,
   PointerOverEvent,
+  PointerUpdateTrigger,
+  SettingsSpec,
 } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
