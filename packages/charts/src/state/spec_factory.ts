@@ -31,11 +31,13 @@ export function useSpecFactory<Props extends Spec>(props: Props) {
 
   useEffect(() => {
     dispatch(upsertSpec(props));
-
-    return () => {
+  });
+  useEffect(
+    () => () => {
       dispatch(removeSpec(props.id));
-    };
-  }, [dispatch, props]);
+    },
+    [], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 }
 
 /**
