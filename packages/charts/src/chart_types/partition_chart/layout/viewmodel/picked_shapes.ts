@@ -8,8 +8,7 @@
 
 import { isLinear } from './viewmodel';
 import { TooltipInfo } from '../../../../components/tooltip';
-import { LayerValue } from '../../../../specs/settings';
-import { TooltipValue } from '../../../../specs/tooltip';
+import { LayerValue, TooltipValue } from '../../../../specs';
 import { LabelAccessor, ValueFormatter } from '../../../../utils/common';
 import { SpecId } from '../../../../utils/ids';
 import { Point } from '../../../../utils/point';

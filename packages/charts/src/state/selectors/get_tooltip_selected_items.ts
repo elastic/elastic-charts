@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { TooltipValue } from '../../specs/tooltip';
+import { TooltipValue } from '../../specs';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 

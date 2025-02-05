@@ -8,9 +8,14 @@
 
 import { getPartitionSpecs } from './get_partition_specs';
 import { getPredicateFn } from '../../../../common/predicate';
-import { GroupByAccessor, GroupBySpec } from '../../../../specs/group_by';
-import { DEFAULT_SM_PANEL_PADDING, SmallMultiplesSpec, SmallMultiplesStyle } from '../../../../specs/small_multiples';
-import { SpecType } from '../../../../specs/spec_type';
+import {
+  GroupByAccessor,
+  GroupBySpec,
+  DEFAULT_SM_PANEL_PADDING,
+  SmallMultiplesSpec,
+  SmallMultiplesStyle,
+  SpecType,
+} from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_multiples_spec';

@@ -7,8 +7,7 @@
  */
 
 import { getOrientedXPosition, getOrientedYPosition } from './interactions';
-import { TooltipType } from '../../../specs/constants';
-import { isCrosshairTooltipType, isFollowTooltipType } from '../../../specs/tooltip';
+import { TooltipType, isCrosshairTooltipType, isFollowTooltipType } from '../../../specs';
 import { Dimensions } from '../../../utils/dimensions';
 
 describe('Interaction utils', () => {

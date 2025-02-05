@@ -10,9 +10,8 @@ import { produce } from 'immer';
 
 import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types/chart_type';
+import { SettingsSpec, SpecType } from '../../specs';
 import { DEFAULT_SETTINGS_SPEC, settingsBuildProps } from '../../specs/default_settings_spec';
-import { SettingsSpec } from '../../specs/settings';
-import { SpecType } from '../../specs/spec_type';
 import { debounce } from '../../utils/debounce';
 import { Logger } from '../../utils/logger';
 import { createCustomCachedSelector } from '../create_selector';

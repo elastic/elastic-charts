@@ -16,7 +16,7 @@ import {
 } from './common';
 import { LegendItem } from '../../../../common/legend';
 import { ScaleType } from '../../../../scales/constants';
-import { SpecType } from '../../../../specs/spec_type';
+import { SpecType } from '../../../../specs';
 import { BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import { Point } from '../../../../utils/point';
 import { ChartType } from '../../../chart_type';

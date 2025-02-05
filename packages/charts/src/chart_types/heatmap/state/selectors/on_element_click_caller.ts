@@ -11,7 +11,7 @@ import { Selector } from 'reselect';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 import { SeriesIdentifier } from '../../../../common/series_id';
-import { SettingsSpec } from '../../../../specs/settings';
+import { SettingsSpec } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { PointerState } from '../../../../state/pointer_states';

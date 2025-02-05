@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { SpecType } from '../../../../specs/spec_type';
+import { SpecType } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';
 import { ChartType } from '../../../chart_type';

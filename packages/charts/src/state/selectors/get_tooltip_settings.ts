@@ -11,7 +11,7 @@ import { Selector } from 're-reselect';
 import { getInternalIsTooltipVisibleSelector } from './get_internal_is_tooltip_visible';
 import { getSettingsSpecSelector } from './get_settings_spec';
 import { getTooltipSpecSelector } from './get_tooltip_spec';
-import { TooltipProps } from '../../specs/tooltip';
+import { TooltipProps } from '../../specs';
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 

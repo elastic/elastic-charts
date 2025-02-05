@@ -10,7 +10,7 @@ import { OutputSelector } from 'reselect';
 
 import { getPickedCells } from './get_picked_cells';
 import { isBrushEndProvided } from './is_brush_available';
-import { HeatmapBrushEvent, SettingsSpec } from '../../../../specs/settings';
+import { HeatmapBrushEvent, SettingsSpec } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { DragState } from '../../../../state/pointer_states';

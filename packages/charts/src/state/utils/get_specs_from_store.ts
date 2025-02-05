@@ -7,7 +7,7 @@
  */
 
 import { ChartType } from '../../chart_types/chart_type';
-import { Spec } from '../../specs/spec';
+import { Spec } from '../../specs';
 import { SpecList } from '../spec_list';
 
 /**

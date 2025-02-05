@@ -8,7 +8,7 @@
 
 import { ComponentProps } from 'react';
 
-import { SpecType } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs';
 import { specComponentFactory } from '../../../state/spec_factory';
 import { ChartType } from '../../chart_type';
 import { RectAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType } from '../utils/specs';

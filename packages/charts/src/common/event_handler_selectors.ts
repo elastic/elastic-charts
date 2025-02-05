@@ -7,8 +7,7 @@
  */
 
 import { SeriesIdentifier } from './series_id';
-import { LayerValue, SettingsSpec } from '../specs/settings';
-import { Spec } from '../specs/spec';
+import { LayerValue, SettingsSpec, Spec } from '../specs';
 import { PointerStates } from '../state/pointer_states';
 import { isClicking } from '../state/utils/is_clicking';
 

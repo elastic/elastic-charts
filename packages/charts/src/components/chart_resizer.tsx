@@ -10,7 +10,7 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
-import { ResizeListener } from '../specs/settings';
+import { ResizeListener } from '../specs';
 import { updateParentDimensions } from '../state/actions/chart_settings';
 import { GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';

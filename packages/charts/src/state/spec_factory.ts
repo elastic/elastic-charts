@@ -18,7 +18,7 @@ import {
   SFProps,
   SFRequiredKeys,
 } from './build_props_types';
-import { Spec } from '../specs/spec';
+import { Spec } from '../specs';
 import { upsertSpec, removeSpec } from '../state/actions/specs';
 import { stripUndefined } from '../utils/common';
 

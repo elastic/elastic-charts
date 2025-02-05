@@ -8,7 +8,7 @@
 
 import React, { FC, Suspense } from 'react';
 
-import { SettingsProps } from '../specs/settings';
+import { SettingsProps } from '../specs';
 
 interface NoResultsProps {
   renderFn?: SettingsProps['noResults'];

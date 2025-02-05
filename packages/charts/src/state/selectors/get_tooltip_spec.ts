@@ -8,8 +8,7 @@
 
 import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types/chart_type';
-import { SpecType } from '../../specs/spec_type';
-import { DEFAULT_TOOLTIP_SPEC, TooltipSpec } from '../../specs/tooltip';
+import { SpecType, DEFAULT_TOOLTIP_SPEC, TooltipSpec } from '../../specs';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecFromStore } from '../utils/get_spec_from_store';
 

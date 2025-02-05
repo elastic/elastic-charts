@@ -9,9 +9,8 @@
 import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types/chart_type';
 import { SmallMultiplesGroupBy } from '../../common/panel_utils';
+import { SmallMultiplesSpec, SpecType } from '../../specs';
 import { GroupBySpec } from '../../specs/group_by';
-import { SmallMultiplesSpec } from '../../specs/small_multiples';
-import { SpecType } from '../../specs/spec_type';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecsFromStore } from '../utils/get_specs_from_store';
 

@@ -17,8 +17,14 @@ import { SFProps } from '../../../state/build_props_types';
 import { buildSFProps } from '../../../state/build_sf_props';
 import { useSpecFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
-import { Datum, LabelAccessor, ShowAccessor, ValueAccessor, ValueFormatter } from '../../../utils/common';
-import { stripUndefined } from '../../../utils/common';
+import {
+  Datum,
+  LabelAccessor,
+  ShowAccessor,
+  ValueAccessor,
+  ValueFormatter,
+  stripUndefined,
+} from '../../../utils/common';
 import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
 import { ChartType } from '../../chart_type';
 import { percentFormatter } from '../layout/config';

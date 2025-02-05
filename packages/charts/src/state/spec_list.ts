@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Spec } from '../specs/spec';
+import { Spec } from '../specs';
 
 /** @internal */
 export interface SpecList {

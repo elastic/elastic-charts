@@ -12,7 +12,7 @@ import { TooltipDivider } from './tooltip_divider';
 import { useTooltipContext } from './tooltip_provider';
 import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { TooltipAction, TooltipSpec, TooltipValue } from '../../../specs/tooltip';
+import { TooltipAction, TooltipSpec, TooltipValue } from '../../../specs';
 import { Datum, renderWithProps } from '../../../utils/common';
 
 /** @internal */

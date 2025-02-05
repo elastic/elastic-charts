@@ -13,7 +13,7 @@ import { DebugState } from './types';
 import { BarSeries } from '../chart_types/xy_chart/specs/bar_series';
 import { Chart } from '../components/chart';
 import { MockSeriesSpec } from '../mocks/specs/specs';
-import { Settings } from '../specs/settings';
+import { Settings } from '../specs';
 
 function getDebugState(wrapper: ReactWrapper): DebugState {
   const statusComponent = wrapper.find('.echChartStatus');

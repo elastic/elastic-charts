@@ -13,7 +13,7 @@ import { LegendIcon } from './legend_icon';
 import { LineSeries, AreaSeries } from '../../chart_types/specs';
 import { LegendValue } from '../../common/legend';
 import { ScaleType } from '../../scales/constants';
-import { Settings } from '../../specs/settings';
+import { Settings } from '../../specs';
 import { Chart } from '../chart';
 
 describe('Legend icons', () => {

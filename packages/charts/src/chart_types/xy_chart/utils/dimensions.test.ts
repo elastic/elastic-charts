@@ -9,7 +9,7 @@
 import { TickLabelBounds } from './axis_utils';
 import { computeChartDimensions } from './dimensions';
 import { AxisSpec } from './specs';
-import { SpecType } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs';
 import { Position } from '../../../utils/common';
 import { Margins } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';

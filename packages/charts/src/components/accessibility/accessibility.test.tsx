@@ -17,7 +17,7 @@ import { BarSeries, LineSeries, Partition } from '../../chart_types/specs';
 import { arrayToLookup } from '../../common/color_calcs';
 import { mocks } from '../../mocks/hierarchical';
 import { productDimension } from '../../mocks/hierarchical/dimension_codes';
-import { Settings } from '../../specs/settings';
+import { Settings } from '../../specs';
 import { Datum } from '../../utils/common';
 import { Chart } from '../chart';
 

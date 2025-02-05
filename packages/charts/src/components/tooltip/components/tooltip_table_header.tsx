@@ -15,7 +15,7 @@ import { TooltipTableRow } from './tooltip_table_row';
 import { TooltipTableColumn } from './types';
 import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { TooltipValue } from '../../../specs/tooltip';
+import { TooltipValue } from '../../../specs';
 import { Datum } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';
 

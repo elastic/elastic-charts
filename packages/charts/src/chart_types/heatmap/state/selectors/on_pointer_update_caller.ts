@@ -10,9 +10,13 @@ import { Selector } from 'reselect';
 
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedGridCell } from './picked_shapes';
-import { PointerUpdateTrigger } from '../../../../specs/pointer_update_trigger';
-import { SettingsSpec } from '../../../../specs/settings';
-import { PointerEvent, PointerEventType, PointerOverEvent } from '../../../../specs/settings_types';
+import {
+  PointerUpdateTrigger,
+  SettingsSpec,
+  PointerEvent,
+  PointerEventType,
+  PointerOverEvent,
+} from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';

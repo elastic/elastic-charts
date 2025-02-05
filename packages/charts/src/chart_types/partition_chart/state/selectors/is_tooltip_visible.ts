@@ -7,7 +7,7 @@
  */
 
 import { getTooltipInfoSelector } from './tooltip';
-import { TooltipType } from '../../../../specs/constants';
+import { TooltipType } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 

@@ -26,8 +26,7 @@ import {
 import { ColorContrastOptions, combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Color } from '../../../../common/colors';
-import { settingsBuildProps } from '../../../../specs/default_settings_spec';
-import { BasicListener, ElementClickListener, ElementOverListener } from '../../../../specs/settings';
+import { settingsBuildProps, BasicListener, ElementClickListener, ElementOverListener } from '../../../../specs';
 import { onChartRendered as onChartRenderedAction } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
