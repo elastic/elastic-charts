@@ -12,12 +12,12 @@ import {
   getHighlightedTooltipTooltipValuesSelector,
   TooltipAndHighlightedGeoms,
 } from './get_tooltip_values_highlighted_geoms';
+import { ChartType } from '../../..';
 import { SettingsSpec } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { IndexedGeometry } from '../../../../utils/geometry';
-import { ChartType } from '../../..';
 
 interface Props {
   settings: SettingsSpec | undefined;

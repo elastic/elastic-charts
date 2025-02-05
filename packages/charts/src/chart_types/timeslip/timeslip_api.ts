@@ -8,13 +8,13 @@
 
 import { TimeslipDataRows } from './timeslip/data_fetch';
 import { DataDemand } from './timeslip/render/cartesian';
+import { ChartType } from '..';
 import { Spec } from '../../specs/spec';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { SFProps } from '../../state/build_props_types';
 import { buildSFProps } from '../../state/build_sf_props';
 import { useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
-import { ChartType } from '..';
 
 /**
  * data getter function

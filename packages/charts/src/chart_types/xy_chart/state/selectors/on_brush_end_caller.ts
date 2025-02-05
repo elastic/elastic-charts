@@ -14,6 +14,7 @@ import { getComputedScalesSelector } from './get_computed_scales';
 import { getSeriesSpecsSelector } from './get_specs';
 import { isBrushAvailableSelector } from './is_brush_available';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
+import { ChartType } from '../../..';
 import { SeriesSpecs } from '../../../../chart_types/specs';
 import { SmallMultipleScales } from '../../../../common/panel_utils';
 import { ScaleContinuous } from '../../../../scales';
@@ -28,7 +29,6 @@ import { clamp, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { hasDragged, DragCheckProps } from '../../../../utils/events';
 import { GroupId } from '../../../../utils/ids';
-import { ChartType } from '../../..';
 import { hasHistogramBarSpec } from '../../domains/y_domain';
 import { isVerticalRotation } from '../utils/common';
 

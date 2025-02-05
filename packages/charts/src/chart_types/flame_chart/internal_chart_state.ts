@@ -7,12 +7,12 @@
  */
 
 import { FlameWithTooltip } from './flame_chart';
+import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES, EMPTY_LEGEND_LIST } from '../../common/legend';
 import { InternalChartState } from '../../state/internal_chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { EMPTY_LEGEND_ITEM_LIST } from '../../state/selectors/get_legend_items_labels';
-import { ChartType } from '..';
 
 /** @internal */
 export class FlameState implements InternalChartState {

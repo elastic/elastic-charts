@@ -11,6 +11,7 @@ import { Selector } from 'reselect';
 import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
+import { ChartType } from '../../..';
 import { SettingsSpec, ProjectedValues } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -19,7 +20,6 @@ import { getLastClickSelector } from '../../../../state/selectors/get_last_click
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isClicking } from '../../../../state/utils/is_clicking';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
-import { ChartType } from '../../..';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../../../specs';
 import { AnnotationTooltipState } from '../../annotations/types';
 import { XYChartSeriesIdentifier } from '../../utils/series';

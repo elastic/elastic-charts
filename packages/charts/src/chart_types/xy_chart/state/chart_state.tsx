@@ -28,6 +28,7 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 import { createOnProjectionAreaCaller } from './selectors/on_projection_area_caller';
+import { ChartType } from '../..';
 import { LegendItemExtraValues } from '../../../common/legend';
 import { SeriesKey } from '../../../common/series_id';
 import { BrushTool } from '../../../components/brush/brush';
@@ -39,7 +40,6 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 import { htmlIdGenerator } from '../../../utils/common';
-import { ChartType } from '../..';
 import { XYChart } from '../renderer/canvas/xy_chart';
 import { Annotations } from '../renderer/dom/annotations';
 import { CursorBand } from '../renderer/dom/cursor_band';

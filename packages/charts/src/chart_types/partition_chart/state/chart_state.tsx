@@ -19,6 +19,7 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
+import { ChartType } from '../..';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
 import { GlobalChartState } from '../../../state/chart_state';
 import { BackwardRef, InternalChartState } from '../../../state/internal_chart_state';
@@ -26,7 +27,6 @@ import { getActivePointerPosition } from '../../../state/selectors/get_active_po
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
-import { ChartType } from '../..';
 import { render } from '../renderer/dom/layered_partition_chart';
 
 /** @internal */

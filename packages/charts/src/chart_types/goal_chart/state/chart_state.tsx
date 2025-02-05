@@ -15,6 +15,7 @@ import { createOnElementClickCaller } from './selectors/on_element_click_caller'
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
+import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
 import { Tooltip } from '../../../components/tooltip/tooltip';
@@ -25,7 +26,6 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
-import { ChartType } from '../..';
 import { Goal } from '../renderer/canvas/connected_component';
 
 /** @internal */
