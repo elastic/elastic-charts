@@ -86,30 +86,30 @@ const handleColorsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) 
 const handleSpecsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
     .addCase(upsertSpec, (state, action) => {
+      if (state.specParsing) {
+        state.specs[action.payload.id] = action.payload;
+      } else {
+        state.specs = { [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC, [action.payload.id]: action.payload };
+      }
+
       state.specsInitialized = false;
       state.chartRendered = false;
       state.specParsing = true;
-      state.specs = state.specParsing
-        ? { ...state.specs, [action.payload.id]: action.payload }
-        : { [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC, [action.payload.id]: action.payload };
-      return state;
     })
     .addCase(removeSpec, (state, action) => {
       const { [action.payload]: specToRemove, ...rest } = state.specs;
       state.specsInitialized = false;
       state.chartRendered = false;
       state.specParsing = false;
-      state.specs = {
-        ...rest,
-      };
+      state.specs = rest;
     })
     .addCase(specParsed, (state) => {
-      const newChartType = chartTypeFromSpecs(state.specs);
-
       state.specsInitialized = true;
       state.specParsing = false;
-      state.internalChartState =
-        state.chartType === newChartType ? state.internalChartState : newInternalState(newChartType);
+
+      const newChartType = chartTypeFromSpecs(state.specs);
+      if (state.chartType === newChartType) return;
+      state.internalChartState = newInternalState(newChartType);
       state.chartType = newChartType;
     })
     .addCase(specUnmounted, (state) => {
