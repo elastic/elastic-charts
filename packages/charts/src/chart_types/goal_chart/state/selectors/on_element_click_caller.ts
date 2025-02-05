@@ -16,7 +16,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { PointerStates } from '../../../../state/pointer_states';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 
 /**
  * Will call the onElementClick listener every time the following preconditions are met:

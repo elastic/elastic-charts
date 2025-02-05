@@ -15,7 +15,7 @@ import { GlobalChartState } from '../../../state/chart_state';
 import { InternalChartState } from '../../../state/internal_chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
-import { ChartType } from '../../chart_type';
+import { ChartType } from '../..';
 import { Metric } from '../renderer/dom';
 
 /** @internal */

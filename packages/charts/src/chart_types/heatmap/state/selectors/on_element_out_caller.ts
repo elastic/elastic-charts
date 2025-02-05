@@ -13,7 +13,7 @@ import { getPickedShapes } from './picked_shapes';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 import { isPickedCells } from '../../layout/types/viewmodel_types';
 
 /**

@@ -26,7 +26,7 @@ import { getActivePointerPosition } from '../../../state/selectors/get_active_po
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
-import { ChartType } from '../../chart_type';
+import { ChartType } from '../..';
 import { render } from '../renderer/dom/layered_partition_chart';
 
 /** @internal */

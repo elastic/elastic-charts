@@ -17,7 +17,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { IndexedGeometry } from '../../../../utils/geometry';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 
 interface Props {
   settings: SettingsSpec | undefined;

@@ -26,7 +26,7 @@ import {
   stripUndefined,
 } from '../../../utils/common';
 import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
-import { ChartType } from '../../chart_type';
+import { ChartType } from '../..';
 import { percentFormatter } from '../layout/config';
 import { PartitionLayout } from '../layout/types/config_types';
 import { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';

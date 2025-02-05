@@ -12,7 +12,7 @@ import { GlobalChartState } from './chart_state';
 import { InitStatus } from './selectors/get_internal_is_intialized';
 import { LegendItemLabel } from './selectors/get_legend_items_labels';
 import { DebugState } from './types';
-import { ChartType } from '../chart_types/chart_type';
+import { ChartType } from '../chart_types';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import { SeriesKey } from '../common/series_id';

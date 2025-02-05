@@ -12,7 +12,7 @@ import { TooltipStickTo, TooltipType } from './constants';
 import { SettingsSpec } from './settings';
 import { Spec } from './spec';
 import { SpecType } from './spec_type';
-import { ChartType } from '../chart_types/chart_type';
+import { ChartType } from '../chart_types';
 import { BaseDatum } from '../chart_types/specs';
 import { Color } from '../common/colors';
 import { SeriesIdentifier } from '../common/series_id';

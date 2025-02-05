@@ -18,6 +18,7 @@ import { ensureWebgl } from './render/ensure_webgl';
 import { uploadToWebgl } from './render/upload_to_webgl';
 import { attributeLocations, GEOM_INDEX_OFFSET } from './shaders';
 import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
+import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../../common/constants';
 import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
 import { GL } from '../../common/webgl_constants';
@@ -37,7 +38,6 @@ import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import { clamp, isFiniteNumber, isNil } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlamegraphStyle } from '../../utils/themes/theme';
-import { ChartType } from '../chart_type';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right

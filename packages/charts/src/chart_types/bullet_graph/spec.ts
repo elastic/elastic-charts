@@ -10,7 +10,7 @@ import { ComponentProps } from 'react';
 import { $Values, Optional } from 'utility-types';
 
 import { BulletColorConfig } from './utils/color';
-import { ChartType } from '../../chart_types/chart_type';
+import { ChartType } from '../../chart_types';
 import { Spec } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { SFProps } from '../../state/build_props_types';

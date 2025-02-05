@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { ChartType } from '..';
 import { BaseDatum } from '../../chart_types/specs';
 import { LegacyAnimationConfig } from '../../common/animation';
 import { Spec } from '../../specs/spec';
@@ -14,7 +15,6 @@ import { SFProps } from '../../state/build_props_types';
 import { buildSFProps } from '../../state/build_sf_props';
 import { useSpecFactory } from '../../state/spec_factory';
 import { Datum, ValueAccessor, ValueFormatter, stripUndefined } from '../../utils/common';
-import { ChartType } from '../chart_type';
 
 /**
  * Control function for resetting chart focus

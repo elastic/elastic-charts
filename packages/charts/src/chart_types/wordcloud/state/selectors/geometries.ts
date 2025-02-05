@@ -13,7 +13,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { WordcloudSpec } from '../../specs';
 

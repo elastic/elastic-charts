@@ -7,7 +7,7 @@
  */
 
 export * from './components';
-export { ChartType } from './chart_types/chart_type';
+export { ChartType } from './chart_types';
 export { ChartSize, ChartSizeArray, ChartSizeObject } from './utils/chart_size';
 
 export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';

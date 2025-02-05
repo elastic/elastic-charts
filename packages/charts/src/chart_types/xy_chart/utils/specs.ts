@@ -11,7 +11,7 @@ import { $Values } from 'utility-types';
 
 import { AnimationOptions } from './../renderer/canvas/animations/animation';
 import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
-import { ChartType } from '../../../chart_types/chart_type';
+import { ChartType } from '../../../chart_types';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal/types';
 import { ScaleContinuousType } from '../../../scales';

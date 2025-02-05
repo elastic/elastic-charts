@@ -8,9 +8,9 @@
 
 import { ComponentProps } from 'react';
 
+import { ChartType } from '../..';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { specComponentFactory } from '../../../state/spec_factory';
-import { ChartType } from '../../chart_type';
 import { RectAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType } from '../utils/specs';
 
 /** @public */

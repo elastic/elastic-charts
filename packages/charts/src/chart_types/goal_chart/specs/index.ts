@@ -18,7 +18,7 @@ import { buildSFProps } from '../../../state/build_sf_props';
 import { useSpecFactory } from '../../../state/spec_factory';
 import { LabelAccessor, round, ValueFormatter, stripUndefined } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';
-import { ChartType } from '../../chart_type';
+import { ChartType } from '../..';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 
 /** @alpha */

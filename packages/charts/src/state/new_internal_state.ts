@@ -8,7 +8,7 @@
 
 import { InternalChartState } from './internal_chart_state';
 import { BulletState } from '../chart_types/bullet_graph/chart_state';
-import { ChartType } from '../chart_types/chart_type';
+import { ChartType } from '../chart_types';
 import { FlameState } from '../chart_types/flame_chart/internal_chart_state';
 import { GoalState } from '../chart_types/goal_chart/state/chart_state';
 import { HeatmapState } from '../chart_types/heatmap/state/chart_state';

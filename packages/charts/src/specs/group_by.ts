@@ -10,7 +10,7 @@ import { ComponentProps } from 'react';
 
 import { Spec } from './spec';
 import { SpecType } from './spec_type';
-import { ChartType } from '../chart_types/chart_type';
+import { ChartType } from '../chart_types';
 import { BaseDatum } from '../chart_types/specs';
 import { Predicate } from '../common/predicate';
 import { SFProps } from '../state/build_props_types';

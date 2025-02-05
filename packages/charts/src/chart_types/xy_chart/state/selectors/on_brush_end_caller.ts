@@ -28,7 +28,7 @@ import { clamp, Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { hasDragged, DragCheckProps } from '../../../../utils/events';
 import { GroupId } from '../../../../utils/ids';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 import { hasHistogramBarSpec } from '../../domains/y_domain';
 import { isVerticalRotation } from '../utils/common';
 

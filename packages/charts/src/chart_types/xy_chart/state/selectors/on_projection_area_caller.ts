@@ -13,7 +13,7 @@ import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Dimensions } from '../../../../utils/dimensions';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 
 function isDiff(prevProps: Dimensions, nextProps: Dimensions) {
   return (

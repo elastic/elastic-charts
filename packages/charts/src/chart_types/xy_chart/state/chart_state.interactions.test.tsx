@@ -24,6 +24,7 @@ import { createOnClickCaller } from './selectors/on_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
+import { ChartType } from '../..';
 import { Icon } from '../../../components/icons/icon';
 import { Rect } from '../../../geoms/types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
@@ -37,7 +38,6 @@ import { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
-import { ChartType } from '../../chart_type';
 import { StackMode, BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesType, AnnotationDomainType } from '../utils/specs';
 
 const SPEC_ID = 'spec_1';

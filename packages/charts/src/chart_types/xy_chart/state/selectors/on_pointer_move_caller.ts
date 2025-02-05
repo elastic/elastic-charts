@@ -19,7 +19,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 import { ComputedScales } from '../utils/types';
 
 const getPointerEventSelector = createCustomCachedSelector(

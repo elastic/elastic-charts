@@ -21,7 +21,7 @@ import { useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, LabelAccessor, ValueFormatter, stripUndefined } from '../../../utils/common';
-import { ChartType } from '../../chart_type';
+import { ChartType } from '../..';
 import { BaseDatum } from '../../specs';
 import { Cell } from '../layout/types/viewmodel_types';
 
