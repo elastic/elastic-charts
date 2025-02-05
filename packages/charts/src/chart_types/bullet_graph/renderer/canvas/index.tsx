@@ -16,7 +16,7 @@ import { colorToRgba } from '../../../../common/color_library_wrappers';
 import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
-import { settingsBuildProps, ElementOverListener } from '../../../../specs';
+import { ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {
@@ -123,9 +123,17 @@ class Component extends React.Component<Props> {
     /* eslint-disable prettier/prettier */
     // TODO - Prettier is going crazy on this line, need to investigate
     const {
- initialized, size, forwardStageRef, a11y, dimensions, spec, style, backgroundColor, locale, metricStyle 
-} =
-      this.props;
+      initialized,
+      size,
+      forwardStageRef,
+      a11y,
+      dimensions,
+      spec,
+      style,
+      backgroundColor,
+      locale,
+      metricStyle,
+    } = this.props;
     /* eslint-enable prettier/prettier */
     const contrastOptions: ColorContrastOptions = {
       lightColor: colorToRgba(metricStyle.textLightColor),
