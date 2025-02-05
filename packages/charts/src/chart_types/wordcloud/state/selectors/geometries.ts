@@ -7,7 +7,7 @@
  */
 
 import { render } from './scenegraph';
-import { SpecType } from '../../../../specs/spec_type';
+import { SpecType } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';

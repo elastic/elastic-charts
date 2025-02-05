@@ -16,7 +16,7 @@ import { TooltipTableHeader } from './tooltip_table_header';
 import { TooltipTableColumn } from './types';
 import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { TooltipValue } from '../../../specs/tooltip';
+import { TooltipValue } from '../../../specs';
 import { Datum, isNil } from '../../../utils/common';
 import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
 

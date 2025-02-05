@@ -9,7 +9,7 @@
 import React, { memo } from 'react';
 
 import { BaseDatum } from '../../../chart_types/specs';
-import { TooltipHeaderFormatter } from '../../../specs/tooltip';
+import { TooltipHeaderFormatter } from '../../../specs';
 import { PointerValue } from '../../../state/types';
 import { Datum, renderComplexChildren } from '../../../utils/common';
 import { PropsOrChildrenWithProps } from '../types';

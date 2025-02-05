@@ -11,8 +11,7 @@ import { $Values, Optional } from 'utility-types';
 
 import { BulletColorConfig } from './utils/color';
 import { ChartType } from '../../chart_types/chart_type';
-import { Spec } from '../../specs/spec';
-import { SpecType } from '../../specs/spec_type';
+import { Spec, SpecType } from '../../specs';
 import { SFProps } from '../../state/build_props_types';
 import { buildSFProps } from '../../state/build_sf_props';
 import { useSpecFactory } from '../../state/spec_factory';

@@ -23,7 +23,7 @@ import { SeededDataGenerator } from '../../../../mocks/utils';
 import { MockXDomain, MockYDomain } from '../../../../mocks/xy/domains';
 import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { Spec } from '../../../../specs/spec';
+import { Spec } from '../../../../specs';
 import { ColorVariant } from '../../../../utils/common';
 import { BARCHART_1Y0G, BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import { ContinuousDomain, Range } from '../../../../utils/domain';

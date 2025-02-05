@@ -16,7 +16,7 @@ import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
 import { Color, Colors } from '../../../../common/colors';
 import { ScreenReaderSummary, ScreenReaderPartitionTable } from '../../../../components/accessibility';
 import { clearCanvas } from '../../../../renderers/canvas';
-import { SettingsSpec } from '../../../../specs/settings';
+import { SettingsSpec } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {

@@ -13,8 +13,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { NoResults } from './no_results';
 import { ChartType } from '../chart_types/chart_type';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
-import { SettingsSpec } from '../specs/settings';
-import { TooltipSpec } from '../specs/tooltip';
+import { SettingsSpec, TooltipSpec } from '../specs';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';
 import {
   onMouseUp as onMouseUpAction,

@@ -10,7 +10,7 @@ import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries
 import { getTooltipAnchorSelector } from './get_tooltip_anchor';
 import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
 import { Rect } from '../../../../geoms/types';
-import { isPointerOverEvent } from '../../../../specs/settings';
+import { isPointerOverEvent } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getInternalIsBrushingSelector } from '../../../../state/selectors/get_internal_is_brushing';

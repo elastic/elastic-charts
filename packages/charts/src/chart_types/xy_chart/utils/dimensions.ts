@@ -7,7 +7,7 @@
  */
 
 import { AxisSpec } from './specs';
-import { SmallMultiplesSpec } from '../../../specs/small_multiples';
+import { SmallMultiplesSpec } from '../../../specs';
 import { ChartDimensions, Dimensions } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { Theme, AxisStyle } from '../../../utils/themes/theme';

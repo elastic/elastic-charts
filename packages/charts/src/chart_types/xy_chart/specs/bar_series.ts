@@ -9,7 +9,7 @@
 import { ComponentProps } from 'react';
 
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs';
 import { SFProps } from '../../../state/build_props_types';
 import { buildSFProps } from '../../../state/build_sf_props';
 import { useSpecFactory } from '../../../state/spec_factory';

@@ -8,7 +8,7 @@
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { SmallMultipleScales } from '../../../../common/panel_utils';
-import { BrushAxis } from '../../../../specs/brush_axis';
+import { BrushAxis } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';

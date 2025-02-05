@@ -14,10 +14,16 @@ import { getSiDataSeriesMapSelector } from './get_si_dataseries_map';
 import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
 import { hasSingleSeriesSelector } from './has_single_series';
 import { TooltipInfo } from '../../../../components/tooltip/types';
-import { TooltipType } from '../../../../specs/constants';
-import { isPointerOutEvent, SettingsSpec } from '../../../../specs/settings';
-import { PointerEvent } from '../../../../specs/settings_types';
-import { TooltipValue, isFollowTooltipType, getTooltipType, TooltipSpec } from '../../../../specs/tooltip';
+import {
+  TooltipType,
+  isPointerOutEvent,
+  SettingsSpec,
+  PointerEvent,
+  TooltipValue,
+  isFollowTooltipType,
+  getTooltipType,
+  TooltipSpec,
+} from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';

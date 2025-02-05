@@ -15,7 +15,7 @@ import { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../common/p
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
-import { SettingsSpec } from '../../../../specs/settings';
+import { SettingsSpec } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isFiniteNumber, isNil, isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';

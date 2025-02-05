@@ -8,13 +8,7 @@
 
 import { LegendItemExtraValues, LegendValue } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
-import {
-  LegendItemListener,
-  BasicListener,
-  LegendColorPicker,
-  LegendAction,
-  LegendPositionConfig,
-} from '../../specs/settings';
+import { LegendItemListener, BasicListener, LegendColorPicker, LegendAction, LegendPositionConfig } from '../../specs';
 import {
   clearTemporaryColors as clearTemporaryColorsAction,
   setTemporaryColor as setTemporaryColorAction,

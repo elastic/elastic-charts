@@ -11,7 +11,7 @@ import { LegendPath } from './actions/legend';
 import { PointerStates } from './pointer_states';
 import { CategoryKey } from '../common/category';
 import { SeriesIdentifier } from '../common/series_id';
-import { TooltipValue } from '../specs/tooltip';
+import { TooltipValue } from '../specs';
 
 /** @internal */
 export interface TooltipInteractionState {

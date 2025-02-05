@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { SpecType } from '../../../../specs/spec_type';
+import { SpecType } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';

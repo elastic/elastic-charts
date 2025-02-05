@@ -9,7 +9,7 @@
 import { LegendItem } from '../../../common/legend';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isLogarithmicScale } from '../../../scales/types';
-import { MarkBuffer } from '../../../specs/settings';
+import { MarkBuffer } from '../../../specs';
 import { getDistance, isWithinRange } from '../../../utils/common';
 import { BarGeometry, ClippedRanges, isPointGeometry, PointGeometry } from '../../../utils/geometry';
 import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';

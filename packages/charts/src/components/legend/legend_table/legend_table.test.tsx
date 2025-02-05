@@ -12,7 +12,7 @@ import React from 'react';
 import { LegendTable } from './legend_table';
 import { BarSeries } from '../../../chart_types/specs';
 import { ScaleType } from '../../../scales/constants';
-import { Settings } from '../../../specs/settings';
+import { Settings } from '../../../specs';
 import { Chart } from '../../chart';
 import { LegendTableRow } from '../legend_table/legend_table_row';
 

@@ -9,14 +9,11 @@
 import { Cancelable } from 'lodash';
 import { Store } from 'redux';
 
+import { SettingsSpec, Spec, SpecType } from '../../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
-import { SettingsSpec } from '../../specs/settings';
-import { Spec } from '../../specs/spec';
-import { SpecType } from '../../specs/spec_type';
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
-import { chartStore, initialize } from '../../state/chart_state';
-import { GlobalChartState } from '../../state/chart_state';
+import { chartStore, initialize, GlobalChartState } from '../../state/chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../utils/common';
 

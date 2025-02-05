@@ -10,8 +10,7 @@ import { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react';
 import { $Values } from 'utility-types';
 
 import { Color } from '../../../common/colors';
-import { Spec } from '../../../specs/spec';
-import { SpecType } from '../../../specs/spec_type';
+import { Spec, SpecType } from '../../../specs';
 import { specComponentFactory } from '../../../state/spec_factory';
 import { LayoutDirection, ValueFormatter } from '../../../utils/common';
 import { GenericDomain } from '../../../utils/domain';

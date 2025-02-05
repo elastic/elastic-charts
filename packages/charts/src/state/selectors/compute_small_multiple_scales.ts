@@ -11,7 +11,7 @@ import { getInternalSmallMultiplesDomains } from './get_internal_sm_domains';
 import { getSmallMultiplesSpec } from './get_small_multiples_spec';
 import { SmallMultipleScales } from '../../common/panel_utils';
 import { ScaleBand } from '../../scales';
-import { RelativeBandsPadding, DEFAULT_SM_PANEL_PADDING } from '../../specs/small_multiples';
+import { RelativeBandsPadding, DEFAULT_SM_PANEL_PADDING } from '../../specs';
 import { OrdinalDomain } from '../../utils/domain';
 import { createCustomCachedSelector } from '../create_selector';
 

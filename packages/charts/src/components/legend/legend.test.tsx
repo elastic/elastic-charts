@@ -17,7 +17,7 @@ import { BarSeries } from '../../chart_types/specs';
 import { LegendValue } from '../../common/legend';
 import { SeededDataGenerator } from '../../mocks/utils';
 import { ScaleType } from '../../scales/constants';
-import { Settings, LegendColorPicker } from '../../specs/settings';
+import { Settings, LegendColorPicker } from '../../specs';
 import { Chart } from '../chart';
 
 const dg = new SeededDataGenerator();

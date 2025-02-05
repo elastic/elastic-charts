@@ -9,8 +9,7 @@
 import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
 import { MockGlobalSpec, MockSeriesSpec, MockSeriesSpecs } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
-import { Direction, BinAgg } from '../../../specs/constants';
-import { SpecType } from '../../../specs/spec_type';
+import { Direction, BinAgg, SpecType } from '../../../specs';
 import { Logger } from '../../../utils/logger';
 import { ChartType } from '../../chart_type';
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';

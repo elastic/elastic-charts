@@ -8,7 +8,7 @@
 
 import { getSpecsFromStore } from './utils/get_specs_from_store';
 import { ChartType } from '../chart_types/chart_type';
-import { SpecType } from '../specs/spec_type';
+import { SpecType } from '../specs';
 
 describe('State utils', () => {
   it('getSpecsFromStore shall return always the same object reference excluding the array', () => {

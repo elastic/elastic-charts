@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { PointerEventType } from '../../specs/settings_types';
+import { PointerEventType } from '../../specs';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */

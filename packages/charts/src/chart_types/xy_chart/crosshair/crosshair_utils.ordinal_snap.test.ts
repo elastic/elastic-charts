@@ -9,7 +9,7 @@
 import { getSnapPosition } from './crosshair_utils';
 import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs';
 import { ChartType } from '../../chart_type';
 import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';
 import { computeSeriesDomains } from '../state/utils/utils';

@@ -18,12 +18,7 @@ import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../.
 import { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
-import {
-  BasicListener,
-  ElementClickListener,
-  ElementOverListener,
-  MetricElementEvent,
-} from '../../../../specs/settings';
+import { BasicListener, ElementClickListener, ElementOverListener, MetricElementEvent } from '../../../../specs';
 import { LayoutDirection, isNil } from '../../../../utils/common';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { MetricDatum } from '../../../specs';

@@ -26,7 +26,7 @@ import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { SeededDataGenerator, getRandomNumberGenerator } from '../../../mocks/utils';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs';
 import { AccessorFn } from '../../../utils/accessor';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
 import { KIBANA_METRICS } from '../../../utils/data_samples/test_dataset_kibana';

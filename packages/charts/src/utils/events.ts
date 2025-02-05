@@ -7,8 +7,7 @@
  */
 
 import { ScaleBand, ScaleContinuous } from '../scales';
-import { BrushEndListener, isPointerOverEvent } from '../specs/settings';
-import { PointerEvent, PointerOverEvent } from '../specs/settings_types';
+import { BrushEndListener, isPointerOverEvent, PointerEvent, PointerOverEvent } from '../specs';
 import { DragState } from '../state/pointer_states';
 
 /** @internal */

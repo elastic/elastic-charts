@@ -11,7 +11,7 @@ import { Store } from 'redux';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { Spec } from '../../../specs/spec';
+import { Spec } from '../../../specs';
 import { GlobalChartState } from '../../../state/chart_state';
 import { PointGeometry, AreaGeometry } from '../../../utils/geometry';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';

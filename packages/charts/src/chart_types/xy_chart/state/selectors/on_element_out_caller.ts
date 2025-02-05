@@ -12,7 +12,7 @@ import {
   getHighlightedTooltipTooltipValuesSelector,
   TooltipAndHighlightedGeoms,
 } from './get_tooltip_values_highlighted_geoms';
-import { SettingsSpec } from '../../../../specs/settings';
+import { SettingsSpec } from '../../../../specs';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';

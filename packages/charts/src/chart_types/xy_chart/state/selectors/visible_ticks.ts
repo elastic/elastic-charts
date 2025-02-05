@@ -17,7 +17,7 @@ import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_util
 import { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { isContinuousScale } from '../../../../scales/types';
-import { SettingsSpec } from '../../../../specs/settings';
+import { SettingsSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';

@@ -8,7 +8,7 @@
 
 import { createAction } from '@reduxjs/toolkit';
 
-import { Spec } from '../../specs/spec';
+import { Spec } from '../../specs';
 
 /** @internal */
 export const upsertSpec = createAction<Spec>('UPSERT_SPEC');

@@ -8,7 +8,7 @@
 
 import { OptionalKeys, RequiredKeys } from 'utility-types';
 
-import { Spec } from '../specs/spec';
+import { Spec } from '../specs';
 
 /*
 ------------------------------------------------------------

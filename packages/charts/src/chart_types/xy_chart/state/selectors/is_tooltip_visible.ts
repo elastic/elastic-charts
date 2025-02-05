@@ -6,12 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { isFollowTooltipType, TooltipSpec } from './../../../../specs/tooltip';
+import { isFollowTooltipType, TooltipSpec, TooltipType } from './../../../../specs';
 import { getTooltipSpecSelector } from './../../../../state/selectors/get_tooltip_spec';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
 import { getTooltipInfoAndGeomsSelector, TooltipAndHighlightedGeoms } from './get_tooltip_values_highlighted_geoms';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';
-import { TooltipType } from '../../../../specs/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { InteractionsState } from '../../../../state/interactions_state';
 import { TooltipVisibility } from '../../../../state/internal_chart_state';

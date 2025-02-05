@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Spec } from '../../../../specs/spec';
+import { Spec } from '../../../../specs';
 import { Rotation } from '../../../../utils/common';
 import { GroupId } from '../../../../utils/ids';
 import { BasicSeriesSpec, DEFAULT_GLOBAL_ID } from '../../../specs';

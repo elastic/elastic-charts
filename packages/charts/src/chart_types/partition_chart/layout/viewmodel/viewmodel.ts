@@ -27,7 +27,7 @@ import {
   trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
 import { Part } from '../../../../common/text_utils';
-import { GroupByAccessor } from '../../../../specs/group_by';
+import { GroupByAccessor } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { ColorVariant, StrokeStyle } from '../../../../utils/common';
 import { Size } from '../../../../utils/dimensions';

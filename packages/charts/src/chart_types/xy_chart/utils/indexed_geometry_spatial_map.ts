@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { MarkBuffer } from '../../../specs/settings';
+import { MarkBuffer } from '../../../specs';
 import { getDistance, isFiniteNumber } from '../../../utils/common';
 import { Delaunay, Bounds } from '../../../utils/d3-delaunay';
 import { IndexedGeometry, PointGeometry } from '../../../utils/geometry';

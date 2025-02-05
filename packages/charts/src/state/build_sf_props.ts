@@ -15,7 +15,7 @@ import {
   SFOverrideKeys,
   SFRequiredKeys,
 } from './build_props_types';
-import { Spec } from '../specs/spec';
+import { Spec } from '../specs';
 
 /**
  * Takes in prop overrides and defaults with enforced types.
