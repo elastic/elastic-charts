@@ -9,6 +9,7 @@
 import { ComponentProps } from 'react';
 
 import { X_SCALE_DEFAULT } from './scale_defaults';
+import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { SmallMultiplesDatum } from '../../../common/panel_utils';
 import { Predicate } from '../../../common/predicate';
@@ -21,7 +22,6 @@ import { useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, LabelAccessor, ValueFormatter, stripUndefined } from '../../../utils/common';
-import { ChartType } from '../..';
 import { BaseDatum } from '../../specs';
 import { Cell } from '../layout/types/viewmodel_types';
 

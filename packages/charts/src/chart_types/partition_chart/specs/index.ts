@@ -8,6 +8,7 @@
 
 import { ComponentProps } from 'react';
 
+import { ChartType } from '../..';
 import { BaseDatum } from '../../../chart_types/specs';
 import { LegacyAnimationConfig } from '../../../common/animation';
 import { Distance, Pixels, Radius } from '../../../common/geometry';
@@ -26,7 +27,6 @@ import {
   stripUndefined,
 } from '../../../utils/common';
 import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
-import { ChartType } from '../..';
 import { percentFormatter } from '../layout/config';
 import { PartitionLayout } from '../layout/types/config_types';
 import { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';

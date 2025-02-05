@@ -25,6 +25,7 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerUpdateCaller } from './selectors/on_pointer_update_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
+import { ChartType } from '../..';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
 import { SmallMultiplesSeriesDomains } from '../../../common/panel_utils';
 import { BrushTool } from '../../../components/brush/brush';
@@ -35,7 +36,6 @@ import { getChartContainerDimensionsSelector } from '../../../state/selectors/ge
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 import { Dimensions } from '../../../utils/dimensions';
-import { ChartType } from '../..';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { CursorBand } from '../renderer/dom/cursor_band';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
