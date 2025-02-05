@@ -11,7 +11,7 @@ import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { MockXDomain } from '../../../mocks/xy/domains';
 import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { Dimensions } from '../../../utils/dimensions';
 import { ChartType } from '../../chart_type';
 import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';

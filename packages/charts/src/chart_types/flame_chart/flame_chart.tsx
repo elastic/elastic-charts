@@ -22,7 +22,8 @@ import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../../common/constants';
 import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
 import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
-import { TooltipType, SettingsSpec, SpecType, TooltipValue } from '../../specs';
+import { TooltipType, SettingsSpec, TooltipValue } from '../../specs';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
 import { onPointerMove } from '../../state/actions/mouse';
 import { GlobalChartState } from '../../state/chart_state';

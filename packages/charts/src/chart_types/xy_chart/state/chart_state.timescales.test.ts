@@ -15,8 +15,9 @@ import { getComputedScalesSelector } from './selectors/get_computed_scales';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { SettingsSpec, SpecType } from '../../../specs';
+import { SettingsSpec } from '../../../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../../../specs/default_settings_spec';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';

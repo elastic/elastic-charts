@@ -11,7 +11,7 @@ import { Store } from 'redux';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onToggleDeselectSeriesAction } from '../../../state/actions/legend';
 import { GlobalChartState } from '../../../state/chart_state';
 import { Position, RecursivePartial } from '../../../utils/common';

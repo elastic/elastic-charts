@@ -10,7 +10,7 @@ import { formatTooltipHeader, formatTooltipValue } from './tooltip';
 import { MockBarGeometry } from '../../../mocks';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { Position, RecursivePartial } from '../../../utils/common';
 import { BarGeometry } from '../../../utils/geometry';
 import { AxisStyle } from '../../../utils/themes/theme';

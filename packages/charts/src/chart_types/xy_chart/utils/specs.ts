@@ -17,7 +17,8 @@ import { TooltipPortalSettings } from '../../../components/portal/types';
 import { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { LogScaleOptions } from '../../../scales/types';
-import { SpecType, Spec } from '../../../specs';
+import { Spec } from '../../../specs';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { AccessorFormat, AccessorFn, Accessor } from '../../../utils/accessor';
 import { RecursivePartial, Position, Datum } from '../../../utils/common';
 import { CurveType } from '../../../utils/curves';

@@ -14,8 +14,8 @@ import {
   DEFAULT_SM_PANEL_PADDING,
   SmallMultiplesSpec,
   SmallMultiplesStyle,
-  SpecType,
 } from '../../../../specs';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_multiples_spec';
