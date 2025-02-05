@@ -22,8 +22,7 @@ import { SFProps } from '../state/build_props_types';
 import { buildSFProps } from '../state/build_sf_props';
 import { useSpecFactory } from '../state/spec_factory';
 import { PointerValue } from '../state/types';
-import { Datum } from '../utils/common';
-import { stripUndefined } from '../utils/common';
+import { Datum, stripUndefined } from '../utils/common';
 import { SeriesCompareFn } from '../utils/series_sort';
 
 /**

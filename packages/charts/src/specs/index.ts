@@ -27,6 +27,8 @@ export * from './constants';
 export * from './tooltip';
 export * from '../chart_types/specs';
 export * from './pointer_update_trigger';
-export * from './spec_type';
 export * from './default_settings_spec';
 export * from './default_legend_config';
+
+// skipped to avoid cyclic dependencies
+// export * from './spec_type';

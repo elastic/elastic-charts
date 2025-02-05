@@ -9,12 +9,11 @@
 import { ComponentProps } from 'react';
 
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { SFProps } from '../../../state/build_props_types';
 import { buildSFProps } from '../../../state/build_sf_props';
 import { useSpecFactory } from '../../../state/spec_factory';
-import { Datum } from '../../../utils/common';
-import { stripUndefined } from '../../../utils/common';
+import { Datum, stripUndefined } from '../../../utils/common';
 import { ChartType } from '../../chart_type';
 import { BarSeriesSpec, BaseDatum, DEFAULT_GLOBAL_ID, SeriesType } from '../utils/specs';
 
