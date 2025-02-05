@@ -35,7 +35,7 @@ import { getChartContainerDimensionsSelector } from '../../../state/selectors/ge
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 import { Dimensions } from '../../../utils/dimensions';
-import { ChartType } from '../../chart_type';
+import { ChartType } from '../..';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { CursorBand } from '../renderer/dom/cursor_band';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';

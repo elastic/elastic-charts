@@ -7,7 +7,7 @@
  */
 
 import { SpecList } from './spec_list';
-import { ChartType } from '../chart_types/chart_type';
+import { ChartType } from '../chart_types';
 import { keepDistinct } from '../utils/common';
 import { Logger } from '../utils/logger';
 

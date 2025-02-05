@@ -25,7 +25,7 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
-import { ChartType } from '../../chart_type';
+import { ChartType } from '../..';
 import { Goal } from '../renderer/canvas/connected_component';
 
 /** @internal */

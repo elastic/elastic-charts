@@ -13,6 +13,7 @@ import { Store } from 'redux';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getComputedScalesSelector } from './selectors/get_computed_scales';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
+import { ChartType } from '../..';
 import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SettingsSpec } from '../../../specs';
@@ -23,7 +24,6 @@ import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { chartSlice, GlobalChartState } from '../../../state/chart_state';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { ChartType } from '../../chart_type';
 import { LineSeriesSpec, SeriesType } from '../utils/specs';
 
 describe('Render chart', () => {

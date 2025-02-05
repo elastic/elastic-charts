@@ -16,7 +16,7 @@ import { specComponentFactory } from '../../../state/spec_factory';
 import { LayoutDirection, ValueFormatter } from '../../../utils/common';
 import { GenericDomain } from '../../../utils/domain';
 import { BulletValueLabels } from '../../bullet_graph/spec';
-import { ChartType } from '../../chart_type';
+import { ChartType } from '../..';
 
 /** @alpha */
 export type MetricBase = {

@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { ChartType } from '../../../chart_types';
 import { BulletSpec } from '../../../chart_types/bullet_graph/spec';
-import { ChartType } from '../../../chart_types/chart_type';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { GlobalChartState } from '../../../state/chart_state';
 import { getSpecFromStore } from '../../../state/utils/get_spec_from_store';

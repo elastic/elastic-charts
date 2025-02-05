@@ -15,7 +15,7 @@ import { HeatmapBrushEvent } from '../../../../specs';
 import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Visible, HeatmapStyle } from '../../../../utils/themes/theme';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { HeatmapCellDatum } from '../viewmodel/viewmodel';
 

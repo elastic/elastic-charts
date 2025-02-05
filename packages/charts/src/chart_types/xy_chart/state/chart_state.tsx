@@ -39,7 +39,7 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 import { htmlIdGenerator } from '../../../utils/common';
-import { ChartType } from '../../chart_type';
+import { ChartType } from '../..';
 import { XYChart } from '../renderer/canvas/xy_chart';
 import { Annotations } from '../renderer/dom/annotations';
 import { CursorBand } from '../renderer/dom/cursor_band';

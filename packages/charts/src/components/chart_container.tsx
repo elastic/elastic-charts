@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { NoResults } from './no_results';
-import { ChartType } from '../chart_types/chart_type';
+import { ChartType } from '../chart_types';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
 import { SettingsSpec, TooltipSpec } from '../specs';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';

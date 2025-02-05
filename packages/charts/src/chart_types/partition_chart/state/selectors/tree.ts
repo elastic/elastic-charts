@@ -7,6 +7,7 @@
  */
 
 import { getPartitionSpecs } from './get_partition_specs';
+import { ChartType } from '../../..';
 import { getPredicateFn } from '../../../../common/predicate';
 import {
   GroupByAccessor,
@@ -22,7 +23,6 @@ import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_mu
 import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
 import { Datum } from '../../../../utils/common';
-import { ChartType } from '../../../chart_type';
 import { HierarchyOfArrays, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';
 import { PartitionSpec } from '../../specs';

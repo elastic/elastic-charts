@@ -8,10 +8,10 @@
 
 import { ComponentProps } from 'react';
 
+import { ChartType } from '../..';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { specComponentFactory } from '../../../state/spec_factory';
 import { Position } from '../../../utils/common';
-import { ChartType } from '../../chart_type';
 import { AxisSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 
 /**

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../chart_types/chart_type';
+import { ChartType } from '../chart_types';
 
 /** @public */
 export interface Spec {

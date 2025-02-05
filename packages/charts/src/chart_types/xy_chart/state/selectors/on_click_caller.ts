@@ -19,7 +19,7 @@ import { getLastClickSelector } from '../../../../state/selectors/get_last_click
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isClicking } from '../../../../state/utils/is_clicking';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../../../specs';
 import { AnnotationTooltipState } from '../../annotations/types';
 import { XYChartSeriesIdentifier } from '../../utils/series';

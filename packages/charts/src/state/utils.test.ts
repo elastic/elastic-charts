@@ -7,7 +7,7 @@
  */
 
 import { getSpecsFromStore } from './utils/get_specs_from_store';
-import { ChartType } from '../chart_types/chart_type';
+import { ChartType } from '../chart_types';
 import { SpecType } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 
 describe('State utils', () => {

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../chart_types/chart_type';
+import { ChartType } from '../../chart_types';
 import { X_SCALE_DEFAULT } from '../../chart_types/heatmap/specs/scale_defaults';
 import { percentFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';

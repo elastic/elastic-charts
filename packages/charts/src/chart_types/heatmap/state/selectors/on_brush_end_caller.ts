@@ -17,7 +17,7 @@ import { DragState } from '../../../../state/pointer_states';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { DragCheckProps, hasDragged } from '../../../../utils/events';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:

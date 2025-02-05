@@ -18,7 +18,7 @@ import { PointerState } from '../../../../state/pointer_states';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isClicking } from '../../../../state/utils/is_clicking';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 import { Cell, isPickedCells } from '../../layout/types/viewmodel_types';
 
 /**

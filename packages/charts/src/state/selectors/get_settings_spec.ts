@@ -9,7 +9,7 @@
 import { produce } from 'immer';
 
 import { getSpecs } from './get_specs';
-import { ChartType } from '../../chart_types/chart_type';
+import { ChartType } from '../../chart_types';
 import { SettingsSpec } from '../../specs';
 import { DEFAULT_SETTINGS_SPEC, settingsBuildProps } from '../../specs/default_settings_spec';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges

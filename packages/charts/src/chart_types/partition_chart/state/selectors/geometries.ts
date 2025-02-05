@@ -8,6 +8,7 @@
 
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees, StyledTree } from './tree';
+import { ChartType } from '../../..';
 import { CategoryKey } from '../../../../common/category';
 import { Pixels } from '../../../../common/geometry';
 import { Font } from '../../../../common/text_utils';
@@ -19,7 +20,6 @@ import { getChartThemeSelector } from '../../../../state/selectors/get_chart_the
 import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
 import { Dimensions } from '../../../../utils/dimensions';
-import { ChartType } from '../../../chart_type';
 import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { getShapeViewModel } from '../../layout/viewmodel/scenegraph';
 import { IndexedContinuousDomainFocus } from '../../renderer/canvas/partition';

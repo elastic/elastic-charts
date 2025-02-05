@@ -7,7 +7,7 @@
  */
 
 import { getSpecs } from './get_specs';
-import { ChartType } from '../../chart_types/chart_type';
+import { ChartType } from '../../chart_types';
 import { SmallMultiplesGroupBy } from '../../common/panel_utils';
 import { SmallMultiplesSpec } from '../../specs';
 import { GroupBySpec } from '../../specs/group_by';

@@ -8,12 +8,12 @@
 
 import { ComponentProps } from 'react';
 
+import { ChartType } from '../..';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { SFProps } from '../../../state/build_props_types';
 import { buildSFProps } from '../../../state/build_sf_props';
 import { useSpecFactory } from '../../../state/spec_factory';
 import { stripUndefined } from '../../../utils/common';
-import { ChartType } from '../../chart_type';
 import { LineAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType } from '../utils/specs';
 
 const buildProps = buildSFProps<LineAnnotationSpec>()(

@@ -14,7 +14,7 @@ import { getOnElementOutSelector } from '../../../../common/event_handler_select
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { ChartType } from '../../../chart_type';
+import { ChartType } from '../../..';
 
 /**
  * Will call the onElementOut listener every time the following preconditions are met:
