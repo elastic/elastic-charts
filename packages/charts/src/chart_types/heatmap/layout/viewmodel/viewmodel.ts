@@ -24,6 +24,7 @@ import {
 } from '../../../../common/panel_utils';
 import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
+import { LinearScale, OrdinalScale, RasterTimeScale, BaseDatum } from '../../../../specs';
 import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
 import { clamp, Datum, isFiniteNumber, isNil } from '../../../../utils/common';
@@ -31,7 +32,6 @@ import { innerPad, pad, ChartDimensions } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
 import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { LinearScale, OrdinalScale, RasterTimeScale, BaseDatum } from '../../../specs';
 import { HeatmapSpec } from '../../specs';
 import { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
 import { HeatmapTable } from '../../state/selectors/get_heatmap_table';

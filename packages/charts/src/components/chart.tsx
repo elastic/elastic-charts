@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { configureStore } from '@reduxjs/toolkit';
 import classNames from 'classnames';
 import React, { CSSProperties, ReactNode, createRef } from 'react';
 import { Provider } from 'react-redux';
-import { Unsubscribe } from 'redux';
+import { Unsubscribe, Store } from 'redux';
 import { OptionalKeys } from 'utility-types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -22,10 +23,10 @@ import { getElementZIndex } from './portal/utils';
 import { Colors } from '../common/colors';
 import { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
-import { updateParentDimensions, updateChartTitles } from '../state/actions/chart_settings';
+import { updateChartTitles, updateParentDimensions } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
-import { chartStore, initialize } from '../state/chart_state';
+import { chartSlice, initialize, GlobalChartState } from '../state/chart_state';
 import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { ChartSize, getChartSize, getFixedChartSize } from '../utils/chart_size';
@@ -63,6 +64,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   private unsubscribeToStore: Unsubscribe;
 
+  private chartStore: Store<GlobalChartState>;
+
   private chartContainerRef: React.RefObject<HTMLDivElement>;
 
   private chartStageRef: React.RefObject<HTMLCanvasElement>;
@@ -72,14 +75,24 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartContainerRef = createRef();
     this.chartStageRef = createRef();
 
+    const id = this.props.id ?? uuidv4();
+    this.chartStore = configureStore({
+      reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
+    });
+    this.chartStore.dispatch(initialize({ id, title: this.props.title, description: this.props.description }));
     this.state = {
       legendDirection: LayoutDirection.Vertical,
       paddingLeft: LIGHT_THEME.chartMargins.left,
       paddingRight: LIGHT_THEME.chartMargins.right,
       displayTitles: true,
     };
-    this.unsubscribeToStore = chartStore.subscribe(() => {
-      const state = chartStore.getState();
+    this.unsubscribeToStore = this.chartStore.subscribe(() => {
+      const state = this.chartStore.getState();
       if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
         return;
       }
@@ -95,11 +108,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   componentDidMount() {
     if (this.chartContainerRef.current) {
-      const id = this.props.id ?? uuidv4();
-      chartStore.dispatch(initialize({ id, title: this.props.title, description: this.props.description }));
-
       const zIndex = getElementZIndex(this.chartContainerRef.current, document.body);
-      chartStore.dispatch(onComputedZIndex(zIndex));
+      this.chartStore.dispatch(onComputedZIndex(zIndex));
     }
   }
 
@@ -109,13 +119,13 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   componentDidUpdate({ title, description, size }: Readonly<ChartProps>) {
     if (title !== this.props.title || description !== this.props.description) {
-      chartStore.dispatch(updateChartTitles({ title: this.props.title, description: this.props.description }));
+      this.chartStore.dispatch(updateChartTitles({ title: this.props.title, description: this.props.description }));
     }
     const prevChartSize = getChartSize(size);
     const newChartSize = getFixedChartSize(this.props.size);
     // if the size is specified in pixels then update directly the store
     if (newChartSize && (newChartSize.width !== prevChartSize.width || newChartSize.height !== prevChartSize.height)) {
-      chartStore.dispatch(updateParentDimensions({ ...newChartSize, top: 0, left: 0 }));
+      this.chartStore.dispatch(updateParentDimensions({ ...newChartSize, top: 0, left: 0 }));
     }
   }
 
@@ -152,7 +162,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   getChartContainerRef = () => this.chartContainerRef;
 
   dispatchExternalPointerEvent(event: PointerEvent) {
-    chartStore.dispatch(onExternalPointerEvent(event));
+    this.chartStore.dispatch(onExternalPointerEvent(event));
   }
 
   render() {
@@ -163,7 +173,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     });
 
     return (
-      <Provider store={chartStore}>
+      <Provider store={this.chartStore}>
         <div className="echChart" style={containerSizeStyle}>
           <Titles
             displayTitles={this.state.displayTitles}

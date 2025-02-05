@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { configureStore } from '@reduxjs/toolkit';
 import { Cancelable } from 'lodash';
 import { Store } from 'redux';
 
@@ -14,7 +15,7 @@ import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
-import { chartStore, initialize, GlobalChartState } from '../../state/chart_state';
+import { chartSlice, initialize, GlobalChartState } from '../../state/chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../utils/common';
 
@@ -24,9 +25,17 @@ export class MockStore {
     { width, height, top, left } = { width: 100, height: 100, top: 0, left: 0 },
     chartId = 'chartId',
   ): Store<GlobalChartState> {
-    chartStore.dispatch(initialize({ id: chartId }));
-    chartStore.dispatch(updateParentDimensions({ width, height, top, left }));
-    return chartStore;
+    const store = configureStore({
+      reducer: chartSlice.reducer,
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          // TODO https://github.com/elastic/elastic-charts/issues/2078
+          serializableCheck: false,
+        }),
+    });
+    store.dispatch(initialize({ id: chartId }));
+    store.dispatch(updateParentDimensions({ width, height, top, left }));
+    return store;
   }
 
   static addSpecs(specs: Spec | Array<Spec>, store: Store<GlobalChartState>) {

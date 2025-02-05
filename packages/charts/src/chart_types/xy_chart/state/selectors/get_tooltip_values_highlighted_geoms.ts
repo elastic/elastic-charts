@@ -15,12 +15,12 @@ import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
 import { hasSingleSeriesSelector } from './has_single_series';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import {
+  PointerEvent,
   TooltipType,
   isPointerOutEvent,
-  SettingsSpec,
-  PointerEvent,
   TooltipValue,
   isFollowTooltipType,
+  SettingsSpec,
   getTooltipType,
   TooltipSpec,
 } from '../../../../specs';
