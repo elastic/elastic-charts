@@ -20,7 +20,7 @@ import { createChartStore } from '../state/chart_state';
 
 describe('Specs parser', () => {
   test('can mount the spec parser', () => {
-    const chartStore = createChartStore('chartId');
+    const chartStore = createChartStore('chart_id');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -32,7 +32,7 @@ describe('Specs parser', () => {
     expect(chartStore.getState().specsInitialized).toBe(true);
   });
   test('can parse few components', () => {
-    const chartStore = createChartStore('chartId');
+    const chartStore = createChartStore('chart_id');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -76,7 +76,7 @@ describe('Specs parser', () => {
     expect(state.specs.bars2).toBeDefined();
   });
   test('can update a component', () => {
-    const chartStore = createChartStore('chartId');
+    const chartStore = createChartStore('chart_id');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -115,7 +115,7 @@ describe('Specs parser', () => {
     expect((state.specs.bars as BarSeriesSpec).xAccessor).toBe(1);
   });
   test('should remove a spec when replaced with a new', () => {
-    const chartStore = createChartStore('chartId');
+    const chartStore = createChartStore('chart_id');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -157,7 +157,7 @@ describe('Specs parser', () => {
     expect(state.specs.two).toBeDefined();
   });
   test('set initialization to false on unmount', () => {
-    const chartStore = createChartStore('chartId');
+    const chartStore = createChartStore('chart_id');
     const component = mount(
       <Provider store={chartStore}>
         <SpecsParser />
@@ -168,7 +168,7 @@ describe('Specs parser', () => {
   });
 
   test('correctly set the rendered status', () => {
-    const chartStore = createChartStore('chartId');
+    const chartStore = createChartStore('chart_id');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const chartContainerRef: React.RefObject<HTMLDivElement> = React.createRef();

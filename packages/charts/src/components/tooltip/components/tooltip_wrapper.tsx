@@ -12,9 +12,8 @@ import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { TooltipActions } from './tooltip_actions';
 import { TooltipPrompt } from './tooltip_prompt';
 import { useTooltipContext } from './tooltip_provider';
-import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { TooltipSpec } from '../../../specs';
+import { BaseDatum, TooltipSpec } from '../../../specs';
 import { Datum } from '../../../utils/common';
 
 type TooltipWrapperProps<

@@ -8,8 +8,8 @@
 
 import { extent } from 'd3-array';
 
-import { DomainPaddingUnit, YDomainRange } from '../chart_types/specs';
 import { ScaleType } from '../scales/constants';
+import { DomainPaddingUnit, YDomainRange } from '../specs';
 
 /** @public */
 export type OrdinalDomain = (number | string)[];

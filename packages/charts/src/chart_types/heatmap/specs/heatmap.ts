@@ -21,7 +21,7 @@ import { buildSFProps } from '../../../state/build_sf_props';
 import { useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
-import { Datum, LabelAccessor, ValueFormatter, stripUndefined } from '../../../utils/common';
+import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';
 import { Cell } from '../layout/types/viewmodel_types';
 
 /** @public */

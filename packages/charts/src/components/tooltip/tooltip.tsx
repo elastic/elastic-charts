@@ -28,10 +28,9 @@ import {
   ToggleSelectedTooltipItemCallback,
   TooltipInfo,
 } from './types';
-import { BaseDatum } from '../../chart_types/specs';
 import { Colors } from '../../common/colors';
 import { SeriesIdentifier } from '../../common/series_id';
-import { DEFAULT_TOOLTIP_SPEC, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
+import { BaseDatum, DEFAULT_TOOLTIP_SPEC, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import {
   toggleSelectedTooltipItem as toggleSelectedTooltipItemAction,

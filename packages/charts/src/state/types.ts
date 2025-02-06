@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
+import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import {
   AnnotationType,
   BaseDatum,
@@ -16,9 +16,9 @@ import {
 } from '../chart_types/specs';
 import { Pixels } from '../common/geometry';
 import { Accessor } from '../utils/accessor';
-import { Datum, Position } from '../utils/common';
+import type { Datum, Position } from '../utils/common';
 import { GenericDomain } from '../utils/domain';
-import { GeometryValue } from '../utils/geometry';
+import type { GeometryValue } from '../utils/geometry';
 import { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
 
 /** @public */

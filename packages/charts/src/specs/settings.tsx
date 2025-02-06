@@ -38,8 +38,8 @@ import {
   Rendering,
   Rotation,
   VerticalAlignment,
+  stripUndefined,
 } from '../utils/common';
-import { stripUndefined } from '../utils/common';
 import { Dimensions } from '../utils/dimensions';
 import { GeometryValue } from '../utils/geometry';
 import { GroupId, SpecId } from '../utils/ids';

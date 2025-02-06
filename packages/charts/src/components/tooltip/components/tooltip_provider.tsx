@@ -8,9 +8,8 @@
 
 import React, { PropsWithChildren, Context, useContext } from 'react';
 
-import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { TooltipValue } from '../../../specs';
+import { BaseDatum, TooltipValue } from '../../../specs';
 import { pinTooltip as pinTooltipAction } from '../../../state/actions/tooltip';
 import { Datum } from '../../../utils/common';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';

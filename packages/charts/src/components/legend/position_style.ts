@@ -8,7 +8,7 @@
 
 import { CSSProperties } from 'react';
 
-import { LegendSpec, LegendPositionConfig } from '../../specs';
+import { LegendSpec, LegendPositionConfig } from '../../specs/settings';
 import { LayoutDirection, Position } from '../../utils/common';
 import { Dimensions, Size } from '../../utils/dimensions';
 

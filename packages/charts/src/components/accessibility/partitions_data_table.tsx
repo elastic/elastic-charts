@@ -13,7 +13,7 @@ import {
   getScreenReaderDataSelector,
   PartitionData,
 } from '../../chart_types/partition_chart/state/selectors/get_screen_reader_data';
-import { SettingsSpec } from '../../specs';
+import { SettingsSpec } from '../../specs/settings';
 import { GlobalChartState } from '../../state/chart_state';
 import {
   A11ySettings,

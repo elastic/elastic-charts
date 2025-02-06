@@ -13,11 +13,10 @@ import { Goal } from '../../chart_types/goal_chart/specs';
 import { GoalSubtype } from '../../chart_types/goal_chart/specs/constants';
 import { defaultPartitionValueFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
-import { BarSeries, LineSeries, Partition } from '../../chart_types/specs';
 import { arrayToLookup } from '../../common/color_calcs';
 import { mocks } from '../../mocks/hierarchical';
 import { productDimension } from '../../mocks/hierarchical/dimension_codes';
-import { Settings } from '../../specs';
+import { BarSeries, LineSeries, Partition, Settings } from '../../specs';
 import { Datum } from '../../utils/common';
 import { Chart } from '../chart';
 
