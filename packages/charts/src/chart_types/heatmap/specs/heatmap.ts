@@ -16,7 +16,7 @@ import { Predicate } from '../../../common/predicate';
 import { ScaleType } from '../../../scales/constants';
 import { BaseDatum } from '../../../specs';
 import { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
+import { useSpecFactory, SFProps, buildSFProps } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';

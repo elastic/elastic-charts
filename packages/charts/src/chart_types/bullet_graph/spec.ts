@@ -13,7 +13,7 @@ import { BulletColorConfig } from './utils/color';
 import { ChartType } from '../../chart_types/index';
 import { Spec, SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
-import { mergePartial, ValueFormatter, stripUndefined } from '../../utils/common';
+import { mergePartial, stripUndefined, ValueFormatter } from '../../utils/common';
 import { GenericDomain } from '../../utils/domain';
 
 /** @public */
