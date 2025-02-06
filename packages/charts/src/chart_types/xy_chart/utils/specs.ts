@@ -14,9 +14,8 @@ import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
 import { ChartType } from '../../../chart_types';
 import { Color } from '../../../common/colors';
 import { TooltipPortalSettings } from '../../../components/portal/types';
-import { ScaleContinuousType } from '../../../scales';
+import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { LogScaleOptions } from '../../../scales/types';
 import { Spec } from '../../../specs';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { AccessorFormat, AccessorFn, Accessor } from '../../../utils/accessor';

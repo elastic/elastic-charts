@@ -12,7 +12,7 @@ import { Provider } from 'react-redux';
 import { Store } from 'redux';
 
 import { LineSeries } from './line_series';
-import { LineAnnotation, AnnotationDomainType } from '../../../chart_types/specs';
+import { LineAnnotation, AnnotationDomainType } from '../../../specs';
 import { SpecsParser } from '../../../specs/specs_parser';
 import { createChartStore, GlobalChartState } from '../../../state/chart_state';
 
