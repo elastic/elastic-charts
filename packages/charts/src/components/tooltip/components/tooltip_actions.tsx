@@ -71,7 +71,7 @@ export const TooltipActions = <D extends BaseDatum = Datum, SI extends SeriesIde
             title={typeof reason === 'string' ? reason : undefined}
             disabled={Boolean(reason)}
             onClick={() => {
-              pinTooltip({ pinned: false, resetPointer: true });
+              pinTooltip(false, true);
               // timeout used to close tooltip before calling action
               setTimeout(() => {
                 onSelect(selected, values);
