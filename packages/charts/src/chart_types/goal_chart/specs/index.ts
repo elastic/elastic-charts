@@ -13,8 +13,8 @@ import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
 import { TAU } from '../../../common/constants';
 import { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
-import { LabelAccessor, round, ValueFormatter, stripUndefined } from '../../../utils/common';
+import { useSpecFactory, SFProps, buildSFProps } from '../../../state/spec_factory';
+import { LabelAccessor, round, stripUndefined, ValueFormatter } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 
