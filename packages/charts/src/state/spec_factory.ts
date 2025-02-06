@@ -8,17 +8,9 @@
 
 import { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { OptionalKeys, RequiredKeys } from 'utility-types';
 
-import {
-  SFDefaults,
-  SFDefaultKeys,
-  SFOptionalKeys,
-  SFOverrides,
-  SFOverrideKeys,
-  SFProps,
-  SFRequiredKeys,
-} from './build_props_types';
-import { Spec } from '../specs';
+import { Spec } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { upsertSpec, removeSpec } from '../state/actions/specs';
 import { stripUndefined } from '../utils/common';
 
@@ -71,3 +63,95 @@ export const specComponentFactory =
       return null;
     };
   };
+
+/**
+ * Takes in prop overrides and defaults with enforced types.
+ * Determines implicit types of optional and required props.
+ *
+ * To use this you must pass the Spec type via empty function call...
+ *
+ * ```ts
+ * const MyThingBuildProps = buildSFProps<MyThingSpec>()(overrides, defaults)
+ * ```
+ *
+ * > IMPORTANT: Both `overrides` and `defaults` should __NOT__ have explicit types.
+ * > The types are determined automatically from thier implicitly defined types, while still
+ * > enforing that the types are derived from the defined `Spec`.
+ * @internal
+ */
+export const buildSFProps =
+  <S extends Spec>() =>
+  <
+    Overrides extends SFOverrideKeys<S>,
+    Defaults extends SFDefaultKeys<S, Overrides>,
+    Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+    Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>,
+  >(
+    overrides: SFOverrides<S, Overrides>,
+    defaults: SFDefaults<S, Overrides, Defaults>,
+  ): BuildProps<S, Overrides, Defaults, Optionals, Requires> => ({
+    overrides,
+    defaults,
+    optionals: {} as Pick<S, Optionals>, // used to transfer type only
+    requires: {} as Pick<S, Requires>, // used to transfer type only
+  });
+
+/*
+------------------------------------------------------------
+  Reused types to maintain single source of truth
+------------------------------------------------------------
+*/
+
+/**
+ * Resulting props for spec given overrides, defaults, optionals and required props
+ * @public
+ */
+export type SFProps<
+  S extends Spec,
+  Overrides extends SFOverrideKeys<S>,
+  Defaults extends SFDefaultKeys<S, Overrides>,
+  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>,
+> = Pick<S, Optionals | Requires> & Partial<Pick<S, Defaults>>;
+
+/** @public */
+export interface BuildProps<
+  S extends Spec,
+  Overrides extends SFOverrideKeys<S>,
+  Defaults extends SFDefaultKeys<S, Overrides>,
+  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+  Requires extends SFRequiredKeys<S, Overrides, Defaults, Optionals>,
+> {
+  overrides: SFOverrides<S, Overrides>;
+  defaults: SFDefaults<S, Overrides, Defaults>;
+  /** @deprecated - ignore - used only as type do not use as value */
+  optionals: Pick<S, Optionals>;
+  /** @deprecated - ignore - used only as type do not use as value */
+  requires: Pick<S, Requires>;
+}
+
+/** All specs __must__ provide these as overrides */
+type RequiredSpecProps = keyof Pick<Spec, 'chartType' | 'specType'>;
+
+/* Types defining keys */
+type SFOverrideKeys<S extends Spec> = keyof S;
+type SFDefaultKeys<S extends Spec, Overrides extends keyof S> = keyof Omit<S, Overrides>;
+type SFOptionalKeys<
+  S extends Spec,
+  Overrides extends keyof S,
+  Defaults extends keyof Omit<S, Overrides>,
+> = OptionalKeys<Omit<S, Overrides | Defaults>>;
+type SFRequiredKeys<
+  S extends Spec,
+  Overrides extends keyof S,
+  Defaults extends keyof Omit<S, Overrides>,
+  Optionals extends SFOptionalKeys<S, Overrides, Defaults>,
+> = RequiredKeys<Omit<S, Overrides | Defaults | Optionals>>;
+
+/* Object types defined from key types above */
+type SFOverrides<S extends Spec, Overrides extends keyof S> = Required<Pick<S, Overrides | RequiredSpecProps>>;
+type SFDefaults<
+  S extends Spec,
+  Overrides extends SFOverrideKeys<S>,
+  Defaults extends SFDefaultKeys<S, Overrides>,
+> = Required<Pick<S, Defaults>>;

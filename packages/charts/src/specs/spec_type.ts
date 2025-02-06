@@ -8,6 +8,8 @@
 
 import { $Values } from 'utility-types';
 
+import { ChartType } from '../chart_types';
+
 /** @public */
 export const SpecType = Object.freeze({
   Series: 'series' as const,
@@ -20,3 +22,18 @@ export const SpecType = Object.freeze({
 });
 /** @public */
 export type SpecType = $Values<typeof SpecType>;
+
+/** @public */
+export interface Spec {
+  /** unique Spec identifier */
+  id: string;
+  /** Chart type define the type of chart that use this spec */
+  chartType: ChartType;
+  /** The type of spec, can be series, axis, annotation, settings etc */
+  specType: SpecType;
+}
+
+/** @internal */
+export interface SpecList {
+  [specId: string]: Spec;
+}

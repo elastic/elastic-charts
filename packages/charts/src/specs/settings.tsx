@@ -8,12 +8,13 @@
 
 import { ComponentProps, ComponentType, ReactChild } from 'react';
 
-import { CustomXDomain, GroupByAccessor, Spec } from '.';
+import { CustomXDomain, GroupByAccessor } from '.';
 import { BrushAxis } from './brush_axis';
 import { BinAgg, Direction } from './constants';
 import { settingsBuildProps } from './default_settings_spec';
 import { PointerUpdateTrigger } from './pointer_update_trigger';
 import { ProjectedValues, PointerOutEvent, PointerOverEvent, PointerEvent, PointerEventType } from './settings_types';
+import { Spec } from './spec_type';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
@@ -27,8 +28,7 @@ import { SmallMultiplesDatum } from '../common/panel_utils';
 import { SeriesIdentifier } from '../common/series_id';
 import { TooltipPortalSettings } from '../components';
 import { LegendPath } from '../state/actions/legend';
-import { SFProps } from '../state/build_props_types';
-import { useSpecFactory } from '../state/spec_factory';
+import { SFProps, useSpecFactory } from '../state/spec_factory';
 import { PointerValue } from '../state/types';
 import {
   HorizontalAlignment,

@@ -14,11 +14,9 @@ import { Color } from '../../../common/colors';
 import { SmallMultiplesDatum } from '../../../common/panel_utils';
 import { Predicate } from '../../../common/predicate';
 import { ScaleType } from '../../../scales/constants';
-import { BaseDatum, Spec } from '../../../specs';
-import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { SFProps } from '../../../state/build_props_types';
-import { buildSFProps } from '../../../state/build_sf_props';
-import { useSpecFactory } from '../../../state/spec_factory';
+import { BaseDatum } from '../../../specs';
+import { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { Accessor, AccessorFn } from '../../../utils/accessor';
 import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
 import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';

@@ -12,11 +12,10 @@ import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
 import { SettingsSpec } from '../../specs';
 import { DEFAULT_SETTINGS_SPEC, settingsBuildProps } from '../../specs/default_settings_spec';
-import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { SpecList, SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { debounce } from '../../utils/debounce';
 import { Logger } from '../../utils/logger';
 import { createCustomCachedSelector } from '../create_selector';
-import { SpecList } from '../spec_list';
 import { getSpecsFromStore } from '../utils/get_specs_from_store';
 
 const DEFAULT_POINTER_UPDATE_DEBOUNCE = 16;

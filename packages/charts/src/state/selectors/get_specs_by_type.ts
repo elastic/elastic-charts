@@ -7,8 +7,7 @@
  */
 
 import { ChartType } from '../../chart_types';
-import { Spec } from '../../specs';
-import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { Spec, SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecsFromStore } from '../utils/get_specs_from_store';
