@@ -7,6 +7,7 @@
  */
 
 import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import { produce } from 'immer';
 
 import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 import { ChartType } from '../../chart_types';
@@ -14,6 +15,7 @@ import { drilldownActive } from '../../chart_types/partition_chart/state/selecto
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
 import { LegendItem } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
+import { TooltipValue } from '../../specs/tooltip';
 import { getDelta } from '../../utils/point';
 import { onDOMElementEnter, onDOMElementLeave } from '../actions/dom_element';
 import { onKeyPress } from '../actions/key';
@@ -33,6 +35,11 @@ import { getInternalTooltipInfoSelector } from '../selectors/get_internal_toolti
 import { getLegendItemsSelector } from '../selectors/get_legend_items';
 import { getInitialPointerState } from '../utils/get_initial_pointer_state';
 import { getInitialTooltipState } from '../utils/get_initial_tooltip_state';
+
+/** @internal */
+function createItemId(item: TooltipValue<any, SeriesIdentifier>) {
+  return `${item.seriesIdentifier.key}-${item.label}-${item.value}`;
+}
 
 /**
  * The minimum number of pixel between two pointer positions to consider for dragging purposes
@@ -220,14 +227,15 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
 
       if (!state.tooltip.pinned) return;
 
-      let updatedItems = [...state.tooltip.selected];
-      if (updatedItems.includes(action.payload)) {
-        updatedItems = updatedItems.filter((item) => item !== action.payload);
+      const index = state.tooltip.selected.findIndex((item) => createItemId(item) === createItemId(action.payload));
+      if (index !== -1) {
+        // deleting from the immutable array using immer's produce
+        state.tooltip.selected = produce(state.tooltip.selected, (draft) => {
+          draft.splice(index, 1);
+        });
       } else {
-        updatedItems.push(action.payload);
+        state.tooltip.selected.push(action.payload);
       }
-
-      state.tooltip.selected = updatedItems;
     })
     .addCase(setSelectedTooltipItems, (globalState, action) => {
       if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
