@@ -50,7 +50,7 @@ describe('Picked shapes selector', () => {
   let treemapSpec: PartitionSpec;
   let sunburstSpec: PartitionSpec;
   beforeEach(() => {
-    store = createChartStore('chart');
+    store = createChartStore('chartId');
     const common = {
       valueAccessor: (d: { v: number }) => d.v,
       data: [
