@@ -8,7 +8,7 @@
 
 // eslint-disable-next-line no-restricted-imports
 import createCachedSelector, { ICacheObject, Options } from 're-reselect';
-import { createSelector } from 'reselect';
+import type { createSelector } from 'reselect';
 
 import { GlobalChartState } from './chart_state';
 
