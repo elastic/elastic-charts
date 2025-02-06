@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { TooltipInteractionState } from '../interactions_state';
+import { TooltipInteractionState } from '../chart_state';
 
 /** @internal */
 export const getInitialTooltipState = (): TooltipInteractionState => ({

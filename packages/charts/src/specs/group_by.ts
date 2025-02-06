@@ -8,10 +8,9 @@
 
 import { ComponentProps } from 'react';
 
-import { Spec } from './spec';
+import { BaseDatum, Spec } from '.';
 import { SpecType } from './spec_type';
 import { ChartType } from '../chart_types';
-import { BaseDatum } from '../chart_types/specs';
 import { Predicate } from '../common/predicate';
 import { SFProps } from '../state/build_props_types';
 import { buildSFProps } from '../state/build_sf_props';

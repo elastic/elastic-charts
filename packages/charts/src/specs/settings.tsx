@@ -8,17 +8,16 @@
 
 import { ComponentProps, ComponentType, ReactChild } from 'react';
 
+import { CustomXDomain, GroupByAccessor, Spec } from '.';
 import { BrushAxis } from './brush_axis';
 import { BinAgg, Direction } from './constants';
 import { settingsBuildProps } from './default_settings_spec';
-import { GroupByAccessor } from './group_by';
 import { PointerUpdateTrigger } from './pointer_update_trigger';
 import { ProjectedValues, PointerOutEvent, PointerOverEvent, PointerEvent, PointerEventType } from './settings_types';
-import { Spec } from './spec';
 import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
 import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
-import { CustomXDomain, LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
+import { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
 import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
 import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import { CategoryLabel } from '../common/category';

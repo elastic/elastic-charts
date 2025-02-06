@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { ScreenReaderSummary } from '../../../../components/accessibility';
-import { SettingsSpec, WordCloudElementEvent } from '../../../../specs';
+import { SettingsSpec, WordCloudElementEvent } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { GlobalChartState } from '../../../../state/chart_state';
 import {

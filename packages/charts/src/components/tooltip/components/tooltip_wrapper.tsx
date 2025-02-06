@@ -13,7 +13,8 @@ import { TooltipActions } from './tooltip_actions';
 import { TooltipPrompt } from './tooltip_prompt';
 import { useTooltipContext } from './tooltip_provider';
 import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipSpec } from '../../../specs';
+import { BaseDatum } from '../../../specs';
+import { TooltipSpec } from '../../../specs/tooltip';
 import { Datum } from '../../../utils/common';
 
 type TooltipWrapperProps<
