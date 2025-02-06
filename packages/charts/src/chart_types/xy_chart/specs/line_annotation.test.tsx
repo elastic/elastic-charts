@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { configureStore } from '@reduxjs/toolkit';
 import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -15,7 +14,7 @@ import { Store } from 'redux';
 import { LineSeries } from './line_series';
 import { LineAnnotation, AnnotationDomainType } from '../../../chart_types/specs';
 import { SpecsParser } from '../../../specs/specs_parser';
-import { chartSlice, GlobalChartState } from '../../../state/chart_state';
+import { createChartStore, GlobalChartState } from '../../../state/chart_state';
 
 function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
   return (
@@ -45,14 +44,7 @@ function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
 
 describe('Line annotation', () => {
   it('Should always be available on the on every render', () => {
-    const chartStore = configureStore({
-      reducer: chartSlice.reducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          // TODO https://github.com/elastic/elastic-charts/issues/2078
-          serializableCheck: false,
-        }),
-    });
+    const chartStore = createChartStore('chartId');
     const wrapper = mount(<LineAnnotationChart chartStore={chartStore} />);
     expect(chartStore.getState().specs.threshold).toBeDefined();
     wrapper.setProps({});

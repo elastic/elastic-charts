@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { configureStore } from '@reduxjs/toolkit';
 import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -14,7 +13,7 @@ import { Store } from 'redux';
 
 import { Settings, SettingsSpec } from './settings';
 import { SpecsParser } from './specs_parser';
-import { chartSlice, GlobalChartState } from '../state/chart_state';
+import { createChartStore, GlobalChartState } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { Position, Rendering, Rotation } from '../utils/common';
@@ -36,14 +35,7 @@ describe('Settings spec component', () => {
   let chartStore: Store<GlobalChartState>;
   let SettingsProxy: ({ settings }: { settings?: Partial<SettingsSpec> }) => JSX.Element;
   beforeEach(() => {
-    chartStore = configureStore({
-      reducer: chartSlice.reducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          // TODO https://github.com/elastic/elastic-charts/issues/2078
-          serializableCheck: false,
-        }),
-    });
+    chartStore = createChartStore('chartId');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     SettingsProxy = getProxy(chartStore);

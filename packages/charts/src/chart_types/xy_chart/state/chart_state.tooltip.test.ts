@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { configureStore } from '@reduxjs/toolkit';
 import { Store } from 'redux';
 
 import { getHighlightedTooltipTooltipValuesSelector } from './selectors/get_tooltip_values_highlighted_geoms';
@@ -15,19 +14,12 @@ import { TooltipType } from '../../../specs';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { chartSlice, GlobalChartState } from '../../../state/chart_state';
+import { createChartStore, GlobalChartState } from '../../../state/chart_state';
 
 describe('XYChart - State tooltips', () => {
   let store: Store<GlobalChartState>;
   beforeEach(() => {
-    store = configureStore({
-      reducer: chartSlice.reducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          // TODO https://github.com/elastic/elastic-charts/issues/2078
-          serializableCheck: false,
-        }),
-    });
+    store = createChartStore('chartId');
     store.dispatch(
       upsertSpec(
         MockSeriesSpec.bar({

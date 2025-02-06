@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { configureStore } from '@reduxjs/toolkit';
 import { Store } from 'redux';
 
 import { partitionMultiGeometries } from './geometries';
@@ -18,21 +17,10 @@ import { SettingsSpec, GroupBySpec, SmallMultiplesSpec } from '../../../../specs
 import { updateParentDimensions } from '../../../../state/actions/chart_settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../../state/actions/specs';
-import { chartSlice, GlobalChartState } from '../../../../state/chart_state';
+import { createChartStore, GlobalChartState } from '../../../../state/chart_state';
 import { Datum } from '../../../../utils/common';
 import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs';
-
-function initStore() {
-  return configureStore({
-    reducer: chartSlice.reducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        // TODO https://github.com/elastic/elastic-charts/issues/2078
-        serializableCheck: false,
-      }),
-  });
-}
 
 describe('Picked shapes selector', () => {
   function addSeries(store: Store<GlobalChartState>, spec: PartitionSpec, settings?: Partial<SettingsSpec>) {
@@ -62,7 +50,7 @@ describe('Picked shapes selector', () => {
   let treemapSpec: PartitionSpec;
   let sunburstSpec: PartitionSpec;
   beforeEach(() => {
-    store = initStore();
+    store = createChartStore('chart');
     const common = {
       valueAccessor: (d: { v: number }) => d.v,
       data: [
