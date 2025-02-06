@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { configureStore } from '@reduxjs/toolkit';
 import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -17,18 +16,11 @@ import { BarSeries } from '../chart_types/specs';
 import { BarSeriesSpec } from '../chart_types/xy_chart/utils/specs';
 import { ChartContainer } from '../components/chart_container';
 import { updateParentDimensions } from '../state/actions/chart_settings';
-import { chartSlice } from '../state/chart_state';
+import { createChartStore } from '../state/chart_state';
 
 describe('Specs parser', () => {
   test('can mount the spec parser', () => {
-    const chartStore = configureStore({
-      reducer: chartSlice.reducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          // TODO https://github.com/elastic/elastic-charts/issues/2078
-          serializableCheck: false,
-        }),
-    });
+    const chartStore = createChartStore('chartId');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -40,14 +32,7 @@ describe('Specs parser', () => {
     expect(chartStore.getState().specsInitialized).toBe(true);
   });
   test('can parse few components', () => {
-    const chartStore = configureStore({
-      reducer: chartSlice.reducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          // TODO https://github.com/elastic/elastic-charts/issues/2078
-          serializableCheck: false,
-        }),
-    });
+    const chartStore = createChartStore('chartId');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -91,14 +76,7 @@ describe('Specs parser', () => {
     expect(state.specs.bars2).toBeDefined();
   });
   test('can update a component', () => {
-    const chartStore = configureStore({
-      reducer: chartSlice.reducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          // TODO https://github.com/elastic/elastic-charts/issues/2078
-          serializableCheck: false,
-        }),
-    });
+    const chartStore = createChartStore('chartId');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -137,14 +115,7 @@ describe('Specs parser', () => {
     expect((state.specs.bars as BarSeriesSpec).xAccessor).toBe(1);
   });
   test('should remove a spec when replaced with a new', () => {
-    const chartStore = configureStore({
-      reducer: chartSlice.reducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          // TODO https://github.com/elastic/elastic-charts/issues/2078
-          serializableCheck: false,
-        }),
-    });
+    const chartStore = createChartStore('chartId');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const component = (
@@ -186,9 +157,7 @@ describe('Specs parser', () => {
     expect(state.specs.two).toBeDefined();
   });
   test('set initialization to false on unmount', () => {
-    const chartStore = configureStore({
-      reducer: chartSlice.reducer,
-    });
+    const chartStore = createChartStore('chartId');
     const component = mount(
       <Provider store={chartStore}>
         <SpecsParser />
@@ -199,14 +168,7 @@ describe('Specs parser', () => {
   });
 
   test('correctly set the rendered status', () => {
-    const chartStore = configureStore({
-      reducer: chartSlice.reducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          // TODO https://github.com/elastic/elastic-charts/issues/2078
-          serializableCheck: false,
-        }),
-    });
+    const chartStore = createChartStore('chartId');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     const chartContainerRef: React.RefObject<HTMLDivElement> = React.createRef();

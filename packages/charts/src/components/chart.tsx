@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { configureStore } from '@reduxjs/toolkit';
 import classNames from 'classnames';
 import React, { CSSProperties, ReactNode, createRef } from 'react';
 import { Provider } from 'react-redux';
@@ -26,7 +25,7 @@ import { SpecsParser } from '../specs/specs_parser';
 import { updateChartTitles, updateParentDimensions } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
-import { chartSlice, initialize, GlobalChartState } from '../state/chart_state';
+import { createChartStore, GlobalChartState } from '../state/chart_state';
 import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { ChartSize, getChartSize, getFixedChartSize } from '../utils/chart_size';
@@ -76,15 +75,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartStageRef = createRef();
 
     const id = this.props.id ?? uuidv4();
-    this.chartStore = configureStore({
-      reducer: chartSlice.reducer,
-      middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-          // TODO https://github.com/elastic/elastic-charts/issues/2078
-          serializableCheck: false,
-        }),
-    });
-    this.chartStore.dispatch(initialize({ id, title: this.props.title, description: this.props.description }));
+    this.chartStore = createChartStore(id, this.props.title, this.props.description);
     this.state = {
       legendDirection: LayoutDirection.Vertical,
       paddingLeft: LIGHT_THEME.chartMargins.left,

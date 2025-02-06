@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { configureStore } from '@reduxjs/toolkit';
 import { DateTime } from 'luxon';
 import { Store } from 'redux';
 
@@ -22,7 +21,7 @@ import { SpecType } from '../../../specs/spec_type'; // kept as long-winded impo
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { chartSlice, GlobalChartState } from '../../../state/chart_state';
+import { createChartStore, GlobalChartState } from '../../../state/chart_state';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LineSeriesSpec, SeriesType } from '../utils/specs';
 
@@ -33,14 +32,7 @@ describe('Render chart', () => {
     const day2 = day1 + 1000 * 60 * 60 * 24;
     const day3 = day2 + 1000 * 60 * 60 * 24;
     beforeEach(() => {
-      store = configureStore({
-        reducer: chartSlice.reducer,
-        middleware: (getDefaultMiddleware) =>
-          getDefaultMiddleware({
-            // TODO https://github.com/elastic/elastic-charts/issues/2078
-            serializableCheck: false,
-          }),
-      });
+      store = createChartStore('chartId');
 
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
@@ -112,14 +104,7 @@ describe('Render chart', () => {
     const date2 = date1 + 1000 * 60 * 5;
     const date3 = date2 + 1000 * 60 * 5;
     beforeEach(() => {
-      store = configureStore({
-        reducer: chartSlice.reducer,
-        middleware: (getDefaultMiddleware) =>
-          getDefaultMiddleware({
-            // TODO https://github.com/elastic/elastic-charts/issues/2078
-            serializableCheck: false,
-          }),
-      });
+      store = createChartStore('chartId');
 
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
@@ -190,14 +175,7 @@ describe('Render chart', () => {
     const date2 = date1 + 1000 * 60 * 5;
     const date3 = date2 + 1000 * 60 * 5;
     beforeEach(() => {
-      store = configureStore({
-        reducer: chartSlice.reducer,
-        middleware: (getDefaultMiddleware) =>
-          getDefaultMiddleware({
-            // TODO https://github.com/elastic/elastic-charts/issues/2078
-            serializableCheck: false,
-          }),
-      });
+      store = createChartStore('chartId');
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
         specType: SpecType.Series,

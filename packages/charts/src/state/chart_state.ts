@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { createSlice, ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
+import { configureStore, createSlice, ActionReducerMapBuilder } from '@reduxjs/toolkit';
 
 import { onChartRendered } from './actions/chart';
 import { updateParentDimensions, updateChartTitles } from './actions/chart_settings';
@@ -140,39 +140,44 @@ const handleEventsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) 
   });
 };
 
-/** @internal */
-export const chartSlice = createSlice({
-  name: 'chart',
-  initialState: getInitialState('not-initialized'),
-  reducers: {
-    initialize(state, action: PayloadAction<{ id: string; title?: string; description?: string }>) {
-      return getInitialState(action.payload.id, action.payload.title, action.payload.description);
+const createChartSlice = (initialState: ChartSliceState) =>
+  createSlice({
+    name: 'chart',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+      handleChartActions(builder);
+      handleChartSettingsActions(builder);
+      handleColorsActions(builder);
+      handleEventsActions(builder);
+      handleSpecsActions(builder);
+      handleZIndexActions(builder);
+
+      // interactions
+      handleKeyActions(builder);
+      handleMouseActions(builder);
+      handleLegendActions(builder);
+      handleDOMElementActions(builder);
+      handleTooltipActions(builder);
     },
-  },
-  extraReducers: (builder) => {
-    handleChartActions(builder);
-    handleChartSettingsActions(builder);
-    handleColorsActions(builder);
-    handleEventsActions(builder);
-    handleSpecsActions(builder);
-    handleZIndexActions(builder);
-
-    // interactions
-    handleKeyActions(builder);
-    handleMouseActions(builder);
-    handleLegendActions(builder);
-    handleDOMElementActions(builder);
-    handleTooltipActions(builder);
-  },
-});
+  });
 
 /** @internal */
-export const { initialize } = chartSlice.actions;
-
-// Infer the `GlobalChartState` and `AppDispatch` types from the store itself
+export const createChartStore = (chartId: string, title?: string, description?: string) => {
+  const initialState = getInitialState(chartId, title, description);
+  const chartSlice = createChartSlice(initialState);
+  return configureStore({
+    reducer: chartSlice.reducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        // TODO https://github.com/elastic/elastic-charts/issues/2078
+        serializableCheck: false,
+      }),
+  });
+};
 
 /**
- * Inferred state type
+ * Infer the `GlobalChartState` from the store itself
  * @internal
  */
-export type GlobalChartState = ChartSliceState;
+export type GlobalChartState = ReturnType<ReturnType<typeof createChartStore>['getState']>;
