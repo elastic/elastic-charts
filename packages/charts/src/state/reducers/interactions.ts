@@ -41,17 +41,18 @@ const DRAG_DETECTION_PIXEL_DELTA = 4;
 
 /** @internal */
 export const handleKeyActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
-  builder.addCase(onKeyPress, (state, action) => {
-    if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+  builder.addCase(onKeyPress, (globalState, action) => {
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    const state = globalState.interactions;
 
     if (action.payload === 'Escape') {
-      if (state.interactions.tooltip.pinned) {
-        state.interactions.pointer = getInitialPointerState();
-        state.interactions.tooltip = getInitialTooltipState();
+      if (state.tooltip.pinned) {
+        state.pointer = getInitialPointerState();
+        state.tooltip = getInitialTooltipState();
         return;
       }
 
-      state.interactions.pointer = getInitialPointerState();
+      state.pointer = getInitialPointerState();
     }
   });
 };
@@ -59,55 +60,58 @@ export const handleKeyActions = (builder: ActionReducerMapBuilder<ChartSliceStat
 /** @internal */
 export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
-    .addCase(onPointerMove, (state, action) => {
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+    .addCase(onPointerMove, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
       // The dragging is enabled when the delta between down and move positions is greater than a constant.
       // After this initial threshold, the dragging still enabled until the mouse up event
       const dragging =
-        state.interactions.pointer.dragging ||
-        (!!state.interactions.pointer.down &&
-          getDelta(state.interactions.pointer.down.position, action.payload.position) > DRAG_DETECTION_PIXEL_DELTA);
+        state.pointer.dragging ||
+        (!!state.pointer.down &&
+          getDelta(state.pointer.down.position, action.payload.position) > DRAG_DETECTION_PIXEL_DELTA);
 
-      state.interactions.pointer.dragging = dragging;
-      state.interactions.pointer.current.position = action.payload.position;
-      state.interactions.pointer.current.time = action.payload.time;
+      state.pointer.dragging = dragging;
+      state.pointer.current.position = action.payload.position;
+      state.pointer.current.time = action.payload.time;
     })
-    .addCase(onMouseDown, (state, action) => {
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+    .addCase(onMouseDown, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-      state.interactions.prevDrilldown = state.interactions.drilldown;
-      state.interactions.drilldown = getDrilldownData(state);
-      state.interactions.pointer.dragging = false;
-      state.interactions.pointer.up = null;
-      state.interactions.pointer.down = {
+      state.prevDrilldown = state.drilldown;
+      state.drilldown = getDrilldownData(globalState);
+      state.pointer.dragging = false;
+      state.pointer.up = null;
+      state.pointer.down = {
         position: action.payload.position,
         time: action.payload.time,
       };
     })
-    .addCase(onMouseUp, (state, action) => {
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+    .addCase(onMouseUp, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-      state.interactions.pointer.lastDrag =
-        state.interactions.pointer.down && state.interactions.pointer.dragging
+      state.pointer.lastDrag =
+        state.pointer.down && state.pointer.dragging
           ? {
               start: {
                 position: {
-                  ...state.interactions.pointer.down.position,
+                  ...state.pointer.down.position,
                 },
-                time: state.interactions.pointer.down.time,
+                time: state.pointer.down.time,
               },
               end: {
                 position: {
-                  ...state.interactions.pointer.current.position,
+                  ...state.pointer.current.position,
                 },
                 time: action.payload.time,
               },
             }
           : null;
 
-      state.interactions.pointer.lastClick =
-        state.interactions.pointer.down && !state.interactions.pointer.dragging
+      state.pointer.lastClick =
+        state.pointer.down && !state.pointer.dragging
           ? {
               position: {
                 ...action.payload.position,
@@ -116,9 +120,9 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
             }
           : null;
 
-      state.interactions.pointer.dragging = false;
-      state.interactions.pointer.down = null;
-      state.interactions.pointer.up = {
+      state.pointer.dragging = false;
+      state.pointer.down = null;
+      state.pointer.up = {
         position: action.payload.position,
         time: action.payload.time,
       };
@@ -127,25 +131,28 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
 
 /** @internal */
 export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
-  builder.addCase(onLegendItemOutAction, (state) => {
-    if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+  builder.addCase(onLegendItemOutAction, (globalState) => {
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    const state = globalState.interactions;
 
-    state.interactions.highlightedLegendPath = [];
+    state.highlightedLegendPath = [];
   });
 
-  builder.addCase(onLegendItemOverAction, (state, action) => {
-    if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+  builder.addCase(onLegendItemOverAction, (globalState, action) => {
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    const state = globalState.interactions;
 
-    state.interactions.highlightedLegendPath = action.payload;
+    state.highlightedLegendPath = action.payload;
   });
 
-  builder.addCase(onToggleDeselectSeriesAction, (state, action) => {
-    if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+  builder.addCase(onToggleDeselectSeriesAction, (globalState, action) => {
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    const state = globalState.interactions;
 
-    state.interactions.deselectedDataSeries = toggleDeselectedDataSeries(
+    state.deselectedDataSeries = toggleDeselectedDataSeries(
       action.payload,
-      state.interactions.deselectedDataSeries,
-      getLegendItemsSelector(state),
+      state.deselectedDataSeries,
+      getLegendItemsSelector(globalState),
     );
   });
 };
@@ -153,77 +160,82 @@ export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceS
 /** @internal */
 export const handleDOMElementActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
-    .addCase(onDOMElementEnter, (state, action) => {
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+    .addCase(onDOMElementEnter, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-      state.interactions.hoveredDOMElement = action.payload;
+      state.hoveredDOMElement = action.payload;
     })
-    .addCase(onDOMElementLeave, (state) => {
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+    .addCase(onDOMElementLeave, (globalState) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-      state.interactions.hoveredDOMElement = null;
+      state.hoveredDOMElement = null;
     });
 };
 
 /** @internal */
 export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
-    .addCase(pinTooltip, (state, action) => {
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+    .addCase(pinTooltip, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
       if (!action.payload.pinned) {
         if (action.payload.resetPointer) {
-          state.interactions.pointer = getInitialPointerState();
+          state.pointer = getInitialPointerState();
         } else {
-          state.interactions.pointer.pinned = null;
+          state.pointer.pinned = null;
         }
-        state.interactions.tooltip = getInitialTooltipState();
+        state.tooltip = getInitialTooltipState();
         return;
       }
 
-      const { isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(state);
+      const { isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(globalState);
 
       if (!isPinnable || displayOnly) {
         return;
       }
 
-      const tooltipSpec = getTooltipSpecSelector(state);
+      const tooltipSpec = getTooltipSpecSelector(globalState);
       const getSelectedValues = () => {
-        const values = getInternalTooltipInfoSelector(state)?.values ?? [];
-        if (state.chartType === ChartType.Heatmap) return values.slice(0, 1); // just use the x value
+        const values = getInternalTooltipInfoSelector(globalState)?.values ?? [];
+        if (globalState.chartType === ChartType.Heatmap) return values.slice(0, 1); // just use the x value
         return values.filter((v) =>
           // TODO find a better way to distinguish these two
-          state.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
+          globalState.chartType === ChartType.XYAxis ? v.isHighlighted : !v.displayOnly,
         );
       };
       const selected =
         // don't pre-populate selection when values are not actionable
         Array.isArray(tooltipSpec.actions) && tooltipSpec.actions.length === 0 ? [] : getSelectedValues();
 
-      state.interactions.tooltip.pinned = true;
-      state.interactions.tooltip.selected = selected;
-      state.interactions.pointer.pinned = state.interactions.pointer.current;
+      state.tooltip.pinned = true;
+      state.tooltip.selected = selected;
+      state.pointer.pinned = state.pointer.current;
     })
-    .addCase(toggleSelectedTooltipItem, (state, action) => {
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+    .addCase(toggleSelectedTooltipItem, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-      if (!state.interactions.tooltip.pinned) return;
+      if (!state.tooltip.pinned) return;
 
-      let updatedItems = [...state.interactions.tooltip.selected];
+      let updatedItems = [...state.tooltip.selected];
       if (updatedItems.includes(action.payload)) {
         updatedItems = updatedItems.filter((item) => item !== action.payload);
       } else {
         updatedItems.push(action.payload);
       }
 
-      state.interactions.tooltip.selected = updatedItems;
+      state.tooltip.selected = updatedItems;
     })
-    .addCase(setSelectedTooltipItems, (state, action) => {
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) return;
+    .addCase(setSelectedTooltipItems, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-      if (!state.interactions.tooltip.pinned) return;
+      if (!state.tooltip.pinned) return;
 
-      state.interactions.tooltip.selected = action.payload;
+      state.tooltip.selected = action.payload;
     });
 };
 
