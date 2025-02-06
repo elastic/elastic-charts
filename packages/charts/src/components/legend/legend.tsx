@@ -18,8 +18,7 @@ import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
 import { LegendItem, LegendItemExtraValues, shouldDisplayTable } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
-import { LegendSpec } from '../../specs';
-import { DEFAULT_LEGEND_CONFIG } from '../../specs/default_legend_config';
+import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
 import {
   onToggleDeselectSeriesAction,

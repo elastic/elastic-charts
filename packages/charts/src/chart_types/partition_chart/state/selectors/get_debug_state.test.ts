@@ -18,7 +18,7 @@ import {
   PartitionElementEvent,
   WordCloudElementEvent,
   XYChartElementEvent,
-} from '../../../../specs';
+} from '../../../../specs/settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { DebugState, SinglePartitionDebugState } from '../../../../state/types';

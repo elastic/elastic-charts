@@ -9,8 +9,7 @@
 import { Cancelable } from 'lodash';
 import { Store } from 'redux';
 
-import { SettingsSpec, Spec } from '../../specs';
-import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
+import { DEFAULT_SETTINGS_SPEC, SettingsSpec, Spec } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';

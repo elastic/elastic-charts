@@ -21,8 +21,7 @@ import {
   onPointerMove as onPointerMoveAction,
 } from '../state/actions/mouse';
 import { pinTooltip as pinTooltipAction } from '../state/actions/tooltip';
-import { GlobalChartState, BackwardRef } from '../state/chart_state';
-import { TooltipInteractionState } from '../state/interactions_state';
+import { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
 import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';

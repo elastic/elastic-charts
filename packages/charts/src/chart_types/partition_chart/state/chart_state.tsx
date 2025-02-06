@@ -21,7 +21,7 @@ import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 import { ChartType } from '../..';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
-import { GlobalChartState, BackwardRef, InternalChartState } from '../../../state/chart_state';
+import { BackwardRef, GlobalChartState, InternalChartState } from '../../../state/chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { DebugState } from '../../../state/types';

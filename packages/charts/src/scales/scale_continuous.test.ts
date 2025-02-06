@@ -8,8 +8,9 @@
 
 import { DateTime, Settings } from 'luxon';
 
+import { ScaleContinuous } from '.';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
-import { ScaleData, limitLogScaleDomain, ScaleContinuous } from './scale_continuous';
+import { ScaleData, limitLogScaleDomain } from './scale_continuous';
 import { isContinuousScale, isLogarithmicScale } from './types';
 import { computeXScale } from '../chart_types/xy_chart/utils/scales';
 import { MockXDomain } from '../mocks/xy/domains';

@@ -12,9 +12,8 @@ import { getProjectedPointerPositionSelector } from './get_projected_pointer_pos
 import { getTooltipInfoAndGeomsSelector, TooltipAndHighlightedGeoms } from './get_tooltip_values_highlighted_geoms';
 import { isAnnotationTooltipVisibleSelector } from './is_annotation_tooltip_visible';
 import { TooltipType } from '../../../../specs/constants';
-import { TooltipVisibility } from '../../../../state/chart_state';
+import { TooltipVisibility, InteractionsState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { InteractionsState } from '../../../../state/interactions_state';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { isExternalTooltipVisibleSelector } from '../../../../state/selectors/is_external_tooltip_visible';
 import { Point } from '../../../../utils/point';

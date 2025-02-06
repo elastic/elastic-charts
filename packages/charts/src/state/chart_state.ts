@@ -31,6 +31,7 @@ import { DEFAULT_SETTINGS_SPEC } from '../specs/default_settings_spec';
 import { upsertSpec, removeSpec, specParsed, specUnmounted } from '../state/actions/specs';
 import { deepEqual } from '../utils/fast_deep_equal';
 
+export { InteractionsState, TooltipInteractionState } from './interactions_state';
 export { BackwardRef, InternalChartState, TooltipVisibility } from './internal_chart_state';
 
 const handleChartActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
