@@ -9,7 +9,7 @@
 import { Colors, ColorScale } from '../../../common/colors';
 import { getPredicateFn } from '../../../common/predicate';
 import { isFiniteNumber, safeFormat, ValueFormatter } from '../../../utils/common';
-import { ColorBand, HeatmapBandsColorScale } from '../specs';
+import { ColorBand, HeatmapBandsColorScale } from '../specs/heatmap';
 
 function defaultColorBandFormatter(valueFormatter?: ValueFormatter) {
   return (startValue: number, endValue: number) => {

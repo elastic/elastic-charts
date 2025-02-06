@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import { InternalChartState } from './chart_state';
 import { ColorOverrides } from './color_overrides';
 import { InteractionsState } from './interactions_state';
-import { InternalChartState } from './internal_chart_state';
 import { SpecList } from './spec_list';
 import { ChartType } from '../chart_types';
 import { PointerEvent } from '../specs';
