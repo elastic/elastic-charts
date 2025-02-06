@@ -8,13 +8,11 @@
 
 import { ComponentProps } from 'react';
 
-import { BaseDatum, Spec } from '.';
-import { SpecType } from './spec_type';
+import { BaseDatum } from '.';
+import { Spec, SpecType } from './spec_type';
 import { ChartType } from '../chart_types';
 import { Predicate } from '../common/predicate';
-import { SFProps } from '../state/build_props_types';
-import { buildSFProps } from '../state/build_sf_props';
-import { useSpecFactory } from '../state/spec_factory';
+import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
 import { Datum, stripUndefined } from '../utils/common';
 
 /** @public */

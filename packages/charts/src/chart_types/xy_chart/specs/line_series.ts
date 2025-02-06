@@ -11,9 +11,7 @@ import { ComponentProps } from 'react';
 import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { SFProps } from '../../../state/build_props_types';
-import { buildSFProps } from '../../../state/build_sf_props';
-import { useSpecFactory } from '../../../state/spec_factory';
+import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { Datum, stripUndefined } from '../../../utils/common';
 import { LineSeriesSpec, DEFAULT_GLOBAL_ID, HistogramModeAlignments, SeriesType, BaseDatum } from '../utils/specs';
 

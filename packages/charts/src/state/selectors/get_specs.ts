@@ -8,8 +8,8 @@
 
 import { Selector } from 're-reselect';
 
+import { SpecList } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { GlobalChartState } from '../chart_state';
-import { SpecList } from '../spec_list';
 
 /**
  * Returns all specs for given chart

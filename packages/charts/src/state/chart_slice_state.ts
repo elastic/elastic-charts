@@ -9,9 +9,9 @@
 import { InternalChartState } from './chart_state';
 import { ColorOverrides } from './color_overrides';
 import { InteractionsState } from './interactions_state';
-import { SpecList } from './spec_list';
 import { ChartType } from '../chart_types';
 import { PointerEvent } from '../specs';
+import { SpecList } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { Dimensions } from '../utils/dimensions';
 
 /** @internal */

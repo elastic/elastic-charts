@@ -7,8 +7,7 @@
  */
 
 import { ChartType } from '../../chart_types';
-import { Spec } from '../../specs';
-import { SpecList } from '../spec_list';
+import { SpecList, Spec } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 
 /**
  * Returns all matching specs
