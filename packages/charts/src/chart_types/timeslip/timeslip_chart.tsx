@@ -17,8 +17,7 @@ import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { TooltipType, SettingsSpec } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
-import { GlobalChartState } from '../../state/chart_state';
-import { BackwardRef } from '../../state/internal_chart_state';
+import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';

@@ -27,8 +27,7 @@ import { TooltipType, SettingsSpec, TooltipValue } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
 import { onPointerMove } from '../../state/actions/mouse';
-import { GlobalChartState } from '../../state/chart_state';
-import { BackwardRef } from '../../state/internal_chart_state';
+import { GlobalChartState, BackwardRef } from '../../state/chart_state';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';

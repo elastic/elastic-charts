@@ -9,10 +9,9 @@
 import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
-import { BaseDatum } from '../../../chart_types/specs';
 import { LegacyAnimationConfig } from '../../../common/animation';
 import { Distance, Pixels, Radius } from '../../../common/geometry';
-import { Spec } from '../../../specs/spec';
+import { BaseDatum, Spec } from '../../../specs';
 import { SpecType } from '../../../specs/spec_type'; // kept as unshortened import on separate line otherwise import circularity emerges
 import { SFProps } from '../../../state/build_props_types';
 import { buildSFProps } from '../../../state/build_sf_props';

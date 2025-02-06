@@ -12,7 +12,7 @@ import { Pixels } from '../../../../common/geometry';
 import { PerPanelMap } from '../../../../common/panel_utils';
 import { Box, Font, TextAlign } from '../../../../common/text_utils';
 import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
-import { HeatmapBrushEvent } from '../../../../specs';
+import { HeatmapBrushEvent } from '../../../../specs/settings';
 import { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { Visible, HeatmapStyle } from '../../../../utils/themes/theme';
