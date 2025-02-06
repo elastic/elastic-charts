@@ -13,7 +13,6 @@ import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/
 import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
 import { AGGREGATE_KEY, PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../chart_types/partition_chart/specs';
-import { HeatmapSpec } from '../../chart_types/specs';
 import { isHorizontalRotation } from '../../chart_types/xy_chart/state/utils/common';
 import {
   SeriesSpecs,
@@ -34,7 +33,7 @@ import {
 } from '../../chart_types/xy_chart/utils/specs';
 import { Predicate } from '../../common/predicate';
 import { ScaleType } from '../../scales/constants';
-import { SettingsSpec, SmallMultiplesSpec, Spec, TooltipSpec, DEFAULT_TOOLTIP_SPEC } from '../../specs';
+import { HeatmapSpec, SettingsSpec, SmallMultiplesSpec, Spec, TooltipSpec, DEFAULT_TOOLTIP_SPEC } from '../../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
 import { GroupBySpec } from '../../specs/group_by';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges

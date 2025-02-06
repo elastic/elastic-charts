@@ -44,7 +44,7 @@ function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
 
 describe('Line annotation', () => {
   it('Should always be available on the on every render', () => {
-    const chartStore = createChartStore('chartId');
+    const chartStore = createChartStore('chart_id');
     const wrapper = mount(<LineAnnotationChart chartStore={chartStore} />);
     expect(chartStore.getState().specs.threshold).toBeDefined();
     wrapper.setProps({});

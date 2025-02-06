@@ -74,7 +74,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartContainerRef = createRef();
     this.chartStageRef = createRef();
 
-    const id = this.props.id ?? uuidv4();
+    const id = props.id ?? uuidv4();
     this.chartStore = createChartStore(id, this.props.title, this.props.description);
     this.state = {
       legendDirection: LayoutDirection.Vertical,

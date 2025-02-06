@@ -35,7 +35,7 @@ describe('Settings spec component', () => {
   let chartStore: Store<GlobalChartState>;
   let SettingsProxy: ({ settings }: { settings?: Partial<SettingsSpec> }) => JSX.Element;
   beforeEach(() => {
-    chartStore = createChartStore('chartId');
+    chartStore = createChartStore('chart_id');
 
     expect(chartStore.getState().specsInitialized).toBe(false);
     SettingsProxy = getProxy(chartStore);

@@ -8,9 +8,8 @@
 
 import { ComponentType, ReactNode } from 'react';
 
-import { BaseDatum } from '../../chart_types/specs';
 import { SeriesIdentifier } from '../../common/series_id';
-import { TooltipValue, TooltipValueFormatter } from '../../specs';
+import { BaseDatum, TooltipValue, TooltipValueFormatter } from '../../specs';
 import { PointerValue } from '../../state/types';
 import { Datum } from '../../utils/common';
 

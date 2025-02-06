@@ -16,7 +16,6 @@ import { hasSingleSeriesSelector } from './has_single_series';
 import { TooltipInfo } from '../../../../components/tooltip/types';
 import {
   PointerEvent,
-  TooltipType,
   isPointerOutEvent,
   TooltipValue,
   isFollowTooltipType,
@@ -24,6 +23,7 @@ import {
   getTooltipType,
   TooltipSpec,
 } from '../../../../specs';
+import { TooltipType } from '../../../../specs/constants';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';

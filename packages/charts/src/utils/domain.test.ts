@@ -8,8 +8,8 @@
 
 import { AccessorFn } from './accessor';
 import { computeContinuousDataDomain, computeDomainExtent, computeOrdinalDataDomain } from './domain';
-import { DomainPaddingUnit } from '../chart_types/specs';
 import { ScaleType } from '../scales/constants';
+import { DomainPaddingUnit } from '../specs';
 
 const DEFAULT_LOCALE = 'en';
 describe('utils/domain', () => {

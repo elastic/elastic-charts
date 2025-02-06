@@ -10,8 +10,8 @@ import classNames from 'classnames';
 import React, { PropsWithChildren } from 'react';
 
 import { useTooltipContext } from './tooltip_provider';
-import { BaseDatum } from '../../../chart_types/specs';
 import { SeriesIdentifier } from '../../../common/series_id';
+import { BaseDatum } from '../../../specs';
 import { Datum, renderComplexChildren } from '../../../utils/common';
 
 /** @public */

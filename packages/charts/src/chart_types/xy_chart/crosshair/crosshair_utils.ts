@@ -10,7 +10,7 @@ import { AnchorPosition } from '../../../components/portal/types';
 import { Line, Rect } from '../../../geoms/types';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isContinuousScale } from '../../../scales/types';
-import { TooltipStickTo } from '../../../specs';
+import { TooltipStickTo } from '../../../specs/constants';
 import { Rotation } from '../../../utils/common';
 import { Dimensions } from '../../../utils/dimensions';
 import { Point } from '../../../utils/point';

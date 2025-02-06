@@ -8,10 +8,9 @@
 
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { computeXScale, computeYScales } from './scales';
-import { AxisSpec } from '../../../chart_types/specs';
 import { SmallMultipleScales, hasSMDomain, getPanelSize } from '../../../common/panel_utils';
 import { ScaleBand, ScaleContinuous } from '../../../scales';
-import { SettingsSpec } from '../../../specs';
+import { AxisSpec, SettingsSpec } from '../../../specs';
 import {
   degToRad,
   getPercentageValue,
