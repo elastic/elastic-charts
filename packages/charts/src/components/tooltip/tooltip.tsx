@@ -353,7 +353,7 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
       onPointerMove: onPointerMoveAction,
       toggleSelectedTooltipItem: toggleSelectedTooltipItemAction,
       setSelectedTooltipItems: setSelectedTooltipItemsAction,
-      pinTooltip: pinTooltipAction,
+      pinTooltip: (pinned: boolean, resetPointer?: boolean) => pinTooltipAction({ pinned, resetPointer }),
     },
     dispatch,
   );

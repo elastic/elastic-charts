@@ -273,8 +273,8 @@ class FlameComponent extends React.Component<FlameProps> {
       columns.position0 === columns.position1 && columns.size0 === columns.size1 ? -Infinity : Infinity; // if nothing to tween, then skip it
   }
 
-  private pinTooltip = (payload: { pinned: boolean }): void => {
-    if (!payload.pinned) {
+  private pinTooltip = (pinned: boolean): void => {
+    if (!pinned) {
       this.unpinTooltip(true);
       return;
     }
@@ -610,7 +610,7 @@ class FlameComponent extends React.Component<FlameProps> {
     window.addEventListener('keyup', this.handleKeyUp);
     window.addEventListener('click', this.handleUnpinningTooltip);
     window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
-    this.pinTooltip({ pinned: true });
+    this.pinTooltip(true);
     this.setState({}); // updates cursor
   };
 
@@ -651,7 +651,7 @@ class FlameComponent extends React.Component<FlameProps> {
     window.removeEventListener('keyup', this.handleKeyUp);
     window.removeEventListener('click', this.handleUnpinningTooltip);
     window.removeEventListener('visibilitychange', this.handleUnpinningTooltip);
-    this.pinTooltip({ pinned: false });
+    this.pinTooltip(false);
   };
 
   static watchedKeys: KeyboardEvent['key'][] = ['Escape'];
