@@ -256,9 +256,9 @@ export function getTitleDimension({
 export const getAllAxisLayersGirth = (
   timeAxisLayerCount: number,
   maxLabelBoxGirth: number,
-  isMultilayerTimeAxis: boolean,
+  multilayerTimeAxis: boolean,
 ) => {
-  const axisLayerCount = timeAxisLayerCount > 0 && isMultilayerTimeAxis ? timeAxisLayerCount : 1;
+  const axisLayerCount = timeAxisLayerCount > 0 && multilayerTimeAxis ? timeAxisLayerCount : 1;
   return axisLayerCount * maxLabelBoxGirth;
 };
 
@@ -282,8 +282,8 @@ export function getPosition(
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
   const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
-  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation });
-  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, isMultilayerTimeAxis);
+  const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation });
+  const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, multilayerTimeAxis);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
     leftIncrement: position === Position.Left ? parallelSize + chartMargins.left : 0,
@@ -306,18 +306,18 @@ export function getPosition(
 }
 
 /** @internal */
-export interface IsMultilayerTimeAxisFnOptions {
+export interface IsMultilayerTimeAxisOptions {
   axisSpec: AxisSpec;
   scaleConfigs: ScaleConfigs;
   rotation: Rotation;
 }
 
 /** @internal */
-export function isMultilayerTimeAxisFn({
+export function isMultilayerTimeAxis({
   axisSpec: { chartType, timeAxisLayerCount, position },
   scaleConfigs,
   rotation,
-}: IsMultilayerTimeAxisFnOptions) {
+}: IsMultilayerTimeAxisOptions) {
   return (
     chartType === ChartType.XYAxis &&
     timeAxisLayerCount > 0 &&

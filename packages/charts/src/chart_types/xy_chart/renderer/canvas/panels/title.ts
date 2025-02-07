@@ -17,7 +17,7 @@ import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import {
   getAllAxisLayersGirth,
   getTitleDimension,
-  isMultilayerTimeAxisFn,
+  isMultilayerTimeAxis,
   shouldShowTicks,
 } from '../../../utils/axis_utils';
 import { AxisProps } from '../axes';
@@ -65,8 +65,8 @@ export function renderTitle(
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: chartRotation });
-  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, isMultilayerTimeAxis);
+  const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation: chartRotation });
+  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, multilayerTimeAxis);
   const labelPaddingSum = innerPad(tickLabel.padding) + outerPad(tickLabel.padding);
   const labelSize = tickLabel.visible ? allLayersGirth + labelPaddingSum : 0;
   const otherTitleDimension = otherTitle ? getTitleDimension(otherAxisTitleToUse) : 0;

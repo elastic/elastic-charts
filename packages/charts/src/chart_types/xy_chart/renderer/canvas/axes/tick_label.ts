@@ -10,7 +10,7 @@ import { AxisProps } from '.';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
 import { Position } from '../../../../../utils/common';
-import { AxisTick, getTickLabelPosition, isMultilayerTimeAxisFn } from '../../../utils/axis_utils';
+import { AxisTick, getTickLabelPosition, isMultilayerTimeAxis } from '../../../utils/axis_utils';
 
 const TICK_TO_LABEL_GAP = 2;
 
@@ -48,8 +48,8 @@ export function renderTickLabel(
     }
   }
 
-  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation });
-  const tickOnTheSide = isMultilayerTimeAxis && Number.isFinite(tick.layer);
+  const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation });
+  const tickOnTheSide = multilayerTimeAxis && Number.isFinite(tick.layer);
 
   renderText(
     ctx,
