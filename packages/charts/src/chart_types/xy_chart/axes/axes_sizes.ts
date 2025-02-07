@@ -31,13 +31,11 @@ const getAxisSizeForLabel = (
   axesStyles: Map<AxisId, AxisStyle | null>,
   { maxLabelBboxWidth = 0, maxLabelBboxHeight = 0 }: TickLabelBounds,
   smSpec: SmallMultiplesSpec | null,
-  scaleConfigs: ScaleConfigs,
-  { rotation }: SettingsSpec,
+  multilayerTimeAxis: boolean,
 ) => {
   const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(axisSpec.id) ?? sharedAxesStyles;
   const horizontal = isHorizontalAxis(axisSpec.position);
   const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation });
   const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, multilayerTimeAxis);
   const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
   const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
@@ -82,6 +80,7 @@ export function getAxesDimensions(
     (acc, [id, tickLabelBounds]) => {
       const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
       if (tickLabelBounds.isHidden || !axisSpec) return acc;
+      const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation });
       // TODO use first and last labels
       const { top, bottom, left, right } = getAxisSizeForLabel(
         axisSpec,
@@ -89,8 +88,7 @@ export function getAxesDimensions(
         axesStyles,
         tickLabelBounds,
         smSpec,
-        scaleConfigs,
-        settingsSpec,
+        multilayerTimeAxis,
       );
       if (isVerticalAxis(axisSpec.position)) {
         acc.axisLabelOverflow.top = Math.max(acc.axisLabelOverflow.top, top);

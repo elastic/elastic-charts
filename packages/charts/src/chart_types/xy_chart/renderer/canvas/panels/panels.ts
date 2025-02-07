@@ -34,7 +34,7 @@ export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: 
 }
 
 function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps, locale: string) {
-  const { size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary, scaleConfigs, settingsSpec } = props;
+  const { size, anchorPoint, debug, axisStyle, axisSpec, panelAnchor, secondary, multilayerTimeAxis } = props;
   const { position } = axisSpec;
   const x = anchorPoint.x + (position === Position.Right ? -1 : 1) * panelAnchor.x;
   const y = anchorPoint.y + (position === Position.Bottom ? -1 : 1) * panelAnchor.y;
@@ -53,8 +53,7 @@ function renderPanel(ctx: CanvasRenderingContext2D, props: AxisProps, locale: st
           axisSpec,
           axisStyle,
           size,
-          scaleConfigs,
-          settingsSpec,
+          multilayerTimeAxis,
           dimension,
           debug,
           anchorPoint: { x: 0, y: 0 },
@@ -73,7 +72,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
   perPanelAxisGeoms.forEach(({ axesGeoms, panelAnchor }) => {
     axesGeoms.forEach((geometry) => {
       const {
-        axis: { panelTitle, id, position, secondary, scaleConfigs, settingsSpec },
+        axis: { panelTitle, id, position, secondary, multilayerTimeAxis },
         anchorPoint,
         size,
         dimension,
@@ -101,8 +100,7 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
             dimension,
             axisStyle,
             axisSpec,
-            scaleConfigs,
-            settingsSpec,
+            multilayerTimeAxis,
           },
           locale,
         );
@@ -121,12 +119,11 @@ export function renderPanelSubstrates(ctx: CanvasRenderingContext2D, props: Axes
           size,
           dimension,
           ticks,
-          scaleConfigs,
-          settingsSpec,
           axisStyle,
           debug,
           renderingArea,
           layerGirth,
+          multilayerTimeAxis,
         },
         locale,
       );

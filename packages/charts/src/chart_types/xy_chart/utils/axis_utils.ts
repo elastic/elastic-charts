@@ -46,6 +46,7 @@ export interface AxisTick {
   detailedLayer: number;
   showGrid: boolean;
   direction: TextDirection;
+  multilayerTimeAxis: boolean;
 }
 
 /** @internal */
@@ -271,8 +272,7 @@ export function getPosition(
   { maxLabelBboxHeight, maxLabelBboxWidth }: TickLabelBounds,
   smScales: SmallMultipleScales,
   { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum }: PerSideDistance,
-  scaleConfigs: ScaleConfigs,
-  settingsSpec: SettingsSpec,
+  multilayerTimeAxis: boolean,
 ) {
   const { title, position, hide, timeAxisLayerCount } = axisSpec;
   const tickDimension = shouldShowTicks(tickLine, hide) ? tickLine.size + tickLine.padding : 0;
@@ -282,7 +282,6 @@ export function getPosition(
   const scaleBand = vertical ? smScales.vertical : smScales.horizontal;
   const panelTitleDimension = hasSMDomain(scaleBand) ? getTitleDimension(axisPanelTitle) : 0;
   const maxLabelBboxGirth = tickLabel.visible ? (vertical ? maxLabelBboxWidth : maxLabelBboxHeight) : 0;
-  const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation });
   const shownLabelSize = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBboxGirth, multilayerTimeAxis);
   const parallelSize = labelPaddingSum + shownLabelSize + tickDimension + titleDimension + panelTitleDimension;
   return {
@@ -342,8 +341,7 @@ export interface AxisGeometry {
     position: Position;
     panelTitle?: string; // defined later per panel
     secondary?: boolean; // defined later per panel
-    scaleConfigs: ScaleConfigs;
-    settingsSpec: SettingsSpec;
+    multilayerTimeAxis: boolean;
   };
   dimension: TickLabelBounds;
   visibleTicks: AxisTick[];
@@ -367,6 +365,7 @@ export function getAxesGeometries(
       if (axisSpec) {
         const vertical = isVerticalAxis(axisSpec.position);
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
+        const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation });
         const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getPosition(
           chartDims,
           chartMargins,
@@ -375,15 +374,14 @@ export function getAxesGeometries(
           labelBox,
           smScales,
           acc,
-          scaleConfigs,
-          settingsSpec,
+          multilayerTimeAxis,
         );
         acc.top += topIncrement;
         acc.bottom += bottomIncrement;
         acc.left += leftIncrement;
         acc.right += rightIncrement;
         acc.geoms.push({
-          axis: { id: axisSpec.id, position: axisSpec.position, scaleConfigs, settingsSpec },
+          axis: { id: axisSpec.id, position: axisSpec.position, multilayerTimeAxis },
           anchorPoint: { x: dimensions.left, y: dimensions.top },
           dimension: labelBox,
           visibleTicks: ticks,

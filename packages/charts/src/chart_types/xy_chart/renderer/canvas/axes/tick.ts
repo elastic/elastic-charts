@@ -10,7 +10,7 @@ import { AxisProps } from '.';
 import { colorToRgba, RgbaTuple } from '../../../../../common/color_library_wrappers';
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import { AxisTick, isMultilayerTimeAxis } from '../../../utils/axis_utils';
+import { AxisTick } from '../../../utils/axis_utils';
 import { HIDE_MINOR_TIME_GRID, HIERARCHICAL_GRID_WIDTH, OUTSIDE_RANGE_TOLERANCE } from '../../../utils/grid_lines';
 import { renderMultiLine } from '../primitives/line';
 
@@ -19,19 +19,11 @@ const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the 
 /** @internal */
 export function renderTick(
   ctx: CanvasRenderingContext2D,
-  { position, domainClampedPosition: tickPosition, layer, detailedLayer }: AxisTick,
-  {
-    axisSpec,
-    size: { width, height },
-    axisStyle: { tickLine, gridLine },
-    layerGirth,
-    scaleConfigs,
-    settingsSpec: { rotation },
-  }: AxisProps,
+  { position, domainClampedPosition: tickPosition, layer, detailedLayer, multilayerTimeAxis }: AxisTick,
+  { axisSpec, size: { width, height }, axisStyle: { tickLine, gridLine }, layerGirth }: AxisProps,
 ) {
   if (Math.abs(tickPosition - position) > OUTSIDE_RANGE_TOLERANCE) return;
   const { position: axisPosition } = axisSpec;
-  const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation });
   const tickOnTheSide = multilayerTimeAxis && typeof layer === 'number';
   const extensionLayer = tickOnTheSide ? layer + 1 : 0;
   const tickSize =
