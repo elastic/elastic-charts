@@ -17,19 +17,15 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
-import { LegendItem } from '../../../common/legend';
+import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
 import { Tooltip } from '../../../components/tooltip/tooltip';
 import { InternalChartState, GlobalChartState, BackwardRef, TooltipVisibility } from '../../../state/chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { LegendItemLabel } from '../../../state/selectors/get_legend_items_labels';
+import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
 import { DebugState } from '../../../state/types';
 import { Dimensions } from '../../../utils/dimensions';
 import { Goal } from '../renderer/canvas/connected_component';
-
-const EMPTY_MAP = new Map();
-const EMPTY_LEGEND_LIST: LegendItem[] = [];
-const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /** @internal */
 export class GoalState implements InternalChartState {
@@ -72,7 +68,7 @@ export class GoalState implements InternalChartState {
   }
 
   getLegendExtraValues() {
-    return EMPTY_MAP;
+    return EMPTY_LEGEND_ITEM_EXTRA_VALUES;
   }
 
   chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
