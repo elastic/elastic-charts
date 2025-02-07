@@ -72,6 +72,7 @@ export function generateTicks(
   layer: number | undefined,
   detailedLayer: number,
   showGrid: boolean,
+  multilayerTimeAxis: boolean,
 ): AxisTick[] {
   const getDirection = getDirectionFn(scale);
   const isContinuous = isContinuousScale(scale);
@@ -88,6 +89,7 @@ export function generateTicks(
       detailedLayer,
       showGrid,
       direction: getDirection(label),
+      multilayerTimeAxis,
     };
   });
 }
@@ -135,6 +137,7 @@ function getVisibleTicks(
             detailedLayer: 0,
             direction: 'rtl',
             showGrid,
+            multilayerTimeAxis,
           },
           {
             value: firstTickValue + scale.minInterval,
@@ -146,9 +149,20 @@ function getVisibleTicks(
             detailedLayer: 0,
             direction: 'rtl',
             showGrid,
+            multilayerTimeAxis,
           },
         ]
-      : generateTicks(axisSpec, scale, ticks, offset, labelFormatter, layer, detailedLayer, showGrid);
+      : generateTicks(
+          axisSpec,
+          scale,
+          ticks,
+          offset,
+          labelFormatter,
+          layer,
+          detailedLayer,
+          showGrid,
+          multilayerTimeAxis,
+        );
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
