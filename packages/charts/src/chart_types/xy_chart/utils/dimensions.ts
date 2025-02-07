@@ -20,7 +20,8 @@ import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
  * Compute the chart dimensions. It's computed removing from the parent dimensions
  * the axis spaces, the legend and any other specified style margin and padding.
  * @internal
- */ export function computeChartDimensions(
+ */
+export function computeChartDimensions(
   parentDimensions: Dimensions,
   theme: Theme,
   axisTickDimensions: AxesTicksDimensions,
@@ -36,8 +37,8 @@ import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
     axesStyles,
     axisSpecs,
     smSpec,
-    scaleConfigs,
-    settingsSpec,
+    scaleConfigs.x.type,
+    settingsSpec.rotation,
   );
   const chartWidth = parentDimensions.width - axesDimensions.left - axesDimensions.right;
   const chartHeight = parentDimensions.height - axesDimensions.top - axesDimensions.bottom;

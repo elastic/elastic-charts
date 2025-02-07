@@ -43,7 +43,7 @@ export const getAxesStylesSelector = createCustomCachedSelector(
       let mergedStyle: AxisStyle | null = null;
 
       // apply multilayer time axis style to xy charts with time on the x axis.
-      if (isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation })) {
+      if (isMultilayerTimeAxis(axisSpec, scaleConfigs.x.type, settingsSpec.rotation)) {
         mergedStyle = mergePartial(sharedAxesStyle, MULTILAYER_TIME_AXIS_STYLE);
       }
 
