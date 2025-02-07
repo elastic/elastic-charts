@@ -15,8 +15,8 @@ import {
   getPosition,
   // getAxesGeometries,
   getTickLabelPosition,
-  isMultilayerTimeAxisFn,
-  IsMultilayerTimeAxisFnOptions,
+  isMultilayerTimeAxis,
+  IsMultilayerTimeAxisOptions,
   isXDomain,
   getScaleForAxisSpec,
 } from './axis_utils';
@@ -1110,50 +1110,50 @@ describe('Axis computational utils', () => {
     expect(horizontalY).toBe(true);
   });
 
-  describe('isMultilayerTimeAxisFn', () => {
+  describe('isMultilayerTimeAxis', () => {
     test('should return true if chartType is xy_axis, timeAxisLayerCount = 2, position is bottom, x axis type is time, rotation is 0', () => {
-      const isMultilayerTimeAxis = isMultilayerTimeAxisFn({
+      const multilayerTimeAxis = isMultilayerTimeAxis({
         axisSpec: { chartType: 'xy_axis', timeAxisLayerCount: 2, position: 'bottom' },
         scaleConfigs: { x: { type: 'time' } },
         rotation: 0,
-      } as unknown as IsMultilayerTimeAxisFnOptions);
-      expect(isMultilayerTimeAxis).toBe(true);
+      } as unknown as IsMultilayerTimeAxisOptions);
+      expect(multilayerTimeAxis).toBe(true);
     });
 
     test('should return false if x axis type is not time', () => {
-      const isMultilayerTimeAxis = isMultilayerTimeAxisFn({
+      const multilayerTimeAxis = isMultilayerTimeAxis({
         axisSpec: { chartType: 'xy_axis', timeAxisLayerCount: 2, position: 'bottom' },
         scaleConfigs: { x: { type: 'ordinal' } },
         rotation: 0,
-      } as unknown as IsMultilayerTimeAxisFnOptions);
-      expect(isMultilayerTimeAxis).toBe(false);
+      } as unknown as IsMultilayerTimeAxisOptions);
+      expect(multilayerTimeAxis).toBe(false);
     });
 
     test('should return false timeAxisLayerCount = 0', () => {
-      const isMultilayerTimeAxis = isMultilayerTimeAxisFn({
+      const multilayerTimeAxis = isMultilayerTimeAxis({
         axisSpec: { chartType: 'xy_axis', timeAxisLayerCount: 0, position: 'bottom' },
         scaleConfigs: { x: { type: 'time' } },
         rotation: 0,
-      } as unknown as IsMultilayerTimeAxisFnOptions);
-      expect(isMultilayerTimeAxis).toBe(false);
+      } as unknown as IsMultilayerTimeAxisOptions);
+      expect(multilayerTimeAxis).toBe(false);
     });
 
     test('should false true if chart type is not xy_axis', () => {
-      const isMultilayerTimeAxis = isMultilayerTimeAxisFn({
+      const multilayerTimeAxis = isMultilayerTimeAxis({
         axisSpec: { chartType: 'metric', timeAxisLayerCount: 2, position: 'bottom' },
         scaleConfigs: { x: { type: 'time' } },
         rotation: 0,
-      } as unknown as IsMultilayerTimeAxisFnOptions);
-      expect(isMultilayerTimeAxis).toBe(false);
+      } as unknown as IsMultilayerTimeAxisOptions);
+      expect(multilayerTimeAxis).toBe(false);
     });
 
     test('should return false if xy_axis, timeAxisLayerCount = 2, position is bottom, rotation is not 0', () => {
-      const isMultilayerTimeAxis = isMultilayerTimeAxisFn({
+      const multilayerTimeAxis = isMultilayerTimeAxis({
         axisSpec: { chartType: 'xy_axis', timeAxisLayerCount: 2, position: 'bottom' },
         scaleConfigs: { x: { type: 'time' } },
         rotation: 90,
-      } as unknown as IsMultilayerTimeAxisFnOptions);
-      expect(isMultilayerTimeAxis).toBe(false);
+      } as unknown as IsMultilayerTimeAxisOptions);
+      expect(multilayerTimeAxis).toBe(false);
     });
   });
 

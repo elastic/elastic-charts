@@ -15,7 +15,7 @@ import { mergePartial, Position, type RecursivePartial } from '../../../../utils
 import { AxisId } from '../../../../utils/ids';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
-import { isMultilayerTimeAxisFn } from '../../utils/axis_utils';
+import { isMultilayerTimeAxis } from '../../utils/axis_utils';
 
 const MULTILAYER_TIME_AXIS_STYLE: RecursivePartial<AxisStyle> = {
   tickLabel: {
@@ -43,7 +43,7 @@ export const getAxesStylesSelector = createCustomCachedSelector(
       let mergedStyle: AxisStyle | null = null;
 
       // apply multilayer time axis style to xy charts with time on the x axis.
-      if (isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation })) {
+      if (isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation })) {
         mergedStyle = mergePartial(sharedAxesStyle, MULTILAYER_TIME_AXIS_STYLE);
       }
 

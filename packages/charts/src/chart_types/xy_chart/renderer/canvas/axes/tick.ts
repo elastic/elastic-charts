@@ -10,7 +10,7 @@ import { AxisProps } from '.';
 import { colorToRgba, RgbaTuple } from '../../../../../common/color_library_wrappers';
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import { AxisTick, isMultilayerTimeAxisFn } from '../../../utils/axis_utils';
+import { AxisTick, isMultilayerTimeAxis } from '../../../utils/axis_utils';
 import { HIDE_MINOR_TIME_GRID, HIERARCHICAL_GRID_WIDTH, OUTSIDE_RANGE_TOLERANCE } from '../../../utils/grid_lines';
 import { renderMultiLine } from '../primitives/line';
 
@@ -31,8 +31,8 @@ export function renderTick(
 ) {
   if (Math.abs(tickPosition - position) > OUTSIDE_RANGE_TOLERANCE) return;
   const { position: axisPosition } = axisSpec;
-  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation });
-  const tickOnTheSide = isMultilayerTimeAxis && typeof layer === 'number';
+  const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation });
+  const tickOnTheSide = multilayerTimeAxis && typeof layer === 'number';
   const extensionLayer = tickOnTheSide ? layer + 1 : 0;
   const tickSize =
     tickLine.size +

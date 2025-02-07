@@ -19,7 +19,7 @@ import { isHorizontalAxis, isVerticalAxis } from '../utils/axis_type_utils';
 import {
   getAllAxisLayersGirth,
   getTitleDimension,
-  isMultilayerTimeAxisFn,
+  isMultilayerTimeAxis,
   shouldShowTicks,
   TickLabelBounds,
 } from '../utils/axis_utils';
@@ -37,8 +37,8 @@ const getAxisSizeForLabel = (
   const { tickLine, axisTitle, axisPanelTitle, tickLabel } = axesStyles.get(axisSpec.id) ?? sharedAxesStyles;
   const horizontal = isHorizontalAxis(axisSpec.position);
   const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const isMultilayerTimeAxis = isMultilayerTimeAxisFn({ axisSpec, scaleConfigs, rotation });
-  const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, isMultilayerTimeAxis);
+  const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation });
+  const allLayersGirth = getAllAxisLayersGirth(axisSpec.timeAxisLayerCount, maxLabelBoxGirth, multilayerTimeAxis);
   const hasPanelTitle = isVerticalAxis(axisSpec.position) ? smSpec?.splitVertically : smSpec?.splitHorizontally;
   const panelTitleDimension = hasPanelTitle ? getTitleDimension(axisPanelTitle) : 0;
   const titleDimension = axisSpec.title ? getTitleDimension(axisTitle) : 0;
@@ -50,7 +50,7 @@ const getAxisSizeForLabel = (
   // don't overflow when the multiTimeAxis layer is used.
   const maxLabelBoxHalfLength = isVerticalAxis(axisSpec.position)
     ? maxLabelBboxHeight / 2
-    : isMultilayerTimeAxis
+    : multilayerTimeAxis
       ? 0
       : maxLabelBboxWidth / 2;
   return horizontal
