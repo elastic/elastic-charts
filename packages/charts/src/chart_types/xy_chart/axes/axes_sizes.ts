@@ -6,14 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { ScaleType } from '../../../scales/constants';
 import { SmallMultiplesSpec } from '../../../specs';
-import { SettingsSpec } from '../../../specs/settings';
-import { Position } from '../../../utils/common';
+import { Position, Rotation } from '../../../utils/common';
 import { innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
 import { AxisId } from '../../../utils/ids';
 import { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
-import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 import { getSpecsById } from '../state/utils/spec';
 import { isHorizontalAxis, isVerticalAxis } from '../utils/axis_type_utils';
 import {
@@ -73,14 +72,14 @@ export function getAxesDimensions(
   axesStyles: Map<AxisId, AxisStyle | null>,
   axisSpecs: AxisSpec[],
   smSpec: SmallMultiplesSpec | null,
-  scaleConfigs: ScaleConfigs,
-  settingsSpec: SettingsSpec,
+  xScaleType: ScaleType,
+  rotation: Rotation,
 ): PerSideDistance & { margin: { left: number } } {
   const sizes = [...axisDimensions].reduce(
     (acc, [id, tickLabelBounds]) => {
       const axisSpec = getSpecsById<AxisSpec>(axisSpecs, id);
       if (tickLabelBounds.isHidden || !axisSpec) return acc;
-      const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation });
+      const multilayerTimeAxis = isMultilayerTimeAxis(axisSpec, xScaleType, rotation);
       // TODO use first and last labels
       const { top, bottom, left, right } = getAxisSizeForLabel(
         axisSpec,

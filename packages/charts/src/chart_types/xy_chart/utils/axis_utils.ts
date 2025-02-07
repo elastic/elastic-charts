@@ -305,24 +305,17 @@ export function getPosition(
 }
 
 /** @internal */
-export interface IsMultilayerTimeAxisOptions {
-  axisSpec: AxisSpec;
-  scaleConfigs: ScaleConfigs;
-  rotation: Rotation;
-}
-
-/** @internal */
-export function isMultilayerTimeAxis({
-  axisSpec: { chartType, timeAxisLayerCount, position },
-  scaleConfigs,
-  rotation,
-}: IsMultilayerTimeAxisOptions) {
+export function isMultilayerTimeAxis(
+  { chartType, timeAxisLayerCount, position }: AxisSpec,
+  xScaleType: ScaleType,
+  rotation: Rotation,
+) {
   return (
     chartType === ChartType.XYAxis &&
     timeAxisLayerCount > 0 &&
     isXDomain(position, rotation) &&
     rotation === 0 &&
-    scaleConfigs.x.type === ScaleType.Time
+    xScaleType === ScaleType.Time
   );
 }
 
@@ -365,7 +358,7 @@ export function getAxesGeometries(
       if (axisSpec) {
         const vertical = isVerticalAxis(axisSpec.position);
         const axisStyle = axesStyles.get(axisId) ?? sharedAxesStyle;
-        const multilayerTimeAxis = isMultilayerTimeAxis({ axisSpec, scaleConfigs, rotation: settingsSpec.rotation });
+        const multilayerTimeAxis = isMultilayerTimeAxis(axisSpec, scaleConfigs.x.type, settingsSpec.rotation);
         const { dimensions, topIncrement, bottomIncrement, leftIncrement, rightIncrement } = getPosition(
           chartDims,
           chartMargins,
