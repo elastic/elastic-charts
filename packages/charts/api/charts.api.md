@@ -286,7 +286,6 @@ export interface AxisStyle {
     gridLine: {
         horizontal: GridLineStyle;
         vertical: GridLineStyle;
-        lumaSteps: number[];
     };
     // (undocumented)
     tickLabel: TextStyle & Visible & {

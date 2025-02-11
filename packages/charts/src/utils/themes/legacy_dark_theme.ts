@@ -208,7 +208,6 @@ export const LEGACY_DARK_THEME: Theme = {
         opacity: 1,
         dash: [0, 0],
       },
-      lumaSteps: [63, 103, 159, 191, 223, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255],
     },
   },
   colors: {
