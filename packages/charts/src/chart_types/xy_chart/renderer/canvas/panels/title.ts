@@ -17,7 +17,10 @@ import { AxisProps } from '../axes';
 import { renderText, TextFont } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 
-type PanelTitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
+type PanelTitleProps = Pick<
+  AxisProps,
+  'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug' | 'multilayerTimeAxis'
+>;
 type TitleProps = PanelTitleProps & { anchorPoint: Point };
 
 const titleFontDefaults: Omit<TextFont, 'fontFamily' | 'textColor' | 'fontSize'> = {
@@ -35,14 +38,16 @@ export function renderTitle(
   {
     size: { width, height },
     dimension: { maxLabelBboxWidth, maxLabelBboxHeight },
-    axisSpec: { position, hide: hideAxis, title, timeAxisLayerCount },
+    axisSpec,
     axisStyle: { axisPanelTitle, axisTitle, tickLabel, tickLine },
     panelTitle,
     debug,
     anchorPoint,
+    multilayerTimeAxis,
   }: TitleProps,
   locale: string,
 ) {
+  const { position, hide: hideAxis, title, timeAxisLayerCount } = axisSpec;
   const titleToRender = panel ? panelTitle : title;
   const axisTitleToUse = panel ? axisPanelTitle : axisTitle;
   if (!titleToRender || !axisTitleToUse.visible) {
@@ -54,7 +59,7 @@ export function renderTitle(
   const font: TextFont = { ...titleFontDefaults, ...axisTitleToUse, textColor: axisTitleToUse.fill };
   const tickDimension = shouldShowTicks(tickLine, hideAxis) ? tickLine.size + tickLine.padding : 0;
   const maxLabelBoxGirth = horizontal ? maxLabelBboxHeight : maxLabelBboxWidth;
-  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, horizontal);
+  const allLayersGirth = getAllAxisLayersGirth(timeAxisLayerCount, maxLabelBoxGirth, multilayerTimeAxis);
   const labelPaddingSum = innerPad(tickLabel.padding) + outerPad(tickLabel.padding);
   const labelSize = tickLabel.visible ? allLayersGirth + labelPaddingSum : 0;
   const otherTitleDimension = otherTitle ? getTitleDimension(otherAxisTitleToUse) : 0;
