@@ -8,13 +8,13 @@
 
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Fill, Stroke } from '../../../../../geoms/types';
+import { renderRect } from '../../../../../renderers/canvas/primitives/rect';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { RectAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationRectProps } from '../../../annotations/rect/types';
 import { GetAnnotationParamsFn } from '../../common/utils';
 import { AnimationContext } from '../animations';
-import { renderRect } from '../primitives/rect';
 import { withPanelTransform } from '../utils/panel_transform';
 
 /** @internal */

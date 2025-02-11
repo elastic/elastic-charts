@@ -15,11 +15,11 @@ import { renderBubbles } from './bubbles';
 import { renderGrids } from './grids';
 import { renderLines } from './lines';
 import { renderGridPanels, renderPanelSubstrates } from './panels/panels';
-import { renderDebugRect } from './utils/debug';
 import { renderBarValues } from './values/bar';
 import { ReactiveChartStateProps } from './xy_chart';
 import { Colors } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
+import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
 
 /** @internal */
 export function renderXYChartCanvas2d(

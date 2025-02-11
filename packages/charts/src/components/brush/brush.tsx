@@ -9,10 +9,10 @@
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 
-import { renderRect } from '../../chart_types/xy_chart/renderer/canvas/primitives/rect';
 import { RgbaTuple } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
+import { renderRect } from '../../renderers/canvas/primitives/rect';
 import { GlobalChartState } from '../../state/chart_state';
 import { getInternalBrushAreaSelector } from '../../state/selectors/get_internal_brush_area';
 import { getInternalIsBrushingSelector } from '../../state/selectors/get_internal_is_brushing';

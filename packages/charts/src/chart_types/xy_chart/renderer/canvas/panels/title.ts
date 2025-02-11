@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { renderText, TextFont } from '../../../../../renderers/canvas/primitives/text';
+import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
 import { innerPad, outerPad } from '../../../../../utils/dimensions';
@@ -14,8 +16,6 @@ import { wrapText } from '../../../../../utils/text/wrap';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
 import { AxisProps } from '../axes';
-import { renderText, TextFont } from '../primitives/text';
-import { renderDebugRect } from '../utils/debug';
 
 type PanelTitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
 type TitleProps = PanelTitleProps & { anchorPoint: Point };

@@ -8,11 +8,11 @@
 
 import { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
+import { renderDebugPoint } from '../../../../../renderers/canvas/utils/debug';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
 import { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
-import { renderDebugPoint } from '../../../../xy_chart/renderer/canvas/utils/debug';
 import { ActiveValue } from '../../../selectors/get_active_values';
 import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
 import { BulletSpec, BulletSubtype } from '../../../spec';

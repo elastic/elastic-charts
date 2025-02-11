@@ -10,13 +10,13 @@ import { Colors } from '../../../../../common/colors';
 import { fillTextColor } from '../../../../../common/fill_text_color';
 import { Font, TextAlign, TextBaseline } from '../../../../../common/text_utils';
 import { Rect } from '../../../../../geoms/types';
+import { renderText } from '../../../../../renderers/canvas/primitives/text';
+import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
 import { HorizontalAlignment, Rotation, VerticalAlignment } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { BarGeometry } from '../../../../../utils/geometry';
 import { BackgroundStyle, TextAlignment, Theme } from '../../../../../utils/themes/theme';
 import { LabelOverflowConstraint } from '../../../utils/specs';
-import { renderText } from '../primitives/text';
-import { renderDebugRect } from '../utils/debug';
 import { withPanelTransform } from '../utils/panel_transform';
 
 interface BarValuesProps {
