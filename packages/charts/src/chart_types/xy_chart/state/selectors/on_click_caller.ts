@@ -19,11 +19,12 @@ import {
   RectAnnotationDatum,
   SettingsSpec,
 } from '../../../../specs';
-import { GlobalChartState, PointerState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { PointerState } from '../../../../state/pointer_states';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { isClicking } from '../../../../state/utils';
+import { isClicking } from '../../../../state/utils/is_clicking';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
 import { AnnotationTooltipState } from '../../annotations/types';
 import { XYChartSeriesIdentifier } from '../../utils/series';

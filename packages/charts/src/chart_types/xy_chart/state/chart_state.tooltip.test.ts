@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { createStore, Store } from 'redux';
+import { Store } from 'redux';
 
 import { getHighlightedTooltipTooltipValuesSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
@@ -14,13 +14,12 @@ import { TooltipType } from '../../../specs/constants';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { GlobalChartState, chartStoreReducer } from '../../../state/chart_state';
+import { createChartStore, GlobalChartState } from '../../../state/chart_state';
 
 describe('XYChart - State tooltips', () => {
   let store: Store<GlobalChartState>;
   beforeEach(() => {
-    const storeReducer = chartStoreReducer('chartId');
-    store = createStore(storeReducer);
+    store = createChartStore('chartId');
     store.dispatch(
       upsertSpec(
         MockSeriesSpec.bar({
@@ -43,7 +42,7 @@ describe('XYChart - State tooltips', () => {
       [TooltipType.VerticalCursor, 1, false, 1],
       [TooltipType.Crosshairs, 1, false, 1],
     ])('tooltip type %s', (tooltipType, expectedHgeomsLength, expectHeader, expectedTooltipValuesLength) => {
-      store.dispatch(onPointerMove({ x: 25, y: 50 }, 0));
+      store.dispatch(onPointerMove({ position: { x: 25, y: 50 }, time: 0 }));
       store.dispatch(
         upsertSpec(
           MockGlobalSpec.tooltip({

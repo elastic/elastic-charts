@@ -15,13 +15,13 @@ import {
   GroupBySpec,
   SmallMultiplesSpec,
   SmallMultiplesStyle,
-  SpecType,
 } from '../../../../specs';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_multiples_spec';
 import { getSpecs } from '../../../../state/selectors/get_specs';
-import { getSpecsFromStore } from '../../../../state/utils';
+import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
 import { Datum } from '../../../../utils/common';
 import { HierarchyOfArrays, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AxisProps } from '.';
+import { AxisProps } from './axis_props';
 import { Position as P } from '../../../../../utils/common';
 
 /** @internal */

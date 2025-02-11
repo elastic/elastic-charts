@@ -13,7 +13,7 @@ import { Point } from '../../../../../utils/point';
 import { wrapText } from '../../../../../utils/text/wrap';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
-import { AxisProps } from '../axes';
+import { AxisProps } from '../axes/axis_props';
 import { renderText, TextFont } from '../primitives/text';
 import { renderDebugRect } from '../utils/debug';
 

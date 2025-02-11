@@ -14,13 +14,14 @@ import { timeslipRender } from './timeslip/timeslip_render';
 import { TimeslipSpec, GetData } from './timeslip_api';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import { SettingsSpec, SpecType, TooltipType } from '../../specs';
+import { TooltipType, SettingsSpec } from '../../specs';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
-import { getSpecsFromStore } from '../../state/utils';
+import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import { Size } from '../../utils/dimensions';
 import { roundUpSize } from '../flame_chart/render/common';
 // @ts-ignore until it becomes TS

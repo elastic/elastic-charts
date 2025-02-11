@@ -7,10 +7,10 @@
  */
 
 import { ChartType } from '../../chart_types';
-import { Spec, SpecType } from '../../specs';
+import { Spec, SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSpecsFromStore } from '../utils';
+import { getSpecsFromStore } from '../utils/get_specs_from_store';
 
 /** @internal */
 export const getSpecsByType = <S extends Spec>(chartType: ChartType, specType: SpecType) =>

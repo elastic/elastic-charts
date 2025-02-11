@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AxisProps } from '.';
+import { AxisProps } from './axis_props';
 import { Position } from '../../../../../utils/common';
 import { AxisTick, getTickLabelPosition } from '../../../utils/axis_utils';
 import { renderText } from '../primitives/text';

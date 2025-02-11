@@ -6,20 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { OptionalKeys, RequiredKeys } from 'utility-types';
 
-import { upsertSpec as upsertSpecAction, removeSpec as removeSpecAction } from './actions/specs';
-import { Spec as Spec } from '../specs';
+import { Spec } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { upsertSpec, removeSpec } from '../state/actions/specs';
 import { stripUndefined } from '../utils/common';
-
-/** @internal */
-export interface DispatchProps {
-  upsertSpec: typeof upsertSpecAction;
-  removeSpec: typeof removeSpecAction;
-}
 
 /**
  * Used inside custom spec component to link component to state as new spec
@@ -27,20 +20,13 @@ export interface DispatchProps {
  */
 export function useSpecFactory<Props extends Spec>(props: Props) {
   const dispatch = useDispatch();
-  const { upsertSpec, removeSpec } = useMemo(
-    () => ({
-      upsertSpec: bindActionCreators(upsertSpecAction, dispatch),
-      removeSpec: bindActionCreators(removeSpecAction, dispatch),
-    }),
-    [dispatch],
-  );
 
   useEffect(() => {
-    upsertSpec(props);
+    dispatch(upsertSpec(props));
   });
   useEffect(
     () => () => {
-      removeSpec(props.id);
+      dispatch(removeSpec(props.id));
     },
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
@@ -56,8 +42,8 @@ export function useSpecFactory<Props extends Spec>(props: Props) {
  * ```
  *
  * > IMPORTANT: Both `overrides` and `defaults` should __NOT__ have explicit types.
- * > The types are determined automatically from thier implicitly defined types, while still
- * > enforing that the types are derived from the defined `Spec`.
+ * > The types are determined automatically from their implicitly defined types, while still
+ * > enforcing that the types are derived from the defined `Spec`.
  * @internal
  */
 export const specComponentFactory =

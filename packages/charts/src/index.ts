@@ -14,6 +14,7 @@ export { SpecId, GroupId, AxisId, AnnotationId } from './utils/ids';
 
 // Everything related to the specs types and react-components
 export * from './specs';
+export * from './specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 export {
   DebugState,
   DebugStateLine,

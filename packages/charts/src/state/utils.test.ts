@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { getSpecsFromStore } from './utils';
+import { getSpecsFromStore } from './utils/get_specs_from_store';
 import { ChartType } from '../chart_types';
-import { SpecType } from '../specs/constants';
+import { SpecType } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 
 describe('State utils', () => {
   it('getSpecsFromStore shall return always the same object reference excluding the array', () => {

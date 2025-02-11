@@ -12,8 +12,9 @@ import { getPickedShapesLayerValues } from './picked_shapes';
 import { getWordcloudSpecSelector } from './wordcloud_spec';
 import { ChartType } from '../../..';
 import { getOnElementClickSelector } from '../../../../common/event_handler_selectors';
-import { GlobalChartState, PointerStates } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { PointerStates } from '../../../../state/pointer_states';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 

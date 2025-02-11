@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AxisProps } from '.';
+import { AxisProps } from './axis_props';
 import { colorToRgba, RgbaTuple } from '../../../../../common/color_library_wrappers';
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';

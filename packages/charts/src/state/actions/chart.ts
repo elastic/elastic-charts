@@ -6,17 +6,7 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export const CHART_RENDERED = 'CHART_RENDERED';
-
-interface ChartRenderedAction {
-  type: typeof CHART_RENDERED;
-}
+import { createAction } from '@reduxjs/toolkit';
 
 /** @internal */
-export function onChartRendered(): ChartRenderedAction {
-  return { type: CHART_RENDERED };
-}
-
-/** @internal */
-export type ChartActions = ChartRenderedAction;
+export const onChartRendered = createAction('CHART_RENDERED');

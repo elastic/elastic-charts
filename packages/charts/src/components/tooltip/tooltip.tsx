@@ -139,7 +139,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       return;
     }
     // TODO: handle scroll cursor update
-    onPointerMove({ x: -1, y: -1 }, Date.now());
+    onPointerMove({ position: { x: -1, y: -1 }, time: Date.now() });
   };
 
   useEffect(() => {
@@ -353,7 +353,7 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
       onPointerMove: onPointerMoveAction,
       toggleSelectedTooltipItem: toggleSelectedTooltipItemAction,
       setSelectedTooltipItems: setSelectedTooltipItemsAction,
-      pinTooltip: pinTooltipAction,
+      pinTooltip: (pinned: boolean, resetPointer?: boolean) => pinTooltipAction({ pinned, resetPointer }),
     },
     dispatch,
   );

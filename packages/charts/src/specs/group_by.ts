@@ -8,8 +8,8 @@
 
 import { ComponentProps } from 'react';
 
-import { BaseDatum, Spec } from '.';
-import { SpecType } from './constants';
+import { BaseDatum } from '.';
+import { Spec, SpecType } from './spec_type';
 import { ChartType } from '../chart_types';
 import { Predicate } from '../common/predicate';
 import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';

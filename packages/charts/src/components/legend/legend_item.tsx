@@ -74,17 +74,17 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
       };
 
   const onLabelToggle = useCallback(
-    (legendItemId: SeriesIdentifier[]) => (negate: boolean) => {
+    (legendItemIds: SeriesIdentifier[]) => (negate: boolean) => {
       if (totalItems <= 1 || (!isToggleable && !onClick)) {
         return;
       }
 
       if (onClick) {
-        onClick(legendItemId);
+        onClick(legendItemIds);
       }
 
       if (isToggleable) {
-        toggleDeselectSeriesAction(legendItemId, negate);
+        toggleDeselectSeriesAction({ legendItemIds, metaKey: negate });
       }
     },
     [onClick, toggleDeselectSeriesAction, isToggleable, totalItems],

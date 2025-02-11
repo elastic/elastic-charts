@@ -13,11 +13,12 @@ import { getPickedShapes } from './picked_shapes';
 import { ChartType } from '../../..';
 import { SeriesIdentifier } from '../../../../common/series_id';
 import { SettingsSpec } from '../../../../specs';
-import { GlobalChartState, PointerState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { PointerState } from '../../../../state/pointer_states';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { isClicking } from '../../../../state/utils';
+import { isClicking } from '../../../../state/utils/is_clicking';
 import { Cell, isPickedCells } from '../../layout/types/viewmodel_types';
 
 /**

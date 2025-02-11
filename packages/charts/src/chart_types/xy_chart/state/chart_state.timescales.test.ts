@@ -7,7 +7,7 @@
  */
 
 import { DateTime } from 'luxon';
-import { createStore, Store } from 'redux';
+import { Store } from 'redux';
 
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getComputedScalesSelector } from './selectors/get_computed_scales';
@@ -16,11 +16,12 @@ import { ChartType } from '../..';
 import { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
 import { SettingsSpec } from '../../../specs';
-import { SpecType, DEFAULT_SETTINGS_SPEC } from '../../../specs/constants';
+import { DEFAULT_SETTINGS_SPEC } from '../../../specs/default_settings_spec';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
+import { createChartStore, GlobalChartState } from '../../../state/chart_state';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { LineSeriesSpec, SeriesType } from '../utils/specs';
 
@@ -31,8 +32,7 @@ describe('Render chart', () => {
     const day2 = day1 + 1000 * 60 * 60 * 24;
     const day3 = day2 + 1000 * 60 * 60 * 24;
     beforeEach(() => {
-      const storeReducer = chartStoreReducer('chartId');
-      store = createStore(storeReducer);
+      store = createChartStore('chartId');
 
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
@@ -75,21 +75,21 @@ describe('Render chart', () => {
       expect(geometries.lines[0]?.value.points.length).toBe(3);
     });
     test('check mouse position correctly return inverted value', () => {
-      store.dispatch(onPointerMove({ x: 15, y: 10 }, 0)); // check first valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 15, y: 10 }, time: 0 })); // check first valid tooltip
       let tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(day1);
       expect(tooltip.header?.formattedValue).toBe(`${day1}`);
       expect(tooltip.values[0]?.value).toBe(10);
       expect(tooltip.values[0]?.formattedValue).toBe(`${10}`);
-      store.dispatch(onPointerMove({ x: 35, y: 10 }, 1)); // check second valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 35, y: 10 }, time: 1 })); // check second valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(day2);
       expect(tooltip.header?.formattedValue).toBe(`${day2}`);
       expect(tooltip.values[0]?.value).toBe(22);
       expect(tooltip.values[0]?.formattedValue).toBe(`${22}`);
-      store.dispatch(onPointerMove({ x: 76, y: 10 }, 2)); // check third valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 76, y: 10 }, time: 2 })); // check third valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(day3);
@@ -104,8 +104,7 @@ describe('Render chart', () => {
     const date2 = date1 + 1000 * 60 * 5;
     const date3 = date2 + 1000 * 60 * 5;
     beforeEach(() => {
-      const storeReducer = chartStoreReducer('chartId');
-      store = createStore(storeReducer);
+      store = createChartStore('chartId');
 
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
@@ -147,21 +146,21 @@ describe('Render chart', () => {
       expect(geometries.lines[0]?.value.points.length).toBe(3);
     });
     test('check mouse position correctly return inverted value', () => {
-      store.dispatch(onPointerMove({ x: 15, y: 10 }, 0)); // check first valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 15, y: 10 }, time: 0 })); // check first valid tooltip
       let tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date1);
       expect(tooltip.header?.formattedValue).toBe(`${date1}`);
       expect(tooltip.values[0]?.value).toBe(10);
       expect(tooltip.values[0]?.formattedValue).toBe(`${10}`);
-      store.dispatch(onPointerMove({ x: 35, y: 10 }, 1)); // check second valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 35, y: 10 }, time: 1 })); // check second valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date2);
       expect(tooltip.header?.formattedValue).toBe(`${date2}`);
       expect(tooltip.values[0]?.value).toBe(22);
       expect(tooltip.values[0]?.formattedValue).toBe(`${22}`);
-      store.dispatch(onPointerMove({ x: 76, y: 10 }, 2)); // check third valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 76, y: 10 }, time: 2 })); // check third valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date3);
@@ -176,8 +175,7 @@ describe('Render chart', () => {
     const date2 = date1 + 1000 * 60 * 5;
     const date3 = date2 + 1000 * 60 * 5;
     beforeEach(() => {
-      const storeReducer = chartStoreReducer('chartId');
-      store = createStore(storeReducer);
+      store = createChartStore('chartId');
       const lineSeries: LineSeriesSpec = {
         chartType: ChartType.XYAxis,
         specType: SpecType.Series,
@@ -237,21 +235,21 @@ describe('Render chart', () => {
       expect(xScale.invertWithStep(100, xValues)).toEqual({ value: date3, withinBandwidth: true });
     });
     test('check mouse position correctly return inverted value', () => {
-      store.dispatch(onPointerMove({ x: 15, y: 10 }, 0)); // check first valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 15, y: 10 }, time: 0 })); // check first valid tooltip
       let tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date1);
       expect(tooltip.header?.formattedValue).toBe(`${date1}`);
       expect(tooltip.values[0]?.value).toBe(10);
       expect(tooltip.values[0]?.formattedValue).toBe(`${10}`);
-      store.dispatch(onPointerMove({ x: 35, y: 10 }, 1)); // check second valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 35, y: 10 }, time: 1 })); // check second valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date2);
       expect(tooltip.header?.formattedValue).toBe(`${date2}`);
       expect(tooltip.values[0]?.value).toBe(22);
       expect(tooltip.values[0]?.formattedValue).toBe(`${22}`);
-      store.dispatch(onPointerMove({ x: 76, y: 10 }, 2)); // check third valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 76, y: 10 }, time: 2 })); // check third valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date3);

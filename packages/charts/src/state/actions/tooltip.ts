@@ -6,50 +6,26 @@
  * Side Public License, v 1.
  */
 
+import { createAction } from '@reduxjs/toolkit';
+
 import { TooltipValue } from '../../specs';
 
 /** @internal */
-export const PIN_TOOLTIP = 'PIN_TOOLTIP';
-
-/** @internal */
-export const TOGGLE_SELECTED_TOOLTIP_ITEM = 'TOGGLE_SELECTED_TOOLTIP_ITEM';
-
-/** @internal */
-export const SET_SELECTED_TOOLTIP_ITEMS = 'SET_SELECTED_TOOLTIP_ITEMS';
-
-/** @internal */
 export interface PinTooltipAction {
-  type: typeof PIN_TOOLTIP;
   pinned: boolean;
-  resetPointer: boolean;
+  resetPointer?: boolean;
 }
 
 /** @internal */
-export interface ToggleSelectedTooltipItemAction {
-  type: typeof TOGGLE_SELECTED_TOOLTIP_ITEM;
-  item: TooltipValue;
-}
+export const pinTooltip = createAction('PIN_TOOLTIP', ({ pinned, resetPointer = false }: PinTooltipAction) => ({
+  payload: {
+    pinned,
+    resetPointer,
+  },
+}));
 
 /** @internal */
-export interface SetSelectedTooltipItemsAction {
-  type: typeof SET_SELECTED_TOOLTIP_ITEMS;
-  items: TooltipValue[];
-}
+export const toggleSelectedTooltipItem = createAction<TooltipValue>('TOGGLE_SELECTED_TOOLTIP_ITEM');
 
 /** @internal */
-export function pinTooltip(pinned: boolean, resetPointer: boolean = false): PinTooltipAction {
-  return { type: PIN_TOOLTIP, pinned, resetPointer };
-}
-
-/** @internal */
-export function toggleSelectedTooltipItem(item: TooltipValue): ToggleSelectedTooltipItemAction {
-  return { type: TOGGLE_SELECTED_TOOLTIP_ITEM, item };
-}
-
-/** @internal */
-export function setSelectedTooltipItems(items: TooltipValue[]): SetSelectedTooltipItemsAction {
-  return { type: SET_SELECTED_TOOLTIP_ITEMS, items };
-}
-
-/** @internal */
-export type TooltipActions = PinTooltipAction | ToggleSelectedTooltipItemAction | SetSelectedTooltipItemsAction;
+export const setSelectedTooltipItems = createAction<TooltipValue[]>('SET_SELECTED_TOOLTIP_ITEMS');

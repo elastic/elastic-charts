@@ -9,8 +9,7 @@
 import { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
-import { Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants';
+import { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { specComponentFactory } from '../../../state/spec_factory';
 import { defaultWordcloudSpec, WordcloudViewModel } from '../layout/types/viewmodel_types';
 

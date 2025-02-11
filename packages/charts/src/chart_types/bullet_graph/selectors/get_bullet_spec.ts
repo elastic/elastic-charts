@@ -8,9 +8,9 @@
 
 import { ChartType } from '../../../chart_types';
 import { BulletSpec } from '../../../chart_types/bullet_graph/spec';
-import { SpecType } from '../../../specs';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { GlobalChartState } from '../../../state/chart_state';
-import { getSpecFromStore } from '../../../state/utils';
+import { getSpecFromStore } from '../../../state/utils/get_spec_from_store';
 
 /** @internal */
 

@@ -12,12 +12,13 @@ import { ChartType } from '../../..';
 import { CategoryKey } from '../../../../common/category';
 import { Pixels } from '../../../../common/geometry';
 import { Font } from '../../../../common/text_utils';
-import { RelativeBandsPadding, SmallMultiplesSpec, SpecType } from '../../../../specs';
+import { RelativeBandsPadding, SmallMultiplesSpec } from '../../../../specs';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecs } from '../../../../state/selectors/get_specs';
-import { getSpecsFromStore } from '../../../../state/utils';
+import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
 import { Dimensions } from '../../../../utils/dimensions';
 import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { getShapeViewModel } from '../../layout/viewmodel/scenegraph';

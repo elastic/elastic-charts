@@ -7,8 +7,14 @@
  */
 
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
+import {
+  AnnotationType,
+  BaseDatum,
+  BulletSubtype,
+  LineAnnotationDatum,
+  RectAnnotationDatum,
+} from '../chart_types/specs';
 import { Pixels } from '../common/geometry';
-import { AnnotationType, BaseDatum, BulletSubtype, LineAnnotationDatum, RectAnnotationDatum } from '../specs';
 import { Accessor } from '../utils/accessor';
 import type { Datum, Position } from '../utils/common';
 import { GenericDomain } from '../utils/domain';
