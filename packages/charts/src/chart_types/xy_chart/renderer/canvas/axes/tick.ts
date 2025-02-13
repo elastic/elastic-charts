@@ -19,16 +19,12 @@ const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the 
 /** @internal */
 export function renderTick(
   ctx: CanvasRenderingContext2D,
-  { position, domainClampedPosition: tickPosition, layer, detailedLayer }: AxisTick,
-  {
-    axisSpec: { position: axisPosition, timeAxisLayerCount },
-    size: { width, height },
-    axisStyle: { tickLine, gridLine },
-    layerGirth,
-  }: AxisProps,
+  { position, domainClampedPosition: tickPosition, layer, detailedLayer, multilayerTimeAxis }: AxisTick,
+  { axisSpec, size: { width, height }, axisStyle: { tickLine, gridLine }, layerGirth }: AxisProps,
 ) {
   if (Math.abs(tickPosition - position) > OUTSIDE_RANGE_TOLERANCE) return;
-  const tickOnTheSide = timeAxisLayerCount > 0 && typeof layer === 'number';
+  const { position: axisPosition } = axisSpec;
+  const tickOnTheSide = multilayerTimeAxis && typeof layer === 'number';
   const extensionLayer = tickOnTheSide ? layer + 1 : 0;
   const tickSize =
     tickLine.size +
