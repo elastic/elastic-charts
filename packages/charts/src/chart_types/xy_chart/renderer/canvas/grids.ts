@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { renderMultiLine } from './primitives/line';
 import { withContext } from '../../../../renderers/canvas';
+import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AxisStyle } from '../../../../utils/themes/theme';
 import { LinesGrid } from '../../utils/grid_lines';

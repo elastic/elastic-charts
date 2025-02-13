@@ -12,7 +12,7 @@ import { TAU } from '../../../../common/constants';
 import { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
-import { MIN_STROKE_WIDTH } from '../../../xy_chart/renderer/canvas/primitives/line';
+import { MIN_STROKE_WIDTH } from '../../../../renderers/canvas/primitives/line';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
