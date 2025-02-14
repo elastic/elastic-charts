@@ -13,7 +13,6 @@ import type { InitStatus } from './selectors/get_internal_is_intialized';
 import type { LegendItemLabel } from './selectors/shared';
 import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
-import type { ChartType } from '../chart_types';
 import type { LegendItem, LegendItemExtraValues } from '../common/legend';
 import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
@@ -22,25 +21,28 @@ import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
 
 /**
- * A set of chart-type-dependant functions that required by all chart type
+ * A set of chart-type-dependant functions that are required by all chart types
  * @internal
  */
-export interface InternalChartState {
+export interface ChartSelectors {
   /**
-   * The chart type
+   * Returns the initialization status of the chart
+   * @param globalState
    */
-  chartType: ChartType;
   isInitialized(globalState: GlobalChartState): InitStatus;
+
   /**
    * `true` if the brush is available for this chart type
    * @param globalState
    */
   isBrushAvailable(globalState: GlobalChartState): boolean;
+
   /**
    * `true` if the brush is available for this chart type
    * @param globalState
    */
   isBrushing(globalState: GlobalChartState): boolean;
+
   /**
    * `true` if the chart is empty (no data displayed)
    * @param globalState
@@ -59,21 +61,25 @@ export interface InternalChartState {
    * @param globalState
    */
   getLegendItems(globalState: GlobalChartState): LegendItem[];
+
   /**
    * Returns the list of extra values for each legend item
    * @param globalState
    */
   getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues>;
+
   /**
    * Returns the CSS pointer cursor depending on the internal chart state
    * @param globalState
    */
   getPointerCursor(globalState: GlobalChartState): CSSProperties['cursor'];
+
   /**
    * Describe if the tooltip is visible and comes from an external source
    * @param globalState
    */
   isTooltipVisible(globalState: GlobalChartState): TooltipVisibility;
+
   /**
    * Get the tooltip information to display
    * @param globalState the GlobalChartState
@@ -133,6 +139,9 @@ export interface InternalChartState {
 }
 
 /** @internal */
-export interface SelectorRegistry {
-  [chartType: string]: InternalChartState;
+export type ChartSelectorsFactory = () => ChartSelectors;
+
+/** @internal */
+export interface ChartSelectorRegistry {
+  [chartType: string]: ChartSelectors;
 }

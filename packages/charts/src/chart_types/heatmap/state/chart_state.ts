@@ -23,105 +23,46 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerUpdateCaller } from './selectors/on_pointer_update_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
-import { ChartType } from '../..';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
-import type { SmallMultiplesSeriesDomains } from '../../../common/panel_utils';
+import type { ChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
-import type { InternalChartState } from '../../../state/internal_chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
-import type { Dimensions } from '../../../utils/dimensions';
 
 /** @internal */
-export class HeatmapState implements InternalChartState {
-  chartType = ChartType.Heatmap;
+export const chartSelectorsFactory: ChartSelectorsFactory = () => {
+  const onElementClickCaller = createOnElementClickCaller();
+  const onElementOverCaller = createOnElementOverCaller();
+  const onElementOutCaller = createOnElementOutCaller();
+  const onBrushEndCaller = createOnBrushEndCaller();
+  const onPointerUpdate = createOnPointerUpdateCaller();
 
-  onElementClickCaller: (state: GlobalChartState) => void = createOnElementClickCaller();
-
-  onElementOverCaller: (state: GlobalChartState) => void = createOnElementOverCaller();
-
-  onElementOutCaller: (state: GlobalChartState) => void = createOnElementOutCaller();
-
-  onBrushEndCaller: (state: GlobalChartState) => void = createOnBrushEndCaller();
-
-  onPointerUpdate: (state: GlobalChartState) => void = createOnPointerUpdateCaller();
-
-  isInitialized() {
-    return InitStatus.Initialized;
-  }
-
-  isBrushAvailable(globalState: GlobalChartState) {
-    return isBrushAvailableSelector(globalState);
-  }
-
-  isBrushing(globalState: GlobalChartState) {
-    return isBrushingSelector(globalState);
-  }
-
-  isChartEmpty(globalState: GlobalChartState) {
-    return isEmptySelector(globalState);
-  }
-
-  getLegendItems(globalState: GlobalChartState) {
-    return computeLegendSelector(globalState);
-  }
-
-  getLegendItemsLabels(globalState: GlobalChartState) {
-    return getLegendItemsLabelsSelector(globalState);
-  }
-
-  getLegendExtraValues() {
-    return EMPTY_LEGEND_ITEM_EXTRA_VALUES;
-  }
-
-  getPointerCursor(globalState: GlobalChartState) {
-    return getPointerCursorSelector(globalState);
-  }
-
-  isTooltipVisible(globalState: GlobalChartState) {
-    return isTooltipVisibleSelector(globalState);
-  }
-
-  getTooltipInfo(globalState: GlobalChartState) {
-    return getTooltipInfoSelector(globalState);
-  }
-
-  getTooltipAnchor(globalState: GlobalChartState) {
-    return getTooltipAnchorSelector(globalState);
-  }
-
-  getProjectionContainerArea(globalState: GlobalChartState): Dimensions {
-    return getChartContainerDimensionsSelector(globalState);
-  }
-
-  getMainProjectionArea(globalState: GlobalChartState): Dimensions {
-    return computeChartDimensionsSelector(globalState).chartDimensions;
-  }
-
-  getBrushArea(globalState: GlobalChartState): Dimensions | null {
-    return getBrushAreaSelector(globalState);
-  }
-
-  getDebugState(globalState: GlobalChartState) {
-    return getDebugStateSelector(globalState);
-  }
-
-  getChartTypeDescription() {
-    return 'Heatmap chart';
-  }
-
-  getSmallMultiplesDomains(globalState: GlobalChartState): SmallMultiplesSeriesDomains {
-    return getHeatmapTableSelector(globalState);
-  }
-
-  eventCallbacks(globalState: GlobalChartState) {
-    this.onElementOverCaller(globalState);
-    this.onElementOutCaller(globalState);
-    this.onElementClickCaller(globalState);
-    this.onBrushEndCaller(globalState);
-    this.onPointerUpdate(globalState);
-  }
-
-  canDisplayChartTitles = () => true;
-}
+  return {
+    isInitialized: () => InitStatus.Initialized,
+    isBrushAvailable: isBrushAvailableSelector,
+    isBrushing: isBrushingSelector,
+    isChartEmpty: isEmptySelector,
+    getLegendItems: computeLegendSelector,
+    getLegendItemsLabels: getLegendItemsLabelsSelector,
+    getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
+    getPointerCursor: getPointerCursorSelector,
+    isTooltipVisible: isTooltipVisibleSelector,
+    getTooltipInfo: getTooltipInfoSelector,
+    getTooltipAnchor: getTooltipAnchorSelector,
+    getProjectionContainerArea: getChartContainerDimensionsSelector,
+    getMainProjectionArea: (state: GlobalChartState) => computeChartDimensionsSelector(state).chartDimensions,
+    getBrushArea: getBrushAreaSelector,
+    getDebugState: getDebugStateSelector,
+    getChartTypeDescription: () => 'Heatmap chart',
+    getSmallMultiplesDomains: getHeatmapTableSelector,
+    eventCallbacks: (state: GlobalChartState) => {
+      onElementOverCaller(state);
+      onElementOutCaller(state);
+      onElementClickCaller(state);
+      onBrushEndCaller(state);
+      onPointerUpdate(state);
+    },
+    canDisplayChartTitles: () => true,
+  };
+};

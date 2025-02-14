@@ -8,8 +8,8 @@
 
 import type { $Values } from 'utility-types';
 
+import type { ChartSelectors } from '../chart_selectors';
 import type { GlobalChartState } from '../chart_state';
-import type { InternalChartState } from '../internal_chart_state';
 
 /** @internal */
 export const InitStatus = Object.freeze({
@@ -26,7 +26,7 @@ export type InitStatus = $Values<typeof InitStatus>;
 /** @internal */
 export const getInternalIsInitializedSelector = (
   globalChartState: GlobalChartState,
-  internalChartState: InternalChartState | null,
+  internalChartState: ChartSelectors | null,
 ): InitStatus => {
   const {
     parentDimensions: { width, height },

@@ -17,125 +17,73 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
-import { ChartType } from '../..';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
+import type { ChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
-import type { InternalChartState } from '../../../state/internal_chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import type { DebugState } from '../../../state/types';
-import type { Dimensions } from '../../../utils/dimensions';
 
 /** @internal */
-export class PartitionState implements InternalChartState {
-  chartType = ChartType.Partition;
+export const chartSelectorsFactory: ChartSelectorsFactory = () => {
+  const onElementClickCaller = createOnElementClickCaller();
+  const onElementOverCaller = createOnElementOverCaller();
+  const onElementOutCaller = createOnElementOutCaller();
 
-  onElementClickCaller: (state: GlobalChartState) => void;
+  return {
+    isInitialized: (state: GlobalChartState) =>
+      getPartitionSpec(state) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized,
 
-  onElementOverCaller: (state: GlobalChartState) => void;
+    isBrushAvailable: () => false,
+    isBrushing: () => false,
+    isChartEmpty: () => false,
 
-  onElementOutCaller: (state: GlobalChartState) => void;
-
-  constructor() {
-    this.onElementClickCaller = createOnElementClickCaller();
-    this.onElementOverCaller = createOnElementOverCaller();
-    this.onElementOutCaller = createOnElementOutCaller();
-  }
-
-  isInitialized(globalState: GlobalChartState) {
-    return getPartitionSpec(globalState) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
-  }
-
-  isBrushAvailable() {
-    return false;
-  }
-
-  isBrushing() {
-    return false;
-  }
-
-  isChartEmpty() {
-    return false;
-  }
-
-  getLegendItemsLabels(globalState: GlobalChartState) {
+    getLegendItems: computeLegendSelector,
     // order doesn't matter, but it needs to return the highest depth of the label occurrence so enough horizontal width is allocated
     // the label item strings needs to be a concatenation of the label + the extra formatted value if available.
     // this is required to compute the legend automatic width
-    return getLegendItemsLabels(globalState);
-  }
+    getLegendItemsLabels,
+    getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
+    getPointerCursor: getPointerCursorSelector,
 
-  getLegendItems(globalState: GlobalChartState) {
-    return computeLegendSelector(globalState);
-  }
-
-  getLegendExtraValues() {
-    return EMPTY_LEGEND_ITEM_EXTRA_VALUES;
-  }
-
-  getPointerCursor(globalState: GlobalChartState) {
-    return getPointerCursorSelector(globalState);
-  }
-
-  isTooltipVisible(globalState: GlobalChartState) {
-    return {
+    isTooltipVisible: (globalState: GlobalChartState) => ({
       visible: isTooltipVisibleSelector(globalState),
       isExternal: false,
       displayOnly: false,
       isPinnable: true,
-    };
-  }
+    }),
+    getTooltipInfo: getTooltipInfoSelector,
+    getTooltipAnchor: (state: GlobalChartState) => {
+      const position = getActivePointerPosition(state);
+      return {
+        isRotated: false,
+        x: position.x,
+        width: 0,
+        y: position.y,
+        height: 0,
+      };
+    },
 
-  getTooltipInfo(globalState: GlobalChartState) {
-    return getTooltipInfoSelector(globalState);
-  }
+    eventCallbacks: (state: GlobalChartState) => {
+      onElementOverCaller(state);
+      onElementOutCaller(state);
+      onElementClickCaller(state);
+    },
 
-  getTooltipAnchor(state: GlobalChartState) {
-    const position = getActivePointerPosition(state);
-    return {
-      isRotated: false,
-      x: position.x,
-      width: 0,
-      y: position.y,
-      height: 0,
-    };
-  }
+    // TODO
+    getProjectionContainerArea: () => ({ width: 0, height: 0, top: 0, left: 0 }),
 
-  eventCallbacks(globalState: GlobalChartState) {
-    this.onElementOverCaller(globalState);
-    this.onElementOutCaller(globalState);
-    this.onElementClickCaller(globalState);
-  }
+    // TODO
+    getMainProjectionArea: () => ({ width: 0, height: 0, top: 0, left: 0 }),
 
-  // TODO
-  getProjectionContainerArea(): Dimensions {
-    return { width: 0, height: 0, top: 0, left: 0 };
-  }
+    // TODO
+    getBrushArea: () => null,
 
-  // TODO
-  getMainProjectionArea(): Dimensions {
-    return { width: 0, height: 0, top: 0, left: 0 };
-  }
-
-  // TODO
-  getBrushArea(): Dimensions | null {
-    return null;
-  }
-
-  getDebugState(state: GlobalChartState): DebugState {
-    return getDebugStateSelector(state);
-  }
-
-  getChartTypeDescription(state: GlobalChartState): string {
-    return getChartTypeDescriptionSelector(state);
-  }
-
-  getSmallMultiplesDomains() {
-    return {
+    getDebugState: getDebugStateSelector,
+    getChartTypeDescription: getChartTypeDescriptionSelector,
+    getSmallMultiplesDomains: () => ({
       smHDomain: [],
       smVDomain: [],
-    };
-  }
-
-  canDisplayChartTitles = () => true;
-}
+    }),
+    canDisplayChartTitles: () => true,
+  };
+};

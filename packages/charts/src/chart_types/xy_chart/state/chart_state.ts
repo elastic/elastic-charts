@@ -26,122 +26,57 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 import { createOnProjectionAreaCaller } from './selectors/on_projection_area_caller';
-import { ChartType } from '../..';
-import type { LegendItemExtraValues } from '../../../common/legend';
-import type { SeriesKey } from '../../../common/series_id';
+import type { ChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
-import type { InternalChartState } from '../../../state/internal_chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/shared';
-import { htmlIdGenerator } from '../../../utils/common';
 
 /** @internal */
-export class XYAxisChartState implements InternalChartState {
-  chartType: ChartType;
+export const chartSelectorsFactory: ChartSelectorsFactory = () => {
+  const onClickCaller = createOnClickCaller();
+  const onElementOverCaller = createOnElementOverCaller();
+  const onElementOutCaller = createOnElementOutCaller();
+  const onBrushEndCaller = createOnBrushEndCaller();
+  const onPointerMoveCaller = createOnPointerMoveCaller();
+  const onProjectionAreaCaller = createOnProjectionAreaCaller();
 
-  legendId: string;
+  return {
+    isInitialized: (state: GlobalChartState) =>
+      getSeriesSpecsSelector(state).length > 0 ? InitStatus.Initialized : InitStatus.SpecNotInitialized,
 
-  onClickCaller: (state: GlobalChartState) => void;
+    isBrushAvailable: isBrushAvailableSelector,
+    isBrushing: (globalState: GlobalChartState) =>
+      isBrushAvailableSelector(globalState) && isBrushingSelector(globalState),
+    isChartEmpty: isChartEmptySelector,
 
-  onElementOverCaller: (state: GlobalChartState) => void;
+    getLegendItems: computeLegendSelector,
+    getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
+    getLegendExtraValues: getLegendItemExtraValuesSelector,
+    getPointerCursor: getPointerCursorSelector,
 
-  onElementOutCaller: (state: GlobalChartState) => void;
+    isTooltipVisible: isTooltipVisibleSelector,
+    getTooltipInfo: getTooltipInfoSelector,
+    getTooltipAnchor: getTooltipAnchorPositionSelector,
 
-  onBrushEndCaller: (state: GlobalChartState) => void;
+    getProjectionContainerArea: getChartContainerDimensionsSelector,
+    getMainProjectionArea: (state: GlobalChartState) => computeChartDimensionsSelector(state).chartDimensions,
+    getBrushArea: getBrushAreaSelector,
 
-  onPointerMoveCaller: (state: GlobalChartState) => void;
+    getDebugState: getDebugStateSelector,
+    getChartTypeDescription: getChartTypeDescriptionSelector,
+    getSmallMultiplesDomains: computeSeriesDomainsSelector,
 
-  onProjectionAreaCaller: (state: GlobalChartState) => void;
+    eventCallbacks: (state: GlobalChartState) => {
+      onClickCaller(state);
+      onElementOverCaller(state);
+      onElementOutCaller(state);
+      onBrushEndCaller(state);
+      onPointerMoveCaller(state);
+      onProjectionAreaCaller(state);
+    },
 
-  constructor() {
-    this.onClickCaller = createOnClickCaller();
-    this.onElementOverCaller = createOnElementOverCaller();
-    this.onElementOutCaller = createOnElementOutCaller();
-    this.onBrushEndCaller = createOnBrushEndCaller();
-    this.onPointerMoveCaller = createOnPointerMoveCaller();
-    this.onProjectionAreaCaller = createOnProjectionAreaCaller();
-    this.chartType = ChartType.XYAxis;
-    this.legendId = htmlIdGenerator()('legend');
-  }
-
-  isInitialized(globalState: GlobalChartState) {
-    return getSeriesSpecsSelector(globalState).length > 0 ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
-  }
-
-  isBrushAvailable(globalState: GlobalChartState) {
-    return isBrushAvailableSelector(globalState);
-  }
-
-  isBrushing(globalState: GlobalChartState) {
-    return this.isBrushAvailable(globalState) && isBrushingSelector(globalState);
-  }
-
-  isChartEmpty(globalState: GlobalChartState) {
-    return isChartEmptySelector(globalState);
-  }
-
-  getMainProjectionArea(globalState: GlobalChartState) {
-    return computeChartDimensionsSelector(globalState).chartDimensions;
-  }
-
-  getProjectionContainerArea(globalState: GlobalChartState) {
-    return getChartContainerDimensionsSelector(globalState);
-  }
-
-  getBrushArea(globalState: GlobalChartState) {
-    return getBrushAreaSelector(globalState);
-  }
-
-  getLegendItemsLabels() {
-    return EMPTY_LEGEND_ITEM_LIST;
-  }
-
-  getLegendItems(globalState: GlobalChartState) {
-    return computeLegendSelector(globalState);
-  }
-
-  getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues> {
-    return getLegendItemExtraValuesSelector(globalState);
-  }
-
-  getPointerCursor(globalState: GlobalChartState) {
-    return getPointerCursorSelector(globalState);
-  }
-
-  isTooltipVisible(globalState: GlobalChartState) {
-    return isTooltipVisibleSelector(globalState);
-  }
-
-  getTooltipInfo(globalState: GlobalChartState) {
-    return getTooltipInfoSelector(globalState);
-  }
-
-  getTooltipAnchor(globalState: GlobalChartState) {
-    return getTooltipAnchorPositionSelector(globalState);
-  }
-
-  getSmallMultiplesDomains(globalState: GlobalChartState) {
-    return computeSeriesDomainsSelector(globalState);
-  }
-
-  eventCallbacks(globalState: GlobalChartState) {
-    this.onElementOverCaller(globalState);
-    this.onElementOutCaller(globalState);
-    this.onClickCaller(globalState);
-    this.onBrushEndCaller(globalState);
-    this.onPointerMoveCaller(globalState);
-    this.onProjectionAreaCaller(globalState);
-  }
-
-  getDebugState(globalState: GlobalChartState) {
-    return getDebugStateSelector(globalState);
-  }
-
-  getChartTypeDescription(globalState: GlobalChartState) {
-    return getChartTypeDescriptionSelector(globalState);
-  }
-
-  canDisplayChartTitles = () => true;
-}
+    canDisplayChartTitles: () => true,
+  };
+};
