@@ -13,15 +13,22 @@ import { getTooltipInfo } from './selectors/get_tooltip_info';
 import { isTooltipVisible } from './selectors/is_tooltip_visible';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../common/legend';
+import { chartSelectorRegistry } from '../../state/chart_selector_registry';
 import type { ChartSelectorsFactory } from '../../state/chart_selectors';
 import type { GlobalChartState } from '../../state/chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { EMPTY_LEGEND_ITEM_LIST } from '../../state/selectors/shared';
 
+const isInitialized = (state: GlobalChartState) => {
+  // First run base initialization checks
+  const baseStatus = chartSelectorRegistry.getSelector<InitStatus>('base', 'getIsInitialized')(state);
+  return baseStatus !== InitStatus.MissingChartType ? baseStatus : InitStatus.Initialized;
+};
+
 /** @internal */
 export const chartSelectorsFactory: ChartSelectorsFactory = () => ({
   getChartTypeDescription: () => 'Bullet chart',
-  isInitialized: () => InitStatus.Initialized,
+  isInitialized,
   isBrushAvailable: () => false,
   isBrushing: () => false,
   isChartEmpty: () => false,
