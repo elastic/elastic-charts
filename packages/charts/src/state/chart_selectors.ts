@@ -21,20 +21,11 @@ import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
-export type SelectorId = string;
-/** @internal */
-export type SelectorFn<R = any> = (state: GlobalChartState) => R;
-/** @internal */
-export type DependencyMap = Record<SelectorId, Set<SelectorId>>;
-
-/** @internal */
 export /**
  * A set of chart-type-dependant functions that are required by all chart types
  * @internal
  */
 interface ChartSelectors {
-  [key: string]: SelectorFn;
-
   /**
    * Returns the initialization status of the chart
    * @param globalState
