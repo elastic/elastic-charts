@@ -131,3 +131,8 @@ export interface InternalChartState {
    */
   canDisplayChartTitles(globalState: GlobalChartState): boolean;
 }
+
+/** @internal */
+export interface SelectorRegistry {
+  [chartType: string]: InternalChartState;
+}

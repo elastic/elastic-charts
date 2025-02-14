@@ -8,12 +8,9 @@
 
 import { getInternalMainProjectionAreaSelector } from './get_internal_main_projection_area';
 import { getInternalSmallMultiplesDomains } from './get_internal_sm_domains';
+import { getSmallMultiplesScale } from './get_small_multiples_scale';
 import { getSmallMultiplesSpec } from './get_small_multiples_spec';
 import type { SmallMultipleScales } from '../../common/panel_utils';
-import { ScaleBand } from '../../scales';
-import type { RelativeBandsPadding } from '../../specs';
-import { DEFAULT_SM_PANEL_PADDING } from '../../specs';
-import type { OrdinalDomain } from '../../utils/domain';
 import { createCustomCachedSelector } from '../create_selector';
 
 /**
@@ -24,20 +21,8 @@ export const computeSmallMultipleScalesSelector = createCustomCachedSelector(
   [getInternalSmallMultiplesDomains, getInternalMainProjectionAreaSelector, getSmallMultiplesSpec],
   ({ smHDomain, smVDomain }, { width, height }, smSpec): SmallMultipleScales => {
     return {
-      horizontal: getScale(smHDomain, width, smSpec?.style?.horizontalPanelPadding),
-      vertical: getScale(smVDomain, height, smSpec?.style?.verticalPanelPadding),
+      horizontal: getSmallMultiplesScale(smHDomain, width, smSpec?.style?.horizontalPanelPadding),
+      vertical: getSmallMultiplesScale(smVDomain, height, smSpec?.style?.verticalPanelPadding),
     };
   },
 );
-
-/**
- * @internal
- */
-export function getScale(
-  domain: OrdinalDomain,
-  maxRange: number,
-  padding: RelativeBandsPadding = DEFAULT_SM_PANEL_PADDING,
-): ScaleBand {
-  const singlePanelSmallMultiple = domain.length <= 1;
-  return new ScaleBand(domain, [0, maxRange], undefined, singlePanelSmallMultiple ? 0 : padding);
-}
