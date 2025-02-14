@@ -12,6 +12,7 @@ import { MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { removeSpec, specParsed, upsertSpec } from '../../../state/actions/specs';
 import type { GlobalChartState } from '../../../state/chart_state';
+import { getInternalChartStateSelector } from '../../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { getLegendItemsSelector } from '../../../state/selectors/get_legend_items';
 
@@ -115,14 +116,15 @@ describe('XYChart - specs ordering', () => {
       ],
       store,
     );
-    expect(getInternalIsInitializedSelector(store.getState())).toBe(InitStatus.Initialized);
+    const internalChartState = getInternalChartStateSelector(store.getState());
+    expect(getInternalIsInitializedSelector(store.getState(), internalChartState)).toBe(InitStatus.Initialized);
     // check on remove
     store.dispatch(removeSpec('A'));
-    expect(getInternalIsInitializedSelector(store.getState())).not.toBe(InitStatus.Initialized);
+    expect(getInternalIsInitializedSelector(store.getState(), internalChartState)).not.toBe(InitStatus.Initialized);
 
     // initialized again after specParsed action
     store.dispatch(specParsed());
-    expect(getInternalIsInitializedSelector(store.getState())).toBe(InitStatus.Initialized);
+    expect(getInternalIsInitializedSelector(store.getState(), internalChartState)).toBe(InitStatus.Initialized);
   });
   it('The status should switch to not initialized when upserting a spec', () => {
     MockStore.addSpecs(
@@ -133,14 +135,15 @@ describe('XYChart - specs ordering', () => {
       ],
       store,
     );
-    expect(getInternalIsInitializedSelector(store.getState())).toBe(InitStatus.Initialized);
+    const internalChartState = getInternalChartStateSelector(store.getState());
+    expect(getInternalIsInitializedSelector(store.getState(), internalChartState)).toBe(InitStatus.Initialized);
 
     // check on upsert
     store.dispatch(upsertSpec(MockSeriesSpec.bar({ id: 'D', data })));
-    expect(getInternalIsInitializedSelector(store.getState())).not.toBe(InitStatus.Initialized);
+    expect(getInternalIsInitializedSelector(store.getState(), internalChartState)).not.toBe(InitStatus.Initialized);
 
     // initialized again after specParsed action
     store.dispatch(specParsed());
-    expect(getInternalIsInitializedSelector(store.getState())).toBe(InitStatus.Initialized);
+    expect(getInternalIsInitializedSelector(store.getState(), internalChartState)).toBe(InitStatus.Initialized);
   });
 });
