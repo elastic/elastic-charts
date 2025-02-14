@@ -6,31 +6,29 @@
  * Side Public License, v 1.
  */
 
-import type { RefObject } from 'react';
-import React from 'react';
-
+import { computeLegendSelector } from './selectors/compute_legend';
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
-import { getGoalSpecSelector } from './selectors/get_goal_spec';
+import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
+import { getDebugStateSelector } from './selectors/get_debug_state';
+import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
+import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
 import { ChartType } from '../..';
-import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
-import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
-import { Tooltip } from '../../../components/tooltip/tooltip';
-import type { InternalChartState, GlobalChartState, BackwardRef, TooltipVisibility } from '../../../state/chart_state';
+import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
+import type { GlobalChartState } from '../../../state/chart_state';
+import type { InternalChartState } from '../../../state/internal_chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
 import type { DebugState } from '../../../state/types';
 import type { Dimensions } from '../../../utils/dimensions';
-import { Goal } from '../renderer/canvas/connected_component';
 
 /** @internal */
-export class GoalState implements InternalChartState {
-  chartType = ChartType.Goal;
+export class PartitionState implements InternalChartState {
+  chartType = ChartType.Partition;
 
   onElementClickCaller: (state: GlobalChartState) => void;
 
@@ -45,7 +43,7 @@ export class GoalState implements InternalChartState {
   }
 
   isInitialized(globalState: GlobalChartState) {
-    return getGoalSpecSelector(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
+    return getPartitionSpec(globalState) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized;
   }
 
   isBrushAvailable() {
@@ -60,37 +58,31 @@ export class GoalState implements InternalChartState {
     return false;
   }
 
-  getLegendItems() {
-    return EMPTY_LEGEND_LIST;
+  getLegendItemsLabels(globalState: GlobalChartState) {
+    // order doesn't matter, but it needs to return the highest depth of the label occurrence so enough horizontal width is allocated
+    // the label item strings needs to be a concatenation of the label + the extra formatted value if available.
+    // this is required to compute the legend automatic width
+    return getLegendItemsLabels(globalState);
   }
 
-  getLegendItemsLabels() {
-    return EMPTY_LEGEND_ITEM_LIST;
+  getLegendItems(globalState: GlobalChartState) {
+    return computeLegendSelector(globalState);
   }
 
   getLegendExtraValues() {
     return EMPTY_LEGEND_ITEM_EXTRA_VALUES;
   }
 
-  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
-    return (
-      <>
-        <Tooltip getChartContainerRef={containerRef} />
-        <Goal forwardStageRef={forwardStageRef} />
-      </>
-    );
+  getPointerCursor(globalState: GlobalChartState) {
+    return getPointerCursorSelector(globalState);
   }
 
-  getPointerCursor() {
-    return DEFAULT_CSS_CURSOR;
-  }
-
-  isTooltipVisible(globalState: GlobalChartState): TooltipVisibility {
+  isTooltipVisible(globalState: GlobalChartState) {
     return {
       visible: isTooltipVisibleSelector(globalState),
       isExternal: false,
       displayOnly: false,
-      isPinnable: false,
+      isPinnable: true,
     };
   }
 
@@ -115,10 +107,6 @@ export class GoalState implements InternalChartState {
     this.onElementClickCaller(globalState);
   }
 
-  getChartTypeDescription(globalState: GlobalChartState) {
-    return getChartTypeDescriptionSelector(globalState);
-  }
-
   // TODO
   getProjectionContainerArea(): Dimensions {
     return { width: 0, height: 0, top: 0, left: 0 };
@@ -134,9 +122,12 @@ export class GoalState implements InternalChartState {
     return null;
   }
 
-  // TODO
-  getDebugState(): DebugState {
-    return {};
+  getDebugState(state: GlobalChartState): DebugState {
+    return getDebugStateSelector(state);
+  }
+
+  getChartTypeDescription(state: GlobalChartState): string {
+    return getChartTypeDescriptionSelector(state);
   }
 
   getSmallMultiplesDomains() {
@@ -146,6 +137,5 @@ export class GoalState implements InternalChartState {
     };
   }
 
-  // TODO enable for small multiples
-  canDisplayChartTitles = () => false;
+  canDisplayChartTitles = () => true;
 }

@@ -17,7 +17,6 @@ import { onComputedZIndex } from './actions/z_index';
 import type { ChartSliceState } from './chart_slice_state';
 import { chartTypeFromSpecs } from './chart_type_from_specs';
 import { getInitialState } from './get_initial_state';
-import { newInternalState } from './new_internal_state';
 import {
   handleKeyActions,
   handleMouseActions,
@@ -32,8 +31,10 @@ import { DEFAULT_SETTINGS_SPEC } from '../specs/default_settings_spec';
 import { upsertSpec, removeSpec, specParsed, specUnmounted } from '../state/actions/specs';
 import { deepEqual } from '../utils/fast_deep_equal';
 
-export { InteractionsState, TooltipInteractionState } from './interactions_state';
-export { BackwardRef, InternalChartState, TooltipVisibility } from './internal_chart_state';
+export type { InteractionsState, TooltipInteractionState } from './interactions_state';
+export type { InternalChartState } from './internal_chart_state';
+export type { BackwardRef } from './internal_chart_renderer';
+export type { TooltipVisibility } from './tooltip_visibility';
 
 const handleChartActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder.addCase(onChartRendered, (state) => {
@@ -113,7 +114,6 @@ const handleSpecsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) =
 
       const newChartType = chartTypeFromSpecs(state.specs);
       if (state.chartType === newChartType) return;
-      state.internalChartState = newInternalState(newChartType);
       state.chartType = newChartType;
     })
     .addCase(specUnmounted, (state) => {

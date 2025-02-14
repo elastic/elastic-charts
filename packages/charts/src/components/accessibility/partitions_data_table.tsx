@@ -15,6 +15,7 @@ import type { SettingsSpec } from '../../specs/settings';
 import type { GlobalChartState } from '../../state/chart_state';
 import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
+import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { isNil } from '../../utils/common';
@@ -123,7 +124,8 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTableProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
     return DEFAULT_SCREEN_READER_SUMMARY;
   }
   return {

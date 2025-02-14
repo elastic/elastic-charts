@@ -8,7 +8,7 @@
 
 import type { HierarchyOfArrays, ArrayNode } from './group_by_rollup';
 import { CHILDREN_KEY, HIERARCHY_ROOT_KEY, PATH_KEY, NULL_SMALL_MULTIPLES_KEY, AGGREGATE_KEY } from './group_by_rollup';
-import type { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
+import type { LegendItemLabel } from '../../../../state/selectors/shared';
 import type { ValueFormatter } from '../../../../utils/common';
 import type { Layer } from '../../specs';
 

@@ -26,9 +26,9 @@ import { SpecsParser } from '../specs/specs_parser';
 import { updateChartTitles, updateParentDimensions } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
-import type { GlobalChartState } from '../state/chart_state';
-import { createChartStore } from '../state/chart_state';
+import { createChartStore, type GlobalChartState } from '../state/chart_state';
 import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
+import { getInternalChartStateSelector } from '../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import type { ChartSize } from '../utils/chart_size';
 import { getChartSize, getFixedChartSize } from '../utils/chart_size';
@@ -87,15 +87,16 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     };
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+      const internalChartState = getInternalChartStateSelector(state);
+      if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
         return;
       }
 
       const newState = getChartContainerUpdateStateSelector(state);
       if (!deepEqual(this.state, newState)) this.setState(newState);
 
-      if (state.internalChartState) {
-        state.internalChartState.eventCallbacks(state);
+      if (internalChartState) {
+        internalChartState.eventCallbacks(state);
       }
     });
   }

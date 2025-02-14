@@ -6,18 +6,16 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
-
 import { getWordcloudSpecSelector } from './selectors/wordcloud_spec';
 import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES, EMPTY_LEGEND_LIST } from '../../../common/legend';
-import type { InternalChartState, GlobalChartState } from '../../../state/chart_state';
+import type { GlobalChartState } from '../../../state/chart_state';
+import type { InternalChartState } from '../../../state/internal_chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
+import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/shared';
 import type { DebugState } from '../../../state/types';
 import type { Dimensions } from '../../../utils/dimensions';
-import { Wordcloud } from '../renderer/svg/connected_component';
 
 const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
 
@@ -51,10 +49,6 @@ export class WordcloudState implements InternalChartState {
 
   getLegendExtraValues() {
     return EMPTY_LEGEND_ITEM_EXTRA_VALUES;
-  }
-
-  chartRenderer() {
-    return <Wordcloud />;
   }
 
   getPointerCursor() {

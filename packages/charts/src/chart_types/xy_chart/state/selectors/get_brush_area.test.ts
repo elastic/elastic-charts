@@ -12,6 +12,7 @@ import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { BrushAxis } from '../../../../specs';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 
 describe('getBrushArea selector', () => {
   describe('compute brush', () => {
@@ -38,7 +39,8 @@ describe('getBrushArea selector', () => {
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const xBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
-      store.getState().internalChartState?.eventCallbacks(store.getState());
+      const internalChartState = getInternalChartStateSelector(store.getState());
+      internalChartState?.eventCallbacks(store.getState());
 
       expect(onBrushEnd).toHaveBeenCalled();
       expect(onBrushEnd.mock.calls[0][0].x[0]).toBeCloseTo(0.1);
@@ -75,7 +77,8 @@ describe('getBrushArea selector', () => {
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const yBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
-      store.getState().internalChartState?.eventCallbacks(store.getState());
+      const internalChartState = getInternalChartStateSelector(store.getState());
+      internalChartState?.eventCallbacks(store.getState());
 
       expect(onBrushEnd).toHaveBeenCalled();
       const brushData = onBrushEnd.mock.calls[0][0].y;
@@ -114,7 +117,8 @@ describe('getBrushArea selector', () => {
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const bothBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
-      store.getState().internalChartState?.eventCallbacks(store.getState());
+      const internalChartState = getInternalChartStateSelector(store.getState());
+      internalChartState?.eventCallbacks(store.getState());
 
       expect(onBrushEnd).toHaveBeenCalled();
 
@@ -156,7 +160,8 @@ describe('getBrushArea selector', () => {
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const xBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
-      store.getState().internalChartState?.eventCallbacks(store.getState());
+      const internalChartState = getInternalChartStateSelector(store.getState());
+      internalChartState?.eventCallbacks(store.getState());
 
       expect(onBrushEnd).toHaveBeenCalled();
       expect(onBrushEnd.mock.calls[0][0].x[0]).toBeCloseTo(0.1);
@@ -193,7 +198,8 @@ describe('getBrushArea selector', () => {
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const yBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
-      store.getState().internalChartState?.eventCallbacks(store.getState());
+      const internalChartState = getInternalChartStateSelector(store.getState());
+      internalChartState?.eventCallbacks(store.getState());
 
       expect(onBrushEnd).toHaveBeenCalled();
       const brushData = onBrushEnd.mock.calls[0][0].y;
@@ -232,7 +238,8 @@ describe('getBrushArea selector', () => {
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const bothBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
-      store.getState().internalChartState?.eventCallbacks(store.getState());
+      const internalChartState = getInternalChartStateSelector(store.getState());
+      internalChartState?.eventCallbacks(store.getState());
 
       expect(onBrushEnd).toHaveBeenCalled();
 
@@ -296,7 +303,8 @@ describe('getBrushArea selector', () => {
     });
 
     store.dispatch(onMouseUp({ position: { x: 10, y: 150 }, time: 1100 }));
-    store.getState().internalChartState?.eventCallbacks(store.getState());
+    const internalChartState = getInternalChartStateSelector(store.getState());
+    internalChartState?.eventCallbacks(store.getState());
 
     expect(onBrushEnd).toHaveBeenCalled();
 

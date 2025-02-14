@@ -6,19 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { FlameWithTooltip } from './flame_chart';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES, EMPTY_LEGEND_LIST } from '../../common/legend';
-import type { InternalChartState } from '../../state/chart_state';
+import type { InternalChartState } from '../../state/internal_chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
-import { EMPTY_LEGEND_ITEM_LIST } from '../../state/selectors/get_legend_items_labels';
+import { EMPTY_LEGEND_ITEM_LIST } from '../../state/selectors/shared';
 
 /** @internal */
 export class FlameState implements InternalChartState {
   chartType = ChartType.Flame;
   getChartTypeDescription = () => 'Flame chart';
-  chartRenderer = FlameWithTooltip;
 
   // default empty properties, unused in Flame
   eventCallbacks = () => {};

@@ -35,6 +35,7 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
@@ -262,7 +263,8 @@ const DEFAULT_PROPS: StateProps = {
 };
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
   const { onElementClick, onElementOut, onElementOver, locale } = getSettingsSpecSelector(state);

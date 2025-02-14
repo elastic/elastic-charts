@@ -6,13 +6,18 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import type { Dimensions } from '../../utils/dimensions';
 import type { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
-export const getInternalMainProjectionAreaSelector = (state: GlobalChartState): Dimensions => {
-  if (state.internalChartState) {
-    return state.internalChartState.getMainProjectionArea(state);
-  }
-  return { width: 0, height: 0, left: 0, top: 0 };
-};
+export const getInternalMainProjectionAreaSelector = createCustomCachedSelector(
+  [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
+  (globalChartState, internalChartState): Dimensions => {
+    if (internalChartState) {
+      return internalChartState.getMainProjectionArea(globalChartState);
+    }
+    return { width: 0, height: 0, left: 0, top: 0 };
+  },
+);

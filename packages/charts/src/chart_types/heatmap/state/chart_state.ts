@@ -6,9 +6,6 @@
  * Side Public License, v 1.
  */
 
-import type { RefObject } from 'react';
-import React from 'react';
-
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
 import { getBrushAreaSelector } from './selectors/get_brush_area';
@@ -29,16 +26,12 @@ import { getTooltipInfoSelector } from './selectors/tooltip';
 import { ChartType } from '../..';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
 import type { SmallMultiplesSeriesDomains } from '../../../common/panel_utils';
-import { BrushTool } from '../../../components/brush/brush';
-import { Tooltip } from '../../../components/tooltip/tooltip';
-import type { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import type { GlobalChartState } from '../../../state/chart_state';
+import type { InternalChartState } from '../../../state/internal_chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 import type { Dimensions } from '../../../utils/dimensions';
-import { Heatmap } from '../renderer/canvas/connected_component';
-import { CursorBand } from '../renderer/dom/cursor_band';
-import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';
 
 /** @internal */
 export class HeatmapState implements InternalChartState {
@@ -80,18 +73,6 @@ export class HeatmapState implements InternalChartState {
 
   getLegendExtraValues() {
     return EMPTY_LEGEND_ITEM_EXTRA_VALUES;
-  }
-
-  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
-    return (
-      <>
-        <Tooltip getChartContainerRef={containerRef} />
-        <Heatmap forwardStageRef={forwardStageRef} />
-        <CursorBand />
-        <BrushTool />
-        <HighlighterFromBrush />
-      </>
-    );
   }
 
   getPointerCursor(globalState: GlobalChartState) {

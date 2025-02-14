@@ -14,6 +14,7 @@ import { getTooltipType } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
@@ -52,7 +53,8 @@ class CursorBandComponent extends React.Component<CursorBandProps> {
 }
 
 const mapStateToProps = (state: GlobalChartState): CursorBandProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
     return {
       bandStyle: LIGHT_THEME.crosshair.band,
       tooltipType: TooltipType.None,

@@ -15,8 +15,7 @@ import type { Spec } from '../../specs/spec_type';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
-import type { GlobalChartState } from '../../state/chart_state';
-import { createChartStore } from '../../state/chart_state';
+import { createChartStore, type GlobalChartState } from '../../state/chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../utils/common';
 

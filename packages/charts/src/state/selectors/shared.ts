@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import type { Dimensions } from '../../utils/dimensions';
-import type { GlobalChartState } from '../chart_state';
+// make sure this file doesn't include any imports to avoid circular dependencies
 
 /** @internal */
-export const getInternalBrushAreaSelector = (state: GlobalChartState): Dimensions | null => {
-  if (state.internalChartState) {
-    return state.internalChartState.getBrushArea(state);
-  }
-  return null;
-};
+export interface LegendItemLabel {
+  label: string;
+  depth: number;
+}
+
+/** @internal */
+export const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];

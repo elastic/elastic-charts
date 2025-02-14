@@ -6,19 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { TimeslipWithTooltip } from './timeslip_chart';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES, EMPTY_LEGEND_LIST } from '../../common/legend';
-import type { InternalChartState } from '../../state/chart_state';
+import type { InternalChartState } from '../../state/internal_chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
-import { EMPTY_LEGEND_ITEM_LIST } from '../../state/selectors/get_legend_items_labels';
+import { EMPTY_LEGEND_ITEM_LIST } from '../../state/selectors/shared';
 
 /** @internal */
 export class TimeslipState implements InternalChartState {
   chartType = ChartType.Timeslip;
   getChartTypeDescription = () => 'Timeslip chart';
-  chartRenderer = TimeslipWithTooltip;
 
   // default empty properties, unused in Timeslip
   eventCallbacks = () => {};

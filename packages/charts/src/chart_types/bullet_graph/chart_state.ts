@@ -6,10 +6,6 @@
  * Side Public License, v 1.
  */
 
-import type { RefObject } from 'react';
-import React from 'react';
-
-import { BulletRenderer } from './renderer/canvas';
 import { canDisplayChartTitles } from './selectors/can_display_chart_titles';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getTooltipAnchor } from './selectors/get_tooltip_anchor';
@@ -18,21 +14,15 @@ import { isTooltipVisible } from './selectors/is_tooltip_visible';
 import { ChartType } from '../../chart_types';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../common/legend';
-import { Tooltip } from '../../components/tooltip/tooltip';
-import type { BackwardRef, GlobalChartState, InternalChartState } from '../../state/chart_state';
+import type { GlobalChartState } from '../../state/chart_state';
+import type { InternalChartState } from '../../state/internal_chart_state';
 import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
-import { EMPTY_LEGEND_ITEM_LIST } from '../../state/selectors/get_legend_items_labels';
+import { EMPTY_LEGEND_ITEM_LIST } from '../../state/selectors/shared';
 
 /** @internal */
 export class BulletState implements InternalChartState {
   chartType = ChartType.Bullet;
   getChartTypeDescription = () => 'Bullet chart';
-  chartRenderer = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
-    <>
-      <BulletRenderer forwardStageRef={forwardStageRef} />
-      <Tooltip getChartContainerRef={containerRef} />
-    </>
-  );
 
   isInitialized = () => InitStatus.Initialized;
   isBrushAvailable = () => false;
