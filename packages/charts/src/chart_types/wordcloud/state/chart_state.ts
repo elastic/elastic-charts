@@ -7,68 +7,34 @@
  */
 
 import { getWordcloudSpecSelector } from './selectors/wordcloud_spec';
-import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES, EMPTY_LEGEND_LIST } from '../../../common/legend';
+import type { ChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
-import type { InternalChartState } from '../../../state/internal_chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/shared';
-import type { DebugState } from '../../../state/types';
-import type { Dimensions } from '../../../utils/dimensions';
 
 const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
 
 /** @internal */
-export class WordcloudState implements InternalChartState {
-  chartType = ChartType.Wordcloud;
-
-  isInitialized(globalState: GlobalChartState) {
-    return getWordcloudSpecSelector(globalState) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized;
-  }
-
-  isBrushAvailable() {
-    return false;
-  }
-
-  isBrushing() {
-    return false;
-  }
-
-  isChartEmpty() {
-    return false;
-  }
-
-  getLegendItems() {
-    return EMPTY_LEGEND_LIST;
-  }
-
-  getLegendItemsLabels() {
-    return EMPTY_LEGEND_ITEM_LIST;
-  }
-
-  getLegendExtraValues() {
-    return EMPTY_LEGEND_ITEM_EXTRA_VALUES;
-  }
-
-  getPointerCursor() {
-    return DEFAULT_CSS_CURSOR;
-  }
-
-  isTooltipVisible() {
-    return {
-      visible: false,
-      isExternal: false,
-      displayOnly: false,
-      isPinnable: false,
-    };
-  }
-
-  getTooltipInfo() {
-    return EMPTY_TOOLTIP;
-  }
-
-  getTooltipAnchor(state: GlobalChartState) {
+export const chartSelectorsFactory: ChartSelectorsFactory = () => ({
+  isInitialized: (state: GlobalChartState) =>
+    getWordcloudSpecSelector(state) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized,
+  isBrushAvailable: () => false,
+  isBrushing: () => false,
+  isChartEmpty: () => false,
+  getLegendItems: () => EMPTY_LEGEND_LIST,
+  getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
+  getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
+  getPointerCursor: () => DEFAULT_CSS_CURSOR,
+  isTooltipVisible: () => ({
+    visible: false,
+    isExternal: false,
+    displayOnly: false,
+    isPinnable: false,
+  }),
+  getTooltipInfo: () => EMPTY_TOOLTIP,
+  getTooltipAnchor: (state: GlobalChartState) => {
     const { position } = state.interactions.pointer.current;
     return {
       isRotated: false,
@@ -77,40 +43,24 @@ export class WordcloudState implements InternalChartState {
       y: position.y,
       height: 0,
     };
-  }
-
-  eventCallbacks() {}
-
-  getChartTypeDescription() {
-    return 'Word cloud chart';
-  }
+  },
+  eventCallbacks: () => {},
+  getChartTypeDescription: () => 'Word cloud chart',
 
   // TODO
-  getProjectionContainerArea(): Dimensions {
-    return { width: 0, height: 0, top: 0, left: 0 };
-  }
+  getProjectionContainerArea: () => ({ width: 0, height: 0, top: 0, left: 0 }),
 
   // TODO
-  getMainProjectionArea(): Dimensions {
-    return { width: 0, height: 0, top: 0, left: 0 };
-  }
+  getMainProjectionArea: () => ({ width: 0, height: 0, top: 0, left: 0 }),
 
   // TODO
-  getBrushArea(): Dimensions | null {
-    return null;
-  }
+  getBrushArea: () => null,
 
   // TODO
-  getDebugState(): DebugState {
-    return {};
-  }
-
-  getSmallMultiplesDomains() {
-    return {
-      smHDomain: [],
-      smVDomain: [],
-    };
-  }
-
-  canDisplayChartTitles = () => true;
-}
+  getDebugState: () => ({}),
+  getSmallMultiplesDomains: () => ({
+    smHDomain: [],
+    smVDomain: [],
+  }),
+  canDisplayChartTitles: () => true,
+});
