@@ -14,6 +14,8 @@ import { bindActionCreators } from 'redux';
 
 import { NoResults } from './no_results';
 import { ChartType } from '../chart_types';
+import { chartTypeRenderer } from '../chart_types/chart_type_renderers';
+import { chartTypeSelectors } from '../chart_types/chart_type_selectors';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
 import type { SettingsSpec, TooltipSpec } from '../specs';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';
@@ -27,8 +29,7 @@ import type { GlobalChartState } from '../state/chart_state';
 import type { TooltipInteractionState } from '../state/interactions_state';
 import type { BackwardRef, ChartRenderer } from '../state/internal_chart_renderer';
 import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
-import { getInternalChartRendererSelector } from '../state/selectors/get_internal_chart_renderer';
-import { getInternalChartStateSelector } from '../state/selectors/get_internal_chart_state';
+import { getInternalChartStateSelector, setCurrentChartSelectors } from '../state/selectors/get_internal_chart_state';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
@@ -37,6 +38,7 @@ import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty'
 import { deepEqual } from '../utils/fast_deep_equal';
 
 interface ChartContainerComponentStateProps {
+  chartType: ChartType | null;
   status: InitStatus;
   isChartEmpty?: boolean;
   pointerCursor: CSSProperties['cursor'];
@@ -241,7 +243,11 @@ const mapDispatchToProps = (dispatch: Dispatch): ChartContainerComponentDispatch
     dispatch,
   );
 const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateProps => {
-  const internalChartRenderer = getInternalChartRendererSelector(state);
+  const internalChartRenderer = state.chartType !== null ? chartTypeRenderer[state.chartType]() : null;
+
+  const internalChartSelectors = state.chartType !== null ? chartTypeSelectors[state.chartType]() : null;
+  setCurrentChartSelectors(internalChartSelectors);
+
   const internalChartState = getInternalChartStateSelector(state);
   const status = getInternalIsInitializedSelector(state, internalChartState);
   const settings = getSettingsSpecSelector(state);
@@ -251,6 +257,7 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
 
   if (internalChartRenderer === null || internalChartState === null || status !== InitStatus.Initialized) {
     return {
+      chartType: state.chartType,
       status,
       initialized,
       tooltipState,
@@ -266,6 +273,7 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
   }
 
   return {
+    chartType: state.chartType,
     status,
     initialized,
     tooltipState,
