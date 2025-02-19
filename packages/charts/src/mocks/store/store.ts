@@ -17,9 +17,11 @@ import { SpecType } from '../../specs/spec_type'; // kept as long-winded import 
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
 import { createChartStore, type GlobalChartState } from '../../state/chart_state';
-import { setCurrentChartSelectors } from '../../state/selectors/get_internal_chart_state';
+import { chartSelectorsRegistry } from '../../state/selectors/get_internal_chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../utils/common';
+
+chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
 
 /** @internal */
 export class MockStore {
@@ -46,10 +48,6 @@ export class MockStore {
       }
     }
     store.dispatch(specParsed());
-    const { chartType } = store.getState();
-    if (chartType) {
-      setCurrentChartSelectors(chartTypeSelectors[chartType]());
-    }
   }
 
   static updateDimensions(

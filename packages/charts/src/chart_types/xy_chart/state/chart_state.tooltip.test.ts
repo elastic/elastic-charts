@@ -15,12 +15,13 @@ import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { createChartStore, type GlobalChartState } from '../../../state/chart_state';
-import { setCurrentChartSelectors } from '../../../state/selectors/get_internal_chart_state';
+import { chartSelectorsRegistry } from '../../../state/selectors/get_internal_chart_state';
 import { chartTypeSelectors } from '../../chart_type_selectors';
 
 describe('XYChart - State tooltips', () => {
   let store: Store<GlobalChartState>;
   beforeEach(() => {
+    chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
     store = createChartStore('chartId');
     store.dispatch(
       upsertSpec(
@@ -35,11 +36,6 @@ describe('XYChart - State tooltips', () => {
     store.dispatch(upsertSpec(MockGlobalSpec.settings()));
     store.dispatch(specParsed());
     store.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
-
-    const { chartType } = store.getState();
-    if (chartType) {
-      setCurrentChartSelectors(chartTypeSelectors[chartType]());
-    }
   });
 
   describe('should compute tooltip values depending on tooltip type', () => {

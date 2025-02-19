@@ -6,18 +6,34 @@
  * Side Public License, v 1.
  */
 
+import type { ChartType } from '../../chart_types';
 import type { ChartSelectors } from '../chart_selectors';
 import type { GlobalChartState } from '../chart_state';
 
-/** @internal */
-const chartSelectors: { current: ChartSelectors | null } = {
-  current: null,
+type ChartSelectorFactories = Record<ChartType, () => ChartSelectors | null>;
+
+const chartSelectorsRegistryFactory = () => {
+  let chartSelectorFactories: ChartSelectorFactories;
+
+  return {
+    setChartSelectors: (d: ChartSelectorFactories) => (chartSelectorFactories = d),
+    getChartSelectors: (chartType: ChartType) => {
+      if (!chartSelectorFactories?.[chartType]) {
+        throw new Error(`No chart selector factory found for chart type ${chartType}`);
+      }
+      return chartSelectorFactories[chartType]();
+    },
+  };
 };
 
 /** @internal */
-export const setCurrentChartSelectors = (cS: ChartSelectors | null) => {
-  chartSelectors.current = cS;
-};
+export const chartSelectorsRegistry = chartSelectorsRegistryFactory();
 
 /** @internal */
-export const getInternalChartStateSelector = (state: GlobalChartState) => state && chartSelectors.current;
+export const getInternalChartStateSelector = (state: GlobalChartState) => {
+  if (state.chartType === null) {
+    return null;
+  }
+
+  return chartSelectorsRegistry.getChartSelectors(state.chartType);
+};
