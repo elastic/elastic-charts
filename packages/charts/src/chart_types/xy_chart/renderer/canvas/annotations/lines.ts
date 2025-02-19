@@ -8,13 +8,13 @@
 
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import { Stroke } from '../../../../../geoms/types';
+import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
 import { Rotation } from '../../../../../utils/common';
 import { Dimensions } from '../../../../../utils/dimensions';
 import { LineAnnotationStyle } from '../../../../../utils/themes/theme';
 import { AnnotationLineProps } from '../../../annotations/line/types';
 import { GetAnnotationParamsFn } from '../../common/utils';
 import { AnimationContext } from '../animations';
-import { renderMultiLine } from '../primitives/line';
 import { withPanelTransform } from '../utils/panel_transform';
 
 /** @internal */
