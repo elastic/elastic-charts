@@ -18,7 +18,7 @@ import { updateParentDimensions } from '../../../../state/actions/chart_settings
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../../state/actions/specs';
 import { createChartStore, type GlobalChartState } from '../../../../state/chart_state';
-import { setCurrentChartSelectors } from '../../../../state/selectors/get_internal_chart_state';
+import { chartSelectorsRegistry } from '../../../../state/selectors/get_internal_chart_state';
 import type { Datum } from '../../../../utils/common';
 import { chartTypeSelectors } from '../../../chart_type_selectors';
 import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
@@ -52,6 +52,7 @@ describe('Picked shapes selector', () => {
   let treemapSpec: PartitionSpec;
   let sunburstSpec: PartitionSpec;
   beforeEach(() => {
+    chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
     store = createChartStore('chartId');
     const common = {
       valueAccessor: (d: { v: number }) => d.v,
@@ -87,11 +88,6 @@ describe('Picked shapes selector', () => {
     addSeries(store, treemapSpec, {
       onElementClick: onClickListener,
     });
-
-    const { chartType } = store.getState();
-    if (chartType) {
-      setCurrentChartSelectors(chartTypeSelectors[chartType]());
-    }
 
     const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries?.quadViewModel).toHaveLength(6);
@@ -171,11 +167,6 @@ describe('Picked shapes selector', () => {
       },
     );
 
-    const { chartType } = store.getState();
-    if (chartType) {
-      setCurrentChartSelectors(chartTypeSelectors[chartType]());
-    }
-
     const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries?.quadViewModel).toHaveLength(2);
 
@@ -222,11 +213,6 @@ describe('Picked shapes selector', () => {
         },
       },
     });
-
-    const { chartType } = store.getState();
-    if (chartType) {
-      setCurrentChartSelectors(chartTypeSelectors[chartType]());
-    }
 
     const geometries = partitionMultiGeometries(store.getState())[0];
     expect(geometries?.quadViewModel).toHaveLength(6);

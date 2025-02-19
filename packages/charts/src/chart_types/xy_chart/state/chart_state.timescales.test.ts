@@ -22,7 +22,7 @@ import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { createChartStore, type GlobalChartState } from '../../../state/chart_state';
-import { setCurrentChartSelectors } from '../../../state/selectors/get_internal_chart_state';
+import { chartSelectorsRegistry } from '../../../state/selectors/get_internal_chart_state';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { chartTypeSelectors } from '../../chart_type_selectors';
 import type { LineSeriesSpec } from '../utils/specs';
@@ -35,6 +35,7 @@ describe('Render chart', () => {
     const day2 = day1 + 1000 * 60 * 60 * 24;
     const day3 = day2 + 1000 * 60 * 60 * 24;
     beforeEach(() => {
+      chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
       store = createChartStore('chartId');
 
       const lineSeries: LineSeriesSpec = {
@@ -67,10 +68,6 @@ describe('Render chart', () => {
       store.dispatch(specParsed());
       store.dispatch(updateParentDimensions({ width: 100, height: 100, top: 0, left: 0 }));
       const state = store.getState();
-
-      if (state.chartType) {
-        setCurrentChartSelectors(chartTypeSelectors[state.chartType]());
-      }
 
       expect(state.specs.lines).toBeDefined();
       expect(state.chartType).toBe(ChartType.XYAxis);
