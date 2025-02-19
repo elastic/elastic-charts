@@ -206,7 +206,6 @@ export const LIGHT_THEME: Theme = {
         opacity: 1,
         dash: [0, 0],
       },
-      lumaSteps: [224, 184, 128, 96, 64, 32, 16, 8, 4, 2, 1, 0, 0, 0, 0, 0],
     },
   },
   colors: {
