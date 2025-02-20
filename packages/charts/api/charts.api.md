@@ -239,7 +239,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "groupId" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "tickFormat" | "gridLine" | "ticks" | "integersOnly" | "labelFormat" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "groupId" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "position" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "ticks" | "tickFormat" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -2522,7 +2522,7 @@ export type Ratio = number;
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "outside", "style" | "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltip" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
+export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "groupId" | "outside" | "zIndex" | "annotationType", "style" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "customTooltip" | "hideTooltips" | "customTooltipDetails" | "animations" | "outsideDimension", "id" | "dataValues">>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -2750,7 +2750,7 @@ export const Settings: (props: SFProps<SettingsSpec, keyof (typeof settingsBuild
 // Warning: (ae-forgotten-export) The symbol "BuildProps" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "debug" | "locale" | "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend", "ariaDescription" | "ariaLabel" | "xDomain" | "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "renderingSort" | "noResults" | "ariaLabelledBy" | "ariaDescribedBy" | "ariaTableCaption" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
+export const settingsBuildProps: BuildProps<SettingsSpec, "id" | "chartType" | "specType", "rotation" | "baseTheme" | "rendering" | "animateData" | "externalPointerEvents" | "debug" | "pointBuffer" | "pointerUpdateTrigger" | "brushAxis" | "minBrushDelta" | "allowBrushingLastHistogramBin" | "ariaLabelHeadingLevel" | "ariaUseDefaultSummary" | "locale" | "dow" | "showLegend" | "legendPosition" | "legendValues" | "legendMaxDepth" | "legendSize" | "flatLegend", "theme" | "debugState" | "onProjectionClick" | "onElementClick" | "onElementOver" | "onElementOut" | "onBrushEnd" | "onPointerUpdate" | "onResize" | "onRenderChange" | "onWillRender" | "onProjectionAreaChange" | "xDomain" | "onAnnotationClick" | "resizeDebounce" | "pointerUpdateDebounce" | "roundHistogramBrushValues" | "orderOrdinalBinsBy" | "renderingSort" | "noResults" | "ariaLabel" | "ariaLabelledBy" | "ariaDescription" | "ariaDescribedBy" | "ariaTableCaption" | "legendStrategy" | "onLegendItemOver" | "onLegendItemOut" | "onLegendItemClick" | "onLegendItemPlusClick" | "onLegendItemMinusClick" | "legendAction" | "legendColorPicker" | "legendSort" | "customLegend" | "legendTitle", never>;
 
 // @public (undocumented)
 export type SettingsProps = ComponentProps<typeof Settings>;
@@ -2897,7 +2897,7 @@ export function sortIndexAccessor(n: ArrayEntry): number;
 export interface Spec {
     chartType: ChartType;
     id: string;
-    specType: string;
+    specType: SpecType;
 }
 
 // @public (undocumented)
@@ -3131,7 +3131,7 @@ export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifi
 };
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "body" | "footer" | "header" | "type" | "snap" | "showNullValues" | "actions" | "actionsLoading" | "noActionsLoaded" | "actionPrompt" | "pinningPrompt" | "selectionPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "fallbackPlacements" | "placement" | "offset" | "boundary" | "boundaryPadding" | "unit" | "headerFormatter" | "customTooltip" | "stickTo", never>;
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "body" | "footer" | "header" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "offset" | "unit" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "customTooltip" | "stickTo", never>;
 
 // @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
@@ -3466,7 +3466,7 @@ export type WeightFn = $Values<typeof WeightFn>;
 export type WillRenderListener = () => void;
 
 // @alpha
-export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontFamily" | "fontStyle" | "fontWeight" | "padding" | "exponent" | "minFontSize" | "maxFontSize" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
+export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontStyle" | "fontWeight" | "fontFamily" | "padding" | "minFontSize" | "maxFontSize" | "startAngle" | "endAngle" | "exponent" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
 
 // @public (undocumented)
 export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];
