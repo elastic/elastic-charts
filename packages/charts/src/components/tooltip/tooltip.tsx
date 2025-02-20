@@ -55,7 +55,7 @@ import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
 
 interface TooltipDispatchProps {
-  onPointerMove: typeof onPointerMoveAction;
+  onPointerMove: (...args: Parameters<typeof onPointerMoveAction>) => void;
   toggleSelectedTooltipItem: ToggleSelectedTooltipItemCallback;
   setSelectedTooltipItems: SetSelectedTooltipItemsCallback;
   pinTooltip: PinTooltipCallback;

@@ -1161,7 +1161,6 @@ class FlameComponent extends React.Component<FlameProps> {
         </div>
         <BasicTooltip
           canPinTooltip={canPinTooltip}
-          // @ts-ignore redux-toolkit complains about this
           onPointerMove={() => onPointerMove({ position: { x: NaN, y: NaN }, time: NaN })}
           position={
             this.tooltipPinned

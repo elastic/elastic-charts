@@ -8,7 +8,7 @@
 
 import { createSelector } from '@reduxjs/toolkit';
 // eslint-disable-next-line no-restricted-imports
-import createCachedSelector, { ICacheObject, Options } from 're-reselect';
+import createCachedSelector, { ICacheObject } from 're-reselect';
 
 import { GlobalChartState } from './chart_state';
 
@@ -64,7 +64,7 @@ class GlobalSelectorCache {
     return chartId;
   }
 
-  getNewOptions(): Options<GlobalChartState, unknown, unknown> {
+  getNewOptions() {
     return {
       keySelector: GlobalSelectorCache.keySelector,
       cacheObject: this.getCacheObject(),
