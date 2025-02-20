@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { OutputSelector } from 'reselect';
+import { OutputSelector } from '@reduxjs/toolkit';
 
 import { getPickedCells } from './get_picked_cells';
 import { isBrushEndProvided } from './is_brush_available';

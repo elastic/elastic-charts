@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 'reselect';
+import { Selector } from '@reduxjs/toolkit';
 
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedShapes } from './picked_shapes';

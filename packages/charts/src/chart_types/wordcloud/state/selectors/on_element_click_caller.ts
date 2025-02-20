@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 'reselect';
+import { Selector } from '@reduxjs/toolkit';
 
 import { getPickedShapesLayerValues } from './picked_shapes';
 import { getWordcloudSpecSelector } from './wordcloud_spec';

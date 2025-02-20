@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 'reselect';
+import { Selector } from '@reduxjs/toolkit';
 
 import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
