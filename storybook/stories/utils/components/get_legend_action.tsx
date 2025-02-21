@@ -6,16 +6,12 @@
  * Side Public License, v 1.
  */
 
-import {
-  EuiIcon,
-  EuiPopover,
-  EuiContextMenu,
-  PopoverAnchorPosition,
-  EuiContextMenuPanelDescriptor,
-} from '@elastic/eui';
+import type { PopoverAnchorPosition, EuiContextMenuPanelDescriptor } from '@elastic/eui';
+import { EuiIcon, EuiPopover, EuiContextMenu } from '@elastic/eui';
 import React, { useState } from 'react';
 
-import { LegendAction, XYChartSeriesIdentifier, useLegendAction } from '@elastic/charts';
+import type { LegendAction, XYChartSeriesIdentifier } from '@elastic/charts';
+import { useLegendAction } from '@elastic/charts';
 
 export const getLegendAction =
   (anchorPosition: PopoverAnchorPosition = 'leftCenter'): LegendAction =>

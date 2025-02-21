@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { $Values as Values } from 'utility-types';
+import type { $Values as Values } from 'utility-types';
 
-import { Color } from './colors';
-import { Pixels, Rectangle } from './geometry';
-import { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { Color } from './colors';
+import type { Pixels, Rectangle } from './geometry';
+import type { ArrayEntry } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
-import { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
-import { Datum } from '../utils/common';
+import type { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
+import type { Datum } from '../utils/common';
 
 const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'];

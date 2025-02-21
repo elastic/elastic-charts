@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 
 const MAX_PADDING_RATIO = 0.25;
 

@@ -6,13 +6,15 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
-import { ResizeListener } from '../specs/settings';
+import type { ResizeListener } from '../specs/settings';
 import { updateParentDimensions } from '../state/actions/chart_settings';
-import { GlobalChartState } from '../state/chart_state';
+import type { GlobalChartState } from '../state/chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 
 interface ResizerStateProps {

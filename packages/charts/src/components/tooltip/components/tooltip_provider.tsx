@@ -6,15 +6,16 @@
  * Side Public License, v 1.
  */
 
-import React, { PropsWithChildren, Context, useContext } from 'react';
+import type { PropsWithChildren, Context } from 'react';
+import React, { useContext } from 'react';
 
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
+import type { SeriesIdentifier } from '../../../common/series_id';
+import type { BaseDatum, TooltipValue } from '../../../specs';
 import { pinTooltip as pinTooltipAction } from '../../../state/actions/tooltip';
-import { Datum } from '../../../utils/common';
+import type { Datum } from '../../../utils/common';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { TooltipStyle } from '../../../utils/themes/theme';
-import { CustomTooltipProps, PinTooltipCallback } from '../types';
+import type { TooltipStyle } from '../../../utils/themes/theme';
+import type { CustomTooltipProps, PinTooltipCallback } from '../types';
 
 /** @public */
 export interface TooltipContext<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier> {

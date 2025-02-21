@@ -9,21 +9,19 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { Datum, PartialTheme, SeriesIdentifier } from '@elastic/charts';
 import {
   Chart,
-  Datum,
   LegendStrategy,
-  PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
   defaultPartitionValueFormatter,
-  SeriesIdentifier,
   LegendValue,
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import {
   discreteColor,

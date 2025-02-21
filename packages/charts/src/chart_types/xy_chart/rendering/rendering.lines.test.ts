@@ -8,9 +8,9 @@
 
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
-import { ScaleContinuousType } from '../../../scales';
+import type { ScaleContinuousType } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { PointGeometry } from '../../../utils/geometry';
+import type { PointGeometry } from '../../../utils/geometry';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
 import { SeriesType } from '../utils/specs';

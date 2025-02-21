@@ -6,11 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
-import { Spec, SpecType } from './spec_type';
+import type { Spec } from './spec_type';
+import { SpecType } from './spec_type';
 import { ChartType } from '../chart_types';
-import { Ratio } from '../common/geometry';
+import type { Ratio } from '../common/geometry';
 import { specComponentFactory } from '../state/spec_factory';
 
 /**

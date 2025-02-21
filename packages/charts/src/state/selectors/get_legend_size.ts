@@ -14,11 +14,11 @@ import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { shouldDisplayTable } from '../../common/legend';
 import { LEGEND_HIERARCHY_MARGIN } from '../../components/legend/legend_item';
 import { LEGEND_TO_FULL_CONFIG } from '../../components/legend/position_style';
-import { LegendPositionConfig } from '../../specs';
+import type { LegendPositionConfig } from '../../specs';
 import { withTextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { isDefined, LayoutDirection, Position } from '../../utils/common';
-import { Size } from '../../utils/dimensions';
-import { GlobalChartState } from '../chart_state';
+import type { Size } from '../../utils/dimensions';
+import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 const getParentDimensionSelector = (state: GlobalChartState) => state.parentDimensions;

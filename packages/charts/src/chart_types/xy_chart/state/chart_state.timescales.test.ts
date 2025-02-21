@@ -7,23 +7,25 @@
  */
 
 import { DateTime } from 'luxon';
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getComputedScalesSelector } from './selectors/get_computed_scales';
 import { getTooltipInfoSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { ChartType } from '../..';
-import { ScaleContinuous } from '../../../scales';
+import type { ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { SettingsSpec } from '../../../specs';
+import type { SettingsSpec } from '../../../specs';
 import { DEFAULT_SETTINGS_SPEC } from '../../../specs/default_settings_spec';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { createChartStore, GlobalChartState } from '../../../state/chart_state';
+import type { GlobalChartState } from '../../../state/chart_state';
+import { createChartStore } from '../../../state/chart_state';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { LineSeriesSpec, SeriesType } from '../utils/specs';
+import type { LineSeriesSpec } from '../utils/specs';
+import { SeriesType } from '../utils/specs';
 
 describe('Render chart', () => {
   describe('line, utc-time, day interval', () => {

@@ -8,15 +8,16 @@
 
 import chroma from 'chroma-js';
 import { extent } from 'd3-array';
-import { ScaleLinear } from 'd3-scale';
-import { $Values, Required } from 'utility-types';
+import type { ScaleLinear } from 'd3-scale';
+import type { $Values, Required } from 'utility-types';
 
-import { BaseBoundsConfig, OpenClosedBoundsConfig } from './bounds';
+import type { BaseBoundsConfig, OpenClosedBoundsConfig } from './bounds';
 import { combineColors } from '../../../common/color_calcs';
 import { RGBATupleToString, colorToRgba, getChromaColor } from '../../../common/color_library_wrappers';
-import { ChromaColorScale, Color, Colors } from '../../../common/colors';
+import type { ChromaColorScale, Color } from '../../../common/colors';
+import { Colors } from '../../../common/colors';
 import { clamp, isFiniteNumber, isNil, isSorted, isWithinRange, sortNumbers } from '../../../utils/common';
-import { ContinuousDomain, GenericDomain } from '../../../utils/domain';
+import type { ContinuousDomain, GenericDomain } from '../../../utils/domain';
 import { Logger } from '../../../utils/logger';
 
 /**

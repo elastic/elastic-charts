@@ -7,7 +7,7 @@
  */
 
 import { isWithinRectBounds } from './dimensions';
-import { AnnotationRectProps } from './types';
+import type { AnnotationRectProps } from './types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';

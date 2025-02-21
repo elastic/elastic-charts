@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { BaseDatum } from '../chart_types/specs';
+import type { BaseDatum } from '../chart_types/specs';
 
 /**
  * Accessor function

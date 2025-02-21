@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RandomNumberGenerator } from './data_generator';
+import type { RandomNumberGenerator } from './data_generator';
 
 /** @internal */
 export class Simple1DNoise {

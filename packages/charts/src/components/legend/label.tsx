@@ -7,10 +7,11 @@
  */
 
 import classNames from 'classnames';
-import React, { KeyboardEventHandler, MouseEventHandler, useCallback } from 'react';
+import type { KeyboardEventHandler, MouseEventHandler } from 'react';
+import React, { useCallback } from 'react';
 
 import { isRTLString } from '../../utils/common';
-import { LegendLabelOptions } from '../../utils/themes/theme';
+import type { LegendLabelOptions } from '../../utils/themes/theme';
 
 interface LabelProps {
   label: string;

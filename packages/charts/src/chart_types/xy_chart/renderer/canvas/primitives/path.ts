@@ -7,11 +7,11 @@
  */
 
 import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
-import { Fill, Rect, Stroke } from '../../../../../geoms/types';
+import type { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { withClipRanges } from '../../../../../renderers/canvas';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
-import { ClippedRanges } from '../../../../../utils/geometry';
-import { Point } from '../../../../../utils/point';
+import type { ClippedRanges } from '../../../../../utils/geometry';
+import type { Point } from '../../../../../utils/point';
 
 /** @internal */
 export function renderLinePaths(

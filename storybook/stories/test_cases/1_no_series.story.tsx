@@ -8,11 +8,12 @@
 
 import { EuiFlexGroup, EuiFlexItem, EuiIcon } from '@elastic/eui';
 import { boolean, text } from '@storybook/addon-knobs';
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { Chart, Settings, Axis, Position } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const NoResults: FC<{ msg: string }> = ({ msg }) => (

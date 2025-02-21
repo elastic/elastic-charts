@@ -7,8 +7,8 @@
  */
 
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from './scale_defaults';
-import { ScaleContinuousType } from '../../../scales';
-import { BasicSeriesSpec, XScaleType } from '../utils/specs';
+import type { ScaleContinuousType } from '../../../scales';
+import type { BasicSeriesSpec, XScaleType } from '../utils/specs';
 
 /** @internal */
 export function getXScaleTypeFromSpec(type?: BasicSeriesSpec['xScaleType']): XScaleType {

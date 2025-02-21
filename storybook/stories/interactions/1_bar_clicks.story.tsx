@@ -10,19 +10,10 @@ import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  LegendValue,
-  Position,
-  ScaleType,
-  Settings,
-  Tooltip,
-  TooltipHeaderFormatter,
-} from '@elastic/charts';
+import type { TooltipHeaderFormatter } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LegendValue, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const onElementListeners = {

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { BinUnit } from '../../../../xy_chart/axes/timeslip/continuous_time_rasters';
+import type { BinUnit } from '../../../../xy_chart/axes/timeslip/continuous_time_rasters';
 
 /** @internal */
 const LOCALE_TRANSLATIONS = {

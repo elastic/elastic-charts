@@ -9,18 +9,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Line } from '../../../../geoms/types';
+import type { Line } from '../../../../geoms/types';
 import { getTooltipType } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
-import { Rotation } from '../../../../utils/common';
+import type { Rotation } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Theme } from '../../../../utils/themes/theme';
+import type { Theme } from '../../../../utils/themes/theme';
 import { getCursorBandPositionSelector } from '../../state/selectors/get_cursor_band';
 import { getCursorLinePositionSelector } from '../../state/selectors/get_cursor_line';
 

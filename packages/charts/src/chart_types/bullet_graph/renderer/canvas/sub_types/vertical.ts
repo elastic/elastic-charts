@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../../../../common/colors';
+import type { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
-import { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
-import { ActiveValue } from '../../../selectors/get_active_values';
-import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
-import { BulletStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
+import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
+import type { ActiveValue } from '../../../selectors/get_active_values';
+import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
+import type { BulletStyle } from '../../../theme';
+import { GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH, TICK_LABEL_PADDING } from '../constants';
 
 /** @internal */

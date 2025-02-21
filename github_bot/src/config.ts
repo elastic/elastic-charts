@@ -9,9 +9,10 @@
 import path from 'path';
 
 import type { StrategyOptions } from '@octokit/auth-app';
-import { ServerOptions, Options } from 'probot/lib/types';
+import type { ServerOptions, Options } from 'probot/lib/types';
 
-import { Env, getEnv } from './env';
+import type { Env } from './env';
+import { getEnv } from './env';
 
 type ConfigServerOptions = Omit<ServerOptions, 'Probot'>;
 type ProbotOptions = Omit<Options, keyof ConfigServerOptions>;

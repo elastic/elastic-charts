@@ -7,19 +7,14 @@
  */
 
 import { computeAxesGeometriesSelector } from './compute_axes_geometries';
-import {
-  getPanelTitle,
-  getPerPanelMap,
-  hasSMDomain,
-  PerPanelMap,
-  SmallMultipleScales,
-} from '../../../../common/panel_utils';
+import type { PerPanelMap, SmallMultipleScales } from '../../../../common/panel_utils';
+import { getPanelTitle, getPerPanelMap, hasSMDomain } from '../../../../common/panel_utils';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
-import { Position } from '../../../../utils/common';
+import type { Position } from '../../../../utils/common';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import { AxisGeometry } from '../../utils/axis_utils';
+import type { AxisGeometry } from '../../utils/axis_utils';
 
 /** @internal */
 export type PerPanelAxisGeoms = {

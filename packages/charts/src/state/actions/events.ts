@@ -8,7 +8,7 @@
 
 import { createAction } from '@reduxjs/toolkit';
 
-import { PointerEvent } from '../../specs';
+import type { PointerEvent } from '../../specs';
 
 /** @internal */
 export const onExternalPointerEvent = createAction<PointerEvent>('EXTERNAL_POINTER_EVENT');

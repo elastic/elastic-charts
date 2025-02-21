@@ -10,7 +10,7 @@ import { getActiveValue } from './get_active_value';
 import { getPanelDimensions } from './get_panel_dimensions';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { sortNumbers } from '../../../utils/common';
-import { ContinuousDomain } from '../../../utils/domain';
+import type { ContinuousDomain } from '../../../utils/domain';
 
 /** @internal */
 export interface ActiveValue {

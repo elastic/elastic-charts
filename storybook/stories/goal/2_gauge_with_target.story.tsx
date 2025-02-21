@@ -10,11 +10,11 @@ import { number, color, array, boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
 import { Chart, Goal, Settings } from '@elastic/charts';
-import { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
+import type { BandFillColorAccessorInput } from '@elastic/charts/src/chart_types/goal_chart/specs';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
-import { Color } from '../../../packages/charts/src/common/colors';
-import { ChartsStory } from '../../types';
+import type { Color } from '../../../packages/charts/src/common/colors';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { getBandFillColorFn } from '../utils/utils';

@@ -9,10 +9,11 @@
 import { boolean, color, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, defaultPartitionValueFormatter, Partition, PartitionLayout, Settings } from '@elastic/charts';
+import type { Datum } from '@elastic/charts';
+import { Chart, defaultPartitionValueFormatter, Partition, PartitionLayout, Settings } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalPastel12, discreteColor, productLookup } from '../utils/utils';
 

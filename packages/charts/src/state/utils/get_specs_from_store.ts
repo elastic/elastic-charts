@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../chart_types';
-import { SpecList, Spec } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { ChartType } from '../../chart_types';
+import type { SpecList, Spec } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 
 /**
  * Returns all matching specs

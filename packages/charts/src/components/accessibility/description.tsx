@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { A11ySettings } from '../../state/selectors/get_accessibility_config';
+import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
 /** @internal */
 export function ScreenReaderDescription(props: A11ySettings) {

@@ -12,7 +12,7 @@ import React from 'react';
 
 import { Axis, LineSeries, Chart, Position, ScaleType, Settings, Direction } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 /**

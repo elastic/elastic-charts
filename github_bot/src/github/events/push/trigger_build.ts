@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Probot } from 'probot';
+import type { Probot } from 'probot';
 
 import { getConfig } from '../../../config';
 import { buildkiteClient } from '../../../utils/buildkite';

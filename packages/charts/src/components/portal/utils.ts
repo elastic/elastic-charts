@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Required } from 'utility-types';
+import type { Required } from 'utility-types';
 
-import { TooltipPortalSettings, Placement } from './types';
+import type { TooltipPortalSettings } from './types';
+import { Placement } from './types';
 
 /** @internal */
 export const DEFAULT_POPPER_SETTINGS: Required<TooltipPortalSettings, 'fallbackPlacements' | 'placement' | 'offset'> = {

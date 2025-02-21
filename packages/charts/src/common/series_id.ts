@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { CategoryKey } from './category';
-import { SpecId } from '../utils/ids';
+import type { CategoryKey } from './category';
+import type { SpecId } from '../utils/ids';
 
 /**
  * A string key used to uniquely identify a series

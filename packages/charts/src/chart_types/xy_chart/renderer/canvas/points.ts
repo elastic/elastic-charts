@@ -10,12 +10,12 @@ import { getPanelClipping } from './panel_clipping';
 import { renderShape } from './primitives/shapes';
 import { withPanelTransform } from './utils/panel_transform';
 import { overrideOpacity } from '../../../../common/color_library_wrappers';
-import { SeriesKey } from '../../../../common/series_id';
-import { Circle, Fill, Stroke } from '../../../../geoms/types';
-import { Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
-import { PointGeometry } from '../../../../utils/geometry';
-import { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
+import type { SeriesKey } from '../../../../common/series_id';
+import type { Circle, Fill, Stroke } from '../../../../geoms/types';
+import type { Rotation } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { PointGeometry } from '../../../../utils/geometry';
+import type { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { isolatedPointRadius } from '../../rendering/points';
 
 /**

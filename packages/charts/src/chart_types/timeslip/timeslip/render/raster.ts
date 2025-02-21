@@ -6,20 +6,21 @@
  * Side Public License, v 1.
  */
 
-import { Layers, renderColumnBars, renderColumnTickLabels } from './column';
+import type { Layers } from './column';
+import { renderColumnBars, renderColumnTickLabels } from './column';
 import { doing, executing, filtering, mapping, pipeline } from '../../../../common/iterables';
 import { isNil } from '../../../../utils/common';
-import {
+import type {
   NumberFormatter,
   Interval,
   TimeFormatter,
   AxisLayer,
 } from '../../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { MAX_TIME_GRID_COUNT, notTooDense } from '../../../xy_chart/axes/timeslip/multilayer_ticks';
-import { NumericScale } from '../../projections/scale';
+import type { NumericScale } from '../../projections/scale';
 import { clamp } from '../../utils/math';
-import { TimeslipConfig } from '../config';
-import { DataState } from '../data_fetch';
+import type { TimeslipConfig } from '../config';
+import type { DataState } from '../data_fetch';
 
 const TIMESLIP_MAX_TIME_GRID_COUNT = 100 || MAX_TIME_GRID_COUNT; // use either
 

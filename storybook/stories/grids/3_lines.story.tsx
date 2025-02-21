@@ -10,22 +10,11 @@ import { array, boolean, color, number } from '@storybook/addon-knobs';
 import { startCase } from 'lodash';
 import React from 'react';
 
-import {
-  Axis,
-  LineSeries,
-  Chart,
-  Position,
-  ScaleType,
-  Settings,
-  TooltipType,
-  PartialTheme,
-  StrokeStyle,
-  StrokeDashArray,
-  Tooltip,
-} from '@elastic/charts';
+import type { PartialTheme, StrokeStyle, StrokeDashArray } from '@elastic/charts';
+import { Axis, LineSeries, Chart, Position, ScaleType, Settings, TooltipType, Tooltip } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

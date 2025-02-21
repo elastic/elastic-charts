@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { AxisProps } from './axis_props';
+import type { AxisProps } from './axis_props';
 import { colorToRgba } from '../../../../../common/color_library_wrappers';
-import { Line } from '../../../../../geoms/types';
+import type { Line } from '../../../../../geoms/types';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
 import { Position } from '../../../../../utils/common';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
-import { AxisTick } from '../../../utils/axis_utils';
+import type { AxisTick } from '../../../utils/axis_utils';
 import { HIDE_MINOR_TIME_GRID, OUTSIDE_RANGE_TOLERANCE } from '../../../utils/grid_lines';
 
 const BASELINE_CORRECTION = 2; // the bottom of the em is a bit higher than the bottom alignment; todo consider measuring

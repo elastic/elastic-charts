@@ -7,9 +7,9 @@
  */
 
 import { Plugins } from './plugins';
-import { CommandStep, GroupStep } from '../../buildkite';
+import type { CommandStep, GroupStep } from '../../buildkite';
 import { bkEnv } from '../buildkite';
-import { ChangeContext } from '../github';
+import type { ChangeContext } from '../github';
 
 /**
  * Available agents from kibana buildkite instance

@@ -174,6 +174,7 @@ module.exports = {
     /*
      * @typescript-eslint plugin
      */
+    '@typescript-eslint/consistent-type-imports': 2,
     '@typescript-eslint/interface-name-prefix': 0,
     '@typescript-eslint/ban-types': 1,
     '@typescript-eslint/return-await': ['error', 'always'], // https://v8.dev/blog/fast-async

@@ -7,24 +7,23 @@
  */
 
 import { isMosaic, isSunburst, isTreemap, isWaffle } from './viewmodel';
-import { LegendItemExtraValues, LegendValue } from '../../../../common/legend';
-import { SeriesKey } from '../../../../common/series_id';
-import { Relation } from '../../../../common/text_utils';
-import { LegendPath } from '../../../../state/actions/legend';
-import { IndexedAccessorFn } from '../../../../utils/accessor';
-import { Datum, ValueAccessor, ValueFormatter } from '../../../../utils/common';
-import { Layer } from '../../specs';
-import { PartitionLayout } from '../types/config_types';
+import type { LegendItemExtraValues } from '../../../../common/legend';
+import { LegendValue } from '../../../../common/legend';
+import type { SeriesKey } from '../../../../common/series_id';
+import type { Relation } from '../../../../common/text_utils';
+import type { LegendPath } from '../../../../state/actions/legend';
+import type { IndexedAccessorFn } from '../../../../utils/accessor';
+import type { Datum, ValueAccessor, ValueFormatter } from '../../../../utils/common';
+import type { Layer } from '../../specs';
+import type { PartitionLayout } from '../types/config_types';
+import type { HierarchyOfArrays, NodeSorter, Sorter } from '../utils/group_by_rollup';
 import {
   aggregators,
   CHILDREN_KEY,
   groupByRollup,
   HIERARCHY_ROOT_KEY,
-  HierarchyOfArrays,
   mapEntryValue,
   mapsToArrays,
-  NodeSorter,
-  Sorter,
 } from '../utils/group_by_rollup';
 
 function aggregateComparator(accessor: (v: any) => any, sorter: Sorter): NodeSorter {

@@ -20,7 +20,7 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter(niceTimeFormatByDay(1));

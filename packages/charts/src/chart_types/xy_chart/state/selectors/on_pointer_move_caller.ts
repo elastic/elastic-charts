@@ -6,21 +6,22 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from '@reduxjs/toolkit';
+import type { Selector } from '@reduxjs/toolkit';
 
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
-import { PointerPosition } from './get_projected_pointer_position';
+import type { PointerPosition } from './get_projected_pointer_position';
 import { ChartType } from '../../..';
-import { PointerEventType, PointerEvent, PointerOverEvent } from '../../../../specs';
+import type { PointerEvent, PointerOverEvent } from '../../../../specs';
+import { PointerEventType } from '../../../../specs';
 import { PointerUpdateTrigger } from '../../../../specs/pointer_update_trigger';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
-import { ComputedScales } from '../utils/types';
+import type { ComputedScales } from '../utils/types';
 
 const getPointerEventSelector = createCustomCachedSelector(
   [

@@ -8,7 +8,7 @@
 
 import { createAction } from '@reduxjs/toolkit';
 
-import { Dimensions } from '../../utils/dimensions';
+import type { Dimensions } from '../../utils/dimensions';
 
 interface UpdateChartTitles {
   title?: string;

@@ -11,7 +11,7 @@ import React from 'react';
 
 import { Chart, Axis, Position, AreaSeries, ScaleType, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { logFormatter } from '../utils/formatters';
 

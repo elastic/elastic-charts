@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { LegendPositionConfig } from '../../specs/settings';
+import type { LegendPositionConfig } from '../../specs/settings';
 import { clamp, LayoutDirection } from '../../utils/common';
-import { Margins, Size } from '../../utils/dimensions';
-import { LegendStyle as ThemeLegendStyle } from '../../utils/themes/theme';
+import type { Margins, Size } from '../../utils/dimensions';
+import type { LegendStyle as ThemeLegendStyle } from '../../utils/themes/theme';
 
 /** @internal */
 export type LegendStyle =

@@ -9,18 +9,10 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  HistogramBarSeries,
-  PartialTheme,
-  Position,
-  ScaleType,
-  Settings,
-} from '@elastic/charts';
+import type { PartialTheme } from '@elastic/charts';
+import { Axis, BarSeries, Chart, HistogramBarSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 'react-redux';
+import type { Selector } from 'react-redux';
 
 import { getPickedShapesLayerValues } from './picked_shapes';
 import { getWordcloudSpecSelector } from './wordcloud_spec';
 import { ChartType } from '../../..';
 import { getOnElementOverSelector } from '../../../../common/event_handler_selectors';
-import { LayerValue } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { LayerValue } from '../../../../specs';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 

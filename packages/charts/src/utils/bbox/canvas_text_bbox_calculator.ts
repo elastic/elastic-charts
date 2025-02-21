@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { cssFontShorthand, Font } from '../../common/text_utils';
+import type { Font } from '../../common/text_utils';
+import { cssFontShorthand } from '../../common/text_utils';
 import { withContext } from '../../renderers/canvas';
-import { Size } from '../dimensions';
+import type { Size } from '../dimensions';
 
 /** @internal */
 export const withTextMeasure = <T>(fun: (textMeasure: TextMeasure) => T) => {

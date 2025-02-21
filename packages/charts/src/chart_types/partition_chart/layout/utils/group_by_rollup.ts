@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { CategoryKey } from '../../../../common/category';
-import { Relation } from '../../../../common/text_utils';
-import { LegendPath } from '../../../../state/actions/legend';
-import { Datum, ValueAccessor } from '../../../../utils/common';
+import type { CategoryKey } from '../../../../common/category';
+import type { Relation } from '../../../../common/text_utils';
+import type { LegendPath } from '../../../../state/actions/legend';
+import type { Datum, ValueAccessor } from '../../../../utils/common';
 
 /** @public */
 export const AGGREGATE_KEY = 'value';

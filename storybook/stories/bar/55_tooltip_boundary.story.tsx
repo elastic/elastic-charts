@@ -9,10 +9,11 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React, { useRef } from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip, TooltipProps } from '@elastic/charts';
+import type { TooltipProps } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();

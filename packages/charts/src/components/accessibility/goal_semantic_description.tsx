@@ -8,8 +8,8 @@
 
 import React, { Fragment } from 'react';
 
-import { BandViewModel } from '../../chart_types/goal_chart/layout/types/viewmodel_types';
-import { A11ySettings } from '../../state/selectors/get_accessibility_config';
+import type { BandViewModel } from '../../chart_types/goal_chart/layout/types/viewmodel_types';
+import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
 interface GoalSemanticDescriptionProps {
   bandLabels: BandViewModel[];

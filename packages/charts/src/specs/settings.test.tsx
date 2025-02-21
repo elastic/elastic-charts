@@ -9,17 +9,20 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
-import { Settings, SettingsSpec } from './settings';
+import type { SettingsSpec } from './settings';
+import { Settings } from './settings';
 import { SpecsParser } from './specs_parser';
-import { createChartStore, GlobalChartState } from '../state/chart_state';
+import type { GlobalChartState } from '../state/chart_state';
+import { createChartStore } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
-import { Position, Rendering, Rotation } from '../utils/common';
+import type { Rendering, Rotation } from '../utils/common';
+import { Position } from '../utils/common';
 import { DARK_THEME } from '../utils/themes/dark_theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { PartialTheme } from '../utils/themes/theme';
+import type { PartialTheme } from '../utils/themes/theme';
 
 const getProxy = (chartStore: Store<GlobalChartState>) =>
   function SettingsProxy({ settings }: { settings?: Partial<SettingsSpec> }) {

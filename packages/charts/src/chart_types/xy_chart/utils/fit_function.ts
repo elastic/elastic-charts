@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { DeepNonNullable } from 'utility-types';
+import type { DeepNonNullable } from 'utility-types';
 
-import { DataSeriesDatum } from './series';
-import { Fit, FitConfig } from './specs';
+import type { DataSeriesDatum } from './series';
+import type { FitConfig } from './specs';
+import { Fit } from './specs';
 import { datumXSortPredicate } from './stacked_series_utils';
 import { ScaleType } from '../../../scales/constants';
 import { isNil } from '../../../utils/common';

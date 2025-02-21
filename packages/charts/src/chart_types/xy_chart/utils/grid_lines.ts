@@ -7,17 +7,19 @@
  */
 
 import { isVerticalAxis } from './axis_type_utils';
-import { AxisGeometry, AxisTick } from './axis_utils';
-import { AxisSpec } from './specs';
+import type { AxisGeometry, AxisTick } from './axis_utils';
+import type { AxisSpec } from './specs';
 import { colorToRgba, overrideOpacity } from '../../../common/color_library_wrappers';
-import { SmallMultipleScales, getPanelSize, getPerPanelMap } from '../../../common/panel_utils';
-import { Line, Stroke } from '../../../geoms/types';
+import type { SmallMultipleScales } from '../../../common/panel_utils';
+import { getPanelSize, getPerPanelMap } from '../../../common/panel_utils';
+import type { Line, Stroke } from '../../../geoms/types';
 import { MIN_STROKE_WIDTH } from '../../../renderers/canvas/primitives/line';
-import { mergePartial, RecursivePartial } from '../../../utils/common';
-import { Size } from '../../../utils/dimensions';
-import { AxisId } from '../../../utils/ids';
-import { Point } from '../../../utils/point';
-import { AxisStyle, Theme } from '../../../utils/themes/theme';
+import type { RecursivePartial } from '../../../utils/common';
+import { mergePartial } from '../../../utils/common';
+import type { Size } from '../../../utils/dimensions';
+import type { AxisId } from '../../../utils/ids';
+import type { Point } from '../../../utils/point';
+import type { AxisStyle, Theme } from '../../../utils/themes/theme';
 
 /** @internal */
 export const OUTSIDE_RANGE_TOLERANCE = 0.01; // can protrude from the scale range by a max of 0.1px, to allow for FP imprecision

@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { groupBy, GroupKeysOrKeyFn } from '../../chart_types/xy_chart/utils/group_data_series';
+import type { GroupKeysOrKeyFn } from '../../chart_types/xy_chart/utils/group_data_series';
+import { groupBy } from '../../chart_types/xy_chart/utils/group_data_series';
 import { isFiniteNumber } from '../common';
 
 /**

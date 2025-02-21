@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { ChangeContext, createStep, CustomCommandStep, commandStepDefaults } from '../utils';
+import type { ChangeContext, CustomCommandStep } from '../utils';
+import { createStep, commandStepDefaults } from '../utils';
 
 export const apiCheckStep = createStep<CustomCommandStep>((ctx) => {
   return {

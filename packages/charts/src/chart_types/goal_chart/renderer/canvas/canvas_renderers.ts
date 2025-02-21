@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../../../common/colors';
+import type { Color } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
-import { Mark } from '../../layout/viewmodel/geoms';
+import type { Mark } from '../../layout/viewmodel/geoms';
 
 /** @internal */
 export function renderCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, geomObjects: Mark[], background: Color) {

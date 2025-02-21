@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { $Keys } from 'utility-types';
+import type { $Keys } from 'utility-types';
 
 import { TimeFunction, TimingFunctions } from './../../../../../utils/time_functions';
-import { TimeMs } from '../../../../../common/geometry';
+import type { TimeMs } from '../../../../../common/geometry';
 import { clamp, isFiniteNumber } from '../../../../../utils/common';
 
 /**

@@ -7,31 +7,22 @@
  */
 
 import { buildPointGeometryStyles } from './point_style';
-import {
-  getY0ScaledValueFn,
-  getY1ScaledValueFn,
-  getYDatumValueFn,
-  isDatumFilled,
-  isYValueDefinedFn,
-  MarkSizeOptions,
-  YDefinedFn,
-} from './utils';
-import { Color } from '../../../common/colors';
-import { ScaleBand, ScaleContinuous } from '../../../scales';
+import type { MarkSizeOptions, YDefinedFn } from './utils';
+import { getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isDatumFilled, isYValueDefinedFn } from './utils';
+import type { Color } from '../../../common/colors';
+import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isFiniteNumber, isNil } from '../../../utils/common';
-import { inplaceInsertInSortedArray, SortedArray } from '../../../utils/data/data_processing';
-import { Dimensions } from '../../../utils/dimensions';
-import { BandedAccessorType, PointGeometry } from '../../../utils/geometry';
-import { PointStyle } from '../../../utils/themes/theme';
+import type { SortedArray } from '../../../utils/data/data_processing';
+import { inplaceInsertInSortedArray } from '../../../utils/data/data_processing';
+import type { Dimensions } from '../../../utils/dimensions';
+import type { PointGeometry } from '../../../utils/geometry';
+import { BandedAccessorType } from '../../../utils/geometry';
+import type { PointStyle } from '../../../utils/themes/theme';
 import { GeometryType, IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import {
-  DataSeries,
-  DataSeriesDatum,
-  FilledValues,
-  getSeriesIdentifierFromDataSeries,
-  XYChartSeriesIdentifier,
-} from '../utils/series';
-import { PointStyleAccessor, StackMode } from '../utils/specs';
+import type { DataSeries, DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
+import { getSeriesIdentifierFromDataSeries } from '../utils/series';
+import type { PointStyleAccessor } from '../utils/specs';
+import { StackMode } from '../utils/specs';
 
 /** @internal */
 export function isolatedPointRadius(lineStrokeWidth: number) {

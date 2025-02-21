@@ -1,6 +1,6 @@
 /* eslint-disable header/header */
 
-import { operations, components } from '@octokit/openapi-types';
+import type { operations, components } from '@octokit/openapi-types';
 
 export type FileDiff = components['schemas']['diff-entry'];
 

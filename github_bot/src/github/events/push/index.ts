@@ -7,6 +7,6 @@
  */
 
 import { setupBuildTrigger } from './trigger_build';
-import { EventSetupFn } from '../../types';
+import type { EventSetupFn } from '../../types';
 
 export const setupFns: EventSetupFn[] = [setupBuildTrigger];

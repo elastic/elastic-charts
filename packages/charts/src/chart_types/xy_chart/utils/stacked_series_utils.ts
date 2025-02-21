@@ -8,17 +8,11 @@
 
 import { stack as D3Stack, stackOffsetWiggle, stackOrderNone } from 'd3-shape';
 
-import {
-  diverging,
-  divergingPercentage,
-  divergingSilhouette,
-  divergingWiggle,
-  XValueMap,
-  XValueSeriesDatum,
-} from './diverging_offsets';
-import { DataSeries, DataSeriesDatum } from './series';
+import type { XValueMap, XValueSeriesDatum } from './diverging_offsets';
+import { diverging, divergingPercentage, divergingSilhouette, divergingWiggle } from './diverging_offsets';
+import type { DataSeries, DataSeriesDatum } from './series';
 import { SeriesType, StackMode } from './specs';
-import { SeriesKey } from '../../../common/series_id';
+import type { SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { clamp, isDefined } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';

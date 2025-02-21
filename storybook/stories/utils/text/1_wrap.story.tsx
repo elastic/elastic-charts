@@ -8,7 +8,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Font, cssFontShorthand } from '@elastic/charts/src/common/text_utils';
+import type { Font } from '@elastic/charts/src/common/text_utils';
+import { cssFontShorthand } from '@elastic/charts/src/common/text_utils';
 import { withContext } from '@elastic/charts/src/renderers/canvas';
 import { withTextMeasure } from '@elastic/charts/src/utils/bbox/canvas_text_bbox_calculator';
 import { wrapText } from '@elastic/charts/src/utils/text/wrap';

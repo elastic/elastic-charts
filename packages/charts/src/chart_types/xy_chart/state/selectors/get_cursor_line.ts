@@ -8,7 +8,7 @@
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
-import { Line } from '../../../../geoms/types';
+import type { Line } from '../../../../geoms/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getCursorLinePosition } from '../../crosshair/crosshair_utils';

@@ -7,7 +7,7 @@
  */
 
 import { getSettingsSpecSelector } from './get_settings_spec';
-import { Rotation } from '../../utils/common';
+import type { Rotation } from '../../utils/common';
 import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */

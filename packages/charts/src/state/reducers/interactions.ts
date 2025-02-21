@@ -6,29 +6,25 @@
  * Side Public License, v 1.
  */
 
-import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
 import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 import { ChartType } from '../../chart_types';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
-import { LegendItem } from '../../common/legend';
-import { SeriesIdentifier } from '../../common/series_id';
-import { TooltipValue } from '../../specs/tooltip';
+import type { LegendItem } from '../../common/legend';
+import type { SeriesIdentifier } from '../../common/series_id';
+import type { TooltipValue } from '../../specs/tooltip';
 import { getDelta } from '../../utils/point';
 import { onDOMElementEnter, onDOMElementLeave } from '../actions/dom_element';
 import { onKeyPress } from '../actions/key';
-import {
-  onLegendItemOutAction,
-  onLegendItemOverAction,
-  onToggleDeselectSeriesAction,
-  ToggleDeselectSeriesAction,
-} from '../actions/legend';
+import type { ToggleDeselectSeriesAction } from '../actions/legend';
+import { onLegendItemOutAction, onLegendItemOverAction, onToggleDeselectSeriesAction } from '../actions/legend';
 import { onMouseDown, onMouseUp, onPointerMove } from '../actions/mouse';
 import { toggleSelectedTooltipItem, pinTooltip, setSelectedTooltipItems } from '../actions/tooltip';
-import { ChartSliceState } from '../chart_slice_state';
-import { GlobalChartState } from '../chart_state';
+import type { ChartSliceState } from '../chart_slice_state';
+import type { GlobalChartState } from '../chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../selectors/get_internal_is_intialized';
 import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';

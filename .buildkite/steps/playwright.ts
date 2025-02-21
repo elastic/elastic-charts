@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomGroupStep, commandStepDefaults, Plugins } from '../utils';
+import type { CustomGroupStep } from '../utils';
+import { createStep, commandStepDefaults, Plugins } from '../utils';
 
 export const playwrightStep = createStep<CustomGroupStep>(() => {
   const skip = false;

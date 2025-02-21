@@ -7,17 +7,19 @@
  */
 
 import { angularBullet, horizontalBullet, verticalBullet } from './sub_types';
-import { Color, Colors } from '../../../../common/colors';
-import { Ratio } from '../../../../common/geometry';
+import type { Color } from '../../../../common/colors';
+import { Colors } from '../../../../common/colors';
+import type { Ratio } from '../../../../common/geometry';
 import { cssFontShorthand } from '../../../../common/text_utils';
 import { withContext, clearCanvas } from '../../../../renderers/canvas';
 import { renderDebugRect, renderDebugPoint } from '../../../../renderers/canvas/utils/debug';
-import { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
-import { ActiveValue } from '../../selectors/get_active_values';
-import { BulletDimensions } from '../../selectors/get_panel_dimensions';
-import { BulletSpec, BulletSubtype } from '../../spec';
+import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
+import type { ActiveValue } from '../../selectors/get_active_values';
+import type { BulletDimensions } from '../../selectors/get_panel_dimensions';
+import type { BulletSpec } from '../../spec';
+import { BulletSubtype } from '../../spec';
+import type { BulletStyle } from '../../theme';
 import {
-  BulletStyle,
   FONT_PADDING,
   HEADER_PADDING,
   SUBTITLE_FONT,

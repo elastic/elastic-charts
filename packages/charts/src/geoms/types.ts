@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { RgbaTuple } from '../common/color_library_wrappers';
-import { TexturedStyles } from '../utils/themes/theme';
+import type { RgbaTuple } from '../common/color_library_wrappers';
+import type { TexturedStyles } from '../utils/themes/theme';
 
 /** @internal */
 export interface Text {

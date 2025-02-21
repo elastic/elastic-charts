@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { $Values as Values } from 'utility-types';
+import type { $Values as Values } from 'utility-types';
 
-import { LegendPath } from '../../../../state/actions/legend';
-import { DataName, QuadViewModel } from '../types/viewmodel_types';
+import type { LegendPath } from '../../../../state/actions/legend';
+import type { DataName, QuadViewModel } from '../types/viewmodel_types';
 
 type LegendStrategyFn = (legendPath: LegendPath) => (partialShape: { path: LegendPath; dataName: DataName }) => boolean;
 

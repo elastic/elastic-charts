@@ -7,7 +7,7 @@
  */
 
 import * as testModule from './fit_function';
-import { DataSeries } from './series';
+import type { DataSeries } from './series';
 import { Fit } from './specs';
 import * as seriesUtils from './stacked_series_utils';
 import {

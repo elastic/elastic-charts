@@ -6,26 +6,28 @@
  * Side Public License, v 1.
  */
 
-import React, { MouseEvent, RefObject } from 'react';
+import type { MouseEvent, RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { renderCanvas2d } from './canvas_renderers';
-import { Color, Colors } from '../../../../common/colors';
-import { Rectangle } from '../../../../common/geometry';
+import type { Color } from '../../../../common/colors';
+import { Colors } from '../../../../common/colors';
+import type { Rectangle } from '../../../../common/geometry';
 import { GoalSemanticDescription, ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
-import {
-  A11ySettings,
-  DEFAULT_A11Y_SETTINGS,
-  getA11ySettingsSelector,
-} from '../../../../state/selectors/get_accessibility_config';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
+import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
-import { Dimensions } from '../../../../utils/dimensions';
-import { BandViewModel, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { initialBoundingBox, Mark } from '../../layout/viewmodel/geoms';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { BandViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { Mark } from '../../layout/viewmodel/geoms';
+import { initialBoundingBox } from '../../layout/viewmodel/geoms';
 import { geometries, getPrimitiveGeoms } from '../../state/selectors/geometries';
 import { getFirstTickValueSelector, getGoalChartSemanticDataSelector } from '../../state/selectors/get_goal_chart_data';
 import { getCaptureBoundingBox } from '../../state/selectors/picked_shapes';

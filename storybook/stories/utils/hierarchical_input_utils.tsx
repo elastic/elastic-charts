@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Datum } from '@elastic/charts';
-import { PrimitiveValue } from '@elastic/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { Datum } from '@elastic/charts';
+import type { PrimitiveValue } from '@elastic/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
 import { discreteColor } from './utils';

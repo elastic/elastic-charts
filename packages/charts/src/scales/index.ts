@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ScaleType } from './constants';
+import type { ScaleType } from './constants';
 
 /** @public */
 export type ScaleContinuousType =

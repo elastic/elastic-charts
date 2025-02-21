@@ -11,6 +11,7 @@ import { boolean, number } from '@storybook/addon-knobs';
 import moment from 'moment';
 import React from 'react';
 
+import type { LineAnnotationSpec } from '@elastic/charts';
 import {
   Chart,
   Axis,
@@ -20,11 +21,10 @@ import {
   ScaleType,
   LineAnnotation,
   AnnotationDomainType,
-  LineAnnotationSpec,
 } from '@elastic/charts';
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 
-import { ChartsStory } from '../../../types';
+import type { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 

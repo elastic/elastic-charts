@@ -6,14 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { createPopper, Instance, Placement as PopperPlacement } from '@popperjs/core';
-import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import type { Instance, Placement as PopperPlacement } from '@popperjs/core';
+import { createPopper } from '@popperjs/core';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-import { PortalAnchorRef, PositionedPortalAnchorRef, TooltipPortalSettings } from './types';
+import type { PortalAnchorRef, PositionedPortalAnchorRef, TooltipPortalSettings } from './types';
 import { DEFAULT_POPPER_SETTINGS, getOrCreateNode, isHTMLElement } from './utils';
 import { isDefined, mergePartial } from '../../utils/common';
-import { Padding } from '../../utils/dimensions';
+import type { Padding } from '../../utils/dimensions';
 
 /**
  * @todo make this type conditional to use PortalAnchorProps or PortalAnchorRefProps

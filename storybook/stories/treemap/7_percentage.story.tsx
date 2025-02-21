@@ -8,14 +8,15 @@
 
 import React from 'react';
 
-import { Chart, Datum, PartialTheme, Partition, PartitionLayout, Settings } from '@elastic/charts';
+import type { Datum, PartialTheme } from '@elastic/charts';
+import { Chart, Partition, PartitionLayout, Settings } from '@elastic/charts';
 import {
   defaultPartitionValueFormatter,
   percentValueGetter,
 } from '@elastic/charts/src/chart_types/partition_chart/layout/config';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, interpolatorTurbo, regionLookup } from '../utils/utils';
 

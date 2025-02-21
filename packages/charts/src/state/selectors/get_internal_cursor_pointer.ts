@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
-import { GlobalChartState } from '../chart_state';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalPointerCursor = (state: GlobalChartState): CSSProperties['cursor'] => {

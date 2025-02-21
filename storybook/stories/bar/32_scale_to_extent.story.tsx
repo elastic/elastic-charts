@@ -12,7 +12,7 @@ import React from 'react';
 import { Axis, Chart, DomainPaddingUnit, Position, ScaleType, Settings } from '@elastic/charts';
 import { computeContinuousDataDomain } from '@elastic/charts/src/utils/domain';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

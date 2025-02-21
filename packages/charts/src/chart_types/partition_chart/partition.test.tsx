@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { computeLegendSelector } from './state/selectors/compute_legend';
 import { partitionMultiGeometries } from './state/selectors/geometries';
 import { getLegendItemsLabels } from './state/selectors/get_legend_items_labels';
 import { MockGlobalSpec, MockSeriesSpec } from '../../mocks/specs';
 import { MockStore } from '../../mocks/store';
-import { GlobalChartState } from '../../state/chart_state';
-import { LegendItemLabel } from '../../state/selectors/get_legend_items_labels';
+import type { GlobalChartState } from '../../state/chart_state';
+import type { LegendItemLabel } from '../../state/selectors/get_legend_items_labels';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 
 // sorting is useful to ensure tests pass even if order changes (where order doesn't matter)

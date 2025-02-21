@@ -8,24 +8,20 @@
 
 import { isHorizontalAxis, isVerticalAxis } from './axis_type_utils';
 import { computeXScale, computeYScales } from './scales';
-import { SmallMultipleScales, hasSMDomain, getPanelSize } from '../../../common/panel_utils';
-import { ScaleBand, ScaleContinuous } from '../../../scales';
-import { AxisSpec, SettingsSpec } from '../../../specs';
-import {
-  degToRad,
-  getPercentageValue,
-  HorizontalAlignment,
-  Position,
-  Rotation,
-  VerticalAlignment,
-} from '../../../utils/common';
-import { Dimensions, innerPad, outerPad, PerSideDistance, Size } from '../../../utils/dimensions';
-import { Range } from '../../../utils/domain';
-import { AxisId } from '../../../utils/ids';
-import { Point } from '../../../utils/point';
-import { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
-import { Projection } from '../state/selectors/visible_ticks';
-import { SeriesDomainsAndData } from '../state/utils/types';
+import type { SmallMultipleScales } from '../../../common/panel_utils';
+import { hasSMDomain, getPanelSize } from '../../../common/panel_utils';
+import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import type { AxisSpec, SettingsSpec } from '../../../specs';
+import type { Rotation } from '../../../utils/common';
+import { degToRad, getPercentageValue, HorizontalAlignment, Position, VerticalAlignment } from '../../../utils/common';
+import type { Dimensions, PerSideDistance, Size } from '../../../utils/dimensions';
+import { innerPad, outerPad } from '../../../utils/dimensions';
+import type { Range } from '../../../utils/domain';
+import type { AxisId } from '../../../utils/ids';
+import type { Point } from '../../../utils/point';
+import type { AxisStyle, TextAlignment, TextOffset, Theme } from '../../../utils/themes/theme';
+import type { Projection } from '../state/selectors/visible_ticks';
+import type { SeriesDomainsAndData } from '../state/utils/types';
 
 type TickValue = number | string;
 

@@ -7,7 +7,8 @@
  */
 
 import classNames from 'classnames';
-import React, { ComponentType, CSSProperties } from 'react';
+import type { ComponentType, CSSProperties } from 'react';
+import React from 'react';
 
 interface AlignedGridProps<D> {
   data: Array<Array<D | undefined>>;

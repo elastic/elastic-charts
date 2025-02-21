@@ -7,9 +7,9 @@
  */
 
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
-import { Stroke } from '../../../../../geoms/types';
+import type { Stroke } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
-import { GeometryStateStyle, LineStyle } from '../../../../../utils/themes/theme';
+import type { GeometryStateStyle, LineStyle } from '../../../../../utils/themes/theme';
 
 /**
  * Return the rendering props for a line. The color of the line will be overwritten

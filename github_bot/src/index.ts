@@ -7,7 +7,8 @@
  */
 
 import bodyParser from 'body-parser';
-import { Server, Probot, ApplicationFunctionOptions } from 'probot';
+import type { ApplicationFunctionOptions } from 'probot';
+import { Server, Probot } from 'probot';
 
 import { setupBuildkiteRoutes } from './buildkite';
 import { getConfig } from './config';

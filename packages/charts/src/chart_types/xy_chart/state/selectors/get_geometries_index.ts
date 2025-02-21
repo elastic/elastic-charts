@@ -8,7 +8,7 @@
 
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
+import type { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 
 /** @internal */
 export const getGeometriesIndexSelector = createCustomCachedSelector(

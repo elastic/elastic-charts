@@ -9,7 +9,7 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import React from 'react';
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { getCursorBandPositionSelector } from './selectors/get_cursor_band';
@@ -26,19 +26,22 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 import { ChartType } from '../..';
 import { Icon } from '../../../components/icons/icon';
-import { Rect } from '../../../geoms/types';
+import type { Rect } from '../../../geoms/types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { BrushAxis, TooltipType, BrushEvent, SettingsSpec } from '../../../specs';
+import type { BrushEvent, SettingsSpec } from '../../../specs';
+import { BrushAxis, TooltipType } from '../../../specs';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
-import { GlobalChartState } from '../../../state/chart_state';
+import type { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
-import { Position, RecursivePartial } from '../../../utils/common';
-import { AxisStyle } from '../../../utils/themes/theme';
-import { StackMode, BarSeriesSpec, BasicSeriesSpec, AxisSpec, SeriesType, AnnotationDomainType } from '../utils/specs';
+import type { RecursivePartial } from '../../../utils/common';
+import { Position } from '../../../utils/common';
+import type { AxisStyle } from '../../../utils/themes/theme';
+import type { BarSeriesSpec, BasicSeriesSpec, AxisSpec } from '../utils/specs';
+import { StackMode, SeriesType, AnnotationDomainType } from '../utils/specs';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';

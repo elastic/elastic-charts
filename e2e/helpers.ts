@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { test, Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test } from '@playwright/test';
 
-import { Rotation } from './constants';
+import type { Rotation } from './constants';
 
 interface FileExample {
   slugifiedName: string;

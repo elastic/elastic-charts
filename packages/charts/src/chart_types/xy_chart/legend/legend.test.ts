@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
@@ -14,13 +14,16 @@ import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onToggleDeselectSeriesAction } from '../../../state/actions/legend';
-import { GlobalChartState } from '../../../state/chart_state';
-import { Position, RecursivePartial } from '../../../utils/common';
-import { AxisStyle } from '../../../utils/themes/theme';
+import type { GlobalChartState } from '../../../state/chart_state';
+import type { RecursivePartial } from '../../../utils/common';
+import { Position } from '../../../utils/common';
+import type { AxisStyle } from '../../../utils/themes/theme';
 import { computeLegendSelector } from '../state/selectors/compute_legend';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
-import { getSeriesName, XYChartSeriesIdentifier } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, SeriesType } from '../utils/specs';
+import type { XYChartSeriesIdentifier } from '../utils/series';
+import { getSeriesName } from '../utils/series';
+import type { AxisSpec, BasicSeriesSpec } from '../utils/specs';
+import { SeriesType } from '../utils/specs';
 
 const spec1: BasicSeriesSpec = {
   chartType: ChartType.XYAxis,

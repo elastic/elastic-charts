@@ -6,22 +6,22 @@
  * Side Public License, v 1.
  */
 
-import { LegendItemExtraValues, LegendValue } from '../../common/legend';
-import { SeriesIdentifier } from '../../common/series_id';
-import {
+import type { LegendItemExtraValues, LegendValue } from '../../common/legend';
+import type { SeriesIdentifier } from '../../common/series_id';
+import type {
   LegendItemListener,
   BasicListener,
   LegendColorPicker,
   LegendAction,
   LegendPositionConfig,
 } from '../../specs/settings';
-import {
+import type {
   clearTemporaryColors as clearTemporaryColorsAction,
   setTemporaryColor as setTemporaryColorAction,
   setPersistedColor as setPersistedColorAction,
 } from '../../state/actions/colors';
-import { LegendPath, onToggleDeselectSeriesAction } from '../../state/actions/legend';
-import { LegendLabelOptions } from '../../utils/themes/theme';
+import type { LegendPath, onToggleDeselectSeriesAction } from '../../state/actions/legend';
+import type { LegendLabelOptions } from '../../utils/themes/theme';
 
 /** @internal */
 export interface SharedLegendItemProps {

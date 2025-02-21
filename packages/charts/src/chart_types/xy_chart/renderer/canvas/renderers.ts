@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { AnimationContext, getAnimationPoolFn } from './animations';
-import { AnimationState } from './animations/animation';
+import type { AnimationContext } from './animations';
+import { getAnimationPoolFn } from './animations';
+import type { AnimationState } from './animations/animation';
 import { renderAnnotations } from './annotations';
 import { renderAreas } from './areas';
 import { renderBars } from './bars';
@@ -16,7 +17,7 @@ import { renderGrids } from './grids';
 import { renderLines } from './lines';
 import { renderGridPanels, renderPanelSubstrates } from './panels/panels';
 import { renderBarValues } from './values/bar';
-import { ReactiveChartStateProps } from './xy_chart';
+import type { ReactiveChartStateProps } from './xy_chart';
 import { Colors } from '../../../../common/colors';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';

@@ -7,28 +7,19 @@
  */
 
 import { bisectLeft } from 'd3-array';
-import {
-  ScaleContinuousNumeric,
-  ScaleLinear,
-  scaleLinear,
-  scaleLog,
-  ScaleLogarithmic,
-  ScalePower,
-  scaleSqrt,
-  scaleUtc,
-  ScaleTime,
-} from 'd3-scale';
-import { Required } from 'utility-types';
+import type { ScaleContinuousNumeric, ScaleLinear, ScaleLogarithmic, ScalePower, ScaleTime } from 'd3-scale';
+import { scaleLinear, scaleLog, scaleSqrt, scaleUtc } from 'd3-scale';
+import type { Required } from 'utility-types';
 
-import { ScaleContinuousType } from '.';
+import type { ScaleContinuousType } from '.';
 import { LOG_MIN_ABS_DOMAIN, ScaleType } from './constants';
-import { LogScaleOptions } from './types';
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { LogScaleOptions } from './types';
+import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
 import { getLinearTicks, getNiceLinearTicks } from '../chart_types/xy_chart/utils/get_linear_ticks';
 import { screenspaceMarkerScaleCompressor } from '../solvers/screenspace_marker_scale_compressor';
 import { clamp, isDefined, isFiniteNumber, mergePartial, round } from '../utils/common';
 import { getMomentWithTz } from '../utils/data/date_time';
-import { ContinuousDomain, Range } from '../utils/domain';
+import type { ContinuousDomain, Range } from '../utils/domain';
 
 type ContinuousScaleType =
   | typeof ScaleType.Time

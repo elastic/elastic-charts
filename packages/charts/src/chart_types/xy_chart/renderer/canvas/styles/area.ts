@@ -7,10 +7,11 @@
  */
 
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
-import { Color } from '../../../../../common/colors';
-import { Fill } from '../../../../../geoms/types';
-import { ColorVariant, getColorFromVariant } from '../../../../../utils/common';
-import { GeometryStateStyle, AreaStyle } from '../../../../../utils/themes/theme';
+import type { Color } from '../../../../../common/colors';
+import type { Fill } from '../../../../../geoms/types';
+import type { ColorVariant } from '../../../../../utils/common';
+import { getColorFromVariant } from '../../../../../utils/common';
+import type { GeometryStateStyle, AreaStyle } from '../../../../../utils/themes/theme';
 import { getTextureStyles } from '../../../utils/texture';
 
 /**

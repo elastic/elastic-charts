@@ -7,13 +7,13 @@
  */
 
 import { clamp, clampAll, isBetween, isFiniteNumber, isNil } from './../../../../utils/common';
-import { Radian } from '../../../../common/geometry';
+import type { Radian } from '../../../../common/geometry';
 import { ScaleContinuous } from '../../../../scales';
-import { Dimensions } from '../../../../utils/dimensions';
-import { Theme } from '../../../../utils/themes/theme';
-import { GoalSpec } from '../../specs';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { Theme } from '../../../../utils/themes/theme';
+import type { GoalSpec } from '../../specs';
 import { GoalSubtype } from '../../specs/constants';
-import { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
+import type { BulletViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 
 /** @internal */
 export function shapeViewModel(spec: GoalSpec, theme: Theme, chartDimensions: Dimensions): ShapeViewModel {

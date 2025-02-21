@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { SeriesIdentifier } from '../common/series_id';
+import type { SeriesIdentifier } from '../common/series_id';
 
 /**
  * A compare function used to determine the order of the elements. It is expected to return

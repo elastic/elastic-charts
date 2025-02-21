@@ -9,13 +9,13 @@
 import { DateTime } from 'luxon';
 import React from 'react';
 
+import type { PointerEvent } from '@elastic/charts';
 import {
   Axis,
   Chart,
   Position,
   ScaleType,
   Settings,
-  PointerEvent,
   Placement,
   TooltipType,
   LineSeries,
@@ -25,7 +25,7 @@ import {
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator('static');

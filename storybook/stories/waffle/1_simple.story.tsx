@@ -9,9 +9,9 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { Datum } from '@elastic/charts';
 import {
   Chart,
-  Datum,
   LegendValue,
   Partition,
   PartitionLayout,
@@ -21,8 +21,8 @@ import {
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ArrayEntry } from '../../../packages/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
-import { ChartsStory } from '../../types';
+import type { ArrayEntry } from '../../../packages/charts/src/chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalStark9, discreteColor } from '../utils/utils';
 

@@ -7,7 +7,7 @@
  */
 
 import { renderRaster } from './raster';
-import {
+import type {
   BinUnit,
   NumberFormatter,
   continuousTimeRasters,
@@ -15,9 +15,10 @@ import {
   TimeFormatter,
 } from '../../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { MAX_TIME_TICK_COUNT, notTooDense } from '../../../xy_chart/axes/timeslip/multilayer_ticks';
-import { makeLinearScale, NumericScale } from '../../projections/scale';
-import { TimeslipConfig } from '../config';
-import { DataState } from '../data_fetch';
+import type { NumericScale } from '../../projections/scale';
+import { makeLinearScale } from '../../projections/scale';
+import type { TimeslipConfig } from '../config';
+import type { DataState } from '../data_fetch';
 
 /** @public */
 export type DataDemand = {

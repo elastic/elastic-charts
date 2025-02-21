@@ -7,7 +7,7 @@
  */
 
 import { getYDatumValueFn } from '../../chart_types/xy_chart/rendering/utils';
-import { DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
+import type { DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
 
 /**
  * Helper function to return array of rendered y1 values

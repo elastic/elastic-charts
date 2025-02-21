@@ -9,7 +9,8 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { TooltipTable, TooltipTableColumn, XYChartSeriesIdentifier } from '@elastic/charts';
+import type { TooltipTableColumn, XYChartSeriesIdentifier } from '@elastic/charts';
+import { TooltipTable } from '@elastic/charts';
 
 import { tableMultipleX } from './data';
 import { TooltipShowcase } from './tooltip_showcase';

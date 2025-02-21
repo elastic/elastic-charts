@@ -7,11 +7,12 @@
  */
 
 import { withContext } from '../';
-import { Degrees } from '../../../common/geometry';
-import { cssFontShorthand, Font, TextAlign, TextBaseline } from '../../../common/text_utils';
+import type { Degrees } from '../../../common/geometry';
+import type { Font, TextAlign, TextBaseline } from '../../../common/text_utils';
+import { cssFontShorthand } from '../../../common/text_utils';
 import { measureText } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { degToRad } from '../../../utils/common';
-import { Point } from '../../../utils/point';
+import type { Point } from '../../../utils/point';
 
 /** @internal */
 export type TextDirection = 'rtl' | 'ltr'; // TODO: export this

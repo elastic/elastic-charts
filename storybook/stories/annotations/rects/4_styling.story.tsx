@@ -10,25 +10,23 @@ import { action } from '@storybook/addon-actions';
 import { array, boolean, color, number } from '@storybook/addon-knobs';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 
+import type { AnnotationAnimationConfig, ChartProps, LineAnnotationDatum, RectAnnotationStyle } from '@elastic/charts';
 import {
-  AnnotationAnimationConfig,
   AnnotationDomainType,
   Axis,
   Chart,
-  ChartProps,
   LineAnnotation,
-  LineAnnotationDatum,
   RectAnnotation,
-  RectAnnotationStyle,
   ScaleType,
   Settings,
 } from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
-import { Position, RecursivePartial } from '@elastic/charts/src/utils/common';
+import type { RecursivePartial } from '@elastic/charts/src/utils/common';
+import { Position } from '@elastic/charts/src/utils/common';
 import { TimeFunction } from '@elastic/charts/src/utils/time_functions';
 
-import { ChartsStory } from '../../../types';
+import type { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 

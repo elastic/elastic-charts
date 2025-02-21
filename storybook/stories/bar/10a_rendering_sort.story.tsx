@@ -10,20 +10,10 @@ import { boolean } from '@storybook/addon-knobs';
 import moment from 'moment';
 import React from 'react';
 
-import {
-  Axis,
-  HistogramBarSeries,
-  Chart,
-  LegendValue,
-  Position,
-  ScaleType,
-  Settings,
-  XYChartSeriesIdentifier,
-  SeriesCompareFn,
-  Tooltip,
-} from '@elastic/charts';
+import type { XYChartSeriesIdentifier, SeriesCompareFn } from '@elastic/charts';
+import { Axis, HistogramBarSeries, Chart, LegendValue, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { sampleLogLevelData } from '../utils/datasets/test_log_data';
 import { customKnobs } from '../utils/knobs';

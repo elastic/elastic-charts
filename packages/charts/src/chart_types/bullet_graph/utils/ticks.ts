@@ -8,7 +8,7 @@
 
 import { clamp, isFiniteNumber } from '../../../utils/common';
 import { MAX_TICK_COUNT, MIN_TICK_COUNT } from '../renderer/canvas/constants';
-import { BulletDatum } from '../spec';
+import type { BulletDatum } from '../spec';
 
 /** @internal */
 export interface TickOptions {

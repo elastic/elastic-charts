@@ -8,9 +8,9 @@
 
 import React from 'react';
 
+import type { Datum } from '@elastic/charts';
 import {
   Chart,
-  Datum,
   LegendValue,
   Partition,
   PartitionLayout,
@@ -18,7 +18,7 @@ import {
   defaultPartitionValueFormatter,
 } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 

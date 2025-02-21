@@ -7,10 +7,11 @@
  */
 
 import { PartitionLayout } from './config_types';
-import { LegacyAnimationConfig } from '../../../../common/animation';
-import { CategoryKey } from '../../../../common/category';
-import { Color, Colors } from '../../../../common/colors';
-import {
+import type { LegacyAnimationConfig } from '../../../../common/animation';
+import type { CategoryKey } from '../../../../common/category';
+import type { Color } from '../../../../common/colors';
+import { Colors } from '../../../../common/colors';
+import type {
   Coordinate,
   Distance,
   Pixels,
@@ -20,17 +21,17 @@ import {
   Radian,
   SizeRatio,
 } from '../../../../common/geometry';
-import { Font, HorizontalAlignment, VerticalAlignments } from '../../../../common/text_utils';
-import { GroupByAccessor } from '../../../../specs';
-import { LegendPath } from '../../../../state/actions/legend';
-import { Size } from '../../../../utils/dimensions';
+import type { Font, HorizontalAlignment, VerticalAlignments } from '../../../../common/text_utils';
+import type { GroupByAccessor } from '../../../../specs';
+import type { LegendPath } from '../../../../state/actions/legend';
+import type { Size } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Theme } from '../../../../utils/themes/theme';
-import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
-import { Layer } from '../../specs';
-import { MODEL_KEY, ValueGetterName } from '../config';
-import { ArrayNode, HierarchyOfArrays, Key } from '../utils/group_by_rollup';
-import { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
+import type { Theme } from '../../../../utils/themes/theme';
+import type { ContinuousDomainFocus } from '../../renderer/canvas/partition';
+import type { Layer } from '../../specs';
+import type { MODEL_KEY, ValueGetterName } from '../config';
+import type { ArrayNode, HierarchyOfArrays, Key } from '../utils/group_by_rollup';
+import type { LinkLabelsViewModelSpec } from '../viewmodel/link_text_layout';
 
 /** @internal */
 export type LinkLabelVM = {

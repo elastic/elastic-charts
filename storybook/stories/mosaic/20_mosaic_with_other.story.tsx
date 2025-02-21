@@ -9,18 +9,10 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  AdditiveNumber,
-  ArrayEntry,
-  Chart,
-  Datum,
-  Partition,
-  PartitionLayout,
-  Settings,
-  defaultPartitionValueFormatter,
-} from '@elastic/charts';
+import type { AdditiveNumber, ArrayEntry, Datum } from '@elastic/charts';
+import { Chart, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup } from '../utils/utils';
 

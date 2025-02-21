@@ -6,37 +6,32 @@
  * Side Public License, v 1.
  */
 
-import React, { MouseEvent, RefObject } from 'react';
+import type { MouseEvent, RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { renderLinearPartitionCanvas2d } from './canvas_linear_renderers';
 import { renderPartitionCanvas2d } from './canvas_renderers';
 import { renderWrappedPartitionCanvas2d } from './canvas_wrapped_renderers';
-import { Color, Colors } from '../../../../common/colors';
+import type { Color } from '../../../../common/colors';
+import { Colors } from '../../../../common/colors';
 import { ScreenReaderSummary, ScreenReaderPartitionTable } from '../../../../components/accessibility';
 import { clearCanvas } from '../../../../renderers/canvas';
-import { SettingsSpec } from '../../../../specs/settings';
+import type { SettingsSpec } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
-import {
-  A11ySettings,
-  DEFAULT_A11Y_SETTINGS,
-  getA11ySettingsSelector,
-} from '../../../../state/selectors/get_accessibility_config';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
+import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { Dimensions } from '../../../../utils/dimensions';
+import type { Dimensions } from '../../../../utils/dimensions';
 import { MODEL_KEY } from '../../layout/config';
-import {
-  hasMostlyRTLLabels,
-  nullShapeViewModel,
-  QuadViewModel,
-  ShapeViewModel,
-  SmallMultiplesDescriptors,
-} from '../../layout/types/viewmodel_types';
+import type { QuadViewModel, ShapeViewModel, SmallMultiplesDescriptors } from '../../layout/types/viewmodel_types';
+import { hasMostlyRTLLabels, nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { INPUT_KEY } from '../../layout/utils/group_by_rollup';
 import { isSimpleLinear, isWaffle } from '../../layout/viewmodel/viewmodel';
 import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';

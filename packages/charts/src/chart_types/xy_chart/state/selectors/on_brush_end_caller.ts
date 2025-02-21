@@ -6,28 +6,32 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from '@reduxjs/toolkit';
+import type { Selector } from '@reduxjs/toolkit';
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { getPlotAreaRestrictedPoint, getPointsConstraintToSinglePanel, PanelPoints } from './get_brush_area';
+import type { PanelPoints } from './get_brush_area';
+import { getPlotAreaRestrictedPoint, getPointsConstraintToSinglePanel } from './get_brush_area';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getSeriesSpecsSelector } from './get_specs';
 import { isBrushAvailableSelector } from './is_brush_available';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { ChartType } from '../../..';
-import { SmallMultipleScales } from '../../../../common/panel_utils';
-import { ScaleContinuous } from '../../../../scales';
+import type { SmallMultipleScales } from '../../../../common/panel_utils';
+import type { ScaleContinuous } from '../../../../scales';
 import { isContinuousScale } from '../../../../scales/types';
-import { SeriesSpecs, BrushAxis, GroupBrushExtent, XYBrushEvent } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { SeriesSpecs, GroupBrushExtent, XYBrushEvent } from '../../../../specs';
+import { BrushAxis } from '../../../../specs';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { DragState } from '../../../../state/pointer_states';
+import type { DragState } from '../../../../state/pointer_states';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { clamp, Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
-import { hasDragged, DragCheckProps } from '../../../../utils/events';
-import { GroupId } from '../../../../utils/ids';
+import type { Rotation } from '../../../../utils/common';
+import { clamp } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { DragCheckProps } from '../../../../utils/events';
+import { hasDragged } from '../../../../utils/events';
+import type { GroupId } from '../../../../utils/ids';
 import { hasHistogramBarSpec } from '../../domains/y_domain';
 import { isVerticalRotation } from '../utils/common';
 

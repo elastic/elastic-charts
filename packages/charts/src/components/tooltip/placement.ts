@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Placement as PopperPlacement } from '@popperjs/core/lib/enums';
-import { CSSProperties } from 'react';
+import type { Placement as PopperPlacement } from '@popperjs/core/lib/enums';
+import type { CSSProperties } from 'react';
 
-import { TooltipStyle } from '../../utils/themes/theme';
+import type { TooltipStyle } from '../../utils/themes/theme';
 
 /** @internal */
 export function getStylesFromPlacement(

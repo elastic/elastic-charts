@@ -7,7 +7,7 @@
  */
 
 import { getSortedData } from './sparkline';
-import { MetricWTrend } from '../../specs';
+import type { MetricWTrend } from '../../specs';
 
 const sampleData = [
   { x: 0, y: 1 },

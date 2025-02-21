@@ -8,7 +8,8 @@
 
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { DataSeries, getSeriesKey } from '../../utils/series';
+import type { DataSeries } from '../../utils/series';
+import { getSeriesKey } from '../../utils/series';
 
 /** @internal */
 export const getSiDataSeriesMapSelector = createCustomCachedSelector(

@@ -13,7 +13,7 @@ import { colorToRgba, overrideOpacity, RGBATupleToString } from '../../common/co
 import { clamp, mergePartial } from '../../utils/common';
 import { Logger } from '../../utils/logger';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
-import { PartialTheme, Theme } from '../../utils/themes/theme';
+import type { PartialTheme, Theme } from '../../utils/themes/theme';
 import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */

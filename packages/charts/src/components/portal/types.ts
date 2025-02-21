@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { RefObject } from 'react';
-import { $Values } from 'utility-types';
+import type { RefObject } from 'react';
+import type { $Values } from 'utility-types';
 
-import { Padding } from '../../utils/dimensions';
+import type { Padding } from '../../utils/dimensions';
 
 /**
  * Placement used in positioning tooltip

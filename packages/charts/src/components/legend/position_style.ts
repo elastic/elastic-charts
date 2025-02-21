@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
-import { LegendSpec, LegendPositionConfig } from '../../specs/settings';
+import type { LegendSpec, LegendPositionConfig } from '../../specs/settings';
 import { LayoutDirection, Position } from '../../utils/common';
-import { Dimensions, Size } from '../../utils/dimensions';
+import type { Dimensions, Size } from '../../utils/dimensions';
 
 const INSIDE_PADDING = 10;
 

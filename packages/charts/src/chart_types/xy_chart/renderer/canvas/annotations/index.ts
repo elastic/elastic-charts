@@ -8,21 +8,26 @@
 
 import { renderLineAnnotations } from './lines';
 import { renderRectAnnotations } from './rect';
-import { Rotation } from '../../../../../utils/common';
-import { Dimensions } from '../../../../../utils/dimensions';
-import { AnnotationId } from '../../../../../utils/ids';
+import type { Rotation } from '../../../../../utils/common';
+import type { Dimensions } from '../../../../../utils/dimensions';
+import type { AnnotationId } from '../../../../../utils/ids';
 import {
   mergeWithDefaultAnnotationLine,
   mergeWithDefaultAnnotationRect,
 } from '../../../../../utils/themes/merge_utils';
-import { LineAnnotationStyle, RectAnnotationStyle, SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
-import { AnnotationLineProps } from '../../../annotations/line/types';
-import { AnnotationRectProps } from '../../../annotations/rect/types';
-import { AnnotationDimensions } from '../../../annotations/types';
+import type {
+  LineAnnotationStyle,
+  RectAnnotationStyle,
+  SharedGeometryStateStyle,
+} from '../../../../../utils/themes/theme';
+import type { AnnotationLineProps } from '../../../annotations/line/types';
+import type { AnnotationRectProps } from '../../../annotations/rect/types';
+import type { AnnotationDimensions } from '../../../annotations/types';
 import { getSpecsById } from '../../../state/utils/spec';
-import { AnnotationSpec, isLineAnnotation, isRectAnnotation } from '../../../utils/specs';
+import type { AnnotationSpec } from '../../../utils/specs';
+import { isLineAnnotation, isRectAnnotation } from '../../../utils/specs';
 import { getAnnotationHoverParamsFn } from '../../common/utils';
-import { AnimationContext } from '../animations';
+import type { AnimationContext } from '../animations';
 
 /** @internal */
 export function renderAnnotations(

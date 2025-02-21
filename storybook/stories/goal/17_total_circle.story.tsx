@@ -12,7 +12,7 @@ import React from 'react';
 import { Chart, Goal, Settings } from '@elastic/charts';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getBandFillColorFn } from '../utils/utils';
 

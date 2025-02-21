@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Attributes } from '../../../common/kingly';
-import { ColumnarViewModel } from '../flame_api';
+import type { Attributes } from '../../../common/kingly';
+import type { ColumnarViewModel } from '../flame_api';
 
 /** @internal */
 export function uploadToWebgl(

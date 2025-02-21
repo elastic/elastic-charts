@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AnnotationId, AxisId, GroupId } from './ids';
+import type { AnnotationId, AxisId, GroupId } from './ids';
 
 describe('IDs', () => {
   test('ids should differ depending on entity', () => {

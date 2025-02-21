@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
+import type { RecursivePartial } from './common';
 import {
   clamp,
   compareByValueAsc,
   hasPartialObjectToMerge,
   mergePartial,
-  RecursivePartial,
   getPartialValue,
   getAllKeys,
   shallowClone,

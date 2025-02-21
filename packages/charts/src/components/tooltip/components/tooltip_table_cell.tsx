@@ -7,9 +7,10 @@
  */
 
 import classNames from 'classnames';
-import React, { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+import React from 'react';
 
-import { TooltipCellStyle } from './types';
+import type { TooltipCellStyle } from './types';
 import { isNonNullablePrimitiveValue } from '../../../utils/common';
 
 /** @public */

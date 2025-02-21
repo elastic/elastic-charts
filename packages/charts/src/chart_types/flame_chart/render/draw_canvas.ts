@@ -9,8 +9,8 @@
 import { BOX_GAP_HORIZONTAL, BOX_GAP_VERTICAL, roundUpSize } from './common';
 import { DEFAULT_FONT_FAMILY } from '../../../common/default_theme_attributes';
 import { cssFontShorthand } from '../../../common/text_utils';
-import { LabelAccessor } from '../../../utils/common';
-import { ColumnarViewModel } from '../flame_api';
+import type { LabelAccessor } from '../../../utils/common';
+import type { ColumnarViewModel } from '../flame_api';
 
 const scale = (value: number, from: number, to: number) => (value - from) / (to - from);
 const formatter: LabelAccessor<string> = (label: string) => label; // todo loop in API value

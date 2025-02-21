@@ -7,7 +7,8 @@
  */
 
 import classNames from 'classnames';
-import React, { SVGAttributes, memo } from 'react';
+import type { SVGAttributes } from 'react';
+import React, { memo } from 'react';
 
 import { AlertIcon } from './assets/alert';
 import { DotIcon } from './assets/dot';

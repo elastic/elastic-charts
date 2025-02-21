@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { mount, ReactWrapper } from 'enzyme';
+import type { ReactWrapper } from 'enzyme';
+import { mount } from 'enzyme';
 import React from 'react';
 
-import { DebugState } from './types';
+import type { DebugState } from './types';
 import { BarSeries } from '../chart_types/xy_chart/specs/bar_series';
 import { Chart } from '../components/chart';
 import { MockSeriesSpec } from '../mocks/specs/specs';

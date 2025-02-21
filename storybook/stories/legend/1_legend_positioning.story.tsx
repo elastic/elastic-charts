@@ -12,7 +12,7 @@ import { Axis, BarSeries, Chart, LegendValue, Position, ScaleType, Settings } fr
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
 import { getLegendSizeKnob } from './legend_size_knob';
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

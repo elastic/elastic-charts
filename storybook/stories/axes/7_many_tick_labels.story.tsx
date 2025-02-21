@@ -9,10 +9,11 @@
 import { number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, RecursivePartial, AxisStyle } from '@elastic/charts';
+import type { RecursivePartial, AxisStyle } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {

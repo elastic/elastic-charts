@@ -7,14 +7,14 @@
  */
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { SmallMultipleScales } from '../../../../common/panel_utils';
-import { ScaleBand } from '../../../../scales/scale_band';
+import type { SmallMultipleScales } from '../../../../common/panel_utils';
+import type { ScaleBand } from '../../../../scales/scale_band';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
-import { Dimensions } from '../../../../utils/dimensions';
-import { Point } from '../../../../utils/point';
-import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { Point } from '../../../../utils/point';
+import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 
 /** @internal */
 export type PointerPosition = Point & { horizontalPanelValue: PrimitiveValue; verticalPanelValue: PrimitiveValue };

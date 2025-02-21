@@ -12,17 +12,8 @@ import path from 'path';
 import { getMetadata, setMetadata } from 'buildkite-agent-node';
 
 import { updateCheckStatus } from './../../utils/github';
-import {
-  exec,
-  downloadArtifacts,
-  startGroup,
-  yarnInstall,
-  getNumber,
-  decompress,
-  compress,
-  bkEnv,
-  ScreenshotMeta,
-} from '../../utils';
+import type { ScreenshotMeta } from '../../utils';
+import { exec, downloadArtifacts, startGroup, yarnInstall, getNumber, decompress, compress, bkEnv } from '../../utils';
 import { ENV_URL } from '../../utils/constants';
 
 const jobIndex = getNumber(process.env.BUILDKITE_PARALLEL_JOB);

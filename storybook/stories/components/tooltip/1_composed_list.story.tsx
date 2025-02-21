@@ -10,7 +10,8 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { TooltipTable, TooltipTableColumn } from '@elastic/charts';
+import type { TooltipTableColumn } from '@elastic/charts';
+import { TooltipTable } from '@elastic/charts';
 import { isDefined } from '@elastic/charts/src/utils/common';
 
 import { tableSimple, simple, long } from './data';

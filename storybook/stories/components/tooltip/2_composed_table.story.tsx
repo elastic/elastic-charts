@@ -9,6 +9,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { TooltipSpec, TooltipCellStyle } from '@elastic/charts';
 import {
   TooltipTable,
   TooltipTableBody,
@@ -17,8 +18,6 @@ import {
   TooltipTableRow,
   TooltipTableCell,
   TooltipTableColorCell,
-  TooltipSpec,
-  TooltipCellStyle,
 } from '@elastic/charts';
 
 import { tableSimple } from './data';

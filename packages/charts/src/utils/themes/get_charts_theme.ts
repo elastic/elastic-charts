@@ -10,7 +10,7 @@ import { AMSTERDAM_DARK_THEME } from './amsterdam_dark_theme';
 import { AMSTERDAM_LIGHT_THEME } from './amsterdam_light_theme';
 import { DARK_THEME } from './dark_theme';
 import { LIGHT_THEME } from './light_theme';
-import { Theme } from './theme';
+import type { Theme } from './theme';
 
 /**
  * Returns charts `Theme` given theme `name` and `darkMode`

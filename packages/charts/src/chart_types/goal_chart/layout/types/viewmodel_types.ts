@@ -7,12 +7,12 @@
  */
 
 import { getGreensColorScale } from '../../../../common/color_library_wrappers';
-import { Pixels, PointObject } from '../../../../common/geometry';
+import type { Pixels, PointObject } from '../../../../common/geometry';
 import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { ValueFormatter } from '../../../../utils/common';
+import type { ValueFormatter } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Theme } from '../../../../utils/themes/theme';
-import { BandFillColorAccessorInput, GoalLabelAccessor } from '../../specs';
+import type { Theme } from '../../../../utils/themes/theme';
+import type { BandFillColorAccessorInput, GoalLabelAccessor } from '../../specs';
 import { GoalSubtype } from '../../specs/constants';
 
 /** @internal */

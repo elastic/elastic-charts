@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { EmitterWebhookEventName, EmitterWebhookEvent } from '@octokit/webhooks';
-import { WebhookEvent } from '@octokit/webhooks-types'; // eslint-disable-line import/no-unresolved
-import { Context, Probot } from 'probot';
+import type { EmitterWebhookEventName, EmitterWebhookEvent } from '@octokit/webhooks';
+import type { WebhookEvent } from '@octokit/webhooks-types'; // eslint-disable-line import/no-unresolved
+import type { Context, Probot } from 'probot';
 
 export type EventSetupFn = (app: Probot) => void;
 

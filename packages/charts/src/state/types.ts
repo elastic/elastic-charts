@@ -7,19 +7,19 @@
  */
 
 import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
-import {
+import type {
   AnnotationType,
   BaseDatum,
   BulletSubtype,
   LineAnnotationDatum,
   RectAnnotationDatum,
 } from '../chart_types/specs';
-import { Pixels } from '../common/geometry';
-import { Accessor } from '../utils/accessor';
+import type { Pixels } from '../common/geometry';
+import type { Accessor } from '../utils/accessor';
 import type { Datum, Position } from '../utils/common';
-import { GenericDomain } from '../utils/domain';
+import type { GenericDomain } from '../utils/domain';
 import type { GeometryValue } from '../utils/geometry';
-import { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
+import type { LineAnnotationStyle, RectAnnotationStyle } from '../utils/themes/theme';
 
 /** @public */
 export interface DebugStateAxis {

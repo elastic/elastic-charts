@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { NumericScale } from '../../../projections/scale';
+import type { NumericScale } from '../../../projections/scale';
 
 /** @internal */
 export type BarRow = { value: number };

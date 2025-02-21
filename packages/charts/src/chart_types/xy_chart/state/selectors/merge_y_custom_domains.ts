@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Rotation } from '../../../../utils/common';
-import { GroupId } from '../../../../utils/ids';
+import type { Rotation } from '../../../../utils/common';
+import type { GroupId } from '../../../../utils/ids';
 import { isXDomain } from '../../utils/axis_utils';
-import { AxisSpec, YDomainRange } from '../../utils/specs';
+import type { AxisSpec, YDomainRange } from '../../utils/specs';
 
 /** @internal */
 export function mergeYCustomDomainsByGroupId(

@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import { ChartType } from '../chart_types';
+import type { ChartType } from '../chart_types';
 
 /** @public */
 export const SpecType = Object.freeze({

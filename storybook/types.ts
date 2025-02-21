@@ -7,11 +7,11 @@
  */
 
 import type { Parameters as SBParameters } from '@storybook/addons';
-import { ArgTypes, Args, StoryContext as SBStoryContext } from '@storybook/react';
-import { CSSProperties, ReactElement } from 'react';
-import { StoryBackgroundParameter, BackgroundGlobals } from 'storybook-addon-background-toggle';
-import { StoryThemeParameter, ThemeGlobals } from 'storybook-addon-theme-toggle';
-import { StoryTogglesParameter, TogglesGlobals } from 'storybook-addon-toggles';
+import type { ArgTypes, Args, StoryContext as SBStoryContext } from '@storybook/react';
+import type { CSSProperties, ReactElement } from 'react';
+import type { StoryBackgroundParameter, BackgroundGlobals } from 'storybook-addon-background-toggle';
+import type { StoryThemeParameter, ThemeGlobals } from 'storybook-addon-theme-toggle';
+import type { StoryTogglesParameter, TogglesGlobals } from 'storybook-addon-toggles';
 
 /**
  * Parameter accessible at the story level

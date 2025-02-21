@@ -6,16 +6,19 @@
  * Side Public License, v 1.
  */
 
-import { LegendItemExtraValues, LegendValue } from '../../../common/legend';
-import { SeriesKey } from '../../../common/series_id';
-import { TooltipValue } from '../../../specs';
-import { PointerValue } from '../../../state/types';
+import type { LegendItemExtraValues } from '../../../common/legend';
+import { LegendValue } from '../../../common/legend';
+import type { SeriesKey } from '../../../common/series_id';
+import type { TooltipValue } from '../../../specs';
+import type { PointerValue } from '../../../state/types';
 import { getAccessorFormatLabel } from '../../../utils/accessor';
 import { isDefined } from '../../../utils/common';
-import { BandedAccessorType, IndexedGeometry } from '../../../utils/geometry';
+import type { IndexedGeometry } from '../../../utils/geometry';
+import { BandedAccessorType } from '../../../utils/geometry';
 import { defaultTickFormatter } from '../utils/axis_utils';
 import { getSeriesName } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, isAreaSeriesSpec, isBarSeriesSpec, TickFormatterOptions } from '../utils/specs';
+import type { AxisSpec, BasicSeriesSpec, TickFormatterOptions } from '../utils/specs';
+import { isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 
 /** @internal */
 export const Y0_ACCESSOR_POSTFIX = ' - lower';

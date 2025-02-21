@@ -10,13 +10,12 @@ import { action } from '@storybook/addon-actions';
 import { boolean, select, number } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { Datum, PartialTheme } from '@elastic/charts';
 import {
   Chart,
-  Datum,
   GroupBy,
   LegendStrategy,
   LegendValue,
-  PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
@@ -26,7 +25,7 @@ import {
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalPastel12, countryLookup, productLookup, regionLookup } from '../utils/utils';
 

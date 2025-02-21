@@ -6,25 +6,31 @@
  * Side Public License, v 1.
  */
 
-import { ScaleLinear, scaleLinear } from 'd3-scale';
+import type { ScaleLinear } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 
 import { getBulletSpec } from './get_bullet_spec';
-import { BulletLayout, BulletHeaderLayout, getLayout } from './get_layout';
-import { ChromaColorScale, Color } from '../../../common/colors';
-import { Rect } from '../../../geoms/types';
+import type { BulletLayout, BulletHeaderLayout } from './get_layout';
+import { getLayout } from './get_layout';
+import type { ChromaColorScale, Color } from '../../../common/colors';
+import type { Rect } from '../../../geoms/types';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getChartThemeSelector } from '../../../state/selectors/get_chart_theme';
 import { getResolvedBackgroundColorSelector } from '../../../state/selectors/get_resolved_background_color';
 import { isWithinRange } from '../../../utils/common';
-import { Size } from '../../../utils/dimensions';
-import { GenericDomain, Range } from '../../../utils/domain';
-import { Point } from '../../../utils/point';
+import type { Size } from '../../../utils/dimensions';
+import type { GenericDomain, Range } from '../../../utils/domain';
+import type { Point } from '../../../utils/point';
 import { ANGULAR_TICK_INTERVAL, TICK_INTERVAL } from '../renderer/canvas/constants';
-import { BulletDatum, BulletSpec, BulletSubtype } from '../spec';
-import { BulletStyle, GRAPH_PADDING } from '../theme';
+import type { BulletDatum, BulletSpec } from '../spec';
+import { BulletSubtype } from '../spec';
+import type { BulletStyle } from '../theme';
+import { GRAPH_PADDING } from '../theme';
 import { getAngledChartSizing, getAnglesBySize } from '../utils/angular';
-import { ColorTick, getColorScaleWithBands } from '../utils/color';
-import { TickOptions, getTicks } from '../utils/ticks';
+import type { ColorTick } from '../utils/color';
+import { getColorScaleWithBands } from '../utils/color';
+import type { TickOptions } from '../utils/ticks';
+import { getTicks } from '../utils/ticks';
 
 /** @internal */
 export type BulletPanelDimensions = {

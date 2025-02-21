@@ -6,14 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
-import { Datum, stripUndefined } from '../../../utils/common';
-import { AreaSeriesSpec, HistogramModeAlignments, DEFAULT_GLOBAL_ID, SeriesType, BaseDatum } from '../utils/specs';
+import type { SFProps } from '../../../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../../../state/spec_factory';
+import type { Datum } from '../../../utils/common';
+import { stripUndefined } from '../../../utils/common';
+import type { AreaSeriesSpec, BaseDatum } from '../utils/specs';
+import { HistogramModeAlignments, DEFAULT_GLOBAL_ID, SeriesType } from '../utils/specs';
 
 const buildProps = buildSFProps<AreaSeriesSpec>()(
   {

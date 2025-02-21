@@ -9,12 +9,12 @@
 import { getPanelClipping } from './panel_clipping';
 import { buildBarStyle } from './styles/bar';
 import { withPanelTransform } from './utils/panel_transform';
-import { LegendItem } from '../../../../common/legend';
+import type { LegendItem } from '../../../../common/legend';
 import { renderRect } from '../../../../renderers/canvas/primitives/rect';
-import { Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
-import { BarGeometry, PerPanel } from '../../../../utils/geometry';
-import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
+import type { Rotation } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { BarGeometry, PerPanel } from '../../../../utils/geometry';
+import type { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
 
 /** @internal */

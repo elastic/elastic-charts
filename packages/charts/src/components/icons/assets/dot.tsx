@@ -9,7 +9,7 @@
 import React from 'react';
 
 import { deepEqual } from '../../../utils/fast_deep_equal';
-import { IconComponentProps } from '../icon';
+import type { IconComponentProps } from '../icon';
 
 /** @internal */
 export class DotIcon extends React.Component<IconComponentProps> {

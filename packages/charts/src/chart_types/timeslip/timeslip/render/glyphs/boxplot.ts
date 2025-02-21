@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { NumericScale } from '../../../projections/scale';
+import type { NumericScale } from '../../../projections/scale';
 
 const goldenRatio = 1.618; // todo move it into constants
 

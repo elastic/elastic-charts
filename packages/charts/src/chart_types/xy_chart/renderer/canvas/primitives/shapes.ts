@@ -7,11 +7,11 @@
  */
 
 import { RGBATupleToString } from '../../../../../common/color_library_wrappers';
-import { Circle, Fill, Stroke } from '../../../../../geoms/types';
+import type { Circle, Fill, Stroke } from '../../../../../geoms/types';
 import { withContext } from '../../../../../renderers/canvas';
 import { MIN_STROKE_WIDTH } from '../../../../../renderers/canvas/primitives/line';
 import { degToRad } from '../../../../../utils/common';
-import { PointShape } from '../../../../../utils/themes/theme';
+import type { PointShape } from '../../../../../utils/themes/theme';
 import { ShapeRendererFn } from '../../shapes_paths';
 
 /** @internal */

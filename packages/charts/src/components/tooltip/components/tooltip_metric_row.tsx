@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React, { memo, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React, { memo } from 'react';
 
 type TooltipMetricRowProps = {
   label: string;

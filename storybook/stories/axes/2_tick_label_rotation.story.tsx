@@ -9,6 +9,7 @@
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { AxisStyle, RecursivePartial } from '@elastic/charts';
 import {
   AreaSeries,
   Axis,
@@ -16,13 +17,11 @@ import {
   Position,
   ScaleType,
   Settings,
-  AxisStyle,
-  RecursivePartial,
   LEGACY_CHART_MARGINS,
   DEFAULT_CHART_PADDING,
 } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

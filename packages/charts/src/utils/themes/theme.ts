@@ -6,17 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { CSSProperties } from 'react';
-import { $Values } from 'utility-types';
+import type { CSSProperties } from 'react';
+import type { $Values } from 'utility-types';
 
-import { PartitionStyle } from './partition';
-import { BulletStyle } from '../../chart_types/bullet_graph/theme';
-import { Color } from '../../common/colors';
-import { Pixels, Radian, Ratio } from '../../common/geometry';
-import { Font, FontStyle } from '../../common/text_utils';
-import { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
-import { Margins, Padding, SimplePadding } from '../dimensions';
-import { Point } from '../point';
+import type { PartitionStyle } from './partition';
+import type { BulletStyle } from '../../chart_types/bullet_graph/theme';
+import type { Color } from '../../common/colors';
+import type { Pixels, Radian, Ratio } from '../../common/geometry';
+import type { Font, FontStyle } from '../../common/text_utils';
+import type { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
+import type { Margins, Padding, SimplePadding } from '../dimensions';
+import type { Point } from '../point';
 
 /** @public */
 export interface Visible {

@@ -6,15 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
-import { GoalSubtype } from './constants';
+import type { GoalSubtype } from './constants';
 import { ChartType } from '../..';
-import { Color } from '../../../common/colors';
+import type { Color } from '../../../common/colors';
 import { TAU } from '../../../common/constants';
-import { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
-import { LabelAccessor, round, stripUndefined, ValueFormatter } from '../../../utils/common';
+import type { Spec } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { SFProps } from '../../../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../../../state/spec_factory';
+import type { LabelAccessor, ValueFormatter } from '../../../utils/common';
+import { round, stripUndefined } from '../../../utils/common';
 import { Logger } from '../../../utils/logger';
 import { defaultGoalSpec } from '../layout/types/viewmodel_types';
 

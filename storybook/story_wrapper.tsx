@@ -7,11 +7,12 @@
  */
 
 import { EuiProvider, EuiMarkdownFormat, EuiFlexGroup, EuiFlexItem, EuiHorizontalRule, EuiText } from '@elastic/eui';
-import { DecoratorFunction } from '@storybook/addons';
+import type { DecoratorFunction } from '@storybook/addons';
 import classNames from 'classnames';
-import React, { CSSProperties, FC, PropsWithChildren } from 'react';
+import type { CSSProperties, FC, PropsWithChildren } from 'react';
+import React from 'react';
 
-import { StoryGlobals, StoryParameters } from './types';
+import type { StoryGlobals, StoryParameters } from './types';
 import { ThemeId, ThemeIdProvider, BackgroundIdProvider } from './use_base_theme';
 
 const ResizeWrapper: FC<PropsWithChildren<{ resize: StoryParameters['resize'] }>> = ({ resize, children }) =>

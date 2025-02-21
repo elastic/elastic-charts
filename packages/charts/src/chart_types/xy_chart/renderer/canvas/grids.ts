@@ -8,10 +8,10 @@
 
 import { withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
-import { Dimensions } from '../../../../utils/dimensions';
-import { AxisStyle } from '../../../../utils/themes/theme';
-import { LinesGrid } from '../../utils/grid_lines';
-import { AxisSpec } from '../../utils/specs';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { AxisStyle } from '../../../../utils/themes/theme';
+import type { LinesGrid } from '../../utils/grid_lines';
+import type { AxisSpec } from '../../utils/specs';
 
 interface GridProps {
   sharedAxesStyle: AxisStyle;

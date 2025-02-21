@@ -7,8 +7,8 @@
  */
 
 import { useMemo, useState } from 'react';
-import { BackgroundParameter } from 'storybook-addon-background-toggle';
-import { ThemeParameter } from 'storybook-addon-theme-toggle';
+import type { BackgroundParameter } from 'storybook-addon-background-toggle';
+import type { ThemeParameter } from 'storybook-addon-theme-toggle';
 
 import type { StoryGlobals, StoryParameters } from './../../../storybook/types';
 import { storybookParameters as globalParams } from '../../../storybook/parameters';

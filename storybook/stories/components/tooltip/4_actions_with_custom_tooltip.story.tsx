@@ -10,6 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { TooltipAction, TooltipSpec, SeriesIdentifier } from '@elastic/charts';
 import {
   TooltipTable,
   TooltipTableBody,
@@ -17,10 +18,7 @@ import {
   TooltipTableRow,
   TooltipTableCell,
   TooltipTableColorCell,
-  TooltipAction,
-  TooltipSpec,
   useTooltipContext,
-  SeriesIdentifier,
 } from '@elastic/charts';
 
 import { long } from './data';

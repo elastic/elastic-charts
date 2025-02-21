@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../common/colors';
-import { SeriesKey } from '../common/series_id';
+import type { Color } from '../common/colors';
+import type { SeriesKey } from '../common/series_id';
 
 /** @internal */
 export interface ColorOverrides {

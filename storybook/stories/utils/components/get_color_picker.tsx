@@ -6,18 +6,12 @@
  * Side Public License, v 1.
  */
 
-import {
-  EuiButton,
-  EuiButtonEmpty,
-  EuiColorPicker,
-  EuiFlexItem,
-  EuiSpacer,
-  EuiWrappingPopover,
-  PopoverAnchorPosition,
-} from '@elastic/eui';
-import React, { FC } from 'react';
+import type { PopoverAnchorPosition } from '@elastic/eui';
+import { EuiButton, EuiButtonEmpty, EuiColorPicker, EuiFlexItem, EuiSpacer, EuiWrappingPopover } from '@elastic/eui';
+import type { FC } from 'react';
+import React from 'react';
 
-import { LegendColorPickerProps } from '@elastic/charts';
+import type { LegendColorPickerProps } from '@elastic/charts';
 
 export const getColorPicker =
   (anchorPosition: PopoverAnchorPosition = 'leftCenter'): FC<LegendColorPickerProps> =>

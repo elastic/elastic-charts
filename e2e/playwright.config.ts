@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { PlaywrightTestConfig, expect } from '@playwright/test';
+import type { PlaywrightTestConfig } from '@playwright/test';
+import { expect } from '@playwright/test';
 import * as pwExpect from 'expect-playwright';
 
 expect.extend(pwExpect.matchers);

@@ -10,11 +10,12 @@ import { action } from '@storybook/addon-actions';
 import { number, boolean, button, color, select } from '@storybook/addon-knobs';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { Chart, isMetricElementEvent, Metric, MetricDatum, Settings } from '@elastic/charts';
+import type { MetricDatum } from '@elastic/charts';
+import { Chart, isMetricElementEvent, Metric, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();

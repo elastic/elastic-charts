@@ -9,21 +9,12 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Chart,
-  Datum,
-  Partition,
-  PartitionLayout,
-  Settings,
-  CustomTooltip as CT,
-  PartialTheme,
-  defaultPartitionValueFormatter,
-  Tooltip,
-} from '@elastic/charts';
+import type { Datum, CustomTooltip as CT, PartialTheme } from '@elastic/charts';
+import { Chart, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter, Tooltip } from '@elastic/charts';
 import { CHILDREN_KEY, entryValue, PARENT_KEY } from '@elastic/charts/src';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';

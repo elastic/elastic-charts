@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import { addTime, propsFromCalendarObj, CalendarUnit } from './chrono';
+import type { CalendarUnit } from './chrono';
+import { addTime, propsFromCalendarObj } from './chrono';
 
 const timeProps = ['epochSeconds', 'dayOfWeek'];
 

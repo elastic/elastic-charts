@@ -12,10 +12,10 @@ import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHighlightedAreaSelector, getHighlightedDataSelector } from './get_highlighted_area';
 import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
-import { LegendItem } from '../../../../common/legend';
+import type { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { DebugState, DebugStateLegend } from '../../../../state/types';
+import type { DebugState, DebugStateLegend } from '../../../../state/types';
 import { Position } from '../../../../utils/common';
 
 /**

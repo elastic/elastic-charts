@@ -6,9 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { getProjectedPointerPositionSelector, PointerPosition } from './get_projected_pointer_position';
-import { SmallMultipleScales, getPanelSize } from '../../../../common/panel_utils';
-import { SettingsSpec } from '../../../../specs/settings';
+import type { PointerPosition } from './get_projected_pointer_position';
+import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
+import type { SmallMultipleScales } from '../../../../common/panel_utils';
+import { getPanelSize } from '../../../../common/panel_utils';
+import type { SettingsSpec } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';

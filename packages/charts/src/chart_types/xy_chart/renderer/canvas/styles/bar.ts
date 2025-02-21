@@ -7,9 +7,9 @@
  */
 
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
-import { Stroke, Fill, Rect } from '../../../../../geoms/types';
+import type { Stroke, Fill, Rect } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
-import { GeometryStateStyle, RectStyle, RectBorderStyle } from '../../../../../utils/themes/theme';
+import type { GeometryStateStyle, RectStyle, RectBorderStyle } from '../../../../../utils/themes/theme';
 import { getTextureStyles } from '../../../utils/texture';
 
 /**

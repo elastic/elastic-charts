@@ -6,19 +6,21 @@
  * Side Public License, v 1.
  */
 
-import { createAppAuth, StrategyOptions } from '@octokit/auth-app';
-import { components } from '@octokit/openapi-types';
+import type { StrategyOptions } from '@octokit/auth-app';
+import { createAppAuth } from '@octokit/auth-app';
+import type { components } from '@octokit/openapi-types';
 import { retry } from '@octokit/plugin-retry';
 import { Octokit } from '@octokit/rest';
 import { getMetadata } from 'buildkite-agent-node';
 import ghpages from 'gh-pages';
-import { minimatch, MinimatchOptions } from 'minimatch';
-import { Optional } from 'utility-types';
+import type { MinimatchOptions } from 'minimatch';
+import { minimatch } from 'minimatch';
+import type { Optional } from 'utility-types';
 
 import { getJobCheckName } from './build';
 import { bkEnv } from './buildkite';
-import { UpdateDeploymentCommentOptions } from './deployment';
-import { CheckStatusOptions, CreateCheckOptions } from './octokit';
+import type { UpdateDeploymentCommentOptions } from './deployment';
+import type { CheckStatusOptions, CreateCheckOptions } from './octokit';
 
 if (!process.env.GITHUB_AUTH) throw new Error('GITHUB_AUTH env variable must be defined');
 

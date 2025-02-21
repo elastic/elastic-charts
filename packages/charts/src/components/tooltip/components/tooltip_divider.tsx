@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React, { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
+import React from 'react';
 
 interface TooltipDividerProps {
   margin?: CSSProperties['margin'];

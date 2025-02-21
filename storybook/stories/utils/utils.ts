@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-import _, { Dictionary, NumericDictionary } from 'lodash';
+import type { Dictionary, NumericDictionary } from 'lodash';
+import _ from 'lodash';
 import seedrandom from 'seedrandom';
 
-import { BandFillColorAccessorInput } from '@elastic/charts';
+import type { BandFillColorAccessorInput } from '@elastic/charts';
 import { arrayToLookup, hueInterpolator } from '@elastic/charts/src/common/color_calcs';
-import { Color } from '@elastic/charts/src/common/colors';
+import type { Color } from '@elastic/charts/src/common/colors';
 import {
   countryDimension,
   productDimension,

@@ -9,9 +9,10 @@
 import fs from 'fs';
 import path from 'path';
 
-import { InstallationAccessTokenAuthentication, InstallationAuthOptions } from '@octokit/auth-app';
+import type { InstallationAccessTokenAuthentication, InstallationAuthOptions } from '@octokit/auth-app';
 import { setMetadata } from 'buildkite-agent-node';
 
+import type { ScreenshotMeta } from '../../utils';
 import {
   bkEnv,
   exec,
@@ -22,7 +23,6 @@ import {
   compress,
   decompress,
   octokit,
-  ScreenshotMeta,
   updateCheckStatus,
   jobStateMapping,
   JobState,

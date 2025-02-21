@@ -6,11 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { GeometriesCounts } from './types';
-import { LegendItem } from '../../../../common/legend';
-import { getDistance, Rotation } from '../../../../utils/common';
-import { Point } from '../../../../utils/point';
-import { BasicSeriesSpec, SeriesType } from '../../utils/specs';
+import type { GeometriesCounts } from './types';
+import type { LegendItem } from '../../../../common/legend';
+import type { Rotation } from '../../../../utils/common';
+import { getDistance } from '../../../../utils/common';
+import type { Point } from '../../../../utils/point';
+import type { BasicSeriesSpec } from '../../utils/specs';
+import { SeriesType } from '../../utils/specs';
 
 /** @internal */
 export const MAX_ANIMATABLE_BARS = 300;

@@ -21,10 +21,10 @@
  * THIS SOFTWARE.
  */
 
-import { ScaleContinuousNumeric } from 'd3-scale';
+import type { ScaleContinuousNumeric } from 'd3-scale';
 
 import { isNil } from '../../../utils/common';
-import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
+import type { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 
 const e10 = Math.sqrt(50);
 const e5 = Math.sqrt(10);

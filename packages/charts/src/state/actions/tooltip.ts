@@ -8,7 +8,7 @@
 
 import { createAction } from '@reduxjs/toolkit';
 
-import { TooltipValue } from '../../specs';
+import type { TooltipValue } from '../../specs';
 
 /** @internal */
 export interface PinTooltipAction {

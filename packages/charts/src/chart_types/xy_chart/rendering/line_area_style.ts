@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { RecursivePartial, mergePartial } from '../../../utils/common';
-import { AreaSeriesStyle, LineSeriesStyle } from '../../../utils/themes/theme';
+import type { RecursivePartial } from '../../../utils/common';
+import { mergePartial } from '../../../utils/common';
+import type { AreaSeriesStyle, LineSeriesStyle } from '../../../utils/themes/theme';
 
 /** @internal */
 export function getLineSeriesStyles(

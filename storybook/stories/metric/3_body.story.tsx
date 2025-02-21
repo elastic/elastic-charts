@@ -12,18 +12,11 @@ import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import classNames from 'classnames';
 import React from 'react';
 
-import {
-  Chart,
-  isMetricElementEvent,
-  Metric,
-  MetricWProgress,
-  MetricWTrend,
-  MetricWNumber,
-  Settings,
-} from '@elastic/charts';
+import type { MetricWProgress, MetricWTrend, MetricWNumber } from '@elastic/charts';
+import { Chart, isMetricElementEvent, Metric, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { PointerStates } from '../pointer_states';
+import type { PointerStates } from '../pointer_states';
 
 /** @internal */
 export const getInitialPointerState = (): PointerStates => ({

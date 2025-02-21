@@ -6,11 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { Required } from 'utility-types';
+import type { Required } from 'utility-types';
 
 import { APCAContrast } from './apca_color_contrast';
-import { RgbaTuple, RGBATupleToString, RgbTuple } from './color_library_wrappers';
-import { ColorDefinition, Colors } from './colors';
+import type { RgbaTuple, RgbTuple } from './color_library_wrappers';
+import { RGBATupleToString } from './color_library_wrappers';
+import type { ColorDefinition } from './colors';
+import { Colors } from './colors';
 import { getWCAG2ContrastRatio } from './wcag2_color_contrast';
 
 /** @internal */

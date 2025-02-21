@@ -6,10 +6,11 @@
  * Side Public License, v 1.
  */
 
-import React, { MouseEventHandler, forwardRef, memo } from 'react';
+import type { MouseEventHandler } from 'react';
+import React, { forwardRef, memo } from 'react';
 
 import { LegendIcon } from './legend_icon';
-import { PointStyle } from '../../utils/themes/theme';
+import type { PointStyle } from '../../utils/themes/theme';
 import { Icon } from '../icons/icon';
 
 interface ColorProps {

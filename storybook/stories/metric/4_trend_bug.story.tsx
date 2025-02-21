@@ -10,20 +10,11 @@ import { action } from '@storybook/addon-actions';
 import { boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Chart,
-  isMetricElementEvent,
-  Metric,
-  MetricTrendShape,
-  MetricWProgress,
-  MetricWTrend,
-  MetricWText,
-  MetricWNumber,
-  Settings,
-} from '@elastic/charts';
+import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber } from '@elastic/charts';
+import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

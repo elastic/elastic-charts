@@ -8,7 +8,7 @@
 
 import { getSeriesSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { SeriesType } from '../../utils/specs';
+import type { SeriesType } from '../../utils/specs';
 
 /** @internal */
 export const getChartTypeDescriptionSelector = createCustomCachedSelector([getSeriesSpecsSelector], (specs): string => {

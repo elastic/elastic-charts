@@ -7,16 +7,18 @@
  */
 
 import { getBulletSpec } from './get_bullet_spec';
-import { BulletPanelDimensions, getPanelDimensions } from './get_panel_dimensions';
+import type { BulletPanelDimensions } from './get_panel_dimensions';
+import { getPanelDimensions } from './get_panel_dimensions';
 import { TAU } from '../../../common/constants';
-import { Radian } from '../../../common/geometry';
+import type { Radian } from '../../../common/geometry';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { isBetween, isFiniteNumber, roundTo, sortNumbers } from '../../../utils/common';
-import { ContinuousDomain, Range } from '../../../utils/domain';
-import { Point } from '../../../utils/point';
+import type { ContinuousDomain, Range } from '../../../utils/domain';
+import type { Point } from '../../../utils/point';
 import { BULLET_SIZE, HOVER_SLOP, TARGET_SIZE } from '../renderer/canvas/constants';
-import { BulletSpec, BulletSubtype } from '../spec';
+import type { BulletSpec } from '../spec';
+import { BulletSubtype } from '../spec';
 import { GRAPH_PADDING } from '../theme';
 import { getAngledChartSizing } from '../utils/angular';
 

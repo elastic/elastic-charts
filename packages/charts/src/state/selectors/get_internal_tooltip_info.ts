@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { TooltipInfo } from '../../components/tooltip/types';
-import { GlobalChartState } from '../chart_state';
+import type { TooltipInfo } from '../../components/tooltip/types';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalTooltipInfoSelector = (state: GlobalChartState): TooltipInfo | undefined => {

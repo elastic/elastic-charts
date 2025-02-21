@@ -9,23 +9,19 @@
 import { getPartitionSpecs } from './get_partition_specs';
 import { ChartType } from '../../..';
 import { getPredicateFn } from '../../../../common/predicate';
-import {
-  DEFAULT_SM_PANEL_PADDING,
-  GroupByAccessor,
-  GroupBySpec,
-  SmallMultiplesSpec,
-  SmallMultiplesStyle,
-} from '../../../../specs';
+import type { GroupByAccessor, GroupBySpec, SmallMultiplesSpec, SmallMultiplesStyle } from '../../../../specs';
+import { DEFAULT_SM_PANEL_PADDING } from '../../../../specs';
 import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSmallMultiplesSpecs } from '../../../../state/selectors/get_small_multiples_spec';
 import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
-import { Datum } from '../../../../utils/common';
-import { HierarchyOfArrays, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
+import type { Datum } from '../../../../utils/common';
+import type { HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
+import { NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { partitionTree } from '../../layout/viewmodel/hierarchy_of_arrays';
-import { PartitionSpec } from '../../specs';
+import type { PartitionSpec } from '../../specs';
 
 const getGroupBySpecs = createCustomCachedSelector([getSpecs], (specs) =>
   getSpecsFromStore<GroupBySpec>(specs, ChartType.Global, SpecType.IndexOrder),

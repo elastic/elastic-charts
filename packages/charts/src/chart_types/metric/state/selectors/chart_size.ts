@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { Dimensions } from '../../../../utils/dimensions';
+import type { Dimensions } from '../../../../utils/dimensions';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 

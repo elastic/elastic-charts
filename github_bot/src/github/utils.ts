@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { components } from '@octokit/openapi-types';
-import { RestEndpointMethodTypes } from '@octokit/rest';
+import type { components } from '@octokit/openapi-types';
+import type { RestEndpointMethodTypes } from '@octokit/rest';
 
 import { getConfig } from './../config';
 import { chartsRepoId } from './constants';
-import { ProbotEventContext, ProbotEventPayload } from './types';
+import type { ProbotEventContext, ProbotEventPayload } from './types';
 import { getBuildConfig } from '../build';
-import { Env } from '../env';
+import type { Env } from '../env';
 import { githubClient } from '../utils/github';
 
 type GetPullResponseData = RestEndpointMethodTypes['pulls']['get']['response']['data'];

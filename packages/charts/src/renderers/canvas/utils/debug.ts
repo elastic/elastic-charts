@@ -9,10 +9,10 @@
 import { withContext } from '../';
 import { overrideOpacity, RGBATupleToString } from '../../../common/color_library_wrappers';
 import { Colors } from '../../../common/colors';
-import { Fill, Stroke, Rect } from '../../../geoms/types';
+import type { Fill, Stroke, Rect } from '../../../geoms/types';
 import { renderRect } from '../../../renderers/canvas/primitives/rect';
 import { degToRad } from '../../../utils/common';
-import { Point } from '../../../utils/point';
+import type { Point } from '../../../utils/point';
 
 /** @internal */
 export const DEFAULT_DEBUG_FILL: Fill = {

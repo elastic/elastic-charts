@@ -12,7 +12,7 @@ import React from 'react';
 
 import { Chart, Settings, Axis, Position, BarSeries, ScaleType } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 class SimpleErrorBoundary extends React.Component<{ onError?: (error: Error) => void }, { hasError: boolean }> {

@@ -24,9 +24,9 @@ import {
 } from '../../../../common/aggregations';
 import { LegendValue } from '../../../../common/legend';
 import { ScaleType } from '../../../../scales/constants';
-import { XDomain } from '../../domains/types';
-import { DataSeries, DataSeriesDatum } from '../../utils/series';
-import { TickFormatter } from '../../utils/specs';
+import type { XDomain } from '../../domains/types';
+import type { DataSeries, DataSeriesDatum } from '../../utils/series';
+import type { TickFormatter } from '../../utils/specs';
 
 /**
  * This method return legend values from a DataSeries that correspond to the type of value requested.

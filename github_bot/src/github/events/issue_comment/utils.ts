@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { components } from '@octokit/openapi-types';
+import type { components } from '@octokit/openapi-types';
 
-import { ProbotEventContext } from '../../types';
+import type { ProbotEventContext } from '../../types';
 import { createIssueReaction } from '../../utils';
 
 export async function getPRFromComment(

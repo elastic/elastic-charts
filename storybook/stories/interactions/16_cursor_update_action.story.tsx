@@ -10,6 +10,7 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { PointerEvent } from '@elastic/charts';
 import {
   Axis,
   BarSeries,
@@ -17,7 +18,6 @@ import {
   Position,
   ScaleType,
   Settings,
-  PointerEvent,
   Placement,
   niceTimeFormatter,
   TooltipType,
@@ -29,7 +29,7 @@ import {
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 import { palettes } from '@elastic/charts/src/utils/themes/colors';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

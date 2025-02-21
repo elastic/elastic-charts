@@ -18,7 +18,7 @@ import {
   formatTimeObj,
   diffTimeObjs,
 } from './moment';
-import { CalendarIntervalUnit, DateTime, FixedIntervalUnit, Minutes, UnixTimestamp } from './types';
+import type { CalendarIntervalUnit, DateTime, FixedIntervalUnit, Minutes, UnixTimestamp } from './types';
 
 /** @internal */
 export function addTime(

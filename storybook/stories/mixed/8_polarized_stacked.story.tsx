@@ -23,7 +23,7 @@ import {
   LegendValue,
 } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { data } from '../utils/datasets/product_profits';
 import { customKnobs } from '../utils/knobs';

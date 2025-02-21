@@ -21,10 +21,10 @@
  * THIS SOFTWARE.
  */
 
-import { Series, SeriesPoint } from 'd3-shape';
+import type { Series, SeriesPoint } from 'd3-shape';
 
-import { DataSeriesDatum } from './series';
-import { SeriesKey } from '../../../common/series_id';
+import type { DataSeriesDatum } from './series';
+import type { SeriesKey } from '../../../common/series_id';
 
 type XValue = string | number;
 type SeriesValueMap = Map<SeriesKey, DataSeriesDatum & { isFiltered: boolean }>;

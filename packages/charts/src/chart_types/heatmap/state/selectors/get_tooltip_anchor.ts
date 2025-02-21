@@ -8,7 +8,7 @@
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getPickedShapes } from './picked_shapes';
-import { AnchorPosition } from '../../../../components/portal/types';
+import type { AnchorPosition } from '../../../../components/portal/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';

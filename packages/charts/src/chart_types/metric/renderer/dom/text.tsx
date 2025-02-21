@@ -7,13 +7,16 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
+import React from 'react';
 
-import { MetricTextDimensions, PADDING } from './text_measurements';
-import { Color } from '../../../../common/colors';
+import type { MetricTextDimensions } from './text_measurements';
+import { PADDING } from './text_measurements';
+import type { Color } from '../../../../common/colors';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
-import { MetricStyle } from '../../../../utils/themes/theme';
-import { isMetricWNumber, MetricDatum } from '../../specs';
+import type { MetricStyle } from '../../../../utils/themes/theme';
+import type { MetricDatum } from '../../specs';
+import { isMetricWNumber } from '../../specs';
 
 function lineClamp(maxLines: number): CSSProperties {
   return {

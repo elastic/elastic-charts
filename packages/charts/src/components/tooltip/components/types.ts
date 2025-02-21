@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum } from '../../../specs';
-import { TooltipValue } from '../../../specs/tooltip';
-import { Datum } from '../../../utils/common';
+import type { SeriesIdentifier } from '../../../common/series_id';
+import type { BaseDatum } from '../../../specs';
+import type { TooltipValue } from '../../../specs/tooltip';
+import type { Datum } from '../../../utils/common';
 
 /**
  * Styles to apply to tooltip table cell

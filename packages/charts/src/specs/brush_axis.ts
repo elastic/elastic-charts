@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
 /** @public */
 export const BrushAxis = Object.freeze({

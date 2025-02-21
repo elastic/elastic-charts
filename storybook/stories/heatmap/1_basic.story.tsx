@@ -10,20 +10,12 @@ import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React, { useMemo } from 'react';
 
-import {
-  Chart,
-  Heatmap,
-  HeatmapStyle,
-  niceTimeFormatter,
-  PointerEvent,
-  RecursivePartial,
-  ScaleType,
-  Settings,
-} from '@elastic/charts';
+import type { HeatmapStyle, PointerEvent, RecursivePartial } from '@elastic/charts';
+import { Chart, Heatmap, niceTimeFormatter, ScaleType, Settings } from '@elastic/charts';
 import { SEVERITY_COLORS } from '@elastic/charts/src/utils/themes/base_colors';
 
 import { DATA_6 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { useHeatmapSelection } from '../utils/use_heatmap_selection';

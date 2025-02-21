@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { ComponentType, ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
-import { SeriesIdentifier } from '../../common/series_id';
-import { BaseDatum, TooltipValue, TooltipValueFormatter } from '../../specs';
-import { PointerValue } from '../../state/types';
-import { Datum } from '../../utils/common';
+import type { SeriesIdentifier } from '../../common/series_id';
+import type { BaseDatum, TooltipValue, TooltipValueFormatter } from '../../specs';
+import type { PointerValue } from '../../state/types';
+import type { Datum } from '../../utils/common';
 
 /**
  * The set of info used to render the a tooltip.

@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { DataDemand } from './render/cartesian';
-import { BoxplotRow } from './render/glyphs/boxplot';
-import { BinUnit, Interval } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
-import { GetData } from '../timeslip_api';
+import type { DataDemand } from './render/cartesian';
+import type { BoxplotRow } from './render/glyphs/boxplot';
+import type { BinUnit, Interval } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
+import type { GetData } from '../timeslip_api';
 
 type DataResponse = { stats: { minValue: number; maxValue: number }; rows: TimeslipDataRows };
 

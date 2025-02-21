@@ -9,6 +9,7 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { SeriesNameFn } from '@elastic/charts';
 import {
   Chart,
   LineSeries,
@@ -19,12 +20,11 @@ import {
   Settings,
   Axis,
   Position,
-  SeriesNameFn,
   LegendValue,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 

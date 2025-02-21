@@ -8,7 +8,7 @@
 
 import { TAU } from '../../../common/constants';
 import { clamp } from '../../../utils/common';
-import { Size } from '../../../utils/dimensions';
+import type { Size } from '../../../utils/dimensions';
 import { TARGET_SIZE } from '../renderer/canvas/constants';
 import { BulletSubtype } from '../spec';
 import { GRAPH_PADDING } from '../theme';

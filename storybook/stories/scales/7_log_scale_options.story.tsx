@@ -10,9 +10,10 @@ import { boolean, number, select } from '@storybook/addon-knobs';
 import { range } from 'lodash';
 import React from 'react';
 
-import { Chart, Axis, Position, ScaleType, Settings, YDomainBase, LogScaleOptions } from '@elastic/charts';
+import type { YDomainBase, LogScaleOptions } from '@elastic/charts';
+import { Chart, Axis, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { logFormatter } from '../utils/formatters';
 import { customKnobs } from '../utils/knobs';

@@ -9,10 +9,11 @@
 import { color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, LegendValue, PartialTheme, Position, ScaleType, Settings } from '@elastic/charts';
+import type { PartialTheme } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LegendValue, Position, ScaleType, Settings } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {

@@ -7,16 +7,17 @@
  */
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
-import { SmallMultipleScales } from '../../../../common/panel_utils';
+import type { SmallMultipleScales } from '../../../../common/panel_utils';
 import { BrushAxis } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { clamp, isNil, Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
-import { Point } from '../../../../utils/point';
+import type { Rotation } from '../../../../utils/common';
+import { clamp, isNil } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { Point } from '../../../../utils/point';
 import { isVerticalRotation } from '../utils/common';
 
 const MIN_AREA_SIZE = 1;

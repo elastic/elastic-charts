@@ -11,9 +11,9 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { XYChartSeriesIdentifier } from '../../../packages/charts/src/chart_types/xy_chart/utils/series';
-import { SeriesIdentifier } from '../../../packages/charts/src/common/series_id';
-import { ChartsStory } from '../../types';
+import type { XYChartSeriesIdentifier } from '../../../packages/charts/src/chart_types/xy_chart/utils/series';
+import type { SeriesIdentifier } from '../../../packages/charts/src/common/series_id';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {

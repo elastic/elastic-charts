@@ -9,7 +9,7 @@
 import { overrideOpacity } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
 import { renderDebugRect } from '../../../../renderers/canvas/utils/debug';
-import { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
+import type { Dimensions, PerSideDistance } from '../../../../utils/dimensions';
 
 const renderDebugMargins = (ctx: CanvasRenderingContext2D, container: Dimensions, margins: PerSideDistance) => {
   const greenSemiTransparent = overrideOpacity(Colors.Green.rgba, 0.5);

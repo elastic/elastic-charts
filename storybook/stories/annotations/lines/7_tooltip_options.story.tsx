@@ -9,22 +9,13 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  AnnotationTooltipFormatter,
-  Axis,
-  BarSeries,
-  Chart,
-  ScaleType,
-  Settings,
-  LineAnnotation,
-  AnnotationDomainType,
-  LineAnnotationDatum,
-} from '@elastic/charts';
-import { CustomAnnotationTooltip } from '@elastic/charts/src/chart_types/xy_chart/annotations/types';
+import type { AnnotationTooltipFormatter, LineAnnotationDatum } from '@elastic/charts';
+import { Axis, BarSeries, Chart, ScaleType, Settings, LineAnnotation, AnnotationDomainType } from '@elastic/charts';
+import type { CustomAnnotationTooltip } from '@elastic/charts/src/chart_types/xy_chart/annotations/types';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 import { Position } from '@elastic/charts/src/utils/common';
 
-import { ChartsStory } from '../../../types';
+import type { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 

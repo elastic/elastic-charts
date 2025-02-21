@@ -10,10 +10,12 @@ import classNames from 'classnames';
 import React from 'react';
 
 import { useTooltipContext } from './tooltip_provider';
-import { TooltipTableCell, TooltipTableCellProps } from './tooltip_table_cell';
+import type { TooltipTableCellProps } from './tooltip_table_cell';
+import { TooltipTableCell } from './tooltip_table_cell';
 import { combineColors, highContrastColor } from '../../../common/color_calcs';
 import { colorToRgba } from '../../../common/color_library_wrappers';
-import { Color, Colors } from '../../../common/colors';
+import type { Color } from '../../../common/colors';
+import { Colors } from '../../../common/colors';
 
 /** @public */
 export type ColorStripCellProps = Omit<TooltipTableCellProps, 'children' | 'width'> & {

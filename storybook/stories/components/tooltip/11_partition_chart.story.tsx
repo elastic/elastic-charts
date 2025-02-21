@@ -10,24 +10,14 @@ import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Chart,
-  Partition,
-  PartitionLayout,
-  Settings,
-  PartialTheme,
-  defaultPartitionValueFormatter,
-  Color,
-  Tooltip,
-  TooltipAction,
-  TooltipValue,
-} from '@elastic/charts';
-import { Layer } from '@elastic/charts/src/chart_types/partition_chart/specs';
+import type { PartialTheme, Color, TooltipAction, TooltipValue } from '@elastic/charts';
+import { Chart, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter, Tooltip } from '@elastic/charts';
+import type { Layer } from '@elastic/charts/src/chart_types/partition_chart/specs';
 import { combineColors } from '@elastic/charts/src/common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '@elastic/charts/src/common/color_library_wrappers';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { ChartsStory } from '../../../types';
+import type { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import {
   discreteColor,

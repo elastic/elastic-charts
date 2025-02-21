@@ -6,13 +6,15 @@
  * Side Public License, v 1.
  */
 
-import React, { ComponentType, useEffect, useState } from 'react';
+import type { ComponentType } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { TooltipDivider } from './tooltip_divider';
 import { useTooltipContext } from './tooltip_provider';
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipAction, TooltipSpec, TooltipValue } from '../../../specs';
-import { Datum, renderWithProps } from '../../../utils/common';
+import type { SeriesIdentifier } from '../../../common/series_id';
+import type { BaseDatum, TooltipAction, TooltipSpec, TooltipValue } from '../../../specs';
+import type { Datum } from '../../../utils/common';
+import { renderWithProps } from '../../../utils/common';
 
 /** @internal */
 export const TooltipActions = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>({

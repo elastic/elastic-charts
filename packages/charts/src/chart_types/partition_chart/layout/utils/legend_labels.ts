@@ -6,18 +6,11 @@
  * Side Public License, v 1.
  */
 
-import {
-  CHILDREN_KEY,
-  HIERARCHY_ROOT_KEY,
-  HierarchyOfArrays,
-  PATH_KEY,
-  ArrayNode,
-  NULL_SMALL_MULTIPLES_KEY,
-  AGGREGATE_KEY,
-} from './group_by_rollup';
-import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
-import { ValueFormatter } from '../../../../utils/common';
-import { Layer } from '../../specs';
+import type { HierarchyOfArrays, ArrayNode } from './group_by_rollup';
+import { CHILDREN_KEY, HIERARCHY_ROOT_KEY, PATH_KEY, NULL_SMALL_MULTIPLES_KEY, AGGREGATE_KEY } from './group_by_rollup';
+import type { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
+import type { ValueFormatter } from '../../../../utils/common';
+import type { Layer } from '../../specs';
 
 /** @internal */
 export function getLegendLabelsAndValue(

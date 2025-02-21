@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { DataSeries } from './series';
+import type { DataSeries } from './series';
 
 /**
  * Return the default sorting used for XY series.

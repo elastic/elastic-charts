@@ -12,35 +12,35 @@
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
+import type { MetricTextDimensions } from './text_measurements';
 import {
   getFittedFontSizes,
   getFitValueFontSize,
   getFixedFontSizes,
   getMetricTextPartDimensions,
   getSnappedFontSizes,
-  MetricTextDimensions,
 } from './text_measurements';
-import { ColorContrastOptions, combineColors, highContrastColor } from '../../../../common/color_calcs';
+import type { ColorContrastOptions } from '../../../../common/color_calcs';
+import { combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
-import { Color } from '../../../../common/colors';
-import { BasicListener, ElementClickListener, ElementOverListener, settingsBuildProps } from '../../../../specs';
+import type { Color } from '../../../../common/colors';
+import type { BasicListener, ElementClickListener, ElementOverListener } from '../../../../specs';
+import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered as onChartRenderedAction } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
-import {
-  A11ySettings,
-  DEFAULT_A11Y_SETTINGS,
-  getA11ySettingsSelector,
-} from '../../../../state/selectors/get_accessibility_config';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
+import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { MetricStyle } from '../../../../utils/themes/theme';
-import { MetricDatum, MetricSpec } from '../../specs';
+import type { MetricStyle } from '../../../../utils/themes/theme';
+import type { MetricDatum, MetricSpec } from '../../specs';
 import { chartSize } from '../../state/selectors/chart_size';
 import { getMetricSpecs } from '../../state/selectors/data';
 import { hasChartTitles } from '../../state/selectors/has_chart_titles';

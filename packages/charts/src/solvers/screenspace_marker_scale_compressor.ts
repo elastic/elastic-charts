@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Cartesian, Pixels, Ratio } from '../common/geometry';
+import type { Cartesian, Pixels, Ratio } from '../common/geometry';
 
 /** @internal */
 export type ArrayIndex = number;

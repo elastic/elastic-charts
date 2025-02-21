@@ -7,15 +7,15 @@
  */
 
 import { isWithinRectBounds } from './dimensions';
-import { AnnotationRectProps } from './types';
-import { Rect } from '../../../../geoms/types';
-import { Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
-import { SpecId } from '../../../../utils/ids';
-import { Point } from '../../../../utils/point';
+import type { AnnotationRectProps } from './types';
+import type { Rect } from '../../../../geoms/types';
+import type { Rotation } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { SpecId } from '../../../../utils/ids';
+import type { Point } from '../../../../utils/point';
 import { isHorizontalRotation } from '../../state/utils/common';
 import { AnnotationType } from '../../utils/specs';
-import { AnnotationTooltipState, Bounds } from '../types';
+import type { AnnotationTooltipState, Bounds } from '../types';
 
 /** @internal */
 export function getRectAnnotationTooltipState(

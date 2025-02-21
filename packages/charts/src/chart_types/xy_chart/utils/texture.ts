@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../../common/colors';
-import { Ratio } from '../../../common/geometry';
-import { Texture } from '../../../geoms/types';
+import type { Color } from '../../../common/colors';
+import type { Ratio } from '../../../common/geometry';
+import type { Texture } from '../../../geoms/types';
 import { ColorVariant, degToRad, getColorFromVariant } from '../../../utils/common';
-import { Point } from '../../../utils/point';
-import { TexturedStyles, TextureShape } from '../../../utils/themes/theme';
+import type { Point } from '../../../utils/point';
+import type { TexturedStyles } from '../../../utils/themes/theme';
+import { TextureShape } from '../../../utils/themes/theme';
 import { TextureRendererFn } from '../renderer/shapes_paths';
 
 const getSpacing = ({ spacing }: TexturedStyles): Point => ({

@@ -9,12 +9,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { RenderChangeListener, WillRenderListener } from '../specs';
-import { GlobalChartState } from '../state/chart_state';
+import type { RenderChangeListener, WillRenderListener } from '../specs';
+import type { GlobalChartState } from '../state/chart_state';
 import { globalSelectorCache } from '../state/create_selector';
 import { getDebugStateSelector } from '../state/selectors/get_debug_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
-import { DebugState } from '../state/types';
+import type { DebugState } from '../state/types';
 
 interface ChartStatusStateProps {
   chartId: string;

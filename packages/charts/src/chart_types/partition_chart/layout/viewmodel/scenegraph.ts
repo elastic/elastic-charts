@@ -6,21 +6,22 @@
  * Side Public License, v 1.
  */
 
-import { BackgroundStyle } from './../../../../utils/themes/theme';
+import type { BackgroundStyle } from './../../../../utils/themes/theme';
 import { shapeViewModel } from './viewmodel';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { Dimensions } from '../../../../utils/dimensions';
-import { PartitionStyle } from '../../../../utils/themes/partition';
-import { Layer, PartitionSpec } from '../../specs';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { PartitionStyle } from '../../../../utils/themes/partition';
+import type { Layer, PartitionSpec } from '../../specs';
 import { VALUE_GETTERS } from '../config';
-import {
+import type {
   PartitionSmallMultiplesModel,
   RawTextGetter,
   ShapeTreeNode,
   ShapeViewModel,
   ValueGetter,
 } from '../types/viewmodel_types';
-import { DEPTH_KEY, HierarchyOfArrays } from '../utils/group_by_rollup';
+import type { HierarchyOfArrays } from '../utils/group_by_rollup';
+import { DEPTH_KEY } from '../utils/group_by_rollup';
 
 function rawTextGetter(layers: Layer[]): RawTextGetter {
   return (node: ShapeTreeNode) => {

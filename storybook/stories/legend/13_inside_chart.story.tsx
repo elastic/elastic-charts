@@ -9,6 +9,7 @@
 import { select, boolean, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { LegendPositionConfig } from '@elastic/charts';
 import {
   AreaSeries,
   Axis,
@@ -16,7 +17,6 @@ import {
   Position,
   ScaleType,
   Settings,
-  LegendPositionConfig,
   VerticalAlignment,
   HorizontalAlignment,
   LayoutDirection,
@@ -25,7 +25,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getLegendAction } from '../utils/components/get_legend_action';
 

@@ -9,6 +9,7 @@
 import { button, select } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { Datum, BandFillColorAccessorInput } from '@elastic/charts';
 import {
   Axis,
   BarSeries,
@@ -18,18 +19,16 @@ import {
   ScaleType,
   Settings,
   Partition,
-  Datum,
   Goal,
   ChartType,
   defaultPartitionValueFormatter,
-  BandFillColorAccessorInput,
   LegendValue,
 } from '@elastic/charts';
 import { GoalSubtype } from '@elastic/charts/src/chart_types/goal_chart/specs/constants';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { productLookup, indexInterpolatedFillColor, interpolatorCET2s, getBandFillColorFn } from '../utils/utils';
 

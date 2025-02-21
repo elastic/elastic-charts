@@ -6,14 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
-import { BaseDatum } from '.';
-import { Spec, SpecType } from './spec_type';
+import type { BaseDatum } from '.';
+import type { Spec } from './spec_type';
+import { SpecType } from './spec_type';
 import { ChartType } from '../chart_types';
-import { Predicate } from '../common/predicate';
-import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
-import { Datum, stripUndefined } from '../utils/common';
+import type { Predicate } from '../common/predicate';
+import type { SFProps } from '../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../state/spec_factory';
+import type { Datum } from '../utils/common';
+import { stripUndefined } from '../utils/common';
 
 /** @public */
 export type GroupByAccessor<D extends BaseDatum = any> = (spec: Spec, datum: D) => string | number;

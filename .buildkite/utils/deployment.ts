@@ -6,16 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { RestEndpointMethodTypes } from '@octokit/rest';
+import type { RestEndpointMethodTypes } from '@octokit/rest';
 import { getMetadata, setMetadata, metadataExists } from 'buildkite-agent-node';
-import { Optional } from 'utility-types';
+import type { Optional } from 'utility-types';
 
 import { bkEnv, getPreviousDeployCommitSha } from './buildkite';
 import { getNumber } from './common';
 import { MetaDataKeys } from './constants';
 import { getOrCreateDeploymentUrl } from './firebase';
 import { octokit, defaultGHOptions, getComment, commentByKey } from './github';
-import { OctokitParameters } from './types';
+import type { OctokitParameters } from './types';
 
 export interface UpdateDeploymentCommentOptions {
   sha?: string;

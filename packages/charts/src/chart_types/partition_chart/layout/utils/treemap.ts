@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { $Values as Values } from 'utility-types';
+import type { $Values as Values } from 'utility-types';
 
-import { ArrayEntry, CHILDREN_KEY, DEPTH_KEY, entryValue, HierarchyOfArrays } from './group_by_rollup';
+import type { ArrayEntry, HierarchyOfArrays } from './group_by_rollup';
+import { CHILDREN_KEY, DEPTH_KEY, entryValue } from './group_by_rollup';
 import { GOLDEN_RATIO } from '../../../../common/constants';
-import { Pixels } from '../../../../common/geometry';
-import { Part } from '../../../../common/text_utils';
+import type { Pixels } from '../../../../common/geometry';
+import type { Part } from '../../../../common/text_utils';
 
 const MAX_U_PADDING_RATIO = 0.0256197; // this limits area distortion to <10% (which occurs due to pixel padding) with very small rectangles
 const MAX_TOP_PADDING_RATIO = 0.33; // this limits further area distortion to ~33%

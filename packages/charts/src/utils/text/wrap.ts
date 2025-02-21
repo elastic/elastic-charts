@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { Font } from '../../common/text_utils';
+import type { Font } from '../../common/text_utils';
 import { monotonicHillClimb } from '../../solvers/monotonic_hill_climb';
-import { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
+import type { TextMeasure } from '../bbox/canvas_text_bbox_calculator';
 
 const ELLIPSIS = '…';
 

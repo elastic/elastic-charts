@@ -11,13 +11,14 @@ import { computeLegendSelector } from './compute_legend';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getGridLinesSelector } from './get_grid_lines';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from './get_specs';
-import { LegendItem } from '../../../../common/legend';
+import type { LegendItem } from '../../../../common/legend';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
-import { AnnotationSpec, AnnotationType, AxisSpec } from '../../../../specs';
+import type { AnnotationSpec, AxisSpec } from '../../../../specs';
+import { AnnotationType } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import {
+import type {
   DebugState,
   DebugStateAnnotations,
   DebugStateArea,
@@ -27,13 +28,14 @@ import {
   DebugStateLine,
   DebugStateValue,
 } from '../../../../state/types';
-import { Rotation } from '../../../../utils/common';
-import { AreaGeometry, BandedAccessorType, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
+import type { Rotation } from '../../../../utils/common';
+import type { AreaGeometry, BarGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
+import { BandedAccessorType } from '../../../../utils/geometry';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from '../../../../utils/themes/merge_utils';
-import { FillStyle, Opacity, StrokeStyle, Theme, Visible } from '../../../../utils/themes/theme';
+import type { FillStyle, Opacity, StrokeStyle, Theme, Visible } from '../../../../utils/themes/theme';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import { AxisGeometry } from '../../utils/axis_utils';
-import { LinesGrid } from '../../utils/grid_lines';
+import type { AxisGeometry } from '../../utils/axis_utils';
+import type { LinesGrid } from '../../utils/grid_lines';
 import { isHorizontalRotation, isVerticalRotation } from '../utils/common';
 
 /**

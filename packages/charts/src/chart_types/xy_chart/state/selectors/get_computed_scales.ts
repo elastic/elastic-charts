@@ -8,7 +8,7 @@
 
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { ComputedScales } from '../utils/types';
+import type { ComputedScales } from '../utils/types';
 
 /** @internal */
 export const getComputedScalesSelector = createCustomCachedSelector(

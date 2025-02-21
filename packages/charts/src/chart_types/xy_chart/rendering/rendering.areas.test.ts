@@ -6,20 +6,21 @@
  * Side Public License, v 1.
  */
 
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import { Spec } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { GlobalChartState } from '../../../state/chart_state';
-import { PointGeometry, AreaGeometry } from '../../../utils/geometry';
+import type { Spec } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { GlobalChartState } from '../../../state/chart_state';
+import type { PointGeometry, AreaGeometry } from '../../../utils/geometry';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 import { computeSeriesGeometriesSelector } from '../state/selectors/compute_series_geometries';
-import { ComputedGeometries } from '../state/utils/types';
-import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { AreaSeriesSpec, StackMode } from '../utils/specs';
+import type { ComputedGeometries } from '../state/utils/types';
+import type { IndexedGeometryMap } from '../utils/indexed_geometry_map';
+import type { AreaSeriesSpec } from '../utils/specs';
+import { StackMode } from '../utils/specs';
 
 const SPEC_ID = 'spec_1';
 const GROUP_ID = 'group_1';

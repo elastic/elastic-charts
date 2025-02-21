@@ -8,17 +8,19 @@
 
 import { scaleBand } from 'd3-scale';
 
-import { Radian } from '../../../../common/geometry';
+import type { Radian } from '../../../../common/geometry';
 import { extent } from '../../../../common/math';
-import { Vec2, rotate2, sub2 } from '../../../../common/vectors';
+import type { Vec2 } from '../../../../common/vectors';
+import { rotate2, sub2 } from '../../../../common/vectors';
 import { screenspaceMarkerScaleCompressor } from '../../../../solvers/screenspace_marker_scale_compressor';
-import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isFiniteNumber, degToRad } from '../../../../utils/common';
-import { horizontalPad, innerPad, outerPad, pad, Size } from '../../../../utils/dimensions';
-import { HeatmapStyle, AxisStyle } from '../../../../utils/themes/theme';
-import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { HeatmapSpec } from '../../specs';
-import { HeatmapTable } from '../selectors/get_heatmap_table';
+import type { Size } from '../../../../utils/dimensions';
+import { horizontalPad, innerPad, outerPad, pad } from '../../../../utils/dimensions';
+import type { HeatmapStyle, AxisStyle } from '../../../../utils/themes/theme';
+import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
+import type { HeatmapSpec } from '../../specs';
+import type { HeatmapTable } from '../selectors/get_heatmap_table';
 
 /** @internal */
 export function getYAxisHorizontalUsedSpace(

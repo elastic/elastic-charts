@@ -7,7 +7,7 @@
  */
 
 import { createAction } from '@reduxjs/toolkit';
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
 /** @internal */
 export const DOMElementType = Object.freeze({

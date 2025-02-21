@@ -11,19 +11,11 @@ import { boolean } from '@storybook/addon-knobs';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import {
-  Axis,
-  Chart,
-  niceTimeFormatter,
-  Position,
-  ScaleType,
-  Settings,
-  HistogramBarSeries,
-  BrushEndListener,
-} from '@elastic/charts';
+import type { BrushEndListener } from '@elastic/charts';
+import { Axis, Chart, niceTimeFormatter, Position, ScaleType, Settings, HistogramBarSeries } from '@elastic/charts';
 import { isVerticalRotation } from '@elastic/charts/src/chart_types/xy_chart/state/utils/common';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

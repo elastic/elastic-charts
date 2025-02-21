@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
@@ -27,14 +28,14 @@ import { createOnPointerUpdateCaller } from './selectors/on_pointer_update_calle
 import { getTooltipInfoSelector } from './selectors/tooltip';
 import { ChartType } from '../..';
 import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
-import { SmallMultiplesSeriesDomains } from '../../../common/panel_utils';
+import type { SmallMultiplesSeriesDomains } from '../../../common/panel_utils';
 import { BrushTool } from '../../../components/brush/brush';
 import { Tooltip } from '../../../components/tooltip/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import type { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
-import { Dimensions } from '../../../utils/dimensions';
+import type { Dimensions } from '../../../utils/dimensions';
 import { Heatmap } from '../renderer/canvas/connected_component';
 import { CursorBand } from '../renderer/dom/cursor_band';
 import { HighlighterFromBrush } from '../renderer/dom/highlighter_brush';

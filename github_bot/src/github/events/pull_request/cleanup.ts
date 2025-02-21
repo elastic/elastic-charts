@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Probot } from 'probot';
+import type { Probot } from 'probot';
 
 import { buildkiteClient } from '../../../utils/buildkite';
 import { deleteDeployment } from '../../../utils/firebase';

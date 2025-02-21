@@ -7,8 +7,8 @@
  */
 
 import { getChartContainerDimensionsSelector } from './get_chart_container_dimensions';
-import { GlobalChartState } from '../chart_state';
-import { DebugState } from '../types';
+import type { GlobalChartState } from '../chart_state';
+import type { DebugState } from '../types';
 
 /** @internal */
 export const getDebugStateSelector = (state: GlobalChartState): DebugState => {

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ChartSliceState } from './chart_slice_state';
+import type { ChartSliceState } from './chart_slice_state';
 import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/default_settings_spec';

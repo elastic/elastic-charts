@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RgbTuple } from './color_library_wrappers';
+import type { RgbTuple } from './color_library_wrappers';
 
 function sRGBtoLin(colorChannel: number) {
   // Send this function a decimal sRGB gamma encoded color value

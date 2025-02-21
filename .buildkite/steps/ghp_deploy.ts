@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomCommandStep, commandStepDefaults, bkEnv } from '../utils';
+import type { CustomCommandStep } from '../utils';
+import { createStep, commandStepDefaults, bkEnv } from '../utils';
 
 export const ghpDeployStep = createStep<CustomCommandStep>(() => {
   const isMainBranch = bkEnv.isMainBranch;

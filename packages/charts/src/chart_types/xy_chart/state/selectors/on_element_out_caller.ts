@@ -6,18 +6,16 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 'react-redux';
+import type { Selector } from 'react-redux';
 
-import {
-  getHighlightedTooltipTooltipValuesSelector,
-  TooltipAndHighlightedGeoms,
-} from './get_tooltip_values_highlighted_geoms';
+import type { TooltipAndHighlightedGeoms } from './get_tooltip_values_highlighted_geoms';
+import { getHighlightedTooltipTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
 import { ChartType } from '../../..';
-import { SettingsSpec } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { SettingsSpec } from '../../../../specs';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { IndexedGeometry } from '../../../../utils/geometry';
+import type { IndexedGeometry } from '../../../../utils/geometry';
 
 interface Props {
   settings: SettingsSpec | undefined;

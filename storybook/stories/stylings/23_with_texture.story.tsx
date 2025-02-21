@@ -9,13 +9,13 @@
 import { array, boolean, color, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { TexturedStyles } from '@elastic/charts';
 import {
   Axis,
   Chart,
   CurveType,
   Position,
   ScaleType,
-  TexturedStyles,
   Settings,
   TextureShape,
   LIGHT_THEME,
@@ -23,7 +23,7 @@ import {
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

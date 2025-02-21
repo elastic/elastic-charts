@@ -9,11 +9,11 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { CustomTooltip } from '@elastic/charts';
 import {
   Axis,
   BarSeries,
   Chart,
-  CustomTooltip,
   niceTimeFormatByDay,
   Position,
   ScaleType,
@@ -24,7 +24,7 @@ import {
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const CustomTooltipWithSubChart: CustomTooltip = ({ values }) => {

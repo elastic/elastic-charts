@@ -6,19 +6,19 @@
  * Side Public License, v 1.
  */
 
-import { CSSProperties, RefObject } from 'react';
+import type { CSSProperties, RefObject } from 'react';
 
-import { GlobalChartState } from './chart_state';
-import { InitStatus } from './selectors/get_internal_is_intialized';
-import { LegendItemLabel } from './selectors/get_legend_items_labels';
-import { DebugState } from './types';
-import { ChartType } from '../chart_types';
-import { LegendItem, LegendItemExtraValues } from '../common/legend';
-import { SmallMultiplesSeriesDomains } from '../common/panel_utils';
-import { SeriesKey } from '../common/series_id';
-import { AnchorPosition } from '../components/portal/types';
-import { TooltipInfo } from '../components/tooltip/types';
-import { Dimensions } from '../utils/dimensions';
+import type { GlobalChartState } from './chart_state';
+import type { InitStatus } from './selectors/get_internal_is_intialized';
+import type { LegendItemLabel } from './selectors/get_legend_items_labels';
+import type { DebugState } from './types';
+import type { ChartType } from '../chart_types';
+import type { LegendItem, LegendItemExtraValues } from '../common/legend';
+import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
+import type { SeriesKey } from '../common/series_id';
+import type { AnchorPosition } from '../components/portal/types';
+import type { TooltipInfo } from '../components/tooltip/types';
+import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
 export interface TooltipVisibility {

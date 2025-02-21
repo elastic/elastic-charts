@@ -9,16 +9,19 @@
 import { line } from 'd3-shape';
 
 import { renderPoints } from './points';
-import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn, MarkSizeOptions } from './utils';
-import { Color } from '../../../common/colors';
-import { ScaleBand, ScaleContinuous } from '../../../scales';
-import { CurveType, getCurveFactory } from '../../../utils/curves';
-import { Dimensions } from '../../../utils/dimensions';
-import { LineGeometry } from '../../../utils/geometry';
-import { LineSeriesStyle } from '../../../utils/themes/theme';
-import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { DataSeries, DataSeriesDatum, getSeriesIdentifierFromDataSeries } from '../utils/series';
-import { PointStyleAccessor } from '../utils/specs';
+import type { MarkSizeOptions } from './utils';
+import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn } from './utils';
+import type { Color } from '../../../common/colors';
+import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import type { CurveType } from '../../../utils/curves';
+import { getCurveFactory } from '../../../utils/curves';
+import type { Dimensions } from '../../../utils/dimensions';
+import type { LineGeometry } from '../../../utils/geometry';
+import type { LineSeriesStyle } from '../../../utils/themes/theme';
+import type { IndexedGeometryMap } from '../utils/indexed_geometry_map';
+import type { DataSeries, DataSeriesDatum } from '../utils/series';
+import { getSeriesIdentifierFromDataSeries } from '../utils/series';
+import type { PointStyleAccessor } from '../utils/specs';
 
 /** @internal */
 export function renderLine(

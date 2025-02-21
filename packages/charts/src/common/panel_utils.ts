@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { ScaleBand } from '../scales';
-import { GroupBySpec } from '../specs/group_by';
+import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { ScaleBand } from '../scales';
+import type { GroupBySpec } from '../specs/group_by';
 import { safeFormat } from '../utils/common';
-import { Dimensions, Size } from '../utils/dimensions';
-import { OrdinalDomain } from '../utils/domain';
-import { Point } from '../utils/point';
+import type { Dimensions, Size } from '../utils/dimensions';
+import type { OrdinalDomain } from '../utils/domain';
+import type { Point } from '../utils/point';
 
 type Value = string | number;
 

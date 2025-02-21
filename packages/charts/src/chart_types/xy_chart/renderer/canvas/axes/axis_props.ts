@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { Dimensions, Size } from '../../../../../utils/dimensions';
-import { Point } from '../../../../../utils/point';
-import { AxisStyle } from '../../../../../utils/themes/theme';
-import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
-import { AxisTick, TickLabelBounds } from '../../../utils/axis_utils';
-import { AxisSpec } from '../../../utils/specs';
+import type { Dimensions, Size } from '../../../../../utils/dimensions';
+import type { Point } from '../../../../../utils/point';
+import type { AxisStyle } from '../../../../../utils/themes/theme';
+import type { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
+import type { AxisTick, TickLabelBounds } from '../../../utils/axis_utils';
+import type { AxisSpec } from '../../../utils/specs';
 
 /** @internal */
 export interface AxisProps {

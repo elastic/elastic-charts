@@ -7,7 +7,7 @@
  */
 
 import { setMetadata } from 'buildkite-agent-node';
-import { Required } from 'utility-types';
+import type { Required } from 'utility-types';
 
 import { updateCheckStatus } from './../../utils/github';
 import type { JSONSchemaForBuildkitePipelineConfigurationFiles as BuildkitePipeline } from '../../buildkite.d';
@@ -25,7 +25,8 @@ import {
   typeCheckStep,
   firebasePreDeployStep,
 } from '../../steps';
-import { bkEnv, ChangeContext, uploadPipeline, Step, CustomCommandStep } from '../../utils';
+import type { Step, CustomCommandStep } from '../../utils';
+import { bkEnv, ChangeContext, uploadPipeline } from '../../utils';
 import { getBuildConfig } from '../../utils/build';
 import { MetaDataKeys } from '../../utils/constants';
 import { createDeployment, createDeploymentStatus, createOrUpdateDeploymentComment } from '../../utils/deployment';

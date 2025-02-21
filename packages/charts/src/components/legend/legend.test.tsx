@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { mount, ReactWrapper } from 'enzyme';
+import type { ReactWrapper } from 'enzyme';
+import { mount } from 'enzyme';
 import React, { Component } from 'react';
 
 import { Legend } from './legend';
@@ -16,7 +17,8 @@ import { LegendTableRow } from './legend_table/legend_table_row';
 import { LegendValue } from '../../common/legend';
 import { SeededDataGenerator } from '../../mocks/utils';
 import { ScaleType } from '../../scales/constants';
-import { Settings, BarSeries, LegendColorPicker } from '../../specs';
+import type { LegendColorPicker } from '../../specs';
+import { Settings, BarSeries } from '../../specs';
 import { Chart } from '../chart';
 
 const dg = new SeededDataGenerator();

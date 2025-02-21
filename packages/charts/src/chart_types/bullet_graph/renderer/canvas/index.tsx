@@ -6,45 +6,49 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { renderBullet } from './bullet';
-import { ColorContrastOptions } from '../../../../common/color_calcs';
+import type { ColorContrastOptions } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Color, Colors } from '../../../../common/colors';
+import type { Color } from '../../../../common/colors';
+import { Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
-import { ElementOverListener, settingsBuildProps } from '../../../../specs';
+import type { ElementOverListener } from '../../../../specs';
+import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
-import {
-  A11ySettings,
-  DEFAULT_A11Y_SETTINGS,
-  getA11ySettingsSelector,
-} from '../../../../state/selectors/get_accessibility_config';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
+import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
+import type { Size } from '../../../../utils/dimensions';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
-import { Point } from '../../../../utils/point';
+import type { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { MetricStyle } from '../../../../utils/themes/theme';
+import type { MetricStyle } from '../../../../utils/themes/theme';
 import { Metric } from '../../../metric/renderer/dom/metric';
 import { getMetricTextPartDimensions, getSnappedFontSizes } from '../../../metric/renderer/dom/text_measurements';
-import { BulletMetricWProgress } from '../../../metric/specs';
-import { ActiveValue, getActiveValues } from '../../selectors/get_active_values';
+import type { BulletMetricWProgress } from '../../../metric/specs';
+import type { ActiveValue } from '../../selectors/get_active_values';
+import { getActiveValues } from '../../selectors/get_active_values';
 import { getBulletSpec } from '../../selectors/get_bullet_spec';
 import { getChartSize } from '../../selectors/get_chart_size';
-import { BulletDimensions, getPanelDimensions } from '../../selectors/get_panel_dimensions';
+import type { BulletDimensions } from '../../selectors/get_panel_dimensions';
+import { getPanelDimensions } from '../../selectors/get_panel_dimensions';
 import { hasChartTitles } from '../../selectors/has_chart_titles';
-import { BulletDatum, BulletSpec, BulletSubtype, mergeValueLabels } from '../../spec';
-import { BulletStyle } from '../../theme';
-import { BulletColorConfig } from '../../utils/color';
+import type { BulletDatum, BulletSpec } from '../../spec';
+import { BulletSubtype, mergeValueLabels } from '../../spec';
+import type { BulletStyle } from '../../theme';
+import type { BulletColorConfig } from '../../utils/color';
 
 interface StateProps {
   initialized: boolean;

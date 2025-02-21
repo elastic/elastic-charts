@@ -6,21 +6,22 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
-import { RgbaTuple } from '../../common/color_library_wrappers';
+import type { RgbaTuple } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
 import { renderRect } from '../../renderers/canvas/primitives/rect';
-import { GlobalChartState } from '../../state/chart_state';
+import type { GlobalChartState } from '../../state/chart_state';
 import { getInternalBrushAreaSelector } from '../../state/selectors/get_internal_brush_area';
 import { getInternalIsBrushingSelector } from '../../state/selectors/get_internal_is_brushing';
 import { getInternalIsBrushingAvailableSelector } from '../../state/selectors/get_internal_is_brushing_available';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';
 import { getInternalProjectionContainerAreaSelector } from '../../state/selectors/get_internal_projection_container_area';
-import { Dimensions } from '../../utils/dimensions';
+import type { Dimensions } from '../../utils/dimensions';
 
 interface StateProps {
   initialized: boolean;

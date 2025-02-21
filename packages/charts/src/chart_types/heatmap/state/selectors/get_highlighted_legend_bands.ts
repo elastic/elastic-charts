@@ -9,7 +9,7 @@
 import { getColorScale } from './get_color_scale';
 import { getHighlightedLegendItemSelector } from './get_highlighted_legend_item';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { GenericDomain } from '../../../../utils/domain';
+import type { GenericDomain } from '../../../../utils/domain';
 
 /** @internal */
 export const getHighlightedLegendBandsSelector = createCustomCachedSelector(

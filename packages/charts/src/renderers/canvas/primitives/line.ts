@@ -8,7 +8,7 @@
 
 import { withContext } from '../';
 import { RGBATupleToString } from '../../../common/color_library_wrappers';
-import { Line, Stroke } from '../../../geoms/types';
+import type { Line, Stroke } from '../../../geoms/types';
 
 /**
  * Canvas2d stroke ignores an exact zero line width

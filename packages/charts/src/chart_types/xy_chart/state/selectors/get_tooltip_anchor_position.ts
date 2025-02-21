@@ -9,7 +9,7 @@
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getCursorBandPositionSelector } from './get_cursor_band';
 import { getProjectedPointerPositionSelector } from './get_projected_pointer_position';
-import { AnchorPosition } from '../../../../components/portal/types';
+import type { AnchorPosition } from '../../../../components/portal/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';

@@ -10,12 +10,14 @@ import { action } from '@storybook/addon-actions';
 import { color, number, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Settings, Wordcloud, FontStyle, WordcloudSpec, Color, WordCloudElementEvent } from '@elastic/charts';
-import { WeightFn, WordModel } from '@elastic/charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
+import type { FontStyle, WordcloudSpec, Color, WordCloudElementEvent } from '@elastic/charts';
+import { Chart, Settings, Wordcloud } from '@elastic/charts';
+import type { WordModel } from '@elastic/charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
+import { WeightFn } from '@elastic/charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 import { palettes as euiPalettes } from '@elastic/charts/src/utils/themes/colors';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const text =

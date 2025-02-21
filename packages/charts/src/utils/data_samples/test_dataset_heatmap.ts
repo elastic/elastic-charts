@@ -8,8 +8,8 @@
 
 import { DateTime } from 'luxon';
 
-import { HeatmapSpec } from '../../chart_types/heatmap/specs';
-import { ESCalendarInterval, ESFixedInterval } from '../chrono/elasticsearch';
+import type { HeatmapSpec } from '../../chart_types/heatmap/specs';
+import type { ESCalendarInterval, ESFixedInterval } from '../chrono/elasticsearch';
 
 type HeatmapDataSets = {
   domain?: { min: number; max: number };

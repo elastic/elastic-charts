@@ -6,12 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
-import { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { Spec } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { specComponentFactory } from '../../../state/spec_factory';
-import { defaultWordcloudSpec, WordcloudViewModel } from '../layout/types/viewmodel_types';
+import type { WordcloudViewModel } from '../layout/types/viewmodel_types';
+import { defaultWordcloudSpec } from '../layout/types/viewmodel_types';
 
 /** @alpha */
 export interface WordcloudSpec extends Spec, WordcloudViewModel {

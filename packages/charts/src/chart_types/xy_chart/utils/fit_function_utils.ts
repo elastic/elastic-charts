@@ -7,9 +7,10 @@
  */
 
 import { fitFunction } from './fit_function';
-import { DataSeries } from './series';
-import { isAreaSeriesSpec, isLineSeriesSpec, SeriesSpecs, BasicSeriesSpec } from './specs';
-import { ScaleType } from '../../../scales/constants';
+import type { DataSeries } from './series';
+import type { SeriesSpecs, BasicSeriesSpec } from './specs';
+import { isAreaSeriesSpec, isLineSeriesSpec } from './specs';
+import type { ScaleType } from '../../../scales/constants';
 import { getSpecsById } from '../state/utils/spec';
 
 /** @internal */

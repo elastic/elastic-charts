@@ -10,26 +10,26 @@ import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
-import { LegendItem, LegendValue } from '../../../../common/legend';
-import { SeriesIdentifier } from '../../../../common/series_id';
+import type { LegendItem } from '../../../../common/legend';
+import { LegendValue } from '../../../../common/legend';
+import type { SeriesIdentifier } from '../../../../common/series_id';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLegendConfigSelector } from '../../../../state/selectors/get_legend_config_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
-import { SpecId } from '../../../../utils/ids';
+import type { SpecId } from '../../../../utils/ids';
 import { isHierarchicalLegend } from '../../../../utils/legend';
 import { PartitionLayout } from '../../layout/types/config_types';
+import type { ArrayNode, HierarchyOfArrays } from '../../layout/utils/group_by_rollup';
 import {
   AGGREGATE_KEY,
-  ArrayNode,
   CHILDREN_KEY,
   DEPTH_KEY,
   HIERARCHY_ROOT_KEY,
-  HierarchyOfArrays,
   PATH_KEY,
 } from '../../layout/utils/group_by_rollup';
 import { isLinear } from '../../layout/viewmodel/viewmodel';
-import { Layer, PartitionSpec } from '../../specs';
+import type { Layer, PartitionSpec } from '../../specs';
 
 function compareLegendItemNames(aItem: LegendNode, bItem: LegendNode, locale: string): number {
   return aItem.item.label.localeCompare(bItem.item.label, locale);

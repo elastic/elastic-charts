@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState, TooltipVisibility } from '../chart_state';
+import type { GlobalChartState, TooltipVisibility } from '../chart_state';
 
 /** @internal */
 export const getInternalIsTooltipVisibleSelector = (state: GlobalChartState): TooltipVisibility => {

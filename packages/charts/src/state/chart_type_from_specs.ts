@@ -7,7 +7,7 @@
  */
 
 import { ChartType } from '../chart_types';
-import { SpecList } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { SpecList } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { keepDistinct } from '../utils/common';
 import { Logger } from '../utils/logger';
 

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Probot } from 'probot';
+import type { Probot } from 'probot';
 
 import { setupFns as issueCommentSetupFns } from './issue_comment';
 import { setupFns as prSetupFns } from './pull_request';

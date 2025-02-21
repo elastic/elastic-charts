@@ -9,18 +9,10 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  AnnotationDomainType,
-  LineAnnotationDatum,
-  Chart,
-  LineAnnotation,
-  BarSeries,
-  ScaleType,
-  Position,
-  Settings,
-} from '@elastic/charts';
+import type { LineAnnotationDatum } from '@elastic/charts';
+import { AnnotationDomainType, Chart, LineAnnotation, BarSeries, ScaleType, Position, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

@@ -10,20 +10,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { InitStatus, getInternalIsInitializedSelector } from '../../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../../state/selectors/is_brushing';
-import { getColorFromVariant, Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
-import { isPointGeometry, IndexedGeometry, PointGeometry, isBarGeometry } from '../../../../utils/geometry';
+import type { Rotation } from '../../../../utils/common';
+import { getColorFromVariant } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { IndexedGeometry, PointGeometry } from '../../../../utils/geometry';
+import { isPointGeometry, isBarGeometry } from '../../../../utils/geometry';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { HighlighterStyle } from '../../../../utils/themes/theme';
+import type { HighlighterStyle } from '../../../../utils/themes/theme';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
 import { getHighlightedGeomsSelector } from '../../state/selectors/get_tooltip_values_highlighted_geoms';
-import { Transform } from '../../state/utils/types';
+import type { Transform } from '../../state/utils/types';
 import { computeChartTransform } from '../../state/utils/utils';
 import { ShapeRendererFn } from '../shapes_paths';
 

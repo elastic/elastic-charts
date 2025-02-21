@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Line } from '../../../../geoms/types';
-import { Dimensions } from '../../../../utils/dimensions';
-import { LineAnnotationDatum } from '../../utils/specs';
-import { AnnotationMarker } from '../types';
+import type { Line } from '../../../../geoms/types';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { LineAnnotationDatum } from '../../utils/specs';
+import type { AnnotationMarker } from '../types';
 
 /** @internal */
 export interface AnnotationLineProps {

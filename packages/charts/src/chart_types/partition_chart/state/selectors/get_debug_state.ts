@@ -8,10 +8,10 @@
 
 import { partitionMultiGeometries } from './geometries';
 import { TAU } from '../../../../common/constants';
-import { Pixels, PointObject } from '../../../../common/geometry';
+import type { Pixels, PointObject } from '../../../../common/geometry';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { DebugState, PartitionDebugState } from '../../../../state/types';
-import { QuadViewModel } from '../../layout/types/viewmodel_types';
+import type { DebugState, PartitionDebugState } from '../../../../state/types';
+import type { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
 /** @internal */
