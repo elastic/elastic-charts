@@ -7,7 +7,7 @@
  */
 
 import { TooltipValue } from '../../specs';
-import { GlobalChartState } from '../chart_state';
+import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */

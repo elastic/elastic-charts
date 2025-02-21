@@ -13,13 +13,9 @@ import { RgbaTuple } from '../../common/color_library_wrappers';
 import { Colors } from '../../common/colors';
 import { clearCanvas, withContext, withClip } from '../../renderers/canvas';
 import { renderRect } from '../../renderers/canvas/primitives/rect';
-import { GlobalChartState } from '../../state/chart_state';
-import { getInternalBrushAreaSelector } from '../../state/selectors/get_internal_brush_area';
-import { getInternalIsBrushingSelector } from '../../state/selectors/get_internal_is_brushing';
-import { getInternalIsBrushingAvailableSelector } from '../../state/selectors/get_internal_is_brushing_available';
+import type { GlobalChartState } from '../../state/chart_state';
+import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
-import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';
-import { getInternalProjectionContainerAreaSelector } from '../../state/selectors/get_internal_projection_container_area';
 import { Dimensions } from '../../utils/dimensions';
 
 interface StateProps {
@@ -130,7 +126,11 @@ class BrushToolComponent extends React.Component<StateProps> {
 }
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (
+    internalChartState === null ||
+    getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized
+  ) {
     return {
       initialized: false,
       projectionContainer: {
@@ -153,11 +153,11 @@ const mapStateToProps = (state: GlobalChartState): StateProps => {
   }
   return {
     initialized: state.specsInitialized,
-    projectionContainer: getInternalProjectionContainerAreaSelector(state),
-    mainProjectionArea: getInternalMainProjectionAreaSelector(state),
-    isBrushAvailable: getInternalIsBrushingAvailableSelector(state),
-    isBrushing: getInternalIsBrushingSelector(state),
-    brushEvent: getInternalBrushAreaSelector(state),
+    projectionContainer: internalChartState.getProjectionContainerArea(state),
+    mainProjectionArea: internalChartState.getMainProjectionArea(state),
+    isBrushAvailable: internalChartState.isBrushAvailable(state),
+    isBrushing: internalChartState.isBrushing(state),
+    brushEvent: internalChartState.getBrushArea(state),
     zIndex: state.zIndex,
   };
 };

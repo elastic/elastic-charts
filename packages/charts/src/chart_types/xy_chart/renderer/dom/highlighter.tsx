@@ -10,9 +10,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 import { InitStatus, getInternalIsInitializedSelector } from '../../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../../state/selectors/is_brushing';
 import { getColorFromVariant, Rotation } from '../../../../utils/common';
@@ -129,7 +130,8 @@ class HighlighterComponent extends React.Component<HighlighterProps> {
 
 const mapStateToProps = (state: GlobalChartState): HighlighterProps => {
   const { chartId, zIndex } = state;
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
     return {
       initialized: false,
       chartId,

@@ -15,7 +15,7 @@ import { PointerPosition } from './get_projected_pointer_position';
 import { ChartType } from '../../..';
 import { PointerEventType, PointerEvent, PointerOverEvent } from '../../../../specs';
 import { PointerUpdateTrigger } from '../../../../specs/pointer_update_trigger';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';

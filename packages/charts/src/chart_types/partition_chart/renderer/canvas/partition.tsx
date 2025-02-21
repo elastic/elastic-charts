@@ -18,7 +18,7 @@ import { ScreenReaderSummary, ScreenReaderPartitionTable } from '../../../../com
 import { clearCanvas } from '../../../../renderers/canvas';
 import { SettingsSpec } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,
@@ -26,6 +26,7 @@ import {
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -223,7 +224,8 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
   const multiGeometries = partitionMultiGeometries(state);

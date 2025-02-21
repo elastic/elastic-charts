@@ -8,8 +8,8 @@
 
 import { computeLegendSelector } from './compute_legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
+import { LegendItemLabel } from '../../../../state/selectors/shared';
 
 /** @internal */
 export const getLegendItemsLabelsSelector = createCustomCachedSelector(

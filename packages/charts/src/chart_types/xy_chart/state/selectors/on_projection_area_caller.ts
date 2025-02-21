@@ -10,7 +10,7 @@ import { Selector } from 'react-redux';
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { ChartType } from '../../..';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Dimensions } from '../../../../utils/dimensions';

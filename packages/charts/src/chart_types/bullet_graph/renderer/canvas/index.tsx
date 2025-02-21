@@ -18,13 +18,14 @@ import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { AlignedGrid } from '../../../../components/grid/aligned_grid';
 import { ElementOverListener, settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import {
   A11ySettings,
   DEFAULT_A11Y_SETTINGS,
   getA11ySettingsSelector,
 } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getResolvedBackgroundColorSelector } from '../../../../state/selectors/get_resolved_background_color';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
@@ -36,7 +37,7 @@ import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { MetricStyle } from '../../../../utils/themes/theme';
 import { Metric } from '../../../metric/renderer/dom/metric';
 import { getMetricTextPartDimensions, getSnappedFontSizes } from '../../../metric/renderer/dom/text_measurements';
-import { BulletMetricWProgress } from '../../../metric/specs';
+import type { BulletMetricWProgress } from '../../../metric/specs';
 import { ActiveValue, getActiveValues } from '../../selectors/get_active_values';
 import { getBulletSpec } from '../../selectors/get_bullet_spec';
 import { getChartSize } from '../../selectors/get_chart_size';
@@ -271,7 +272,8 @@ const DEFAULT_PROPS: StateProps = {
 };
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
   const { bulletGraph: style, metric: metricStyle } = getChartThemeSelector(state);

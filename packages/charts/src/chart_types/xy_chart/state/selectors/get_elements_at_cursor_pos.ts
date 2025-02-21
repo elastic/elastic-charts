@@ -13,7 +13,7 @@ import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { getOrientedProjectedPointerPositionSelector } from './get_oriented_projected_pointer_position';
 import { PointerPosition } from './get_projected_pointer_position';
 import { PointerEvent, SettingsSpec } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';

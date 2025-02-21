@@ -11,17 +11,18 @@ import React, { RefObject } from 'react';
 import { HighlighterFromHover } from './highlighter_hover';
 import { HighlighterFromLegend } from './highlighter_legend';
 import { Tooltip } from '../../../../components/tooltip/tooltip';
-import { BackwardRef } from '../../../../state/chart_state';
+import type { BackwardRef, ChartRenderer } from '../../../../state/internal_chart_renderer';
 import { Partition } from '../canvas/partition';
 
 /** @internal */
-export function render(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) {
-  return (
-    <>
-      <Tooltip getChartContainerRef={containerRef} />
-      <Partition forwardStageRef={forwardStageRef} />
-      <HighlighterFromHover />
-      <HighlighterFromLegend />
-    </>
-  );
-}
+export const chartRenderer: ChartRenderer = (
+  containerRef: BackwardRef,
+  forwardStageRef: RefObject<HTMLCanvasElement>,
+) => (
+  <>
+    <Tooltip getChartContainerRef={containerRef} />
+    <Partition forwardStageRef={forwardStageRef} />
+    <HighlighterFromHover />
+    <HighlighterFromLegend />
+  </>
+);

@@ -10,9 +10,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { RenderChangeListener, WillRenderListener } from '../specs';
-import { GlobalChartState } from '../state/chart_state';
+import type { GlobalChartState } from '../state/chart_state';
 import { globalSelectorCache } from '../state/create_selector';
-import { getDebugStateSelector } from '../state/selectors/get_debug_state';
+import { getInternalChartStateSelector } from '../state/selectors/get_internal_chart_state';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { DebugState } from '../state/types';
 
@@ -64,6 +64,7 @@ class ChartStatusComponent extends React.Component<ChartStatusStateProps> {
 }
 
 const mapStateToProps = (state: GlobalChartState): ChartStatusStateProps => {
+  const internalChartState = getInternalChartStateSelector(state);
   const { onWillRender, onRenderChange, debugState } = getSettingsSpecSelector(state);
 
   return {
@@ -72,7 +73,7 @@ const mapStateToProps = (state: GlobalChartState): ChartStatusStateProps => {
     renderedCount: state.chartRenderedCount,
     onWillRender,
     onRenderChange,
-    debugState: debugState ? getDebugStateSelector(state) : null,
+    debugState: debugState && internalChartState ? internalChartState.getDebugState(state) : null,
   };
 };
 

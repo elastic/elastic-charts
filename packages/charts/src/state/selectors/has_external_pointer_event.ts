@@ -7,7 +7,7 @@
  */
 
 import { PointerEventType } from '../../specs';
-import { GlobalChartState } from '../chart_state';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const hasExternalEventSelector = ({ externalEvents: { pointer } }: GlobalChartState) =>

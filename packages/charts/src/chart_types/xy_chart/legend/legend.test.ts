@@ -14,7 +14,7 @@ import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onToggleDeselectSeriesAction } from '../../../state/actions/legend';
-import { GlobalChartState } from '../../../state/chart_state';
+import type { GlobalChartState } from '../../../state/chart_state';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';
 import { computeLegendSelector } from '../state/selectors/compute_legend';

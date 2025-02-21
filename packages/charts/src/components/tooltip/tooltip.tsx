@@ -37,10 +37,12 @@ import {
   setSelectedTooltipItems as setSelectedTooltipItemsAction,
   pinTooltip as pinTooltipAction,
 } from '../../state/actions/tooltip';
-import { BackwardRef, GlobalChartState } from '../../state/chart_state';
+import type { GlobalChartState } from '../../state/chart_state';
+import type { BackwardRef } from '../../state/internal_chart_renderer';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
+import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getInternalIsTooltipVisibleSelector } from '../../state/selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipAnchorPositionSelector } from '../../state/selectors/get_internal_tooltip_anchor_position';
@@ -369,7 +371,8 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
     tooltip: tooltipTheme,
   } = getChartThemeSelector(state);
   const { isExternal } = getInternalIsTooltipVisibleSelector(state);
-  return getInternalIsInitializedSelector(state) !== InitStatus.Initialized
+  const internalChartState = getInternalChartStateSelector(state);
+  return getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized
     ? HIDDEN_TOOLTIP_PROPS
     : {
         tooltip,
@@ -385,7 +388,7 @@ const mapStateToPropsBasic = (state: GlobalChartState): BasicTooltipProps => {
 };
 
 const mapStateToProps = (state: GlobalChartState): TooltipStateProps =>
-  getInternalIsInitializedSelector(state) !== InitStatus.Initialized
+  getInternalIsInitializedSelector(state, getInternalChartStateSelector(state)) !== InitStatus.Initialized
     ? HIDDEN_TOOLTIP_PROPS
     : {
         ...mapStateToPropsBasic(state),

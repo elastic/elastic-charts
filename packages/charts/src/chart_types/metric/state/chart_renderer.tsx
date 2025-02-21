@@ -6,13 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Dimensions } from '../../utils/dimensions';
-import { GlobalChartState } from '../chart_state';
+import React from 'react';
+
+import type { ChartRenderer } from '../../../state/internal_chart_renderer';
+import { Metric } from '../renderer/dom';
 
 /** @internal */
-export const getInternalProjectionContainerAreaSelector = (state: GlobalChartState): Dimensions => {
-  if (state.internalChartState) {
-    return state.internalChartState.getProjectionContainerArea(state);
-  }
-  return { width: 0, height: 0, left: 0, top: 0 };
-};
+export const chartRenderer: ChartRenderer = () => <Metric />;

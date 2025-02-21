@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../chart_state';
+// make sure this file doesn't include any imports to avoid circular dependencies
 
 /** @internal */
-export const getChartTypeDescriptionSelector = (state: GlobalChartState): string => {
-  if (state.internalChartState) {
-    return state.internalChartState.getChartTypeDescription(state);
-  }
-  // need to return something so there is always a string returned
-  return 'unknown chart type';
-};
+export interface LegendItemLabel {
+  label: string;
+  depth: number;
+}
+
+/** @internal */
+export const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];

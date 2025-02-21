@@ -25,7 +25,7 @@ import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs'
 // import { MockStore } from '../../../mocks/store/store';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
-import { getScale } from '../../../state/selectors/compute_small_multiple_scales';
+import { getSmallMultiplesScale } from '../../../state/selectors/get_small_multiples_scale';
 import { Position, mergePartial, HorizontalAlignment, VerticalAlignment } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import { OrdinalDomain } from '../../../utils/domain';
@@ -161,8 +161,8 @@ describe('Axis computational utils', () => {
   });
 
   const getSmScales = (smHDomain: OrdinalDomain = [], smVDomain: OrdinalDomain = []): SmallMultipleScales => ({
-    horizontal: getScale(smHDomain, chartDim.width),
-    vertical: getScale(smVDomain, chartDim.height),
+    horizontal: getSmallMultiplesScale(smHDomain, chartDim.width),
+    vertical: getSmallMultiplesScale(smVDomain, chartDim.height),
   });
 
   const emptySmScales = getSmScales();

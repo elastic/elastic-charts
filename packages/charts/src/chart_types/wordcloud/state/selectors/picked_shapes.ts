@@ -8,7 +8,7 @@
 
 import { geometries } from './geometries';
 import { LayerValue } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { WordcloudViewModel } from '../../layout/types/viewmodel_types';
 

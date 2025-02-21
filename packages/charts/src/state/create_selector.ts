@@ -10,7 +10,7 @@ import { createSelector } from '@reduxjs/toolkit';
 // eslint-disable-next-line no-restricted-imports
 import createCachedSelector, { ICacheObject } from 're-reselect';
 
-import { GlobalChartState } from './chart_state';
+import type { GlobalChartState } from './chart_state';
 
 /**
  * This wraps Redux Toolkit's `createSelector` with a custom cache size of 100.

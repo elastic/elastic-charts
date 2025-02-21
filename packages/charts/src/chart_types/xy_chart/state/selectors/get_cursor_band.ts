@@ -17,7 +17,7 @@ import { isTooltipSnapEnableSelector } from './is_tooltip_snap_enabled';
 import { SmallMultipleScales } from '../../../../common/panel_utils';
 import { Rect } from '../../../../geoms/types';
 import { SettingsSpec, PointerEvent } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';

@@ -14,7 +14,7 @@ import {
 } from './get_tooltip_values_highlighted_geoms';
 import { ChartType } from '../../..';
 import { SettingsSpec } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';

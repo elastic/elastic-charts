@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { CSSProperties, RefObject } from 'react';
+import { CSSProperties } from 'react';
 
-import { GlobalChartState } from './chart_state';
+import type { GlobalChartState } from './chart_state';
 import { InitStatus } from './selectors/get_internal_is_intialized';
-import { LegendItemLabel } from './selectors/get_legend_items_labels';
+import { LegendItemLabel } from './selectors/shared';
+import type { TooltipVisibility } from './tooltip_visibility';
 import { DebugState } from './types';
-import { ChartType } from '../chart_types';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import { SeriesKey } from '../common/series_id';
@@ -21,42 +21,29 @@ import { TooltipInfo } from '../components/tooltip/types';
 import { Dimensions } from '../utils/dimensions';
 
 /** @internal */
-export interface TooltipVisibility {
-  visible: boolean;
-  isExternal: boolean;
-  isPinnable: boolean;
-  displayOnly: boolean;
-}
-
-/** @internal */
-export type BackwardRef = () => RefObject<HTMLDivElement>;
-
-/**
- * A set of chart-type-dependant functions that required by all chart type
+export /**
+ * A set of chart-type-dependant functions that are required by all chart types
  * @internal
  */
-export interface InternalChartState {
+interface ChartSelectors {
   /**
-   * The chart type
+   * Returns the initialization status of the chart
+   * @param globalState
    */
-  chartType: ChartType;
   isInitialized(globalState: GlobalChartState): InitStatus;
-  /**
-   * Returns a JSX element with the chart rendered (lenged excluded)
-   * @param containerRef
-   * @param forwardStageRef
-   */
-  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>): JSX.Element | null;
+
   /**
    * `true` if the brush is available for this chart type
    * @param globalState
    */
   isBrushAvailable(globalState: GlobalChartState): boolean;
+
   /**
    * `true` if the brush is available for this chart type
    * @param globalState
    */
   isBrushing(globalState: GlobalChartState): boolean;
+
   /**
    * `true` if the chart is empty (no data displayed)
    * @param globalState
@@ -75,21 +62,25 @@ export interface InternalChartState {
    * @param globalState
    */
   getLegendItems(globalState: GlobalChartState): LegendItem[];
+
   /**
    * Returns the list of extra values for each legend item
    * @param globalState
    */
   getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues>;
+
   /**
    * Returns the CSS pointer cursor depending on the internal chart state
    * @param globalState
    */
   getPointerCursor(globalState: GlobalChartState): CSSProperties['cursor'];
+
   /**
    * Describe if the tooltip is visible and comes from an external source
    * @param globalState
    */
   isTooltipVisible(globalState: GlobalChartState): TooltipVisibility;
+
   /**
    * Get the tooltip information to display
    * @param globalState the GlobalChartState
@@ -146,4 +137,12 @@ export interface InternalChartState {
    * Determines if chart titles are displayed when provided
    */
   canDisplayChartTitles(globalState: GlobalChartState): boolean;
+}
+
+/** @internal */
+export type ChartSelectorsFactory = () => ChartSelectors;
+
+/** @internal */
+export interface ChartSelectorRegistry {
+  [chartType: string]: ChartSelectors;
 }

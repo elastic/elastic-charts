@@ -17,7 +17,8 @@ import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { TooltipType, SettingsSpec } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
-import { BackwardRef, GlobalChartState } from '../../state/chart_state';
+import type { GlobalChartState } from '../../state/chart_state';
+import type { BackwardRef, ChartRenderer } from '../../state/internal_chart_renderer';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
@@ -157,6 +158,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>
 const TimeslipChartLayers = connect(mapStateToProps, mapDispatchToProps)(TimeslipComponent);
 
 /** @internal */
-export const TimeslipWithTooltip = (containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>) => (
-  <TimeslipChartLayers forwardStageRef={forwardStageRef} containerRef={containerRef} />
-);
+export const chartRenderer: ChartRenderer = (
+  containerRef: BackwardRef,
+  forwardStageRef: RefObject<HTMLCanvasElement>,
+) => <TimeslipChartLayers forwardStageRef={forwardStageRef} containerRef={containerRef} />;

@@ -34,7 +34,7 @@ import { BrushAxis, TooltipType, BrushEvent, SettingsSpec } from '../../../specs
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onExternalPointerEvent } from '../../../state/actions/events';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../state/actions/mouse';
-import { GlobalChartState } from '../../../state/chart_state';
+import type { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 import { Position, RecursivePartial } from '../../../utils/common';
 import { AxisStyle } from '../../../utils/themes/theme';

@@ -15,7 +15,7 @@ import {
   NULL_SMALL_MULTIPLES_KEY,
   AGGREGATE_KEY,
 } from './group_by_rollup';
-import { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
+import { LegendItemLabel } from '../../../../state/selectors/shared';
 import { ValueFormatter } from '../../../../utils/common';
 import { Layer } from '../../specs';
 

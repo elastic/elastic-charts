@@ -9,13 +9,17 @@
 import { Cancelable } from 'lodash';
 import { Store } from 'redux';
 
+import { chartTypeSelectors } from '../../chart_types/chart_type_selectors';
 import { DEFAULT_SETTINGS_SPEC, SettingsSpec } from '../../specs';
 import { Spec, SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
-import { createChartStore, GlobalChartState } from '../../state/chart_state';
+import { createChartStore, type GlobalChartState } from '../../state/chart_state';
+import { chartSelectorsRegistry } from '../../state/selectors/get_internal_chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../utils/common';
+
+chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
 
 /** @internal */
 export class MockStore {

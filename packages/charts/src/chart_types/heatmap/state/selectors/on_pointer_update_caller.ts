@@ -18,7 +18,7 @@ import {
   PointerUpdateTrigger,
   SettingsSpec,
 } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';

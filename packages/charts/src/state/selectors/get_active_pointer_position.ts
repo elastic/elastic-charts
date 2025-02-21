@@ -7,7 +7,7 @@
  */
 
 import { Point } from '../../utils/point';
-import { GlobalChartState } from '../chart_state';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getActivePointerPosition = ({ interactions }: GlobalChartState): Point => {

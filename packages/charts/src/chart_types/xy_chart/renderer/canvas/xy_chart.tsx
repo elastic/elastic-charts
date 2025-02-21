@@ -17,7 +17,7 @@ import { LegendItem } from '../../../../common/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { computePanelsSelectors, PanelGeoms } from '../../../../state/selectors/compute_panels';
 import {
   A11ySettings,
@@ -27,6 +27,7 @@ import {
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { Rotation } from '../../../../utils/common';
@@ -242,7 +243,8 @@ const DEFAULT_PROPS: ReactiveChartStateProps = {
 };
 
 const mapStateToProps = (state: GlobalChartState): ReactiveChartStateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
 
