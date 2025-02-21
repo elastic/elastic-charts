@@ -10,10 +10,10 @@ import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState, TooltipVisibility } from '../chart_state';
 
 /** @internal */
-export const getInternalIsTooltipVisibleSelector = (state: GlobalChartState): TooltipVisibility => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState) {
-    return internalChartState.isTooltipVisible(state);
-  }
-  return { visible: false, isExternal: false, displayOnly: false, isPinnable: false };
-};
+export const getInternalIsTooltipVisibleSelector = (state: GlobalChartState): TooltipVisibility =>
+  getInternalChartStateSelector(state)?.isTooltipVisible(state) ?? {
+    visible: false,
+    isExternal: false,
+    displayOnly: false,
+    isPinnable: false,
+  };

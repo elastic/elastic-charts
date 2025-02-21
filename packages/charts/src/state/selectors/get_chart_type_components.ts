@@ -15,10 +15,7 @@ type ChartRendererFn = (
 ) => JSX.Element | null;
 
 /** @internal */
-export const getInternalChartRendererSelector = (state: GlobalChartState): ChartRendererFn => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState) {
-    return internalChartState.chartRenderer;
-  }
-  return () => null;
-};
+export const getInternalChartRendererSelector =
+  (state: GlobalChartState): ChartRendererFn =>
+  (...args) =>
+    getInternalChartStateSelector(state)?.chartRenderer(...args) ?? null;

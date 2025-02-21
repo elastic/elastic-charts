@@ -91,10 +91,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
       const newState = getChartContainerUpdateStateSelector(state);
       if (!deepEqual(this.state, newState)) this.setState(newState);
-      const internalChartState = getInternalChartStateSelector(state);
-      if (internalChartState) {
-        internalChartState.eventCallbacks(state);
-      }
+      getInternalChartStateSelector(state)?.eventCallbacks(state);
     });
   }
 

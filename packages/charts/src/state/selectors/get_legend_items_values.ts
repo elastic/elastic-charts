@@ -14,10 +14,5 @@ import { GlobalChartState } from '../chart_state';
 const EMPTY_ITEM_LIST = new Map<SeriesKey, LegendItemExtraValues>();
 
 /** @internal */
-export const getLegendExtraValuesSelector = (state: GlobalChartState): Map<SeriesKey, LegendItemExtraValues> => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState) {
-    return internalChartState.getLegendExtraValues(state);
-  }
-  return EMPTY_ITEM_LIST;
-};
+export const getLegendExtraValuesSelector = (state: GlobalChartState): Map<SeriesKey, LegendItemExtraValues> =>
+  getInternalChartStateSelector(state)?.getLegendExtraValues(state) ?? EMPTY_ITEM_LIST;

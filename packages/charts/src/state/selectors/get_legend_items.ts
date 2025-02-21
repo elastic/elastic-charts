@@ -11,10 +11,5 @@ import { LegendItem, EMPTY_LEGEND_LIST } from '../../common/legend';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getLegendItemsSelector = (state: GlobalChartState): LegendItem[] => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState) {
-    return internalChartState.getLegendItems(state);
-  }
-  return EMPTY_LEGEND_LIST;
-};
+export const getLegendItemsSelector = (state: GlobalChartState): LegendItem[] =>
+  getInternalChartStateSelector(state)?.getLegendItems(state) ?? EMPTY_LEGEND_LIST;

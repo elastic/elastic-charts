@@ -11,7 +11,5 @@ import { AnchorPosition } from '../../components/portal/types';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getInternalTooltipAnchorPositionSelector = (state: GlobalChartState): AnchorPosition | null => {
-  const internalChartState = getInternalChartStateSelector(state);
-  return internalChartState?.getTooltipAnchor(state) ?? null;
-};
+export const getInternalTooltipAnchorPositionSelector = (state: GlobalChartState): AnchorPosition | null =>
+  getInternalChartStateSelector(state)?.getTooltipAnchor(state) ?? null;

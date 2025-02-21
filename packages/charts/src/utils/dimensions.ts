@@ -17,6 +17,9 @@ export interface Dimensions {
 }
 
 /** @internal */
+export const EMPTY_DIMENSIONS: Dimensions = Object.freeze({ width: 0, height: 0, left: 0, top: 0 });
+
+/** @internal */
 export interface Size {
   width: number;
   height: number;

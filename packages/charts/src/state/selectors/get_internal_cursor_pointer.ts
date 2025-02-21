@@ -13,7 +13,5 @@ import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getInternalPointerCursor = (state: GlobalChartState): CSSProperties['cursor'] => {
-  const internalChartState = getInternalChartStateSelector(state);
-  return internalChartState?.getPointerCursor(state) ?? DEFAULT_CSS_CURSOR;
-};
+export const getInternalPointerCursor = (state: GlobalChartState): CSSProperties['cursor'] =>
+  getInternalChartStateSelector(state)?.getPointerCursor(state) ?? DEFAULT_CSS_CURSOR;

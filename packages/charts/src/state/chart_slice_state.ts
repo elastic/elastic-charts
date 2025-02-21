@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { InternalChartState } from './chart_state';
 import { ColorOverrides } from './color_overrides';
 import { InteractionsState } from './interactions_state';
 import { ChartType } from '../chart_types';
@@ -61,10 +60,6 @@ export interface ChartSliceState {
    * the chart type depending on the used specs
    */
   chartType: ChartType | null;
-  /**
-   * a chart-type-dependant class that is used to render and share chart-type dependant functions
-   */
-  internalChartState: InternalChartState | null;
   /**
    * the dimensions of the parent container, including the legend
    */

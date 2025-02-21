@@ -10,11 +10,5 @@ import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getChartTypeDescriptionSelector = (state: GlobalChartState): string => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState) {
-    return internalChartState.getChartTypeDescription(state);
-  }
-  // need to return something so there is always a string returned
-  return 'unknown chart type';
-};
+export const getChartTypeDescriptionSelector = (state: GlobalChartState): string =>
+  getInternalChartStateSelector(state)?.getChartTypeDescription(state) ?? 'unknown chart type';

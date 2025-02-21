@@ -11,7 +11,5 @@ import { TooltipInfo } from '../../components/tooltip/types';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getInternalTooltipInfoSelector = (state: GlobalChartState): TooltipInfo | undefined => {
-  const internalChartState = getInternalChartStateSelector(state);
-  return internalChartState?.getTooltipInfo(state);
-};
+export const getInternalTooltipInfoSelector = (state: GlobalChartState): TooltipInfo | undefined =>
+  getInternalChartStateSelector(state)?.getTooltipInfo(state);

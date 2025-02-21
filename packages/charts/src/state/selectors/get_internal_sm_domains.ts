@@ -11,13 +11,5 @@ import { SmallMultiplesSeriesDomains } from '../../common/panel_utils';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getInternalSmallMultiplesDomains = (state: GlobalChartState): SmallMultiplesSeriesDomains => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState) {
-    return internalChartState.getSmallMultiplesDomains(state);
-  }
-  return {
-    smHDomain: [],
-    smVDomain: [],
-  };
-};
+export const getInternalSmallMultiplesDomains = (state: GlobalChartState): SmallMultiplesSeriesDomains =>
+  getInternalChartStateSelector(state)?.getSmallMultiplesDomains(state) ?? { smHDomain: [], smVDomain: [] };

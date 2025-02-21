@@ -10,9 +10,5 @@ import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const isInternalChartEmptySelector = (state: GlobalChartState): boolean | undefined => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState) {
-    return internalChartState.isChartEmpty(state);
-  }
-};
+export const isInternalChartEmptySelector = (state: GlobalChartState): boolean | undefined =>
+  getInternalChartStateSelector(state)?.isChartEmpty(state);

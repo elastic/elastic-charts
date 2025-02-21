@@ -11,10 +11,5 @@ import { Dimensions } from '../../utils/dimensions';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getInternalBrushAreaSelector = (state: GlobalChartState): Dimensions | null => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState) {
-    return internalChartState.getBrushArea(state);
-  }
-  return null;
-};
+export const getInternalBrushAreaSelector = (state: GlobalChartState): Dimensions | null =>
+  getInternalChartStateSelector(state)?.getBrushArea(state) ?? null;

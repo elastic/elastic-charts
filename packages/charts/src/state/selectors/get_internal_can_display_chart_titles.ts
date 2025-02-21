@@ -10,7 +10,5 @@ import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getInternalCanDisplayChartTitles = (state: GlobalChartState): boolean => {
-  const internalChartState = getInternalChartStateSelector(state);
-  return internalChartState?.canDisplayChartTitles(state) ?? true;
-};
+export const getInternalCanDisplayChartTitles = (state: GlobalChartState): boolean =>
+  getInternalChartStateSelector(state)?.canDisplayChartTitles(state) ?? true;

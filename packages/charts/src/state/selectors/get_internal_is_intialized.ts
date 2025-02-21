@@ -29,19 +29,13 @@ export const getInternalIsInitializedSelector = (state: GlobalChartState): InitS
     parentDimensions: { width, height },
     specsInitialized,
   } = state;
-  const internalChartState = getInternalChartStateSelector(state);
 
   if (!specsInitialized) {
     return InitStatus.SpecNotInitialized;
   }
-
-  if (!internalChartState) {
-    return InitStatus.MissingChartType;
-  }
-
   if (width <= 0 || height <= 0) {
     return InitStatus.ParentSizeInvalid;
   }
 
-  return internalChartState.isInitialized(state);
+  return getInternalChartStateSelector(state)?.isInitialized(state) ?? InitStatus.MissingChartType;
 };

@@ -10,10 +10,5 @@ import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getInternalIsBrushingAvailableSelector = (state: GlobalChartState): boolean => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (internalChartState) {
-    return internalChartState.isBrushAvailable(state);
-  }
-  return false;
-};
+export const getInternalIsBrushingAvailableSelector = (state: GlobalChartState): boolean =>
+  getInternalChartStateSelector(state)?.isBrushAvailable(state) ?? false;
