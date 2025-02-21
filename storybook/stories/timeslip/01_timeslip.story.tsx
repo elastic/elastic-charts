@@ -8,9 +8,10 @@
 
 import React from 'react';
 
-import { Chart, Timeslip, Settings, GetData } from '@elastic/charts';
+import type { GetData } from '@elastic/charts';
+import { Chart, Timeslip, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const getData = (dataDemand: Parameters<GetData>[0]) => {

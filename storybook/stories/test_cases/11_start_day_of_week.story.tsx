@@ -13,7 +13,7 @@ import React from 'react';
 import { Chart, Axis, BarSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 
 const rng = getRandomNumberGenerator('chart');
 const randomValues = Array.from({ length: 1000 }).map(() => rng(10, 100));

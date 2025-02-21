@@ -8,11 +8,12 @@
 
 import React from 'react';
 
-import { BarSeries, Chart, ScaleType, Settings, PartialTheme, Tooltip } from '@elastic/charts';
+import type { PartialTheme } from '@elastic/charts';
+import { BarSeries, Chart, ScaleType, Settings, Tooltip } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();

@@ -7,18 +7,10 @@
  */
 
 import { select } from '@storybook/addon-knobs';
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import {
-  Placement,
-  TooltipProps,
-  SeriesType,
-  BarSeries,
-  LineSeries,
-  AreaSeries,
-  BubbleSeries,
-  Rotation,
-} from '@elastic/charts';
+import type { TooltipProps, Rotation } from '@elastic/charts';
+import { Placement, SeriesType, BarSeries, LineSeries, AreaSeries, BubbleSeries } from '@elastic/charts';
 
 import { getMultiSelectKnob, getNumberSelectKnob } from './custom';
 

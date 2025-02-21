@@ -9,6 +9,7 @@
 import { select, boolean, color, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { RecursivePartial } from '@elastic/charts';
 import {
   AreaSeries,
   Axis,
@@ -19,13 +20,13 @@ import {
   Settings,
   Fit,
   SeriesType,
-  RecursivePartial,
   LegendValue,
 } from '@elastic/charts';
 
 import { ColorVariant } from '../../../packages/charts/src/utils/common';
-import { AreaFitStyle, LineFitStyle, TextureShape } from '../../../packages/charts/src/utils/themes/theme';
-import { ChartsStory } from '../../types';
+import type { AreaFitStyle, LineFitStyle } from '../../../packages/charts/src/utils/themes/theme';
+import { TextureShape } from '../../../packages/charts/src/utils/themes/theme';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

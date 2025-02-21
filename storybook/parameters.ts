@@ -9,9 +9,9 @@
 import euiDarkVars from '@elastic/eui/dist/eui_theme_dark.json';
 import euiLightVars from '@elastic/eui/dist/eui_theme_light.json';
 import type { Parameters as SBParameters } from '@storybook/addons';
-import { BackgroundParameter } from 'storybook-addon-background-toggle';
-import { ThemeParameter } from 'storybook-addon-theme-toggle';
-import { TogglesParameter } from 'storybook-addon-toggles';
+import type { BackgroundParameter } from 'storybook-addon-background-toggle';
+import type { ThemeParameter } from 'storybook-addon-theme-toggle';
+import type { TogglesParameter } from 'storybook-addon-toggles';
 
 import { SB_KNOBS_PANEL, SB_SOURCE_PANEL } from './stories/utils/storybook';
 

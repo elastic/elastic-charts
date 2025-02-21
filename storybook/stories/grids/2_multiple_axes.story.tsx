@@ -9,9 +9,10 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, GridLineStyle, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
+import type { GridLineStyle } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function generateGridLineStyle(group: string, gridColor = 'purple'): GridLineStyle {

@@ -8,9 +8,10 @@
 
 import React from 'react';
 
-import { Chart, Datum, LegendStrategy, Partition, PartitionLayout, Settings } from '@elastic/charts';
+import type { Datum } from '@elastic/charts';
+import { Chart, LegendStrategy, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getFlatData, getLayerSpec, maxDepth } from '../utils/hierarchical_input_utils';
 import { plasma18 as palette } from '../utils/utils';

@@ -7,12 +7,12 @@
  */
 
 import { select, array, number, optionsKnob, boolean } from '@storybook/addon-knobs';
-import {
+import type {
   OptionsTypeKnobSingleValue,
   OptionsTypeKnobValue,
   OptionsTypeOptionsProp,
 } from '@storybook/addon-knobs/dist/components/types';
-import { OptionsKnobOptionsDisplay } from '@storybook/addon-knobs/dist/components/types/Options';
+import type { OptionsKnobOptionsDisplay } from '@storybook/addon-knobs/dist/components/types/Options';
 
 import { isFiniteNumber } from '@elastic/charts/src/utils/common';
 
