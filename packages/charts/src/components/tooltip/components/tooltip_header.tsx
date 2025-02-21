@@ -8,10 +8,11 @@
 
 import React, { memo } from 'react';
 
-import { BaseDatum, TooltipHeaderFormatter } from '../../../specs';
-import { PointerValue } from '../../../state/types';
-import { Datum, renderComplexChildren } from '../../../utils/common';
-import { PropsOrChildrenWithProps } from '../types';
+import type { BaseDatum, TooltipHeaderFormatter } from '../../../specs';
+import type { PointerValue } from '../../../state/types';
+import type { Datum } from '../../../utils/common';
+import { renderComplexChildren } from '../../../utils/common';
+import type { PropsOrChildrenWithProps } from '../types';
 
 /** @public */
 export type TooltipHeaderProps<D extends BaseDatum = Datum> = PropsOrChildrenWithProps<{

@@ -12,7 +12,7 @@ import { getPanelSize } from '../../../../common/panel_utils';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { Dimensions } from '../../../../utils/dimensions';
+import type { Dimensions } from '../../../../utils/dimensions';
 
 /** @internal */
 export type ChartElementSizes = {

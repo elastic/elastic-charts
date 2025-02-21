@@ -6,10 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { Rect } from '../../../../../geoms/types';
-import { CanvasRenderer, withContext } from '../../../../../renderers/canvas';
-import { degToRad, Rotation } from '../../../../../utils/common';
-import { Dimensions } from '../../../../../utils/dimensions';
+import type { Rect } from '../../../../../geoms/types';
+import type { CanvasRenderer } from '../../../../../renderers/canvas';
+import { withContext } from '../../../../../renderers/canvas';
+import type { Rotation } from '../../../../../utils/common';
+import { degToRad } from '../../../../../utils/common';
+import type { Dimensions } from '../../../../../utils/dimensions';
 import { computeChartTransform } from '../../../state/utils/utils';
 
 /** @internal */

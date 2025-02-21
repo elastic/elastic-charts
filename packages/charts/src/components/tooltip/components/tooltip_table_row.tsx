@@ -7,7 +7,8 @@
  */
 
 import classNames from 'classnames';
-import React, { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+import React from 'react';
 
 import { useTooltipContext } from './tooltip_provider';
 import { isNil } from '../../../utils/common';

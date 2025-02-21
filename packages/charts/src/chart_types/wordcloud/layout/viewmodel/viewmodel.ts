@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Dimensions } from '../../../../utils/dimensions';
-import { Theme } from '../../../../utils/themes/theme';
-import { WordcloudSpec } from '../../specs';
-import { WordcloudViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { Theme } from '../../../../utils/themes/theme';
+import type { WordcloudSpec } from '../../specs';
+import type { WordcloudViewModel, PickFunction, ShapeViewModel } from '../types/viewmodel_types';
 
 /** @internal */
 export function shapeViewModel(spec: WordcloudSpec, theme: Theme, chartDimensions: Dimensions): ShapeViewModel {

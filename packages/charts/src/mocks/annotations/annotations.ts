@@ -7,9 +7,10 @@
  */
 
 import { getAnnotationLinePropsId } from '../../chart_types/xy_chart/annotations/line/dimensions';
-import { AnnotationLineProps } from '../../chart_types/xy_chart/annotations/line/types';
-import { AnnotationRectProps } from '../../chart_types/xy_chart/annotations/rect/types';
-import { mergePartial, RecursivePartial } from '../../utils/common';
+import type { AnnotationLineProps } from '../../chart_types/xy_chart/annotations/line/types';
+import type { AnnotationRectProps } from '../../chart_types/xy_chart/annotations/rect/types';
+import type { RecursivePartial } from '../../utils/common';
+import { mergePartial } from '../../utils/common';
 
 /** @internal */
 export class MockAnnotationLineProps {

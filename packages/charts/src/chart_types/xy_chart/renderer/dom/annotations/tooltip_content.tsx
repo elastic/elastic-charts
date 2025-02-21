@@ -10,8 +10,9 @@ import React, { useCallback } from 'react';
 
 import { TooltipDivider, TooltipHeader } from '../../../../../components/tooltip';
 import { renderWithProps } from '../../../../../utils/common';
-import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../../../../specs';
-import { AnnotationTooltipState } from '../../../annotations/types';
+import type { LineAnnotationDatum, RectAnnotationDatum } from '../../../../specs';
+import { AnnotationType } from '../../../../specs';
+import type { AnnotationTooltipState } from '../../../annotations/types';
 
 /** @internal */
 export const TooltipContent = ({

@@ -10,7 +10,7 @@ import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
-import { PickDragFunction } from '../../layout/types/viewmodel_types';
+import type { PickDragFunction } from '../../layout/types/viewmodel_types';
 
 /** @internal */
 export const getPickedCells = createCustomCachedSelector(

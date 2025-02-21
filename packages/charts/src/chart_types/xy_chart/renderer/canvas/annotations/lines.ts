@@ -7,14 +7,14 @@
  */
 
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
-import { Stroke } from '../../../../../geoms/types';
+import type { Stroke } from '../../../../../geoms/types';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
-import { Rotation } from '../../../../../utils/common';
-import { Dimensions } from '../../../../../utils/dimensions';
-import { LineAnnotationStyle } from '../../../../../utils/themes/theme';
-import { AnnotationLineProps } from '../../../annotations/line/types';
-import { GetAnnotationParamsFn } from '../../common/utils';
-import { AnimationContext } from '../animations';
+import type { Rotation } from '../../../../../utils/common';
+import type { Dimensions } from '../../../../../utils/dimensions';
+import type { LineAnnotationStyle } from '../../../../../utils/themes/theme';
+import type { AnnotationLineProps } from '../../../annotations/line/types';
+import type { GetAnnotationParamsFn } from '../../common/utils';
+import type { AnimationContext } from '../animations';
 import { withPanelTransform } from '../utils/panel_transform';
 
 /** @internal */

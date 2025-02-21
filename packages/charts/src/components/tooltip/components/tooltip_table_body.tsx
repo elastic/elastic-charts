@@ -7,16 +7,17 @@
  */
 
 import classNames from 'classnames';
-import React, { ReactNode, useRef } from 'react';
+import type { ReactNode } from 'react';
+import React, { useRef } from 'react';
 
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
-import { TooltipCellStyle, TooltipTableColumn } from './types';
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
-import { Datum } from '../../../utils/common';
-import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
+import type { TooltipCellStyle, TooltipTableColumn } from './types';
+import type { SeriesIdentifier } from '../../../common/series_id';
+import type { BaseDatum, TooltipValue } from '../../../specs';
+import type { Datum } from '../../../utils/common';
+import type { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
 
 type TooltipTableBodyProps<
   D extends BaseDatum = Datum,

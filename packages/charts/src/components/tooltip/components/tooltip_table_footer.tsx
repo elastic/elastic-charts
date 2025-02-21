@@ -12,11 +12,11 @@ import React from 'react';
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
-import { TooltipTableColumn } from './types';
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
-import { Datum } from '../../../utils/common';
-import { PropsOrChildrenWithProps } from '../types';
+import type { TooltipTableColumn } from './types';
+import type { SeriesIdentifier } from '../../../common/series_id';
+import type { BaseDatum, TooltipValue } from '../../../specs';
+import type { Datum } from '../../../utils/common';
+import type { PropsOrChildrenWithProps } from '../types';
 
 type TooltipTableFooterProps<
   D extends BaseDatum = Datum,

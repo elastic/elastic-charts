@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { Dimensions } from '../../../../utils/dimensions';
-import { Theme } from '../../../../utils/themes/theme';
-import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { Theme } from '../../../../utils/themes/theme';
+import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { shapeViewModel } from '../../layout/viewmodel/viewmodel';
-import { WordcloudSpec } from '../../specs';
+import type { WordcloudSpec } from '../../specs';
 
 /** @internal */
 export function render(spec: WordcloudSpec, theme: Theme, parentDimensions: Dimensions): ShapeViewModel {

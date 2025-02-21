@@ -8,8 +8,8 @@
 
 import { createAction } from '@reduxjs/toolkit';
 
-import { CategoryKey } from '../../common/category';
-import { SeriesIdentifier } from '../../common/series_id';
+import type { CategoryKey } from '../../common/category';
+import type { SeriesIdentifier } from '../../common/series_id';
 
 /** @public */
 export type LegendPathElement = { index: number; value: CategoryKey };

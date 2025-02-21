@@ -8,18 +8,18 @@
 
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { mergeYCustomDomainsByGroupId } from './merge_y_custom_domains';
-import { ScaleContinuousType } from '../../../../scales';
+import type { ScaleContinuousType } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
-import { SettingsSpec } from '../../../../specs/settings';
+import type { SettingsSpec } from '../../../../specs/settings';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { GroupId } from '../../../../utils/ids';
+import type { GroupId } from '../../../../utils/ids';
 import { convertXScaleTypes } from '../../domains/x_domain';
 import { coerceYScaleTypes } from '../../domains/y_domain';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../scales/scale_defaults';
 import { isXDomain } from '../../utils/axis_utils';
 import { groupBy } from '../../utils/group_data_series';
-import { AxisSpec, BasicSeriesSpec, CustomXDomain, XScaleType, YDomainRange } from '../../utils/specs';
+import type { AxisSpec, BasicSeriesSpec, CustomXDomain, XScaleType, YDomainRange } from '../../utils/specs';
 import { getSpecDomainGroupId } from '../utils/spec';
 
 /** @internal */

@@ -9,7 +9,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { DateTime as LuxonDateTime } from 'luxon';
 
-import { CalendarIntervalUnit, CalendarObj, DateTime, FixedIntervalUnit, Minutes, UnixTimestamp } from './types';
+import type { CalendarIntervalUnit, CalendarObj, DateTime, FixedIntervalUnit, Minutes, UnixTimestamp } from './types';
 
 /** @internal */
 export const timeObjFromCalendarObj = (

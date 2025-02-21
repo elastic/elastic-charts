@@ -8,7 +8,8 @@
 
 import { line, area } from 'd3-shape';
 
-import { CurveType, getCurveFactory } from '../utils/curves';
+import type { CurveType } from '../utils/curves';
+import { getCurveFactory } from '../utils/curves';
 
 type SVGPath = string;
 

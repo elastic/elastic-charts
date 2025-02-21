@@ -6,17 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { TickLabelBounds } from './axis_utils';
+import type { TickLabelBounds } from './axis_utils';
 import { computeChartDimensions } from './dimensions';
-import { AxisSpec } from './specs';
+import type { AxisSpec } from './specs';
 import { ChartType } from '../..';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { Position } from '../../../utils/common';
-import { Margins } from '../../../utils/dimensions';
-import { AxisId } from '../../../utils/ids';
+import type { Margins } from '../../../utils/dimensions';
+import type { AxisId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { LegendStyle } from '../../../utils/themes/theme';
-import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
+import type { LegendStyle } from '../../../utils/themes/theme';
+import type { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 
 describe('Computed chart dimensions', () => {
   const parentDim = {

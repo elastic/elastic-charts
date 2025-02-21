@@ -9,9 +9,10 @@
 import React from 'react';
 
 import { ShapeRendererFn } from '../../chart_types/xy_chart/renderer/shapes_paths';
-import { Color } from '../../common/colors';
+import type { Color } from '../../common/colors';
 import { getColorFromVariant } from '../../utils/common';
-import { PointShape, PointStyle } from '../../utils/themes/theme';
+import type { PointStyle } from '../../utils/themes/theme';
+import { PointShape } from '../../utils/themes/theme';
 
 interface LegendIconProps {
   pointStyle?: PointStyle;

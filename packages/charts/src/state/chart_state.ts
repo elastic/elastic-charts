@@ -6,14 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { configureStore, createSlice, ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 import { onChartRendered } from './actions/chart';
 import { updateParentDimensions, updateChartTitles } from './actions/chart_settings';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from './actions/colors';
 import { onExternalPointerEvent } from './actions/events';
 import { onComputedZIndex } from './actions/z_index';
-import { ChartSliceState } from './chart_slice_state';
+import type { ChartSliceState } from './chart_slice_state';
 import { chartTypeFromSpecs } from './chart_type_from_specs';
 import { getInitialState } from './get_initial_state';
 import { newInternalState } from './new_internal_state';
@@ -26,7 +27,7 @@ import {
 } from './reducers/interactions';
 import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
-import { Color } from '../common/colors';
+import type { Color } from '../common/colors';
 import { DEFAULT_SETTINGS_SPEC } from '../specs/default_settings_spec';
 import { upsertSpec, removeSpec, specParsed, specUnmounted } from '../state/actions/specs';
 import { deepEqual } from '../utils/fast_deep_equal';

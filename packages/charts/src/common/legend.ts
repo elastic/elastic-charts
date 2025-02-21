@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import { CategoryKey, CategoryLabel } from './category';
-import { Color } from './colors';
-import { SeriesKey, SeriesIdentifier } from './series_id';
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { SeriesType } from '../specs';
-import { LegendPath } from '../state/actions/legend';
-import { PointStyle } from '../utils/themes/theme';
+import type { CategoryKey, CategoryLabel } from './category';
+import type { Color } from './colors';
+import type { SeriesKey, SeriesIdentifier } from './series_id';
+import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { SeriesType } from '../specs';
+import type { LegendPath } from '../state/actions/legend';
+import type { PointStyle } from '../utils/themes/theme';
 
 /** @internal */
 export type LegendItemChildId = CategoryKey;

@@ -16,7 +16,8 @@ import { Logger } from '../../../utils/logger';
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';
 import { getDataSeriesFromSpecs } from '../utils/series';
-import { BasicSeriesSpec, SeriesType } from '../utils/specs';
+import type { BasicSeriesSpec } from '../utils/specs';
+import { SeriesType } from '../utils/specs';
 
 jest.mock('../../../utils/logger', () => ({
   Logger: {

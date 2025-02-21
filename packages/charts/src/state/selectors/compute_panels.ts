@@ -7,8 +7,9 @@
  */
 
 import { computeSmallMultipleScalesSelector } from './compute_small_multiple_scales';
-import { getPanelSize, getPerPanelMap, PerPanelMap } from '../../common/panel_utils';
-import { Size } from '../../utils/dimensions';
+import type { PerPanelMap } from '../../common/panel_utils';
+import { getPanelSize, getPerPanelMap } from '../../common/panel_utils';
+import type { Size } from '../../utils/dimensions';
 import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */

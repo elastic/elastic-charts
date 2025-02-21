@@ -8,7 +8,7 @@
 
 import { palettes } from './colors';
 import { DEFAULT_ANNOTATION_LINE_STYLE, DEFAULT_ANNOTATION_RECT_STYLE } from './merge_utils';
-import { Theme } from './theme';
+import type { Theme } from './theme';
 import {
   DEFAULT_GEOMETRY_STYLES,
   DEFAULT_MISSING_COLOR,

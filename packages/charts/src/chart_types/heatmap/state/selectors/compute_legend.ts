@@ -9,7 +9,7 @@
 import { getColorScale } from './get_color_scale';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { isEmptySelector } from './is_empty';
-import { LegendItem } from '../../../../common/legend';
+import type { LegendItem } from '../../../../common/legend';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getDeselectedSeriesSelector } from '../../../../state/selectors/get_deselected_data_series';
 

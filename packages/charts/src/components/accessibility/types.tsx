@@ -8,8 +8,8 @@
 
 import React from 'react';
 
-import { GoalChartData } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
-import { A11ySettings } from '../../state/selectors/get_accessibility_config';
+import type { GoalChartData } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
+import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
 interface ScreenReaderTypesProps {
   chartTypeDescription: string;

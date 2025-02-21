@@ -6,13 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { ReactiveChartStateProps } from './connected_component';
+import type { ReactiveChartStateProps } from './connected_component';
 import { renderHeatmapDebugElements } from './debug';
 import { getColorBandStyle, getGeometryStateStyle } from './utils';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
 import { renderRect } from '../../../../renderers/canvas/primitives/rect';
-import { renderText, TextFont, wrapLines } from '../../../../renderers/canvas/primitives/text';
+import type { TextFont } from '../../../../renderers/canvas/primitives/text';
+import { renderText, wrapLines } from '../../../../renderers/canvas/primitives/text';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
 

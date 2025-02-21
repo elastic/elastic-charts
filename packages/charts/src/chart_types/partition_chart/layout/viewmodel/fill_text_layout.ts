@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { RectangleConstruction } from './viewmodel';
+import type { RectangleConstruction } from './viewmodel';
 import { TAU } from '../../../../common/constants';
-import {
+import type {
   Coordinate,
   Distance,
   Pixels,
@@ -16,17 +16,18 @@ import {
   Radian,
   Ratio,
   RingSectorConstruction,
-  trueBearingToStandardPositionAngle,
-  wrapToTau,
 } from '../../../../common/geometry';
+import { trueBearingToStandardPositionAngle, wrapToTau } from '../../../../common/geometry';
 import { logarithm } from '../../../../common/math';
-import { Box, Font, HorizontalAlignment, PartialFont, VerticalAlignments } from '../../../../common/text_utils';
+import type { Box, Font, PartialFont } from '../../../../common/text_utils';
+import { HorizontalAlignment, VerticalAlignments } from '../../../../common/text_utils';
 import { integerSnap, monotonicHillClimb } from '../../../../solvers/monotonic_hill_climb';
-import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { ValueFormatter, getOppositeAlignment, isRTLString } from '../../../../utils/common';
-import { FillLabelConfig, Padding, PartitionStyle } from '../../../../utils/themes/partition';
-import { Layer } from '../../specs';
-import {
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { ValueFormatter } from '../../../../utils/common';
+import { getOppositeAlignment, isRTLString } from '../../../../utils/common';
+import type { FillLabelConfig, Padding, PartitionStyle } from '../../../../utils/themes/partition';
+import type { Layer } from '../../specs';
+import type {
   QuadViewModel,
   RawTextGetter,
   RowBox,

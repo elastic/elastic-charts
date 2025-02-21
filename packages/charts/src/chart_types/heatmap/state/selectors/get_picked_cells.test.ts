@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { createOnBrushEndCaller } from './on_brush_end_caller';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { onPointerMove, onMouseDown, onMouseUp } from '../../../../state/actions/mouse';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 
 describe('Heatmap picked cells', () => {
   let store: Store<GlobalChartState>;

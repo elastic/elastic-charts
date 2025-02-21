@@ -7,18 +7,20 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, useState } from 'react';
+import type { CSSProperties } from 'react';
+import React, { useState } from 'react';
 
 import { ProgressBar } from './progress';
 import { SparkLine, getSparkLineColor } from './sparkline';
 import { MetricText } from './text';
-import { MetricTextDimensions } from './text_measurements';
-import { ColorContrastOptions, combineColors } from '../../../../common/color_calcs';
+import type { MetricTextDimensions } from './text_measurements';
+import type { ColorContrastOptions } from '../../../../common/color_calcs';
+import { combineColors } from '../../../../common/color_calcs';
 import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
-import { Color } from '../../../../common/colors';
+import type { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
-import {
+import type {
   BasicListener,
   ElementClickListener,
   ElementOverListener,
@@ -26,8 +28,9 @@ import {
   MetricElementEvent,
 } from '../../../../specs';
 import { LayoutDirection, isNil } from '../../../../utils/common';
-import { MetricStyle } from '../../../../utils/themes/theme';
-import { MetricWNumber, isMetricWProgress, isMetricWTrend } from '../../specs';
+import type { MetricStyle } from '../../../../utils/themes/theme';
+import type { MetricWNumber } from '../../specs';
+import { isMetricWProgress, isMetricWTrend } from '../../specs';
 
 /** @internal */
 export const Metric: React.FunctionComponent<{

@@ -6,17 +6,19 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../../../../common/colors';
+import type { Color } from '../../../../../common/colors';
 import { cssFontShorthand } from '../../../../../common/text_utils';
 import { renderDebugPoint } from '../../../../../renderers/canvas/utils/debug';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isBetween, isFiniteNumber, sortNumbers } from '../../../../../utils/common';
-import { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
+import type { ContinuousDomain, GenericDomain } from '../../../../../utils/domain';
 import { drawPolarLine } from '../../../../xy_chart/renderer/canvas/lines';
-import { ActiveValue } from '../../../selectors/get_active_values';
-import { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
-import { BulletSpec, BulletSubtype } from '../../../spec';
-import { BulletStyle, GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
+import type { ActiveValue } from '../../../selectors/get_active_values';
+import type { BulletPanelDimensions } from '../../../selectors/get_panel_dimensions';
+import type { BulletSpec } from '../../../spec';
+import { BulletSubtype } from '../../../spec';
+import type { BulletStyle } from '../../../theme';
+import { GRAPH_PADDING, TICK_FONT, TICK_FONT_SIZE } from '../../../theme';
 import { getAngledChartSizing } from '../../../utils/angular';
 import { TARGET_SIZE, BULLET_SIZE, TICK_WIDTH, BAR_SIZE, TARGET_STROKE_WIDTH } from '../constants';
 

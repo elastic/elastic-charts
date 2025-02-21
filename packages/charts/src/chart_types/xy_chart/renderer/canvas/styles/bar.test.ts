@@ -9,7 +9,7 @@
 import { buildBarStyle } from './bar';
 import * as commonColors from '../../../../../common/color_library_wrappers';
 import { colorToRgba } from '../../../../../common/color_library_wrappers';
-import { Fill, Rect, Stroke } from '../../../../../geoms/types';
+import type { Fill, Rect, Stroke } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
 import { getTextureStyles } from '../../../utils/texture';

@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import React, { FC, Suspense } from 'react';
+import type { FC } from 'react';
+import React, { Suspense } from 'react';
 
-import { SettingsProps } from '../specs';
+import type { SettingsProps } from '../specs';
 
 interface NoResultsProps {
   renderFn?: SettingsProps['noResults'];

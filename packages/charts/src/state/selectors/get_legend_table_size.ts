@@ -6,20 +6,21 @@
  * Side Public License, v 1.
  */
 
-import { getLegendConfigSelector } from './get_legend_config_selector';
-import { LegendSizing } from './get_legend_size';
+import type { getLegendConfigSelector } from './get_legend_config_selector';
+import type { LegendSizing } from './get_legend_size';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
-import { LegendItem, LegendItemValue, legendValueTitlesMap } from '../../common/legend';
-import { Font } from '../../common/text_utils';
+import type { LegendItem, LegendItemValue } from '../../common/legend';
+import { legendValueTitlesMap } from '../../common/legend';
+import type { Font } from '../../common/text_utils';
 import {
   GRID_ACTION_WIDTH,
   GRID_COLOR_WIDTH,
   MIN_LABEL_WIDTH,
 } from '../../components/legend/legend_table/legend_table';
-import { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
+import type { TextMeasure } from '../../utils/bbox/canvas_text_bbox_calculator';
 import { isDefined, LayoutDirection } from '../../utils/common';
-import { Dimensions } from '../../utils/dimensions';
-import { Theme } from '../../utils/themes/theme';
+import type { Dimensions } from '../../utils/dimensions';
+import type { Theme } from '../../utils/themes/theme';
 
 const MONO_LETTER_WIDTH = 8.5;
 const MONO_SEPARATOR_WIDTH = 4.5;

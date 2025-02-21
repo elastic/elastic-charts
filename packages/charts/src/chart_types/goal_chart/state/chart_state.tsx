@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 
 import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_description';
 import { getGoalSpecSelector } from './selectors/get_goal_spec';
@@ -19,12 +20,12 @@ import { ChartType } from '../..';
 import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
 import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
 import { Tooltip } from '../../../components/tooltip/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef, TooltipVisibility } from '../../../state/chart_state';
+import type { InternalChartState, GlobalChartState, BackwardRef, TooltipVisibility } from '../../../state/chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';
-import { DebugState } from '../../../state/types';
-import { Dimensions } from '../../../utils/dimensions';
+import type { DebugState } from '../../../state/types';
+import type { Dimensions } from '../../../utils/dimensions';
 import { Goal } from '../renderer/canvas/connected_component';
 
 /** @internal */

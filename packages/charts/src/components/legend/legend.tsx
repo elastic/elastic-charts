@@ -9,24 +9,28 @@
 import classNames from 'classnames';
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, bindActionCreators } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { CustomLegend } from './custom_legend';
-import { LegendItemProps, LegendListItem } from './legend_item';
+import type { LegendItemProps } from './legend_item';
+import { LegendListItem } from './legend_item';
 import { LegendTable } from './legend_table';
 import { getLegendPositionConfig, legendPositionStyle } from './position_style';
 import { getLegendStyle, getLegendListStyle } from './style_utils';
-import { LegendItem, LegendItemExtraValues, shouldDisplayTable } from '../../common/legend';
-import { SeriesIdentifier } from '../../common/series_id';
-import { DEFAULT_LEGEND_CONFIG, LegendSpec } from '../../specs';
+import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { shouldDisplayTable } from '../../common/legend';
+import type { SeriesIdentifier } from '../../common/series_id';
+import type { LegendSpec } from '../../specs';
+import { DEFAULT_LEGEND_CONFIG } from '../../specs';
 import { clearTemporaryColors, setTemporaryColor, setPersistedColor } from '../../state/actions/colors';
+import type { LegendPath } from '../../state/actions/legend';
 import {
   onToggleDeselectSeriesAction,
   onLegendItemOutAction,
   onLegendItemOverAction,
-  LegendPath,
 } from '../../state/actions/legend';
-import { GlobalChartState } from '../../state/chart_state';
+import type { GlobalChartState } from '../../state/chart_state';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';
@@ -38,9 +42,9 @@ import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
 import { hasMostlyRTLItems, HorizontalAlignment, LayoutDirection, VerticalAlignment } from '../../utils/common';
-import { Dimensions, Size } from '../../utils/dimensions';
+import type { Dimensions, Size } from '../../utils/dimensions';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
-import { Theme } from '../../utils/themes/theme';
+import type { Theme } from '../../utils/themes/theme';
 
 interface LegendStateProps {
   debug: boolean;

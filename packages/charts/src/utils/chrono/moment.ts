@@ -8,7 +8,7 @@
 
 import moment from 'moment-timezone';
 
-import { CalendarIntervalUnit, CalendarObj, DateTime, FixedIntervalUnit, Minutes, UnixTimestamp } from './types';
+import type { CalendarIntervalUnit, CalendarObj, DateTime, FixedIntervalUnit, Minutes, UnixTimestamp } from './types';
 
 /** @internal */
 export const timeObjFromCalendarObj = (

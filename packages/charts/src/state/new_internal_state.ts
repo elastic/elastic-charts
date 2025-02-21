@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { InternalChartState } from './internal_chart_state';
+import type { InternalChartState } from './internal_chart_state';
 import { ChartType } from '../chart_types';
 import { BulletState } from '../chart_types/bullet_graph/chart_state';
 import { FlameState } from '../chart_types/flame_chart/internal_chart_state';

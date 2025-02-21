@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ConfigItem } from '../../../../common/config_objects';
+import type { ConfigItem } from '../../../../common/config_objects';
 import { TAU } from '../../../../common/constants';
 
 /**

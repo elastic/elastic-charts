@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { ScaleBand, ScaleContinuous } from '../scales';
-import { BrushEndListener, isPointerOverEvent, PointerEvent, PointerOverEvent } from '../specs';
-import { DragState } from '../state/pointer_states';
+import type { ScaleBand, ScaleContinuous } from '../scales';
+import type { BrushEndListener, PointerEvent, PointerOverEvent } from '../specs';
+import { isPointerOverEvent } from '../specs';
+import type { DragState } from '../state/pointer_states';
 
 /** @internal */
 export function isValidPointerOverEvent(

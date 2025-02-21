@@ -8,7 +8,8 @@
 
 import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
-import { DEFAULT_TOOLTIP_SPEC, TooltipSpec } from '../../specs';
+import type { TooltipSpec } from '../../specs';
+import { DEFAULT_TOOLTIP_SPEC } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecFromStore } from '../utils/get_spec_from_store';

@@ -6,13 +6,15 @@
  * Side Public License, v 1.
  */
 
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
-import { Rect } from '../../../../geoms/types';
-import { Dimensions } from '../../../../utils/dimensions';
+import type { Rect } from '../../../../geoms/types';
+import type { Dimensions } from '../../../../utils/dimensions';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { HeatmapStyle } from '../../../../utils/themes/theme';
-import { DragShape, nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { HeatmapStyle } from '../../../../utils/themes/theme';
+import type { DragShape, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
 
 /** @internal */
 export interface HighlighterCellsProps {

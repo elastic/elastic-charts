@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { Rect } from '../../../../geoms/types';
-import { Dimensions } from '../../../../utils/dimensions';
-import { RectAnnotationDatum } from '../../utils/specs';
+import type { Rect } from '../../../../geoms/types';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { RectAnnotationDatum } from '../../utils/specs';
 
 /** @internal */
 export interface AnnotationRectProps {

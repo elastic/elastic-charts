@@ -6,11 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { AxisProps } from './axis_props';
+import type { AxisProps } from './axis_props';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
 import { Position } from '../../../../../utils/common';
-import { AxisTick, getTickLabelPosition } from '../../../utils/axis_utils';
+import type { AxisTick } from '../../../utils/axis_utils';
+import { getTickLabelPosition } from '../../../utils/axis_utils';
 
 const TICK_TO_LABEL_GAP = 2;
 

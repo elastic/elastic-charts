@@ -7,7 +7,7 @@
  */
 
 import { highContrastColor, combineColors } from './color_calcs';
-import { RgbaTuple } from './color_library_wrappers';
+import type { RgbaTuple } from './color_library_wrappers';
 import { Colors } from './colors';
 import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb';
 

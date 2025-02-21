@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Required, Assign } from 'utility-types';
+import type { Required, Assign } from 'utility-types';
 
 /**
  * Base configurable bounds based on greater than, less than (equal to)

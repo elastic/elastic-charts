@@ -7,13 +7,13 @@
  */
 
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
-import { Color } from '../../../../common/colors';
+import type { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
-import { Pixels } from '../../../../common/geometry';
+import type { Pixels } from '../../../../common/geometry';
 import { cssFontShorthand, HorizontalAlignment } from '../../../../common/text_utils';
 import { renderLayers, withContext } from '../../../../renderers/canvas';
 import { MIN_STROKE_WIDTH } from '../../../../renderers/canvas/primitives/line';
-import {
+import type {
   LinkLabelVM,
   OutsideLinksViewModel,
   QuadViewModel,
@@ -22,7 +22,7 @@ import {
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/viewmodel_types';
-import { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
+import type { LinkLabelsViewModelSpec } from '../../layout/viewmodel/link_text_layout';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
 // the burnout avoidance in the center of the pie

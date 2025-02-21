@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import { GlobalChartState } from '../chart_state';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const InitStatus = Object.freeze({

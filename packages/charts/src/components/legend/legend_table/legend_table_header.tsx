@@ -11,8 +11,9 @@ import React from 'react';
 import { LegendTableCell } from './legend_table_cell';
 import { LegendTableRow } from './legend_table_row';
 import { LegendValueComponent } from './legend_value';
-import { LegendValue, legendValueTitlesMap } from '../../../common/legend';
-import { LegendLabelOptions } from '../../../utils/themes/theme';
+import type { LegendValue } from '../../../common/legend';
+import { legendValueTitlesMap } from '../../../common/legend';
+import type { LegendLabelOptions } from '../../../utils/themes/theme';
 import { NonInteractiveLabel } from '../label';
 
 /** @internal */

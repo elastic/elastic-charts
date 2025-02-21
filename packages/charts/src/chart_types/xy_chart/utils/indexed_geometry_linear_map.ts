@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { IndexedGeometry } from '../../../utils/geometry';
+import type { IndexedGeometry } from '../../../utils/geometry';
 
 /** @internal */
 export class IndexedGeometryLinearMap {

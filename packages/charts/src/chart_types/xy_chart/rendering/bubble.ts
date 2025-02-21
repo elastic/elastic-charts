@@ -7,15 +7,16 @@
  */
 
 import { renderPoints } from './points';
-import { MarkSizeOptions } from './utils';
-import { Color } from '../../../common/colors';
-import { ScaleBand, ScaleContinuous } from '../../../scales';
-import { Dimensions } from '../../../utils/dimensions';
-import { BubbleGeometry } from '../../../utils/geometry';
-import { BubbleSeriesStyle } from '../../../utils/themes/theme';
-import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import { DataSeries, getSeriesIdentifierFromDataSeries } from '../utils/series';
-import { PointStyleAccessor } from '../utils/specs';
+import type { MarkSizeOptions } from './utils';
+import type { Color } from '../../../common/colors';
+import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import type { Dimensions } from '../../../utils/dimensions';
+import type { BubbleGeometry } from '../../../utils/geometry';
+import type { BubbleSeriesStyle } from '../../../utils/themes/theme';
+import type { IndexedGeometryMap } from '../utils/indexed_geometry_map';
+import type { DataSeries } from '../utils/series';
+import { getSeriesIdentifierFromDataSeries } from '../utils/series';
+import type { PointStyleAccessor } from '../utils/specs';
 
 /** @internal */
 export function renderBubble(

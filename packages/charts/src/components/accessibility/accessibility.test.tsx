@@ -17,7 +17,7 @@ import { arrayToLookup } from '../../common/color_calcs';
 import { mocks } from '../../mocks/hierarchical';
 import { productDimension } from '../../mocks/hierarchical/dimension_codes';
 import { BarSeries, LineSeries, Partition, Settings } from '../../specs';
-import { Datum } from '../../utils/common';
+import type { Datum } from '../../utils/common';
 import { Chart } from '../chart';
 
 describe('Accessibility', () => {

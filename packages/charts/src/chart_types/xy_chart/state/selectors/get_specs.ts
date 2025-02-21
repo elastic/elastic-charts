@@ -11,7 +11,7 @@ import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded i
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
-import { AnnotationSpec, AxisSpec, BasicSeriesSpec } from '../../utils/specs';
+import type { AnnotationSpec, AxisSpec, BasicSeriesSpec } from '../../utils/specs';
 
 /** @internal */
 export const getAxisSpecsSelector = createCustomCachedSelector([getSpecs], (specs): AxisSpec[] =>

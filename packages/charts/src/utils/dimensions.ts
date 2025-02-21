@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Pixels } from '../common/geometry';
+import type { Pixels } from '../common/geometry';
 
 /** @public */
 export interface Dimensions {

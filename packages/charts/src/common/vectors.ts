@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Radian } from './geometry';
+import type { Radian } from './geometry';
 
 /** @internal */
 export type Vec2 = [number, number];

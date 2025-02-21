@@ -9,16 +9,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Rect } from '../../../../geoms/types';
+import type { Rect } from '../../../../geoms/types';
 import { getTooltipType } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Theme } from '../../../../utils/themes/theme';
+import type { Theme } from '../../../../utils/themes/theme';
 import { getCursorBandPositionSelector } from '../../state/selectors/get_cursor_band';
 
 interface CursorBandProps {
