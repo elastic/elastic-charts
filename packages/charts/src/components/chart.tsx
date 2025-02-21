@@ -9,7 +9,7 @@
 import classNames from 'classnames';
 import React, { CSSProperties, ReactNode, createRef } from 'react';
 import { Provider } from 'react-redux';
-import { createStore, Store, Unsubscribe } from 'redux';
+import { Unsubscribe, Store } from 'redux';
 import { OptionalKeys } from 'utility-types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -25,7 +25,7 @@ import { SpecsParser } from '../specs/specs_parser';
 import { updateChartTitles, updateParentDimensions } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
-import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
+import { createChartStore, GlobalChartState } from '../state/chart_state';
 import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
 import { getInternalChartStateSelector } from '../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
@@ -76,8 +76,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartStageRef = createRef();
 
     const id = props.id ?? uuidv4();
-    const storeReducer = chartStoreReducer(id, props.title, props.description);
-    this.chartStore = createStore(storeReducer);
+    this.chartStore = createChartStore(id, this.props.title, this.props.description);
     this.state = {
       legendDirection: LayoutDirection.Vertical,
       paddingLeft: LIGHT_THEME.chartMargins.left,
@@ -112,7 +111,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   componentDidUpdate({ title, description, size }: Readonly<ChartProps>) {
     if (title !== this.props.title || description !== this.props.description) {
-      this.chartStore.dispatch(updateChartTitles(this.props.title, this.props.description));
+      this.chartStore.dispatch(updateChartTitles({ title: this.props.title, description: this.props.description }));
     }
     const prevChartSize = getChartSize(size);
     const newChartSize = getFixedChartSize(this.props.size);

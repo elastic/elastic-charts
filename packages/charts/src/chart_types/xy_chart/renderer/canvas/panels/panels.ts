@@ -17,7 +17,8 @@ import { AxisId } from '../../../../../utils/ids';
 import { Point } from '../../../../../utils/point';
 import { getSpecsById } from '../../../state/utils/spec';
 import { AxisSpec } from '../../../utils/specs';
-import { AxesProps, AxisProps, renderAxis } from '../axes';
+import { renderAxis } from '../axes';
+import { AxesProps, AxisProps } from '../axes/axis_props';
 
 /** @internal */
 export function renderGridPanels(ctx: CanvasRenderingContext2D, { x: chartX, y: chartY }: Point, panels: PanelGeoms) {

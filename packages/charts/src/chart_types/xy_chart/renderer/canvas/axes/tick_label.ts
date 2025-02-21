@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AxisProps } from '.';
+import { AxisProps } from './axis_props';
 import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRectCenterRotated } from '../../../../../renderers/canvas/utils/debug';
 import { Position } from '../../../../../utils/common';

@@ -6,15 +6,17 @@
  * Side Public License, v 1.
  */
 
+import { produce } from 'immer';
+
 import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
-import { SpecType, DEFAULT_SETTINGS_SPEC, settingsBuildProps } from '../../specs/constants';
-import { SettingsSpec } from '../../specs/settings';
+import { SettingsSpec } from '../../specs';
+import { DEFAULT_SETTINGS_SPEC, settingsBuildProps } from '../../specs/default_settings_spec';
+import { SpecList, SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { debounce } from '../../utils/debounce';
 import { Logger } from '../../utils/logger';
-import { SpecList } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
-import { getSpecsFromStore } from '../utils';
+import { getSpecsFromStore } from '../utils/get_specs_from_store';
 
 const DEFAULT_POINTER_UPDATE_DEBOUNCE = 16;
 
@@ -30,17 +32,17 @@ function getSettingsSpec(specs: SpecList): SettingsSpec {
 }
 
 function validateSpec(spec: SettingsSpec): SettingsSpec {
-  const delay = spec.pointerUpdateDebounce ?? DEFAULT_POINTER_UPDATE_DEBOUNCE;
+  return produce(spec, (draft) => {
+    const delay = draft.pointerUpdateDebounce ?? DEFAULT_POINTER_UPDATE_DEBOUNCE;
 
-  if (spec.onPointerUpdate) {
-    spec.onPointerUpdate = debounce(spec.onPointerUpdate, delay);
-  }
+    if (draft.onPointerUpdate) {
+      draft.onPointerUpdate = debounce(draft.onPointerUpdate, delay);
+    }
 
-  if (spec.dow < 1 || spec.dow > 7 || !Number.isInteger(spec.dow)) {
-    Logger.warn(`Settings.dow option must be an integer from 1 to 7, received ${spec.dow}. Using default of 1.`);
+    if (draft.dow < 1 || draft.dow > 7 || !Number.isInteger(draft.dow)) {
+      Logger.warn(`Settings.dow option must be an integer from 1 to 7, received ${draft.dow}. Using default of 1.`);
 
-    spec.dow = settingsBuildProps.defaults.dow;
-  }
-
-  return spec;
+      draft.dow = settingsBuildProps.defaults.dow;
+    }
+  });
 }

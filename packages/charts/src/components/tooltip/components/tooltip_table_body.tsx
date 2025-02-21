@@ -40,6 +40,10 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   className,
   ...props
 }: TooltipTableBodyProps<D, SI>) => {
+  function createItemId(item: TooltipValue<D, SI>) {
+    return `${item.seriesIdentifier.key}-${item.label}-${item.value}`;
+  }
+
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null);
 
   if ('children' in props) {
@@ -61,11 +65,14 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
       {items.map((item) => {
         const { isHighlighted, isVisible, displayOnly } = item;
         if (!isVisible) return null;
+        const itemId = createItemId(item);
         return (
           <TooltipTableRow
-            key={`${item.seriesIdentifier.key}-${item.label}-${item.value}`}
+            key={itemId}
             isHighlighted={!pinned && !allHighlighted && isHighlighted}
-            isSelected={pinned && selected.includes(item)}
+            // Because of redux toolkit/immer's immutability, we need to check by
+            // a unique identifier instead of the object reference.
+            isSelected={pinned && selected.some((selectedItem) => createItemId(selectedItem) === itemId)}
             onSelect={displayOnly || !onSelect ? undefined : () => onSelect(item)}
           >
             {columns.map((column, j) => {

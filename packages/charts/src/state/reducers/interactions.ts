@@ -6,33 +6,40 @@
  * Side Public License, v 1.
  */
 
+import { ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import { produce } from 'immer';
+
 import { getTooltipSpecSelector } from './../selectors/get_tooltip_spec';
 import { ChartType } from '../../chart_types';
 import { drilldownActive } from '../../chart_types/partition_chart/state/selectors/drilldown_active';
 import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/state/selectors/picked_shapes';
 import { LegendItem } from '../../common/legend';
 import { SeriesIdentifier } from '../../common/series_id';
+import { TooltipValue } from '../../specs/tooltip';
 import { getDelta } from '../../utils/point';
-import { DOMElementActions, ON_DOM_ELEMENT_ENTER, ON_DOM_ELEMENT_LEAVE } from '../actions/dom_element';
-import { KeyActions, ON_KEY_UP } from '../actions/key';
+import { onDOMElementEnter, onDOMElementLeave } from '../actions/dom_element';
+import { onKeyPress } from '../actions/key';
 import {
-  LegendActions,
-  ON_LEGEND_ITEM_OUT,
-  ON_LEGEND_ITEM_OVER,
-  ON_TOGGLE_DESELECT_SERIES,
+  onLegendItemOutAction,
+  onLegendItemOverAction,
+  onToggleDeselectSeriesAction,
   ToggleDeselectSeriesAction,
 } from '../actions/legend';
-import { MouseActions, ON_MOUSE_DOWN, ON_MOUSE_UP, ON_POINTER_MOVE } from '../actions/mouse';
-import {
-  TOGGLE_SELECTED_TOOLTIP_ITEM,
-  PIN_TOOLTIP,
-  TooltipActions,
-  SET_SELECTED_TOOLTIP_ITEMS,
-} from '../actions/tooltip';
-import { GlobalChartState, InteractionsState } from '../chart_state';
+import { onMouseDown, onMouseUp, onPointerMove } from '../actions/mouse';
+import { toggleSelectedTooltipItem, pinTooltip, setSelectedTooltipItems } from '../actions/tooltip';
+import { ChartSliceState } from '../chart_slice_state';
+import { GlobalChartState } from '../chart_state';
+import { getInternalIsInitializedSelector, InitStatus } from '../selectors/get_internal_is_intialized';
 import { getInternalIsTooltipVisibleSelector } from '../selectors/get_internal_is_tooltip_visible';
 import { getInternalTooltipInfoSelector } from '../selectors/get_internal_tooltip_info';
-import { getInitialPointerState, getInitialTooltipState } from '../utils';
+import { getLegendItemsSelector } from '../selectors/get_legend_items';
+import { getInitialPointerState } from '../utils/get_initial_pointer_state';
+import { getInitialTooltipState } from '../utils/get_initial_tooltip_state';
+
+/** @internal */
+function createItemId(item: TooltipValue<any, SeriesIdentifier>) {
+  return `${item.seriesIdentifier.key}-${item.label}-${item.value}`;
+}
 
 /**
  * The minimum number of pixel between two pointer positions to consider for dragging purposes
@@ -40,161 +47,161 @@ import { getInitialPointerState, getInitialTooltipState } from '../utils';
 const DRAG_DETECTION_PIXEL_DELTA = 4;
 
 /** @internal */
-export function interactionsReducer(
-  globalState: GlobalChartState,
-  action: LegendActions | MouseActions | KeyActions | DOMElementActions | TooltipActions,
-  legendItems: LegendItem[],
-): InteractionsState {
-  const { interactions: state } = globalState;
-  switch (action.type) {
-    case ON_KEY_UP:
-      if (action.key === 'Escape') {
-        if (state.tooltip.pinned) {
-          return {
-            ...state,
-            pointer: getInitialPointerState(),
-            tooltip: getInitialTooltipState(),
-          };
-        }
+export const handleKeyActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder.addCase(onKeyPress, (globalState, action) => {
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    const state = globalState.interactions;
 
-        return {
-          ...state,
-          pointer: getInitialPointerState(),
-        };
+    if (action.payload === 'Escape') {
+      if (state.tooltip.pinned) {
+        state.pointer = getInitialPointerState();
+        state.tooltip = getInitialTooltipState();
+        return;
       }
 
-      return state;
+      state.pointer = getInitialPointerState();
+    }
+  });
+};
 
-    case ON_POINTER_MOVE:
+/** @internal */
+export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder
+    .addCase(onPointerMove, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
+
       // The dragging is enabled when the delta between down and move positions is greater than a constant.
       // After this initial threshold, the dragging still enabled until the mouse up event
       const dragging =
         state.pointer.dragging ||
-        (!!state.pointer.down && getDelta(state.pointer.down.position, action.position) > DRAG_DETECTION_PIXEL_DELTA);
-      return {
-        ...state,
-        pointer: {
-          ...state.pointer,
-          dragging,
-          current: {
-            position: {
-              ...action.position,
-            },
-            time: action.time,
-          },
-        },
-      };
+        (!!state.pointer.down &&
+          getDelta(state.pointer.down.position, action.payload.position) > DRAG_DETECTION_PIXEL_DELTA);
 
-    case ON_MOUSE_DOWN:
-      return {
-        ...state,
-        drilldown: getDrilldownData(globalState),
-        prevDrilldown: state.drilldown,
-        pointer: {
-          ...state.pointer,
-          dragging: false,
-          up: null,
-          down: {
-            position: {
-              ...action.position,
-            },
-            time: action.time,
-          },
-        },
-      };
+      state.pointer.dragging = dragging;
+      state.pointer.current.position = action.payload.position;
+      state.pointer.current.time = action.payload.time;
+    })
+    .addCase(onMouseDown, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-    case ON_MOUSE_UP: {
-      return {
-        ...state,
-        pointer: {
-          ...state.pointer,
-          lastDrag:
-            state.pointer.down && state.pointer.dragging
-              ? {
-                  start: {
-                    position: {
-                      ...state.pointer.down.position,
-                    },
-                    time: state.pointer.down.time,
-                  },
-                  end: {
-                    position: {
-                      ...state.pointer.current.position,
-                    },
-                    time: action.time,
-                  },
-                }
-              : null,
-          lastClick:
-            state.pointer.down && !state.pointer.dragging
-              ? {
-                  position: {
-                    ...action.position,
-                  },
-                  time: action.time,
-                }
-              : null,
-          dragging: false,
-          down: null,
-          up: {
-            position: {
-              ...action.position,
-            },
-            time: action.time,
-          },
-        },
+      state.prevDrilldown = state.drilldown;
+      state.drilldown = getDrilldownData(globalState);
+      state.pointer.dragging = false;
+      state.pointer.up = null;
+      state.pointer.down = {
+        position: action.payload.position,
+        time: action.payload.time,
       };
-    }
+    })
+    .addCase(onMouseUp, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-    case ON_LEGEND_ITEM_OUT:
-      return {
-        ...state,
-        highlightedLegendPath: [],
-      };
-
-    case ON_LEGEND_ITEM_OVER:
-      const { legendPath: highlightedLegendPath } = action;
-      return {
-        ...state,
-        highlightedLegendPath,
-      };
-
-    case ON_TOGGLE_DESELECT_SERIES:
-      return {
-        ...state,
-        deselectedDataSeries: toggleDeselectedDataSeries(action, state.deselectedDataSeries, legendItems),
-      };
-
-    case ON_DOM_ELEMENT_ENTER:
-      return {
-        ...state,
-        hoveredDOMElement: action.element,
-      };
-
-    case ON_DOM_ELEMENT_LEAVE:
-      return {
-        ...state,
-        hoveredDOMElement: null,
-      };
-
-    case PIN_TOOLTIP: {
-      if (!action.pinned) {
-        return {
-          ...state,
-          pointer: action.resetPointer
-            ? getInitialPointerState()
-            : {
-                ...state.pointer,
-                pinned: null,
+      state.pointer.lastDrag =
+        state.pointer.down && state.pointer.dragging
+          ? {
+              start: {
+                position: {
+                  ...state.pointer.down.position,
+                },
+                time: state.pointer.down.time,
               },
-          tooltip: getInitialTooltipState(),
-        };
+              end: {
+                position: {
+                  ...state.pointer.current.position,
+                },
+                time: action.payload.time,
+              },
+            }
+          : null;
+
+      state.pointer.lastClick =
+        state.pointer.down && !state.pointer.dragging
+          ? {
+              position: {
+                ...action.payload.position,
+              },
+              time: action.payload.time,
+            }
+          : null;
+
+      state.pointer.dragging = false;
+      state.pointer.down = null;
+      state.pointer.up = {
+        position: action.payload.position,
+        time: action.payload.time,
+      };
+    });
+};
+
+/** @internal */
+export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder.addCase(onLegendItemOutAction, (globalState) => {
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    const state = globalState.interactions;
+
+    state.highlightedLegendPath = [];
+  });
+
+  builder.addCase(onLegendItemOverAction, (globalState, action) => {
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    const state = globalState.interactions;
+
+    state.highlightedLegendPath = action.payload;
+  });
+
+  builder.addCase(onToggleDeselectSeriesAction, (globalState, action) => {
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+    const state = globalState.interactions;
+
+    state.deselectedDataSeries = toggleDeselectedDataSeries(
+      action.payload,
+      state.deselectedDataSeries,
+      getLegendItemsSelector(globalState),
+    );
+  });
+};
+
+/** @internal */
+export const handleDOMElementActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder
+    .addCase(onDOMElementEnter, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
+
+      state.hoveredDOMElement = action.payload;
+    })
+    .addCase(onDOMElementLeave, (globalState) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
+
+      state.hoveredDOMElement = null;
+    });
+};
+
+/** @internal */
+export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
+  builder
+    .addCase(pinTooltip, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
+
+      if (!action.payload.pinned) {
+        if (action.payload.resetPointer) {
+          state.pointer = getInitialPointerState();
+        } else {
+          state.pointer.pinned = null;
+        }
+        state.tooltip = getInitialTooltipState();
+        return;
       }
 
       const { isPinnable, displayOnly } = getInternalIsTooltipVisibleSelector(globalState);
 
       if (!isPinnable || displayOnly) {
-        return state;
+        return;
       }
 
       const tooltipSpec = getTooltipSpecSelector(globalState);
@@ -210,54 +217,35 @@ export function interactionsReducer(
         // don't pre-populate selection when values are not actionable
         Array.isArray(tooltipSpec.actions) && tooltipSpec.actions.length === 0 ? [] : getSelectedValues();
 
-      return {
-        ...state,
-        tooltip: {
-          ...state.tooltip,
-          pinned: true,
-          selected,
-        },
-        pointer: {
-          ...state.pointer,
-          pinned: state.pointer.current,
-        },
-      };
-    }
+      state.tooltip.pinned = true;
+      state.tooltip.selected = selected;
+      state.pointer.pinned = state.pointer.current;
+    })
+    .addCase(toggleSelectedTooltipItem, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-    case TOGGLE_SELECTED_TOOLTIP_ITEM: {
-      if (!state.tooltip.pinned) return state;
-      let updatedItems = [...state.tooltip.selected];
-      if (updatedItems.includes(action.item)) {
-        updatedItems = updatedItems.filter((item) => item !== action.item);
+      if (!state.tooltip.pinned) return;
+
+      const index = state.tooltip.selected.findIndex((item) => createItemId(item) === createItemId(action.payload));
+      if (index !== -1) {
+        // deleting from the immutable array using immer's produce
+        state.tooltip.selected = produce(state.tooltip.selected, (draft) => {
+          draft.splice(index, 1);
+        });
       } else {
-        updatedItems.push(action.item);
+        state.tooltip.selected.push(action.payload);
       }
+    })
+    .addCase(setSelectedTooltipItems, (globalState, action) => {
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
+      const state = globalState.interactions;
 
-      return {
-        ...state,
-        tooltip: {
-          ...state.tooltip,
-          selected: updatedItems,
-        },
-      };
-    }
+      if (!state.tooltip.pinned) return;
 
-    case SET_SELECTED_TOOLTIP_ITEMS: {
-      if (!state.tooltip.pinned) return state;
-
-      return {
-        ...state,
-        tooltip: {
-          ...state.tooltip,
-          selected: action.items,
-        },
-      };
-    }
-
-    default:
-      return state;
-  }
-}
+      state.tooltip.selected = action.payload;
+    });
+};
 
 /**
  * Helper functions that currently depend on chart type eg. xy or partition

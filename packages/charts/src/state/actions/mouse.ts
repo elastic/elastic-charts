@@ -6,40 +6,11 @@
  * Side Public License, v 1.
  */
 
+import { createAction } from '@reduxjs/toolkit';
+
 import { Point } from '../../utils/point';
 
-/** @internal */
-export const ON_POINTER_MOVE = 'ON_POINTER_MOVE';
-
-/** @internal */
-export const ON_MOUSE_DOWN = 'ON_MOUSE_DOWN';
-
-/** @internal */
-export const ON_MOUSE_UP = 'ON_MOUSE_UP';
-
-/** @internal */
-export const ON_MOUSE_RIGHT_CLICK = 'ON_MOUSE_RIGHT_CLICK';
-
-interface MouseRightClickAction {
-  type: typeof ON_MOUSE_RIGHT_CLICK;
-  position: Point;
-  time: number;
-}
-
-interface MouseDownAction {
-  type: typeof ON_MOUSE_DOWN;
-  position: Point;
-  time: number;
-}
-
-interface MouseUpAction {
-  type: typeof ON_MOUSE_UP;
-  position: Point;
-  time: number;
-}
-
-interface PointerMoveAction {
-  type: typeof ON_POINTER_MOVE;
+interface MouseAction {
   position: Point;
   time: number;
 }
@@ -50,9 +21,7 @@ interface PointerMoveAction {
  * @param time the timestamp of the event (native event timeStamp)
  * @internal
  */
-export function onMouseRightClick(position: Point, time: number): MouseRightClickAction {
-  return { type: ON_MOUSE_RIGHT_CLICK, position, time };
-}
+export const onMouseRightClick = createAction<MouseAction>('ON_MOUSE_RIGHT_CLICK');
 
 /**
  * Action called on mouse button down event
@@ -60,9 +29,7 @@ export function onMouseRightClick(position: Point, time: number): MouseRightClic
  * @param time the timestamp of the event (native event timeStamp)
  * @internal
  */
-export function onMouseDown(position: Point, time: number): MouseDownAction {
-  return { type: ON_MOUSE_DOWN, position, time };
-}
+export const onMouseDown = createAction<MouseAction>('ON_MOUSE_DOWN');
 
 /**
  * Action called on mouse button up event
@@ -70,9 +37,7 @@ export function onMouseDown(position: Point, time: number): MouseDownAction {
  * @param time the timestamp of the event (native event timeStamp)
  * @internal
  */
-export function onMouseUp(position: Point, time: number): MouseUpAction {
-  return { type: ON_MOUSE_UP, position, time };
-}
+export const onMouseUp = createAction<MouseAction>('ON_MOUSE_UP');
 
 /**
  * Action called with the mouse coordinates relatives to the chart container (exclude the legend)
@@ -80,9 +45,4 @@ export function onMouseUp(position: Point, time: number): MouseUpAction {
  * @param time the timestamp of the event (native event timeStamp)
  * @internal
  */
-export function onPointerMove(position: Point, time: number): PointerMoveAction {
-  return { type: ON_POINTER_MOVE, position, time };
-}
-
-/** @internal */
-export type MouseActions = MouseDownAction | MouseUpAction | PointerMoveAction;
+export const onPointerMove = createAction<MouseAction>('ON_POINTER_MOVE');

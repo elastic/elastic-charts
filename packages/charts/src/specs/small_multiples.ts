@@ -8,8 +8,7 @@
 
 import { ComponentProps } from 'react';
 
-import { Spec } from '.';
-import { SpecType } from './constants';
+import { Spec, SpecType } from './spec_type';
 import { ChartType } from '../chart_types';
 import { Ratio } from '../common/geometry';
 import { specComponentFactory } from '../state/spec_factory';

@@ -9,8 +9,7 @@
 import { TimeslipDataRows } from './timeslip/data_fetch';
 import { DataDemand } from './timeslip/render/cartesian';
 import { ChartType } from '..';
-import { Spec } from '../../specs';
-import { SpecType } from '../../specs/constants'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { Spec, SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
 
