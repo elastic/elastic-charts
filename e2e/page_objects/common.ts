@@ -10,7 +10,8 @@
 
 import { URL } from 'url';
 
-import { expect, test, Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { paramCase } from 'change-case';
 
 import { environmentUrl } from '../e2e_config';
