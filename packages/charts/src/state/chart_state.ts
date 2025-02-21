@@ -16,7 +16,6 @@ import { onComputedZIndex } from './actions/z_index';
 import { ChartSliceState } from './chart_slice_state';
 import { chartTypeFromSpecs } from './chart_type_from_specs';
 import { getInitialState } from './get_initial_state';
-import { newInternalState } from './new_internal_state';
 import {
   handleKeyActions,
   handleMouseActions,
@@ -112,7 +111,6 @@ const handleSpecsActions = (builder: ActionReducerMapBuilder<ChartSliceState>) =
 
       const newChartType = chartTypeFromSpecs(state.specs);
       if (state.chartType === newChartType) return;
-      state.internalChartState = newInternalState(newChartType);
       state.chartType = newChartType;
     })
     .addCase(specUnmounted, (state) => {

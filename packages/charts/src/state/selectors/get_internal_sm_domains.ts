@@ -6,16 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { SmallMultiplesSeriesDomains } from '../../common/panel_utils';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getInternalSmallMultiplesDomains = (state: GlobalChartState): SmallMultiplesSeriesDomains => {
-  if (state.internalChartState) {
-    return state.internalChartState.getSmallMultiplesDomains(state);
-  }
-  return {
-    smHDomain: [],
-    smVDomain: [],
-  };
-};
+export const getInternalSmallMultiplesDomains = (state: GlobalChartState): SmallMultiplesSeriesDomains =>
+  getInternalChartStateSelector(state)?.getSmallMultiplesDomains(state) ?? { smHDomain: [], smVDomain: [] };

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
@@ -16,7 +17,7 @@ export interface LegendItemLabel {
 
 /** @internal */
 export const getLegendItemsLabelsSelector = (state: GlobalChartState): LegendItemLabel[] =>
-  state.internalChartState?.getLegendItemsLabels(state) ?? [];
+  getInternalChartStateSelector(state)?.getLegendItemsLabels(state) ?? [];
 
 /** @internal */
 export const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];

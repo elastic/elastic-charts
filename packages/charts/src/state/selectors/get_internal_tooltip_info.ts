@@ -6,12 +6,10 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { TooltipInfo } from '../../components/tooltip/types';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export const getInternalTooltipInfoSelector = (state: GlobalChartState): TooltipInfo | undefined => {
-  if (state.internalChartState) {
-    return state.internalChartState.getTooltipInfo(state);
-  }
-};
+export const getInternalTooltipInfoSelector = (state: GlobalChartState): TooltipInfo | undefined =>
+  getInternalChartStateSelector(state)?.getTooltipInfo(state);
