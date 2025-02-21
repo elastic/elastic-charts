@@ -29,7 +29,6 @@ export const getInitialState = (chartId: string, title?: string, description?: s
     persisted: {},
   },
   chartType: null,
-  internalChartState: null,
   interactions: {
     pointer: getInitialPointerState(),
     highlightedLegendPath: [],
