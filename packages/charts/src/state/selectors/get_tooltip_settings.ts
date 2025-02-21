@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 're-reselect';
+import { Selector } from '@reduxjs/toolkit';
 
 import { getInternalIsTooltipVisibleSelector } from './get_internal_is_tooltip_visible';
 import { getSettingsSpecSelector } from './get_settings_spec';

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 'reselect';
+import { Selector } from '@reduxjs/toolkit';
 
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getPlotAreaRestrictedPoint, getPointsConstraintToSinglePanel, PanelPoints } from './get_brush_area';
@@ -18,10 +18,10 @@ import { ChartType } from '../../..';
 import { SmallMultipleScales } from '../../../../common/panel_utils';
 import { ScaleContinuous } from '../../../../scales';
 import { isContinuousScale } from '../../../../scales/types';
-import { GroupBrushExtent, SeriesSpecs, XYBrushEvent } from '../../../../specs';
-import { BrushAxis } from '../../../../specs/constants';
-import { DragState, GlobalChartState } from '../../../../state/chart_state';
+import { SeriesSpecs, BrushAxis, GroupBrushExtent, XYBrushEvent } from '../../../../specs';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { DragState } from '../../../../state/pointer_states';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { clamp, Rotation } from '../../../../utils/common';

@@ -11,8 +11,7 @@ import { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
 import { Color } from '../../../common/colors';
-import { Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants';
+import { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { specComponentFactory } from '../../../state/spec_factory';
 import { LayoutDirection, ValueFormatter } from '../../../utils/common';
 import { GenericDomain } from '../../../utils/domain';

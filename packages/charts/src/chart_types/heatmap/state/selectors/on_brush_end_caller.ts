@@ -6,14 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { OutputSelector } from 'reselect';
+import { OutputSelector } from '@reduxjs/toolkit';
 
 import { getPickedCells } from './get_picked_cells';
 import { isBrushEndProvided } from './is_brush_available';
 import { ChartType } from '../../..';
 import { HeatmapBrushEvent, SettingsSpec } from '../../../../specs/settings';
-import { DragState, GlobalChartState } from '../../../../state/chart_state';
+import { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { DragState } from '../../../../state/pointer_states';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { DragCheckProps, hasDragged } from '../../../../utils/events';

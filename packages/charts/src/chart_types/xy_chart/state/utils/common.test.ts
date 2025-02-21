@@ -17,7 +17,7 @@ import {
 import { ChartType } from '../../..';
 import { LegendItem } from '../../../../common/legend';
 import { ScaleType } from '../../../../scales/constants';
-import { SpecType } from '../../../../specs';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
 import { Point } from '../../../../utils/point';
 import { AreaSeriesSpec, SeriesType, LineSeriesSpec, BarSeriesSpec } from '../../utils/specs';

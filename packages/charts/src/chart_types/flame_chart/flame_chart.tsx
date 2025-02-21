@@ -23,16 +23,17 @@ import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../../common/constants';
 import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
 import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
-import { SettingsSpec, SpecType, TooltipType, TooltipValue } from '../../specs';
+import { TooltipType, SettingsSpec, TooltipValue } from '../../specs';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
-import { ON_POINTER_MOVE } from '../../state/actions/mouse';
+import { onPointerMove } from '../../state/actions/mouse';
 import { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
-import { getSpecsFromStore } from '../../state/utils';
+import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import { clamp, isFiniteNumber, isNil } from '../../utils/common';
 import { Size } from '../../utils/dimensions';
 import { FlamegraphStyle } from '../../utils/themes/theme';
@@ -1160,7 +1161,7 @@ class FlameComponent extends React.Component<FlameProps> {
         </div>
         <BasicTooltip
           canPinTooltip={canPinTooltip}
-          onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
+          onPointerMove={() => onPointerMove({ position: { x: NaN, y: NaN }, time: NaN })}
           position={
             this.tooltipPinned
               ? { x: this.pinnedPointerX, y: this.pinnedPointerY, width: 0, height: 0 }

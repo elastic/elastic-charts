@@ -6,14 +6,8 @@
  * Side Public License, v 1.
  */
 
+import { createAction } from '@reduxjs/toolkit';
 import { $Values } from 'utility-types';
-
-/** @internal */
-export const ON_DOM_ELEMENT_ENTER = 'ON_DOM_ELEMENT_ENTER';
-/** @internal */
-export const ON_DOM_ELEMENT_LEAVE = 'ON_DOM_ELEMENT_LEAVE';
-/** @internal */
-export const ON_DOM_ELEMENT_CLICK = 'ON_DOM_ELEMENT_CLICK';
 
 /** @internal */
 export const DOMElementType = Object.freeze({
@@ -29,33 +23,12 @@ export interface DOMElement {
   createdBySpecId: string; // TODO is that + datum enough to identify the elements?
   datum: unknown;
 }
-interface DOMElementEnterAction {
-  type: typeof ON_DOM_ELEMENT_ENTER;
-  element: DOMElement;
-}
-
-interface DOMElementLeaveAction {
-  type: typeof ON_DOM_ELEMENT_LEAVE;
-}
-
-interface DOMElementClickAction {
-  type: typeof ON_DOM_ELEMENT_CLICK;
-}
 
 /** @internal */
-export function onDOMElementLeave(): DOMElementLeaveAction {
-  return { type: ON_DOM_ELEMENT_LEAVE };
-}
+export const onDOMElementLeave = createAction('ON_DOM_ELEMENT_LEAVE');
 
 /** @internal */
-export function onDOMElementEnter(element: DOMElement): DOMElementEnterAction {
-  return { type: ON_DOM_ELEMENT_ENTER, element };
-}
+export const onDOMElementEnter = createAction<DOMElement>('ON_DOM_ELEMENT_ENTER');
 
 /** @internal */
-export function onDOMElementClick(): DOMElementClickAction {
-  return { type: ON_DOM_ELEMENT_CLICK };
-}
-
-/** @internal */
-export type DOMElementActions = DOMElementEnterAction | DOMElementLeaveAction;
+export const onDOMElementClick = createAction('ON_DOM_ELEMENT_CLICK');

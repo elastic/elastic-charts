@@ -16,7 +16,7 @@ import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
 import { BinAgg, Direction, XScaleType } from '../../../specs';
 import { OrderBy } from '../../../specs/settings';
-import { ColorOverrides } from '../../../state/chart_state';
+import { ColorOverrides } from '../../../state/color_overrides';
 import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
 import { Datum, isNil, stripUndefined } from '../../../utils/common';
 import { GroupId } from '../../../utils/ids';

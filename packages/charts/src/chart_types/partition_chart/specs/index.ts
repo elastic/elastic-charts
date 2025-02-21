@@ -11,8 +11,8 @@ import { ComponentProps } from 'react';
 import { ChartType } from '../..';
 import { LegacyAnimationConfig } from '../../../common/animation';
 import { Distance, Pixels, Radius } from '../../../common/geometry';
-import { BaseDatum, Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
+import { BaseDatum } from '../../../specs';
+import { Spec, SpecType } from '../../../specs/spec_type'; // kept as unshortened import on separate line otherwise import circularity emerges
 import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
 import { IndexedAccessorFn } from '../../../utils/accessor';
 import {

@@ -43,7 +43,7 @@ const TooltipContext = React.createContext<TooltipContext>({
   toggleSelected: () => {},
   setSelection: () => {},
   values: [],
-  pinTooltip: pinTooltipAction,
+  pinTooltip: (pinned: boolean, resetPointer?: boolean) => pinTooltipAction({ pinned, resetPointer }),
   theme: LIGHT_THEME.tooltip,
 });
 

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { createStore, Store } from 'redux';
+import { Store } from 'redux';
 
 import { partitionMultiGeometries } from './geometries';
 import { createOnElementClickCaller } from './on_element_click_caller';
@@ -17,15 +17,10 @@ import { SettingsSpec, GroupBySpec, SmallMultiplesSpec } from '../../../../specs
 import { updateParentDimensions } from '../../../../state/actions/chart_settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../../state/actions/specs';
-import { chartStoreReducer, GlobalChartState } from '../../../../state/chart_state';
+import { createChartStore, GlobalChartState } from '../../../../state/chart_state';
 import { Datum } from '../../../../utils/common';
 import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import { PartitionSpec } from '../../specs';
-
-function initStore() {
-  const storeReducer = chartStoreReducer('chartId');
-  return createStore(storeReducer);
-}
 
 describe('Picked shapes selector', () => {
   function addSeries(store: Store<GlobalChartState>, spec: PartitionSpec, settings?: Partial<SettingsSpec>) {
@@ -55,7 +50,7 @@ describe('Picked shapes selector', () => {
   let treemapSpec: PartitionSpec;
   let sunburstSpec: PartitionSpec;
   beforeEach(() => {
-    store = initStore();
+    store = createChartStore('chartId');
     const common = {
       valueAccessor: (d: { v: number }) => d.v,
       data: [
@@ -97,9 +92,9 @@ describe('Picked shapes selector', () => {
     store.subscribe(() => {
       onElementClickCaller(store.getState());
     });
-    store.dispatch(onPointerMove({ x: 200, y: 200 }, 0));
-    store.dispatch(onMouseDown({ x: 200, y: 200 }, 1));
-    store.dispatch(onMouseUp({ x: 200, y: 200 }, 2));
+    store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 0 }));
+    store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1 }));
+    store.dispatch(onMouseUp({ position: { x: 200, y: 200 }, time: 2 }));
     expect(onClickListener).toHaveBeenCalled();
     expect(onClickListener).toHaveBeenCalledWith([
       [
@@ -176,9 +171,9 @@ describe('Picked shapes selector', () => {
     });
     const x = 50;
     const y = 150;
-    store.dispatch(onPointerMove({ x, y }, 0));
-    store.dispatch(onMouseDown({ x, y }, 1));
-    store.dispatch(onMouseUp({ x, y }, 2));
+    store.dispatch(onPointerMove({ position: { x, y }, time: 0 }));
+    store.dispatch(onMouseDown({ position: { x, y }, time: 1 }));
+    store.dispatch(onMouseUp({ position: { x, y }, time: 2 }));
     expect(onClickListener).toHaveBeenCalled();
     expect(onClickListener).toHaveBeenCalledWith([
       [
@@ -220,9 +215,9 @@ describe('Picked shapes selector', () => {
     store.subscribe(() => {
       onElementClickCaller(store.getState());
     });
-    store.dispatch(onPointerMove({ x: 200, y: 200 }, 0));
-    store.dispatch(onMouseDown({ x: 200, y: 200 }, 1));
-    store.dispatch(onMouseUp({ x: 200, y: 200 }, 2));
+    store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 0 }));
+    store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1 }));
+    store.dispatch(onMouseUp({ position: { x: 200, y: 200 }, time: 2 }));
     expect(onClickListener).toHaveBeenCalled();
     expect(onClickListener).toHaveBeenCalledWith([
       [

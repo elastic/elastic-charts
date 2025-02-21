@@ -8,9 +8,9 @@
 
 import { ComponentType, ReactNode } from 'react';
 
-import { SpecType, TooltipStickTo, TooltipType } from './constants';
-import { Spec } from './index';
+import { TooltipStickTo, TooltipType } from './constants';
 import { SettingsSpec } from './settings';
+import { Spec, SpecType } from './spec_type';
 import { ChartType } from '../chart_types';
 import { BaseDatum } from '../chart_types/specs';
 import { Color } from '../common/colors';

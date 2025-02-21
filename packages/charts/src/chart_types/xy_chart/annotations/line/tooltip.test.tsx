@@ -14,8 +14,8 @@ import { ChartType } from '../../..';
 import { Chart } from '../../../../components/chart';
 import { MockAnnotationLineProps, MockAnnotationRectProps } from '../../../../mocks/annotations/annotations';
 import { ScaleType } from '../../../../scales/constants';
-import { SpecType } from '../../../../specs/constants';
 import { Settings } from '../../../../specs/settings';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { Rotation } from '../../../../utils/common';
 import { Dimensions } from '../../../../utils/dimensions';
 import { AnnotationId } from '../../../../utils/ids';

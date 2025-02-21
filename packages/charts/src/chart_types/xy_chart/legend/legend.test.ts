@@ -12,7 +12,7 @@ import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onToggleDeselectSeriesAction } from '../../../state/actions/legend';
 import { GlobalChartState } from '../../../state/chart_state';
 import { Position, RecursivePartial } from '../../../utils/common';
@@ -351,7 +351,7 @@ describe('Legends', () => {
     addBarSeries(3);
     const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
 
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key, specId }] }));
     const legend = computeLegendSelector(store.getState());
     const visibility = legend.map((item) => !item.isSeriesHidden);
     // only the clicked item should be visible
@@ -361,9 +361,9 @@ describe('Legends', () => {
     addBarSeries(3);
     const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
     // click the first item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key, specId }] }));
     // now click again the same item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key, specId }] }));
     const legend = computeLegendSelector(store.getState());
     const visibility = legend.map((item) => !item.isSeriesHidden);
     expect(visibility).toEqual([true, true, true]);
@@ -372,11 +372,11 @@ describe('Legends', () => {
     addBarSeries(3);
     const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
     // click the first item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key, specId }] }));
     const { key: otherKey, specId: otherSpecId } = computeSeriesDomainsSelector(store.getState())
       .formattedDataSeries[1]!;
     // now click the second item (now hidden)
-    store.dispatch(onToggleDeselectSeriesAction([{ key: otherKey, specId: otherSpecId }]));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key: otherKey, specId: otherSpecId }] }));
     const legend = computeLegendSelector(store.getState());
     const visibility = legend.map((item) => !item.isSeriesHidden);
     expect(visibility).toEqual([true, true, false]);
@@ -385,13 +385,13 @@ describe('Legends', () => {
     addBarSeries(3);
     const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
     // click the first item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key, specId }] }));
     const { key: otherKey, specId: otherSpecId } = computeSeriesDomainsSelector(store.getState())
       .formattedDataSeries[1]!;
     // now click the second item (now hidden)
-    store.dispatch(onToggleDeselectSeriesAction([{ key: otherKey, specId: otherSpecId }]));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key: otherKey, specId: otherSpecId }] }));
     // ...and click again this second item to make it hidden
-    store.dispatch(onToggleDeselectSeriesAction([{ key: otherKey, specId: otherSpecId }]));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key: otherKey, specId: otherSpecId }] }));
     const legend = computeLegendSelector(store.getState());
     const visibility = legend.map((item) => !item.isSeriesHidden);
     expect(visibility).toEqual([true, false, false]);
@@ -400,9 +400,9 @@ describe('Legends', () => {
     addBarSeries(3);
     const { key, specId } = computeSeriesDomainsSelector(store.getState()).formattedDataSeries[0]!;
     // click the first item
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }]));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key, specId }] }));
     // now click again with the meta key enabled
-    store.dispatch(onToggleDeselectSeriesAction([{ key, specId }], true));
+    store.dispatch(onToggleDeselectSeriesAction({ legendItemIds: [{ key, specId }], metaKey: true }));
     const legend = computeLegendSelector(store.getState());
     const visibility = legend.map((item) => !item.isSeriesHidden);
     expect(visibility).toEqual([false, false, false]);

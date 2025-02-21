@@ -15,7 +15,7 @@ import { Point } from '../../../../../utils/point';
 import { wrapText } from '../../../../../utils/text/wrap';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
-import { AxisProps } from '../axes';
+import { AxisProps } from '../axes/axis_props';
 
 type PanelTitleProps = Pick<AxisProps, 'panelTitle' | 'axisSpec' | 'axisStyle' | 'size' | 'dimension' | 'debug'>;
 type TitleProps = PanelTitleProps & { anchorPoint: Point };

@@ -7,9 +7,10 @@
  */
 
 import { SeriesIdentifier } from './series_id';
-import { LayerValue, SettingsSpec, Spec } from '../specs';
-import { PointerStates } from '../state/chart_state';
-import { isClicking } from '../state/utils';
+import { LayerValue, SettingsSpec } from '../specs';
+import { Spec } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import { PointerStates } from '../state/pointer_states';
+import { isClicking } from '../state/utils/is_clicking';
 
 // todo revise all the complex branching in this file, replace some `if`s and multiple return points with ternaries
 

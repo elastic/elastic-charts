@@ -33,17 +33,10 @@ import {
 } from '../../chart_types/xy_chart/utils/specs';
 import { Predicate } from '../../common/predicate';
 import { ScaleType } from '../../scales/constants';
-import {
-  SettingsSpec,
-  SpecType,
-  DEFAULT_SETTINGS_SPEC,
-  SmallMultiplesSpec,
-  GroupBySpec,
-  Spec,
-  HeatmapSpec,
-  TooltipSpec,
-  DEFAULT_TOOLTIP_SPEC,
-} from '../../specs';
+import { HeatmapSpec, SettingsSpec, SmallMultiplesSpec, TooltipSpec, DEFAULT_TOOLTIP_SPEC } from '../../specs';
+import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
+import { GroupBySpec } from '../../specs/group_by';
+import { Spec, SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { Datum, mergePartial, Position, RecursivePartial, Rotation } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 

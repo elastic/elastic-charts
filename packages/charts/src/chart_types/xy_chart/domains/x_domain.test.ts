@@ -10,7 +10,8 @@ import { convertXScaleTypes, findMinInterval, mergeXDomain } from './x_domain';
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec, MockSeriesSpecs } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType, Direction, BinAgg } from '../../../specs/constants';
+import { Direction, BinAgg } from '../../../specs';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { Logger } from '../../../utils/logger';
 import { getXNiceFromSpec, getXScaleTypeFromSpec } from '../scales/get_api_scales';
 import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';

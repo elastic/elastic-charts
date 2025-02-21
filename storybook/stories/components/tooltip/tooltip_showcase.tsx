@@ -60,7 +60,6 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
     visible: boolean('visible', true),
     backgroundColor: color('backgroundColor', '#E8F9FD'),
     getChartContainerRef: () => divRef,
-    // @ts-ignore - overriding mouse logic
     onPointerMove: () => {},
     toggleSelectedTooltipItem: (rawitem) => {
       const item = rawitem as TooltipValue<D, SI>;
@@ -86,6 +85,10 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
       ...(DEFAULT_TOOLTIP_SPEC as unknown as TooltipSpec<D, SI>),
       ...props.tooltip,
     },
+    isBrushing: false,
+    isExternal: false,
+    position: null,
+    chartId: 'chartId',
   };
 
   return (

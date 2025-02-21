@@ -55,7 +55,7 @@ import { TooltipStyle } from '../../utils/themes/theme';
 import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
 
 interface TooltipDispatchProps {
-  onPointerMove: typeof onPointerMoveAction;
+  onPointerMove: (...args: Parameters<typeof onPointerMoveAction>) => void;
   toggleSelectedTooltipItem: ToggleSelectedTooltipItemCallback;
   setSelectedTooltipItems: SetSelectedTooltipItemsCallback;
   pinTooltip: PinTooltipCallback;
@@ -139,7 +139,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       return;
     }
     // TODO: handle scroll cursor update
-    onPointerMove({ x: -1, y: -1 }, Date.now());
+    onPointerMove({ position: { x: -1, y: -1 }, time: Date.now() });
   };
 
   useEffect(() => {
@@ -353,7 +353,7 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
       onPointerMove: onPointerMoveAction,
       toggleSelectedTooltipItem: toggleSelectedTooltipItemAction,
       setSelectedTooltipItems: setSelectedTooltipItemsAction,
-      pinTooltip: pinTooltipAction,
+      pinTooltip: (pinned: boolean, resetPointer?: boolean) => pinTooltipAction({ pinned, resetPointer }),
     },
     dispatch,
   );

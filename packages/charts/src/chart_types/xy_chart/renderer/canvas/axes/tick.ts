@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AxisProps } from '.';
+import { AxisProps } from './axis_props';
 import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import { Line } from '../../../../../geoms/types';
 import { renderMultiLine } from '../../../../../renderers/canvas/primitives/line';
