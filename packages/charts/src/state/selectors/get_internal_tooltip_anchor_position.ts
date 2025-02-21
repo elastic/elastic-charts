@@ -6,13 +6,12 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { AnchorPosition } from '../../components/portal/types';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalTooltipAnchorPositionSelector = (state: GlobalChartState): AnchorPosition | null => {
-  if (state.internalChartState) {
-    return state.internalChartState.getTooltipAnchor(state);
-  }
-  return null;
+  const internalChartState = getInternalChartStateSelector(state);
+  return internalChartState?.getTooltipAnchor(state) ?? null;
 };

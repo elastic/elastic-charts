@@ -6,12 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalIsBrushingAvailableSelector = (state: GlobalChartState): boolean => {
-  if (state.internalChartState) {
-    return state.internalChartState.isBrushAvailable(state);
+  const internalChartState = getInternalChartStateSelector(state);
+  if (internalChartState) {
+    return internalChartState.isBrushAvailable(state);
   }
   return false;
 };

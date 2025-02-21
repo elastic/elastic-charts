@@ -8,10 +8,12 @@
 
 import { CSSProperties } from 'react';
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalPointerCursor = (state: GlobalChartState): CSSProperties['cursor'] => {
-  return state.internalChartState?.getPointerCursor(state) ?? DEFAULT_CSS_CURSOR;
+  const internalChartState = getInternalChartStateSelector(state);
+  return internalChartState?.getPointerCursor(state) ?? DEFAULT_CSS_CURSOR;
 };

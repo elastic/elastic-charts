@@ -6,11 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const isInternalChartEmptySelector = (state: GlobalChartState): boolean | undefined => {
-  if (state.internalChartState) {
-    return state.internalChartState.isChartEmpty(state);
+  const internalChartState = getInternalChartStateSelector(state);
+  if (internalChartState) {
+    return internalChartState.isChartEmpty(state);
   }
 };

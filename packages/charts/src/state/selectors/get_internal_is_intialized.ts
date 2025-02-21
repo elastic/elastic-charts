@@ -8,6 +8,7 @@
 
 import { $Values } from 'utility-types';
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState } from '../chart_state';
 
 /** @internal */
@@ -27,8 +28,8 @@ export const getInternalIsInitializedSelector = (state: GlobalChartState): InitS
   const {
     parentDimensions: { width, height },
     specsInitialized,
-    internalChartState,
   } = state;
+  const internalChartState = getInternalChartStateSelector(state);
 
   if (!specsInitialized) {
     return InitStatus.SpecNotInitialized;

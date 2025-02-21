@@ -24,15 +24,6 @@ import { LegendItemLabel } from './selectors/get_legend_items_labels';
 import { DebugState } from './types';
 import { getInitialPointerState, getInitialTooltipState } from './utils';
 import { ChartType } from '../chart_types';
-import { BulletState } from '../chart_types/bullet_graph/chart_state';
-import { FlameState } from '../chart_types/flame_chart/internal_chart_state';
-import { GoalState } from '../chart_types/goal_chart/state/chart_state';
-import { HeatmapState } from '../chart_types/heatmap/state/chart_state';
-import { MetricState } from '../chart_types/metric/state/chart_state';
-import { PartitionState } from '../chart_types/partition_chart/state/chart_state';
-import { TimeslipState } from '../chart_types/timeslip/internal_chart_state';
-import { WordcloudState } from '../chart_types/wordcloud/state/chart_state';
-import { XYAxisChartState } from '../chart_types/xy_chart/state/chart_state';
 import { CategoryKey } from '../common/category';
 import { Color } from '../common/colors';
 import { LegendItem, LegendItemExtraValues } from '../common/legend';
@@ -273,10 +264,7 @@ export interface GlobalChartState {
    * the chart type depending on the used specs
    */
   chartType: ChartType | null;
-  /**
-   * a chart-type-dependant class that is used to render and share chart-type dependant functions
-   */
-  internalChartState: InternalChartState | null;
+
   /**
    * the dimensions of the parent container, including the legend
    */
@@ -313,7 +301,6 @@ export const getInitialState = (chartId: string, title?: string, description?: s
     persisted: {},
   },
   chartType: null,
-  internalChartState: null,
   interactions: {
     pointer: getInitialPointerState(),
     highlightedLegendPath: [],
@@ -352,7 +339,6 @@ export const chartStoreReducer = (chartId: string, title?: string, description?:
           specsInitialized: true,
           specParsing: false,
           chartType,
-          internalChartState: state.chartType === chartType ? state.internalChartState : newInternalState(chartType),
         };
       case SPEC_UNMOUNTED:
         return {
@@ -491,21 +477,4 @@ function chartTypeFromSpecs(specs: SpecList): ChartType | null {
     return null;
   }
   return nonGlobalTypes[0];
-}
-
-const constructors: Record<ChartType, () => InternalChartState | null> = {
-  [ChartType.Goal]: () => new GoalState(),
-  [ChartType.Partition]: () => new PartitionState(),
-  [ChartType.Flame]: () => new FlameState(),
-  [ChartType.Timeslip]: () => new TimeslipState(),
-  [ChartType.XYAxis]: () => new XYAxisChartState(),
-  [ChartType.Heatmap]: () => new HeatmapState(),
-  [ChartType.Wordcloud]: () => new WordcloudState(),
-  [ChartType.Metric]: () => new MetricState(),
-  [ChartType.Bullet]: () => new BulletState(),
-  [ChartType.Global]: () => null,
-}; // with no default, TS signals if a new chart type isn't added here too
-
-function newInternalState(chartType: ChartType | null): InternalChartState | null {
-  return chartType ? constructors[chartType]() : null;
 }

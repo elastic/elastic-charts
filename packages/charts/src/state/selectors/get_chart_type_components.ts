@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { GlobalChartState, BackwardRef } from '../chart_state';
 
 type ChartRendererFn = (
@@ -15,8 +16,9 @@ type ChartRendererFn = (
 
 /** @internal */
 export const getInternalChartRendererSelector = (state: GlobalChartState): ChartRendererFn => {
-  if (state.internalChartState) {
-    return state.internalChartState.chartRenderer;
+  const internalChartState = getInternalChartStateSelector(state);
+  if (internalChartState) {
+    return internalChartState.chartRenderer;
   }
   return () => null;
 };
