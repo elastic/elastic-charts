@@ -8,7 +8,7 @@
 
 import { $Values } from 'utility-types';
 
-import type { GlobalChartState } from '../chart_state_types';
+import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */

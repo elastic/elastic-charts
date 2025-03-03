@@ -32,7 +32,6 @@ import { upsertSpec, removeSpec, specParsed, specUnmounted } from '../state/acti
 import { deepEqual } from '../utils/fast_deep_equal';
 
 export type { InteractionsState, TooltipInteractionState } from './interactions_state';
-export type { InternalChartState } from './internal_chart_state';
 export type { BackwardRef } from './internal_chart_renderer';
 export type { TooltipVisibility } from './tooltip_visibility';
 
