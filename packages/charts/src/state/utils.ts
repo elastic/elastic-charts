@@ -9,7 +9,7 @@
 import type { TooltipInteractionState } from './interactions_state';
 import type { PointerState, PointerStates } from './pointer_states';
 import type { ChartType } from '../chart_types';
-import { Spec } from '../specs/spec';
+import type { Spec } from '../specs/spec';
 import type { SpecList } from '../specs/spec_type';
 
 /**

@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 
 import { BrushTool } from '../../../components/brush/brush';
 import { Tooltip } from '../../../components/tooltip/tooltip';
