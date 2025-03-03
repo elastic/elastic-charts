@@ -17,8 +17,7 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getPartitionSpec } from './selectors/partition_spec';
 import { getTooltipInfoSelector } from './selectors/tooltip';
-import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
-import type { ChartSelectorsFactory } from '../../../state/chart_selectors';
+import { createChartSelectorsFactory, type ChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
@@ -29,12 +28,10 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
   const onElementOverCaller = createOnElementOverCaller();
   const onElementOutCaller = createOnElementOutCaller();
 
-  return {
+  return createChartSelectorsFactory({
     isInitialized: (state: GlobalChartState) =>
       getPartitionSpec(state) !== null ? InitStatus.Initialized : InitStatus.SpecNotInitialized,
 
-    isBrushAvailable: () => false,
-    isBrushing: () => false,
     isChartEmpty: () => false,
 
     getLegendItems: computeLegendSelector,
@@ -42,7 +39,6 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
     // the label item strings needs to be a concatenation of the label + the extra formatted value if available.
     // this is required to compute the legend automatic width
     getLegendItemsLabels,
-    getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
     getPointerCursor: getPointerCursorSelector,
 
     isTooltipVisible: (globalState: GlobalChartState) => ({
@@ -80,10 +76,5 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
 
     getDebugState: getDebugStateSelector,
     getChartTypeDescription: getChartTypeDescriptionSelector,
-    getSmallMultiplesDomains: () => ({
-      smHDomain: [],
-      smVDomain: [],
-    }),
-    canDisplayChartTitles: () => true,
-  };
+  })();
 };

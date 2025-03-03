@@ -23,8 +23,7 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerUpdateCaller } from './selectors/on_pointer_update_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
-import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
-import type { ChartSelectorsFactory } from '../../../state/chart_selectors';
+import { createChartSelectorsFactory, type ChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
@@ -38,14 +37,13 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
   const onBrushEndCaller = createOnBrushEndCaller();
   const onPointerUpdate = createOnPointerUpdateCaller();
 
-  return {
+  return createChartSelectorsFactory({
     isInitialized: () => InitStatus.Initialized,
     isBrushAvailable: isBrushAvailableSelector,
     isBrushing: isBrushingSelector,
     isChartEmpty: isEmptySelector,
     getLegendItems: computeLegendSelector,
     getLegendItemsLabels: getLegendItemsLabelsSelector,
-    getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
     getPointerCursor: getPointerCursorSelector,
     isTooltipVisible: isTooltipVisibleSelector,
     getTooltipInfo: getTooltipInfoSelector,
@@ -63,6 +61,5 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
       onBrushEndCaller(state);
       onPointerUpdate(state);
     },
-    canDisplayChartTitles: () => true,
-  };
+  })();
 };
