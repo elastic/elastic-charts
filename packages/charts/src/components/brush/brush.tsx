@@ -128,10 +128,7 @@ class BrushToolComponent extends React.Component<StateProps> {
 
 const mapStateToProps = (state: GlobalChartState): StateProps => {
   const internalChartState = getInternalChartStateSelector(state);
-  if (
-    internalChartState === null ||
-    getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized
-  ) {
+  if (internalChartState === null || getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return {
       initialized: false,
       projectionContainer: {

@@ -14,7 +14,6 @@ import { TooltipType, getTooltipType } from '../../../../specs';
 import type { GlobalChartState, TooltipInteractionState } from '../../../../state/chart_state';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
@@ -79,8 +78,7 @@ class CursorLineComponent extends React.Component<CursorLineProps> {
 }
 
 const mapStateToProps = (state: GlobalChartState): CursorLineProps => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
+  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return {
       isBrushing: false,
       theme: LIGHT_THEME,

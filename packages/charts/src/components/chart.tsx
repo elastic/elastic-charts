@@ -93,7 +93,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
       const internalChartState = getInternalChartStateSelector(state);
-      if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
+      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
         return;
       }
 

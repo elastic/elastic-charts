@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 import { Colors } from '../common/colors';
 import type { GlobalChartState } from '../state/chart_state';
 import { getChartThemeSelector } from '../state/selectors/get_chart_theme';
-import { getInternalChartStateSelector } from '../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 
 interface ChartBackgroundProps {
@@ -30,8 +29,7 @@ export class ChartBackgroundComponent extends React.Component<ChartBackgroundPro
 }
 
 const mapStateToProps = (state: GlobalChartState): ChartBackgroundProps => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
+  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return {
       backgroundColor: Colors.Transparent.keyword,
     };

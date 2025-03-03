@@ -16,7 +16,6 @@ import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/st
 import type { LegendItem } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
 import type { TooltipValue } from '../../specs/tooltip';
-import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getDelta } from '../../utils/point';
 import { onDOMElementEnter, onDOMElementLeave } from '../actions/dom_element';
 import { onKeyPress } from '../actions/key';
@@ -46,8 +45,7 @@ const DRAG_DETECTION_PIXEL_DELTA = 4;
 /** @internal */
 export const handleKeyActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder.addCase(onKeyPress, (globalState, action) => {
-    const internalChartState = getInternalChartStateSelector(globalState);
-    if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
     if (action.payload === 'Escape') {
@@ -66,8 +64,7 @@ export const handleKeyActions = (builder: ActionReducerMapBuilder<ChartSliceStat
 export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
     .addCase(onPointerMove, (globalState, action) => {
-      const internalChartState = getInternalChartStateSelector(globalState);
-      if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       // The dragging is enabled when the delta between down and move positions is greater than a constant.
@@ -82,8 +79,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
       state.pointer.current.time = action.payload.time;
     })
     .addCase(onMouseDown, (globalState, action) => {
-      const internalChartState = getInternalChartStateSelector(globalState);
-      if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       state.prevDrilldown = state.drilldown;
@@ -96,8 +92,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
       };
     })
     .addCase(onMouseUp, (globalState, action) => {
-      const internalChartState = getInternalChartStateSelector(globalState);
-      if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       state.pointer.lastDrag =
@@ -140,24 +135,21 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
 /** @internal */
 export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder.addCase(onLegendItemOutAction, (globalState) => {
-    const internalChartState = getInternalChartStateSelector(globalState);
-    if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
     state.highlightedLegendPath = [];
   });
 
   builder.addCase(onLegendItemOverAction, (globalState, action) => {
-    const internalChartState = getInternalChartStateSelector(globalState);
-    if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
     state.highlightedLegendPath = action.payload;
   });
 
   builder.addCase(onToggleDeselectSeriesAction, (globalState, action) => {
-    const internalChartState = getInternalChartStateSelector(globalState);
-    if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+    if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
     const state = globalState.interactions;
 
     state.deselectedDataSeries = toggleDeselectedDataSeries(
@@ -172,15 +164,13 @@ export const handleLegendActions = (builder: ActionReducerMapBuilder<ChartSliceS
 export const handleDOMElementActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
     .addCase(onDOMElementEnter, (globalState, action) => {
-      const internalChartState = getInternalChartStateSelector(globalState);
-      if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       state.hoveredDOMElement = action.payload;
     })
     .addCase(onDOMElementLeave, (globalState) => {
-      const internalChartState = getInternalChartStateSelector(globalState);
-      if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       state.hoveredDOMElement = null;
@@ -191,8 +181,7 @@ export const handleDOMElementActions = (builder: ActionReducerMapBuilder<ChartSl
 export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder
     .addCase(pinTooltip, (globalState, action) => {
-      const internalChartState = getInternalChartStateSelector(globalState);
-      if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       if (!action.payload.pinned) {
@@ -229,8 +218,7 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
       state.pointer.pinned = state.pointer.current;
     })
     .addCase(toggleSelectedTooltipItem, (globalState, action) => {
-      const internalChartState = getInternalChartStateSelector(globalState);
-      if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       if (!state.tooltip.pinned) return;
@@ -246,8 +234,7 @@ export const handleTooltipActions = (builder: ActionReducerMapBuilder<ChartSlice
       }
     })
     .addCase(setSelectedTooltipItems, (globalState, action) => {
-      const internalChartState = getInternalChartStateSelector(globalState);
-      if (getInternalIsInitializedSelector(globalState, internalChartState) !== InitStatus.Initialized) return;
+      if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
 
       if (!state.tooltip.pinned) return;

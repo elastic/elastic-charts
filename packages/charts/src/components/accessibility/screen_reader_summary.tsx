@@ -53,10 +53,7 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryStateProps => {
   const internalChartState = getInternalChartStateSelector(state);
-  if (
-    internalChartState === null ||
-    getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized
-  ) {
+  if (internalChartState === null || getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_SCREEN_READER_SUMMARY;
   }
   return {

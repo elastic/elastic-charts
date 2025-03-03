@@ -206,10 +206,7 @@ const EMPTY_DEFAULT_STATE: LegendStateProps = {
 
 const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
   const internalChartState = getInternalChartStateSelector(state);
-  if (
-    internalChartState === null ||
-    getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized
-  ) {
+  if (internalChartState === null || getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return EMPTY_DEFAULT_STATE;
   }
   const config = getLegendConfigSelector(state);

@@ -245,7 +245,7 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
   const internalChartRenderer = state.chartType !== null ? chartTypeRenderer[state.chartType]() : null;
 
   const internalChartState = getInternalChartStateSelector(state);
-  const status = getInternalIsInitializedSelector(state, internalChartState);
+  const status = getInternalIsInitializedSelector(state);
   const settings = getSettingsSpecSelector(state);
   const tooltip = getTooltipSpecSelector(state);
   const initialized = !state.specParsing && state.specsInitialized;
