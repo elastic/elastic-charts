@@ -8,9 +8,9 @@
 
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
+import type { LegendItemLabel } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import type { LegendItemLabel } from '../../../../state/selectors/shared';
 import { getLegendLabelsAndValue } from '../../layout/utils/legend_labels';
 
 /** @internal */

@@ -10,8 +10,6 @@ import type { CSSProperties } from 'react';
 
 import type { GlobalChartState } from './chart_state';
 import { InitStatus } from './selectors/get_internal_is_intialized';
-import type { LegendItemLabel } from './selectors/shared';
-import { EMPTY_LEGEND_ITEM_LIST } from './selectors/shared';
 import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
 import { DEFAULT_CSS_CURSOR } from '../common/constants';
@@ -24,11 +22,19 @@ import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
-export /**
+export interface LegendItemLabel {
+  label: string;
+  depth: number;
+}
+
+/** @internal */
+export const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
+
+/**
  * A set of chart-type-dependant functions that are required by all chart types
  * @internal
  */
-interface ChartSelectors {
+export interface ChartSelectors {
   /**
    * Returns the initialization status of the chart
    * @param globalState

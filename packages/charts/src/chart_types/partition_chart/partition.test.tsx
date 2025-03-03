@@ -13,8 +13,8 @@ import { partitionMultiGeometries } from './state/selectors/geometries';
 import { getLegendItemsLabels } from './state/selectors/get_legend_items_labels';
 import { MockGlobalSpec, MockSeriesSpec } from '../../mocks/specs';
 import { MockStore } from '../../mocks/store';
+import type { LegendItemLabel } from '../../state/chart_selectors';
 import type { GlobalChartState } from '../../state/chart_state';
-import type { LegendItemLabel } from '../../state/selectors/shared';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 
 // sorting is useful to ensure tests pass even if order changes (where order doesn't matter)

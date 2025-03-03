@@ -7,7 +7,7 @@
  */
 
 import { getInternalChartStateSelector } from './get_internal_chart_state';
-import type { LegendItemLabel } from './shared';
+import type { LegendItemLabel } from '../chart_selectors';
 import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
