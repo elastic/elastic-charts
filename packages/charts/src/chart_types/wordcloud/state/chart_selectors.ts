@@ -7,33 +7,15 @@
  */
 
 import { getWordcloudSpecSelector } from './selectors/wordcloud_spec';
-import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
-import { EMPTY_LEGEND_ITEM_EXTRA_VALUES, EMPTY_LEGEND_LIST } from '../../../common/legend';
-import type { ChartSelectorsFactory } from '../../../state/chart_selectors';
+import { createChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/shared';
-
-const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
 
 /** @internal */
-export const chartSelectorsFactory: ChartSelectorsFactory = () => ({
+export const chartSelectorsFactory = createChartSelectorsFactory({
   isInitialized: (state: GlobalChartState) =>
     getWordcloudSpecSelector(state) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized,
-  isBrushAvailable: () => false,
-  isBrushing: () => false,
   isChartEmpty: () => false,
-  getLegendItems: () => EMPTY_LEGEND_LIST,
-  getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
-  getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
-  getPointerCursor: () => DEFAULT_CSS_CURSOR,
-  isTooltipVisible: () => ({
-    visible: false,
-    isExternal: false,
-    displayOnly: false,
-    isPinnable: false,
-  }),
-  getTooltipInfo: () => EMPTY_TOOLTIP,
   getTooltipAnchor: (state: GlobalChartState) => {
     const { position } = state.interactions.pointer.current;
     return {
@@ -44,7 +26,6 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => ({
       height: 0,
     };
   },
-  eventCallbacks: () => {},
   getChartTypeDescription: () => 'Word cloud chart',
 
   // TODO
@@ -58,9 +39,4 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => ({
 
   // TODO
   getDebugState: () => ({}),
-  getSmallMultiplesDomains: () => ({
-    smHDomain: [],
-    smVDomain: [],
-  }),
-  canDisplayChartTitles: () => true,
 });

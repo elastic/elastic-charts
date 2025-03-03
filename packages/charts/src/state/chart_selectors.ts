@@ -9,11 +9,14 @@
 import type { CSSProperties } from 'react';
 
 import type { GlobalChartState } from './chart_state';
-import type { InitStatus } from './selectors/get_internal_is_intialized';
+import { InitStatus } from './selectors/get_internal_is_intialized';
 import type { LegendItemLabel } from './selectors/shared';
+import { EMPTY_LEGEND_ITEM_LIST } from './selectors/shared';
 import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
+import { DEFAULT_CSS_CURSOR } from '../common/constants';
 import type { LegendItem, LegendItemExtraValues } from '../common/legend';
+import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../common/legend';
 import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
 import type { AnchorPosition } from '../components/portal/types';
@@ -141,6 +144,39 @@ interface ChartSelectors {
 
 /** @internal */
 export type ChartSelectorsFactory = () => ChartSelectors;
+
+const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
+
+/** @internal */
+export const createChartSelectorsFactory =
+  (overrides: Partial<ChartSelectors> = {}): ChartSelectorsFactory =>
+  () => ({
+    isInitialized: () => InitStatus.SpecNotInitialized,
+    isBrushAvailable: () => false,
+    isBrushing: () => false,
+    isChartEmpty: () => true,
+    getLegendItems: () => EMPTY_LEGEND_LIST,
+    getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
+    getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
+    getPointerCursor: () => DEFAULT_CSS_CURSOR,
+    isTooltipVisible: () => ({
+      visible: false,
+      isExternal: false,
+      displayOnly: false,
+      isPinnable: false,
+    }),
+    getTooltipInfo: () => EMPTY_TOOLTIP,
+    getTooltipAnchor: () => null,
+    getProjectionContainerArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+    getMainProjectionArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+    getBrushArea: () => null,
+    getDebugState: () => ({}),
+    getChartTypeDescription: () => '',
+    getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
+    canDisplayChartTitles: () => true,
+    eventCallbacks: () => {},
+    ...overrides,
+  });
 
 /** @internal */
 export interface ChartSelectorRegistry {

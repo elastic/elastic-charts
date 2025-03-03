@@ -13,13 +13,10 @@ import { createOnElementClickCaller } from './selectors/on_element_click_caller'
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
-import { DEFAULT_CSS_CURSOR } from '../../../common/constants';
-import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../common/legend';
-import type { ChartSelectorsFactory } from '../../../state/chart_selectors';
+import { createChartSelectorsFactory, type ChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
-import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/shared';
 
 /** @internal */
 export const chartSelectorsFactory: ChartSelectorsFactory = () => {
@@ -27,18 +24,11 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
   const onElementOverCaller = createOnElementOverCaller();
   const onElementOutCaller = createOnElementOutCaller();
 
-  return {
+  return createChartSelectorsFactory({
     isInitialized: (state: GlobalChartState) =>
       getGoalSpecSelector(state) !== null ? InitStatus.Initialized : InitStatus.ChartNotInitialized,
 
-    isBrushAvailable: () => false,
-    isBrushing: () => false,
     isChartEmpty: () => false,
-
-    getLegendItems: () => EMPTY_LEGEND_LIST,
-    getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
-    getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
-    getPointerCursor: () => DEFAULT_CSS_CURSOR,
 
     isTooltipVisible: (state: GlobalChartState) => ({
       visible: isTooltipVisibleSelector(state),
@@ -84,5 +74,5 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
 
     // TODO enable for small multiples
     canDisplayChartTitles: () => false,
-  };
+  })();
 };

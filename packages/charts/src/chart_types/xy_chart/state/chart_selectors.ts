@@ -26,12 +26,11 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 import { createOnProjectionAreaCaller } from './selectors/on_projection_area_caller';
-import type { ChartSelectorsFactory } from '../../../state/chart_selectors';
+import { createChartSelectorsFactory, type ChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
-import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/shared';
 
 /** @internal */
 export const chartSelectorsFactory: ChartSelectorsFactory = () => {
@@ -42,7 +41,7 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
   const onPointerMoveCaller = createOnPointerMoveCaller();
   const onProjectionAreaCaller = createOnProjectionAreaCaller();
 
-  return {
+  return createChartSelectorsFactory({
     isInitialized: (state: GlobalChartState) =>
       getSeriesSpecsSelector(state).length > 0 ? InitStatus.Initialized : InitStatus.SpecNotInitialized,
 
@@ -52,7 +51,6 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
     isChartEmpty: isChartEmptySelector,
 
     getLegendItems: computeLegendSelector,
-    getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
     getLegendExtraValues: getLegendItemExtraValuesSelector,
     getPointerCursor: getPointerCursorSelector,
 
@@ -76,7 +74,5 @@ export const chartSelectorsFactory: ChartSelectorsFactory = () => {
       onPointerMoveCaller(state);
       onProjectionAreaCaller(state);
     },
-
-    canDisplayChartTitles: () => true,
-  };
+  })();
 };
