@@ -7,8 +7,9 @@
  */
 
 import { ScaleBand } from '../../scales';
-import { RelativeBandsPadding, DEFAULT_SM_PANEL_PADDING } from '../../specs';
-import { OrdinalDomain } from '../../utils/domain';
+import type { RelativeBandsPadding } from '../../specs';
+import { DEFAULT_SM_PANEL_PADDING } from '../../specs';
+import type { OrdinalDomain } from '../../utils/domain';
 
 /**
  * @internal
