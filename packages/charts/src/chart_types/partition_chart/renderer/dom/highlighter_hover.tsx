@@ -12,14 +12,12 @@ import type { HighlighterProps } from './highlighter';
 import { DEFAULT_PROPS, HighlighterComponent, highlightSetMapper } from './highlighter';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
-import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';
 import { getPickedShapes } from '../../state/selectors/picked_shapes';
 
 const hoverMapStateToProps = (state: GlobalChartState): HighlighterProps => {
-  const internalChartState = getInternalChartStateSelector(state);
-  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
+  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_PROPS;
   }
 

@@ -24,7 +24,6 @@ import { onPointerMove as onPointerMoveAction } from '../../../../../state/actio
 import type { GlobalChartState } from '../../../../../state/chart_state';
 import type { BackwardRef } from '../../../../../state/internal_chart_renderer';
 import { getChartThemeSelector } from '../../../../../state/selectors/get_chart_theme';
-import { getInternalChartStateSelector } from '../../../../../state/selectors/get_internal_chart_state';
 import {
   getInternalIsInitializedSelector,
   InitStatus,
@@ -198,8 +197,7 @@ const mapDispatchToProps = (dispatch: Dispatch): AnnotationsDispatchProps =>
 
 const mapStateToProps = (state: GlobalChartState): AnnotationsStateProps => {
   const { zIndex, chartId } = state;
-  const internalChartState = getInternalChartStateSelector(state);
-  if (getInternalIsInitializedSelector(state, internalChartState) !== InitStatus.Initialized) {
+  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return {
       isChartEmpty: true,
       chartDimensions: { top: 0, left: 0, width: 0, height: 0 },
