@@ -7,8 +7,9 @@
  */
 
 import { isFiniteNumber } from '../../../../utils/common';
-import { MetricStyle } from '../../../../utils/themes/theme';
-import { MetricDatum, isMetricWNumber, isMetricWNumberArrayValues } from '../../specs';
+import type { MetricStyle } from '../../../../utils/themes/theme';
+import type { MetricDatum } from '../../specs';
+import { isMetricWNumber, isMetricWNumberArrayValues } from '../../specs';
 
 /** @internal */
 export interface TextParts {

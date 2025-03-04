@@ -6,43 +6,41 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
-import { AnimationState } from './animations/animation';
+import type { AnimationState } from './animations/animation';
 import { renderXYChartCanvas2d } from './renderers';
 import { hasMostlyRTL } from './utils/has_mostly_rtl';
-import { LegendItem } from '../../../../common/legend';
+import type { LegendItem } from '../../../../common/legend';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { settingsBuildProps } from '../../../../specs';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { computePanelsSelectors, PanelGeoms } from '../../../../state/selectors/compute_panels';
-import {
-  A11ySettings,
-  DEFAULT_A11Y_SETTINGS,
-  getA11ySettingsSelector,
-} from '../../../../state/selectors/get_accessibility_config';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import type { PanelGeoms } from '../../../../state/selectors/compute_panels';
+import { computePanelsSelectors } from '../../../../state/selectors/compute_panels';
+import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
+import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
+import type { Rotation } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
-import { AnnotationId, AxisId } from '../../../../utils/ids';
+import type { AnnotationId, AxisId } from '../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Theme, AxisStyle } from '../../../../utils/themes/theme';
-import { AnnotationDimensions } from '../../annotations/types';
+import type { Theme, AxisStyle } from '../../../../utils/themes/theme';
+import type { AnnotationDimensions } from '../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
-import {
-  computePerPanelAxesGeomsSelector,
-  PerPanelAxisGeoms,
-} from '../../state/selectors/compute_per_panel_axes_geoms';
+import type { PerPanelAxisGeoms } from '../../state/selectors/compute_per_panel_axes_geoms';
+import { computePerPanelAxesGeomsSelector } from '../../state/selectors/compute_per_panel_axes_geoms';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
 import { getAxesStylesSelector } from '../../state/selectors/get_axis_styles';
 import { getGridLinesSelector } from '../../state/selectors/get_grid_lines';
@@ -50,10 +48,10 @@ import { getHighlightedAnnotationIdsSelector } from '../../state/selectors/get_h
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { getAnnotationSpecsSelector, getAxisSpecsSelector } from '../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
-import { Geometries, Transform } from '../../state/utils/types';
-import { LinesGrid } from '../../utils/grid_lines';
+import type { Geometries, Transform } from '../../state/utils/types';
+import type { LinesGrid } from '../../utils/grid_lines';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
-import { AxisSpec, AnnotationSpec } from '../../utils/specs';
+import type { AxisSpec, AnnotationSpec } from '../../utils/specs';
 
 /** @internal */
 export interface ReactiveChartStateProps {

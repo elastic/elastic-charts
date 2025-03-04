@@ -6,20 +6,21 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from '@reduxjs/toolkit';
+import type { Selector } from '@reduxjs/toolkit';
 
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 import { ChartType } from '../../..';
-import { SeriesIdentifier } from '../../../../common/series_id';
-import { SettingsSpec } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { SeriesIdentifier } from '../../../../common/series_id';
+import type { SettingsSpec } from '../../../../specs';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { PointerState } from '../../../../state/pointer_states';
+import type { PointerState } from '../../../../state/pointer_states';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isClicking } from '../../../../state/utils/is_clicking';
-import { Cell, isPickedCells } from '../../layout/types/viewmodel_types';
+import type { Cell } from '../../layout/types/viewmodel_types';
+import { isPickedCells } from '../../layout/types/viewmodel_types';
 
 /**
  * Will call the onElementClick listener every time the following preconditions are met:

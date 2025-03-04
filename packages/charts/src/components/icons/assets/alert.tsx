@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { IconComponentProps } from '../icon';
+import type { IconComponentProps } from '../icon';
 
 /** @internal */
 export function AlertIcon(extraProps: IconComponentProps) {

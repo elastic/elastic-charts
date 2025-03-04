@@ -6,11 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { components } from '@octokit/openapi-types';
-import axios, { AxiosInstance } from 'axios';
+import type { components } from '@octokit/openapi-types';
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
 
-import { ProbotEventPayload } from './../github/types';
-import { BuildkiteBuild, BuildkiteTriggerBuildOptions, PullRequestBuildEnv } from './types';
+import type { ProbotEventPayload } from './../github/types';
+import type { BuildkiteBuild, BuildkiteTriggerBuildOptions, PullRequestBuildEnv } from './types';
 import { getConfig } from '../config';
 import { checkCommitFn } from '../github/utils';
 

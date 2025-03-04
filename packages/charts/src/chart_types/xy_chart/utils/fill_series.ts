@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { DataSeries } from './series';
-import { BasicSeriesSpec, isLineSeriesSpec, isAreaSeriesSpec } from './specs';
+import type { DataSeries } from './series';
+import type { BasicSeriesSpec } from './specs';
+import { isLineSeriesSpec, isAreaSeriesSpec } from './specs';
 import { ScaleType } from '../../../scales/constants';
 
 /**

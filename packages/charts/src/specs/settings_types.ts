@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { ScaleOrdinalType, ScaleContinuousType } from '../scales';
+import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { ScaleOrdinalType, ScaleContinuousType } from '../scales';
 
 /** @public */
 export const PointerEventType = Object.freeze({

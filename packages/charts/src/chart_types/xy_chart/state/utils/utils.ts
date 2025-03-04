@@ -8,22 +8,23 @@
 
 import { isHorizontalRotation } from './common';
 import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from './spec';
-import { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';
-import { Color } from '../../../../common/colors';
-import { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../common/panel_utils';
+import type { ComputedGeometries, GeometriesCounts, SeriesDomainsAndData, Transform } from './types';
+import type { Color } from '../../../../common/colors';
+import type { SmallMultipleScales, SmallMultiplesGroupBy } from '../../../../common/panel_utils';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
-import { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
-import { ScaleBand, ScaleContinuous } from '../../../../scales';
-import { SettingsSpec, TickFormatter } from '../../../../specs';
-import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isFiniteNumber, isNil, isUniqueArray, mergePartial, Rotation } from '../../../../utils/common';
+import type { SeriesIdentifier, SeriesKey } from '../../../../common/series_id';
+import type { ScaleBand, ScaleContinuous } from '../../../../scales';
+import type { SettingsSpec, TickFormatter } from '../../../../specs';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { Rotation } from '../../../../utils/common';
+import { isFiniteNumber, isNil, isUniqueArray, mergePartial } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
-import { Dimensions, Size } from '../../../../utils/dimensions';
-import { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
-import { GroupId, SpecId } from '../../../../utils/ids';
-import { SeriesCompareFn } from '../../../../utils/series_sort';
-import { ColorConfig, Theme } from '../../../../utils/themes/theme';
-import { XDomain } from '../../domains/types';
+import type { Dimensions, Size } from '../../../../utils/dimensions';
+import type { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PerPanel } from '../../../../utils/geometry';
+import type { GroupId, SpecId } from '../../../../utils/ids';
+import type { SeriesCompareFn } from '../../../../utils/series_sort';
+import type { ColorConfig, Theme } from '../../../../utils/themes/theme';
+import type { XDomain } from '../../domains/types';
 import { mergeXDomain } from '../../domains/x_domain';
 import { isStackedSpec, mergeYDomain } from '../../domains/y_domain';
 import { renderArea } from '../../rendering/area';
@@ -36,21 +37,12 @@ import { fillSeries } from '../../utils/fill_series';
 import { groupBy } from '../../utils/group_data_series';
 import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
 import { computeXScale, computeYScales } from '../../utils/scales';
-import {
-  DataSeries,
-  getDataSeriesFromSpecs,
-  getFormattedDataSeries,
-  getSeriesKey,
-  isBandedSpec,
-} from '../../utils/series';
+import type { DataSeries } from '../../utils/series';
+import { getDataSeriesFromSpecs, getFormattedDataSeries, getSeriesKey, isBandedSpec } from '../../utils/series';
+import type { AnnotationSpec, AxisSpec, BasicSeriesSpec, FitConfig, HistogramModeAlignment } from '../../utils/specs';
 import {
   AnnotationDomainType,
-  AnnotationSpec,
-  AxisSpec,
-  BasicSeriesSpec,
   Fit,
-  FitConfig,
-  HistogramModeAlignment,
   HistogramModeAlignments,
   isAreaSeriesSpec,
   isBarSeriesSpec,
@@ -58,7 +50,7 @@ import {
   isLineAnnotation,
   isLineSeriesSpec,
 } from '../../utils/specs';
-import { ScaleConfigs } from '../selectors/get_api_scale_configs';
+import type { ScaleConfigs } from '../selectors/get_api_scale_configs';
 
 /**
  * Return map association between `seriesKey` and only the custom colors string

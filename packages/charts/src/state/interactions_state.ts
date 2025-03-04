@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { DOMElement } from './actions/dom_element';
-import { LegendPath } from './actions/legend';
-import { PointerStates } from './pointer_states';
-import { CategoryKey } from '../common/category';
-import { SeriesIdentifier } from '../common/series_id';
-import { TooltipValue } from '../specs';
+import type { DOMElement } from './actions/dom_element';
+import type { LegendPath } from './actions/legend';
+import type { PointerStates } from './pointer_states';
+import type { CategoryKey } from '../common/category';
+import type { SeriesIdentifier } from '../common/series_id';
+import type { TooltipValue } from '../specs';
 
 /** @internal */
 export interface TooltipInteractionState {

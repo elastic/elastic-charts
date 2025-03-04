@@ -8,10 +8,11 @@
 
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, FilterPredicate, LegendValue } from '@elastic/charts';
+import type { FilterPredicate } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendValue } from '@elastic/charts';
 import * as TestDatasets from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {

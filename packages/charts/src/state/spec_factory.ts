@@ -6,11 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { FC, useEffect } from 'react';
+import type { FC } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { OptionalKeys, RequiredKeys } from 'utility-types';
+import type { OptionalKeys, RequiredKeys } from 'utility-types';
 
-import { Spec } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { Spec } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { upsertSpec, removeSpec } from '../state/actions/specs';
 import { stripUndefined } from '../utils/common';
 

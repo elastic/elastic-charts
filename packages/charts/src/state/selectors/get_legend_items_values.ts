@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { LegendItemExtraValues } from '../../common/legend';
-import { SeriesKey } from '../../common/series_id';
-import { GlobalChartState } from '../chart_state';
+import type { LegendItemExtraValues } from '../../common/legend';
+import type { SeriesKey } from '../../common/series_id';
+import type { GlobalChartState } from '../chart_state';
 
 const EMPTY_ITEM_LIST = new Map<SeriesKey, LegendItemExtraValues>();
 

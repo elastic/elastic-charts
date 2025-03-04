@@ -12,7 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, LegendValue, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 import { timeFormatter } from '@elastic/charts/src/utils/data/formatters';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {

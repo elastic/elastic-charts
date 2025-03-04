@@ -10,20 +10,12 @@ import { action } from '@storybook/addon-actions';
 import { boolean, select, color, number, text } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Chart,
-  Heatmap,
-  HeatmapStyle,
-  Margins,
-  niceTimeFormatter,
-  RecursivePartial,
-  ScaleType,
-  Settings,
-} from '@elastic/charts';
+import type { HeatmapStyle, Margins, RecursivePartial } from '@elastic/charts';
+import { Chart, Heatmap, niceTimeFormatter, ScaleType, Settings } from '@elastic/charts';
 import { DATA_6 } from '@elastic/charts/src/utils/data_samples/test_dataset_heatmap';
 
-import { AxisStyle } from '../../../packages/charts/src/utils/themes/theme';
-import { ChartsStory } from '../../types';
+import type { AxisStyle } from '../../../packages/charts/src/utils/themes/theme';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 

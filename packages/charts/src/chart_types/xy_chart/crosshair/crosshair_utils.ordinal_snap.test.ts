@@ -14,7 +14,8 @@ import { SpecType } from '../../../specs/spec_type'; // kept as long-winded impo
 import { getScaleConfigsFromSpecs } from '../state/selectors/get_api_scale_configs';
 import { computeSeriesDomains } from '../state/utils/utils';
 import { computeXScale } from '../utils/scales';
-import { BasicSeriesSpec, SeriesType } from '../utils/specs';
+import type { BasicSeriesSpec } from '../utils/specs';
+import { SeriesType } from '../utils/specs';
 
 describe('Crosshair utils ordinal scales', () => {
   const barSeries1SpecId = 'barSeries1';

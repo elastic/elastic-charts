@@ -9,7 +9,7 @@
 import { BrushAxis } from './brush_axis';
 import { DEFAULT_LEGEND_CONFIG } from './default_legend_config';
 import { PointerUpdateTrigger } from './pointer_update_trigger';
-import { SettingsSpec } from './settings';
+import type { SettingsSpec } from './settings';
 import { SpecType } from './spec_type';
 import { ChartType } from '../chart_types';
 import { buildSFProps } from '../state/spec_factory';

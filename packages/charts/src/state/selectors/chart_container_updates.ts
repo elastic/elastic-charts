@@ -9,7 +9,7 @@
 import { getChartThemeSelector } from './get_chart_theme';
 import { getInternalCanDisplayChartTitles } from './get_internal_can_display_chart_titles';
 import { getLegendConfigSelector } from './get_legend_config_selector';
-import { LegendPositionConfig } from '../../specs';
+import type { LegendPositionConfig } from '../../specs';
 import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */

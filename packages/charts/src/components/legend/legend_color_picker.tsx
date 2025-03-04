@@ -9,8 +9,8 @@
 import React from 'react';
 
 import { Color as ItemColor } from './color';
-import { LegendItemProps } from './legend_item';
-import { Color } from '../../common/colors';
+import type { LegendItemProps } from './legend_item';
+import type { Color } from '../../common/colors';
 
 /** @internal */
 export const useLegendColorPicker = ({

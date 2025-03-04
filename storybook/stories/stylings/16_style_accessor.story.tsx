@@ -9,23 +9,16 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  AreaSeries,
-  Axis,
-  BarSeries,
-  Chart,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
+import type {
   RecursivePartial,
   BarSeriesStyle,
   PointStyle,
   BarStyleAccessor,
   PointStyleAccessor,
 } from '@elastic/charts';
+import { AreaSeries, Axis, BarSeries, Chart, LineSeries, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {

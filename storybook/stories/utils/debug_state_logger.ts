@@ -8,7 +8,7 @@
 
 import { action } from '@storybook/addon-actions';
 
-import { DebugState } from '@elastic/charts';
+import type { DebugState } from '@elastic/charts';
 import { debounce } from '@elastic/charts/src/utils/debounce';
 
 export const getDebugStateLogger = (debugState: boolean) => {

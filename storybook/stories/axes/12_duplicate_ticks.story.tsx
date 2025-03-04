@@ -11,19 +11,11 @@ import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 import React from 'react';
 
-import {
-  Axis,
-  Chart,
-  LineSeries,
-  Position,
-  ScaleType,
-  niceTimeFormatter,
-  TickFormatter,
-  Settings,
-} from '@elastic/charts';
+import type { TickFormatter } from '@elastic/charts';
+import { Axis, Chart, LineSeries, Position, ScaleType, niceTimeFormatter, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {

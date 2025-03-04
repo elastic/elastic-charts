@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { TooltipInfo, XYChartSeriesIdentifier } from '@elastic/charts';
+import type { TooltipInfo, XYChartSeriesIdentifier } from '@elastic/charts';
 
 export const tableSimple: TooltipInfo<any, XYChartSeriesIdentifier> = {
   header: null,

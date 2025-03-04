@@ -12,7 +12,7 @@ import React from 'react';
 
 import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getKnobFromEnum } from '../utils/knobs/utils';
 

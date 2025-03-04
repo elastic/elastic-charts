@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { execSync, ExecSyncOptionsWithBufferEncoding } from 'child_process';
+import type { ExecSyncOptionsWithBufferEncoding } from 'child_process';
+import { execSync } from 'child_process';
 import path from 'path';
 
 import { setJobMetadata, startGroup } from './buildkite';

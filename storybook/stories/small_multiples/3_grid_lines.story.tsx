@@ -12,6 +12,7 @@ import { startCase } from 'lodash';
 import { DateTime } from 'luxon';
 import React from 'react';
 
+import type { AxisSpec, XYBrushEvent } from '@elastic/charts';
 import {
   ScaleType,
   Position,
@@ -23,13 +24,11 @@ import {
   Settings,
   niceTimeFormatByDay,
   timeFormatter,
-  AxisSpec,
-  XYBrushEvent,
 } from '@elastic/charts';
 import { isVerticalAxis } from '@elastic/charts/src/chart_types/xy_chart/utils/axis_type_utils';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();

@@ -6,16 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react';
-import { $Values } from 'utility-types';
+import type { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react';
+import type { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
-import { Color } from '../../../common/colors';
-import { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { Color } from '../../../common/colors';
+import type { Spec } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { specComponentFactory } from '../../../state/spec_factory';
-import { LayoutDirection, ValueFormatter } from '../../../utils/common';
-import { GenericDomain } from '../../../utils/domain';
-import { BulletValueLabels } from '../../bullet_graph/spec';
+import type { LayoutDirection, ValueFormatter } from '../../../utils/common';
+import type { GenericDomain } from '../../../utils/domain';
+import type { BulletValueLabels } from '../../bullet_graph/spec';
 
 /** @alpha */
 export type MetricBase = {

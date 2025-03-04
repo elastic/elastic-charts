@@ -8,11 +8,12 @@
 
 import { getBulletSpec } from './get_bullet_spec';
 import { getChartSize } from './get_chart_size';
-import { BulletDatum, BulletSubtype } from '../../../chart_types/bullet_graph/spec';
+import type { BulletDatum } from '../../../chart_types/bullet_graph/spec';
+import { BulletSubtype } from '../../../chart_types/bullet_graph/spec';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
-import { Size } from '../../../utils/dimensions';
+import type { Size } from '../../../utils/dimensions';
 import { wrapText } from '../../../utils/text/wrap';
 import {
   FONT_PADDING,

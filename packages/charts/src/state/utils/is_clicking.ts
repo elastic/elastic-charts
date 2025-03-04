@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { PointerState } from '../pointer_states';
+import type { PointerState } from '../pointer_states';
 
 /** @internal */
 export function isClicking(prevClick: PointerState | null, lastClick: PointerState | null) {

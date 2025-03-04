@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { onPointerMove } from '../../../../state/actions/mouse';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 
 const data = [
   { x: 0, y: 2 },

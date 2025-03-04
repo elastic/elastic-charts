@@ -10,7 +10,12 @@ import { action } from '@storybook/addon-actions';
 import { boolean, button } from '@storybook/addon-knobs';
 import { useEffect, useCallback, useState } from 'react';
 
-import { ElementClickListener, HeatmapBrushEvent, HeatmapElementEvent, HeatmapHighlightedData } from '@elastic/charts';
+import type {
+  ElementClickListener,
+  HeatmapBrushEvent,
+  HeatmapElementEvent,
+  HeatmapHighlightedData,
+} from '@elastic/charts';
 
 export const useHeatmapSelection = (disableActions = false) => {
   const [selection, setSelection] = useState<HeatmapHighlightedData | undefined>();

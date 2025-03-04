@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { ScaleContinuous } from '../../scales';
+import type { ScaleContinuous } from '../../scales';
 import { ScaleType } from '../../scales/constants';
 import { mergePartial } from '../../utils/common';
 

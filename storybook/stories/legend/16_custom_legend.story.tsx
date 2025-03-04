@@ -9,6 +9,7 @@
 import moment from 'moment';
 import React from 'react';
 
+import type { CustomLegend } from '@elastic/charts';
 import {
   Axis,
   AreaSeries,
@@ -17,13 +18,12 @@ import {
   ScaleType,
   Settings,
   timeFormatter,
-  CustomLegend,
   Tooltip,
   LegendValue,
 } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dateFormatter = timeFormatter('HH:mm');

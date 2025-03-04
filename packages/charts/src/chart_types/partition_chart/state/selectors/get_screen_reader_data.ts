@@ -9,9 +9,9 @@
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { STATISTICS_KEY } from '../../layout/utils/group_by_rollup';
-import { PartitionSpec } from '../../specs';
+import type { PartitionSpec } from '../../specs';
 
 /** @internal */
 export interface PartitionSectionData {

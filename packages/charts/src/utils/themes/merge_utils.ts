@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { LineAnnotationStyle, RectAnnotationStyle } from './theme';
-import { mergePartial, RecursivePartial } from '../common';
+import type { LineAnnotationStyle, RectAnnotationStyle } from './theme';
+import type { RecursivePartial } from '../common';
+import { mergePartial } from '../common';
 
 /**
  * @public

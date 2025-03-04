@@ -10,7 +10,7 @@ import { getDebugStateSelector } from './selectors/get_debug_state';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store/store';
 import { ScaleType } from '../../../scales/constants';
-import { Rotation } from '../../../utils/common';
+import type { Rotation } from '../../../utils/common';
 
 describe('XYChart - debug state', () => {
   it.each<Rotation>([0, 90, -90, 180])('line chart rotation: %i', (rotation) => {

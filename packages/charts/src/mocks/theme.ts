@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { RecursivePartial, mergePartial } from '../utils/common';
-import {
+import type { RecursivePartial } from '../utils/common';
+import { mergePartial } from '../utils/common';
+import type {
   GeometryStateStyle,
   RectBorderStyle,
   RectStyle,

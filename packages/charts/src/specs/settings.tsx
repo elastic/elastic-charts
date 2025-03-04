@@ -6,44 +6,46 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps, ComponentType, ReactChild } from 'react';
+import type { ComponentProps, ComponentType, ReactChild } from 'react';
 
-import { CustomXDomain, GroupByAccessor } from '.';
-import { BrushAxis } from './brush_axis';
-import { BinAgg, Direction } from './constants';
+import type { CustomXDomain, GroupByAccessor } from '.';
+import type { BrushAxis } from './brush_axis';
+import type { BinAgg, Direction } from './constants';
 import { settingsBuildProps } from './default_settings_spec';
-import { PointerUpdateTrigger } from './pointer_update_trigger';
-import { ProjectedValues, PointerOutEvent, PointerOverEvent, PointerEvent, PointerEventType } from './settings_types';
-import { Spec } from './spec_type';
-import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
-import { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
-import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
-import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
-import { CategoryLabel } from '../common/category';
-import { Color } from '../common/colors';
-import { LegendItemValue, LegendValue } from '../common/legend';
-import { SmallMultiplesDatum } from '../common/panel_utils';
-import { SeriesIdentifier } from '../common/series_id';
-import { TooltipPortalSettings } from '../components';
-import { LegendPath } from '../state/actions/legend';
-import { SFProps, useSpecFactory } from '../state/spec_factory';
-import { PointerValue } from '../state/types';
-import {
+import type { PointerUpdateTrigger } from './pointer_update_trigger';
+import type { ProjectedValues, PointerOutEvent, PointerOverEvent, PointerEvent } from './settings_types';
+import { PointerEventType } from './settings_types';
+import type { Spec } from './spec_type';
+import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
+import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
+import type { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
+import type { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
+import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import type { CategoryLabel } from '../common/category';
+import type { Color } from '../common/colors';
+import type { LegendItemValue, LegendValue } from '../common/legend';
+import type { SmallMultiplesDatum } from '../common/panel_utils';
+import type { SeriesIdentifier } from '../common/series_id';
+import type { TooltipPortalSettings } from '../components';
+import type { LegendPath } from '../state/actions/legend';
+import type { SFProps } from '../state/spec_factory';
+import { useSpecFactory } from '../state/spec_factory';
+import type { PointerValue } from '../state/types';
+import type {
   HorizontalAlignment,
   LayoutDirection,
   Position,
   Rendering,
   Rotation,
   VerticalAlignment,
-  stripUndefined,
 } from '../utils/common';
-import { Dimensions } from '../utils/dimensions';
-import { GeometryValue } from '../utils/geometry';
-import { GroupId, SpecId } from '../utils/ids';
-import { SeriesCompareFn } from '../utils/series_sort';
-import { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
+import { stripUndefined } from '../utils/common';
+import type { Dimensions } from '../utils/dimensions';
+import type { GeometryValue } from '../utils/geometry';
+import type { GroupId, SpecId } from '../utils/ids';
+import type { SeriesCompareFn } from '../utils/series_sort';
+import type { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
 
 /** @public */
 export interface LayerValue {

@@ -7,7 +7,8 @@
  */
 
 import { Logger } from './../../../../../utils/logger';
-import { AnimatedValue, Animation, AnimationOptions, AnimationState } from './animation';
+import type { AnimatedValue, AnimationOptions, AnimationState } from './animation';
+import { Animation } from './animation';
 import { debounce } from '../../../../../utils/debounce';
 
 // TODO find a better way to do this when we have an actual build process

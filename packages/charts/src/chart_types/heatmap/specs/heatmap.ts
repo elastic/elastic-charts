@@ -6,21 +6,24 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 import { X_SCALE_DEFAULT } from './scale_defaults';
 import { ChartType } from '../..';
-import { Color } from '../../../common/colors';
-import { SmallMultiplesDatum } from '../../../common/panel_utils';
+import type { Color } from '../../../common/colors';
+import type { SmallMultiplesDatum } from '../../../common/panel_utils';
 import { Predicate } from '../../../common/predicate';
-import { ScaleType } from '../../../scales/constants';
-import { BaseDatum } from '../../../specs';
-import { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
-import { Accessor, AccessorFn } from '../../../utils/accessor';
-import { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
-import { Datum, LabelAccessor, stripUndefined, ValueFormatter } from '../../../utils/common';
-import { Cell } from '../layout/types/viewmodel_types';
+import type { ScaleType } from '../../../scales/constants';
+import type { BaseDatum } from '../../../specs';
+import type { Spec } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { SFProps } from '../../../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../../../state/spec_factory';
+import type { Accessor, AccessorFn } from '../../../utils/accessor';
+import type { ESCalendarInterval, ESFixedInterval } from '../../../utils/chrono/elasticsearch';
+import type { Datum, LabelAccessor, ValueFormatter } from '../../../utils/common';
+import { stripUndefined } from '../../../utils/common';
+import type { Cell } from '../layout/types/viewmodel_types';
 
 /** @public */
 export type HeatmapScaleType =

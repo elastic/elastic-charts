@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Pixels } from '../../common/geometry';
-import { Attributes, UseInfo } from '../../common/kingly';
+import type { Pixels } from '../../common/geometry';
+import type { Attributes, UseInfo } from '../../common/kingly';
 
 /** @internal */
 export interface GLResources {

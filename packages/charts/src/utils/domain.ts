@@ -9,7 +9,8 @@
 import { extent } from 'd3-array';
 
 import { ScaleType } from '../scales/constants';
-import { DomainPaddingUnit, YDomainRange } from '../specs';
+import type { YDomainRange } from '../specs';
+import { DomainPaddingUnit } from '../specs';
 
 /** @public */
 export type OrdinalDomain = (number | string)[];

@@ -12,7 +12,7 @@
 // could in theory be three-valued (in,on,out)
 // It also serves as documentation.
 
-import { TimeMs } from './geometry';
+import type { TimeMs } from './geometry';
 
 /**
  * @public

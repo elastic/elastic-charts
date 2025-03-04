@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { getHighlightedTooltipTooltipValuesSelector } from './selectors/get_tooltip_values_highlighted_geoms';
 import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
@@ -14,7 +14,8 @@ import { TooltipType } from '../../../specs/constants';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import { createChartStore, GlobalChartState } from '../../../state/chart_state';
+import type { GlobalChartState } from '../../../state/chart_state';
+import { createChartStore } from '../../../state/chart_state';
 
 describe('XYChart - State tooltips', () => {
   let store: Store<GlobalChartState>;

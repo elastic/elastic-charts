@@ -10,20 +10,11 @@ import { action } from '@storybook/addon-actions';
 import { select, boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Axis,
-  Chart,
-  HistogramBarSeries,
-  LineSeries,
-  Position,
-  ScaleType,
-  Settings,
-  Tooltip,
-  TooltipAction,
-} from '@elastic/charts';
+import type { TooltipAction } from '@elastic/charts';
+import { Axis, Chart, HistogramBarSeries, LineSeries, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
 
 import { DATA_SERIES } from './data/series';
-import { ChartsStory } from '../../../types';
+import type { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 import { SB_SOURCE_PANEL } from '../../utils/storybook';

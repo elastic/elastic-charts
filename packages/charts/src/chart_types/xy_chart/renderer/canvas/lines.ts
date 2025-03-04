@@ -12,15 +12,16 @@ import { renderLinePaths } from './primitives/path';
 import { buildLineStyles } from './styles/line';
 import { withPanelTransform } from './utils/panel_transform';
 import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
-import { Radian } from '../../../../common/geometry';
-import { LegendItem } from '../../../../common/legend';
-import { Rect, Stroke } from '../../../../geoms/types';
+import type { Radian } from '../../../../common/geometry';
+import type { LegendItem } from '../../../../common/legend';
+import type { Rect, Stroke } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
-import { ColorVariant, Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
-import { LineGeometry, PerPanel } from '../../../../utils/geometry';
-import { Point } from '../../../../utils/point';
-import { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
+import type { Rotation } from '../../../../utils/common';
+import { ColorVariant } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { LineGeometry, PerPanel } from '../../../../utils/geometry';
+import type { Point } from '../../../../utils/point';
+import type { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
 
 /** @internal */

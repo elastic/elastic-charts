@@ -8,8 +8,9 @@
 
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getTooltipInfoAndGeomsSelector } from './get_tooltip_values_highlighted_geoms';
-import { LegendItemExtraValues, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../../common/legend';
-import { SeriesKey } from '../../../../common/series_id';
+import type { LegendItemExtraValues } from '../../../../common/legend';
+import { EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../../../../common/legend';
+import type { SeriesKey } from '../../../../common/series_id';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getLegendItemExtraValues } from '../../tooltip/tooltip';

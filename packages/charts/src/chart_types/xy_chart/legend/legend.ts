@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../../common/colors';
-import { LegendItem } from '../../../common/legend';
-import { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
-import { SettingsSpec } from '../../../specs';
+import type { Color } from '../../../common/colors';
+import type { LegendItem } from '../../../common/legend';
+import type { SeriesKey, SeriesIdentifier } from '../../../common/series_id';
+import type { SettingsSpec } from '../../../specs';
 import { isDefined, mergePartial } from '../../../utils/common';
 import { BandedAccessorType } from '../../../utils/geometry';
-import { SeriesCompareFn } from '../../../utils/series_sort';
-import { PointStyle, Theme } from '../../../utils/themes/theme';
-import { XDomain } from '../domains/types';
+import type { SeriesCompareFn } from '../../../utils/series_sort';
+import type { PointStyle, Theme } from '../../../utils/themes/theme';
+import type { XDomain } from '../domains/types';
 import { isDatumFilled } from '../rendering/utils';
 import { getLegendValues } from '../state/utils/get_legend_values';
 import { getAxesSpecForSpecId, getSpecsById } from '../state/utils/spec';
@@ -22,25 +22,16 @@ import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 import { defaultTickFormatter } from '../utils/axis_utils';
 import { defaultXYLegendSeriesSort } from '../utils/default_series_sort_fn';
 import { groupBy } from '../utils/group_data_series';
+import type { DataSeries, DataSeriesDatum } from '../utils/series';
 import {
   getSeriesIndex,
   getSeriesName,
-  DataSeries,
   getSeriesKey,
   getSeriesIdentifierFromDataSeries,
   isBandedSpec,
-  DataSeriesDatum,
 } from '../utils/series';
-import {
-  AxisSpec,
-  BasicSeriesSpec,
-  Postfixes,
-  StackMode,
-  isAreaSeriesSpec,
-  isBarSeriesSpec,
-  isBubbleSeriesSpec,
-  isLineSeriesSpec,
-} from '../utils/specs';
+import type { AxisSpec, BasicSeriesSpec, Postfixes } from '../utils/specs';
+import { StackMode, isAreaSeriesSpec, isBarSeriesSpec, isBubbleSeriesSpec, isLineSeriesSpec } from '../utils/specs';
 
 /** @internal */
 export interface FormattedLastValues {

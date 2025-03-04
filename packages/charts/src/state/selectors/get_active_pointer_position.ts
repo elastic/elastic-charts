@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Point } from '../../utils/point';
-import { GlobalChartState } from '../chart_state';
+import type { Point } from '../../utils/point';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getActivePointerPosition = ({ interactions }: GlobalChartState): Point => {

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../chart_state';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export interface LegendItemLabel {

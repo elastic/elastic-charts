@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../common/colors';
-import { Pixels, Distance, Radian, SizeRatio, Ratio } from '../../common/geometry';
-import { Font, PartialFont, FontFamily } from '../../common/text_utils';
-import { ColorVariant, StrokeStyle } from '../common';
-import { PerSideDistance } from '../dimensions';
+import type { Color } from '../../common/colors';
+import type { Pixels, Distance, Radian, SizeRatio, Ratio } from '../../common/geometry';
+import type { Font, PartialFont, FontFamily } from '../../common/text_utils';
+import type { ColorVariant, StrokeStyle } from '../common';
+import type { PerSideDistance } from '../dimensions';
 
 interface LabelConfig extends Font {
   textColor: Color | typeof ColorVariant.Adaptive;

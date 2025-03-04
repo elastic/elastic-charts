@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { SmallMultiplesSeriesDomains } from '../../common/panel_utils';
-import { GlobalChartState } from '../chart_state';
+import type { SmallMultiplesSeriesDomains } from '../../common/panel_utils';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalSmallMultiplesDomains = (state: GlobalChartState): SmallMultiplesSeriesDomains => {

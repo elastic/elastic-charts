@@ -7,10 +7,10 @@
  */
 
 import { overrideOpacity } from '../../../../common/color_library_wrappers';
-import { Fill, Stroke } from '../../../../geoms/types';
-import { GenericDomain } from '../../../../utils/domain';
-import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
-import { Cell } from '../../layout/types/viewmodel_types';
+import type { Fill, Stroke } from '../../../../geoms/types';
+import type { GenericDomain } from '../../../../utils/domain';
+import type { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
+import type { Cell } from '../../layout/types/viewmodel_types';
 import { isValueInRanges } from '../../layout/viewmodel/viewmodel';
 
 /** @internal */

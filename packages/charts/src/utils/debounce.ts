@@ -7,7 +7,9 @@
  */
 
 // eslint-disable-next-line no-restricted-imports
-import { debounce as tsDebounce, Options } from 'ts-debounce';
+import type { Options } from 'ts-debounce';
+// eslint-disable-next-line no-restricted-imports
+import { debounce as tsDebounce } from 'ts-debounce';
 
 /** @internal */
 export interface DebouncedFunction<Args extends any[], F extends (...args: Args) => any> {

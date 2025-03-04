@@ -7,16 +7,10 @@
  */
 
 import { createContext, useContext } from 'react';
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import {
-  Theme,
-  LIGHT_THEME,
-  DARK_THEME,
-  LEGACY_CHART_MARGINS,
-  LEGACY_DARK_THEME,
-  LEGACY_LIGHT_THEME,
-} from '@elastic/charts';
+import type { Theme } from '@elastic/charts';
+import { LIGHT_THEME, DARK_THEME, LEGACY_CHART_MARGINS, LEGACY_DARK_THEME, LEGACY_LIGHT_THEME } from '@elastic/charts';
 import { mergePartial } from '@elastic/charts/src/utils/common';
 
 import { storybookParameters } from './parameters';

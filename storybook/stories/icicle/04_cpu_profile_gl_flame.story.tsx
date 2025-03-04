@@ -10,19 +10,12 @@ import { action } from '@storybook/addon-actions';
 import { boolean, button, text } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  Chart,
-  Datum,
-  Flame,
-  Settings,
-  FlameGlobalControl,
-  FlameNodeControl,
-  ColumnarViewModel,
-} from '@elastic/charts';
+import type { Datum, FlameGlobalControl, FlameNodeControl, ColumnarViewModel } from '@elastic/charts';
+import { Chart, Flame, Settings } from '@elastic/charts';
 import columnarMock from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock_columnar.json';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const rng = getRandomNumberGenerator();

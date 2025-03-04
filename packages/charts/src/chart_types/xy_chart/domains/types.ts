@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
-import { OrdinalDomain, ContinuousDomain } from '../../../utils/domain';
-import { GroupId } from '../../../utils/ids';
-import { XScaleType } from '../utils/specs';
+import type { LogScaleOptions, ScaleContinuousType } from '../../../scales';
+import type { OrdinalDomain, ContinuousDomain } from '../../../utils/domain';
+import type { GroupId } from '../../../utils/ids';
+import type { XScaleType } from '../utils/specs';
 
 /** @internal */
 export type XDomain = Pick<LogScaleOptions, 'logBase'> & {

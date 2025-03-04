@@ -8,9 +8,9 @@
 
 import { getActivePointerPosition } from './../../../../state/selectors/get_active_pointer_position';
 import { getPerPanelHeatmapGeometries } from './get_per_panel_heatmap_geometries';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { DragShape } from '../../layout/types/viewmodel_types';
+import type { DragShape } from '../../layout/types/viewmodel_types';
 
 function getCurrentPointerStates(state: GlobalChartState) {
   return state.interactions.pointer;

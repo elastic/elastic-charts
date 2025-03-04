@@ -11,6 +11,7 @@ import { range } from 'lodash';
 import { DateTime } from 'luxon';
 import React, { useEffect, useMemo } from 'react';
 
+import type { SmallMultiplesStyle, Margins } from '@elastic/charts';
 import {
   ScaleType,
   Chart,
@@ -20,12 +21,10 @@ import {
   niceTimeFormatByDay,
   timeFormatter,
   Heatmap,
-  SmallMultiplesStyle,
-  Margins,
 } from '@elastic/charts';
 import { SeededDataGenerator, getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 import { customKnobs } from '../utils/knobs';

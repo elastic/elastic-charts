@@ -9,8 +9,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { CustomLegendProps, CustomLegend as CustomLegendComponent } from '../../specs';
-import { GlobalChartState } from '../../state/chart_state';
+import type { CustomLegendProps } from '../../specs';
+import { CustomLegend as CustomLegendComponent } from '../../specs';
+import type { GlobalChartState } from '../../state/chart_state';
 import { getPointerValueSelector } from '../../state/selectors/get_pointer_value';
 
 interface Props extends CustomLegendProps {

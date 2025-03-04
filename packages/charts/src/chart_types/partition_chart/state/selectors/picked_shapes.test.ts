@@ -6,21 +6,22 @@
  * Side Public License, v 1.
  */
 
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { partitionMultiGeometries } from './geometries';
 import { createOnElementClickCaller } from './on_element_click_caller';
 import { GOLDEN_RATIO } from '../../../../common/constants';
 import { Predicate } from '../../../../common/predicate';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs';
-import { SettingsSpec, GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
+import type { SettingsSpec, GroupBySpec, SmallMultiplesSpec } from '../../../../specs';
 import { updateParentDimensions } from '../../../../state/actions/chart_settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../../state/actions/specs';
-import { createChartStore, GlobalChartState } from '../../../../state/chart_state';
-import { Datum } from '../../../../utils/common';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import { createChartStore } from '../../../../state/chart_state';
+import type { Datum } from '../../../../utils/common';
 import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
-import { PartitionSpec } from '../../specs';
+import type { PartitionSpec } from '../../specs';
 
 describe('Picked shapes selector', () => {
   function addSeries(store: Store<GlobalChartState>, spec: PartitionSpec, settings?: Partial<SettingsSpec>) {

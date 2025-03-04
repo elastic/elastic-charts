@@ -8,9 +8,9 @@
 
 import { ScaleBand, ScaleContinuous } from '../../../scales';
 import { ScaleType } from '../../../scales/constants';
-import { ContinuousDomain, Range } from '../../../utils/domain';
-import { GroupId } from '../../../utils/ids';
-import { XDomain, YDomain } from '../domains/types';
+import type { ContinuousDomain, Range } from '../../../utils/domain';
+import type { GroupId } from '../../../utils/ids';
+import type { XDomain, YDomain } from '../domains/types';
 
 function getBandScaleRange(
   isInverse: boolean,

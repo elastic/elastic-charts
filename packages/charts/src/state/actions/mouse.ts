@@ -8,7 +8,7 @@
 
 import { createAction } from '@reduxjs/toolkit';
 
-import { Point } from '../../utils/point';
+import type { Point } from '../../utils/point';
 
 interface MouseAction {
   position: Point;

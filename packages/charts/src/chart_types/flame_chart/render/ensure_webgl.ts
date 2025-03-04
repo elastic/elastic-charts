@@ -16,7 +16,8 @@ import {
 } from '../../../common/kingly';
 import { GL } from '../../../common/webgl_constants';
 import { attributeLocations, colorFrag, roundedRectFrag, roundedRectVert, simpleRectVert } from '../shaders';
-import { GLResources, NULL_GL_RESOURCES } from '../types';
+import type { GLResources } from '../types';
+import { NULL_GL_RESOURCES } from '../types';
 
 /** @internal */
 export function ensureWebgl(

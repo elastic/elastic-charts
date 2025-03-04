@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AnchorPosition } from '../../../components/portal';
+import type { AnchorPosition } from '../../../components/portal';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getActivePointerPosition } from '../../../state/selectors/get_active_pointer_position';
 
