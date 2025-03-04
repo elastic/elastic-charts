@@ -153,36 +153,44 @@ export type ChartSelectorsFactory = () => ChartSelectors;
 
 const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
 
+type CallbackCreator = () => (state: GlobalChartState) => void;
+
 /** @internal */
 export const createChartSelectorsFactory =
-  (overrides: Partial<ChartSelectors> = {}): ChartSelectorsFactory =>
-  () => ({
-    isInitialized: () => InitStatus.SpecNotInitialized,
-    isBrushAvailable: () => false,
-    isBrushing: () => false,
-    isChartEmpty: () => true,
-    getLegendItems: () => EMPTY_LEGEND_LIST,
-    getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
-    getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
-    getPointerCursor: () => DEFAULT_CSS_CURSOR,
-    isTooltipVisible: () => ({
-      visible: false,
-      isExternal: false,
-      displayOnly: false,
-      isPinnable: false,
-    }),
-    getTooltipInfo: () => EMPTY_TOOLTIP,
-    getTooltipAnchor: () => null,
-    getProjectionContainerArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
-    getMainProjectionArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
-    getBrushArea: () => null,
-    getDebugState: () => ({}),
-    getChartTypeDescription: () => '',
-    getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
-    canDisplayChartTitles: () => true,
-    eventCallbacks: () => {},
-    ...overrides,
-  });
+  (overrides: Partial<ChartSelectors> = {}, callbacksCreators: Array<CallbackCreator> = []): ChartSelectorsFactory =>
+  () => {
+    const callbacks = callbacksCreators.map((cb) => cb());
+
+    return {
+      isInitialized: () => InitStatus.SpecNotInitialized,
+      isBrushAvailable: () => false,
+      isBrushing: () => false,
+      isChartEmpty: () => true,
+      getLegendItems: () => EMPTY_LEGEND_LIST,
+      getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
+      getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
+      getPointerCursor: () => DEFAULT_CSS_CURSOR,
+      isTooltipVisible: () => ({
+        visible: false,
+        isExternal: false,
+        displayOnly: false,
+        isPinnable: false,
+      }),
+      getTooltipInfo: () => EMPTY_TOOLTIP,
+      getTooltipAnchor: () => null,
+      getProjectionContainerArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+      getMainProjectionArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+      getBrushArea: () => null,
+      getDebugState: () => ({}),
+      getChartTypeDescription: () => '',
+      getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
+      canDisplayChartTitles: () => true,
+      eventCallbacks: (state: GlobalChartState) => {
+        callbacks.forEach((cb) => cb(state));
+      },
+      ...overrides,
+    };
+  };
 
 /** @internal */
 export interface ChartSelectorRegistry {

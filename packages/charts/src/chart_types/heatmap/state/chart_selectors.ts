@@ -30,34 +30,32 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 
 /** @internal */
-export const chartSelectorsFactory = createChartSelectorsFactory({
-  isInitialized: () => InitStatus.Initialized,
-  isBrushAvailable: isBrushAvailableSelector,
-  isBrushing: isBrushingSelector,
-  isChartEmpty: isEmptySelector,
-  getLegendItems: computeLegendSelector,
-  getLegendItemsLabels: getLegendItemsLabelsSelector,
-  getPointerCursor: getPointerCursorSelector,
-  isTooltipVisible: isTooltipVisibleSelector,
-  getTooltipInfo: getTooltipInfoSelector,
-  getTooltipAnchor: getTooltipAnchorSelector,
-  getProjectionContainerArea: getChartContainerDimensionsSelector,
-  getMainProjectionArea: (state: GlobalChartState) => computeChartDimensionsSelector(state).chartDimensions,
-  getBrushArea: getBrushAreaSelector,
-  getDebugState: getDebugStateSelector,
-  getChartTypeDescription: () => 'Heatmap chart',
-  getSmallMultiplesDomains: getHeatmapTableSelector,
-  eventCallbacks: (state: GlobalChartState) => {
-    const onElementClickCaller = createOnElementClickCaller();
-    const onElementOverCaller = createOnElementOverCaller();
-    const onElementOutCaller = createOnElementOutCaller();
-    const onBrushEndCaller = createOnBrushEndCaller();
-    const onPointerUpdate = createOnPointerUpdateCaller();
-
-    onElementOverCaller(state);
-    onElementOutCaller(state);
-    onElementClickCaller(state);
-    onBrushEndCaller(state);
-    onPointerUpdate(state);
+export const chartSelectorsFactory = createChartSelectorsFactory(
+  // selectors
+  {
+    isInitialized: () => InitStatus.Initialized,
+    isBrushAvailable: isBrushAvailableSelector,
+    isBrushing: isBrushingSelector,
+    isChartEmpty: isEmptySelector,
+    getLegendItems: computeLegendSelector,
+    getLegendItemsLabels: getLegendItemsLabelsSelector,
+    getPointerCursor: getPointerCursorSelector,
+    isTooltipVisible: isTooltipVisibleSelector,
+    getTooltipInfo: getTooltipInfoSelector,
+    getTooltipAnchor: getTooltipAnchorSelector,
+    getProjectionContainerArea: getChartContainerDimensionsSelector,
+    getMainProjectionArea: (state: GlobalChartState) => computeChartDimensionsSelector(state).chartDimensions,
+    getBrushArea: getBrushAreaSelector,
+    getDebugState: getDebugStateSelector,
+    getChartTypeDescription: () => 'Heatmap chart',
+    getSmallMultiplesDomains: getHeatmapTableSelector,
   },
-});
+  // event callbacks
+  [
+    createOnElementClickCaller,
+    createOnElementOverCaller,
+    createOnElementOutCaller,
+    createOnBrushEndCaller,
+    createOnPointerUpdateCaller,
+  ],
+);

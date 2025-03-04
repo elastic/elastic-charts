@@ -33,45 +33,40 @@ import { InitStatus } from '../../../state/selectors/get_internal_is_intialized'
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 
 /** @internal */
-export const chartSelectorsFactory = createChartSelectorsFactory({
-  isInitialized: (state: GlobalChartState) =>
-    getSeriesSpecsSelector(state).length > 0 ? InitStatus.Initialized : InitStatus.SpecNotInitialized,
+export const chartSelectorsFactory = createChartSelectorsFactory(
+  // selectors
+  {
+    isInitialized: (state: GlobalChartState) =>
+      getSeriesSpecsSelector(state).length > 0 ? InitStatus.Initialized : InitStatus.SpecNotInitialized,
 
-  isBrushAvailable: isBrushAvailableSelector,
-  isBrushing: (globalState: GlobalChartState) =>
-    isBrushAvailableSelector(globalState) && isBrushingSelector(globalState),
-  isChartEmpty: isChartEmptySelector,
+    isBrushAvailable: isBrushAvailableSelector,
+    isBrushing: (globalState: GlobalChartState) =>
+      isBrushAvailableSelector(globalState) && isBrushingSelector(globalState),
+    isChartEmpty: isChartEmptySelector,
 
-  getLegendItems: computeLegendSelector,
-  getLegendExtraValues: getLegendItemExtraValuesSelector,
-  getPointerCursor: getPointerCursorSelector,
+    getLegendItems: computeLegendSelector,
+    getLegendExtraValues: getLegendItemExtraValuesSelector,
+    getPointerCursor: getPointerCursorSelector,
 
-  isTooltipVisible: isTooltipVisibleSelector,
-  getTooltipInfo: getTooltipInfoSelector,
-  getTooltipAnchor: getTooltipAnchorPositionSelector,
+    isTooltipVisible: isTooltipVisibleSelector,
+    getTooltipInfo: getTooltipInfoSelector,
+    getTooltipAnchor: getTooltipAnchorPositionSelector,
 
-  getProjectionContainerArea: getChartContainerDimensionsSelector,
-  getMainProjectionArea: (state: GlobalChartState) => computeChartDimensionsSelector(state).chartDimensions,
-  getBrushArea: getBrushAreaSelector,
+    getProjectionContainerArea: getChartContainerDimensionsSelector,
+    getMainProjectionArea: (state: GlobalChartState) => computeChartDimensionsSelector(state).chartDimensions,
+    getBrushArea: getBrushAreaSelector,
 
-  getDebugState: getDebugStateSelector,
-  getChartTypeDescription: getChartTypeDescriptionSelector,
-  getSmallMultiplesDomains: computeSeriesDomainsSelector,
-
-  eventCallbacks: (state: GlobalChartState) => {
-    const onClickCaller = createOnClickCaller();
-    const onElementOverCaller = createOnElementOverCaller();
-    const onElementOutCaller = createOnElementOutCaller();
-    const onBrushEndCaller = createOnBrushEndCaller();
-    const onPointerMoveCaller = createOnPointerMoveCaller();
-    const onProjectionAreaCaller = createOnProjectionAreaCaller();
-
-    console.log('xy eventCallbacks');
-    onClickCaller(state);
-    onElementOverCaller(state);
-    onElementOutCaller(state);
-    onBrushEndCaller(state);
-    onPointerMoveCaller(state);
-    onProjectionAreaCaller(state);
+    getDebugState: getDebugStateSelector,
+    getChartTypeDescription: getChartTypeDescriptionSelector,
+    getSmallMultiplesDomains: computeSeriesDomainsSelector,
   },
-});
+  // event callbacks
+  [
+    createOnClickCaller,
+    createOnElementOverCaller,
+    createOnElementOutCaller,
+    createOnBrushEndCaller,
+    createOnPointerMoveCaller,
+    createOnProjectionAreaCaller,
+  ],
+);
