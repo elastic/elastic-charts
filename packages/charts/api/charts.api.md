@@ -239,7 +239,7 @@ export interface ArrayNode extends NodeDescriptor {
 }
 
 // @public
-export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "groupId" | "hide" | "showOverlappingTicks" | "showOverlappingLabels" | "position" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "ticks" | "tickFormat" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
+export const Axis: FC<SFProps<AxisSpec, "chartType" | "specType", "position" | "hide" | "groupId" | "showOverlappingTicks" | "showOverlappingLabels" | "timeAxisLayerCount", "style" | "title" | "domain" | "maximumFractionDigits" | "ticks" | "tickFormat" | "gridLine" | "labelFormat" | "integersOnly" | "showDuplicatedTicks", "id">>;
 
 // @public (undocumented)
 export type AxisId = string;
@@ -2522,7 +2522,7 @@ export type Ratio = number;
 export type RawTextGetter = (node: ShapeTreeNode) => string;
 
 // @public (undocumented)
-export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "groupId" | "outside" | "zIndex" | "annotationType", "style" | "offset" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "customTooltip" | "hideTooltips" | "customTooltipDetails" | "animations" | "outsideDimension", "id" | "dataValues">>;
+export const RectAnnotation: FC<SFProps<RectAnnotationSpec, "chartType" | "specType", "zIndex" | "groupId" | "annotationType" | "outside", "style" | "offset" | "customTooltip" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding" | "hideTooltips" | "animations" | "customTooltipDetails" | "outsideDimension", "id" | "dataValues">>;
 
 // @public
 export interface RectAnnotationDatum {
@@ -3131,7 +3131,7 @@ export type TooltipAction<D extends BaseDatum = Datum, SI extends SeriesIdentifi
 };
 
 // @public
-export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "body" | "footer" | "header" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "offset" | "unit" | "fallbackPlacements" | "placement" | "boundary" | "boundaryPadding" | "headerFormatter" | "customTooltip" | "stickTo", never>;
+export const tooltipBuildProps: BuildProps<TooltipSpec<any, SeriesIdentifier>, "id" | "chartType" | "specType", "type" | "body" | "footer" | "header" | "actions" | "selectionPrompt" | "actionsLoading" | "noActionsLoaded" | "snap" | "showNullValues" | "actionPrompt" | "pinningPrompt" | "maxTooltipItems" | "maxVisibleTooltipItems", "sort" | "offset" | "unit" | "headerFormatter" | "customTooltip" | "stickTo" | "placement" | "fallbackPlacements" | "boundary" | "boundaryPadding", never>;
 
 // @public
 export type TooltipCellStyle = Pick<CSSProperties, 'maxHeight' | 'textAlign' | 'padding' | 'paddingTop' | 'paddingRight' | 'paddingBottom' | 'paddingLeft'>;
@@ -3466,7 +3466,7 @@ export type WeightFn = $Values<typeof WeightFn>;
 export type WillRenderListener = () => void;
 
 // @alpha
-export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontStyle" | "fontWeight" | "fontFamily" | "padding" | "minFontSize" | "maxFontSize" | "startAngle" | "endAngle" | "exponent" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
+export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontStyle" | "fontWeight" | "fontFamily" | "padding" | "minFontSize" | "maxFontSize" | "exponent" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
 
 // @public (undocumented)
 export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];
