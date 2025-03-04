@@ -23,43 +23,41 @@ import { createOnElementOutCaller } from './selectors/on_element_out_caller';
 import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerUpdateCaller } from './selectors/on_pointer_update_caller';
 import { getTooltipInfoSelector } from './selectors/tooltip';
-import { createChartSelectorsFactory, type ChartSelectorsFactory } from '../../../state/chart_selectors';
+import { createChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { isBrushingSelector } from '../../../state/selectors/is_brushing';
 
 /** @internal */
-export const chartSelectorsFactory: ChartSelectorsFactory = () => {
-  const onElementClickCaller = createOnElementClickCaller();
-  const onElementOverCaller = createOnElementOverCaller();
-  const onElementOutCaller = createOnElementOutCaller();
-  const onBrushEndCaller = createOnBrushEndCaller();
-  const onPointerUpdate = createOnPointerUpdateCaller();
+export const chartSelectorsFactory = createChartSelectorsFactory({
+  isInitialized: () => InitStatus.Initialized,
+  isBrushAvailable: isBrushAvailableSelector,
+  isBrushing: isBrushingSelector,
+  isChartEmpty: isEmptySelector,
+  getLegendItems: computeLegendSelector,
+  getLegendItemsLabels: getLegendItemsLabelsSelector,
+  getPointerCursor: getPointerCursorSelector,
+  isTooltipVisible: isTooltipVisibleSelector,
+  getTooltipInfo: getTooltipInfoSelector,
+  getTooltipAnchor: getTooltipAnchorSelector,
+  getProjectionContainerArea: getChartContainerDimensionsSelector,
+  getMainProjectionArea: (state: GlobalChartState) => computeChartDimensionsSelector(state).chartDimensions,
+  getBrushArea: getBrushAreaSelector,
+  getDebugState: getDebugStateSelector,
+  getChartTypeDescription: () => 'Heatmap chart',
+  getSmallMultiplesDomains: getHeatmapTableSelector,
+  eventCallbacks: (state: GlobalChartState) => {
+    const onElementClickCaller = createOnElementClickCaller();
+    const onElementOverCaller = createOnElementOverCaller();
+    const onElementOutCaller = createOnElementOutCaller();
+    const onBrushEndCaller = createOnBrushEndCaller();
+    const onPointerUpdate = createOnPointerUpdateCaller();
 
-  return createChartSelectorsFactory({
-    isInitialized: () => InitStatus.Initialized,
-    isBrushAvailable: isBrushAvailableSelector,
-    isBrushing: isBrushingSelector,
-    isChartEmpty: isEmptySelector,
-    getLegendItems: computeLegendSelector,
-    getLegendItemsLabels: getLegendItemsLabelsSelector,
-    getPointerCursor: getPointerCursorSelector,
-    isTooltipVisible: isTooltipVisibleSelector,
-    getTooltipInfo: getTooltipInfoSelector,
-    getTooltipAnchor: getTooltipAnchorSelector,
-    getProjectionContainerArea: getChartContainerDimensionsSelector,
-    getMainProjectionArea: (state: GlobalChartState) => computeChartDimensionsSelector(state).chartDimensions,
-    getBrushArea: getBrushAreaSelector,
-    getDebugState: getDebugStateSelector,
-    getChartTypeDescription: () => 'Heatmap chart',
-    getSmallMultiplesDomains: getHeatmapTableSelector,
-    eventCallbacks: (state: GlobalChartState) => {
-      onElementOverCaller(state);
-      onElementOutCaller(state);
-      onElementClickCaller(state);
-      onBrushEndCaller(state);
-      onPointerUpdate(state);
-    },
-  })();
-};
+    onElementOverCaller(state);
+    onElementOutCaller(state);
+    onElementClickCaller(state);
+    onBrushEndCaller(state);
+    onPointerUpdate(state);
+  },
+});
