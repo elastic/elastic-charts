@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { ComponentType, ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
-import { AnnotationLineProps } from './line/types';
-import { AnnotationRectProps } from './rect/types';
-import { Color } from '../../../common/colors';
-import { TooltipPortalSettings } from '../../../components/portal';
-import { Position } from '../../../utils/common';
-import { AnnotationId, SpecId } from '../../../utils/ids';
-import { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../utils/specs';
+import type { AnnotationLineProps } from './line/types';
+import type { AnnotationRectProps } from './rect/types';
+import type { Color } from '../../../common/colors';
+import type { TooltipPortalSettings } from '../../../components/portal';
+import type { Position } from '../../../utils/common';
+import type { AnnotationId, SpecId } from '../../../utils/ids';
+import type { AnnotationType, LineAnnotationDatum, RectAnnotationDatum } from '../utils/specs';
 
 /** @public */
 export type AnnotationTooltipFormatter = ComponentType<{ details?: string }>;

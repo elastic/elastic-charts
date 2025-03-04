@@ -6,11 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { Probot } from 'probot';
+import type { Probot } from 'probot';
 
 import { getPRFromComment, hasCommentAction } from './utils';
 import { buildkiteClient, getPRBuildParams } from '../../../utils/buildkite';
-import { PullRequestBuildEnv } from '../../../utils/types';
+import type { PullRequestBuildEnv } from '../../../utils/types';
 import { checkUserFn, createIssueReaction, isValidUser, labelCheckFn, updateAllChecks } from '../../utils';
 
 /**

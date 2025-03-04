@@ -9,12 +9,13 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore, Store } from 'redux';
+import type { Store } from 'redux';
 
 import { LineSeries } from './line_series';
 import { LineAnnotation, AnnotationDomainType } from '../../../specs';
 import { SpecsParser } from '../../../specs/specs_parser';
-import { chartStoreReducer, GlobalChartState } from '../../../state/chart_state';
+import type { GlobalChartState } from '../../../state/chart_state';
+import { createChartStore } from '../../../state/chart_state';
 
 function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
   return (
@@ -44,8 +45,7 @@ function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
 
 describe('Line annotation', () => {
   it('Should always be available on the on every render', () => {
-    const storeReducer = chartStoreReducer('chart_id');
-    const chartStore = createStore(storeReducer);
+    const chartStore = createChartStore('chart_id');
     const wrapper = mount(<LineAnnotationChart chartStore={chartStore} />);
     expect(chartStore.getState().specs.threshold).toBeDefined();
     wrapper.setProps({});

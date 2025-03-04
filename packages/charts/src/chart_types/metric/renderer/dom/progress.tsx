@@ -10,11 +10,12 @@ import classNames from 'classnames';
 import { scaleLinear } from 'd3-scale';
 import React from 'react';
 
-import { Color } from '../../../../common/colors';
+import type { Color } from '../../../../common/colors';
 import { Icon } from '../../../../components/icons/icon';
 import { isNil, LayoutDirection, sortNumbers } from '../../../../utils/common';
-import { ContinuousDomain, GenericDomain } from '../../../../utils/domain';
-import { BulletMetricWProgress, isBulletMetric, MetricWProgress } from '../../specs';
+import type { ContinuousDomain, GenericDomain } from '../../../../utils/domain';
+import type { BulletMetricWProgress, MetricWProgress } from '../../specs';
+import { isBulletMetric } from '../../specs';
 
 const TARGET_SIZE = 8;
 const BASELINE_SIZE = 2;

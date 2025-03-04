@@ -8,7 +8,7 @@
 
 import { test } from '@playwright/test';
 
-import { Position } from '../constants';
+import type { Position } from '../constants';
 import { pwEach } from '../helpers';
 import { common } from '../page_objects/common';
 

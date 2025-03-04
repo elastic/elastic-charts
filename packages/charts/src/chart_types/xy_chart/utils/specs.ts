@@ -6,24 +6,23 @@
  * Side Public License, v 1.
  */
 
-import { ReactNode } from 'react';
-import { $Values } from 'utility-types';
+import type { ReactNode } from 'react';
+import type { $Values } from 'utility-types';
 
-import { AnimationOptions } from './../renderer/canvas/animations/animation';
-import { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
-import { ChartType } from '../../../chart_types';
-import { Color } from '../../../common/colors';
-import { TooltipPortalSettings } from '../../../components/portal/types';
-import { LogScaleOptions, ScaleContinuousType } from '../../../scales';
-import { ScaleType } from '../../../scales/constants';
-import { Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants';
-import { AccessorFormat, AccessorFn, Accessor } from '../../../utils/accessor';
-import { RecursivePartial, Position, Datum } from '../../../utils/common';
-import { CurveType } from '../../../utils/curves';
-import { OrdinalDomain } from '../../../utils/domain';
-import { AxisId, GroupId, SpecId } from '../../../utils/ids';
-import {
+import type { AnimationOptions } from './../renderer/canvas/animations/animation';
+import type { XYChartSeriesIdentifier, DataSeriesDatum } from './series';
+import type { ChartType } from '../../../chart_types';
+import type { Color } from '../../../common/colors';
+import type { TooltipPortalSettings } from '../../../components/portal/types';
+import type { LogScaleOptions, ScaleContinuousType } from '../../../scales';
+import type { ScaleType } from '../../../scales/constants';
+import type { Spec, SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { AccessorFormat, AccessorFn, Accessor } from '../../../utils/accessor';
+import type { RecursivePartial, Position, Datum } from '../../../utils/common';
+import type { CurveType } from '../../../utils/curves';
+import type { OrdinalDomain } from '../../../utils/domain';
+import type { AxisId, GroupId, SpecId } from '../../../utils/ids';
+import type {
   AreaSeriesStyle,
   BarSeriesStyle,
   GridLineStyle,
@@ -34,8 +33,8 @@ import {
   BubbleSeriesStyle,
   AxisStyle,
 } from '../../../utils/themes/theme';
-import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
-import {
+import type { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
+import type {
   AnnotationTooltipFormatter,
   ComponentWithAnnotationDatum,
   CustomAnnotationTooltip,

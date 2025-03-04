@@ -8,18 +8,11 @@
 
 import React from 'react';
 
-import {
-  Chart,
-  Datum,
-  Partition,
-  PartitionLayout,
-  Settings,
-  PartialTheme,
-  defaultPartitionValueFormatter,
-} from '@elastic/charts';
+import type { Datum, PartialTheme } from '@elastic/charts';
+import { Chart, Partition, PartitionLayout, Settings, defaultPartitionValueFormatter } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { indexInterpolatedFillColor, interpolatorCET2s, productLookup } from '../utils/utils';
 

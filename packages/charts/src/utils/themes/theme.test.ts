@@ -9,7 +9,7 @@
 import { DARK_THEME } from './dark_theme';
 import { LIGHT_THEME } from './light_theme';
 import { mergeWithDefaultAnnotationLine, mergeWithDefaultAnnotationRect } from './merge_utils';
-import { LineAnnotationStyle, Theme } from './theme';
+import type { LineAnnotationStyle, Theme } from './theme';
 
 describe('Theme', () => {
   let CLONED_LIGHT_THEME: Theme;

@@ -7,10 +7,26 @@
  */
 
 // eslint-disable-next-line no-restricted-imports
-import createCachedSelector, { ICacheObject, Options } from 're-reselect';
-import type { createSelector } from 'reselect';
+import { createSelector } from '@reduxjs/toolkit';
+// eslint-disable-next-line no-restricted-imports
+import type { ICacheObject } from 're-reselect';
+// eslint-disable-next-line no-restricted-imports
+import createCachedSelector from 're-reselect';
 
-import { GlobalChartState } from './chart_state';
+import type { GlobalChartState } from './chart_state';
+
+/**
+ * This wraps Redux Toolkit's `createSelector` with a custom cache size of 100.
+ * It will be passed on to re-reselect's `createCachedSelector` to handle the cache.
+ * This means we'll get a cache size of 100 for each chartId. The default cache size
+ * of 1 slowed things down quite a bit after migrating to Redux Toolkit.
+ */
+const createSelectorWithMaxSize100 = ((selectors: any[], combiner: (...args: any[]) => any) =>
+  createSelector(selectors, combiner, {
+    memoizeOptions: {
+      maxSize: 100,
+    },
+  })) as unknown as typeof createSelector;
 
 /**
  * Custom object cache
@@ -51,17 +67,21 @@ class GlobalSelectorCache {
     return chartId;
   }
 
-  getNewOptions(): Options<GlobalChartState, unknown, unknown> {
+  getNewOptions() {
     return {
       keySelector: GlobalSelectorCache.keySelector,
       cacheObject: this.getCacheObject(),
+      selectorCreator: createSelectorWithMaxSize100,
     };
   }
 
   removeKeyFromAll(key: string) {
+    // remove the chart id from all caches
     this.selectorCaches.forEach((cache) => {
       cache.remove(key);
     });
+    // clean up empty caches
+    this.selectorCaches = this.selectorCaches.filter((cache) => !cache.isEmpty());
   }
 
   private getCacheObject(): CustomMapCache {

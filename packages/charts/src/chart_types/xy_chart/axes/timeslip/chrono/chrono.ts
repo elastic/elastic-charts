@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
+import type { CalendarObject } from './chrono_luxon/chrono_luxon';
 import {
   addTimeToObj,
-  CalendarObject,
   timeObjFromCalendarObj,
   timeObjFromEpochSeconds,
   timeObjToSeconds,

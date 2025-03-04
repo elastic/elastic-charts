@@ -6,20 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { PointerEvent } from '../../specs/settings';
+import { createAction } from '@reduxjs/toolkit';
+
+import type { PointerEvent } from '../../specs';
 
 /** @internal */
-export const EXTERNAL_POINTER_EVENT = 'EXTERNAL_POINTER_EVENT';
-
-interface ExternalPointerEvent {
-  type: typeof EXTERNAL_POINTER_EVENT;
-  event: PointerEvent;
-}
-
-/** @internal */
-export function onExternalPointerEvent(event: PointerEvent): ExternalPointerEvent {
-  return { type: EXTERNAL_POINTER_EVENT, event };
-}
-
-/** @internal */
-export type EventsActions = ExternalPointerEvent;
+export const onExternalPointerEvent = createAction<PointerEvent>('EXTERNAL_POINTER_EVENT');

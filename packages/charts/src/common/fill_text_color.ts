@@ -6,9 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { ColorContrastOptions, HighContrastResult, combineColors, highContrastColor } from './color_calcs';
+import type { ColorContrastOptions, HighContrastResult } from './color_calcs';
+import { combineColors, highContrastColor } from './color_calcs';
 import { colorToRgba } from './color_library_wrappers';
-import { Color, Colors } from './colors';
+import type { Color } from './colors';
+import { Colors } from './colors';
 
 /**
  * limit used to return fallback color

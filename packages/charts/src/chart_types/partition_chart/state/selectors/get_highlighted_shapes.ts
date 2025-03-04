@@ -7,10 +7,10 @@
  */
 
 import { partitionMultiGeometries } from './geometries';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { QuadViewModel } from '../../layout/types/viewmodel_types';
+import type { QuadViewModel } from '../../layout/types/viewmodel_types';
 import { highlightedGeoms } from '../../layout/utils/highlighted_geoms';
 
 const getHighlightedLegendItemPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;

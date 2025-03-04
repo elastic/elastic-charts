@@ -7,17 +7,17 @@
  */
 
 import { ChartType } from '../../..';
-import { Color } from '../../../../common/colors';
-import { Pixels } from '../../../../common/geometry';
-import { PerPanelMap } from '../../../../common/panel_utils';
-import { Box, Font, TextAlign } from '../../../../common/text_utils';
-import { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
-import { HeatmapBrushEvent } from '../../../../specs/settings';
-import { Point } from '../../../../utils/point';
+import type { Color } from '../../../../common/colors';
+import type { Pixels } from '../../../../common/geometry';
+import type { PerPanelMap } from '../../../../common/panel_utils';
+import type { Box, Font, TextAlign } from '../../../../common/text_utils';
+import type { Fill, Line, Rect, Stroke } from '../../../../geoms/types';
+import type { HeatmapBrushEvent } from '../../../../specs/settings';
+import type { Point } from '../../../../utils/point';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Visible, HeatmapStyle } from '../../../../utils/themes/theme';
-import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { HeatmapCellDatum } from '../viewmodel/viewmodel';
+import type { Visible, HeatmapStyle } from '../../../../utils/themes/theme';
+import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
+import type { HeatmapCellDatum } from '../viewmodel/viewmodel';
 
 /** @public */
 export interface Cell {

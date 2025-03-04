@@ -18,27 +18,21 @@ import { colorToRgba, RGBATupleToString } from '../../../../common/color_library
 import { Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
-import {
-  Distance,
-  meanAngle,
-  Pixels,
-  PointTuple,
-  Radius,
-  trueBearingToStandardPositionAngle,
-} from '../../../../common/geometry';
-import { Part } from '../../../../common/text_utils';
-import { GroupByAccessor } from '../../../../specs';
-import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { ColorVariant, StrokeStyle } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
+import type { Distance, Pixels, PointTuple, Radius } from '../../../../common/geometry';
+import { meanAngle, trueBearingToStandardPositionAngle } from '../../../../common/geometry';
+import type { Part } from '../../../../common/text_utils';
+import type { GroupByAccessor } from '../../../../specs';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { StrokeStyle } from '../../../../utils/common';
+import { ColorVariant } from '../../../../utils/common';
+import type { Size } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
-import { FillLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
-import { BackgroundStyle } from '../../../../utils/themes/theme';
-import { Layer, PartitionSpec } from '../../specs';
+import type { FillLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
+import type { BackgroundStyle } from '../../../../utils/themes/theme';
+import type { Layer, PartitionSpec } from '../../specs';
 import { MODEL_KEY, percentValueGetter } from '../config';
 import { PartitionLayout } from '../types/config_types';
-import {
-  nullShapeViewModel,
+import type {
   OutsideLinksViewModel,
   PartitionSmallMultiplesModel,
   PickFunction,
@@ -49,15 +43,15 @@ import {
   ShapeViewModel,
   ValueGetterFunction,
 } from '../types/viewmodel_types';
+import { nullShapeViewModel } from '../types/viewmodel_types';
 import { ringSectorConstruction } from '../utils/circline_geometry';
+import type { ArrayEntry, HierarchyOfArrays } from '../utils/group_by_rollup';
 import {
   aggregateAccessor,
-  ArrayEntry,
   CHILDREN_KEY,
   depthAccessor,
   entryKey,
   entryValue,
-  HierarchyOfArrays,
   mapEntryValue,
   parentAccessor,
   pathAccessor,

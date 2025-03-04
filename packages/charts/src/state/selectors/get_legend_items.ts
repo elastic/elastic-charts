@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { LegendItem, EMPTY_LEGEND_LIST } from '../../common/legend';
-import { GlobalChartState } from '../chart_state';
+import type { LegendItem } from '../../common/legend';
+import { EMPTY_LEGEND_LIST } from '../../common/legend';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getLegendItemsSelector = (state: GlobalChartState): LegendItem[] => {

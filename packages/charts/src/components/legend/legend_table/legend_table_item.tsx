@@ -12,11 +12,12 @@ import React, { useCallback } from 'react';
 import { LegendTableCell } from './legend_table_cell';
 import { LegendTableRow } from './legend_table_row';
 import { LegendValueComponent } from './legend_value';
-import { SeriesIdentifier } from '../../../common/series_id';
+import type { SeriesIdentifier } from '../../../common/series_id';
 import { LayoutDirection } from '../../../utils/common';
 import { Label as ItemLabel } from '../label';
 import { useLegendColorPicker } from '../legend_color_picker';
-import { LegendItemProps, prepareLegendValues } from '../legend_item';
+import type { LegendItemProps } from '../legend_item';
+import { prepareLegendValues } from '../legend_item';
 
 /** @internal */
 export const LegendListItem: React.FC<LegendItemProps> = (props) => {
@@ -45,17 +46,17 @@ export const LegendListItem: React.FC<LegendItemProps> = (props) => {
   const legendValueItems = prepareLegendValues(item, legendValues, totalItems, extraValues);
 
   const onLabelToggle = useCallback(
-    (legendItemId: SeriesIdentifier[]) => (negate: boolean) => {
+    (legendItemIds: SeriesIdentifier[]) => (negate: boolean) => {
       if (totalItems <= 1 || (!isToggleable && !onClick)) {
         return;
       }
 
       if (onClick) {
-        onClick(legendItemId);
+        onClick(legendItemIds);
       }
 
       if (isToggleable) {
-        toggleDeselectSeriesAction(legendItemId, negate);
+        toggleDeselectSeriesAction({ legendItemIds, metaKey: negate });
       }
     },
     [onClick, toggleDeselectSeriesAction, isToggleable, totalItems],

@@ -9,17 +9,10 @@
 import { boolean, color } from '@storybook/addon-knobs';
 import React, { memo, useEffect, useRef, useState } from 'react';
 
-import {
-  BaseDatum,
-  Datum,
-  SeriesIdentifier,
-  TooltipProps,
-  LIGHT_THEME,
-  DEFAULT_TOOLTIP_SPEC,
-  TooltipSpec,
-  TooltipValue,
-} from '@elastic/charts';
-import { TooltipComponent, TooltipComponentProps } from '@elastic/charts/src/components/tooltip/tooltip';
+import type { BaseDatum, Datum, SeriesIdentifier, TooltipProps, TooltipSpec, TooltipValue } from '@elastic/charts';
+import { LIGHT_THEME, DEFAULT_TOOLTIP_SPEC } from '@elastic/charts';
+import type { TooltipComponentProps } from '@elastic/charts/src/components/tooltip/tooltip';
+import { TooltipComponent } from '@elastic/charts/src/components/tooltip/tooltip';
 
 import { customKnobs } from '../../utils/knobs';
 
@@ -60,7 +53,6 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
     visible: boolean('visible', true),
     backgroundColor: color('backgroundColor', '#E8F9FD'),
     getChartContainerRef: () => divRef,
-    // @ts-ignore - overriding mouse logic
     onPointerMove: () => {},
     toggleSelectedTooltipItem: (rawitem) => {
       const item = rawitem as TooltipValue<D, SI>;
@@ -86,6 +78,10 @@ const TooltipShowcaseInner = <D extends BaseDatum = Datum, SI extends SeriesIden
       ...(DEFAULT_TOOLTIP_SPEC as unknown as TooltipSpec<D, SI>),
       ...props.tooltip,
     },
+    isBrushing: false,
+    isExternal: false,
+    position: null,
+    chartId: 'chartId',
   };
 
   return (

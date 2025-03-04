@@ -6,15 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { AxisSpec } from './specs';
-import { SmallMultiplesSpec } from '../../../specs';
-import { SettingsSpec } from '../../../specs/settings';
-import { ChartDimensions, Dimensions } from '../../../utils/dimensions';
-import { AxisId } from '../../../utils/ids';
-import { Theme, AxisStyle } from '../../../utils/themes/theme';
+import type { AxisSpec } from './specs';
+import type { SettingsSpec, SmallMultiplesSpec } from '../../../specs';
+import type { ChartDimensions, Dimensions } from '../../../utils/dimensions';
+import type { AxisId } from '../../../utils/ids';
+import type { Theme, AxisStyle } from '../../../utils/themes/theme';
 import { getAxesDimensions } from '../axes/axes_sizes';
-import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
-import { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
+import type { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
+import type { ScaleConfigs } from '../state/selectors/get_api_scale_configs';
 
 /**
  * Compute the chart dimensions. It's computed removing from the parent dimensions

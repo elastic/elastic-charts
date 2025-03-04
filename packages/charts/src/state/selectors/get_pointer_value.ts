@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState } from '../chart_state';
-import { PointerValue } from '../types';
+import type { GlobalChartState } from '../chart_state';
+import type { PointerValue } from '../types';
 
 /** @internal */
 export const getPointerValueSelector = (state: GlobalChartState): PointerValue | undefined => {

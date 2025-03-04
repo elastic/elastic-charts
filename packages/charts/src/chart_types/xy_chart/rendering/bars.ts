@@ -8,21 +8,19 @@
 
 import { getDatumYValue } from './points';
 import { getY0ScaledValueFn, getY1ScaledValueFn } from './utils';
-import { Color } from '../../../common/colors';
-import { ScaleBand, ScaleContinuous } from '../../../scales';
-import { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
+import type { Color } from '../../../common/colors';
+import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import type { TextMeasure } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, mergePartial } from '../../../utils/common';
-import { Dimensions } from '../../../utils/dimensions';
-import { BandedAccessorType, BarGeometry } from '../../../utils/geometry';
-import { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
+import type { Dimensions } from '../../../utils/dimensions';
+import type { BarGeometry } from '../../../utils/geometry';
+import { BandedAccessorType } from '../../../utils/geometry';
+import type { BarSeriesStyle, DisplayValueStyle } from '../../../utils/themes/theme';
 import { IndexedGeometryMap } from '../utils/indexed_geometry_map';
-import {
-  DataSeries,
-  DataSeriesDatum,
-  getSeriesIdentifierFromDataSeries,
-  XYChartSeriesIdentifier,
-} from '../utils/series';
-import { BarStyleAccessor, DisplayValueSpec, LabelOverflowConstraint, StackMode } from '../utils/specs';
+import type { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../utils/series';
+import { getSeriesIdentifierFromDataSeries } from '../utils/series';
+import type { BarStyleAccessor, DisplayValueSpec, StackMode } from '../utils/specs';
+import { LabelOverflowConstraint } from '../utils/specs';
 
 const PADDING = 1; // default padding for now
 const FONT_SIZE_FACTOR = 0.7; // Take 70% of space for the label text

@@ -12,7 +12,7 @@ import { hasExternalEventSelector } from './has_external_pointer_event';
 import { getComputedScalesSelector } from '../../chart_types/xy_chart/state/selectors/get_computed_scales';
 import { PointerEventType } from '../../specs';
 import { isNil } from '../../utils/common';
-import { GlobalChartState } from '../chart_state';
+import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
 
 const getExternalEventPointer = ({ externalEvents: { pointer } }: GlobalChartState) => pointer;

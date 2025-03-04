@@ -6,27 +6,23 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 'reselect';
+import type { Selector } from '@reduxjs/toolkit';
 
 import { getMultipleRectangleAnnotations } from './get_multiple_rectangle_annotations';
 import { getProjectedScaledValues } from './get_projected_scaled_values';
 import { getHighlightedGeomsSelector } from './get_tooltip_values_highlighted_geoms';
 import { ChartType } from '../../..';
-import {
-  AnnotationType,
-  LineAnnotationDatum,
-  ProjectedValues,
-  RectAnnotationDatum,
-  SettingsSpec,
-} from '../../../../specs';
-import { GlobalChartState, PointerState } from '../../../../state/chart_state';
+import type { LineAnnotationDatum, ProjectedValues, RectAnnotationDatum, SettingsSpec } from '../../../../specs';
+import { AnnotationType } from '../../../../specs';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import type { PointerState } from '../../../../state/pointer_states';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { isClicking } from '../../../../state/utils';
-import { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
-import { AnnotationTooltipState } from '../../annotations/types';
-import { XYChartSeriesIdentifier } from '../../utils/series';
+import { isClicking } from '../../../../state/utils/is_clicking';
+import type { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
+import type { AnnotationTooltipState } from '../../annotations/types';
+import type { XYChartSeriesIdentifier } from '../../utils/series';
 
 /**
  * Will call the onElementClick listener every time the following preconditions are met:

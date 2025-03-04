@@ -15,12 +15,13 @@ import {
   sortClosestToPoint,
 } from './common';
 import { ChartType } from '../../..';
-import { LegendItem } from '../../../../common/legend';
+import type { LegendItem } from '../../../../common/legend';
 import { ScaleType } from '../../../../scales/constants';
-import { SpecType } from '../../../../specs';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { BARCHART_1Y1G } from '../../../../utils/data_samples/test_dataset';
-import { Point } from '../../../../utils/point';
-import { AreaSeriesSpec, SeriesType, LineSeriesSpec, BarSeriesSpec } from '../../utils/specs';
+import type { Point } from '../../../../utils/point';
+import type { AreaSeriesSpec, LineSeriesSpec, BarSeriesSpec } from '../../utils/specs';
+import { SeriesType } from '../../utils/specs';
 
 describe('Type Checks', () => {
   it('is horizontal chart rotation', () => {

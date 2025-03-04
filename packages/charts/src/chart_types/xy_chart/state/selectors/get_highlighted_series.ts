@@ -7,8 +7,8 @@
  */
 
 import { computeLegendSelector } from './compute_legend';
-import { LegendItem } from '../../../../common/legend';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { LegendItem } from '../../../../common/legend';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 const getHighlightedLegendPath = (state: GlobalChartState) => state.interactions.highlightedLegendPath;

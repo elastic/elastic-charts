@@ -6,11 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { BasicSeriesSpec, DEFAULT_GLOBAL_ID, Spec } from '../../../../specs';
-import { Rotation } from '../../../../utils/common';
-import { GroupId } from '../../../../utils/ids';
+import type { BasicSeriesSpec } from '../../../../specs';
+import { DEFAULT_GLOBAL_ID } from '../../../../specs';
+import type { Spec } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { Rotation } from '../../../../utils/common';
+import type { GroupId } from '../../../../utils/ids';
 import { isXDomain } from '../../utils/axis_utils';
-import { AxisSpec } from '../../utils/specs';
+import type { AxisSpec } from '../../utils/specs';
 
 /** @internal */
 export function getSpecsById<T extends Spec>(specs: T[], id: string): T | undefined {

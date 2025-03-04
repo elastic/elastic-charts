@@ -9,9 +9,9 @@
 import { getGoalSpecSelector } from './get_goal_spec';
 import { getPickedShapes } from './picked_shapes';
 import { Colors } from '../../../../common/colors';
-import { TooltipInfo } from '../../../../components/tooltip/types';
+import type { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { BandViewModel } from '../../layout/types/viewmodel_types';
+import type { BandViewModel } from '../../layout/types/viewmodel_types';
 
 const EMPTY_TOOLTIP = Object.freeze({
   header: null,

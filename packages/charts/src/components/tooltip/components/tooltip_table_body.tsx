@@ -7,16 +7,17 @@
  */
 
 import classNames from 'classnames';
-import React, { ReactNode, useRef } from 'react';
+import type { ReactNode } from 'react';
+import React, { useRef } from 'react';
 
 import { TooltipTableCell } from './tooltip_table_cell';
 import { TooltipTableColorCell } from './tooltip_table_color_cell';
 import { TooltipTableRow } from './tooltip_table_row';
-import { TooltipCellStyle, TooltipTableColumn } from './types';
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum, TooltipValue } from '../../../specs';
-import { Datum } from '../../../utils/common';
-import { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
+import type { TooltipCellStyle, TooltipTableColumn } from './types';
+import type { SeriesIdentifier } from '../../../common/series_id';
+import type { BaseDatum, TooltipValue } from '../../../specs';
+import type { Datum } from '../../../utils/common';
+import type { PropsOrChildrenWithProps, ToggleSelectedTooltipItemCallback } from '../types';
 
 type TooltipTableBodyProps<
   D extends BaseDatum = Datum,
@@ -40,6 +41,10 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
   className,
   ...props
 }: TooltipTableBodyProps<D, SI>) => {
+  function createItemId(item: TooltipValue<D, SI>) {
+    return `${item.seriesIdentifier.key}-${item.label}-${item.value}`;
+  }
+
   const tableBodyRef = useRef<HTMLTableSectionElement | null>(null);
 
   if ('children' in props) {
@@ -61,11 +66,14 @@ export const TooltipTableBody = <D extends BaseDatum = Datum, SI extends SeriesI
       {items.map((item) => {
         const { isHighlighted, isVisible, displayOnly } = item;
         if (!isVisible) return null;
+        const itemId = createItemId(item);
         return (
           <TooltipTableRow
-            key={`${item.seriesIdentifier.key}-${item.label}-${item.value}`}
+            key={itemId}
             isHighlighted={!pinned && !allHighlighted && isHighlighted}
-            isSelected={pinned && selected.includes(item)}
+            // Because of redux toolkit/immer's immutability, we need to check by
+            // a unique identifier instead of the object reference.
+            isSelected={pinned && selected.some((selectedItem) => createItemId(selectedItem) === itemId)}
             onSelect={displayOnly || !onSelect ? undefined : () => onSelect(item)}
           >
             {columns.map((column, j) => {

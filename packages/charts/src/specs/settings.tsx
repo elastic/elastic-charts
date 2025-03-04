@@ -6,40 +6,46 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps, ComponentType, ReactChild } from 'react';
+import type { ComponentProps, ComponentType, ReactChild } from 'react';
 
-import { CustomXDomain, GroupByAccessor, Spec } from '.';
-import { BinAgg, BrushAxis, Direction, PointerEventType, PointerUpdateTrigger, settingsBuildProps } from './constants';
-import { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
-import { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
-import { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
-import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
-import { CategoryLabel } from '../common/category';
-import { Color } from '../common/colors';
-import { LegendItemValue, LegendValue } from '../common/legend';
-import { SmallMultiplesDatum } from '../common/panel_utils';
-import { SeriesIdentifier } from '../common/series_id';
-import { TooltipPortalSettings } from '../components';
-import { ScaleContinuousType, ScaleOrdinalType } from '../scales';
-import { LegendPath } from '../state/actions/legend';
-import { SFProps, useSpecFactory } from '../state/spec_factory';
-import { PointerValue } from '../state/types';
-import {
+import type { CustomXDomain, GroupByAccessor } from '.';
+import type { BrushAxis } from './brush_axis';
+import type { BinAgg, Direction } from './constants';
+import { settingsBuildProps } from './default_settings_spec';
+import type { PointerUpdateTrigger } from './pointer_update_trigger';
+import type { ProjectedValues, PointerOutEvent, PointerOverEvent, PointerEvent } from './settings_types';
+import { PointerEventType } from './settings_types';
+import type { Spec } from './spec_type';
+import type { Cell } from '../chart_types/heatmap/layout/types/viewmodel_types';
+import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { LegendStrategy } from '../chart_types/partition_chart/layout/utils/highlighted_geoms';
+import type { LineAnnotationDatum, RectAnnotationDatum, SeriesType } from '../chart_types/specs';
+import type { WordModel } from '../chart_types/wordcloud/layout/types/viewmodel_types';
+import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import type { CategoryLabel } from '../common/category';
+import type { Color } from '../common/colors';
+import type { LegendItemValue, LegendValue } from '../common/legend';
+import type { SmallMultiplesDatum } from '../common/panel_utils';
+import type { SeriesIdentifier } from '../common/series_id';
+import type { TooltipPortalSettings } from '../components';
+import type { LegendPath } from '../state/actions/legend';
+import type { SFProps } from '../state/spec_factory';
+import { useSpecFactory } from '../state/spec_factory';
+import type { PointerValue } from '../state/types';
+import type {
   HorizontalAlignment,
   LayoutDirection,
   Position,
   Rendering,
   Rotation,
   VerticalAlignment,
-  stripUndefined,
 } from '../utils/common';
-import { Dimensions } from '../utils/dimensions';
-import { GeometryValue } from '../utils/geometry';
-import { GroupId, SpecId } from '../utils/ids';
-import { SeriesCompareFn } from '../utils/series_sort';
-import { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
+import { stripUndefined } from '../utils/common';
+import type { Dimensions } from '../utils/dimensions';
+import type { GeometryValue } from '../utils/geometry';
+import type { GroupId, SpecId } from '../utils/ids';
+import type { SeriesCompareFn } from '../utils/series_sort';
+import type { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
 
 /** @public */
 export interface LayerValue {
@@ -127,32 +133,6 @@ export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]):
 }
 
 /**
- * An object that contains the scaled mouse position based on
- * the current chart configuration.
- * @public
- */
-export type ProjectedValues = {
-  /**
-   * The independent variable of the chart
-   */
-  x: PrimitiveValue;
-  /**
-   * The set of dependent variable, each one with its own groupId
-   */
-  y: Array<{ value: PrimitiveValue; groupId: string }>;
-  /**
-   * The categorical value used for the vertical placement of the chart
-   * in a small multiple layout
-   */
-  smVerticalValue: PrimitiveValue;
-  /**
-   * The categorical value used for the horizontal placement of the chart
-   * in a small multiple layout
-   */
-  smHorizontalValue: PrimitiveValue;
-};
-
-/**
  * @public
  * The listener type for click on the projection area.
  */
@@ -234,36 +214,6 @@ export type AnnotationClickListener = (annotations: {
   rects: RectAnnotationEvent[];
   lines: LineAnnotationEvent[];
 }) => void;
-
-/** @public */
-export interface BasePointerEvent {
-  chartId: string;
-  type: PointerEventType;
-}
-
-/**
- * Event used to synchronize pointers/mouse positions between Charts.
- *
- * fired as callback argument for `PointerUpdateListener`
- * @public
- */
-export interface PointerOverEvent extends BasePointerEvent, ProjectedValues {
-  type: typeof PointerEventType.Over;
-  scale: ScaleContinuousType | ScaleOrdinalType;
-  /**
-   * Unit for event (i.e. `time`, `feet`, `count`, etc.) Not currently used/implemented
-   * @alpha
-   */
-  unit?: string;
-}
-
-/** @public */
-export interface PointerOutEvent extends BasePointerEvent {
-  type: typeof PointerEventType.Out;
-}
-
-/** @public */
-export type PointerEvent = PointerOverEvent | PointerOutEvent;
 
 /**
  * The settings for handling external events.

@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 
 import { HighlighterFromHover } from './highlighter_hover';
 import { HighlighterFromLegend } from './highlighter_legend';
 import { Tooltip } from '../../../../components/tooltip/tooltip';
-import { BackwardRef } from '../../../../state/chart_state';
+import type { BackwardRef } from '../../../../state/chart_state';
 import { Partition } from '../canvas/partition';
 
 /** @internal */

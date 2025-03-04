@@ -27,17 +27,20 @@ import {
   ZERO_Y_BASE,
 } from './config';
 import { getEnrichedData } from './data';
-import { DataState, getNullDataState, invalid, updateDataState } from './data_fetch';
+import type { DataState } from './data_fetch';
+import { getNullDataState, invalid, updateDataState } from './data_fetch';
 import { renderChartTitle } from './render/annotations/chart_title';
 import { renderTimeExtentAnnotation } from './render/annotations/time_extent';
 import { renderTimeUnitAnnotation } from './render/annotations/time_unit';
 import { renderCartesian } from './render/cartesian';
 import { renderDebugBox } from './render/glyphs/debug_box';
-import { continuousTimeRasters, NumberFormatter } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
+import type { NumberFormatter } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
+import { continuousTimeRasters } from '../../xy_chart/axes/timeslip/continuous_time_rasters';
 import { numericalRasters } from '../../xy_chart/axes/timeslip/numerical_rasters';
 import { axisModel } from '../projections/axis_model';
 import { domainTween } from '../projections/domain_tween';
 import { getDesiredTickCount, makeLinearScale } from '../projections/scale';
+import type { ZoomPan } from '../projections/zoom_pan';
 import {
   doPanFromJumpDelta,
   doPanFromPosition,
@@ -53,17 +56,17 @@ import {
   resetTouchZoom,
   startTouchZoom,
   touchOngoing,
-  ZoomPan,
 } from '../projections/zoom_pan';
-import { GetData } from '../timeslip_api';
+import type { GetData } from '../timeslip_api';
 import { withAnimation, withDeltaTime } from '../utils/animation';
-import { elementSize, ElementSize, zoomSafePointerX, zoomSafePointerY } from '../utils/dom';
+import type { ElementSize } from '../utils/dom';
+import { elementSize, zoomSafePointerX, zoomSafePointerY } from '../utils/dom';
+import type { Multitouch } from '../utils/multitouch';
 import {
   continuedTwoPointTouch,
   eraseMultitouch,
   getPinchRatio,
   initialMultitouch,
-  Multitouch,
   setNewMultitouch,
   touches,
   touchMidpoint,

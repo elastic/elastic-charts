@@ -9,11 +9,9 @@
 import { boolean, radios } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { AdditiveNumber, ArrayEntry, Datum } from '@elastic/charts';
 import {
-  AdditiveNumber,
-  ArrayEntry,
   Chart,
-  Datum,
   LegendValue,
   Partition,
   PartitionLayout,
@@ -23,7 +21,7 @@ import {
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 import { keepDistinct } from '@elastic/charts/src/utils/common';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, colorBrewerCategoricalPastel12B, regionLookup } from '../utils/utils';
 

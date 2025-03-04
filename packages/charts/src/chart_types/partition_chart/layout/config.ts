@@ -7,10 +7,11 @@
  */
 
 import { PartitionLayout } from './types/config_types';
-import { ShapeTreeNode } from './types/viewmodel_types';
+import type { ShapeTreeNode } from './types/viewmodel_types';
 import { AGGREGATE_KEY, STATISTICS_KEY } from './utils/group_by_rollup';
 import { Colors } from '../../../common/colors';
-import { ConfigItem, Numeric } from '../../../common/config_objects';
+import type { ConfigItem } from '../../../common/config_objects';
+import { Numeric } from '../../../common/config_objects';
 import { GOLDEN_RATIO, TAU } from '../../../common/constants';
 import { FONT_STYLES, FONT_VARIANTS } from '../../../common/text_utils';
 import { ColorVariant } from '../../../utils/common';

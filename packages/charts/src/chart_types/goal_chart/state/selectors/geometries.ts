@@ -8,15 +8,17 @@
 
 import { render } from './scenegraph';
 import { ChartType } from '../../..';
-import { SpecType } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecs } from '../../../../state/selectors/get_specs';
-import { getSpecFromStore } from '../../../../state/utils';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
-import { geoms, Mark } from '../../layout/viewmodel/geoms';
-import { GoalSpec } from '../../specs';
+import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';
+import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { Mark } from '../../layout/viewmodel/geoms';
+import { geoms } from '../../layout/viewmodel/geoms';
+import type { GoalSpec } from '../../specs';
 
 const getParentDimensions = (state: GlobalChartState) => state.parentDimensions;
 

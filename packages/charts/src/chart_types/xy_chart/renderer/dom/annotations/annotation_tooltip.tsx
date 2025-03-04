@@ -6,12 +6,14 @@
  * Side Public License, v 1.
  */
 
-import React, { useCallback, useMemo, useEffect, RefObject } from 'react';
+import type { RefObject } from 'react';
+import React, { useCallback, useMemo, useEffect } from 'react';
 
 import { TooltipContent } from './tooltip_content';
-import { TooltipPortal, Placement, TooltipPortalSettings } from '../../../../../components/portal';
+import type { TooltipPortalSettings } from '../../../../../components/portal';
+import { TooltipPortal, Placement } from '../../../../../components/portal';
 import { TooltipWrapper } from '../../../../../components/tooltip';
-import { AnnotationTooltipState } from '../../../annotations/types';
+import type { AnnotationTooltipState } from '../../../annotations/types';
 
 interface AnnotationTooltipProps {
   state: AnnotationTooltipState | null;

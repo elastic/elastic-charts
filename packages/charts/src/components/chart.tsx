@@ -7,10 +7,11 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, ReactNode, createRef } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import React, { createRef } from 'react';
 import { Provider } from 'react-redux';
-import { createStore, Store, Unsubscribe } from 'redux';
-import { OptionalKeys } from 'utility-types';
+import type { Unsubscribe, Store } from 'redux';
+import type { OptionalKeys } from 'utility-types';
 import { v4 as uuidv4 } from 'uuid';
 
 import { ChartBackground } from './chart_background';
@@ -20,15 +21,17 @@ import { ChartStatus } from './chart_status';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
 import { Colors } from '../common/colors';
-import { LegendPositionConfig, PointerEvent } from '../specs';
+import type { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
 import { updateChartTitles, updateParentDimensions } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
-import { chartStoreReducer, GlobalChartState } from '../state/chart_state';
+import type { GlobalChartState } from '../state/chart_state';
+import { createChartStore } from '../state/chart_state';
 import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
-import { ChartSize, getChartSize, getFixedChartSize } from '../utils/chart_size';
+import type { ChartSize } from '../utils/chart_size';
+import { getChartSize, getFixedChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
 import { deepEqual } from '../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
@@ -75,8 +78,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartStageRef = createRef();
 
     const id = props.id ?? uuidv4();
-    const storeReducer = chartStoreReducer(id, props.title, props.description);
-    this.chartStore = createStore(storeReducer);
+    this.chartStore = createChartStore(id, this.props.title, this.props.description);
     this.state = {
       legendDirection: LayoutDirection.Vertical,
       paddingLeft: LIGHT_THEME.chartMargins.left,
@@ -111,7 +113,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
 
   componentDidUpdate({ title, description, size }: Readonly<ChartProps>) {
     if (title !== this.props.title || description !== this.props.description) {
-      this.chartStore.dispatch(updateChartTitles(this.props.title, this.props.description));
+      this.chartStore.dispatch(updateChartTitles({ title: this.props.title, description: this.props.description }));
     }
     const prevChartSize = getChartSize(size);
     const newChartSize = getFixedChartSize(this.props.size);

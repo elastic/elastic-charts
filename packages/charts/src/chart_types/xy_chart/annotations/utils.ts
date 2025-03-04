@@ -8,17 +8,18 @@
 
 import { computeLineAnnotationDimensions } from './line/dimensions';
 import { computeRectAnnotationDimensions } from './rect/dimensions';
-import { AnnotationDimensions } from './types';
-import { SmallMultipleScales } from '../../../common/panel_utils';
-import { SettingsSpec } from '../../../specs';
-import { Rotation, Position } from '../../../utils/common';
-import { Dimensions } from '../../../utils/dimensions';
-import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
-import { Point } from '../../../utils/point';
-import { AxisStyle, Theme } from '../../../utils/themes/theme';
+import type { AnnotationDimensions } from './types';
+import type { SmallMultipleScales } from '../../../common/panel_utils';
+import type { SettingsSpec } from '../../../specs';
+import type { Rotation, Position } from '../../../utils/common';
+import type { Dimensions } from '../../../utils/dimensions';
+import type { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
+import type { Point } from '../../../utils/point';
+import type { AxisStyle, Theme } from '../../../utils/themes/theme';
 import { getAxesSpecForSpecId } from '../state/utils/spec';
-import { ComputedGeometries } from '../state/utils/types';
-import { AnnotationDomainType, AnnotationSpec, AxisSpec, isLineAnnotation } from '../utils/specs';
+import type { ComputedGeometries } from '../state/utils/types';
+import type { AnnotationSpec, AxisSpec } from '../utils/specs';
+import { AnnotationDomainType, isLineAnnotation } from '../utils/specs';
 
 /** @internal */
 export function getAnnotationAxis(

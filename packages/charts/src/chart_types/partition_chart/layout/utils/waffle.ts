@@ -6,8 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { CHILDREN_KEY, HierarchyOfArrays } from './group_by_rollup';
-import { Part } from '../../../../common/text_utils';
+import type { HierarchyOfArrays } from './group_by_rollup';
+import { CHILDREN_KEY } from './group_by_rollup';
+import type { Part } from '../../../../common/text_utils';
 
 // 10 x 10 grid for 100 cells ie. one cell is 1%
 const rowCount = 10;

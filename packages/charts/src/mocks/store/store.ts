@@ -6,13 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { Cancelable } from 'lodash';
-import { createStore, Store } from 'redux';
+import type { Cancelable } from 'lodash';
+import type { Store } from 'redux';
 
-import { DEFAULT_SETTINGS_SPEC, SettingsSpec, Spec, SpecType } from '../../specs';
+import type { SettingsSpec } from '../../specs';
+import { DEFAULT_SETTINGS_SPEC } from '../../specs';
+import type { Spec } from '../../specs/spec_type';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { updateParentDimensions } from '../../state/actions/chart_settings';
 import { upsertSpec, specParsed } from '../../state/actions/specs';
-import { chartStoreReducer, GlobalChartState } from '../../state/chart_state';
+import type { GlobalChartState } from '../../state/chart_state';
+import { createChartStore } from '../../state/chart_state';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { mergePartial } from '../../utils/common';
 
@@ -22,8 +26,7 @@ export class MockStore {
     { width, height, top, left } = { width: 100, height: 100, top: 0, left: 0 },
     chartId = 'chartId',
   ): Store<GlobalChartState> {
-    const storeReducer = chartStoreReducer(chartId);
-    const store = createStore(storeReducer);
+    const store = createChartStore(chartId);
     store.dispatch(updateParentDimensions({ width, height, top, left }));
     return store;
   }

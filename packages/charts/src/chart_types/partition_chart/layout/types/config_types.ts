@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import { Ratio } from '../../../../common/geometry';
+import type { Ratio } from '../../../../common/geometry';
 
 /** @public */
 export const PartitionLayout = Object.freeze({

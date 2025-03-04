@@ -6,14 +6,16 @@
  * Side Public License, v 1.
  */
 
-import React, { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { NoResults } from './no_results';
 import { ChartType } from '../chart_types';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
-import { SettingsSpec, TooltipSpec } from '../specs';
+import type { SettingsSpec, TooltipSpec } from '../specs';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';
 import {
   onMouseUp as onMouseUpAction,
@@ -21,7 +23,7 @@ import {
   onPointerMove as onPointerMoveAction,
 } from '../state/actions/mouse';
 import { pinTooltip as pinTooltipAction } from '../state/actions/tooltip';
-import { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
+import type { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
 import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';
@@ -86,13 +88,13 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
       return;
     }
 
-    onPointerMove(
-      {
+    onPointerMove({
+      position: {
         x: offsetX,
         y: offsetY,
       },
-      timeStamp,
-    );
+      time: timeStamp,
+    });
   };
 
   handleMouseLeave = ({ nativeEvent: { timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -100,7 +102,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     if (isChartEmpty || disableInteractions || isBrushing) {
       return;
     }
-    onPointerMove({ x: -1, y: -1 }, timeStamp);
+    onPointerMove({ position: { x: -1, y: -1 }, time: timeStamp });
   };
 
   handleMouseDown = ({
@@ -117,13 +119,13 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
 
     window.addEventListener('keyup', this.handleKeyUp);
 
-    onMouseDown(
-      {
+    onMouseDown({
+      position: {
         x: offsetX,
         y: offsetY,
       },
-      timeStamp,
-    );
+      time: timeStamp,
+    });
   };
 
   handleUnpinningTooltip = () => {
@@ -131,7 +133,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     window.removeEventListener('click', this.handleUnpinningTooltip);
     window.removeEventListener('scroll', this.handleUnpinningTooltip);
     window.removeEventListener('visibilitychange', this.handleUnpinningTooltip);
-    this.props.pinTooltip(false, true);
+    this.props.pinTooltip({ pinned: false, resetPointer: true });
   };
 
   handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -152,7 +154,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     window.addEventListener('scroll', this.handleUnpinningTooltip);
     window.addEventListener('visibilitychange', this.handleUnpinningTooltip);
 
-    this.props.pinTooltip(true);
+    this.props.pinTooltip({ pinned: true });
   };
 
   handleMouseUp = ({ nativeEvent: { offsetX, offsetY, timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -163,13 +165,13 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
 
     window.removeEventListener('keyup', this.handleKeyUp);
 
-    onMouseUp(
-      {
+    onMouseUp({
+      position: {
         x: offsetX,
         y: offsetY,
       },
-      timeStamp,
-    );
+      time: timeStamp,
+    });
   };
 
   handleKeyUp = ({ key }: KeyboardEvent) => {
@@ -189,7 +191,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     const { onMouseUp } = this.props;
 
     window.removeEventListener('mouseup', this.handleBrushEnd);
-    onMouseUp({ x: -1, y: -1 }, Date.now());
+    onMouseUp({ position: { x: -1, y: -1 }, time: Date.now() });
   };
 
   render() {

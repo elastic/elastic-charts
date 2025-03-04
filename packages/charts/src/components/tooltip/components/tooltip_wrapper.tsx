@@ -7,15 +7,16 @@
  */
 
 import classNames from 'classnames';
-import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import type { PropsWithChildren } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { TooltipActions } from './tooltip_actions';
 import { TooltipPrompt } from './tooltip_prompt';
 import { useTooltipContext } from './tooltip_provider';
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum } from '../../../specs';
-import { TooltipSpec } from '../../../specs/tooltip';
-import { Datum } from '../../../utils/common';
+import type { SeriesIdentifier } from '../../../common/series_id';
+import type { BaseDatum } from '../../../specs';
+import type { TooltipSpec } from '../../../specs/tooltip';
+import type { Datum } from '../../../utils/common';
 
 type TooltipWrapperProps<
   D extends BaseDatum = Datum,

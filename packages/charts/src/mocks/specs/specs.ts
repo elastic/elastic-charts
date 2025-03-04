@@ -10,41 +10,40 @@ import { ChartType } from '../../chart_types';
 import { X_SCALE_DEFAULT } from '../../chart_types/heatmap/specs/scale_defaults';
 import { percentFormatter } from '../../chart_types/partition_chart/layout/config';
 import { PartitionLayout } from '../../chart_types/partition_chart/layout/types/config_types';
-import { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
-import { AGGREGATE_KEY, PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { PartitionSpec } from '../../chart_types/partition_chart/specs';
+import type { ShapeTreeNode } from '../../chart_types/partition_chart/layout/types/viewmodel_types';
+import type { PrimitiveValue } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
+import { AGGREGATE_KEY } from '../../chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { PartitionSpec } from '../../chart_types/partition_chart/specs';
 import { isHorizontalRotation } from '../../chart_types/xy_chart/state/utils/common';
-import {
+import type {
   SeriesSpecs,
-  DEFAULT_GLOBAL_ID,
   BarSeriesSpec,
   AreaSeriesSpec,
-  HistogramModeAlignments,
   HistogramBarSeriesSpec,
   LineSeriesSpec,
   BasicSeriesSpec,
-  SeriesType,
   BubbleSeriesSpec,
   LineAnnotationSpec,
   RectAnnotationSpec,
+  AxisSpec,
+} from '../../chart_types/xy_chart/utils/specs';
+import {
+  DEFAULT_GLOBAL_ID,
+  HistogramModeAlignments,
+  SeriesType,
   AnnotationType,
   AnnotationDomainType,
-  AxisSpec,
 } from '../../chart_types/xy_chart/utils/specs';
 import { Predicate } from '../../common/predicate';
 import { ScaleType } from '../../scales/constants';
-import {
-  SettingsSpec,
-  SpecType,
-  DEFAULT_SETTINGS_SPEC,
-  SmallMultiplesSpec,
-  GroupBySpec,
-  Spec,
-  HeatmapSpec,
-  TooltipSpec,
-  DEFAULT_TOOLTIP_SPEC,
-} from '../../specs';
-import { Datum, mergePartial, Position, RecursivePartial, Rotation } from '../../utils/common';
+import type { HeatmapSpec, SettingsSpec, SmallMultiplesSpec, TooltipSpec } from '../../specs';
+import { DEFAULT_TOOLTIP_SPEC } from '../../specs';
+import { DEFAULT_SETTINGS_SPEC } from '../../specs/default_settings_spec';
+import type { GroupBySpec } from '../../specs/group_by';
+import type { Spec } from '../../specs/spec_type';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { Datum, RecursivePartial, Rotation } from '../../utils/common';
+import { mergePartial, Position } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 
 /** @internal */

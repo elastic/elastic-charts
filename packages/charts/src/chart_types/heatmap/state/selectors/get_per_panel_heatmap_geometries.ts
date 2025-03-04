@@ -12,12 +12,13 @@ import { getColorScale } from './get_color_scale';
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import { isEmptySelector } from './is_empty';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors/get_small_multiples_index_order';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { computeScenegraph } from '../../layout/viewmodel/scenegraph';
 
 const getDeselectedSeriesSelector = (state: GlobalChartState) => state.interactions.deselectedDataSeries;

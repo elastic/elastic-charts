@@ -9,8 +9,8 @@
 import React from 'react';
 
 import { Color as ItemColor } from './color';
-import { LegendItemProps } from './legend_item';
-import { Color } from '../../common/colors';
+import type { LegendItemProps } from './legend_item';
+import type { Color } from '../../common/colors';
 
 /** @internal */
 export const useLegendColorPicker = ({
@@ -37,7 +37,7 @@ export const useLegendColorPicker = ({
 
   const handleColorPickerClose = () => {
     const seriesKeys = seriesIdentifiers.map(({ key }) => key);
-    setPersistedColorAction(seriesKeys, shouldClearPersistedColor.current ? null : color);
+    setPersistedColorAction({ keys: seriesKeys, color: shouldClearPersistedColor.current ? null : color });
     clearTemporaryColorsAction();
     requestAnimationFrame(() => colorRef.current?.focus());
     toggleIsOpen();
@@ -46,7 +46,7 @@ export const useLegendColorPicker = ({
   const handleColorPickerChange = (c: Color | null) => {
     const seriesKeys = seriesIdentifiers.map(({ key }) => key);
     shouldClearPersistedColor.current = c === null;
-    setTemporaryColorAction(seriesKeys, c);
+    setTemporaryColorAction({ keys: seriesKeys, color: c });
   };
 
   const hasColorPicker = Boolean(ColorPickerRenderer);

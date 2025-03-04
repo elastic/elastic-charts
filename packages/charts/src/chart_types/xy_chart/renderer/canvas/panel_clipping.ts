@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { Rect } from '../../../../geoms/types';
-import { Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
+import type { Rect } from '../../../../geoms/types';
+import type { Rotation } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
 const CLIPPING_MARGIN = 0.5;
 
 /** @internal */

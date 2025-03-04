@@ -14,7 +14,7 @@ import { AreaSeries, Axis, Chart, Position, ScaleType, Settings, Fit, StackMode,
 import { getRandomNumberGenerator, getRNGSeed } from '@elastic/charts/src/mocks/utils';
 
 import { TextureShape } from '../../../packages/charts/src/utils/themes/theme';
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

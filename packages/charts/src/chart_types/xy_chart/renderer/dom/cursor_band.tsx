@@ -9,10 +9,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Rect } from '../../../../geoms/types';
-import { getTooltipType } from '../../../../specs';
-import { TooltipType } from '../../../../specs/constants';
-import { GlobalChartState, TooltipInteractionState } from '../../../../state/chart_state';
+import type { Rect } from '../../../../geoms/types';
+import { TooltipType, getTooltipType } from '../../../../specs';
+import type { GlobalChartState, TooltipInteractionState } from '../../../../state/chart_state';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
@@ -20,10 +19,10 @@ import { getSettingsSpecSelector } from '../../../../state/selectors/get_setting
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
 import { isBrushingSelector } from '../../../../state/selectors/is_brushing';
-import { getInitialTooltipState } from '../../../../state/utils';
-import { Rotation } from '../../../../utils/common';
+import { getInitialTooltipState } from '../../../../state/utils/get_initial_tooltip_state';
+import type { Rotation } from '../../../../utils/common';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Theme } from '../../../../utils/themes/theme';
+import type { Theme } from '../../../../utils/themes/theme';
 import { getCursorBandPositionSelector } from '../../state/selectors/get_cursor_band';
 
 interface CursorBandProps {

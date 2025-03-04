@@ -6,19 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 'reselect';
+import type { Selector } from '@reduxjs/toolkit';
 
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedGridCell } from './picked_shapes';
 import { ChartType } from '../../..';
-import {
-  PointerEvent,
-  PointerEventType,
-  PointerOverEvent,
-  PointerUpdateTrigger,
-  SettingsSpec,
-} from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { PointerEvent, PointerOverEvent, SettingsSpec } from '../../../../specs';
+import { PointerEventType, PointerUpdateTrigger } from '../../../../specs';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getActivePointerPosition } from '../../../../state/selectors/get_active_pointer_position';
 import { getChartIdSelector } from '../../../../state/selectors/get_chart_id';

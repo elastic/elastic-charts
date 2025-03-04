@@ -6,10 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Router } from 'express';
+import type { Router } from 'express';
 
 import { handleFinishedBuild } from './finished_build';
-import { BuildkiteWebhookPayload } from './types';
+import type { BuildkiteWebhookPayload } from './types';
 import { getConfig } from '../config';
 interface RouteParams {
   nonce?: string;

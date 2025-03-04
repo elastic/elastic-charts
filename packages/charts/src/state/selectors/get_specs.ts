@@ -6,9 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { Selector } from 're-reselect';
+import type { Selector } from '@reduxjs/toolkit';
 
-import { GlobalChartState, SpecList } from '../chart_state';
+import type { SpecList } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { GlobalChartState } from '../chart_state';
 
 /**
  * Returns all specs for given chart

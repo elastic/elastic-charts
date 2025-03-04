@@ -6,12 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { BarRow, renderBarGlyph } from './glyphs/bar';
-import { BoxplotRow, renderBoxplotGlyph } from './glyphs/boxplot';
-import { Interval, TimeFormatter, AxisLayer } from '../../../xy_chart/axes/timeslip/continuous_time_rasters';
-import { NumericScale } from '../../projections/scale';
-import { TimeslipConfig } from '../config';
-import { TimeslipDataRows } from '../data_fetch';
+import type { BarRow } from './glyphs/bar';
+import { renderBarGlyph } from './glyphs/bar';
+import type { BoxplotRow } from './glyphs/boxplot';
+import { renderBoxplotGlyph } from './glyphs/boxplot';
+import type { Interval, TimeFormatter, AxisLayer } from '../../../xy_chart/axes/timeslip/continuous_time_rasters';
+import type { NumericScale } from '../../projections/scale';
+import type { TimeslipConfig } from '../config';
+import type { TimeslipDataRows } from '../data_fetch';
 
 const textOffset = 0.35; // customary value
 const showMissingValuesAsZero = false;

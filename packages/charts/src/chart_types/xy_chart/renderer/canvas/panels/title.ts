@@ -6,16 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { renderText, TextFont } from '../../../../../renderers/canvas/primitives/text';
+import type { TextFont } from '../../../../../renderers/canvas/primitives/text';
+import { renderText } from '../../../../../renderers/canvas/primitives/text';
 import { renderDebugRect } from '../../../../../renderers/canvas/utils/debug';
 import { measureText } from '../../../../../utils/bbox/canvas_text_bbox_calculator';
 import { Position } from '../../../../../utils/common';
 import { innerPad, outerPad } from '../../../../../utils/dimensions';
-import { Point } from '../../../../../utils/point';
+import type { Point } from '../../../../../utils/point';
 import { wrapText } from '../../../../../utils/text/wrap';
 import { isHorizontalAxis } from '../../../utils/axis_type_utils';
 import { getAllAxisLayersGirth, getTitleDimension, shouldShowTicks } from '../../../utils/axis_utils';
-import { AxisProps } from '../axes';
+import type { AxisProps } from '../axes/axis_props';
 
 type PanelTitleProps = Pick<
   AxisProps,

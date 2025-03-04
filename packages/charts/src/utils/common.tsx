@@ -6,16 +6,19 @@
  * Side Public License, v 1.
  */
 
-import React, { ComponentType, isValidElement, ReactNode } from 'react';
-import { $Values, isPrimitive } from 'utility-types';
+import type { ComponentType, ReactNode } from 'react';
+import React, { isValidElement } from 'react';
+import type { $Values } from 'utility-types';
+import { isPrimitive } from 'utility-types';
 import { v1 as uuidv1 } from 'uuid';
 
-import { AdditiveNumber } from './accessor';
-import { Point } from './point';
-import { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
-import { Color, Colors } from '../common/colors';
-import { Degrees, Radian } from '../common/geometry';
-import { BaseDatum } from '../specs';
+import type { AdditiveNumber } from './accessor';
+import type { Point } from './point';
+import type { PrimitiveValue } from '../chart_types/partition_chart/layout/utils/group_by_rollup';
+import type { Color } from '../common/colors';
+import { Colors } from '../common/colors';
+import type { Degrees, Radian } from '../common/geometry';
+import type { BaseDatum } from '../specs';
 
 /** @public */
 export const Position = Object.freeze({

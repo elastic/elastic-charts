@@ -9,21 +9,22 @@
 import { mount } from 'enzyme';
 import React from 'react';
 
-import { AnnotationLineProps } from './types';
+import type { AnnotationLineProps } from './types';
 import { ChartType } from '../../..';
 import { Chart } from '../../../../components/chart';
 import { MockAnnotationLineProps, MockAnnotationRectProps } from '../../../../mocks/annotations/annotations';
 import { ScaleType } from '../../../../scales/constants';
-import { SpecType } from '../../../../specs/constants';
 import { Settings } from '../../../../specs/settings';
-import { Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
-import { AnnotationId } from '../../../../utils/ids';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { Rotation } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { AnnotationId } from '../../../../utils/ids';
 import { LineAnnotation } from '../../specs/line_annotation';
 import { LineSeries } from '../../specs/line_series';
-import { AnnotationDomainType, AnnotationType, RectAnnotationSpec } from '../../utils/specs';
+import type { RectAnnotationSpec } from '../../utils/specs';
+import { AnnotationDomainType, AnnotationType } from '../../utils/specs';
 import { computeRectAnnotationTooltipState } from '../tooltip';
-import { AnnotationDimensions } from '../types';
+import type { AnnotationDimensions } from '../types';
 
 describe('Annotation tooltips', () => {
   describe('Line annotation tooltips', () => {

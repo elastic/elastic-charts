@@ -9,19 +9,10 @@
 import { boolean, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import {
-  AreaSeries,
-  Axis,
-  Chart,
-  PartialTheme,
-  Position,
-  ScaleType,
-  Settings,
-  RecursivePartial,
-  AxisStyle,
-} from '@elastic/charts';
+import type { PartialTheme, RecursivePartial, AxisStyle } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 function range(title: string, min: number, max: number, value: number, groupId?: string, step = 1) {

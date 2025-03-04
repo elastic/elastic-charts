@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
-import { SpecType } from '../../../specs/constants';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { specComponentFactory } from '../../../state/spec_factory';
-import { RectAnnotationSpec, DEFAULT_GLOBAL_ID, AnnotationType } from '../utils/specs';
+import type { RectAnnotationSpec } from '../utils/specs';
+import { DEFAULT_GLOBAL_ID, AnnotationType } from '../utils/specs';
 
 /** @public */
 export const RectAnnotation = specComponentFactory<RectAnnotationSpec>()(

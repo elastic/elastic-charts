@@ -7,11 +7,11 @@
  */
 
 import { ChartType } from '../../..';
-import { SpecType } from '../../../../specs';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSpecs } from '../../../../state/selectors/get_specs';
-import { getSpecFromStore } from '../../../../state/utils';
-import { HeatmapSpec } from '../../specs';
+import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';
+import type { HeatmapSpec } from '../../specs';
 
 /** @internal */
 export const getHeatmapSpecSelector = createCustomCachedSelector([getSpecs], (specs): HeatmapSpec => {

@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { computeLegendSelector } from './selectors/compute_legend';
@@ -29,11 +30,11 @@ import { createOnElementOverCaller } from './selectors/on_element_over_caller';
 import { createOnPointerMoveCaller } from './selectors/on_pointer_move_caller';
 import { createOnProjectionAreaCaller } from './selectors/on_projection_area_caller';
 import { ChartType } from '../..';
-import { LegendItemExtraValues } from '../../../common/legend';
-import { SeriesKey } from '../../../common/series_id';
+import type { LegendItemExtraValues } from '../../../common/legend';
+import type { SeriesKey } from '../../../common/series_id';
 import { BrushTool } from '../../../components/brush/brush';
 import { Tooltip } from '../../../components/tooltip/tooltip';
-import { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
+import type { InternalChartState, GlobalChartState, BackwardRef } from '../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../state/selectors/get_chart_container_dimensions';
 import { InitStatus } from '../../../state/selectors/get_internal_is_intialized';
 import { EMPTY_LEGEND_ITEM_LIST } from '../../../state/selectors/get_legend_items_labels';

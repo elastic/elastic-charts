@@ -9,8 +9,9 @@
 import { MockSeriesIdentifier } from './series/series_identifiers';
 import { buildPointGeometryStyles } from '../chart_types/xy_chart/rendering/point_style';
 import { Colors } from '../common/colors';
-import { mergePartial, RecursivePartial } from '../utils/common';
-import { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PointGeometry } from '../utils/geometry';
+import type { RecursivePartial } from '../utils/common';
+import { mergePartial } from '../utils/common';
+import type { AreaGeometry, BarGeometry, BubbleGeometry, LineGeometry, PointGeometry } from '../utils/geometry';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { PointShape } from '../utils/themes/theme';
 

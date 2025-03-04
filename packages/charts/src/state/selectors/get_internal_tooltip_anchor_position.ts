@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { AnchorPosition } from '../../components/portal/types';
-import { GlobalChartState } from '../chart_state';
+import type { AnchorPosition } from '../../components/portal/types';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalTooltipAnchorPositionSelector = (state: GlobalChartState): AnchorPosition | null => {

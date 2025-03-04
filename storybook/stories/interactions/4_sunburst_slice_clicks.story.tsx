@@ -12,7 +12,7 @@ import React from 'react';
 
 import { Chart, Position, Settings, Partition, PartitionLayout, LegendValue } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, colorBrewerCategoricalPastel12 } from '../utils/utils';
 

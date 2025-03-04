@@ -12,10 +12,9 @@ import { DateTime } from 'luxon';
 import * as moment from 'moment-timezone';
 import React from 'react';
 
+import type { BrushEndListener } from '@elastic/charts';
 import {
   Axis,
-  BarSeries,
-  BrushEndListener,
   Chart,
   HistogramBarSeries,
   LineSeries,
@@ -25,7 +24,7 @@ import {
   Settings,
 } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

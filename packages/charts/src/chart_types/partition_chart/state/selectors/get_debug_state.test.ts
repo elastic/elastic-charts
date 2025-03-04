@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { getDebugStateSelector } from './get_debug_state';
 import { createOnElementClickCaller } from './on_element_click_caller';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../../mocks/specs/specs';
 import { MockStore } from '../../../../mocks/store/store';
-import {
+import type {
   HeatmapElementEvent,
   LayerValue,
   PartitionElementEvent,
@@ -20,8 +20,8 @@ import {
   XYChartElementEvent,
 } from '../../../../specs/settings';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { DebugState, SinglePartitionDebugState } from '../../../../state/types';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import type { DebugState, SinglePartitionDebugState } from '../../../../state/types';
 import { PartitionLayout } from '../../layout/types/config_types';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
@@ -117,9 +117,9 @@ function expectCorrectClickInfo(
     coords: [x, y],
   } = partition;
 
-  store.dispatch(onPointerMove({ x, y }, index * 3));
-  store.dispatch(onMouseDown({ x, y }, index * 3 + 1));
-  store.dispatch(onMouseUp({ x, y }, index * 3 + 2));
+  store.dispatch(onPointerMove({ position: { x, y }, time: index * 3 }));
+  store.dispatch(onMouseDown({ position: { x, y }, time: index * 3 + 1 }));
+  store.dispatch(onMouseUp({ position: { x, y }, time: index * 3 + 2 }));
 
   expect(onClickListener).toHaveBeenCalledTimes(index + 1);
   const obj = onClickListener.mock.calls[index]![0]![0]![0] as LayerValue[];

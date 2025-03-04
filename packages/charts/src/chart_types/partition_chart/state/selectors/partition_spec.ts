@@ -7,10 +7,11 @@
  */
 
 import { ChartType } from '../../..';
-import { SpecType } from '../../../../specs';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { getSpecsFromStore, getSpecFromStore } from '../../../../state/utils';
-import { PartitionSpec } from '../../specs';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';
+import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
+import type { PartitionSpec } from '../../specs';
 
 /** @internal */
 export function getPartitionSpecs(state: GlobalChartState): PartitionSpec[] {

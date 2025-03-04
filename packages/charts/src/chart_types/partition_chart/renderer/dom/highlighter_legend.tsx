@@ -8,8 +8,9 @@
 
 import { connect } from 'react-redux';
 
-import { HighlighterComponent, HighlighterProps, DEFAULT_PROPS, highlightSetMapper } from './highlighter';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { HighlighterProps } from './highlighter';
+import { HighlighterComponent, DEFAULT_PROPS, highlightSetMapper } from './highlighter';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { partitionDrilldownFocus, partitionMultiGeometries } from '../../state/selectors/geometries';

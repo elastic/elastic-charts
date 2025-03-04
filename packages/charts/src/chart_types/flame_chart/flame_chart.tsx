@@ -6,36 +6,43 @@
  * Side Public License, v 1.
  */
 
-import React, { createRef, CSSProperties, RefObject, WheelEventHandler } from 'react';
+import type { CSSProperties, RefObject, WheelEventHandler } from 'react';
+import React, { createRef } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
-import { FlameSpec } from './flame_api';
-import { NavigationStrategy, NavButtonControlledZoomPanHistory } from './navigation';
+import type { FlameSpec } from './flame_api';
+import type { NavigationStrategy } from './navigation';
+import { NavButtonControlledZoomPanHistory } from './navigation';
 import { roundUpSize } from './render/common';
 import { drawFrame, EPSILON, PADDING_BOTTOM, PADDING_LEFT, PADDING_RIGHT, PADDING_TOP } from './render/draw_a_frame';
 import { ensureWebgl } from './render/ensure_webgl';
 import { uploadToWebgl } from './render/upload_to_webgl';
 import { attributeLocations, GEOM_INDEX_OFFSET } from './shaders';
-import { GLResources, NULL_GL_RESOURCES, nullColumnarViewModel, PickFunction } from './types';
+import type { GLResources, PickFunction } from './types';
+import { NULL_GL_RESOURCES, nullColumnarViewModel } from './types';
 import { ChartType } from '..';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../../common/constants';
-import { bindFramebuffer, createTexture, NullTexture, readPixel, Texture } from '../../common/kingly';
+import type { Texture } from '../../common/kingly';
+import { bindFramebuffer, createTexture, NullTexture, readPixel } from '../../common/kingly';
 import { GL } from '../../common/webgl_constants';
 import { BasicTooltip } from '../../components/tooltip/tooltip';
-import { SettingsSpec, SpecType, TooltipType, TooltipValue } from '../../specs';
+import type { SettingsSpec, TooltipValue } from '../../specs';
+import { TooltipType } from '../../specs';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
-import { ON_POINTER_MOVE } from '../../state/actions/mouse';
-import { BackwardRef, GlobalChartState } from '../../state/chart_state';
+import { onPointerMove } from '../../state/actions/mouse';
+import type { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
-import { getSpecsFromStore } from '../../state/utils';
+import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import { clamp, isFiniteNumber, isNil } from '../../utils/common';
-import { Size } from '../../utils/dimensions';
-import { FlamegraphStyle } from '../../utils/themes/theme';
+import type { Size } from '../../utils/dimensions';
+import type { FlamegraphStyle } from '../../utils/themes/theme';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
@@ -1160,7 +1167,7 @@ class FlameComponent extends React.Component<FlameProps> {
         </div>
         <BasicTooltip
           canPinTooltip={canPinTooltip}
-          onPointerMove={() => ({ type: ON_POINTER_MOVE, position: { x: NaN, y: NaN }, time: NaN })}
+          onPointerMove={() => onPointerMove({ position: { x: NaN, y: NaN }, time: NaN })}
           position={
             this.tooltipPinned
               ? { x: this.pinnedPointerX, y: this.pinnedPointerY, width: 0, height: 0 }

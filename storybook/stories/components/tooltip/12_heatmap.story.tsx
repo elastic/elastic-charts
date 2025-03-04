@@ -7,12 +7,14 @@
  */
 
 import { action } from '@storybook/addon-actions';
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
-import { Chart, Heatmap, Settings, Tooltip, TooltipValue } from '@elastic/charts';
+import type { TooltipValue } from '@elastic/charts';
+import { Chart, Heatmap, Settings, Tooltip } from '@elastic/charts';
 import { BABYNAME_DATA } from '@elastic/charts/src/utils/data_samples/babynames';
 
-import { ChartsStory } from '../../../types';
+import type { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 
 function boldMap(d: TooltipValue[]) {

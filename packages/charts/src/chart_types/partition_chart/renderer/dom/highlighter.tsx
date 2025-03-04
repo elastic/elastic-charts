@@ -10,17 +10,13 @@ import React from 'react';
 
 import { Colors } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
-import { PointObject } from '../../../../common/geometry';
-import { Dimensions } from '../../../../utils/dimensions';
-import { PartitionLayout } from '../../layout/types/config_types';
-import {
-  nullPartitionSmallMultiplesModel,
-  PartitionSmallMultiplesModel,
-  QuadViewModel,
-  ShapeViewModel,
-} from '../../layout/types/viewmodel_types';
+import type { PointObject } from '../../../../common/geometry';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { PartitionLayout } from '../../layout/types/config_types';
+import type { PartitionSmallMultiplesModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { nullPartitionSmallMultiplesModel } from '../../layout/types/viewmodel_types';
 import { isSunburst, isTreemap, isMosaic } from '../../layout/viewmodel/viewmodel';
-import { ContinuousDomainFocus, IndexedContinuousDomainFocus } from '../canvas/partition';
+import type { ContinuousDomainFocus, IndexedContinuousDomainFocus } from '../canvas/partition';
 
 interface HighlightSet extends PartitionSmallMultiplesModel {
   geometries: QuadViewModel[];

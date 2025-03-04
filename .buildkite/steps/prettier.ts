@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { createStep, CustomCommandStep, commandStepDefaults } from '../utils';
+import type { CustomCommandStep } from '../utils';
+import { createStep, commandStepDefaults } from '../utils';
 
 export const prettierStep = createStep<CustomCommandStep>(() => {
   return {

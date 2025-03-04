@@ -10,7 +10,7 @@ import { getActiveValue } from './get_active_value';
 import { getBulletSpec } from './get_bullet_spec';
 import { getPanelDimensions } from './get_panel_dimensions';
 import { createCustomCachedSelector } from '../../../state/create_selector';
-import { BulletDebugStateRow, DebugState } from '../../../state/types';
+import type { BulletDebugStateRow, DebugState } from '../../../state/types';
 
 /** @internal */
 export const getDebugStateSelector = createCustomCachedSelector(

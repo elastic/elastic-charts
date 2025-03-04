@@ -12,7 +12,7 @@ import React from 'react';
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { BARCHART_1Y1G } from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => (

@@ -9,9 +9,10 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, LegendValue, Partition, PartitionLayout, Settings } from '@elastic/charts';
+import type { Datum } from '@elastic/charts';
+import { Chart, LegendValue, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { colorBrewerCategoricalStark9, discreteColor, productPriceLookup } from '../utils/utils';
 

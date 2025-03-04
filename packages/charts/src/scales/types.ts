@@ -7,8 +7,8 @@
  */
 
 import { ScaleType } from './constants';
-import { ScaleBand } from './scale_band';
-import { ScaleContinuous } from './scale_continuous';
+import type { ScaleBand } from './scale_band';
+import type { ScaleContinuous } from './scale_continuous';
 
 /**
  * Check if a scale is logaritmic

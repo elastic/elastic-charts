@@ -9,21 +9,20 @@
 import d3TagCloud from 'd3-cloud';
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { ScreenReaderSummary } from '../../../../components/accessibility';
-import { SettingsSpec, WordCloudElementEvent } from '../../../../specs/settings';
+import type { SettingsSpec, WordCloudElementEvent } from '../../../../specs/settings';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
-import {
-  A11ySettings,
-  DEFAULT_A11Y_SETTINGS,
-  getA11ySettingsSelector,
-} from '../../../../state/selectors/get_accessibility_config';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
+import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { Size } from '../../../../utils/dimensions';
-import { nullShapeViewModel, ShapeViewModel, Word, WordcloudViewModel } from '../../layout/types/viewmodel_types';
+import type { Size } from '../../../../utils/dimensions';
+import type { ShapeViewModel, Word, WordcloudViewModel } from '../../layout/types/viewmodel_types';
+import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { geometries } from '../../state/selectors/geometries';
 
 function getFont(d: Word) {

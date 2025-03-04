@@ -8,17 +8,17 @@
 
 import { flatten } from 'lodash';
 
+import type { XYChartSeriesIdentifier, DataSeries } from './series';
 import {
   getFormattedDataSeries,
   getSeriesColors,
   getDataSeriesFromSpecs,
-  XYChartSeriesIdentifier,
   getSeriesName,
-  DataSeries,
   splitSeriesDataByAccessors,
   extractYAndMarkFromDatum,
 } from './series';
-import { BasicSeriesSpec, LineSeriesSpec, SeriesType, AreaSeriesSpec } from './specs';
+import type { BasicSeriesSpec, LineSeriesSpec, AreaSeriesSpec } from './specs';
+import { SeriesType } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import { ChartType } from '../..';
 import { MockDataSeries } from '../../../mocks/series';
@@ -27,11 +27,11 @@ import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { SeededDataGenerator, getRandomNumberGenerator } from '../../../mocks/utils';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
-import { AccessorFn } from '../../../utils/accessor';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { AccessorFn } from '../../../utils/accessor';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
 import { KIBANA_METRICS } from '../../../utils/data_samples/test_dataset_kibana';
-import { ColorConfig } from '../../../utils/themes/theme';
+import type { ColorConfig } from '../../../utils/themes/theme';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
 
 const dg = new SeededDataGenerator();

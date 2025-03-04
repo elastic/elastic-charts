@@ -7,7 +7,7 @@
  */
 
 import { BOX_GAP_HORIZONTAL, BOX_GAP_VERTICAL } from './common';
-import { Render, Texture } from '../../../common/kingly';
+import type { Render, Texture } from '../../../common/kingly';
 import { GEOM_INDEX_OFFSET } from '../shaders';
 
 // text rendering and other config

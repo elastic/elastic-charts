@@ -6,34 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { Dimensions } from '../../utils/dimensions';
+import { createAction } from '@reduxjs/toolkit';
 
-/** @internal */
-export const UPDATE_PARENT_DIMENSION = 'UPDATE_PARENT_DIMENSION';
+import type { Dimensions } from '../../utils/dimensions';
 
-/** @internal */
-export const UPDATE_CHART_TITLES = 'UPDATE_CHART_TITLES';
-
-interface UpdateParentDimensionAction {
-  type: typeof UPDATE_PARENT_DIMENSION;
-  dimensions: Dimensions;
-}
-
-interface UpdateChartTitlesAction {
-  type: typeof UPDATE_CHART_TITLES;
+interface UpdateChartTitles {
   title?: string;
   description?: string;
 }
 
 /** @internal */
-export function updateParentDimensions(dimensions: Dimensions): UpdateParentDimensionAction {
-  return { type: UPDATE_PARENT_DIMENSION, dimensions };
-}
+export const updateParentDimensions = createAction<Dimensions>('UPDATE_PARENT_DIMENSIONS');
 
 /** @internal */
-export function updateChartTitles(title?: string, description?: string): UpdateChartTitlesAction {
-  return { type: UPDATE_CHART_TITLES, title, description };
-}
-
-/** @internal */
-export type ChartSettingsActions = UpdateParentDimensionAction | UpdateChartTitlesAction;
+export const updateChartTitles = createAction<UpdateChartTitles>('UPDATE_CHART_TITLES');

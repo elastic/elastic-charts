@@ -6,31 +6,33 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject } from 'react';
+import type { RefObject } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { renderHeatmapCanvas2d } from './canvas_renderers';
-import { Color, Colors } from '../../../../common/colors';
+import type { Color } from '../../../../common/colors';
+import { Colors } from '../../../../common/colors';
 import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
-import { GlobalChartState } from '../../../../state/chart_state';
-import {
-  A11ySettings,
-  DEFAULT_A11Y_SETTINGS,
-  getA11ySettingsSelector,
-} from '../../../../state/selectors/get_accessibility_config';
+import type { GlobalChartState } from '../../../../state/chart_state';
+import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
+import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { Dimensions } from '../../../../utils/dimensions';
-import { GenericDomain } from '../../../../utils/domain';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { GenericDomain } from '../../../../utils/domain';
 import { deepEqual } from '../../../../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
-import { Theme } from '../../../../utils/themes/theme';
-import { nullShapeViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import type { Theme } from '../../../../utils/themes/theme';
+import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';
-import { ChartElementSizes, computeChartElementSizesSelector } from '../../state/selectors/compute_chart_element_sizes';
+import type { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
+import { computeChartElementSizesSelector } from '../../state/selectors/compute_chart_element_sizes';
 import { getHeatmapContainerSizeSelector } from '../../state/selectors/get_heatmap_container_size';
 import { getHighlightedLegendBandsSelector } from '../../state/selectors/get_highlighted_legend_bands';
 import { getPerPanelHeatmapGeometries } from '../../state/selectors/get_per_panel_heatmap_geometries';

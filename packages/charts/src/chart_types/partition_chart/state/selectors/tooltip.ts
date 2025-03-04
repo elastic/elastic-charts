@@ -9,7 +9,7 @@
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpec } from './partition_spec';
 import { getPickedShapes } from './picked_shapes';
-import { TooltipInfo } from '../../../../components/tooltip/types';
+import type { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { pickShapesTooltipValues } from '../../layout/viewmodel/picked_shapes';
 

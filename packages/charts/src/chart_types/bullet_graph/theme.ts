@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { BulletColorConfig } from './utils/color';
-import { Color } from '../../common/colors';
+import type { BulletColorConfig } from './utils/color';
+import type { Color } from '../../common/colors';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
-import { Pixels } from '../../common/geometry';
-import { Font } from '../../common/text_utils';
-import { Padding } from '../../utils/dimensions';
+import type { Pixels } from '../../common/geometry';
+import type { Font } from '../../common/text_utils';
+import type { Padding } from '../../utils/dimensions';
 import {
   DARK_BACKGROUND_COLORS,
   DARK_BORDER_COLORS,

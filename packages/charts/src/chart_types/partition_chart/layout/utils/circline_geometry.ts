@@ -7,7 +7,7 @@
  */
 
 import { TAU } from '../../../../common/constants';
-import {
+import type {
   Circline,
   CirclineArc,
   CirclinePredicate,
@@ -17,11 +17,11 @@ import {
   Radian,
   Radius,
   RingSectorConstruction,
-  trueBearingToStandardPositionAngle,
 } from '../../../../common/geometry';
-import { PartitionStyle } from '../../../../utils/themes/partition';
-import { PartitionSpec } from '../../specs';
-import { AngleFromTo, LayerFromTo, ShapeTreeNode } from '../types/viewmodel_types';
+import { trueBearingToStandardPositionAngle } from '../../../../common/geometry';
+import type { PartitionStyle } from '../../../../utils/themes/partition';
+import type { PartitionSpec } from '../../specs';
+import type { AngleFromTo, LayerFromTo, ShapeTreeNode } from '../types/viewmodel_types';
 
 function euclideanDistance({ x: x1, y: y1 }: PointObject, { x: x2, y: y2 }: PointObject): Distance {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));

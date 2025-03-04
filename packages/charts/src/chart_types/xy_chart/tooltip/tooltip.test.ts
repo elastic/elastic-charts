@@ -11,11 +11,12 @@ import { ChartType } from '../..';
 import { MockBarGeometry } from '../../../mocks';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
-import { Position, RecursivePartial } from '../../../utils/common';
-import { BarGeometry } from '../../../utils/geometry';
-import { AxisStyle } from '../../../utils/themes/theme';
-import { AxisSpec, BarSeriesSpec, TickFormatter } from '../utils/specs';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { RecursivePartial } from '../../../utils/common';
+import { Position } from '../../../utils/common';
+import type { BarGeometry } from '../../../utils/geometry';
+import type { AxisStyle } from '../../../utils/themes/theme';
+import type { AxisSpec, BarSeriesSpec, TickFormatter } from '../utils/specs';
 
 const style: RecursivePartial<AxisStyle> = {
   tickLine: {

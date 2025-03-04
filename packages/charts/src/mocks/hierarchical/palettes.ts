@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { RgbTuple } from '../../common/color_library_wrappers';
+import type { RgbTuple } from '../../common/color_library_wrappers';
 
 const CET2s: RgbTuple[] = [
   [46, 34, 235],

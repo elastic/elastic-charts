@@ -8,7 +8,8 @@
 
 import { getChartThemeSelector } from './get_chart_theme';
 import { colorToRgba, RGBATupleToString } from '../../common/color_library_wrappers';
-import { Color, Colors } from '../../common/colors';
+import type { Color } from '../../common/colors';
+import { Colors } from '../../common/colors';
 import { TRANSPARENT_LIMIT } from '../../common/fill_text_color';
 import { createCustomCachedSelector } from '../create_selector';
 

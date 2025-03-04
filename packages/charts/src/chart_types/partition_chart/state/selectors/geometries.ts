@@ -7,21 +7,24 @@
  */
 
 import { getPartitionSpecs } from './get_partition_specs';
-import { getTrees, StyledTree } from './tree';
+import type { StyledTree } from './tree';
+import { getTrees } from './tree';
 import { ChartType } from '../../..';
-import { CategoryKey } from '../../../../common/category';
-import { Pixels } from '../../../../common/geometry';
-import { Font } from '../../../../common/text_utils';
-import { RelativeBandsPadding, SmallMultiplesSpec, SpecType } from '../../../../specs';
+import type { CategoryKey } from '../../../../common/category';
+import type { Pixels } from '../../../../common/geometry';
+import type { Font } from '../../../../common/text_utils';
+import type { RelativeBandsPadding, SmallMultiplesSpec } from '../../../../specs';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSpecs } from '../../../../state/selectors/get_specs';
-import { getSpecsFromStore } from '../../../../state/utils';
-import { Dimensions } from '../../../../utils/dimensions';
-import { nullShapeViewModel, QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { QuadViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
+import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import { getShapeViewModel } from '../../layout/viewmodel/scenegraph';
-import { IndexedContinuousDomainFocus } from '../../renderer/canvas/partition';
+import type { IndexedContinuousDomainFocus } from '../../renderer/canvas/partition';
 
 const horizontalSplit = (s?: SmallMultiplesSpec) => s?.splitHorizontally;
 const verticalSplit = (s?: SmallMultiplesSpec) => s?.splitVertically;

@@ -52,7 +52,7 @@
 
 /// //  Input value must be integer in RGB order (RRGGBB for 0xFFFFFF)  /////
 
-import { RgbTuple } from './color_library_wrappers';
+import type { RgbTuple } from './color_library_wrappers';
 
 /**
  * / //  DO NOT use a Y from any other method  /////

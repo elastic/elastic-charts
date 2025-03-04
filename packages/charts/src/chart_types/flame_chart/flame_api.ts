@@ -7,11 +7,14 @@
  */
 
 import { ChartType } from '..';
-import { LegacyAnimationConfig } from '../../common/animation';
-import { BaseDatum, Spec } from '../../specs';
-import { SpecType } from '../../specs/constants'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
-import { Datum, stripUndefined, ValueAccessor, ValueFormatter } from '../../utils/common';
+import type { LegacyAnimationConfig } from '../../common/animation';
+import type { BaseDatum } from '../../specs';
+import type { Spec } from '../../specs/spec_type';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { SFProps } from '../../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../../state/spec_factory';
+import type { Datum, ValueAccessor, ValueFormatter } from '../../utils/common';
+import { stripUndefined } from '../../utils/common';
 
 /**
  * Control function for resetting chart focus

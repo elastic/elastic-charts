@@ -6,17 +6,10 @@
  * Side Public License, v 1.
  */
 
-import { CategoryKey } from '../../common/category';
-import { SeriesIdentifier } from '../../common/series_id';
+import { createAction } from '@reduxjs/toolkit';
 
-/** @internal */
-export const ON_LEGEND_ITEM_OVER = 'ON_LEGEND_ITEM_OVER';
-
-/** @internal */
-export const ON_LEGEND_ITEM_OUT = 'ON_LEGEND_ITEM_OUT';
-
-/** @internal */
-export const ON_TOGGLE_DESELECT_SERIES = 'ON_TOGGLE_DESELECT_SERIES';
+import type { CategoryKey } from '../../common/category';
+import type { SeriesIdentifier } from '../../common/series_id';
 
 /** @public */
 export type LegendPathElement = { index: number; value: CategoryKey };
@@ -34,39 +27,25 @@ export type LegendPathElement = { index: number; value: CategoryKey };
  */
 export type LegendPath = LegendPathElement[];
 
-interface LegendItemOverAction {
-  type: typeof ON_LEGEND_ITEM_OVER;
-  legendPath: LegendPath;
-}
-
-interface LegendItemOutAction {
-  type: typeof ON_LEGEND_ITEM_OUT;
-}
-
 /** @internal */
 export interface ToggleDeselectSeriesAction {
-  type: typeof ON_TOGGLE_DESELECT_SERIES;
   legendItemIds: SeriesIdentifier[];
-  metaKey: boolean;
+  metaKey?: boolean;
 }
 
 /** @internal */
-export function onLegendItemOverAction(legendPath: LegendPath): LegendItemOverAction {
-  return { type: ON_LEGEND_ITEM_OVER, legendPath };
-}
+export const onLegendItemOverAction = createAction<LegendPath>('ON_LEGEND_ITEM_OVER');
 
 /** @internal */
-export function onLegendItemOutAction(): LegendItemOutAction {
-  return { type: ON_LEGEND_ITEM_OUT };
-}
+export const onLegendItemOutAction = createAction('ON_LEGEND_ITEM_OUT');
 
 /** @internal */
-export function onToggleDeselectSeriesAction(
-  legendItemIds: SeriesIdentifier[],
-  metaKey = false,
-): ToggleDeselectSeriesAction {
-  return { type: ON_TOGGLE_DESELECT_SERIES, legendItemIds, metaKey };
-}
-
-/** @internal */
-export type LegendActions = LegendItemOverAction | LegendItemOutAction | ToggleDeselectSeriesAction;
+export const onToggleDeselectSeriesAction = createAction(
+  'ON_TOGGLE_DESELECT_SERIES',
+  ({ legendItemIds, metaKey = false }: ToggleDeselectSeriesAction) => ({
+    payload: {
+      legendItemIds,
+      metaKey,
+    },
+  }),
+);

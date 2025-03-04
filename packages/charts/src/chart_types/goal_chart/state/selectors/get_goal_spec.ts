@@ -7,10 +7,10 @@
  */
 
 import { ChartType } from '../../..';
-import { SpecType } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
-import { getSpecFromStore } from '../../../../state/utils';
-import { GoalSpec } from '../../specs';
+import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { GlobalChartState } from '../../../../state/chart_state';
+import { getSpecFromStore } from '../../../../state/utils/get_spec_from_store';
+import type { GoalSpec } from '../../specs';
 
 /** @internal */
 export function getGoalSpecSelector(state: GlobalChartState): GoalSpec {

@@ -8,8 +8,9 @@
 
 import { connect } from 'react-redux';
 
-import { DEFAULT_PROPS, HighlighterCellsComponent, HighlighterCellsProps } from './highlighter';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { HighlighterCellsProps } from './highlighter';
+import { DEFAULT_PROPS, HighlighterCellsComponent } from './highlighter';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { computeChartDimensionsSelector } from '../../state/selectors/compute_chart_dimensions';

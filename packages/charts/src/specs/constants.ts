@@ -6,27 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import { SettingsSpec } from './settings';
-import { ChartType } from '../chart_types';
 import { BOTTOM, CENTER, LEFT, MIDDLE, RIGHT, TOP } from '../common/constants';
-import { buildSFProps } from '../state/spec_factory';
-import { Position } from '../utils/common';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
-
-/** @public */
-export const SpecType = Object.freeze({
-  Series: 'series' as const,
-  Axis: 'axis' as const,
-  Annotation: 'annotation' as const,
-  Settings: 'settings' as const,
-  Tooltip: 'tooltip' as const,
-  IndexOrder: 'index_order' as const,
-  SmallMultiples: 'small_multiples' as const,
-});
-/** @public */
-export type SpecType = $Values<typeof SpecType>;
 
 /**
  * Type of bin aggregations
@@ -62,14 +44,6 @@ export const Direction = Object.freeze({
 /** @public */
 export type Direction = $Values<typeof Direction>;
 
-/** @public */
-export const PointerEventType = Object.freeze({
-  Over: 'Over' as const,
-  Out: 'Out' as const,
-});
-/** @public */
-export type PointerEventType = $Values<typeof PointerEventType>;
-
 /**
  * This enums provides the available tooltip types
  * @public
@@ -90,27 +64,6 @@ export const TooltipType = Object.freeze({
  */
 export type TooltipType = $Values<typeof TooltipType>;
 
-/** @public */
-export const BrushAxis = Object.freeze({
-  X: 'x' as const,
-  Y: 'y' as const,
-  Both: 'both' as const,
-});
-/** @public */
-export type BrushAxis = $Values<typeof BrushAxis>;
-
-/**
- * pointer update trigger
- * @public
- */
-export const PointerUpdateTrigger = Object.freeze({
-  X: 'x' as const,
-  Y: 'y' as const,
-  Both: 'both' as const,
-});
-/** @public */
-export type PointerUpdateTrigger = $Values<typeof PointerUpdateTrigger>;
-
 /**
  * The position to stick the tooltip to
  * @public
@@ -126,53 +79,3 @@ export const TooltipStickTo = Object.freeze({
 });
 /** @public */
 export type TooltipStickTo = $Values<typeof TooltipStickTo>;
-
-/**
- * Default legend config
- * @internal
- */
-export const DEFAULT_LEGEND_CONFIG = {
-  showLegend: false,
-  legendSize: NaN,
-  legendValues: [],
-  legendMaxDepth: Infinity,
-  legendPosition: Position.Right,
-  flatLegend: false,
-};
-
-/** @public */
-export const settingsBuildProps = buildSFProps<SettingsSpec>()(
-  {
-    id: '__global__settings___' as const,
-    chartType: ChartType.Global,
-    specType: SpecType.Settings,
-  },
-  {
-    rendering: 'canvas' as const,
-    rotation: 0 as const,
-    animateData: true,
-    debug: false,
-    pointerUpdateTrigger: PointerUpdateTrigger.X,
-    externalPointerEvents: {
-      tooltip: {
-        visible: false,
-      },
-    },
-    baseTheme: LIGHT_THEME,
-    brushAxis: BrushAxis.X,
-    minBrushDelta: 2,
-    ariaUseDefaultSummary: true,
-    ariaLabelHeadingLevel: 'p',
-    allowBrushingLastHistogramBin: true,
-    pointBuffer: 10,
-    ...DEFAULT_LEGEND_CONFIG,
-    locale: 'en-US',
-    dow: 1,
-  },
-);
-
-/** @public */
-export const DEFAULT_SETTINGS_SPEC: SettingsSpec = {
-  ...settingsBuildProps.defaults,
-  ...settingsBuildProps.overrides,
-};

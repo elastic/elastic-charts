@@ -12,11 +12,12 @@ import { MockSeriesSpec, MockGlobalSpec } from '../../../mocks/specs';
 import { MockStore } from '../../../mocks/store';
 import { MockYDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
-import { SpecType } from '../../../specs/constants';
+import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { BARCHART_1Y0G } from '../../../utils/data_samples/test_dataset';
 import { Logger } from '../../../utils/logger';
 import { computeSeriesDomainsSelector } from '../state/selectors/compute_series_domains';
-import { BasicSeriesSpec, SeriesType, DEFAULT_GLOBAL_ID, StackMode } from '../utils/specs';
+import type { BasicSeriesSpec } from '../utils/specs';
+import { SeriesType, DEFAULT_GLOBAL_ID, StackMode } from '../utils/specs';
 
 jest.mock('../../../utils/logger', () => ({
   Logger: {

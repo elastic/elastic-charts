@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { TimeslipDataRows } from './timeslip/data_fetch';
-import { DataDemand } from './timeslip/render/cartesian';
+import type { TimeslipDataRows } from './timeslip/data_fetch';
+import type { DataDemand } from './timeslip/render/cartesian';
 import { ChartType } from '..';
-import { Spec } from '../../specs';
-import { SpecType } from '../../specs/constants'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
+import type { Spec } from '../../specs/spec_type';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { SFProps } from '../../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../../state/spec_factory';
 import { stripUndefined } from '../../utils/common';
 
 /**

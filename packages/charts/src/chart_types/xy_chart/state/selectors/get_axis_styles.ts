@@ -11,9 +11,10 @@ import { getAxisSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { mergePartial, Position, type RecursivePartial } from '../../../../utils/common';
-import { AxisId } from '../../../../utils/ids';
-import { AxisStyle } from '../../../../utils/themes/theme';
+import type { RecursivePartial } from '../../../../utils/common';
+import { mergePartial, Position } from '../../../../utils/common';
+import type { AxisId } from '../../../../utils/ids';
+import type { AxisStyle } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
 import { isMultilayerTimeAxis } from '../../utils/axis_utils';
 

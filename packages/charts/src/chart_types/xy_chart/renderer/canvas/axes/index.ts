@@ -6,42 +6,11 @@
  * Side Public License, v 1.
  */
 
+import type { AxisProps } from './axis_props';
 import { renderAxisLine } from './line';
 import { renderTicks } from './tick';
 import { renderTickLabel } from './tick_label';
-import { Dimensions, Size } from '../../../../../utils/dimensions';
-import { Point } from '../../../../../utils/point';
-import { AxisStyle } from '../../../../../utils/themes/theme';
-import { PerPanelAxisGeoms } from '../../../state/selectors/compute_per_panel_axes_geoms';
-import { AxisTick, TickLabelBounds, shouldShowTicks } from '../../../utils/axis_utils';
-import { AxisSpec } from '../../../utils/specs';
-
-/** @internal */
-export interface AxisProps {
-  panelTitle?: string;
-  secondary?: boolean;
-  panelAnchor: Point;
-  axisStyle: AxisStyle; // todo rename to just style (it's in Axis... already)
-  axisSpec: AxisSpec; // todo rename to just spec (it's in Axis... already)
-  size: Size;
-  anchorPoint: Point;
-  dimension: TickLabelBounds;
-  ticks: AxisTick[];
-  debug: boolean;
-  renderingArea: Dimensions;
-  layerGirth: number;
-  multilayerTimeAxis: boolean;
-}
-
-/** @internal */
-export interface AxesProps {
-  axesSpecs: AxisSpec[];
-  perPanelAxisGeoms: PerPanelAxisGeoms[];
-  axesStyles: Map<string, AxisStyle | null>;
-  sharedAxesStyle: AxisStyle;
-  debug: boolean;
-  renderingArea: Dimensions;
-}
+import { shouldShowTicks } from '../../../utils/axis_utils';
 
 /** @internal */
 export function renderAxis(ctx: CanvasRenderingContext2D, props: AxisProps) {

@@ -6,23 +6,20 @@
  * Side Public License, v 1.
  */
 
-import { ScaleType } from '../../../scales/constants';
-import { SmallMultiplesSpec } from '../../../specs';
-import { Position, Rotation } from '../../../utils/common';
-import { innerPad, outerPad, PerSideDistance } from '../../../utils/dimensions';
-import { AxisId } from '../../../utils/ids';
-import { AxisStyle, Theme } from '../../../utils/themes/theme';
-import { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
+import type { ScaleType } from '../../../scales/constants';
+import type { SmallMultiplesSpec } from '../../../specs';
+import type { Rotation } from '../../../utils/common';
+import { Position } from '../../../utils/common';
+import type { PerSideDistance } from '../../../utils/dimensions';
+import { innerPad, outerPad } from '../../../utils/dimensions';
+import type { AxisId } from '../../../utils/ids';
+import type { AxisStyle, Theme } from '../../../utils/themes/theme';
+import type { AxesTicksDimensions } from '../state/selectors/compute_axis_ticks_dimensions';
 import { getSpecsById } from '../state/utils/spec';
 import { isHorizontalAxis, isVerticalAxis } from '../utils/axis_type_utils';
-import {
-  getAllAxisLayersGirth,
-  getTitleDimension,
-  isMultilayerTimeAxis,
-  shouldShowTicks,
-  TickLabelBounds,
-} from '../utils/axis_utils';
-import { AxisSpec } from '../utils/specs';
+import type { TickLabelBounds } from '../utils/axis_utils';
+import { getAllAxisLayersGirth, getTitleDimension, isMultilayerTimeAxis, shouldShowTicks } from '../utils/axis_utils';
+import type { AxisSpec } from '../utils/specs';
 
 const getAxisSizeForLabel = (
   axisSpec: AxisSpec,

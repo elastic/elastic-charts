@@ -6,10 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { Placement as PopperPlacement } from '@popperjs/core';
-import React, { useEffect, useMemo, memo, RefObject, useState } from 'react';
+import type { Placement as PopperPlacement } from '@popperjs/core';
+import type { RefObject } from 'react';
+import React, { useEffect, useMemo, memo, useState } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import {
   computeTableMaxHeight,
@@ -20,24 +22,25 @@ import {
   TooltipWrapper,
 } from './components';
 import { TooltipProvider } from './components/tooltip_provider';
-import { TooltipTableColumn } from './components/types';
+import type { TooltipTableColumn } from './components/types';
 import { getStylesFromPlacement } from './placement';
-import {
+import type {
   PinTooltipCallback,
   SetSelectedTooltipItemsCallback,
   ToggleSelectedTooltipItemCallback,
   TooltipInfo,
 } from './types';
 import { Colors } from '../../common/colors';
-import { SeriesIdentifier } from '../../common/series_id';
-import { BaseDatum, DEFAULT_TOOLTIP_SPEC, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
+import type { SeriesIdentifier } from '../../common/series_id';
+import type { BaseDatum, TooltipProps, TooltipSpec, TooltipValue } from '../../specs';
+import { DEFAULT_TOOLTIP_SPEC } from '../../specs';
 import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import {
   toggleSelectedTooltipItem as toggleSelectedTooltipItemAction,
   setSelectedTooltipItems as setSelectedTooltipItemsAction,
   pinTooltip as pinTooltipAction,
 } from '../../state/actions/tooltip';
-import { BackwardRef, GlobalChartState } from '../../state/chart_state';
+import type { BackwardRef, GlobalChartState } from '../../state/chart_state';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
@@ -49,13 +52,15 @@ import { getTooltipSelectedItems } from '../../state/selectors/get_tooltip_selec
 import { getTooltipSettings } from '../../state/selectors/get_tooltip_settings';
 import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
-import { Datum, hasMostlyRTLItems, isDefined, Rotation } from '../../utils/common';
+import type { Datum, Rotation } from '../../utils/common';
+import { hasMostlyRTLItems, isDefined } from '../../utils/common';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
-import { TooltipStyle } from '../../utils/themes/theme';
-import { AnchorPosition, Placement, TooltipPortal, TooltipPortalSettings } from '../portal';
+import type { TooltipStyle } from '../../utils/themes/theme';
+import type { AnchorPosition, TooltipPortalSettings } from '../portal';
+import { Placement, TooltipPortal } from '../portal';
 
 interface TooltipDispatchProps {
-  onPointerMove: typeof onPointerMoveAction;
+  onPointerMove: (...args: Parameters<typeof onPointerMoveAction>) => void;
   toggleSelectedTooltipItem: ToggleSelectedTooltipItemCallback;
   setSelectedTooltipItems: SetSelectedTooltipItemsCallback;
   pinTooltip: PinTooltipCallback;
@@ -139,7 +144,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       return;
     }
     // TODO: handle scroll cursor update
-    onPointerMove({ x: -1, y: -1 }, Date.now());
+    onPointerMove({ position: { x: -1, y: -1 }, time: Date.now() });
   };
 
   useEffect(() => {
@@ -353,7 +358,7 @@ const mapDispatchToProps = (dispatch: Dispatch): TooltipDispatchProps =>
       onPointerMove: onPointerMoveAction,
       toggleSelectedTooltipItem: toggleSelectedTooltipItemAction,
       setSelectedTooltipItems: setSelectedTooltipItemsAction,
-      pinTooltip: pinTooltipAction,
+      pinTooltip: (pinned: boolean, resetPointer?: boolean) => pinTooltipAction({ pinned, resetPointer }),
     },
     dispatch,
   );

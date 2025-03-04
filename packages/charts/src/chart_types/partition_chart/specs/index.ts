@@ -6,28 +6,25 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
-import { LegacyAnimationConfig } from '../../../common/animation';
-import { Distance, Pixels, Radius } from '../../../common/geometry';
-import { BaseDatum, Spec } from '../../../specs';
-import { SpecType } from '../../../specs/constants'; // kept as unshortened import on separate line otherwise import circularity emerges
-import { buildSFProps, SFProps, useSpecFactory } from '../../../state/spec_factory';
-import { IndexedAccessorFn } from '../../../utils/accessor';
-import {
-  Datum,
-  LabelAccessor,
-  ShowAccessor,
-  ValueAccessor,
-  ValueFormatter,
-  stripUndefined,
-} from '../../../utils/common';
-import { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
+import type { LegacyAnimationConfig } from '../../../common/animation';
+import type { Distance, Pixels, Radius } from '../../../common/geometry';
+import type { BaseDatum } from '../../../specs';
+import type { Spec } from '../../../specs/spec_type';
+import { SpecType } from '../../../specs/spec_type'; // kept as unshortened import on separate line otherwise import circularity emerges
+import type { SFProps } from '../../../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../../../state/spec_factory';
+import type { IndexedAccessorFn } from '../../../utils/accessor';
+import type { Datum, LabelAccessor, ShowAccessor, ValueAccessor, ValueFormatter } from '../../../utils/common';
+import { stripUndefined } from '../../../utils/common';
+import type { FillFontSizeRange, FillLabelConfig } from '../../../utils/themes/partition';
 import { percentFormatter } from '../layout/config';
 import { PartitionLayout } from '../layout/types/config_types';
-import { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';
-import { NodeSorter, AGGREGATE_KEY } from '../layout/utils/group_by_rollup';
+import type { NodeColorAccessor, ValueGetter } from '../layout/types/viewmodel_types';
+import type { NodeSorter } from '../layout/utils/group_by_rollup';
+import { AGGREGATE_KEY } from '../layout/utils/group_by_rollup';
 
 interface ExtendedFillLabelConfig extends FillLabelConfig, FillFontSizeRange {
   valueFormatter: ValueFormatter;

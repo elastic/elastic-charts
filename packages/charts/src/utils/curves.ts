@@ -18,7 +18,7 @@ import {
   curveStepAfter,
   curveStepBefore,
 } from 'd3-shape';
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
 /** @public */
 export const CurveType = Object.freeze({

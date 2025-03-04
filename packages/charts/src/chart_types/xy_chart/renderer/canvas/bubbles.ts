@@ -7,13 +7,13 @@
  */
 
 import { renderPointGroup } from './points';
-import { LegendItem } from '../../../../common/legend';
-import { SeriesKey } from '../../../../common/series_id';
+import type { LegendItem } from '../../../../common/legend';
+import type { SeriesKey } from '../../../../common/series_id';
 import { withContext } from '../../../../renderers/canvas';
-import { Rotation } from '../../../../utils/common';
-import { Dimensions } from '../../../../utils/dimensions';
-import { BubbleGeometry, PerPanel } from '../../../../utils/geometry';
-import { SharedGeometryStateStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
+import type { Rotation } from '../../../../utils/common';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { BubbleGeometry, PerPanel } from '../../../../utils/geometry';
+import type { SharedGeometryStateStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
 import { getGeometryStateStyle } from '../../rendering/utils';
 
 /** @internal */

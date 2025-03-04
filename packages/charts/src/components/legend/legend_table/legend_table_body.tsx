@@ -9,8 +9,8 @@
 import React from 'react';
 
 import { LegendListItem } from './legend_table_item';
-import { LegendItem } from '../../../common/legend';
-import { SharedLegendItemProps } from '../types';
+import type { LegendItem } from '../../../common/legend';
+import type { SharedLegendItemProps } from '../types';
 
 /** @internal */
 export const LegendTableBody: React.FC<SharedLegendItemProps & { items: LegendItem[] }> = ({ items, ...itemProps }) => {

@@ -9,11 +9,10 @@
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
+import type { Datum, PartialTheme } from '@elastic/charts';
 import {
   Chart,
-  Datum,
   defaultPartitionValueFormatter,
-  PartialTheme,
   Partition,
   PartitionLayout,
   Settings,
@@ -21,7 +20,7 @@ import {
 } from '@elastic/charts';
 import { mocks } from '@elastic/charts/src/mocks/hierarchical';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { countryLookup, indexInterpolatedFillColor, interpolatorCET2s, regionLookup } from '../utils/utils';
 

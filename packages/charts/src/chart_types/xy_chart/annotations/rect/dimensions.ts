@@ -6,22 +6,24 @@
  * Side Public License, v 1.
  */
 
-import { AnnotationRectProps } from './types';
-import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_utils';
-import { Rect } from '../../../../geoms/types';
-import { ScaleBand, ScaleContinuous } from '../../../../scales';
+import type { AnnotationRectProps } from './types';
+import type { SmallMultipleScales } from '../../../../common/panel_utils';
+import { getPanelSize } from '../../../../common/panel_utils';
+import type { Rect } from '../../../../geoms/types';
+import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
-import { isDefined, isNil, Position, Rotation } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
-import { AxisId, GroupId } from '../../../../utils/ids';
+import type { Rotation } from '../../../../utils/common';
+import { isDefined, isNil, Position } from '../../../../utils/common';
+import type { Size } from '../../../../utils/dimensions';
+import type { AxisId, GroupId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
-import { Point } from '../../../../utils/point';
-import { AxisStyle } from '../../../../utils/themes/theme';
-import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
+import type { Point } from '../../../../utils/point';
+import type { AxisStyle } from '../../../../utils/themes/theme';
+import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
 import { isHorizontalRotation } from '../../state/utils/common';
 import { getAxesSpecForSpecId } from '../../state/utils/spec';
-import { AxisSpec, RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
-import { Bounds } from '../types';
+import type { AxisSpec, RectAnnotationDatum, RectAnnotationSpec } from '../../utils/specs';
+import type { Bounds } from '../types';
 
 /** @internal */
 export function isWithinRectBounds({ x, y }: Point, { startX, endX, startY, endY }: Bounds): boolean {

@@ -6,9 +6,11 @@
  * Side Public License, v 1.
  */
 
-import React, { RefObject, useCallback } from 'react';
+import type { RefObject } from 'react';
+import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { AnnotationTooltip } from './annotation_tooltip';
 import { LineMarker } from './line_marker';
@@ -19,19 +21,19 @@ import {
   onDOMElementClick,
 } from '../../../../../state/actions/dom_element';
 import { onPointerMove as onPointerMoveAction } from '../../../../../state/actions/mouse';
-import { GlobalChartState, BackwardRef } from '../../../../../state/chart_state';
+import type { GlobalChartState, BackwardRef } from '../../../../../state/chart_state';
 import { getChartThemeSelector } from '../../../../../state/selectors/get_chart_theme';
 import {
   getInternalIsInitializedSelector,
   InitStatus,
 } from '../../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../../state/selectors/get_settings_spec';
-import { Dimensions } from '../../../../../utils/dimensions';
-import { AnnotationId } from '../../../../../utils/ids';
+import type { Dimensions } from '../../../../../utils/dimensions';
+import type { AnnotationId } from '../../../../../utils/ids';
 import { LIGHT_THEME } from '../../../../../utils/themes/light_theme';
-import { SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
-import { AnnotationLineProps } from '../../../annotations/line/types';
-import { AnnotationDimensions, AnnotationTooltipState } from '../../../annotations/types';
+import type { SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
+import type { AnnotationLineProps } from '../../../annotations/line/types';
+import type { AnnotationDimensions, AnnotationTooltipState } from '../../../annotations/types';
 import { computeAnnotationDimensionsSelector } from '../../../state/selectors/compute_annotations';
 import { computeChartDimensionsSelector } from '../../../state/selectors/compute_chart_dimensions';
 import { getAnnotationTooltipStateSelector } from '../../../state/selectors/get_annotation_tooltip_state';
@@ -39,7 +41,8 @@ import { getHighlightedAnnotationIdsSelector } from '../../../state/selectors/ge
 import { getAnnotationSpecsSelector } from '../../../state/selectors/get_specs';
 import { isChartEmptySelector } from '../../../state/selectors/is_chart_empty';
 import { getSpecsById } from '../../../state/utils/spec';
-import { isLineAnnotation, AnnotationSpec, AnnotationAnimationConfig } from '../../../utils/specs';
+import type { AnnotationSpec, AnnotationAnimationConfig } from '../../../utils/specs';
+import { isLineAnnotation } from '../../../utils/specs';
 import { getAnnotationHoverParamsFn } from '../../common/utils';
 
 interface AnnotationsDispatchProps {
@@ -157,7 +160,7 @@ const AnnotationsComponent = ({
   ]);
 
   const onScroll = useCallback(() => {
-    onPointerMove({ x: -1, y: -1 }, Date.now());
+    onPointerMove({ position: { x: -1, y: -1 }, time: Date.now() });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isChartEmpty) {

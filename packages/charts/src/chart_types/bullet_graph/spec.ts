@@ -6,16 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { ComponentProps } from 'react';
-import { $Values, Optional } from 'utility-types';
+import type { ComponentProps } from 'react';
+import type { $Values, Optional } from 'utility-types';
 
-import { BulletColorConfig } from './utils/color';
+import type { BulletColorConfig } from './utils/color';
 import { ChartType } from '../../chart_types/index';
-import { Spec } from '../../specs';
-import { SpecType } from '../../specs/constants';
-import { buildSFProps, SFProps, useSpecFactory } from '../../state/spec_factory';
-import { mergePartial, stripUndefined, ValueFormatter } from '../../utils/common';
-import { GenericDomain } from '../../utils/domain';
+import type { Spec } from '../../specs/spec_type';
+import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { SFProps } from '../../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../../state/spec_factory';
+import type { ValueFormatter } from '../../utils/common';
+import { mergePartial, stripUndefined } from '../../utils/common';
+import type { GenericDomain } from '../../utils/domain';
 
 /** @public */
 export interface BulletDatum {

@@ -6,15 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { getTextParts, TextParts } from './text_processing';
+import type { TextParts } from './text_processing';
+import { getTextParts } from './text_processing';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
-import { Font } from '../../../../common/text_utils';
-import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { Font } from '../../../../common/text_utils';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isNil, LayoutDirection } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
+import type { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
-import { MetricStyle } from '../../../../utils/themes/theme';
-import { MetricDatum, isMetricWProgress, MetricWNumber } from '../../specs';
+import type { MetricStyle } from '../../../../utils/themes/theme';
+import type { MetricDatum, MetricWNumber } from '../../specs';
+import { isMetricWProgress } from '../../specs';
 
 interface HeightBasedSizes {
   iconSize: number;

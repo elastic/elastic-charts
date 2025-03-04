@@ -9,8 +9,8 @@
 import { DateTime } from 'luxon';
 import moment from 'moment-timezone';
 
+import type { TickLabelBounds } from './axis_utils';
 import {
-  TickLabelBounds,
   computeRotatedLabelDimensions,
   getPosition,
   // getAxesGeometries,
@@ -20,8 +20,9 @@ import {
   getScaleForAxisSpec,
 } from './axis_utils';
 import { computeXScale } from './scales';
-import { AxisSpec, DomainRange, DEFAULT_GLOBAL_ID, TickFormatter } from './specs';
-import { SmallMultipleScales } from '../../../common/panel_utils';
+import type { AxisSpec, DomainRange, TickFormatter } from './specs';
+import { DEFAULT_GLOBAL_ID } from './specs';
+import type { SmallMultipleScales } from '../../../common/panel_utils';
 import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs';
 // import { MockStore } from '../../../mocks/store/store';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
@@ -29,10 +30,10 @@ import { ScaleType } from '../../../scales/constants';
 import { getScale } from '../../../state/selectors/compute_small_multiple_scales';
 import { Position, mergePartial, HorizontalAlignment, VerticalAlignment } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
-import { OrdinalDomain } from '../../../utils/domain';
-import { GroupId } from '../../../utils/ids';
+import type { OrdinalDomain } from '../../../utils/domain';
+import type { GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
-import { AxisStyle, TextOffset } from '../../../utils/themes/theme';
+import type { AxisStyle, TextOffset } from '../../../utils/themes/theme';
 /*
 import { computeAxesGeometriesSelector } from '../state/selectors/compute_axes_geometries';
 import {

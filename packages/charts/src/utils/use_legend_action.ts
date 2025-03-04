@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { LegacyRef, useRef } from 'react';
+import type { LegacyRef } from 'react';
+import { useRef } from 'react';
 
 /**
  * This hook handles a11y focus management closing of the action popover

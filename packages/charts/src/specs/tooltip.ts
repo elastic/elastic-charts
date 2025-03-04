@@ -6,21 +6,25 @@
  * Side Public License, v 1.
  */
 
-import { ComponentType, ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
-import { SpecType, TooltipStickTo, TooltipType } from './constants';
-import { Spec } from './index';
-import { SettingsSpec } from './settings';
+import type { TooltipStickTo } from './constants';
+import { TooltipType } from './constants';
+import type { SettingsSpec } from './settings';
+import type { Spec } from './spec_type';
+import { SpecType } from './spec_type';
 import { ChartType } from '../chart_types';
-import { BaseDatum } from '../chart_types/specs';
-import { Color } from '../common/colors';
-import { SeriesIdentifier } from '../common/series_id';
-import { TooltipPortalSettings } from '../components/portal';
-import { CustomTooltip } from '../components/tooltip';
-import { buildSFProps, SFProps, useSpecFactory } from '../state/spec_factory';
-import { PointerValue } from '../state/types';
-import { Datum, stripUndefined } from '../utils/common';
-import { SeriesCompareFn } from '../utils/series_sort';
+import type { BaseDatum } from '../chart_types/specs';
+import type { Color } from '../common/colors';
+import type { SeriesIdentifier } from '../common/series_id';
+import type { TooltipPortalSettings } from '../components/portal';
+import type { CustomTooltip } from '../components/tooltip';
+import type { SFProps } from '../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../state/spec_factory';
+import type { PointerValue } from '../state/types';
+import type { Datum } from '../utils/common';
+import { stripUndefined } from '../utils/common';
+import type { SeriesCompareFn } from '../utils/series_sort';
 
 /**
  * This interface describe the properties of single value shown in the tooltip
