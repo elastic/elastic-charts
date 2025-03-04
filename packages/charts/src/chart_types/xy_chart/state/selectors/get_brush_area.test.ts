@@ -17,7 +17,7 @@ import { getInternalChartStateSelector } from '../../../../state/selectors/get_i
 describe('getBrushArea selector', () => {
   describe('compute brush', () => {
     it('along the X axis', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
+      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 }, 'compute-brush-along-the-x-axis');
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -55,7 +55,7 @@ describe('getBrushArea selector', () => {
     });
 
     it('along the Y axis', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
+      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 }, 'compute-brush-along-the-y-axis');
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -95,7 +95,7 @@ describe('getBrushArea selector', () => {
     });
 
     it('along both axis', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
+      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 }, 'compute-brush-along-both-axis');
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -138,7 +138,10 @@ describe('getBrushArea selector', () => {
 
   describe('compute brush on a rotated chart', () => {
     it('along the X axis', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
+      const store = MockStore.default(
+        { left: 0, top: 0, width: 100, height: 100 },
+        'compute-brush-on-a-rotated-chart-along-the-x-axis',
+      );
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -176,7 +179,10 @@ describe('getBrushArea selector', () => {
     });
 
     it('along the Y axis', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
+      const store = MockStore.default(
+        { left: 0, top: 0, width: 100, height: 100 },
+        'compute-brush-on-a-rotated-chart-along-the-y-axis',
+      );
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -216,7 +222,10 @@ describe('getBrushArea selector', () => {
     });
 
     it('along both axis', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
+      const store = MockStore.default(
+        { left: 0, top: 0, width: 100, height: 100 },
+        'computer-brush-on-a-=rotated-chart-along-both-axis',
+      );
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -258,57 +267,59 @@ describe('getBrushArea selector', () => {
   });
 
   describe('limit brush to single panel w/small multiples', () => {
-    const store = MockStore.default({ left: 0, top: 0, width: 200, height: 200 });
-    const onBrushEnd = jest.fn();
-    MockStore.addSpecs(
-      [
-        MockGlobalSpec.settingsNoMargins({ onBrushEnd }),
-        MockGlobalSpec.groupBy({ id: 'hSplit' }),
-        MockGlobalSpec.groupBy({ id: 'vSplit' }),
-        MockGlobalSpec.smallMultiple({ splitHorizontally: 'hSplit', splitVertically: 'vSplit' }),
-        MockSeriesSpec.line({
-          id: '1',
-          xAccessor: 0,
-          yAccessors: [1],
-          xScaleType: ScaleType.Linear,
-          data: [
-            [0, 10],
-            [0.5, 5],
-            [1, 3],
-          ],
-        }),
-        MockSeriesSpec.line({
-          id: '2',
-          xAccessor: 0,
-          yAccessors: [1],
-          xScaleType: ScaleType.Linear,
-          data: [
-            [0, 5],
-            [0.5, 2],
-            [1, 6],
-          ],
-        }),
-      ],
-      store,
-    );
+    it('should limit the brush to a single panel', () => {
+      const store = MockStore.default({ left: 0, top: 0, width: 200, height: 200 }, 'limit-brush-to-single-panel');
+      const onBrushEnd = jest.fn();
+      MockStore.addSpecs(
+        [
+          MockGlobalSpec.settingsNoMargins({ onBrushEnd }),
+          MockGlobalSpec.groupBy({ id: 'hSplit' }),
+          MockGlobalSpec.groupBy({ id: 'vSplit' }),
+          MockGlobalSpec.smallMultiple({ splitHorizontally: 'hSplit', splitVertically: 'vSplit' }),
+          MockSeriesSpec.line({
+            id: '1',
+            xAccessor: 0,
+            yAccessors: [1],
+            xScaleType: ScaleType.Linear,
+            data: [
+              [0, 10],
+              [0.5, 5],
+              [1, 3],
+            ],
+          }),
+          MockSeriesSpec.line({
+            id: '2',
+            xAccessor: 0,
+            yAccessors: [1],
+            xScaleType: ScaleType.Linear,
+            data: [
+              [0, 5],
+              [0.5, 2],
+              [1, 6],
+            ],
+          }),
+        ],
+        store,
+      );
 
-    store.dispatch(onMouseDown({ position: { x: 150, y: 10 }, time: 0 }));
-    store.dispatch(onPointerMove({ position: { x: 10, y: 150 }, time: 1000 }));
-    const bothBrushArea = getBrushAreaSelector(store.getState());
-    expect(bothBrushArea).toEqual({
-      top: 0,
-      left: 150,
-      width: -50,
-      height: 100,
+      store.dispatch(onMouseDown({ position: { x: 150, y: 10 }, time: 0 }));
+      store.dispatch(onPointerMove({ position: { x: 10, y: 150 }, time: 1000 }));
+      const bothBrushArea = getBrushAreaSelector(store.getState());
+      expect(bothBrushArea).toEqual({
+        top: 0,
+        left: 150,
+        width: -50,
+        height: 100,
+      });
+
+      store.dispatch(onMouseUp({ position: { x: 10, y: 150 }, time: 1100 }));
+      const internalChartState = getInternalChartStateSelector(store.getState());
+      internalChartState?.eventCallbacks(store.getState());
+
+      expect(onBrushEnd).toHaveBeenCalled();
+
+      expect(onBrushEnd.mock.calls[0][0].x[0]).toBeCloseTo(0);
+      expect(onBrushEnd.mock.calls[0][0].x[1]).toBeCloseTo(0.5);
     });
-
-    store.dispatch(onMouseUp({ position: { x: 10, y: 150 }, time: 1100 }));
-    const internalChartState = getInternalChartStateSelector(store.getState());
-    internalChartState?.eventCallbacks(store.getState());
-
-    expect(onBrushEnd).toHaveBeenCalled();
-
-    expect(onBrushEnd.mock.calls[0][0].x[0]).toBeCloseTo(0);
-    expect(onBrushEnd.mock.calls[0][0].x[1]).toBeCloseTo(0.5);
   });
 });
