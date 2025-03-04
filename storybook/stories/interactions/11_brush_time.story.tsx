@@ -17,6 +17,7 @@ import {
   BarSeries,
   BrushEndListener,
   Chart,
+  HistogramBarSeries,
   LineSeries,
   niceTimeFormatter,
   Position,
@@ -53,7 +54,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks tickFormat={formatter} />
       <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
-      <BarSeries
+      <HistogramBarSeries
         id="bars"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}

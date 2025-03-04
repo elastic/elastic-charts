@@ -155,7 +155,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         <Axis id="y" position={Position.Left} gridLine={{ visible: true }} />
         <BarSeries
           id="Categorical"
-          xScaleType={ScaleType.Time}
+          xScaleType={ScaleType.Ordinal}
           yScaleType={ScaleType.Linear}
           xAccessor={0}
           yAccessors={[1]}
