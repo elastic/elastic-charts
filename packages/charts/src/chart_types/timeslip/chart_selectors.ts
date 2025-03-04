@@ -12,7 +12,6 @@ import { InitStatus } from '../../state/selectors/get_internal_is_intialized';
 /** @internal */
 export const chartSelectorsFactory = createChartSelectorsFactory({
   getChartTypeDescription: () => 'Timeslip chart',
-
   isInitialized: () => InitStatus.Initialized,
   isChartEmpty: () => false,
   getTooltipAnchor: () => ({ x: 0, y: 0, width: 0, height: 0 }),
