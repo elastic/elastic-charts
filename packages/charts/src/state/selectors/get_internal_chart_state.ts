@@ -9,6 +9,7 @@
 import type { ChartType } from '../../chart_types';
 import type { ChartSelectors } from '../chart_selectors';
 import type { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 
 type ChartSelectorFactories = Record<ChartType, () => ChartSelectors | null>;
 
@@ -30,10 +31,10 @@ const chartSelectorsRegistryFactory = () => {
 export const chartSelectorsRegistry = chartSelectorsRegistryFactory();
 
 /** @internal */
-export const getInternalChartStateSelector = (state: GlobalChartState) => {
-  if (state.chartType === null) {
-    return null;
-  }
-
-  return chartSelectorsRegistry.getChartSelectors(state.chartType);
-};
+export const getInternalChartStateSelector = createCustomCachedSelector(
+  [(state: GlobalChartState) => state.chartType],
+  (chartType) => {
+    if (chartType === null) return null;
+    return chartSelectorsRegistry.getChartSelectors(chartType);
+  },
+);
