@@ -12,7 +12,7 @@ import type { AxisSpec } from './specs';
 import { ChartType } from '../..';
 import { ScaleType } from '../../../scales/constants';
 import type { SettingsSpec } from '../../../specs';
-import { SpecType } from '../../../specs/constants';
+import { SpecType } from '../../../specs/spec_type';
 import { Position } from '../../../utils/common';
 import type { Margins } from '../../../utils/dimensions';
 import type { AxisId } from '../../../utils/ids';
