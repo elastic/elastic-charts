@@ -17,7 +17,7 @@ import { getInternalChartStateSelector } from '../../../../state/selectors/get_i
 describe('getBrushArea selector', () => {
   describe('compute brush', () => {
     it('along the X axis', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 }, 'compute-brush-along-the-x-axis');
+      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -55,7 +55,7 @@ describe('getBrushArea selector', () => {
     });
 
     it('along the Y axis', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 }, 'compute-brush-along-the-y-axis');
+      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -95,7 +95,7 @@ describe('getBrushArea selector', () => {
     });
 
     it('along both axis', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 }, 'compute-brush-along-both-axis');
+      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -138,10 +138,7 @@ describe('getBrushArea selector', () => {
 
   describe('compute brush on a rotated chart', () => {
     it('along the X axis', () => {
-      const store = MockStore.default(
-        { left: 0, top: 0, width: 100, height: 100 },
-        'compute-brush-on-a-rotated-chart-along-the-x-axis',
-      );
+      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -179,10 +176,7 @@ describe('getBrushArea selector', () => {
     });
 
     it('along the Y axis', () => {
-      const store = MockStore.default(
-        { left: 0, top: 0, width: 100, height: 100 },
-        'compute-brush-on-a-rotated-chart-along-the-y-axis',
-      );
+      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -222,10 +216,7 @@ describe('getBrushArea selector', () => {
     });
 
     it('along both axis', () => {
-      const store = MockStore.default(
-        { left: 0, top: 0, width: 100, height: 100 },
-        'computer-brush-on-a-=rotated-chart-along-both-axis',
-      );
+      const store = MockStore.default({ left: 0, top: 0, width: 100, height: 100 });
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
@@ -268,7 +259,7 @@ describe('getBrushArea selector', () => {
 
   describe('limit brush to single panel w/small multiples', () => {
     it('should limit the brush to a single panel', () => {
-      const store = MockStore.default({ left: 0, top: 0, width: 200, height: 200 }, 'limit-brush-to-single-panel');
+      const store = MockStore.default({ left: 0, top: 0, width: 200, height: 200 });
       const onBrushEnd = jest.fn();
       MockStore.addSpecs(
         [
