@@ -61,9 +61,9 @@ exports[`Chart should render the legend name test 1`] = `
           </SpecsParserComponent>
         </Connect(SpecsParserComponent)>
         <div className="echContainer">
-          <Connect(ChartContainer) getChartContainerRef={[Function: getChartContainerRef]} forwardStageRef={{...}}>
-            <ChartContainer getChartContainerRef={[Function: getChartContainerRef]} forwardStageRef={{...}} status="Initialized" initialized={true} tooltipState={{...}} isChartEmpty={false} canPinTooltip={false} pointerCursor={[undefined]} isBrushingAvailable={false} isBrushing={false} internalChartRenderer={[Function: chartRenderer]} settings={{...}} tooltip={{...}} disableInteractions={false} onPointerMove={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onKeyPress={[Function (anonymous)]} pinTooltip={[Function (anonymous)]}>
-              <div className="echChartPointerContainer" style={{...}} onMouseMove={[Function: handleMouseMove]} onMouseLeave={[Function: handleMouseLeave]} onMouseDown={[Function: handleMouseDown]} onMouseUp={[Function: handleMouseUp]} onContextMenu={[undefined]}>
+          <Connect(ChartContainer) getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}}>
+            <ChartContainer getChartContainerRef={[Function (anonymous)]} forwardStageRef={{...}} status="Initialized" initialized={true} tooltipState={{...}} isChartEmpty={false} canPinTooltip={false} pointerCursor={[undefined]} isBrushingAvailable={false} isBrushing={false} internalChartRenderer={[Function: chartRenderer]} settings={{...}} tooltip={{...}} disableInteractions={false} onPointerMove={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onKeyPress={[Function (anonymous)]} pinTooltip={[Function (anonymous)]}>
+              <div className="echChartPointerContainer" style={{...}} onMouseMove={[Function (anonymous)]} onMouseLeave={[Function (anonymous)]} onMouseDown={[Function (anonymous)]} onMouseUp={[Function (anonymous)]} onContextMenu={[undefined]}>
                 <Connect(CursorBand)>
                   <CursorBand isBrushing={false} theme={{...}} chartRotation={0} cursorPosition={[undefined]} tooltipType="vertical" fromExternalEvent={[undefined]} tooltipState={{...}} dispatch={[Function (anonymous)]} />
                 </Connect(CursorBand)>
@@ -98,11 +98,11 @@ exports[`Chart should render the legend name test 1`] = `
                 <Connect(CursorCrossLine)>
                   <CursorCrossLine theme={{...}} chartRotation={0} cursorCrossLinePosition={[undefined]} tooltipType="vertical" dispatch={[Function (anonymous)]} />
                 </Connect(CursorCrossLine)>
-                <Connect(Tooltip) getChartContainerRef={[Function: getChartContainerRef]}>
-                  <Tooltip getChartContainerRef={[Function: getChartContainerRef]} tooltip={{...}} isExternal={false} isBrushing={false} zIndex={0} settings={{...}} tooltipTheme={{...}} rotation={0} chartId="chart1" backgroundColor="#FFFFFF" visible={false} position={{...}} info={{...}} pinned={false} selected={{...}} canPinTooltip={false} onPointerMove={[Function (anonymous)]} toggleSelectedTooltipItem={[Function (anonymous)]} setSelectedTooltipItems={[Function (anonymous)]} pinTooltip={[Function (anonymous)]} />
+                <Connect(Tooltip) getChartContainerRef={[Function (anonymous)]}>
+                  <Tooltip getChartContainerRef={[Function (anonymous)]} tooltip={{...}} isExternal={false} isBrushing={false} zIndex={0} settings={{...}} tooltipTheme={{...}} rotation={0} chartId="chart1" backgroundColor="#FFFFFF" visible={false} position={{...}} info={{...}} pinned={false} selected={{...}} canPinTooltip={false} onPointerMove={[Function (anonymous)]} toggleSelectedTooltipItem={[Function (anonymous)]} setSelectedTooltipItems={[Function (anonymous)]} pinTooltip={[Function (anonymous)]} />
                 </Connect(Tooltip)>
-                <Connect(Annotations) getChartContainerRef={[Function: getChartContainerRef]} chartAreaRef={{...}}>
-                  <Annotations getChartContainerRef={[Function: getChartContainerRef]} chartAreaRef={{...}} isChartEmpty={false} chartDimensions={{...}} sharedStyle={{...}} annotationDimensions={{...}} annotationSpecs={{...}} tooltipState={{...}} chartId="chart1" zIndex={0} hoveredAnnotationIds={{...}} clickable={false} onPointerMove={[Function (anonymous)]} onDOMElementLeave={[Function (anonymous)]} onDOMElementEnter={[Function (anonymous)]} onDOMElementClick={[Function (anonymous)]}>
+                <Connect(Annotations) getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}}>
+                  <Annotations getChartContainerRef={[Function (anonymous)]} chartAreaRef={{...}} isChartEmpty={false} chartDimensions={{...}} sharedStyle={{...}} annotationDimensions={{...}} annotationSpecs={{...}} tooltipState={{...}} chartId="chart1" zIndex={0} hoveredAnnotationIds={{...}} clickable={false} onPointerMove={[Function (anonymous)]} onDOMElementLeave={[Function (anonymous)]} onDOMElementEnter={[Function (anonymous)]} onDOMElementClick={[Function (anonymous)]}>
                     <AnnotationTooltip chartId="chart1" zIndex={0} state={{...}} chartRef={{...}} onScroll={[Function (anonymous)]} />
                   </Annotations>
                 </Connect(Annotations)>
