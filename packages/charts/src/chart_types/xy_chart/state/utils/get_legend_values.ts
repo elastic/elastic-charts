@@ -84,8 +84,13 @@ export function getLegendValue(
       return first ? valueAccessor(first) : null;
     case LegendValue.CurrentAndLastValue: // the current value will be passed directly to the legend component
     case LegendValue.LastValue:
-      const last = series.data.findLast((d) => d.x === xDomain.dataDomain[1]);
-      return last ? valueAccessor(last) : null;
+      for (let i = series.data.length - 1; i >= 0; i--) {
+        const value = series.data[i];
+        if (value && value.x === xDomain.dataDomain[1]) {
+          return valueAccessor(value);
+        }
+      }
+      return null;
     case LegendValue.Average:
       return average(series.data, valueAccessor);
     case LegendValue.Median:

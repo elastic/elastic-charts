@@ -125,7 +125,8 @@ function getTooltipAndHighlightFromValue(
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
   const values = matchingGeoms
-    .toSorted((a, b) => {
+    .slice()
+    .sort((a, b) => {
       // presort matchingGeoms to group by series then y value to prevent flipping
       return b.seriesIdentifier.key.localeCompare(a.seriesIdentifier.key) || b.value.y - a.value.y;
     })
