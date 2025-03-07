@@ -13,5 +13,5 @@ void (async () => {
 
   startGroup('Running jest tests');
 
-  await exec('yarn test --coverage');
+  await exec('yarn test');
 })();
