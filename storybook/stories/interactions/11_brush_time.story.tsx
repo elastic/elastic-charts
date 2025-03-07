@@ -13,7 +13,16 @@ import * as moment from 'moment-timezone';
 import React from 'react';
 
 import type { BrushEndListener } from '@elastic/charts';
-import { Axis, BarSeries, Chart, LineSeries, niceTimeFormatter, Position, ScaleType, Settings } from '@elastic/charts';
+import {
+  Axis,
+  Chart,
+  HistogramBarSeries,
+  LineSeries,
+  niceTimeFormatter,
+  Position,
+  ScaleType,
+  Settings,
+} from '@elastic/charts';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -44,7 +53,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       <Axis id="bottom" position={Position.Bottom} title="bottom" showOverlappingTicks tickFormat={formatter} />
       <Axis id="left" title="left" position={Position.Left} tickFormat={(d) => Number(d).toFixed(2)} />
 
-      <BarSeries
+      <HistogramBarSeries
         id="bars"
         xScaleType={ScaleType.Time}
         yScaleType={ScaleType.Linear}

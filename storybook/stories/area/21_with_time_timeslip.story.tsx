@@ -101,12 +101,8 @@ export const Example: ChartsStory = (_, { title, description }) => {
         }}
         style={{
           axisLine: { stroke: dataInk },
-          tickLine: { size: 0.0001, padding: 4 },
           tickLabel: {
             ...tickLabelStyle,
-            alignment: { horizontal: Position.Left, vertical: Position.Bottom },
-            padding: 0,
-            offset: { x: 0, y: 0 },
           },
 
           axisTitle: { fontFamily, fill: axisTitleColor, fontSize: axisTitleFontSize },

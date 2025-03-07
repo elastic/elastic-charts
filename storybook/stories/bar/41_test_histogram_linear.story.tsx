@@ -146,7 +146,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       {hasHistogramBarSeries && (
         <HistogramBarSeries
           id="histo"
-          xScaleType={ScaleType.Time}
+          xScaleType={ScaleType.Linear}
           yScaleType={ScaleType.Linear}
           xAccessor="x"
           yAccessors={['y']}
@@ -157,7 +157,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       )}
       <BarSeries
         id="bars-1"
-        xScaleType={ScaleType.Time}
+        xScaleType={ScaleType.Linear}
         yScaleType={ScaleType.Linear}
         xAccessor="x"
         yAccessors={['y']}

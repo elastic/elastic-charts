@@ -53,14 +53,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
         showOverlappingTicks={!multiLayerAxis}
         tickFormat={formatter}
         timeAxisLayerCount={multiLayerAxis ? 3 : 0}
-        style={
-          multiLayerAxis
-            ? {
-                tickLine: { size: 0.0001, padding: 4 },
-                tickLabel: { alignment: { horizontal: Position.Left, vertical: Position.Bottom } },
-              }
-            : {}
-        }
       />
       <Axis id="left" title={KIBANA_METRICS.metrics.kibana_os_load.v1.metric.title} position={Position.Left} />
       <Series
