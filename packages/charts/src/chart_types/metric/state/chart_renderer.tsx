@@ -6,13 +6,10 @@
  * Side Public License, v 1.
  */
 
-import type { GlobalChartState } from '../chart_state';
+import React from 'react';
+
+import type { ChartRenderer } from '../../../state/internal_chart_renderer';
+import { Metric } from '../renderer/dom';
 
 /** @internal */
-export const getChartTypeDescriptionSelector = (state: GlobalChartState): string => {
-  if (state.internalChartState) {
-    return state.internalChartState.getChartTypeDescription(state);
-  }
-  // need to return something so there is always a string returned
-  return 'unknown chart type';
-};
+export const chartRenderer: ChartRenderer = () => <Metric />;

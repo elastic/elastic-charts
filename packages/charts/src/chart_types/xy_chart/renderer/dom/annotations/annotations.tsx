@@ -21,7 +21,8 @@ import {
   onDOMElementClick,
 } from '../../../../../state/actions/dom_element';
 import { onPointerMove as onPointerMoveAction } from '../../../../../state/actions/mouse';
-import type { GlobalChartState, BackwardRef } from '../../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../../state/chart_state';
+import type { BackwardRef } from '../../../../../state/internal_chart_renderer';
 import { getChartThemeSelector } from '../../../../../state/selectors/get_chart_theme';
 import {
   getInternalIsInitializedSelector,

@@ -6,8 +6,13 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import type { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
-export const getInternalCanDisplayChartTitles = (state: GlobalChartState): boolean =>
-  state.internalChartState?.canDisplayChartTitles(state) ?? true;
+export const getInternalCanDisplayChartTitles = createCustomCachedSelector(
+  [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
+  (globalChartState, internalChartState): boolean =>
+    internalChartState?.canDisplayChartTitles(globalChartState) ?? true,
+);

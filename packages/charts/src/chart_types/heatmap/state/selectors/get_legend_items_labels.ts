@@ -7,8 +7,8 @@
  */
 
 import { computeLegendSelector } from './compute_legend';
+import type { LegendItemLabel } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import type { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 
 /** @internal */

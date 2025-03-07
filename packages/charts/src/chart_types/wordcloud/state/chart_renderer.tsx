@@ -6,13 +6,10 @@
  * Side Public License, v 1.
  */
 
-import type { Dimensions } from '../../utils/dimensions';
-import type { GlobalChartState } from '../chart_state';
+import React from 'react';
+
+import type { ChartRenderer } from '../../../state/internal_chart_renderer';
+import { Wordcloud } from '../renderer/svg/connected_component';
 
 /** @internal */
-export const getInternalBrushAreaSelector = (state: GlobalChartState): Dimensions | null => {
-  if (state.internalChartState) {
-    return state.internalChartState.getBrushArea(state);
-  }
-  return null;
-};
+export const chartRenderer: ChartRenderer = () => <Wordcloud />;

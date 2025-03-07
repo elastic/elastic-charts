@@ -14,6 +14,7 @@ import { bindActionCreators } from 'redux';
 
 import { NoResults } from './no_results';
 import { ChartType } from '../chart_types';
+import { chartTypeRenderer } from '../chart_types/chart_type_renderers';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
 import type { SettingsSpec, TooltipSpec } from '../specs';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';
@@ -23,12 +24,12 @@ import {
   onPointerMove as onPointerMoveAction,
 } from '../state/actions/mouse';
 import { pinTooltip as pinTooltipAction } from '../state/actions/tooltip';
-import type { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
+import type { GlobalChartState } from '../state/chart_state';
+import type { TooltipInteractionState } from '../state/interactions_state';
+import type { BackwardRef, ChartRenderer } from '../state/internal_chart_renderer';
 import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
-import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
+import { getInternalChartStateSelector } from '../state/selectors/get_internal_chart_state';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';
-import { getInternalIsBrushingSelector } from '../state/selectors/get_internal_is_brushing';
-import { getInternalIsBrushingAvailableSelector } from '../state/selectors/get_internal_is_brushing_available';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../state/selectors/get_tooltip_spec';
@@ -36,6 +37,7 @@ import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty'
 import { deepEqual } from '../utils/fast_deep_equal';
 
 interface ChartContainerComponentStateProps {
+  chartType: ChartType | null;
   status: InitStatus;
   isChartEmpty?: boolean;
   pointerCursor: CSSProperties['cursor'];
@@ -47,10 +49,7 @@ interface ChartContainerComponentStateProps {
   settings?: SettingsSpec;
   tooltip: TooltipSpec;
   disableInteractions: boolean;
-  internalChartRenderer: (
-    containerRef: BackwardRef,
-    forwardStageRef: React.RefObject<HTMLCanvasElement>,
-  ) => JSX.Element | null;
+  internalChartRenderer: ChartRenderer;
 }
 interface ChartContainerComponentDispatchProps {
   onPointerMove: typeof onPointerMoveAction;
@@ -243,14 +242,18 @@ const mapDispatchToProps = (dispatch: Dispatch): ChartContainerComponentDispatch
     dispatch,
   );
 const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateProps => {
+  const internalChartRenderer = state.chartType !== null ? chartTypeRenderer[state.chartType]() : null;
+
+  const internalChartState = getInternalChartStateSelector(state);
   const status = getInternalIsInitializedSelector(state);
   const settings = getSettingsSpecSelector(state);
   const tooltip = getTooltipSpecSelector(state);
   const initialized = !state.specParsing && state.specsInitialized;
   const tooltipState = state.interactions.tooltip;
 
-  if (status !== InitStatus.Initialized) {
+  if (internalChartRenderer === null || internalChartState === null || status !== InitStatus.Initialized) {
     return {
+      chartType: state.chartType,
       status,
       initialized,
       tooltipState,
@@ -266,15 +269,16 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
   }
 
   return {
+    chartType: state.chartType,
     status,
     initialized,
     tooltipState,
     isChartEmpty: isInternalChartEmptySelector(state),
     canPinTooltip: isPinnableTooltip(state),
     pointerCursor: getInternalPointerCursor(state),
-    isBrushingAvailable: getInternalIsBrushingAvailableSelector(state),
-    isBrushing: getInternalIsBrushingSelector(state),
-    internalChartRenderer: getInternalChartRendererSelector(state),
+    isBrushingAvailable: internalChartState.isBrushAvailable(state),
+    isBrushing: internalChartState.isBrushing(state),
+    internalChartRenderer,
     settings,
     tooltip,
     disableInteractions: state.chartType === ChartType.Flame,

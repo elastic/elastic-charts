@@ -14,12 +14,14 @@ import { TooltipType } from '../../../specs/constants';
 import { updateParentDimensions } from '../../../state/actions/chart_settings';
 import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
-import type { GlobalChartState } from '../../../state/chart_state';
-import { createChartStore } from '../../../state/chart_state';
+import { createChartStore, type GlobalChartState } from '../../../state/chart_state';
+import { chartSelectorsRegistry } from '../../../state/selectors/get_internal_chart_state';
+import { chartTypeSelectors } from '../../chart_type_selectors';
 
 describe('XYChart - State tooltips', () => {
   let store: Store<GlobalChartState>;
   beforeEach(() => {
+    chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
     store = createChartStore('chartId');
     store.dispatch(
       upsertSpec(

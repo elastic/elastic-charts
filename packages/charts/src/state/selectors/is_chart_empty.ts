@@ -6,11 +6,16 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import type { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
-export const isInternalChartEmptySelector = (state: GlobalChartState): boolean | undefined => {
-  if (state.internalChartState) {
-    return state.internalChartState.isChartEmpty(state);
-  }
-};
+export const isInternalChartEmptySelector = createCustomCachedSelector(
+  [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
+  (globalChartState, internalChartState): boolean | undefined => {
+    if (internalChartState) {
+      return internalChartState.isChartEmpty(globalChartState);
+    }
+  },
+);

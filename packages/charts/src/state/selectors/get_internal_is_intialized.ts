@@ -8,6 +8,7 @@
 
 import type { $Values } from 'utility-types';
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
@@ -23,16 +24,17 @@ export const InitStatus = Object.freeze({
 export type InitStatus = $Values<typeof InitStatus>;
 
 /** @internal */
-export const getInternalIsInitializedSelector = (state: GlobalChartState): InitStatus => {
+export const getInternalIsInitializedSelector = (globalChartState: GlobalChartState): InitStatus => {
   const {
     parentDimensions: { width, height },
     specsInitialized,
-    internalChartState,
-  } = state;
+  } = globalChartState;
 
   if (!specsInitialized) {
     return InitStatus.SpecNotInitialized;
   }
+
+  const internalChartState = getInternalChartStateSelector(globalChartState);
 
   if (!internalChartState) {
     return InitStatus.MissingChartType;
@@ -42,5 +44,5 @@ export const getInternalIsInitializedSelector = (state: GlobalChartState): InitS
     return InitStatus.ParentSizeInvalid;
   }
 
-  return internalChartState.isInitialized(state);
+  return internalChartState.isInitialized(globalChartState);
 };

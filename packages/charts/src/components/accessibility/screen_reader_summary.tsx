@@ -20,7 +20,7 @@ import {
 import type { GlobalChartState } from '../../state/chart_state';
 import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
-import { getChartTypeDescriptionSelector } from '../../state/selectors/get_chart_type_description';
+import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 
 interface ScreenReaderSummaryStateProps {
@@ -52,11 +52,12 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryStateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (internalChartState === null || getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return DEFAULT_SCREEN_READER_SUMMARY;
   }
   return {
-    chartTypeDescription: getChartTypeDescriptionSelector(state),
+    chartTypeDescription: internalChartState.getChartTypeDescription(state),
     a11ySettings: getA11ySettingsSelector(state),
     goalChartData: getGoalChartDataSelector(state),
     goalChartLabels: getGoalChartLabelsSelector(state),
