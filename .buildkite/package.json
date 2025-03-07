@@ -18,7 +18,7 @@
     "@types/gh-pages": "^3.2.1",
     "@types/targz": "^1.0.1",
     "@types/tmp": "^0.2.3",
-    "axios": "^1.7.4",
+    "axios": "^1.8.2",
     "buildkite-agent-node": "^0.0.11-pre.2",
     "gh-pages": "^5.0.0",
     "json-schema-to-typescript": "15.0.4",
