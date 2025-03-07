@@ -8,7 +8,7 @@
 
 import { getActiveValue } from './get_active_value';
 import { getBulletSpec } from './get_bullet_spec';
-import { TooltipInfo } from '../../../components/tooltip';
+import type { TooltipInfo } from '../../../components/tooltip';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { isBetween } from '../../../utils/common';
 import { mergeValueLabels } from '../spec';

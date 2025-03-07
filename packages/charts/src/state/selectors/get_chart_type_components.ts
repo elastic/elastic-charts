@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { GlobalChartState, BackwardRef } from '../chart_state';
+import type { GlobalChartState, BackwardRef } from '../chart_state';
 
 type ChartRendererFn = (
   containerRef: BackwardRef,

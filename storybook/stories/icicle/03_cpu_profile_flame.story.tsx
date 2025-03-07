@@ -10,10 +10,11 @@ import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Datum, Partition, PartitionLayout, PrimitiveValue, Settings, PartialTheme } from '@elastic/charts';
+import type { Datum, PrimitiveValue, PartialTheme } from '@elastic/charts';
+import { Chart, Partition, PartitionLayout, Settings } from '@elastic/charts';
 import data from '@elastic/charts/src/mocks/hierarchical/cpu_profile_tree_mock.json';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { discreteColor, viridis18 as palette } from '../utils/utils';
 

@@ -6,15 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
-import { Dimensions } from './dimensions';
-import { BarSeriesStyle, PointStyle, PointShape, LineSeriesStyle, AreaSeriesStyle } from './themes/theme';
-import { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
-import { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
-import { Color } from '../common/colors';
-import { Pixels } from '../common/geometry';
-import { Fill, Stroke } from '../geoms/types';
+import type { Dimensions } from './dimensions';
+import type { BarSeriesStyle, PointStyle, PointShape, LineSeriesStyle, AreaSeriesStyle } from './themes/theme';
+import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
+import type { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
+import type { Color } from '../common/colors';
+import type { Pixels } from '../common/geometry';
+import type { Fill, Stroke } from '../geoms/types';
 
 /**
  * The accessor type

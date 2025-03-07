@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { XDomain, YDomain } from '../../chart_types/xy_chart/domains/types';
+import type { XDomain, YDomain } from '../../chart_types/xy_chart/domains/types';
 import {
   getXNiceFromSpec,
   getXScaleTypeFromSpec,
@@ -14,10 +14,12 @@ import {
   getYScaleTypeFromSpec,
 } from '../../chart_types/xy_chart/scales/get_api_scales';
 import { X_SCALE_DEFAULT, Y_SCALE_DEFAULT } from '../../chart_types/xy_chart/scales/scale_defaults';
-import { DEFAULT_GLOBAL_ID, XScaleType } from '../../chart_types/xy_chart/utils/specs';
-import { ScaleContinuousType } from '../../scales';
+import type { XScaleType } from '../../chart_types/xy_chart/utils/specs';
+import { DEFAULT_GLOBAL_ID } from '../../chart_types/xy_chart/utils/specs';
+import type { ScaleContinuousType } from '../../scales';
 import { ScaleType } from '../../scales/constants';
-import { mergePartial, RecursivePartial } from '../../utils/common';
+import type { RecursivePartial } from '../../utils/common';
+import { mergePartial } from '../../utils/common';
 
 /** @internal */
 export class MockXDomain {

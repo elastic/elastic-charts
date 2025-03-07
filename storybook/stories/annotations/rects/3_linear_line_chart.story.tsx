@@ -9,11 +9,12 @@
 import { boolean, select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings, RectAnnotationDatum } from '@elastic/charts';
+import type { RectAnnotationDatum } from '@elastic/charts';
+import { Axis, Chart, LineSeries, RectAnnotation, ScaleType, Settings } from '@elastic/charts';
 import { Position } from '@elastic/charts/src/utils/common';
 import { BandedAccessorType } from '@elastic/charts/src/utils/geometry';
 
-import { ChartsStory } from '../../../types';
+import type { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { customKnobs } from '../../utils/knobs';
 

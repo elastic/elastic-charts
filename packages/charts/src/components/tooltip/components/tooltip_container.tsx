@@ -7,12 +7,14 @@
  */
 
 import classNames from 'classnames';
-import React, { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+import React from 'react';
 
 import { useTooltipContext } from './tooltip_provider';
-import { SeriesIdentifier } from '../../../common/series_id';
-import { BaseDatum } from '../../../specs';
-import { Datum, renderComplexChildren } from '../../../utils/common';
+import type { SeriesIdentifier } from '../../../common/series_id';
+import type { BaseDatum } from '../../../specs';
+import type { Datum } from '../../../utils/common';
+import { renderComplexChildren } from '../../../utils/common';
 
 /** @public */
 export const TooltipContainer = <D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(

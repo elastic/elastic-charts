@@ -6,21 +6,23 @@
  * Side Public License, v 1.
  */
 
-import { createPopper, Instance } from '@popperjs/core';
-import React, { RefObject, useRef, useEffect, useCallback, CSSProperties } from 'react';
+import type { Instance } from '@popperjs/core';
+import { createPopper } from '@popperjs/core';
+import type { RefObject, CSSProperties } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 
 import { DEFAULT_CSS_CURSOR } from '../../../../../common/constants';
-import {
-  DOMElementType,
+import type {
   onDOMElementEnter as onDOMElementEnterAction,
   onDOMElementLeave as onDOMElementLeaveAction,
   onDOMElementClick as onDOMElementClickAction,
 } from '../../../../../state/actions/dom_element';
+import { DOMElementType } from '../../../../../state/actions/dom_element';
 import { Position, renderWithProps } from '../../../../../utils/common';
-import { Dimensions } from '../../../../../utils/dimensions';
-import { AnnotationLineProps } from '../../../annotations/line/types';
-import { AnimationOptions } from '../../canvas/animations/animation';
-import { GetAnnotationParamsFn } from '../../common/utils';
+import type { Dimensions } from '../../../../../utils/dimensions';
+import type { AnnotationLineProps } from '../../../annotations/line/types';
+import type { AnimationOptions } from '../../canvas/animations/animation';
+import type { GetAnnotationParamsFn } from '../../common/utils';
 
 type LineMarkerProps = Pick<AnnotationLineProps, 'id' | 'specId' | 'datum' | 'panel'> & {
   marker: AnnotationLineProps['markers'][number];

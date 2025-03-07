@@ -6,16 +6,17 @@
  * Side Public License, v 1.
  */
 
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
 import { IndexedGeometryLinearMap } from './indexed_geometry_linear_map';
 import { IndexedGeometrySpatialMap } from './indexed_geometry_spatial_map';
-import { MarkBuffer } from '../../../specs';
+import type { MarkBuffer } from '../../../specs';
 import { isNil } from '../../../utils/common';
-import { Bounds } from '../../../utils/d3-delaunay';
-import { IndexedGeometry, isPointGeometry } from '../../../utils/geometry';
-import { Point } from '../../../utils/point';
-import { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
+import type { Bounds } from '../../../utils/d3-delaunay';
+import type { IndexedGeometry } from '../../../utils/geometry';
+import { isPointGeometry } from '../../../utils/geometry';
+import type { Point } from '../../../utils/point';
+import type { PrimitiveValue } from '../../partition_chart/layout/utils/group_by_rollup';
 
 /** @internal */
 export const GeometryType = Object.freeze({

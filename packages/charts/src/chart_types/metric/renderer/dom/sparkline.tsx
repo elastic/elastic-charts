@@ -6,14 +6,16 @@
  * Side Public License, v 1.
  */
 
-import React, { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
+import React from 'react';
 
 import { colorToHsl, hslToColor } from '../../../../common/color_library_wrappers';
 import { extent } from '../../../../common/math';
 import { areaGenerator } from '../../../../geoms/path';
 import { isFiniteNumber } from '../../../../utils/common';
 import { CurveType } from '../../../../utils/curves';
-import { MetricTrendShape, MetricWTrend } from '../../specs';
+import type { MetricWTrend } from '../../specs';
+import { MetricTrendShape } from '../../specs';
 
 /** @internal */
 export const getSparkLineColor = (color: MetricWTrend['color']) => {
@@ -40,7 +42,7 @@ export const getSortedData = (trend: MetricWTrend['trend']) => {
   if (!shouldBeSorted) {
     return trend;
   }
-  return trend.toSorted((a, b) => {
+  return trend.slice().sort((a, b) => {
     return a.x - b.x || +a.y - b.y;
   });
 };

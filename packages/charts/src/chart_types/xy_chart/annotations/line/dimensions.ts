@@ -6,20 +6,23 @@
  * Side Public License, v 1.
  */
 
-import { AnnotationLineProps } from './types';
+import type { AnnotationLineProps } from './types';
 import { Colors } from '../../../../common/colors';
-import { SmallMultipleScales, getPanelSize } from '../../../../common/panel_utils';
-import { Line } from '../../../../geoms/types';
-import { ScaleBand, ScaleContinuous } from '../../../../scales';
+import type { SmallMultipleScales } from '../../../../common/panel_utils';
+import { getPanelSize } from '../../../../common/panel_utils';
+import type { Line } from '../../../../geoms/types';
+import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { isBandScale, isContinuousScale } from '../../../../scales/types';
-import { Position, Rotation } from '../../../../utils/common';
-import { Dimensions, Size } from '../../../../utils/dimensions';
-import { GroupId } from '../../../../utils/ids';
+import type { Rotation } from '../../../../utils/common';
+import { Position } from '../../../../utils/common';
+import type { Dimensions, Size } from '../../../../utils/dimensions';
+import type { GroupId } from '../../../../utils/ids';
 import { mergeWithDefaultAnnotationLine } from '../../../../utils/themes/merge_utils';
-import { LineAnnotationStyle } from '../../../../utils/themes/theme';
+import type { LineAnnotationStyle } from '../../../../utils/themes/theme';
 import { isHorizontalRotation, isVerticalRotation } from '../../state/utils/common';
 import { computeXScaleOffset } from '../../state/utils/utils';
-import { AnnotationDomainType, LineAnnotationDatum, LineAnnotationSpec } from '../../utils/specs';
+import type { LineAnnotationDatum, LineAnnotationSpec } from '../../utils/specs';
+import { AnnotationDomainType } from '../../utils/specs';
 
 function computeYDomainLineAnnotationDimensions(
   annotationSpec: LineAnnotationSpec,

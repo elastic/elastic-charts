@@ -9,10 +9,11 @@
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { AreaSeries, Axis, AxisProps, Chart, Position, ScaleType, Settings } from '@elastic/charts';
+import type { AxisProps } from '@elastic/charts';
+import { AreaSeries, Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { SB_SOURCE_PANEL } from '../utils/storybook';
 

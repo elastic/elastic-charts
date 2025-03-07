@@ -22,7 +22,7 @@ import {
 } from '@elastic/charts';
 import DATA from '@elastic/charts/src/utils/data_samples/4_time_series.json';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dataNames = Object.keys(DATA);

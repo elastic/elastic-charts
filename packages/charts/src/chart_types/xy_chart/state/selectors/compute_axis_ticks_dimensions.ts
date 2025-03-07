@@ -6,30 +6,32 @@
  * Side Public License, v 1.
  */
 
-import { AxisLabelFormatter, getAxisTickLabelFormatter } from './axis_tick_formatter';
+import type { AxisLabelFormatter } from './axis_tick_formatter';
+import { getAxisTickLabelFormatter } from './axis_tick_formatter';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
-import { ScaleBand, ScaleContinuous } from '../../../../scales';
+import type { ScaleBand, ScaleContinuous } from '../../../../scales';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
-import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { AxisId } from '../../../../utils/ids';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { AxisId } from '../../../../utils/ids';
 import { Logger } from '../../../../utils/logger';
-import { AxisStyle, GridLineStyle } from '../../../../utils/themes/theme';
+import type { AxisStyle, GridLineStyle } from '../../../../utils/themes/theme';
 import { isVerticalAxis } from '../../utils/axis_type_utils';
+import type { TickLabelBounds } from '../../utils/axis_utils';
 import {
   computeRotatedLabelDimensions,
   defaultTickFormatter,
   getScaleForAxisSpec,
   isXDomain,
-  TickLabelBounds,
 } from '../../utils/axis_utils';
-import { AxisSpec, TickFormatter } from '../../utils/specs';
+import type { AxisSpec, TickFormatter } from '../../utils/specs';
 
 /** @internal */
 export type AxesTicksDimensions = Map<AxisId, TickLabelBounds>;

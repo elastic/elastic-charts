@@ -10,21 +10,11 @@ import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import React, { useState, useMemo } from 'react';
 
-import {
-  Axis,
-  BarSeries,
-  Chart,
-  Position,
-  ScaleType,
-  Settings,
-  LegendColorPicker,
-  Color,
-  SeriesKey,
-  toEntries,
-} from '@elastic/charts';
+import type { LegendColorPicker, Color, SeriesKey } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, toEntries } from '@elastic/charts';
 import { BARCHART_1Y1G } from '@elastic/charts/src/utils/data_samples/test_dataset';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { getColorPicker } from '../utils/components/get_color_picker';
 import { getLegendAction } from '../utils/components/get_legend_action';

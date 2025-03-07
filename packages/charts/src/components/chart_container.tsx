@@ -6,14 +6,16 @@
  * Side Public License, v 1.
  */
 
-import React, { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { NoResults } from './no_results';
 import { ChartType } from '../chart_types';
 import { DEFAULT_CSS_CURSOR, SECONDARY_BUTTON } from '../common/constants';
-import { SettingsSpec, TooltipSpec } from '../specs';
+import type { SettingsSpec, TooltipSpec } from '../specs';
 import { onKeyPress as onKeyPressAction } from '../state/actions/key';
 import {
   onMouseUp as onMouseUpAction,
@@ -21,7 +23,7 @@ import {
   onPointerMove as onPointerMoveAction,
 } from '../state/actions/mouse';
 import { pinTooltip as pinTooltipAction } from '../state/actions/tooltip';
-import { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
+import type { GlobalChartState, BackwardRef, TooltipInteractionState } from '../state/chart_state';
 import { isPinnableTooltip } from '../state/selectors/can_pin_tooltip';
 import { getInternalChartRendererSelector } from '../state/selectors/get_chart_type_components';
 import { getInternalPointerCursor } from '../state/selectors/get_internal_cursor_pointer';

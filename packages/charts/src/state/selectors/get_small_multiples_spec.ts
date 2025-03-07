@@ -8,7 +8,7 @@
 
 import { getSpecs } from './get_specs';
 import { ChartType } from '../../chart_types';
-import { SmallMultiplesSpec } from '../../specs';
+import type { SmallMultiplesSpec } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { createCustomCachedSelector } from '../create_selector';
 import { getSpecFromStore } from '../utils/get_spec_from_store';

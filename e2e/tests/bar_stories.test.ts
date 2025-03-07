@@ -8,7 +8,8 @@
 
 import { test } from '@playwright/test';
 
-import { DisplayValueStyleAlignment, HorizontalAlignment, VerticalAlignment } from '../constants';
+import type { DisplayValueStyleAlignment } from '../constants';
+import { HorizontalAlignment, VerticalAlignment } from '../constants';
 import { eachRotation, pwEach } from '../helpers';
 import { common } from '../page_objects';
 

@@ -9,10 +9,11 @@
 import { boolean, color, number, button } from '@storybook/addon-knobs';
 import React, { useState } from 'react';
 
-import { Axis, Chart, CurveType, Position, TexturedStyles, Settings, TextureShape, SeriesType } from '@elastic/charts';
+import type { TexturedStyles } from '@elastic/charts';
+import { Axis, Chart, CurveType, Position, Settings, TextureShape, SeriesType } from '@elastic/charts';
 import { getRandomNumberGenerator, SeededDataGenerator, getRandomEntryFn } from '@elastic/charts/src/mocks/utils';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

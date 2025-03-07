@@ -6,14 +6,15 @@
  * Side Public License, v 1.
  */
 
-import { LegendItem } from '../../../common/legend';
-import { ScaleBand, ScaleContinuous } from '../../../scales';
+import type { LegendItem } from '../../../common/legend';
+import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isLogarithmicScale } from '../../../scales/types';
-import { MarkBuffer } from '../../../specs';
+import type { MarkBuffer } from '../../../specs';
 import { getDistance, isWithinRange } from '../../../utils/common';
-import { BarGeometry, ClippedRanges, isPointGeometry, PointGeometry } from '../../../utils/geometry';
-import { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
-import { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
+import type { BarGeometry, ClippedRanges, PointGeometry } from '../../../utils/geometry';
+import { isPointGeometry } from '../../../utils/geometry';
+import type { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
+import type { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
 
 /** @internal */
 export interface MarkSizeOptions {

@@ -9,7 +9,7 @@
 import { extent } from 'd3-array';
 
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
-import { SmallMultiplesSeriesDomains } from '../../../../common/panel_utils';
+import type { SmallMultiplesSeriesDomains } from '../../../../common/panel_utils';
 import { getPredicateFn, Predicate } from '../../../../common/predicate';
 import { ScaleType } from '../../../../scales/constants';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -18,7 +18,7 @@ import { getSmallMultiplesIndexOrderSelector } from '../../../../state/selectors
 import { getAccessorValue } from '../../../../utils/accessor';
 import { addIntervalToTime, timeRange } from '../../../../utils/chrono/elasticsearch';
 import { isFiniteNumber, isNil, isNonNullablePrimitiveValue } from '../../../../utils/common';
-import { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
+import type { HeatmapCellDatum } from '../../layout/viewmodel/viewmodel';
 
 /**
  * @internal

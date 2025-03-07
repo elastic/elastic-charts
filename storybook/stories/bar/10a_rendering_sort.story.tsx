@@ -10,20 +10,10 @@ import { boolean } from '@storybook/addon-knobs';
 import moment from 'moment';
 import React from 'react';
 
-import {
-  Axis,
-  HistogramBarSeries,
-  Chart,
-  LegendValue,
-  Position,
-  ScaleType,
-  Settings,
-  XYChartSeriesIdentifier,
-  SeriesCompareFn,
-  Tooltip,
-} from '@elastic/charts';
+import type { XYChartSeriesIdentifier, SeriesCompareFn } from '@elastic/charts';
+import { Axis, HistogramBarSeries, Chart, LegendValue, Position, ScaleType, Settings, Tooltip } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { sampleLogLevelData } from '../utils/datasets/test_log_data';
 import { customKnobs } from '../utils/knobs';
@@ -47,7 +37,7 @@ function getSortOrderFn(group: string, disabled = false) {
 
   if (!sortEnabled) return;
 
-  const finalOrder = reverseSort ? sortOrder.toReversed() : sortOrder;
+  const finalOrder = reverseSort ? sortOrder.slice().reverse() : sortOrder;
   const renderMap = Object.fromEntries(
     sampleLogLevelData.levels.map((l) => [l, finalOrder.includes(l) ? finalOrder.indexOf(l) : 100]),
   );

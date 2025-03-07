@@ -10,9 +10,9 @@ import React from 'react';
 
 import { LegendTableBody } from './legend_table_body';
 import { LegendTableHeader } from './legend_table_header';
-import { LegendItem } from '../../../common/legend';
+import type { LegendItem } from '../../../common/legend';
 import { LayoutDirection } from '../../../utils/common';
-import { SharedLegendItemProps } from '../types';
+import type { SharedLegendItemProps } from '../types';
 
 /** @internal */
 export interface LegendTableProps extends SharedLegendItemProps {

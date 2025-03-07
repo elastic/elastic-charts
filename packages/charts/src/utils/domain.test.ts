@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AccessorFn } from './accessor';
+import type { AccessorFn } from './accessor';
 import { computeContinuousDataDomain, computeDomainExtent, computeOrdinalDataDomain } from './domain';
 import { ScaleType } from '../scales/constants';
 import { DomainPaddingUnit } from '../specs';

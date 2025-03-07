@@ -11,7 +11,7 @@ import { SpecType } from '../../../../specs/spec_type'; // kept as long-winded i
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getSpecs } from '../../../../state/selectors/get_specs';
 import { getSpecsFromStore } from '../../../../state/utils/get_specs_from_store';
-import { PartitionSpec } from '../../specs';
+import type { PartitionSpec } from '../../specs';
 
 /** @internal */
 export const getPartitionSpecs = createCustomCachedSelector([getSpecs], (specs) => {

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { Point } from '../utils/point';
+import type { Point } from '../utils/point';
 
 /** @internal */
 export interface PointerState {

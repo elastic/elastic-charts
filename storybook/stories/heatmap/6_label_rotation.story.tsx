@@ -10,11 +10,12 @@ import { action } from '@storybook/addon-actions';
 import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Chart, Heatmap, HeatmapStyle, RecursivePartial, Settings } from '@elastic/charts';
+import type { HeatmapStyle, RecursivePartial } from '@elastic/charts';
+import { Chart, Heatmap, Settings } from '@elastic/charts';
 
 import { ScaleType } from '../../../packages/charts/src/scales/constants';
 import { DATA_1, ECOMMERCE_DATA } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {

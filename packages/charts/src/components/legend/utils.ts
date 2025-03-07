@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { LegendItemExtraValues, LegendItem, LegendItemValue, LegendValue } from '../../common/legend';
+import type { LegendItemExtraValues, LegendItem, LegendItemValue } from '../../common/legend';
+import { LegendValue } from '../../common/legend';
 
 const findCurrentValue = (values: LegendItemValue[]) =>
   values.find((v) => v.type === LegendValue.CurrentAndLastValue || v.type === LegendValue.Value);

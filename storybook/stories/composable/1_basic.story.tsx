@@ -8,12 +8,13 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean, number } from '@storybook/addon-knobs';
-import React, { CSSProperties, useState } from 'react';
+import type { CSSProperties } from 'react';
+import React, { useState } from 'react';
 
 import { Axis, Chart, Position, ScaleType, Settings } from '@elastic/charts';
 
 import { BarSeries } from '../../../packages/charts/src/chart_types/specs';
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 interface Dimensions {

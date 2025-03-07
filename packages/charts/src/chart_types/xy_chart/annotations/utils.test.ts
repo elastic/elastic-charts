@@ -8,8 +8,9 @@
 
 import { getAnnotationAxis, getTransformedCursor, invertTransformedCursor } from './utils';
 import { MockGlobalSpec } from '../../../mocks/specs';
-import { Position, Rotation } from '../../../utils/common';
-import { Dimensions } from '../../../utils/dimensions';
+import type { Rotation } from '../../../utils/common';
+import { Position } from '../../../utils/common';
+import type { Dimensions } from '../../../utils/dimensions';
 import { AnnotationDomainType } from '../utils/specs';
 
 describe('Annotation utils', () => {

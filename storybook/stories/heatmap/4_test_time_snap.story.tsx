@@ -11,9 +11,10 @@ import { extent } from 'd3-array';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { Chart, Heatmap, PartialTheme, ScaleType, Settings } from '@elastic/charts';
+import type { PartialTheme } from '@elastic/charts';
+import { Chart, Heatmap, ScaleType, Settings } from '@elastic/charts';
 
-import { ColorBand } from '../../../packages/charts/src/chart_types/heatmap/specs/heatmap';
+import type { ColorBand } from '../../../packages/charts/src/chart_types/heatmap/specs/heatmap';
 import {
   DATA_1,
   DATA_2,
@@ -25,7 +26,7 @@ import {
   DATA_8,
   DATA_9,
 } from '../../../packages/charts/src/utils/data_samples/test_dataset_heatmap';
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const datasets = [DATA_1, DATA_2, DATA_3, DATA_4, DATA_5, DATA_6, DATA_7, DATA_8, DATA_9];

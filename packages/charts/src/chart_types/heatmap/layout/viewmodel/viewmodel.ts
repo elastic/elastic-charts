@@ -6,36 +6,38 @@
  * Side Public License, v 1.
  */
 
-import { ScaleBand, scaleBand, scaleQuantize } from 'd3-scale';
+import type { ScaleBand } from 'd3-scale';
+import { scaleBand, scaleQuantize } from 'd3-scale';
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { ColorScale } from '../../../../common/colors';
+import type { ColorScale } from '../../../../common/colors';
 import { fillTextColor } from '../../../../common/fill_text_color';
-import { Pixels } from '../../../../common/geometry';
+import type { Pixels } from '../../../../common/geometry';
+import type { SmallMultipleScales, SmallMultiplesDatum, SmallMultiplesGroupBy } from '../../../../common/panel_utils';
 import {
   getPanelSize,
   getPanelTitle,
   getPerPanelMap,
   hasSMDomain,
   isPointerOverPanelFn,
-  SmallMultipleScales,
-  SmallMultiplesDatum,
-  SmallMultiplesGroupBy,
 } from '../../../../common/panel_utils';
-import { Box, Font, maximiseFontSize } from '../../../../common/text_utils';
+import type { Box, Font } from '../../../../common/text_utils';
+import { maximiseFontSize } from '../../../../common/text_utils';
 import { ScaleType } from '../../../../scales/constants';
-import { LinearScale, OrdinalScale, RasterTimeScale, BaseDatum } from '../../../../specs';
-import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { LinearScale, OrdinalScale, RasterTimeScale, BaseDatum } from '../../../../specs';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { addIntervalToTime, roundDateToESInterval } from '../../../../utils/chrono/elasticsearch';
-import { clamp, Datum, isFiniteNumber, isNil } from '../../../../utils/common';
-import { innerPad, pad, ChartDimensions } from '../../../../utils/dimensions';
+import type { Datum } from '../../../../utils/common';
+import { clamp, isFiniteNumber, isNil } from '../../../../utils/common';
+import type { ChartDimensions } from '../../../../utils/dimensions';
+import { innerPad, pad } from '../../../../utils/dimensions';
 import { Logger } from '../../../../utils/logger';
-import { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
-import { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
-import { HeatmapSpec } from '../../specs';
-import { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
-import { HeatmapTable } from '../../state/selectors/get_heatmap_table';
-import {
+import type { HeatmapStyle, Theme, Visible } from '../../../../utils/themes/theme';
+import type { PrimitiveValue } from '../../../partition_chart/layout/utils/group_by_rollup';
+import type { HeatmapSpec } from '../../specs';
+import type { ChartElementSizes } from '../../state/selectors/compute_chart_element_sizes';
+import type { HeatmapTable } from '../../state/selectors/get_heatmap_table';
+import type {
   Cell,
   GridCell,
   HeatmapTitleConfig,

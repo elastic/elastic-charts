@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { InternalChartState } from './chart_state';
-import { ColorOverrides } from './color_overrides';
-import { InteractionsState } from './interactions_state';
-import { ChartType } from '../chart_types';
-import { PointerEvent } from '../specs';
-import { SpecList } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { Dimensions } from '../utils/dimensions';
+import type { InternalChartState } from './chart_state';
+import type { ColorOverrides } from './color_overrides';
+import type { InteractionsState } from './interactions_state';
+import type { ChartType } from '../chart_types';
+import type { PointerEvent } from '../specs';
+import type { SpecList } from '../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
+import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
 export interface ExternalEventsState {

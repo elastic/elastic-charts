@@ -4,23 +4,23 @@
 
 ```ts
 
-import { $Keys } from 'utility-types';
-import { $Values } from 'utility-types';
-import { Assign } from 'utility-types';
-import { ComponentProps } from 'react';
-import { ComponentType } from 'react';
-import { CSSProperties } from 'react';
+import type { $Keys } from 'utility-types';
+import type { $Values } from 'utility-types';
+import type { Assign } from 'utility-types';
+import type { ComponentProps } from 'react';
+import type { ComponentType } from 'react';
+import type { CSSProperties } from 'react';
 import { FC } from 'react';
-import { LegacyRef } from 'react';
-import { Optional } from 'utility-types';
-import { OptionalKeys } from 'utility-types';
-import { PropsWithChildren as PropsWithChildren_2 } from 'react';
+import type { LegacyRef } from 'react';
+import type { Optional } from 'utility-types';
+import type { OptionalKeys } from 'utility-types';
+import type { PropsWithChildren as PropsWithChildren_2 } from 'react';
 import { default as React_2 } from 'react';
-import { ReactChild } from 'react';
-import { ReactElement } from 'react';
-import { ReactNode } from 'react';
-import { Required as Required_2 } from 'utility-types';
-import { RequiredKeys } from 'utility-types';
+import type { ReactChild } from 'react';
+import type { ReactElement } from 'react';
+import type { ReactNode } from 'react';
+import type { Required as Required_2 } from 'utility-types';
+import type { RequiredKeys } from 'utility-types';
 
 // @public (undocumented)
 export type A = number;

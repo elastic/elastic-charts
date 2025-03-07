@@ -10,7 +10,7 @@ import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getPickedShapes } from './picked_shapes';
 import { RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { Colors } from '../../../../common/colors';
-import { TooltipInfo } from '../../../../components/tooltip/types';
+import type { TooltipInfo } from '../../../../components/tooltip/types';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 const EMPTY_TOOLTIP = Object.freeze({

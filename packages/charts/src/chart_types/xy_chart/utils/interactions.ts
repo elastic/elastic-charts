@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Rotation } from '../../../utils/common';
-import { Size } from '../../../utils/dimensions';
+import type { Rotation } from '../../../utils/common';
+import type { Size } from '../../../utils/dimensions';
 
 /**
  * Get the cursor position depending on the chart rotation

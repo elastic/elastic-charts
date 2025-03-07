@@ -10,9 +10,10 @@ import { DateTime } from 'luxon';
 import moment from 'moment';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, Position, ScaleType, Settings, SeriesNameFn, LegendValue } from '@elastic/charts';
+import type { SeriesNameFn } from '@elastic/charts';
+import { Axis, BarSeries, Chart, Position, ScaleType, Settings, LegendValue } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {

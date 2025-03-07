@@ -6,15 +6,18 @@
  * Side Public License, v 1.
  */
 
-import { getTextParts, TextParts } from './text_processing';
+import type { TextParts } from './text_processing';
+import { getTextParts } from './text_processing';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
-import { Font } from '../../../../common/text_utils';
-import { TextMeasure, withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { Font } from '../../../../common/text_utils';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { clamp, isNil, LayoutDirection } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
+import type { Size } from '../../../../utils/dimensions';
 import { wrapText } from '../../../../utils/text/wrap';
-import { MetricStyle } from '../../../../utils/themes/theme';
-import { MetricDatum, isMetricWProgress, MetricWNumber } from '../../specs';
+import type { MetricStyle } from '../../../../utils/themes/theme';
+import type { MetricDatum, MetricWNumber } from '../../specs';
+import { isMetricWProgress } from '../../specs';
 
 interface HeightBasedSizes {
   iconSize: number;
@@ -73,13 +76,13 @@ const VALUE_FONT_SIZE: Record<BreakPoint, number> = {
   xxl: 170,
 };
 const VALUE_FONT_SIZE_VALUES = [
-  VALUE_FONT_SIZE.xxxs,
-  VALUE_FONT_SIZE.xxs,
-  VALUE_FONT_SIZE.xs,
-  VALUE_FONT_SIZE.s,
-  VALUE_FONT_SIZE.m,
-  VALUE_FONT_SIZE.l,
   VALUE_FONT_SIZE.xl,
+  VALUE_FONT_SIZE.l,
+  VALUE_FONT_SIZE.m,
+  VALUE_FONT_SIZE.s,
+  VALUE_FONT_SIZE.xs,
+  VALUE_FONT_SIZE.xxs,
+  VALUE_FONT_SIZE.xxxs,
 ];
 const VALUE_PART_FONT_RATIO = 1.3;
 const TITLE_FONT: Font = {
@@ -210,7 +213,7 @@ export function getSnappedFontSizes(
   const sizes = getHeightBasedFontSizes(HEIGHT_BP, panelHeight, style);
   const minFontSize = Math.min(fittedValueFontSize, sizes.valueFontSize);
   const fontSize = clamp(
-    VALUE_FONT_SIZE_VALUES.findLast((value) => value <= minFontSize) ?? minFontSize,
+    VALUE_FONT_SIZE_VALUES.find((value) => value <= minFontSize) ?? minFontSize,
     VALUE_FONT_SIZE.xxxs,
     VALUE_FONT_SIZE.xxl,
   );

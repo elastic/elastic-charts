@@ -7,14 +7,15 @@
  */
 
 import { getRectAnnotationTooltipState } from './rect/tooltip';
-import { AnnotationRectProps } from './rect/types';
-import { AnnotationDimensions, AnnotationTooltipState } from './types';
-import { TooltipPortalSettings } from '../../../components/portal';
-import { Rotation } from '../../../utils/common';
-import { Dimensions } from '../../../utils/dimensions';
-import { AnnotationId } from '../../../utils/ids';
-import { Point } from '../../../utils/point';
-import { AnnotationSpec, isRectAnnotation } from '../utils/specs';
+import type { AnnotationRectProps } from './rect/types';
+import type { AnnotationDimensions, AnnotationTooltipState } from './types';
+import type { TooltipPortalSettings } from '../../../components/portal';
+import type { Rotation } from '../../../utils/common';
+import type { Dimensions } from '../../../utils/dimensions';
+import type { AnnotationId } from '../../../utils/ids';
+import type { Point } from '../../../utils/point';
+import type { AnnotationSpec } from '../utils/specs';
+import { isRectAnnotation } from '../utils/specs';
 
 /** @internal */
 export function computeRectAnnotationTooltipState(

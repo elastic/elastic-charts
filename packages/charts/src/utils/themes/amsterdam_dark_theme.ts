@@ -7,7 +7,7 @@
  */
 
 import { palettes } from './colors';
-import { Theme } from './theme';
+import type { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { Colors } from '../../common/colors';
 import { TAU } from '../../common/constants';

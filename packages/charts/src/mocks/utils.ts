@@ -8,7 +8,8 @@
 
 import seedrandom from 'seedrandom';
 
-import { DataGenerator, RandomNumberGenerator } from '../utils/data_generators/data_generator';
+import type { RandomNumberGenerator } from '../utils/data_generators/data_generator';
+import { DataGenerator } from '../utils/data_generators/data_generator';
 
 /**
  * Forces object to be partial type for mocking tests

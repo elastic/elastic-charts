@@ -8,14 +8,15 @@
 
 import { getSagitta, getMinSagitta, getTransformDirection } from './utils';
 import { GOLDEN_RATIO, TAU } from '../../../../common/constants';
-import { PointObject, Radian, Rectangle } from '../../../../common/geometry';
-import { cssFontShorthand, Font } from '../../../../common/text_utils';
-import { CanvasRenderer } from '../../../../renderers/canvas';
+import type { PointObject, Radian, Rectangle } from '../../../../common/geometry';
+import type { Font } from '../../../../common/text_utils';
+import { cssFontShorthand } from '../../../../common/text_utils';
+import type { CanvasRenderer } from '../../../../renderers/canvas';
 import { measureText } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { Dimensions } from '../../../../utils/dimensions';
-import { Theme } from '../../../../utils/themes/theme';
+import type { Dimensions } from '../../../../utils/dimensions';
+import type { Theme } from '../../../../utils/themes/theme';
 import { GoalSubtype } from '../../specs/constants';
-import { BulletViewModel } from '../types/viewmodel_types';
+import type { BulletViewModel } from '../types/viewmodel_types';
 
 /** @internal */
 export interface Mark {

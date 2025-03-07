@@ -6,10 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { colorToRgba, OpacityFn, overrideOpacity } from '../../../common/color_library_wrappers';
+import type { OpacityFn } from '../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity } from '../../../common/color_library_wrappers';
 import { getColorFromVariant, mergePartial } from '../../../utils/common';
-import { PointGeometryStyle } from '../../../utils/geometry';
-import { PointShape, PointStyle } from '../../../utils/themes/theme';
+import type { PointGeometryStyle } from '../../../utils/geometry';
+import type { PointStyle } from '../../../utils/themes/theme';
+import { PointShape } from '../../../utils/themes/theme';
 
 /** @internal */
 export function buildPointGeometryStyles(

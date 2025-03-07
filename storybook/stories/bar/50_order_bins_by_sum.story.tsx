@@ -11,7 +11,7 @@ import React from 'react';
 
 import { Axis, BarSeries, Chart, Position, ScaleType, Settings, BinAgg, Direction, LegendValue } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const data = [

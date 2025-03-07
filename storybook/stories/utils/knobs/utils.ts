@@ -7,10 +7,10 @@
  */
 
 import { select } from '@storybook/addon-knobs';
-import { SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
+import type { SelectTypeKnobValue } from '@storybook/addon-knobs/dist/components/types';
 import { kebabCase, startCase } from 'lodash';
 
-import { ExtendsNever } from '@elastic/charts/src/utils/common';
+import type { ExtendsNever } from '@elastic/charts/src/utils/common';
 
 import { getNumberSelectKnob } from './custom';
 

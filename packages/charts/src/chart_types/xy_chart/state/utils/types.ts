@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import { SmallMultiplesSeriesDomains } from '../../../../common/panel_utils';
-import { ScaleBand, ScaleContinuous } from '../../../../scales';
-import { BarGeometry, AreaGeometry, LineGeometry, BubbleGeometry, PerPanel } from '../../../../utils/geometry';
-import { GroupId } from '../../../../utils/ids';
-import { XDomain, YDomain } from '../../domains/types';
-import { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
-import { DataSeries } from '../../utils/series';
+import type { SmallMultiplesSeriesDomains } from '../../../../common/panel_utils';
+import type { ScaleBand, ScaleContinuous } from '../../../../scales';
+import type { BarGeometry, AreaGeometry, LineGeometry, BubbleGeometry, PerPanel } from '../../../../utils/geometry';
+import type { GroupId } from '../../../../utils/ids';
+import type { XDomain, YDomain } from '../../domains/types';
+import type { IndexedGeometryMap } from '../../utils/indexed_geometry_map';
+import type { DataSeries } from '../../utils/series';
 
 /** @internal */
 export interface Transform {

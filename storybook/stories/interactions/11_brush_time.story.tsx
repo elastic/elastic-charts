@@ -12,19 +12,10 @@ import { DateTime } from 'luxon';
 import * as moment from 'moment-timezone';
 import React from 'react';
 
-import {
-  Axis,
-  BarSeries,
-  BrushEndListener,
-  Chart,
-  LineSeries,
-  niceTimeFormatter,
-  Position,
-  ScaleType,
-  Settings,
-} from '@elastic/charts';
+import type { BrushEndListener } from '@elastic/charts';
+import { Axis, BarSeries, Chart, LineSeries, niceTimeFormatter, Position, ScaleType, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

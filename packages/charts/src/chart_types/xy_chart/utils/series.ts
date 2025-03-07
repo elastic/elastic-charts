@@ -8,21 +8,25 @@
 
 import { applyFitFunctionToDataSeries } from './fit_function_utils';
 import { groupBy } from './group_data_series';
-import { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
+import type { BaseDatum, BasicSeriesSpec, SeriesNameConfigOptions, SeriesSpecs, SeriesType, StackMode } from './specs';
 import { datumXSortPredicate, formatStackedDataSeriesValues } from './stacked_series_utils';
-import { Color, Colors } from '../../../common/colors';
-import { SmallMultiplesDatum, SmallMultiplesGroupBy } from '../../../common/panel_utils';
-import { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
+import type { Color } from '../../../common/colors';
+import { Colors } from '../../../common/colors';
+import type { SmallMultiplesDatum, SmallMultiplesGroupBy } from '../../../common/panel_utils';
+import type { SeriesIdentifier, SeriesKey } from '../../../common/series_id';
 import { ScaleType } from '../../../scales/constants';
-import { BinAgg, Direction, XScaleType } from '../../../specs';
-import { OrderBy } from '../../../specs/settings';
-import { ColorOverrides } from '../../../state/color_overrides';
-import { Accessor, AccessorFn, getAccessorValue } from '../../../utils/accessor';
-import { Datum, isNil, stripUndefined } from '../../../utils/common';
-import { GroupId } from '../../../utils/ids';
+import type { XScaleType } from '../../../specs';
+import { BinAgg, Direction } from '../../../specs';
+import type { OrderBy } from '../../../specs/settings';
+import type { ColorOverrides } from '../../../state/color_overrides';
+import type { Accessor, AccessorFn } from '../../../utils/accessor';
+import { getAccessorValue } from '../../../utils/accessor';
+import type { Datum } from '../../../utils/common';
+import { isNil, stripUndefined } from '../../../utils/common';
+import type { GroupId } from '../../../utils/ids';
 import { Logger } from '../../../utils/logger';
-import { SeriesCompareFn } from '../../../utils/series_sort';
-import { ColorConfig } from '../../../utils/themes/theme';
+import type { SeriesCompareFn } from '../../../utils/series_sort';
+import type { ColorConfig } from '../../../utils/themes/theme';
 import { groupSeriesByYGroup, isStackedSpec } from '../domains/y_domain';
 import { X_SCALE_DEFAULT } from '../scales/scale_defaults';
 
@@ -318,7 +322,7 @@ const getSortedDataSeries = (
 ): DataSeries[] =>
   dataSeries.map(({ data, ...rest }) => ({
     ...rest,
-    data: data.toSorted(datumXSortPredicate(xScaleType, [...xValues.values()])),
+    data: data.slice().sort(datumXSortPredicate(xScaleType, [...xValues.values()])),
   }));
 
 /** @internal */

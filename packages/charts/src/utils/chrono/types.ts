@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { TimeMs } from '../../common/geometry';
+import type { TimeMs } from '../../common/geometry';
 
 /** @internal */
 export interface CalendarObj {

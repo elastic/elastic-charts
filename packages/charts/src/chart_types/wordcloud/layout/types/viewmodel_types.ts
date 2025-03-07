@@ -6,12 +6,12 @@
  * Side Public License, v 1.
  */
 
-import { Word as D3Word } from 'd3-cloud';
-import { $Values as Values } from 'utility-types';
+import type { Word as D3Word } from 'd3-cloud';
+import type { $Values as Values } from 'utility-types';
 
-import { Color } from '../../../../common/colors';
-import { Pixels, PointObject } from '../../../../common/geometry';
-import { FontStyle } from '../../../../common/text_utils';
+import type { Color } from '../../../../common/colors';
+import type { Pixels, PointObject } from '../../../../common/geometry';
+import type { FontStyle } from '../../../../common/text_utils';
 
 /** @public */
 export interface WordModel {

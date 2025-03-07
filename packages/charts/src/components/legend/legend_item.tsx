@@ -7,14 +7,16 @@
  */
 
 import classNames from 'classnames';
-import React, { CSSProperties, useCallback } from 'react';
+import type { CSSProperties } from 'react';
+import React, { useCallback } from 'react';
 
 import { Label as ItemLabel } from './label';
 import { useLegendColorPicker } from './legend_color_picker';
-import { SharedLegendItemProps } from './types';
+import type { SharedLegendItemProps } from './types';
 import { getExtra } from './utils';
-import { LegendItem, LegendItemExtraValues, LegendValue } from '../../common/legend';
-import { SeriesIdentifier } from '../../common/series_id';
+import type { LegendItem, LegendItemExtraValues } from '../../common/legend';
+import { LegendValue } from '../../common/legend';
+import type { SeriesIdentifier } from '../../common/series_id';
 import { LayoutDirection, isDefined } from '../../utils/common';
 
 /** @internal */

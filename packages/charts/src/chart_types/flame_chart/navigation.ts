@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { NavRect } from './flame_chart';
+import type { NavRect } from './flame_chart';
 
 function isZoomPanNav(nav?: NavRect) {
   return nav && Number.isNaN(nav.index);

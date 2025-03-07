@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import chroma from 'chroma-js';
+import type chroma from 'chroma-js';
 
-import { RgbaTuple } from './color_library_wrappers';
+import type { RgbaTuple } from './color_library_wrappers';
 
 /**
  * A CSS color keyword or a numerical representation (hex, rgb, rgba, hsl, hsla)

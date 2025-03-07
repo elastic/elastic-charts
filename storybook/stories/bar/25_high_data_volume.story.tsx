@@ -12,7 +12,7 @@ import { Axis, BarSeries, Chart, Position, ScaleType, Settings, Tooltip } from '
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { TooltipType } from '@elastic/charts/src/specs/constants';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 export const Example: ChartsStory = (_, { title, description }) => {

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
+import type { DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
 
 /** @internal */
 export const fitFunctionData: DataSeriesDatum[] = [

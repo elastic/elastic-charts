@@ -7,17 +7,17 @@
  */
 
 import { isLinear } from './viewmodel';
-import { TooltipInfo } from '../../../../components/tooltip';
-import { LayerValue, TooltipValue } from '../../../../specs';
-import { LabelAccessor, ValueFormatter } from '../../../../utils/common';
-import { SpecId } from '../../../../utils/ids';
-import { Point } from '../../../../utils/point';
-import { ContinuousDomainFocus } from '../../renderer/canvas/partition';
+import type { TooltipInfo } from '../../../../components/tooltip';
+import type { LayerValue, TooltipValue } from '../../../../specs';
+import type { LabelAccessor, ValueFormatter } from '../../../../utils/common';
+import type { SpecId } from '../../../../utils/ids';
+import type { Point } from '../../../../utils/point';
+import type { ContinuousDomainFocus } from '../../renderer/canvas/partition';
 import { MODEL_KEY, percentValueGetter } from '../config';
-import { QuadViewModel, ShapeViewModel } from '../types/viewmodel_types';
+import type { QuadViewModel, ShapeViewModel } from '../types/viewmodel_types';
+import type { ArrayNode } from '../utils/group_by_rollup';
 import {
   AGGREGATE_KEY,
-  ArrayNode,
   CHILDREN_KEY,
   DEPTH_KEY,
   entryValue,

@@ -24,7 +24,7 @@ import {
 } from '@elastic/charts';
 import { Icon } from '@elastic/charts/src/components/icons/icon';
 
-import { ChartsStory } from '../../../types';
+import type { ChartsStory } from '../../../types';
 import { useBaseTheme } from '../../../use_base_theme';
 import { getDebugStateLogger } from '../../utils/debug_state_logger';
 

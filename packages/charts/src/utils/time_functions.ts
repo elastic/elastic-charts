@@ -7,7 +7,7 @@
  */
 
 import bezier from 'bezier-easing';
-import { $Values } from 'utility-types';
+import type { $Values } from 'utility-types';
 
 /** @public */
 export const TimeFunction = Object.freeze({

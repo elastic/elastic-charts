@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { Color } from '../../common/colors';
-import { Rect } from '../../geoms/types';
-import { ClippedRanges } from '../../utils/geometry';
+import type { Color } from '../../common/colors';
+import type { Rect } from '../../geoms/types';
+import type { ClippedRanges } from '../../utils/geometry';
 
 /** @internal */
 export type CanvasRenderer<R = void> = (ctx: CanvasRenderingContext2D) => R;

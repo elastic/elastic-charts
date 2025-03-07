@@ -28,7 +28,7 @@ import {
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
 import { ColorVariant } from '@elastic/charts/src/utils/common';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 
 const dg = new SeededDataGenerator();

@@ -9,12 +9,13 @@
 import { mount } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Store } from 'redux';
+import type { Store } from 'redux';
 
 import { LineSeries } from './line_series';
 import { LineAnnotation, AnnotationDomainType } from '../../../specs';
 import { SpecsParser } from '../../../specs/specs_parser';
-import { createChartStore, GlobalChartState } from '../../../state/chart_state';
+import type { GlobalChartState } from '../../../state/chart_state';
+import { createChartStore } from '../../../state/chart_state';
 
 function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
   return (

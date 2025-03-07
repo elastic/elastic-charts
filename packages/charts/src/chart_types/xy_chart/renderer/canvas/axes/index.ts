@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { AxisProps } from './axis_props';
+import type { AxisProps } from './axis_props';
 import { renderAxisLine } from './line';
 import { renderTicks } from './tick';
 import { renderTickLabel } from './tick_label';

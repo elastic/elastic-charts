@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { Dimensions } from '../../utils/dimensions';
-import { GlobalChartState } from '../chart_state';
+import type { Dimensions } from '../../utils/dimensions';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
 export const getInternalBrushAreaSelector = (state: GlobalChartState): Dimensions | null => {

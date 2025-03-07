@@ -23,17 +23,10 @@ import { number, boolean, object, color } from '@storybook/addon-knobs';
 import numeral from 'numeral';
 import React, { useCallback } from 'react';
 
-import {
-  Chart,
-  Bullet,
-  BulletSubtype,
-  Settings,
-  BulletColorConfig,
-  ColorBandSimpleConfig,
-  ColorBandComplexConfig,
-} from '@elastic/charts';
+import type { BulletColorConfig, ColorBandSimpleConfig, ColorBandComplexConfig } from '@elastic/charts';
+import { Chart, Bullet, BulletSubtype, Settings } from '@elastic/charts';
 
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme, useThemeId } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 import { getKnobFromEnum } from '../utils/knobs/utils';

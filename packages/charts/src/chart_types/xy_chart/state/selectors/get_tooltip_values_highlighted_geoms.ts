@@ -13,36 +13,31 @@ import { getProjectedPointerPositionSelector } from './get_projected_pointer_pos
 import { getSiDataSeriesMapSelector } from './get_si_dataseries_map';
 import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
 import { hasSingleSeriesSelector } from './has_single_series';
-import { TooltipInfo } from '../../../../components/tooltip/types';
-import {
-  PointerEvent,
-  isPointerOutEvent,
-  TooltipValue,
-  isFollowTooltipType,
-  SettingsSpec,
-  getTooltipType,
-  TooltipSpec,
-} from '../../../../specs';
+import type { TooltipInfo } from '../../../../components/tooltip/types';
+import type { PointerEvent, TooltipValue, SettingsSpec, TooltipSpec } from '../../../../specs';
+import { isPointerOutEvent, isFollowTooltipType, getTooltipType } from '../../../../specs';
 import { TooltipType } from '../../../../specs/constants';
-import { GlobalChartState } from '../../../../state/chart_state';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getTooltipInteractionState } from '../../../../state/selectors/get_tooltip_interaction_state';
 import { getTooltipSpecSelector } from '../../../../state/selectors/get_tooltip_spec';
-import { PointerValue } from '../../../../state/types';
-import { isNil, Rotation } from '../../../../utils/common';
+import type { PointerValue } from '../../../../state/types';
+import type { Rotation } from '../../../../utils/common';
+import { isNil } from '../../../../utils/common';
 import { isValidPointerOverEvent } from '../../../../utils/events';
-import { IndexedGeometry } from '../../../../utils/geometry';
-import { Point } from '../../../../utils/point';
-import { SeriesCompareFn } from '../../../../utils/series_sort';
+import type { IndexedGeometry } from '../../../../utils/geometry';
+import type { Point } from '../../../../utils/point';
+import type { SeriesCompareFn } from '../../../../utils/series_sort';
 import { isPointOnGeometry } from '../../rendering/utils';
 import { formatTooltipHeader, formatTooltipValue } from '../../tooltip/tooltip';
 import { defaultXYLegendSeriesSort } from '../../utils/default_series_sort_fn';
-import { DataSeries, isBandedSpec } from '../../utils/series';
-import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
+import type { DataSeries } from '../../utils/series';
+import { isBandedSpec } from '../../utils/series';
+import type { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
 import { getAxesSpecForSpecId, getSpecDomainGroupId, getSpecsById } from '../utils/spec';
-import { ComputedScales } from '../utils/types';
+import type { ComputedScales } from '../utils/types';
 
 const EMPTY_VALUES = Object.freeze({
   tooltip: {
@@ -130,7 +125,8 @@ function getTooltipAndHighlightFromValue(
   const xValues = new Set<any>();
   const hideNullValues = !tooltip.showNullValues;
   const values = matchingGeoms
-    .toSorted((a, b) => {
+    .slice()
+    .sort((a, b) => {
       // presort matchingGeoms to group by series then y value to prevent flipping
       return b.seriesIdentifier.key.localeCompare(a.seriesIdentifier.key) || b.value.y - a.value.y;
     })

@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 
 import { getPickedShapes, hasPicketVisibleCells } from './picked_shapes';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';

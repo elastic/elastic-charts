@@ -7,25 +7,21 @@
  */
 
 import { colorToRgba } from '../../../../common/color_library_wrappers';
-import { Color } from '../../../../common/colors';
+import type { Color } from '../../../../common/colors';
 import { TAU } from '../../../../common/constants';
 import { fillTextColor } from '../../../../common/fill_text_color';
-import {
-  Distance,
-  meanAngle,
-  Pixels,
-  PointTuple,
-  PointTuples,
-  trueBearingToStandardPositionAngle,
-} from '../../../../common/geometry';
-import { cutToLength, fitText, Font, measureOneBoxWidth } from '../../../../common/text_utils';
-import { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { ColorVariant, isRTLString, ValueFormatter } from '../../../../utils/common';
+import type { Distance, Pixels, PointTuple, PointTuples } from '../../../../common/geometry';
+import { meanAngle, trueBearingToStandardPositionAngle } from '../../../../common/geometry';
+import type { Font } from '../../../../common/text_utils';
+import { cutToLength, fitText, measureOneBoxWidth } from '../../../../common/text_utils';
+import type { TextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
+import type { ValueFormatter } from '../../../../utils/common';
+import { ColorVariant, isRTLString } from '../../../../utils/common';
 import { Logger } from '../../../../utils/logger';
-import { Point } from '../../../../utils/point';
-import { LinkLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
-import { BackgroundStyle } from '../../../../utils/themes/theme';
-import { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
+import type { Point } from '../../../../utils/point';
+import type { LinkLabelConfig, PartitionStyle } from '../../../../utils/themes/partition';
+import type { BackgroundStyle } from '../../../../utils/themes/theme';
+import type { LinkLabelVM, RawTextGetter, ShapeTreeNode, ValueGetterFunction } from '../types/viewmodel_types';
 
 /** @internal */
 export interface LinkLabelsViewModelSpec {

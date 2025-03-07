@@ -6,29 +6,33 @@
  * Side Public License, v 1.
  */
 
-import { AxisLabelFormatter } from './axis_tick_formatter';
-import { getJoinedVisibleAxesData, getLabelBox, JoinedAxisData } from './compute_axis_ticks_dimensions';
+import type { AxisLabelFormatter } from './axis_tick_formatter';
+import type { JoinedAxisData } from './compute_axis_ticks_dimensions';
+import { getJoinedVisibleAxesData, getLabelBox } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
-import { getPanelSize, SmallMultipleScales } from '../../../../common/panel_utils';
-import { ScaleBand, ScaleContinuous } from '../../../../scales';
+import type { SmallMultipleScales } from '../../../../common/panel_utils';
+import { getPanelSize } from '../../../../common/panel_utils';
+import type { ScaleBand } from '../../../../scales';
+import { ScaleContinuous } from '../../../../scales';
 import { ScaleType } from '../../../../scales/constants';
 import { isContinuousScale } from '../../../../scales/types';
-import { AxisSpec, SettingsSpec } from '../../../../specs';
+import type { AxisSpec, SettingsSpec } from '../../../../specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
-import { isRTLString, Position, Rotation } from '../../../../utils/common';
-import { Size } from '../../../../utils/dimensions';
-import { AxisId } from '../../../../utils/ids';
+import type { Position, Rotation } from '../../../../utils/common';
+import { isRTLString } from '../../../../utils/common';
+import type { Size } from '../../../../utils/dimensions';
+import type { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import { AxisTick, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
+import type { AxisTick, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
 import { computeXScale } from '../../utils/scales';
-import { SeriesDomainsAndData } from '../utils/types';
+import type { SeriesDomainsAndData } from '../utils/types';
 
 /** @internal */
 export type Projection = { ticks: AxisTick[]; labelBox: TickLabelBounds; scale: ScaleBand | ScaleContinuous };
@@ -155,7 +159,8 @@ function getVisibleTicks(
   return bypassOverlapCheck
     ? allTicks
     : allTicks
-        .toSorted((a: AxisTick, b: AxisTick) => a.position - b.position)
+        .slice()
+        .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
         .reduce(
           (prev, tick) => {
             const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;

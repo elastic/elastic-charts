@@ -9,10 +9,11 @@
 import { select } from '@storybook/addon-knobs';
 import React from 'react';
 
-import { Axis, BarSeries, Chart, ScaleType, Settings, PartialTheme } from '@elastic/charts';
+import type { PartialTheme } from '@elastic/charts';
+import { Axis, BarSeries, Chart, ScaleType, Settings } from '@elastic/charts';
 
 import { BARCHART_1Y0G_LINEAR } from '../../../packages/charts/src/utils/data_samples/test_dataset';
-import { ChartsStory } from '../../types';
+import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 

@@ -8,8 +8,8 @@
 
 import { createAction } from '@reduxjs/toolkit';
 
-import { Color } from '../../common/colors';
-import { SeriesKey } from '../../common/series_id';
+import type { Color } from '../../common/colors';
+import type { SeriesKey } from '../../common/series_id';
 
 interface SetTemporaryColor {
   keys: SeriesKey[];

@@ -6,14 +6,14 @@
  * Side Public License, v 1.
  */
 
-import { AnchorPosition } from '../../../components/portal/types';
-import { Line, Rect } from '../../../geoms/types';
-import { ScaleBand, ScaleContinuous } from '../../../scales';
+import type { AnchorPosition } from '../../../components/portal/types';
+import type { Line, Rect } from '../../../geoms/types';
+import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isContinuousScale } from '../../../scales/types';
 import { TooltipStickTo } from '../../../specs/constants';
-import { Rotation } from '../../../utils/common';
-import { Dimensions } from '../../../utils/dimensions';
-import { Point } from '../../../utils/point';
+import type { Rotation } from '../../../utils/common';
+import type { Dimensions } from '../../../utils/dimensions';
+import type { Point } from '../../../utils/point';
 import { isHorizontalRotation, isVerticalRotation } from '../state/utils/common';
 
 /** @internal */

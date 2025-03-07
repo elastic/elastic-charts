@@ -6,9 +6,11 @@
  * Side Public License, v 1.
  */
 
-import { useEffect, FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import type { Dispatch } from 'redux';
+import { bindActionCreators } from 'redux';
 
 import { specParsed, specUnmounted } from '../state/actions/specs';
 

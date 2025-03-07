@@ -9,7 +9,7 @@
 import { buildAreaStyles } from './area';
 import * as commonColors from '../../../../../common/color_library_wrappers';
 import { colorToRgba } from '../../../../../common/color_library_wrappers';
-import { Fill } from '../../../../../geoms/types';
+import type { Fill } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
 import { getTextureStyles } from '../../../utils/texture';
