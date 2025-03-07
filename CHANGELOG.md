@@ -1,3 +1,12 @@
+## [69.1.1](https://github.com/elastic/elastic-charts/compare/v69.1.0...v69.1.1) (2025-03-07)
+
+
+### Bug Fixes
+
+* **axis:** remove multi-pass axis line rendering ([#2606](https://github.com/elastic/elastic-charts/issues/2606)) ([d33007c](https://github.com/elastic/elastic-charts/commit/d33007c53e5699e91a529b05b5fe92759cf678fc))
+* **deps:** update dependency @elastic/eui to ^99.2.0 ([#2611](https://github.com/elastic/elastic-charts/issues/2611)) ([bbb803e](https://github.com/elastic/elastic-charts/commit/bbb803e6d39c67106a97bf8d2f9a633fabe4326f))
+* **typescript:** increase and fix compilation target and lib  ([#2622](https://github.com/elastic/elastic-charts/issues/2622)) ([fa80875](https://github.com/elastic/elastic-charts/commit/fa80875c263addb4590a02115d52d62366a9a5eb))
+
 # [69.1.0](https://github.com/elastic/elastic-charts/compare/v69.0.0...v69.1.0) (2025-01-29)
 
 
