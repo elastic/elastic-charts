@@ -42,7 +42,7 @@ export const getSortedData = (trend: MetricWTrend['trend']) => {
   if (!shouldBeSorted) {
     return trend;
   }
-  return trend.toSorted((a, b) => {
+  return trend.slice().sort((a, b) => {
     return a.x - b.x || +a.y - b.y;
   });
 };

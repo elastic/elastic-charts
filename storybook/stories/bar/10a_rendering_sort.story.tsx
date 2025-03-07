@@ -37,7 +37,7 @@ function getSortOrderFn(group: string, disabled = false) {
 
   if (!sortEnabled) return;
 
-  const finalOrder = reverseSort ? sortOrder.toReversed() : sortOrder;
+  const finalOrder = reverseSort ? sortOrder.slice().reverse() : sortOrder;
   const renderMap = Object.fromEntries(
     sampleLogLevelData.levels.map((l) => [l, finalOrder.includes(l) ? finalOrder.indexOf(l) : 100]),
   );

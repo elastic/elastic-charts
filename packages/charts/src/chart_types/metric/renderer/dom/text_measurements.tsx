@@ -76,13 +76,13 @@ const VALUE_FONT_SIZE: Record<BreakPoint, number> = {
   xxl: 170,
 };
 const VALUE_FONT_SIZE_VALUES = [
-  VALUE_FONT_SIZE.xxxs,
-  VALUE_FONT_SIZE.xxs,
-  VALUE_FONT_SIZE.xs,
-  VALUE_FONT_SIZE.s,
-  VALUE_FONT_SIZE.m,
-  VALUE_FONT_SIZE.l,
   VALUE_FONT_SIZE.xl,
+  VALUE_FONT_SIZE.l,
+  VALUE_FONT_SIZE.m,
+  VALUE_FONT_SIZE.s,
+  VALUE_FONT_SIZE.xs,
+  VALUE_FONT_SIZE.xxs,
+  VALUE_FONT_SIZE.xxxs,
 ];
 const VALUE_PART_FONT_RATIO = 1.3;
 const TITLE_FONT: Font = {
@@ -213,7 +213,7 @@ export function getSnappedFontSizes(
   const sizes = getHeightBasedFontSizes(HEIGHT_BP, panelHeight, style);
   const minFontSize = Math.min(fittedValueFontSize, sizes.valueFontSize);
   const fontSize = clamp(
-    VALUE_FONT_SIZE_VALUES.findLast((value) => value <= minFontSize) ?? minFontSize,
+    VALUE_FONT_SIZE_VALUES.find((value) => value <= minFontSize) ?? minFontSize,
     VALUE_FONT_SIZE.xxxs,
     VALUE_FONT_SIZE.xxl,
   );

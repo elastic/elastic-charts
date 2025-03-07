@@ -159,7 +159,8 @@ function getVisibleTicks(
   return bypassOverlapCheck
     ? allTicks
     : allTicks
-        .toSorted((a: AxisTick, b: AxisTick) => a.position - b.position)
+        .slice()
+        .sort((a: AxisTick, b: AxisTick) => a.position - b.position)
         .reduce(
           (prev, tick) => {
             const tickLabelFits = tick.position >= prev.occupiedSpace + requiredSpace;
