@@ -1095,7 +1095,7 @@ describe('Axis computational utils', () => {
   describe('isMultilayerTimeAxis', () => {
     test('should return true if chartType is xy_axis, timeAxisLayerCount = 2, position is bottom, x axis type is time, rotation is 0', () => {
       const multilayerTimeAxis = isMultilayerTimeAxis(
-        { chartType: 'xy_axis', timeAxisLayerCount: 2, position: 'bottom' } as unknown as AxisSpec,
+        MockGlobalSpec.xAxis({ timeAxisLayerCount: 2, position: 'bottom' }),
         'time',
         0,
       );
@@ -1104,7 +1104,7 @@ describe('Axis computational utils', () => {
 
     test('should return false if x axis type is not time', () => {
       const multilayerTimeAxis = isMultilayerTimeAxis(
-        { chartType: 'xy_axis', timeAxisLayerCount: 2, position: 'bottom' } as unknown as AxisSpec,
+        MockGlobalSpec.xAxis({ timeAxisLayerCount: 2, position: 'bottom' }),
         'ordinal',
         0,
       );
@@ -1113,7 +1113,7 @@ describe('Axis computational utils', () => {
 
     test('should return false timeAxisLayerCount = 0', () => {
       const multilayerTimeAxis = isMultilayerTimeAxis(
-        { chartType: 'xy_axis', timeAxisLayerCount: 0, position: 'bottom' } as unknown as AxisSpec,
+        MockGlobalSpec.xAxis({ timeAxisLayerCount: 0, position: 'bottom' }),
         'time',
         0,
       );
@@ -1131,7 +1131,7 @@ describe('Axis computational utils', () => {
 
     test('should return false if xy_axis, timeAxisLayerCount = 2, position is bottom, rotation is not 0', () => {
       const multilayerTimeAxis = isMultilayerTimeAxis(
-        { chartType: 'xy_axis', timeAxisLayerCount: 2, position: 'bottom' } as unknown as AxisSpec,
+        MockGlobalSpec.xAxis({ timeAxisLayerCount: 2, position: 'bottom' }),
         'time',
         90,
       );
