@@ -10,8 +10,8 @@ import type { TickLabelBounds } from './axis_utils';
 import { computeChartDimensions } from './dimensions';
 import type { AxisSpec } from './specs';
 import { ChartType } from '../..';
+import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { ScaleType } from '../../../scales/constants';
-import type { SettingsSpec } from '../../../specs';
 import { SpecType } from '../../../specs/spec_type';
 import { Position } from '../../../utils/common';
 import type { Margins } from '../../../utils/dimensions';
@@ -30,8 +30,6 @@ const getScaleConfigs = (): ScaleConfigs => ({
   },
   y: {},
 });
-
-const getSettingsSpec = (): SettingsSpec => ({ rotation: 0 }) as unknown as SettingsSpec;
 
 describe('Computed chart dimensions', () => {
   const parentDim = {
@@ -105,7 +103,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
-      getSettingsSpec(),
+      MockGlobalSpec.settings(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -126,7 +124,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
-      getSettingsSpec(),
+      MockGlobalSpec.settings(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -147,7 +145,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
-      getSettingsSpec(),
+      MockGlobalSpec.settings(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -173,7 +171,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
-      getSettingsSpec(),
+      MockGlobalSpec.settings(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -199,7 +197,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
-      getSettingsSpec(),
+      MockGlobalSpec.settings(),
     );
     expect(chartDimensions.left + chartDimensions.width).toBeLessThanOrEqual(parentDim.width);
     expect(chartDimensions.top + chartDimensions.height).toBeLessThanOrEqual(parentDim.height);
@@ -223,7 +221,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
-      getSettingsSpec(),
+      MockGlobalSpec.settings(),
     );
 
     const expectedDims = {
@@ -254,7 +252,7 @@ describe('Computed chart dimensions', () => {
       axisSpecs,
       null,
       getScaleConfigs(),
-      getSettingsSpec(),
+      MockGlobalSpec.settings(),
     );
 
     expect(hiddenAxisChartDimensions).toEqual(expectedDims);
