@@ -61,17 +61,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
           }}
           brushAxis={BrushAxis.X}
         />
-        <Axis
-          id="time"
-          position={Position.Bottom}
-          gridLine={{ visible: true }}
-          tickFormat={tickTimeFormatter}
-          timeAxisLayerCount={2}
-          style={{
-            tickLine: { size: 0.0001, padding: 4 },
-            tickLabel: { alignment: { horizontal: Position.Left, vertical: Position.Bottom }, padding: 0 },
-          }}
-        />
+        <Axis id="time" position={Position.Bottom} gridLine={{ visible: true }} tickFormat={tickTimeFormatter} />
         <Axis
           id="axis"
           position={Position.Right}

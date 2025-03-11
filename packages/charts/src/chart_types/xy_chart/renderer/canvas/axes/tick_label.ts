@@ -20,9 +20,10 @@ export function renderTickLabel(
   ctx: CanvasRenderingContext2D,
   tick: AxisTick,
   showTicks: boolean,
-  { axisSpec: { position, timeAxisLayerCount }, dimension, size, debug, axisStyle }: AxisProps,
+  { axisSpec, dimension, size, debug, axisStyle }: AxisProps,
   layerGirth: number,
 ) {
+  const { position } = axisSpec;
   const labelStyle = axisStyle.tickLabel;
   const tickLabelProps = getTickLabelPosition(
     axisStyle,
@@ -48,7 +49,7 @@ export function renderTickLabel(
     }
   }
 
-  const tickOnTheSide = timeAxisLayerCount > 0 && Number.isFinite(tick.layer);
+  const tickOnTheSide = tick.multilayerTimeAxis && Number.isFinite(tick.layer);
 
   renderText(
     ctx,

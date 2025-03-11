@@ -15,6 +15,7 @@ import {
   getPosition,
   // getAxesGeometries,
   getTickLabelPosition,
+  isMultilayerTimeAxis,
   isXDomain,
   getScaleForAxisSpec,
 } from './axis_utils';
@@ -850,6 +851,7 @@ describe('Axis computational utils', () => {
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+      false,
     );
     const expectedLeftAxisPosition = {
       dimensions: {
@@ -883,6 +885,7 @@ describe('Axis computational utils', () => {
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+      false,
     );
 
     const expectedRightAxisPosition = {
@@ -917,6 +920,7 @@ describe('Axis computational utils', () => {
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+      false,
     );
     const { size: tickSize, padding: tickPadding } = LIGHT_THEME.axes.tickLine;
 
@@ -952,6 +956,7 @@ describe('Axis computational utils', () => {
       axis1Dims,
       emptySmScales,
       { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+      false,
     );
 
     const expectedBottomAxisPosition = {
@@ -1085,6 +1090,53 @@ describe('Axis computational utils', () => {
 
     const horizontalY = !isXDomain(Position.Top, 90);
     expect(horizontalY).toBe(true);
+  });
+
+  describe('isMultilayerTimeAxis', () => {
+    test('should return true if chartType is xy_axis, timeAxisLayerCount = 2, position is bottom, x axis type is time, rotation is 0', () => {
+      const multilayerTimeAxis = isMultilayerTimeAxis(
+        MockGlobalSpec.xAxis({ timeAxisLayerCount: 2, position: 'bottom' }),
+        'time',
+        0,
+      );
+      expect(multilayerTimeAxis).toBe(true);
+    });
+
+    test('should return false if x axis type is not time', () => {
+      const multilayerTimeAxis = isMultilayerTimeAxis(
+        MockGlobalSpec.xAxis({ timeAxisLayerCount: 2, position: 'bottom' }),
+        'ordinal',
+        0,
+      );
+      expect(multilayerTimeAxis).toBe(false);
+    });
+
+    test('should return false timeAxisLayerCount = 0', () => {
+      const multilayerTimeAxis = isMultilayerTimeAxis(
+        MockGlobalSpec.xAxis({ timeAxisLayerCount: 0, position: 'bottom' }),
+        'time',
+        0,
+      );
+      expect(multilayerTimeAxis).toBe(false);
+    });
+
+    test('should false true if chart type is not xy_axis', () => {
+      const multilayerTimeAxis = isMultilayerTimeAxis(
+        { chartType: 'metric', timeAxisLayerCount: 2, position: 'bottom' } as unknown as AxisSpec,
+        'time',
+        0,
+      );
+      expect(multilayerTimeAxis).toBe(false);
+    });
+
+    test('should return false if xy_axis, timeAxisLayerCount = 2, position is bottom, rotation is not 0', () => {
+      const multilayerTimeAxis = isMultilayerTimeAxis(
+        MockGlobalSpec.xAxis({ timeAxisLayerCount: 2, position: 'bottom' }),
+        'time',
+        90,
+      );
+      expect(multilayerTimeAxis).toBe(false);
+    });
   });
 
   test('should merge axis domains by group id', () => {
@@ -1315,7 +1367,17 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale, scale.ticks(), offset, (v: any) => formatter(v, tickFormatOption), 0, 0, true),
+      generateTicks(
+        axisSpec,
+        scale,
+        scale.ticks(),
+        offset,
+        (v: any) => formatter(v, tickFormatOption),
+        0,
+        0,
+        true,
+        false,
+      ),
     ).toEqual([
       { value: 1547208000000, label: '2019-01-11', position: 25.145833333333332, layer },
       { value: 1547251200000, label: '2019-01-12', position: 85.49583333333334, layer },
@@ -1363,6 +1425,7 @@ describe('Axis computational utils', () => {
       0,
       0,
       true,
+      false,
     );
     const tickLabels = ticks.map(({ label }) => ({ label }));
     expect(tickLabels).toEqual([
@@ -1410,7 +1473,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale, scale.ticks(), offset, (v) => tickFormat(v, tickFormatOption), 0, 0, true),
+      generateTicks(axisSpec, scale, scale.ticks(), offset, (v) => tickFormat(v, tickFormatOption), 0, 0, true, false),
     ).toEqual([
       {
         value: 1547208000000,
@@ -1419,6 +1482,7 @@ describe('Axis computational utils', () => {
         position: 25.145833333333332,
         domainClampedPosition: 25.145833333333332,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1430,6 +1494,7 @@ describe('Axis computational utils', () => {
         position: 85.49583333333334,
         domainClampedPosition: 85.49583333333334,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1441,6 +1506,7 @@ describe('Axis computational utils', () => {
         position: 145.84583333333333,
         domainClampedPosition: 145.84583333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1452,6 +1518,7 @@ describe('Axis computational utils', () => {
         position: 206.19583333333333,
         domainClampedPosition: 206.19583333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1463,6 +1530,7 @@ describe('Axis computational utils', () => {
         position: 266.54583333333335,
         domainClampedPosition: 266.54583333333335,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1474,6 +1542,7 @@ describe('Axis computational utils', () => {
         position: 326.8958333333333,
         domainClampedPosition: 326.8958333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1485,6 +1554,7 @@ describe('Axis computational utils', () => {
         position: 387.24583333333334,
         domainClampedPosition: 387.24583333333334,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1496,6 +1566,7 @@ describe('Axis computational utils', () => {
         position: 447.59583333333336,
         domainClampedPosition: 447.59583333333336,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1507,6 +1578,7 @@ describe('Axis computational utils', () => {
         position: 507.9458333333333,
         domainClampedPosition: 507.9458333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1518,6 +1590,7 @@ describe('Axis computational utils', () => {
         position: 568.2958333333333,
         domainClampedPosition: 568.2958333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1552,7 +1625,7 @@ describe('Axis computational utils', () => {
     const offset = 0;
     const tickFormatOption = { timeZone: 'utc+1' };
     expect(
-      generateTicks(axisSpec, scale, scale.ticks(), offset, (v) => tickFormat(v, tickFormatOption), 0, 0, true),
+      generateTicks(axisSpec, scale, scale.ticks(), offset, (v) => tickFormat(v, tickFormatOption), 0, 0, true, false),
     ).toEqual([
       {
         value: 1547208000000,
@@ -1561,6 +1634,7 @@ describe('Axis computational utils', () => {
         position: 25.145833333333332,
         domainClampedPosition: 25.145833333333332,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1572,6 +1646,7 @@ describe('Axis computational utils', () => {
         position: 85.49583333333334,
         domainClampedPosition: 85.49583333333334,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1583,6 +1658,7 @@ describe('Axis computational utils', () => {
         position: 145.84583333333333,
         domainClampedPosition: 145.84583333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1594,6 +1670,7 @@ describe('Axis computational utils', () => {
         position: 206.19583333333333,
         domainClampedPosition: 206.19583333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1605,6 +1682,7 @@ describe('Axis computational utils', () => {
         position: 266.54583333333335,
         domainClampedPosition: 266.54583333333335,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1616,6 +1694,7 @@ describe('Axis computational utils', () => {
         position: 326.8958333333333,
         domainClampedPosition: 326.8958333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1627,6 +1706,7 @@ describe('Axis computational utils', () => {
         position: 387.24583333333334,
         domainClampedPosition: 387.24583333333334,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1638,6 +1718,7 @@ describe('Axis computational utils', () => {
         position: 447.59583333333336,
         domainClampedPosition: 447.59583333333336,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1649,6 +1730,7 @@ describe('Axis computational utils', () => {
         position: 507.9458333333333,
         domainClampedPosition: 507.9458333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1660,6 +1742,7 @@ describe('Axis computational utils', () => {
         position: 568.2958333333333,
         domainClampedPosition: 568.2958333333333,
         layer,
+        multilayerTimeAxis: false,
         detailedLayer,
         direction: 'ltr',
         showGrid: true,
@@ -1685,6 +1768,7 @@ describe('Axis computational utils', () => {
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+          false,
         );
 
         const expectedLeftAxisPosition = {
@@ -1713,6 +1797,7 @@ describe('Axis computational utils', () => {
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+          false,
         );
 
         const expectedRightAxisPosition = {
@@ -1741,6 +1826,7 @@ describe('Axis computational utils', () => {
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+          false,
         );
 
         const expectedTopAxisPosition = {
@@ -1769,6 +1855,7 @@ describe('Axis computational utils', () => {
           axis1Dims,
           smScales,
           { top: cumTopSum, bottom: cumBottomSum, left: cumLeftSum, right: cumRightSum },
+          false,
         );
 
         const expectedBottomAxisPosition = {
