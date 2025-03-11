@@ -285,7 +285,7 @@ function getVisibleTickSets(
               detailedLayer,
               ticks,
               labelFormatter,
-              isXAxis && multilayerTimeAxis,
+              multilayerTimeAxis,
               showGrid,
             ),
             labelBox,
