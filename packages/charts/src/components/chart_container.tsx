@@ -37,7 +37,6 @@ import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty'
 import { deepEqual } from '../utils/fast_deep_equal';
 
 interface ChartContainerComponentStateProps {
-  chartType: ChartType | null;
   status: InitStatus;
   isChartEmpty?: boolean;
   pointerCursor: CSSProperties['cursor'];
@@ -253,7 +252,6 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
 
   if (internalChartRenderer === null || internalChartState === null || status !== InitStatus.Initialized) {
     return {
-      chartType: state.chartType,
       status,
       initialized,
       tooltipState,
@@ -269,7 +267,6 @@ const mapStateToProps = (state: GlobalChartState): ChartContainerComponentStateP
   }
 
   return {
-    chartType: state.chartType,
     status,
     initialized,
     tooltipState,
