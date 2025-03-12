@@ -10,11 +10,11 @@ import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import { getHeatmapTableSelector } from './get_heatmap_table';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getScale } from '../../../../state/selectors/compute_small_multiple_scales';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalSmallMultiplesDomains } from '../../../../state/selectors/get_internal_sm_domains';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
 import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
+import { getSmallMultiplesScale } from '../../../../state/utils/get_small_multiples_scale';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { isRasterTimeScale } from '../../layout/viewmodel/viewmodel';
@@ -45,8 +45,11 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
     smSpec,
     { smHDomain },
   ) => {
-    // TODO find a cleaner way without circular dependencies
-    const panelWidth = getScale(smHDomain, container.width, smSpec?.style?.horizontalPanelPadding).bandwidth;
+    const panelWidth = getSmallMultiplesScale(
+      smHDomain,
+      container.width,
+      smSpec?.style?.horizontalPanelPadding,
+    ).bandwidth;
 
     return withTextMeasure((textMeasure) => {
       const isLegendHorizontal = isHorizontalLegend(legendSize.position);

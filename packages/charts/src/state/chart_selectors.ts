@@ -6,14 +6,15 @@
  * Side Public License, v 1.
  */
 
-import type { CSSProperties, RefObject } from 'react';
+import type { CSSProperties } from 'react';
 
 import type { GlobalChartState } from './chart_state';
-import type { InitStatus } from './selectors/get_internal_is_intialized';
-import type { LegendItemLabel } from './selectors/get_legend_items_labels';
+import { InitStatus } from './selectors/get_internal_is_intialized';
+import type { TooltipVisibility } from './tooltip_visibility';
 import type { DebugState } from './types';
-import type { ChartType } from '../chart_types';
+import { DEFAULT_CSS_CURSOR } from '../common/constants';
 import type { LegendItem, LegendItemExtraValues } from '../common/legend';
+import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../common/legend';
 import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
 import type { AnchorPosition } from '../components/portal/types';
@@ -21,42 +22,37 @@ import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
-export interface TooltipVisibility {
-  visible: boolean;
-  isExternal: boolean;
-  isPinnable: boolean;
-  displayOnly: boolean;
+export interface LegendItemLabel {
+  label: string;
+  depth: number;
 }
 
 /** @internal */
-export type BackwardRef = () => RefObject<HTMLDivElement>;
+export const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 
 /**
- * A set of chart-type-dependant functions that required by all chart type
+ * A set of chart-type-dependant functions that are required by all chart types
  * @internal
  */
-export interface InternalChartState {
+export interface ChartSelectors {
   /**
-   * The chart type
+   * Returns the initialization status of the chart
+   * @param globalState
    */
-  chartType: ChartType;
   isInitialized(globalState: GlobalChartState): InitStatus;
-  /**
-   * Returns a JSX element with the chart rendered (lenged excluded)
-   * @param containerRef
-   * @param forwardStageRef
-   */
-  chartRenderer(containerRef: BackwardRef, forwardStageRef: RefObject<HTMLCanvasElement>): JSX.Element | null;
+
   /**
    * `true` if the brush is available for this chart type
    * @param globalState
    */
   isBrushAvailable(globalState: GlobalChartState): boolean;
+
   /**
    * `true` if the brush is available for this chart type
    * @param globalState
    */
   isBrushing(globalState: GlobalChartState): boolean;
+
   /**
    * `true` if the chart is empty (no data displayed)
    * @param globalState
@@ -75,21 +71,25 @@ export interface InternalChartState {
    * @param globalState
    */
   getLegendItems(globalState: GlobalChartState): LegendItem[];
+
   /**
    * Returns the list of extra values for each legend item
    * @param globalState
    */
   getLegendExtraValues(globalState: GlobalChartState): Map<SeriesKey, LegendItemExtraValues>;
+
   /**
    * Returns the CSS pointer cursor depending on the internal chart state
    * @param globalState
    */
   getPointerCursor(globalState: GlobalChartState): CSSProperties['cursor'];
+
   /**
    * Describe if the tooltip is visible and comes from an external source
    * @param globalState
    */
   isTooltipVisible(globalState: GlobalChartState): TooltipVisibility;
+
   /**
    * Get the tooltip information to display
    * @param globalState the GlobalChartState
@@ -146,4 +146,56 @@ export interface InternalChartState {
    * Determines if chart titles are displayed when provided
    */
   canDisplayChartTitles(globalState: GlobalChartState): boolean;
+}
+
+/** @internal */
+export type ChartSelectorsFactory = () => ChartSelectors;
+
+const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
+
+type CallbackCreator = () => (state: GlobalChartState) => void;
+
+/** @internal */
+export const createChartSelectorsFactory =
+  (
+    overrides: Partial<Omit<ChartSelectors, 'eventCallbacks'>> = {},
+    callbacksCreators: Array<CallbackCreator> = [],
+  ): ChartSelectorsFactory =>
+  () => {
+    const callbacks = callbacksCreators.map((cb) => cb());
+
+    return {
+      isInitialized: () => InitStatus.SpecNotInitialized,
+      isBrushAvailable: () => false,
+      isBrushing: () => false,
+      isChartEmpty: () => true,
+      getLegendItems: () => EMPTY_LEGEND_LIST,
+      getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
+      getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
+      getPointerCursor: () => DEFAULT_CSS_CURSOR,
+      isTooltipVisible: () => ({
+        visible: false,
+        isExternal: false,
+        displayOnly: false,
+        isPinnable: false,
+      }),
+      getTooltipInfo: () => EMPTY_TOOLTIP,
+      getTooltipAnchor: () => null,
+      getProjectionContainerArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+      getMainProjectionArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+      getBrushArea: () => null,
+      getDebugState: () => ({}),
+      getChartTypeDescription: () => '',
+      getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
+      canDisplayChartTitles: () => true,
+      ...overrides,
+      eventCallbacks: (state: GlobalChartState) => {
+        callbacks.forEach((cb) => cb(state));
+      },
+    };
+  };
+
+/** @internal */
+export interface ChartSelectorRegistry {
+  [chartType: string]: ChartSelectors;
 }

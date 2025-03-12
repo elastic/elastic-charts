@@ -40,7 +40,8 @@ import {
   setSelectedTooltipItems as setSelectedTooltipItemsAction,
   pinTooltip as pinTooltipAction,
 } from '../../state/actions/tooltip';
-import type { BackwardRef, GlobalChartState } from '../../state/chart_state';
+import type { GlobalChartState } from '../../state/chart_state';
+import type { BackwardRef } from '../../state/internal_chart_renderer';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
 import { getChartRotationSelector } from '../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
