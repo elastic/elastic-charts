@@ -157,7 +157,10 @@ type CallbackCreator = () => (state: GlobalChartState) => void;
 
 /** @internal */
 export const createChartSelectorsFactory =
-  (overrides: Partial<ChartSelectors> = {}, callbacksCreators: Array<CallbackCreator> = []): ChartSelectorsFactory =>
+  (
+    overrides: Partial<Omit<ChartSelectors, 'eventCallbacks'>> = {},
+    callbacksCreators: Array<CallbackCreator> = [],
+  ): ChartSelectorsFactory =>
   () => {
     const callbacks = callbacksCreators.map((cb) => cb());
 
@@ -185,10 +188,10 @@ export const createChartSelectorsFactory =
       getChartTypeDescription: () => '',
       getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
       canDisplayChartTitles: () => true,
+      ...overrides,
       eventCallbacks: (state: GlobalChartState) => {
         callbacks.forEach((cb) => cb(state));
       },
-      ...overrides,
     };
   };
 
