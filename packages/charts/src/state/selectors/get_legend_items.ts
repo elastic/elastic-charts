@@ -6,14 +6,19 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import type { LegendItem } from '../../common/legend';
 import { EMPTY_LEGEND_LIST } from '../../common/legend';
 import type { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
-export const getLegendItemsSelector = (state: GlobalChartState): LegendItem[] => {
-  if (state.internalChartState) {
-    return state.internalChartState.getLegendItems(state);
-  }
-  return EMPTY_LEGEND_LIST;
-};
+export const getLegendItemsSelector = createCustomCachedSelector(
+  [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
+  (globalChartState, internalChartState): LegendItem[] => {
+    if (internalChartState) {
+      return internalChartState.getLegendItems(globalChartState);
+    }
+    return EMPTY_LEGEND_LIST;
+  },
+);

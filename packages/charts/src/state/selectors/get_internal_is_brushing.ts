@@ -6,12 +6,17 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import type { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
-export const getInternalIsBrushingSelector = (state: GlobalChartState): boolean => {
-  if (state.internalChartState) {
-    return state.internalChartState.isBrushing(state);
-  }
-  return false;
-};
+export const getInternalIsBrushingSelector = createCustomCachedSelector(
+  [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
+  (globalChartState, internalChartState): boolean => {
+    if (internalChartState) {
+      return internalChartState.isBrushing(globalChartState);
+    }
+    return false;
+  },
+);

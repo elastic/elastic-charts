@@ -6,17 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
+import type { LegendItemLabel } from '../chart_selectors';
 import type { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
-export interface LegendItemLabel {
-  label: string;
-  depth: number;
-}
-
-/** @internal */
-export const getLegendItemsLabelsSelector = (state: GlobalChartState): LegendItemLabel[] =>
-  state.internalChartState?.getLegendItemsLabels(state) ?? [];
-
-/** @internal */
-export const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
+export const getLegendItemsLabelsSelector = createCustomCachedSelector(
+  [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
+  (globalChartState, internalChartState): LegendItemLabel[] =>
+    internalChartState?.getLegendItemsLabels(globalChartState) ?? [],
+);

@@ -20,15 +20,16 @@ import { ChartResizer } from './chart_resizer';
 import { ChartStatus } from './chart_status';
 import { Legend } from './legend/legend';
 import { getElementZIndex } from './portal/utils';
+import { chartTypeSelectors } from '../chart_types/chart_type_selectors';
 import { Colors } from '../common/colors';
 import type { LegendPositionConfig, PointerEvent } from '../specs';
 import { SpecsParser } from '../specs/specs_parser';
 import { updateChartTitles, updateParentDimensions } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
 import { onComputedZIndex } from '../state/actions/z_index';
-import type { GlobalChartState } from '../state/chart_state';
-import { createChartStore } from '../state/chart_state';
+import { createChartStore, type GlobalChartState } from '../state/chart_state';
 import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
+import { getInternalChartStateSelector, chartSelectorsRegistry } from '../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
 import type { ChartSize } from '../utils/chart_size';
 import { getChartSize, getFixedChartSize } from '../utils/chart_size';
@@ -77,6 +78,10 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     this.chartContainerRef = createRef();
     this.chartStageRef = createRef();
 
+    // set up the chart specific selector overrides
+    chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
+
+    // set up the redux store
     const id = props.id ?? uuidv4();
     this.chartStore = createChartStore(id, this.props.title, this.props.description);
     this.state = {
@@ -87,6 +92,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     };
     this.unsubscribeToStore = this.chartStore.subscribe(() => {
       const state = this.chartStore.getState();
+      const internalChartState = getInternalChartStateSelector(state);
       if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
         return;
       }
@@ -94,8 +100,8 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       const newState = getChartContainerUpdateStateSelector(state);
       if (!deepEqual(this.state, newState)) this.setState(newState);
 
-      if (state.internalChartState) {
-        state.internalChartState.eventCallbacks(state);
+      if (internalChartState) {
+        internalChartState.eventCallbacks(state);
       }
     });
   }

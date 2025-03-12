@@ -8,8 +8,8 @@
 
 import type { $Values } from 'utility-types';
 
-import { getInternalChartStateSelector } from './get_internal_chart_state';
 import type { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
 export const InitStatus = Object.freeze({
@@ -24,25 +24,21 @@ export const InitStatus = Object.freeze({
 export type InitStatus = $Values<typeof InitStatus>;
 
 /** @internal */
-export const getInternalIsInitializedSelector = (globalChartState: GlobalChartState): InitStatus => {
-  const {
-    parentDimensions: { width, height },
-    specsInitialized,
-  } = globalChartState;
+export const getIsInitializedSelector = createCustomCachedSelector(
+  [
+    (state: GlobalChartState) => state.specsInitialized,
+    (state: GlobalChartState) => state.parentDimensions.width,
+    (state: GlobalChartState) => state.parentDimensions.height,
+  ],
+  (specsInitialized, width, height): InitStatus => {
+    if (!specsInitialized) {
+      return InitStatus.SpecNotInitialized;
+    }
 
-  if (!specsInitialized) {
-    return InitStatus.SpecNotInitialized;
-  }
+    if (width <= 0 || height <= 0) {
+      return InitStatus.ParentSizeInvalid;
+    }
 
-  const internalChartState = getInternalChartStateSelector(globalChartState);
-
-  if (!internalChartState) {
     return InitStatus.MissingChartType;
-  }
-
-  if (width <= 0 || height <= 0) {
-    return InitStatus.ParentSizeInvalid;
-  }
-
-  return internalChartState.isInitialized(globalChartState);
-};
+  },
+);

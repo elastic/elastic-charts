@@ -14,8 +14,7 @@ import type { Store } from 'redux';
 import { LineSeries } from './line_series';
 import { LineAnnotation, AnnotationDomainType } from '../../../specs';
 import { SpecsParser } from '../../../specs/specs_parser';
-import type { GlobalChartState } from '../../../state/chart_state';
-import { createChartStore } from '../../../state/chart_state';
+import { createChartStore, type GlobalChartState } from '../../../state/chart_state';
 
 function LineAnnotationChart(props: { chartStore: Store<GlobalChartState> }) {
   return (

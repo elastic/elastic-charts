@@ -8,10 +8,15 @@
 
 import type { CSSProperties } from 'react';
 
+import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { DEFAULT_CSS_CURSOR } from '../../common/constants';
 import type { GlobalChartState } from '../chart_state';
+import { createCustomCachedSelector } from '../create_selector';
 
 /** @internal */
-export const getInternalPointerCursor = (state: GlobalChartState): CSSProperties['cursor'] => {
-  return state.internalChartState?.getPointerCursor(state) ?? DEFAULT_CSS_CURSOR;
-};
+export const getInternalPointerCursor = createCustomCachedSelector(
+  [(globalChartState: GlobalChartState) => globalChartState, getInternalChartStateSelector],
+  (globalChartState, internalChartState): CSSProperties['cursor'] => {
+    return internalChartState?.getPointerCursor(globalChartState) ?? DEFAULT_CSS_CURSOR;
+  },
+);

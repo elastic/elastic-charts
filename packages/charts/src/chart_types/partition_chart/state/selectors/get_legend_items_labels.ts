@@ -8,8 +8,8 @@
 
 import { getPartitionSpecs } from './get_partition_specs';
 import { getTrees } from './tree';
+import type { LegendItemLabel } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import type { LegendItemLabel } from '../../../../state/selectors/get_legend_items_labels';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getLegendLabelsAndValue } from '../../layout/utils/legend_labels';
 

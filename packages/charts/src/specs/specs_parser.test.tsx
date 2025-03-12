@@ -12,11 +12,15 @@ import { Provider } from 'react-redux';
 
 import { DEFAULT_SETTINGS_SPEC } from './default_settings_spec';
 import { SpecsParser } from './specs_parser';
+import { chartTypeSelectors } from '../chart_types/chart_type_selectors';
 import { BarSeries } from '../chart_types/specs';
 import type { BarSeriesSpec } from '../chart_types/xy_chart/utils/specs';
 import { ChartContainer } from '../components/chart_container';
 import { updateParentDimensions } from '../state/actions/chart_settings';
 import { createChartStore } from '../state/chart_state';
+import { chartSelectorsRegistry } from '../state/selectors/get_internal_chart_state';
+
+chartSelectorsRegistry.setChartSelectors(chartTypeSelectors);
 
 describe('Specs parser', () => {
   test('can mount the spec parser', () => {

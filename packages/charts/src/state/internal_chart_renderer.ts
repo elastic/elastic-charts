@@ -6,17 +6,18 @@
  * Side Public License, v 1.
  */
 
-import type { GlobalChartState, BackwardRef } from '../chart_state';
-
-type ChartRendererFn = (
-  containerRef: BackwardRef,
-  forwardStageRef: React.RefObject<HTMLCanvasElement>,
-) => JSX.Element | null;
+import type { RefObject } from 'react';
 
 /** @internal */
-export const getInternalChartRendererSelector = (state: GlobalChartState): ChartRendererFn => {
-  if (state.internalChartState) {
-    return state.internalChartState.chartRenderer;
-  }
-  return () => null;
-};
+export type BackwardRef = () => React.RefObject<HTMLDivElement>;
+
+/**
+ * Returns a JSX element with the chart rendered (legend excluded)
+ * @param containerRef
+ * @param forwardStageRef
+ * @internal
+ */
+export type ChartRenderer = (
+  containerRef: BackwardRef,
+  forwardStageRef: RefObject<HTMLCanvasElement>,
+) => JSX.Element | null;

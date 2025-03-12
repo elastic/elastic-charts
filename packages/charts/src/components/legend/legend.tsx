@@ -32,11 +32,10 @@ import {
 } from '../../state/actions/legend';
 import type { GlobalChartState } from '../../state/chart_state';
 import { getChartThemeSelector } from '../../state/selectors/get_chart_theme';
+import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 import { getInternalMainProjectionAreaSelector } from '../../state/selectors/get_internal_main_projection_area';
-import { getInternalProjectionContainerAreaSelector } from '../../state/selectors/get_internal_projection_container_area';
 import { getLegendConfigSelector } from '../../state/selectors/get_legend_config_selector';
-import { getLegendItemsSelector } from '../../state/selectors/get_legend_items';
 import { getLegendExtraValuesSelector } from '../../state/selectors/get_legend_items_values';
 import { getLegendSizeSelector } from '../../state/selectors/get_legend_size';
 import { getSettingsSpecSelector } from '../../state/selectors/get_settings_spec';
@@ -206,7 +205,8 @@ const EMPTY_DEFAULT_STATE: LegendStateProps = {
 };
 
 const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
-  if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
+  const internalChartState = getInternalChartStateSelector(state);
+  if (internalChartState === null || getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
     return EMPTY_DEFAULT_STATE;
   }
   const config = getLegendConfigSelector(state);
@@ -218,10 +218,10 @@ const mapStateToProps = (state: GlobalChartState): LegendStateProps => {
     debug,
     isBrushing: isBrushingSelector(state),
     chartDimensions: getInternalMainProjectionAreaSelector(state),
-    containerDimensions: getInternalProjectionContainerAreaSelector(state),
+    containerDimensions: internalChartState.getProjectionContainerArea(state),
     chartTheme: getChartThemeSelector(state),
     size: getLegendSizeSelector(state),
-    items: getLegendItemsSelector(state),
+    items: internalChartState.getLegendItems(state),
     extraValues: getLegendExtraValuesSelector(state),
     config,
   };
