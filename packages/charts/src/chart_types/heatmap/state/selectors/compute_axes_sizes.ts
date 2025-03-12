@@ -13,8 +13,8 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalSmallMultiplesDomains } from '../../../../state/selectors/get_internal_sm_domains';
 import { getLegendSizeSelector } from '../../../../state/selectors/get_legend_size';
-import { getSmallMultiplesScale } from '../../../../state/selectors/get_small_multiples_scale';
 import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
+import { getSmallMultiplesScale } from '../../../../state/utils/get_small_multiples_scale';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { isHorizontalLegend } from '../../../../utils/legend';
 import { isRasterTimeScale } from '../../layout/viewmodel/viewmodel';
@@ -45,7 +45,6 @@ export const computeAxesSizesSelector = createCustomCachedSelector(
     smSpec,
     { smHDomain },
   ) => {
-    // TODO find a cleaner way without circular dependencies
     const panelWidth = getSmallMultiplesScale(
       smHDomain,
       container.width,

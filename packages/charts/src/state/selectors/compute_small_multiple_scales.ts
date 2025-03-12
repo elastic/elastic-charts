@@ -8,10 +8,10 @@
 
 import { getInternalMainProjectionAreaSelector } from './get_internal_main_projection_area';
 import { getInternalSmallMultiplesDomains } from './get_internal_sm_domains';
-import { getSmallMultiplesScale } from './get_small_multiples_scale';
 import { getSmallMultiplesSpec } from './get_small_multiples_spec';
 import type { SmallMultipleScales } from '../../common/panel_utils';
 import { createCustomCachedSelector } from '../create_selector';
+import { getSmallMultiplesScale } from '../utils/get_small_multiples_scale';
 
 /**
  * Return the small multiple scales for horizontal and vertical grids

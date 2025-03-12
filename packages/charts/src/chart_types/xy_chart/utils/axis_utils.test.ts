@@ -27,7 +27,7 @@ import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs'
 // import { MockStore } from '../../../mocks/store/store';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
-import { getSmallMultiplesScale } from '../../../state/selectors/get_small_multiples_scale';
+import { getSmallMultiplesScale } from '../../../state/utils/get_small_multiples_scale';
 import { Position, mergePartial, HorizontalAlignment, VerticalAlignment } from '../../../utils/common';
 import { niceTimeFormatter } from '../../../utils/data/formatters';
 import type { OrdinalDomain } from '../../../utils/domain';
