@@ -27,16 +27,4 @@ export const chartSelectorsFactory = createChartSelectorsFactory({
     };
   },
   getChartTypeDescription: () => 'Word cloud chart',
-
-  // TODO
-  getProjectionContainerArea: () => ({ width: 0, height: 0, top: 0, left: 0 }),
-
-  // TODO
-  getMainProjectionArea: () => ({ width: 0, height: 0, top: 0, left: 0 }),
-
-  // TODO
-  getBrushArea: () => null,
-
-  // TODO
-  getDebugState: () => ({}),
 });
