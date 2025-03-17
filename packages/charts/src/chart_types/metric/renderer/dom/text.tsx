@@ -124,7 +124,7 @@ export const MetricText: React.FunctionComponent<{
         <div>
           {visibility.extra && (
             <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
-              {extra}
+              {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: highContrastTextColor })}
             </p>
           )}
         </div>
