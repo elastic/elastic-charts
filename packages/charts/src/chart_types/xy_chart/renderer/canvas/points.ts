@@ -28,6 +28,7 @@ export function renderPoints(
   points: PointGeometry[],
   { opacity }: GeometryStateStyle,
   pointStyle: PointStyle,
+  isolatedPointStyle: { enabled: boolean } & Omit<PointStyle, 'radius'>,
   lineStrokeWidth: number,
   seriesMinPointDistance: number,
   pointsDistanceVisibilityThreshold: number,
@@ -37,10 +38,10 @@ export function renderPoints(
   // In this case the point should be visible if the visibility style is set to `auto`
   const isHiddenOnAuto = pointStyle.visible === 'auto' && seriesMinPointDistance < pointsDistanceVisibilityThreshold;
   const hideDataPoints = pointStyle.visible === 'never' || isHiddenOnAuto;
-  const hideIsolatedDataPoints = hasConnectingLine && hideDataPoints;
+  const hideIsolatedDataPoints =
+    hasConnectingLine || !isolatedPointStyle.enabled || isolatedPointStyle.visible === 'never';
 
   const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
-
   points.forEach(({ x, y, radius, transform, style, isolated }) => {
     if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
       return;

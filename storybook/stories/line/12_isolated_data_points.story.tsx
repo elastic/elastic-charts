@@ -19,7 +19,8 @@ import { getMultiSelectKnob } from '../utils/knobs/custom';
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const fitEnabled = boolean('enable fit function', false);
-  const [Series] = customKnobs.enum.xySeries('series type', 'line', { exclude: ['bar', 'bubble'] });
+  const [Series, seriesType] = customKnobs.enum.xySeries('series type', 'line', { exclude: ['bar', 'bubble'] });
+  const stackAreas = boolean('stack areas', false);
   const maxDataPoints = number('max data points', 60, {
     range: true,
     min: 0,
@@ -102,6 +103,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xAccessor={0}
         yAccessors={[1]}
         splitSeriesAccessors={[2]}
+        stackAccessors={stackAreas && seriesType === 'area' ? [''] : undefined}
         data={[
           ...KIBANA_METRICS.metrics.kibana_os_load.v1.data.slice(0, maxDataPoints).map((d, i) => {
             if ([1, 10, 12, 20, 22, 24, 28].includes(i)) {

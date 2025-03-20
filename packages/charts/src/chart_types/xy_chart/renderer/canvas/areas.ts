@@ -73,6 +73,7 @@ export function renderAreas(
             points,
             geometryStyle,
             style.point,
+            style.isolatedPoint,
             style.line.strokeWidth,
             minPointDistance,
             style.pointVisibilityMinDistance,
