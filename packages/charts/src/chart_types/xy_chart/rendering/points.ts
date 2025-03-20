@@ -245,7 +245,7 @@ export function getRadiusFn(
 }
 
 function yAccessorForIsolatedPointCheck(datum: DataSeriesDatum): number | null {
-  return datum.filled?.y1 ? null : datum.y1;
+  return isNil(datum.initialY1) || !isNil(datum.filled?.y1) ? null : datum.y1;
 }
 
 function isIsolatedPoint(
