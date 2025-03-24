@@ -93,6 +93,18 @@ test.describe('Metric', () => {
     );
   });
 
+  test.describe('Extra badge props', () => {
+    for (const breakpoint of ['small', 'big']) {
+      for (const badge of ['icon', 'value', 'both']) {
+        test(`extra badge with ${breakpoint} breakpoints with trend ${badge}`, async ({ page }) => {
+          await common.expectChartAtUrlToMatchScreenshot(page)(
+            `http://localhost:9001/?path=/story/metric-alpha--extra-badges&knob-Show%20breakpoints=${breakpoint}&knob-Trend%20option=${badge}`,
+          );
+        });
+      }
+    }
+  });
+
   pwEach.describe(['trend', 'bar', 'none'])(
     (v) => `Metric - ${v} type`,
     (type) => {
