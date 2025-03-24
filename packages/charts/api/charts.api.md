@@ -2039,7 +2039,10 @@ export type MetricBase = {
         verticalAlign: 'middle';
     }>;
     subtitle?: string;
-    extra?: ReactElement;
+    extra?: ReactElement | ComponentType<{
+        fontSize: number;
+        color: string;
+    }>;
     icon?: ComponentType<{
         width: number;
         height: number;
