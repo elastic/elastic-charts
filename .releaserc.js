@@ -42,36 +42,36 @@ module.exports = {
     ],
     '@semantic-release/release-notes-generator',
     '@semantic-release/changelog',
-    [
-      '@semantic-release/exec',
-      {
-        prepareCmd: 'node ./packages/charts/scripts/move_txt_files.js',
-        execCwd: '.',
-      },
-    ],
-    [
-      '@semantic-release/github',
-      {
-        successComment: false,
-        failComment: false,
-      },
-    ],
-    [
-      '@semantic-release/npm',
-      {
-        // must point to the child package
-        pkgRoot: './packages/charts',
-      },
-    ],
-    [
-      '@semantic-release/git',
-      {
-        assets: ['./packages/charts/package.json', 'CHANGELOG.md'],
-      },
-    ],
     ...(isDryRun
       ? []
       : [
+          [
+            '@semantic-release/exec',
+            {
+              prepareCmd: 'node ./packages/charts/scripts/move_txt_files.js',
+              execCwd: '.',
+            },
+          ],
+          [
+            '@semantic-release/github',
+            {
+              successComment: false,
+              failComment: false,
+            },
+          ],
+          [
+            '@semantic-release/npm',
+            {
+              // must point to the child package
+              pkgRoot: './packages/charts',
+            },
+          ],
+          [
+            '@semantic-release/git',
+            {
+              assets: ['./packages/charts/package.json', 'CHANGELOG.md'],
+            },
+          ],
           [
             'semantic-release-slack-bot',
             {
