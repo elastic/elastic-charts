@@ -1,3 +1,15 @@
+# [70.0.0](https://github.com/elastic/elastic-charts/compare/v69.2.0...v70.0.0) (2025-03-26)
+
+
+### Features
+
+* **xy:** change timeAxisLayerCount the default from 0 to 2 ([#2582](https://github.com/elastic/elastic-charts/issues/2582)) ([81c32c7](https://github.com/elastic/elastic-charts/commit/81c32c703cb29ab6c5a8b06708c270e65558a4c6))
+
+
+### BREAKING CHANGES
+
+* **xy:** The timeAxisLayerCount options now defaults to 2 instead of 0. The multilayer time axis is now the default style.
+
 # [69.2.0](https://github.com/elastic/elastic-charts/compare/v69.1.1...v69.2.0) (2025-03-26)
 
 
