@@ -1,3 +1,10 @@
+# [69.2.0](https://github.com/elastic/elastic-charts/compare/v69.1.1...v69.2.0) (2025-03-26)
+
+
+### Features
+
+* **metric:** Expose both font size and color stylings on the extra prop ([#2627](https://github.com/elastic/elastic-charts/issues/2627)) ([2d21118](https://github.com/elastic/elastic-charts/commit/2d2111899588d6619dbe4152fd8113cd2215fa1a))
+
 ## [69.1.1](https://github.com/elastic/elastic-charts/compare/v69.1.0...v69.1.1) (2025-03-07)
 
 
