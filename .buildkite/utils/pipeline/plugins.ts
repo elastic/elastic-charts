@@ -12,7 +12,7 @@ import path from 'path';
 
 import { ECH_CHECK_ID } from '../constants';
 
-const DOCKER_VERSION = '3.12.0';
+const DOCKER_VERSION = '5.12.0';
 
 // TODO make this more safe if version is range
 export const NODE_VERSION = fs.readFileSync(path.resolve(__dirname, '../../../.nvmrc')).toString().trim();
