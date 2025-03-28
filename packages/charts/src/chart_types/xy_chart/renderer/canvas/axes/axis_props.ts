@@ -27,7 +27,6 @@ export interface AxisProps {
   debug: boolean;
   renderingArea: Dimensions;
   layerGirth: number;
-  multilayerTimeAxis: boolean;
 }
 
 /** @internal */

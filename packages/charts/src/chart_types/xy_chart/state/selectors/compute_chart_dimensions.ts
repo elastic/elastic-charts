@@ -7,13 +7,11 @@
  */
 
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
-import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getAxesStylesSelector } from './get_axis_styles';
 import { getAxisSpecsSelector } from './get_specs';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getChartContainerDimensionsSelector } from '../../../../state/selectors/get_chart_container_dimensions';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
-import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { getSmallMultiplesSpec } from '../../../../state/selectors/get_small_multiples_spec';
 import { computeChartDimensions } from '../../utils/dimensions';
 
@@ -26,8 +24,6 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     getAxesStylesSelector,
     getAxisSpecsSelector,
     getSmallMultiplesSpec,
-    getScaleConfigsFromSpecsSelector,
-    getSettingsSpecSelector,
   ],
   computeChartDimensions,
 );

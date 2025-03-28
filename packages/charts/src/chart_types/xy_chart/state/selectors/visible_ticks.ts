@@ -11,8 +11,6 @@ import type { JoinedAxisData } from './compute_axis_ticks_dimensions';
 import { getJoinedVisibleAxesData, getLabelBox } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
-import type { ScaleConfigs } from './get_api_scale_configs';
-import { getScaleConfigsFromSpecsSelector } from './get_api_scale_configs';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import type { SmallMultipleScales } from '../../../../common/panel_utils';
@@ -32,7 +30,6 @@ import type { Size } from '../../../../utils/dimensions';
 import type { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
 import { isHorizontalAxis, isVerticalAxis } from '../../utils/axis_type_utils';
-import { isMultilayerTimeAxis } from '../../utils/axis_utils';
 import type { AxisTick, TextDirection, TickLabelBounds } from '../../utils/axis_utils';
 import { computeXScale } from '../../utils/scales';
 import type { SeriesDomainsAndData } from '../utils/types';
@@ -78,7 +75,6 @@ export function generateTicks(
   layer: number | undefined,
   detailedLayer: number,
   showGrid: boolean,
-  multilayerTimeAxis: boolean,
 ): AxisTick[] {
   const getDirection = getDirectionFn(scale);
   const isContinuous = isContinuousScale(scale);
@@ -95,7 +91,6 @@ export function generateTicks(
       detailedLayer,
       showGrid,
       direction: getDirection(label),
-      multilayerTimeAxis,
     };
   });
 }
@@ -111,11 +106,11 @@ function getVisibleTicks(
   layer: number | undefined,
   detailedLayer: number,
   ticks: (number | string)[],
-  multilayerTimeAxis: boolean = false,
+  isMultilayerTimeAxis: boolean = false,
   showGrid = true,
 ): AxisTick[] {
   const isSingleValueScale = scale.domain[0] === scale.domain[1];
-  const makeRaster = enableHistogramMode && scale.bandwidth > 0 && !multilayerTimeAxis;
+  const makeRaster = enableHistogramMode && scale.bandwidth > 0 && !isMultilayerTimeAxis;
   const ultimateTick = ticks.at(-1);
   const penultimateTick = ticks.at(-2);
   if (makeRaster && !isSingleValueScale && typeof penultimateTick === 'number' && typeof ultimateTick === 'number') {
@@ -143,7 +138,6 @@ function getVisibleTicks(
             detailedLayer: 0,
             direction: 'rtl',
             showGrid,
-            multilayerTimeAxis,
           },
           {
             value: firstTickValue + scale.minInterval,
@@ -155,24 +149,13 @@ function getVisibleTicks(
             detailedLayer: 0,
             direction: 'rtl',
             showGrid,
-            multilayerTimeAxis,
           },
         ]
-      : generateTicks(
-          axisSpec,
-          scale,
-          ticks,
-          offset,
-          labelFormatter,
-          layer,
-          detailedLayer,
-          showGrid,
-          multilayerTimeAxis,
-        );
+      : generateTicks(axisSpec, scale, ticks, offset, labelFormatter, layer, detailedLayer, showGrid);
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;
-  const bypassOverlapCheck = showOverlappingLabels || multilayerTimeAxis;
+  const bypassOverlapCheck = showOverlappingLabels || isMultilayerTimeAxis;
   return bypassOverlapCheck
     ? allTicks
     : allTicks
@@ -204,7 +187,7 @@ function getVisibleTickSet(
   detailedLayer: number,
   ticks: (number | string)[],
   labelFormatter: AxisLabelFormatter,
-  multilayerTimeAxis = false,
+  isMultilayerTimeAxis = false,
   showGrid = true,
 ): AxisTick[] {
   const vertical = isVerticalAxis(axisSpec.position);
@@ -222,7 +205,7 @@ function getVisibleTickSet(
     layer,
     detailedLayer,
     ticks,
-    multilayerTimeAxis,
+    isMultilayerTimeAxis,
     showGrid,
   );
 }
@@ -231,7 +214,6 @@ function getVisibleTickSet(
 export const getVisibleTickSetsSelector = createCustomCachedSelector(
   [
     getSettingsSpecSelector,
-    getScaleConfigsFromSpecsSelector,
     getJoinedVisibleAxesData,
     computeSeriesDomainsSelector,
     computeSmallMultipleScalesSelector,
@@ -244,7 +226,6 @@ export const getVisibleTickSetsSelector = createCustomCachedSelector(
 
 function getVisibleTickSets(
   { rotation: chartRotation, locale, dow }: Pick<SettingsSpec, 'rotation' | 'locale' | 'dow'>,
-  scaleConfigs: ScaleConfigs,
   joinedAxesData: Map<AxisId, JoinedAxisData>,
   { xDomain, yDomains }: Pick<SeriesDomainsAndData, 'xDomain' | 'yDomains'>,
   smScales: SmallMultipleScales,
@@ -261,7 +242,7 @@ function getVisibleTickSets(
         const domain = isXAxis ? xDomain : yDomain;
         const range = axisMinMax(axisSpec.position, chartRotation, panel);
         const maxTickCount = domain?.desiredTickCount ?? 0;
-        const multilayerTimeAxis = isMultilayerTimeAxis(axisSpec, scaleConfigs.x.type, chartRotation);
+        const isMultilayerTimeAxis = domain?.type === ScaleType.Time && timeAxisLayerCount > 0;
         // TODO: remove this fallback when integersOnly is removed
         const maximumFractionDigits = mfd ?? (integersOnly ? 0 : undefined);
 
@@ -286,7 +267,7 @@ function getVisibleTickSets(
               detailedLayer,
               ticks,
               labelFormatter,
-              multilayerTimeAxis,
+              isMultilayerTimeAxis,
               showGrid,
             ),
             labelBox,
@@ -353,7 +334,7 @@ function getVisibleTickSets(
           return { fallbackAskedTickCount };
         };
 
-        if (multilayerTimeAxis) {
+        if (isMultilayerTimeAxis) {
           const scale = getScale(0); // the scale is only needed for its non-tick props like step, bandwidth, ...
           if (!scale || !isContinuousScale(scale)) throw new Error('Scale generation for the multilayer axis failed');
           return acc.set(

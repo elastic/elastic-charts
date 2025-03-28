@@ -60,6 +60,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
         position={Position.Bottom}
         title={TEST_DATASET_DISCOVER.xAxisLabel}
         tickFormat={formatter}
+        style={
+          multiLayerAxis
+            ? {
+                tickLine: { size: 0.0001, padding: 4 },
+                tickLabel: { alignment: { horizontal: Position.Left, vertical: Position.Bottom } },
+              }
+            : {}
+        }
       />
 
       <HistogramBarSeries

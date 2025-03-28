@@ -85,10 +85,11 @@ const looseFormatter = (d: any) => (d < 100 ? String(d) : moment(d).format('L'))
 
 export const Example: ChartsStory = (_, { title, description }) => {
   const maxMetric = 30;
-  const debug = boolean('Debug', false);
+  const debug = boolean('Debug', true);
   const showLegend = boolean('show legend', true);
   const rotation = customKnobs.enum.rotation();
   const side = customKnobs.enum.position('Side', Position.Bottom);
+  const padding = number('TickLine padding for markerBody', 30, { step: 5, min: 0, max: 100 });
   const start = moment('4/1/2020').startOf('d');
   const metric = number('Annotation metric', maxMetric, { step: 1, min: 0, max: maxMetric, range: true });
   const isVerticalSide = isVerticalAxis(side);
@@ -102,8 +103,14 @@ export const Example: ChartsStory = (_, { title, description }) => {
         maximumFractionDigits={0}
         tickFormat={looseFormatter}
         position={side === Position.Right ? Position.Right : Position.Left}
+        style={{ tickLine: { padding: isVerticalSide ? padding : undefined } }}
       />
-      <Axis id="x" tickFormat={looseFormatter} position={side === Position.Top ? Position.Top : Position.Bottom} />
+      <Axis
+        id="x"
+        style={{ tickLine: { padding: isVerticalSide ? undefined : padding } }}
+        tickFormat={looseFormatter}
+        position={side === Position.Top ? Position.Top : Position.Bottom}
+      />
       {isYDomain ? (
         <LineAnnotation
           id="annotation_y"

@@ -30,7 +30,7 @@ export const Axis = specComponentFactory<AxisSpec>()(
     showOverlappingTicks: false,
     showOverlappingLabels: false,
     position: Position.Left,
-    timeAxisLayerCount: 2,
+    timeAxisLayerCount: 0,
   },
 );
 

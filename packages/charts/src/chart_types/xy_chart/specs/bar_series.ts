@@ -47,14 +47,7 @@ export const BarSeries = function <D extends BaseDatum = Datum>(
   >,
 ) {
   const { defaults, overrides } = buildProps;
-  const constraints: Pick<typeof props, 'enableHistogramMode'> = {};
-
-  // enable histogram mode for time scales to align with the multi-layer time axis.
-  if (props.xScaleType === ScaleType.Time) {
-    constraints.enableHistogramMode = true;
-  }
-
-  useSpecFactory<BarSeriesSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides, ...constraints });
+  useSpecFactory<BarSeriesSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
   return null;
 };
 

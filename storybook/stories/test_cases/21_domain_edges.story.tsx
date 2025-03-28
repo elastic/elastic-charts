@@ -81,7 +81,24 @@ export const Example: ChartsStory = (_, { title, description }) => {
             },
           }}
         />
-        <Axis id="x" tickFormat={tickFormat} position={Position.Bottom} gridLine={{ visible: true }} />
+        <Axis
+          id="x"
+          tickFormat={tickFormat}
+          position={Position.Bottom}
+          gridLine={{ visible: true }}
+          timeAxisLayerCount={2}
+          style={{
+            tickLabel: {
+              alignment: { horizontal: 'left' },
+              padding: 0,
+            },
+            tickLine: {
+              visible: true,
+              padding: 0,
+              size: 5,
+            },
+          }}
+        />
         <Axis id="y" position={Position.Left} gridLine={{ visible: true }} />
         <HistogramBarSeries
           id="Area"
@@ -114,7 +131,24 @@ export const Example: ChartsStory = (_, { title, description }) => {
             },
           }}
         />
-        <Axis id="x" tickFormat={tickFormat} position={Position.Bottom} gridLine={{ visible: true }} />
+        <Axis
+          id="x"
+          tickFormat={tickFormat}
+          position={Position.Bottom}
+          gridLine={{ visible: true }}
+          timeAxisLayerCount={2}
+          style={{
+            tickLabel: {
+              alignment: { horizontal: 'left' },
+              padding: 0,
+            },
+            tickLine: {
+              visible: true,
+              padding: 0,
+              size: 5,
+            },
+          }}
+        />
         <Axis id="y" position={Position.Left} gridLine={{ visible: true }} />
         <LineSeries
           id="Line"
@@ -150,6 +184,18 @@ export const Example: ChartsStory = (_, { title, description }) => {
           id="x"
           position={Position.Bottom}
           gridLine={{ visible: true }}
+          timeAxisLayerCount={2}
+          style={{
+            tickLabel: {
+              alignment: { horizontal: 'center' },
+              padding: 0,
+            },
+            tickLine: {
+              visible: true,
+              padding: 0,
+              size: 5,
+            },
+          }}
           tickFormat={(d) => niceTimeFormatter(domain)(d, { timeZone: 'UTC' })}
         />
         <Axis id="y" position={Position.Left} gridLine={{ visible: true }} />

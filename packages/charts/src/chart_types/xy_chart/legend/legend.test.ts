@@ -71,7 +71,7 @@ const axisSpec: AxisSpec = {
   position: Position.Left,
   style,
   tickFormat: (value: any) => `${value}`,
-  timeAxisLayerCount: 2,
+  timeAxisLayerCount: 0,
 };
 axesSpecs.push(axisSpec);
 

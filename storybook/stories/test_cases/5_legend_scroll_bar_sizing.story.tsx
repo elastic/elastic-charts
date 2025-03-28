@@ -76,7 +76,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         yScaleType={ScaleType.Linear}
         splitSeriesAccessors={['g']}
         stackAccessors={['g']}
-        data={data.map((d) => ({ ...d, x: new Date(d.x).getTime() }))}
+        data={data}
       />
     </Chart>
   );
