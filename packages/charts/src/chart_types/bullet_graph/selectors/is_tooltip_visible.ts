@@ -8,9 +8,9 @@
 
 import { getTooltipInfo } from './get_tooltip_info';
 import { TooltipType } from '../../../specs';
-import type { TooltipVisibility } from '../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../state/create_selector';
 import { getTooltipSpecSelector } from '../../../state/selectors/get_tooltip_spec';
+import type { TooltipVisibility } from '../../../state/tooltip_visibility';
 
 /** @internal */
 export const isTooltipVisible = createCustomCachedSelector(

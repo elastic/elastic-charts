@@ -9,11 +9,9 @@
 import type { RefObject } from 'react';
 import React from 'react';
 
-import { HighlighterFromHover } from './highlighter_hover';
-import { HighlighterFromLegend } from './highlighter_legend';
-import { Tooltip } from '../../../../components/tooltip/tooltip';
-import type { BackwardRef, ChartRenderer } from '../../../../state/internal_chart_renderer';
-import { Partition } from '../canvas/partition';
+import { BulletRenderer } from './renderer/canvas';
+import { Tooltip } from '../../components/tooltip/tooltip';
+import type { BackwardRef, ChartRenderer } from '../../state/internal_chart_renderer';
 
 /** @internal */
 export const chartRenderer: ChartRenderer = (
@@ -21,9 +19,7 @@ export const chartRenderer: ChartRenderer = (
   forwardStageRef: RefObject<HTMLCanvasElement>,
 ) => (
   <>
+    <BulletRenderer forwardStageRef={forwardStageRef} />
     <Tooltip getChartContainerRef={containerRef} />
-    <Partition forwardStageRef={forwardStageRef} />
-    <HighlighterFromHover />
-    <HighlighterFromLegend />
   </>
 );

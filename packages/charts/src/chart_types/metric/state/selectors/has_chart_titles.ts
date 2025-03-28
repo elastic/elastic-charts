@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import type { GlobalChartState } from './../../../../state/chart_state';
 import { canDisplayChartTitles } from './can_display_chart_titles';
+import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 const getChartTitleOrDescription = ({ title, description }: GlobalChartState) => Boolean(title || description);
