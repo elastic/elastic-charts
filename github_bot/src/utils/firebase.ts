@@ -18,7 +18,7 @@ export function deleteDeployment(pr: number) {
   try {
     const channelId = `pr-${pr}`;
     const gacFilePath = createGACFile();
-    execSync(`npx firebase-tools hosting:channel:delete ${channelId} --force`, {
+    execSync(`npx firebase-tools@13.35.1 hosting:channel:delete ${channelId} --force`, {
       encoding: 'utf8',
       stdio: 'pipe',
       env: {

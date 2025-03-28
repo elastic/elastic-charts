@@ -42,8 +42,8 @@ export const firebaseDeploy = async (opt: DeployOptions = {}) => {
   const channelId = getChannelId();
   const gacFile = createGACFile();
   const command = channelId
-    ? `npx firebase-tools hosting:channel:deploy ${channelId} --expires ${expires} --no-authorized-domains --json`
-    : `npx firebase-tools deploy --only hosting --json`;
+    ? `npx firebase-tools@13.35.1 hosting:channel:deploy ${channelId} --expires ${expires} --no-authorized-domains --json`
+    : `npx firebase-tools@13.35.1 deploy --only hosting --json`;
   const stdout = await exec(command, {
     cwd: './e2e_server',
     stdio: 'pipe',
@@ -110,7 +110,7 @@ export async function getOrCreateDeploymentUrl(): Promise<string> {
   let channelUrl: string | undefined;
 
   try {
-    const deploymentJson = await exec(`npx firebase-tools hosting:channel:open ${channelId} --json`, {
+    const deploymentJson = await exec(`npx firebase-tools@13.35.1 hosting:channel:open ${channelId} --json`, {
       cwd: './e2e_server',
       stdio: 'pipe',
       allowFailure: true,
@@ -128,7 +128,7 @@ export async function getOrCreateDeploymentUrl(): Promise<string> {
   if (channelUrl) return channelUrl;
 
   try {
-    const deploymentJson = await exec(`npx firebase-tools hosting:channel:create ${channelId} --json`, {
+    const deploymentJson = await exec(`npx firebase-tools@13.35.1 hosting:channel:create ${channelId} --json`, {
       cwd: './e2e_server',
       stdio: 'pipe',
       allowFailure: true,
