@@ -15,8 +15,7 @@ import { ECH_CHECK_ID } from '../constants';
 const DOCKER_VERSION = '5.12.0';
 
 // TODO make this more safe if version is range
-export const NODE_VERSION = fs.readFileSync(path.resolve(__dirname, '../../../.nvmrc')).toString().trim();
-if (!NODE_VERSION) throw new Error('Error: Unable to find node verion from .nvmrc');
+export const NODE_VERSION = '20.11.1';
 
 // e.g. '└─ @playwright/test@1.18.1'
 const yarnListPlaywright = execSync('yarn list --pattern "@playwright/test" --depth=0 | grep playwright/test', {
