@@ -1,3 +1,10 @@
+## [69.2.1](https://github.com/elastic/elastic-charts/compare/v69.2.0...v69.2.1) (2025-03-28)
+
+
+### Reverts
+
+* "feat(xy)!: change `timeAxisLayerCount` the default from `0` to `2` ([#2582](https://github.com/elastic/elastic-charts/issues/2582))" ([a9d3fcb](https://github.com/elastic/elastic-charts/commit/a9d3fcb454d0408ce16aa15ac075e1475da6c25d))
+
 # [69.2.0](https://github.com/elastic/elastic-charts/compare/v69.1.1...v69.2.0) (2025-03-26)
 
 
