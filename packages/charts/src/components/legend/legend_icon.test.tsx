@@ -34,7 +34,7 @@ describe('Legend icons', () => {
     );
     const legendIconWrapper = wrapper.find(LegendIcon);
     expect(legendIconWrapper.exists).toBeTruthy();
-    expect(legendIconWrapper.first().getElement().props.color).toEqual('#54B399');
+    expect(legendIconWrapper.first().getElement().props.color).toEqual('#16C5C0');
   });
 
   it('should align styles - stroke', () => {
