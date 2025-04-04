@@ -24,7 +24,8 @@ import {
   Settings,
 } from '@elastic/charts';
 import { SeededDataGenerator } from '@elastic/charts/src/mocks/utils';
-import { palettes } from '@elastic/charts/src/utils/themes/colors';
+import { BOREALIS_COLORS_PALETTE } from '@elastic/charts/src/utils/themes/borealis_colors';
+import { palettes } from '@elastic/charts/src/utils/themes/legacy_colors';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -128,12 +129,12 @@ export const Example: ChartsStory = (_, { title, description }) => {
       vizColors: select(
         'vizColors',
         {
-          colorBlind: palettes.echPaletteColorBlind.colors,
+          colorBlind: BOREALIS_COLORS_PALETTE,
           darkBackground: palettes.echPaletteForDarkBackground.colors,
           lightBackground: palettes.echPaletteForLightBackground.colors,
           forStatus: palettes.echPaletteForStatus.colors,
         },
-        palettes.echPaletteColorBlind.colors,
+        BOREALIS_COLORS_PALETTE,
         'Colors',
       ),
       defaultVizColor: DEFAULT_MISSING_COLOR,

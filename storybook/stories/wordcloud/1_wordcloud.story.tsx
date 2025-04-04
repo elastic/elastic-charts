@@ -15,7 +15,8 @@ import { Chart, Settings, Wordcloud } from '@elastic/charts';
 import type { WordModel } from '@elastic/charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
 import { WeightFn } from '@elastic/charts/src/chart_types/wordcloud/layout/types/viewmodel_types';
 import { getRandomNumberGenerator } from '@elastic/charts/src/mocks/utils';
-import { palettes as euiPalettes } from '@elastic/charts/src/utils/themes/colors';
+import { BOREALIS_COLORS_PALETTE } from '@elastic/charts/src/utils/themes/borealis_colors';
+import { palettes as euiPalettes } from '@elastic/charts/src/utils/themes/legacy_colors';
 
 import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
@@ -53,7 +54,7 @@ const palettes = {
     return euiPalettes.echPaletteForLightBackground.colors[i % euiPalettes.echPaletteForLightBackground.colors.length];
   },
   euiColorBlind: (d: RawDatum, i: number) => {
-    return euiPalettes.echPaletteColorBlind.colors[i % euiPalettes.echPaletteColorBlind.colors.length];
+    return BOREALIS_COLORS_PALETTE[i % BOREALIS_COLORS_PALETTE.length];
   },
 };
 

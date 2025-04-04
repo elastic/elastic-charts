@@ -6,11 +6,6 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export interface ColorScales {
-  [key: string]: string;
-}
-
 interface EchPalette {
   colors: string[];
 }
@@ -28,19 +23,6 @@ const echPaletteColorBlind: EchPalette = {
     '#B9A888',
     '#D6BF57',
   ],
-  // TODO swap colors for original colors after main changes
-  // colors: [
-  //   '#54B399',
-  //   '#6092C0',
-  //   '#D36086',
-  //   '#9170B8',
-  //   '#CA8EAE',
-  //   '#D6BF57',
-  //   '#B9A888',
-  //   '#DA8B45',
-  //   '#AA6556',
-  //   '#E7664C',
-  // ],
 };
 
 const echPaletteForLightBackground: EchPalette = {

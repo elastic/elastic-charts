@@ -30,12 +30,12 @@ exports[`Chart should render the legend name test 1`] = `
                     <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="test">
                       <div className="background" />
                       <div className="echLegend__colorWrapper">
-                        <ForwardRef color="#54B399" seriesName="test" isSeriesHidden={false} hasColorPicker={false} onClick={[undefined]} pointStyle={[undefined]}>
+                        <ForwardRef color="#16C5C0" seriesName="test" isSeriesHidden={false} hasColorPicker={false} onClick={[undefined]} pointStyle={[undefined]}>
                           <div className="echLegendItem__color" title="series color">
-                            <LegendIcon pointStyle={[undefined]} color="#54B399" ariaLabel="series color: #54B399">
-                              <svg width={16} height={16} aria-label="series color: #54B399">
+                            <LegendIcon pointStyle={[undefined]} color="#16C5C0" ariaLabel="series color: #16C5C0">
+                              <svg width={16} height={16} aria-label="series color: #16C5C0">
                                 <g transform="\\n          translate(8, 8)\\n          rotate(0)\\n        ">
-                                  <path d="M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0" stroke="#54B399" strokeWidth={1} fill="#54B399" opacity={1} />
+                                  <path d="M -3.5 0 a 3.5,3.5 0 1,0 7,0 a 3.5,3.5 0 1,0 -7,0" stroke="#16C5C0" strokeWidth={1} fill="#16C5C0" opacity={1} />
                                 </g>
                               </svg>
                             </LegendIcon>

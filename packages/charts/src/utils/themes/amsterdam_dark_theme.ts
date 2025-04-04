@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { palettes } from './colors';
+import { palettes } from './legacy_colors';
 import type { Theme } from './theme';
 import { DEFAULT_CHART_MARGINS, DEFAULT_CHART_PADDING, DEFAULT_GEOMETRY_STYLES } from './theme_common';
 import { Colors } from '../../common/colors';

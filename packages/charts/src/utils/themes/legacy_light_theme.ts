@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { palettes } from './colors';
+import { palettes } from './legacy_colors';
 import { DEFAULT_ANNOTATION_LINE_STYLE, DEFAULT_ANNOTATION_RECT_STYLE } from './merge_utils';
 import type { Theme } from './theme';
 import {
