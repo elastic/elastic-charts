@@ -1,3 +1,10 @@
+## [69.2.2](https://github.com/elastic/elastic-charts/compare/v69.2.1...v69.2.2) (2025-04-08)
+
+
+### Bug Fixes
+
+* **colors:** use borealis colors as default ([#2643](https://github.com/elastic/elastic-charts/issues/2643)) [69.x] ([#2644](https://github.com/elastic/elastic-charts/issues/2644)) ([df5a9e7](https://github.com/elastic/elastic-charts/commit/df5a9e7b660015ed59903735e756f9221ccb59da))
+
 ## [69.2.1](https://github.com/elastic/elastic-charts/compare/v69.2.0...v69.2.1) (2025-03-28)
 
 
