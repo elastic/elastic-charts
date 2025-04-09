@@ -42,7 +42,7 @@ export const DARK_THEME: Theme = {
     },
     isolatedPoint: {
       enabled: true,
-      visible: 'auto',
+      visible: 'always',
       strokeWidth: 0,
       stroke: ColorVariant.None,
       fill: ColorVariant.Series,
@@ -87,7 +87,7 @@ export const DARK_THEME: Theme = {
     },
     isolatedPoint: {
       enabled: true,
-      visible: 'auto',
+      visible: 'always',
       stroke: ColorVariant.None,
       strokeWidth: 0,
       fill: ColorVariant.Series,

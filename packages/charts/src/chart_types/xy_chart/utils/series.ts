@@ -351,12 +351,12 @@ export function getFormattedDataSeries(
     if (!dataSeries[0]) return acc;
     const [{ stackMode, seriesType }] = dataSeries;
     const formatted = formatStackedDataSeriesValues(dataSeries, xValues, seriesType, stackMode);
-    return [...acc, ...formatted];
+    return acc.concat(formatted);
   }, []);
   // get already fitted non stacked dataSeries
   const nonStackedDataSeries = fittedDataSeries.filter(({ spec }) => !isStackedSpec(spec));
 
-  return [...fittedAndStackedDataSeries, ...nonStackedDataSeries].sort((a, b) => a.sortOrder - b.sortOrder);
+  return fittedAndStackedDataSeries.concat(nonStackedDataSeries).sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 /** @internal */
