@@ -6,13 +6,23 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
+/**
+ * Horizontal space between flamegraph elements
+ * @internal
+ */
 export const BOX_GAP_HORIZONTAL = 0.5;
 
-/** @internal */
+/**
+ * Vertical space between flamegraph elements
+ * @internal
+ */
 export const BOX_GAP_VERTICAL = 2;
 
-const CANVAS_SIZE_INCREMENT = 256; // to avoid thrashing the layout and canvases on every one pixel width/height change
+/**
+ * The size of incremeneting the canvas size when resizing to avoid
+ * thrashing the layout and canvases on every one pixel width/height change
+ */
+const CANVAS_SIZE_INCREMENT = 256;
 
 /** @internal */
 export const roundUpSize = (cssPixelSize: number) =>
