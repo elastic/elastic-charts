@@ -148,6 +148,7 @@ export type ElementClickListener = (
     | WordCloudElementEvent
     | MetricElementEvent
   >,
+  options?: { keyPressed: Record<string, boolean> },
 ) => void;
 
 /** @public */
@@ -166,7 +167,7 @@ export type ElementOverListener = (
 export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
 /** @public */
-export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+export type BrushEndListener = (brushAreaEvent: BrushEvent, options?: { keyPressed: Record<string, boolean> }) => void;
 
 /** @public */
 export type ProjectionAreaChangeListener = (areas: { projection: Dimensions; parent: Dimensions }) => void;

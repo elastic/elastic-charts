@@ -13,6 +13,7 @@ import type { Point } from '../../utils/point';
 interface MouseAction {
   position: Point;
   time: number;
+  keyPressed: Record<string, boolean>;
 }
 
 /**
