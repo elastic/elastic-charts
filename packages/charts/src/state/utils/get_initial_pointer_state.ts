@@ -17,4 +17,6 @@ export const getInitialPointerState = (): PointerStates => ({
   up: null,
   lastDrag: null,
   lastClick: null,
+  metakey: false,
+  keyPressed: {},
 });

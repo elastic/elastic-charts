@@ -42,6 +42,9 @@ function createItemId(item: TooltipValue<any, SeriesIdentifier>) {
  */
 const DRAG_DETECTION_PIXEL_DELTA = 4;
 
+const isAppleDevice = typeof window !== 'undefined' && /Mac|iPhone|iPad/.test(window.navigator.userAgent);
+const isMetaKey = ({ metaKey, ctrlKey }: Record<string, boolean>) => !!(isAppleDevice ? metaKey : ctrlKey);
+
 /** @internal */
 export const handleKeyActions = (builder: ActionReducerMapBuilder<ChartSliceState>) => {
   builder.addCase(onKeyPress, (globalState, action) => {
@@ -77,11 +80,11 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
       state.pointer.dragging = dragging;
       state.pointer.current.position = action.payload.position;
       state.pointer.current.time = action.payload.time;
+      state.pointer.metakey = isMetaKey(action.payload.keyPressed);
     })
     .addCase(onMouseDown, (globalState, action) => {
       if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
-
       state.prevDrilldown = state.drilldown;
       state.drilldown = getDrilldownData(globalState);
       state.pointer.dragging = false;
@@ -90,6 +93,8 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
         position: action.payload.position,
         time: action.payload.time,
       };
+      state.pointer.metakey = isMetaKey(action.payload.keyPressed);
+      state.pointer.keyPressed = action.payload.keyPressed;
     })
     .addCase(onMouseUp, (globalState, action) => {
       if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
@@ -129,6 +134,8 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
         position: action.payload.position,
         time: action.payload.time,
       };
+      state.pointer.metakey = isMetaKey(action.payload.keyPressed);
+      state.pointer.keyPressed = action.payload.keyPressed;
     });
 };
 

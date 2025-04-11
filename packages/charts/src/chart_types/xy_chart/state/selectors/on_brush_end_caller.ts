@@ -37,6 +37,8 @@ import { isVerticalRotation } from '../utils/common';
 
 const getLastDragSelector = (state: GlobalChartState) => state.interactions.pointer.lastDrag;
 
+const getKeyPressedSelector = (state: GlobalChartState) => state.interactions.pointer.keyPressed;
+
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:
  * - the onBrushEnd listener is available
@@ -62,6 +64,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           isHistogramModeEnabledSelector,
           computeSmallMultipleScalesSelector,
           getSeriesSpecsSelector,
+          getKeyPressedSelector,
         ],
         (
           lastDrag,
@@ -71,6 +74,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           histogramMode,
           smallMultipleScales,
           seriesSpec,
+          keyPressed,
         ): void => {
           const nextProps = {
             lastDrag,
@@ -105,7 +109,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
               );
             }
             if (brushAreaEvent.x !== undefined || brushAreaEvent.y !== undefined) {
-              onBrushEnd(brushAreaEvent);
+              onBrushEnd(brushAreaEvent, { keyPressed });
             }
           }
           prevProps = nextProps;

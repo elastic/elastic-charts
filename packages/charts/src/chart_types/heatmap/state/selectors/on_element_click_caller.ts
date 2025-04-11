@@ -22,6 +22,8 @@ import { isClicking } from '../../../../state/utils/is_clicking';
 import type { Cell } from '../../layout/types/viewmodel_types';
 import { isPickedCells } from '../../layout/types/viewmodel_types';
 
+const getKeyPressedSelector = (state: GlobalChartState) => state.interactions.pointer.keyPressed;
+
 /**
  * Will call the onElementClick listener every time the following preconditions are met:
  * - the onElementClick listener is available
@@ -35,8 +37,8 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
   return (state: GlobalChartState) => {
     if (selector === null && state.chartType === ChartType.Heatmap) {
       selector = createCustomCachedSelector(
-        [getHeatmapSpecSelector, getLastClickSelector, getSettingsSpecSelector, getPickedShapes],
-        (spec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes): void => {
+        [getHeatmapSpecSelector, getLastClickSelector, getSettingsSpecSelector, getPickedShapes, getKeyPressedSelector],
+        (spec, lastClick: PointerState | null, settings: SettingsSpec, pickedShapes, keyPressed): void => {
           if (!spec) {
             return;
           }
@@ -55,7 +57,7 @@ export function createOnElementClickCaller(): (state: GlobalChartState) => void 
                 key: `spec{${spec.id}}`,
               },
             ]);
-            settings.onElementClick(elements);
+            settings.onElementClick(elements, { keyPressed });
           }
           prevClick = lastClick;
         },
