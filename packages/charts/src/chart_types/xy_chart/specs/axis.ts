@@ -10,16 +10,13 @@ import type { ComponentProps } from 'react';
 
 import { ChartType } from '../..';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
-import { specComponentFactory } from '../../../state/spec_factory';
-import { Position } from '../../../utils/common';
+import type { SFProps } from '../../../state/spec_factory';
+import { buildSFProps, useSpecFactory } from '../../../state/spec_factory';
+import { Position, stripUndefined } from '../../../utils/common';
 import type { AxisSpec } from '../utils/specs';
 import { DEFAULT_GLOBAL_ID } from '../utils/specs';
 
-/**
- * Add axis spec to chart
- * @public
- */
-export const Axis = specComponentFactory<AxisSpec>()(
+const buildProps = buildSFProps<AxisSpec>()(
   {
     chartType: ChartType.XYAxis,
     specType: SpecType.Axis,
@@ -34,5 +31,33 @@ export const Axis = specComponentFactory<AxisSpec>()(
   },
 );
 
-/** @public */
+/** @internal */
+export const Axis = function (
+  props: SFProps<
+    AxisSpec,
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
+  >,
+) {
+  useSpecFactory<AxisSpec>(getAxisSpec(props));
+  return null;
+};
+
+/** @internal */
 export type AxisProps = ComponentProps<typeof Axis>;
+
+/** @internal */
+export function getAxisSpec(
+  props: SFProps<
+    AxisSpec,
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
+  >,
+): AxisSpec {
+  const { defaults, overrides } = buildProps;
+  return { ...defaults, ...stripUndefined(props), ...overrides };
+}

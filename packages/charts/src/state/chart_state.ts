@@ -7,7 +7,7 @@
  */
 
 import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { configureStore, createListenerMiddleware, createSlice } from '@reduxjs/toolkit';
 
 import { onChartRendered } from './actions/chart';
 import { updateParentDimensions, updateChartTitles } from './actions/chart_settings';
@@ -24,6 +24,8 @@ import {
   handleDOMElementActions,
   handleTooltipActions,
 } from './reducers/interactions';
+import { getInternalChartStateSelector } from './selectors/get_internal_chart_state';
+import { getInternalIsInitializedSelector, InitStatus } from './selectors/get_internal_is_intialized';
 import { getInitialPointerState } from './utils/get_initial_pointer_state';
 import { getInitialTooltipState } from './utils/get_initial_tooltip_state';
 import type { Color } from '../common/colors';
@@ -165,6 +167,21 @@ const createChartSlice = (initialState: ChartSliceState) =>
     },
   });
 
+// provides a middleware to send events to callbacks
+const callbackListenerMiddleware = createListenerMiddleware<ChartSliceState>();
+callbackListenerMiddleware.startListening({
+  predicate: (_, currentState) => {
+    return getInternalIsInitializedSelector(currentState) === InitStatus.Initialized;
+  },
+  effect: (_, listenerApi) => {
+    const state = listenerApi.getOriginalState();
+    const internalChartState = getInternalChartStateSelector(state);
+    if (internalChartState) {
+      internalChartState.eventCallbacks(state);
+    }
+  },
+});
+
 /** @internal */
 export const createChartStore = (chartId: string, title?: string, description?: string) => {
   const initialState = getInitialState(chartId, title, description);
@@ -175,7 +192,7 @@ export const createChartStore = (chartId: string, title?: string, description?: 
       getDefaultMiddleware({
         // TODO https://github.com/elastic/elastic-charts/issues/2078
         serializableCheck: false,
-      }),
+      }).prepend(callbackListenerMiddleware.middleware),
   });
 };
 

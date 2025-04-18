@@ -632,8 +632,7 @@ export const Settings = function (
     keyof (typeof settingsBuildProps)['requires']
   >,
 ) {
-  const { defaults, overrides } = settingsBuildProps;
-  useSpecFactory<SettingsSpec>({ ...defaults, ...stripUndefined(props), ...overrides });
+  useSpecFactory<SettingsSpec>(getSettingsSpec(props));
   return null;
 };
 
@@ -648,4 +647,18 @@ export function isPointerOutEvent(event: PointerEvent | null | undefined): event
 /** @internal */
 export function isPointerOverEvent(event: PointerEvent | null | undefined): event is PointerOverEvent {
   return event?.type === PointerEventType.Over;
+}
+
+/** @internal */
+export function getSettingsSpec(
+  props: SFProps<
+    SettingsSpec,
+    keyof (typeof settingsBuildProps)['overrides'],
+    keyof (typeof settingsBuildProps)['defaults'],
+    keyof (typeof settingsBuildProps)['optionals'],
+    keyof (typeof settingsBuildProps)['requires']
+  >,
+): SettingsSpec {
+  const { defaults, overrides } = settingsBuildProps;
+  return { ...defaults, ...stripUndefined(props), ...overrides };
 }

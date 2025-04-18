@@ -289,13 +289,7 @@ export const Tooltip = function <D extends BaseDatum = Datum, SI extends SeriesI
     keyof (typeof tooltipBuildProps)['requires']
   >,
 ) {
-  const { defaults, overrides } = tooltipBuildProps;
-  // @ts-ignore - default generic value
-  useSpecFactory<TooltipSpec<D, SI>>({
-    ...defaults,
-    ...stripUndefined(props),
-    ...overrides,
-  });
+  useSpecFactory(getTooltipSpec(props));
   return null;
 };
 
@@ -310,3 +304,22 @@ export type TooltipProps<D extends BaseDatum = Datum, SI extends SeriesIdentifie
   keyof (typeof tooltipBuildProps)['optionals'],
   keyof (typeof tooltipBuildProps)['requires']
 >;
+
+/** @internal */
+export function getTooltipSpec<D extends BaseDatum = Datum, SI extends SeriesIdentifier = SeriesIdentifier>(
+  props: SFProps<
+    TooltipSpec<D, SI>,
+    keyof (typeof tooltipBuildProps)['overrides'],
+    keyof (typeof tooltipBuildProps)['defaults'],
+    keyof (typeof tooltipBuildProps)['optionals'],
+    keyof (typeof tooltipBuildProps)['requires']
+  >,
+): TooltipSpec<D, SI> {
+  const { defaults, overrides } = tooltipBuildProps;
+  // @ts-ignore - default generic value
+  return {
+    ...defaults,
+    ...stripUndefined(props),
+    ...overrides,
+  };
+}

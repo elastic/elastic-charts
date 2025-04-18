@@ -84,6 +84,8 @@ export { LEGACY_LIGHT_THEME } from './utils/themes/legacy_light_theme';
 export { LEGACY_DARK_THEME } from './utils/themes/legacy_dark_theme';
 export { AMSTERDAM_LIGHT_THEME } from './utils/themes/amsterdam_light_theme';
 export { AMSTERDAM_DARK_THEME } from './utils/themes/amsterdam_dark_theme';
+export { getAreaSeriesSpec } from './chart_types/xy_chart/specs/area_series';
+export { getAxisSpec } from './chart_types/xy_chart/specs/axis';
 
 // wordcloud
 export { WordcloudViewModel } from './chart_types/wordcloud/layout/types/viewmodel_types';
