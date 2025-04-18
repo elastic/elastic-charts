@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import type { CSSProperties } from 'react';
 import React, { createRef } from 'react';
 import { Provider } from 'react-redux';
-import type { Unsubscribe, Store } from 'redux';
+import type { Store } from 'redux';
 import type { OptionalKeys } from 'utility-types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -30,13 +30,10 @@ import { onExternalPointerEvent } from '../state/actions/events';
 import { specParsed, upsertSpec } from '../state/actions/specs';
 import { onComputedZIndex } from '../state/actions/z_index';
 import { createChartStore, type GlobalChartState } from '../state/chart_state';
-import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
-import { getInternalChartStateSelector, chartSelectorsRegistry } from '../state/selectors/get_internal_chart_state';
-import { getInternalIsInitializedSelector, InitStatus } from '../state/selectors/get_internal_is_intialized';
+import { chartSelectorsRegistry } from '../state/selectors/get_internal_chart_state';
 import type { ChartSize } from '../utils/chart_size';
 import { getChartSize, getFixedChartSize } from '../utils/chart_size';
 import { LayoutDirection } from '../utils/common';
-import { deepEqual } from '../utils/fast_deep_equal';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 
 /** @public */
@@ -67,8 +64,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     renderer: 'canvas',
   };
 
-  private unsubscribeToStore: Unsubscribe;
-
   private chartStore: Store<GlobalChartState>;
 
   private chartContainerRef: React.RefObject<HTMLDivElement>;
@@ -92,20 +87,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       paddingRight: LIGHT_THEME.chartMargins.right,
       displayTitles: true,
     };
-    this.unsubscribeToStore = this.chartStore.subscribe(() => {
-      const state = this.chartStore.getState();
-      const internalChartState = getInternalChartStateSelector(state);
-      if (getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {
-        return;
-      }
-
-      const newState = getChartContainerUpdateStateSelector(state);
-      if (!deepEqual(this.state, newState)) this.setState(newState);
-
-      if (internalChartState) {
-        internalChartState.eventCallbacks(state);
-      }
-    });
   }
 
   componentDidMount() {
@@ -113,10 +94,13 @@ export class Chart extends React.Component<ChartProps, ChartState> {
       const zIndex = getElementZIndex(this.chartContainerRef.current, document.body);
       this.chartStore.dispatch(onComputedZIndex(zIndex));
     }
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeToStore();
+    if (this.props.config) {
+      for (const spec of this.props.config) {
+        // align specs with default
+        this.chartStore.dispatch(upsertSpec(spec));
+      }
+      this.chartStore.dispatch(specParsed());
+    }
   }
 
   componentDidUpdate({ title, description, size }: Readonly<ChartProps>) {
