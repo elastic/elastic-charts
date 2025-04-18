@@ -7,7 +7,7 @@
  */
 
 import classNames from 'classnames';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import React, { createRef } from 'react';
 import { Provider } from 'react-redux';
 import type { Unsubscribe, Store } from 'redux';
@@ -23,9 +23,11 @@ import { getElementZIndex } from './portal/utils';
 import { chartTypeSelectors } from '../chart_types/chart_type_selectors';
 import { Colors } from '../common/colors';
 import type { LegendPositionConfig, PointerEvent } from '../specs';
+import type { Spec } from '../specs/spec_type';
 import { SpecsParser } from '../specs/specs_parser';
 import { updateChartTitles, updateParentDimensions } from '../state/actions/chart_settings';
 import { onExternalPointerEvent } from '../state/actions/events';
+import { specParsed, upsertSpec } from '../state/actions/specs';
 import { onComputedZIndex } from '../state/actions/z_index';
 import { createChartStore, type GlobalChartState } from '../state/chart_state';
 import { getChartContainerUpdateStateSelector } from '../state/selectors/chart_container_updates';
@@ -49,7 +51,7 @@ export interface ChartProps {
   id?: string;
   title?: string;
   description?: string;
-  children?: ReactNode;
+  config?: Spec[];
 }
 
 interface ChartState {
@@ -127,6 +129,13 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     if (newChartSize && (newChartSize.width !== prevChartSize.width || newChartSize.height !== prevChartSize.height)) {
       this.chartStore.dispatch(updateParentDimensions({ ...newChartSize, top: 0, left: 0 }));
     }
+    if (this.props.config) {
+      for (const spec of this.props.config) {
+        // align specs with default
+        this.chartStore.dispatch(upsertSpec(spec));
+      }
+      this.chartStore.dispatch(specParsed());
+    }
   }
 
   getPNGSnapshot(
@@ -187,7 +196,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
             <ChartStatus />
             <ChartResizer />
             <Legend />
-            <SpecsParser>{this.props.children}</SpecsParser>
+            {(this.props.config ?? []).length === 0 && <SpecsParser>{this.props.children}</SpecsParser>}
             <div className="echContainer" ref={this.chartContainerRef}>
               <ChartContainer getChartContainerRef={this.getChartContainerRef} forwardStageRef={this.chartStageRef} />
             </div>
