@@ -24,6 +24,8 @@ import type { IndexedGeometry, GeometryValue } from '../../../../utils/geometry'
 import type { AnnotationTooltipState } from '../../annotations/types';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 
+const getKeyPressedSelector = (state: GlobalChartState) => state.interactions.pointer.keyPressed;
+
 /**
  * Will call the onElementClick listener every time the following preconditions are met:
  * - the onElementClick listener is available
@@ -48,6 +50,7 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
         getHighlightedGeomsSelector,
         getProjectedScaledValues,
         getMultipleRectangleAnnotations,
+        getKeyPressedSelector,
       ],
       (
         lastClick: PointerState | null,
@@ -55,11 +58,12 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
         indexedGeometries: IndexedGeometry[],
         values,
         tooltipStates,
+        keyPressed,
       ): void => {
         if (!isClicking(prevClick, lastClick)) {
           return;
         }
-        const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick);
+        const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick, keyPressed);
         if (!elementClickFired && onAnnotationClick && tooltipStates) {
           tryFiringOnAnnotationClick(tooltipStates, onAnnotationClick, indexedGeometries);
         } else if (!elementClickFired) {
@@ -74,6 +78,7 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
 function tryFiringOnElementClick(
   indexedGeometries: IndexedGeometry[],
   onElementClick: SettingsSpec['onElementClick'],
+  keyPressed: Record<string, boolean>,
 ): boolean {
   if (indexedGeometries.length === 0 || !onElementClick) {
     return false;
@@ -82,7 +87,7 @@ function tryFiringOnElementClick(
     value,
     seriesIdentifier,
   ]);
-  onElementClick(elements);
+  onElementClick(elements, { keyPressed });
   return true;
 }
 
