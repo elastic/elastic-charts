@@ -32,7 +32,7 @@ import type { SettingsSpec, TooltipValue } from '../../specs';
 import { TooltipType } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
-import { onPointerMove } from '../../state/actions/mouse';
+import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
 import type { GlobalChartState } from '../../state/chart_state';
 import type { BackwardRef } from '../../state/internal_chart_renderer';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
@@ -1168,7 +1168,13 @@ class FlameComponent extends React.Component<FlameProps> {
         </div>
         <BasicTooltip
           canPinTooltip={canPinTooltip}
-          onPointerMove={() => onPointerMove({ position: { x: NaN, y: NaN }, time: NaN })}
+          onPointerMove={() =>
+            onPointerMoveAction({
+              position: { x: NaN, y: NaN },
+              time: NaN,
+              keyPressed: {},
+            })
+          }
           position={
             this.tooltipPinned
               ? { x: this.pinnedPointerX, y: this.pinnedPointerY, width: 0, height: 0 }

@@ -145,7 +145,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       return;
     }
     // TODO: handle scroll cursor update
-    onPointerMove({ position: { x: -1, y: -1 }, time: Date.now() });
+    onPointerMove({ position: { x: -1, y: -1 }, time: Date.now(), keyPressed: {} });
   };
 
   useEffect(() => {

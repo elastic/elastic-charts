@@ -87,21 +87,24 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     }
 
     onPointerMove({
-      position: {
-        x: offsetX,
-        y: offsetY,
-      },
+      position: { x: offsetX, y: offsetY },
       time: timeStamp,
       keyPressed: { shiftKey, ctrlKey, altKey, metaKey },
     });
   };
 
-  handleMouseLeave = ({ nativeEvent: { timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  handleMouseLeave = ({
+    nativeEvent: { timeStamp, shiftKey, ctrlKey, altKey, metaKey },
+  }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { isChartEmpty, disableInteractions, onPointerMove, isBrushing } = this.props;
     if (isChartEmpty || disableInteractions || isBrushing) {
       return;
     }
-    onPointerMove({ position: { x: -1, y: -1 }, time: timeStamp, keyPressed: {} });
+    onPointerMove({
+      position: { x: -1, y: -1 },
+      time: timeStamp,
+      keyPressed: { shiftKey, ctrlKey, altKey, metaKey },
+    });
   };
 
   handleMouseDown = ({
@@ -188,7 +191,11 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     const { onMouseUp } = this.props;
 
     window.removeEventListener('mouseup', this.handleBrushEnd);
-    onMouseUp({ position: { x: -1, y: -1 }, time: Date.now(), keyPressed: {} });
+    onMouseUp({
+      position: { x: -1, y: -1 },
+      time: Date.now(),
+      keyPressed: {},
+    });
   };
 
   render() {

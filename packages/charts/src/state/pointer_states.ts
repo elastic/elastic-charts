@@ -29,6 +29,5 @@ export interface PointerStates {
   up: PointerState | null;
   lastDrag: DragState | null;
   lastClick: PointerState | null;
-  metakey: boolean;
   keyPressed: Record<string, boolean>;
 }

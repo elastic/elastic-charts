@@ -108,32 +108,32 @@ describe('Chart state pointer interactions', () => {
   });
 
   test('can convert/limit mouse pointer positions relative to chart projection', () => {
-    store.dispatch(onPointerMove({ position: { x: 20, y: 20 }, time: 0 }));
+    store.dispatch(onPointerMove({ position: { x: 20, y: 20 }, time: 0, keyPressed: {} }));
     let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
     expect(projectedPointerPosition.x).toBe(10);
     expect(projectedPointerPosition.y).toBe(10);
 
-    store.dispatch(onPointerMove({ position: { x: 10, y: 10 }, time: 1 }));
+    store.dispatch(onPointerMove({ position: { x: 10, y: 10 }, time: 1, keyPressed: {} }));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
     expect(projectedPointerPosition.x).toBe(0);
     expect(projectedPointerPosition.y).toBe(0);
-    store.dispatch(onPointerMove({ position: { x: 5, y: 5 }, time: 2 }));
+    store.dispatch(onPointerMove({ position: { x: 5, y: 5 }, time: 2, keyPressed: {} }));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
     expect(projectedPointerPosition.x).toBe(-1);
     expect(projectedPointerPosition.y).toBe(-1);
-    store.dispatch(onPointerMove({ position: { x: 200, y: 20 }, time: 3 }));
+    store.dispatch(onPointerMove({ position: { x: 200, y: 20 }, time: 3, keyPressed: {} }));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
     expect(projectedPointerPosition.x).toBe(-1);
     expect(projectedPointerPosition.y).toBe(10);
-    store.dispatch(onPointerMove({ position: { x: 20, y: 200 }, time: 4 }));
+    store.dispatch(onPointerMove({ position: { x: 20, y: 200 }, time: 4, keyPressed: {} }));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
     expect(projectedPointerPosition.x).toBe(10);
     expect(projectedPointerPosition.y).toBe(-1);
-    store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 5 }));
+    store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 5, keyPressed: {} }));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
     expect(projectedPointerPosition.x).toBe(-1);
     expect(projectedPointerPosition.y).toBe(-1);
-    store.dispatch(onPointerMove({ position: { x: -20, y: -20 }, time: 6 }));
+    store.dispatch(onPointerMove({ position: { x: -20, y: -20 }, time: 6, keyPressed: {} }));
     projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
     expect(projectedPointerPosition.x).toBe(-1);
     expect(projectedPointerPosition.y).toBe(-1);
@@ -152,13 +152,13 @@ describe('Chart state pointer interactions', () => {
       onElementOutCaller(store.getState());
       onElementOverCaller(store.getState());
     });
-    store.dispatch(onPointerMove({ position: { x: 20, y: 20 }, time: 0 }));
+    store.dispatch(onPointerMove({ position: { x: 20, y: 20 }, time: 0, keyPressed: {} }));
     expect(onOutListener).toHaveBeenCalledTimes(0);
 
     // no more calls after the first out one outside chart
-    store.dispatch(onPointerMove({ position: { x: 5, y: 5 }, time: 1 }));
+    store.dispatch(onPointerMove({ position: { x: 5, y: 5 }, time: 1, keyPressed: {} }));
     expect(onOutListener).toHaveBeenCalledTimes(1);
-    store.dispatch(onPointerMove({ position: { x: 3, y: 3 }, time: 2 }));
+    store.dispatch(onPointerMove({ position: { x: 3, y: 3 }, time: 2, keyPressed: {} }));
     expect(onOutListener).toHaveBeenCalledTimes(1);
   });
 
@@ -173,7 +173,7 @@ describe('Chart state pointer interactions', () => {
       ],
       store,
     );
-    store.dispatch(onPointerMove({ position: { x: 10, y: 10 + 70 }, time: 0 }));
+    store.dispatch(onPointerMove({ position: { x: 10, y: 10 + 70 }, time: 0, keyPressed: {} }));
     const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
     // no tooltip values exist if we have a TooltipType === None
     expect(tooltipInfo.tooltip.values.length).toBe(0);
@@ -190,7 +190,7 @@ describe('Chart state pointer interactions', () => {
       ],
       store,
     );
-    store.dispatch(onPointerMove({ position: { x: 10, y: 10 + 70 }, time: 1 }));
+    store.dispatch(onPointerMove({ position: { x: 10, y: 10 + 70 }, time: 1, keyPressed: {} }));
     const { geometriesIndex } = computeSeriesGeometriesSelector(store.getState());
     expect(geometriesIndex.size).toBe(2);
     const highlightedGeometries = getHighlightedGeomsSelector(store.getState());
@@ -240,14 +240,14 @@ describe('Chart state pointer interactions', () => {
     });
 
     it('should avoid calling pointer update listener if moving over the same element', () => {
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 10 }, time: 0 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 10 }, time: 0, keyPressed: {} }));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
       const tooltipInfo1 = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo1.tooltip.values.length).toBe(1);
       // avoid calls
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 12, y: chartTop + 12 }, time: 1 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 12, y: chartTop + 12 }, time: 1, keyPressed: {} }));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
@@ -258,14 +258,14 @@ describe('Chart state pointer interactions', () => {
 
     it.skip('should avoid calling projection update listener if moving over the same element with same y', () => {
       MockStore.updateSettings(store, { pointerUpdateTrigger: 'y' });
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 10 }, time: 0 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 10 }, time: 0, keyPressed: {} }));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
       const tooltipInfo1 = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo1.tooltip.values.length).toBe(1);
       // avoid calls
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 12, y: chartTop + 10 }, time: 1 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 12, y: chartTop + 10 }, time: 1, keyPressed: {} }));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
 
@@ -275,7 +275,7 @@ describe('Chart state pointer interactions', () => {
     });
 
     it.skip('should call projection update listener if moving over the same element with differnt y', () => {
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 10 }, time: 0 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 10 }, time: 0, keyPressed: {} }));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
       expect(onPointerUpdateListener.mock.calls[0]?.[0]).toMatchObject({
@@ -289,7 +289,7 @@ describe('Chart state pointer interactions', () => {
       });
 
       // avoid calls
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 11 }, time: 1 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 11 }, time: 1, keyPressed: {} }));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(2);
       expect(onPointerUpdateListener.mock.calls[1][0]).toMatchObject({
@@ -304,7 +304,7 @@ describe('Chart state pointer interactions', () => {
     });
 
     it('should call pointer update listeners on move', () => {
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 10 }, time: 0 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 10, y: chartTop + 10 }, time: 0, keyPressed: {} }));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(1);
       expect(onPointerUpdateListener).toHaveBeenCalledWith({
@@ -324,7 +324,7 @@ describe('Chart state pointer interactions', () => {
       });
 
       // avoid multiple calls for the same value
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 50, y: chartTop + 11 }, time: 1 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 50, y: chartTop + 11 }, time: 1, keyPressed: {} }));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(2);
 
@@ -344,7 +344,7 @@ describe('Chart state pointer interactions', () => {
         smHorizontalValue: null,
       });
 
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 200, y: chartTop + 12 }, time: 1 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 200, y: chartTop + 12 }, time: 1, keyPressed: {} }));
       MockStore.flush(store);
       expect(onPointerUpdateListener).toHaveBeenCalledTimes(3);
       expect(onPointerUpdateListener.mock.calls[2][0]).toEqual({
@@ -404,7 +404,7 @@ describe('Chart state pointer interactions', () => {
     test('can hover top-left corner of the first bar', () => {
       let tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
       expect(tooltipInfo.tooltip.values).toEqual([]);
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 0, y: chartTop + 0 }, time: 0 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 0, y: chartTop + 0 }, time: 0, keyPressed: {} }));
       let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       expect(projectedPointerPosition).toMatchObject({ x: 0, y: 0 });
       const cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -438,7 +438,7 @@ describe('Chart state pointer interactions', () => {
         ],
       ]);
 
-      store.dispatch(onPointerMove({ position: { x: chartLeft - 1, y: chartTop - 1 }, time: 1 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft - 1, y: chartTop - 1 }, time: 1, keyPressed: {} }));
       projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       expect(projectedPointerPosition).toMatchObject({ x: -1, y: -1 });
       isTooltipVisible = isTooltipVisibleSelector(store.getState());
@@ -451,7 +451,7 @@ describe('Chart state pointer interactions', () => {
     });
 
     test('can hover bottom-left corner of the first bar', () => {
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 0, y: chartTop + 89 }, time: 0 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 0, y: chartTop + 89 }, time: 0, keyPressed: {} }));
       let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       expect(projectedPointerPosition).toMatchObject({ x: 0, y: 89 });
       const cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -484,7 +484,7 @@ describe('Chart state pointer interactions', () => {
           },
         ],
       ]);
-      store.dispatch(onPointerMove({ position: { x: chartLeft - 1, y: chartTop + 89 }, time: 1 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft - 1, y: chartTop + 89 }, time: 1, keyPressed: {} }));
       projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       expect(projectedPointerPosition).toMatchObject({ x: -1, y: 89 });
       isTooltipVisible = isTooltipVisibleSelector(store.getState());
@@ -501,7 +501,9 @@ describe('Chart state pointer interactions', () => {
       if (scaleType !== ScaleType.Ordinal) {
         scaleOffset = 1;
       }
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 44 + scaleOffset, y: chartTop + 0 }, time: 0 }));
+      store.dispatch(
+        onPointerMove({ position: { x: chartLeft + 44 + scaleOffset, y: chartTop + 0 }, time: 0, keyPressed: {} }),
+      );
       let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       expect(projectedPointerPosition).toMatchObject({ x: 44 + scaleOffset, y: 0 });
       let cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -535,7 +537,9 @@ describe('Chart state pointer interactions', () => {
         ],
       ]);
 
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 45 + scaleOffset, y: chartTop + 0 }, time: 1 }));
+      store.dispatch(
+        onPointerMove({ position: { x: chartLeft + 45 + scaleOffset, y: chartTop + 0 }, time: 1, keyPressed: {} }),
+      );
       projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       expect(projectedPointerPosition).toMatchObject({ x: 45 + scaleOffset, y: 0 });
       cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -556,7 +560,9 @@ describe('Chart state pointer interactions', () => {
       if (scaleType !== ScaleType.Ordinal) {
         scaleOffset = 1;
       }
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 44 + scaleOffset, y: chartTop + 89 }, time: 0 }));
+      store.dispatch(
+        onPointerMove({ position: { x: chartLeft + 44 + scaleOffset, y: chartTop + 89 }, time: 0, keyPressed: {} }),
+      );
       let projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       expect(projectedPointerPosition).toMatchObject({ x: 44 + scaleOffset, y: 89 });
       let cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -590,7 +596,9 @@ describe('Chart state pointer interactions', () => {
         ],
       ]);
 
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 45 + scaleOffset, y: chartTop + 89 }, time: 1 }));
+      store.dispatch(
+        onPointerMove({ position: { x: chartLeft + 45 + scaleOffset, y: chartTop + 89 }, time: 1, keyPressed: {} }),
+      );
       projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       expect(projectedPointerPosition).toMatchObject({ x: 45 + scaleOffset, y: 89 });
       cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -626,7 +634,9 @@ describe('Chart state pointer interactions', () => {
 
       expect(onOutListener).toHaveBeenCalledTimes(0);
 
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 47 + scaleOffset, y: chartTop + 89 }, time: 2 }));
+      store.dispatch(
+        onPointerMove({ position: { x: chartLeft + 47 + scaleOffset, y: chartTop + 89 }, time: 2, keyPressed: {} }),
+      );
     });
 
     test('can hover top-right corner of the chart', () => {
@@ -636,7 +646,7 @@ describe('Chart state pointer interactions', () => {
       expect(tooltipInfo.highlightedGeometries.length).toBe(0);
       expect(tooltipInfo.tooltip.values.length).toBe(0);
 
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 89, y: chartTop + 0 }, time: 0 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 89, y: chartTop + 0 }, time: 0, keyPressed: {} }));
       const projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       expect(projectedPointerPosition).toMatchObject({ x: 89, y: 0 });
       const cursorBandPosition = getCursorBandPositionSelector(store.getState());
@@ -662,25 +672,33 @@ describe('Chart state pointer interactions', () => {
       }
       let timeCounter = 0;
       for (let i = 0; i < halfWidth; i++) {
-        store.dispatch(onPointerMove({ position: { x: chartLeft + i, y: chartTop + 89 }, time: timeCounter }));
+        store.dispatch(
+          onPointerMove({ position: { x: chartLeft + i, y: chartTop + 89 }, time: timeCounter, keyPressed: {} }),
+        );
         expect(onOverListener).toHaveBeenCalledTimes(1);
         expect(onOutListener).toHaveBeenCalledTimes(0);
         timeCounter++;
       }
       for (let i = halfWidth; i < 90; i++) {
-        store.dispatch(onPointerMove({ position: { x: chartLeft + i, y: chartTop + 89 }, time: timeCounter }));
+        store.dispatch(
+          onPointerMove({ position: { x: chartLeft + i, y: chartTop + 89 }, time: timeCounter, keyPressed: {} }),
+        );
         expect(onOverListener).toHaveBeenCalledTimes(2);
         expect(onOutListener).toHaveBeenCalledTimes(0);
         timeCounter++;
       }
       for (let i = 0; i < halfWidth; i++) {
-        store.dispatch(onPointerMove({ position: { x: chartLeft + i, y: chartTop + 0 }, time: timeCounter }));
+        store.dispatch(
+          onPointerMove({ position: { x: chartLeft + i, y: chartTop + 0 }, time: timeCounter, keyPressed: {} }),
+        );
         expect(onOverListener).toHaveBeenCalledTimes(3);
         expect(onOutListener).toHaveBeenCalledTimes(0);
         timeCounter++;
       }
       for (let i = halfWidth; i < 90; i++) {
-        store.dispatch(onPointerMove({ position: { x: chartLeft + i, y: chartTop + 0 }, time: timeCounter }));
+        store.dispatch(
+          onPointerMove({ position: { x: chartLeft + i, y: chartTop + 0 }, time: timeCounter, keyPressed: {} }),
+        );
         expect(onOverListener).toHaveBeenCalledTimes(3);
         expect(onOutListener).toHaveBeenCalledTimes(1);
         timeCounter++;
@@ -688,7 +706,7 @@ describe('Chart state pointer interactions', () => {
     });
 
     test('can hover bottom-right corner of the chart', () => {
-      store.dispatch(onPointerMove({ position: { x: chartLeft + 89, y: chartTop + 89 }, time: 0 }));
+      store.dispatch(onPointerMove({ position: { x: chartLeft + 89, y: chartTop + 89 }, time: 0, keyPressed: {} }));
       const projectedPointerPosition = getProjectedPointerPositionSelector(store.getState());
       // store.setCursorPosition(chartLeft + 99, chartTop + 99);
       expect(projectedPointerPosition).toMatchObject({ x: 89, y: 89 });
@@ -787,7 +805,7 @@ describe('Chart state pointer interactions', () => {
 
       test('chart 0 rotation', () => {
         MockStore.addSpecs([spec, leftAxis, bottomAxis, currentSettingSpec], store);
-        store.dispatch(onPointerMove({ position: { x: chartLeft + 0, y: chartTop + 89 }, time: 0 }));
+        store.dispatch(onPointerMove({ position: { x: chartLeft + 0, y: chartTop + 89 }, time: 0, keyPressed: {} }));
         const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
         expect(tooltipInfo.tooltip.header?.value).toBe(0);
         expect(tooltipInfo.tooltip.header?.formattedValue).toBe('bottom 0');
@@ -802,7 +820,7 @@ describe('Chart state pointer interactions', () => {
         };
         MockStore.addSpecs([spec, leftAxis, bottomAxis, updatedSettings], store);
 
-        store.dispatch(onPointerMove({ position: { x: chartLeft + 0, y: chartTop + 89 }, time: 0 }));
+        store.dispatch(onPointerMove({ position: { x: chartLeft + 0, y: chartTop + 89 }, time: 0, keyPressed: {} }));
         const tooltipInfo = getHighlightedTooltipTooltipValuesSelector(store.getState());
         expect(tooltipInfo.tooltip.header?.value).toBe(1);
         expect(tooltipInfo.tooltip.header?.formattedValue).toBe('left 1');
@@ -850,9 +868,9 @@ describe('Chart state pointer interactions', () => {
         const start1 = { x: 0, y: 0 };
         const end1 = { x: 75, y: 0 };
 
-        store.dispatch(onMouseDown({ position: start1, time: 0 }));
-        store.dispatch(onPointerMove({ position: end1, time: 200 }));
-        store.dispatch(onMouseUp({ position: end1, time: 300 }));
+        store.dispatch(onMouseDown({ position: start1, time: 0, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end1, time: 200, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end1, time: 300, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -862,9 +880,9 @@ describe('Chart state pointer interactions', () => {
         const start2 = { x: 75, y: 0 };
         const end2 = { x: 100, y: 0 };
 
-        store.dispatch(onMouseDown({ position: start2, time: 400 }));
-        store.dispatch(onPointerMove({ position: end2, time: 500 }));
-        store.dispatch(onMouseUp({ position: end2, time: 600 }));
+        store.dispatch(onMouseDown({ position: start2, time: 400, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end2, time: 500, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end2, time: 600, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -874,9 +892,9 @@ describe('Chart state pointer interactions', () => {
 
         const start3 = { x: 75, y: 0 };
         const end3 = { x: 250, y: 0 };
-        store.dispatch(onMouseDown({ position: start3, time: 700 }));
-        store.dispatch(onPointerMove({ position: end3, time: 800 }));
-        store.dispatch(onMouseUp({ position: end3, time: 900 }));
+        store.dispatch(onMouseDown({ position: start3, time: 700, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end3, time: 800, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end3, time: 900, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -886,9 +904,9 @@ describe('Chart state pointer interactions', () => {
 
         const start4 = { x: 25, y: 0 };
         const end4 = { x: -20, y: 0 };
-        store.dispatch(onMouseDown({ position: start4, time: 1000 }));
-        store.dispatch(onPointerMove({ position: end4, time: 1100 }));
-        store.dispatch(onMouseUp({ position: end4, time: 1200 }));
+        store.dispatch(onMouseDown({ position: start4, time: 1000, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end4, time: 1100, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end4, time: 1200, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -896,9 +914,9 @@ describe('Chart state pointer interactions', () => {
           expect(brushEndListener.mock.calls[3]?.[0]).toEqual({ x: [0, 0.5] });
         }
 
-        store.dispatch(onMouseDown({ position: { x: 25, y: 0 }, time: 1300 }));
-        store.dispatch(onPointerMove({ position: { x: 28, y: 0 }, time: 1390 }));
-        store.dispatch(onMouseUp({ position: { x: 28, y: 0 }, time: 1400 }));
+        store.dispatch(onMouseDown({ position: { x: 25, y: 0 }, time: 1300, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: { x: 28, y: 0 }, time: 1390, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: { x: 28, y: 0 }, time: 1400, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -931,9 +949,9 @@ describe('Chart state pointer interactions', () => {
         const start1 = { x: 0, y: 25 };
         const end1 = { x: 0, y: 75 };
 
-        store.dispatch(onMouseDown({ position: start1, time: 0 }));
-        store.dispatch(onPointerMove({ position: end1, time: 100 }));
-        store.dispatch(onMouseUp({ position: end1, time: 200 }));
+        store.dispatch(onMouseDown({ position: start1, time: 0, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end1, time: 100, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end1, time: 200, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -943,9 +961,9 @@ describe('Chart state pointer interactions', () => {
         const start2 = { x: 0, y: 75 };
         const end2 = { x: 0, y: 100 };
 
-        store.dispatch(onMouseDown({ position: start2, time: 400 }));
-        store.dispatch(onPointerMove({ position: end2, time: 500 }));
-        store.dispatch(onMouseUp({ position: end2, time: 600 }));
+        store.dispatch(onMouseDown({ position: start2, time: 400, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end2, time: 500, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end2, time: 600, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -955,9 +973,9 @@ describe('Chart state pointer interactions', () => {
 
         const start3 = { x: 0, y: 75 };
         const end3 = { x: 0, y: 200 };
-        store.dispatch(onMouseDown({ position: start3, time: 700 }));
-        store.dispatch(onPointerMove({ position: end3, time: 800 }));
-        store.dispatch(onMouseUp({ position: end3, time: 900 }));
+        store.dispatch(onMouseDown({ position: start3, time: 700, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end3, time: 800, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end3, time: 900, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -967,9 +985,9 @@ describe('Chart state pointer interactions', () => {
 
         const start4 = { x: 0, y: 25 };
         const end4 = { x: 0, y: -20 };
-        store.dispatch(onMouseDown({ position: start4, time: 1000 }));
-        store.dispatch(onPointerMove({ position: end4, time: 1100 }));
-        store.dispatch(onMouseUp({ position: end4, time: 1200 }));
+        store.dispatch(onMouseDown({ position: start4, time: 1000, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end4, time: 1100, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end4, time: 1200, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -1017,9 +1035,9 @@ describe('Chart state pointer interactions', () => {
         const start1 = { x: 0, y: 0 };
         const end1 = { x: 0, y: 75 };
 
-        store.dispatch(onMouseDown({ position: start1, time: 0 }));
-        store.dispatch(onPointerMove({ position: end1, time: 100 }));
-        store.dispatch(onMouseUp({ position: end1, time: 200 }));
+        store.dispatch(onMouseDown({ position: start1, time: 0, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end1, time: 100, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end1, time: 200, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -1036,9 +1054,9 @@ describe('Chart state pointer interactions', () => {
         const start2 = { x: 0, y: 75 };
         const end2 = { x: 0, y: 100 };
 
-        store.dispatch(onMouseDown({ position: start2, time: 400 }));
-        store.dispatch(onPointerMove({ position: end2, time: 500 }));
-        store.dispatch(onMouseUp({ position: end2, time: 600 }));
+        store.dispatch(onMouseDown({ position: start2, time: 400, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end2, time: 500, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end2, time: 600, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -1093,9 +1111,9 @@ describe('Chart state pointer interactions', () => {
         const start1 = { x: 0, y: 0 };
         const end1 = { x: 75, y: 75 };
 
-        store.dispatch(onMouseDown({ position: start1, time: 0 }));
-        store.dispatch(onPointerMove({ position: end1, time: 100 }));
-        store.dispatch(onMouseUp({ position: end1, time: 300 }));
+        store.dispatch(onMouseDown({ position: start1, time: 0, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end1, time: 100, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end1, time: 300, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -1113,9 +1131,9 @@ describe('Chart state pointer interactions', () => {
         const start2 = { x: 75, y: 75 };
         const end2 = { x: 100, y: 100 };
 
-        store.dispatch(onMouseDown({ position: start2, time: 400 }));
-        store.dispatch(onPointerMove({ position: end2, time: 500 }));
-        store.dispatch(onMouseUp({ position: end2, time: 600 }));
+        store.dispatch(onMouseDown({ position: start2, time: 400, keyPressed: {} }));
+        store.dispatch(onPointerMove({ position: end2, time: 500, keyPressed: {} }));
+        store.dispatch(onMouseUp({ position: end2, time: 600, keyPressed: {} }));
         if (scaleType === ScaleType.Ordinal) {
           expect(brushEndListener).not.toHaveBeenCalled();
         } else {
@@ -1169,15 +1187,15 @@ describe('Negative bars click and hover', () => {
   });
 
   test('highlight negative bars', () => {
-    store.dispatch(onPointerMove({ position: { x: 50, y: 75 }, time: 0 }));
+    store.dispatch(onPointerMove({ position: { x: 50, y: 75 }, time: 0, keyPressed: {} }));
     const highlightedGeoms = getHighlightedGeomsSelector(store.getState());
     expect(highlightedGeoms.length).toBe(1);
     expect(highlightedGeoms[0]?.value.datum).toEqual([1, -10]);
   });
   test('click negative bars', () => {
-    store.dispatch(onPointerMove({ position: { x: 50, y: 75 }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x: 50, y: 75 }, time: 100 }));
-    store.dispatch(onMouseUp({ position: { x: 50, y: 75 }, time: 200 }));
+    store.dispatch(onPointerMove({ position: { x: 50, y: 75 }, time: 0, keyPressed: {} }));
+    store.dispatch(onMouseDown({ position: { x: 50, y: 75 }, time: 100, keyPressed: {} }));
+    store.dispatch(onMouseUp({ position: { x: 50, y: 75 }, time: 200, keyPressed: {} }));
 
     expect(onElementClick).toHaveBeenCalled();
     const callArgs = onElementClick.mock.calls[0]?.[0];
@@ -1228,9 +1246,9 @@ describe('Clickable annotations', () => {
       store,
     );
 
-    store.dispatch(onPointerMove({ position: { x: 130, y: 217 }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x: 130, y: 217 }, time: 100 }));
-    store.dispatch(onMouseUp({ position: { x: 130, y: 217 }, time: 200 }));
+    store.dispatch(onPointerMove({ position: { x: 130, y: 217 }, time: 0, keyPressed: {} }));
+    store.dispatch(onMouseDown({ position: { x: 130, y: 217 }, time: 100, keyPressed: {} }));
+    store.dispatch(onMouseUp({ position: { x: 130, y: 217 }, time: 200, keyPressed: {} }));
 
     expect(onAnnotationClick).toHaveBeenCalled();
     const callArgs = onAnnotationClick.mock.calls[0]?.[0];
@@ -1295,9 +1313,9 @@ describe('Clickable annotations', () => {
       store,
     );
     // the overlap of the blue and red rect
-    store.dispatch(onPointerMove({ position: { x: 200, y: 195 }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x: 200, y: 195 }, time: 100 }));
-    store.dispatch(onMouseUp({ position: { x: 200, y: 195 }, time: 200 }));
+    store.dispatch(onPointerMove({ position: { x: 200, y: 195 }, time: 0, keyPressed: {} }));
+    store.dispatch(onMouseDown({ position: { x: 200, y: 195 }, time: 100, keyPressed: {} }));
+    store.dispatch(onMouseUp({ position: { x: 200, y: 195 }, time: 200, keyPressed: {} }));
 
     expect(onAnnotationClick).toHaveBeenCalled();
     const callArgs = onAnnotationClick.mock.calls[0]?.[0];
@@ -1358,9 +1376,9 @@ describe('Clickable annotations', () => {
       store,
     );
     // the line marker
-    store.dispatch(onPointerMove({ position: { x: 10, y: 10 }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 100 }));
-    store.dispatch(onMouseUp({ position: { x: 10, y: 10 }, time: 200 }));
+    store.dispatch(onPointerMove({ position: { x: 10, y: 10 }, time: 0, keyPressed: {} }));
+    store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 100, keyPressed: {} }));
+    store.dispatch(onMouseUp({ position: { x: 10, y: 10 }, time: 200, keyPressed: {} }));
     expect(onAnnotationClick).toHaveBeenCalled();
   });
 
@@ -1405,13 +1423,13 @@ describe('Clickable annotations', () => {
           store,
         );
         // move over the 1st bar
-        store.dispatch(onPointerMove({ position: { x: 15, y: 50 }, time: 0 }));
+        store.dispatch(onPointerMove({ position: { x: 15, y: 50 }, time: 0, keyPressed: {} }));
         expect(tooltipValues(store)).toIncludeSameMembers(first);
         // move over the 2nd bar (hide the null)
-        store.dispatch(onPointerMove({ position: { x: 45, y: 50 }, time: 1 }));
+        store.dispatch(onPointerMove({ position: { x: 45, y: 50 }, time: 1, keyPressed: {} }));
         expect(tooltipValues(store)).toIncludeSameMembers(second);
         // move over the 3rd bar (hide missing series)
-        store.dispatch(onPointerMove({ position: { x: 75, y: 50 }, time: 1 }));
+        store.dispatch(onPointerMove({ position: { x: 75, y: 50 }, time: 1, keyPressed: {} }));
         expect(tooltipValues(store)).toIncludeSameMembers(third);
       },
     );
