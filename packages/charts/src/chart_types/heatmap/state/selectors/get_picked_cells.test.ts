@@ -59,20 +59,20 @@ describe('Heatmap picked cells', () => {
 
   it('should pick cells', () => {
     const caller = createOnBrushEndCaller();
-    store.dispatch(onPointerMove({ position: { x: 50, y: 50 }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x: 50, y: 50 }, time: 100 }));
-    store.dispatch(onPointerMove({ position: { x: 150, y: 250 }, time: 200 }));
-    store.dispatch(onMouseUp({ position: { x: 150, y: 250 }, time: 300 }));
+    store.dispatch(onPointerMove({ position: { x: 50, y: 50 }, time: 0, keyPressed: {} }));
+    store.dispatch(onMouseDown({ position: { x: 50, y: 50 }, time: 100, keyPressed: {} }));
+    store.dispatch(onPointerMove({ position: { x: 150, y: 250 }, time: 200, keyPressed: {} }));
+    store.dispatch(onMouseUp({ position: { x: 150, y: 250 }, time: 300, keyPressed: {} }));
     caller(store.getState());
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.x.length).toBe(2);
   });
   it('should not include x values if only dragging along y-axis', () => {
     const caller = createOnBrushEndCaller();
-    store.dispatch(onPointerMove({ position: { x: 0, y: 50 }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x: 0, y: 50 }, time: 100 }));
-    store.dispatch(onPointerMove({ position: { x: 0, y: 20 }, time: 200 }));
-    store.dispatch(onMouseUp({ position: { x: 0, y: 20 }, time: 300 }));
+    store.dispatch(onPointerMove({ position: { x: 0, y: 50 }, time: 0, keyPressed: {} }));
+    store.dispatch(onMouseDown({ position: { x: 0, y: 50 }, time: 100, keyPressed: {} }));
+    store.dispatch(onPointerMove({ position: { x: 0, y: 20 }, time: 200, keyPressed: {} }));
+    store.dispatch(onMouseUp({ position: { x: 0, y: 20 }, time: 300, keyPressed: {} }));
     caller(store.getState());
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.x.length).toBe(0);

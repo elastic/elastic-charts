@@ -117,9 +117,9 @@ function expectCorrectClickInfo(
     coords: [x, y],
   } = partition;
 
-  store.dispatch(onPointerMove({ position: { x, y }, time: index * 3 }));
-  store.dispatch(onMouseDown({ position: { x, y }, time: index * 3 + 1 }));
-  store.dispatch(onMouseUp({ position: { x, y }, time: index * 3 + 2 }));
+  store.dispatch(onPointerMove({ position: { x, y }, time: index * 3, keyPressed: {} }));
+  store.dispatch(onMouseDown({ position: { x, y }, time: index * 3 + 1, keyPressed: {} }));
+  store.dispatch(onMouseUp({ position: { x, y }, time: index * 3 + 2, keyPressed: {} }));
 
   expect(onClickListener).toHaveBeenCalledTimes(index + 1);
   const obj = onClickListener.mock.calls[index]![0]![0]![0] as LayerValue[];

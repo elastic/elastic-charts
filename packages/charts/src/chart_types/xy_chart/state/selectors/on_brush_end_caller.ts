@@ -64,7 +64,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           isHistogramModeEnabledSelector,
           computeSmallMultipleScalesSelector,
           getSeriesSpecsSelector,
-          getKeyPressedSelector,
+          getKeyPressedSelector, // take the keyPressed form the state
         ],
         (
           lastDrag,
