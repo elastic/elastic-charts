@@ -35,6 +35,7 @@ import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../state/selectors/get_tooltip_spec';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 import { deepEqual } from '../utils/fast_deep_equal';
+import { noModifierKeysPressed } from '../utils/keys';
 
 interface ChartContainerComponentStateProps {
   status: InitStatus;
@@ -194,7 +195,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     onMouseUp({
       position: { x: -1, y: -1 },
       time: Date.now(),
-      keyPressed: {},
+      keyPressed: noModifierKeysPressed,
     });
   };
 

@@ -32,7 +32,7 @@ import type { SettingsSpec, TooltipValue } from '../../specs';
 import { TooltipType } from '../../specs';
 import { SpecType } from '../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onChartRendered } from '../../state/actions/chart';
-import { onPointerMove as onPointerMoveAction } from '../../state/actions/mouse';
+import { onPointerMove } from '../../state/actions/mouse';
 import type { GlobalChartState } from '../../state/chart_state';
 import type { BackwardRef } from '../../state/internal_chart_renderer';
 import { isPinnableTooltip } from '../../state/selectors/can_pin_tooltip';
@@ -44,6 +44,7 @@ import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import { clamp, isFiniteNumber, isNil } from '../../utils/common';
 import type { Size } from '../../utils/dimensions';
 import type { FlamegraphStyle } from '../../utils/themes/theme';
+import { noModifierKeysPressed } from '../../utils/keys';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right
@@ -1169,10 +1170,10 @@ class FlameComponent extends React.Component<FlameProps> {
         <BasicTooltip
           canPinTooltip={canPinTooltip}
           onPointerMove={() =>
-            onPointerMoveAction({
+            onPointerMove({
               position: { x: NaN, y: NaN },
               time: NaN,
-              keyPressed: {},
+              keyPressed: noModifierKeysPressed,
             })
           }
           position={

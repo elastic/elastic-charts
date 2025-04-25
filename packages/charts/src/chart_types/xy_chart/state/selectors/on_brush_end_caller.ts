@@ -32,12 +32,14 @@ import type { Dimensions } from '../../../../utils/dimensions';
 import type { DragCheckProps } from '../../../../utils/events';
 import { hasDragged } from '../../../../utils/events';
 import type { GroupId } from '../../../../utils/ids';
+import { noModifierKeysPressed } from '../../../../utils/keys';
 import { hasHistogramBarSpec } from '../../domains/y_domain';
 import { isVerticalRotation } from '../utils/common';
 
 const getLastDragSelector = (state: GlobalChartState) => state.interactions.pointer.lastDrag;
 
-const getKeyPressedSelector = (state: GlobalChartState) => state.interactions.pointer.keyPressed;
+const getKeyPressedSelector = (state: GlobalChartState) =>
+  state.interactions.pointer.keyPressed ?? noModifierKeysPressed;
 
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:

@@ -21,10 +21,12 @@ import { getLastClickSelector } from '../../../../state/selectors/get_last_click
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isClicking } from '../../../../state/utils/is_clicking';
 import type { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
+import { noModifierKeysPressed, type KeyPressed } from '../../../../utils/keys';
 import type { AnnotationTooltipState } from '../../annotations/types';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 
-const getKeyPressedSelector = (state: GlobalChartState) => state.interactions.pointer.keyPressed;
+const getKeyPressedSelector = (state: GlobalChartState) =>
+  state.interactions.pointer.keyPressed ?? noModifierKeysPressed;
 
 /**
  * Will call the onElementClick listener every time the following preconditions are met:
@@ -78,7 +80,7 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
 function tryFiringOnElementClick(
   indexedGeometries: IndexedGeometry[],
   onElementClick: SettingsSpec['onElementClick'],
-  keyPressed: Record<string, boolean>,
+  keyPressed: KeyPressed,
 ): boolean {
   if (indexedGeometries.length === 0 || !onElementClick) {
     return false;

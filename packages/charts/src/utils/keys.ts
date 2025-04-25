@@ -6,13 +6,10 @@
  * Side Public License, v 1.
  */
 
-/** @public */
-export interface Point {
-  x: number;
-  y: number;
-}
+type ModifierKeys = 'shiftKey' | 'ctrlKey' | 'altKey' | 'metaKey';
 
 /** @internal */
-export function getDelta(start: Point, end: Point) {
-  return Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
-}
+export type KeyPressed = Record<ModifierKeys, boolean>;
+
+/** @internal */
+export const noModifierKeysPressed: KeyPressed = { shiftKey: false, ctrlKey: false, altKey: false, metaKey: false };

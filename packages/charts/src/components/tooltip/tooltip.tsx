@@ -59,6 +59,7 @@ import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import type { TooltipStyle } from '../../utils/themes/theme';
 import type { AnchorPosition, TooltipPortalSettings } from '../portal';
 import { Placement, TooltipPortal } from '../portal';
+import { noModifierKeysPressed } from '../../utils/keys';
 
 interface TooltipDispatchProps {
   onPointerMove: (...args: Parameters<typeof onPointerMoveAction>) => void;
@@ -145,7 +146,7 @@ export const TooltipComponent = <D extends BaseDatum = Datum, SI extends SeriesI
       return;
     }
     // TODO: handle scroll cursor update
-    onPointerMove({ position: { x: -1, y: -1 }, time: Date.now(), keyPressed: {} });
+    onPointerMove({ position: { x: -1, y: -1 }, time: Date.now(), keyPressed: noModifierKeysPressed });
   };
 
   useEffect(() => {

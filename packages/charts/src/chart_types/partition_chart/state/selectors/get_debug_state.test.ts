@@ -22,6 +22,7 @@ import type {
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import type { DebugState, SinglePartitionDebugState } from '../../../../state/types';
+import { noModifierKeysPressed } from '../../../../utils/keys';
 import { PartitionLayout } from '../../layout/types/config_types';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
@@ -117,9 +118,9 @@ function expectCorrectClickInfo(
     coords: [x, y],
   } = partition;
 
-  store.dispatch(onPointerMove({ position: { x, y }, time: index * 3, keyPressed: {} }));
-  store.dispatch(onMouseDown({ position: { x, y }, time: index * 3 + 1, keyPressed: {} }));
-  store.dispatch(onMouseUp({ position: { x, y }, time: index * 3 + 2, keyPressed: {} }));
+  store.dispatch(onPointerMove({ position: { x, y }, time: index * 3, keyPressed: noModifierKeysPressed }));
+  store.dispatch(onMouseDown({ position: { x, y }, time: index * 3 + 1, keyPressed: noModifierKeysPressed }));
+  store.dispatch(onMouseUp({ position: { x, y }, time: index * 3 + 2, keyPressed: noModifierKeysPressed }));
 
   expect(onClickListener).toHaveBeenCalledTimes(index + 1);
   const obj = onClickListener.mock.calls[index]![0]![0]![0] as LayerValue[];

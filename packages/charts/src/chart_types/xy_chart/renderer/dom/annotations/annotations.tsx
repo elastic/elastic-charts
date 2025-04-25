@@ -31,6 +31,7 @@ import {
 import { getSettingsSpecSelector } from '../../../../../state/selectors/get_settings_spec';
 import type { Dimensions } from '../../../../../utils/dimensions';
 import type { AnnotationId } from '../../../../../utils/ids';
+import { noModifierKeysPressed } from '../../../../../utils/keys';
 import { LIGHT_THEME } from '../../../../../utils/themes/light_theme';
 import type { SharedGeometryStateStyle } from '../../../../../utils/themes/theme';
 import type { AnnotationLineProps } from '../../../annotations/line/types';
@@ -164,7 +165,7 @@ const AnnotationsComponent = ({
     onPointerMove({
       position: { x: -1, y: -1 },
       time: Date.now(),
-      keyPressed: {},
+      keyPressed: noModifierKeysPressed,
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

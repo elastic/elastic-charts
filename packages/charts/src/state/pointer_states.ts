@@ -6,12 +6,14 @@
  * Side Public License, v 1.
  */
 
+import type { KeyPressed } from '../utils/keys';
 import type { Point } from '../utils/point';
 
 /** @internal */
 export interface PointerState {
   position: Point;
   time: number;
+  keyPressed?: KeyPressed;
 }
 
 /** @internal */
@@ -29,5 +31,5 @@ export interface PointerStates {
   up: PointerState | null;
   lastDrag: DragState | null;
   lastClick: PointerState | null;
-  keyPressed: Record<string, boolean>;
+  keyPressed: KeyPressed | null;
 }

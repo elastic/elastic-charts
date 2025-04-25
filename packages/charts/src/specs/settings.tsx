@@ -44,6 +44,7 @@ import { stripUndefined } from '../utils/common';
 import type { Dimensions } from '../utils/dimensions';
 import type { GeometryValue } from '../utils/geometry';
 import type { GroupId, SpecId } from '../utils/ids';
+import type { KeyPressed } from '../utils/keys';
 import type { SeriesCompareFn } from '../utils/series_sort';
 import type { PartialTheme, PointStyle, Theme } from '../utils/themes/theme';
 
@@ -148,7 +149,7 @@ export type ElementClickListener = (
     | WordCloudElementEvent
     | MetricElementEvent
   >,
-  options?: { keyPressed: Record<string, boolean> },
+  options?: { keyPressed: KeyPressed },
 ) => void;
 
 /** @public */
@@ -167,7 +168,7 @@ export type ElementOverListener = (
 export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
 /** @public */
-export type BrushEndListener = (brushAreaEvent: BrushEvent, options?: { keyPressed: Record<string, boolean> }) => void;
+export type BrushEndListener = (brushAreaEvent: BrushEvent, options?: { keyPressed: KeyPressed }) => void;
 
 /** @public */
 export type ProjectionAreaChangeListener = (areas: { projection: Dimensions; parent: Dimensions }) => void;

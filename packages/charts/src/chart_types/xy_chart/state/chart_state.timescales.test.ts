@@ -23,6 +23,7 @@ import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { createChartStore, type GlobalChartState } from '../../../state/chart_state';
 import { chartSelectorsRegistry } from '../../../state/selectors/get_internal_chart_state';
+import { noModifierKeysPressed } from '../../../utils/keys';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { chartTypeSelectors } from '../../chart_type_selectors';
 import type { LineSeriesSpec } from '../utils/specs';
@@ -80,21 +81,21 @@ describe('Render chart', () => {
       expect(geometries.lines[0]?.value.points.length).toBe(3);
     });
     test('check mouse position correctly return inverted value', () => {
-      store.dispatch(onPointerMove({ position: { x: 15, y: 10 }, time: 0, keyPressed: {} })); // check first valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 15, y: 10 }, time: 0, keyPressed: noModifierKeysPressed })); // check first valid tooltip
       let tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(day1);
       expect(tooltip.header?.formattedValue).toBe(`${day1}`);
       expect(tooltip.values[0]?.value).toBe(10);
       expect(tooltip.values[0]?.formattedValue).toBe(`${10}`);
-      store.dispatch(onPointerMove({ position: { x: 35, y: 10 }, time: 1, keyPressed: {} })); // check second valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 35, y: 10 }, time: 1, keyPressed: noModifierKeysPressed })); // check second valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(day2);
       expect(tooltip.header?.formattedValue).toBe(`${day2}`);
       expect(tooltip.values[0]?.value).toBe(22);
       expect(tooltip.values[0]?.formattedValue).toBe(`${22}`);
-      store.dispatch(onPointerMove({ position: { x: 76, y: 10 }, time: 2, keyPressed: {} })); // check third valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 76, y: 10 }, time: 2, keyPressed: noModifierKeysPressed })); // check third valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(day3);
@@ -151,21 +152,21 @@ describe('Render chart', () => {
       expect(geometries.lines[0]?.value.points.length).toBe(3);
     });
     test('check mouse position correctly return inverted value', () => {
-      store.dispatch(onPointerMove({ position: { x: 15, y: 10 }, time: 0, keyPressed: {} })); // check first valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 15, y: 10 }, time: 0, keyPressed: noModifierKeysPressed })); // check first valid tooltip
       let tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date1);
       expect(tooltip.header?.formattedValue).toBe(`${date1}`);
       expect(tooltip.values[0]?.value).toBe(10);
       expect(tooltip.values[0]?.formattedValue).toBe(`${10}`);
-      store.dispatch(onPointerMove({ position: { x: 35, y: 10 }, time: 1, keyPressed: {} })); // check second valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 35, y: 10 }, time: 1, keyPressed: noModifierKeysPressed })); // check second valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date2);
       expect(tooltip.header?.formattedValue).toBe(`${date2}`);
       expect(tooltip.values[0]?.value).toBe(22);
       expect(tooltip.values[0]?.formattedValue).toBe(`${22}`);
-      store.dispatch(onPointerMove({ position: { x: 76, y: 10 }, time: 2, keyPressed: {} })); // check third valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 76, y: 10 }, time: 2, keyPressed: noModifierKeysPressed })); // check third valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date3);
@@ -240,21 +241,21 @@ describe('Render chart', () => {
       expect(xScale.invertWithStep(100, xValues)).toEqual({ value: date3, withinBandwidth: true });
     });
     test('check mouse position correctly return inverted value', () => {
-      store.dispatch(onPointerMove({ position: { x: 15, y: 10 }, time: 0, keyPressed: {} })); // check first valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 15, y: 10 }, time: 0, keyPressed: noModifierKeysPressed })); // check first valid tooltip
       let tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date1);
       expect(tooltip.header?.formattedValue).toBe(`${date1}`);
       expect(tooltip.values[0]?.value).toBe(10);
       expect(tooltip.values[0]?.formattedValue).toBe(`${10}`);
-      store.dispatch(onPointerMove({ position: { x: 35, y: 10 }, time: 1, keyPressed: {} })); // check second valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 35, y: 10 }, time: 1, keyPressed: noModifierKeysPressed })); // check second valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date2);
       expect(tooltip.header?.formattedValue).toBe(`${date2}`);
       expect(tooltip.values[0]?.value).toBe(22);
       expect(tooltip.values[0]?.formattedValue).toBe(`${22}`);
-      store.dispatch(onPointerMove({ position: { x: 76, y: 10 }, time: 2, keyPressed: {} })); // check third valid tooltip
+      store.dispatch(onPointerMove({ position: { x: 76, y: 10 }, time: 2, keyPressed: noModifierKeysPressed })); // check third valid tooltip
       tooltip = getTooltipInfoSelector(store.getState());
       expect(tooltip.values.length).toBe(1);
       expect(tooltip.header?.value).toBe(date3);

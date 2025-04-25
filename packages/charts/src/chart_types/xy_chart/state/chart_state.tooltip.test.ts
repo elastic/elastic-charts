@@ -16,6 +16,7 @@ import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { createChartStore, type GlobalChartState } from '../../../state/chart_state';
 import { chartSelectorsRegistry } from '../../../state/selectors/get_internal_chart_state';
+import { noModifierKeysPressed } from '../../../utils/keys';
 import { chartTypeSelectors } from '../../chart_type_selectors';
 
 describe('XYChart - State tooltips', () => {
@@ -45,7 +46,7 @@ describe('XYChart - State tooltips', () => {
       [TooltipType.VerticalCursor, 1, false, 1],
       [TooltipType.Crosshairs, 1, false, 1],
     ])('tooltip type %s', (tooltipType, expectedHgeomsLength, expectHeader, expectedTooltipValuesLength) => {
-      store.dispatch(onPointerMove({ position: { x: 25, y: 50 }, time: 0, keyPressed: {} }));
+      store.dispatch(onPointerMove({ position: { x: 25, y: 50 }, time: 0, keyPressed: noModifierKeysPressed }));
       store.dispatch(
         upsertSpec(
           MockGlobalSpec.tooltip({
