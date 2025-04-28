@@ -15,10 +15,12 @@ import type { HeatmapBrushEvent, SettingsSpec } from '../../../../specs/settings
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { DragState } from '../../../../state/pointer_states';
+import { getKeyPressedSelector } from '../../../../state/selectors/get_key_pressed';
 import { getLastDragSelector } from '../../../../state/selectors/get_last_drag';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { DragCheckProps } from '../../../../utils/events';
 import { hasDragged } from '../../../../utils/events';
+import type { KeyPressed } from '../../../../utils/keys';
 
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:
@@ -31,7 +33,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
   let selector: OutputSelector<
     Array<(state: GlobalChartState) => GlobalChartState>,
     void,
-    (res1: DragState | null, res3: SettingsSpec, res4: HeatmapBrushEvent | null) => void
+    (res1: DragState | null, res2: SettingsSpec, res3: HeatmapBrushEvent | null, res4: KeyPressed) => void
   > | null = null;
 
   return (state) => {
@@ -42,8 +44,8 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
         return;
       }
       selector = createCustomCachedSelector(
-        [getLastDragSelector, getSettingsSpecSelector, getPickedCells],
-        (lastDrag, { onBrushEnd }, pickedCells): void => {
+        [getLastDragSelector, getSettingsSpecSelector, getPickedCells, getKeyPressedSelector],
+        (lastDrag, { onBrushEnd }, pickedCells, keyPressed): void => {
           const nextProps: DragCheckProps = {
             lastDrag,
             onBrushEnd,
@@ -52,7 +54,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
             return;
           }
           if (lastDrag !== null && hasDragged(prevProps, nextProps)) {
-            onBrushEnd(pickedCells);
+            onBrushEnd(pickedCells, { keyPressed });
           }
           prevProps = nextProps;
         },
