@@ -13,3 +13,8 @@ export type KeyPressed = Record<ModifierKeys, boolean>;
 
 /** @internal */
 export const noModifierKeysPressed: KeyPressed = { shiftKey: false, ctrlKey: false, altKey: false, metaKey: false };
+
+/** @internal */
+export function getModifierKeys(overrides: Partial<KeyPressed> = {}): KeyPressed {
+  return { ...noModifierKeysPressed, ...overrides };
+}
