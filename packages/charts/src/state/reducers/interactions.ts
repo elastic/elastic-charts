@@ -89,9 +89,8 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
       state.pointer.down = {
         position: action.payload.position,
         time: action.payload.time,
-        keyPressed: action.payload.keyPressed,
       };
-      // Do not update state.pointer.keyPressed here
+      state.pointer.keyPressed = action.payload.keyPressed;
     })
     .addCase(onMouseUp, (globalState, action) => {
       if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
@@ -125,15 +124,13 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
             }
           : null;
 
-      const onPointerDownKeyPressed = state.pointer.down?.keyPressed ?? null;
-
       state.pointer.dragging = false;
       state.pointer.down = null;
       state.pointer.up = {
         position: action.payload.position,
         time: action.payload.time,
       };
-      state.pointer.keyPressed = onPointerDownKeyPressed;
+      // Do not update state.pointer.keyPressed here
     });
 };
 

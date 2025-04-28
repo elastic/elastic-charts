@@ -13,7 +13,6 @@ import type { Point } from '../utils/point';
 export interface PointerState {
   position: Point;
   time: number;
-  keyPressed?: KeyPressed;
 }
 
 /** @internal */
@@ -31,5 +30,5 @@ export interface PointerStates {
   up: PointerState | null;
   lastDrag: DragState | null;
   lastClick: PointerState | null;
-  keyPressed: KeyPressed | null;
+  keyPressed: KeyPressed;
 }
