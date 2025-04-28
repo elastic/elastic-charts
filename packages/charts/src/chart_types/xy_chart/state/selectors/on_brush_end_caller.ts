@@ -25,6 +25,7 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { DragState } from '../../../../state/pointer_states';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
+import { getKeyPressedSelector } from '../../../../state/selectors/get_key_pressed';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Rotation } from '../../../../utils/common';
 import { clamp } from '../../../../utils/common';
@@ -32,14 +33,10 @@ import type { Dimensions } from '../../../../utils/dimensions';
 import type { DragCheckProps } from '../../../../utils/events';
 import { hasDragged } from '../../../../utils/events';
 import type { GroupId } from '../../../../utils/ids';
-import { noModifierKeysPressed } from '../../../../utils/keys';
 import { hasHistogramBarSpec } from '../../domains/y_domain';
 import { isVerticalRotation } from '../utils/common';
 
 const getLastDragSelector = (state: GlobalChartState) => state.interactions.pointer.lastDrag;
-
-const getKeyPressedSelector = (state: GlobalChartState) =>
-  state.interactions.pointer.keyPressed ?? noModifierKeysPressed;
 
 /**
  * Will call the onBrushEnd listener every time the following preconditions are met:
@@ -66,7 +63,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           isHistogramModeEnabledSelector,
           computeSmallMultipleScalesSelector,
           getSeriesSpecsSelector,
-          getKeyPressedSelector, // take the keyPressed form the state
+          getKeyPressedSelector,
         ],
         (
           lastDrag,
