@@ -30,7 +30,7 @@ import type { Rect } from '../../../geoms/types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import type { BrushEndListener, ElementClickListener, SettingsSpec } from '../../../specs';
+import type { BrushEndListener, SettingsSpec } from '../../../specs';
 import { BrushAxis, TooltipType } from '../../../specs';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onExternalPointerEvent } from '../../../state/actions/events';
@@ -39,6 +39,7 @@ import type { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 import type { RecursivePartial } from '../../../utils/common';
 import { Position } from '../../../utils/common';
+import { getModifierKeys, noModifierKeysPressed } from '../../../utils/keys';
 import type { AxisStyle } from '../../../utils/themes/theme';
 import type { BarSeriesSpec, BasicSeriesSpec, AxisSpec } from '../utils/specs';
 import { StackMode, SeriesType, AnnotationDomainType } from '../utils/specs';
@@ -87,18 +88,9 @@ const settingSpec = MockGlobalSpec.settings({
   },
 });
 
-function createMockElementClickListener() {
-  return jest.fn<ReturnType<ElementClickListener>, Parameters<ElementClickListener>>((): void => undefined);
-}
-
 function createMockBrushEndListener() {
   return jest.fn<ReturnType<BrushEndListener>, Parameters<BrushEndListener>>((): void => undefined);
 }
-
-function getModifierKeys(overrides: Partial<Record<'altKey' | 'ctrlKey' | 'metaKey' | 'shiftKey', boolean>> = {}) {
-  return { altKey: false, ctrlKey: false, metaKey: false, shiftKey: false, ...overrides };
-}
-const noModifierKeysPressed = getModifierKeys();
 
 function initStore(spec: BasicSeriesSpec) {
   const store = MockStore.default({ width: 100, height: 100, top: chartTop, left: chartLeft }, 'chartId');
