@@ -6,6 +6,8 @@
  * Side Public License, v 1.
  */
 
-/** @internal */
-export * from './store';
-export * from './brush_end_listener';
+import type { BrushEndListener } from '../../specs';
+
+export function createMockBrushEndListener() {
+  return jest.fn<ReturnType<BrushEndListener>, Parameters<BrushEndListener>>((): void => undefined);
+}

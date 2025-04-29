@@ -28,9 +28,9 @@ import { ChartType } from '../..';
 import { Icon } from '../../../components/icons/icon';
 import type { Rect } from '../../../geoms/types';
 import { MockAnnotationSpec, MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
-import { MockStore } from '../../../mocks/store';
+import { createMockBrushEndListener, MockStore } from '../../../mocks/store';
 import { ScaleType } from '../../../scales/constants';
-import type { BrushEndListener, SettingsSpec } from '../../../specs';
+import type { SettingsSpec } from '../../../specs';
 import { BrushAxis, TooltipType } from '../../../specs';
 import { SpecType } from '../../../specs/spec_type'; // kept as long-winded import on separate line otherwise import circularity emerges
 import { onExternalPointerEvent } from '../../../state/actions/events';
@@ -39,7 +39,7 @@ import type { GlobalChartState } from '../../../state/chart_state';
 import { getSettingsSpecSelector } from '../../../state/selectors/get_settings_spec';
 import type { RecursivePartial } from '../../../utils/common';
 import { Position } from '../../../utils/common';
-import { getModifierKeys, noModifierKeysPressed } from '../../../utils/keys';
+import { noModifierKeysPressed } from '../../../utils/keys';
 import type { AxisStyle } from '../../../utils/themes/theme';
 import type { BarSeriesSpec, BasicSeriesSpec, AxisSpec } from '../utils/specs';
 import { StackMode, SeriesType, AnnotationDomainType } from '../utils/specs';
@@ -87,10 +87,6 @@ const settingSpec = MockGlobalSpec.settings({
     },
   },
 });
-
-function createMockBrushEndListener() {
-  return jest.fn<ReturnType<BrushEndListener>, Parameters<BrushEndListener>>((): void => undefined);
-}
 
 function initStore(spec: BasicSeriesSpec) {
   const store = MockStore.default({ width: 100, height: 100, top: chartTop, left: chartLeft }, 'chartId');
@@ -1283,125 +1279,6 @@ describe('Chart state pointer interactions', () => {
               },
             ],
           });
-        }
-      });
-      test('can handle modifier keys during brush events', () => {
-        const brushEndListener = createMockBrushEndListener();
-        const onBrushCaller = createOnBrushEndCaller();
-        store.subscribe(() => {
-          onBrushCaller(store.getState());
-        });
-        const settings = getSettingsSpecSelector(store.getState());
-        const updatedSettings: SettingsSpec = {
-          ...settings,
-          theme: {
-            ...settings.theme,
-            chartMargins: {
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
-            },
-          },
-          onBrushEnd: brushEndListener,
-        };
-        MockStore.addSpecs(
-          [
-            {
-              ...spec,
-              data: [
-                [0, 1],
-                [1, 1],
-                [2, 2],
-                [3, 3],
-              ],
-            } as BarSeriesSpec,
-            updatedSettings,
-          ],
-          store,
-        );
-
-        /*
-         * We should only consider the modifier keys that were pressed during the mouseDown event,
-         * which marks the start of the sequence. Any changes to the keyPressed state that occur
-         * during the sequence (e.g., during pointerMove or mouseUp) should be ignored.
-         */
-
-        // No Modifier Key Pressed
-
-        const start1 = { x: 0, y: 0 };
-        const end1 = { x: 75, y: 0 };
-
-        store.dispatch(onMouseDown({ position: start1, time: 0, keyPressed: noModifierKeysPressed }));
-        store.dispatch(onPointerMove({ position: end1, time: 200, keyPressed: noModifierKeysPressed }));
-        store.dispatch(onMouseUp({ position: end1, time: 300, keyPressed: noModifierKeysPressed }));
-        if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toHaveBeenCalled();
-        } else {
-          expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener).toHaveBeenCalledWith({ x: [0, 2.5] }, { keyPressed: noModifierKeysPressed });
-        }
-
-        // Modifier Key Released Mid-Brush
-
-        const metaKeyPressed = getModifierKeys({ metaKey: true });
-
-        const start2 = { x: 75, y: 0 };
-        const end2 = { x: 100, y: 0 };
-
-        store.dispatch(onMouseDown({ position: start2, time: 400, keyPressed: metaKeyPressed }));
-        store.dispatch(onPointerMove({ position: end2, time: 500, keyPressed: noModifierKeysPressed }));
-        store.dispatch(onMouseUp({ position: end2, time: 600, keyPressed: noModifierKeysPressed }));
-        if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toHaveBeenCalled();
-        } else {
-          expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[1]?.[1]).toEqual({ keyPressed: metaKeyPressed });
-        }
-
-        // Modifier Key Pressed End-Brush
-
-        const start3 = { x: 75, y: 0 };
-        const end3 = { x: 250, y: 0 };
-
-        store.dispatch(onMouseDown({ position: start3, time: 700, keyPressed: noModifierKeysPressed }));
-        store.dispatch(onPointerMove({ position: end3, time: 800, keyPressed: noModifierKeysPressed }));
-        store.dispatch(onMouseUp({ position: end3, time: 900, keyPressed: metaKeyPressed }));
-        if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toHaveBeenCalled();
-        } else {
-          expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[2]?.[1]).toEqual({ keyPressed: noModifierKeysPressed });
-        }
-
-        // Modifier Key Pressed Mid-Brush
-
-        const start4 = { x: 25, y: 0 };
-        const end4 = { x: -20, y: 0 };
-
-        store.dispatch(onMouseDown({ position: start4, time: 1000, keyPressed: noModifierKeysPressed }));
-        store.dispatch(onPointerMove({ position: end4, time: 1100, keyPressed: metaKeyPressed }));
-        store.dispatch(onMouseUp({ position: end4, time: 1200, keyPressed: noModifierKeysPressed }));
-        if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toHaveBeenCalled();
-        } else {
-          expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[2]?.[1]).toEqual({ keyPressed: noModifierKeysPressed });
-        }
-
-        // Modifier Key Pressed During Sequence
-
-        const start5 = { x: 75, y: 0 };
-        const end5 = { x: 250, y: 0 };
-
-        store.dispatch(onMouseDown({ position: start5, time: 1300, keyPressed: noModifierKeysPressed }));
-        store.dispatch(onPointerMove({ position: end5, time: 1400, keyPressed: metaKeyPressed }));
-        store.dispatch(onMouseUp({ position: end5, time: 1500, keyPressed: metaKeyPressed }));
-        if (scaleType === ScaleType.Ordinal) {
-          expect(brushEndListener).not.toHaveBeenCalled();
-        } else {
-          expect(brushEndListener).toHaveBeenCalled();
-          expect(brushEndListener.mock.calls[2]?.[1]).toEqual({ keyPressed: noModifierKeysPressed });
         }
       });
     });
