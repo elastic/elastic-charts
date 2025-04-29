@@ -9,6 +9,7 @@
 import type { Store } from 'redux';
 
 import { createOnBrushEndCaller } from './selectors/on_brush_end_caller';
+import { createOnClickCaller } from './selectors/on_click_caller';
 import { ChartType } from '../..';
 import { MockGlobalSpec, MockSeriesSpec } from '../../../mocks/specs/specs';
 import { createMockBrushEndListener, MockStore } from '../../../mocks/store';
@@ -62,6 +63,18 @@ const linearBarSeries = MockSeriesSpec.bar({
   yScaleType: ScaleType.Linear,
 });
 
+const barSeries = MockSeriesSpec.bar({
+  xAccessor: 0,
+  yAccessors: [1],
+  data: [
+    [0, 10],
+    [1, -10],
+    [2, 10],
+  ],
+});
+
+const POSITION = { x: 50, y: 75 };
+
 const START_POSITION_1 = { x: 0, y: 0 };
 const END_POSITION_1 = { x: 75, y: 0 };
 
@@ -71,15 +84,14 @@ const END_POSITION_2 = { x: 100, y: 0 };
 describe('Key Modifiers on BrushEnd', () => {
   let store: Store<GlobalChartState>;
   let mockBrushEndListener: ReturnType<typeof createMockBrushEndListener>;
-  let onBrushCaller: ReturnType<typeof createOnBrushEndCaller>;
 
-  beforeAll(() => {
+  beforeEach(() => {
     store = MockStore.default({ width: 300, height: 300, top: 0, left: 0 }, 'chartId');
     mockBrushEndListener = createMockBrushEndListener();
     const mockSettingsSpec = MockGlobalSpec.settingsNoMargins({ onBrushEnd: mockBrushEndListener });
     MockStore.addSpecs([mockSettingsSpec, linearBarSeries], store);
 
-    onBrushCaller = createOnBrushEndCaller();
+    const onBrushCaller = createOnBrushEndCaller();
     store.subscribe(() => {
       onBrushCaller(store.getState());
     });
@@ -146,5 +158,38 @@ describe('Key Modifiers on BrushEnd', () => {
 
     expect(mockBrushEndListener).toHaveBeenCalledTimes(2);
     expect(mockBrushEndListener).toHaveBeenNthCalledWith(2, expect.anything(), { keyPressed: noModifierKeysPressed });
+  });
+});
+
+describe('Key Modifiers on ElementClick', () => {
+  let store: Store<GlobalChartState>;
+  let mockOnElementClick: jest.Mock<void, any[]>;
+
+  beforeEach(() => {
+    store = MockStore.default({ width: 300, height: 300, top: 0, left: 0 }, 'chartId');
+    mockOnElementClick = jest.fn<void, any[]>((): void => undefined);
+    const mockSettingsSpec = MockGlobalSpec.settingsNoMargins({ onElementClick: mockOnElementClick });
+    MockStore.addSpecs([mockSettingsSpec, barSeries], store);
+
+    const onElementClickCaller = createOnClickCaller();
+    store.subscribe(() => {
+      onElementClickCaller(store.getState());
+    });
+  });
+
+  test('should handle multiple brush sequences with different modifier keys', () => {
+    store.dispatch(onPointerMove({ position: POSITION, time: 0, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseDown({ position: POSITION, time: 100, keyPressed: metaKeyPressed }));
+    store.dispatch(onMouseUp({ position: POSITION, time: 200, keyPressed: noModifierKeysPressed }));
+
+    expect(mockOnElementClick).toHaveBeenCalledTimes(1);
+    expect(mockOnElementClick).toHaveBeenNthCalledWith(1, expect.anything(), { keyPressed: metaKeyPressed });
+
+    store.dispatch(onPointerMove({ position: POSITION, time: 300, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseDown({ position: POSITION, time: 400, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseUp({ position: POSITION, time: 500, keyPressed: noModifierKeysPressed }));
+
+    expect(mockOnElementClick).toHaveBeenCalledTimes(2);
+    expect(mockOnElementClick).toHaveBeenNthCalledWith(2, expect.anything(), { keyPressed: noModifierKeysPressed });
   });
 });
