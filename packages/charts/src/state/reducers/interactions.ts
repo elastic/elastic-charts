@@ -82,6 +82,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
     .addCase(onMouseDown, (globalState, action) => {
       if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
       const state = globalState.interactions;
+
       state.prevDrilldown = state.drilldown;
       state.drilldown = getDrilldownData(globalState);
       state.pointer.dragging = false;
