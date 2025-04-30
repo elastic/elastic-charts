@@ -82,7 +82,7 @@ export const SparkLine: FunctionComponent<{
         viewBox="0 0 1 1"
         preserveAspectRatio="none"
         role="img"
-        aria-labelledby={`${titleId} ${descriptionId}`}
+        aria-labelledby={`${titleId}_${descriptionId}`}
       >
         <title id={titleId} className="echScreenReaderOnly">
           {trendA11yTitle}
