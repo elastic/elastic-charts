@@ -8,7 +8,7 @@
 
 type ModifierKeys = 'shiftKey' | 'ctrlKey' | 'altKey' | 'metaKey';
 
-/** @internal */
+/** @public */
 export type KeyPressed = Record<ModifierKeys, boolean>;
 
 /** @internal */
