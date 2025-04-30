@@ -43,8 +43,8 @@ import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import { clamp, isFiniteNumber, isNil } from '../../utils/common';
 import type { Size } from '../../utils/dimensions';
-import type { FlamegraphStyle } from '../../utils/themes/theme';
 import { noModifierKeysPressed } from '../../utils/keys';
+import type { FlamegraphStyle } from '../../utils/themes/theme';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
 const SIDE_OVERSHOOT_RATIO = 0.05; // e.g. 0.05 means, extend the domain 5% to the left and 5% to the right

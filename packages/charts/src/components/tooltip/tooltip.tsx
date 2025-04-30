@@ -55,11 +55,11 @@ import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { isBrushingSelector } from '../../state/selectors/is_brushing';
 import type { Datum, Rotation } from '../../utils/common';
 import { hasMostlyRTLItems, isDefined } from '../../utils/common';
+import { noModifierKeysPressed } from '../../utils/keys';
 import { LIGHT_THEME } from '../../utils/themes/light_theme';
 import type { TooltipStyle } from '../../utils/themes/theme';
 import type { AnchorPosition, TooltipPortalSettings } from '../portal';
 import { Placement, TooltipPortal } from '../portal';
-import { noModifierKeysPressed } from '../../utils/keys';
 
 interface TooltipDispatchProps {
   onPointerMove: (...args: Parameters<typeof onPointerMoveAction>) => void;

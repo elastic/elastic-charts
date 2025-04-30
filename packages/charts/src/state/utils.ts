@@ -11,6 +11,7 @@ import type { PointerState, PointerStates } from './pointer_states';
 import type { ChartType } from '../chart_types';
 import type { Spec } from '../specs/spec';
 import type { SpecList } from '../specs/spec_type';
+import { noModifierKeysPressed } from '../utils/keys';
 
 /**
  * Returns all matching specs
@@ -52,6 +53,7 @@ export const getInitialPointerState = (): PointerStates => ({
   up: null,
   lastDrag: null,
   lastClick: null,
+  keyPressed: noModifierKeysPressed,
 });
 
 /** @internal */
