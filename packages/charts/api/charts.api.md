@@ -423,7 +423,9 @@ export const BrushAxis: Readonly<{
 export type BrushAxis = $Values<typeof BrushAxis>;
 
 // @public (undocumented)
-export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+export type BrushEndListener = (brushAreaEvent: BrushEvent, options?: {
+    keyPressed: KeyPressed;
+}) => void;
 
 // @public (undocumented)
 export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
@@ -1151,7 +1153,9 @@ export interface DomainRange {
 }
 
 // @public (undocumented)
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>, options?: {
+    keyPressed: KeyPressed;
+}) => void;
 
 // @public (undocumented)
 export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
@@ -1737,6 +1741,9 @@ export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, Fal
 export type Key = CategoryKey;
 
 // @public (undocumented)
+export type KeyPressed = Record<ModifierKeys, boolean>;
+
+// @public (undocumented)
 export type LabelAccessor<T = PrimitiveValue> = (value: T) => string;
 
 // @public (undocumented)
@@ -2157,6 +2164,9 @@ export type MetricWTrend = (MetricWNumber | MetricWText | MetricWNumberArrayValu
 
 // @public (undocumented)
 export const MODEL_KEY = "parent";
+
+// @public (undocumented)
+export type ModifierKeys = 'shiftKey' | 'ctrlKey' | 'altKey' | 'metaKey';
 
 // @public
 export type Neverify<T extends Record<string, unknown>> = {

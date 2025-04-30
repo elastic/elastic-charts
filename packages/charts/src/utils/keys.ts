@@ -6,7 +6,8 @@
  * Side Public License, v 1.
  */
 
-type ModifierKeys = 'shiftKey' | 'ctrlKey' | 'altKey' | 'metaKey';
+/** @public */
+export type ModifierKeys = 'shiftKey' | 'ctrlKey' | 'altKey' | 'metaKey';
 
 /** @public */
 export type KeyPressed = Record<ModifierKeys, boolean>;

@@ -651,3 +651,5 @@ export function isPointerOutEvent(event: PointerEvent | null | undefined): event
 export function isPointerOverEvent(event: PointerEvent | null | undefined): event is PointerOverEvent {
   return event?.type === PointerEventType.Over;
 }
+
+export type { KeyPressed, ModifierKeys } from '../utils/keys';
