@@ -6,10 +6,20 @@
  * Side Public License, v 1.
  */
 
-/** @public */
+/**
+ * Represents the available modifier keys (e.g., Shift, Control, Alt, Meta).
+ * These keys can be used to modify the behavior of user interactions.
+ *
+ * @public
+ */
 export type ModifierKeys = 'shiftKey' | 'ctrlKey' | 'altKey' | 'metaKey';
 
-/** @public */
+/**
+ * Represents the state of modifier keys during an interaction.
+ * Each key is a boolean indicating whether it is pressed (`true`) or not (`false`).
+ *
+ * @public
+ */
 export type KeyPressed = Record<ModifierKeys, boolean>;
 
 /** @internal */

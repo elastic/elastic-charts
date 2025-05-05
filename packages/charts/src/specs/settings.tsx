@@ -89,27 +89,59 @@ export interface FlameLayerValue {
   vmIndex: number;
 }
 
-/** @public */
+/**
+ * Represents the extent of a brush interaction for a specific group in an XY chart.
+ *
+ * @public
+ */
 export interface GroupBrushExtent {
   groupId: GroupId;
   extent: [number, number];
 }
 
-/** @public */
+/**
+ * Represents the details of a brush interaction in an XY chart.
+ *
+ * @public
+ */
 export interface XYBrushEvent {
   x?: [number, number];
   y?: Array<GroupBrushExtent>;
 }
 
-/** @public */
+/**
+ * Represents an interaction event with an element in an XY chart.
+ *
+ * @public
+ */
 export type XYChartElementEvent = [geometry: GeometryValue, seriesIdentifier: XYChartSeriesIdentifier];
-/** @public */
+
+/**
+ * Represents an interaction event with an element in a partition chart.
+ *
+ * @public
+ */
 export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier: SeriesIdentifier];
-/** @public */
+
+/**
+ * Represents an interaction event with an element in a flame chart.
+ *
+ * @public
+ */
 export type FlameElementEvent = FlameLayerValue;
-/** @public */
+
+/**
+ * Represents an interaction event with a cell in a heatmap chart.
+ *
+ * @public
+ */
 export type HeatmapElementEvent = [cell: Cell, seriesIdentifier: SeriesIdentifier];
-/** @public */
+
+/**
+ * Represents an interaction event with an element in a word cloud chart.
+ *
+ * @public
+ */
 export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];
 
 /**
@@ -139,7 +171,17 @@ export function isMetricElementEvent(e: Parameters<ElementClickListener>[0][0]):
  */
 export type ProjectionClickListener = (values: ProjectedValues) => void;
 
-/** @public */
+/**
+ * The listener type for the `onElementClick` event.
+ *
+ * This listener is triggered when an element in the chart is clicked, providing details about the clicked elements
+ * and any modifier keys that were pressed during the interaction.
+ *
+ * @param elements - An array of clicked elements.
+ * @param options - Additional options, including the state of modifier keys (`keyPressed`).
+ *
+ * @public
+ */
 export type ElementClickListener = (
   elements: Array<
     | XYChartElementEvent
@@ -164,16 +206,42 @@ export type ElementOverListener = (
   >,
 ) => void;
 
-/** @public */
+/**
+ * Represents the details of a brush interaction event.
+ *
+ * A `BrushEvent` can be one of the following:
+ * - `XYBrushEvent`: Represents a brush interaction in an XY chart.
+ * - `HeatmapBrushEvent`: Represents a brush interaction in a Heatmap chart.
+ *
+ * This type is used in listeners like `onBrushEnd` to provide information about the brushed area.
+ *
+ * @public
+ */
 export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
-/** @public */
+/**
+ * The listener type for the `onBrushEnd` event.
+ *
+ * This listener is triggered when a brush interaction ends, providing details about the brushed area
+ * and any modifier keys that were pressed during the interaction.
+ *
+ * @param brushAreaEvent - The details of the brushed area, which can be an `XYBrushEvent` or `HeatmapBrushEvent`.
+ * @param options - Additional options, including the state of modifier keys (`keyPressed`).
+ *
+ * @public
+ */
 export type BrushEndListener = (brushAreaEvent: BrushEvent, options?: { keyPressed: KeyPressed }) => void;
 
 /** @public */
 export type ProjectionAreaChangeListener = (areas: { projection: Dimensions; parent: Dimensions }) => void;
 
-/** @public */
+/**
+ * Represents the details of a brush interaction in a Heatmap chart.
+ *
+ * This interface provides information about the brushed cells and the corresponding X and Y values.
+ *
+ * @public
+ */
 export interface HeatmapBrushEvent extends SmallMultiplesDatum {
   cells: Cell[];
   x: (string | number)[];
