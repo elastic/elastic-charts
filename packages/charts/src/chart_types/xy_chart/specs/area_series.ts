@@ -46,10 +46,23 @@ export const AreaSeries = function <D extends BaseDatum = Datum>(
     keyof (typeof buildProps)['requires']
   >,
 ) {
-  const { defaults, overrides } = buildProps;
-  useSpecFactory<AreaSeriesSpec<D>>({ ...defaults, ...stripUndefined(props), ...overrides });
+  useSpecFactory<AreaSeriesSpec<D>>(getAreaSeriesSpec(props));
   return null;
 };
 
 /** @public */
 export type AreaSeriesProps = ComponentProps<typeof AreaSeries>;
+
+/** @internal */
+export function getAreaSeriesSpec<D extends BaseDatum = Datum>(
+  props: SFProps<
+    AreaSeriesSpec<D>,
+    keyof (typeof buildProps)['overrides'],
+    keyof (typeof buildProps)['defaults'],
+    keyof (typeof buildProps)['optionals'],
+    keyof (typeof buildProps)['requires']
+  >,
+) {
+  const { defaults, overrides } = buildProps;
+  return { ...defaults, ...stripUndefined(props), ...overrides };
+}

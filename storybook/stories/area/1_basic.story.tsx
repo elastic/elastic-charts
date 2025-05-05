@@ -8,7 +8,7 @@
 
 import React from 'react';
 
-import { AreaSeries, Chart, ScaleType, Settings } from '@elastic/charts';
+import { Chart, ScaleType, getAreaSeriesSpec, getSettingsSpec } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
 import type { ChartsStory } from '../../types';
@@ -17,16 +17,22 @@ import { useBaseTheme } from '../../use_base_theme';
 export const Example: ChartsStory = (_, { title, description }) => {
   const { data } = KIBANA_METRICS.metrics.kibana_os_load.v1;
   return (
-    <Chart title={title} description={description}>
-      <Settings baseTheme={useBaseTheme()} />
-      <AreaSeries
-        id="area"
-        xScaleType={ScaleType.Time}
-        yScaleType={ScaleType.Linear}
-        xAccessor={0}
-        yAccessors={[1]}
-        data={data}
-      />
-    </Chart>
+    <Chart
+      title={title}
+      description={description}
+      config={[
+        getSettingsSpec({
+          baseTheme: useBaseTheme(),
+        }),
+        getAreaSeriesSpec({
+          id: 'area',
+          xScaleType: ScaleType.Time,
+          yScaleType: ScaleType.Linear,
+          xAccessor: 0,
+          yAccessors: [1],
+          data,
+        }),
+      ]}
+    ></Chart>
   );
 };
