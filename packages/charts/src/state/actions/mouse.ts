@@ -47,4 +47,4 @@ export const onMouseUp = createAction<MouseAction>('ON_MOUSE_UP');
  * @param time the timestamp of the event (native event timeStamp)
  * @internal
  */
-export const onPointerMove = createAction<MouseAction>('ON_POINTER_MOVE');
+export const onPointerMove = createAction<Omit<MouseAction, 'keyPressed'>>('ON_POINTER_MOVE');

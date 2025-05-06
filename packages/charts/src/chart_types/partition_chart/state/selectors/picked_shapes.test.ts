@@ -97,7 +97,7 @@ describe('Picked shapes selector', () => {
     store.subscribe(() => {
       onElementClickCaller(store.getState());
     });
-    store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 0, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 0 }));
     store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1, keyPressed: noModifierKeysPressed }));
     store.dispatch(onMouseUp({ position: { x: 200, y: 200 }, time: 2, keyPressed: noModifierKeysPressed }));
     expect(onClickListener).toHaveBeenCalled();
@@ -177,7 +177,7 @@ describe('Picked shapes selector', () => {
     });
     const x = 50;
     const y = 150;
-    store.dispatch(onPointerMove({ position: { x, y }, time: 0, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onPointerMove({ position: { x, y }, time: 0 }));
     store.dispatch(onMouseDown({ position: { x, y }, time: 1, keyPressed: noModifierKeysPressed }));
     store.dispatch(onMouseUp({ position: { x, y }, time: 2, keyPressed: noModifierKeysPressed }));
     expect(onClickListener).toHaveBeenCalled();
@@ -222,7 +222,7 @@ describe('Picked shapes selector', () => {
     store.subscribe(() => {
       onElementClickCaller(store.getState());
     });
-    store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 0, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 0 }));
     store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1, keyPressed: noModifierKeysPressed }));
     store.dispatch(onMouseUp({ position: { x: 200, y: 200 }, time: 2, keyPressed: noModifierKeysPressed }));
     expect(onClickListener).toHaveBeenCalled();

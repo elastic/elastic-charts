@@ -118,7 +118,7 @@ function expectCorrectClickInfo(
     coords: [x, y],
   } = partition;
 
-  store.dispatch(onPointerMove({ position: { x, y }, time: index * 3, keyPressed: noModifierKeysPressed }));
+  store.dispatch(onPointerMove({ position: { x, y }, time: index * 3 }));
   store.dispatch(onMouseDown({ position: { x, y }, time: index * 3 + 1, keyPressed: noModifierKeysPressed }));
   store.dispatch(onMouseUp({ position: { x, y }, time: index * 3 + 2, keyPressed: noModifierKeysPressed }));
 

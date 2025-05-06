@@ -43,7 +43,6 @@ import { getTooltipSpecSelector } from '../../state/selectors/get_tooltip_spec';
 import { getSpecsFromStore } from '../../state/utils/get_specs_from_store';
 import { clamp, isFiniteNumber, isNil } from '../../utils/common';
 import type { Size } from '../../utils/dimensions';
-import { noModifierKeysPressed } from '../../utils/keys';
 import type { FlamegraphStyle } from '../../utils/themes/theme';
 
 const PINCH_ZOOM_CHECK_INTERVAL_MS = 100;
@@ -1173,7 +1172,6 @@ class FlameComponent extends React.Component<FlameProps> {
             onPointerMove({
               position: { x: NaN, y: NaN },
               time: NaN,
-              keyPressed: noModifierKeysPressed,
             })
           }
           position={

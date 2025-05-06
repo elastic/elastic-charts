@@ -77,7 +77,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   }
 
   handleMouseMove = ({
-    nativeEvent: { offsetX, offsetY, timeStamp, shiftKey, ctrlKey, altKey, metaKey },
+    nativeEvent: { offsetX, offsetY, timeStamp },
   }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { isChartEmpty, disableInteractions, onPointerMove, internalChartRenderer } = this.props;
     if (isChartEmpty || disableInteractions || internalChartRenderer.name === 'FlameWithTooltip') {
@@ -90,13 +90,10 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     onPointerMove({
       position: { x: offsetX, y: offsetY },
       time: timeStamp,
-      keyPressed: { shiftKey, ctrlKey, altKey, metaKey },
     });
   };
 
-  handleMouseLeave = ({
-    nativeEvent: { timeStamp, shiftKey, ctrlKey, altKey, metaKey },
-  }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  handleMouseLeave = ({ nativeEvent: { timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { isChartEmpty, disableInteractions, onPointerMove, isBrushing } = this.props;
     if (isChartEmpty || disableInteractions || isBrushing) {
       return;
@@ -104,7 +101,6 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     onPointerMove({
       position: { x: -1, y: -1 },
       time: timeStamp,
-      keyPressed: { shiftKey, ctrlKey, altKey, metaKey },
     });
   };
 
