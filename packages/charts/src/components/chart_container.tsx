@@ -87,10 +87,7 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     }
 
     onPointerMove({
-      position: {
-        x: offsetX,
-        y: offsetY,
-      },
+      position: { x: offsetX, y: offsetY },
       time: timeStamp,
     });
   };
@@ -100,11 +97,14 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     if (isChartEmpty || disableInteractions || isBrushing) {
       return;
     }
-    onPointerMove({ position: { x: -1, y: -1 }, time: timeStamp });
+    onPointerMove({
+      position: { x: -1, y: -1 },
+      time: timeStamp,
+    });
   };
 
   handleMouseDown = ({
-    nativeEvent: { offsetX, offsetY, timeStamp, button, ctrlKey },
+    nativeEvent: { offsetX, offsetY, timeStamp, button, shiftKey, ctrlKey, altKey, metaKey },
   }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { isChartEmpty, disableInteractions, onMouseDown, isBrushingAvailable, tooltipState } = this.props;
 
@@ -118,11 +118,9 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     window.addEventListener('keyup', this.handleKeyUp);
 
     onMouseDown({
-      position: {
-        x: offsetX,
-        y: offsetY,
-      },
+      position: { x: offsetX, y: offsetY },
       time: timeStamp,
+      keyPressed: { shiftKey, ctrlKey, altKey, metaKey },
     });
   };
 
@@ -162,12 +160,8 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     }
 
     window.removeEventListener('keyup', this.handleKeyUp);
-
     onMouseUp({
-      position: {
-        x: offsetX,
-        y: offsetY,
-      },
+      position: { x: offsetX, y: offsetY },
       time: timeStamp,
     });
   };
@@ -189,7 +183,10 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     const { onMouseUp } = this.props;
 
     window.removeEventListener('mouseup', this.handleBrushEnd);
-    onMouseUp({ position: { x: -1, y: -1 }, time: Date.now() });
+    onMouseUp({
+      position: { x: -1, y: -1 },
+      time: Date.now(),
+    });
   };
 
   render() {

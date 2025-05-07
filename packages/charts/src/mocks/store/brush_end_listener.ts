@@ -6,13 +6,8 @@
  * Side Public License, v 1.
  */
 
-/** @public */
-export interface Point {
-  x: number;
-  y: number;
-}
+import type { BrushEndListener } from '../../specs';
 
-/** @internal */
-export function getDelta(start: Point, end: Point) {
-  return Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
+export function createMockBrushEndListener() {
+  return jest.fn<ReturnType<BrushEndListener>, Parameters<BrushEndListener>>((): void => undefined);
 }
