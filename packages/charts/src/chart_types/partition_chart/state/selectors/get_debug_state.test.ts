@@ -22,7 +22,6 @@ import type {
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import type { DebugState, SinglePartitionDebugState } from '../../../../state/types';
-import { noModifierKeysPressed } from '../../../../utils/keys';
 import { PartitionLayout } from '../../layout/types/config_types';
 import { isSunburst } from '../../layout/viewmodel/viewmodel';
 
@@ -119,7 +118,7 @@ function expectCorrectClickInfo(
   } = partition;
 
   store.dispatch(onPointerMove({ position: { x, y }, time: index * 3 }));
-  store.dispatch(onMouseDown({ position: { x, y }, time: index * 3 + 1, keyPressed: noModifierKeysPressed }));
+  store.dispatch(onMouseDown({ position: { x, y }, time: index * 3 + 1 }));
   store.dispatch(onMouseUp({ position: { x, y }, time: index * 3 + 2 }));
 
   expect(onClickListener).toHaveBeenCalledTimes(index + 1);

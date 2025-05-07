@@ -13,7 +13,6 @@ import { ScaleType } from '../../../../scales/constants';
 import { BrushAxis } from '../../../../specs';
 import { onMouseDown, onMouseUp, onPointerMove } from '../../../../state/actions/mouse';
 import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
-import { noModifierKeysPressed } from '../../../../utils/keys';
 
 describe('getBrushArea selector', () => {
   describe('compute brush', () => {
@@ -36,7 +35,7 @@ describe('getBrushArea selector', () => {
         ],
         store,
       );
-      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0 }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const xBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
@@ -74,7 +73,7 @@ describe('getBrushArea selector', () => {
         ],
         store,
       );
-      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0 }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const yBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
@@ -114,7 +113,7 @@ describe('getBrushArea selector', () => {
         ],
         store,
       );
-      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0 }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const bothBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
@@ -157,7 +156,7 @@ describe('getBrushArea selector', () => {
         ],
         store,
       );
-      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0 }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const xBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
@@ -195,7 +194,7 @@ describe('getBrushArea selector', () => {
         ],
         store,
       );
-      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0 }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const yBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
@@ -235,7 +234,7 @@ describe('getBrushArea selector', () => {
         ],
         store,
       );
-      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0 }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const bothBrushArea = getBrushAreaSelector(store.getState());
       store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
@@ -294,7 +293,7 @@ describe('getBrushArea selector', () => {
         store,
       );
 
-      store.dispatch(onMouseDown({ position: { x: 150, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseDown({ position: { x: 150, y: 10 }, time: 0 }));
       store.dispatch(onPointerMove({ position: { x: 10, y: 150 }, time: 1000 }));
       const bothBrushArea = getBrushAreaSelector(store.getState());
       expect(bothBrushArea).toEqual({

@@ -1168,12 +1168,7 @@ class FlameComponent extends React.Component<FlameProps> {
         </div>
         <BasicTooltip
           canPinTooltip={canPinTooltip}
-          onPointerMove={() =>
-            onPointerMove({
-              position: { x: NaN, y: NaN },
-              time: NaN,
-            })
-          }
+          onPointerMove={() => onPointerMove({ position: { x: NaN, y: NaN }, time: NaN })}
           position={
             this.tooltipPinned
               ? { x: this.pinnedPointerX, y: this.pinnedPointerY, width: 0, height: 0 }

@@ -20,7 +20,6 @@ import { upsertSpec, specParsed } from '../../../../state/actions/specs';
 import { createChartStore, type GlobalChartState } from '../../../../state/chart_state';
 import { chartSelectorsRegistry } from '../../../../state/selectors/get_internal_chart_state';
 import type { Datum } from '../../../../utils/common';
-import { noModifierKeysPressed } from '../../../../utils/keys';
 import { chartTypeSelectors } from '../../../chart_type_selectors';
 import { HIERARCHY_ROOT_KEY, NULL_SMALL_MULTIPLES_KEY } from '../../layout/utils/group_by_rollup';
 import type { PartitionSpec } from '../../specs';
@@ -98,7 +97,7 @@ describe('Picked shapes selector', () => {
       onElementClickCaller(store.getState());
     });
     store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1}));
     store.dispatch(onMouseUp({ position: { x: 200, y: 200 }, time: 2 }));
     expect(onClickListener).toHaveBeenCalled();
     expect(onClickListener).toHaveBeenCalledWith([
@@ -178,7 +177,7 @@ describe('Picked shapes selector', () => {
     const x = 50;
     const y = 150;
     store.dispatch(onPointerMove({ position: { x, y }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x, y }, time: 1, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseDown({ position: { x, y }, time: 1 }));
     store.dispatch(onMouseUp({ position: { x, y }, time: 2 }));
     expect(onClickListener).toHaveBeenCalled();
     expect(onClickListener).toHaveBeenCalledWith([
@@ -223,7 +222,7 @@ describe('Picked shapes selector', () => {
       onElementClickCaller(store.getState());
     });
     store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1 }));
     store.dispatch(onMouseUp({ position: { x: 200, y: 200 }, time: 2 }));
     expect(onClickListener).toHaveBeenCalled();
     expect(onClickListener).toHaveBeenCalledWith([
