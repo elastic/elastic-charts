@@ -106,6 +106,9 @@ export interface GeometryStateStyle {
    * if set to `0.5` all given opacities will be halfed
    */
   opacity: number;
+  stroke?: Color;
+  fill?: Color;
+  strokeWidth?: number;
 }
 
 /** @public */
