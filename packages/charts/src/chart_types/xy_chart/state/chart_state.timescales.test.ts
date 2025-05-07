@@ -23,7 +23,6 @@ import { onPointerMove } from '../../../state/actions/mouse';
 import { upsertSpec, specParsed } from '../../../state/actions/specs';
 import { createChartStore, type GlobalChartState } from '../../../state/chart_state';
 import { chartSelectorsRegistry } from '../../../state/selectors/get_internal_chart_state';
-import { noModifierKeysPressed } from '../../../utils/keys';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import { chartTypeSelectors } from '../../chart_type_selectors';
 import type { LineSeriesSpec } from '../utils/specs';

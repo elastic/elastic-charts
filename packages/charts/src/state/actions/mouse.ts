@@ -14,7 +14,7 @@ import type { Point } from '../../utils/point';
 interface MouseAction {
   position: Point;
   time: number;
-  keyPressed: KeyPressed;
+  keyPressed?: KeyPressed;
 }
 
 /**
@@ -47,4 +47,4 @@ export const onMouseUp = createAction<MouseAction>('ON_MOUSE_UP');
  * @param time the timestamp of the event (native event timeStamp)
  * @internal
  */
-export const onPointerMove = createAction<Omit<MouseAction, 'keyPressed'>>('ON_POINTER_MOVE');
+export const onPointerMove = createAction<MouseAction>('ON_POINTER_MOVE');

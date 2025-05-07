@@ -8,7 +8,8 @@
 
 /**
  * Represents the available modifier keys (e.g., Shift, Control, Alt, Meta).
- * These keys can be used to modify the behavior of user interactions.
+ * These keys correspond to the `MouseEvent` instance properties `shiftKey`, `ctrlKey`, `altKey` and `metaKey`.
+ * For more details, see: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent#instance_properties
  *
  * @public
  */

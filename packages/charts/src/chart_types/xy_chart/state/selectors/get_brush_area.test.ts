@@ -39,7 +39,7 @@ describe('getBrushArea selector', () => {
       store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const xBrushArea = getBrushAreaSelector(store.getState());
-      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
       const internalChartState = getInternalChartStateSelector(store.getState());
       internalChartState?.eventCallbacks(store.getState());
 
@@ -77,7 +77,7 @@ describe('getBrushArea selector', () => {
       store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const yBrushArea = getBrushAreaSelector(store.getState());
-      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
       const internalChartState = getInternalChartStateSelector(store.getState());
       internalChartState?.eventCallbacks(store.getState());
 
@@ -117,7 +117,7 @@ describe('getBrushArea selector', () => {
       store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const bothBrushArea = getBrushAreaSelector(store.getState());
-      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
       const internalChartState = getInternalChartStateSelector(store.getState());
       internalChartState?.eventCallbacks(store.getState());
 
@@ -160,7 +160,7 @@ describe('getBrushArea selector', () => {
       store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const xBrushArea = getBrushAreaSelector(store.getState());
-      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
       const internalChartState = getInternalChartStateSelector(store.getState());
       internalChartState?.eventCallbacks(store.getState());
 
@@ -198,7 +198,7 @@ describe('getBrushArea selector', () => {
       store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const yBrushArea = getBrushAreaSelector(store.getState());
-      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
       const internalChartState = getInternalChartStateSelector(store.getState());
       internalChartState?.eventCallbacks(store.getState());
 
@@ -238,7 +238,7 @@ describe('getBrushArea selector', () => {
       store.dispatch(onMouseDown({ position: { x: 10, y: 10 }, time: 0, keyPressed: noModifierKeysPressed }));
       store.dispatch(onPointerMove({ position: { x: 30, y: 30 }, time: 1000 }));
       const bothBrushArea = getBrushAreaSelector(store.getState());
-      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseUp({ position: { x: 30, y: 30 }, time: 1100 }));
       const internalChartState = getInternalChartStateSelector(store.getState());
       internalChartState?.eventCallbacks(store.getState());
 
@@ -304,7 +304,7 @@ describe('getBrushArea selector', () => {
         height: 100,
       });
 
-      store.dispatch(onMouseUp({ position: { x: 10, y: 150 }, time: 1100, keyPressed: noModifierKeysPressed }));
+      store.dispatch(onMouseUp({ position: { x: 10, y: 150 }, time: 1100 }));
       const internalChartState = getInternalChartStateSelector(store.getState());
       internalChartState?.eventCallbacks(store.getState());
 

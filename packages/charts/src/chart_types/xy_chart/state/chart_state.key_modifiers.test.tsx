@@ -137,7 +137,7 @@ describe('Key Modifiers on BrushEnd', () => {
 
   test.each(testCases)('should handle $description', ({ start, end, time, keys }) => {
     store.dispatch(onMouseDown({ position: start, time: time[0], keyPressed: keys[0] }));
-    store.dispatch(onPointerMove({ position: end, time: time[1] }));
+    store.dispatch(onPointerMove({ position: end, time: time[1], keyPressed: keys[1] }));
     store.dispatch(onMouseUp({ position: end, time: time[2], keyPressed: keys[2] }));
 
     expect(mockBrushEndListener).toHaveBeenCalledTimes(1);
@@ -146,14 +146,14 @@ describe('Key Modifiers on BrushEnd', () => {
 
   test('should handle multiple brush sequences with different modifier keys', () => {
     store.dispatch(onMouseDown({ position: START_POSITION_1, time: 100, keyPressed: metaKeyPressed }));
-    store.dispatch(onPointerMove({ position: END_POSITION_1, time: 200 }));
+    store.dispatch(onPointerMove({ position: END_POSITION_1, time: 200, keyPressed: noModifierKeysPressed }));
     store.dispatch(onMouseUp({ position: END_POSITION_1, time: 300, keyPressed: noModifierKeysPressed }));
 
     expect(mockBrushEndListener).toHaveBeenCalledTimes(1);
     expect(mockBrushEndListener).toHaveBeenNthCalledWith(1, expect.anything(), { keyPressed: metaKeyPressed });
 
     store.dispatch(onMouseDown({ position: START_POSITION_2, time: 400, keyPressed: noModifierKeysPressed }));
-    store.dispatch(onPointerMove({ position: END_POSITION_2, time: 500 }));
+    store.dispatch(onPointerMove({ position: END_POSITION_2, time: 500, keyPressed: noModifierKeysPressed }));
     store.dispatch(onMouseUp({ position: END_POSITION_2, time: 600, keyPressed: noModifierKeysPressed }));
 
     expect(mockBrushEndListener).toHaveBeenCalledTimes(2);
@@ -178,14 +178,14 @@ describe('Key Modifiers on ElementClick', () => {
   });
 
   test('should handle multiple brush sequences with different modifier keys', () => {
-    store.dispatch(onPointerMove({ position: POSITION, time: 0 }));
+    store.dispatch(onPointerMove({ position: POSITION, time: 0, keyPressed: noModifierKeysPressed }));
     store.dispatch(onMouseDown({ position: POSITION, time: 100, keyPressed: metaKeyPressed }));
     store.dispatch(onMouseUp({ position: POSITION, time: 200, keyPressed: noModifierKeysPressed }));
 
     expect(mockOnElementClick).toHaveBeenCalledTimes(1);
     expect(mockOnElementClick).toHaveBeenNthCalledWith(1, expect.anything(), { keyPressed: metaKeyPressed });
 
-    store.dispatch(onPointerMove({ position: POSITION, time: 300 }));
+    store.dispatch(onPointerMove({ position: POSITION, time: 300, keyPressed: noModifierKeysPressed }));
     store.dispatch(onMouseDown({ position: POSITION, time: 400, keyPressed: noModifierKeysPressed }));
     store.dispatch(onMouseUp({ position: POSITION, time: 500, keyPressed: noModifierKeysPressed }));
 

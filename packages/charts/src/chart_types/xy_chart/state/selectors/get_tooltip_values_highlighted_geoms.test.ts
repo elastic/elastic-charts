@@ -14,7 +14,6 @@ import { MockStore } from '../../../../mocks/store/store';
 import { ScaleType } from '../../../../scales/constants';
 import { onPointerMove } from '../../../../state/actions/mouse';
 import type { GlobalChartState } from '../../../../state/chart_state';
-import { noModifierKeysPressed } from '../../../../utils/keys';
 
 describe('Highlight points', () => {
   describe('On Ordinal area chart', () => {

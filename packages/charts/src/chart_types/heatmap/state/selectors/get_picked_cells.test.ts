@@ -63,7 +63,7 @@ describe('Heatmap picked cells', () => {
     store.dispatch(onPointerMove({ position: { x: 50, y: 50 }, time: 0 }));
     store.dispatch(onMouseDown({ position: { x: 50, y: 50 }, time: 100, keyPressed: noModifierKeysPressed }));
     store.dispatch(onPointerMove({ position: { x: 150, y: 250 }, time: 200 }));
-    store.dispatch(onMouseUp({ position: { x: 150, y: 250 }, time: 300, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseUp({ position: { x: 150, y: 250 }, time: 300 }));
     caller(store.getState());
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.x.length).toBe(2);
@@ -73,7 +73,7 @@ describe('Heatmap picked cells', () => {
     store.dispatch(onPointerMove({ position: { x: 0, y: 50 }, time: 0 }));
     store.dispatch(onMouseDown({ position: { x: 0, y: 50 }, time: 100, keyPressed: noModifierKeysPressed }));
     store.dispatch(onPointerMove({ position: { x: 0, y: 20 }, time: 200 }));
-    store.dispatch(onMouseUp({ position: { x: 0, y: 20 }, time: 300, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseUp({ position: { x: 0, y: 20 }, time: 300 }));
     caller(store.getState());
     const brushEvent = onBrushEndMock.mock.calls[0][0];
     expect(brushEvent.x.length).toBe(0);

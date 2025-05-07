@@ -35,7 +35,6 @@ import { getSettingsSpecSelector } from '../state/selectors/get_settings_spec';
 import { getTooltipSpecSelector } from '../state/selectors/get_tooltip_spec';
 import { isInternalChartEmptySelector } from '../state/selectors/is_chart_empty';
 import { deepEqual } from '../utils/fast_deep_equal';
-import { noModifierKeysPressed } from '../utils/keys';
 
 interface ChartContainerComponentStateProps {
   status: InitStatus;
@@ -154,20 +153,16 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     this.props.pinTooltip({ pinned: true });
   };
 
-  handleMouseUp = ({
-    nativeEvent: { offsetX, offsetY, timeStamp, shiftKey, ctrlKey, altKey, metaKey },
-  }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  handleMouseUp = ({ nativeEvent: { offsetX, offsetY, timeStamp } }: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const { isChartEmpty, disableInteractions, onMouseUp, tooltipState } = this.props;
     if (tooltipState.pinned || isChartEmpty || disableInteractions) {
       return;
     }
 
     window.removeEventListener('keyup', this.handleKeyUp);
-
     onMouseUp({
       position: { x: offsetX, y: offsetY },
       time: timeStamp,
-      keyPressed: { shiftKey, ctrlKey, altKey, metaKey },
     });
   };
 
@@ -191,7 +186,6 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
     onMouseUp({
       position: { x: -1, y: -1 },
       time: Date.now(),
-      keyPressed: noModifierKeysPressed,
     });
   };
 

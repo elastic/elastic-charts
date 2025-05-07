@@ -120,7 +120,7 @@ function expectCorrectClickInfo(
 
   store.dispatch(onPointerMove({ position: { x, y }, time: index * 3 }));
   store.dispatch(onMouseDown({ position: { x, y }, time: index * 3 + 1, keyPressed: noModifierKeysPressed }));
-  store.dispatch(onMouseUp({ position: { x, y }, time: index * 3 + 2, keyPressed: noModifierKeysPressed }));
+  store.dispatch(onMouseUp({ position: { x, y }, time: index * 3 + 2 }));
 
   expect(onClickListener).toHaveBeenCalledTimes(index + 1);
   const obj = onClickListener.mock.calls[index]![0]![0]![0] as LayerValue[];

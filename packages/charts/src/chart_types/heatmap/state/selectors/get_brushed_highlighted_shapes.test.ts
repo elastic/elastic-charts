@@ -62,7 +62,7 @@ describe('Categorical heatmap brush', () => {
     store.dispatch(onPointerMove({ position: { x: 50, y: 50 }, time: 0 }));
     store.dispatch(onMouseDown({ position: { x: 50, y: 50 }, time: 100, keyPressed: noModifierKeysPressed }));
     store.dispatch(onPointerMove({ position: { x: 150, y: 250 }, time: 200 }));
-    store.dispatch(onMouseUp({ position: { x: 150, y: 250 }, time: 300, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseUp({ position: { x: 150, y: 250 }, time: 300 }));
     caller(store.getState());
     expect(onBrushEndMock).toHaveBeenCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
@@ -118,7 +118,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onPointerMove({ position: { x: 50, y: 50 }, time: 0 }));
     store.dispatch(onMouseDown({ position: { x: 50, y: 50 }, time: 100, keyPressed: noModifierKeysPressed }));
     store.dispatch(onPointerMove({ position: { x: 250, y: 250 }, time: 200 }));
-    store.dispatch(onMouseUp({ position: { x: 250, y: 250 }, time: 300, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseUp({ position: { x: 250, y: 250 }, time: 300 }));
     caller(store.getState());
     expect(onBrushEndMock).toHaveBeenCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
@@ -132,7 +132,7 @@ describe('Temporal heatmap brush', () => {
     store.dispatch(onPointerMove({ position: { x: 50, y: 50 }, time: 0 }));
     store.dispatch(onMouseDown({ position: { x: 50, y: 50 }, time: 100, keyPressed: noModifierKeysPressed }));
     store.dispatch(onPointerMove({ position: { x: 60, y: 60 }, time: 200 }));
-    store.dispatch(onMouseUp({ position: { x: 60, y: 60 }, time: 300, keyPressed: noModifierKeysPressed }));
+    store.dispatch(onMouseUp({ position: { x: 60, y: 60 }, time: 300 }));
     caller(store.getState());
     expect(onBrushEndMock).toHaveBeenCalledTimes(1);
     const brushEvent = onBrushEndMock.mock.calls[0][0];
