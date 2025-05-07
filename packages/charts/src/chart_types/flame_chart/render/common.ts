@@ -19,7 +19,7 @@ export const BOX_GAP_HORIZONTAL = 0.5;
 export const BOX_GAP_VERTICAL = 2;
 
 /**
- * The size of incremeneting the canvas size when resizing to avoid
+ * The size of incrementing the canvas size when resizing to avoid
  * thrashing the layout and canvases on every one pixel width/height change
  */
 const CANVAS_SIZE_INCREMENT = 256;
