@@ -59,6 +59,9 @@ export const DEFAULT_GEOMETRY_STYLES: SharedGeometryStateStyle = {
     opacity: 1,
   },
   unhighlighted: {
-    opacity: 0.25,
+    opacity: 1,
+    strokeWidth: 1,
+    stroke: 'rgba(202, 211, 226, 0.15)',
+    fill: 'rgba(202, 211, 226, 0.15)',
   },
 };

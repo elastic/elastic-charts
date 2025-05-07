@@ -13,9 +13,13 @@ import type { LegendItem } from '../../../../common/legend';
 import { renderRect } from '../../../../renderers/canvas/primitives/rect';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
-import type { BarGeometry, PerPanel } from '../../../../utils/geometry';
+import {
+  getGeometryHighlightState,
+  getGeometryHighlightStateStyle,
+  type BarGeometry,
+  type PerPanel,
+} from '../../../../utils/geometry';
 import type { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
-import { getGeometryStateStyle } from '../../rendering/utils';
 
 /** @internal */
 export function renderBars(
@@ -37,7 +41,8 @@ export function renderBars(
         bars.forEach((barGeometry) => {
           const { x, y, width, height, color, seriesStyle: style, seriesIdentifier } = barGeometry;
           const rect = { x, y, width, height };
-          const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
+          const highlightState = getGeometryHighlightState(seriesIdentifier.key, highlightedLegendItem);
+          const geometryStateStyle = getGeometryHighlightStateStyle(sharedStyle, highlightState);
           const barStyle = buildBarStyle(ctx, imgCanvas, color, style.rect, style.rectBorder, geometryStateStyle, rect);
           renderRect(ctx, rect, barStyle.fill, barStyle.stroke);
         }),
