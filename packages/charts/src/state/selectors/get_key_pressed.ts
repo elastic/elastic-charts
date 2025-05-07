@@ -6,13 +6,10 @@
  * Side Public License, v 1.
  */
 
-/** @public */
-export interface Point {
-  x: number;
-  y: number;
-}
+import { noModifierKeysPressed } from '../../utils/keys';
+import type { GlobalChartState } from '../chart_state';
 
 /** @internal */
-export function getDelta(start: Point, end: Point) {
-  return Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
+export function getKeyPressedSelector(state: GlobalChartState) {
+  return state.interactions.pointer.keyPressed ?? noModifierKeysPressed;
 }

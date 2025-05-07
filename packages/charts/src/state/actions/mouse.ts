@@ -8,11 +8,13 @@
 
 import { createAction } from '@reduxjs/toolkit';
 
+import type { KeyPressed } from '../../utils/keys';
 import type { Point } from '../../utils/point';
 
 interface MouseAction {
   position: Point;
   time: number;
+  keyPressed?: KeyPressed;
 }
 
 /**

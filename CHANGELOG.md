@@ -1,3 +1,11 @@
+## [70.0.1](https://github.com/elastic/elastic-charts/compare/v70.0.0...v70.0.1) (2025-05-02)
+
+
+### Bug Fixes
+
+* **colors:** use borealis colors as default ([#2643](https://github.com/elastic/elastic-charts/issues/2643)) ([b728661](https://github.com/elastic/elastic-charts/commit/b7286613b2b1f6a001751f6a24c3e71b0f235ab8))
+* Update aria-labelledby for Sparkline svg to not use spaces ([#2654](https://github.com/elastic/elastic-charts/issues/2654)) ([19349f3](https://github.com/elastic/elastic-charts/commit/19349f3a9507bf92d23e013c4e3ddf31f8c80bf7))
+
 # [70.0.0](https://github.com/elastic/elastic-charts/compare/v69.2.0...v70.0.0) (2025-03-26)
 
 

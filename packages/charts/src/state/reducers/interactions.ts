@@ -16,6 +16,7 @@ import { getPickedShapesLayerValues } from '../../chart_types/partition_chart/st
 import type { LegendItem } from '../../common/legend';
 import type { SeriesIdentifier } from '../../common/series_id';
 import type { TooltipValue } from '../../specs/tooltip';
+import { noModifierKeysPressed } from '../../utils/keys';
 import { getDelta } from '../../utils/point';
 import { onDOMElementEnter, onDOMElementLeave } from '../actions/dom_element';
 import { onKeyPress } from '../actions/key';
@@ -77,6 +78,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
       state.pointer.dragging = dragging;
       state.pointer.current.position = action.payload.position;
       state.pointer.current.time = action.payload.time;
+      // Do not update state.pointer.keyPressed here, only the mouseDown event should store the pressed keys
     })
     .addCase(onMouseDown, (globalState, action) => {
       if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
@@ -90,6 +92,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
         position: action.payload.position,
         time: action.payload.time,
       };
+      state.pointer.keyPressed = action.payload.keyPressed ?? noModifierKeysPressed;
     })
     .addCase(onMouseUp, (globalState, action) => {
       if (getInternalIsInitializedSelector(globalState) !== InitStatus.Initialized) return;
@@ -129,6 +132,7 @@ export const handleMouseActions = (builder: ActionReducerMapBuilder<ChartSliceSt
         position: action.payload.position,
         time: action.payload.time,
       };
+      // Do not update state.pointer.keyPressed here, only the mouseDown event should store the pressed keys
     });
 };
 

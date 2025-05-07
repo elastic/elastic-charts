@@ -17,10 +17,12 @@ import { AnnotationType } from '../../../../specs';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { PointerState } from '../../../../state/pointer_states';
+import { getKeyPressedSelector } from '../../../../state/selectors/get_key_pressed';
 import { getLastClickSelector } from '../../../../state/selectors/get_last_click';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isClicking } from '../../../../state/utils/is_clicking';
 import type { IndexedGeometry, GeometryValue } from '../../../../utils/geometry';
+import { type KeyPressed } from '../../../../utils/keys';
 import type { AnnotationTooltipState } from '../../annotations/types';
 import type { XYChartSeriesIdentifier } from '../../utils/series';
 
@@ -48,6 +50,7 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
         getHighlightedGeomsSelector,
         getProjectedScaledValues,
         getMultipleRectangleAnnotations,
+        getKeyPressedSelector,
       ],
       (
         lastClick: PointerState | null,
@@ -55,11 +58,12 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
         indexedGeometries: IndexedGeometry[],
         values,
         tooltipStates,
+        keyPressed,
       ): void => {
         if (!isClicking(prevClick, lastClick)) {
           return;
         }
-        const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick);
+        const elementClickFired = tryFiringOnElementClick(indexedGeometries, onElementClick, keyPressed);
         if (!elementClickFired && onAnnotationClick && tooltipStates) {
           tryFiringOnAnnotationClick(tooltipStates, onAnnotationClick, indexedGeometries);
         } else if (!elementClickFired) {
@@ -74,6 +78,7 @@ export function createOnClickCaller(): (state: GlobalChartState) => void {
 function tryFiringOnElementClick(
   indexedGeometries: IndexedGeometry[],
   onElementClick: SettingsSpec['onElementClick'],
+  keyPressed: KeyPressed,
 ): boolean {
   if (indexedGeometries.length === 0 || !onElementClick) {
     return false;
@@ -82,7 +87,7 @@ function tryFiringOnElementClick(
     value,
     seriesIdentifier,
   ]);
-  onElementClick(elements);
+  onElementClick(elements, { keyPressed });
   return true;
 }
 

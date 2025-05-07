@@ -8,3 +8,4 @@
 
 /** @internal */
 export * from './store';
+export * from './brush_end_listener';
