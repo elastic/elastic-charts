@@ -97,7 +97,7 @@ describe('Picked shapes selector', () => {
       onElementClickCaller(store.getState());
     });
     store.dispatch(onPointerMove({ position: { x: 200, y: 200 }, time: 0 }));
-    store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1}));
+    store.dispatch(onMouseDown({ position: { x: 200, y: 200 }, time: 1 }));
     store.dispatch(onMouseUp({ position: { x: 200, y: 200 }, time: 2 }));
     expect(onClickListener).toHaveBeenCalled();
     expect(onClickListener).toHaveBeenCalledWith([
