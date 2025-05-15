@@ -35,7 +35,7 @@ export function buildBarStyle(
     (opacity) => opacity * themeRectStyle.opacity * geometryStateStyle.opacity,
   );
   const fill: Fill = {
-    color: fillColor,
+    color: geometryStateStyle.fill ? colorToRgba(geometryStateStyle.fill) : fillColor,
     texture,
   };
 
@@ -44,10 +44,10 @@ export function buildBarStyle(
     (opacity) => opacity * geometryStateStyle.opacity * (themeRectBorderStyle.strokeOpacity ?? themeRectStyle.opacity),
   );
   const stroke: Stroke = {
-    color: strokeColor,
+    color: geometryStateStyle.stroke ? colorToRgba(geometryStateStyle.stroke) : strokeColor,
     width:
       themeRectBorderStyle.visible && rect.height > themeRectBorderStyle.strokeWidth
-        ? themeRectBorderStyle.strokeWidth
+        ? geometryStateStyle.strokeWidth ?? themeRectBorderStyle.strokeWidth
         : 0,
   };
   return { fill, stroke };
