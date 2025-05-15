@@ -29,8 +29,8 @@ export function buildLineStyles(
     (opacity) => opacity * themeLineStyle.opacity * geometryStateStyle.opacity,
   );
   return {
-    color: strokeColor,
-    width: themeLineStyle.strokeWidth,
+    color: geometryStateStyle.stroke ? colorToRgba(geometryStateStyle.stroke) : strokeColor,
+    width: geometryStateStyle.strokeWidth ?? themeLineStyle.strokeWidth,
     dash: themeLineStyle.dash,
   };
 }
