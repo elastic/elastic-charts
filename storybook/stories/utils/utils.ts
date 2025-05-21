@@ -224,17 +224,16 @@ export const colorBrewerCategoricalPastel12B: RGBStrings = [
 ].map(rgbStringToTuple) as RGBStrings;
 
 export const colorBrewerCategoricalStark9: RGBStrings = [
-  '#16C5C0',
-  '#A6EDEA',
-  '#61A2FF',
-  '#BFDBFF',
-  '#EE72A6',
-  '#FFC7DB',
-  '#F6726A',
-  '#FFC9C2',
-  '#EAAE01',
-  '#FCD883',
-].map(hexStringToTuple) as RGBStrings;
+  'rgb(228,26,28)',
+  'rgb(55,126,184)',
+  'rgb(77,175,74)',
+  'rgb(152,78,163)',
+  'rgb(255,127,0)',
+  'rgb(255,255,51)',
+  'rgb(166,86,40)',
+  'rgb(247,129,191)',
+  'rgb(153,153,153)',
+].map(rgbStringToTuple) as RGBStrings;
 
 export const discreteColor =
   (categoricalColors: RGBStrings, opacity = 1) =>
