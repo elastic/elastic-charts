@@ -196,4 +196,19 @@ test.describe('Heatmap stories', () => {
       );
     });
   });
+
+  test.describe('Tooltip', () => {
+    test('should not be shown when the tooltip info is empty', async ({ page }) => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/heatmap-alpha--test-tooltip&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Boundary%20Element=default&knob-Fallback%20Placements=right,left,top,bottom&knob-Show%20x%20axis%20title=true&knob-Show%20y%20axis%20title=true&knob-Tooltip%20offset=10&knob-Tooltip%20placement=right&knob-chart%20width=700&knob-stickTo=middle&knob-tooltip%20type=vertical`,
+        { left: 150, top: 150 },
+      );
+    });
+    test('should be shown when the tooltip info is not empty', async ({ page }) => {
+      await common.expectChartWithMouseAtUrlToMatchScreenshot(page)(
+        `http://localhost:9001/?path=/story/heatmap-alpha--test-tooltip&globals=toggles.showHeader:true;toggles.showChartTitle:false;toggles.showChartDescription:false;toggles.showChartBoundary:false;theme:light&knob-Boundary%20Element=default&knob-Fallback%20Placements=right,left,top,bottom&knob-Show%20x%20axis%20title=true&knob-Show%20y%20axis%20title=true&knob-Tooltip%20offset=10&knob-Tooltip%20placement=left&knob-chart%20width=700&knob-stickTo=middle&knob-tooltip%20type=vertical`,
+        { right: 100, top: 150 },
+      );
+    });
+  });
 });
