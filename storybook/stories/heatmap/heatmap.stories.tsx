@@ -17,3 +17,4 @@ export { Example as timeSnap } from './4_test_time_snap.story';
 export { Example as theming } from './5_theming.story';
 export { Example as labelRotation } from './6_label_rotation.story';
 export { Example as sorting } from './7_sorting.story';
+export { Example as testTooltip } from './8_test_tooltip.story';
