@@ -93,7 +93,7 @@ describe('isTooltipVisibleSelector', () => {
     expect(result.visible).toBe(false);
   });
 
-  it('should return visible: false when tooltip info has an empty label and value', () => {
+  it('should return visible: false when every element of the tooltipInfo values has isVisible: false', () => {
     jest.mocked(tooltipInfo.getTooltipInfoSelector).mockReturnValue({
       disableActions: true,
       header: null,
@@ -104,7 +104,7 @@ describe('isTooltipVisibleSelector', () => {
           displayOnly: true,
           formattedValue: '',
           isHighlighted: false,
-          isVisible: true,
+          isVisible: false,
           label: '',
           seriesIdentifier: { specId: 'testHeatmap', key: 'testHeatmap' },
           value: '',
