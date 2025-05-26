@@ -44,7 +44,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
   const showXAxisTitle = boolean('Show x axis title', true);
   const showYAxisTitle = boolean('Show y axis title', true);
 
-  const chartWidth = number('chart width', 0, { step: 1, min: 0 });
+  const chartWidth = number('chart width', 700, { step: 1, min: 0 });
 
   return (
     <Chart title={title} description={description} size={[chartWidth ? chartWidth : '100%', 320]}>
