@@ -26,8 +26,10 @@ export const isTooltipVisibleSelector = createCustomCachedSelector(
       };
     }
 
+    const tooltipInfoIsVisible = tooltipInfo.values.some(({ isVisible }) => isVisible);
+
     return {
-      visible: tooltipInfo.values.length > 0 || pinned,
+      visible: tooltipInfoIsVisible || pinned,
       displayOnly: tooltipInfo.values.every(({ displayOnly }) => displayOnly),
       isExternal: false,
       isPinnable: tooltipInfo.values.length > 0,
