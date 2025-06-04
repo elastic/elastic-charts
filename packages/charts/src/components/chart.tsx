@@ -188,7 +188,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
             <ChartResizer />
             <Legend />
             <SpecsParser>{this.props.children}</SpecsParser>
-            <div className="echContainer" ref={this.chartContainerRef}>
+            <div className="echContainer" ref={this.chartContainerRef} tabIndex={0}>
               <ChartContainer getChartContainerRef={this.getChartContainerRef} forwardStageRef={this.chartStageRef} />
             </div>
           </div>
