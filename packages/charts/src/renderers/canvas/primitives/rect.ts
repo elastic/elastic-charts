@@ -9,6 +9,7 @@
 import { MIN_STROKE_WIDTH } from './line';
 import { RGBATupleToString } from '../../../common/color_library_wrappers';
 import type { Fill, Rect, Stroke } from '../../../geoms/types';
+import { isFiniteNumber } from '../../../utils/common';
 
 /** @internal */
 export function renderRect(
@@ -17,6 +18,7 @@ export function renderRect(
   { color, texture }: Fill,
   stroke: Stroke,
   disableBorderOffset: boolean = false,
+  rounded?: number,
 ) {
   const borderOffset = !disableBorderOffset && stroke.width >= MIN_STROKE_WIDTH ? stroke.width : 0;
   if (stroke.width >= MIN_STROKE_WIDTH && height >= borderOffset && width >= borderOffset) {
@@ -30,7 +32,11 @@ export function renderRect(
   }
 
   ctx.beginPath();
-  ctx.rect(x + borderOffset, y + borderOffset, width - borderOffset * 2, height - borderOffset * 2);
+  if (isFiniteNumber(rounded) && rounded > 0) {
+    ctx.roundRect(x + borderOffset, y + borderOffset, width - borderOffset * 2, height - borderOffset * 2, rounded);
+  } else {
+    ctx.rect(x + borderOffset, y + borderOffset, width - borderOffset * 2, height - borderOffset * 2);
+  }
   ctx.fillStyle = RGBATupleToString(color);
   ctx.fill();
 
