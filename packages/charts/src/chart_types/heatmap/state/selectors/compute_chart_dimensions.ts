@@ -14,6 +14,7 @@ import type { ChartDimensions } from '../../../../utils/dimensions';
 
 const getParentDimension = (state: GlobalChartState) => state.parentDimensions;
 
+const CANVAS_MARGIN = 2;
 /**
  * Returns chart dimensions  axes sizes and positions.
  * @internal
@@ -44,10 +45,10 @@ export const computeChartDimensionsSelector = createCustomCachedSelector(
     const paddedHeight = chartHeight - chartPaddings.top - chartPaddings.bottom;
 
     // Calculate dimensions after applying margins
-    const top = paddedTop + chartMargins.top;
-    const left = paddedLeft + chartMargins.left;
-    const width = Math.max(0, paddedWidth - chartMargins.left - chartMargins.right);
-    const height = Math.max(0, paddedHeight - chartMargins.bottom - chartMargins.top);
+    const top = paddedTop + chartMargins.top + CANVAS_MARGIN;
+    const left = paddedLeft + chartMargins.left + CANVAS_MARGIN;
+    const width = Math.max(0, paddedWidth - chartMargins.left - chartMargins.right) - CANVAS_MARGIN * 2;
+    const height = Math.max(0, paddedHeight - chartMargins.bottom - chartMargins.top) - CANVAS_MARGIN * 2;
 
     return {
       leftMargin: NaN, // not used

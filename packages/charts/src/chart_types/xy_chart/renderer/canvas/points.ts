@@ -9,7 +9,7 @@
 import { getPanelClipping } from './panel_clipping';
 import { renderShape } from './primitives/shapes';
 import { withPanelTransform } from './utils/panel_transform';
-import { overrideOpacity } from '../../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import type { SeriesKey } from '../../../../common/series_id';
 import type { Circle, Fill, Stroke } from '../../../../geoms/types';
 import type { Rotation } from '../../../../utils/common';
@@ -26,7 +26,7 @@ import { isolatedPointRadius } from '../../rendering/points';
 export function renderPoints(
   ctx: CanvasRenderingContext2D,
   points: PointGeometry[],
-  { opacity }: GeometryStateStyle,
+  geomStateStyle: GeometryStateStyle,
   pointStyle: PointStyle,
   lineStrokeWidth: number,
   seriesMinPointDistance: number,
@@ -51,10 +51,16 @@ export function renderPoints(
       y: y + transform.y,
       radius: isolated ? (useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : pointStyle.radius) : radius,
     };
-    const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
-    const stroke = {
+    const fill = {
+      color: geomStateStyle.fill
+        ? colorToRgba(geomStateStyle.fill)
+        : overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * geomStateStyle.opacity),
+    };
+    const stroke: Stroke = {
       ...style.stroke,
-      color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
+      color: geomStateStyle.stroke
+        ? colorToRgba(geomStateStyle.stroke)
+        : overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * geomStateStyle.opacity),
     };
     renderShape(ctx, style.shape, coordinates, fill, stroke);
   });
@@ -83,6 +89,7 @@ export function renderPointGroup(
         ...style.stroke,
         color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
       };
+
       const coordinates: Circle = { x: x + transform.x, y, radius };
       const renderer = () => renderShape(ctx, style.shape, coordinates, fill, stroke);
       const clippings = { area: getPanelClipping(panel, rotation), shouldClip };

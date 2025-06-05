@@ -6,9 +6,12 @@
  * Side Public License, v 1.
  */
 
+import chroma from 'chroma-js';
+
 import type { ReactiveChartStateProps } from './connected_component';
 import { renderHeatmapDebugElements } from './debug';
-import { getColorBandStyle, getGeometryStateStyle } from './utils';
+import { getCellStyle } from './utils';
+import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import { clearCanvas, renderLayers, withContext } from '../../../../renderers/canvas';
 import { renderMultiLine } from '../../../../renderers/canvas/primitives/line';
 import { renderRect } from '../../../../renderers/canvas/primitives/rect';
@@ -16,13 +19,15 @@ import type { TextFont } from '../../../../renderers/canvas/primitives/text';
 import { renderText, wrapLines } from '../../../../renderers/canvas/primitives/text';
 import { radToDeg } from '../../../../utils/common';
 import { horizontalPad } from '../../../../utils/dimensions';
+import { getCellHighlightState } from '../../state/highlight_state';
 
+const HIGHLIGHTED_BORDER_SIZE = 2;
 /** @internal */
 export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number, props: ReactiveChartStateProps) {
   const { theme } = props.geometries;
   const { heatmapViewModels } = props.geometries;
   const {
-    theme: { sharedStyle: sharedGeometryStyle, chartPaddings: paddings, chartMargins: margins },
+    theme: { chartPaddings: paddings, chartMargins: margins },
     background,
     elementSizes,
     highlightedLegendBands,
@@ -72,10 +77,43 @@ export function renderHeatmapCanvas2d(ctx: CanvasRenderingContext2D, dpr: number
           withContext(ctx, () => {
             ctx.translate(x, y);
             cells.forEach((cell) => {
-              if (cell.visible) {
-                const geometryStateStyle = getGeometryStateStyle(cell, sharedGeometryStyle, highlightedLegendBands);
-                const style = getColorBandStyle(cell, geometryStateStyle);
-                renderRect(ctx, cell, style.fill, style.stroke);
+              if (cell.visible && getCellHighlightState(cell, highlightedLegendBands) !== 'highlighted') {
+                const highlightState = getCellHighlightState(cell, highlightedLegendBands);
+                const style = getCellStyle(cell, highlightState, theme.cell);
+                renderRect(ctx, cell, style.fill, style.stroke, true);
+              }
+            });
+          });
+        }),
+
+      () =>
+        // render highlighted cells border first
+        heatmapViewModels.forEach(({ gridOrigin: { x, y }, cells }) => {
+          withContext(ctx, () => {
+            ctx.translate(x, y);
+            cells.forEach((cell) => {
+              if (cell.visible && getCellHighlightState(cell, highlightedLegendBands) === 'highlighted') {
+                const style = getCellStyle(cell, 'highlighted', theme.cell);
+
+                renderRect(
+                  ctx,
+                  {
+                    ...cell,
+                    x: cell.x - HIGHLIGHTED_BORDER_SIZE,
+                    y: cell.y - HIGHLIGHTED_BORDER_SIZE,
+                    width: cell.width + HIGHLIGHTED_BORDER_SIZE * 2,
+                    height: cell.height + HIGHLIGHTED_BORDER_SIZE * 2,
+                  },
+                  {
+                    ...style.fill,
+                    // darkening the border color a bit
+                    color: colorToRgba(chroma(RGBATupleToString(style.fill.color)).darken(2).hex()),
+                  },
+                  style.stroke,
+                  true,
+                  1, // render a rounded rectangle with a 1px radius
+                );
+                renderRect(ctx, cell, style.fill, style.stroke, true);
               }
             });
           });

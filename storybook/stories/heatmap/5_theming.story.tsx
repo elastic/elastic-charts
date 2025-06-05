@@ -20,6 +20,7 @@ import { useBaseTheme } from '../../use_base_theme';
 import { getDebugStateLogger } from '../utils/debug_state_logger';
 
 export const Example: ChartsStory = (_, { title, description }) => {
+  const baseTheme = useBaseTheme();
   const debug = boolean('Debug', false);
   const debugState = boolean('Enable debug state', true);
 
@@ -73,8 +74,13 @@ export const Example: ChartsStory = (_, { title, description }) => {
     },
     grid: {
       stroke: {
-        color: color('grid stroke color', 'gray', 'Theme'),
-        width: number('grid stroke width', 1, { range: true, min: 0, max: 10, step: 1 }, 'Theme'),
+        color: color('grid stroke color', baseTheme.heatmap.grid.stroke.color, 'Theme'),
+        width: number(
+          'grid stroke width',
+          baseTheme.heatmap.grid.stroke.width,
+          { range: true, min: 0, max: 10, step: 1 },
+          'Theme',
+        ),
       },
     },
     cell: {
@@ -117,7 +123,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         xDomain={{ min: 1572868800000, max: 1572912000000, minInterval: 1800000 }}
         debugState={debugState}
         theme={{ axes, heatmap, chartMargins, chartPaddings }}
-        baseTheme={useBaseTheme()}
+        baseTheme={baseTheme}
         debug={debug}
       />
       <Heatmap
@@ -125,11 +131,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
         colorScale={{
           type: 'bands',
           bands: [
-            { start: -Infinity, end: 3.5, color: '#d2e9f7' },
-            { start: 3.5, end: 25, color: '#8bc8fb' },
-            { start: 25, end: 50, color: '#fdec25' },
-            { start: 50, end: 75, color: '#fba740' },
-            { start: 75, end: Infinity, color: '#fe5050' },
+            { start: -Infinity, end: 3.5, color: '#16C5C0' },
+            { start: 3.5, end: 25, color: '#A6EDEA' },
+            { start: 25, end: 50, color: '#61A2FF' },
+            { start: 50, end: 75, color: '#BFDBFF' },
+            { start: 75, end: Infinity, color: '#EE72A6' },
           ],
         }}
         data={DATA_6.data}

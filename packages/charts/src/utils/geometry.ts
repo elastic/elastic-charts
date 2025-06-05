@@ -9,11 +9,21 @@
 import type { $Values } from 'utility-types';
 
 import type { Dimensions } from './dimensions';
-import type { BarSeriesStyle, PointStyle, PointShape, LineSeriesStyle, AreaSeriesStyle } from './themes/theme';
+import type {
+  BarSeriesStyle,
+  PointStyle,
+  PointShape,
+  LineSeriesStyle,
+  AreaSeriesStyle,
+  SharedGeometryStateStyle,
+  GeometryStateStyle,
+} from './themes/theme';
 import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/series';
 import type { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
 import type { Color } from '../common/colors';
 import type { Pixels } from '../common/geometry';
+import type { LegendItem } from '../common/legend';
+import type { SeriesKey } from '../common/series_id';
 import type { Fill, Stroke } from '../geoms/types';
 
 /**
@@ -164,4 +174,31 @@ export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
 /** @internal */
 export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
   return ig.hasOwnProperty('width') && ig.hasOwnProperty('height');
+}
+
+/** @internal */
+export type GeometryHighlightState = 'dimmed' | 'highlighted' | 'default';
+
+/** @internal */
+export function getGeometryHighlightStateStyle(
+  sharedGeometryStyle: SharedGeometryStateStyle,
+  highlightState: GeometryHighlightState,
+): GeometryStateStyle {
+  switch (highlightState) {
+    case 'dimmed':
+      return sharedGeometryStyle.unhighlighted;
+    case 'default':
+      return sharedGeometryStyle.default;
+    case 'highlighted':
+      return sharedGeometryStyle.highlighted;
+  }
+}
+
+/** @internal */
+export function getGeometryHighlightState(key: SeriesKey, highlightedLegendItem?: LegendItem): GeometryHighlightState {
+  return !highlightedLegendItem
+    ? 'default'
+    : highlightedLegendItem.seriesIdentifiers.some((si) => si.key === key)
+      ? 'highlighted'
+      : 'dimmed';
 }

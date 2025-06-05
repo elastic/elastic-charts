@@ -407,6 +407,10 @@ export const LIGHT_THEME: Theme = {
         strokeWidth: 0,
         stroke: LIGHT_BORDER_COLORS.borderBaseSubdued,
       },
+      dimmed: {
+        stroke: 'rgba(202, 211, 226, 0.25)',
+        fill: 'rgba(202, 211, 226, 0.25)',
+      },
     },
   },
   metric: {

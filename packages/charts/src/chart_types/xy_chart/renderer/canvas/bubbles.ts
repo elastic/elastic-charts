@@ -12,9 +12,13 @@ import type { SeriesKey } from '../../../../common/series_id';
 import { withContext } from '../../../../renderers/canvas';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
-import type { BubbleGeometry, PerPanel } from '../../../../utils/geometry';
+import {
+  getGeometryHighlightState,
+  getGeometryHighlightStateStyle,
+  type BubbleGeometry,
+  type PerPanel,
+} from '../../../../utils/geometry';
 import type { SharedGeometryStateStyle, GeometryStateStyle } from '../../../../utils/themes/theme';
-import { getGeometryStateStyle } from '../../rendering/utils';
 
 /** @internal */
 export function renderBubbles(
@@ -28,7 +32,8 @@ export function renderBubbles(
   withContext(ctx, () => {
     const styles: Record<SeriesKey, GeometryStateStyle> = {};
     const allPoints = bubbles.flatMap(({ value: { seriesIdentifier, points } }) => {
-      styles[seriesIdentifier.key] = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
+      const highlightState = getGeometryHighlightState(seriesIdentifier.key, highlightedLegendItem);
+      styles[seriesIdentifier.key] = getGeometryHighlightStateStyle(sharedStyle, highlightState);
       return points;
     });
 

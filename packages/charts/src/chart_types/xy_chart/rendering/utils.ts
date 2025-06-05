@@ -6,15 +6,13 @@
  * Side Public License, v 1.
  */
 
-import type { LegendItem } from '../../../common/legend';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import { isLogarithmicScale } from '../../../scales/types';
 import type { MarkBuffer } from '../../../specs';
 import { getDistance, isWithinRange } from '../../../utils/common';
 import type { BarGeometry, ClippedRanges, PointGeometry } from '../../../utils/geometry';
 import { isPointGeometry } from '../../../utils/geometry';
-import type { GeometryStateStyle, SharedGeometryStateStyle } from '../../../utils/themes/theme';
-import type { DataSeriesDatum, FilledValues, XYChartSeriesIdentifier } from '../utils/series';
+import type { DataSeriesDatum, FilledValues } from '../utils/series';
 
 /** @internal */
 export interface MarkSizeOptions {
@@ -91,19 +89,6 @@ export function getClippedRanges(
     }
     return acc;
   }, []);
-}
-
-/** @internal */
-export function getGeometryStateStyle(
-  seriesIdentifier: XYChartSeriesIdentifier,
-  sharedGeometryStyle: SharedGeometryStateStyle,
-  highlightedLegendItem?: LegendItem,
-): GeometryStateStyle {
-  if (highlightedLegendItem) {
-    const isHighlighted = highlightedLegendItem.seriesIdentifiers.some((si) => si.key === seriesIdentifier.key);
-    return isHighlighted ? sharedGeometryStyle.highlighted : sharedGeometryStyle.unhighlighted;
-  }
-  return sharedGeometryStyle.default;
 }
 
 /** @internal */

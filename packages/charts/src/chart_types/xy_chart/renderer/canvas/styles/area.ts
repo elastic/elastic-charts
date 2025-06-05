@@ -33,7 +33,7 @@ export function buildAreaStyles(
   );
 
   return {
-    color,
+    color: geometryStateStyle.fill ? colorToRgba(geometryStateStyle.fill) : color,
     texture,
   };
 }
