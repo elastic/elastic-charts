@@ -7,7 +7,7 @@
  */
 
 import { buildPointGeometryStyles } from './point_style';
-import type { MarkSizeOptions, YDefinedFn } from './utils';
+import type { MarkSizeOptions } from './utils';
 import { getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isDatumFilled, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
