@@ -25,11 +25,6 @@ import type { PointStyleAccessor } from '../utils/specs';
 import { StackMode } from '../utils/specs';
 
 /** @internal */
-export function isolatedPointRadius(lineStrokeWidth: number) {
-  return lineStrokeWidth + 0.5;
-}
-
-/** @internal */
 export function renderPoints(
   shift: number,
   dataSeries: DataSeries,
@@ -38,12 +33,10 @@ export function renderPoints(
   panel: Dimensions,
   color: Color,
   pointStyle: PointStyle,
-  isolatedPointThemeStyle: Omit<PointStyle, 'radius'>,
-  lineStrokeWidth: number,
+  isolatedPointThemeStyle: Omit<PointStyle, 'radius' | 'visible'>,
   isBandedSpec: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
-  allowIsolated: boolean,
   styleAccessor?: PointStyleAccessor,
 ): {
   pointGeometries: PointGeometry[];
@@ -90,7 +83,7 @@ export function renderPoints(
 
       const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-      const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const isPointIsolated = isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
       if (styleAccessor) {
         styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
         style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
@@ -102,11 +95,9 @@ export function renderPoints(
         const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
 
         // if radius is defined with the mark, limit the minimum radius to the theme radius value
-        const radius = isPointIsolated
-          ? isolatedPointRadius(lineStrokeWidth)
-          : markSizeOptions.enabled
-            ? Math.max(getRadius(mark), pointStyle.radius)
-            : styleOverrides?.radius ?? pointStyle.radius;
+        const radius = markSizeOptions.enabled
+          ? Math.max(getRadius(mark), pointStyle.radius)
+          : styleOverrides?.radius ?? pointStyle.radius;
 
         const pointGeometry: PointGeometry = {
           x,

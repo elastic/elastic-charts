@@ -27,10 +27,7 @@ export function getLineSeriesStyles(
   return mergePartial(
     baseStyle,
     {
-      isolatedPoint: {
-        ...isolatedPointStyleOverrides,
-        visible: seriesStyle?.isolatedPoint?.visible ?? baseStyle.isolatedPoint.visible,
-      },
+      isolatedPoint: { ...isolatedPointStyleOverrides },
     },
     undefined,
     [seriesStyle],
@@ -54,10 +51,7 @@ export function getAreaSeriesStyles(
   return mergePartial(
     baseStyle,
     {
-      isolatedPoint: {
-        ...isolatedPointStyleOverrides,
-        visible: seriesStyle?.isolatedPoint?.visible ?? baseStyle.isolatedPoint.visible,
-      },
+      isolatedPoint: { ...isolatedPointStyleOverrides },
     },
     undefined,
     [seriesStyle],

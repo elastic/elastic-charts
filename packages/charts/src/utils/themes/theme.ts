@@ -727,7 +727,7 @@ export interface LineSeriesStyle {
   /** Style for the points  */
   point: PointStyle;
   /** Style for the isolated points  */
-  isolatedPoint: { enabled: boolean } & Omit<PointStyle, 'radius'>;
+  isolatedPoint: Omit<PointStyle, 'radius' | 'visible'>;
   /** Style for the fitted line  */
   fit: {
     line: LineFitStyle;
@@ -751,7 +751,7 @@ export interface AreaSeriesStyle {
   /** Style for the points  */
   point: PointStyle;
   /** Style for the isolated points  */
-  isolatedPoint: { enabled: boolean } & Omit<PointStyle, 'radius'>;
+  isolatedPoint: Omit<PointStyle, 'radius' | 'visible'>;
   /** Style for the fitted area  */
   fit: {
     line: LineFitStyle;

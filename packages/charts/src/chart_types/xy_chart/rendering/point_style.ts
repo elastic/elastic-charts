@@ -16,7 +16,7 @@ import { PointShape } from '../../../utils/themes/theme';
 /** @internal */
 export function buildPointGeometryStyles(
   color: string,
-  themePointStyle: Omit<PointStyle, 'radius'>,
+  themePointStyle: Omit<PointStyle, 'radius' | 'visible'>,
   overrides?: Partial<PointStyle>,
 ): PointGeometryStyle {
   const pointStyle = mergePartial(themePointStyle, overrides);

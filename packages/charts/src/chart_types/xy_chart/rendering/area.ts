@@ -75,11 +75,9 @@ export function renderArea(
     color,
     style.point,
     style.isolatedPoint,
-    style.line.strokeWidth,
     isBandedSpec,
     markSizeOptions,
     false,
-    style.isolatedPoint.enabled,
     pointStyleAccessor,
   );
 

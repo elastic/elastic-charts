@@ -16,7 +16,10 @@ import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
 import type { PointGeometry } from '../../../../utils/geometry';
 import type { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
-import { isolatedPointRadius } from '../../rendering/points';
+
+function isolatedPointRadius(lineStrokeWidth: number) {
+  return lineStrokeWidth + 0.5;
+}
 
 /**
  * Renders points from single series
@@ -28,7 +31,6 @@ export function renderPoints(
   points: PointGeometry[],
   { opacity }: GeometryStateStyle,
   pointStyle: PointStyle,
-  isolatedPointStyle: { enabled: boolean } & Omit<PointStyle, 'radius'>,
   lineStrokeWidth: number,
   seriesMinPointDistance: number,
   pointsDistanceVisibilityThreshold: number,
@@ -38,10 +40,10 @@ export function renderPoints(
   // In this case the point should be visible if the visibility style is set to `auto`
   const isHiddenOnAuto = pointStyle.visible === 'auto' && seriesMinPointDistance < pointsDistanceVisibilityThreshold;
   const hideDataPoints = pointStyle.visible === 'never' || isHiddenOnAuto;
-  const hideIsolatedDataPoints =
-    hasConnectingLine || !isolatedPointStyle.enabled || isolatedPointStyle.visible === 'never';
+  const hideIsolatedDataPoints = hasConnectingLine && (isHiddenOnAuto || pointStyle.visible === 'never');
 
-  const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
+  const isolatedRadius =
+    hideDataPoints && !hideIsolatedDataPoints ? isolatedPointRadius(lineStrokeWidth) : pointStyle.radius;
   points.forEach(({ x, y, radius, transform, style, isolated }) => {
     if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
       return;
@@ -50,7 +52,7 @@ export function renderPoints(
     const coordinates = {
       x: x + transform.x,
       y: y + transform.y,
-      radius: isolated ? (useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : pointStyle.radius) : radius,
+      radius: isolated ? isolatedRadius : radius,
     };
     const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
     const stroke = {

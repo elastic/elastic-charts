@@ -58,7 +58,6 @@ export function renderLines(
             line.points,
             geometryStyle,
             line.style.point,
-            line.style.isolatedPoint,
             line.style.line.strokeWidth,
             line.minPointDistance,
             line.style.pointVisibilityMinDistance,
