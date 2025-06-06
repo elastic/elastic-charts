@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkelastic_charts_docs=self.webpackChunkelastic_charts_docs||[]).push([[9647],{18122:(s,e,c)=>{c.r(e),c.d(e,{default:()=>h});c(96540);var r=c(34164),a=c(81769),t=c(204),u=c(22831),l=c(41833),d=c(74848);function h(s){return(0,d.jsx)(a.e3,{className:(0,r.A)(t.G.wrapper.docsPages),children:(0,d.jsx)(l.A,{children:(0,u.v)(s.route.routes)})})}}}]);

@@ -1,0 +1,1 @@
+(self.webpackChunkelastic_charts_docs=self.webpackChunkelastic_charts_docs||[]).push([[28577],{20549:(s,c,a)=>{"use strict";a.d(c,{A:()=>t});var e=a(58291);const t=e},45741:()=>{}}]);
