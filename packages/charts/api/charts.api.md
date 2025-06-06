@@ -422,10 +422,12 @@ export const BrushAxis: Readonly<{
 // @public (undocumented)
 export type BrushAxis = $Values<typeof BrushAxis>;
 
-// @public (undocumented)
-export type BrushEndListener = (brushAreaEvent: BrushEvent) => void;
+// @public
+export type BrushEndListener = (brushAreaEvent: BrushEvent, options?: {
+    keyPressed: KeyPressed;
+}) => void;
 
-// @public (undocumented)
+// @public
 export type BrushEvent = XYBrushEvent | HeatmapBrushEvent;
 
 // Warning: (ae-forgotten-export) The symbol "buildProps_5" needs to be exported by the entry point index.d.ts
@@ -1150,8 +1152,10 @@ export interface DomainRange {
     minInterval?: number;
 }
 
-// @public (undocumented)
-export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
+// @public
+export type ElementClickListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>, options?: {
+    keyPressed: KeyPressed;
+}) => void;
 
 // @public (undocumented)
 export type ElementOverListener = (elements: Array<XYChartElementEvent | PartitionElementEvent | FlameElementEvent | HeatmapElementEvent | WordCloudElementEvent | MetricElementEvent>) => void;
@@ -1237,7 +1241,7 @@ export type FitConfig = {
 // @public
 export const Flame: <D extends BaseDatum = any>(props: SFProps<FlameSpec<D>, keyof (typeof buildProps_11)["overrides"], keyof (typeof buildProps_11)["defaults"], keyof (typeof buildProps_11)["optionals"], keyof (typeof buildProps_11)["requires"]>) => null;
 
-// @public (undocumented)
+// @public
 export type FlameElementEvent = FlameLayerValue;
 
 // @public
@@ -1458,7 +1462,7 @@ export interface GridLineStyle {
     visible: boolean;
 }
 
-// @public (undocumented)
+// @public
 export interface GroupBrushExtent {
     // (undocumented)
     extent: [number, number];
@@ -1514,7 +1518,7 @@ export interface HeatmapBandsColorScale {
     type: 'bands';
 }
 
-// @public (undocumented)
+// @public
 export interface HeatmapBrushEvent extends SmallMultiplesDatum {
     // (undocumented)
     cells: Cell[];
@@ -1536,7 +1540,7 @@ export interface HeatmapCellDatum extends SmallMultiplesDatum {
     y: NonNullable<PrimitiveValue>;
 }
 
-// @public (undocumented)
+// @public
 export type HeatmapElementEvent = [cell: Cell, seriesIdentifier: SeriesIdentifier];
 
 // @public (undocumented)
@@ -1735,6 +1739,9 @@ export type IsUnknown<T, True, False = never> = unknown extends T ? IsAny<T, Fal
 
 // @public (undocumented)
 export type Key = CategoryKey;
+
+// @public
+export type KeyPressed = Record<ModifierKeys, boolean>;
 
 // @public (undocumented)
 export type LabelAccessor<T = PrimitiveValue> = (value: T) => string;
@@ -2039,7 +2046,10 @@ export type MetricBase = {
         verticalAlign: 'middle';
     }>;
     subtitle?: string;
-    extra?: ReactElement;
+    extra?: ReactElement | ComponentType<{
+        fontSize: number;
+        color: string;
+    }>;
     icon?: ComponentType<{
         width: number;
         height: number;
@@ -2156,6 +2166,9 @@ export type MetricWTrend = (MetricWNumber | MetricWText | MetricWNumberArrayValu
 export const MODEL_KEY = "parent";
 
 // @public
+export type ModifierKeys = 'shiftKey' | 'ctrlKey' | 'altKey' | 'metaKey';
+
+// @public
 export type Neverify<T extends Record<string, unknown>> = {
     [Key in keyof T]?: never;
 };
@@ -2233,7 +2246,7 @@ export type PartialTheme = RecursivePartial<Theme>;
 // @public
 export const Partition: <D extends BaseDatum = any>(props: SFProps<PartitionSpec<D>, keyof (typeof buildProps)["overrides"], keyof (typeof buildProps)["defaults"], keyof (typeof buildProps)["optionals"], keyof (typeof buildProps)["requires"]>) => null;
 
-// @public (undocumented)
+// @public
 export type PartitionElementEvent = [layers: Array<LayerValue>, seriesIdentifier: SeriesIdentifier];
 
 // Warning: (ae-forgotten-export) The symbol "LabelConfig" needs to be exported by the entry point index.d.ts
@@ -3468,7 +3481,7 @@ export type WillRenderListener = () => void;
 // @alpha
 export const Wordcloud: FC<SFProps<WordcloudSpec, "chartType" | "specType", "data" | "fontStyle" | "fontWeight" | "fontFamily" | "padding" | "minFontSize" | "maxFontSize" | "exponent" | "startAngle" | "endAngle" | "angleCount" | "spiral" | "weightFn" | "outOfRoomCallback", never, "id">>;
 
-// @public (undocumented)
+// @public
 export type WordCloudElementEvent = [model: WordModel, seriesIdentifier: SeriesIdentifier];
 
 // Warning: (ae-incompatible-release-tags) The symbol "WordcloudProps" is marked as @public, but its signature references "Wordcloud" which is marked as @alpha
@@ -3529,7 +3542,7 @@ export interface WordModel {
 // @public (undocumented)
 export type XScaleType = typeof ScaleType.Ordinal | ScaleContinuousType;
 
-// @public (undocumented)
+// @public
 export interface XYBrushEvent {
     // (undocumented)
     x?: [number, number];
@@ -3537,7 +3550,7 @@ export interface XYBrushEvent {
     y?: Array<GroupBrushExtent>;
 }
 
-// @public (undocumented)
+// @public
 export type XYChartElementEvent = [geometry: GeometryValue, seriesIdentifier: XYChartSeriesIdentifier];
 
 // @public (undocumented)

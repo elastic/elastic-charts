@@ -25,6 +25,7 @@ import type { GlobalChartState } from '../../../../state/chart_state';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { DragState } from '../../../../state/pointer_states';
 import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/compute_small_multiple_scales';
+import { getKeyPressedSelector } from '../../../../state/selectors/get_key_pressed';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import type { Rotation } from '../../../../utils/common';
 import { clamp } from '../../../../utils/common';
@@ -62,6 +63,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           isHistogramModeEnabledSelector,
           computeSmallMultipleScalesSelector,
           getSeriesSpecsSelector,
+          getKeyPressedSelector,
         ],
         (
           lastDrag,
@@ -71,6 +73,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
           histogramMode,
           smallMultipleScales,
           seriesSpec,
+          keyPressed,
         ): void => {
           const nextProps = {
             lastDrag,
@@ -105,7 +108,7 @@ export function createOnBrushEndCaller(): (state: GlobalChartState) => void {
               );
             }
             if (brushAreaEvent.x !== undefined || brushAreaEvent.y !== undefined) {
-              onBrushEnd(brushAreaEvent);
+              onBrushEnd(brushAreaEvent, { keyPressed });
             }
           }
           prevProps = nextProps;

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { noModifierKeysPressed } from '../../utils/keys';
 import type { PointerStates } from '../pointer_states';
 
 /** @internal */
@@ -17,4 +18,5 @@ export const getInitialPointerState = (): PointerStates => ({
   up: null,
   lastDrag: null,
   lastClick: null,
+  keyPressed: noModifierKeysPressed,
 });

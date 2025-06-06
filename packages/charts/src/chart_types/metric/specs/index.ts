@@ -29,7 +29,7 @@ export type MetricBase = {
   valueColor?: Color;
   valueIcon?: ComponentType<{ width: number; height: number; color: Color; verticalAlign: 'middle' }>;
   subtitle?: string;
-  extra?: ReactElement;
+  extra?: ReactElement | ComponentType<{ fontSize: number; color: string }>;
   icon?: ComponentType<{ width: number; height: number; color: Color }>;
   body?: ReactNode;
 };

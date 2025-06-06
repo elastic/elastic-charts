@@ -1,3 +1,30 @@
+## [70.0.1](https://github.com/elastic/elastic-charts/compare/v70.0.0...v70.0.1) (2025-05-02)
+
+
+### Bug Fixes
+
+* **colors:** use borealis colors as default ([#2643](https://github.com/elastic/elastic-charts/issues/2643)) ([b728661](https://github.com/elastic/elastic-charts/commit/b7286613b2b1f6a001751f6a24c3e71b0f235ab8))
+* Update aria-labelledby for Sparkline svg to not use spaces ([#2654](https://github.com/elastic/elastic-charts/issues/2654)) ([19349f3](https://github.com/elastic/elastic-charts/commit/19349f3a9507bf92d23e013c4e3ddf31f8c80bf7))
+
+# [70.0.0](https://github.com/elastic/elastic-charts/compare/v69.2.0...v70.0.0) (2025-03-26)
+
+
+### Features
+
+* **xy:** change timeAxisLayerCount the default from 0 to 2 ([#2582](https://github.com/elastic/elastic-charts/issues/2582)) ([81c32c7](https://github.com/elastic/elastic-charts/commit/81c32c703cb29ab6c5a8b06708c270e65558a4c6))
+
+
+### BREAKING CHANGES
+
+* **xy:** The timeAxisLayerCount options now defaults to 2 instead of 0. The multilayer time axis is now the default style.
+
+# [69.2.0](https://github.com/elastic/elastic-charts/compare/v69.1.1...v69.2.0) (2025-03-26)
+
+
+### Features
+
+* **metric:** Expose both font size and color stylings on the extra prop ([#2627](https://github.com/elastic/elastic-charts/issues/2627)) ([2d21118](https://github.com/elastic/elastic-charts/commit/2d2111899588d6619dbe4152fd8113cd2215fa1a))
+
 ## [69.1.1](https://github.com/elastic/elastic-charts/compare/v69.1.0...v69.1.1) (2025-03-07)
 
 
