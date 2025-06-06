@@ -42,8 +42,8 @@ export function getYDatumValueFn(valueName: keyof Omit<FilledValues, 'x'> = 'y1'
  * @param param0
  * @internal
  */
-export function isDatumFilled({ filled, initialY1 }: DataSeriesDatum) {
-  return filled?.x !== undefined || filled?.y1 !== undefined || initialY1 === null || initialY1 === undefined;
+export function isDatumFilled({ filled }: DataSeriesDatum) {
+  return filled?.x !== undefined || filled?.y1 !== undefined || filled?.y0 !== undefined;
 }
 
 /**

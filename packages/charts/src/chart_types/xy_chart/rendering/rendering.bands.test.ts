@@ -93,10 +93,11 @@ describe('Rendering bands - areas', () => {
       expect(transform).toEqual({ x: 12.5, y: 0 });
     });
 
-    test('Can render two points', () => {
+    test('Can render 4 data points + 3 isolated points', () => {
       const {
         value: { points },
       } = areas[0]!;
+      expect(points).toHaveLength(7);
       expect(points).toMatchSnapshot();
     });
   });

@@ -83,7 +83,7 @@ export function renderPoints(
 
       const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-      const isPointIsolated = isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const isPointIsolated = isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, prev, next);
       if (styleAccessor) {
         styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
         style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
@@ -235,25 +235,36 @@ export function getRadiusFn(
   };
 }
 
-function yAccessorForIsolatedPointCheck(datum: DataSeriesDatum): number | null {
-  return isNil(datum.initialY1) || !isNil(datum.filled?.y1) ? null : datum.y1;
+function isDefined(prev: DataSeriesDatum, isBandedSpec: boolean) {
+  const accessor = getYDatumValueFn('y1');
+  if (isNil(accessor(prev))) {
+    return false;
+  }
+  if (isBandedSpec) {
+    const y0Accessor = getYDatumValueFn('y0');
+    if (isNil(y0Accessor(prev))) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function isIsolatedPoint(
   index: number,
   length: number,
-  yDefined: YDefinedFn,
+  current: DataSeriesDatum,
+  isBandedSpec: boolean,
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (index === 0 && (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))) {
+  if (!isDefined(current, isBandedSpec)) {
     return true;
   }
-  if (index === length - 1 && (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck))) {
+  if (index === 0 && (isNil(next) || !isDefined(next, isBandedSpec))) {
     return true;
   }
-  return (
-    (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck)) &&
-    (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))
-  );
+  if (index === length - 1 && (isNil(prev) || !isDefined(prev, isBandedSpec))) {
+    return true;
+  }
+  return (isNil(prev) || !isDefined(prev, isBandedSpec)) && (isNil(next) || !isDefined(next, isBandedSpec));
 }
