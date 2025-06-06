@@ -33,8 +33,6 @@ export const AMSTERDAM_DARK_THEME: Theme = {
       opacity: 1,
     },
     isolatedPoint: {
-      enabled: true,
-      visible: 'auto',
       strokeWidth: 0,
       stroke: ColorVariant.None,
       fill: ColorVariant.Series,
@@ -78,8 +76,6 @@ export const AMSTERDAM_DARK_THEME: Theme = {
       opacity: 1,
     },
     isolatedPoint: {
-      enabled: true,
-      visible: 'auto',
       stroke: ColorVariant.None,
       strokeWidth: 0,
       fill: ColorVariant.Series,

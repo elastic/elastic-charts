@@ -207,9 +207,7 @@ export interface AreaSeriesStyle {
         line: LineFitStyle;
         area: AreaFitStyle;
     };
-    isolatedPoint: {
-        enabled: boolean;
-    } & Omit<PointStyle, 'radius'>;
+    isolatedPoint: Omit<PointStyle, 'radius' | 'visible'>;
     line: LineStyle;
     point: PointStyle;
     pointVisibilityMinDistance: Pixels;
@@ -1995,9 +1993,7 @@ export interface LineSeriesStyle {
     fit: {
         line: LineFitStyle;
     };
-    isolatedPoint: {
-        enabled: boolean;
-    } & Omit<PointStyle, 'radius'>;
+    isolatedPoint: Omit<PointStyle, 'radius' | 'visible'>;
     line: LineStyle;
     point: PointStyle;
     pointVisibilityMinDistance: Pixels;

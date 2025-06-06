@@ -45,14 +45,10 @@ export function renderBubble(
     color,
     seriesStyle.point,
     // there is no concept of isolated point in bubble chart, so we mark it as invisible
-    { ...seriesStyle.point, visible: 'never' },
-    // there is no need to know the line stroke width to compute the isolated point radius
-    NaN,
+    { ...seriesStyle.point },
     hasY0Accessors,
     markSizeOptions,
     !isMixedChart,
-    // don't allow rendering of isolated points
-    false,
     pointStyleAccessor,
   );
 
