@@ -9,13 +9,8 @@
 import { shuffle } from 'lodash';
 
 import { fitFunctionData } from './data';
-import {
-  fitFunction as fitFunctionFn,
-  type FullDataSeriesDatum,
-  type WithIndex,
-} from '../../chart_types/xy_chart/utils/fit_function';
+import { type FullDataSeriesDatum, type WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 import type { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
-import { ScaleType } from '../../scales/constants';
 import { SeriesType } from '../../specs';
 import { mergePartial } from '../../utils/common';
 import { MockSeriesSpec } from '../specs';
