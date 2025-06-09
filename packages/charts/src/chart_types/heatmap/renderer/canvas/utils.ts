@@ -6,41 +6,38 @@
  * Side Public License, v 1.
  */
 
-import { overrideOpacity } from '../../../../common/color_library_wrappers';
+import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Fill, Stroke } from '../../../../geoms/types';
-import type { GenericDomain } from '../../../../utils/domain';
-import type { GeometryStateStyle, SharedGeometryStateStyle } from '../../../../utils/themes/theme';
+import { getColorFromVariant } from '../../../../utils/common';
+import type { GeometryHighlightState } from '../../../../utils/geometry';
+import type { Theme } from '../../../../utils/themes/theme';
 import type { Cell } from '../../layout/types/viewmodel_types';
-import { isValueInRanges } from '../../layout/viewmodel/viewmodel';
 
 /** @internal */
-export function getGeometryStateStyle(
+export function getCellStyle(
   cell: Cell,
-  sharedGeometryStyle: SharedGeometryStateStyle,
-  highlightedLegendBands: Array<GenericDomain>,
-): GeometryStateStyle {
-  const { default: defaultStyles, highlighted, unhighlighted } = sharedGeometryStyle;
-
-  if (highlightedLegendBands.length > 0) {
-    const isHighlightedBand = isValueInRanges(cell.value, highlightedLegendBands);
-    return isHighlightedBand ? highlighted : unhighlighted;
+  highlightState: GeometryHighlightState,
+  cellStyle: Theme['heatmap']['cell'],
+): { fill: Fill; stroke: Stroke } {
+  const cellColorAsString = RGBATupleToString(cell.fill.color);
+  const cellStrokeAsString = RGBATupleToString(cell.stroke.color);
+  switch (highlightState) {
+    case 'default':
+    case 'highlighted':
+      return {
+        fill: cell.fill,
+        stroke: cell.stroke,
+      };
+    case 'dimmed':
+      return {
+        fill: {
+          ...cell.fill,
+          color: colorToRgba(getColorFromVariant(cellColorAsString, cellStyle.dimmed.fill)),
+        },
+        stroke: {
+          ...cell.stroke,
+          color: colorToRgba(getColorFromVariant(cellStrokeAsString, cellStyle.dimmed.stroke)),
+        },
+      };
   }
-
-  return defaultStyles;
-}
-
-/** @internal */
-export function getColorBandStyle(cell: Cell, geometryStateStyle: GeometryStateStyle): { fill: Fill; stroke: Stroke } {
-  const fillColor = overrideOpacity(cell.fill.color, (opacity) => opacity * geometryStateStyle.opacity);
-  const fill: Fill = {
-    ...cell.fill,
-    color: fillColor,
-  };
-
-  const strokeColor = overrideOpacity(cell.stroke.color, (opacity) => opacity * geometryStateStyle.opacity);
-  const stroke: Stroke = {
-    ...cell.stroke,
-    color: strokeColor,
-  };
-  return { fill, stroke };
 }

@@ -82,4 +82,10 @@ export interface PartitionStyle extends FillFontSizeRange {
   linkLabel: LinkLabelConfig;
   sectorLineWidth: Pixels;
   sectorLineStroke: StrokeStyle;
+
+  dimmed: {
+    fill: Color | ColorVariant;
+    stroke: Color | ColorVariant;
+    strokeWidth: Pixels;
+  };
 }
