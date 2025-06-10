@@ -123,7 +123,7 @@ export function renderPoints(
         indexedGeometryMap.set(pointGeometry, geometryType);
         // use the geometry only if the yDatum in contained in the current yScale domain
         if (
-          isFiniteNumber(y) &&
+          isFiniteNumber(originalY) &&
           yDefined(datum, valueAccessor) &&
           yScale.isValueInDomain(valueAccessor(datum)) &&
           !isDatumFilled(datum)

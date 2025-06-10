@@ -10,7 +10,7 @@ import { area } from 'd3-shape';
 
 import { renderPoints } from './points';
 import type { MarkSizeOptions } from './utils';
-import { getClippedRanges, getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn } from './utils';
+import { getClippedRanges, getY0ScaledValueFn, getY1ScaledValueFn, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import type { CurveType } from '../../../utils/curves';
@@ -46,14 +46,15 @@ export function renderArea(
   const y1Fn = getY1ScaledValueFn(yScale);
   const y0Fn = getY0ScaledValueFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
-  const y1DatumAccessor = getYDatumValueFn();
-  const y0DatumAccessor = getYDatumValueFn('y0');
   const pathGenerator = area<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
     .y1(y1Fn)
     .y0(y0Fn)
     .defined((datum) => {
-      return definedFn(datum, y1DatumAccessor) && (isBandedSpec ? definedFn(datum, y0DatumAccessor) : true);
+      return (
+        definedFn(datum, (d) => d.filled?.y1 ?? d.initialY1) &&
+        (isBandedSpec ? definedFn(datum, (d) => d.filled?.y0 ?? d.initialY0) : true)
+      );
     })
     .curve(getCurveFactory(curve));
 

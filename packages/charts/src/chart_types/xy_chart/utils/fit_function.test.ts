@@ -7,17 +7,22 @@
  */
 
 import * as testModule from './fit_function';
-import type { DataSeries } from './series';
+import type { DataSeries, DataSeriesDatum } from './series';
 import { Fit } from './specs';
 import * as seriesUtils from './stacked_series_utils';
-import {
-  MockDataSeries,
-  getFilledNullData,
-  getFilledNonNullData,
-  getYResolvedData,
-  MockDataSeriesDatum,
-} from '../../../mocks';
+import { MockDataSeries, getFilledNullData, getFilledNonNullData, MockDataSeriesDatum } from '../../../mocks';
 import { ScaleType } from '../../../scales/constants';
+import { getYDatumValueFn } from '../rendering/utils';
+
+/**
+ * Returns value of `y1` or `filled.y1` or null
+ */
+const getYResolvedData = (data: DataSeriesDatum[]): (number | null)[] => {
+  const datumAccessor = getYDatumValueFn();
+  return data.map((d) => {
+    return datumAccessor(d);
+  });
+};
 
 describe('Fit Function', () => {
   describe('getValue', () => {

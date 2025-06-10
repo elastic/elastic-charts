@@ -10,7 +10,7 @@ import { line } from 'd3-shape';
 
 import { renderPoints } from './points';
 import type { MarkSizeOptions } from './utils';
-import { getClippedRanges, getY1ScaledValueFn, getYDatumValueFn, isYValueDefinedFn } from './utils';
+import { getClippedRanges, getY1ScaledValueFn, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
 import type { CurveType } from '../../../utils/curves';
@@ -44,12 +44,11 @@ export function renderLine(
 } {
   const y1Fn = getY1ScaledValueFn(yScale);
   const definedFn = isYValueDefinedFn(yScale, xScale);
-  const y1Accessor = getYDatumValueFn();
 
   const pathGenerator = line<DataSeriesDatum>()
     .x(({ x }) => xScale.scale(x) - xScaleOffset)
     .y(y1Fn)
-    .defined((datum) => definedFn(datum, y1Accessor))
+    .defined((datum) => definedFn(datum, (d) => d.initialY1))
     .curve(getCurveFactory(curve));
 
   const { pointGeometries, indexedGeometryMap, minDistanceBetweenPoints } = renderPoints(
