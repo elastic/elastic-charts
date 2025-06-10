@@ -237,8 +237,240 @@ exports[`Rendering bands - areas Single band area chart Can render two points 1`
 ]
 `;
 
-exports[`Rendering bands - areas Single band area chart with null values Can render two points 1`] = `
+exports[`Rendering bands - areas Single band area chart with null values Can render 4 data points + 3 isolated points 1`] = `
 [
+  {
+    "color": "red",
+    "isolated": false,
+    "panel": {
+      "height": 100,
+      "left": 0,
+      "top": 0,
+      "width": 100,
+    },
+    "radius": 3,
+    "seriesIdentifier": {
+      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
+      "seriesKeys": [
+        2,
+      ],
+      "specId": "spec_1",
+      "splitAccessors": Map {},
+      "xAccessor": 0,
+      "yAccessor": 2,
+    },
+    "style": {
+      "fill": {
+        "color": [
+          255,
+          0,
+          0,
+          1,
+        ],
+      },
+      "shape": "circle",
+      "stroke": {
+        "color": [
+          0,
+          0,
+          0,
+          0,
+        ],
+        "width": 0,
+      },
+    },
+    "transform": {
+      "x": 12.5,
+      "y": 0,
+    },
+    "value": {
+      "accessor": "y1",
+      "datum": [
+        3,
+        3,
+        5,
+      ],
+      "mark": null,
+      "x": 3,
+      "y": 5,
+    },
+    "x": 75,
+    "y": 50,
+  },
+  {
+    "color": "red",
+    "isolated": false,
+    "panel": {
+      "height": 100,
+      "left": 0,
+      "top": 0,
+      "width": 100,
+    },
+    "radius": 3,
+    "seriesIdentifier": {
+      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
+      "seriesKeys": [
+        2,
+      ],
+      "specId": "spec_1",
+      "splitAccessors": Map {},
+      "xAccessor": 0,
+      "yAccessor": 2,
+    },
+    "style": {
+      "fill": {
+        "color": [
+          255,
+          0,
+          0,
+          1,
+        ],
+      },
+      "shape": "circle",
+      "stroke": {
+        "color": [
+          0,
+          0,
+          0,
+          0,
+        ],
+        "width": 0,
+      },
+    },
+    "transform": {
+      "x": 12.5,
+      "y": 0,
+    },
+    "value": {
+      "accessor": "y0",
+      "datum": [
+        3,
+        3,
+        5,
+      ],
+      "mark": null,
+      "x": 3,
+      "y": 3,
+    },
+    "x": 75,
+    "y": 70,
+  },
+  {
+    "color": "red",
+    "isolated": false,
+    "panel": {
+      "height": 100,
+      "left": 0,
+      "top": 0,
+      "width": 100,
+    },
+    "radius": 3,
+    "seriesIdentifier": {
+      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
+      "seriesKeys": [
+        2,
+      ],
+      "specId": "spec_1",
+      "splitAccessors": Map {},
+      "xAccessor": 0,
+      "yAccessor": 2,
+    },
+    "style": {
+      "fill": {
+        "color": [
+          255,
+          0,
+          0,
+          1,
+        ],
+      },
+      "shape": "circle",
+      "stroke": {
+        "color": [
+          0,
+          0,
+          0,
+          0,
+        ],
+        "width": 0,
+      },
+    },
+    "transform": {
+      "x": 12.5,
+      "y": 0,
+    },
+    "value": {
+      "accessor": "y1",
+      "datum": [
+        2,
+        3,
+        5,
+      ],
+      "mark": null,
+      "x": 2,
+      "y": 5,
+    },
+    "x": 50,
+    "y": 50,
+  },
+  {
+    "color": "red",
+    "isolated": false,
+    "panel": {
+      "height": 100,
+      "left": 0,
+      "top": 0,
+      "width": 100,
+    },
+    "radius": 3,
+    "seriesIdentifier": {
+      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
+      "seriesKeys": [
+        2,
+      ],
+      "specId": "spec_1",
+      "splitAccessors": Map {},
+      "xAccessor": 0,
+      "yAccessor": 2,
+    },
+    "style": {
+      "fill": {
+        "color": [
+          255,
+          0,
+          0,
+          1,
+        ],
+      },
+      "shape": "circle",
+      "stroke": {
+        "color": [
+          0,
+          0,
+          0,
+          0,
+        ],
+        "width": 0,
+      },
+    },
+    "transform": {
+      "x": 12.5,
+      "y": 0,
+    },
+    "value": {
+      "accessor": "y0",
+      "datum": [
+        2,
+        3,
+        5,
+      ],
+      "mark": null,
+      "x": 2,
+      "y": 3,
+    },
+    "x": 50,
+    "y": 70,
+  },
   {
     "color": "red",
     "isolated": true,
@@ -248,7 +480,65 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 2.5,
+    "radius": 3,
+    "seriesIdentifier": {
+      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
+      "seriesKeys": [
+        2,
+      ],
+      "specId": "spec_1",
+      "splitAccessors": Map {},
+      "xAccessor": 0,
+      "yAccessor": 2,
+    },
+    "style": {
+      "fill": {
+        "color": [
+          255,
+          0,
+          0,
+          1,
+        ],
+      },
+      "shape": "circle",
+      "stroke": {
+        "color": [
+          255,
+          0,
+          0,
+          1,
+        ],
+        "width": 0,
+      },
+    },
+    "transform": {
+      "x": 12.5,
+      "y": 0,
+    },
+    "value": {
+      "accessor": "y0",
+      "datum": [
+        1,
+        2,
+        null,
+      ],
+      "mark": null,
+      "x": 1,
+      "y": 2,
+    },
+    "x": 25,
+    "y": 80,
+  },
+  {
+    "color": "red",
+    "isolated": true,
+    "panel": {
+      "height": 100,
+      "left": 0,
+      "top": 0,
+      "width": 100,
+    },
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -306,7 +596,7 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
       "top": 0,
       "width": 100,
     },
-    "radius": 2.5,
+    "radius": 3,
     "seriesIdentifier": {
       "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
       "seriesKeys": [
@@ -354,238 +644,6 @@ exports[`Rendering bands - areas Single band area chart with null values Can ren
     },
     "x": 0,
     "y": 80,
-  },
-  {
-    "color": "red",
-    "isolated": false,
-    "panel": {
-      "height": 100,
-      "left": 0,
-      "top": 0,
-      "width": 100,
-    },
-    "radius": 3,
-    "seriesIdentifier": {
-      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
-      "seriesKeys": [
-        2,
-      ],
-      "specId": "spec_1",
-      "splitAccessors": Map {},
-      "xAccessor": 0,
-      "yAccessor": 2,
-    },
-    "style": {
-      "fill": {
-        "color": [
-          255,
-          0,
-          0,
-          1,
-        ],
-      },
-      "shape": "circle",
-      "stroke": {
-        "color": [
-          0,
-          0,
-          0,
-          0,
-        ],
-        "width": 0,
-      },
-    },
-    "transform": {
-      "x": 12.5,
-      "y": 0,
-    },
-    "value": {
-      "accessor": "y1",
-      "datum": [
-        3,
-        3,
-        5,
-      ],
-      "mark": null,
-      "x": 3,
-      "y": 5,
-    },
-    "x": 75,
-    "y": 50,
-  },
-  {
-    "color": "red",
-    "isolated": false,
-    "panel": {
-      "height": 100,
-      "left": 0,
-      "top": 0,
-      "width": 100,
-    },
-    "radius": 3,
-    "seriesIdentifier": {
-      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
-      "seriesKeys": [
-        2,
-      ],
-      "specId": "spec_1",
-      "splitAccessors": Map {},
-      "xAccessor": 0,
-      "yAccessor": 2,
-    },
-    "style": {
-      "fill": {
-        "color": [
-          255,
-          0,
-          0,
-          1,
-        ],
-      },
-      "shape": "circle",
-      "stroke": {
-        "color": [
-          0,
-          0,
-          0,
-          0,
-        ],
-        "width": 0,
-      },
-    },
-    "transform": {
-      "x": 12.5,
-      "y": 0,
-    },
-    "value": {
-      "accessor": "y0",
-      "datum": [
-        3,
-        3,
-        5,
-      ],
-      "mark": null,
-      "x": 3,
-      "y": 3,
-    },
-    "x": 75,
-    "y": 70,
-  },
-  {
-    "color": "red",
-    "isolated": false,
-    "panel": {
-      "height": 100,
-      "left": 0,
-      "top": 0,
-      "width": 100,
-    },
-    "radius": 3,
-    "seriesIdentifier": {
-      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
-      "seriesKeys": [
-        2,
-      ],
-      "specId": "spec_1",
-      "splitAccessors": Map {},
-      "xAccessor": 0,
-      "yAccessor": 2,
-    },
-    "style": {
-      "fill": {
-        "color": [
-          255,
-          0,
-          0,
-          1,
-        ],
-      },
-      "shape": "circle",
-      "stroke": {
-        "color": [
-          0,
-          0,
-          0,
-          0,
-        ],
-        "width": 0,
-      },
-    },
-    "transform": {
-      "x": 12.5,
-      "y": 0,
-    },
-    "value": {
-      "accessor": "y1",
-      "datum": [
-        2,
-        3,
-        5,
-      ],
-      "mark": null,
-      "x": 2,
-      "y": 5,
-    },
-    "x": 50,
-    "y": 50,
-  },
-  {
-    "color": "red",
-    "isolated": false,
-    "panel": {
-      "height": 100,
-      "left": 0,
-      "top": 0,
-      "width": 100,
-    },
-    "radius": 3,
-    "seriesIdentifier": {
-      "key": "groupId{group_1}spec{spec_1}yAccessor{2}splitAccessors{}",
-      "seriesKeys": [
-        2,
-      ],
-      "specId": "spec_1",
-      "splitAccessors": Map {},
-      "xAccessor": 0,
-      "yAccessor": 2,
-    },
-    "style": {
-      "fill": {
-        "color": [
-          255,
-          0,
-          0,
-          1,
-        ],
-      },
-      "shape": "circle",
-      "stroke": {
-        "color": [
-          0,
-          0,
-          0,
-          0,
-        ],
-        "width": 0,
-      },
-    },
-    "transform": {
-      "x": 12.5,
-      "y": 0,
-    },
-    "value": {
-      "accessor": "y0",
-      "datum": [
-        2,
-        3,
-        5,
-      ],
-      "mark": null,
-      "x": 2,
-      "y": 3,
-    },
-    "x": 50,
-    "y": 70,
   },
 ]
 `;

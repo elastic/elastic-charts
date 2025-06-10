@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { getYDatumValueFn } from '../../chart_types/xy_chart/rendering/utils';
 import type { DataSeriesDatum } from '../../chart_types/xy_chart/utils/series';
 
 /**
@@ -28,14 +27,3 @@ export const getFilledNonNullData = (data: DataSeriesDatum[]): (number | undefin
  * @internal
  */
 export const getXValueData = (data: DataSeriesDatum[]): (number | string)[] => data.map(({ x }) => x);
-
-/**
- * Returns value of `y1` or `filled.y1` or null
- * @internal
- */
-export const getYResolvedData = (data: DataSeriesDatum[]): (number | null)[] => {
-  const datumAccessor = getYDatumValueFn();
-  return data.map((d) => {
-    return datumAccessor(d);
-  });
-};

@@ -9,7 +9,7 @@
 import { shuffle } from 'lodash';
 
 import { fitFunctionData } from './data';
-import type { FullDataSeriesDatum, WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
+import { type FullDataSeriesDatum, type WithIndex } from '../../chart_types/xy_chart/utils/fit_function';
 import type { DataSeries, DataSeriesDatum, XYChartSeriesIdentifier } from '../../chart_types/xy_chart/utils/series';
 import { SeriesType } from '../../specs';
 import { mergePartial } from '../../utils/common';
@@ -58,7 +58,10 @@ export class MockDataSeries {
       : fitFunctionData;
     const data = options.shuffle && !options.ordinal ? shuffle(ordinalData) : ordinalData;
 
-    return { ...MockDataSeries.base, data };
+    return {
+      ...MockDataSeries.base,
+      data,
+    };
   }
 
   static fromData(data: DataSeries['data'], seriesIdentifier?: Partial<XYChartSeriesIdentifier>): DataSeries {
