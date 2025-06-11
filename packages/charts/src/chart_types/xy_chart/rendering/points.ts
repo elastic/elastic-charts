@@ -7,7 +7,7 @@
  */
 
 import { buildPointGeometryStyles } from './point_style';
-import type { MarkSizeOptions, YDefinedFn } from './utils';
+import type { MarkSizeOptions } from './utils';
 import { getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isDatumFilled, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
@@ -43,7 +43,6 @@ export function renderPoints(
   isBandedSpec: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
-  allowIsolated: boolean,
   styleAccessor?: PointStyleAccessor,
 ): {
   pointGeometries: PointGeometry[];
@@ -90,7 +89,7 @@ export function renderPoints(
 
       const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-      const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const isPointIsolated = isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, prev, next);
       if (styleAccessor) {
         styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
         style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
@@ -244,25 +243,26 @@ export function getRadiusFn(
   };
 }
 
-function yAccessorForIsolatedPointCheck(datum: DataSeriesDatum): number | null {
-  return datum.filled?.y1 ? null : datum.y1;
+function isNotDefined(value: DataSeriesDatum, isBandedSpec: boolean) {
+  return isNil(value.initialY1) || (isBandedSpec && isNil(value.initialY0));
 }
 
 function isIsolatedPoint(
   index: number,
   length: number,
-  yDefined: YDefinedFn,
+  current: DataSeriesDatum,
+  isBandedSpec: boolean,
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (index === 0 && (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))) {
+  if (isNotDefined(current, isBandedSpec)) {
     return true;
   }
-  if (index === length - 1 && (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck))) {
+  if (index === 0 && (isNil(next) || isNotDefined(next, isBandedSpec))) {
     return true;
   }
-  return (
-    (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck)) &&
-    (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))
-  );
+  if (index === length - 1 && (isNil(prev) || isNotDefined(prev, isBandedSpec))) {
+    return true;
+  }
+  return (isNil(prev) || isNotDefined(prev, isBandedSpec)) && (isNil(next) || isNotDefined(next, isBandedSpec));
 }

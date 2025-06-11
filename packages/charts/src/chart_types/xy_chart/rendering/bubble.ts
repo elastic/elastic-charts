@@ -51,8 +51,6 @@ export function renderBubble(
     hasY0Accessors,
     markSizeOptions,
     !isMixedChart,
-    // don't allow rendering of isolated points
-    false,
     pointStyleAccessor,
   );
 

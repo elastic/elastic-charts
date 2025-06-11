@@ -79,7 +79,6 @@ export function renderArea(
     isBandedSpec,
     markSizeOptions,
     false,
-    style.isolatedPoint.enabled,
     pointStyleAccessor,
   );
 
