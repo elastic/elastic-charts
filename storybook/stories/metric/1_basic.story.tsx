@@ -84,7 +84,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
   const titlesTextAlign = getTextAlignKnob('title text-align', 'left');
-  const valuesTextAlign = getTextAlignKnob('values text-align', 'right');
+  const valueTextAlign = getTextAlignKnob('value text-align', 'right');
+  const extraTextAlign = getTextAlignKnob('extra text-align', 'right');
   const iconAlign = select(
     'icon align',
     {
@@ -149,7 +150,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
             blendingBackground: useBlendingBackground ? blendingBackground : undefined,
             valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
             titlesTextAlign,
-            valuesTextAlign,
+            valueTextAlign,
+            extraTextAlign,
             iconAlign,
           },
         }}

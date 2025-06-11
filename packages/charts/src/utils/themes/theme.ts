@@ -306,14 +306,25 @@ export interface HeatmapStyle {
 }
 
 /** @public */
+export type TextAlign = 'left' | 'center' | 'right';
+
+/** @public */
+export type HorizontalSide = 'left' | 'right';
+
+/** @public */
 export interface MetricStyle {
   textDarkColor: Color;
   textLightColor: Color;
   valueFontSize: 'default' | 'fit' | number;
   minValueFontSize: number;
-  titlesTextAlign: 'left' | 'center' | 'right';
-  valuesTextAlign: 'left' | 'center' | 'right';
+
+  // Alignments
+  titlesTextAlign: TextAlign;
+  extraTextAlign: TextAlign;
+  valueTextAlign: TextAlign;
+  // valuePosition: 'top' | 'bottom';
   iconAlign: 'left' | 'right';
+
   border: Color;
   barBackground: Color;
   emptyBackground: Color;

@@ -19,7 +19,8 @@ import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum, MetricWNumber } from '../../specs';
 import { isMetricWProgress } from '../../specs';
 
-interface HeightBasedSizes {
+/** @internal */
+export interface HeightBasedSizes {
   iconSize: number;
   titleFontSize: number;
   subtitleFontSize: number;
@@ -126,16 +127,19 @@ export function getFitValueFontSize(
 }
 
 /** @internal */
+export interface Visibility extends ElementVisibility {
+  titleLines: string[];
+  subtitleLines: string[];
+  gapHeight: number;
+}
+
+/** @internal */
 export interface MetricTextDimensions {
   heightBasedSizes: HeightBasedSizes;
   hasProgressBar: boolean;
   progressBarDirection: LayoutDirection | undefined;
   progressBarWidth: number;
-  visibility: ElementVisibility & {
-    titleLines: string[];
-    subtitleLines: string[];
-    gapHeight: number;
-  };
+  visibility: Visibility;
   textParts: TextParts[];
 }
 
