@@ -38,7 +38,7 @@ export function renderPoints(
   panel: Dimensions,
   color: Color,
   pointStyle: PointStyle,
-  isolatedPointThemeStyle: Omit<PointStyle, 'radius'>,
+  considerIsolatedPoints: boolean,
   lineStrokeWidth: number,
   isBandedSpec: boolean,
   markSizeOptions: MarkSizeOptions,
@@ -62,9 +62,7 @@ export function renderPoints(
   const needSorting = !markSizeOptions.enabled;
 
   let style = buildPointGeometryStyles(color, pointStyle);
-  let isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle);
   let styleOverrides: Partial<PointStyle> | undefined = undefined;
-
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
     pointGeometries: SortedArray<PointGeometry>;
     minDistanceBetweenPoints: number;
@@ -89,11 +87,12 @@ export function renderPoints(
 
       const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-      const isPointIsolated = isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, prev, next);
+      const isPointIsolated = considerIsolatedPoints
+        ? isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, y1Fn, y0Fn, prev, next)
+        : false;
       if (styleAccessor) {
         styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
         style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-        isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle, styleOverrides);
       }
       yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
         const valueAccessor = getYDatumValueFn(yDatumKeyName);
@@ -112,7 +111,7 @@ export function renderPoints(
           y: y === null ? NaN : y,
           radius,
           color,
-          style: isPointIsolated ? isolatedPointStyle : style,
+          style,
           value: {
             x: xValue,
             y: originalY,
@@ -243,8 +242,18 @@ export function getRadiusFn(
   };
 }
 
-function isNotDefined(value: DataSeriesDatum, isBandedSpec: boolean) {
-  return isNil(value.initialY1) || (isBandedSpec && isNil(value.initialY0));
+function isNotDefined(
+  datum: DataSeriesDatum,
+  isBandedSpec: boolean,
+  y1Scale: (d: DataSeriesDatum) => number,
+  y0Scale: (d: DataSeriesDatum) => number,
+) {
+  return (
+    !isNil(datum.filled?.x) ||
+    !isNil(datum.filled?.y1) ||
+    !isFiniteNumber(y1Scale(datum)) ||
+    (isBandedSpec && (!isNil(datum.filled?.y0) || !isFiniteNumber(y0Scale(datum))))
+  );
 }
 
 function isIsolatedPoint(
@@ -252,17 +261,21 @@ function isIsolatedPoint(
   length: number,
   current: DataSeriesDatum,
   isBandedSpec: boolean,
+  y1Scale: (datum: DataSeriesDatum) => number,
+  y0Scale: (datum: DataSeriesDatum) => number,
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (isNotDefined(current, isBandedSpec)) {
+  if (isNotDefined(current, isBandedSpec, y1Scale, y0Scale)) {
     return true;
   }
-  if (index === 0 && (isNil(next) || isNotDefined(next, isBandedSpec))) {
+  const isNextNotDefined = isNil(next) || isNotDefined(next, isBandedSpec, y1Scale, y0Scale);
+  if (index === 0 && isNextNotDefined) {
     return true;
   }
-  if (index === length - 1 && (isNil(prev) || isNotDefined(prev, isBandedSpec))) {
+  const isPrevNotDefined = isNil(prev) || isNotDefined(prev, isBandedSpec, y1Scale, y0Scale);
+  if (index === length - 1 && isPrevNotDefined) {
     return true;
   }
-  return (isNil(prev) || isNotDefined(prev, isBandedSpec)) && (isNil(next) || isNotDefined(next, isBandedSpec));
+  return isNextNotDefined && isPrevNotDefined;
 }

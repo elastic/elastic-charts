@@ -60,7 +60,7 @@ export function renderLine(
     panel,
     color,
     style.point,
-    style.isolatedPoint,
+    true,
     style.line.strokeWidth,
     hasY0Accessors,
     markSizeOptions,

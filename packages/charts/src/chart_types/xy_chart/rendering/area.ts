@@ -74,7 +74,7 @@ export function renderArea(
     panel,
     color,
     style.point,
-    style.isolatedPoint,
+    true,
     style.line.strokeWidth,
     isBandedSpec,
     markSizeOptions,
