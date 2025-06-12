@@ -418,6 +418,7 @@ export const DARK_THEME: Theme = {
     titlesTextAlign: 'left',
     extraTextAlign: 'right',
     valueTextAlign: 'right',
+    valuePosition: 'bottom',
     iconAlign: 'right',
     border: DARK_BORDER_COLORS.borderBaseSubdued,
     barBackground: DARK_BACKGROUND_COLORS.backgroundBaseDisabled,

@@ -418,6 +418,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     titlesTextAlign: 'left',
     extraTextAlign: 'right',
     valueTextAlign: 'right',
+    valuePosition: 'bottom',
     iconAlign: 'right',
     border: '#EDF0F5',
     barBackground: '#EDF0F5',

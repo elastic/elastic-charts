@@ -417,6 +417,7 @@ export const LIGHT_THEME: Theme = {
     titlesTextAlign: 'left',
     extraTextAlign: 'right',
     valueTextAlign: 'right',
+    valuePosition: 'bottom',
     iconAlign: 'right',
     border: LIGHT_BORDER_COLORS.borderBaseSubdued,
     barBackground: LIGHT_BACKGROUND_COLORS.backgroundBaseDisabled,

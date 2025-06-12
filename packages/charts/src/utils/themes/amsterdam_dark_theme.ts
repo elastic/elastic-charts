@@ -410,6 +410,7 @@ export const AMSTERDAM_DARK_THEME: Theme = {
     titlesTextAlign: 'left',
     extraTextAlign: 'right',
     valueTextAlign: 'right',
+    valuePosition: 'bottom',
     iconAlign: 'right',
     border: '#343741',
     barBackground: '#343741',
