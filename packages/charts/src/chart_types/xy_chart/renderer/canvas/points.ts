@@ -39,7 +39,7 @@ export function renderPoints(
   const hideDataPoints = pointStyle.visible === 'never' || isHiddenOnAuto;
   const hideIsolatedDataPoints = hasConnectingLine && hideDataPoints;
 
-  // const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
+  const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
 
   points.forEach(({ x, y, radius, transform, style, isolated }) => {
     if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
@@ -49,7 +49,7 @@ export function renderPoints(
     const coordinates = {
       x: x + transform.x,
       y: y + transform.y,
-      radius: isolated ? pointStyle.radius : radius,
+      radius: isolated && useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : radius,
     };
     const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
     const stroke = {
