@@ -7,7 +7,7 @@
  */
 
 import { buildPointGeometryStyles } from './point_style';
-import type { MarkSizeOptions, YDefinedFn } from './utils';
+import type { MarkSizeOptions } from './utils';
 import { getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isDatumFilled, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
@@ -38,12 +38,11 @@ export function renderPoints(
   panel: Dimensions,
   color: Color,
   pointStyle: PointStyle,
-  isolatedPointThemeStyle: Omit<PointStyle, 'radius'>,
+  considerIsolatedPoints: boolean,
   lineStrokeWidth: number,
   isBandedSpec: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
-  allowIsolated: boolean,
   styleAccessor?: PointStyleAccessor,
 ): {
   pointGeometries: PointGeometry[];
@@ -63,9 +62,7 @@ export function renderPoints(
   const needSorting = !markSizeOptions.enabled;
 
   let style = buildPointGeometryStyles(color, pointStyle);
-  let isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle);
   let styleOverrides: Partial<PointStyle> | undefined = undefined;
-
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
     pointGeometries: SortedArray<PointGeometry>;
     minDistanceBetweenPoints: number;
@@ -90,11 +87,12 @@ export function renderPoints(
 
       const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-      const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+      const isPointIsolated = considerIsolatedPoints
+        ? isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, y1Fn, y0Fn, prev, next)
+        : false;
       if (styleAccessor) {
         styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
         style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-        isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle, styleOverrides);
       }
       yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
         const valueAccessor = getYDatumValueFn(yDatumKeyName);
@@ -113,7 +111,7 @@ export function renderPoints(
           y: y === null ? NaN : y,
           radius,
           color,
-          style: isPointIsolated ? isolatedPointStyle : style,
+          style,
           value: {
             x: xValue,
             y: originalY,
@@ -244,25 +242,40 @@ export function getRadiusFn(
   };
 }
 
-function yAccessorForIsolatedPointCheck(datum: DataSeriesDatum): number | null {
-  return datum.filled?.y1 ? null : datum.y1;
+function isNotDefined(
+  datum: DataSeriesDatum,
+  isBandedSpec: boolean,
+  y1Scale: (d: DataSeriesDatum) => number,
+  y0Scale: (d: DataSeriesDatum) => number,
+) {
+  return (
+    !isNil(datum.filled?.x) ||
+    !isNil(datum.filled?.y1) ||
+    !isFiniteNumber(y1Scale(datum)) ||
+    (isBandedSpec && (!isNil(datum.filled?.y0) || !isFiniteNumber(y0Scale(datum))))
+  );
 }
 
 function isIsolatedPoint(
   index: number,
   length: number,
-  yDefined: YDefinedFn,
+  current: DataSeriesDatum,
+  isBandedSpec: boolean,
+  y1Scale: (datum: DataSeriesDatum) => number,
+  y0Scale: (datum: DataSeriesDatum) => number,
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (index === 0 && (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))) {
+  if (isNotDefined(current, isBandedSpec, y1Scale, y0Scale)) {
     return true;
   }
-  if (index === length - 1 && (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck))) {
+  const isNextNotDefined = isNil(next) || isNotDefined(next, isBandedSpec, y1Scale, y0Scale);
+  if (index === 0 && isNextNotDefined) {
     return true;
   }
-  return (
-    (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck)) &&
-    (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))
-  );
+  const isPrevNotDefined = isNil(prev) || isNotDefined(prev, isBandedSpec, y1Scale, y0Scale);
+  if (index === length - 1 && isPrevNotDefined) {
+    return true;
+  }
+  return isNextNotDefined && isPrevNotDefined;
 }
