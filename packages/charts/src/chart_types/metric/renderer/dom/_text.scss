@@ -2,12 +2,12 @@ $padding: 8px;
 
 .echMetricText {
   position: relative;
-  padding: $padding;
-  height: 100%;
   z-index: 1;
   display: grid;
   grid-template-columns: 100%;
   grid-template-rows: min-content auto min-content min-content;
+  height: 100%;
+  padding: $padding;
   line-height: 1.2;
 
   &__titlesBlock {
@@ -94,28 +94,28 @@ $padding: 8px;
   }
 
   &__icon {
-    position: absolute;
-    top: $padding;
+    // position: absolute;
+    // top: $padding;
 
     &--left {
-      left: $padding;
+      // left: $padding;
     }
 
     &--right {
-      right: $padding;
+      // right: $padding;
     }
   }
 
   &__gap {
-    position: relative;
+    // position: relative;
   }
 
   &__body {
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    // overflow: hidden;
+    // position: absolute;
+    // top: 0;
+    // right: 0;
+    // bottom: 0;
+    // left: 0;
   }
 }

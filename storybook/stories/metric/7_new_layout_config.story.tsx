@@ -30,9 +30,17 @@ const getTextAlignKnob = (name: string, defaultValue: TextAlign): TextAlign =>
     defaultValue,
   );
 
-export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
-  const title = text('title', '21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9');
-  const subtitle = text('subtitle', 'Cluster CPU usage');
+const getIcon =
+  (type: string) =>
+  ({ width, height, color }: { width: number; height: number; color: string }) => (
+    <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
+  );
+
+export const Example: ChartsStory = (args) => {
+  console.log(args);
+
+  const title = text('title', 'Count of records');
+  const subtitle = text('subtitle', 'Litle description of this component');
   const progressOrTrend = select(
     'progress or trend',
     {
@@ -66,8 +74,12 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const valueColor = color('value color', '#3c3c3c');
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
+
+  // icon
   const showIcon = boolean('show icon', false);
   const iconType = customKnobs.eui.getIconTypeKnob('EUI icon glyph name', 'warning');
+  const iconAlign = select('icon align', { Left: 'left', Right: 'right' }, 'right');
+
   const showValueIcon = boolean('show value icon', false);
   const valueIconType = customKnobs.eui.getIconTypeKnob('EUI value icon glyph name', 'sortUp');
   const useBlendingBackground = boolean('use blending background', false);
@@ -81,24 +93,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     },
     'default',
   );
-  const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
-  const titlesTextAlign = getTextAlignKnob('title text-align', 'left');
-  const valueTextAlign = getTextAlignKnob('value text-align', 'right');
-  const extraTextAlign = getTextAlignKnob('extra text-align', 'right');
-  const valuePosition = select('value position', { Bottom: 'bottom', Top: 'top' }, 'bottom');
-  const iconAlign = select(
-    'icon align',
-    {
-      Left: 'left',
-      Right: 'right',
-    },
-    'right',
-  );
-  const getIcon =
-    (type: string) =>
-    ({ width, height, color }: { width: number; height: number; color: string }) => (
-      <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
-    );
+
   const data = {
     color: metricColor,
     title,
@@ -123,6 +118,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
         }
       : {}),
   };
+
   const textualData: MetricWText | MetricWTrend = {
     ...data,
     value,
@@ -143,8 +139,16 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   const configuredData = [[numberTextSwitch ? numericData : textualData]];
 
+  // configurations
+  const titlesTextAlign = getTextAlignKnob('titles text-align', 'left');
+  const extraTextAlign = getTextAlignKnob('extra text-align', 'left');
+  // value
+  const valueTextAlign = getTextAlignKnob('value text-align', 'left');
+  const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
+  const valuePosition = select('value position', { Bottom: 'bottom', Top: 'top' }, 'top');
+
   return (
-    <Chart title={storyTitle} description={description}>
+    <Chart title="title" description="Desctiprion">
       <Settings
         theme={{
           metric: {

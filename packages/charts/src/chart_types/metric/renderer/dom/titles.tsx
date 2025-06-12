@@ -11,8 +11,7 @@ import type { CSSProperties } from 'react';
 import React, { useMemo } from 'react';
 
 import type { HeightBasedSizes, Visibility } from './text_measurements';
-import { PADDING } from './text_measurements';
-import type { HorizontalSide, TextAlign } from '../../../../utils/themes/theme';
+import type { TextAlign } from '../../../../utils/themes/theme';
 
 function lineClamp(maxLines: number): CSSProperties {
   return {
@@ -54,7 +53,9 @@ interface TitlesBlockProps {
   // Alignment & icon
   textAlign: TextAlign;
   isIconVisible: boolean;
-  iconAlign: HorizontalSide;
+
+  titlesRow: number;
+  titlesColumn: string;
 
   // Events
   onElementClick?: () => void;
@@ -69,17 +70,20 @@ export const TitlesBlock: React.FC<TitlesBlockProps> = ({
   visibility,
   textAlign,
   isIconVisible,
-  iconAlign,
+  titlesRow,
+  titlesColumn,
   onElementClick,
 }) => {
-  const { titleFontSize, subtitleFontSize, iconSize } = sizes;
+  const { titleFontSize, subtitleFontSize } = sizes;
   const { title: isTitleVisible, subtitle: isSubtitleVisible, titleLines, subtitleLines } = visibility;
 
   const titlesBlockStyle = useMemo(() => {
     if (!isIconVisible) return undefined;
-    const getMargin = (side: HorizontalSide) => (textAlign === 'center' || iconAlign === side ? iconSize + PADDING : 0);
-    return { marginLeft: getMargin('left'), marginRight: getMargin('right') };
-  }, [isIconVisible, textAlign, iconAlign, iconSize]);
+    return {
+      gridRow: titlesRow,
+      gridColumn: titlesColumn,
+    };
+  }, [isIconVisible, titlesRow, titlesColumn]);
 
   const titleProps = {
     title,

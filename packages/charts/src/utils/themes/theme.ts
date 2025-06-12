@@ -322,7 +322,7 @@ export interface MetricStyle {
   titlesTextAlign: TextAlign;
   extraTextAlign: TextAlign;
   valueTextAlign: TextAlign;
-  // valuePosition: 'top' | 'bottom';
+  valuePosition: 'top' | 'bottom';
   iconAlign: 'left' | 'right';
 
   border: Color;
