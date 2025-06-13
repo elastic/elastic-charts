@@ -7,31 +7,24 @@
  */
 
 import classNames from 'classnames';
-import type { CSSProperties } from 'react';
 import React from 'react';
 
 import type { MetricTextDimensions } from './text_measurements';
 import { PADDING } from './text_measurements';
+import { TitlesBlock } from './titles';
 import type { Color } from '../../../../common/colors';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
-import type { MetricStyle } from '../../../../utils/themes/theme';
+import type { HorizontalSide, MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum } from '../../specs';
 import { isMetricWNumber } from '../../specs';
 
-function lineClamp(maxLines: number): CSSProperties {
-  return {
-    textOverflow: 'ellipsis',
-    display: '-webkit-box',
-    WebkitLineClamp: maxLines, // due to an issue with react CSSProperties filtering out this line, see https://github.com/facebook/react/issues/23033
-    lineClamp: maxLines,
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
-    whiteSpace: 'pre-wrap',
-  };
-}
+const getGridTemplateColumns = (isIconVisible: boolean, iconAlign: HorizontalSide, iconSize: number) => {
+  if (!isIconVisible) return '1fr';
+  const iconSizeWithPadding = `${iconSize + PADDING}px`;
+  return iconAlign === 'left' ? `${iconSizeWithPadding} 1fr` : `1fr ${iconSizeWithPadding}`;
+};
 
-/** @internal */
-export const MetricText: React.FunctionComponent<{
+interface MetricTextprops {
   id: string;
   datum: MetricDatum;
   style: MetricStyle;
@@ -39,7 +32,18 @@ export const MetricText: React.FunctionComponent<{
   highContrastTextColor: Color;
   progressBarSize: 'small';
   textDimensions: MetricTextDimensions;
-}> = ({ id, datum, style, onElementClick, highContrastTextColor, progressBarSize, textDimensions }) => {
+}
+
+/** @internal */
+export const MetricText: React.FC<MetricTextprops> = ({
+  id,
+  datum,
+  style,
+  onElementClick,
+  highContrastTextColor,
+  progressBarSize,
+  textDimensions,
+}) => {
   const { heightBasedSizes: sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
   const { extra, body } = datum;
 
@@ -49,67 +53,55 @@ export const MetricText: React.FunctionComponent<{
     'echMetricText--horizontal': progressBarDirection === LayoutDirection.Horizontal,
   });
 
-  const TitleElement = () => (
-    <span
-      style={{
-        fontSize: sizes.titleFontSize,
-        textAlign: style.titlesTextAlign,
-        ...lineClamp(visibility.titleLines.length),
-      }}
-      title={datum.title}
-    >
-      {datum.title}
-    </span>
-  );
+  const { valuePosition, iconAlign } = style;
+  // TODO: Avoid checking isIconVisible too many times
+  const isIconVisible = !!datum.icon;
+
+  let valueRow, valueColumn, titlesRow, titlesColumn;
+  if (valuePosition === 'top') {
+    valueRow = 1;
+    valueColumn = isIconVisible ? (iconAlign === 'left' ? 2 : '1') : '1';
+    titlesRow = 2;
+    titlesColumn = isIconVisible ? '1 / span 2' : '1';
+  } else {
+    valueRow = 4;
+    valueColumn = isIconVisible ? '1 / span 2' : '1';
+    titlesRow = 1;
+    titlesColumn = isIconVisible ? (iconAlign === 'left' ? '2' : '1') : '1';
+  }
+
+  const gridColumn = isIconVisible ? '1 / span 2' : 1;
+
+  const iconStyles = isIconVisible
+    ? {
+        gridRow: 1,
+        gridColumn: iconAlign === 'left' ? 1 : 2,
+      }
+    : {};
+
+  const gridTemplateColumns = getGridTemplateColumns(isIconVisible, iconAlign, sizes.iconSize);
+
   return (
-    <div className={containerClassName} style={{ color: highContrastTextColor }}>
-      <div
-        className={classNames('echMetricText__titlesBlock', `echMetricText__titlesBlock--${style.titlesTextAlign}`)}
-        style={
-          datum.icon && {
-            marginLeft: 'center' === style.titlesTextAlign || style.iconAlign === 'left' ? sizes.iconSize + PADDING : 0,
-            marginRight:
-              'center' === style.titlesTextAlign || style.iconAlign === 'right' ? sizes.iconSize + PADDING : 0,
-          }
-        }
-      >
-        {visibility.title && (
-          <h2 id={id} className="echMetricText__title">
-            {onElementClick ? (
-              <button
-                // ".echMetric" displays an outline halo;
-                // inline styles protect us from unintended overrides of these styles.
-                style={{ outline: 'none' }}
-                onMouseDown={(e) => e.stopPropagation()}
-                onMouseUp={(e) => e.stopPropagation()}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onElementClick();
-                }}
-              >
-                <TitleElement />
-              </button>
-            ) : (
-              <TitleElement />
-            )}
-          </h2>
-        )}
-        {visibility.subtitle && (
-          <p
-            className="echMetricText__subtitle"
-            style={{
-              fontSize: sizes.subtitleFontSize,
-              ...lineClamp(visibility.subtitleLines.length),
-            }}
-            title={datum.subtitle}
-          >
-            {datum.subtitle}
-          </p>
-        )}
-      </div>
+    <div className={containerClassName} style={{ color: highContrastTextColor, gridTemplateColumns }}>
+      {/* Titles Block */}
+      <TitlesBlock
+        metricId={id}
+        title={datum.title}
+        subtitle={datum.subtitle}
+        sizes={sizes} // titleFontSize, subtitleFontSize
+        visibility={visibility} // title, subtitle, titleLines, subtitleLines
+        textAlign={style.titlesTextAlign}
+        isIconVisible={isIconVisible}
+        titlesRow={titlesRow}
+        titlesColumn={titlesColumn}
+        onElementClick={onElementClick}
+      />
 
       {datum.icon && (
-        <div className={classNames('echMetricText__icon', `echMetricText__icon--${style.iconAlign}`)}>
+        <div
+          className={classNames('echMetricText__icon', `echMetricText__icon--${style.iconAlign}`)}
+          style={{ ...iconStyles }}
+        >
           {renderWithProps(datum.icon, {
             width: sizes.iconSize,
             height: sizes.iconSize,
@@ -118,61 +110,63 @@ export const MetricText: React.FunctionComponent<{
         </div>
       )}
 
-      <div className="echMetricText__gap">{body && <div className="echMetricText__body">{body}</div>}</div>
+      <div className="echMetricText__gap" style={{ gridRow: valuePosition === 'top' ? 3 : 2, gridColumn }}>
+        {body && <div className="echMetricText__body">{body}</div>}
+      </div>
 
-      <div className={classNames('echMetricText__valuesBlock', `echMetricText__valuesBlock--${style.valuesTextAlign}`)}>
-        <div>
-          {visibility.extra && (
-            <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
-              {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: highContrastTextColor })}
-            </p>
-          )}
-        </div>
+      {/* Extra Block */}
+      <div
+        className={classNames('echMetricText__extraBlock', `echMetricText__extraBlock--${style.extraTextAlign}`)}
+        style={{ gridRow: valuePosition === 'top' ? 4 : 3, gridColumn }}
+      >
+        {visibility.extra && (
+          <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
+            {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: highContrastTextColor })}
+          </p>
+        )}
+      </div>
 
-        <div className="echMetricText__valueGroup">
+      {/* Value Block */}
+      <div
+        className={classNames('echMetricText__valueBlock', `echMetricText__valueBlock--${style.valueTextAlign}`)}
+        style={{ gridRow: valueRow, gridColumn: valueColumn }}
+      >
+        <p
+          className="echMetricText__value"
+          style={{
+            fontSize: sizes.valueFontSize,
+            textOverflow: isMetricWNumber(datum) ? undefined : 'ellipsis',
+            color: datum.valueColor,
+          }}
+          title={textParts.map(({ text }) => text).join('')}
+        >
+          {textParts.map(({ emphasis, text }, i) => {
+            return emphasis === 'small' ? (
+              <span key={`${text}${i}`} className="echMetricText__part" style={{ fontSize: sizes.valuePartFontSize }}>
+                {text}
+              </span>
+            ) : (
+              text
+            );
+          })}
+        </p>
+        {datum.valueIcon && (
           <p
-            className="echMetricText__value"
+            className="echMetricText__valueIcon"
             style={{
               fontSize: sizes.valueFontSize,
-              textOverflow: isMetricWNumber(datum) ? undefined : 'ellipsis',
-              color: datum.valueColor,
+              color: datum.valueColor ?? highContrastTextColor,
+              marginRight: style.valueTextAlign === 'center' ? -(sizes.valuePartFontSize + PADDING) : undefined,
             }}
-            title={textParts.map(({ text }) => text).join('')}
           >
-            {textParts.map(({ emphasis, text }, i) => {
-              return emphasis === 'small' ? (
-                <span
-                  key={`${text}${i}`}
-                  className="echMetricText__part"
-                  style={{
-                    fontSize: sizes.valuePartFontSize,
-                  }}
-                >
-                  {text}
-                </span>
-              ) : (
-                text
-              );
+            {renderWithProps(datum.valueIcon, {
+              width: sizes.valuePartFontSize,
+              height: sizes.valuePartFontSize,
+              color: datum.valueColor ?? highContrastTextColor,
+              verticalAlign: 'middle',
             })}
           </p>
-          {datum.valueIcon && (
-            <p
-              className="echMetricText__valueIcon"
-              style={{
-                fontSize: sizes.valueFontSize,
-                color: datum.valueColor ?? highContrastTextColor,
-                marginRight: style.valuesTextAlign === 'center' ? -(sizes.valuePartFontSize + PADDING) : undefined,
-              }}
-            >
-              {renderWithProps(datum.valueIcon, {
-                width: sizes.valuePartFontSize,
-                height: sizes.valuePartFontSize,
-                color: datum.valueColor ?? highContrastTextColor,
-                verticalAlign: 'middle',
-              })}
-            </p>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

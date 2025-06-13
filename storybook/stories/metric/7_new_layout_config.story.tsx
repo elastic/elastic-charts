@@ -19,20 +19,21 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-const getTextAlignKnob = (name: string, defaultValue: TextAlign): TextAlign =>
-  select(
-    name,
-    {
-      Left: 'left',
-      Center: 'center',
-      Right: 'right',
-    },
-    defaultValue,
+const getTextAlignKnob = (name: string, defaultValue: TextAlign, groupId?: string): TextAlign =>
+  select(name, { Left: 'left', Center: 'center', Right: 'right' }, defaultValue, groupId);
+
+const getIcon =
+  (type: string) =>
+  ({ width, height, color }: { width: number; height: number; color: string }) => (
+    <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
   );
 
 export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
-  const title = text('title', '21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9');
-  const subtitle = text('subtitle', 'Cluster CPU usage');
+  // title and subtitle values
+  const title = text('title', 'Count of records');
+  const subtitle = text('subtitle', 'Litle description of this component');
+
+  // Visualization type
   const progressOrTrend = select(
     'progress or trend',
     {
@@ -47,6 +48,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     { horizontal: 'horizontal', vertical: 'vertical' },
     'vertical',
   );
+
   const maxDataPoints = number('trend data points', 30, { min: 0, max: 50, step: 1 });
   const trendShape = customKnobs.fromEnum('trend shape', MetricTrendShape, MetricTrendShape.Area);
   const trendA11yTitle = text('trend a11y title', 'The Cluster CPU Usage trend');
@@ -66,39 +68,20 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const valueColor = color('value color', '#3c3c3c');
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
+
+  const iconType = 'warning';
+
+  // icon
   const showIcon = boolean('show icon', false);
-  const iconType = customKnobs.eui.getIconTypeKnob('EUI icon glyph name', 'warning');
+  const iconAlign = select('icon align', { Left: 'left', Right: 'right' }, 'right');
+
+  // value icon
   const showValueIcon = boolean('show value icon', false);
-  const valueIconType = customKnobs.eui.getIconTypeKnob('EUI value icon glyph name', 'sortUp');
+  const valueIconType = 'sortUp';
+
   const useBlendingBackground = boolean('use blending background', false);
   const blendingBackground = color('blending background', 'rgba(255,255,255,1)');
-  const valueFontSizeMode = select(
-    'value font mode',
-    {
-      Default: 'default',
-      Fit: 'fit',
-      Custom: 'custom',
-    },
-    'default',
-  );
-  const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
-  const titlesTextAlign = getTextAlignKnob('title text-align', 'left');
-  const valueTextAlign = getTextAlignKnob('value text-align', 'right');
-  const extraTextAlign = getTextAlignKnob('extra text-align', 'right');
-  const valuePosition = select('value position', { Bottom: 'bottom', Top: 'top' }, 'bottom');
-  const iconAlign = select(
-    'icon align',
-    {
-      Left: 'left',
-      Right: 'right',
-    },
-    'right',
-  );
-  const getIcon =
-    (type: string) =>
-    ({ width, height, color }: { width: number; height: number; color: string }) => (
-      <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
-    );
+
   const data = {
     color: metricColor,
     title,
@@ -123,6 +106,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
         }
       : {}),
   };
+
   const textualData: MetricWText | MetricWTrend = {
     ...data,
     value,
@@ -142,6 +126,31 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const onEventOutAction = action('out');
 
   const configuredData = [[numberTextSwitch ? numericData : textualData]];
+
+  // Configurations
+
+  const group1 = 'Text configuration and postion';
+
+  // title and subtitle
+  const titlesTextAlign = getTextAlignKnob('Title and subtitle alignment', 'left', group1);
+  const titleWeight = select('Title weight', { Bold: 'bold', Regular: 'regular' }, 'bold', group1);
+  // value (primary metric)
+  const valuePosition = select('Primary metric position', { Bottom: 'bottom', Top: 'top' }, 'top', group1);
+  const valueTextAlign = getTextAlignKnob('Primary metric alignment', 'left', group1);
+  const valueFontSizeMode = select(
+    'Primary metric font size mode',
+    { Default: 'default', Fit: 'fit', Custom: 'custom' },
+    'default',
+    group1,
+  );
+  const valueFontSize = number(
+    'Primary metric font size (only if custom font size selected)',
+    40,
+    { min: 0, step: 10 },
+    group1,
+  );
+  // extra (secondary metric)
+  const extraTextAlign = getTextAlignKnob('Extra element alignment', 'left', group1);
 
   return (
     <Chart title={storyTitle} description={description}>

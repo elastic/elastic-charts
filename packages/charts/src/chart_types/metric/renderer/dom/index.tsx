@@ -23,6 +23,7 @@ import {
   getFixedFontSizes,
   getMetricTextPartDimensions,
   getSnappedFontSizes,
+  PADDING,
 } from './text_measurements';
 import type { ColorContrastOptions } from '../../../../common/color_calcs';
 import { combineColors, highContrastColor } from '../../../../common/color_calcs';
@@ -137,9 +138,14 @@ function Component({
           }
           const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
 
+          // Note: Take into account the width taken by the icon if there's an icon
+          const isIconVisible = !!datum.icon;
+          const iconGridColumnWidth = textDimensions.heightBasedSizes.iconSize + PADDING;
+          const iconWidth = isIconVisible ? iconGridColumnWidth : 0;
+
           const fontSize = getFitValueFontSize(
             textDimensions.heightBasedSizes.valueFontSize,
-            panel.width - textDimensions.progressBarWidth,
+            panel.width - textDimensions.progressBarWidth - iconWidth,
             textDimensions.visibility.gapHeight,
             textDimensions.textParts,
             style.minValueFontSize,
