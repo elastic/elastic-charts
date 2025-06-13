@@ -417,6 +417,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
+    titleWeight: 'bold',
   },
   bulletGraph: {
     textColor: '#343741',

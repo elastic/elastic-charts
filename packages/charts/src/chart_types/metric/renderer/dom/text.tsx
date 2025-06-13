@@ -24,11 +24,6 @@ const getGridTemplateColumns = (isIconVisible: boolean, iconAlign: HorizontalSid
   return iconAlign === 'left' ? `${iconSizeWithPadding} 1fr` : `1fr ${iconSizeWithPadding}`;
 };
 
-type GridPosition = {
-  row: number;
-  column: string | number;
-};
-
 interface MetricTextprops {
   id: string;
   datum: MetricDatum;
@@ -59,6 +54,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
   });
 
   const { valuePosition, iconAlign } = style;
+  // TODO: Avoid checking isIconVisible too many times
   const isIconVisible = !!datum.icon;
 
   let valueRow, valueColumn, titlesRow, titlesColumn;
@@ -76,14 +72,10 @@ export const MetricText: React.FC<MetricTextprops> = ({
 
   const gridColumn = isIconVisible ? '1 / span 2' : 1;
 
-  const iconProps = isIconVisible
+  const iconStyles = isIconVisible
     ? {
         gridRow: 1,
         gridColumn: iconAlign === 'left' ? 1 : 2,
-        zIndex: 2,
-        width: '100%',
-        height: '100%',
-        boxSizing: 'border-box',
       }
     : {};
 
@@ -108,7 +100,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
       {datum.icon && (
         <div
           className={classNames('echMetricText__icon', `echMetricText__icon--${style.iconAlign}`)}
-          style={{ ...iconProps }}
+          style={{ ...iconStyles }}
         >
           {renderWithProps(datum.icon, {
             width: sizes.iconSize,

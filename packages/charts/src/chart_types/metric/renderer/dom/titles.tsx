@@ -25,6 +25,8 @@ function lineClamp(maxLines: number): CSSProperties {
   };
 }
 
+// Note: Created separated components in case we wan to add them separately to the grid
+
 interface TitleElementProps {
   title: string | undefined;
   fontSize: number;
@@ -37,6 +39,57 @@ const TitleElement: React.FunctionComponent<TitleElementProps> = ({ fontSize, te
     <span style={{ fontSize, textAlign, ...lineClamp(linesLength) }} title={title}>
       {title}
     </span>
+  );
+};
+
+interface TitleHeadingProps {
+  metricId: string;
+  onElementClick?: () => void;
+  titleProps: TitleElementProps;
+}
+
+const TitleHeading: React.FC<TitleHeadingProps> = ({ metricId, onElementClick, titleProps }) => {
+  return (
+    <h2 id={metricId} className="echMetricText__title">
+      {onElementClick ? (
+        <button
+          // ".echMetric" displays an outline halo;
+          // inline styles protect us from unintended overrides of these styles.
+          style={{ outline: 'none' }}
+          onMouseDown={(e) => e.stopPropagation()}
+          onMouseUp={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onElementClick();
+          }}
+        >
+          <TitleElement {...titleProps} />
+        </button>
+      ) : (
+        <TitleElement {...titleProps} />
+      )}
+    </h2>
+  );
+};
+
+interface SubtitleElementProps {
+  subtitle: string | undefined;
+  fontSize: number;
+  subtitleLines: string[];
+}
+
+const SubtitleElement: React.FC<SubtitleElementProps> = ({ subtitle, fontSize, subtitleLines }) => {
+  return (
+    <p
+      className="echMetricText__subtitle"
+      style={{
+        fontSize,
+        ...lineClamp(subtitleLines.length),
+      }}
+      title={subtitle}
+    >
+      {subtitle}
+    </p>
   );
 };
 
@@ -75,7 +128,7 @@ export const TitlesBlock: React.FC<TitlesBlockProps> = ({
   onElementClick,
 }) => {
   const { titleFontSize, subtitleFontSize } = sizes;
-  const { title: isTitleVisible, subtitle: isSubtitleVisible, titleLines, subtitleLines } = visibility;
+  const { title: showTitle, subtitle: showSubtitle, titleLines, subtitleLines } = visibility;
 
   const titlesBlockStyle = useMemo(() => {
     if (!isIconVisible) return undefined;
@@ -97,39 +150,10 @@ export const TitlesBlock: React.FC<TitlesBlockProps> = ({
       className={classNames('echMetricText__titlesBlock', `echMetricText__titlesBlock--${textAlign}`)}
       style={titlesBlockStyle}
     >
-      {isTitleVisible && (
-        <h2 id={metricId} className="echMetricText__title">
-          {onElementClick ? (
-            <button
-              // ".echMetric" displays an outline halo;
-              // inline styles protect us from unintended overrides of these styles.
-              style={{ outline: 'none' }}
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-              onClick={(e) => {
-                e.stopPropagation();
-                onElementClick();
-              }}
-            >
-              <TitleElement {...titleProps} />
-            </button>
-          ) : (
-            <TitleElement {...titleProps} />
-          )}
-        </h2>
-      )}
+      {showTitle && <TitleHeading metricId={metricId} onElementClick={onElementClick} titleProps={titleProps} />}
 
-      {isSubtitleVisible && (
-        <p
-          className="echMetricText__subtitle"
-          style={{
-            fontSize: subtitleFontSize,
-            ...lineClamp(subtitleLines.length),
-          }}
-          title={subtitle}
-        >
-          {subtitle}
-        </p>
+      {showSubtitle && (
+        <SubtitleElement subtitle={subtitle} fontSize={subtitleFontSize} subtitleLines={subtitleLines} />
       )}
     </div>
   );

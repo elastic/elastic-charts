@@ -19,16 +19,8 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-const getTextAlignKnob = (name: string, defaultValue: TextAlign): TextAlign =>
-  select(
-    name,
-    {
-      Left: 'left',
-      Center: 'center',
-      Right: 'right',
-    },
-    defaultValue,
-  );
+const getTextAlignKnob = (name: string, defaultValue: TextAlign, groupId?: string): TextAlign =>
+  select(name, { Left: 'left', Center: 'center', Right: 'right' }, defaultValue, groupId);
 
 const getIcon =
   (type: string) =>
@@ -36,11 +28,12 @@ const getIcon =
     <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
   );
 
-export const Example: ChartsStory = (args) => {
-  console.log(args);
-
+export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
+  // title and subtitle values
   const title = text('title', 'Count of records');
   const subtitle = text('subtitle', 'Litle description of this component');
+
+  // Visualization type
   const progressOrTrend = select(
     'progress or trend',
     {
@@ -55,6 +48,7 @@ export const Example: ChartsStory = (args) => {
     { horizontal: 'horizontal', vertical: 'vertical' },
     'vertical',
   );
+
   const maxDataPoints = number('trend data points', 30, { min: 0, max: 50, step: 1 });
   const trendShape = customKnobs.fromEnum('trend shape', MetricTrendShape, MetricTrendShape.Area);
   const trendA11yTitle = text('trend a11y title', 'The Cluster CPU Usage trend');
@@ -75,24 +69,18 @@ export const Example: ChartsStory = (args) => {
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
 
+  const iconType = 'warning';
+
   // icon
   const showIcon = boolean('show icon', false);
-  const iconType = customKnobs.eui.getIconTypeKnob('EUI icon glyph name', 'warning');
   const iconAlign = select('icon align', { Left: 'left', Right: 'right' }, 'right');
 
+  // value icon
   const showValueIcon = boolean('show value icon', false);
-  const valueIconType = customKnobs.eui.getIconTypeKnob('EUI value icon glyph name', 'sortUp');
+  const valueIconType = 'sortUp';
+
   const useBlendingBackground = boolean('use blending background', false);
   const blendingBackground = color('blending background', 'rgba(255,255,255,1)');
-  const valueFontSizeMode = select(
-    'value font mode',
-    {
-      Default: 'default',
-      Fit: 'fit',
-      Custom: 'custom',
-    },
-    'default',
-  );
 
   const data = {
     color: metricColor,
@@ -139,16 +127,33 @@ export const Example: ChartsStory = (args) => {
 
   const configuredData = [[numberTextSwitch ? numericData : textualData]];
 
-  // configurations
-  const titlesTextAlign = getTextAlignKnob('titles text-align', 'left');
-  const extraTextAlign = getTextAlignKnob('extra text-align', 'left');
-  // value
-  const valueTextAlign = getTextAlignKnob('value text-align', 'left');
-  const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
-  const valuePosition = select('value position', { Bottom: 'bottom', Top: 'top' }, 'top');
+  // Configurations
+
+  const group1 = 'Text configuration and postion';
+
+  // title and subtitle
+  const titlesTextAlign = getTextAlignKnob('Title and subtitle alignment', 'left', group1);
+  const titleWeight = select('Title weight', { Bold: 'bold', Regular: 'regular' }, 'bold', group1);
+  // value (primary metric)
+  const valuePosition = select('Primary metric position', { Bottom: 'bottom', Top: 'top' }, 'top', group1);
+  const valueTextAlign = getTextAlignKnob('Primary metric alignment', 'left', group1);
+  const valueFontSizeMode = select(
+    'Primary metric font size mode',
+    { Default: 'default', Fit: 'fit', Custom: 'custom' },
+    'default',
+    group1,
+  );
+  const valueFontSize = number(
+    'Primary metric font size (only if custom font size selected)',
+    40,
+    { min: 0, step: 10 },
+    group1,
+  );
+  // extra (secondary metric)
+  const extraTextAlign = getTextAlignKnob('Extra element alignment', 'left', group1);
 
   return (
-    <Chart title="title" description="Desctiprion">
+    <Chart title={storyTitle} description={description}>
       <Settings
         theme={{
           metric: {

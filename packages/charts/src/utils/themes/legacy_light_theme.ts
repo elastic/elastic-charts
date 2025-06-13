@@ -425,6 +425,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
     emptyBackground: Colors.Transparent.keyword,
     nonFiniteText: 'N/A',
     minHeight: 64,
+    titleWeight: 'bold',
   },
   bulletGraph: LIGHT_THEME_BULLET_STYLE,
   tooltip: {

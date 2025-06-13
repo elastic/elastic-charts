@@ -325,6 +325,8 @@ export interface MetricStyle {
   valuePosition: 'top' | 'bottom';
   iconAlign: 'left' | 'right';
 
+  titleWeight: 'bold' | 'regular';
+
   border: Color;
   barBackground: Color;
   emptyBackground: Color;

@@ -94,17 +94,14 @@ $padding: 8px;
   }
 
   &__icon {
-    // position: absolute;
-    // top: $padding;
     display: flex;
-    justify-content: right;
-
+    
     &--left {
-      // left: $padding;
+      justify-content: left;
     }
 
     &--right {
-      // right: $padding;
+      justify-content: right;
     }
   }
 
