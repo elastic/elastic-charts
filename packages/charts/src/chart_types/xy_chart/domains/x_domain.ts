@@ -168,9 +168,10 @@ export function convertXScaleTypes(
   const scaleTypes = new Set(specs.map((s) => getXScaleTypeFromSpec(s.xScaleType)));
   const niceDomains = specs.map((s) => getXNiceFromSpec(s.xNice));
   const timeZone = getZoneFromSpecs(specs);
+  const firstScaleType = scaleTypes.values().next().value
   const type =
-    scaleTypes.size === 1
-      ? scaleTypes.values().next().value // pick the only scaleType present
+    scaleTypes.size === 1 && firstScaleType
+      ? firstScaleType
       : scaleTypes.has(ScaleType.Ordinal)
         ? ScaleType.Ordinal
         : ScaleType.Linear; // if Ordinal is not present, coerce to Linear, whether it's present or not

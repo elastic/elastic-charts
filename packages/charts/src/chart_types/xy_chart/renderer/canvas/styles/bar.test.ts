@@ -24,6 +24,14 @@ describe('Bar styles', () => {
   let ctx: CanvasRenderingContext2D;
   let imgCanvas: HTMLCanvasElement;
 
+  // Mock CanvasRenderingContext2D and HTMLCanvasElement for Jest environment
+  beforeAll(() => {
+    // @ts-ignore
+    global.HTMLCanvasElement = class { getContext() { return {}; } };
+    // @ts-ignore
+    global.CanvasRenderingContext2D = class {};
+  });
+
   describe('#buildBarStyles', () => {
     let result: { fill: Fill; stroke: Stroke };
     let baseColor = COLOR;
@@ -45,6 +53,8 @@ describe('Bar styles', () => {
     }
 
     beforeEach(() => {
+      imgCanvas = document.createElement('canvas');
+      ctx = imgCanvas.getContext('2d') as CanvasRenderingContext2D;
       result = buildBarStyle(ctx, imgCanvas, baseColor, themeRectStyle, themeRectBorderStyle, geometryStateStyle, rect);
     });
 
@@ -159,6 +169,8 @@ describe('Bar styles', () => {
         setDefaults();
         themeRectStyle = MockStyles.rect({ texture });
         (getTextureStyles as jest.Mock).mockReturnValue(mockTexture);
+        imgCanvas = document.createElement('canvas');
+        ctx = imgCanvas.getContext('2d') as CanvasRenderingContext2D;
       });
 
       it('should return correct texture', () => {

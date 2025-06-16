@@ -29,7 +29,6 @@ export const getValidatedTimeZone = (specifiedTimeZone?: string): string =>
 /** @internal */
 export const getZoneFromSpecs = (specs: { timeZone?: string }[]): string => {
   const allValidTimezones = new Set<string>(specs.map((s) => s.timeZone ?? '').filter(isValidTimeZone));
-  return allValidTimezones.size === 1
-    ? allValidTimezones.values().next().value
-    : Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const firstTimeZone = allValidTimezones.values().next().value;
+  return allValidTimezones.size === 1 && firstTimeZone ? firstTimeZone : Intl.DateTimeFormat().resolvedOptions().timeZone;
 };
