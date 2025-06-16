@@ -139,11 +139,11 @@ function Component({
           const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
 
           // Note: Take into account the width taken by the icon if there's an icon
-          const isIconVisible = !!datum.icon;
+          const isIconVisible = !!datum.icon && style.valuePosition === 'top';
           const iconGridColumnWidth = textDimensions.heightBasedSizes.iconSize + PADDING;
           const iconWidth = isIconVisible ? iconGridColumnWidth : 0;
 
-          const fontSize = getFitValueFontSize(
+          const valueFontSize = getFitValueFontSize(
             textDimensions.heightBasedSizes.valueFontSize,
             panel.width - textDimensions.progressBarWidth - iconWidth,
             textDimensions.visibility.gapHeight,
@@ -151,7 +151,7 @@ function Component({
             style.minValueFontSize,
             datum.valueIcon !== undefined,
           );
-          acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, fontSize);
+          acc.fittedValueFontSize = Math.min(acc.fittedValueFontSize, valueFontSize);
 
           return {
             type: 'metric',
