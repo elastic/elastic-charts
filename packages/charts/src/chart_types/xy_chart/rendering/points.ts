@@ -100,9 +100,7 @@ export function renderPoints(
         const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
 
         // if radius is defined with the mark, limit the minimum radius to the theme radius value
-        const radius = isPointIsolated
-          ? isolatedPointRadius(lineStrokeWidth)
-          : markSizeOptions.enabled
+        const radius = markSizeOptions.enabled
             ? Math.max(getRadius(mark), pointStyle.radius)
             : styleOverrides?.radius ?? pointStyle.radius;
 
