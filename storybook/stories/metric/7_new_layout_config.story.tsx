@@ -164,6 +164,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
             extraTextAlign,
             iconAlign,
             valuePosition,
+            titleWeight,
           },
         }}
         baseTheme={useBaseTheme()}

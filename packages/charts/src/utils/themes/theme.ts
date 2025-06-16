@@ -193,9 +193,7 @@ export interface GridLineStyle {
   dash: number[];
 }
 
-/**
- * @public
- */
+/** @public */
 export interface GoalStyles {
   progressLine: Pick<StrokeStyle, 'stroke'>;
   targetLine: Pick<StrokeStyle, 'stroke'>;
@@ -244,9 +242,7 @@ export interface GoalStyles {
   capturePad: number;
 }
 
-/**
- * @public
- */
+/** @public */
 export interface HeatmapStyle {
   /**
    * Config of the mask over the area outside of the selected cells
@@ -305,13 +301,28 @@ export interface HeatmapStyle {
   maxLegendHeight?: number;
 }
 
-/** @public */
+/**
+ * Horizontal text alignment options.
+ * @public
+ */
 export type TextAlign = 'left' | 'center' | 'right';
 
-/** @public */
+/**
+ * Horizontal side options, typically used for alignment or positioning.
+ * @public
+ */
 export type HorizontalSide = 'left' | 'right';
 
-/** @public */
+/**
+ * Font weight options for text styling.
+ * @public
+ */
+export type FontWeight = 'bold' | 'regular';
+
+/**
+ * Style options for the Metric chart type.
+ * @public
+ */
 export interface MetricStyle {
   textDarkColor: Color;
   textLightColor: Color;
@@ -323,9 +334,9 @@ export interface MetricStyle {
   extraTextAlign: TextAlign;
   valueTextAlign: TextAlign;
   valuePosition: 'top' | 'bottom';
-  iconAlign: 'left' | 'right';
+  iconAlign: HorizontalSide;
 
-  titleWeight: 'bold' | 'regular';
+  titleWeight: FontWeight;
 
   border: Color;
   barBackground: Color;

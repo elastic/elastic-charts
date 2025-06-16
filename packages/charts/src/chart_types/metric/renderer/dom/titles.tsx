@@ -11,7 +11,7 @@ import type { CSSProperties } from 'react';
 import React, { useMemo } from 'react';
 
 import type { HeightBasedSizes, Visibility } from './text_measurements';
-import type { TextAlign } from '../../../../utils/themes/theme';
+import type { FontWeight, TextAlign } from '../../../../utils/themes/theme';
 
 function lineClamp(maxLines: number): CSSProperties {
   return {
@@ -25,18 +25,24 @@ function lineClamp(maxLines: number): CSSProperties {
   };
 }
 
-// Note: Created separated components in case we wan to add them separately to the grid
-
 interface TitleElementProps {
   title: string | undefined;
+  titleWeight: FontWeight;
   fontSize: number;
   textAlign: TextAlign;
   linesLength: number;
 }
 
-const TitleElement: React.FunctionComponent<TitleElementProps> = ({ fontSize, textAlign, linesLength, title }) => {
+const TitleElement: React.FunctionComponent<TitleElementProps> = ({
+  title,
+  titleWeight,
+  fontSize,
+  textAlign,
+  linesLength,
+}) => {
+  const fontWeight = titleWeight === 'regular' ? 'normal' : titleWeight;
   return (
-    <span style={{ fontSize, textAlign, ...lineClamp(linesLength) }} title={title}>
+    <span style={{ fontSize, textAlign, fontWeight, ...lineClamp(linesLength) }} title={title}>
       {title}
     </span>
   );
@@ -105,6 +111,7 @@ interface TitlesBlockProps {
 
   // Alignment & icon
   textAlign: TextAlign;
+  titleWeight: FontWeight;
   isIconVisible: boolean;
 
   titlesRow: number;
@@ -122,6 +129,7 @@ export const TitlesBlock: React.FC<TitlesBlockProps> = ({
   sizes,
   visibility,
   textAlign,
+  titleWeight,
   isIconVisible,
   titlesRow,
   titlesColumn,
@@ -142,6 +150,7 @@ export const TitlesBlock: React.FC<TitlesBlockProps> = ({
     title,
     fontSize: titleFontSize,
     textAlign,
+    titleWeight,
     linesLength: titleLines.length,
   };
 

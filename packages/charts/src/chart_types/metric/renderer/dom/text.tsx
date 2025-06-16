@@ -91,6 +91,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
         sizes={sizes} // titleFontSize, subtitleFontSize
         visibility={visibility} // title, subtitle, titleLines, subtitleLines
         textAlign={style.titlesTextAlign}
+        titleWeight={style.titleWeight}
         isIconVisible={isIconVisible}
         titlesRow={titlesRow}
         titlesColumn={titlesColumn}
