@@ -48,15 +48,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const subtitle = text('subtitle', 'Litle description of this component');
 
   // Visualization type
-  const progressOrTrend = select(
-    'progress or trend',
-    {
-      trend: 'trend',
-      bar: 'bar',
-      none: 'none',
-    },
-    'trend',
-  );
+  const progressOrTrend = select('progress or trend', { trend: 'trend', bar: 'bar', none: 'none' }, 'bar');
   const progressBarDirection = select(
     'progress bar direction',
     { horizontal: 'horizontal', vertical: 'vertical' },
@@ -168,7 +160,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   const baseTheme = useBaseTheme();
 
-  const breakpointShow = select('Show breakpoints', { Small: 'small', Medium: 'medium', Large: 'large' }, 'medium');
+  const breakpointShow = select('Show breakpoints', { Small: 'small', Medium: 'medium', Large: 'large' }, 'small');
   const breakpoints = sizeMap[breakpointShow];
 
   return (

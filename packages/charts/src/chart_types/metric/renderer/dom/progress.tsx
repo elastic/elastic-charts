@@ -20,6 +20,8 @@ import { isBulletMetric } from '../../specs';
 const TARGET_SIZE = 8;
 const BASELINE_SIZE = 2;
 
+const BORDER_RADIUS = 8;
+
 interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
@@ -59,6 +61,11 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
         right: `${100 - max}%`,
       };
 
+  const overrideBorderRadius =
+    (isVertical && positionStyle.top === '0%') || (!isVertical && positionStyle.right === '0%')
+      ? `${BORDER_RADIUS}px`
+      : undefined;
+
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${TARGET_SIZE / 2}px)`;
   const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
   const labelType = isBullet ? 'Value' : 'Percentage';
@@ -94,7 +101,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       )}
       <div
         className={getDirectionalClasses('ProgressBar', isVertical, size)}
-        style={{ ...positionStyle, backgroundColor: blendedBarColor }}
+        style={{ ...positionStyle, borderRadius: overrideBorderRadius, backgroundColor: blendedBarColor }}
         role="meter"
         title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
         aria-label={title ? `${labelType} of ${title}` : labelType}

@@ -1,5 +1,3 @@
-$padding: 8px;
-
 .echMetricText {
   position: relative;
   z-index: 1;
@@ -9,6 +7,10 @@ $padding: 8px;
   height: 100%;
   padding: $padding;
   line-height: 1.2;
+
+  &--small {
+    // Add styles
+  }
 
   &__titlesBlock {
     display: flex;

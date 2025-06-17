@@ -1,12 +1,15 @@
+$boder-radius: 8px;
+
 .echSingleMetricProgress {
   position: absolute;
+  border-radius: $boder-radius;
 
   &--vertical {
-    left: 0;
+    left: $padding;
     right: 0;
-    top: 0;
+    top: $padding;
     bottom: 0;
-    height: 100%;
+    height: calc(100% - #{$padding * 2});
     width: 100%;
 
     &.echSingleMetricProgress--small {
@@ -16,11 +19,11 @@
   }
 
   &--horizontal {
-    left: 0;
+    left: $padding;
     right: 0;
-    width: 100%;
+    width: calc(100% - #{$padding * 2});
     top: 0;
-    bottom: 0;
+    bottom: $padding;
     height: 100%;
 
     &.echSingleMetricProgress--small {
@@ -32,13 +35,14 @@
 
 .echSingleMetricProgressBar {
   transition: background-color ease-in-out 0.1s;
-
+  
   &--vertical {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     width: 100%;
+    border-radius: 0 0 $boder-radius $boder-radius ;
   }
 
   &--horizontal {
@@ -47,6 +51,7 @@
     bottom: 0;
     left: 0;
     height: 100%;
+    border-radius: $boder-radius 0 0 $boder-radius;
   }
 }
 
