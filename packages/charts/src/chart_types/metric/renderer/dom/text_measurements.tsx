@@ -155,6 +155,8 @@ export function getMetricTextPartDimensions(
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
 
+  const hasHorizontalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Horizontal;
+
   return {
     heightBasedSizes,
     hasProgressBar,
@@ -163,7 +165,14 @@ export function getMetricTextPartDimensions(
       hasProgressBar && progressBarDirection === LayoutDirection.Vertical
         ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
         : 0,
-    visibility: elementVisibility(datum, panel, heightBasedSizes, locale, style.valueFontSize === 'fit'),
+    visibility: elementVisibility(
+      datum,
+      panel,
+      heightBasedSizes,
+      locale,
+      style.valueFontSize === 'fit',
+      hasHorizontalProgressBar,
+    ),
     textParts: getTextParts(datum, style),
   };
 }
@@ -227,6 +236,16 @@ export function getSnappedFontSizes(
   };
 }
 
+const getResponsiveBreakpoints = (title: boolean, subtitle: boolean, extra: boolean): Array<ElementVisibility> => [
+  { titleMaxLines: 3, subtitleMaxLines: 2, title, subtitle, extra },
+  { titleMaxLines: 3, subtitleMaxLines: 1, title, subtitle, extra },
+  { titleMaxLines: 2, subtitleMaxLines: 1, title, subtitle, extra },
+  { titleMaxLines: 1, subtitleMaxLines: 1, title, subtitle, extra },
+  { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra },
+  { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra: false },
+  { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra: false },
+];
+
 /** @internal */
 export function elementVisibility(
   datum: MetricDatum,
@@ -234,6 +253,7 @@ export function elementVisibility(
   sizes: HeightBasedSizes,
   locale: string,
   fit: boolean,
+  hasHorizontalProgressBar: boolean,
 ): ElementVisibility & {
   titleLines: string[];
   subtitleLines: string[];
@@ -262,15 +282,7 @@ export function elementVisibility(
   const extraHeight = sizes.extraFontSize * LINE_HEIGHT;
   const valueHeight = sizes.valueFontSize * LINE_HEIGHT;
 
-  const responsiveBreakPoints: Array<ElementVisibility> = [
-    { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 3, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 2, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-  ];
+  const responsiveBreakPoints = getResponsiveBreakpoints(!!datum.title, !!datum.subtitle, !!datum.extra);
 
   const getCombinedHeight = (
     { titleMaxLines, subtitleMaxLines, title, subtitle, extra }: ElementVisibility,
@@ -280,14 +292,25 @@ export function elementVisibility(
     (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
     (extra ? extraHeight : 0) +
     valueHeight +
-    PADDING;
+    PADDING +
+    // Take into account when there is an horizontal progress bar
+    (hasHorizontalProgressBar ? PROGRESS_BAR_WIDTH + PADDING : 0);
 
+  /**
+   * Determines if the given breakpoint should be considered "visible"
+   * for the provided text measurement.
+   */
   const isVisible = (ev: ElementVisibility, measure: TextMeasure) => getCombinedHeight(ev, measure) < panel.height;
 
   return withTextMeasure((textMeasure) => {
-    const visibilityBreakpoint = fit
-      ? responsiveBreakPoints.at(0)!
-      : responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
+    let visibilityBreakpoint: ElementVisibility;
+
+    if (fit) {
+      visibilityBreakpoint = responsiveBreakPoints.at(0)!;
+    } else {
+      const found = responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure));
+      visibilityBreakpoint = found ?? responsiveBreakPoints.at(-1)!;
+    }
 
     return {
       ...visibilityBreakpoint,
