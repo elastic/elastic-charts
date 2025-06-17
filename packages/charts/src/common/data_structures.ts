@@ -28,7 +28,10 @@ export class LRUCache<K, V> {
 
   set(key: K, val: V) {
     if (this.cache.has(key)) this.cache.delete(key);
-    else if (this.cache.size === this.max) this.cache.delete(this.first());
+    else if (this.cache.size === this.max) {
+      const first = this.first();
+      if(first) this.cache.delete(first)
+    };
     this.cache.set(key, val);
   }
 

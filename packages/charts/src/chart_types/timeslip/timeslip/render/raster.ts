@@ -22,7 +22,7 @@ import { clamp } from '../../utils/math';
 import type { TimeslipConfig } from '../config';
 import type { DataState } from '../data_fetch';
 
-const TIMESLIP_MAX_TIME_GRID_COUNT = 100 || MAX_TIME_GRID_COUNT; // use either
+const TIMESLIP_MAX_TIME_GRID_COUNT = 100; // MAX_TIME_GRID_COUNT; // use either
 
 interface LoHi {
   lo: Interval | null;
