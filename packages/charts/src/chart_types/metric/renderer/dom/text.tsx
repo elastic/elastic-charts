@@ -18,10 +18,9 @@ import type { HorizontalSide, MetricStyle } from '../../../../utils/themes/theme
 import type { MetricDatum } from '../../specs';
 import { isMetricWNumber } from '../../specs';
 
-const getGridTemplateColumns = (isIconVisible: boolean, iconAlign: HorizontalSide, iconSize: number) => {
-  if (!isIconVisible) return '1fr';
+const getGridTemplateColumnsWithIcon = (iconAlign: HorizontalSide, iconSize: number) => {
   const iconSizeWithPadding = `${iconSize + PADDING}px`;
-  return iconAlign === 'left' ? `${iconSizeWithPadding} 1fr` : `1fr ${iconSizeWithPadding}`;
+  return iconAlign === 'left' ? `${iconSizeWithPadding} minmax(0, 1fr)` : `minmax(0, 1fr)${iconSizeWithPadding}`;
 };
 
 interface MetricTextprops {
@@ -72,14 +71,10 @@ export const MetricText: React.FC<MetricTextprops> = ({
 
   const gridColumn = isIconVisible ? '1 / span 2' : 1;
 
-  const iconStyles = isIconVisible
-    ? {
-        gridRow: 1,
-        gridColumn: iconAlign === 'left' ? 1 : 2,
-      }
-    : {};
+  const iconStyles = isIconVisible ? { gridRow: 1, gridColumn: iconAlign === 'left' ? 1 : 2 } : {};
 
-  const gridTemplateColumns = getGridTemplateColumns(isIconVisible, iconAlign, sizes.iconSize);
+  // If an icon is present, use a two-column grid (icon + content) by overriding the default gridTemplateColumns
+  const gridTemplateColumns = isIconVisible ? getGridTemplateColumnsWithIcon(iconAlign, sizes.iconSize) : undefined;
 
   return (
     <div className={containerClassName} style={{ color: highContrastTextColor, gridTemplateColumns }}>
