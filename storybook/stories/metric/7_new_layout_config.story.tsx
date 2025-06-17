@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { EuiIcon } from '@elastic/eui';
+import { EuiFlexGroup, EuiFlexItem, EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
@@ -27,6 +27,20 @@ const getIcon =
   ({ width, height, color }: { width: number; height: number; color: string }) => (
     <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
   );
+
+const sizeMap: Record<'small' | 'medium' | 'large', Array<{ height: string; width: string }>> = {
+  small: [
+    { height: '100px', width: '200px' },
+    { height: '150px', width: '200px' },
+    { height: '200px', width: '200px' },
+    { height: '300px', width: '200px' },
+  ],
+  medium: [{ height: '400px', width: '400px' }],
+  large: [
+    { height: '600px', width: '600px' },
+    { height: '700px', width: '700px' },
+  ],
+};
 
 export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   // title and subtitle values
@@ -152,48 +166,52 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   // extra (secondary metric)
   const extraTextAlign = getTextAlignKnob('Extra element alignment', 'left', group1);
 
-  return (
-    <Chart title={storyTitle} description={description}>
-      <Settings
-        theme={{
-          metric: {
-            blendingBackground: useBlendingBackground ? blendingBackground : undefined,
-            valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
-            titlesTextAlign,
-            valueTextAlign,
-            extraTextAlign,
-            iconAlign,
-            valuePosition,
-            titleWeight,
-          },
-        }}
-        baseTheme={useBaseTheme()}
-        onElementClick={([d]) => {
-          if (isMetricElementEvent(d)) {
-            const { rowIndex, columnIndex } = d;
-            onEventClickAction(
-              `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
-            );
-          }
-        }}
-        onElementOver={([d]) => {
-          if (isMetricElementEvent(d)) {
-            const { rowIndex, columnIndex } = d;
-            onEventOverAction(
-              `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
-            );
-          }
-        }}
-        onElementOut={() => onEventOutAction('out')}
-      />
-      <Metric id="1" data={configuredData} />
-    </Chart>
-  );
-};
+  const baseTheme = useBaseTheme();
 
-Example.parameters = {
-  resize: {
-    height: '200px',
-    width: '200px',
-  },
+  const breakpointShow = select('Show breakpoints', { Small: 'small', Medium: 'medium', Large: 'large' }, 'medium');
+  const breakpoints = sizeMap[breakpointShow];
+
+  return (
+    <EuiFlexGroup>
+      {breakpoints.map(({ height, width }, i) => (
+        <EuiFlexItem key={height} style={{ height, maxWidth: width }}>
+          <Chart title={storyTitle} description={description}>
+            <Settings
+              theme={{
+                metric: {
+                  blendingBackground: useBlendingBackground ? blendingBackground : undefined,
+                  valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
+                  titlesTextAlign,
+                  valueTextAlign,
+                  extraTextAlign,
+                  iconAlign,
+                  valuePosition,
+                  titleWeight,
+                },
+              }}
+              baseTheme={baseTheme}
+              onElementClick={([d]) => {
+                if (isMetricElementEvent(d)) {
+                  const { rowIndex, columnIndex } = d;
+                  onEventClickAction(
+                    `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+                  );
+                }
+              }}
+              onElementOver={([d]) => {
+                if (isMetricElementEvent(d)) {
+                  const { rowIndex, columnIndex } = d;
+                  onEventOverAction(
+                    `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+                  );
+                }
+              }}
+              onElementOut={() => onEventOutAction('out')}
+            />
+            <Metric id={`${i}`} data={configuredData} />
+          </Chart>
+        </EuiFlexItem>
+      ))}
+    </EuiFlexGroup>
+  );
 };
