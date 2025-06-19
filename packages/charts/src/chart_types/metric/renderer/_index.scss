@@ -1,5 +1,16 @@
-$progress-bar-width: 10px;
-$progress-bar-height: 10px;
+// Progress bar thickness by size
+$progress-bar-thickness-small: 4px;
+$progress-bar-thickness-medium: 8px;
+$progress-bar-thickness-large: 16px;
+
+$progress-bar-width-small: $progress-bar-thickness-small;
+$progress-bar-width-medium: $progress-bar-thickness-medium;
+$progress-bar-width-large: $progress-bar-thickness-large;
+
+$progress-bar-height-small: $progress-bar-thickness-small;
+$progress-bar-height-medium: $progress-bar-thickness-medium;
+$progress-bar-height-large: $progress-bar-thickness-large;
+
 $progress-bar-target-width: 4px;
 $progress-bar-target-height: 2px;
 
@@ -51,16 +62,29 @@ $padding: 8px;
   }
 
   &--vertical {
-    // TODO: find a better way to style based on sizes (i.e. sass functions)
+    // TODO: Find a better way to style based on sizes (i.e. sass functions)
     &.echMetric--withProgressBar {
       &--small {
-        padding-left: $progress-bar-width + $padding;
+        padding-left: $progress-bar-width-small + $padding;
+      }
+      &--medium {
+        padding-left: $progress-bar-width-medium + $padding;
+      }
+      &--large {
+        padding-left: $progress-bar-width-large + $padding;
       }
     }
 
+    // Note: What is the target progress bar? Should we add the padding?
     &.echMetric--withTargetProgressBar {
       &--small {
-        padding-left: $progress-bar-width + $progress-bar-target-width;
+        padding-left: $progress-bar-width-small + $progress-bar-target-width;
+      }
+      &--medium {
+        padding-left: $progress-bar-width-medium + $progress-bar-target-width;
+      }
+      &--large {
+        padding-left: $progress-bar-width-large + $progress-bar-target-width;
       }
     }
   }
@@ -68,13 +92,26 @@ $padding: 8px;
   &--horizontal {
     &.echMetric--withProgressBar {
       &--small {
-        padding-bottom: $progress-bar-height + $padding;
+        padding-bottom: $progress-bar-height-small + $padding;
+      }
+      &--medium {
+        padding-bottom: $progress-bar-height-medium + $padding;
+      }
+      &--large {
+        padding-bottom: $progress-bar-height-large + $padding;
       }
     }
 
+    // Note: What is the target progress bar? Should we add the padding?
     &.echMetric--withTargetProgressBar {
       &--small {
-        padding-bottom: $progress-bar-height + $progress-bar-target-height;
+        padding-bottom: $progress-bar-height-small + $progress-bar-target-height;
+      }
+      &--medium {
+        padding-bottom: $progress-bar-height-medium + $progress-bar-target-height;
+      }
+      &--large {
+        padding-bottom: $progress-bar-height-large + $progress-bar-target-height;
       }
     }
   }

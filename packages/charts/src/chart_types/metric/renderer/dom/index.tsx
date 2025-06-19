@@ -137,15 +137,10 @@ function Component({
             };
           }
           const textDimensions = getMetricTextPartDimensions(datum, panel, style, locale);
-
-          // Note: Take into account the width taken by the icon if there's an icon
-          const isIconVisible = !!datum.icon && style.valuePosition === 'top';
-          const iconGridColumnWidth = textDimensions.heightBasedSizes.iconSize + PADDING;
-          const iconWidth = isIconVisible ? iconGridColumnWidth : 0;
-
+          const totalWidth = panel.width - textDimensions.progressBarWidth - textDimensions.iconGridColumnWidth;
           const valueFontSize = getFitValueFontSize(
             textDimensions.heightBasedSizes.valueFontSize,
-            panel.width - textDimensions.progressBarWidth - iconWidth,
+            totalWidth,
             textDimensions.visibility.gapHeight,
             textDimensions.textParts,
             style.minValueFontSize,

@@ -139,7 +139,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   // title and subtitle
   const titlesTextAlign = getTextAlignKnob('Title and subtitle alignment', 'left', group1);
-  const titleWeight = select('Title weight', { Bold: 'bold', Regular: 'regular' }, 'bold', group1);
+  const titleWeight = select('Title weight', { Bold: 'bold', Regular: 'regular' }, 'regular', group1);
   // value (primary metric)
   const valuePosition = select('Primary metric position', { Bottom: 'bottom', Top: 'top' }, 'top', group1);
   const valueTextAlign = getTextAlignKnob('Primary metric alignment', 'left', group1);

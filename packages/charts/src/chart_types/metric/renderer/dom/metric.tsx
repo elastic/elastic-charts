@@ -32,6 +32,14 @@ import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricWNumber } from '../../specs';
 import { isMetricWProgress, isMetricWTrend } from '../../specs';
 
+// Synced with _index.scss
+type ProgressBarSize = 'small' | 'medium' | 'large';
+const progressBarMap: Record<number, ProgressBarSize> = {
+  4: 'small',
+  8: 'medium',
+  16: 'large',
+};
+
 /** @internal */
 export const Metric: React.FunctionComponent<{
   chartId: string;
@@ -64,7 +72,9 @@ export const Metric: React.FunctionComponent<{
   onElementOver,
   onElementOut,
 }) => {
-  const progressBarSize = 'small'; // currently we provide only the small progress bar;
+  const { progressBarThinkness } = textDimensions.heightBasedSizes;
+  const progressBarSize = progressBarMap[progressBarThinkness] ?? 'medium';
+
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
   const [lastMouseDownTimestamp, setLastMouseDownTimestamp] = useState<number>(0);
   const metricHTMLId = `echMetric-${chartId}-${rowIndex}-${columnIndex}`;

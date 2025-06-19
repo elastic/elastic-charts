@@ -20,7 +20,7 @@ import { isBulletMetric } from '../../specs';
 const TARGET_SIZE = 8;
 const BASELINE_SIZE = 2;
 
-const BORDER_RADIUS = 8;
+const PROGRESS_BAR_BORDER_RADIUS = 8; // synced with _progress.scss
 
 interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
@@ -63,7 +63,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
 
   const overrideBorderRadius =
     (isVertical && positionStyle.top === '0%') || (!isVertical && positionStyle.right === '0%')
-      ? `${BORDER_RADIUS}px`
+      ? `${PROGRESS_BAR_BORDER_RADIUS}px`
       : undefined;
 
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${TARGET_SIZE / 2}px)`;

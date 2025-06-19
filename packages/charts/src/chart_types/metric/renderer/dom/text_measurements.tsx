@@ -27,6 +27,7 @@ export interface HeightBasedSizes {
   extraFontSize: number;
   valueFontSize: number;
   valuePartFontSize: number;
+  progressBarThinkness: number;
 }
 
 type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
@@ -42,7 +43,6 @@ type ElementVisibility = {
 /** @internal */
 export const PADDING = 8;
 
-const PROGRESS_BAR_WIDTH = 10; // synced with scss variables
 const PROGRESS_BAR_TARGET_WIDTH = 4;
 const LINE_HEIGHT = 1.2; // aligned with our CSS
 const HEIGHT_BP: [number, number, BreakPoint][] = [
@@ -98,6 +98,7 @@ const SUBTITLE_FONT: Font = {
   ...TITLE_FONT,
   fontWeight: 'normal',
 };
+const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 8, s: 8, m: 8, l: 8, xl: 8, xxl: 16 };
 
 /**
  * Approximate font size to fit given available space
@@ -138,9 +139,18 @@ export interface MetricTextDimensions {
   heightBasedSizes: HeightBasedSizes;
   hasProgressBar: boolean;
   progressBarDirection: LayoutDirection | undefined;
+  /**
+   * This only applies when there is a progress bar and is vertical.
+   * We have added the padding into the calculation
+   */
   progressBarWidth: number;
   visibility: Visibility;
   textParts: TextParts[];
+  /**
+   * This only applies when there is an icon and the value postition is top.
+   * We have added the padding into the calculation
+   */
+  iconGridColumnWidth: number;
 }
 
 /** @internal */
@@ -155,25 +165,34 @@ export function getMetricTextPartDimensions(
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
 
+  const hasVerticalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Vertical;
   const hasHorizontalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Horizontal;
+
+  const { progressBarThinkness, iconSize } = heightBasedSizes;
+
+  const progressBarTotalSpace = progressBarThinkness + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0) + PADDING;
+  const progressBarWidth = hasVerticalProgressBar ? progressBarTotalSpace : 0;
+  const progressBarHeight = hasHorizontalProgressBar ? progressBarTotalSpace : 0;
+
+  const isIconVisible = !!datum.icon && style.valuePosition === 'top';
+  // Note: We add padding to the icon to make the column wider
+  const iconGridColumnWidth = isIconVisible ? iconSize + PADDING : 0;
 
   return {
     heightBasedSizes,
     hasProgressBar,
     progressBarDirection,
-    progressBarWidth:
-      hasProgressBar && progressBarDirection === LayoutDirection.Vertical
-        ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
-        : 0,
+    progressBarWidth,
     visibility: elementVisibility(
       datum,
       panel,
       heightBasedSizes,
       locale,
       style.valueFontSize === 'fit',
-      hasHorizontalProgressBar,
+      progressBarHeight,
     ),
     textParts: getTextParts(datum, style),
+    iconGridColumnWidth,
   };
 }
 
@@ -195,6 +214,7 @@ function getHeightBasedFontSizes(
     extraFontSize: EXTRA_FONT_SIZE[size],
     valueFontSize,
     valuePartFontSize,
+    progressBarThinkness: PROGRESS_BAR_THICKNESS[size],
   };
 }
 
@@ -246,14 +266,13 @@ const getResponsiveBreakpoints = (title: boolean, subtitle: boolean, extra: bool
   { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra: false },
 ];
 
-/** @internal */
-export function elementVisibility(
+function elementVisibility(
   datum: MetricDatum,
   panel: Size,
   sizes: HeightBasedSizes,
   locale: string,
   fit: boolean,
-  hasHorizontalProgressBar: boolean,
+  progressBarHeight: number,
 ): ElementVisibility & {
   titleLines: string[];
   subtitleLines: string[];
@@ -293,8 +312,8 @@ export function elementVisibility(
     (extra ? extraHeight : 0) +
     valueHeight +
     PADDING +
-    // Take into account when there is an horizontal progress bar
-    (hasHorizontalProgressBar ? PROGRESS_BAR_WIDTH + PADDING : 0);
+    // For the height calculation, take into account when there is an horizontal progress bar
+    progressBarHeight;
 
   /**
    * Determines if the given breakpoint should be considered "visible"
