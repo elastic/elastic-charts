@@ -45,7 +45,7 @@ const sizeMap: Record<'small' | 'medium' | 'large', Array<{ height: string; widt
 export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   // title and subtitle values
   const title = text('title', 'Count of records');
-  const subtitle = text('subtitle', 'Litle description of this component');
+  const subtitle = text('subtitle', 'Little description of this component');
 
   // Visualization type
   const progressOrTrend = select('progress or trend', { trend: 'trend', bar: 'bar', none: 'none' }, 'bar');
@@ -135,7 +135,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   // Configurations
 
-  const group1 = 'Text configuration and postion';
+  const group1 = 'Text configuration and position';
 
   // title and subtitle
   const titlesTextAlign = getTextAlignKnob('Title and subtitle alignment', 'left', group1);
