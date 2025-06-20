@@ -19,8 +19,6 @@ const TEXT_PAD_LEFT = 4;
 const TEXT_PAD_RIGHT = 4;
 const MIN_TEXT_LENGTH = 0; // in font height, so 1 means roughly 2 characters (latin characters are tall on average)
 const ROW_OFFSET_Y = 0.45; // approx. middle line (text is middle anchored so tall bars with small fonts can still have vertically centered text)
-const MAX_FONT_HEIGHT_RATIO = 1; // relative to the row height
-const MAX_FONT_SIZE = 12;
 
 const mix = (a: number = 1, b: number = 1, x: number = 1) => (1 - x) * a + x * b; // like the GLSL `mix`
 
@@ -40,10 +38,7 @@ export const drawCanvas2d = (
 ) => {
   const zoomedRowHeight = rowHeight / Math.abs(focusHiY - focusLoY);
   const rowHeightPx = zoomedRowHeight * cssHeight;
-  const fontSize = Math.min(
-    2.6 * Math.log2((zoomedRowHeight * cssHeight - BOX_GAP_VERTICAL) * MAX_FONT_HEIGHT_RATIO),
-    MAX_FONT_SIZE,
-  );
+  const fontSize = zoomedRowHeight * cssHeight - 2 * BOX_GAP_VERTICAL;
   const minTextLengthCssPix = MIN_TEXT_LENGTH * fontSize; // don't render shorter text than this
   const minRectWidthForTextInCssPix = minTextLengthCssPix + TEXT_PAD_LEFT + TEXT_PAD_RIGHT;
   const minRectWidth = minRectWidthForTextInCssPix / cssWidth;
