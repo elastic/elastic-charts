@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import { scaleLinear } from 'd3-scale';
 import React from 'react';
 
+import type { ProgressBarSize } from './metric';
 import type { Color } from '../../../../common/colors';
 import { Icon } from '../../../../components/icons/icon';
 import { isNil, LayoutDirection, sortNumbers } from '../../../../utils/common';
@@ -20,11 +21,13 @@ import { isBulletMetric } from '../../specs';
 const TARGET_SIZE = 8;
 const BASELINE_SIZE = 2;
 
+const PROGRESS_BAR_BORDER_RADIUS = 8; // synced with _progress.scss
+
 interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
   blendedBarColor: Color;
-  size: 'small';
+  size: ProgressBarSize;
 }
 
 /** @internal */
@@ -59,6 +62,11 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
         right: `${100 - max}%`,
       };
 
+  const overrideBorderRadius =
+    (isVertical && positionStyle.top === '0%') || (!isVertical && positionStyle.right === '0%')
+      ? `${PROGRESS_BAR_BORDER_RADIUS}px`
+      : undefined;
+
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${TARGET_SIZE / 2}px)`;
   const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
   const labelType = isBullet ? 'Value' : 'Percentage';
@@ -66,7 +74,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   return (
     <div
       className={getDirectionalClasses('Progress', isVertical, size)}
-      style={{ backgroundColor: size === 'small' ? barBackground : undefined }}
+      style={{ backgroundColor: barBackground }}
       title={!isBullet ? '' : `${updatedDomain[0]} to ${updatedDomain[1]}`}
     >
       {targetPlacement && (
@@ -94,7 +102,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       )}
       <div
         className={getDirectionalClasses('ProgressBar', isVertical, size)}
-        style={{ ...positionStyle, backgroundColor: blendedBarColor }}
+        style={{ ...positionStyle, borderRadius: overrideBorderRadius, backgroundColor: blendedBarColor }}
         role="meter"
         title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
         aria-label={title ? `${labelType} of ${title}` : labelType}
