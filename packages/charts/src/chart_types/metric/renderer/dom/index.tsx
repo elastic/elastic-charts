@@ -23,7 +23,6 @@ import {
   getFixedFontSizes,
   getMetricTextPartDimensions,
   getSnappedFontSizes,
-  PADDING,
 } from './text_measurements';
 import type { ColorContrastOptions } from '../../../../common/color_calcs';
 import { combineColors, highContrastColor } from '../../../../common/color_calcs';
@@ -97,6 +96,7 @@ function Component({
   const maxColumns = data.reduce((acc, row) => Math.max(acc, row.length), 0);
 
   const panel = { width: width / maxColumns, height: height / totalRows };
+
   const contrastOptions: ColorContrastOptions = {
     lightColor: colorToRgba(style.textLightColor),
     darkColor: colorToRgba(style.textDarkColor),

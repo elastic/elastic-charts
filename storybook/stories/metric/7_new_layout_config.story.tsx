@@ -69,11 +69,31 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const value = text('value', '55.23');
   const valuePrefix = text('value prefix', '');
   const valuePostfix = text('value postfix', ' %');
-  const metricColor = color('color', '#3c3c3c');
-  const useValueColor = boolean('use value color', false);
-  const valueColor = color('value color', '#3c3c3c');
+
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
+
+  const group2 = 'Colors';
+  const metricColor = color('color', '#61A2FF', group2);
+  const useValueColor = boolean('Use value color', false, group2);
+  const valueColor = select(
+    'Value color',
+    {
+      textPrimary: '#1750BA',
+      textSuccess: '#09724D',
+      textRegular: '#0F658A',
+      textWarning: '#6A4906',
+      textRisk: '#782E18',
+      textDanger: '#A71627',
+      textAccent: '#A11262',
+      textAccentSecondary: '#047471',
+    },
+    '#1750BA',
+    group2,
+  );
+  const useBlendingBackground = boolean('use blending background', false, group2);
+  const blendingBackground = color('blending background', 'rgba(255,255,255,1)', group2);
+  const barBackground = color('Bar background', '#CAD3E2', group2);
 
   const iconType = 'warning';
 
@@ -84,9 +104,6 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   // value icon
   const showValueIcon = boolean('show value icon', false);
   const valueIconType = 'sortUp';
-
-  const useBlendingBackground = boolean('use blending background', false);
-  const blendingBackground = color('blending background', 'rgba(255,255,255,1)');
 
   const data = {
     color: metricColor,
@@ -166,7 +183,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   return (
     <EuiFlexGroup>
       {breakpoints.map(({ height, width }, i) => (
-        <EuiFlexItem key={height} style={{ height, maxWidth: width }}>
+        <EuiFlexItem key={height} style={{ height, maxWidth: width, border: 'solid' }}>
           <Chart title={storyTitle} description={description}>
             <Settings
               theme={{
@@ -179,6 +196,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
                   iconAlign,
                   valuePosition,
                   titleWeight,
+                  barBackground,
                 },
               }}
               baseTheme={baseTheme}

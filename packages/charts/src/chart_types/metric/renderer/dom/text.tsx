@@ -9,6 +9,7 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import type { ProgressBarSize } from './metric';
 import type { MetricTextDimensions } from './text_measurements';
 import { PADDING } from './text_measurements';
 import { TitlesBlock } from './titles';
@@ -23,14 +24,18 @@ const getGridTemplateColumnsWithIcon = (iconAlign: HorizontalSide, iconSize: num
   return iconAlign === 'left' ? `${iconSizeWithPadding} minmax(0, 1fr)` : `minmax(0, 1fr)${iconSizeWithPadding}`;
 };
 
+interface TextColors {
+  highContrastTextColor: Color;
+}
+
 interface MetricTextprops {
   id: string;
   datum: MetricDatum;
   style: MetricStyle;
   onElementClick?: () => void;
-  highContrastTextColor: Color;
-  progressBarSize: 'small';
+  progressBarSize: ProgressBarSize;
   textDimensions: MetricTextDimensions;
+  textColors: TextColors;
 }
 
 /** @internal */
@@ -39,9 +44,9 @@ export const MetricText: React.FC<MetricTextprops> = ({
   datum,
   style,
   onElementClick,
-  highContrastTextColor,
   progressBarSize,
   textDimensions,
+  textColors,
 }) => {
   const { heightBasedSizes: sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
   const { extra, body } = datum;
@@ -77,7 +82,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
   const gridTemplateColumns = isIconVisible ? getGridTemplateColumnsWithIcon(iconAlign, sizes.iconSize) : undefined;
 
   return (
-    <div className={containerClassName} style={{ color: highContrastTextColor, gridTemplateColumns }}>
+    <div className={containerClassName} style={{ color: textColors.highContrastTextColor, gridTemplateColumns }}>
       {/* Titles Block */}
       <TitlesBlock
         metricId={id}
@@ -101,7 +106,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
           {renderWithProps(datum.icon, {
             width: sizes.iconSize,
             height: sizes.iconSize,
-            color: highContrastTextColor,
+            color: textColors.highContrastTextColor,
           })}
         </div>
       )}
@@ -117,7 +122,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
       >
         {visibility.extra && (
           <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
-            {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: highContrastTextColor })}
+            {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: textColors.highContrastTextColor })}
           </p>
         )}
       </div>
@@ -151,14 +156,14 @@ export const MetricText: React.FC<MetricTextprops> = ({
             className="echMetricText__valueIcon"
             style={{
               fontSize: sizes.valueFontSize,
-              color: datum.valueColor ?? highContrastTextColor,
+              color: datum.valueColor ?? textColors.highContrastTextColor,
               marginRight: style.valueTextAlign === 'center' ? -(sizes.valuePartFontSize + PADDING) : undefined,
             }}
           >
             {renderWithProps(datum.valueIcon, {
               width: sizes.valuePartFontSize,
               height: sizes.valuePartFontSize,
-              color: datum.valueColor ?? highContrastTextColor,
+              color: datum.valueColor ?? textColors.highContrastTextColor,
               verticalAlign: 'middle',
             })}
           </p>

@@ -32,8 +32,11 @@ import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricWNumber } from '../../specs';
 import { isMetricWProgress, isMetricWTrend } from '../../specs';
 
-// Synced with _index.scss
-type ProgressBarSize = 'small' | 'medium' | 'large';
+/**
+ * Synced with _index.scss
+ * @internal
+ */
+export type ProgressBarSize = 'small' | 'medium' | 'large';
 const progressBarMap: Record<number, ProgressBarSize> = {
   4: 'small',
   8: 'medium',
@@ -137,6 +140,10 @@ export const Metric: React.FunctionComponent<{
     }
   }
 
+  const textColors = {
+    highContrastTextColor: finalTextColor.keyword,
+  };
+
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
   const hasMouseEventsHandler = onElementOut || onElementOver || onElementClick;
   return (
@@ -180,8 +187,8 @@ export const Metric: React.FunctionComponent<{
         style={style}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
         progressBarSize={progressBarSize}
-        highContrastTextColor={finalTextColor.keyword}
         textDimensions={textDimensions}
+        textColors={textColors}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (

@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import { scaleLinear } from 'd3-scale';
 import React from 'react';
 
+import type { ProgressBarSize } from './metric';
 import type { Color } from '../../../../common/colors';
 import { Icon } from '../../../../components/icons/icon';
 import { isNil, LayoutDirection, sortNumbers } from '../../../../utils/common';
@@ -26,7 +27,7 @@ interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
   blendedBarColor: Color;
-  size: 'small';
+  size: ProgressBarSize;
 }
 
 /** @internal */
@@ -73,7 +74,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   return (
     <div
       className={getDirectionalClasses('Progress', isVertical, size)}
-      style={{ backgroundColor: size === 'small' ? barBackground : undefined }}
+      style={{ backgroundColor: barBackground }}
       title={!isBullet ? '' : `${updatedDomain[0]} to ${updatedDomain[1]}`}
     >
       {targetPlacement && (
