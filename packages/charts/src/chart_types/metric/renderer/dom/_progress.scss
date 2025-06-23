@@ -17,12 +17,12 @@ $progress-bar-border-radius: 8px;
       width: $progress-bar-width-small;
     }
 
-     &.echSingleMetricProgress--medium {
+    &.echSingleMetricProgress--medium {
       right: auto;
       width: $progress-bar-width-medium;
     }
 
-     &.echSingleMetricProgress--large {
+    &.echSingleMetricProgress--large {
       right: auto;
       width: $progress-bar-width-large;
     }
@@ -55,14 +55,14 @@ $progress-bar-border-radius: 8px;
 
 .echSingleMetricProgressBar {
   transition: background-color ease-in-out 0.1s;
-  
+
   &--vertical {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     width: 100%;
-    border-radius: 0 0 $progress-bar-border-radius $progress-bar-border-radius ;
+    border-radius: 0 0 $progress-bar-border-radius $progress-bar-border-radius;
   }
 
   &--horizontal {

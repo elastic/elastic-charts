@@ -412,7 +412,11 @@ export const DARK_THEME: Theme = {
   },
   metric: {
     textLightColor: DARK_TEXT_COLORS.textHeading,
+    textSubtitleLightColor: DARK_TEXT_COLORS.textSubdued,
+    textExtraLightColor: DARK_TEXT_COLORS.textParagraph,
     textDarkColor: LIGHT_TEXT_COLORS.textHeading,
+    textSubtitleDarkColor: LIGHT_TEXT_COLORS.textSubdued,
+    textExtraDarkColor: LIGHT_TEXT_COLORS.textParagraph,
     valueFontSize: 'default',
     minValueFontSize: 12,
     titlesTextAlign: 'left',

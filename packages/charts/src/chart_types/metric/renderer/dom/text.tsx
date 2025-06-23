@@ -24,8 +24,14 @@ const getGridTemplateColumnsWithIcon = (iconAlign: HorizontalSide, iconSize: num
   return iconAlign === 'left' ? `${iconSizeWithPadding} minmax(0, 1fr)` : `minmax(0, 1fr)${iconSizeWithPadding}`;
 };
 
-interface TextColors {
-  highContrastTextColor: Color;
+/** @internal */
+export interface TextColors {
+  /**
+   * Default color, used for the title and the heading
+   */
+  highContrast: Color;
+  subtitle: Color;
+  extra: Color;
 }
 
 interface MetricTextprops {
@@ -35,7 +41,7 @@ interface MetricTextprops {
   onElementClick?: () => void;
   progressBarSize: ProgressBarSize;
   textDimensions: MetricTextDimensions;
-  textColors: TextColors;
+  colors: TextColors;
 }
 
 /** @internal */
@@ -46,7 +52,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
   onElementClick,
   progressBarSize,
   textDimensions,
-  textColors,
+  colors,
 }) => {
   const { heightBasedSizes: sizes, hasProgressBar, progressBarDirection, visibility, textParts } = textDimensions;
   const { extra, body } = datum;
@@ -82,8 +88,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
   const gridTemplateColumns = isIconVisible ? getGridTemplateColumnsWithIcon(iconAlign, sizes.iconSize) : undefined;
 
   return (
-    <div className={containerClassName} style={{ color: textColors.highContrastTextColor, gridTemplateColumns }}>
-      {/* Titles Block */}
+    <div className={containerClassName} style={{ color: colors.highContrast, gridTemplateColumns }}>
       <TitlesBlock
         metricId={id}
         title={datum.title}
@@ -95,6 +100,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
         isIconVisible={isIconVisible}
         titlesRow={titlesRow}
         titlesColumn={titlesColumn}
+        subtitleColor={colors.subtitle}
         onElementClick={onElementClick}
       />
 
@@ -106,7 +112,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
           {renderWithProps(datum.icon, {
             width: sizes.iconSize,
             height: sizes.iconSize,
-            color: textColors.highContrastTextColor,
+            color: colors.highContrast,
           })}
         </div>
       )}
@@ -118,11 +124,11 @@ export const MetricText: React.FC<MetricTextprops> = ({
       {/* Extra Block */}
       <div
         className={classNames('echMetricText__extraBlock', `echMetricText__extraBlock--${style.extraTextAlign}`)}
-        style={{ gridRow: valuePosition === 'top' ? 4 : 3, gridColumn }}
+        style={{ gridRow: valuePosition === 'top' ? 4 : 3, gridColumn, color: colors.extra }}
       >
         {visibility.extra && (
           <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
-            {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: textColors.highContrastTextColor })}
+            {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: colors.extra })}
           </p>
         )}
       </div>
@@ -137,7 +143,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
           style={{
             fontSize: sizes.valueFontSize,
             textOverflow: isMetricWNumber(datum) ? undefined : 'ellipsis',
-            color: datum.valueColor,
+            color: datum.valueColor, // overrides the default color
           }}
           title={textParts.map(({ text }) => text).join('')}
         >
@@ -156,14 +162,14 @@ export const MetricText: React.FC<MetricTextprops> = ({
             className="echMetricText__valueIcon"
             style={{
               fontSize: sizes.valueFontSize,
-              color: datum.valueColor ?? textColors.highContrastTextColor,
+              color: datum.valueColor ?? colors.highContrast,
               marginRight: style.valueTextAlign === 'center' ? -(sizes.valuePartFontSize + PADDING) : undefined,
             }}
           >
             {renderWithProps(datum.valueIcon, {
               width: sizes.valuePartFontSize,
               height: sizes.valuePartFontSize,
-              color: datum.valueColor ?? textColors.highContrastTextColor,
+              color: datum.valueColor ?? colors.highContrast,
               verticalAlign: 'middle',
             })}
           </p>

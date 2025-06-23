@@ -55,6 +55,13 @@ export interface ColorContrastOptions {
   lightColor?: RgbaTuple;
 }
 
+/** @internal */
+export interface TextContrastOptions {
+  text: ColorContrastOptions;
+  subtitle: ColorContrastOptions;
+  extra: ColorContrastOptions;
+}
+
 const getOptionWithDefaults = (options: ColorContrastOptions = {}): Required<ColorContrastOptions> => ({
   darkColor: Colors.Black.rgba,
   lightColor: Colors.White.rgba,

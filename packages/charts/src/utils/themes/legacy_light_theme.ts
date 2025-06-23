@@ -412,6 +412,10 @@ export const LEGACY_LIGHT_THEME: Theme = {
   },
   metric: {
     textLightColor: '#E0E5EE',
+    textSubtitleLightColor: '#E0E5EE',
+    textSubtitleDarkColor: '#343741',
+    textExtraLightColor: '#E0E5EE',
+    textExtraDarkColor: '#343741',
     textDarkColor: '#343741',
     valueFontSize: 'default',
     minValueFontSize: 12,

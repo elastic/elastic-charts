@@ -326,6 +326,11 @@ export type FontWeight = 'bold' | 'regular';
 export interface MetricStyle {
   textDarkColor: Color;
   textLightColor: Color;
+  textSubtitleDarkColor: Color;
+  textSubtitleLightColor: Color;
+  textExtraDarkColor: Color;
+  textExtraLightColor: Color;
+
   valueFontSize: 'default' | 'fit' | number;
   minValueFontSize: number;
 

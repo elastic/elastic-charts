@@ -405,6 +405,10 @@ export const AMSTERDAM_DARK_THEME: Theme = {
   metric: {
     textLightColor: '#E0E5EE',
     textDarkColor: '#343741',
+    textSubtitleLightColor: '#E0E5EE',
+    textSubtitleDarkColor: '#343741',
+    textExtraLightColor: '#E0E5EE',
+    textExtraDarkColor: '#343741',
     valueFontSize: 'default',
     minValueFontSize: 12,
     titlesTextAlign: 'left',

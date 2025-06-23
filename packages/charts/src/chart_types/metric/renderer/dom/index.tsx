@@ -24,7 +24,7 @@ import {
   getMetricTextPartDimensions,
   getSnappedFontSizes,
 } from './text_measurements';
-import type { ColorContrastOptions } from '../../../../common/color_calcs';
+import type { TextContrastOptions } from '../../../../common/color_calcs';
 import { combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
@@ -97,14 +97,19 @@ function Component({
 
   const panel = { width: width / maxColumns, height: height / totalRows };
 
-  const contrastOptions: ColorContrastOptions = {
-    lightColor: colorToRgba(style.textLightColor),
-    darkColor: colorToRgba(style.textDarkColor),
+  const textContrastOptions: TextContrastOptions = {
+    text: { lightColor: colorToRgba(style.textLightColor), darkColor: colorToRgba(style.textDarkColor) },
+    subtitle: {
+      lightColor: colorToRgba(style.textSubtitleLightColor),
+      darkColor: colorToRgba(style.textSubtitleDarkColor),
+    },
+    extra: { lightColor: colorToRgba(style.textExtraLightColor), darkColor: colorToRgba(style.textExtraDarkColor) },
   };
 
   const emptyBackgroundRGBA = combineColors(colorToRgba(style.emptyBackground), colorToRgba(backgroundColor));
   const emptyBackground = RGBATupleToString(emptyBackgroundRGBA);
-  const emptyForegroundColor = highContrastColor(emptyBackgroundRGBA, undefined, contrastOptions).color;
+  // using the text contrast options
+  const emptyForegroundColor = highContrastColor(emptyBackgroundRGBA, undefined, textContrastOptions.text).color;
 
   const metricsConfigs = data.reduce<{
     fittedValueFontSize: number;
@@ -224,7 +229,7 @@ function Component({
               columnIndex={config.columnIndex}
               style={style}
               backgroundColor={backgroundColor}
-              contrastOptions={contrastOptions}
+              textContrastOptions={textContrastOptions}
               onElementClick={onElementClick}
               onElementOut={onElementOut}
               onElementOver={onElementOver}

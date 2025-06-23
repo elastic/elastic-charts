@@ -11,6 +11,7 @@ import type { CSSProperties } from 'react';
 import React, { useMemo } from 'react';
 
 import type { HeightBasedSizes, Visibility } from './text_measurements';
+import type { Color } from '../../../../common/colors';
 import type { FontWeight, TextAlign } from '../../../../utils/themes/theme';
 
 function lineClamp(maxLines: number): CSSProperties {
@@ -42,19 +43,27 @@ const TitleElement: React.FunctionComponent<TitleElementProps> = ({
 }) => {
   const fontWeight = titleWeight === 'regular' ? 'normal' : titleWeight;
   return (
-    <span style={{ fontSize, textAlign, fontWeight, ...lineClamp(linesLength) }} title={title}>
+    <span
+      title={title}
+      style={{
+        fontSize,
+        textAlign,
+        fontWeight,
+        ...lineClamp(linesLength),
+      }}
+    >
       {title}
     </span>
   );
 };
 
-interface TitleHeadingProps {
+interface TitleProps {
   metricId: string;
   onElementClick?: () => void;
-  titleProps: TitleElementProps;
+  titleElementProps: TitleElementProps;
 }
 
-const TitleHeading: React.FC<TitleHeadingProps> = ({ metricId, onElementClick, titleProps }) => {
+const Title: React.FC<TitleProps> = ({ metricId, onElementClick, titleElementProps }) => {
   return (
     <h2 id={metricId} className="echMetricText__title">
       {onElementClick ? (
@@ -69,27 +78,29 @@ const TitleHeading: React.FC<TitleHeadingProps> = ({ metricId, onElementClick, t
             onElementClick();
           }}
         >
-          <TitleElement {...titleProps} />
+          <TitleElement {...titleElementProps} />
         </button>
       ) : (
-        <TitleElement {...titleProps} />
+        <TitleElement {...titleElementProps} />
       )}
     </h2>
   );
 };
 
-interface SubtitleElementProps {
+interface SubtitleProps {
   subtitle: string | undefined;
   fontSize: number;
   subtitleLines: string[];
+  color: Color;
 }
 
-const SubtitleElement: React.FC<SubtitleElementProps> = ({ subtitle, fontSize, subtitleLines }) => {
+const Subtitle: React.FC<SubtitleProps> = ({ subtitle, fontSize, subtitleLines, color }) => {
   return (
     <p
       className="echMetricText__subtitle"
       style={{
         fontSize,
+        color,
         ...lineClamp(subtitleLines.length),
       }}
       title={subtitle}
@@ -117,6 +128,8 @@ interface TitlesBlockProps {
   titlesRow: number;
   titlesColumn: string;
 
+  subtitleColor: Color;
+
   // Events
   onElementClick?: () => void;
 }
@@ -133,6 +146,7 @@ export const TitlesBlock: React.FC<TitlesBlockProps> = ({
   isIconVisible,
   titlesRow,
   titlesColumn,
+  subtitleColor,
   onElementClick,
 }) => {
   const { titleFontSize, subtitleFontSize } = sizes;
@@ -146,7 +160,7 @@ export const TitlesBlock: React.FC<TitlesBlockProps> = ({
     };
   }, [isIconVisible, titlesRow, titlesColumn]);
 
-  const titleProps = {
+  const titleElementProps = {
     title,
     fontSize: titleFontSize,
     textAlign,
@@ -159,10 +173,10 @@ export const TitlesBlock: React.FC<TitlesBlockProps> = ({
       className={classNames('echMetricText__titlesBlock', `echMetricText__titlesBlock--${textAlign}`)}
       style={titlesBlockStyle}
     >
-      {showTitle && <TitleHeading metricId={metricId} onElementClick={onElementClick} titleProps={titleProps} />}
+      {showTitle && <Title metricId={metricId} onElementClick={onElementClick} titleElementProps={titleElementProps} />}
 
       {showSubtitle && (
-        <SubtitleElement subtitle={subtitle} fontSize={subtitleFontSize} subtitleLines={subtitleLines} />
+        <Subtitle subtitle={subtitle} fontSize={subtitleFontSize} subtitleLines={subtitleLines} color={subtitleColor} />
       )}
     </div>
   );

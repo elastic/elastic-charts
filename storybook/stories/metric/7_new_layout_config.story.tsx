@@ -42,6 +42,8 @@ const sizeMap: Record<'small' | 'medium' | 'large', Array<{ height: string; widt
   ],
 };
 
+// TODO: Add target to story
+
 export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   // title and subtitle values
   const title = text('title', 'Count of records');
@@ -183,7 +185,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   return (
     <EuiFlexGroup>
       {breakpoints.map(({ height, width }, i) => (
-        <EuiFlexItem key={height} style={{ height, maxWidth: width, border: 'solid' }}>
+        <EuiFlexItem key={height} style={{ height, maxWidth: width }}>
           <Chart title={storyTitle} description={description}>
             <Settings
               theme={{
