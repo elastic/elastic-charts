@@ -46,7 +46,9 @@ export const PADDING = 8;
 const PROGRESS_BAR_TARGET_WIDTH = 4;
 const LINE_HEIGHT = 1.2; // aligned with our CSS
 const HEIGHT_BP: [number, number, BreakPoint][] = [
-  [100, 200, 'xs'],
+  [0, 100, 'xxxs'],
+  [100, 150, 'xxs'],
+  [150, 200, 'xs'],
   [200, 300, 's'],
   [300, 400, 'm'],
   [400, 500, 'l'],
