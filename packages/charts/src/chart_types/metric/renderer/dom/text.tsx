@@ -19,6 +19,28 @@ import type { HorizontalSide, MetricStyle } from '../../../../utils/themes/theme
 import type { MetricDatum } from '../../specs';
 import { isMetricWNumber } from '../../specs';
 
+const gridRows = {
+  top: { value: '1', titles: '2', body: '3', extra: '4' },
+  bottom: { value: '4', titles: '1', body: '2', extra: '3' },
+};
+
+const gridColumnsValuePostitionTop = {
+  left: { value: '2', titles: '1 / span 2', body: '1 / span 2', extra: '1 / span 2' },
+  right: { value: '1', titles: '1 / span 2', body: '1 / span 2', extra: '1 / span 2' },
+};
+
+const gridColumnsValuePositionBottom = {
+  left: { value: '1 / span 2', titles: '2', body: '1 / span 2', extra: '1 / span 2' },
+  right: { value: '1 / span 2', titles: '1', body: '1 / span 2', extra: '1 / span 2' },
+};
+
+const gridColumns = {
+  top: gridColumnsValuePostitionTop,
+  bottom: gridColumnsValuePositionBottom,
+};
+
+const gridSingleColumn = { value: '1', titles: '1', body: '1', extra: '1' };
+
 const getGridTemplateColumnsWithIcon = (iconAlign: HorizontalSide, iconSize: number) => {
   const iconSizeWithPadding = `${iconSize + PADDING}px`;
   return iconAlign === 'left' ? `${iconSizeWithPadding} minmax(0, 1fr)` : `minmax(0, 1fr)${iconSizeWithPadding}`;
@@ -64,28 +86,15 @@ export const MetricText: React.FC<MetricTextprops> = ({
   });
 
   const { valuePosition, iconAlign } = style;
-  // TODO: Avoid checking isIconVisible too many times
   const isIconVisible = !!datum.icon;
-
-  let valueRow, valueColumn, titlesRow, titlesColumn;
-  if (valuePosition === 'top') {
-    valueRow = 1;
-    valueColumn = isIconVisible ? (iconAlign === 'left' ? 2 : '1') : '1';
-    titlesRow = 2;
-    titlesColumn = isIconVisible ? '1 / span 2' : '1';
-  } else {
-    valueRow = 4;
-    valueColumn = isIconVisible ? '1 / span 2' : '1';
-    titlesRow = 1;
-    titlesColumn = isIconVisible ? (iconAlign === 'left' ? '2' : '1') : '1';
-  }
-
-  const gridColumn = isIconVisible ? '1 / span 2' : 1;
-
-  const iconStyles = isIconVisible ? { gridRow: 1, gridColumn: iconAlign === 'left' ? 1 : 2 } : {};
 
   // If an icon is present, use a two-column grid (icon + content) by overriding the default gridTemplateColumns
   const gridTemplateColumns = isIconVisible ? getGridTemplateColumnsWithIcon(iconAlign, sizes.iconSize) : undefined;
+
+  const iconGridStyles = isIconVisible ? { gridRow: '1', gridColumn: iconAlign === 'left' ? '1' : '2' } : {};
+
+  const currentGridRows = gridRows[valuePosition];
+  const currentGridColumns = isIconVisible ? gridColumns[valuePosition][iconAlign] : gridSingleColumn;
 
   return (
     <div className={containerClassName} style={{ color: colors.highContrast, gridTemplateColumns }}>
@@ -98,8 +107,8 @@ export const MetricText: React.FC<MetricTextprops> = ({
         textAlign={style.titlesTextAlign}
         titleWeight={style.titleWeight}
         isIconVisible={isIconVisible}
-        titlesRow={titlesRow}
-        titlesColumn={titlesColumn}
+        titlesRow={currentGridRows.titles}
+        titlesColumn={currentGridColumns.titles}
         subtitleColor={colors.subtitle}
         onElementClick={onElementClick}
       />
@@ -107,7 +116,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
       {datum.icon && (
         <div
           className={classNames('echMetricText__icon', `echMetricText__icon--${style.iconAlign}`)}
-          style={{ ...iconStyles }}
+          style={{ ...iconGridStyles }}
         >
           {renderWithProps(datum.icon, {
             width: sizes.iconSize,
@@ -117,14 +126,17 @@ export const MetricText: React.FC<MetricTextprops> = ({
         </div>
       )}
 
-      <div className="echMetricText__gap" style={{ gridRow: valuePosition === 'top' ? 3 : 2, gridColumn }}>
+      <div
+        className="echMetricText__gap"
+        style={{ gridRow: currentGridRows.body, gridColumn: currentGridColumns.body }}
+      >
         {body && <div className="echMetricText__body">{body}</div>}
       </div>
 
       {/* Extra Block */}
       <div
         className={classNames('echMetricText__extraBlock', `echMetricText__extraBlock--${style.extraTextAlign}`)}
-        style={{ gridRow: valuePosition === 'top' ? 4 : 3, gridColumn, color: colors.extra }}
+        style={{ gridRow: currentGridRows.extra, gridColumn: currentGridColumns.extra, color: colors.extra }}
       >
         {visibility.extra && (
           <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
@@ -136,7 +148,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
       {/* Value Block */}
       <div
         className={classNames('echMetricText__valueBlock', `echMetricText__valueBlock--${style.valueTextAlign}`)}
-        style={{ gridRow: valueRow, gridColumn: valueColumn }}
+        style={{ gridRow: currentGridRows.value, gridColumn: currentGridColumns.value }}
       >
         <p
           className="echMetricText__value"

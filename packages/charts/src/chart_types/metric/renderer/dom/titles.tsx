@@ -125,7 +125,7 @@ interface TitlesBlockProps {
   titleWeight: FontWeight;
   isIconVisible: boolean;
 
-  titlesRow: number;
+  titlesRow: string;
   titlesColumn: string;
 
   subtitleColor: Color;
