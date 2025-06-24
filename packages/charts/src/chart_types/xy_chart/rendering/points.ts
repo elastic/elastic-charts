@@ -59,7 +59,7 @@ export function renderPoints(
   const yDefined = isYValueDefinedFn(yScale, xScale);
 
   const needSorting = !markSizeOptions.enabled;
-  console.log(dataSeries);
+
   let style = buildPointGeometryStyles(color, pointStyle);
   let styleOverrides: Partial<PointStyle> | undefined = undefined;
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
