@@ -19,17 +19,24 @@ jest.spyOn(common, 'getColorFromVariant');
 jest.spyOn(commonColors, 'colorToRgba');
 
 const COLOR = 'aquamarine';
-
 describe('Area styles', () => {
   let ctx: CanvasRenderingContext2D;
   let imgCanvas: HTMLCanvasElement;
+
+  // Mock CanvasRenderingContext2D and HTMLCanvasElement for Jest environment
+  beforeAll(() => {
+    // @ts-ignore
+    global.HTMLCanvasElement = class { getContext() { return {}; } };
+    // @ts-ignore
+    global.CanvasRenderingContext2D = class {};
+  });
 
   describe('#buildAreaStyles', () => {
     let result: Fill;
     let baseColor = COLOR;
     let themeAreaStyle = MockStyles.area();
     let geometryStateStyle = MockStyles.geometryState();
-
+    
     function setDefaults() {
       baseColor = COLOR;
       themeAreaStyle = MockStyles.area();
@@ -37,6 +44,8 @@ describe('Area styles', () => {
     }
 
     beforeEach(() => {
+      imgCanvas = document.createElement('canvas');
+      ctx = imgCanvas.getContext('2d') as CanvasRenderingContext2D;
       result = buildAreaStyles(ctx, imgCanvas, baseColor, themeAreaStyle, geometryStateStyle);
     });
 

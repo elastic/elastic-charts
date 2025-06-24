@@ -23,8 +23,7 @@ import { computeXScale } from './scales';
 import type { AxisSpec, DomainRange, TickFormatter } from './specs';
 import { DEFAULT_GLOBAL_ID } from './specs';
 import type { SmallMultipleScales } from '../../../common/panel_utils';
-import { MockGlobalSpec /*, MockSeriesSpec*/ } from '../../../mocks/specs/specs';
-// import { MockStore } from '../../../mocks/store/store';
+import { MockGlobalSpec } from '../../../mocks/specs/specs';
 import { MockXDomain, MockYDomain } from '../../../mocks/xy/domains';
 import { ScaleType } from '../../../scales/constants';
 import { getSmallMultiplesScale } from '../../../state/utils/get_small_multiples_scale';
@@ -34,15 +33,7 @@ import type { OrdinalDomain } from '../../../utils/domain';
 import type { GroupId } from '../../../utils/ids';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
 import type { AxisStyle, TextOffset } from '../../../utils/themes/theme';
-/*
-import { computeAxesGeometriesSelector } from '../state/selectors/compute_axes_geometries';
-import {
-  AxesTicksDimensions,
-  computeAxisTicksDimensionsSelector,
-} from '../state/selectors/compute_axis_ticks_dimensions';
-*/
-// import { getAxesStylesSelector } from '../state/selectors/get_axis_styles';
-// import { getGridLinesSelector } from '../state/selectors/get_grid_lines';
+
 import { mergeYCustomDomainsByGroupId } from '../state/selectors/merge_y_custom_domains';
 import { generateTicks } from '../state/selectors/visible_ticks';
 
@@ -50,8 +41,6 @@ const alignmentsDefault = { horizontal: HorizontalAlignment.Near, vertical: Vert
 
 const layer = 0;
 const detailedLayer = 0;
-
-// const NO_ROTATION = 0;
 
 const getCustomStyle = (rotation = 0, padding = 10): AxisStyle =>
   mergePartial(LIGHT_THEME.axes, {
@@ -926,7 +915,7 @@ describe('Axis computational utils', () => {
 
     const expectedTopAxisPosition = {
       dimensions: {
-        height: 48 || axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
+        height: 48,// axis1Dims.maxLabelBboxHeight + axisTitleHeight + tickSize + tickPadding,
         width: 100,
         left: 0,
         top: cumTopSum + LIGHT_THEME.chartMargins.top,

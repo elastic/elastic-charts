@@ -19,6 +19,7 @@ import { groupBy } from '../utils/group_data_series';
 import type { DataSeries } from '../utils/series';
 import type { BasicSeriesSpec, SeriesScales, YDomainRange } from '../utils/specs';
 import { DomainPaddingUnit, SeriesType, StackMode } from '../utils/specs';
+import { ScaleContinuousType } from '../../../scales';
 
 /** @internal */
 export type YBasicSeriesSpec = Pick<
@@ -179,9 +180,11 @@ export function isStackedSpec(spec: YBasicSeriesSpec) {
 }
 
 /** @internal */
-export function coerceYScaleTypes(series: Pick<SeriesScales, 'yScaleType' | 'yNice'>[]) {
+export function coerceYScaleTypes(series: Pick<SeriesScales, 'yScaleType' | 'yNice'>[]): {type: ScaleContinuousType, nice: boolean} {
   const scaleTypes = new Set(series.map((s) => getYScaleTypeFromSpec(s.yScaleType)));
   const niceDomains = series.map((s) => getYNiceFromSpec(s.yNice));
-  const type = scaleTypes.size === 1 ? scaleTypes.values().next().value : ScaleType.Linear;
-  return { type, nice: !niceDomains.includes(false) };
+  const nice = !niceDomains.includes(false)
+  const firstScaleType = scaleTypes.values().next().value;
+  const type = scaleTypes.size === 1 && firstScaleType ? firstScaleType : ScaleType.Linear;
+  return { type, nice };
 }
