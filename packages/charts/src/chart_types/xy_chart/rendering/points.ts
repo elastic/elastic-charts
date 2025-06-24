@@ -59,7 +59,7 @@ export function renderPoints(
   const yDefined = isYValueDefinedFn(yScale, xScale);
 
   const needSorting = !markSizeOptions.enabled;
-
+  console.log(dataSeries);
   let style = buildPointGeometryStyles(color, pointStyle);
   let styleOverrides: Partial<PointStyle> | undefined = undefined;
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
@@ -86,8 +86,9 @@ export function renderPoints(
 
       const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
+
       const isPointIsolated = considerIsolatedPoints
-        ? isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, prev, next)
+        ? isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, y1Fn, y0Fn, prev, next)
         : false;
       if (styleAccessor) {
         styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
@@ -239,12 +240,18 @@ export function getRadiusFn(
   };
 }
 
-function isNotDefined(datum: DataSeriesDatum, isBandedSpec: boolean) {
+function isNotDefined(
+  datum: DataSeriesDatum,
+  isBandedSpec: boolean,
+  y1Scale: (d: DataSeriesDatum) => number,
+  y0Scale: (d: DataSeriesDatum) => number,
+) {
   return (
     !isNil(datum.filled?.x) ||
     !isNil(datum.filled?.y1) ||
     !isFiniteNumber(datum.initialY1) ||
-    (isBandedSpec && (!isNil(datum.filled?.y0) || !isFiniteNumber(datum.initialY0)))
+    !isFiniteNumber(y1Scale(datum)) ||
+    (isBandedSpec && (!isNil(datum.filled?.y0) || !isFiniteNumber(datum.initialY0) || !isFiniteNumber(y0Scale(datum))))
   );
 }
 
@@ -253,17 +260,19 @@ function isIsolatedPoint(
   length: number,
   current: DataSeriesDatum,
   isBandedSpec: boolean,
+  y1Scale: (datum: DataSeriesDatum) => number,
+  y0Scale: (datum: DataSeriesDatum) => number,
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (isNotDefined(current, isBandedSpec)) {
+  if (isNotDefined(current, isBandedSpec, y1Scale, y0Scale)) {
     return true;
   }
-  const isNextNotDefined = isNil(next) || isNotDefined(next, isBandedSpec);
+  const isNextNotDefined = isNil(next) || isNotDefined(next, isBandedSpec, y1Scale, y0Scale);
   if (index === 0 && isNextNotDefined) {
     return true;
   }
-  const isPrevNotDefined = isNil(prev) || isNotDefined(prev, isBandedSpec);
+  const isPrevNotDefined = isNil(prev) || isNotDefined(prev, isBandedSpec, y1Scale, y0Scale);
   if (index === length - 1 && isPrevNotDefined) {
     return true;
   }
