@@ -89,7 +89,7 @@ export function formatStackedDataSeriesValues(
       if (!dataSeriesProps) return null;
       const data = stackedSeries
         .map<DataSeriesDatum | null>((row) => {
-          const d = row.data[1].get(stackedSeries.key);
+          const d = row.data[1]?.get(stackedSeries.key);
           if (!d || d.x === undefined || d.x === null) return null;
           const { initialY0, initialY1, mark, datum, filled, x } = d;
           const [y0, y1] = row;

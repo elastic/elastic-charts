@@ -45,7 +45,6 @@ export function renderBubble(
     color,
     seriesStyle.point,
     false, // there is no concept of isolated points in a bubble charts, prevents radius overrides
-    NaN, // there is no need to know the line stroke width to compute the isolated point radius
     hasY0Accessors,
     markSizeOptions,
     !isMixedChart,
