@@ -240,18 +240,39 @@ export function getRadiusFn(
   };
 }
 
-function isNotDefined(
+/**
+ * Determines if a datum's initial (original, pre-stacking) values are defined and valid for rendering.
+ *
+ * Checks that the datum has not been filled on the x, y1, or (if applicable) y0 values,
+ * and that the initialY1 (and initialY0 for banded specs) are finite numbers.
+ * Also ensures that the scaled y1 (and y0 for banded specs) values are finite,
+ * which is important for scale types like log that may produce invalid values for some inputs.
+ *
+ * The "initial" values refer to the original datum values before any stacking or transformation is applied.
+ *
+ * @param datum - The data series datum to check.
+ * @param isBandedSpec - Whether the series is a banded spec (e.g., area band).
+ * @param y1Scale - Function to scale the datum's y1 value.
+ * @param y0Scale - Function to scale the datum's y0 value.
+ * @returns True if the datum's initial values are defined and valid for rendering; otherwise, false.
+ */
+function isInitialDatumDefined(
   datum: DataSeriesDatum,
   isBandedSpec: boolean,
   y1Scale: (d: DataSeriesDatum) => number,
   y0Scale: (d: DataSeriesDatum) => number,
 ) {
   return (
-    !isNil(datum.filled?.x) ||
-    !isNil(datum.filled?.y1) ||
-    !isFiniteNumber(datum.initialY1) ||
-    !isFiniteNumber(y1Scale(datum)) ||
-    (isBandedSpec && (!isNil(datum.filled?.y0) || !isFiniteNumber(datum.initialY0) || !isFiniteNumber(y0Scale(datum))))
+    // not filled on x
+    isNil(datum.filled?.x) &&
+    // not filled on y1
+    isNil(datum.filled?.y1) &&
+    // finite initial/original Y1
+    isFiniteNumber(datum.initialY1) &&
+    // and the scaled value is finite (e.g. no log(-1))
+    isFiniteNumber(y1Scale(datum)) &&
+    // same for y0 if band spec
+    (isBandedSpec ? isNil(datum.filled?.y0) && isFiniteNumber(datum.initialY0) && isFiniteNumber(y0Scale(datum)) : true)
   );
 }
 
@@ -265,14 +286,14 @@ function isIsolatedPoint(
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (isNotDefined(current, isBandedSpec, y1Scale, y0Scale)) {
+  if (!isInitialDatumDefined(current, isBandedSpec, y1Scale, y0Scale)) {
     return true;
   }
-  const isNextNotDefined = isNil(next) || isNotDefined(next, isBandedSpec, y1Scale, y0Scale);
+  const isNextNotDefined = isNil(next) || !isInitialDatumDefined(next, isBandedSpec, y1Scale, y0Scale);
   if (index === 0 && isNextNotDefined) {
     return true;
   }
-  const isPrevNotDefined = isNil(prev) || isNotDefined(prev, isBandedSpec, y1Scale, y0Scale);
+  const isPrevNotDefined = isNil(prev) || !isInitialDatumDefined(prev, isBandedSpec, y1Scale, y0Scale);
   if (index === length - 1 && isPrevNotDefined) {
     return true;
   }
