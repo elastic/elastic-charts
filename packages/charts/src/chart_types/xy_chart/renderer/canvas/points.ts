@@ -9,12 +9,12 @@
 import { getPanelClipping } from './panel_clipping';
 import { renderShape } from './primitives/shapes';
 import { withPanelTransform } from './utils/panel_transform';
-import { overrideOpacity } from '../../../../common/color_library_wrappers';
+import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import type { SeriesKey } from '../../../../common/series_id';
 import type { Circle, Fill, Stroke } from '../../../../geoms/types';
 import type { Rotation } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
-import type { PointGeometry } from '../../../../utils/geometry';
+import type { GeometryHighlightState, PointGeometry } from '../../../../utils/geometry';
 import type { GeometryStateStyle, PointStyle } from '../../../../utils/themes/theme';
 import { isolatedPointRadius } from '../../rendering/points';
 
@@ -26,7 +26,7 @@ import { isolatedPointRadius } from '../../rendering/points';
 export function renderPoints(
   ctx: CanvasRenderingContext2D,
   points: PointGeometry[],
-  { opacity }: GeometryStateStyle,
+  highlightState: GeometryHighlightState,
   pointStyle: PointStyle,
   lineStrokeWidth: number,
   seriesMinPointDistance: number,
@@ -41,6 +41,14 @@ export function renderPoints(
 
   const useIsolatedPointRadius = hideDataPoints && !hasConnectingLine;
 
+  const opacity =
+    highlightState === 'dimmed' && 'opacity' in pointStyle.dimmed ? pointStyle.dimmed.opacity : pointStyle.opacity;
+
+  const dimmedFill =
+    highlightState === 'dimmed' && 'fill' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.fill) : undefined;
+  const dimmedStroke =
+    highlightState === 'dimmed' && 'stroke' in pointStyle.dimmed ? colorToRgba(pointStyle.dimmed.stroke) : undefined;
+
   points.forEach(({ x, y, radius, transform, style, isolated }) => {
     if ((isolated && hideIsolatedDataPoints) || (!isolated && hideDataPoints)) {
       return;
@@ -51,10 +59,11 @@ export function renderPoints(
       y: y + transform.y,
       radius: isolated ? (useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : pointStyle.radius) : radius,
     };
-    const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
+
+    const fill = { color: overrideOpacity(dimmedFill ?? style.fill.color, (fillOpacity) => fillOpacity * opacity) };
     const stroke = {
       ...style.stroke,
-      color: overrideOpacity(style.stroke.color, (fillOpacity) => fillOpacity * opacity),
+      color: overrideOpacity(dimmedStroke ?? style.stroke.color, (fillOpacity) => fillOpacity * opacity),
     };
     renderShape(ctx, style.shape, coordinates, fill, stroke);
   });

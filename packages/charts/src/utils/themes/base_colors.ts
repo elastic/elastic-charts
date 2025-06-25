@@ -78,6 +78,7 @@ export const SEMANTIC_COLORS = {
 const primary100RGB = chroma(SEMANTIC_COLORS.primary100).rgb().join(' ');
 const plainLightRGB = chroma(SEMANTIC_COLORS.plainLight).rgb().join(' ');
 const shade145RGB = chroma(SEMANTIC_COLORS.shade145).rgb().join(' ');
+const shade30RGB = chroma(SEMANTIC_COLORS.shade30).rgb().join(', ');
 
 /**
  * Semantic colors from EUI theme Borealis https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_semantic_colors.ts
@@ -89,6 +90,8 @@ export const SEMANTIC_ALPHA_COLORS = {
   plainLightAlpha8: `rgba(${plainLightRGB} / 0.08)`,
   plainLightAlpha70: `rgba(${plainLightRGB} / 0.7)`,
   shade145Alpha70: `rgba(${shade145RGB} / 0.7)`,
+  shade30RGBAlpha15: `rgba(${shade30RGB}, 0.15)`,
+  shade30RGBAlpha35: `rgba(${shade30RGB}, 0.35)`,
 };
 
 /**
@@ -187,4 +190,20 @@ export const SEVERITY_COLORS = {
   euiColorSeverity10: SEMANTIC_COLORS.danger50,
   euiColorSeverity12: SEMANTIC_COLORS.danger70,
   euiColorSeverity14: SEMANTIC_COLORS.danger90,
+};
+
+/** @internal */
+export const LIGHT_DIMMED_COLORS = {
+  lineStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
+  areaFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
+  pointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
+  pointFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
+};
+
+/** @internal */
+export const DARK_DIMMED_COLORS = {
+  lineStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
+  areaFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha15,
+  pointStroke: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
+  pointFill: SEMANTIC_ALPHA_COLORS.shade30RGBAlpha35,
 };

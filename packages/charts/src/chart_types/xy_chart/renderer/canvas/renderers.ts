@@ -113,11 +113,10 @@ export function renderXYChartCanvas2d(
         () => renderBars(ctx, imgCanvas, geometries.bars, sharedStyle, rotation, renderingArea, highlightedLegendItem),
 
         // rendering areas
-        () =>
-          renderAreas(ctx, imgCanvas, geometries.areas, sharedStyle, rotation, renderingArea, highlightedLegendItem),
+        () => renderAreas(ctx, imgCanvas, geometries.areas, rotation, renderingArea, highlightedLegendItem),
 
         // rendering lines
-        () => renderLines(ctx, geometries.lines, sharedStyle, rotation, renderingArea, highlightedLegendItem),
+        () => renderLines(ctx, geometries.lines, rotation, renderingArea, highlightedLegendItem),
 
         // rendering bubbles
         () => renderBubbles(ctx, geometries.bubbles, sharedStyle, rotation, renderingArea, highlightedLegendItem),

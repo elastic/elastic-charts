@@ -42,10 +42,10 @@ function createPattern(
   patternCanvas: HTMLCanvasElement,
   baseColor: Color | ColorVariant,
   sharedGeometryOpacity: Ratio,
-  textureStyle?: TexturedStyles,
+  textureStyle: TexturedStyles,
 ): CanvasPattern | null {
   const pCtx = patternCanvas.getContext('2d');
-  if (!textureStyle || !pCtx) return null;
+  if (!pCtx) return null;
 
   const { size = 10, stroke, strokeWidth = 1, opacity, shapeRotation, fill, dash } = textureStyle;
 
@@ -96,12 +96,12 @@ export const getTextureStyles = (
   patternCanvas: HTMLCanvasElement,
   baseColor: Color | ColorVariant,
   sharedGeometryOpacity: Ratio,
-  texture?: TexturedStyles,
+  texture: TexturedStyles,
 ): Texture | undefined => {
   const dpi = window.devicePixelRatio;
   const pattern = createPattern(ctx, dpi, patternCanvas, baseColor, sharedGeometryOpacity, texture);
 
-  if (!pattern || !texture) return;
+  if (!pattern) return;
 
   const { rotation, offset } = texture;
 
