@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import type { ProgressBarSize } from './metric';
+import { isSecondaryMetricProps, SecondaryMetric } from './secondary_metric';
 import type { MetricTextDimensions } from './text_measurements';
 import { PADDING } from './text_measurements';
 import { TitlesBlock } from './titles';
@@ -96,6 +97,17 @@ export const MetricText: React.FC<MetricTextprops> = ({
   const currentGridRows = gridRows[valuePosition];
   const currentGridColumns = isIconVisible ? gridColumns[valuePosition][iconAlign] : gridSingleColumn;
 
+  let extraElement = null;
+  if (isSecondaryMetricProps(extra)) {
+    extraElement = <SecondaryMetric {...extra} />;
+  } else if (React.isValidElement(extra) || typeof extra === 'function') {
+    extraElement = (
+      <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
+        {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: colors.extra })}
+      </p>
+    );
+  }
+
   return (
     <div className={containerClassName} style={{ color: colors.highContrast, gridTemplateColumns }}>
       <TitlesBlock
@@ -138,11 +150,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
         className={classNames('echMetricText__extraBlock', `echMetricText__extraBlock--${style.extraTextAlign}`)}
         style={{ gridRow: currentGridRows.extra, gridColumn: currentGridColumns.extra, color: colors.extra }}
       >
-        {visibility.extra && (
-          <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
-            {renderWithProps(extra, { fontSize: sizes.extraFontSize, color: colors.extra })}
-          </p>
-        )}
+        {visibility.extra && extraElement}
       </div>
 
       {/* Value Block */}

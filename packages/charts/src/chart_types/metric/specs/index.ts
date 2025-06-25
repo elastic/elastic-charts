@@ -17,6 +17,7 @@ import { specComponentFactory } from '../../../state/spec_factory';
 import type { LayoutDirection, ValueFormatter } from '../../../utils/common';
 import type { GenericDomain } from '../../../utils/domain';
 import type { BulletValueLabels } from '../../bullet_graph/spec';
+import type { SecondaryMetricProps } from '../renderer/dom/secondary_metric';
 
 /** @alpha */
 export type MetricBase = {
@@ -29,7 +30,12 @@ export type MetricBase = {
   valueColor?: Color;
   valueIcon?: ComponentType<{ width: number; height: number; color: Color; verticalAlign: 'middle' }>;
   subtitle?: string;
-  extra?: ReactElement | ComponentType<{ fontSize: number; color: string }>;
+  /**
+   * Optional extra content to display below the subtitle.
+   * - Can be a React element, a component type (which will receive `fontSize` and `color` props), or a SecondaryMetricProps object.
+   * - If a SecondaryMetricProps object is provided, it will be rendered using the SecondaryMetric component.
+   */
+  extra?: ReactElement | ComponentType<{ fontSize: number; color: string }> | SecondaryMetricProps;
   icon?: ComponentType<{ width: number; height: number; color: Color }>;
   body?: ReactNode;
 };

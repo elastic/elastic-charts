@@ -65,15 +65,48 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     'The trend shows a peak of CPU usage in the last 5 minutes',
   );
 
-  let extra = text('extra', 'last <b>5m</b>');
+  //
+
   const progressMax = number('progress max', 100);
   const numberTextSwitch = boolean('is numeric metric', true);
   const value = text('value', '55.23');
   const valuePrefix = text('value prefix', '');
   const valuePostfix = text('value postfix', ' %');
 
+  //
+
+  const showExtra = boolean('Show extra', true, 'Secondary metric');
+  const useCustomExtra = boolean('Use custom extra', false, 'Secondary metric');
+
+  let extra = text('Custom extra', 'last <b>5m</b>', 'Secondary metric');
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
+
+  const secondaryMetricValue = text('Secondary metric value', '87.20 ↑', 'Secondary metric');
+  const label = text('Label', 'Last week', 'Secondary metric');
+  const colorByValue = boolean('Color by value', true, 'Secondary metric');
+  const badgeColor = color('Secondary metric value color', '#61A2FF', 'Secondary metric');
+  const secondaryMetricValuePosition = select(
+    'Secondary metric value position',
+    { before: 'before', after: 'after' },
+    'after',
+    'Secondary metric',
+  );
+
+  const secondaryProps = {
+    value: secondaryMetricValue,
+    label,
+    badgeColor: colorByValue ? badgeColor : undefined,
+    valuePosition: secondaryMetricValuePosition,
+  };
+
+  const dataExtra = showExtra
+    ? useCustomExtra
+      ? { extra: <span dangerouslySetInnerHTML={{ __html: extra }}></span> }
+      : { extra: secondaryProps }
+    : {};
+
+  //
 
   const group2 = 'Colors';
   const metricColor = color('color', '#61A2FF', group2);
@@ -112,7 +145,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     title,
     valueColor: useValueColor ? valueColor : undefined,
     subtitle,
-    extra: <span dangerouslySetInnerHTML={{ __html: extra }}></span>,
+    ...dataExtra,
     ...(showIcon ? { icon: getIcon(iconType) } : {}),
     ...(showValueIcon ? { valueIcon: getIcon(valueIconType) } : {}),
   };
