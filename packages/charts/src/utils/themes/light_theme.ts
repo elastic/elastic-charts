@@ -11,7 +11,7 @@ import {
   LIGHT_BACKGROUND_COLORS,
   LIGHT_BACKGROUND_COLORS_CUSTOM,
   LIGHT_BORDER_COLORS,
-  LIGHT_DIMMED_COLORS,
+  // LIGHT_DIMMED_COLORS,
   LIGHT_TEXT_COLORS,
 } from './base_colors';
 import { BOREALIS_COLORS_PALETTE } from './borealis_colors';
@@ -32,13 +32,15 @@ export const LIGHT_THEME: Theme = {
       visible: true,
       strokeWidth: 2,
       opacity: 1,
-      dimmed: {
-        strokeWidth: 1,
-        stroke: LIGHT_DIMMED_COLORS.lineStroke,
-      },
-      focused: {
-        strokeWidth: 2.5,
-      },
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 2 },
+      // dimmed: {
+      //   strokeWidth: 1,
+      //   stroke: LIGHT_DIMMED_COLORS.lineStroke,
+      // },
+      // focused: {
+      //   strokeWidth: 2.5,
+      // },
     },
     point: {
       visible: 'auto',
@@ -47,10 +49,11 @@ export const LIGHT_THEME: Theme = {
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
-      dimmed: {
-        stroke: LIGHT_DIMMED_COLORS.pointStroke,
-        fill: LIGHT_DIMMED_COLORS.pointFill,
-      },
+      dimmed: { opacity: 0.25 },
+      // dimmed: {
+      //   stroke: LIGHT_DIMMED_COLORS.pointStroke,
+      //   fill: LIGHT_DIMMED_COLORS.pointFill,
+      // },
     },
     isolatedPoint: {
       enabled: true,
@@ -84,22 +87,25 @@ export const LIGHT_THEME: Theme = {
     area: {
       visible: true,
       opacity: 0.3,
-      dimmed: {
-        fill: LIGHT_DIMMED_COLORS.areaFill,
-        texture: { opacity: 0.2 },
-      },
+      dimmed: { opacity: 0.25 },
+      // dimmed: {
+      //   fill: LIGHT_DIMMED_COLORS.areaFill,
+      //   texture: { opacity: 0.2 },
+      // },
     },
     line: {
       visible: true,
       strokeWidth: 2,
       opacity: 1,
-      dimmed: {
-        strokeWidth: 1,
-        stroke: LIGHT_DIMMED_COLORS.lineStroke,
-      },
-      focused: {
-        strokeWidth: 2.5,
-      },
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 1 },
+      // dimmed: {
+      //   strokeWidth: 1,
+      //   stroke: LIGHT_DIMMED_COLORS.lineStroke,
+      // },
+      // focused: {
+      //   strokeWidth: 2.5,
+      // },
     },
     point: {
       visible: 'never',
@@ -108,10 +114,11 @@ export const LIGHT_THEME: Theme = {
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
-      dimmed: {
-        stroke: LIGHT_DIMMED_COLORS.pointStroke,
-        fill: LIGHT_DIMMED_COLORS.pointFill,
-      },
+      dimmed: { opacity: 0.25 },
+      // dimmed: {
+      //   stroke: LIGHT_DIMMED_COLORS.pointStroke,
+      //   fill: LIGHT_DIMMED_COLORS.pointFill,
+      // },
     },
     isolatedPoint: {
       enabled: true,
