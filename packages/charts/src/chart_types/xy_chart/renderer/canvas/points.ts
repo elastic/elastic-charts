@@ -49,7 +49,7 @@ export function renderPoints(
     const coordinates = {
       x: x + transform.x,
       y: y + transform.y,
-      radius: isolated ? (useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : pointStyle.radius) : radius,
+      radius: isolated && useIsolatedPointRadius ? isolatedPointRadius(lineStrokeWidth) : radius,
     };
     const fill = { color: overrideOpacity(style.fill.color, (fillOpacity) => fillOpacity * opacity) };
     const stroke = {
