@@ -7,7 +7,7 @@
  */
 
 import { buildPointGeometryStyles } from './point_style';
-import type { MarkSizeOptions, YDefinedFn } from './utils';
+import type { MarkSizeOptions } from './utils';
 import { getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isDatumFilled, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
@@ -38,12 +38,10 @@ export function renderPoints(
   panel: Dimensions,
   color: Color,
   pointStyle: PointStyle,
-  isolatedPointThemeStyle: Omit<PointStyle, 'radius'>,
-  lineStrokeWidth: number,
+  considerIsolatedPoints: boolean,
   isBandedSpec: boolean,
   markSizeOptions: MarkSizeOptions,
   useSpatialIndex: boolean,
-  allowIsolated: boolean,
   styleAccessor?: PointStyleAccessor,
 ): {
   pointGeometries: PointGeometry[];
@@ -63,9 +61,7 @@ export function renderPoints(
   const needSorting = !markSizeOptions.enabled;
 
   let style = buildPointGeometryStyles(color, pointStyle);
-  let isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle);
   let styleOverrides: Partial<PointStyle> | undefined = undefined;
-
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
     pointGeometries: SortedArray<PointGeometry>;
     minDistanceBetweenPoints: number;
@@ -90,11 +86,13 @@ export function renderPoints(
 
       const yDatumKeyNames: Array<keyof Omit<FilledValues, 'x'>> = isBandedSpec ? ['y0', 'y1'] : ['y1'];
       const seriesIdentifier: XYChartSeriesIdentifier = getSeriesIdentifierFromDataSeries(dataSeries);
-      const isPointIsolated = allowIsolated && isIsolatedPoint(dataIndex, dataSeries.data.length, yDefined, prev, next);
+
+      const isPointIsolated = considerIsolatedPoints
+        ? isIsolatedPoint(dataIndex, dataSeries.data.length, datum, isBandedSpec, y1Fn, y0Fn, prev, next)
+        : false;
       if (styleAccessor) {
         styleOverrides = getPointStyleOverrides(datum, seriesIdentifier, isPointIsolated, styleAccessor);
         style = buildPointGeometryStyles(color, pointStyle, styleOverrides);
-        isolatedPointStyle = buildPointGeometryStyles(color, isolatedPointThemeStyle, styleOverrides);
       }
       yDatumKeyNames.forEach((yDatumKeyName, keyIndex) => {
         const valueAccessor = getYDatumValueFn(yDatumKeyName);
@@ -102,18 +100,16 @@ export function renderPoints(
         const originalY = getDatumYValue(datum, keyIndex === 0, isBandedSpec, dataSeries.stackMode);
 
         // if radius is defined with the mark, limit the minimum radius to the theme radius value
-        const radius = isPointIsolated
-          ? isolatedPointRadius(lineStrokeWidth)
-          : markSizeOptions.enabled
-            ? Math.max(getRadius(mark), pointStyle.radius)
-            : styleOverrides?.radius ?? pointStyle.radius;
+        const radius = markSizeOptions.enabled
+          ? Math.max(getRadius(mark), pointStyle.radius)
+          : styleOverrides?.radius ?? pointStyle.radius;
 
         const pointGeometry: PointGeometry = {
           x,
           y: y === null ? NaN : y,
           radius,
           color,
-          style: isPointIsolated ? isolatedPointStyle : style,
+          style,
           value: {
             x: xValue,
             y: originalY,
@@ -244,25 +240,62 @@ export function getRadiusFn(
   };
 }
 
-function yAccessorForIsolatedPointCheck(datum: DataSeriesDatum): number | null {
-  return datum.filled?.y1 ? null : datum.y1;
+/**
+ * Determines if a datum's initial (original, pre-stacking) values are defined and valid for rendering.
+ *
+ * Checks that the datum has not been filled on the x, y1, or (if applicable) y0 values,
+ * and that the initialY1 (and initialY0 for banded specs) are finite numbers.
+ * Also ensures that the scaled y1 (and y0 for banded specs) values are finite,
+ * which is important for scale types like log that may produce invalid values for some inputs.
+ *
+ * The "initial" values refer to the original datum values before any stacking or transformation is applied.
+ *
+ * @param datum - The data series datum to check.
+ * @param isBandedSpec - Whether the series is a banded spec (e.g., area band).
+ * @param y1Scale - Function to scale the datum's y1 value.
+ * @param y0Scale - Function to scale the datum's y0 value.
+ * @returns True if the datum's initial values are defined and valid for rendering; otherwise, false.
+ */
+function isInitialDatumDefined(
+  datum: DataSeriesDatum,
+  isBandedSpec: boolean,
+  y1Scale: (d: DataSeriesDatum) => number,
+  y0Scale: (d: DataSeriesDatum) => number,
+) {
+  return (
+    // not filled on x
+    isNil(datum.filled?.x) &&
+    // not filled on y1
+    isNil(datum.filled?.y1) &&
+    // finite initial/original Y1
+    isFiniteNumber(datum.initialY1) &&
+    // and the scaled value is finite (e.g. no log(-1))
+    isFiniteNumber(y1Scale(datum)) &&
+    // same for y0 if band spec
+    (isBandedSpec ? isNil(datum.filled?.y0) && isFiniteNumber(datum.initialY0) && isFiniteNumber(y0Scale(datum)) : true)
+  );
 }
 
 function isIsolatedPoint(
   index: number,
   length: number,
-  yDefined: YDefinedFn,
+  current: DataSeriesDatum,
+  isBandedSpec: boolean,
+  y1Scale: (datum: DataSeriesDatum) => number,
+  y0Scale: (datum: DataSeriesDatum) => number,
   prev?: DataSeriesDatum,
   next?: DataSeriesDatum,
 ): boolean {
-  if (index === 0 && (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))) {
+  if (!isInitialDatumDefined(current, isBandedSpec, y1Scale, y0Scale)) {
     return true;
   }
-  if (index === length - 1 && (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck))) {
+  const isNextNotDefined = isNil(next) || !isInitialDatumDefined(next, isBandedSpec, y1Scale, y0Scale);
+  if (index === 0 && isNextNotDefined) {
     return true;
   }
-  return (
-    (isNil(prev) || !yDefined(prev, yAccessorForIsolatedPointCheck)) &&
-    (isNil(next) || !yDefined(next, yAccessorForIsolatedPointCheck))
-  );
+  const isPrevNotDefined = isNil(prev) || !isInitialDatumDefined(prev, isBandedSpec, y1Scale, y0Scale);
+  if (index === length - 1 && isPrevNotDefined) {
+    return true;
+  }
+  return isNextNotDefined && isPrevNotDefined;
 }
