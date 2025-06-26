@@ -11,6 +11,7 @@ import type { MarkSizeOptions } from './utils';
 import { getY0ScaledValueFn, getY1ScaledValueFn, getYDatumValueFn, isDatumFilled, isYValueDefinedFn } from './utils';
 import type { Color } from '../../../common/colors';
 import type { ScaleBand, ScaleContinuous } from '../../../scales';
+import type { RecursivePartial } from '../../../utils/common';
 import { isFiniteNumber, isNil } from '../../../utils/common';
 import type { SortedArray } from '../../../utils/data/data_processing';
 import { inplaceInsertInSortedArray } from '../../../utils/data/data_processing';
@@ -61,7 +62,7 @@ export function renderPoints(
   const needSorting = !markSizeOptions.enabled;
 
   let style = buildPointGeometryStyles(color, pointStyle);
-  let styleOverrides: Partial<PointStyle> | undefined = undefined;
+  let styleOverrides: RecursivePartial<PointStyle> | undefined = undefined;
   const { pointGeometries, minDistanceBetweenPoints } = dataSeries.data.reduce<{
     pointGeometries: SortedArray<PointGeometry>;
     minDistanceBetweenPoints: number;
@@ -157,7 +158,7 @@ export function getPointStyleOverrides(
   seriesIdentifier: XYChartSeriesIdentifier,
   isolatedPoint: boolean,
   pointStyleAccessor?: PointStyleAccessor,
-): Partial<PointStyle> | undefined {
+): RecursivePartial<PointStyle> | undefined {
   const styleOverride = pointStyleAccessor && pointStyleAccessor(datum, seriesIdentifier, isolatedPoint);
 
   if (!styleOverride) {

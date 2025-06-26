@@ -36,16 +36,35 @@ export class MockStyles {
   }
 
   static area(partial: RecursivePartial<AreaStyle> = {}): AreaStyle {
-    return mergePartial({ visible: true, fill: 'blue', opacity: 1 }, partial);
+    return mergePartial({ visible: true, fill: 'blue', opacity: 1, dimmed: { opacity: 0.25 } }, partial);
   }
 
   static line(partial: RecursivePartial<LineStyle> = {}): LineStyle {
-    return mergePartial({ visible: true, stroke: 'blue', strokeWidth: 1, opacity: 1, dash: [1, 2, 1] }, partial);
+    return mergePartial(
+      {
+        visible: true,
+        stroke: 'blue',
+        strokeWidth: 1,
+        opacity: 1,
+        dash: [1, 2, 1],
+        dimmed: { opacity: 0.25 },
+        focused: { strokeWidth: 1 },
+      },
+      partial,
+    );
   }
 
   static point(partial: RecursivePartial<PointStyle> = {}): PointStyle {
     return mergePartial(
-      { visible: 'always', stroke: 'blue', strokeWidth: 1, fill: 'blue', opacity: 1, radius: 10 },
+      {
+        visible: 'always',
+        stroke: 'blue',
+        strokeWidth: 1,
+        fill: 'blue',
+        opacity: 1,
+        radius: 10,
+        dimmed: { fill: 'gray', stroke: 'gray', opacity: 1 },
+      },
       partial,
     );
   }
