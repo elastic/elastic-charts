@@ -73,8 +73,8 @@ function renderAreasGroup(
   highlighedState: GeometryHighlightState,
 ) {
   areas.forEach(({ panel, value: geom }) => {
+    const clippings = getPanelClipping(panel, rotation);
     if (geom.style.area.visible) {
-      const clippings = getPanelClipping(panel, rotation);
       withPanelTransform(
         ctx,
         panel,
@@ -86,7 +86,6 @@ function renderAreasGroup(
     }
 
     if (geom.style.line.visible) {
-      const clippings = getPanelClipping(panel, rotation);
       withPanelTransform(
         ctx,
         panel,
@@ -96,18 +95,24 @@ function renderAreasGroup(
         { area: clippings, shouldClip: true },
       );
     }
-    withPanelTransform(ctx, panel, rotation, renderingArea, () =>
-      renderPoints(
-        ctx,
-        geom.points,
-        highlighedState,
-        geom.style.point,
-        geom.style.line.strokeWidth,
-        geom.minPointDistance,
-        geom.style.pointVisibilityMinDistance,
-        // has a connecting line only if is fit and there are more than one point on the chart
-        geom.hasFit && geom.points.length > 1,
-      ),
+    withPanelTransform(
+      ctx,
+      panel,
+      rotation,
+      renderingArea,
+      () =>
+        renderPoints(
+          ctx,
+          geom.points,
+          highlighedState,
+          geom.style.point,
+          geom.style.line.strokeWidth,
+          geom.minPointDistance,
+          geom.style.pointVisibilityMinDistance,
+          // has a connecting line only if is fit and there are more than one point on the chart
+          geom.hasFit && geom.points.length > 1,
+        ),
+      { area: clippings, shouldClip: geom.points[0]?.value.mark !== null },
     );
   });
 }
