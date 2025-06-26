@@ -187,9 +187,10 @@ export const Example: ChartsStory = (_, { title, description }) => {
                   area: {
                     fill: 'gray',
                     texture: {
+                      stroke: 'gray',
                       shape: TextureShape.Line,
                       rotation: -45,
-                      opacity: 0.2,
+                      opacity: 0.25,
                     },
                   },
                 },

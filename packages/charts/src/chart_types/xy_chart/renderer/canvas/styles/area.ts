@@ -36,7 +36,9 @@ export function buildAreaStyles(
   const isDimmed = highlightState === 'dimmed';
   const fillColor = isDimmed && 'fill' in themeAreaStyle.dimmed ? themeAreaStyle.dimmed.fill : seriesColor;
   const opacity =
-    isDimmed && 'opacity' in themeAreaStyle.dimmed ? themeAreaStyle.dimmed.opacity : themeAreaStyle.opacity;
+    isDimmed && 'opacity' in themeAreaStyle.dimmed
+      ? themeAreaStyle.dimmed.opacity * themeAreaStyle.opacity
+      : themeAreaStyle.opacity;
 
   const texture = themeAreaStyle.texture
     ? getTextureStyles(
@@ -70,7 +72,7 @@ function getTextureStyleFromFocusState(
   if ('opacity' in themeDimmedStyle) {
     return {
       ...textureStyle,
-      opacity: themeDimmedStyle.opacity,
+      opacity: textureStyle.opacity ?? 1 * themeDimmedStyle.opacity,
     };
   }
   return {

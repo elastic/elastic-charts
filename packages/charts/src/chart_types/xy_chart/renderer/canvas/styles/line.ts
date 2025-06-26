@@ -30,7 +30,10 @@ export function buildLineStyles(
 
   const strokeColor = isDimmed && 'stroke' in themeLineStyle.dimmed ? themeLineStyle.dimmed.stroke : seriesColor;
   const opacity =
-    isDimmed && 'opacity' in themeLineStyle.dimmed ? themeLineStyle.dimmed.opacity : themeLineStyle.opacity;
+    isDimmed && 'opacity' in themeLineStyle.dimmed
+      ? themeLineStyle.dimmed.opacity * themeLineStyle.opacity
+      : themeLineStyle.opacity;
+
   const width =
     isDimmed && 'strokeWidth' in themeLineStyle.dimmed
       ? themeLineStyle.dimmed.strokeWidth
