@@ -42,8 +42,8 @@ export function buildAreaStyles(
     ? getTextureStyles(
         ctx,
         imgCanvas,
-        fillColor,
-        opacity,
+        seriesColor,
+        1,
         getTextureStyleFromFocusState(themeAreaStyle.texture, themeAreaStyle.dimmed, highlightState),
       )
     : undefined;

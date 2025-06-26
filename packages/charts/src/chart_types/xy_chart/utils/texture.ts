@@ -56,6 +56,7 @@ function createPattern(
   patternCanvas.height = dpi * cssHeight;
 
   pCtx.globalAlpha = sharedGeometryOpacity * (opacity ?? 1);
+
   pCtx.lineWidth = strokeWidth;
 
   pCtx.strokeStyle = getColorFromVariant(baseColor, stroke ?? ColorVariant.Series);
