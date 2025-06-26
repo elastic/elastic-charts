@@ -1,31 +1,54 @@
+$progress-bar-border-radius: 8px;
+
 .echSingleMetricProgress {
   position: absolute;
+  border-radius: $progress-bar-border-radius;
 
   &--vertical {
-    left: 0;
+    left: $padding;
     right: 0;
-    top: 0;
+    top: $padding;
     bottom: 0;
-    height: 100%;
+    height: calc(100% - #{$padding * 2});
     width: 100%;
 
     &.echSingleMetricProgress--small {
       right: auto;
-      width: 10px;
+      width: $progress-bar-width-small;
+    }
+
+    &.echSingleMetricProgress--medium {
+      right: auto;
+      width: $progress-bar-width-medium;
+    }
+
+    &.echSingleMetricProgress--large {
+      right: auto;
+      width: $progress-bar-width-large;
     }
   }
 
   &--horizontal {
-    left: 0;
+    left: $padding;
     right: 0;
-    width: 100%;
+    width: calc(100% - #{$padding * 2});
     top: 0;
-    bottom: 0;
+    bottom: $padding;
     height: 100%;
 
     &.echSingleMetricProgress--small {
       top: auto;
-      height: 10px;
+      height: $progress-bar-height-small;
+    }
+
+    &.echSingleMetricProgress--medium {
+      top: auto;
+      height: $progress-bar-height-medium;
+    }
+
+    &.echSingleMetricProgress--large {
+      top: auto;
+      height: $progress-bar-height-large;
     }
   }
 }
@@ -39,6 +62,7 @@
     right: 0;
     bottom: 0;
     width: 100%;
+    border-radius: 0 0 $progress-bar-border-radius $progress-bar-border-radius;
   }
 
   &--horizontal {
@@ -47,6 +71,7 @@
     bottom: 0;
     left: 0;
     height: 100%;
+    border-radius: $progress-bar-border-radius 0 0 $progress-bar-border-radius;
   }
 }
 
