@@ -36,7 +36,7 @@ export class MockStyles {
   }
 
   static area(partial: RecursivePartial<AreaStyle> = {}): AreaStyle {
-    return mergePartial({ visible: true, fill: 'blue', opacity: 1, dimmed: { opacity: 0.25 } }, partial);
+    return mergePartial({ visible: true, fill: 'blue', opacity: 1, dimmed: { opacity: 0.75 } }, partial);
   }
 
   static line(partial: RecursivePartial<LineStyle> = {}): LineStyle {
@@ -47,7 +47,7 @@ export class MockStyles {
         strokeWidth: 1,
         opacity: 1,
         dash: [1, 2, 1],
-        dimmed: { opacity: 0.25 },
+        dimmed: { opacity: 0.75 },
         focused: { strokeWidth: 1 },
       },
       partial,
