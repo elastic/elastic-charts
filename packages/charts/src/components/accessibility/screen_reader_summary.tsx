@@ -9,7 +9,6 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
-import { DataTableToggle } from './data_table_toggle';
 import { ScreenReaderDescription } from './description';
 import { ScreenReaderLabel } from './label';
 import { ChartType } from '../../chart_types';
@@ -25,7 +24,6 @@ import type { BasicSeriesSpec, AxisSpec } from '../../chart_types/xy_chart/utils
 import type { GlobalChartState } from '../../state/chart_state';
 import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../state/selectors/get_accessibility_config';
-import { getChartIdSelector } from '../../state/selectors/get_chart_id';
 import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 
@@ -38,7 +36,6 @@ interface ScreenReaderSummaryStateProps {
   axisSpecs?: AxisSpec[];
   seriesDomains?: SeriesDomainsAndData;
   chartType: ChartType | null;
-  chartId: string;
 }
 
 const ScreenReaderSummaryComponent = ({
@@ -50,7 +47,6 @@ const ScreenReaderSummaryComponent = ({
   axisSpecs,
   seriesDomains,
   chartType,
-  chartId,
 }: ScreenReaderSummaryStateProps) => {
   // Create a consolidated summary text for better screen reader experience
   const createConsolidatedSummary = () => {
@@ -94,9 +90,11 @@ const ScreenReaderSummaryComponent = ({
       chartTypeDescription === 'goal chart' ||
       chartTypeDescription === 'horizontalBullet chart' ||
       chartTypeDescription === 'verticalBullet chart';
-    
+
     if (validGoalChart && goalChartData && !isNaN(goalChartData.maximum)) {
-      parts.push(`Minimum: ${goalChartData.minimum}, Maximum: ${goalChartData.maximum}, Target: ${goalChartData.target}, Value: ${goalChartData.value}`);
+      parts.push(
+        `Minimum: ${goalChartData.minimum}, Maximum: ${goalChartData.maximum}, Target: ${goalChartData.target}, Value: ${goalChartData.value}`,
+      );
     }
 
     // Axis descriptions
@@ -147,20 +145,16 @@ const ScreenReaderSummaryComponent = ({
           rangeDescription = `, ranging from ${min} to ${max}`;
         }
 
-        const yAxisDescription = yAxisSpecs.length === 1
-          ? `Y axis displays ${axisTitle}${rangeDescription}`
-          : `${yAxisSpecs.length} Y axes${rangeDescription}`;
+        const yAxisDescription =
+          yAxisSpecs.length === 1
+            ? `Y axis displays ${axisTitle}${rangeDescription}`
+            : `${yAxisSpecs.length} Y axes${rangeDescription}`;
 
         parts.push(yAxisDescription);
       }
     }
 
-    // Data table availability
-    if (chartType === ChartType.XYAxis) {
-      parts.push('Press Tab to access data table toggle');
-    }
-
-    return parts.join('. ') + '.';
+    return `${parts.join('. ')}.`;
   };
 
   const consolidatedSummary = createConsolidatedSummary();
@@ -171,7 +165,6 @@ const ScreenReaderSummaryComponent = ({
       {/* Consolidated summary for better UX */}
       <div>{consolidatedSummary}</div>
       <ScreenReaderDescription {...a11ySettings} />
-      <DataTableToggle chartType={chartType} chartId={chartId} />
     </div>
   );
 };
@@ -184,7 +177,6 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
   axisSpecs: undefined,
   seriesDomains: undefined,
   chartType: null,
-  chartId: '',
 };
 
 const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryStateProps => {
@@ -218,7 +210,6 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryStateProps
     axisSpecs,
     seriesDomains,
     chartType: state.chartType,
-    chartId: getChartIdSelector(state),
   };
 };
 
