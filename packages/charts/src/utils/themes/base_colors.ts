@@ -75,11 +75,11 @@ export const SEMANTIC_COLORS = {
   warning30: PRIMITIVE_COLORS.yellow30,
 };
 
-const primary100RGB = chroma(SEMANTIC_COLORS.primary100).rgb().join(' ');
-const plainLightRGB = chroma(SEMANTIC_COLORS.plainLight).rgb().join(' ');
-const shade145RGB = chroma(SEMANTIC_COLORS.shade145).rgb().join(' ');
-const shade30RGB = chroma(SEMANTIC_COLORS.shade30).rgb().join(' ');
-const shade60RGB = chroma(SEMANTIC_COLORS.shade60).rgb().join(' ');
+const primary100RGB = chroma(SEMANTIC_COLORS.primary100).rgb().join(', ');
+const plainLightRGB = chroma(SEMANTIC_COLORS.plainLight).rgb().join(', ');
+const shade145RGB = chroma(SEMANTIC_COLORS.shade145).rgb().join(', ');
+const shade30RGB = chroma(SEMANTIC_COLORS.shade30).rgb().join(', ');
+const shade60RGB = chroma(SEMANTIC_COLORS.shade60).rgb().join(', ');
 
 /**
  * Semantic colors from EUI theme Borealis https://github.com/elastic/eui/blob/f4892c31cdbf6112d23f11421a87ac14323de62a/packages/eui-theme-borealis/src/variables/colors/_semantic_colors.ts
@@ -87,16 +87,16 @@ const shade60RGB = chroma(SEMANTIC_COLORS.shade60).rgb().join(' ');
  * @internal
  */
 export const SEMANTIC_ALPHA_COLORS = {
-  primary100Alpha4: `rgb(${primary100RGB} / 0.04)`,
-  plainLightAlpha8: `rgb(${plainLightRGB} / 0.08)`,
-  plainLightAlpha70: `rgb(${plainLightRGB} / 0.7)`,
-  shade145Alpha70: `rgb(${shade145RGB} / 0.7)`,
-  shade30RGBAlpha15: `rgb(${shade30RGB} / 0.15)`,
-  shade30RGBAlpha35: `rgb(${shade30RGB} / 0.35)`,
-  shade30RGBAlpha50: `rgb(${shade30RGB} / 0.5)`,
-  shade60RGBAlpha15: `rgb(${shade60RGB} / 0.15)`,
-  shade60RGBAlpha35: `rgb(${shade60RGB} / 0.35)`,
-  shade60RGBAlpha50: `rgb(${shade60RGB} / 0.5)`,
+  primary100Alpha4: `rgba(${primary100RGB}, 0.04)`,
+  plainLightAlpha8: `rgba(${plainLightRGB}, 0.08)`,
+  plainLightAlpha70: `rgba(${plainLightRGB}, 0.7)`,
+  shade145Alpha70: `rgba(${shade145RGB}, 0.7)`,
+  shade30RGBAlpha15: `rgba(${shade30RGB}, 0.15)`,
+  shade30RGBAlpha35: `rgba(${shade30RGB}, 0.35)`,
+  shade30RGBAlpha50: `rgba(${shade30RGB}, 0.5)`,
+  shade60RGBAlpha15: `rgba(${shade60RGB}, 0.15)`,
+  shade60RGBAlpha35: `rgba(${shade60RGB}, 0.35)`,
+  shade60RGBAlpha50: `rgba(${shade60RGB}, 0.5)`,
 };
 
 /**
