@@ -94,17 +94,42 @@ const ScreenReaderSummaryComponent = ({
           case 'ordinal':
             rangeDescription = `with ${xDomain.domain.length} categories`;
             break;
-          case 'time':
+          case 'time': {
             const minTime = new Date(xDomain.domain[0]);
             const maxTime = new Date(xDomain.domain[1]);
+            const timeDiff = maxTime.getTime() - minTime.getTime();
+            
+            // Choose granularity based on time span
             const formatTime = (date: Date) => {
-              return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-              });
+              if (timeDiff < 24 * 60 * 60 * 1000) { // Less than 1 day
+                return date.toLocaleString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
+                });
+              } else if (timeDiff < 7 * 24 * 60 * 60 * 1000) { // Less than 1 week
+                return date.toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: 'numeric',
+                });
+              } else if (timeDiff < 365 * 24 * 60 * 60 * 1000) { // Less than 1 year
+                return date.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                });
+              } else { // 1 year or more
+                return date.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                });
+              }
             };
             rangeDescription = `from ${formatTime(minTime)} to ${formatTime(maxTime)}`;
             break;
+          }
           case 'linear':
             const [min, max] = xDomain.domain;
             rangeDescription = `from ${min} to ${max}`;
