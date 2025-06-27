@@ -6,8 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { boolean, number, text } from '@storybook/addon-knobs';
-import chroma from 'chroma-js';
+import { boolean, number } from '@storybook/addon-knobs';
 import React from 'react';
 
 import {
@@ -66,41 +65,6 @@ export const Example: ChartsStory = (_, { title, description }) => {
     range: true,
   });
 
-  const lineDimmedStroke = text(
-    'line stroke',
-    'stroke' in baseTheme.areaSeriesStyle.line.dimmed
-      ? chroma(baseTheme.areaSeriesStyle.line.dimmed.stroke).css()
-      : 'gray',
-    'dimmed',
-  );
-  const lineDimmedStrokeWidth = number(
-    'line strokeWidth',
-    'strokeWidth' in baseTheme.areaSeriesStyle.line.dimmed ? baseTheme.areaSeriesStyle.line.dimmed.strokeWidth : 2,
-    {},
-    'dimmed',
-  );
-
-  const areaDimmedFill = text(
-    'area fill',
-    'fill' in baseTheme.areaSeriesStyle.area.dimmed ? chroma(baseTheme.areaSeriesStyle.area.dimmed.fill).css() : 'gray',
-    'dimmed',
-  );
-
-  const pointDimmedFill = text(
-    'point fill',
-    'fill' in baseTheme.areaSeriesStyle.point.dimmed
-      ? chroma(baseTheme.areaSeriesStyle.point.dimmed.fill).css()
-      : 'gray',
-    'dimmed',
-  );
-  const pointDimmedStroke = text(
-    'point stroke',
-    'stroke' in baseTheme.areaSeriesStyle.point.dimmed
-      ? chroma(baseTheme.areaSeriesStyle.point.dimmed.stroke).css()
-      : 'gray',
-    'dimmed',
-  );
-
   const ChartComponent = chartType === 'area' ? AreaSeries : chartType === 'line' ? LineSeries : BubbleSeries;
   return (
     <Chart title={title} description={description}>
@@ -113,42 +77,11 @@ export const Example: ChartsStory = (_, { title, description }) => {
           lineSeriesStyle: {
             point: {
               visible: showPoints ? 'always' : 'never',
-              dimmed: {
-                fill: pointDimmedFill,
-                stroke: pointDimmedStroke,
-              },
-            },
-            line: {
-              dimmed: {
-                stroke: lineDimmedStroke,
-                strokeWidth: lineDimmedStrokeWidth,
-              },
             },
           },
           areaSeriesStyle: {
             point: {
               visible: showPoints ? 'always' : 'never',
-              dimmed: {
-                fill: pointDimmedFill,
-                stroke: pointDimmedStroke,
-              },
-            },
-            line: {
-              dimmed: {
-                stroke: lineDimmedStroke,
-                strokeWidth: lineDimmedStrokeWidth,
-              },
-            },
-            area: {
-              dimmed: {
-                fill: areaDimmedFill,
-              },
-              // texture: {
-              //   stroke: 'black',
-              //   fill: 'red',
-              //   size: 20,
-              //   spacing: 20,
-              // },
             },
           },
         }}
