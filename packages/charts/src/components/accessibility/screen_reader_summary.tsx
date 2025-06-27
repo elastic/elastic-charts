@@ -41,7 +41,6 @@ const ScreenReaderSummaryComponent = ({
   seriesSpecs,
   axisSpecs,
   seriesDomains,
-  chartType,
 }: ScreenReaderSummaryStateProps) => {
   // Create a consolidated summary text for better screen reader experience
   const createConsolidatedSummary = () => {
@@ -135,11 +134,6 @@ const ScreenReaderSummaryComponent = ({
 
         parts.push(yAxisDescription);
       }
-    }
-
-    // Data table availability
-    if (chartType === ChartType.XYAxis) {
-      parts.push('Press Tab to access data table toggle');
     }
 
     return `${parts.join('. ')}.`;

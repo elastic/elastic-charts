@@ -8,3 +8,4 @@
 
 /* @internal */
 export { ScreenReaderSummary } from './screen_reader_summary';
+export { AxisDescriptions } from './axis_descriptions';
