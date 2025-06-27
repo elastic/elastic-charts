@@ -29,7 +29,7 @@ describe('Accessibility', () => {
           <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
-      expect(wrapper.find('dd').first().text()).toBe('bar chart');
+      expect(wrapper.find('.echScreenReaderOnly').text()).toContain('bar chart');
     });
     it('should include the series types if multiple types of series', () => {
       const wrapper = mount(
@@ -39,7 +39,7 @@ describe('Accessibility', () => {
           <LineSeries id="test2" data={[{ x: 3, y: 5 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
-      expect(wrapper.find('dd').first().text()).toBe('Mixed chart: bar and line chart');
+      expect(wrapper.find('.echScreenReaderOnly').text()).toContain('Mixed chart: bar and line chart');
     });
   });
 
@@ -109,10 +109,10 @@ describe('Accessibility', () => {
     );
 
     it('should include the series type if partition chart', () => {
-      expect(sunburstWrapper.find('dd').first().text()).toBe('sunburst chart');
+      expect(sunburstWrapper.find('.echScreenReaderOnly').first().text()).toContain('sunburst chart');
     });
     it('should include series type if treemap type', () => {
-      expect(treemapWrapper.find('dd').first().text()).toBe('treemap chart');
+      expect(treemapWrapper.find('.echScreenReaderOnly').first().text()).toContain('treemap chart');
     });
     it('should test defaults for screen reader data  table', () => {
       expect(sunburstWrapper.find('tr').first().text()).toBe('LabelValuePercentage');

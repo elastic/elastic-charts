@@ -27,12 +27,12 @@ export function ScreenReaderTypes({
     chartTypeDescription === 'goal chart' ||
     chartTypeDescription === 'horizontalBullet chart' ||
     chartTypeDescription === 'verticalBullet chart';
+
   return (
-    <dl>
-      <dt>Chart type:</dt>
-      <dd id={defaultSummaryId}>{chartTypeDescription}</dd>
+    <>
+      <div>Chart type: {chartTypeDescription}</div>
       {validGoalChart && goalChartData && !isNaN(goalChartData.maximum) ? (
-        <>
+        <dl>
           <dt>Minimum:</dt>
           <dd>{goalChartData.minimum}</dd>
           <dt>Maximum:</dt>
@@ -41,8 +41,8 @@ export function ScreenReaderTypes({
           <dd>{goalChartData.target}</dd>
           <dd>Value:</dd>
           <dt>{goalChartData.value}</dt>
-        </>
+        </dl>
       ) : null}
-    </dl>
+    </>
   );
 }
