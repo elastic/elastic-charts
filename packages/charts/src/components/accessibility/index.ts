@@ -10,3 +10,5 @@
 export { ScreenReaderSummary } from './screen_reader_summary';
 export { ScreenReaderPartitionTable } from './partitions_data_table';
 export { GoalSemanticDescription } from './goal_semantic_description';
+export { AxisDescriptions } from './axis_descriptions';
+export { DataTableToggle } from './data_table_toggle';
