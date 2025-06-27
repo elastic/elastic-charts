@@ -19,7 +19,10 @@ export const getHighlightedSeriesSelector = createCustomCachedSelector(
   (highlightedLegendPaths, legendItems): LegendItem | undefined => {
     if (highlightedLegendPaths.length > 0) {
       const lookup = new Set(highlightedLegendPaths.map(({ value }) => value));
-      return legendItems.find(({ seriesIdentifiers }) => seriesIdentifiers.some(({ key }) => lookup.has(key)));
+      return legendItems.find(
+        ({ seriesIdentifiers, isSeriesHidden }) =>
+          !isSeriesHidden && seriesIdentifiers.some(({ key }) => lookup.has(key)),
+      );
     }
   },
 );
