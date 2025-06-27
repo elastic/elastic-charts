@@ -47,25 +47,53 @@ const ScreenReaderSummaryComponent = ({
     const parts: string[] = [];
 
     // Chart type and series information
-    if (chartTypeDescription && seriesSpecs) {
+    if (chartTypeDescription && seriesSpecs && seriesDomains?.formattedDataSeries) {
       const seriesTypes = new Set<string>();
       seriesSpecs.forEach((spec) => seriesTypes.add(spec.seriesType));
 
-      const seriesNames = seriesSpecs
-        .map((spec) => {
-          if (typeof spec.name === 'string') return spec.name;
-          if (typeof spec.name === 'object' && spec.name?.names) return 'Series';
-          return `Series ${spec.id}`;
+      // Get actual rendered series count (after split processing)
+      const actualSeriesCount = seriesDomains.formattedDataSeries.length;
+      const renderedSeries = seriesDomains.formattedDataSeries;
+
+      // Get series names from rendered series (which includes split series)
+      const seriesNames = renderedSeries
+        .map((series) => {
+          // Extract series name from the series key or use the spec name
+          const spec = seriesSpecs.find(s => s.id === series.specId);
+          if (spec && typeof spec.name === 'string') return spec.name;
+          if (series.splitAccessors && series.splitAccessors.size > 0) {
+            // For split series, use the split accessor values as the name
+            const splitValues = Array.from(series.splitAccessors.values());
+            return splitValues.join(' ');
+          }
+          return `Series ${series.specId}`;
         })
         .filter((name) => name);
 
+      // Check if any series are stacked
+      const hasStackedSeries = seriesSpecs.some((spec) => 
+        'stackAccessors' in spec && spec.stackAccessors && spec.stackAccessors.length > 0
+      );
+
       if (seriesTypes.size === 1) {
         const seriesType = Array.from(seriesTypes)[0];
-        const count = seriesSpecs.length;
-        if (count === 1) {
-          parts.push(`${seriesType} chart`);
+        
+        // Check for percentage stacking
+        const hasPercentageStacking = seriesSpecs.some((spec) => 
+          'stackMode' in spec && spec.stackMode === 'percentage'
+        );
+        
+        const stackPrefix = hasStackedSeries 
+          ? (hasPercentageStacking ? 'percentage stacked' : 'stacked')
+          : '';
+
+        if (actualSeriesCount === 1) {
+          parts.push(`${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart`);
         } else {
-          const description = `${seriesType} chart with ${count} ${seriesType}s`;
+          const chartTypeDescription = `${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart`;
+          const countDescription = `with ${actualSeriesCount} ${seriesType}s`;
+          
+          const description = `${chartTypeDescription} ${countDescription}`;
           if (seriesNames.length > 0 && seriesNames.length <= 5) {
             parts.push(`${description}: ${seriesNames.join(', ')}`);
           } else {
@@ -73,7 +101,8 @@ const ScreenReaderSummaryComponent = ({
           }
         }
       } else {
-        parts.push(`Mixed chart: ${Array.from(seriesTypes).join(' and ')} chart`);
+        const stackPrefix = hasStackedSeries ? 'stacked mixed' : 'mixed';
+        parts.push(`${stackPrefix} chart: ${Array.from(seriesTypes).join(' and ')} chart`);
       }
     } else if (chartTypeDescription) {
       parts.push(chartTypeDescription);
