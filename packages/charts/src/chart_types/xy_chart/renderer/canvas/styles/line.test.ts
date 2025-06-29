@@ -12,6 +12,7 @@ import { colorToRgba } from '../../../../../common/color_library_wrappers';
 import type { Stroke } from '../../../../../geoms/types';
 import { MockStyles } from '../../../../../mocks';
 import * as common from '../../../../../utils/common';
+import type { GeometryHighlightState } from '../../../../../utils/geometry';
 
 jest.spyOn(common, 'getColorFromVariant');
 jest.spyOn(commonColors, 'colorToRgba');
@@ -23,16 +24,16 @@ describe('Line styles', () => {
     let result: Stroke;
     let baseColor = COLOR;
     let themeLineStyle = MockStyles.line();
-    let geometryStateStyle = MockStyles.geometryState();
+    let geometryHighlightState: GeometryHighlightState = 'default';
 
     function setDefaults() {
       baseColor = COLOR;
       themeLineStyle = MockStyles.line();
-      geometryStateStyle = MockStyles.geometryState();
+      geometryHighlightState = 'default';
     }
 
     beforeEach(() => {
-      result = buildLineStyles(baseColor, themeLineStyle, geometryStateStyle);
+      result = buildLineStyles(baseColor, themeLineStyle, geometryHighlightState);
     });
 
     it('should call getColorFromVariant with correct args for stroke', () => {
@@ -73,7 +74,7 @@ describe('Line styles', () => {
       beforeAll(() => {
         setDefaults();
         themeLineStyle = MockStyles.line({ opacity: strokeOpacity });
-        geometryStateStyle = MockStyles.geometryState({ opacity: geoOpacity });
+        geometryHighlightState = 'dimmed';
         (common.getColorFromVariant as jest.Mock).mockReturnValue(strokeColor);
       });
 

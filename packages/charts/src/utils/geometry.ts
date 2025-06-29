@@ -14,6 +14,8 @@ import type { XYChartSeriesIdentifier } from '../chart_types/xy_chart/utils/seri
 import type { LabelOverflowConstraint } from '../chart_types/xy_chart/utils/specs';
 import type { Color } from '../common/colors';
 import type { Pixels } from '../common/geometry';
+import type { LegendItem } from '../common/legend';
+import type { SeriesKey } from '../common/series_id';
 import type { Fill, Stroke } from '../geoms/types';
 
 /**
@@ -164,4 +166,21 @@ export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
 /** @internal */
 export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
   return ig.hasOwnProperty('width') && ig.hasOwnProperty('height');
+}
+
+/** @internal */
+export type GeometryHighlightState = 'dimmed' | 'focused' | 'default';
+
+/** @internal */
+export function getGeometryHighlightState(key: SeriesKey, highlightedLegendItem?: LegendItem): GeometryHighlightState {
+  return !highlightedLegendItem
+    ? 'default'
+    : highlightedLegendItem.seriesIdentifiers.some((si) => si.key === key)
+      ? 'focused'
+      : 'dimmed';
+}
+
+/** @internal */
+export function isDimmed(state: GeometryHighlightState): state is 'dimmed' {
+  return state === 'dimmed';
 }

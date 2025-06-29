@@ -8,6 +8,7 @@
 
 import type { OpacityFn } from '../../../common/color_library_wrappers';
 import { colorToRgba, overrideOpacity } from '../../../common/color_library_wrappers';
+import type { RecursivePartial } from '../../../utils/common';
 import { getColorFromVariant, mergePartial } from '../../../utils/common';
 import type { PointGeometryStyle } from '../../../utils/geometry';
 import type { PointStyle } from '../../../utils/themes/theme';
@@ -17,7 +18,7 @@ import { PointShape } from '../../../utils/themes/theme';
 export function buildPointGeometryStyles(
   color: string,
   themePointStyle: Omit<PointStyle, 'radius'>,
-  overrides?: Partial<PointStyle>,
+  overrides?: RecursivePartial<PointStyle>,
 ): PointGeometryStyle {
   const pointStyle = mergePartial(themePointStyle, overrides);
   const opacityFn: OpacityFn = (opacity) => opacity * pointStyle.opacity;

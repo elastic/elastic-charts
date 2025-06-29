@@ -23,6 +23,8 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
       visible: true,
       strokeWidth: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 1 },
     },
     point: {
       visible: 'auto',
@@ -31,6 +33,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     isolatedPoint: {
       enabled: true,
@@ -57,17 +60,21 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
       fill: ColorVariant.Series,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
   },
   areaSeriesStyle: {
     area: {
       visible: true,
       opacity: 0.3,
+      dimmed: { opacity: 0.25 },
     },
     line: {
       visible: true,
       strokeWidth: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 1 },
     },
     point: {
       visible: 'never',
@@ -76,6 +83,7 @@ export const AMSTERDAM_LIGHT_THEME: Theme = {
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     isolatedPoint: {
       enabled: true,

@@ -12,76 +12,108 @@ import { renderLinePaths, renderAreaPath } from './primitives/path';
 import { buildAreaStyles } from './styles/area';
 import { buildLineStyles } from './styles/line';
 import { withPanelTransform } from './utils/panel_transform';
-import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import type { LegendItem } from '../../../../common/legend';
-import type { Fill, Rect, Stroke } from '../../../../geoms/types';
+import type { Rect } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
 import type { Rotation } from '../../../../utils/common';
-import { ColorVariant } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
-import type { AreaGeometry, PerPanel } from '../../../../utils/geometry';
-import type { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
-import { getGeometryStateStyle } from '../../rendering/utils';
-import { getTextureStyles } from '../../utils/texture';
+import {
+  type GeometryHighlightState,
+  getGeometryHighlightState,
+  type AreaGeometry,
+  type PerPanel,
+} from '../../../../utils/geometry';
 
 /** @internal */
 export function renderAreas(
   ctx: CanvasRenderingContext2D,
   imgCanvas: HTMLCanvasElement,
   areas: Array<PerPanel<AreaGeometry>>,
-  sharedStyle: SharedGeometryStateStyle,
   rotation: Rotation,
   renderingArea: Dimensions,
   highlightedLegendItem?: LegendItem,
 ) {
+  const sortedRenderingAreas = areas.reduce<{
+    dimmed: { stacked: PerPanel<AreaGeometry>[]; nonStacked: PerPanel<AreaGeometry>[] };
+    focused: { stacked: PerPanel<AreaGeometry>[]; nonStacked: PerPanel<AreaGeometry>[] };
+    default: { stacked: PerPanel<AreaGeometry>[]; nonStacked: PerPanel<AreaGeometry>[] };
+  }>(
+    (acc, area) => {
+      const highlightState = getGeometryHighlightState(area.value.seriesIdentifier.key, highlightedLegendItem);
+      acc[highlightState][area.value.isStacked ? 'stacked' : 'nonStacked'][area.value.isStacked ? 'unshift' : 'push'](
+        area,
+      );
+      return acc;
+    },
+    {
+      dimmed: { stacked: [], nonStacked: [] },
+      focused: { stacked: [], nonStacked: [] },
+      default: { stacked: [], nonStacked: [] },
+    },
+  );
+
   withContext(ctx, () => {
-    // first render all the areas and lines
-    areas.forEach(({ panel, value: geom }) => {
-      const clippings = getPanelClipping(panel, rotation);
-      if (geom.style.area.visible) {
-        withPanelTransform(
-          ctx,
-          panel,
-          rotation,
-          renderingArea,
-          () => renderArea(ctx, imgCanvas, geom, sharedStyle, clippings, highlightedLegendItem),
-          { area: clippings, shouldClip: true },
-        );
-      }
-      if (geom.style.line.visible) {
-        withPanelTransform(
-          ctx,
-          panel,
-          rotation,
-          renderingArea,
-          () => renderAreaLines(ctx, geom, sharedStyle, clippings, highlightedLegendItem),
-          { area: clippings, shouldClip: true },
-        );
-      }
-    });
-    // now we can render the visible points on top of each the areas/lines
-    areas.forEach(({ panel, value: { style, seriesIdentifier, points, hasFit, minPointDistance } }) => {
-      const geometryStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
+    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.default.stacked, 'default');
+    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.default.nonStacked, 'default');
+
+    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.dimmed.stacked, 'dimmed');
+    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.dimmed.nonStacked, 'dimmed');
+
+    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.focused.stacked, 'focused');
+    renderAreasGroup(ctx, imgCanvas, rotation, renderingArea, sortedRenderingAreas.focused.nonStacked, 'focused');
+  });
+}
+
+function renderAreasGroup(
+  ctx: CanvasRenderingContext2D,
+  imgCanvas: HTMLCanvasElement,
+  rotation: Rotation,
+  renderingArea: Dimensions,
+  areas: PerPanel<AreaGeometry>[],
+  highlighedState: GeometryHighlightState,
+) {
+  areas.forEach(({ panel, value: geom }) => {
+    const clippings = getPanelClipping(panel, rotation);
+    if (geom.style.area.visible) {
       withPanelTransform(
         ctx,
         panel,
         rotation,
         renderingArea,
-        () =>
-          renderPoints(
-            ctx,
-            points,
-            geometryStyle,
-            style.point,
-            style.line.strokeWidth,
-            minPointDistance,
-            style.pointVisibilityMinDistance,
-            // has a connecting line only if is fit and there are more than one point on the chart
-            hasFit && points.length > 1,
-          ),
-        { area: getPanelClipping(panel, rotation), shouldClip: points[0]?.value.mark !== null },
+        () => renderArea(ctx, imgCanvas, geom, clippings, highlighedState),
+        { area: clippings, shouldClip: true },
       );
-    });
+    }
+
+    if (geom.style.line.visible) {
+      withPanelTransform(
+        ctx,
+        panel,
+        rotation,
+        renderingArea,
+        () => renderAreaLines(ctx, geom, clippings, highlighedState),
+        { area: clippings, shouldClip: true },
+      );
+    }
+    withPanelTransform(
+      ctx,
+      panel,
+      rotation,
+      renderingArea,
+      () =>
+        renderPoints(
+          ctx,
+          geom.points,
+          highlighedState,
+          geom.style.point,
+          geom.style.line.strokeWidth,
+          geom.minPointDistance,
+          geom.style.pointVisibilityMinDistance,
+          // has a connecting line only if is fit and there are more than one point on the chart
+          geom.hasFit && geom.points.length > 1,
+        ),
+      { area: clippings, shouldClip: geom.points[0]?.value.mark !== null },
+    );
   });
 }
 
@@ -89,22 +121,14 @@ function renderArea(
   ctx: CanvasRenderingContext2D,
   imgCanvas: HTMLCanvasElement,
   geometry: AreaGeometry,
-  sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
-  highlightedLegendItem?: LegendItem,
+  highlightState: GeometryHighlightState,
 ) {
-  const { area, color, transform, seriesIdentifier, style, clippedRanges, shouldClip } = geometry;
-  const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const areaFill = buildAreaStyles(ctx, imgCanvas, color, style.area, geometryStateStyle);
+  const { area, color, transform, style, clippedRanges, shouldClip } = geometry;
+  const areaFill = buildAreaStyles(ctx, imgCanvas, color, style.area, highlightState);
 
-  const fitAreaFillColor = style.fit.area.fill === ColorVariant.Series ? color : style.fit.area.fill;
-  const fitAreaFill: Fill = {
-    texture: getTextureStyles(ctx, imgCanvas, fitAreaFillColor, geometryStateStyle.opacity, style.fit.area.texture),
-    color: overrideOpacity(
-      colorToRgba(fitAreaFillColor),
-      (opacity) => opacity * geometryStateStyle.opacity * style.fit.area.opacity,
-    ),
-  };
+  const fitAreaFillThemeStyle = { ...style.fit.area, dimmed: style.area.dimmed };
+  const fitAreaFill = buildAreaStyles(ctx, imgCanvas, color, fitAreaFillThemeStyle, highlightState);
 
   renderAreaPath(
     ctx,
@@ -121,29 +145,27 @@ function renderArea(
 function renderAreaLines(
   ctx: CanvasRenderingContext2D,
   geometry: AreaGeometry,
-  sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
-  highlightedLegendItem?: LegendItem,
+  highlightState: GeometryHighlightState,
 ) {
-  const { lines, color, seriesIdentifier, transform, style, clippedRanges, shouldClip } = geometry;
-  const geometryStateStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
-  const lineStyle = buildLineStyles(color, style.line, geometryStateStyle);
+  const { lines, color, transform, style, clippedRanges, shouldClip } = geometry;
 
-  const fitLineStroke: Stroke = {
-    dash: style.fit.line.dash,
-    width: style.line.strokeWidth,
-    color: overrideOpacity(
-      colorToRgba(style.fit.line.stroke === ColorVariant.Series ? color : style.fit.line.stroke),
-      (opacity) => opacity * geometryStateStyle.opacity * style.fit.line.opacity,
-    ),
+  const lineStyle = buildLineStyles(color, style.line, highlightState);
+
+  const fitLineThemeStyle = {
+    ...style.fit.line,
+    strokeWidth: style.line.strokeWidth,
+    dimmed: style.line.dimmed,
+    focused: style.line.focused,
   };
+  const fitLineStyle = buildLineStyles(color, fitLineThemeStyle, highlightState);
 
   renderLinePaths(
     ctx,
     transform,
     lines,
     lineStyle,
-    fitLineStroke,
+    fitLineStyle,
     clippedRanges,
     clippings,
     shouldClip && style.fit.line.visible,
