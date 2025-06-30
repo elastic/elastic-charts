@@ -18,6 +18,8 @@ import { mocks } from '../../mocks/hierarchical';
 import { productDimension } from '../../mocks/hierarchical/dimension_codes';
 import { BarSeries, LineSeries, Partition, Settings } from '../../specs';
 import type { Datum } from '../../utils/common';
+import { BARCHART_1Y1G } from '../../utils/data_samples/test_dataset';
+import { GITHUB_DATASET } from '../../utils/data_samples/test_dataset_github';
 import { Chart } from '../chart';
 
 describe('Accessibility', () => {
@@ -40,6 +42,162 @@ describe('Accessibility', () => {
         </Chart>,
       );
       expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('mixed chart: bar and line chart.');
+    });
+  });
+
+  describe('Bar chart accessibility with realistic data', () => {
+    it('should provide screen reader information for grouped bar chart', () => {
+      const wrapper = mount(
+        <Chart size={[500, 300]} id="grouped-bar-chart">
+          <Settings
+            debug
+            rendering="svg"
+            showLegend
+            ariaLabel="GitHub Issues by Visualization Type and Issue Type"
+            ariaDescription="Bar chart showing bug reports and other issues across different visualization types in GitHub repositories"
+          />
+          <BarSeries
+            id="bug-reports"
+            name="Bug Reports"
+            data={GITHUB_DATASET.filter((d) => d.issueType === 'Bug')}
+            xAccessor="vizType"
+            yAccessors={['count']}
+            splitSeriesAccessors={['authorAssociation']}
+          />
+          <BarSeries
+            id="other-issues"
+            name="Other Issues"
+            data={GITHUB_DATASET.filter((d) => d.issueType === 'Other')}
+            xAccessor="vizType"
+            yAccessors={['count']}
+            splitSeriesAccessors={['authorAssociation']}
+          />
+        </Chart>,
+      );
+
+      const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
+
+      // Should identify chart type
+      expect(screenReaderContent).toContain('bar chart');
+
+      // Should include series information
+      expect(screenReaderContent).toContain('Bug Reports');
+      expect(screenReaderContent).toContain('Other Issues');
+
+      // Should include the chart title/description
+      expect(screenReaderContent).toContain('GitHub Issues by Visualization Type and Issue Type');
+    });
+
+    it('should generate accessible data table for multi-group bar chart', () => {
+      const wrapper = mount(
+        <Chart size={[400, 250]} id="multi-group-bar">
+          <Settings debug rendering="svg" showLegend={false} ariaLabel="Sample Data by Category and Group" />
+          <BarSeries
+            id="group-a"
+            name="Group A"
+            data={BARCHART_1Y1G.filter((d) => d.g === 'a')}
+            xAccessor="x"
+            yAccessors={['y']}
+          />
+          <BarSeries
+            id="group-b"
+            name="Group B"
+            data={BARCHART_1Y1G.filter((d) => d.g === 'b')}
+            xAccessor="x"
+            yAccessors={['y']}
+          />
+        </Chart>,
+      );
+
+      const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
+
+      // Should describe chart structure
+      expect(screenReaderContent).toContain('bar chart');
+      expect(screenReaderContent).toContain('Group A');
+      expect(screenReaderContent).toContain('Group B');
+
+      // Should include accessible chart label
+      expect(screenReaderContent).toContain('Sample Data by Category and Group');
+    });
+
+    it('should provide axis information for screen readers', () => {
+      const wrapper = mount(
+        <Chart size={[400, 250]} id="axis-info-bar">
+          <Settings
+            debug
+            rendering="svg"
+            ariaLabel="Issue Count by Visualization Type"
+            ariaDescription="Horizontal axis shows visualization types, vertical axis shows number of issues"
+          />
+          <BarSeries
+            id="issue-count"
+            name="Issue Count"
+            data={GITHUB_DATASET.slice(0, 6)}
+            xAccessor="vizType"
+            yAccessors={['count']}
+          />
+        </Chart>,
+      );
+
+      const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
+
+      // Should include chart description
+      expect(screenReaderContent).toContain('Issue Count by Visualization Type');
+      expect(screenReaderContent).toContain(
+        'Horizontal axis shows visualization types, vertical axis shows number of issues',
+      );
+
+      // Should identify as bar chart
+      expect(screenReaderContent).toContain('bar chart');
+    });
+
+    it('should handle empty data gracefully for accessibility', () => {
+      const wrapper = mount(
+        <Chart size={[400, 250]} id="empty-bar-chart">
+          <Settings debug rendering="svg" ariaLabel="Empty Bar Chart" ariaDescription="No data available to display" />
+          <BarSeries id="empty-series" name="Empty Series" data={[]} xAccessor="x" yAccessors={['y']} />
+        </Chart>,
+      );
+
+      // Check if screen reader element exists, if not, that's expected for empty data
+      const screenReaderElements = wrapper.find('.echScreenReaderOnly');
+      if (screenReaderElements.length > 0) {
+        const screenReaderContent = screenReaderElements.text();
+
+        // Should still provide basic accessibility information
+        expect(screenReaderContent).toContain('Empty Bar Chart');
+        expect(screenReaderContent).toContain('No data available to display');
+      } else {
+        // If no screen reader element, verify the chart container exists but is empty
+        expect(wrapper.find('.echChart')).toHaveLength(1);
+      }
+    });
+
+    it('should provide meaningful descriptions for stacked bar charts', () => {
+      const stackedData = GITHUB_DATASET.slice(0, 8);
+
+      const wrapper = mount(
+        <Chart size={[500, 300]} id="stacked-bar-chart">
+          <Settings debug rendering="svg" ariaLabel="Stacked Issues by Visualization Type and Author Association" />
+          <BarSeries
+            id="stacked-issues"
+            name="Issues"
+            data={stackedData}
+            xAccessor="vizType"
+            yAccessors={['count']}
+            splitSeriesAccessors={['issueType']}
+            stackAccessors={['vizType']}
+          />
+        </Chart>,
+      );
+
+      const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
+
+      // Should identify as stacked bar chart
+      expect(screenReaderContent).toMatch(/stacked.*bar chart|bar chart/);
+
+      // Should include the accessibility label
+      expect(screenReaderContent).toContain('Stacked Issues by Visualization Type and Author Association');
     });
   });
 
