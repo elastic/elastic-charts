@@ -18,33 +18,27 @@ import { Chart } from '../chart';
 describe('Bar chart accessibility with realistic data', () => {
   // These tests verify the dynamically generated a11y summaries
   // rather than testing aria-label/aria-description attributes
-  it('should generate dynamic a11y summary for multi-series bar chart', () => {
+  it('should generate dynamic a11y summary for basic bar chart', () => {
+    // Simple test data similar to Vega bar chart example
+    const testData = [
+      { category: 'A', amount: 28 },
+      { category: 'B', amount: 55 },
+      { category: 'C', amount: 43 },
+      { category: 'D', amount: 91 },
+      { category: 'E', amount: 81 },
+    ];
+
     const wrapper = mount(
-      <Chart size={[500, 300]} id="grouped-bar-chart">
-        <Settings debug rendering="svg" showLegend />
-        <BarSeries
-          id="bug-reports"
-          name="Bug Reports"
-          data={GITHUB_DATASET.filter((d) => d.issueType === 'Bug')}
-          xAccessor="vizType"
-          yAccessors={['count']}
-          splitSeriesAccessors={['authorAssociation']}
-        />
-        <BarSeries
-          id="other-issues"
-          name="Other Issues"
-          data={GITHUB_DATASET.filter((d) => d.issueType === 'Other')}
-          xAccessor="vizType"
-          yAccessors={['count']}
-          splitSeriesAccessors={['authorAssociation']}
-        />
+      <Chart size={[500, 300]} id="basic-bar-chart">
+        <Settings debug rendering="svg" />
+        <BarSeries id="bars" data={testData} xAccessor="category" yAccessors={['amount']} />
       </Chart>,
     );
 
     const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
 
-    // Assert the full a11y summary for better developer experience
-    expect(screenReaderContent).toBe('bar chart with 4 bars: Bug Reports, Bug Reports, Other Issues, Other Issues.');
+    // Single series bar chart shows just the chart type
+    expect(screenReaderContent).toBe('bar chart.');
   });
 
   it('should generate dynamic a11y summary for grouped bar chart', () => {
