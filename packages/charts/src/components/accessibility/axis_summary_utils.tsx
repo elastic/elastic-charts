@@ -9,6 +9,7 @@
 import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
 import type { AxisSpec } from '../../chart_types/xy_chart/utils/specs';
 
+/** @internal */
 export function createAxisDescriptions(axisSpecs: AxisSpec[], seriesDomains: SeriesDomainsAndData): string[] {
   const descriptions: string[] = [];
   const { xDomain, yDomains } = seriesDomains;

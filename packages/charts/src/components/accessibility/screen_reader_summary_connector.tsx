@@ -22,6 +22,7 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../state/sele
 import { getInternalChartStateSelector } from '../../state/selectors/get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from '../../state/selectors/get_internal_is_intialized';
 
+/** @internal */
 export interface ScreenReaderSummaryStateProps {
   a11ySettings: A11ySettings;
   chartTypeDescription: string;
@@ -43,6 +44,7 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
   chartType: null,
 };
 
+/** @internal */
 export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryStateProps => {
   const internalChartState = getInternalChartStateSelector(state);
   if (internalChartState === null || getInternalIsInitializedSelector(state) !== InitStatus.Initialized) {

@@ -9,6 +9,7 @@
 import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
 import type { BasicSeriesSpec } from '../../chart_types/xy_chart/utils/specs';
 
+/** @internal */
 export function createChartTypeDescription(
   chartTypeDescription: string,
   seriesSpecs?: BasicSeriesSpec[],
@@ -43,9 +44,7 @@ export function createChartTypeDescription(
   if (seriesTypes.size === 1) {
     const seriesType = Array.from(seriesTypes)[0];
 
-    const hasPercentageStacking = seriesSpecs.some(
-      (spec) => 'stackMode' in spec && spec.stackMode === 'percentage',
-    );
+    const hasPercentageStacking = seriesSpecs.some((spec) => 'stackMode' in spec && spec.stackMode === 'percentage');
 
     const stackPrefix = hasStackedSeries ? (hasPercentageStacking ? 'percentage stacked' : 'stacked') : '';
 
@@ -56,11 +55,9 @@ export function createChartTypeDescription(
       const countDescription = `with ${actualSeriesCount} ${seriesType}s`;
 
       const description = `${chartTypeDescriptionStackChecked} ${countDescription}`;
-      if (seriesNames.length > 0 && seriesNames.length <= 5) {
-        return `${description}: ${seriesNames.join(', ')}`;
-      } else {
-        return description;
-      }
+      return seriesNames.length > 0 && seriesNames.length <= 5
+        ? `${description}: ${seriesNames.join(', ')}`
+        : description;
     }
   } else {
     const stackPrefix = hasStackedSeries ? 'stacked mixed' : 'mixed';

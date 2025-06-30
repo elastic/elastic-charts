@@ -166,7 +166,11 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
     return (
       <>
-        <figure aria-labelledby={a11ySettings.labelId} aria-describedby={`${a11ySettings.descriptionId}-summary ${a11ySettings.descriptionId}`} tabIndex={0}>
+        <figure
+          aria-labelledby={a11ySettings.labelId}
+          aria-describedby={`${a11ySettings.descriptionId}-summary ${a11ySettings.descriptionId}`}
+          tabIndex={0}
+        >
           <canvas
             dir={isRTL ? 'rtl' : 'ltr'}
             ref={forwardCanvasRef}

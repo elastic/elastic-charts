@@ -51,9 +51,9 @@ describe('createChartTypeDescription', () => {
     const singleSeriesDomains = {
       formattedDataSeries: [mockSeriesDomains.formattedDataSeries[0]],
     } as SeriesDomainsAndData;
-    
+
     const singleSeriesSpecs = [mockSeriesSpecs[0]!];
-    
+
     const result = createChartTypeDescription('chart', singleSeriesSpecs, singleSeriesDomains);
     expect(result).toBe('bar chart');
   });
@@ -166,7 +166,10 @@ describe('createChartTypeDescription', () => {
       formattedDataSeries: [
         {
           specId: 'series1',
-          splitAccessors: new Map([['region', 'North'], ['quarter', 'Q1']]),
+          splitAccessors: new Map([
+            ['region', 'North'],
+            ['quarter', 'Q1'],
+          ]),
         },
       ],
     } as SeriesDomainsAndData;
@@ -191,9 +194,7 @@ describe('createChartTypeDescription', () => {
     ] as BasicSeriesSpec[];
 
     const unnamedSeriesDomains = {
-      formattedDataSeries: [
-        { specId: 'series1', splitAccessors: new Map() },
-      ],
+      formattedDataSeries: [{ specId: 'series1', splitAccessors: new Map() }],
     } as SeriesDomainsAndData;
 
     const result = createChartTypeDescription('chart', unnamedSeriesSpecs, unnamedSeriesDomains);
