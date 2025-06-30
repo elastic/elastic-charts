@@ -59,7 +59,7 @@ const ScreenReaderSummaryComponent = ({
       const seriesNames = renderedSeries
         .map((series) => {
           // Extract series name from the series key or use the spec name
-          const spec = seriesSpecs.find(s => s.id === series.specId);
+          const spec = seriesSpecs.find((s) => s.id === series.specId);
           if (spec && typeof spec.name === 'string') return spec.name;
           if (series.splitAccessors && series.splitAccessors.size > 0) {
             // For split series, use the split accessor values as the name
@@ -71,29 +71,27 @@ const ScreenReaderSummaryComponent = ({
         .filter((name) => name);
 
       // Check if any series are stacked
-      const hasStackedSeries = seriesSpecs.some((spec) => 
-        'stackAccessors' in spec && spec.stackAccessors && spec.stackAccessors.length > 0
+      const hasStackedSeries = seriesSpecs.some(
+        (spec) => 'stackAccessors' in spec && spec.stackAccessors && spec.stackAccessors.length > 0,
       );
 
       if (seriesTypes.size === 1) {
         const seriesType = Array.from(seriesTypes)[0];
-        
+
         // Check for percentage stacking
-        const hasPercentageStacking = seriesSpecs.some((spec) => 
-          'stackMode' in spec && spec.stackMode === 'percentage'
+        const hasPercentageStacking = seriesSpecs.some(
+          (spec) => 'stackMode' in spec && spec.stackMode === 'percentage',
         );
-        
-        const stackPrefix = hasStackedSeries 
-          ? (hasPercentageStacking ? 'percentage stacked' : 'stacked')
-          : '';
+
+        const stackPrefix = hasStackedSeries ? (hasPercentageStacking ? 'percentage stacked' : 'stacked') : '';
 
         if (actualSeriesCount === 1) {
           parts.push(`${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart`);
         } else {
-          const chartTypeDescription = `${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart`;
+          const chartTypeDescriptionStackChecked = `${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart`;
           const countDescription = `with ${actualSeriesCount} ${seriesType}s`;
-          
-          const description = `${chartTypeDescription} ${countDescription}`;
+
+          const description = `${chartTypeDescriptionStackChecked} ${countDescription}`;
           if (seriesNames.length > 0 && seriesNames.length <= 5) {
             parts.push(`${description}: ${seriesNames.join(', ')}`);
           } else {
@@ -127,29 +125,33 @@ const ScreenReaderSummaryComponent = ({
             const minTime = new Date(xDomain.domain[0]);
             const maxTime = new Date(xDomain.domain[1]);
             const timeDiff = maxTime.getTime() - minTime.getTime();
-            
+
             // Choose granularity based on time span
             const formatTime = (date: Date) => {
-              if (timeDiff < 24 * 60 * 60 * 1000) { // Less than 1 day
+              if (timeDiff < 24 * 60 * 60 * 1000) {
+                // Less than 1 day
                 return date.toLocaleString('en-US', {
                   month: 'short',
                   day: 'numeric',
                   hour: 'numeric',
                   minute: '2-digit',
                 });
-              } else if (timeDiff < 7 * 24 * 60 * 60 * 1000) { // Less than 1 week
+              } else if (timeDiff < 7 * 24 * 60 * 60 * 1000) {
+                // Less than 1 week
                 return date.toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
                   hour: 'numeric',
                 });
-              } else if (timeDiff < 365 * 24 * 60 * 60 * 1000) { // Less than 1 year
+              } else if (timeDiff < 365 * 24 * 60 * 60 * 1000) {
+                // Less than 1 year
                 return date.toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'short',
                   day: 'numeric',
                 });
-              } else { // 1 year or more
+              } else {
+                // 1 year or more
                 return date.toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -201,8 +203,7 @@ const ScreenReaderSummaryComponent = ({
       id={`${a11ySettings.descriptionId}-summary`}
       data-testid="echScreenReaderSummary"
     >
-      {/* Consolidated summary for better UX */}
-      <div>{consolidatedSummary}</div>
+      {consolidatedSummary}
       <ScreenReaderDescription {...a11ySettings} />
       <ScreenReaderItems {...a11ySettings} screenReaderItems={screenReaderData?.screenReaderItems} />
     </figcaption>
