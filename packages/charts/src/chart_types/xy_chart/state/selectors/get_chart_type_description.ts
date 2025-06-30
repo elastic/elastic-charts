@@ -14,5 +14,8 @@ import type { SeriesType } from '../../utils/specs';
 export const getChartTypeDescriptionSelector = createCustomCachedSelector([getSeriesSpecsSelector], (specs): string => {
   const seriesTypes = new Set<SeriesType>();
   specs.forEach((value) => seriesTypes.add(value.seriesType));
-  return seriesTypes.size > 1 ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart` : `${[...seriesTypes]} chart`;
+  const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+  return seriesTypes.size > 1
+    ? `Mixed chart: ${[...seriesTypes].join(' and ')} chart`
+    : `${capitalizeFirst([...seriesTypes][0] ?? '')} chart`;
 });

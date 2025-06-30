@@ -12,6 +12,7 @@ import type { GoalChartData } from '../../chart_types/goal_chart/state/selectors
 export function createGoalChartDescription(chartTypeDescription: string, goalChartData?: GoalChartData): string | null {
   const validGoalChart =
     chartTypeDescription === 'goal chart' ||
+    chartTypeDescription === 'Goal chart' ||
     chartTypeDescription === 'horizontalBullet chart' ||
     chartTypeDescription === 'verticalBullet chart';
 

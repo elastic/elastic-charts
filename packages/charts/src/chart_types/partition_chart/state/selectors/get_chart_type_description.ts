@@ -13,6 +13,7 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 export const getChartTypeDescriptionSelector = createCustomCachedSelector(
   [getPartitionSpec],
   (partitionSpec): string => {
-    return `${partitionSpec?.layout} chart` ?? 'Partition chart';
+    const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+    return partitionSpec?.layout ? `${capitalizeFirst(partitionSpec.layout)} chart` : 'Partition chart';
   },
 );

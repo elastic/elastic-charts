@@ -41,6 +41,11 @@ describe('createGoalChartDescription', () => {
     expect(result).toBe('Minimum: 0, Maximum: 300, Target: 260, Value: 170');
   });
 
+  it('should create description for Goal chart (capitalized)', () => {
+    const result = createGoalChartDescription('Goal chart', mockGoalChartData);
+    expect(result).toBe('Minimum: 0, Maximum: 300, Target: 260, Value: 170');
+  });
+
   it('should create description for horizontalBullet chart', () => {
     const result = createGoalChartDescription('horizontalBullet chart', mockGoalChartData);
     expect(result).toBe('Minimum: 0, Maximum: 300, Target: 260, Value: 170');

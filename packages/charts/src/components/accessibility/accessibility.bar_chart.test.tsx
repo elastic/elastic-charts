@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { mount } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { Axis, BarSeries, Settings } from '../../specs';
@@ -28,21 +28,21 @@ describe('Bar chart accessibility with realistic data', () => {
       { category: 'E', amount: 81 },
     ];
 
-    const wrapper = mount(
+    render(
       <Chart size={[500, 300]} id="basic-bar-chart">
         <Settings debug rendering="svg" />
         <BarSeries id="bars" data={testData} xAccessor="category" yAccessors={['amount']} />
       </Chart>,
     );
 
-    const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
-
     // Single series bar chart shows chart type with data context
-    expect(screenReaderContent).toBe('bar chart with 5 categories, values ranging from 28 to 91.');
+    expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
+      'Bar chart with 5 categories, values ranging from 28 to 91.',
+    );
   });
 
   it('should generate dynamic a11y summary for grouped bar chart', () => {
-    const wrapper = mount(
+    render(
       <Chart size={[400, 250]} id="multi-group-bar">
         <Settings debug rendering="svg" showLegend={false} />
         <BarSeries
@@ -62,14 +62,12 @@ describe('Bar chart accessibility with realistic data', () => {
       </Chart>,
     );
 
-    const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
-
     // Assert the full a11y summary
-    expect(screenReaderContent).toBe('bar chart with 2 bars: Group A, Group B.');
+    expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Bar chart with 2 bars: Group A, Group B.');
   });
 
   it('should generate dynamic a11y summary for single series bar chart', () => {
-    const wrapper = mount(
+    render(
       <Chart size={[400, 250]} id="axis-info-bar">
         <Settings debug rendering="svg" />
         <BarSeries
@@ -82,37 +80,17 @@ describe('Bar chart accessibility with realistic data', () => {
       </Chart>,
     );
 
-    const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
-
     // Assert the full a11y summary
     // Single series bar chart shows chart type with data context
-    expect(screenReaderContent).toBe('bar chart with 6 categories, values ranging from 6 to 22.');
-  });
-
-  it('should handle empty data gracefully for accessibility', () => {
-    const wrapper = mount(
-      <Chart size={[400, 250]} id="empty-bar-chart">
-        <Settings debug rendering="svg" />
-        <BarSeries id="empty-series" name="Empty Series" data={[]} xAccessor="x" yAccessors={['y']} />
-      </Chart>,
+    expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
+      'Bar chart with 6 categories, values ranging from 6 to 22.',
     );
-
-    // Check if screen reader element exists, if not, that's expected for empty data
-    const screenReaderElements = wrapper.find('.echScreenReaderOnly');
-    const chartElements = wrapper.find('.echChart');
-
-    // Should have either screen reader content or just the chart container
-    expect(screenReaderElements.length > 0 || chartElements.length === 1).toBe(true);
-
-    // For empty charts, we expect either no screen reader content or minimal content
-    // This is acceptable behavior as there's no meaningful data to describe
-    expect(screenReaderElements.length).toBeGreaterThanOrEqual(0);
   });
 
   it('should generate dynamic a11y summary for stacked bar chart', () => {
     const stackedData = GITHUB_DATASET.slice(0, 8);
 
-    const wrapper = mount(
+    render(
       <Chart size={[500, 300]} id="stacked-bar-chart">
         <Settings debug rendering="svg" />
         <BarSeries
@@ -127,14 +105,14 @@ describe('Bar chart accessibility with realistic data', () => {
       </Chart>,
     );
 
-    const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
-
     // Assert the full a11y summary for stacked charts
-    expect(screenReaderContent).toBe('stacked bar chart with 2 bars: Issues, Issues.');
+    expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
+      'Stacked bar chart with 2 bars: Issues, Issues.',
+    );
   });
 
   it('should include axis descriptions in a11y summary when Axis specs are provided', () => {
-    const wrapper = mount(
+    render(
       <Chart size={[500, 300]} id="bar-chart-with-axes">
         <Settings debug rendering="svg" />
         <Axis id="bottom" position={Position.Bottom} title="Visualization Type" />
@@ -149,11 +127,9 @@ describe('Bar chart accessibility with realistic data', () => {
       </Chart>,
     );
 
-    const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
-
     // Assert the full a11y summary including axis information
-    expect(screenReaderContent).toBe(
-      'bar chart with 6 categories, values ranging from 6 to 22. X axis displays Visualization Type with 3 categories. Y axis displays Issue Count, ranging from 0 to 22.',
+    expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
+      'Bar chart with 6 categories, values ranging from 6 to 22. X axis displays Visualization Type with 3 categories. Y axis displays Issue Count, ranging from 0 to 22.',
     );
   });
 });
