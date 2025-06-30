@@ -6,17 +6,14 @@
  * Side Public License, v 1.
  */
 
+import { ChartType } from '../../chart_types';
 import type { GoalChartData } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
 
 /** @internal */
-export function createGoalChartDescription(chartTypeDescription: string, goalChartData?: GoalChartData): string | null {
-  const validGoalChart =
-    chartTypeDescription === 'goal chart' ||
-    chartTypeDescription === 'Goal chart' ||
-    chartTypeDescription === 'horizontalBullet chart' ||
-    chartTypeDescription === 'verticalBullet chart';
+export function createGoalChartDescription(chartType: ChartType | null, goalChartData?: GoalChartData): string | null {
+  const isGoalChart = chartType === ChartType.Goal || chartType === ChartType.Bullet;
 
-  if (!validGoalChart || !goalChartData || isNaN(goalChartData.maximum)) {
+  if (!isGoalChart || !goalChartData || isNaN(goalChartData.maximum)) {
     return null;
   }
 
