@@ -29,7 +29,7 @@ describe('Accessibility', () => {
           <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
-      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Chart type:bar chart');
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('bar chart.');
     });
     it('should include the series types if multiple types of series', () => {
       render(
@@ -39,9 +39,7 @@ describe('Accessibility', () => {
           <LineSeries id="test2" data={[{ x: 3, y: 5 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
-      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
-        'Chart type:Mixed chart: bar and line chart',
-      );
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('mixed chart: bar and line chart.');
     });
   });
 
@@ -66,7 +64,7 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Chart type:sunburst chart');
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('sunburst chart.');
     });
     it('should include series type if treemap type', () => {
       render(
@@ -86,7 +84,7 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Chart type:treemap chart');
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('treemap chart.');
     });
     it('should test defaults for screen reader data  table', () => {
       render(
@@ -165,7 +163,7 @@ describe('Accessibility', () => {
         </Chart>,
       );
       expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
-        'Chart type:goal chartMajor label:Revenue 2020 YTD  Minor label:(thousand USD)  Minimum:0Maximum:300Target:260Value:170',
+        'goal chart.Major label:Revenue 2020 YTD  Minor label:(thousand USD)  Minimum:0Maximum:300Target:260Value:170',
       );
     });
     it('should correctly render ascending semantic values', () => {
