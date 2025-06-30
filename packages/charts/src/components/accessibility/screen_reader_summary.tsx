@@ -9,40 +9,16 @@
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
-import { createAxisDescriptions } from './axis_summary_utils';
-import { createChartTypeDescription } from './chart_summary_utils';
 import { ScreenReaderDescription } from './screen_reader_description';
 import { ScreenReaderItems } from './screen_reader_items';
-import { mapStateToProps, type ScreenReaderSummaryStateProps } from './screen_reader_summary_connector';
+import { mapStateToProps } from './screen_reader_summary_connector';
+import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
 
 const ScreenReaderSummaryComponent = ({
   a11ySettings,
   screenReaderData,
-  chartTypeDescription,
-  seriesSpecs,
-  axisSpecs,
-  seriesDomains,
-}: ScreenReaderSummaryStateProps) => {
-  const createConsolidatedSummary = () => {
-    const parts: string[] = [];
-
-    // Chart type and series information
-    const chartDescription = createChartTypeDescription(chartTypeDescription, seriesSpecs, seriesDomains);
-    if (chartDescription) {
-      parts.push(chartDescription);
-    }
-
-    // Axis descriptions
-    if (axisSpecs && axisSpecs.length > 0 && seriesDomains) {
-      const axisDescriptions = createAxisDescriptions(axisSpecs, seriesDomains);
-      parts.push(...axisDescriptions);
-    }
-
-    return `${parts.join('. ')}.`;
-  };
-
-  const consolidatedSummary = createConsolidatedSummary();
-
+  consolidatedSummary,
+}: ScreenReaderSummaryData) => {
   return (
     <figcaption
       className="echScreenReaderOnly"

@@ -7,6 +7,7 @@
  */
 
 import { createGoalChartDescription } from './goal_chart_summary_utils';
+import { ChartType } from '../../chart_types';
 import type { GoalChartData } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
 
 describe('createGoalChartDescription', () => {
@@ -18,12 +19,12 @@ describe('createGoalChartDescription', () => {
   };
 
   it('should return null for non-goal chart types', () => {
-    const result = createGoalChartDescription('bar chart', mockGoalChartData);
+    const result = createGoalChartDescription(ChartType.XYAxis, mockGoalChartData);
     expect(result).toBeNull();
   });
 
   it('should return null when goalChartData is undefined', () => {
-    const result = createGoalChartDescription('goal chart', undefined);
+    const result = createGoalChartDescription(ChartType.Goal, undefined);
     expect(result).toBeNull();
   });
 
@@ -32,28 +33,23 @@ describe('createGoalChartDescription', () => {
       ...mockGoalChartData,
       maximum: NaN,
     };
-    const result = createGoalChartDescription('goal chart', invalidData);
+    const result = createGoalChartDescription(ChartType.Goal, invalidData);
     expect(result).toBeNull();
   });
 
   it('should create description for goal chart', () => {
-    const result = createGoalChartDescription('goal chart', mockGoalChartData);
+    const result = createGoalChartDescription(ChartType.Goal, mockGoalChartData);
     expect(result).toBe('Minimum: 0, Maximum: 300, Target: 260, Value: 170');
   });
 
-  it('should create description for Goal chart (capitalized)', () => {
-    const result = createGoalChartDescription('Goal chart', mockGoalChartData);
+  it('should create description for bullet chart', () => {
+    const result = createGoalChartDescription(ChartType.Bullet, mockGoalChartData);
     expect(result).toBe('Minimum: 0, Maximum: 300, Target: 260, Value: 170');
   });
 
-  it('should create description for horizontalBullet chart', () => {
-    const result = createGoalChartDescription('horizontalBullet chart', mockGoalChartData);
-    expect(result).toBe('Minimum: 0, Maximum: 300, Target: 260, Value: 170');
-  });
-
-  it('should create description for verticalBullet chart', () => {
-    const result = createGoalChartDescription('verticalBullet chart', mockGoalChartData);
-    expect(result).toBe('Minimum: 0, Maximum: 300, Target: 260, Value: 170');
+  it('should return null for null chart type', () => {
+    const result = createGoalChartDescription(null, mockGoalChartData);
+    expect(result).toBeNull();
   });
 
   it('should handle decimal values', () => {
@@ -63,7 +59,7 @@ describe('createGoalChartDescription', () => {
       target: 85.25,
       value: 67.8,
     };
-    const result = createGoalChartDescription('goal chart', decimalData);
+    const result = createGoalChartDescription(ChartType.Goal, decimalData);
     expect(result).toBe('Minimum: 0.5, Maximum: 100.75, Target: 85.25, Value: 67.8');
   });
 
@@ -74,7 +70,7 @@ describe('createGoalChartDescription', () => {
       target: 10,
       value: -5,
     };
-    const result = createGoalChartDescription('goal chart', negativeData);
+    const result = createGoalChartDescription(ChartType.Goal, negativeData);
     expect(result).toBe('Minimum: -50, Maximum: 50, Target: 10, Value: -5');
   });
 
@@ -85,7 +81,7 @@ describe('createGoalChartDescription', () => {
       target: 0,
       value: 0,
     };
-    const result = createGoalChartDescription('goal chart', zeroData);
+    const result = createGoalChartDescription(ChartType.Goal, zeroData);
     expect(result).toBe('Minimum: 0, Maximum: 0, Target: 0, Value: 0');
   });
 
@@ -96,7 +92,7 @@ describe('createGoalChartDescription', () => {
       target: 4000000,
       value: 3500000,
     };
-    const result = createGoalChartDescription('goal chart', largeData);
+    const result = createGoalChartDescription(ChartType.Goal, largeData);
     expect(result).toBe('Minimum: 1000000, Maximum: 5000000, Target: 4000000, Value: 3500000');
   });
 });
