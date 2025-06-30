@@ -8,9 +8,9 @@
 
 import { getGoalSpecSelector } from './get_goal_spec';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { capitalizeFirst } from '../../../../utils/text/text_utils';
 
 /** @internal */
 export const getChartTypeDescriptionSelector = createCustomCachedSelector([getGoalSpecSelector], (spec) => {
-  const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
   return `${capitalizeFirst(spec?.subtype ?? 'goal')} chart`;
 });

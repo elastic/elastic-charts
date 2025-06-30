@@ -8,6 +8,7 @@
 
 import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
 import type { BasicSeriesSpec } from '../../chart_types/xy_chart/utils/specs';
+import { capitalizeFirst } from '../../utils/text/text_utils';
 
 function getDataSummary(seriesDomains: SeriesDomainsAndData): string {
   const dataCount = seriesDomains.formattedDataSeries[0]?.data?.length || 0;
@@ -50,8 +51,6 @@ export function createChartTypeDescription(
   if (!chartTypeDescription || !seriesSpecs || !seriesDomains?.formattedDataSeries) {
     return chartTypeDescription;
   }
-
-  const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
   const seriesTypes = new Set<string>();
   seriesSpecs.forEach((spec) => seriesTypes.add(spec.seriesType));
