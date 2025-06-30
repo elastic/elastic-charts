@@ -11,5 +11,6 @@ import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
 export const getChartTypeDescriptionSelector = createCustomCachedSelector([getGoalSpecSelector], (spec) => {
-  return `${spec?.subtype ?? 'goal'} chart`;
+  const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+  return `${capitalizeFirst(spec?.subtype ?? 'goal')} chart`;
 });

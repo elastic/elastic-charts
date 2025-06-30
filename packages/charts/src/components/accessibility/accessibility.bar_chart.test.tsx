@@ -38,7 +38,7 @@ describe('Bar chart accessibility with realistic data', () => {
     const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
 
     // Single series bar chart shows chart type with data context
-    expect(screenReaderContent).toBe('bar chart with 5 categories, values ranging from 28 to 91.');
+    expect(screenReaderContent).toBe('Bar chart with 5 categories, values ranging from 28 to 91.');
   });
 
   it('should generate dynamic a11y summary for grouped bar chart', () => {
@@ -65,7 +65,7 @@ describe('Bar chart accessibility with realistic data', () => {
     const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
 
     // Assert the full a11y summary
-    expect(screenReaderContent).toBe('bar chart with 2 bars: Group A, Group B.');
+    expect(screenReaderContent).toBe('Bar chart with 2 bars: Group A, Group B.');
   });
 
   it('should generate dynamic a11y summary for single series bar chart', () => {
@@ -86,7 +86,7 @@ describe('Bar chart accessibility with realistic data', () => {
 
     // Assert the full a11y summary
     // Single series bar chart shows chart type with data context
-    expect(screenReaderContent).toBe('bar chart with 6 categories, values ranging from 6 to 22.');
+    expect(screenReaderContent).toBe('Bar chart with 6 categories, values ranging from 6 to 22.');
   });
 
   it('should handle empty data gracefully for accessibility', () => {
@@ -130,7 +130,7 @@ describe('Bar chart accessibility with realistic data', () => {
     const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
 
     // Assert the full a11y summary for stacked charts
-    expect(screenReaderContent).toBe('stacked bar chart with 2 bars: Issues, Issues.');
+    expect(screenReaderContent).toBe('Stacked bar chart with 2 bars: Issues, Issues.');
   });
 
   it('should include axis descriptions in a11y summary when Axis specs are provided', () => {
@@ -153,7 +153,7 @@ describe('Bar chart accessibility with realistic data', () => {
 
     // Assert the full a11y summary including axis information
     expect(screenReaderContent).toBe(
-      'bar chart with 6 categories, values ranging from 6 to 22. X axis displays Visualization Type with 3 categories. Y axis displays Issue Count, ranging from 0 to 22.',
+      'Bar chart with 6 categories, values ranging from 6 to 22. X axis displays Visualization Type with 3 categories. Y axis displays Issue Count, ranging from 0 to 22.',
     );
   });
 });

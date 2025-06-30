@@ -55,12 +55,12 @@ describe('createChartTypeDescription', () => {
     const singleSeriesSpecs = [mockSeriesSpecs[0]!];
 
     const result = createChartTypeDescription('chart', singleSeriesSpecs, singleSeriesDomains);
-    expect(result).toBe('bar chart');
+    expect(result).toBe('Bar chart');
   });
 
   it('should create description for single series type with multiple series', () => {
     const result = createChartTypeDescription('chart', mockSeriesSpecs, mockSeriesDomains);
-    expect(result).toBe('bar chart with 2 bars: Sales, Revenue');
+    expect(result).toBe('Bar chart with 2 bars: Sales, Revenue');
   });
 
   it('should create description for single series type with many series (>5)', () => {
@@ -78,7 +78,7 @@ describe('createChartTypeDescription', () => {
     } as SeriesDomainsAndData;
 
     const result = createChartTypeDescription('chart', manySeriesSpecs, manySeriesDomains);
-    expect(result).toBe('line chart with 6 lines');
+    expect(result).toBe('Line chart with 6 lines');
   });
 
   it('should create description for mixed series types', () => {
@@ -95,7 +95,7 @@ describe('createChartTypeDescription', () => {
     } as SeriesDomainsAndData;
 
     const result = createChartTypeDescription('chart', mixedSeriesSpecs, mixedSeriesDomains);
-    expect(result).toBe('mixed chart: bar and line chart');
+    expect(result).toBe('Mixed chart: bar and line chart');
   });
 
   it('should handle stacked series', () => {
@@ -113,7 +113,7 @@ describe('createChartTypeDescription', () => {
     } as SeriesDomainsAndData;
 
     const result = createChartTypeDescription('chart', stackedSeriesSpecs, stackedSeriesDomains);
-    expect(result).toBe('stacked bar chart');
+    expect(result).toBe('Stacked bar chart');
   });
 
   it('should handle percentage stacked series', () => {
@@ -132,7 +132,7 @@ describe('createChartTypeDescription', () => {
     } as SeriesDomainsAndData;
 
     const result = createChartTypeDescription('chart', percentageStackedSeriesSpecs, percentageStackedSeriesDomains);
-    expect(result).toBe('percentage stacked area chart');
+    expect(result).toBe('Percentage stacked area chart');
   });
 
   it('should handle stacked mixed series types', () => {
@@ -158,7 +158,7 @@ describe('createChartTypeDescription', () => {
     } as SeriesDomainsAndData;
 
     const result = createChartTypeDescription('chart', stackedMixedSeriesSpecs, stackedMixedSeriesDomains);
-    expect(result).toBe('stacked mixed chart: bar and area chart');
+    expect(result).toBe('Stacked mixed chart: bar and area chart');
   });
 
   it('should handle series with split accessors', () => {
@@ -182,7 +182,7 @@ describe('createChartTypeDescription', () => {
     ] as BasicSeriesSpec[];
 
     const result = createChartTypeDescription('chart', splitSeriesSpecs, splitSeriesDomains);
-    expect(result).toBe('line chart');
+    expect(result).toBe('Line chart');
   });
 
   it('should handle series without names', () => {
@@ -198,6 +198,6 @@ describe('createChartTypeDescription', () => {
     } as SeriesDomainsAndData;
 
     const result = createChartTypeDescription('chart', unnamedSeriesSpecs, unnamedSeriesDomains);
-    expect(result).toBe('bar chart');
+    expect(result).toBe('Bar chart');
   });
 });
