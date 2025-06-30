@@ -12,9 +12,9 @@ import type { BasicSeriesSpec } from '../../chart_types/xy_chart/utils/specs';
 function getDataSummary(seriesDomains: SeriesDomainsAndData): string {
   const dataCount = seriesDomains.formattedDataSeries[0]?.data?.length || 0;
   const xDomain = seriesDomains.xDomain;
-  
+
   if (dataCount === 0) return '';
-  
+
   if (xDomain?.type === 'ordinal') {
     return `with ${dataCount} categories`;
   } else if (xDomain?.type === 'time') {
@@ -30,14 +30,14 @@ function getValueRangeContext(seriesDomains: SeriesDomainsAndData): string {
   }
 
   // Get actual data values, not the domain (which may include 0 for bar charts)
-  const yValues = firstSeries.data.map(d => d.y1 ?? d.y0 ?? 0).filter(val => val != null);
+  const yValues = firstSeries.data.map((d) => d.y1 ?? d.y0 ?? 0).filter((val) => val !== null);
   if (yValues.length === 0) {
     return '';
   }
 
   const min = Math.min(...yValues);
   const max = Math.max(...yValues);
-  
+
   return `, values ranging from ${min} to ${max}`;
 }
 
@@ -50,6 +50,8 @@ export function createChartTypeDescription(
   if (!chartTypeDescription || !seriesSpecs || !seriesDomains?.formattedDataSeries) {
     return chartTypeDescription;
   }
+
+  const capitalizeFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
   const seriesTypes = new Set<string>();
   seriesSpecs.forEach((spec) => seriesTypes.add(spec.seriesType));
@@ -84,18 +86,20 @@ export function createChartTypeDescription(
       const dataSummary = seriesDomains ? getDataSummary(seriesDomains) : '';
       const valueRange = seriesDomains ? getValueRangeContext(seriesDomains) : '';
       const contextInfo = dataSummary + valueRange;
-      return `${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart${contextInfo ? ` ${contextInfo}` : ''}`;
+      return capitalizeFirst(
+        `${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart${contextInfo ? ` ${contextInfo}` : ''}`,
+      );
     } else {
       const chartTypeDescriptionStackChecked = `${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart`;
       const countDescription = `with ${actualSeriesCount} ${seriesType}s`;
 
       const description = `${chartTypeDescriptionStackChecked} ${countDescription}`;
-      return seriesNames.length > 0 && seriesNames.length <= 5
-        ? `${description}: ${seriesNames.join(', ')}`
-        : description;
+      const finalDescription =
+        seriesNames.length > 0 && seriesNames.length <= 5 ? `${description}: ${seriesNames.join(', ')}` : description;
+      return capitalizeFirst(finalDescription);
     }
   } else {
     const stackPrefix = hasStackedSeries ? 'stacked mixed' : 'mixed';
-    return `${stackPrefix} chart: ${Array.from(seriesTypes).join(' and ')} chart`;
+    return capitalizeFirst(`${stackPrefix} chart: ${Array.from(seriesTypes).join(' and ')} chart`);
   }
 }
