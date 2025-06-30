@@ -9,6 +9,38 @@
 import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
 import type { BasicSeriesSpec } from '../../chart_types/xy_chart/utils/specs';
 
+function getDataSummary(seriesDomains: SeriesDomainsAndData): string {
+  const dataCount = seriesDomains.formattedDataSeries[0]?.data?.length || 0;
+  const xDomain = seriesDomains.xDomain;
+  
+  if (dataCount === 0) return '';
+  
+  if (xDomain?.type === 'ordinal') {
+    return `with ${dataCount} categories`;
+  } else if (xDomain?.type === 'time') {
+    return `with ${dataCount} time periods`;
+  }
+  return `with ${dataCount} data points`;
+}
+
+function getValueRangeContext(seriesDomains: SeriesDomainsAndData): string {
+  const firstSeries = seriesDomains.formattedDataSeries[0];
+  if (!firstSeries?.data || firstSeries.data.length === 0) {
+    return '';
+  }
+
+  // Get actual data values, not the domain (which may include 0 for bar charts)
+  const yValues = firstSeries.data.map(d => d.y1 ?? d.y0 ?? 0).filter(val => val != null);
+  if (yValues.length === 0) {
+    return '';
+  }
+
+  const min = Math.min(...yValues);
+  const max = Math.max(...yValues);
+  
+  return `, values ranging from ${min} to ${max}`;
+}
+
 /** @internal */
 export function createChartTypeDescription(
   chartTypeDescription: string,
@@ -49,7 +81,10 @@ export function createChartTypeDescription(
     const stackPrefix = hasStackedSeries ? (hasPercentageStacking ? 'percentage stacked' : 'stacked') : '';
 
     if (actualSeriesCount === 1) {
-      return `${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart`;
+      const dataSummary = seriesDomains ? getDataSummary(seriesDomains) : '';
+      const valueRange = seriesDomains ? getValueRangeContext(seriesDomains) : '';
+      const contextInfo = dataSummary + valueRange;
+      return `${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart${contextInfo ? ` ${contextInfo}` : ''}`;
     } else {
       const chartTypeDescriptionStackChecked = `${stackPrefix ? `${stackPrefix} ` : ''}${seriesType} chart`;
       const countDescription = `with ${actualSeriesCount} ${seriesType}s`;

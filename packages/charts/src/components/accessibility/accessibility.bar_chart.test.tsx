@@ -37,8 +37,8 @@ describe('Bar chart accessibility with realistic data', () => {
 
     const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
 
-    // Single series bar chart shows just the chart type
-    expect(screenReaderContent).toBe('bar chart.');
+    // Single series bar chart shows chart type with data context
+    expect(screenReaderContent).toBe('bar chart with 5 categories, values ranging from 28 to 91.');
   });
 
   it('should generate dynamic a11y summary for grouped bar chart', () => {
@@ -85,8 +85,8 @@ describe('Bar chart accessibility with realistic data', () => {
     const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
 
     // Assert the full a11y summary
-    // Single series bar chart shows just the chart type
-    expect(screenReaderContent).toBe('bar chart.');
+    // Single series bar chart shows chart type with data context
+    expect(screenReaderContent).toBe('bar chart with 6 categories, values ranging from 6 to 22.');
   });
 
   it('should handle empty data gracefully for accessibility', () => {
@@ -153,7 +153,7 @@ describe('Bar chart accessibility with realistic data', () => {
 
     // Assert the full a11y summary including axis information
     expect(screenReaderContent).toBe(
-      'bar chart. X axis displays Visualization Type with 3 categories. Y axis displays Issue Count, ranging from 0 to 22.',
+      'bar chart with 6 categories, values ranging from 6 to 22. X axis displays Visualization Type with 3 categories. Y axis displays Issue Count, ranging from 0 to 22.',
     );
   });
 });
