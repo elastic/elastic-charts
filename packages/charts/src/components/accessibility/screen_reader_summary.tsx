@@ -60,6 +60,5 @@ const ScreenReaderSummaryComponent = ({
   );
 };
 
-
 /** @internal */
 export const ScreenReaderSummary = memo(connect(mapStateToProps)(ScreenReaderSummaryComponent));

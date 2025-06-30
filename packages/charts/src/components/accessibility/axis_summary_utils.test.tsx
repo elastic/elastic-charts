@@ -7,9 +7,9 @@
  */
 
 import { createAxisDescriptions } from './axis_summary_utils';
-import { Position } from '../../utils/common';
 import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
 import type { AxisSpec } from '../../chart_types/xy_chart/utils/specs';
+import { Position } from '../../utils/common';
 
 describe('createAxisDescriptions', () => {
   const mockXAxisSpec: AxisSpec = {
@@ -53,7 +53,7 @@ describe('createAxisDescriptions', () => {
   it('should create X axis description for time domain with less than 1 day span', () => {
     const startTime = new Date('2023-01-01T08:00:00Z').getTime();
     const endTime = new Date('2023-01-01T16:00:00Z').getTime();
-    
+
     const seriesDomains = {
       xDomain: {
         type: 'time',
@@ -120,10 +120,7 @@ describe('createAxisDescriptions', () => {
     } as unknown as SeriesDomainsAndData;
 
     const result = createAxisDescriptions([mockXAxisSpec, mockYAxisSpec], seriesDomains);
-    expect(result).toEqual([
-      'X axis displays Time with 3 categories',
-      'Y axis displays Values, ranging from 0 to 50',
-    ]);
+    expect(result).toEqual(['X axis displays Time with 3 categories', 'Y axis displays Values, ranging from 0 to 50']);
   });
 
   it('should use default titles when axis titles are not provided', () => {
