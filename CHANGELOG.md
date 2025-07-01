@@ -1,3 +1,16 @@
+# [70.1.0](https://github.com/elastic/elastic-charts/compare/v70.0.1...v70.1.0) (2025-06-23)
+
+
+### Bug Fixes
+
+* **flame_chart:** fix font size to occupy available space ([#2671](https://github.com/elastic/elastic-charts/issues/2671)) ([2b5d962](https://github.com/elastic/elastic-charts/commit/2b5d962d891cd5257ff3a4f0064ec1b77290c454))
+* **heatmap:** update tooltip visibility logic to handle empty tooltip info ([#2661](https://github.com/elastic/elastic-charts/issues/2661)) ([ff5ff27](https://github.com/elastic/elastic-charts/commit/ff5ff27a968cc87c0717aa070cfec0b8b6af8977))
+
+
+### Features
+
+* **interactions:** add modifier keys pressed information available in the `onElementClick` and `onBrushEnd` listeners ([#2647](https://github.com/elastic/elastic-charts/issues/2647)) ([d632df0](https://github.com/elastic/elastic-charts/commit/d632df093e06d0f870aa60bdccfdb1d925933d52))
+
 ## [70.0.1](https://github.com/elastic/elastic-charts/compare/v70.0.0...v70.0.1) (2025-05-02)
 
 
