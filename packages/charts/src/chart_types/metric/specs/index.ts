@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import type { ComponentProps, ComponentType, ReactElement, ReactNode } from 'react';
+import type { ComponentProps, ComponentType, CSSProperties, ReactElement, ReactNode } from 'react';
 import type { $Values } from 'utility-types';
 
 import { ChartType } from '../..';
@@ -17,7 +17,34 @@ import { specComponentFactory } from '../../../state/spec_factory';
 import type { LayoutDirection, ValueFormatter } from '../../../utils/common';
 import type { GenericDomain } from '../../../utils/domain';
 import type { BulletValueLabels } from '../../bullet_graph/spec';
-import type { SecondaryMetricProps } from '../renderer/dom/secondary_metric';
+
+/**
+ * Props for displaying a secondary metric value with optional label and badge styling.
+ *
+ * @alpha
+ * */
+export interface SecondaryMetricProps {
+  /**
+   * The main value to display.
+   */
+  value: string;
+  /**
+   * Optional label to display alongside the value.
+   */
+  label?: string;
+  /**
+   * Optional background color for the value badge. If not provided, no badge is displayed.
+   */
+  badgeColor?: string;
+  /**
+   * Determines whether the value appears before or after the label.
+   */
+  valuePosition?: 'before' | 'after';
+  /**
+   * Optional CSS properties to apply to the container element.
+   */
+  style?: CSSProperties;
+}
 
 /** @alpha */
 export type MetricBase = {
@@ -185,3 +212,14 @@ export function isMetricWTrend(datum: MetricDatum): datum is MetricWTrend {
     !datum.hasOwnProperty('domainMax')
   );
 }
+
+/** @internal */
+export const isSecondaryMetricProps = (props: any): props is SecondaryMetricProps => {
+  return (
+    props &&
+    'value' in props &&
+    typeof props.value === 'string' &&
+    (props.label === undefined || typeof props.label === 'string') &&
+    (props.badgeColor === undefined || typeof props.badgeColor === 'string')
+  );
+};

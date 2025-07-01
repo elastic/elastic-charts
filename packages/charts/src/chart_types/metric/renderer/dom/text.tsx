@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import type { ProgressBarSize } from './metric';
-import { isSecondaryMetricProps, SecondaryMetric } from './secondary_metric';
+import { SecondaryMetric } from './secondary_metric';
 import type { MetricTextDimensions } from './text_measurements';
 import { PADDING } from './text_measurements';
 import { TitlesBlock } from './titles';
@@ -18,7 +18,7 @@ import type { Color } from '../../../../common/colors';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
 import type { HorizontalSide, MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum } from '../../specs';
-import { isMetricWNumber } from '../../specs';
+import { isMetricWNumber, isSecondaryMetricProps } from '../../specs';
 
 const gridRows = {
   top: { value: '1', titles: '2', body: '3', extra: '4' },
