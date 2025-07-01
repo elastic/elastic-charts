@@ -288,3 +288,10 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     </EuiFlexGroup>
   );
 };
+
+Example.parameters = {
+  resize: {
+    height: '700px',
+    width: '1200px',
+  },
+};
