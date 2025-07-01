@@ -1,0 +1,36 @@
+
+.echBadge__content {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  overflow: hidden;
+
+  max-width: 80%;
+  min-block-size: 18px;
+  flex-shrink: 0;
+  flex-grow: 0; 
+
+  padding-block: 0px;
+  padding-inline: 8px;
+
+  border: 1px solid transparent;
+  border-radius: 2px;
+
+  font-size: inherit;
+  line-height: inherit;
+  text-align: start;
+  text-decoration: none;
+
+  background-color: #e3e8f2;
+  color: #07101f;
+
+  cursor: inherit;
+}
+
+.echBadge__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  min-width: 0;
+}

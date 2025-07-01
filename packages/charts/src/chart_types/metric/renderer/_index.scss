@@ -75,7 +75,6 @@ $padding: 8px;
       }
     }
 
-    // Note: What is the target progress bar? Should we add the padding?
     &.echMetric--withTargetProgressBar {
       &--small {
         padding-left: $progress-bar-width-small + $progress-bar-target-width;
@@ -102,7 +101,6 @@ $padding: 8px;
       }
     }
 
-    // Note: What is the target progress bar? Should we add the padding?
     &.echMetric--withTargetProgressBar {
       &--small {
         padding-bottom: $progress-bar-height-small + $progress-bar-target-height;
@@ -129,3 +127,4 @@ $padding: 8px;
 @import 'dom/progress';
 @import 'dom/sparkline';
 @import 'dom/secondary_metric';
+@import 'dom/badge'

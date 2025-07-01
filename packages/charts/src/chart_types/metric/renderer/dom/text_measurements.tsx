@@ -18,6 +18,7 @@ import { wrapText } from '../../../../utils/text/wrap';
 import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum, MetricWNumber } from '../../specs';
 import { isMetricWProgress } from '../../specs';
+import { BADGE_BORDER } from './badge';
 
 /** @internal */
 export interface HeightBasedSizes {
@@ -300,7 +301,13 @@ function elementVisibility(
       : 0;
   };
 
-  const extraHeight = sizes.extraFontSize * LINE_HEIGHT;
+  // If there is a badge, we add the padding to the extra height
+  const hasBadge = !!(datum?.extra && 'badgeColor' in datum?.extra && datum?.extra?.badgeColor);
+  const badgeHeight = hasBadge ? BADGE_BORDER * 2 : 0;
+
+  // We assume that the extra element is taking one line
+  const extraHeight = sizes.extraFontSize * LINE_HEIGHT + badgeHeight;
+
   const valueHeight = sizes.valueFontSize * LINE_HEIGHT;
 
   const responsiveBreakPoints = getResponsiveBreakpoints(!!datum.title, !!datum.subtitle, !!datum.extra);

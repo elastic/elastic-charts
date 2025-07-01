@@ -13,8 +13,7 @@
     flex-direction: column;
   }
 
-  &__titlesBlock,
-  &__extraBlock {
+  &__titlesBlock {
     &--left {
       align-items: start;
       text-align: left;
@@ -34,6 +33,23 @@
     &--right {
       align-items: end;
       text-align: right;
+    }
+  }
+
+  .echMetricText__extraBlock {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+
+
+    &--left {
+      justify-content: flex-start;
+    }
+    &--center {
+      justify-content: center;
+    }
+    &--right {
+      justify-content: flex-end;
     }
   }
 
@@ -99,18 +115,5 @@
     &--right {
       justify-content: right;
     }
-  }
-
-  &__gap {
-    // position: relative;
-  }
-
-  &__body {
-    // overflow: hidden;
-    // position: absolute;
-    // top: 0;
-    // right: 0;
-    // bottom: 0;
-    // left: 0;
   }
 }

@@ -99,7 +99,10 @@ export const MetricText: React.FC<MetricTextprops> = ({
 
   let extraElement = null;
   if (isSecondaryMetricProps(extra)) {
-    extraElement = <SecondaryMetric {...extra} />;
+    const { style: extraStyle = {}, ...rest } = extra;
+    extraElement = (
+      <SecondaryMetric {...rest} style={{ ...extraStyle, fontSize: sizes.extraFontSize, color: colors.extra }} />
+    );
   } else if (React.isValidElement(extra) || typeof extra === 'function') {
     extraElement = (
       <p className="echMetricText__extra" style={{ fontSize: sizes.extraFontSize }}>
@@ -148,7 +151,11 @@ export const MetricText: React.FC<MetricTextprops> = ({
       {/* Extra Block */}
       <div
         className={classNames('echMetricText__extraBlock', `echMetricText__extraBlock--${style.extraTextAlign}`)}
-        style={{ gridRow: currentGridRows.extra, gridColumn: currentGridColumns.extra, color: colors.extra }}
+        style={{
+          gridRow: currentGridRows.extra,
+          gridColumn: currentGridColumns.extra,
+          color: colors.extra,
+        }}
       >
         {visibility.extra && extraElement}
       </div>
