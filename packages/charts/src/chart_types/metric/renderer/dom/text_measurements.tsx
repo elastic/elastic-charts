@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { BADGE_BORDER } from './badge';
 import type { TextParts } from './text_processing';
 import { getTextParts } from './text_processing';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
@@ -18,7 +19,6 @@ import { wrapText } from '../../../../utils/text/wrap';
 import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum, MetricWNumber } from '../../specs';
 import { isMetricWProgress } from '../../specs';
-import { BADGE_BORDER } from './badge';
 
 /** @internal */
 export interface HeightBasedSizes {
