@@ -44,7 +44,7 @@ const gridSingleColumn = { value: '1', titles: '1', body: '1', extra: '1' };
 
 const getGridTemplateColumnsWithIcon = (iconAlign: HorizontalSide, iconSize: number) => {
   const iconSizeWithPadding = `${iconSize + PADDING}px`;
-  return iconAlign === 'left' ? `${iconSizeWithPadding} minmax(0, 1fr)` : `minmax(0, 1fr)${iconSizeWithPadding}`;
+  return iconAlign === 'left' ? `${iconSizeWithPadding} minmax(0, 1fr)` : `minmax(0, 1fr) ${iconSizeWithPadding}`;
 };
 
 /** @internal */

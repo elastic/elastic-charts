@@ -139,8 +139,8 @@ export const Metric: React.FunctionComponent<{
   onElementOver,
   onElementOut,
 }) => {
-  const { progressBarThinkness } = textDimensions.heightBasedSizes;
-  const progressBarSize = progressBarMap[progressBarThinkness] ?? 'medium';
+  const { progressBarThickness } = textDimensions.heightBasedSizes;
+  const progressBarSize = progressBarMap[progressBarThickness] ?? 'medium';
 
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
   const [lastMouseDownTimestamp, setLastMouseDownTimestamp] = useState<number>(0);

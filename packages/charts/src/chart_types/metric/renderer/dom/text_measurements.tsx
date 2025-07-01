@@ -28,7 +28,7 @@ export interface HeightBasedSizes {
   extraFontSize: number;
   valueFontSize: number;
   valuePartFontSize: number;
-  progressBarThinkness: number;
+  progressBarThickness: number;
 }
 
 type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
@@ -171,9 +171,9 @@ export function getMetricTextPartDimensions(
   const hasVerticalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Vertical;
   const hasHorizontalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Horizontal;
 
-  const { progressBarThinkness, iconSize } = heightBasedSizes;
+  const { progressBarThickness, iconSize } = heightBasedSizes;
 
-  const progressBarTotalSpace = progressBarThinkness + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0) + PADDING;
+  const progressBarTotalSpace = progressBarThickness + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0) + PADDING;
   const progressBarWidth = hasVerticalProgressBar ? progressBarTotalSpace : 0;
   const progressBarHeight = hasHorizontalProgressBar ? progressBarTotalSpace : 0;
 
@@ -217,7 +217,7 @@ function getHeightBasedFontSizes(
     extraFontSize: EXTRA_FONT_SIZE[size],
     valueFontSize,
     valuePartFontSize,
-    progressBarThinkness: PROGRESS_BAR_THICKNESS[size],
+    progressBarThickness: PROGRESS_BAR_THICKNESS[size],
   };
 }
 
