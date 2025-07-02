@@ -10,7 +10,7 @@ import React, { useRef, memo, useState } from 'react';
 import { connect } from 'react-redux';
 
 import type { PartitionData } from '../../chart_types/partition_chart/state/selectors/get_screen_reader_data';
-import { getScreenReaderDataSelector } from '../../chart_types/partition_chart/state/selectors/get_screen_reader_data';
+import { getPartitionScreenReaderDataSelector } from '../../chart_types/partition_chart/state/selectors/get_screen_reader_data';
 import type { SettingsSpec } from '../../specs/settings';
 import type { GlobalChartState } from '../../state/chart_state';
 import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
@@ -128,7 +128,7 @@ const mapStateToProps = (state: GlobalChartState): ScreenReaderPartitionTablePro
   }
   return {
     a11ySettings: getA11ySettingsSelector(state),
-    partitionData: getScreenReaderDataSelector(state),
+    partitionData: getPartitionScreenReaderDataSelector(state),
     debug: getSettingsSpecSelector(state).debug,
   };
 };

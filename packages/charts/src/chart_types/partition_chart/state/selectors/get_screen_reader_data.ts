@@ -8,6 +8,7 @@
 
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
+import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { STATISTICS_KEY } from '../../layout/utils/group_by_rollup';
@@ -59,7 +60,7 @@ const getScreenReaderDataForPartitions = (
 };
 
 /** @internal */
-export const getScreenReaderDataSelector = createCustomCachedSelector(
+export const getPartitionScreenReaderDataSelector = createCustomCachedSelector(
   [getPartitionSpecs, partitionMultiGeometries],
   (specs, shapeViewModel): PartitionData => {
     if (specs.length === 0) {
@@ -73,6 +74,33 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
       hasMultipleLayers: (specs[0]?.layers.length ?? NaN) > 1,
       isSmallMultiple: shapeViewModel.length > 1,
       data: getScreenReaderDataForPartitions(specs, shapeViewModel),
+    };
+  },
+);
+
+/** @internal */
+export const getScreenReaderDataSelector = createCustomCachedSelector(
+  [getPartitionScreenReaderDataSelector],
+  (partitionData): ChartSpecificScreenReaderData => {
+    const summaryParts: string[] = [];
+
+    // Add partition-specific accessibility information
+    if (partitionData.data.length > 0) {
+      const totalItems = partitionData.data.length;
+      summaryParts.push(`${totalItems} data ${totalItems === 1 ? 'point' : 'points'}`);
+
+      if (partitionData.hasMultipleLayers) {
+        summaryParts.push('with hierarchical layers');
+      }
+
+      if (partitionData.isSmallMultiple) {
+        summaryParts.push('in small multiples layout');
+      }
+    }
+
+    return {
+      data: partitionData,
+      summaryParts,
     };
   },
 );

@@ -11,6 +11,7 @@ import { getChartTypeDescriptionSelector } from './selectors/get_chart_type_desc
 import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getLegendItemsLabels } from './selectors/get_legend_items_labels';
+import { getScreenReaderDataSelector } from './selectors/get_screen_reader_data';
 import { isTooltipVisibleSelector } from './selectors/is_tooltip_visible';
 import { createOnElementClickCaller } from './selectors/on_element_click_caller';
 import { createOnElementOutCaller } from './selectors/on_element_out_caller';
@@ -58,6 +59,7 @@ export const chartSelectorsFactory = createChartSelectorsFactory(
 
     getDebugState: getDebugStateSelector,
     getChartTypeDescription: getChartTypeDescriptionSelector,
+    getScreenReaderData: getScreenReaderDataSelector,
   },
   // event callbacks
   [createOnElementClickCaller, createOnElementOverCaller, createOnElementOutCaller],
