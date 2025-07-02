@@ -51,21 +51,23 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const updatedDomain = scale.domain() as GenericDomain;
   const [domainMin, domainMax] = sortNumbers(updatedDomain) as ContinuousDomain;
   const scaledValue = scale(value);
+
+  // Progress bar
   const [min, max] = sortNumbers([scale(0), scaledValue]);
+  const safeStartPosition = Math.max(0, min);
+  const endPosition = 100 - max;
+  const safeEndPosition = Math.max(0, endPosition);
   const positionStyle = isVertical
     ? {
-        bottom: `${min}%`,
-        top: `${100 - max}%`,
+        bottom: `${safeStartPosition}%`,
+        top: `${safeEndPosition}%`,
       }
     : {
-        left: `${min}%`,
-        right: `${100 - max}%`,
+        left: `${safeStartPosition}%`,
+        right: `${safeEndPosition}%`,
       };
 
-  const overrideBorderRadius =
-    (isVertical && positionStyle.top === '0%') || (!isVertical && positionStyle.right === '0%')
-      ? `${PROGRESS_BAR_BORDER_RADIUS}px`
-      : undefined;
+  const progressBarBorderRadius = endPosition <= 0 ? `${PROGRESS_BAR_BORDER_RADIUS}px` : undefined;
 
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${TARGET_SIZE / 2}px)`;
   const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
@@ -102,7 +104,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       )}
       <div
         className={getDirectionalClasses('ProgressBar', isVertical, size)}
-        style={{ ...positionStyle, borderRadius: overrideBorderRadius, backgroundColor: blendedBarColor }}
+        style={{ ...positionStyle, borderRadius: progressBarBorderRadius, backgroundColor: blendedBarColor }}
         role="meter"
         title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
         aria-label={title ? `${labelType} of ${title}` : labelType}

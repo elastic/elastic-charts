@@ -55,6 +55,7 @@ $progress-bar-border-radius: 8px;
 
 .echSingleMetricProgressBar {
   transition: background-color ease-in-out 0.1s;
+  max-width: 100%;
 
   &--vertical {
     position: absolute;
