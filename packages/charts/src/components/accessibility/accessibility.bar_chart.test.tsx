@@ -95,7 +95,6 @@ describe('Bar chart accessibility with realistic data', () => {
         <Settings debug rendering="svg" />
         <BarSeries
           id="stacked-issues"
-          name="Issues"
           data={stackedData}
           xAccessor="vizType"
           yAccessors={['count']}
@@ -106,9 +105,7 @@ describe('Bar chart accessibility with realistic data', () => {
     );
 
     // Assert the full a11y summary for stacked charts
-    expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
-      'Stacked bar chart with 2 bars: Issues, Issues.',
-    );
+    expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Stacked bar chart with 2 bars: Bug, Other.');
   });
 
   it('should include axis descriptions in a11y summary when Axis specs are provided', () => {
@@ -117,13 +114,7 @@ describe('Bar chart accessibility with realistic data', () => {
         <Settings debug rendering="svg" />
         <Axis id="bottom" position={Position.Bottom} title="Visualization Type" />
         <Axis id="left" position={Position.Left} title="Issue Count" />
-        <BarSeries
-          id="issues"
-          name="Issues"
-          data={GITHUB_DATASET.slice(0, 6)}
-          xAccessor="vizType"
-          yAccessors={['count']}
-        />
+        <BarSeries id="issues" data={GITHUB_DATASET.slice(0, 6)} xAccessor="vizType" yAccessors={['count']} />
       </Chart>,
     );
 
