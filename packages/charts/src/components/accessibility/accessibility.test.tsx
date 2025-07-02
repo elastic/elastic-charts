@@ -66,7 +66,7 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Sunburst chart.');
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Sunburst chart. 10 data points.');
     });
     it('should include series type if treemap type', () => {
       render(
@@ -86,7 +86,7 @@ describe('Accessibility', () => {
           />
         </Chart>,
       );
-      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Treemap chart.');
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Treemap chart. 10 data points.');
     });
     it('should test defaults for screen reader data  table', () => {
       render(

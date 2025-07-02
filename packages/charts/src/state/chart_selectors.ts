@@ -35,6 +35,10 @@ export interface ScreenReaderItem {
 export interface ChartSpecificScreenReaderData {
   /** Custom summary parts to include in the consolidated summary */
   screenReaderItems?: ScreenReaderItem[];
+  /** Chart-specific data for screen reader summary */
+  data?: any;
+  /** Custom summary parts to include in the consolidated summary */
+  summaryParts?: string[];
 }
 
 /** @internal */

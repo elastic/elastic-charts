@@ -11,11 +11,6 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from './get_accessibil
 import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from './get_internal_is_intialized';
 import { ChartType } from '../../chart_types';
-import { computeSeriesDomainsSelector } from '../../chart_types/xy_chart/state/selectors/compute_series_domains';
-import { getAxisSpecsSelector, getSeriesSpecsSelector } from '../../chart_types/xy_chart/state/selectors/get_specs';
-import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
-import type { BasicSeriesSpec, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
-import { createAxisDescriptions } from '../../components/accessibility/axis_summary_utils';
 import { createChartTypeDescription } from '../../components/accessibility/chart_summary_utils';
 import type { ChartSpecificScreenReaderData } from '../chart_selectors';
 import type { GlobalChartState } from '../chart_state';
@@ -26,10 +21,8 @@ export interface ScreenReaderSummaryData {
   a11ySettings: A11ySettings;
   screenReaderData?: ChartSpecificScreenReaderData;
   chartTypeDescription: string;
-  seriesSpecs?: BasicSeriesSpec[];
-  axisSpecs?: AxisSpec[];
-  seriesDomains?: SeriesDomainsAndData;
   chartType: ChartType | null;
+  chartSpecificData?: ChartSpecificScreenReaderData;
   consolidatedSummary: string;
 }
 
@@ -37,10 +30,8 @@ const DEFAULT_SCREEN_READER_SUMMARY: ScreenReaderSummaryData = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
   screenReaderData: undefined,
   chartTypeDescription: '',
-  seriesSpecs: undefined,
-  axisSpecs: undefined,
-  seriesDomains: undefined,
   chartType: null,
+  chartSpecificData: undefined,
   consolidatedSummary: '',
 };
 
@@ -62,43 +53,41 @@ export const getScreenReaderSummarySelector = createCustomCachedSelector(
     const screenReaderData = internalChartState.getScreenReaderData?.(state);
 
     const chartTypeDescription = internalChartState.getChartTypeDescription(state);
-    let seriesSpecs: BasicSeriesSpec[] | undefined;
-    let axisSpecs: AxisSpec[] | undefined;
-    let seriesDomains: SeriesDomainsAndData | undefined;
 
-    if (chartType === ChartType.XYAxis) {
-      seriesSpecs = getSeriesSpecsSelector(state);
-      axisSpecs = getAxisSpecsSelector(state);
-      seriesDomains = computeSeriesDomainsSelector(state);
-    }
+    // Get chart-specific screen reader data
+    const chartSpecificData = internalChartState.getScreenReaderData?.(state);
 
     // Generate consolidated summary
     const parts: string[] = [];
 
-    // Chart type and series information
-    const chartDescription = createChartTypeDescription(chartTypeDescription, seriesSpecs, seriesDomains);
-    console.log('chartDescription', chartDescription);
-    if (chartDescription) {
-      parts.push(chartDescription);
+    // Chart type and series information - use chart-specific logic for XY charts
+    if (chartType === ChartType.XYAxis && chartSpecificData?.data) {
+      const { seriesSpecs, seriesDomains } = chartSpecificData.data;
+      const chartDescription = createChartTypeDescription(chartTypeDescription, seriesSpecs, seriesDomains);
+      if (chartDescription) {
+        parts.push(chartDescription);
+      }
+    } else {
+      // For other chart types, use the basic chart type description
+      if (chartTypeDescription) {
+        parts.push(chartTypeDescription);
+      }
     }
 
-    // Axis descriptions
-    if (axisSpecs && axisSpecs.length > 0 && seriesDomains) {
-      const axisDescriptions = createAxisDescriptions(axisSpecs, seriesDomains);
-      parts.push(...axisDescriptions);
+    // Add chart-specific summary parts
+    if (chartSpecificData?.summaryParts) {
+      parts.push(...chartSpecificData.summaryParts);
     }
 
-    const consolidatedSummary = `${parts.join('. ')}.`;
+    const consolidatedSummary = parts.length > 0 ? `${parts.join('. ')}.` : '';
 
     return {
       chartTypeDescription,
       a11ySettings,
       chartType,
-      screenReaderData,
-      seriesSpecs,
-      axisSpecs,
-      seriesDomains,
+      chartSpecificData,
       consolidatedSummary,
+      screenReaderData,
     };
   },
 );

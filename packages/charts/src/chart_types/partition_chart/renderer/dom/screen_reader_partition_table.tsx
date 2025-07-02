@@ -16,8 +16,8 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../stat
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { isNil } from '../../../../utils/common';
-import { getPartitionScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
 import type { PartitionData } from '../../state/selectors/get_screen_reader_data';
+import { getPartitionScreenReaderDataSelector } from '../../state/selectors/get_screen_reader_data';
 
 interface ScreenReaderPartitionTableProps {
   a11ySettings: A11ySettings;

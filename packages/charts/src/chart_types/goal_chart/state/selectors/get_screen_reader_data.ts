@@ -50,6 +50,11 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
       );
     }
 
-    return { screenReaderItems };
+    const summaryParts: string[] = [];
+
+    return {
+      summaryParts,
+      screenReaderItems,
+    };
   },
 );
