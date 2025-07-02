@@ -813,8 +813,8 @@ describe('Axis computational utils', () => {
   });
 
   test('should omit first tick on first layer if offset', () => {
-    const start = DateTime.fromISO('2019-01-11T00:11:00.000').setZone('utc+1').toMillis();
-    const end = DateTime.fromISO('2019-01-11T04:11:00.000').setZone('utc+1').toMillis();
+    const start = DateTime.fromISO('2019-01-11T00:11:00.000', { zone: 'utc' }).toMillis();
+    const end = DateTime.fromISO('2019-01-11T04:11:00.000', { zone: 'utc' }).toMillis();
     const formatter = niceTimeFormatter([start, end]);
     const xDomainTime = MockXDomain.fromScaleType(ScaleType.Time, {
       isBandScale: false,
@@ -826,7 +826,7 @@ describe('Axis computational utils', () => {
       totalBarsInCluster: 0,
       range: [0, 603.5],
     });
-    const tickFormatOption = { timeZone: 'utc+1' };
+    const tickFormatOption = { timeZone: 'utc' };
     const result = generateTicks(
       scale,
       scale.ticks(),
@@ -840,51 +840,19 @@ describe('Axis computational utils', () => {
 
     expect(result).toHaveLength(8);
     expect(result).toMatchObject([
-      {
-        label: '07:30:00',
-        layer: 0,
-        value: 1547188200000,
-      },
-      {
-        label: '08:00:00',
-        layer: 0,
-        value: 1547190000000,
-      },
-      {
-        label: '08:30:00',
-        layer: 0,
-        value: 1547191800000,
-      },
-      {
-        label: '09:00:00',
-        layer: 0,
-        value: 1547193600000,
-      },
-      {
-        label: '09:30:00',
-        layer: 0,
-        value: 1547195400000,
-      },
-      {
-        label: '10:00:00',
-        layer: 0,
-        value: 1547197200000,
-      },
-      {
-        label: '10:30:00',
-        layer: 0,
-        value: 1547199000000,
-      },
-      {
-        label: '11:00:00',
-        layer: 0,
-        value: 1547200800000,
-      },
+      { label: '00:30:00', value: 1547166600000 },
+      { label: '01:00:00', value: 1547168400000 },
+      { label: '01:30:00', value: 1547170200000 },
+      { label: '02:00:00', value: 1547172000000 },
+      { label: '02:30:00', value: 1547173800000 },
+      { label: '03:00:00', value: 1547175600000 },
+      { label: '03:30:00', value: 1547177400000 },
+      { label: '04:00:00', value: 1547179200000 },
     ]);
   });
 
   test('should use custom tick formatter', () => {
-    const start = DateTime.fromISO('2019-01-11T00:00:00.000').setZone('utc+1').toMillis();
+    const start = DateTime.fromISO('2019-01-11T00:00:00.000', { zone: 'utc' }).toMillis();
     const interval = moment.duration(1, 'day').asMilliseconds();
     const end = start + interval * 31;
     const tickFormat = niceTimeFormatter([start, end]);
@@ -898,24 +866,25 @@ describe('Axis computational utils', () => {
     const tickFormatOption = { timeZone: 'utc+1' };
     const result = generateTicks(scale, scale.ticks(), 0, (v) => tickFormat(v, tickFormatOption), 0, 0, true, false);
 
-    expect(result).toHaveLength(16);
+    expect(result).toHaveLength(17);
     expect(result).toMatchObject([
-      { value: 1547337600000, label: '2019-01-13' },
-      { value: 1547510400000, label: '2019-01-15' },
-      { value: 1547683200000, label: '2019-01-17' },
-      { value: 1547856000000, label: '2019-01-19' },
-      { value: 1548028800000, label: '2019-01-21' },
-      { value: 1548201600000, label: '2019-01-23' },
-      { value: 1548374400000, label: '2019-01-25' },
-      { value: 1548547200000, label: '2019-01-27' },
-      { value: 1548720000000, label: '2019-01-29' },
-      { value: 1548892800000, label: '2019-01-31' },
-      { value: 1548979200000, label: '2019-02-01' },
-      { value: 1549152000000, label: '2019-02-03' },
-      { value: 1549324800000, label: '2019-02-05' },
-      { value: 1549497600000, label: '2019-02-07' },
-      { value: 1549670400000, label: '2019-02-09' },
-      { value: 1549843200000, label: '2019-02-11' },
+      { label: '2019-01-11', value: 1547164800000 },
+      { label: '2019-01-13', value: 1547337600000 },
+      { label: '2019-01-15', value: 1547510400000 },
+      { label: '2019-01-17', value: 1547683200000 },
+      { label: '2019-01-19', value: 1547856000000 },
+      { label: '2019-01-21', value: 1548028800000 },
+      { label: '2019-01-23', value: 1548201600000 },
+      { label: '2019-01-25', value: 1548374400000 },
+      { label: '2019-01-27', value: 1548547200000 },
+      { label: '2019-01-29', value: 1548720000000 },
+      { label: '2019-01-31', value: 1548892800000 },
+      { label: '2019-02-01', value: 1548979200000 },
+      { label: '2019-02-03', value: 1549152000000 },
+      { label: '2019-02-05', value: 1549324800000 },
+      { label: '2019-02-07', value: 1549497600000 },
+      { label: '2019-02-09', value: 1549670400000 },
+      { label: '2019-02-11', value: 1549843200000 },
     ]);
   });
 
