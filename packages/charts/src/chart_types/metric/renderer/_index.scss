@@ -76,7 +76,6 @@ $padding: 8px;
       }
     }
 
-    // Override padding-left if there is a target
     &.echMetric--withTargetProgressBar {
       &--small {
         padding-left: $progress-bar-width-small + $padding + $progress-bar-target-width;
@@ -103,7 +102,6 @@ $padding: 8px;
       }
     }
 
-    // Override padding-bottom if there is a target
     &.echMetric--withTargetProgressBar {
       &--small {
         padding-bottom: $progress-bar-height-small + $padding + $progress-bar-target-height;

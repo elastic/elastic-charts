@@ -2,7 +2,6 @@ $progress-bar-border-radius: 8px;
 
 .echSingleMetricProgress {
   position: absolute;
-  overflow: hidden;
   border-radius: $progress-bar-border-radius;
 
   &--vertical {
@@ -58,9 +57,9 @@ $progress-bar-border-radius: 8px;
   transition: background-color ease-in-out 0.1s;
   max-width: 100%;
   max-height: 100%;
-  position: absolute;
 
   &--vertical {
+    position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
@@ -68,6 +67,7 @@ $progress-bar-border-radius: 8px;
   }
 
   &--horizontal {
+    position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
@@ -76,7 +76,6 @@ $progress-bar-border-radius: 8px;
 }
 
 .echSingleMetricTarget {
-  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,32 +84,14 @@ $progress-bar-border-radius: 8px;
 
   &--vertical {
     transform: rotate(90deg);
-
-    &.echSingleMetricTarget--small {
-      left: calc($padding + $progress-bar-width-small);
-    }
-
-    &.echSingleMetricTarget--medium {
-      left: calc($padding + $progress-bar-width-medium);
-    }
-
-    &.echSingleMetricTarget--large {
-      left: calc($padding + $progress-bar-width-large);
-    }
+    position: absolute;
+    left: 100%;
+    bottom: 0;
   }
 
   &--horizontal {
-    &.echSingleMetricTarget--small {
-      bottom: calc($padding + $progress-bar-height-small);
-    }
-
-    &.echSingleMetricTarget--medium {
-      bottom: calc($padding + $progress-bar-height-medium);
-    }
-
-    &.echSingleMetricTarget--large {
-      bottom: calc($padding + $progress-bar-height-large);
-    }
+    position: absolute;
+    bottom: 100%;
   }
 }
 
@@ -119,43 +100,28 @@ $progress-bar-border-radius: 8px;
   justify-content: center;
   align-items: center;
   overflow: visible;
-
   $line-width: 2px;
   $line-length: 13px;
 
   &--vertical {
     position: absolute;
-    height: $line-width;
-    width: $line-length;
+    left: 0;
 
     &.echSingleMetricZeroBaseline--small {
-      left: calc($padding + ($progress-bar-width-small / 2) - ($line-width / 2));
-    }
-
-    &.echSingleMetricZeroBaseline--medium {
-      left: calc($padding + ($progress-bar-width-medium / 2) - ($line-width / 2));
-    }
-
-    &.echSingleMetricZeroBaseline--large {
-      left: calc($padding + ($progress-bar-width-large / 2) - ($line-width / 2));
+      right: auto;
+      height: $line-width;
+      width: $line-length;
     }
   }
 
   &--horizontal {
     position: absolute;
-    width: $line-width;
-    height: $line-length;
+    bottom: 0;
 
     &.echSingleMetricZeroBaseline--small {
-      bottom: calc($padding + ($progress-bar-height-small / 2) - ($line-length / 2));
-    }
-
-    &.echSingleMetricZeroBaseline--medium {
-      bottom: calc($padding + ($progress-bar-height-medium / 2) - ($line-length / 2));
-    }
-
-    &.echSingleMetricZeroBaseline--large {
-      bottom: calc($padding + ($progress-bar-height-large / 2) - ($line-length / 2));
+      top: auto;
+      width: $line-width;
+      height: $line-length;
     }
   }
 }

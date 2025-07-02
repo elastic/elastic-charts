@@ -8,6 +8,7 @@
 
 import classNames from 'classnames';
 import { scaleLinear } from 'd3-scale';
+import type { CSSProperties } from 'react';
 import React from 'react';
 
 import type { ProgressBarSize } from './metric';
@@ -19,6 +20,11 @@ import type { ContinuousDomain, GenericDomain } from '../../../../utils/domain';
 import type { BulletMetricWProgress, MetricWProgress } from '../../specs';
 import { isBulletMetric } from '../../specs';
 
+/**
+ * Synced with _progress.scss
+ * @internal
+ */
+const PROGRESS_BAR_BORDER_RADIUS = 8;
 const BASELINE_SIZE = 2;
 
 interface ProgressBarProps {
@@ -50,39 +56,61 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const [domainMin, domainMax] = sortNumbers(updatedDomain) as ContinuousDomain;
   const scaledValue = scale(value);
   const [min, max] = sortNumbers([scale(0), scaledValue]);
+  const endValue = 100 - max;
+  const safeStartValue = Math.max(0, min);
+  const safeEndValue = Math.max(0, endValue);
   const positionStyle = isVertical
     ? {
-        bottom: `${min}%`,
-        top: `${100 - max}%`,
+        bottom: `${safeStartValue}%`,
+        top: `${safeEndValue}%`,
       }
     : {
-        left: `${min}%`,
-        right: `${100 - max}%`,
+        left: `${safeStartValue}%`,
+        right: `${safeEndValue}%`,
       };
+
+  let borderRadius: CSSProperties = {};
+  if (!isVertical && endValue <= 0) {
+    borderRadius = {
+      ...borderRadius,
+      borderTopRightRadius: PROGRESS_BAR_BORDER_RADIUS,
+      borderBottomRightRadius: PROGRESS_BAR_BORDER_RADIUS,
+    };
+  }
+  if (!isVertical && min <= 0) {
+    borderRadius = {
+      ...borderRadius,
+      borderTopLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
+      borderBottomLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
+    };
+  }
+
+  // For vertical progress bar
+  if (isVertical && endValue <= 0) {
+    borderRadius = {
+      ...borderRadius,
+      borderTopLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
+      borderTopRightRadius: PROGRESS_BAR_BORDER_RADIUS,
+    };
+  }
+  if (isVertical && min <= 0) {
+    borderRadius = {
+      ...borderRadius,
+      borderBottomLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
+      borderBottomRightRadius: PROGRESS_BAR_BORDER_RADIUS,
+    };
+  }
 
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
   const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
-
   const labelType = isBullet ? 'Value' : 'Percentage';
 
   return (
-    <div>
-      <div
-        className={getDirectionalClasses('Progress', isVertical, size)}
-        style={{ backgroundColor: barBackground }}
-        title={!isBullet ? '' : `${updatedDomain[0]} to ${updatedDomain[1]}`}
-      >
-        <div
-          className={getDirectionalClasses('ProgressBar', isVertical, size)}
-          style={{ ...positionStyle, backgroundColor: blendedBarColor }}
-          role="meter"
-          title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
-          aria-label={title ? `${labelType} of ${title}` : labelType}
-          aria-valuemin={isBullet ? domainMin : 0}
-          aria-valuemax={isBullet ? domainMax : 100}
-          aria-valuenow={isBullet ? value : scaledValue}
-        />
-      </div>
+    <div
+      className={getDirectionalClasses('Progress', isVertical, size)}
+      style={{ backgroundColor: barBackground }}
+      title={!isBullet ? '' : `${updatedDomain[0]} to ${updatedDomain[1]}`}
+    >
       {targetPlacement && (
         <div
           className={getDirectionalClasses('Target', isVertical, size)}
@@ -111,6 +139,16 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
           }}
         />
       )}
+      <div
+        className={getDirectionalClasses('ProgressBar', isVertical, size)}
+        style={{ ...positionStyle, ...borderRadius, backgroundColor: blendedBarColor }}
+        role="meter"
+        title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
+        aria-label={title ? `${labelType} of ${title}` : labelType}
+        aria-valuemin={isBullet ? domainMin : 0}
+        aria-valuemax={isBullet ? domainMax : 100}
+        aria-valuenow={isBullet ? value : scaledValue}
+      />
     </div>
   );
 };
