@@ -109,6 +109,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     ...(showValueIcon ? { valueIcon: getIcon(valueIconType) } : {}),
   };
 
+  const target = number('target', 75, { range: true, min: -200, max: 200 });
+
   const numericData: MetricWProgress | MetricWNumber | MetricWTrend = {
     ...data,
     value: Number.parseFloat(value),
@@ -122,6 +124,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
           trendA11yDescription,
         }
       : {}),
+    target,
   };
   const textualData: MetricWText | MetricWTrend = {
     ...data,

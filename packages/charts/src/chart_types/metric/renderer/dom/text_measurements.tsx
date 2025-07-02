@@ -44,7 +44,11 @@ type ElementVisibility = {
 /** @internal */
 export const PADDING = 8;
 
-const PROGRESS_BAR_TARGET_WIDTH = 4;
+/**
+ * Synced with _index.scss
+ * @internal
+ */
+export const PROGRESS_BAR_TARGET_SIZE = 8;
 const LINE_HEIGHT = 1.2; // aligned with our CSS
 const HEIGHT_BP: [number, number, BreakPoint][] = [
   [0, 100, 'xxxs'],
@@ -173,7 +177,7 @@ export function getMetricTextPartDimensions(
 
   const { progressBarThickness, iconSize } = heightBasedSizes;
 
-  const progressBarTotalSpace = progressBarThickness + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0) + PADDING;
+  const progressBarTotalSpace = progressBarThickness + (hasTarget ? PROGRESS_BAR_TARGET_SIZE : 0) + PADDING;
   const progressBarWidth = hasVerticalProgressBar ? progressBarTotalSpace : 0;
   const progressBarHeight = hasHorizontalProgressBar ? progressBarTotalSpace : 0;
 
