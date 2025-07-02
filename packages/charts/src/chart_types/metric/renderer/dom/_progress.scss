@@ -2,6 +2,7 @@ $progress-bar-border-radius: 8px;
 
 .echSingleMetricProgress {
   position: absolute;
+  overflow: hidden;
   border-radius: $progress-bar-border-radius;
 
   &--vertical {
@@ -56,6 +57,7 @@ $progress-bar-border-radius: 8px;
 .echSingleMetricProgressBar {
   transition: background-color ease-in-out 0.1s;
   max-width: 100%;
+  max-height: 100%;
 
   &--vertical {
     position: absolute;
@@ -63,7 +65,6 @@ $progress-bar-border-radius: 8px;
     right: 0;
     bottom: 0;
     width: 100%;
-    border-radius: 0 0 $progress-bar-border-radius $progress-bar-border-radius;
   }
 
   &--horizontal {
@@ -72,7 +73,6 @@ $progress-bar-border-radius: 8px;
     bottom: 0;
     left: 0;
     height: 100%;
-    border-radius: $progress-bar-border-radius 0 0 $progress-bar-border-radius;
   }
 }
 
