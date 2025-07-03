@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
@@ -80,9 +81,14 @@ export const getPartitionScreenReaderDataSelector = createCustomCachedSelector(
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [getPartitionScreenReaderDataSelector],
-  (partitionData): ChartSpecificScreenReaderData => {
+  [getPartitionScreenReaderDataSelector, getChartTypeDescriptionSelector],
+  (partitionData, chartTypeDescription): ChartSpecificScreenReaderData => {
     const summaryParts: string[] = [];
+
+    // Add chart type description first
+    if (chartTypeDescription) {
+      summaryParts.push(chartTypeDescription);
+    }
 
     // Add partition-specific accessibility information
     if (partitionData.data.length > 0) {
