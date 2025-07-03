@@ -8,7 +8,7 @@
 
 import { getGoalChartDataSelector, getGoalChartLabelsSelector } from './get_goal_chart_data';
 import type { ChartType } from '../../../../chart_types';
-import { createGoalChartDescription } from '../../../../components/accessibility/goal_chart_summary_utils';
+import { createGoalChartDescription } from '../../utils/summary_utils';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Chart should render the legend name test 1`] = `
 "<Chart size={{...}} id="chart1" renderer="canvas">
@@ -69,25 +69,21 @@ exports[`Chart should render the legend name test 1`] = `
                 </Connect(CursorBand)>
                 <Connect(XYChart) forwardCanvasRef={{...}}>
                   <XYChart forwardCanvasRef={{...}} locale="en-US" isRTL={false} initialized={true} isChartEmpty={false} debug={true} geometries={{...}} geometriesIndex={{...}} theme={{...}} chartContainerDimensions={{...}} highlightedLegendItem={[undefined]} hoveredAnnotationIds={{...}} rotation={0} renderingArea={{...}} chartTransform={{...}} axesSpecs={{...}} perPanelAxisGeoms={{...}} perPanelGridLines={{...}} axesStyles={{...}} annotationDimensions={{...}} annotationSpecs={{...}} panelGeoms={{...}} a11ySettings={{...}} onChartRendered={[Function (anonymous)]}>
-                    <figure aria-labelledby={[undefined]} aria-describedby="chart1--defaultSummary">
+                    <figure aria-labelledby={[undefined]} aria-describedby="chart1--defaultSummary-summary chart1--defaultSummary" tabIndex={0}>
                       <canvas dir="ltr" className="echCanvasRenderer" width={170} height={200} style={{...}} role="presentation" />
                     </figure>
                     <Connect(ScreenReaderSummaryComponent)>
                       <ScreenReaderSummaryComponent chartTypeDescription="bar chart" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function (anonymous)]}>
-                        <div className="echScreenReaderOnly">
+                        <figcaption className="echScreenReaderOnly" id="chart1--defaultSummary-summary">
                           <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} goalChartLabels={{...}} />
                           <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} />
                           <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} chartTypeDescription="bar chart" goalChartData={{...}}>
-                            <dl>
-                              <dt>
-                                Chart type:
-                              </dt>
-                              <dd id="chart1--defaultSummary">
-                                bar chart
-                              </dd>
-                            </dl>
+                            <div>
+                              Chart type: 
+                              bar chart
+                            </div>
                           </ScreenReaderTypes>
-                        </div>
+                        </figcaption>
                       </ScreenReaderSummaryComponent>
                     </Connect(ScreenReaderSummaryComponent)>
                   </XYChart>
