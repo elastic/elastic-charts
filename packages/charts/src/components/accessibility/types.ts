@@ -6,13 +6,13 @@
  * Side Public License, v 1.
  */
 
-import type { GlobalChartState } from '../../state/chart_state';
-import {
-  getScreenReaderSummarySelector,
-  type ScreenReaderSummaryData,
-} from '../../state/selectors/get_screen_reader_summary';
-
-/** @internal */
-export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryData => {
-  return getScreenReaderSummarySelector(state);
-};
+/**
+ * Generic interface for chart label data
+ * @internal
+ */
+export interface ChartLabelData {
+  /** Primary label for the chart */
+  primaryLabel?: string;
+  /** Secondary label for additional context */
+  secondaryLabel?: string;
+}
