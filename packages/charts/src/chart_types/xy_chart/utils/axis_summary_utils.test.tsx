@@ -7,9 +7,9 @@
  */
 
 import { createAxisDescriptions } from './axis_summary_utils';
-import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
-import type { AxisSpec } from '../../chart_types/xy_chart/utils/specs';
-import { Position } from '../../utils/common';
+import type { AxisSpec } from './specs';
+import { Position } from '../../../utils/common';
+import type { SeriesDomainsAndData } from '../state/utils/types';
 
 describe('createAxisDescriptions', () => {
   const mockXAxisSpec: AxisSpec = {
