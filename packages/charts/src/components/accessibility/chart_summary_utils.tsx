@@ -17,11 +17,11 @@ function getDataSummary(seriesDomains: SeriesDomainsAndData): string {
   if (dataCount === 0) return '';
 
   if (xDomain?.type === 'ordinal') {
-    return `with ${dataCount} categories`;
+    return `with ${dataCount} ${dataCount === 1 ? 'category' : 'categories'}`;
   } else if (xDomain?.type === 'time') {
-    return `with ${dataCount} time periods`;
+    return `with ${dataCount} time ${dataCount === 1 ? 'period' : 'periods'}`;
   }
-  return `with ${dataCount} data points`;
+  return `with ${dataCount} data ${dataCount === 1 ? 'point' : 'points'}`;
 }
 
 function getValueRangeContext(seriesDomains: SeriesDomainsAndData): string {
@@ -39,6 +39,12 @@ function getValueRangeContext(seriesDomains: SeriesDomainsAndData): string {
   const min = Math.min(...yValues);
   const max = Math.max(...yValues);
 
+  if (min === max) {
+    if (yValues.length === 1) {
+      return `, value is ${min}`;
+    }
+    return `, all values are ${min}`;
+  }
   return `, values ranging from ${min} to ${max}`;
 }
 
