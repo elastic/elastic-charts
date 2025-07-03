@@ -29,9 +29,7 @@ describe('Accessibility', () => {
           <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
-      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe(
-        'Bar chart with 1 categories, values ranging from 2 to 2.',
-      );
+      expect(screen.getByTestId('echScreenReaderSummary').textContent).toBe('Bar chart with 1 category, value is 2.');
     });
     it('should include the series types if multiple types of series', () => {
       render(

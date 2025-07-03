@@ -67,34 +67,25 @@ describe('Get screen reader data', () => {
     MockStore.addSpecs([spec1], store);
     const expected = getPartitionScreenReaderDataSelector(store.getState());
     expect(expected).toEqual({
-      data: {
-        data: [
-          { depth: 1, label: 'aaa', panelTitle: '', parentName: 'none', percentage: '100%', value: 3, valueText: '3' },
-          { depth: 2, label: 'aa', panelTitle: '', parentName: 'aaa', percentage: '67%', value: 2, valueText: '2' },
-          { depth: 3, label: '1', panelTitle: '', parentName: 'aa', percentage: '33%', value: 1, valueText: '1' },
-          { depth: 3, label: '3', panelTitle: '', parentName: 'aa', percentage: '33%', value: 1, valueText: '1' },
-          { depth: 2, label: 'bb', panelTitle: '', parentName: 'aaa', percentage: '33%', value: 1, valueText: '1' },
-          { depth: 3, label: '4', panelTitle: '', parentName: 'bb', percentage: '33%', value: 1, valueText: '1' },
-        ],
-        hasMultipleLayers: true,
-        isSmallMultiple: false,
-      },
-      summaryParts: [
-        '6 data points',
-        'with hierarchical layers',
+      data: [
+        { depth: 1, label: 'aaa', panelTitle: '', parentName: 'none', percentage: '100%', value: 3, valueText: '3' },
+        { depth: 2, label: 'aa', panelTitle: '', parentName: 'aaa', percentage: '67%', value: 2, valueText: '2' },
+        { depth: 3, label: '1', panelTitle: '', parentName: 'aa', percentage: '33%', value: 1, valueText: '1' },
+        { depth: 3, label: '3', panelTitle: '', parentName: 'aa', percentage: '33%', value: 1, valueText: '1' },
+        { depth: 2, label: 'bb', panelTitle: '', parentName: 'aaa', percentage: '33%', value: 1, valueText: '1' },
+        { depth: 3, label: '4', panelTitle: '', parentName: 'bb', percentage: '33%', value: 1, valueText: '1' },
       ],
+      hasMultipleLayers: true,
+      isSmallMultiple: false,
     });
   });
   it('should compute screen reader data for no slices in pie', () => {
     MockStore.addSpecs([specNoSlice], store);
     const expected = getPartitionScreenReaderDataSelector(store.getState());
     expect(expected).toEqual({
-      data: {
-        data: [],
-        hasMultipleLayers: true,
-        isSmallMultiple: false,
-      },
-      summaryParts: [],
+      data: [],
+      hasMultipleLayers: true,
+      isSmallMultiple: false,
     });
   });
 });
