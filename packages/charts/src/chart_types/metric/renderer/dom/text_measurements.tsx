@@ -167,7 +167,7 @@ export function getMetricTextPartDimensions(
   style: MetricStyle,
   locale: string,
 ): MetricTextDimensions {
-  const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, panel.height, style);
+  const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, Math.min(panel.height, panel.width), style);
   const hasProgressBar = isMetricWProgress(datum);
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
