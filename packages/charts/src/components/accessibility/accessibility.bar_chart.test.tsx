@@ -41,6 +41,44 @@ describe('Bar chart accessibility with realistic data', () => {
     expect(screenReaderContent).toBe('Bar chart with 5 categories, values ranging from 28 to 91.');
   });
 
+  it('should generate dynamic a11y summary for single category bar chart', () => {
+    // Test data with a single category to verify singular form
+    const testData = [{ category: 'A', amount: 2 }];
+
+    const wrapper = mount(
+      <Chart size={[500, 300]} id="single-category-bar-chart">
+        <Settings debug rendering="svg" />
+        <BarSeries id="bars" data={testData} xAccessor="category" yAccessors={['amount']} />
+      </Chart>,
+    );
+
+    const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
+
+    // Single category should use singular form and single value wording
+    expect(screenReaderContent).toBe('Bar chart with 1 category, value is 2.');
+  });
+
+  it('should generate dynamic a11y summary for chart with all same values', () => {
+    // Test data with multiple categories but all same values
+    const testData = [
+      { category: 'A', amount: 10 },
+      { category: 'B', amount: 10 },
+      { category: 'C', amount: 10 },
+    ];
+
+    const wrapper = mount(
+      <Chart size={[500, 300]} id="same-values-bar-chart">
+        <Settings debug rendering="svg" />
+        <BarSeries id="bars" data={testData} xAccessor="category" yAccessors={['amount']} />
+      </Chart>,
+    );
+
+    const screenReaderContent = wrapper.find('.echScreenReaderOnly').text();
+
+    // Should use "all values are" instead of "ranging from X to X"
+    expect(screenReaderContent).toBe('Bar chart with 3 categories, all values are 10.');
+  });
+
   it('should generate dynamic a11y summary for grouped bar chart', () => {
     const wrapper = mount(
       <Chart size={[400, 250]} id="multi-group-bar">
