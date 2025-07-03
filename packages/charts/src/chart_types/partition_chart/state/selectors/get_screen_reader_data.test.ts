@@ -68,7 +68,7 @@ describe('Get screen reader data', () => {
     const expected = getScreenReaderDataSelector(store.getState());
     expect(expected).toEqual({
       data: {
-        data: [
+        sections: [
           { depth: 1, label: 'aaa', panelTitle: '', parentName: 'none', percentage: '100%', value: 3, valueText: '3' },
           { depth: 2, label: 'aa', panelTitle: '', parentName: 'aaa', percentage: '67%', value: 2, valueText: '2' },
           { depth: 3, label: '1', panelTitle: '', parentName: 'aa', percentage: '33%', value: 1, valueText: '1' },
@@ -87,7 +87,7 @@ describe('Get screen reader data', () => {
     const expected = getScreenReaderDataSelector(store.getState());
     expect(expected).toEqual({
       data: {
-        data: [],
+        sections: [],
         hasMultipleLayers: true,
         isSmallMultiple: false,
       },
