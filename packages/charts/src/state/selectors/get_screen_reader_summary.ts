@@ -10,8 +10,7 @@ import type { A11ySettings } from './get_accessibility_config';
 import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from './get_accessibility_config';
 import { getInternalChartStateSelector } from './get_internal_chart_state';
 import { getInternalIsInitializedSelector, InitStatus } from './get_internal_is_intialized';
-import { ChartType } from '../../chart_types';
-import { createChartTypeDescription } from '../../components/accessibility/chart_summary_utils';
+import type { ChartType } from '../../chart_types';
 import type { ChartSpecificScreenReaderData } from '../chart_selectors';
 import type { GlobalChartState } from '../chart_state';
 import { createCustomCachedSelector } from '../create_selector';
@@ -60,23 +59,12 @@ export const getScreenReaderSummarySelector = createCustomCachedSelector(
     // Generate consolidated summary
     const parts: string[] = [];
 
-    // Chart type and series information - use chart-specific logic for XY charts
-    if (chartType === ChartType.XYAxis && chartSpecificData?.data) {
-      const { seriesSpecs, seriesDomains } = chartSpecificData.data;
-      const chartDescription = createChartTypeDescription(chartTypeDescription, seriesSpecs, seriesDomains);
-      if (chartDescription) {
-        parts.push(chartDescription);
-      }
-    } else {
-      // For other chart types, use the basic chart type description
-      if (chartTypeDescription) {
-        parts.push(chartTypeDescription);
-      }
-    }
-
-    // Add chart-specific summary parts
+    // Add chart-specific summary parts (each chart type now includes its own chart type description)
     if (chartSpecificData?.summaryParts) {
       parts.push(...chartSpecificData.summaryParts);
+    } else if (chartTypeDescription) {
+      // Fallback for chart types that don't provide summaryParts
+      parts.push(chartTypeDescription);
     }
 
     const consolidatedSummary = parts.length > 0 ? `${parts.join('. ')}.` : '';

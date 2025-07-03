@@ -6,14 +6,15 @@
  * Side Public License, v 1.
  */
 
+import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { getGoalChartDataSelector, getGoalChartLabelsSelector } from './get_goal_chart_data';
 import type { ChartSpecificScreenReaderData, ScreenReaderItem } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [getGoalChartDataSelector, getGoalChartLabelsSelector],
-  (goalChartData, goalChartLabels): ChartSpecificScreenReaderData => {
+  [getGoalChartDataSelector, getGoalChartLabelsSelector, getChartTypeDescriptionSelector],
+  (goalChartData, goalChartLabels, chartTypeDescription): ChartSpecificScreenReaderData => {
     const screenReaderItems: ScreenReaderItem[] = [];
 
     // Add goal chart specific parts
@@ -51,6 +52,11 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     }
 
     const summaryParts: string[] = [];
+
+    // Add chart type description first
+    if (chartTypeDescription) {
+      summaryParts.push(chartTypeDescription);
+    }
 
     return {
       summaryParts,

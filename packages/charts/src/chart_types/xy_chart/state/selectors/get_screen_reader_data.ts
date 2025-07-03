@@ -8,7 +8,9 @@
 
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
+import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { createAxisDescriptions } from '../../../../components/accessibility/axis_summary_utils';
+import { createChartTypeDescription } from '../../../../components/accessibility/chart_summary_utils';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 
@@ -21,9 +23,15 @@ export interface XYChartScreenReaderData {
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [getSeriesSpecsSelector, getAxisSpecsSelector, computeSeriesDomainsSelector],
-  (seriesSpecs, axisSpecs, seriesDomains): ChartSpecificScreenReaderData => {
+  [getSeriesSpecsSelector, getAxisSpecsSelector, computeSeriesDomainsSelector, getChartTypeDescriptionSelector],
+  (seriesSpecs, axisSpecs, seriesDomains, chartTypeDescription): ChartSpecificScreenReaderData => {
     const summaryParts: string[] = [];
+
+    // Chart type description with series details
+    const chartDescription = createChartTypeDescription(chartTypeDescription, seriesSpecs, seriesDomains);
+    if (chartDescription) {
+      summaryParts.push(chartDescription);
+    }
 
     // Axis descriptions
     if (axisSpecs.length > 0) {
