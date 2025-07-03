@@ -73,10 +73,10 @@ exports[`Chart should render the legend name test 1`] = `
                       <canvas dir="ltr" className="echCanvasRenderer" width={170} height={200} style={{...}} role="presentation" />
                     </figure>
                     <Connect(ScreenReaderSummaryComponent)>
-                      <ScreenReaderSummaryComponent chartTypeDescription="bar chart" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} seriesSpecs={{...}} axisSpecs={{...}} seriesDomains={{...}} chartType="xy_axis" dispatch={[Function (anonymous)]}>
+                      <ScreenReaderSummaryComponent chartTypeDescription="Bar chart" a11ySettings={{...}} chartType="xy_axis" chartSpecificData={{...}} consolidatedSummary="Bar chart with 1 categories, values ranging from 2 to 2." dispatch={[Function (anonymous)]}>
                         <figcaption className="echScreenReaderOnly" id="chart1--defaultSummary-summary">
-                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} goalChartLabels={{...}} />
-                          bar chart.
+                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} goalChartLabels={[undefined]} />
+                          Bar chart with 1 categories, values ranging from 2 to 2.
                           <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} />
                         </figcaption>
                       </ScreenReaderSummaryComponent>
