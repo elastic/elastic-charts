@@ -7,6 +7,7 @@
  */
 
 import { computeSeriesDomainsSelector } from './compute_series_domains';
+import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
@@ -20,9 +21,14 @@ export interface XYChartScreenReaderData {
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [getSeriesSpecsSelector, getAxisSpecsSelector, computeSeriesDomainsSelector],
-  (seriesSpecs, axisSpecs, seriesDomains): ChartSpecificScreenReaderData => {
+  [getSeriesSpecsSelector, getAxisSpecsSelector, computeSeriesDomainsSelector, getChartTypeDescriptionSelector],
+  (seriesSpecs, axisSpecs, seriesDomains, chartTypeDescription): ChartSpecificScreenReaderData => {
     const summaryParts: string[] = [];
+
+    // Add chart type description first
+    if (chartTypeDescription) {
+      summaryParts.push(chartTypeDescription);
+    }
 
     return {
       data: {

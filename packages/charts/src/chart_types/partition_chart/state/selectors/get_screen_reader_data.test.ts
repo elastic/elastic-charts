@@ -79,7 +79,7 @@ describe('Get screen reader data', () => {
         hasMultipleLayers: true,
         isSmallMultiple: false,
       },
-      summaryParts: ['6 data points', 'with hierarchical layers'],
+      summaryParts: ['Sunburst chart', '6 data points', 'with hierarchical layers'],
     });
   });
   it('should compute screen reader data for no slices in pie', () => {
@@ -91,7 +91,7 @@ describe('Get screen reader data', () => {
         hasMultipleLayers: true,
         isSmallMultiple: false,
       },
-      summaryParts: [],
+      summaryParts: ['Sunburst chart'],
     });
   });
 });

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { getGoalChartDataSelector, getGoalChartLabelsSelector } from './get_goal_chart_data';
 import type { ChartType } from '../../../../chart_types';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
@@ -20,9 +21,14 @@ export interface GoalChartScreenReaderData {
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [getGoalChartDataSelector, getGoalChartLabelsSelector, (state) => state.chartType],
-  (goalChartData, goalChartLabels, chartType): ChartSpecificScreenReaderData => {
+  [getGoalChartDataSelector, getGoalChartLabelsSelector, (state) => state.chartType, getChartTypeDescriptionSelector],
+  (goalChartData, goalChartLabels, chartType, chartTypeDescription): ChartSpecificScreenReaderData => {
     const summaryParts: string[] = [];
+
+    // Add chart type description first
+    if (chartTypeDescription) {
+      summaryParts.push(chartTypeDescription);
+    }
 
     // Add title from labels
     const title = `${goalChartLabels.majorLabel}${goalChartLabels.minorLabel}`.trim();
