@@ -8,8 +8,8 @@
 
 import React from 'react';
 
-import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
-import type { AxisSpec } from '../../chart_types/xy_chart/utils/specs';
+import type { SeriesDomainsAndData } from '../state/utils/types';
+import type { AxisSpec } from '../utils/specs';
 
 interface AxisDescriptionsProps {
   axisSpecs: AxisSpec[];

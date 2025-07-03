@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
-import type { AxisSpec } from '../../chart_types/xy_chart/utils/specs';
+import type { AxisSpec } from './specs';
+import type { SeriesDomainsAndData } from '../state/utils/types';
 
 /** @internal */
 export function createAxisDescriptions(axisSpecs: AxisSpec[], seriesDomains: SeriesDomainsAndData): string[] {
