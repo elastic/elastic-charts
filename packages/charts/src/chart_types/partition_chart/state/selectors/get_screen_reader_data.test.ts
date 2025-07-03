@@ -79,10 +79,7 @@ describe('Get screen reader data', () => {
         hasMultipleLayers: true,
         isSmallMultiple: false,
       },
-      summaryParts: [
-        '6 data points',
-        'with hierarchical layers',
-      ],
+      summaryParts: ['6 data points', 'with hierarchical layers'],
     });
   });
   it('should compute screen reader data for no slices in pie', () => {
