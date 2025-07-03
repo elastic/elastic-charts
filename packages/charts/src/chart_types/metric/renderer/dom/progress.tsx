@@ -25,7 +25,15 @@ import { isBulletMetric } from '../../specs';
  * @internal
  */
 const PROGRESS_BAR_BORDER_RADIUS = 8;
-const BASELINE_SIZE = 2;
+
+/**
+ * Synced with _progress.scss
+ */
+const zeroBaselineSizeMap = {
+  small: 2,
+  medium: 2,
+  large: 4,
+};
 
 interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
@@ -101,8 +109,11 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
     };
   }
 
+  const zeroBaselineSize = zeroBaselineSizeMap[size];
+
   const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
-  const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
+  const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${zeroBaselineSize / 2}px)`;
+
   const labelType = isBullet ? 'Value' : 'Percentage';
 
   return (
