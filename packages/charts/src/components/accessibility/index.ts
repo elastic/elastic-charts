@@ -8,5 +8,4 @@
 
 /* @internal */
 export { ScreenReaderSummary } from './screen_reader_summary';
-export { GoalSemanticDescription } from './goal_semantic_description';
 export type { ChartLabelData } from './types';
