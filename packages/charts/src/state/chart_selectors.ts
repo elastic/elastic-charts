@@ -17,6 +17,7 @@ import type { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../common/legend';
 import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
+import type { ChartLabelData } from '../components/accessibility/types';
 import type { AnchorPosition } from '../components/portal/types';
 import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
@@ -39,6 +40,8 @@ export interface ChartSpecificScreenReaderData {
   data?: any;
   /** Custom summary parts to include in the consolidated summary */
   summaryParts?: string[];
+  /** Generic label data for accessibility */
+  labelData?: ChartLabelData;
 }
 
 /** @internal */

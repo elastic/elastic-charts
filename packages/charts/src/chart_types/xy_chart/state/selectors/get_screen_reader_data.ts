@@ -7,8 +7,8 @@
  */
 
 import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { getChartTypeDescriptionSelector } from './get_chart_type_description';
+import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import { createAxisDescriptions } from '../../../../components/accessibility/axis_summary_utils';
 import { createChartTypeDescription } from '../../../../components/accessibility/chart_summary_utils';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
