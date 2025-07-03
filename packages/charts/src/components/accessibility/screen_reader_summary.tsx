@@ -11,13 +11,18 @@ import { connect } from 'react-redux';
 
 import { ScreenReaderDescription } from './description';
 import { ScreenReaderLabel } from './label';
-import { mapStateToProps, type ScreenReaderSummaryStateProps } from './screen_reader_summary_connector';
+import { mapStateToProps } from './screen_reader_summary_connector';
+import type { GoalChartScreenReaderData } from '../../chart_types/goal_chart/state/selectors/get_screen_reader_data';
+import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
 
 const ScreenReaderSummaryComponent = ({
   a11ySettings,
-  goalChartLabels,
+  chartSpecificData,
   consolidatedSummary,
-}: ScreenReaderSummaryStateProps) => {
+}: ScreenReaderSummaryData) => {
+  // Extract goalChartLabels from chartSpecificData if it's a goal chart
+  const goalChartLabels = (chartSpecificData?.data as GoalChartScreenReaderData | undefined)?.goalChartLabels;
+  
   return (
     <figcaption className="echScreenReaderOnly" id={`${a11ySettings.descriptionId}-summary`}>
       <ScreenReaderLabel {...a11ySettings} goalChartLabels={goalChartLabels} />

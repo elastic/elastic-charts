@@ -6,28 +6,10 @@
  * Side Public License, v 1.
  */
 
-import type { ChartType } from '../../chart_types';
-import type { GoalChartData, GoalChartLabels } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
-import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
-import type { BasicSeriesSpec, AxisSpec } from '../../chart_types/xy_chart/utils/specs';
 import type { GlobalChartState } from '../../state/chart_state';
-import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
-import { getScreenReaderSummarySelector } from '../../state/selectors/get_screen_reader_summary';
+import { getScreenReaderSummarySelector, type ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
 
 /** @internal */
-export interface ScreenReaderSummaryStateProps {
-  a11ySettings: A11ySettings;
-  chartTypeDescription: string;
-  goalChartData?: GoalChartData;
-  goalChartLabels?: GoalChartLabels;
-  seriesSpecs?: BasicSeriesSpec[];
-  axisSpecs?: AxisSpec[];
-  seriesDomains?: SeriesDomainsAndData;
-  chartType: ChartType | null;
-  consolidatedSummary: string;
-}
-
-/** @internal */
-export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryStateProps => {
+export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryData => {
   return getScreenReaderSummarySelector(state);
 };
