@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import { createGoalChartDescription } from './goal_chart_summary_utils';
-import { ChartType } from '../../chart_types';
-import type { GoalChartData } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
+import { createGoalChartDescription } from './summary_utils';
+import { ChartType } from '../../../chart_types';
+import type { GoalChartData } from '../state/selectors/get_goal_chart_data';
 
 describe('createGoalChartDescription', () => {
   const mockGoalChartData: GoalChartData = {

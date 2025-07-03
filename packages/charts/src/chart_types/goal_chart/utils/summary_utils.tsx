@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { ChartType } from '../../chart_types';
-import type { GoalChartData } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
+import { ChartType } from '../../../chart_types';
+import type { GoalChartData } from '../state/selectors/get_goal_chart_data';
 
 /** @internal */
 export function createGoalChartDescription(chartType: ChartType | null, goalChartData?: GoalChartData): string | null {
