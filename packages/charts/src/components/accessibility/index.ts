@@ -10,3 +10,4 @@
 export { ScreenReaderSummary } from './screen_reader_summary';
 export { GoalSemanticDescription } from './goal_semantic_description';
 export { AxisDescriptions } from './axis_descriptions';
+export type { ChartLabelData } from './types';
