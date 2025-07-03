@@ -30,7 +30,7 @@ export interface PartitionSectionData {
 export interface PartitionData {
   hasMultipleLayers: boolean;
   isSmallMultiple: boolean;
-  data: PartitionSectionData[];
+  sections: PartitionSectionData[];
 }
 
 /**
@@ -68,13 +68,13 @@ export const getPartitionScreenReaderDataSelector = createCustomCachedSelector(
       return {
         hasMultipleLayers: false,
         isSmallMultiple: false,
-        data: [],
+        sections: [],
       };
     }
     return {
       hasMultipleLayers: (specs[0]?.layers.length ?? NaN) > 1,
       isSmallMultiple: shapeViewModel.length > 1,
-      data: getScreenReaderDataForPartitions(specs, shapeViewModel),
+      sections: getScreenReaderDataForPartitions(specs, shapeViewModel),
     };
   },
 );
@@ -91,8 +91,8 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     }
 
     // Add partition-specific accessibility information
-    if (partitionData.data.length > 0) {
-      const totalItems = partitionData.data.length;
+    if (partitionData.sections.length > 0) {
+      const totalItems = partitionData.sections.length;
       summaryParts.push(`${totalItems} data ${totalItems === 1 ? 'point' : 'points'}`);
 
       if (partitionData.hasMultipleLayers) {
