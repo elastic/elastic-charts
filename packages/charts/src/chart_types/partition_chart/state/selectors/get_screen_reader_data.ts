@@ -6,8 +6,8 @@
  * Side Public License, v 1.
  */
 
-import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { partitionMultiGeometries } from './geometries';
+import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { getPartitionSpecs } from './get_partition_specs';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';

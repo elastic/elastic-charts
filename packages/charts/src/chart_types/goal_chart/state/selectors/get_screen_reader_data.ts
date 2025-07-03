@@ -48,6 +48,10 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
         goalChartLabels,
       } as GoalChartScreenReaderData,
       summaryParts,
+      labelData: {
+        primaryLabel: goalChartLabels.majorLabel,
+        secondaryLabel: goalChartLabels.minorLabel,
+      },
     };
   },
 );

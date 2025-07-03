@@ -170,7 +170,7 @@ describe('Accessibility', () => {
     );
     it('should test defaults for goal charts', () => {
       expect(goalChartWrapper.find('.echScreenReaderOnly').first().text()).toBe(
-        'Revenue 2020 YTD  (thousand USD)  Chart type: goal chartMinimum:0Maximum:300Target:260Value:170',
+        'Revenue 2020 YTD  (thousand USD)  goal chart. Revenue 2020 YTD  (thousand USD). Minimum: 0, Maximum: 300, Target: 260, Value: 170.',
       );
     });
     it('should correctly render ascending semantic values', () => {

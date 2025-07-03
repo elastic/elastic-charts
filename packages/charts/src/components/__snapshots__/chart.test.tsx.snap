@@ -73,16 +73,11 @@ exports[`Chart should render the legend name test 1`] = `
                       <canvas dir="ltr" className="echCanvasRenderer" width={170} height={200} style={{...}} role="presentation" />
                     </figure>
                     <Connect(ScreenReaderSummaryComponent)>
-                      <ScreenReaderSummaryComponent chartTypeDescription="bar chart" a11ySettings={{...}} goalChartData={{...}} goalChartLabels={{...}} dispatch={[Function (anonymous)]}>
+                      <ScreenReaderSummaryComponent chartTypeDescription="bar chart" a11ySettings={{...}} chartType="xy_axis" chartSpecificData={{...}} consolidatedSummary="bar chart." dispatch={[Function (anonymous)]}>
                         <figcaption className="echScreenReaderOnly" id="chart1--defaultSummary-summary">
-                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} goalChartLabels={{...}} />
+                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} chartLabelData={[undefined]} />
+                          bar chart.
                           <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} />
-                          <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} chartTypeDescription="bar chart" goalChartData={{...}}>
-                            <div>
-                              Chart type: 
-                              bar chart
-                            </div>
-                          </ScreenReaderTypes>
                         </figcaption>
                       </ScreenReaderSummaryComponent>
                     </Connect(ScreenReaderSummaryComponent)>
