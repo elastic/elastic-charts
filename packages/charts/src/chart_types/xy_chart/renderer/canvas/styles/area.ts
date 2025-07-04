@@ -72,7 +72,7 @@ function getTextureStyleFromFocusState(
   if ('opacity' in themeDimmedStyle) {
     return {
       ...textureStyle,
-      opacity: textureStyle.opacity ?? 1 * themeDimmedStyle.opacity,
+      opacity: (textureStyle.opacity ?? 1) * themeDimmedStyle.opacity,
     };
   }
   return {
