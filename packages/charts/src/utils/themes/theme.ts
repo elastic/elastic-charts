@@ -692,6 +692,7 @@ export interface AreaStyle {
     | {
         /** The fill color to use when the area is dimmed. */
         fill: Color | ColorVariant;
+        /** The opacity multiplier for the texture color when the area is dimmed */
         texture: { opacity: number };
       };
 }
