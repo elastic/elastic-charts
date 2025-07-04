@@ -12,9 +12,10 @@ import React, { useState } from 'react';
 
 import { ProgressBar } from './progress';
 import { SparkLine, getSparkLineColor } from './sparkline';
+import type { TextColors } from './text';
 import { MetricText } from './text';
 import type { MetricTextDimensions } from './text_measurements';
-import type { ColorContrastOptions } from '../../../../common/color_calcs';
+import type { ColorContrastOptions, TextContrastOptions } from '../../../../common/color_calcs';
 import { combineColors } from '../../../../common/color_calcs';
 import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
@@ -32,6 +33,80 @@ import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricWNumber } from '../../specs';
 import { isMetricWProgress, isMetricWTrend } from '../../specs';
 
+/**
+ * Synced with _index.scss
+ * @internal
+ */
+export type ProgressBarSize = 'small' | 'medium' | 'large';
+const progressBarMap: Record<number, ProgressBarSize> = {
+  4: 'small',
+  8: 'medium',
+  16: 'large',
+};
+
+interface MetricContext {
+  backgroundColor: Color;
+  blendedColor: Color;
+  hasProgressBar: boolean;
+  hasTrend: boolean;
+}
+
+const getTextColor = ({
+  metricContext: { backgroundColor, blendedColor, hasProgressBar, hasTrend },
+  contrastOptions,
+}: {
+  metricContext: MetricContext;
+  contrastOptions: ColorContrastOptions;
+}) => {
+  const highContrastTextColor = fillTextColor(
+    backgroundColor,
+    hasProgressBar ? backgroundColor : blendedColor,
+    undefined,
+    contrastOptions,
+  );
+
+  let finalTextColor = highContrastTextColor.color;
+
+  if (hasTrend) {
+    const { ratio, color, shade } = fillTextColor(
+      backgroundColor,
+      getSparkLineColor(blendedColor),
+      undefined,
+      contrastOptions,
+    );
+
+    // TODO verify this check is applied correctly
+    if (shade !== highContrastTextColor.shade && ratio > highContrastTextColor.ratio) {
+      finalTextColor = color;
+    }
+  }
+
+  return finalTextColor.keyword;
+};
+
+const getTextColors = ({
+  metricContext,
+  textContrastOptions,
+}: {
+  metricContext: MetricContext;
+  textContrastOptions: TextContrastOptions;
+}): TextColors => {
+  return {
+    highContrast: getTextColor({
+      metricContext,
+      contrastOptions: textContrastOptions.text,
+    }),
+    subtitle: getTextColor({
+      metricContext,
+      contrastOptions: textContrastOptions.subtitle,
+    }),
+    extra: getTextColor({
+      metricContext,
+      contrastOptions: textContrastOptions.extra,
+    }),
+  };
+};
+
 /** @internal */
 export const Metric: React.FunctionComponent<{
   chartId: string;
@@ -43,7 +118,7 @@ export const Metric: React.FunctionComponent<{
   datum: MetricDatum;
   style: MetricStyle;
   backgroundColor: Color;
-  contrastOptions: ColorContrastOptions;
+  textContrastOptions: TextContrastOptions;
   textDimensions: MetricTextDimensions;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
@@ -58,18 +133,23 @@ export const Metric: React.FunctionComponent<{
   datum,
   style,
   backgroundColor: chartBackgroundColor,
-  contrastOptions,
+  textContrastOptions,
   textDimensions,
   onElementClick,
   onElementOver,
   onElementOut,
 }) => {
-  const progressBarSize = 'small'; // currently we provide only the small progress bar;
+  const { progressBarThickness } = textDimensions.heightBasedSizes;
+  const progressBarSize = progressBarMap[progressBarThickness] ?? 'medium';
+
   const [mouseState, setMouseState] = useState<'leave' | 'enter' | 'down'>('leave');
   const [lastMouseDownTimestamp, setLastMouseDownTimestamp] = useState<number>(0);
   const metricHTMLId = `echMetric-${chartId}-${rowIndex}-${columnIndex}`;
+
   const hasProgressBar = isMetricWProgress(datum);
   const progressBarDirection = hasProgressBar ? datum.progressBarDirection : undefined;
+
+  const hasTrend = isMetricWTrend(datum);
 
   const containerClassName = classNames('echMetric', {
     'echMetric--rightBorder': columnIndex < totalColumns - 1,
@@ -100,32 +180,15 @@ export const Metric: React.FunctionComponent<{
   const event: MetricElementEvent = { type: 'metricElementEvent', rowIndex, columnIndex };
 
   const containerStyle: CSSProperties = {
-    backgroundColor: isMetricWTrend(datumWithInteractionColor) ? backgroundColor : datumWithInteractionColor.color,
+    backgroundColor: hasTrend ? backgroundColor : datumWithInteractionColor.color,
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
   };
 
-  const highContrastTextColor = fillTextColor(
-    backgroundColor,
-    isMetricWProgress(datum) ? backgroundColor : blendedColor,
-    undefined,
-    contrastOptions,
-  );
-  let finalTextColor = highContrastTextColor.color;
-
-  if (isMetricWTrend(datum)) {
-    const { ratio, color, shade } = fillTextColor(
-      backgroundColor,
-      getSparkLineColor(blendedColor),
-      undefined,
-      contrastOptions,
-    );
-
-    // TODO verify this check is applied correctly
-    if (shade !== highContrastTextColor.shade && ratio > highContrastTextColor.ratio) {
-      finalTextColor = color;
-    }
-  }
+  const textColors = getTextColors({
+    metricContext: { backgroundColor, blendedColor, hasProgressBar, hasTrend },
+    textContrastOptions,
+  });
 
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
   const hasMouseEventsHandler = onElementOut || onElementOver || onElementClick;
@@ -170,8 +233,8 @@ export const Metric: React.FunctionComponent<{
         style={style}
         onElementClick={onElementClick ? onElementClickHandler : undefined}
         progressBarSize={progressBarSize}
-        highContrastTextColor={finalTextColor.keyword}
         textDimensions={textDimensions}
+        colors={textColors}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (
@@ -182,7 +245,7 @@ export const Metric: React.FunctionComponent<{
           size={progressBarSize}
         />
       )}
-      <div className="echMetric--outline" style={{ color: finalTextColor.keyword }}></div>
+      <div className="echMetric--outline" style={{ color: textColors.highContrast }}></div>
     </div>
   );
 };
