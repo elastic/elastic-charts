@@ -44,6 +44,10 @@ export interface SecondaryMetricProps {
    * Optional CSS properties to apply to the container element.
    */
   style?: CSSProperties;
+  /**
+   * Optional aria description
+   */
+  ariaDescription?: string;
 }
 
 /** @alpha */

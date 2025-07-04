@@ -20,6 +20,7 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
   badgeColor,
   valuePosition = 'after',
   style,
+  ariaDescription,
 }) => {
   const valueNode = badgeColor ? (
     <Badge value={value} backgroundColor={badgeColor} />
@@ -38,7 +39,11 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
   );
 
   return (
-    <span className="echSecondaryMetric" style={style}>
+    <span
+      className="echSecondaryMetric"
+      style={style}
+      {...(ariaDescription ? { 'aria-describedby': ariaDescription } : {})}
+    >
       {isValueBeforeLabel && valueNode}
       {label && labelNode}
       {!isValueBeforeLabel && valueNode}

@@ -11,7 +11,14 @@ import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber, TextAlign } from '@elastic/charts';
+import type {
+  MetricWProgress,
+  MetricWTrend,
+  MetricWText,
+  MetricWNumber,
+  TextAlign,
+  SecondaryMetricProps,
+} from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -89,12 +96,14 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     'after',
     secondaryMetricGroup,
   );
+  const secondaryMetricAriaDescription = text('Aria description', 'This is a description', secondaryMetricGroup);
 
-  const secondaryProps = {
+  const secondaryProps: SecondaryMetricProps = {
     value: secondaryMetricValue,
     label,
     badgeColor: colorByValue ? badgeColor : undefined,
     valuePosition: secondaryMetricValuePosition,
+    ariaDescription: secondaryMetricAriaDescription,
   };
 
   const dataExtra = showExtra
