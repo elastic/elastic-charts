@@ -29,7 +29,9 @@ export function buildBarStyle(
   geometryStateStyle: GeometryStateStyle,
   rect: Rect,
 ): { fill: Fill; stroke: Stroke } {
-  const texture = getTextureStyles(ctx, imgCanvas, baseColor, geometryStateStyle.opacity, themeRectStyle.texture);
+  const texture = themeRectStyle.texture
+    ? getTextureStyles(ctx, imgCanvas, baseColor, geometryStateStyle.opacity, themeRectStyle.texture)
+    : undefined;
   const fillColor = overrideOpacity(
     colorToRgba(getColorFromVariant(baseColor, themeRectStyle.fill)),
     (opacity) => opacity * themeRectStyle.opacity * geometryStateStyle.opacity,

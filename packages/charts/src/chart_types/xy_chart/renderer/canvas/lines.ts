@@ -11,86 +11,89 @@ import { renderPoints } from './points';
 import { renderLinePaths } from './primitives/path';
 import { buildLineStyles } from './styles/line';
 import { withPanelTransform } from './utils/panel_transform';
-import { colorToRgba, overrideOpacity } from '../../../../common/color_library_wrappers';
 import type { Radian } from '../../../../common/geometry';
 import type { LegendItem } from '../../../../common/legend';
-import type { Rect, Stroke } from '../../../../geoms/types';
+import type { Rect } from '../../../../geoms/types';
 import { withContext } from '../../../../renderers/canvas';
 import type { Rotation } from '../../../../utils/common';
-import { ColorVariant } from '../../../../utils/common';
 import type { Dimensions } from '../../../../utils/dimensions';
-import type { LineGeometry, PerPanel } from '../../../../utils/geometry';
+import {
+  type GeometryHighlightState,
+  getGeometryHighlightState,
+  type LineGeometry,
+  type PerPanel,
+} from '../../../../utils/geometry';
 import type { Point } from '../../../../utils/point';
-import type { SharedGeometryStateStyle } from '../../../../utils/themes/theme';
-import { getGeometryStateStyle } from '../../rendering/utils';
 
 /** @internal */
 export function renderLines(
   ctx: CanvasRenderingContext2D,
   lines: Array<PerPanel<LineGeometry>>,
-  sharedStyle: SharedGeometryStateStyle,
   rotation: Rotation,
   renderingArea: Dimensions,
   highlightedLegendItem?: LegendItem,
 ) {
   withContext(ctx, () => {
-    lines.forEach(({ panel, value: line }) => {
-      const clippings = getPanelClipping(panel, rotation);
-      if (line.style.line.visible) {
+    lines
+      .map(({ panel, value }) => {
+        return {
+          panel,
+          line: value,
+          highlightState: getGeometryHighlightState(value.seriesIdentifier.key, highlightedLegendItem),
+        };
+      })
+      // sort by dimmed first once are rendered ontop of the non-highlighted ones
+      .sort(({ highlightState }) => (highlightState === 'dimmed' ? -1 : 1))
+      .forEach(({ panel, line, highlightState }) => {
+        const clippings = getPanelClipping(panel, rotation);
+        if (line.style.line.visible) {
+          withPanelTransform(
+            ctx,
+            panel,
+            rotation,
+            renderingArea,
+            () => renderLine(ctx, line, clippings, highlightState),
+            { area: clippings, shouldClip: true },
+          );
+        }
         withPanelTransform(
           ctx,
           panel,
           rotation,
           renderingArea,
-          () => renderLine(ctx, line, sharedStyle, clippings, highlightedLegendItem),
-          { area: clippings, shouldClip: true },
+          () =>
+            renderPoints(
+              ctx,
+              line.points,
+              highlightState,
+              line.style.point,
+              line.style.line.strokeWidth,
+              line.minPointDistance,
+              line.style.pointVisibilityMinDistance,
+              // has a connecting line only if is fit and there are more than one point on the chart
+              line.hasFit && line.points.length > 1,
+            ),
+          // TODO: add padding over clipping
+          { area: clippings, shouldClip: line.points[0]?.value.mark !== null },
         );
-      }
-      const geometryStyle = getGeometryStateStyle(line.seriesIdentifier, sharedStyle, highlightedLegendItem);
-      withPanelTransform(
-        ctx,
-        panel,
-        rotation,
-        renderingArea,
-        () =>
-          renderPoints(
-            ctx,
-            line.points,
-            geometryStyle,
-            line.style.point,
-            line.style.line.strokeWidth,
-            line.minPointDistance,
-            line.style.pointVisibilityMinDistance,
-            // has a connecting line only if is fit and there are more than one point on the chart
-            line.hasFit && line.points.length > 1,
-          ),
-        // TODO: add padding over clipping
-        { area: clippings, shouldClip: line.points[0]?.value.mark !== null },
-      );
-    });
+      });
   });
 }
 
 function renderLine(
   ctx: CanvasRenderingContext2D,
   line: LineGeometry,
-  sharedStyle: SharedGeometryStateStyle,
   clippings: Rect,
-  highlightedLegendItem?: LegendItem,
+  highlightState: GeometryHighlightState,
 ) {
-  const { color, transform, seriesIdentifier, style, clippedRanges, shouldClip } = line;
-  const geometryStyle = getGeometryStateStyle(seriesIdentifier, sharedStyle, highlightedLegendItem);
+  const { color, transform, style, clippedRanges, shouldClip } = line;
+  const lineStroke = buildLineStyles(color, style.line, highlightState);
 
-  const lineStroke = buildLineStyles(color, style.line, geometryStyle);
-  const fitLineStrokeColor = style.fit.line.stroke === ColorVariant.Series ? color : style.fit.line.stroke;
-  const fitLineStroke: Stroke = {
-    dash: style.fit.line.dash,
-    width: style.line.strokeWidth,
-    color: overrideOpacity(
-      colorToRgba(fitLineStrokeColor),
-      (opacity) => opacity * geometryStyle.opacity * style.fit.line.opacity,
-    ),
-  };
+  const fitLineStroke = buildLineStyles(
+    color,
+    { ...style.fit.line, strokeWidth: style.line.strokeWidth, dimmed: style.line.dimmed, focused: style.line.focused },
+    highlightState,
+  );
 
   renderLinePaths(
     ctx,

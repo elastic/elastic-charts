@@ -9,28 +9,45 @@
 import { colorToRgba, overrideOpacity } from '../../../../../common/color_library_wrappers';
 import type { Stroke } from '../../../../../geoms/types';
 import { getColorFromVariant } from '../../../../../utils/common';
-import type { GeometryStateStyle, LineStyle } from '../../../../../utils/themes/theme';
+import type { GeometryHighlightState } from '../../../../../utils/geometry';
+import type { LineStyle } from '../../../../../utils/themes/theme';
 
 /**
- * Return the rendering props for a line. The color of the line will be overwritten
- * by the stroke color of the themeLineStyle parameter if present
- * @param baseColor the assigned color of the line for this series
- * @param themeLineStyle the theme style for the line series
- * @param geometryStateStyle the highlight geometry style
+ * Returns the rendering properties for a line, including color, width, and dash pattern.
+ * The line color and style can be overridden by the themeLineStyle and highlightState parameters.
+ * @param seriesColor - The base color assigned to the line series.
+ * @param themeLineStyle - The theme style configuration for the line series.
+ * @param highlightState - The highlight state of the geometry (e.g., dimmed, focused).
  * @internal
  */
 export function buildLineStyles(
-  baseColor: string,
+  seriesColor: string,
   themeLineStyle: LineStyle,
-  geometryStateStyle: GeometryStateStyle,
+  highlightState: GeometryHighlightState,
 ): Stroke {
-  const strokeColor = overrideOpacity(
-    colorToRgba(getColorFromVariant(baseColor, themeLineStyle.stroke)),
-    (opacity) => opacity * themeLineStyle.opacity * geometryStateStyle.opacity,
+  const isDimmed = highlightState === 'dimmed';
+  const isFocused = highlightState === 'focused';
+
+  const strokeColor = isDimmed && 'stroke' in themeLineStyle.dimmed ? themeLineStyle.dimmed.stroke : seriesColor;
+  const opacity =
+    isDimmed && 'opacity' in themeLineStyle.dimmed
+      ? themeLineStyle.dimmed.opacity * themeLineStyle.opacity
+      : themeLineStyle.opacity;
+
+  const width =
+    isDimmed && 'strokeWidth' in themeLineStyle.dimmed
+      ? themeLineStyle.dimmed.strokeWidth
+      : isFocused && 'strokeWidth' in themeLineStyle.focused
+        ? themeLineStyle.focused.strokeWidth
+        : themeLineStyle.strokeWidth;
+
+  const color = overrideOpacity(
+    colorToRgba(getColorFromVariant(strokeColor, themeLineStyle.stroke)),
+    (currentColorOpacity) => currentColorOpacity * opacity,
   );
   return {
-    color: strokeColor,
-    width: themeLineStyle.strokeWidth,
+    color,
+    width,
     dash: themeLineStyle.dash,
   };
 }
