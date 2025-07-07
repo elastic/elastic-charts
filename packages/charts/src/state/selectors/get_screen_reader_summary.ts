@@ -62,10 +62,23 @@ export const getScreenReaderSummarySelector = createCustomCachedSelector(
 
     const generatedDescription = parts.length > 0 ? `${parts.join('. ')}.` : '';
 
-    // Merge generated description into a11ySettings
+    // Combine generated description with custom description
+    const customDescription = a11ySettings.description;
+    const combinedParts: string[] = [];
+
+    if (generatedDescription) {
+      combinedParts.push(generatedDescription);
+    }
+    if (customDescription) {
+      combinedParts.push(customDescription);
+    }
+
+    const combinedDescription = combinedParts.length > 0 ? combinedParts.join(' ') : undefined;
+
+    // Create enhanced a11ySettings with combined description
     const enhancedA11ySettings: A11ySettings = {
       ...a11ySettings,
-      generatedDescription,
+      description: combinedDescription,
     };
 
     return {
