@@ -18,8 +18,7 @@ export type A11ySettings = {
   label?: string;
   labelId?: string;
   labelHeadingLevel: SettingsSpec['ariaLabelHeadingLevel'];
-  customDescription?: string;
-  generatedDescription?: string;
+  description?: string;
   descriptionId?: string;
   defaultSummaryId?: string;
   tableCaption?: string;
@@ -59,7 +58,8 @@ export const getA11ySettingsSelector = createCustomCachedSelector(
         ? ariaLabelHeadingLevel
         : DEFAULT_A11Y_SETTINGS.labelHeadingLevel,
       // don't use a description if ariaDescribedBy id is provided
-      customDescription: ariaDescribedBy ? undefined : ariaDescription,
+      // Note: This will be combined with generated description in getScreenReaderSummarySelector
+      description: ariaDescribedBy ? undefined : ariaDescription,
       // concat all the ids
       descriptionId: describeBy.length > 0 ? describeBy.join(' ') : undefined,
       defaultSummaryId,

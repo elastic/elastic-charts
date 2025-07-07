@@ -75,11 +75,11 @@ exports[`Chart should render the legend name test 1`] = `
                     <Connect(ScreenReaderSummaryComponent)>
                       <ScreenReaderSummaryComponent chartTypeDescription="Bar chart" a11ySettings={{...}} chartType="xy_axis" chartSpecificData={{...}} dispatch={[Function (anonymous)]}>
                         <figcaption className="echScreenReaderOnly" id="chart1--defaultSummary-summary">
-                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" customDescription={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} generatedDescription="Bar chart with 1 category, value is 2." chartLabelData={[undefined]} />
-                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" customDescription={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} generatedDescription="Bar chart with 1 category, value is 2.">
-                            <span>
+                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description="Bar chart with 1 category, value is 2." descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} chartLabelData={[undefined]} />
+                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description="Bar chart with 1 category, value is 2." descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]}>
+                            <p id="chart1--defaultSummary">
                               Bar chart with 1 category, value is 2.
-                            </span>
+                            </p>
                           </ScreenReaderDescription>
                         </figcaption>
                       </ScreenReaderSummaryComponent>

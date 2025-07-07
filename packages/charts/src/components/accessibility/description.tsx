@@ -12,15 +12,9 @@ import type { A11ySettings } from '../../state/selectors/get_accessibility_confi
 
 /** @internal */
 export function ScreenReaderDescription(props: A11ySettings) {
-  const { customDescription, generatedDescription, descriptionId } = props;
-  
-  // Return null if neither description exists
-  if (!customDescription && !generatedDescription) return null;
-  
-  return (
-    <>
-      {generatedDescription && <span>{generatedDescription}</span>}
-      {customDescription && <p id={descriptionId}>{customDescription}</p>}
-    </>
-  );
+  const { description, descriptionId } = props;
+
+  if (!description) return null;
+
+  return <p id={descriptionId}>{description}</p>;
 }
