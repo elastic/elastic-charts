@@ -638,6 +638,42 @@ export class CommonPage {
     const summaryText = await this.getA11ySummaryText(page)();
     expect(summaryText).toBe(expectedSummary);
   };
+
+  /**
+   * Get accessibility description text specifically
+   */
+  getA11yDescription = (page: Page) => async (): Promise<string> => {
+    const descElement = await page.locator('.echScreenReaderOnly p').first().waitFor({ state: 'attached' });
+    return (await descElement.textContent()) || '';
+  };
+
+  /**
+   * Assert accessibility summary matches expected pattern
+   */
+  expectA11ySummaryToMatch =
+    (page: Page) =>
+    async (expectedPattern: string | RegExp): Promise<void> => {
+      const summaryText = await this.getA11ySummaryText(page)();
+      if (typeof expectedPattern === 'string') {
+        expect(summaryText).toBe(expectedPattern);
+      } else {
+        expect(summaryText).toMatch(expectedPattern);
+      }
+    };
+
+  /**
+   * Assert accessibility description matches expected pattern
+   */
+  expectA11yDescriptionToMatch =
+    (page: Page) =>
+    async (expectedPattern: string | RegExp): Promise<void> => {
+      const descriptionText = await this.getA11yDescription(page)();
+      if (typeof expectedPattern === 'string') {
+        expect(descriptionText).toBe(expectedPattern);
+      } else {
+        expect(descriptionText).toMatch(expectedPattern);
+      }
+    };
 }
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {
