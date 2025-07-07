@@ -21,7 +21,6 @@ const ScreenReaderSummaryComponent = ({ a11ySettings, screenReaderData }: Screen
       id={`${a11ySettings.descriptionId}-summary`}
       data-testid="echScreenReaderSummary"
     >
-      {a11ySettings.generatedDescription}
       <ScreenReaderDescription {...a11ySettings} />
       <ScreenReaderItems {...a11ySettings} screenReaderItems={screenReaderData?.screenReaderItems} />
     </figcaption>
