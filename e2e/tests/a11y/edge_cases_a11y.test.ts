@@ -23,7 +23,7 @@ test.describe('Edge Cases Accessibility', () => {
   });
 
   test('should handle single data point', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/bar-chart--single-data-linear';
+    const url = 'http://localhost:9001/?path=/story/bar-chart--with-linear-x-axis';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 

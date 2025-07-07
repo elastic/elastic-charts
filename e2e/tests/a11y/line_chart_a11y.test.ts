@@ -23,7 +23,7 @@ test.describe('Line Chart Accessibility', () => {
   });
 
   test('should generate correct a11y summary for multi-series line chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/line-chart--multi-series';
+    const url = 'http://localhost:9001/?path=/story/line-chart--multiple-with-axis-and-legend';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 
@@ -34,7 +34,7 @@ test.describe('Line Chart Accessibility', () => {
   });
 
   test('should generate correct a11y summary for stacked line chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/line-chart--stacked';
+    const url = 'http://localhost:9001/?path=/story/line-chart--stacked-with-axis-and-legend';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 
