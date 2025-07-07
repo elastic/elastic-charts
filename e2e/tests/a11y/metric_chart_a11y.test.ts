@@ -12,7 +12,7 @@ import { common } from '../../page_objects/common';
 
 test.describe('Metric Chart Accessibility', () => {
   test('should generate correct a11y summary for metric chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/metric-chart--basic';
+    const url = 'http://localhost:9001/?path=/story/metric-alpha--basic';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 
