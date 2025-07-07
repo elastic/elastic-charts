@@ -76,8 +76,11 @@ exports[`Chart should render the legend name test 1`] = `
                       <ScreenReaderSummaryComponent chartTypeDescription="bar chart" a11ySettings={{...}} chartType="xy_axis" chartSpecificData={{...}} dispatch={[Function (anonymous)]}>
                         <figcaption className="echScreenReaderOnly" id="chart1--defaultSummary-summary">
                           <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" customDescription={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} generatedDescription="bar chart." chartLabelData={[undefined]} />
-                          bar chart.
-                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" customDescription={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} generatedDescription="bar chart." />
+                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" customDescription={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} generatedDescription="bar chart.">
+                            <span>
+                              bar chart.
+                            </span>
+                          </ScreenReaderDescription>
                         </figcaption>
                       </ScreenReaderSummaryComponent>
                     </Connect(ScreenReaderSummaryComponent)>
