@@ -6,9 +6,9 @@
  * Side Public License, v 1.
  */
 
-import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
-import type { BasicSeriesSpec } from '../../chart_types/xy_chart/utils/specs';
-import { capitalizeFirst } from '../../utils/text/text_utils';
+import type { BasicSeriesSpec } from './specs';
+import { capitalizeFirst } from '../../../utils/text/text_utils';
+import type { SeriesDomainsAndData } from '../state/utils/types';
 
 function getDataSummary(seriesDomains: SeriesDomainsAndData): string {
   const dataCount = seriesDomains.formattedDataSeries[0]?.data?.length || 0;
