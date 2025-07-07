@@ -73,11 +73,11 @@ exports[`Chart should render the legend name test 1`] = `
                       <canvas dir="ltr" className="echCanvasRenderer" width={170} height={200} style={{...}} role="presentation" />
                     </figure>
                     <Connect(ScreenReaderSummaryComponent)>
-                      <ScreenReaderSummaryComponent chartTypeDescription="bar chart" a11ySettings={{...}} chartType="xy_axis" chartSpecificData={{...}} consolidatedSummary="bar chart." dispatch={[Function (anonymous)]}>
+                      <ScreenReaderSummaryComponent chartTypeDescription="bar chart" a11ySettings={{...}} chartType="xy_axis" chartSpecificData={{...}} dispatch={[Function (anonymous)]}>
                         <figcaption className="echScreenReaderOnly" id="chart1--defaultSummary-summary">
-                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} chartLabelData={[undefined]} />
+                          <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" customDescription={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} generatedDescription="bar chart." chartLabelData={[undefined]} />
                           bar chart.
-                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} />
+                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" customDescription={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} generatedDescription="bar chart." />
                         </figcaption>
                       </ScreenReaderSummaryComponent>
                     </Connect(ScreenReaderSummaryComponent)>
