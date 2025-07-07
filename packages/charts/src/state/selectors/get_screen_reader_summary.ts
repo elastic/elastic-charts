@@ -21,7 +21,6 @@ export interface ScreenReaderSummaryData {
   chartTypeDescription: string;
   chartType: ChartType | null;
   chartSpecificData?: ChartSpecificScreenReaderData;
-  consolidatedSummary: string;
 }
 
 const DEFAULT_SCREEN_READER_SUMMARY: ScreenReaderSummaryData = {
@@ -29,7 +28,6 @@ const DEFAULT_SCREEN_READER_SUMMARY: ScreenReaderSummaryData = {
   chartTypeDescription: '',
   chartType: null,
   chartSpecificData: undefined,
-  consolidatedSummary: '',
 };
 
 /** @internal */
@@ -62,14 +60,19 @@ export const getScreenReaderSummarySelector = createCustomCachedSelector(
       parts.push(chartTypeDescription);
     }
 
-    const consolidatedSummary = parts.length > 0 ? `${parts.join('. ')}.` : '';
+    const generatedDescription = parts.length > 0 ? `${parts.join('. ')}.` : '';
+
+    // Merge generated description into a11ySettings
+    const enhancedA11ySettings: A11ySettings = {
+      ...a11ySettings,
+      generatedDescription,
+    };
 
     return {
       chartTypeDescription,
-      a11ySettings,
+      a11ySettings: enhancedA11ySettings,
       chartType,
       chartSpecificData,
-      consolidatedSummary,
     };
   },
 );

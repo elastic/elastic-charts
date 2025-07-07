@@ -14,15 +14,11 @@ import { ScreenReaderLabel } from './label';
 import { mapStateToProps } from './screen_reader_summary_connector';
 import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
 
-const ScreenReaderSummaryComponent = ({
-  a11ySettings,
-  chartSpecificData,
-  consolidatedSummary,
-}: ScreenReaderSummaryData) => {
+const ScreenReaderSummaryComponent = ({ a11ySettings, chartSpecificData }: ScreenReaderSummaryData) => {
   return (
     <figcaption className="echScreenReaderOnly" id={`${a11ySettings.descriptionId}-summary`}>
       <ScreenReaderLabel {...a11ySettings} chartLabelData={chartSpecificData?.labelData} />
-      {consolidatedSummary}
+      {a11ySettings.generatedDescription}
       <ScreenReaderDescription {...a11ySettings} />
     </figcaption>
   );

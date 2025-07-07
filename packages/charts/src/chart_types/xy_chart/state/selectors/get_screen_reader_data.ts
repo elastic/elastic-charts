@@ -9,10 +9,10 @@
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
-import { createChartTypeDescription } from '../../../../components/accessibility/chart_summary_utils';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { createAxisDescriptions } from '../../utils/axis_summary_utils';
+import { createChartTypeDescription } from '../../utils/chart_summary_utils';
 
 /** @internal */
 export interface XYChartScreenReaderData {
