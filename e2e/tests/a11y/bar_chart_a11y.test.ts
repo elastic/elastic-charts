@@ -22,7 +22,7 @@ test.describe('Bar Chart Accessibility', () => {
   });
 
   test('should generate correct a11y summary for stacked bar chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/bar-chart--stacked';
+    const url = 'http://localhost:9001/?path=/story/bar-chart--stacked-with-axis-and-legend';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 
@@ -33,7 +33,7 @@ test.describe('Bar Chart Accessibility', () => {
   });
 
   test('should generate correct a11y summary for horizontal bar chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/bar-chart--horizontal';
+    const url = 'http://localhost:9001/?path=/story/bar-chart--with-axis-and-legend';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 

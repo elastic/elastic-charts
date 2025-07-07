@@ -12,7 +12,7 @@ import { common } from '../../page_objects/common';
 
 test.describe('Heatmap Chart Accessibility', () => {
   test('should generate correct a11y summary for heatmap chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/heatmap--basic';
+    const url = 'http://localhost:9001/?path=/story/heatmap-alpha--basic';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 

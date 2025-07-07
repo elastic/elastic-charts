@@ -12,7 +12,7 @@ import { common } from '../../page_objects/common';
 
 test.describe('Goal Chart Accessibility', () => {
   test('should generate correct a11y summary for goal chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/goal-chart--single-goal';
+    const url = 'http://localhost:9001/?path=/story/goal-alpha--minimal-goal';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 
@@ -23,7 +23,7 @@ test.describe('Goal Chart Accessibility', () => {
   });
 
   test('should generate correct a11y summary for gauge chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/goal-chart--gauge';
+    const url = 'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 

@@ -12,7 +12,7 @@ import { common } from '../../page_objects/common';
 
 test.describe('Pie Chart Accessibility', () => {
   test('should generate correct a11y summary for basic pie chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/sunburst--sunburst-two-layers';
+    const url = 'http://localhost:9001/?path=/story/sunburst--most-basic';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 
@@ -23,7 +23,7 @@ test.describe('Pie Chart Accessibility', () => {
   });
 
   test('should generate correct a11y summary for donut chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/sunburst--donut';
+    const url = 'http://localhost:9001/?path=/story/sunburst--donut-chart-with-fill-labels';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 
