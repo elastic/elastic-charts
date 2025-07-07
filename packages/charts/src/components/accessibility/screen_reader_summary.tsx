@@ -14,18 +14,14 @@ import { ScreenReaderItems } from './screen_reader_items';
 import { mapStateToProps } from './screen_reader_summary_connector';
 import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
 
-const ScreenReaderSummaryComponent = ({
-  a11ySettings,
-  screenReaderData,
-  consolidatedSummary,
-}: ScreenReaderSummaryData) => {
+const ScreenReaderSummaryComponent = ({ a11ySettings, screenReaderData }: ScreenReaderSummaryData) => {
   return (
     <figcaption
       className="echScreenReaderOnly"
       id={`${a11ySettings.descriptionId}-summary`}
       data-testid="echScreenReaderSummary"
     >
-      {consolidatedSummary}
+      {a11ySettings.generatedDescription}
       <ScreenReaderDescription {...a11ySettings} />
       <ScreenReaderItems {...a11ySettings} screenReaderItems={screenReaderData?.screenReaderItems} />
     </figcaption>

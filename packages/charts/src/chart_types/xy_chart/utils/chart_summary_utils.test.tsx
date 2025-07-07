@@ -7,8 +7,8 @@
  */
 
 import { createChartTypeDescription } from './chart_summary_utils';
-import type { SeriesDomainsAndData } from '../../chart_types/xy_chart/state/utils/types';
-import type { BasicSeriesSpec } from '../../chart_types/xy_chart/utils/specs';
+import type { BasicSeriesSpec } from './specs';
+import type { SeriesDomainsAndData } from '../state/utils/types';
 
 describe('createChartTypeDescription', () => {
   const mockSeriesDomains = {
