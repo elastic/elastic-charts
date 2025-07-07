@@ -18,7 +18,6 @@ const ScreenReaderSummaryComponent = ({ a11ySettings, chartSpecificData }: Scree
   return (
     <figcaption className="echScreenReaderOnly" id={`${a11ySettings.descriptionId}-summary`}>
       <ScreenReaderLabel {...a11ySettings} chartLabelData={chartSpecificData?.labelData} />
-      {a11ySettings.generatedDescription}
       <ScreenReaderDescription {...a11ySettings} />
     </figcaption>
   );
