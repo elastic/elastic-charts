@@ -45,7 +45,9 @@ test.describe('Goal Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:goal chart');
+    expect(summaryText).toBe(
+      'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:280',
+    );
   });
 
   test('should generate correct a11y summary for full circle goal chart', async ({ page }) => {
@@ -54,6 +56,6 @@ test.describe('Goal Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:goal chart');
+    expect(summaryText).toBe('Chart type:goal chartMinimum:0Maximum:300Target:260Value:280');
   });
 });

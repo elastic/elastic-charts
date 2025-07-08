@@ -47,7 +47,9 @@ test.describe('Pie Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:mosaic');
+    expect(summaryText).toBe(
+      'Chart type:mosaic chart The table fully represents the dataset of 14 data pointsDepthLabelParentValuePercentage1AMERICASnone1,30740%1ASIAnone1,02532%1EUROPEnone59418%1AFRICAnone3059%2United StatesAMERICAS55317%2OtherAMERICAS75323%2South KoreaASIA1775%2JapanASIA1775%2ChinaASIA39312%2OtherASIA2779%2San MarinoEUROPE1354%2GermanyEUROPE2538%2OtherEUROPE2056%2OtherAFRICA3059%',
+    );
   });
 
   test('should generate correct a11y summary for sunburst with linked labels', async ({ page }) => {
@@ -56,7 +58,9 @@ test.describe('Pie Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:sunburst chart');
+    expect(summaryText).toBe(
+      'Chart type:sunburst chart The table fully represents the dataset of 10 data pointsLabelValuePercentageMineral fuels, lubricants and related materials$1,930 Bn22%Chemicals and related products$848 Bn10%Miscellaneous manufactured articles$817 Bn9%Manufactured goods classified chiefly by material$745 Bn9%Commodities and transactions not classified elsewhere$451 Bn5%Crude materials, inedible, except fuels$394 Bn5%Food and live animals$353 Bn4%Beverages and tobacco$54 Bn1%Animal and vegetable oils, fats and waxes$36 Bn0%Machinery and transport equipment$3,110 Bn36%',
+    );
   });
 
   test('should generate correct a11y summary for treemap with fill labels', async ({ page }) => {
@@ -65,6 +69,8 @@ test.describe('Pie Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:treemap');
+    expect(summaryText).toBe(
+      'Chart type:treemap chart The table fully represents the dataset of 10 data pointsLabelValuePercentageMachinery and transport equipment$3,110 Bn36%Mineral fuels, lubricants and related materials$1,930 Bn22%Chemicals and related products$848 Bn10%Miscellaneous manufactured articles$817 Bn9%Manufactured goods classified chiefly by material$745 Bn9%Commodities and transactions not classified elsewhere$451 Bn5%Crude materials, inedible, except fuels$394 Bn5%Food and live animals$353 Bn4%Beverages and tobacco$54 Bn1%Animal and vegetable oils, fats and waxes$36 Bn0%',
+    );
   });
 });

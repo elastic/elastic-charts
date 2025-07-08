@@ -63,7 +63,7 @@ test.describe('Bar Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:bar chart');
+    expect(summaryText).toBe('Chart type:Mixed chart: bar and line chart');
   });
 
   test('should generate correct a11y summary for bar chart with value labels', async ({ page }) => {

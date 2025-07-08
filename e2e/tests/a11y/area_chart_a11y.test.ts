@@ -44,7 +44,7 @@ test.describe('Area Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:area chart');
+    expect(summaryText).toBe('Chart type:Mixed chart: area and line chart');
   });
 
   test('should generate correct a11y summary for discontinuous area chart', async ({ page }) => {

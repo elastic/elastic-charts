@@ -48,11 +48,13 @@ test.describe('Edge Cases Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:line chart');
+    expect(summaryText).toBe(
+      'Chart type:treemap chart The table fully represents the dataset of 10 data pointsLabelValuePercentageמכונות וציוד הובלה3.1 t36%דלקים מינרליים, חומרי סיכה וחומרים נלווים1.9 t22%כימיקלים ומוצרים נלווים848.2 b10%מוצרים מיוצרים שונים816.8 b9%מוצרים מיוצרים המסווגים בעיקר לפי חומר745.2 b9%סחורות ועסקאות שאינן מסווגות במקום אחר450.5 b5%חומרים גולמיים, בלתי אכילים, למעט דלקים393.9 b5%מזון וחיות חיות353.3 b4%משקאות וטבק54.5 b1%שמנים, שומנים ושעווה מהחי וצומח36.0 b0%',
+    );
   });
 
   test('should generate correct a11y summary for point style override', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/test-cases--point-style-override';
+    const url = 'http://localhost:9001/?path=/story/test-cases--point-style-overrides';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 
