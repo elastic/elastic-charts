@@ -6,8 +6,10 @@
   "scripts": {
     "clean": "./scripts/clean.sh",
     "test": "./scripts/start.sh",
+    "test:a11y": "./scripts/start-a11y.sh",
     "start": "npx http-server ./server --port 9002",
     "test:playwright": "./scripts/test.sh",
+    "test:playwright:a11y": "./scripts/test-a11y.sh",
     "merge:reports": "ts-node ./merge_html_reports.ts",
     "playwright": "playwright"
   },
