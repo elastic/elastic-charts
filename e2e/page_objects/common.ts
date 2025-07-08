@@ -605,9 +605,11 @@ export class CommonPage {
    * Wait for accessibility content to be rendered
    * @param timeout timeout for waiting on element to appear in DOM
    */
-  waitForA11yContent = (page: Page) => async (timeout = 5000) => {
-    await page.waitForSelector('.echScreenReaderOnly', { timeout });
-  };
+  waitForA11yContent =
+    (page: Page) =>
+    async (timeout = 5000) => {
+      await page.waitForSelector('.echScreenReaderOnly', { timeout });
+    };
 
   /**
    * Get accessibility summary text from screen reader elements
@@ -628,26 +630,30 @@ export class CommonPage {
   /**
    * Assert accessibility summary matches expected pattern
    */
-  expectA11ySummaryToMatch = (page: Page) => async (expectedPattern: string | RegExp): Promise<void> => {
-    const summaryText = await this.getA11ySummaryText(page)();
-    if (typeof expectedPattern === 'string') {
-      expect(summaryText).toBe(expectedPattern);
-    } else {
-      expect(summaryText).toMatch(expectedPattern);
-    }
-  };
+  expectA11ySummaryToMatch =
+    (page: Page) =>
+    async (expectedPattern: string | RegExp): Promise<void> => {
+      const summaryText = await this.getA11ySummaryText(page)();
+      if (typeof expectedPattern === 'string') {
+        expect(summaryText).toBe(expectedPattern);
+      } else {
+        expect(summaryText).toMatch(expectedPattern);
+      }
+    };
 
   /**
    * Assert accessibility description matches expected pattern
    */
-  expectA11yDescriptionToMatch = (page: Page) => async (expectedPattern: string | RegExp): Promise<void> => {
-    const descriptionText = await this.getA11yDescription(page)();
-    if (typeof expectedPattern === 'string') {
-      expect(descriptionText).toBe(expectedPattern);
-    } else {
-      expect(descriptionText).toMatch(expectedPattern);
-    }
-  };
+  expectA11yDescriptionToMatch =
+    (page: Page) =>
+    async (expectedPattern: string | RegExp): Promise<void> => {
+      const descriptionText = await this.getA11yDescription(page)();
+      if (typeof expectedPattern === 'string') {
+        expect(descriptionText).toBe(expectedPattern);
+      } else {
+        expect(descriptionText).toMatch(expectedPattern);
+      }
+    };
 }
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {

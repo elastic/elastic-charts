@@ -41,7 +41,7 @@ export const A11Y_PATTERNS = {
 export function createChartA11yPattern(chartType: string, seriesCount?: number): RegExp {
   const basePattern = `^(?:Stacked )?${chartType} chart`;
   const countPattern = seriesCount ? ` with ${seriesCount}` : ` with \\d+`;
-  
+
   switch (chartType.toLowerCase()) {
     case 'bar':
       return new RegExp(`${basePattern}${countPattern} (?:categories?|bars?)`);
