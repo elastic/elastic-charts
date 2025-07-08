@@ -17,7 +17,7 @@ test.describe('Stylings Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:area chart');
   });
 
   test('should generate correct a11y summary for texture multiple series', async ({ page }) => {
@@ -26,7 +26,7 @@ test.describe('Stylings Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:area chart');
   });
 
   test('should generate correct a11y summary for highlighter style', async ({ page }) => {
@@ -35,6 +35,6 @@ test.describe('Stylings Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:line chart');
   });
 });

@@ -17,7 +17,7 @@ test.describe('Mixed Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:area chart');
   });
 
   test('should generate correct a11y summary for fitting functions stacked', async ({ page }) => {
@@ -26,7 +26,7 @@ test.describe('Mixed Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:area chart');
   });
 
   test('should generate correct a11y summary for polarized stacked charts', async ({ page }) => {
@@ -35,6 +35,6 @@ test.describe('Mixed Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:bar chart');
   });
 });

@@ -17,7 +17,7 @@ test.describe('Word Cloud Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Word cloud chart');
   });
 
   test('should generate correct a11y summary for single template wordcloud', async ({ page }) => {
@@ -26,7 +26,7 @@ test.describe('Word Cloud Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Word cloud chart');
   });
 
   test('should generate correct a11y summary for right angled template wordcloud', async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe('Word Cloud Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Word cloud chart');
   });
 
   test('should generate correct a11y summary for multiple template wordcloud', async ({ page }) => {
@@ -44,6 +44,6 @@ test.describe('Word Cloud Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Word cloud chart');
   });
 });

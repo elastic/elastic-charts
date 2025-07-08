@@ -17,6 +17,6 @@ test.describe('Grid Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:line chart');
   });
 });

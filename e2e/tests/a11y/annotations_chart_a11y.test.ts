@@ -17,7 +17,7 @@ test.describe('Annotations Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:bar chart');
   });
 
   test('should generate correct a11y summary for rect annotation', async ({ page }) => {
@@ -26,7 +26,7 @@ test.describe('Annotations Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:line chart');
   });
 
   test('should generate correct a11y summary for advanced markers', async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe('Annotations Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:bar chart');
   });
 
   test('should generate correct a11y summary for outside annotations', async ({ page }) => {
@@ -44,6 +44,6 @@ test.describe('Annotations Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:line chart');
   });
 });

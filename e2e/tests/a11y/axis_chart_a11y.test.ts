@@ -17,7 +17,7 @@ test.describe('Axis Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:area chart');
   });
 
   test('should generate correct a11y summary for tick label rotation', async ({ page }) => {
@@ -26,7 +26,7 @@ test.describe('Axis Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:area chart');
   });
 
   test('should generate correct a11y summary for many tick labels', async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe('Axis Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:area chart');
   });
 
   test('should generate correct a11y summary for custom mixed axes', async ({ page }) => {
@@ -44,7 +44,7 @@ test.describe('Axis Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Mixed chart: bar and line chart');
   });
 
   test('should generate correct a11y summary for duplicate ticks', async ({ page }) => {
@@ -53,7 +53,7 @@ test.describe('Axis Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:line chart');
   });
 
   test('should generate correct a11y summary for fit domain', async ({ page }) => {
@@ -62,6 +62,6 @@ test.describe('Axis Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:line chart');
   });
 });

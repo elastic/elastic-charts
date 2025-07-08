@@ -17,7 +17,7 @@ test.describe('Bullet Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Bullet chart');
   });
 
   test('should generate correct a11y summary for angular bullet chart', async ({ page }) => {
@@ -26,7 +26,7 @@ test.describe('Bullet Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Bullet chart');
   });
 
   test('should generate correct a11y summary for single row bullet chart', async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe('Bullet Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Bullet chart');
   });
 
   test('should generate correct a11y summary for single column bullet chart', async ({ page }) => {
@@ -44,7 +44,7 @@ test.describe('Bullet Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Bullet chart');
   });
 
   test('should generate correct a11y summary for grid bullet chart', async ({ page }) => {
@@ -53,7 +53,7 @@ test.describe('Bullet Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Bullet chart');
   });
 
   test('should generate correct a11y summary for color bands bullet chart', async ({ page }) => {
@@ -62,6 +62,6 @@ test.describe('Bullet Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:Bullet chart');
   });
 });

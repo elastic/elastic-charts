@@ -17,7 +17,7 @@ test.describe('Scales Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:line chart');
   });
 
   test('should generate correct a11y summary for linear binary scale', async ({ page }) => {
@@ -26,6 +26,6 @@ test.describe('Scales Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe('Chart type:line chart');
   });
 });

@@ -17,7 +17,9 @@ test.describe('Waffle Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe(
+      'Chart type:waffle chart The table represents only 20 of the 100 data pointsLabelValuePercentageAl$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Al$3,110 Bn46%Click to show more data',
+    );
   });
 
   test('should generate correct a11y summary for waffle test chart', async ({ page }) => {
@@ -26,6 +28,8 @@ test.describe('Waffle Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:');
+    expect(summaryText).toBe(
+      'Chart type:waffle chart The table represents only 20 of the 100 data pointsLabelValuePercentage01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%01348%Click to show more data',
+    );
   });
 });
