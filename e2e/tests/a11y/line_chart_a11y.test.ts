@@ -37,4 +37,31 @@ test.describe('Line Chart Accessibility', () => {
     const summaryText = await common.getA11ySummaryText(page)();
     expect(summaryText).toBe('Chart type:line chart');
   });
+
+  test('should generate correct a11y summary for line chart with ordinal axis', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/line-chart--ordinal-with-axis';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:line chart');
+  });
+
+  test('should generate correct a11y summary for line chart with path ordering', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/line-chart--test-path-ordering';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:line chart');
+  });
+
+  test('should generate correct a11y summary for line chart with discontinuous data', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/line-chart--discontinuous-data-points';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:line chart');
+  });
 });

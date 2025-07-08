@@ -38,4 +38,22 @@ test.describe('Goal Chart Accessibility', () => {
       'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:170',
     );
   });
+
+  test('should generate correct a11y summary for goal chart without target', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/goal-alpha--gaps';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:goal chart');
+  });
+
+  test('should generate correct a11y summary for full circle goal chart', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/goal-alpha--full-circle';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:goal chart');
+  });
 });

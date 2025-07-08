@@ -64,4 +64,22 @@ test.describe('Axis Chart Accessibility', () => {
     const summaryText = await common.getA11ySummaryText(page)();
     expect(summaryText).toBe('Chart type:line chart');
   });
+
+  test('should generate correct a11y summary for timeslip with different locale', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/area-chart--timeslip';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:area chart');
+  });
+
+  test('should generate correct a11y summary for small multiples', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/small-multiples-alpha--sunbursts';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:sunburst chart');
+  });
 });

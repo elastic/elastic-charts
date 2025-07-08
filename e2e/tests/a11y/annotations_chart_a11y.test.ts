@@ -21,7 +21,8 @@ test.describe('Annotations Chart Accessibility', () => {
   });
 
   test('should generate correct a11y summary for rect annotation', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/annotations-rects--styling';
+    const url =
+      'http://localhost:9001/?path=/story/annotations-rects--styling&knob-showLineAnnotations=true&knob-chartRotation=0';
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 

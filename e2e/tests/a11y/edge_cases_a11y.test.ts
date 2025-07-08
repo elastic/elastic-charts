@@ -32,4 +32,31 @@ test.describe('Edge Cases Accessibility', () => {
     const summaryText = await common.getA11ySummaryText(page)();
     expect(summaryText).toBe('Chart type:bar chart');
   });
+
+  test('should generate correct a11y summary for error boundary', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/test-cases--error-boundary';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:bar chart');
+  });
+
+  test('should generate correct a11y summary for RTL text', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/test-cases--rtl-text';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:line chart');
+  });
+
+  test('should generate correct a11y summary for point style override', async ({ page }) => {
+    const url = 'http://localhost:9001/?path=/story/test-cases--point-style-override';
+    await common.loadElementFromURL(page)(url, '.echChart');
+    await common.waitForA11yContent(page)();
+
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('Chart type:line chart');
+  });
 });
