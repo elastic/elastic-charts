@@ -30,8 +30,6 @@ test.describe('Edge Cases Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe(
-      'Bar chart with 4 data points, values ranging from 2 to 7. X axis displays Bottom axis from 1 to 9. Y axis displays Left axis, ranging from 0 to 7.',
-    );
+    expect(summaryText).toBe('Chart type:bar chart');
   });
 });

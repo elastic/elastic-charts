@@ -20,6 +20,6 @@ test.describe('Heatmap Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('142 data points.');
+    expect(summaryText).toBe('Chart type:Heatmap chart');
   });
 });

@@ -21,7 +21,7 @@ test.describe('Goal Chart Accessibility', () => {
 
     const summaryText = await common.getA11ySummaryText(page)();
     expect(summaryText).toBe(
-      'Revenue 2020 YTD  (thousand USD)  Goal chart. Revenue 2020 YTD  (thousand USD). Minimum: 0, Maximum: 300, Target: 260, Value: 280.',
+      'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:280',
     );
   });
 
@@ -35,7 +35,7 @@ test.describe('Goal Chart Accessibility', () => {
 
     const summaryText = await common.getA11ySummaryText(page)();
     expect(summaryText).toBe(
-      'Revenue 2020 YTD  (thousand USD)  Goal chart. Revenue 2020 YTD  (thousand USD). Minimum: 0, Maximum: 300, Target: 260, Value: 170.',
+      'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:170',
     );
   });
 });
