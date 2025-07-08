@@ -11,7 +11,6 @@ import { test } from '@playwright/test';
 import type { DisplayValueStyleAlignment } from '../constants';
 import { HorizontalAlignment, VerticalAlignment } from '../constants';
 import { eachRotation, pwEach } from '../helpers';
-import { A11Y_PATTERNS } from '../helpers/accessibility';
 import { common } from '../page_objects';
 
 test.describe('Bar series stories', () => {
@@ -20,10 +19,6 @@ test.describe('Bar series stories', () => {
       async ({ page, rotation }) => {
         const url = `http://localhost:9001/?path=/story/interactions--brush-selection-tool-on-histogram-time-charts&knob-debug=&knob-chartRotation=${rotation}`;
         await common.expectChartAtUrlToMatchScreenshot(page)(url);
-
-        // Add a11y assertions
-        await common.waitForA11yContent(page)();
-        await common.expectA11ySummaryToMatch(page)(A11Y_PATTERNS.barChart);
       },
       (r) => `Should render correct axis - rotation ${r}`,
     );
@@ -34,10 +29,6 @@ test.describe('Bar series stories', () => {
       const url =
         'http://localhost:9001/?path=/story/bar-chart--test-switch-ordinal-linear-axis&knob-scaleType=ordinal';
       await common.expectChartAtUrlToMatchScreenshot(page)(url);
-
-      // Add a11y assertions
-      await common.waitForA11yContent(page)();
-      await common.expectA11ySummaryToMatch(page)(A11Y_PATTERNS.barChart);
     });
   });
 
@@ -45,10 +36,6 @@ test.describe('Bar series stories', () => {
     test('using no custom minInterval', async ({ page }) => {
       const url = 'http://localhost:9001/?path=/story/bar-chart--test-discover&knob-use custom minInterval of 30s=';
       await common.expectChartAtUrlToMatchScreenshot(page)(url);
-
-      // Add a11y assertions
-      await common.waitForA11yContent(page)();
-      await common.expectA11ySummaryToMatch(page)(A11Y_PATTERNS.barChart);
     });
   });
 

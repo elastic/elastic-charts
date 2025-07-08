@@ -17,18 +17,9 @@ test.describe('Heatmap Chart Accessibility', () => {
 
     // Wait for the chart to load
     await page.waitForSelector('.echChart', { timeout: 5000 });
+    await common.waitForA11yContent(page)();
 
-    // Check if accessibility content exists (regardless of visibility)
-    const a11yElements = page.locator('.echScreenReaderOnly');
-    const count = await a11yElements.count();
-
-    if (count > 0) {
-      const summaryText = await common.getA11ySummaryText(page)();
-      expect(summaryText).toBeTruthy();
-    } else {
-      // If no accessibility content, test that the chart loaded
-      const chartElement = page.locator('.echChart').first();
-      await expect(chartElement).toBeVisible();
-    }
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('142 data points.');
   });
 });
