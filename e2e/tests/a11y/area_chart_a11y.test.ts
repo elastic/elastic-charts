@@ -17,9 +17,7 @@ test.describe('Area Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    console.log('Basic area chart summary:', summaryText);
-    // TODO: Replace with exact expected text after running test
-    expect(summaryText).toBeTruthy();
+    expect(summaryText).toBe('Area chart with 120 time periods, values ranging from 4.26171875 to 34.28125.');
   });
 
   test('should generate correct a11y summary for stacked area chart', async ({ page }) => {
@@ -28,8 +26,8 @@ test.describe('Area Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    console.log('Stacked area chart summary:', summaryText);
-    // TODO: Replace with exact expected text after running test
-    expect(summaryText).toBeTruthy();
+    expect(summaryText).toBe(
+      'Stacked area chart with 3 areas: 15m, 5m, 1m. X axis displays timestamp per 1 minute from Mar 1, 11:00 AM to Mar 1, 11:59 AM. Y axis displays System Load, ranging from 0 to 61.5546875.',
+    );
   });
 });

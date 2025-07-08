@@ -17,7 +17,6 @@ test.describe('Bar Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    console.log('Basic bar chart summary:', summaryText);
     expect(summaryText).toBe('Bar chart with 4 data points, values ranging from 2 to 7.');
   });
 
@@ -27,9 +26,9 @@ test.describe('Bar Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    console.log('Stacked bar chart summary:', summaryText);
-    // TODO: Replace with exact expected text after running test
-    expect(summaryText).toBeTruthy();
+    expect(summaryText).toBe(
+      'Stacked bar chart with 2 bars: a, b. X axis displays Bottom axis from 0 to 3. Y axis displays Left axis, ranging from 0 to 12.',
+    );
   });
 
   test('should generate correct a11y summary for horizontal bar chart', async ({ page }) => {
@@ -38,9 +37,9 @@ test.describe('Bar Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    console.log('Horizontal bar chart summary:', summaryText);
-    // TODO: Replace with exact expected text after running test
-    expect(summaryText).toBeTruthy();
+    expect(summaryText).toBe(
+      'Bar chart with 4 data points, values ranging from 2 to 7. X axis displays Bottom axis from 0 to 3. Y axis displays Left axis, ranging from 0 to 7.',
+    );
   });
 
   test('should include axis descriptions when provided', async ({ page }) => {
@@ -49,8 +48,8 @@ test.describe('Bar Chart Accessibility', () => {
     await common.waitForA11yContent(page)();
 
     const summaryText = await common.getA11ySummaryText(page)();
-    console.log('Bar chart with axis summary:', summaryText);
-    // TODO: Replace with exact expected text after running test
-    expect(summaryText).toBeTruthy();
+    expect(summaryText).toBe(
+      'Bar chart with 4 data points, values ranging from 2 to 7. X axis displays Bottom axis from 0 to 3. Y axis displays Left axis, ranging from 0 to 7.',
+    );
   });
 });
