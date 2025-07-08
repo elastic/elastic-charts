@@ -15,20 +15,12 @@ test.describe('Metric Chart Accessibility', () => {
     const url = 'http://localhost:9001/?path=/story/metric-alpha--basic';
     await common.loadElementFromURL(page)(url, '.echChart');
 
-    // Wait for the chart to load
-    await page.waitForSelector('.echChart', { timeout: 5000 });
+    const sparklines = await page.locator('.echSingleMetricSparkline').elementHandles();
+    expect(sparklines.length).toBe(1);
 
-    // Check if accessibility content exists (regardless of visibility)
-    const a11yElements = page.locator('.echScreenReaderOnly');
-    const count = await a11yElements.count();
+    await common.waitForA11yContent(page)();
 
-    if (count > 0) {
-      const summaryText = await common.getA11ySummaryText(page)();
-      expect(summaryText).toBeTruthy();
-    } else {
-      // If no accessibility content, test that the chart loaded
-      const chartElement = page.locator('.echChart').first();
-      await expect(chartElement).toBeVisible();
-    }
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe('The Cluster CPU Usage trend The trend shows a peak of CPU usage in the last 5 minutes');
   });
 });

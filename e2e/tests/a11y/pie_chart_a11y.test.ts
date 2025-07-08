@@ -18,18 +18,12 @@ test.describe('Pie Chart Accessibility', () => {
     // Wait for the chart to load
     await page.waitForSelector('.echChart', { timeout: 5000 });
 
-    // Check if accessibility content exists (regardless of visibility)
-    const a11yElements = page.locator('.echScreenReaderOnly');
-    const count = await a11yElements.count();
+    await common.waitForA11yContent(page)();
 
-    if (count > 0) {
-      const summaryText = await common.getA11ySummaryText(page)();
-      expect(summaryText).toBeTruthy();
-    } else {
-      // If no accessibility content, test that the chart loaded
-      const chartElement = page.locator('.echChart').first();
-      await expect(chartElement).toBeVisible();
-    }
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe(
+      'Sunburst chart. 10 data points. The table fully represents the dataset of 10 data pointsLabelValuePercentageMineral fuels, lubricants and related materials$1,930 Bn22%Chemicals and related products$848 Bn10%Miscellaneous manufactured articles$817 Bn9%Manufactured goods classified chiefly by material$745 Bn9%Commodities and transactions not classified elsewhere$451 Bn5%Crude materials, inedible, except fuels$394 Bn5%Food and live animals$353 Bn4%Beverages and tobacco$54 Bn1%Animal and vegetable oils, fats and waxes$36 Bn0%Machinery and transport equipment$3,110 Bn36%',
+    );
   });
 
   test('should generate correct a11y summary for donut chart', async ({ page }) => {
@@ -39,17 +33,11 @@ test.describe('Pie Chart Accessibility', () => {
     // Wait for the chart to load
     await page.waitForSelector('.echChart', { timeout: 5000 });
 
-    // Check if accessibility content exists (regardless of visibility)
-    const a11yElements = page.locator('.echScreenReaderOnly');
-    const count = await a11yElements.count();
+    await common.waitForA11yContent(page)();
 
-    if (count > 0) {
-      const summaryText = await common.getA11ySummaryText(page)();
-      expect(summaryText).toBeTruthy();
-    } else {
-      // If no accessibility content, test that the chart loaded
-      const chartElement = page.locator('.echChart').first();
-      await expect(chartElement).toBeVisible();
-    }
+    const summaryText = await common.getA11ySummaryText(page)();
+    expect(summaryText).toBe(
+      'Sunburst chart. 10 data points. The table fully represents the dataset of 10 data pointsLabelValuePercentageMineral fuels, lubricants and related materials$1,930 Bn22%Chemicals and related products$848 Bn10%Miscellaneous manufactured articles$817 Bn9%Manufactured goods classified chiefly by material$745 Bn9%Commodities and transactions not classified elsewhere$451 Bn5%Crude materials, inedible, except fuels$394 Bn5%Food and live animals$353 Bn4%Beverages and tobacco$54 Bn1%Animal and vegetable oils, fats and waxes$36 Bn0%Machinery and transport equipment$3,110 Bn36%',
+    );
   });
 });

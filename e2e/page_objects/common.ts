@@ -608,52 +608,28 @@ export class CommonPage {
   waitForA11yContent =
     (page: Page) =>
     async (timeout = 5000) => {
-      await page.waitForSelector('.echScreenReaderOnly', { timeout });
+      await page.locator('.echScreenReaderOnly').first().waitFor({ state: 'attached', timeout });
     };
 
   /**
    * Get accessibility summary text from screen reader elements
    */
   getA11ySummaryText = (page: Page) => async (): Promise<string> => {
-    const element = await page.locator('.echScreenReaderOnly').first();
-    return (await element.textContent()) || '';
+    const elements = page.locator('.echScreenReaderOnly');
+    const count = await elements.count();
+
+    const texts = await Promise.all(Array.from({ length: count }, (_, i) => elements.nth(i).textContent()));
+
+    return texts.filter((text): text is string => text !== null).join(' ');
   };
 
   /**
    * Get accessibility description text specifically
    */
   getA11yDescription = (page: Page) => async (): Promise<string> => {
-    const descElement = await page.locator('.echScreenReaderOnly p').first();
+    const descElement = page.locator('.echScreenReaderOnly p').first();
     return (await descElement.textContent()) || '';
   };
-
-  /**
-   * Assert accessibility summary matches expected pattern
-   */
-  expectA11ySummaryToMatch =
-    (page: Page) =>
-    async (expectedPattern: string | RegExp): Promise<void> => {
-      const summaryText = await this.getA11ySummaryText(page)();
-      if (typeof expectedPattern === 'string') {
-        expect(summaryText).toBe(expectedPattern);
-      } else {
-        expect(summaryText).toMatch(expectedPattern);
-      }
-    };
-
-  /**
-   * Assert accessibility description matches expected pattern
-   */
-  expectA11yDescriptionToMatch =
-    (page: Page) =>
-    async (expectedPattern: string | RegExp): Promise<void> => {
-      const descriptionText = await this.getA11yDescription(page)();
-      if (typeof expectedPattern === 'string') {
-        expect(descriptionText).toBe(expectedPattern);
-      } else {
-        expect(descriptionText).toMatch(expectedPattern);
-      }
-    };
 }
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {
