@@ -622,14 +622,6 @@ export class CommonPage {
 
     return texts.filter((text): text is string => text !== null).join(' ');
   };
-
-  /**
-   * Get accessibility description text specifically
-   */
-  getA11yDescription = (page: Page) => async (): Promise<string> => {
-    const descElement = page.locator('.echScreenReaderOnly p').first();
-    return (await descElement.textContent()) || '';
-  };
 }
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {

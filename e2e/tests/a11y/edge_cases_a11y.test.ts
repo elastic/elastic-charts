@@ -38,6 +38,8 @@ test.describe('Edge Cases Accessibility', () => {
     await common.loadElementFromURL(page)(url, '.echChart');
     await common.waitForA11yContent(page)();
 
+    // TODO This doesn't throw the error yet, the default storybook pages first
+    // loads without error, the error needs then to be triggered manually.
     const summaryText = await common.getA11ySummaryText(page)();
     expect(summaryText).toBe('Chart type:bar chart');
   });
