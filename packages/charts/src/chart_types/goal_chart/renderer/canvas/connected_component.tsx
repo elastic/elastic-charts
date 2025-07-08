@@ -139,10 +139,9 @@ class Component extends React.Component<Props> {
           }}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
-        >
-          <ScreenReaderSummary />
-          <GoalSemanticDescription bandLabels={bandLabels} firstValue={firstValue} {...a11ySettings} />
-        </canvas>
+        />
+        <ScreenReaderSummary />
+        <GoalSemanticDescription bandLabels={bandLabels} firstValue={firstValue} {...a11ySettings} />
       </figure>
     );
   }
