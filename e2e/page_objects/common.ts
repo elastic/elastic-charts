@@ -622,6 +622,22 @@ export class CommonPage {
 
     return texts.filter((text): text is string => text !== null).join(' ');
   };
+
+  /**
+   * Test accessibility summary for a chart at a given URL
+   * @param url Storybook URL for the chart
+   * @param expectedSummary Expected accessibility summary text
+   */
+  testA11ySummary = (page: Page) => async (url: string, expectedSummary: string) => {
+    await this.loadElementFromURL(page)(url, '.echChart');
+
+    // Wait for the chart to load
+    await page.waitForSelector('.echChart', { timeout: 5000 });
+    await this.waitForA11yContent(page)();
+
+    const summaryText = await this.getA11ySummaryText(page)();
+    expect(summaryText).toBe(expectedSummary);
+  };
 }
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {

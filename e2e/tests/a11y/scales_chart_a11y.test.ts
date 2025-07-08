@@ -6,26 +6,22 @@
  * Side Public License, v 1.
  */
 
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 import { common } from '../../page_objects/common';
 
 test.describe('Scales Chart Accessibility', () => {
   test('should generate correct a11y summary for log scale options', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/scales--log-scale-options';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:line chart');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/scales--log-scale-options',
+      'Chart type:line chart',
+    );
   });
 
   test('should generate correct a11y summary for linear binary scale', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/scales--linear-binary';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:line chart');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/scales--linear-binary',
+      'Chart type:line chart',
+    );
   });
 });

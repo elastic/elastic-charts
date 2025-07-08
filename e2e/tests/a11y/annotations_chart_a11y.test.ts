@@ -6,45 +6,36 @@
  * Side Public License, v 1.
  */
 
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 import { common } from '../../page_objects/common';
 
 test.describe('Annotations Chart Accessibility', () => {
   test('should generate correct a11y summary for line annotation', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/annotations-lines--single-bar-histogram';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:bar chart');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/annotations-lines--single-bar-histogram',
+      'Chart type:bar chart',
+    );
   });
 
   test('should generate correct a11y summary for rect annotation', async ({ page }) => {
-    const url =
-      'http://localhost:9001/?path=/story/annotations-rects--styling&knob-showLineAnnotations=true&knob-chartRotation=0';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:line chart');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/annotations-rects--styling&knob-showLineAnnotations=true&knob-chartRotation=0',
+      'Chart type:line chart',
+    );
   });
 
   test('should generate correct a11y summary for advanced markers', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/annotations-lines--advanced-markers';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:bar chart');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/annotations-lines--advanced-markers',
+      'Chart type:bar chart',
+    );
   });
 
   test('should generate correct a11y summary for outside annotations', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/annotations-rects--outside';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:line chart');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/annotations-rects--outside',
+      'Chart type:line chart',
+    );
   });
 });

@@ -6,56 +6,36 @@
  * Side Public License, v 1.
  */
 
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 import { common } from '../../page_objects/common';
 
 test.describe('Goal Chart Accessibility', () => {
   test('should generate correct a11y summary for goal chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/goal-alpha--minimal-goal';
-    await common.loadElementFromURL(page)(url, '.echChart');
-
-    // Wait for the chart to load
-    await page.waitForSelector('.echChart', { timeout: 5000 });
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe(
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/goal-alpha--minimal-goal',
       'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:280',
     );
   });
 
   test('should generate correct a11y summary for gauge chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target';
-    await common.loadElementFromURL(page)(url, '.echChart');
-
-    // Wait for the chart to load
-    await page.waitForSelector('.echChart', { timeout: 5000 });
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe(
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/goal-alpha--gauge-with-target',
       'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:170',
     );
   });
 
   test('should generate correct a11y summary for goal chart without target', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/goal-alpha--gaps';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe(
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/goal-alpha--gaps',
       'Revenue 2020 YTD  (thousand USD)  Chart type:goal chartMinimum:0Maximum:300Target:260Value:280',
     );
   });
 
   test('should generate correct a11y summary for full circle goal chart', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/goal-alpha--full-circle';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:goal chartMinimum:0Maximum:300Target:260Value:280');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/goal-alpha--full-circle',
+      'Chart type:goal chartMinimum:0Maximum:300Target:260Value:280',
+    );
   });
 });

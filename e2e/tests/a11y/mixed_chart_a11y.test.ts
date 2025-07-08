@@ -6,35 +6,29 @@
  * Side Public License, v 1.
  */
 
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
 import { common } from '../../page_objects/common';
 
 test.describe('Mixed Chart Accessibility', () => {
   test('should generate correct a11y summary for fitting functions non-stacked', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/mixed-charts--fitting-functions-non-stacked-series';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:area chart');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/mixed-charts--fitting-functions-non-stacked-series',
+      'Chart type:area chart',
+    );
   });
 
   test('should generate correct a11y summary for fitting functions stacked', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/mixed-charts--fitting-functions-stacked-series';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:area chart');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/mixed-charts--fitting-functions-stacked-series',
+      'Chart type:area chart',
+    );
   });
 
   test('should generate correct a11y summary for polarized stacked charts', async ({ page }) => {
-    const url = 'http://localhost:9001/?path=/story/mixed-charts--polarized-stacked';
-    await common.loadElementFromURL(page)(url, '.echChart');
-    await common.waitForA11yContent(page)();
-
-    const summaryText = await common.getA11ySummaryText(page)();
-    expect(summaryText).toBe('Chart type:bar chart');
+    await common.testA11ySummary(page)(
+      'http://localhost:9001/?path=/story/mixed-charts--polarized-stacked',
+      'Chart type:bar chart',
+    );
   });
 });
