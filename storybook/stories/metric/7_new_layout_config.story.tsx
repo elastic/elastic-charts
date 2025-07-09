@@ -119,16 +119,18 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const valueColor = select(
     'Value color',
     {
-      textPrimary: '#1750BA',
-      textSuccess: '#09724D',
-      textRegular: '#0F658A',
-      textWarning: '#6A4906',
-      textRisk: '#782E18',
-      textDanger: '#A71627',
-      textAccent: '#A11262',
-      textAccentSecondary: '#047471',
+      euiColorVisText0: '#065B58',
+      euiColorVisText1: '#047471',
+      euiColorVisText2: '#154399',
+      euiColorVisText3: '#0B64DD',
+      euiColorVisText4: '#A11262',
+      euiColorVisText5: '#D13680',
+      euiColorVisText6: '#A71627',
+      euiColorVisText7: '#DA3737',
+      euiColorVisText8: '#6A4906',
+      euiColorVisText9: '#966B03',
     },
-    '#1750BA',
+    '#065B58',
     colorGroup,
   );
   const useBlendingBackground = boolean('Use blending background', false, colorGroup);
