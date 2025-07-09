@@ -180,7 +180,9 @@ void (async () => {
   const artifactPath = isA11y ? '.buildkite/artifacts/a11y_reports/*' : '.buildkite/artifacts/e2e_reports/*';
   const reportDir = isA11y ? '.buildkite/artifacts/a11y_reports' : '.buildkite/artifacts/e2e_reports';
   const outputDir = isA11y ? 'merged_a11y_html_report' : 'merged_html_report';
-  const outputArtifact = isA11y ? '.buildkite/artifacts/merged_a11y_html_report.gz' : '.buildkite/artifacts/merged_html_report.gz';
+  const outputArtifact = isA11y
+    ? '.buildkite/artifacts/merged_a11y_html_report.gz'
+    : '.buildkite/artifacts/merged_html_report.gz';
 
   await downloadArtifacts(artifactPath);
 
