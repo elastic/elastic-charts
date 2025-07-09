@@ -13,7 +13,7 @@ import baseConfig from './playwright.config';
 const config: PlaywrightTestConfig = {
   ...baseConfig,
   testIgnore: undefined, // Reset the testIgnore from base config
-  testMatch: ['**/tests/a11y/**/*.test.ts'],
+  testMatch: ['**/tests_a11y/**/*.test.ts'],
   reporter: [
     ['list'],
     ['html', { open: 'never', outputFolder: 'reports/a11y-html' }],
