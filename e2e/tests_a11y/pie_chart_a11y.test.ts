@@ -8,7 +8,7 @@
 
 import { test, expect } from '@playwright/test';
 
-import { common } from '../../page_objects/common';
+import { common } from '../page_objects/common';
 
 test.describe('Pie Chart Accessibility', () => {
   test('should generate correct a11y summary for basic pie chart', async ({ page }) => {

@@ -8,7 +8,7 @@
 
 import { test, expect } from '@playwright/test';
 
-import { common } from '../../page_objects/common';
+import { common } from '../page_objects/common';
 
 test.describe('Metric Chart Accessibility', () => {
   test('should generate correct a11y summary for metric chart', async ({ page }) => {

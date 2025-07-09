@@ -8,7 +8,7 @@
 
 import { test } from '@playwright/test';
 
-import { common } from '../../page_objects/common';
+import { common } from '../page_objects/common';
 
 test.describe('Annotations Chart Accessibility', () => {
   test('should generate correct a11y summary for line annotation', async ({ page }) => {

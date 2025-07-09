@@ -8,7 +8,7 @@
 
 import { test, expect } from '@playwright/test';
 
-import { common } from '../../page_objects/common';
+import { common } from '../page_objects/common';
 
 test.describe('Edge Cases Accessibility', () => {
   test('no screen reader summary for empty charts', async ({ page }) => {
