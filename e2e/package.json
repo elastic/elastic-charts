@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "./scripts/clean.sh",
     "test": "./scripts/start.sh",
-    "test:a11y": "./scripts/start-a11y.sh",
+    "test:a11y": "./scripts/start.sh --a11y",
     "start": "npx http-server ./server --port 9002",
     "test:playwright": "./scripts/test.sh",
     "test:playwright:a11y": "./scripts/test-a11y.sh",
