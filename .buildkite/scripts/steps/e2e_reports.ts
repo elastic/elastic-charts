@@ -38,7 +38,8 @@ async function setGroupStatus() {
     return;
   }
 
-  const e2eJobs = await getBuildJobs('playwright__parallel-step');
+  const parallelKey = checkId === 'playwright_a11y' ? 'playwright_a11y__parallel-step' : 'playwright__parallel-step';
+  const e2eJobs = await getBuildJobs(parallelKey);
   const jobStateMap = new Map<string, number>();
   jobStateMap.set('Success', 0);
   jobStateMap.set('Failed', 0);
