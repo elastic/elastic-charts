@@ -27,7 +27,7 @@ import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Position, Rotation } from '../../../../utils/common';
-import { isRTLString } from '../../../../utils/common';
+import { isFiniteNumber, isRTLString } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import type { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
@@ -84,9 +84,10 @@ export function generateTicks(
   return ticks.reduce<AxisTick[]>((acc, value, i) => {
     const domainClampedValue = isContinuous && typeof value === 'number' ? Math.max(value, scale.domain[0]) : value;
     const label = labelFormatter(value);
-    const position = (scale.scale(value) || 0) + offset; // todo it doesn't look desirable to convert a NaN into a zero
-    const domainClampedPosition = (scale.scale(domainClampedValue) || 0) + offset; // todo it doesn't look desirable to convert a NaN into a zero
+    const position = scale.scale(value) + offset;
+    const domainClampedPosition = scale.scale(domainClampedValue) + offset;
 
+    if (!isFiniteNumber(position) || !isFiniteNumber(domainClampedPosition)) return acc;
     if (layer === 0 && i === 0 && position < domainClampedPosition) return acc;
 
     acc.push({

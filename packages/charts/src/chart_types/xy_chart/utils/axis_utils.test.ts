@@ -888,6 +888,22 @@ describe('Axis computational utils', () => {
     ]);
   });
 
+  test('should omit NaN values from generated ticks', () => {
+    const xDomainTime = MockXDomain.fromScaleType(ScaleType.Ordinal, {
+      domain: [1, 3, 5],
+    });
+    const scale = computeXScale({ xDomain: xDomainTime, totalBarsInCluster: 0, range: [0, 10] });
+    const ticks = [1, 2, 3, 4, 5];
+    const result = generateTicks(scale, ticks, 0, String, 0, 0, true, false);
+
+    expect(result).toHaveLength(3);
+    expect(result).toMatchObject([
+      { value: 1, label: '1' },
+      { value: 3, label: '3' },
+      { value: 5, label: '5' },
+    ]);
+  });
+
   describe('Small multiples', () => {
     const axisStyles = axisTitleStyles(10, 8);
     const cumTopSum = 10;
