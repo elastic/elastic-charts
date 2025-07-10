@@ -6,7 +6,7 @@
  * Side Public License, v 1.
  */
 
-import { EuiFlexGroup, EuiFlexItem, EuiIcon } from '@elastic/eui';
+import { EuiIcon } from '@elastic/eui';
 import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
@@ -34,17 +34,6 @@ const getIcon =
   ({ width, height, color }: { width: number; height: number; color: string }) => (
     <EuiIcon type={type} width={width} height={height} fill={color} style={{ width, height }} />
   );
-
-const sizeMap = {
-  xxxs: { height: '100px', maxWidth: '200px' },
-  xxs: { height: '150px', maxWidth: '200px' },
-  xs: { height: '200px', maxWidth: '300px' },
-  s: { height: '300px', maxWidth: '200px' },
-  m: { height: '400px', maxWidth: '400px' },
-  l: { height: '500px', maxWidth: '500px' },
-  xl: { height: '600px', maxWidth: '600px' },
-  xxl: { height: '700px', maxWidth: '700px' },
-};
 
 const textConfigurationAndPositionGroup = 'Text configuration and position';
 const secondaryMetricGroup = 'Secondary metric';
@@ -229,80 +218,51 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   // Extra (secondary metric)
   const extraTextAlign = getTextAlignKnob('Extra element alignment', 'left', textConfigurationAndPositionGroup);
 
-  // Breakpoints and size
-
-  const breakpointShow = select(
-    'Show breakpoint',
-    {
-      xxxs: 'xxxs',
-      xxs: 'xxs',
-      xs: 'xs',
-      s: 's',
-      m: 'm',
-      l: 'l',
-      xl: 'xl',
-      xxl: 'xxl',
-    },
-    'm',
-    textConfigurationAndPositionGroup,
-  );
-
-  const customSize = boolean('Custom size', false, textConfigurationAndPositionGroup);
-
-  const height = number('Metric height', 400, { min: 100, step: 10 }, textConfigurationAndPositionGroup);
-  const width = number('Metric width', 400, { min: 100, step: 10 }, textConfigurationAndPositionGroup);
-
-  const sizeStyle = customSize ? { height, maxWidth: width } : sizeMap[breakpointShow];
-
   const baseTheme = useBaseTheme();
 
   return (
-    <EuiFlexGroup>
-      <EuiFlexItem style={sizeStyle}>
-        <Chart title={storyTitle} description={description}>
-          <Settings
-            theme={{
-              metric: {
-                blendingBackground: useBlendingBackground ? blendingBackground : undefined,
-                valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
-                titlesTextAlign,
-                valueTextAlign,
-                extraTextAlign,
-                iconAlign,
-                valuePosition,
-                titleWeight,
-                barBackground,
-              },
-            }}
-            baseTheme={baseTheme}
-            onElementClick={([d]) => {
-              if (isMetricElementEvent(d)) {
-                const { rowIndex, columnIndex } = d;
-                onEventClickAction(
-                  `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
-                );
-              }
-            }}
-            onElementOver={([d]) => {
-              if (isMetricElementEvent(d)) {
-                const { rowIndex, columnIndex } = d;
-                onEventOverAction(
-                  `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
-                );
-              }
-            }}
-            onElementOut={() => onEventOutAction('out')}
-          />
-          <Metric id="metric-id" data={configuredData} />
-        </Chart>
-      </EuiFlexItem>
-    </EuiFlexGroup>
+    <Chart title={storyTitle} description={description}>
+      <Settings
+        theme={{
+          metric: {
+            blendingBackground: useBlendingBackground ? blendingBackground : undefined,
+            valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
+            titlesTextAlign,
+            valueTextAlign,
+            extraTextAlign,
+            iconAlign,
+            valuePosition,
+            titleWeight,
+            barBackground,
+          },
+        }}
+        baseTheme={baseTheme}
+        onElementClick={([d]) => {
+          if (isMetricElementEvent(d)) {
+            const { rowIndex, columnIndex } = d;
+            onEventClickAction(
+              `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+            );
+          }
+        }}
+        onElementOver={([d]) => {
+          if (isMetricElementEvent(d)) {
+            const { rowIndex, columnIndex } = d;
+            onEventOverAction(
+              `row:${rowIndex} col:${columnIndex} value:${configuredData[rowIndex][columnIndex].value}`,
+            );
+          }
+        }}
+        onElementOut={() => onEventOutAction('out')}
+      />
+      <Metric id="metric-id" data={configuredData} />
+    </Chart>
   );
 };
 
 Example.parameters = {
   resize: {
-    height: '700px',
-    width: '1200px',
+    height: '200px',
+    width: '200px',
   },
 };
