@@ -16,7 +16,7 @@ import type { TextColors } from './text';
 import { MetricText } from './text';
 import type { MetricTextDimensions } from './text_measurements';
 import type { ColorContrastOptions, TextContrastOptions } from '../../../../common/color_calcs';
-import { combineColors } from '../../../../common/color_calcs';
+import { combineColors, getBorderRecommendation } from '../../../../common/color_calcs';
 import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
@@ -31,7 +31,7 @@ import type {
 import { LayoutDirection, isNil } from '../../../../utils/common';
 import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricWNumber } from '../../specs';
-import { isMetricWProgress, isMetricWTrend } from '../../specs';
+import { isMetricWProgress, isMetricWTrend, isSecondaryMetricProps } from '../../specs';
 
 /**
  * Synced with _index.scss
@@ -106,6 +106,8 @@ const getTextColors = ({
     }),
   };
 };
+
+const CONTRAST_THRESHOLD = 3.0;
 
 /** @internal */
 export const Metric: React.FunctionComponent<{
@@ -190,6 +192,30 @@ export const Metric: React.FunctionComponent<{
     textContrastOptions,
   });
 
+  // Note: Added here the calculation because we have all the metric context and info
+  let badgeBorderColor;
+  if (isSecondaryMetricProps(datum.extra) && !!datum.extra.badgeColor && !datum.extra.badgeBorderColor) {
+    const metricBackgroundColor = hasProgressBar ? backgroundColor : blendedColor;
+    const borderRecommendation = getBorderRecommendation(metricBackgroundColor, datum.extra.badgeColor, {
+      contrastThreshold: CONTRAST_THRESHOLD,
+      borderOptions: textContrastOptions.extra,
+    });
+    badgeBorderColor = borderRecommendation.borderColor;
+    if (hasTrend) {
+      const { shade, borderColor, contrastRatio } = getBorderRecommendation(
+        getSparkLineColor(blendedColor),
+        datum.extra.badgeColor,
+        {
+          contrastThreshold: CONTRAST_THRESHOLD,
+          borderOptions: textContrastOptions.extra,
+        },
+      );
+      if (shade !== borderRecommendation.shade && contrastRatio > borderRecommendation.contrastRatio) {
+        badgeBorderColor = borderColor;
+      }
+    }
+  }
+
   const onElementClickHandler = () => onElementClick && onElementClick([event]);
   const hasMouseEventsHandler = onElementOut || onElementOver || onElementClick;
   return (
@@ -235,6 +261,7 @@ export const Metric: React.FunctionComponent<{
         progressBarSize={progressBarSize}
         textDimensions={textDimensions}
         colors={textColors}
+        badgeBorderColor={badgeBorderColor}
       />
       {isMetricWTrend(datumWithInteractionColor) && <SparkLine id={metricHTMLId} datum={datumWithInteractionColor} />}
       {isMetricWProgress(datumWithInteractionColor) && (

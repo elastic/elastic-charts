@@ -35,7 +35,7 @@ export interface SecondaryMetricProps {
   /**
    * Optional background color for the value badge. If not provided, no badge is displayed.
    */
-  badgeColor?: string;
+  badgeColor?: Color;
   /**
    * Determines whether the value appears before or after the label.
    */
@@ -48,6 +48,7 @@ export interface SecondaryMetricProps {
    * Optional aria description
    */
   ariaDescription?: string;
+  badgeBorderColor?: Color;
 }
 
 /** @alpha */
