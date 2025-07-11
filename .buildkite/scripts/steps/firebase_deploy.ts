@@ -47,17 +47,26 @@ void (async () => {
     dest: path.join(outDir, 'e2e-report'),
   });
 
+  const a11yReportSrc = '.buildkite/artifacts/merged_a11y_html_report.gz';
+  await downloadArtifacts(a11yReportSrc, 'playwright_a11y_merge_and_status');
+  await decompress({
+    src: a11yReportSrc,
+    dest: path.join(outDir, 'a11y-report'),
+  });
+
   startGroup('Check deployment files');
 
   const hasDocsIndex = fs.existsSync(path.join(outDir, 'index.html'));
   const hasStorybookIndex = fs.existsSync(path.join(outDir, 'storybook/index.html'));
   const hasE2EIndex = fs.existsSync(path.join(outDir, 'e2e/index.html'));
   const hasE2EReportIndex = fs.existsSync(path.join(outDir, 'e2e-report/index.html'));
+  const hasA11yReportIndex = fs.existsSync(path.join(outDir, 'a11y-report/index.html'));
   const missingFiles = [
     ['docs', hasDocsIndex],
     ['storybook', hasStorybookIndex],
     ['e2e server', hasE2EIndex],
     ['e2e report', hasE2EReportIndex],
+    ['a11y report', hasA11yReportIndex],
   ]
     .filter(([, exists]) => !exists)
     .map<string>(([f]) => f as string);

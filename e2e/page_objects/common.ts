@@ -600,6 +600,44 @@ export class CommonPage {
       if (width !== undefined) element.style.width = typeof width === 'number' ? `${width}px` : width;
     }, dimensions);
   };
+
+  /**
+   * Wait for accessibility content to be rendered
+   * @param timeout timeout for waiting on element to appear in DOM
+   */
+  waitForA11yContent =
+    (page: Page) =>
+    async (timeout = 5000) => {
+      await page.locator('.echScreenReaderOnly').first().waitFor({ state: 'attached', timeout });
+    };
+
+  /**
+   * Get accessibility summary text from screen reader elements
+   */
+  getA11ySummaryText = (page: Page) => async (): Promise<string> => {
+    const elements = page.locator('.echScreenReaderOnly');
+    const count = await elements.count();
+
+    const texts = await Promise.all(Array.from({ length: count }, (_, i) => elements.nth(i).textContent()));
+
+    return texts.filter((text): text is string => text !== null).join(' ');
+  };
+
+  /**
+   * Test accessibility summary for a chart at a given URL
+   * @param url Storybook URL for the chart
+   * @param expectedSummary Expected accessibility summary text
+   */
+  testA11ySummary = (page: Page) => async (url: string, expectedSummary: string) => {
+    await this.loadElementFromURL(page)(url, '.echChart');
+
+    // Wait for the chart to load
+    await page.waitForSelector('.echChart', { timeout: 5000 });
+    await this.waitForA11yContent(page)();
+
+    const summaryText = await this.getA11ySummaryText(page)();
+    expect(summaryText).toBe(expectedSummary);
+  };
 }
 
 function getSnapshotOptions(options?: ScreenshotDOMElementOptions) {
