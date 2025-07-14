@@ -3,9 +3,8 @@
 name: Publish a Release
 
 on:
-  workflow_dispatch:
-    branches:
-      - main
+  workflow_dispatch
+
 
 env:
   ECH_NODE_VERSION: '20.11.1'
@@ -31,21 +30,21 @@ jobs:
 
       # TODO: fix unnecessary yarn installs
       - name: Install node_modules
-        uses: bahmutov/npm-install@v1.10.2
+        uses: bahmutov/npm-install@v1.10.9
         with:
           useRollingCache: true
       - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1.10.2
+        uses: bahmutov/npm-install@v1.10.9
         with:
           working-directory: e2e
           useRollingCache: true
       - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1.10.2
+        uses: bahmutov/npm-install@v1.10.9
         with:
           working-directory: .buildkite
           useRollingCache: true
       - name: Install e2e node_modules
-        uses: bahmutov/npm-install@v1.10.2
+        uses: bahmutov/npm-install@v1.10.9
         with:
           working-directory: github_bot
           useRollingCache: true
@@ -80,7 +79,7 @@ jobs:
           node-version: ${{ env.ECH_NODE_VERSION }}
 
       - name: Install node_modules
-        uses: bahmutov/npm-install@v1.10.2
+        uses: bahmutov/npm-install@v1.10.9
         with:
           useRollingCache: true
 
