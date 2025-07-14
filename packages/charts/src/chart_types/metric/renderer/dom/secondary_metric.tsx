@@ -11,8 +11,6 @@ import React from 'react';
 import { Badge } from './badge';
 import type { SecondaryMetricProps } from '../../specs';
 
-const LABEL_MARGIN = 4;
-
 /** @internal */
 export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
   value,
@@ -24,20 +22,18 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
   badgeBorderColor,
 }) => {
   const valueNode = badgeColor ? (
-    <Badge value={value} backgroundColor={badgeColor} borderColor={badgeBorderColor} />
+    <Badge
+      className="echSecondaryMetric__value"
+      value={value}
+      backgroundColor={badgeColor}
+      borderColor={badgeBorderColor}
+    />
   ) : (
-    <span className="echSecondaryMetric__value">{value}</span>
+    <span className="echSecondaryMetric__value echSecondaryMetric__truncate">{value}</span>
   );
 
   const isValueBeforeLabel = valuePosition === 'before';
-  const labelNode = (
-    <span
-      className="echSecondaryMetric__label"
-      style={isValueBeforeLabel ? { marginLeft: `${LABEL_MARGIN}px` } : { marginRight: `${LABEL_MARGIN}px` }}
-    >
-      {label}
-    </span>
-  );
+  const labelNode = <span className="echSecondaryMetric__label echSecondaryMetric__truncate">{label}</span>;
 
   return (
     <span
