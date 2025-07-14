@@ -48,6 +48,9 @@ export interface SecondaryMetricProps {
    * Optional aria description
    */
   ariaDescription?: string;
+  /**
+   * Border color applied to the badge
+   */
   badgeBorderColor?: Color;
 }
 
