@@ -1,3 +1,12 @@
+## [70.1.1](https://github.com/elastic/elastic-charts/compare/v70.1.0...v70.1.1) (2025-07-14)
+
+
+### Bug Fixes
+
+* **axis:** prevent sticky label in multi-layer time axis ([#2681](https://github.com/elastic/elastic-charts/issues/2681)) ([089c835](https://github.com/elastic/elastic-charts/commit/089c835cf4b77bc837445c5c048cdd74e56f4c27))
+* **highlight:** improve highlight on area/line charts  ([#2676](https://github.com/elastic/elastic-charts/issues/2676)) ([556a21b](https://github.com/elastic/elastic-charts/commit/556a21b2c1616d6ab734f706b1fd1c6493fc874b))
+* **isolatedPoints:** fix visibility and remove custom style for isolated points ([#2665](https://github.com/elastic/elastic-charts/issues/2665)) ([b38059d](https://github.com/elastic/elastic-charts/commit/b38059d16cb162c596d5104f3310f6ec27763e57))
+
 # [70.1.0](https://github.com/elastic/elastic-charts/compare/v70.0.1...v70.1.0) (2025-06-23)
 
 
