@@ -11,6 +11,7 @@ import {
   LIGHT_BACKGROUND_COLORS,
   LIGHT_BACKGROUND_COLORS_CUSTOM,
   LIGHT_BORDER_COLORS,
+  LIGHT_DIMMED_COLORS,
   LIGHT_TEXT_COLORS,
 } from './base_colors';
 import { BOREALIS_COLORS_PALETTE } from './borealis_colors';
@@ -31,6 +32,11 @@ export const LIGHT_THEME: Theme = {
       visible: true,
       strokeWidth: 2,
       opacity: 1,
+      focused: { strokeWidth: 2.5 },
+      dimmed: {
+        strokeWidth: 1,
+        stroke: LIGHT_DIMMED_COLORS.lineStroke,
+      },
     },
     point: {
       visible: 'auto',
@@ -39,6 +45,10 @@ export const LIGHT_THEME: Theme = {
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
+      dimmed: {
+        stroke: LIGHT_DIMMED_COLORS.linePointStroke,
+        fill: LIGHT_DIMMED_COLORS.linePointFill,
+      },
     },
     isolatedPoint: {
       enabled: true,
@@ -65,17 +75,29 @@ export const LIGHT_THEME: Theme = {
       fill: ColorVariant.Series,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
   },
   areaSeriesStyle: {
     area: {
       visible: true,
       opacity: 0.3,
+      dimmed: {
+        fill: LIGHT_DIMMED_COLORS.areaFill,
+        texture: { opacity: 0.25 },
+      },
     },
     line: {
       visible: true,
       strokeWidth: 2,
       opacity: 1,
+      dimmed: {
+        strokeWidth: 1,
+        stroke: LIGHT_DIMMED_COLORS.areaStroke,
+      },
+      focused: {
+        strokeWidth: 2.5,
+      },
     },
     point: {
       visible: 'never',
@@ -84,6 +106,10 @@ export const LIGHT_THEME: Theme = {
       fill: ColorVariant.Series,
       radius: 3,
       opacity: 1,
+      dimmed: {
+        stroke: LIGHT_DIMMED_COLORS.areaPointStroke,
+        fill: LIGHT_DIMMED_COLORS.areaPointFill,
+      },
     },
     isolatedPoint: {
       enabled: true,
