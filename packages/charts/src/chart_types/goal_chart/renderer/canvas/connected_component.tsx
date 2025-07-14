@@ -16,7 +16,7 @@ import { renderCanvas2d } from './canvas_renderers';
 import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
 import type { Rectangle } from '../../../../common/geometry';
-import { GoalSemanticDescription, ScreenReaderSummary } from '../../../../components/accessibility';
+import { ScreenReaderSummary } from '../../../../components/accessibility';
 import { onChartRendered } from '../../../../state/actions/chart';
 import type { GlobalChartState } from '../../../../state/chart_state';
 import type { A11ySettings } from '../../../../state/selectors/get_accessibility_config';
@@ -24,6 +24,7 @@ import { DEFAULT_A11Y_SETTINGS, getA11ySettingsSelector } from '../../../../stat
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getInternalIsInitializedSelector, InitStatus } from '../../../../state/selectors/get_internal_is_intialized';
 import type { Dimensions } from '../../../../utils/dimensions';
+import { GoalSemanticDescription } from '../../components/goal_semantic_description';
 import type { BandViewModel, ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { nullShapeViewModel } from '../../layout/types/viewmodel_types';
 import type { Mark } from '../../layout/viewmodel/geoms';
@@ -138,10 +139,9 @@ class Component extends React.Component<Props> {
           }}
           // eslint-disable-next-line jsx-a11y/no-interactive-element-to-noninteractive-role
           role="presentation"
-        >
-          <ScreenReaderSummary />
-          <GoalSemanticDescription bandLabels={bandLabels} firstValue={firstValue} {...a11ySettings} />
-        </canvas>
+        />
+        <ScreenReaderSummary />
+        <GoalSemanticDescription bandLabels={bandLabels} firstValue={firstValue} {...a11ySettings} />
       </figure>
     );
   }
