@@ -37,6 +37,7 @@
       "matchPackageNames": ["@elastic/eui", "@elastic/datemath"],
       "matchUpdateTypes": ["major"],
       "schedule": ["every 1 week on monday"],
+      "dependencyDashboardApproval": true,
       "automerge": true,
       "enabled": true
     },
