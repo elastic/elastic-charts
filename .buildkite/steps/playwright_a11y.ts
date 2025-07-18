@@ -21,7 +21,7 @@ export const playwrightA11yStep = createStep<CustomGroupStep>(() => {
         ...commandStepDefaults,
         label: ':playwright: Playwright a11y',
         skip,
-        parallelism: 5,
+        parallelism: 1,
         retry: {
           automatic: [
             {
