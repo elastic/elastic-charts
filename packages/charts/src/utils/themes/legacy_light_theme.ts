@@ -34,6 +34,8 @@ export const LEGACY_LIGHT_THEME: Theme = {
       visible: true,
       strokeWidth: 1,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 1 },
     },
     point: {
       visible: 'always',
@@ -42,6 +44,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
       fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     isolatedPoint: {
       enabled: true,
@@ -68,17 +71,21 @@ export const LEGACY_LIGHT_THEME: Theme = {
       fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
   },
   areaSeriesStyle: {
     area: {
       visible: true,
       opacity: 0.3,
+      dimmed: { opacity: 0.25 },
     },
     line: {
       visible: true,
       strokeWidth: 1,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
+      focused: { strokeWidth: 1 },
     },
     point: {
       visible: 'never',
@@ -87,6 +94,7 @@ export const LEGACY_LIGHT_THEME: Theme = {
       fill: Colors.White.keyword,
       radius: 2,
       opacity: 1,
+      dimmed: { opacity: 0.25 },
     },
     isolatedPoint: {
       enabled: true,

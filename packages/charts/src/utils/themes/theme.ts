@@ -597,9 +597,22 @@ export interface PointStyle {
   radius: Pixels;
   /** shape for the point, default to circle */
   shape?: PointShape;
+  /**
+   * The style applied to the point when it is dimmed relative to other highlighted elements on the chart.
+   * This is typically used to visually de-emphasize the point, for example, when another series is highlighted.
+   */
+  dimmed:
+    | { opacity: number }
+    | {
+        /** The fill color to use when the point is dimmed. */
+        fill: Color | ColorVariant;
+        /** The stroke color to use when the point is dimmed. */
+        stroke: Color | ColorVariant;
+      };
 }
 
 /** @public */
+
 export interface LineStyle {
   /** is the line visible or hidden ? */
   visible: boolean;
@@ -611,6 +624,22 @@ export interface LineStyle {
   opacity: number;
   /** the dash array */
   dash?: number[];
+  /**
+   * The style applied to the line when it is dimmed relative to other highlighted elements on the chart.
+   * This is typically used to visually de-emphasize the line, for example, when another series is highlighted.
+   */
+  dimmed:
+    | { opacity: number }
+    | {
+        /** The stroke color to use when the line is dimmed. */
+        stroke: Color | ColorVariant;
+        /** The stroke width to use when the line is dimmed. */
+        strokeWidth: number;
+      };
+  focused: {
+    /** The stroke width to use when the line is focused. */
+    strokeWidth: number;
+  };
 }
 
 /** @public */
@@ -683,6 +712,18 @@ export interface AreaStyle {
   fill?: Color | ColorVariant;
   /** the opacity of each area on the theme/series */
   opacity: number;
+  /**
+   * The style applied to the area when it is dimmed relative to other highlighted elements on the chart.
+   * This is typically used to visually de-emphasize the area, for example, when another series is highlighted.
+   */
+  dimmed:
+    | { opacity: number }
+    | {
+        /** The fill color to use when the area is dimmed. */
+        fill: Color | ColorVariant;
+        /** The opacity multiplier for the texture color when the area is dimmed */
+        texture: { opacity: number };
+      };
 }
 
 /** @public */
@@ -756,7 +797,7 @@ export interface LineSeriesStyle {
   /** Style for the points  */
   point: PointStyle;
   /** Style for the isolated points  */
-  isolatedPoint: { enabled: boolean } & Omit<PointStyle, 'radius'>;
+  isolatedPoint: { enabled: boolean } & Omit<PointStyle, 'radius' | 'dimmed'>;
   /** Style for the fitted line  */
   fit: {
     line: LineFitStyle;
@@ -780,7 +821,7 @@ export interface AreaSeriesStyle {
   /** Style for the points  */
   point: PointStyle;
   /** Style for the isolated points  */
-  isolatedPoint: { enabled: boolean } & Omit<PointStyle, 'radius'>;
+  isolatedPoint: { enabled: boolean } & Omit<PointStyle, 'radius' | 'dimmed'>;
   /** Style for the fitted area  */
   fit: {
     line: LineFitStyle;

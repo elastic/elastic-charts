@@ -27,7 +27,7 @@ import { computeSmallMultipleScalesSelector } from '../../../../state/selectors/
 import { getSettingsSpecSelector } from '../../../../state/selectors/get_settings_spec';
 import { withTextMeasure } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import type { Position, Rotation } from '../../../../utils/common';
-import { isRTLString } from '../../../../utils/common';
+import { isFiniteNumber, isRTLString } from '../../../../utils/common';
 import type { Size } from '../../../../utils/dimensions';
 import type { AxisId } from '../../../../utils/ids';
 import { multilayerAxisEntry } from '../../axes/timeslip/multilayer_ticks';
@@ -70,7 +70,6 @@ function getDirectionFn({ type }: ScaleBand | ScaleContinuous): (label: string) 
 
 /** @internal */
 export function generateTicks(
-  axisSpec: AxisSpec,
   scale: ScaleBand | ScaleContinuous,
   ticks: (number | string)[],
   offset: number,
@@ -82,22 +81,29 @@ export function generateTicks(
 ): AxisTick[] {
   const getDirection = getDirectionFn(scale);
   const isContinuous = isContinuousScale(scale);
-  return ticks.map<AxisTick>((value) => {
+  return ticks.reduce<AxisTick[]>((acc, value, i) => {
     const domainClampedValue = isContinuous && typeof value === 'number' ? Math.max(value, scale.domain[0]) : value;
     const label = labelFormatter(value);
-    return {
+    const position = scale.scale(value) + offset;
+    const domainClampedPosition = scale.scale(domainClampedValue) + offset;
+
+    if (!isFiniteNumber(position) || !isFiniteNumber(domainClampedPosition)) return acc;
+    if (layer === 0 && i === 0 && position < domainClampedPosition) return acc;
+
+    acc.push({
       value,
       domainClampedValue,
       label,
-      position: (scale.scale(value) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
-      domainClampedPosition: (scale.scale(domainClampedValue) || 0) + offset, // todo it doesn't look desirable to convert a NaN into a zero
+      position,
+      domainClampedPosition,
       layer,
       detailedLayer,
       showGrid,
       direction: getDirection(label),
       multilayerTimeAxis,
-    };
-  });
+    });
+    return acc;
+  }, []);
 }
 
 function getVisibleTicks(
@@ -158,17 +164,7 @@ function getVisibleTicks(
             multilayerTimeAxis,
           },
         ]
-      : generateTicks(
-          axisSpec,
-          scale,
-          ticks,
-          offset,
-          labelFormatter,
-          layer,
-          detailedLayer,
-          showGrid,
-          multilayerTimeAxis,
-        );
+      : generateTicks(scale, ticks, offset, labelFormatter, layer, detailedLayer, showGrid, multilayerTimeAxis);
 
   const { showOverlappingTicks, showOverlappingLabels, position } = axisSpec;
   const requiredSpace = isVerticalAxis(position) ? labelBox.maxLabelBboxHeight / 2 : labelBox.maxLabelBboxWidth / 2;

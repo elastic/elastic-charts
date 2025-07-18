@@ -110,7 +110,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
         tickFormat={tooltipDateFormatter}
         labelFormat={topAxisLabelFormat}
         title="time (1-minute measurements)"
-        timeAxisLayerCount={number('layerCount', 3, { range: true, min: 0, max: 3, step: 1 })}
+        timeAxisLayerCount={number('layerCount', 2, { range: true, min: 0, max: 3, step: 1 })}
       />
       <Axis
         id="left"

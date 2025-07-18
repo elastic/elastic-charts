@@ -209,7 +209,7 @@ export interface AreaSeriesStyle {
     };
     isolatedPoint: {
         enabled: boolean;
-    } & Omit<PointStyle, 'radius'>;
+    } & Omit<PointStyle, 'radius' | 'dimmed'>;
     line: LineStyle;
     point: PointStyle;
     pointVisibilityMinDistance: Pixels;
@@ -217,6 +217,14 @@ export interface AreaSeriesStyle {
 
 // @public (undocumented)
 export interface AreaStyle {
+    dimmed: {
+        opacity: number;
+    } | {
+        fill: Color | ColorVariant;
+        texture: {
+            opacity: number;
+        };
+    };
     fill?: Color | ColorVariant;
     opacity: number;
     texture?: TexturedStyles;
@@ -2003,7 +2011,7 @@ export interface LineSeriesStyle {
     };
     isolatedPoint: {
         enabled: boolean;
-    } & Omit<PointStyle, 'radius'>;
+    } & Omit<PointStyle, 'radius' | 'dimmed'>;
     line: LineStyle;
     point: PointStyle;
     pointVisibilityMinDistance: Pixels;
@@ -2012,6 +2020,16 @@ export interface LineSeriesStyle {
 // @public (undocumented)
 export interface LineStyle {
     dash?: number[];
+    dimmed: {
+        opacity: number;
+    } | {
+        stroke: Color | ColorVariant;
+        strokeWidth: number;
+    };
+    // (undocumented)
+    focused: {
+        strokeWidth: number;
+    };
     opacity: number;
     stroke?: Color | ColorVariant;
     strokeWidth: number;
@@ -2458,6 +2476,12 @@ export type PointShape = $Values<typeof PointShape>;
 
 // @public (undocumented)
 export interface PointStyle {
+    dimmed: {
+        opacity: number;
+    } | {
+        fill: Color | ColorVariant;
+        stroke: Color | ColorVariant;
+    };
     fill?: Color | ColorVariant;
     opacity: number;
     radius: Pixels;
