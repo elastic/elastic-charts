@@ -52,7 +52,7 @@ export type GetMeasuredTicks = (
 
 type Projections = Map<AxisId, Projection>;
 
-const adaptiveTickCount = true;
+const USE_ADAPTIVE_TICK_COUNT = true;
 
 function axisMinMax(axisPosition: Position, chartRotation: Rotation, { width, height }: Size): [number, number] {
   const horizontal = isHorizontalAxis(axisPosition);
@@ -117,6 +117,7 @@ function getVisibleTicks(
   layer: number | undefined,
   detailedLayer: number,
   ticks: (number | string)[],
+  adaptiveTickCount: boolean,
   multilayerTimeAxis: boolean = false,
   showGrid = true,
 ): AxisTick[] {
@@ -200,6 +201,7 @@ function getVisibleTickSet(
   detailedLayer: number,
   ticks: (number | string)[],
   labelFormatter: AxisLabelFormatter,
+  adaptiveTickCount: boolean,
   multilayerTimeAxis = false,
   showGrid = true,
 ): AxisTick[] {
@@ -218,6 +220,7 @@ function getVisibleTickSet(
     layer,
     detailedLayer,
     ticks,
+    adaptiveTickCount,
     multilayerTimeAxis,
     showGrid,
   );
@@ -260,6 +263,8 @@ function getVisibleTickSets(
         const multilayerTimeAxis = isMultilayerTimeAxis(axisSpec, scaleConfigs.x.type, chartRotation);
         // TODO: remove this fallback when integersOnly is removed
         const maximumFractionDigits = mfd ?? (integersOnly ? 0 : undefined);
+        const isNice = (isXAxis ? scaleConfigs.x.nice : scaleConfigs.y[groupId]?.nice) ?? false;
+        const adaptiveTickCount = !isNice && USE_ADAPTIVE_TICK_COUNT;
 
         const getMeasuredTicks = (
           scale: ScaleBand | ScaleContinuous,
@@ -282,6 +287,7 @@ function getVisibleTickSets(
               detailedLayer,
               ticks,
               labelFormatter,
+              adaptiveTickCount,
               multilayerTimeAxis,
               showGrid,
             ),
