@@ -1314,6 +1314,9 @@ export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "i
 // @public (undocumented)
 export type FontStyle = (typeof FONT_STYLES)[number];
 
+// @public
+export type FontWeight = 'bold' | 'regular';
+
 // @public (undocumented)
 export type GenericDomain = [start: number, end: number];
 
@@ -1728,6 +1731,9 @@ export const HorizontalAlignment: Readonly<{
 // @public
 export type HorizontalAlignment = $Values<typeof HorizontalAlignment>;
 
+// @public
+export type HorizontalSide = 'left' | 'right';
+
 // Warning: (ae-forgotten-export) The symbol "BinaryAccessorFn" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -2067,7 +2073,7 @@ export type MetricBase = {
     extra?: ReactElement | ComponentType<{
         fontSize: number;
         color: string;
-    }>;
+    }> | SecondaryMetricProps;
     icon?: ComponentType<{
         width: number;
         height: number;
@@ -2099,7 +2105,7 @@ export interface MetricSpec extends Spec {
 // @alpha @deprecated (undocumented)
 export type MetricSpecProps = ComponentProps<typeof Metric>;
 
-// @public (undocumented)
+// @public
 export interface MetricStyle {
     // (undocumented)
     barBackground: Color;
@@ -2109,7 +2115,9 @@ export interface MetricStyle {
     // (undocumented)
     emptyBackground: Color;
     // (undocumented)
-    iconAlign: 'left' | 'right';
+    extraTextAlign: TextAlign;
+    // (undocumented)
+    iconAlign: HorizontalSide;
     // (undocumented)
     minHeight: Pixels;
     // (undocumented)
@@ -2119,13 +2127,25 @@ export interface MetricStyle {
     // (undocumented)
     textDarkColor: Color;
     // (undocumented)
+    textExtraDarkColor: Color;
+    // (undocumented)
+    textExtraLightColor: Color;
+    // (undocumented)
     textLightColor: Color;
     // (undocumented)
-    titlesTextAlign: 'left' | 'center' | 'right';
+    textSubtitleDarkColor: Color;
+    // (undocumented)
+    textSubtitleLightColor: Color;
+    // (undocumented)
+    titlesTextAlign: TextAlign;
+    // (undocumented)
+    titleWeight: FontWeight;
     // (undocumented)
     valueFontSize: 'default' | 'fit' | number;
     // (undocumented)
-    valuesTextAlign: 'left' | 'center' | 'right';
+    valuePosition: 'top' | 'bottom';
+    // (undocumented)
+    valueTextAlign: TextAlign;
 }
 
 // @alpha (undocumented)
@@ -2671,6 +2691,17 @@ export const ScaleType: Readonly<{
 // @public
 export type ScaleType = $Values<typeof ScaleType>;
 
+// @alpha
+export interface SecondaryMetricProps {
+    ariaDescription?: string;
+    badgeBorderColor?: Color;
+    badgeColor?: Color;
+    label?: string;
+    style?: CSSProperties;
+    value: string;
+    valuePosition?: 'before' | 'after';
+}
+
 // @public (undocumented)
 export interface SectorGeomSpecY {
     // (undocumented)
@@ -2983,6 +3014,9 @@ export interface StrokeStyle<C = Color> {
     stroke: C;
     strokeWidth: number;
 }
+
+// @public
+export type TextAlign = 'left' | 'center' | 'right';
 
 // @public
 export interface TextAlignment {
