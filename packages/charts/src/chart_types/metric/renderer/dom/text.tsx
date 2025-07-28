@@ -16,7 +16,7 @@ import { PADDING } from './text_measurements';
 import { TitlesBlock } from './titles';
 import type { Color } from '../../../../common/colors';
 import { LayoutDirection, renderWithProps } from '../../../../utils/common';
-import type { HorizontalSide, MetricStyle } from '../../../../utils/themes/theme';
+import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum } from '../../specs';
 import { isMetricWNumber, isSecondaryMetricProps } from '../../specs';
 
@@ -42,7 +42,7 @@ const gridColumns = {
 
 const gridSingleColumn = { value: '1', titles: '1', body: '1', extra: '1' };
 
-const getGridTemplateColumnsWithIcon = (iconAlign: HorizontalSide, iconSize: number) => {
+const getGridTemplateColumnsWithIcon = (iconAlign: MetricStyle['iconAlign'], iconSize: number) => {
   const iconSizeWithPadding = `${iconSize + PADDING}px`;
   return iconAlign === 'left' ? `${iconSizeWithPadding} minmax(0, 1fr)` : `minmax(0, 1fr) ${iconSizeWithPadding}`;
 };

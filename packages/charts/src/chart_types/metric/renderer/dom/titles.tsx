@@ -12,7 +12,7 @@ import React, { useMemo } from 'react';
 
 import type { HeightBasedSizes, Visibility } from './text_measurements';
 import type { Color } from '../../../../common/colors';
-import type { MetricFontWeight, TextAlign } from '../../../../utils/themes/theme';
+import type { MetricFontWeight, MetricTextAlign } from '../../../../utils/themes/theme';
 
 function lineClamp(maxLines: number): CSSProperties {
   return {
@@ -26,34 +26,12 @@ function lineClamp(maxLines: number): CSSProperties {
   };
 }
 
-interface TitleElementProps {
-  title: string | undefined;
-  titleWeight: MetricFontWeight;
-  fontSize: number;
-  textAlign: TextAlign;
-  linesLength: number;
-}
-
-const TitleElement: React.FC<TitleElementProps> = ({ title, titleWeight, fontSize, textAlign, linesLength }) => (
-  <span
-    title={title}
-    style={{
-      fontSize,
-      textAlign,
-      fontWeight: titleWeight,
-      ...lineClamp(linesLength),
-    }}
-  >
-    {title}
-  </span>
-);
-
 interface TitleProps {
   metricId: string;
   title: string | undefined;
   titleWeight: MetricFontWeight;
   fontSize: number;
-  textAlign: TextAlign;
+  textAlign: MetricTextAlign;
   linesLength: number;
   onElementClick?: () => void;
 }
@@ -137,7 +115,7 @@ interface TitlesBlockProps {
   visibility: Visibility;
 
   // Alignment & icon
-  textAlign: TextAlign;
+  textAlign: MetricTextAlign;
   titleWeight: MetricFontWeight;
   isIconVisible: boolean;
 

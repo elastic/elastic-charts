@@ -13,7 +13,7 @@ import type { PartitionStyle } from './partition';
 import type { BulletStyle } from '../../chart_types/bullet_graph/theme';
 import type { Color } from '../../common/colors';
 import type { Pixels, Radian, Ratio } from '../../common/geometry';
-import type { Font, FontStyle, FontWeight } from '../../common/text_utils';
+import type { Font, FontStyle, FontWeight, TextAlign } from '../../common/text_utils';
 import type { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import type { Margins, Padding, SimplePadding } from '../dimensions';
 import type { Point } from '../point';
@@ -302,16 +302,10 @@ export interface HeatmapStyle {
 }
 
 /**
- * Horizontal text alignment options.
+ * Metric text alignment options.
  * @public
  */
-export type TextAlign = 'left' | 'center' | 'right';
-
-/**
- * Horizontal side options, typically used for alignment or positioning.
- * @public
- */
-export type HorizontalSide = 'left' | 'right';
+export type MetricTextAlign = Extract<TextAlign, 'left' | 'center' | 'right'>;
 
 /**
  * Metric font weight options for text styling.
@@ -335,11 +329,11 @@ export interface MetricStyle {
   minValueFontSize: number;
 
   // Alignments
-  titlesTextAlign: TextAlign;
-  extraTextAlign: TextAlign;
-  valueTextAlign: TextAlign;
+  titlesTextAlign: MetricTextAlign;
+  extraTextAlign: MetricTextAlign;
+  valueTextAlign: MetricTextAlign;
   valuePosition: 'top' | 'bottom';
-  iconAlign: HorizontalSide;
+  iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
 
   titleWeight: MetricFontWeight;
 

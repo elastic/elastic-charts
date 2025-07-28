@@ -11,7 +11,7 @@ import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber, TextAlign } from '@elastic/charts';
+import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber, MetricTextAlign } from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -19,7 +19,7 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-const getTextAlignKnob = (name: string, defaultValue: TextAlign): TextAlign =>
+const getTextAlignKnob = (name: string, defaultValue: MetricTextAlign): MetricTextAlign =>
   select(
     name,
     {

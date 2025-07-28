@@ -1728,9 +1728,6 @@ export const HorizontalAlignment: Readonly<{
 // @public
 export type HorizontalAlignment = $Values<typeof HorizontalAlignment>;
 
-// @public
-export type HorizontalSide = 'left' | 'right';
-
 // Warning: (ae-forgotten-export) The symbol "BinaryAccessorFn" needs to be exported by the entry point index.d.ts
 //
 // @public
@@ -2117,9 +2114,9 @@ export interface MetricStyle {
     // (undocumented)
     emptyBackground: Color;
     // (undocumented)
-    extraTextAlign: TextAlign;
+    extraTextAlign: MetricTextAlign;
     // (undocumented)
-    iconAlign: HorizontalSide;
+    iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
     // (undocumented)
     minHeight: Pixels;
     // (undocumented)
@@ -2139,7 +2136,7 @@ export interface MetricStyle {
     // (undocumented)
     textSubtitleLightColor: Color;
     // (undocumented)
-    titlesTextAlign: TextAlign;
+    titlesTextAlign: MetricTextAlign;
     // (undocumented)
     titleWeight: MetricFontWeight;
     // (undocumented)
@@ -2147,8 +2144,13 @@ export interface MetricStyle {
     // (undocumented)
     valuePosition: 'top' | 'bottom';
     // (undocumented)
-    valueTextAlign: TextAlign;
+    valueTextAlign: MetricTextAlign;
 }
+
+// Warning: (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type MetricTextAlign = Extract<TextAlign, 'left' | 'center' | 'right'>;
 
 // @alpha (undocumented)
 export const MetricTrendShape: Readonly<{
@@ -3016,9 +3018,6 @@ export interface StrokeStyle<C = Color> {
     stroke: C;
     strokeWidth: number;
 }
-
-// @public
-export type TextAlign = 'left' | 'center' | 'right';
 
 // @public
 export interface TextAlignment {

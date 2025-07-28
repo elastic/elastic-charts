@@ -16,7 +16,7 @@ import type {
   MetricWTrend,
   MetricWText,
   MetricWNumber,
-  TextAlign,
+  MetricTextAlign,
   SecondaryMetricProps,
 } from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
@@ -26,7 +26,7 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-const getTextAlignKnob = (name: string, defaultValue: TextAlign, groupId?: string): TextAlign =>
+const getTextAlignKnob = (name: string, defaultValue: MetricTextAlign, groupId?: string): MetricTextAlign =>
   select(name, { Left: 'left', Center: 'center', Right: 'right' }, defaultValue, groupId);
 
 const getIcon =
