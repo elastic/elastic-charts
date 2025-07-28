@@ -50,11 +50,36 @@ const TitleElement: React.FC<TitleElementProps> = ({ title, titleWeight, fontSiz
 
 interface TitleProps {
   metricId: string;
+  title: string | undefined;
+  titleWeight: MetricFontWeight;
+  fontSize: number;
+  textAlign: TextAlign;
+  linesLength: number;
   onElementClick?: () => void;
-  titleElementProps: TitleElementProps;
 }
 
-const Title: React.FC<TitleProps> = ({ metricId, onElementClick, titleElementProps }) => {
+const Title: React.FC<TitleProps> = ({
+  metricId,
+  title,
+  titleWeight,
+  fontSize,
+  textAlign,
+  linesLength,
+  onElementClick,
+}) => {
+  const contentStyle = {
+    fontSize,
+    textAlign,
+    fontWeight: titleWeight,
+    ...lineClamp(linesLength),
+  };
+
+  const content = (
+    <span title={title} style={contentStyle}>
+      {title}
+    </span>
+  );
+
   return (
     <h2 id={metricId} className="echMetricText__title">
       {onElementClick ? (
@@ -69,10 +94,10 @@ const Title: React.FC<TitleProps> = ({ metricId, onElementClick, titleElementPro
             onElementClick();
           }}
         >
-          <TitleElement {...titleElementProps} />
+          {content}
         </button>
       ) : (
-        <TitleElement {...titleElementProps} />
+        content
       )}
     </h2>
   );
@@ -151,20 +176,22 @@ export const TitlesBlock: React.FC<TitlesBlockProps> = ({
     };
   }, [isIconVisible, titlesRow, titlesColumn]);
 
-  const titleElementProps = {
-    title,
-    fontSize: titleFontSize,
-    textAlign,
-    titleWeight,
-    linesLength: titleLines.length,
-  };
-
   return (
     <div
       className={classNames('echMetricText__titlesBlock', `echMetricText__titlesBlock--${textAlign}`)}
       style={titlesBlockStyle}
     >
-      {showTitle && <Title metricId={metricId} onElementClick={onElementClick} titleElementProps={titleElementProps} />}
+      {showTitle && (
+        <Title
+          metricId={metricId}
+          title={title}
+          fontSize={titleFontSize}
+          textAlign={textAlign}
+          titleWeight={titleWeight}
+          linesLength={titleLines.length}
+          onElementClick={onElementClick}
+        />
+      )}
 
       {showSubtitle && (
         <Subtitle subtitle={subtitle} fontSize={subtitleFontSize} subtitleLines={subtitleLines} color={subtitleColor} />
