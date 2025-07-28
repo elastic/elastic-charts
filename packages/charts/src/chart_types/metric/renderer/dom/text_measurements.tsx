@@ -182,8 +182,11 @@ export function getMetricTextPartDimensions(
   const progressBarHeight = hasHorizontalProgressBar ? progressBarTotalSpace : 0;
 
   const isIconVisible = !!datum.icon && style.valuePosition === 'top';
-  // Note: We add padding to the icon to make the column wider
-  const iconGridColumnWidth = isIconVisible ? iconSize + PADDING : 0;
+  // The width of the icon column, including padding
+  const iconColumnWidth = iconSize + PADDING;
+  // If the value is center-aligned and the icon is visible, add an extra column width for visual centering
+  const needsCenterSpacer = isIconVisible && style.valueTextAlign === 'center';
+  const iconGridColumnWidth = isIconVisible ? iconColumnWidth * (needsCenterSpacer ? 2 : 1) : 0;
 
   return {
     heightBasedSizes,

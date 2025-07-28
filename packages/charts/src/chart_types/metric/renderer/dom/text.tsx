@@ -20,19 +20,23 @@ import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum } from '../../specs';
 import { isMetricWNumber, isSecondaryMetricProps } from '../../specs';
 
+const GRID_SPAN_THREE = '1 / span 3';
+
 const gridRows = {
   top: { value: '1', titles: '2', body: '3', extra: '4' },
   bottom: { value: '4', titles: '1', body: '2', extra: '3' },
 };
 
+const gridSingleColumn = { value: '1', titles: '1', body: '1', extra: '1' };
+
 const gridColumnsValuePostitionTop = {
-  left: { value: '2', titles: '1 / span 2', body: '1 / span 2', extra: '1 / span 2' },
-  right: { value: '1', titles: '1 / span 2', body: '1 / span 2', extra: '1 / span 2' },
+  left: { value: '2 / span 2', titles: GRID_SPAN_THREE, body: GRID_SPAN_THREE, extra: GRID_SPAN_THREE },
+  right: { value: '1 / span 2', titles: GRID_SPAN_THREE, body: GRID_SPAN_THREE, extra: GRID_SPAN_THREE },
 };
 
 const gridColumnsValuePositionBottom = {
-  left: { value: '1 / span 2', titles: '2', body: '1 / span 2', extra: '1 / span 2' },
-  right: { value: '1 / span 2', titles: '1', body: '1 / span 2', extra: '1 / span 2' },
+  left: { value: GRID_SPAN_THREE, titles: '2 / span 2', body: GRID_SPAN_THREE, extra: GRID_SPAN_THREE },
+  right: { value: GRID_SPAN_THREE, titles: '1 / span 2', body: GRID_SPAN_THREE, extra: GRID_SPAN_THREE },
 };
 
 const gridColumns = {
@@ -40,11 +44,10 @@ const gridColumns = {
   bottom: gridColumnsValuePositionBottom,
 };
 
-const gridSingleColumn = { value: '1', titles: '1', body: '1', extra: '1' };
-
-const getGridTemplateColumnsWithIcon = (iconAlign: MetricStyle['iconAlign'], iconSize: number) => {
+// Allways use three columns when the icon is visible for symmetry and centering
+const getGridTemplateColumnsWithIcon = (iconSize: number) => {
   const iconSizeWithPadding = `${iconSize + PADDING}px`;
-  return iconAlign === 'left' ? `${iconSizeWithPadding} minmax(0, 1fr)` : `minmax(0, 1fr) ${iconSizeWithPadding}`;
+  return `${iconSizeWithPadding} minmax(0, 1fr) ${iconSizeWithPadding}`;
 };
 
 /** @internal */
@@ -91,13 +94,19 @@ export const MetricText: React.FC<MetricTextprops> = ({
   const { valuePosition, iconAlign } = style;
   const isIconVisible = !!datum.icon;
 
-  // If an icon is present, use a two-column grid (icon + content) by overriding the default gridTemplateColumns
-  const gridTemplateColumns = isIconVisible ? getGridTemplateColumnsWithIcon(iconAlign, sizes.iconSize) : undefined;
+  const gridTemplateColumns = isIconVisible ? getGridTemplateColumnsWithIcon(sizes.iconSize) : undefined;
 
-  const iconGridStyles = isIconVisible ? { gridRow: '1', gridColumn: iconAlign === 'left' ? '1' : '2' } : {};
+  const iconGridStyles = isIconVisible ? { gridRow: '1', gridColumn: iconAlign === 'left' ? '1' : '3' } : {};
 
   const currentGridRows = gridRows[valuePosition];
-  const currentGridColumns = isIconVisible ? gridColumns[valuePosition][iconAlign] : gridSingleColumn;
+
+  let currentGridColumns = isIconVisible ? gridColumns[valuePosition][iconAlign] : gridSingleColumn;
+  if (isIconVisible && valuePosition === 'top' && style.valueTextAlign === 'center') {
+    currentGridColumns = { ...currentGridColumns, value: '2' }; // Center value in middle column
+  }
+  if (isIconVisible && valuePosition === 'bottom' && style.titlesTextAlign === 'center') {
+    currentGridColumns = { ...currentGridColumns, titles: '2' }; // Center titles in middle column
+  }
 
   let extraElement = null;
   if (isSecondaryMetricProps(extra)) {
