@@ -1,3 +1,6 @@
+$echBadgeBackgroundColor: #e3e8f2;
+$echBadgeTextColor: #07101f;
+
 .echBadge__content {
   display: inline-flex;
   align-items: center;
@@ -19,8 +22,8 @@
   text-align: start;
   text-decoration: none;
 
-  background-color: #e3e8f2;
-  color: #07101f;
+  background-color: $echBadgeBackgroundColor;
+  color: $echBadgeTextColor;
 
   cursor: inherit;
 }
