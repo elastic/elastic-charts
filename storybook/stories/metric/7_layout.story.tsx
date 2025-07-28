@@ -103,7 +103,6 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   // Colors
 
-  // const metricColor = color('Metric color', '#61A2FF', colorGroup);
   const metricColor = color('Metric color', 'rgba(148, 192, 255, 1)', colorGroup);
 
   const useValueColor = boolean('Use value color', false, colorGroup);
