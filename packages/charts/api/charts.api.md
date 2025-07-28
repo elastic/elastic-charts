@@ -1314,9 +1314,6 @@ export const FONT_STYLES: readonly ["normal", "italic", "oblique", "inherit", "i
 // @public (undocumented)
 export type FontStyle = (typeof FONT_STYLES)[number];
 
-// @public
-export type FontWeight = 'bold' | 'regular';
-
 // @public (undocumented)
 export type GenericDomain = [start: number, end: number];
 
@@ -2092,6 +2089,11 @@ export type MetricElementEvent = {
     columnIndex: number;
 };
 
+// Warning: (ae-forgotten-export) The symbol "FontWeight" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
+
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
     // (undocumented)
@@ -2139,7 +2141,7 @@ export interface MetricStyle {
     // (undocumented)
     titlesTextAlign: TextAlign;
     // (undocumented)
-    titleWeight: FontWeight;
+    titleWeight: MetricFontWeight;
     // (undocumented)
     valueFontSize: 'default' | 'fit' | number;
     // (undocumented)

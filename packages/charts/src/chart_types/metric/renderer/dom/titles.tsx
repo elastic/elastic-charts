@@ -12,7 +12,7 @@ import React, { useMemo } from 'react';
 
 import type { HeightBasedSizes, Visibility } from './text_measurements';
 import type { Color } from '../../../../common/colors';
-import type { FontWeight, TextAlign } from '../../../../utils/themes/theme';
+import type { MetricFontWeight, TextAlign } from '../../../../utils/themes/theme';
 
 function lineClamp(maxLines: number): CSSProperties {
   return {
@@ -28,34 +28,25 @@ function lineClamp(maxLines: number): CSSProperties {
 
 interface TitleElementProps {
   title: string | undefined;
-  titleWeight: FontWeight;
+  titleWeight: MetricFontWeight;
   fontSize: number;
   textAlign: TextAlign;
   linesLength: number;
 }
 
-const TitleElement: React.FunctionComponent<TitleElementProps> = ({
-  title,
-  titleWeight,
-  fontSize,
-  textAlign,
-  linesLength,
-}) => {
-  const fontWeight = titleWeight === 'regular' ? 'normal' : titleWeight;
-  return (
-    <span
-      title={title}
-      style={{
-        fontSize,
-        textAlign,
-        fontWeight,
-        ...lineClamp(linesLength),
-      }}
-    >
-      {title}
-    </span>
-  );
-};
+const TitleElement: React.FC<TitleElementProps> = ({ title, titleWeight, fontSize, textAlign, linesLength }) => (
+  <span
+    title={title}
+    style={{
+      fontSize,
+      textAlign,
+      fontWeight: titleWeight,
+      ...lineClamp(linesLength),
+    }}
+  >
+    {title}
+  </span>
+);
 
 interface TitleProps {
   metricId: string;
@@ -122,7 +113,7 @@ interface TitlesBlockProps {
 
   // Alignment & icon
   textAlign: TextAlign;
-  titleWeight: FontWeight;
+  titleWeight: MetricFontWeight;
   isIconVisible: boolean;
 
   titlesRow: string;

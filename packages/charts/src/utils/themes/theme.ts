@@ -13,7 +13,7 @@ import type { PartitionStyle } from './partition';
 import type { BulletStyle } from '../../chart_types/bullet_graph/theme';
 import type { Color } from '../../common/colors';
 import type { Pixels, Radian, Ratio } from '../../common/geometry';
-import type { Font, FontStyle } from '../../common/text_utils';
+import type { Font, FontStyle, FontWeight } from '../../common/text_utils';
 import type { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import type { Margins, Padding, SimplePadding } from '../dimensions';
 import type { Point } from '../point';
@@ -314,10 +314,10 @@ export type TextAlign = 'left' | 'center' | 'right';
 export type HorizontalSide = 'left' | 'right';
 
 /**
- * Font weight options for text styling.
+ * Metric font weight options for text styling.
  * @public
  */
-export type FontWeight = 'bold' | 'regular';
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
 
 /**
  * Style options for the Metric chart type.
@@ -341,7 +341,7 @@ export interface MetricStyle {
   valuePosition: 'top' | 'bottom';
   iconAlign: HorizontalSide;
 
-  titleWeight: FontWeight;
+  titleWeight: MetricFontWeight;
 
   border: Color;
   barBackground: Color;
