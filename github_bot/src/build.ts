@@ -35,7 +35,7 @@ export const getBuildConfig = (isMainBranch: boolean): BuildConfig => ({
     { name: 'Deploy - firebase', id: 'deploy_fb' },
     ...(isMainBranch ? [{ name: 'Deploy - GitHub Pages', id: 'deploy_ghp' }] : []),
     { name: 'Jest', id: 'jest' },
-    { name: 'Playwright e2e', id: 'playwright' },
-    { name: 'Playwright e2e a11y', id: 'playwright_a11y' },
+    { name: 'Playwright e2e VRT', id: 'playwright' },
+    { name: 'Playwright e2e A11Y', id: 'playwright_a11y' },
   ],
 });

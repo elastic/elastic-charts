@@ -461,10 +461,12 @@ Failure${jobLink ? ` - [failed job](${jobLink})` : ''}${err}
 - [Docs](${deploymentUrl})
 - [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
-- ([Playwright report](${deploymentUrl}/e2e-report)`
+- ([Playwright VRT report](${deploymentUrl}/e2e-report)
+- ([Playwright A11Y report](${deploymentUrl}/a11y-report)`
           : `- ⏳ Storybook
 - ⏳ e2e server
-- ⏳ Playwright report`;
+- ⏳ Playwright VRT report
+- ⏳ Playwright A11Y report`;
       return `## ⏳ Pending Deployment${buildText} - ${sha}${updateComment}
 
 ${deploymentMsg}`;
@@ -475,7 +477,7 @@ ${deploymentMsg}`;
 - [Docs](${deploymentUrl})
 - [Storybook](${deploymentUrl}/storybook)
 - [e2e server](${deploymentUrl}/e2e)
-${preDeploy ? '- ⏳ Playwright report - Running e2e tests' : `- [Playwright report](${deploymentUrl}/e2e-report)`}
+${preDeploy ? '- ⏳ Playwright VRT report - Running e2e tests' : `- [Playwright VRT report](${deploymentUrl}/e2e-report)`}
 ${preDeploy ? '- ⏳ Playwright A11Y report - Running a11y tests' : `- [Playwright A11Y report](${deploymentUrl}/a11y-report)`}`;
   },
 };

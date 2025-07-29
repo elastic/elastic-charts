@@ -13,13 +13,13 @@ export const playwrightA11yStep = createStep<CustomGroupStep>(() => {
   const skip = false;
   const parallelKey = 'playwright_a11y__parallel-step';
   return {
-    group: ':playwright: Playwright a11y',
+    group: ':playwright: Playwright e2e A11Y',
     key: 'playwright_a11y',
     skip,
     steps: [
       {
         ...commandStepDefaults,
-        label: ':playwright: Playwright a11y',
+        label: ':playwright: Playwright e2e A11Y',
         skip,
         parallelism: 1,
         retry: {
