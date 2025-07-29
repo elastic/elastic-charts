@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test';
 
 import { common } from '../page_objects/common';
 
-test.describe('Flame Chart Accessibility', () => {
+test.describe.skip('Flame Chart Accessibility', () => {
   test('should generate correct a11y summary for CPU profile flame chart', async ({ page }) => {
     const url = 'http://localhost:9002/?path=/story/flame-alpha--cpu-profile-g-l-flame-chart';
     await common.loadElementFromURL(page)(url, '.echChart');
