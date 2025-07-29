@@ -1,3 +1,10 @@
+## [70.1.2](https://github.com/elastic/elastic-charts/compare/v70.1.1...v70.1.2) (2025-07-23)
+
+
+### Bug Fixes
+
+* **axis:** disable nice adaptive ticks ([#2689](https://github.com/elastic/elastic-charts/issues/2689)) ([5f9d946](https://github.com/elastic/elastic-charts/commit/5f9d9463ee35ac16ab469778e6a4f493c9ca344f))
+
 ## [70.1.1](https://github.com/elastic/elastic-charts/compare/v70.1.0...v70.1.1) (2025-07-14)
 
 
