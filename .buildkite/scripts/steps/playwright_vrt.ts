@@ -80,7 +80,7 @@ void (async () => {
     {
       status: 'in_progress',
     },
-    'playwright',
+    'playwright_vrt',
     `${activeJobs} of ${jobTotal ?? 1} jobs started`,
   );
 

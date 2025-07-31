@@ -18,7 +18,7 @@ import {
   e2eServerStep,
   eslintStep,
   jestStep,
-  playwrightStep,
+  playwrightVrtStep,
   playwrightA11yStep,
   prettierStep,
   docsStep,
@@ -61,7 +61,7 @@ void (async () => {
       e2eServerStep(),
       firebasePreDeployStep(),
       ghpDeployStep(),
-      playwrightStep(),
+      playwrightVrtStep(),
       playwrightA11yStep(),
       firebaseDeployStep(),
     ].map((step) => step(changeCtx));

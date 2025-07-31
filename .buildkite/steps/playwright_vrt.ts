@@ -9,12 +9,12 @@
 import type { CustomGroupStep } from '../utils';
 import { createStep, commandStepDefaults, Plugins } from '../utils';
 
-export const playwrightStep = createStep<CustomGroupStep>(() => {
+export const playwrightVrtStep = createStep<CustomGroupStep>(() => {
   const skip = false;
-  const parallelKey = 'playwright__parallel-step';
+  const parallelKey = 'playwright_vrt__parallel-step';
   return {
     group: ':playwright: Playwright e2e VRT',
-    key: 'playwright',
+    key: 'playwright_vrt',
     skip,
     steps: [
       {
@@ -46,18 +46,18 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
           '.buildkite/artifacts/screenshot_meta/*',
           'e2e/reports/json/*',
         ],
-        commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
+        commands: ['npx ts-node .buildkite/scripts/steps/playwright_vrt.ts'],
       },
       {
         ...commandStepDefaults,
-        key: 'playwright_merge_and_status',
-        label: ':playwright: Set group status and merge reports',
+        key: 'playwright_vrt_merge_and_status',
+        label: ':playwright: Set vrt group status and merge reports',
         skip,
         allow_dependency_failure: true,
         depends_on: [{ step: parallelKey, allow_failure: true }],
         commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
         env: {
-          ECH_CHECK_ID: 'playwright',
+          ECH_CHECK_ID: 'playwright_vrt',
         },
       },
     ],
