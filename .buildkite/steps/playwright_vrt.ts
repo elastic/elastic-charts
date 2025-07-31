@@ -41,7 +41,7 @@ export const playwrightVrtStep = createStep<CustomGroupStep>(() => {
         depends_on: ['build_e2e'],
         plugins: [Plugins.docker.playwright()],
         artifact_paths: [
-          '.buildkite/artifacts/e2e_reports/*',
+          '.buildkite/artifacts/vrt_reports/*',
           '.buildkite/artifacts/screenshots/*',
           '.buildkite/artifacts/screenshot_meta/*',
           'e2e/reports/json/*',
