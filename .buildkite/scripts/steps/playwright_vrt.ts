@@ -80,7 +80,7 @@ void (async () => {
     {
       status: 'in_progress',
     },
-    'playwright',
+    'playwright_vrt',
     `${activeJobs} of ${jobTotal ?? 1} jobs started`,
   );
 
@@ -98,12 +98,12 @@ void (async () => {
   // TODO Fix this duplicate script that allows us to skip root node install on all e2e test runners
   await exec('node ./e2e/scripts/extract_examples.js');
 
-  startGroup('Running e2e playwright job');
-  const reportDir = `reports/report_${shardIndex}`;
+  startGroup('Running e2e vrt playwright job');
+  const reportDir = `reports/vrt_report_${shardIndex}`;
   async function postCommandTasks() {
     await compress({
       src: path.join('e2e', reportDir),
-      dest: `.buildkite/artifacts/e2e_reports/report_${shardIndex}.gz`,
+      dest: `.buildkite/artifacts/vrt_reports/report_${shardIndex}.gz`,
     });
 
     if (bkEnv.steps.playwright.updateScreenshots) {
@@ -119,7 +119,7 @@ void (async () => {
       env: {
         [ENV_URL]: 'http://127.0.0.1:9002',
         PLAYWRIGHT_HTML_REPORT: reportDir,
-        PLAYWRIGHT_JSON_OUTPUT_NAME: `reports/json/report_${shardIndex}.json`,
+        PLAYWRIGHT_JSON_OUTPUT_NAME: `reports/vrt-json/report_${shardIndex}.json`,
       },
     });
     await postCommandTasks();
