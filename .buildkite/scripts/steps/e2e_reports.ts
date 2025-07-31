@@ -178,12 +178,12 @@ void (async () => {
 
   const { checkId } = bkEnv;
   const isA11y = checkId === 'playwright_a11y';
-  const artifactPath = isA11y ? '.buildkite/artifacts/a11y_reports/*' : '.buildkite/artifacts/e2e_reports/*';
-  const reportDir = isA11y ? '.buildkite/artifacts/a11y_reports' : '.buildkite/artifacts/e2e_reports';
-  const outputDir = isA11y ? 'merged_a11y_html_report' : 'merged_html_report';
+  const artifactPath = isA11y ? '.buildkite/artifacts/a11y_reports/*' : '.buildkite/artifacts/vrt_reports/*';
+  const reportDir = isA11y ? '.buildkite/artifacts/a11y_reports' : '.buildkite/artifacts/vrt_reports';
+  const outputDir = isA11y ? 'merged_a11y_html_report' : 'merged_vrt_html_report';
   const outputArtifact = isA11y
     ? '.buildkite/artifacts/merged_a11y_html_report.gz'
-    : '.buildkite/artifacts/merged_html_report.gz';
+    : '.buildkite/artifacts/merged_vrt_html_report.gz';
 
   await downloadArtifacts(artifactPath);
 
