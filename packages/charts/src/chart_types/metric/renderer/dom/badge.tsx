@@ -43,9 +43,12 @@ export const Badge: React.FC<BadgeProps> = ({
   const classes = classNames('echBadge__content', className);
   const highContrastColor = fillTextColor(backgroundColor, backgroundColor);
 
-  const iconStyles = {
-    [iconSide === 'left' ? 'marginInlineEnd' : 'marginInlineStart']: icon ? PADDING / 2 : undefined,
-  };
+  const iconStyles =
+    value !== ''
+      ? {
+          [iconSide === 'left' ? 'marginInlineEnd' : 'marginInlineStart']: icon ? PADDING / 2 : undefined,
+        }
+      : undefined;
   const optionalIcon = icon ? <span style={iconStyles}>{icon}</span> : null;
 
   return (
