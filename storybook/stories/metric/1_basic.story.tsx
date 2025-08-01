@@ -11,7 +11,7 @@ import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber } from '@elastic/charts';
+import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber, MetricTextAlign } from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -19,8 +19,7 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-type TextAlign = 'left' | 'center' | 'right';
-const getTextAlignKnob = (name: string, defaultValue: TextAlign): TextAlign =>
+const getTextAlignKnob = (name: string, defaultValue: MetricTextAlign): MetricTextAlign =>
   select(
     name,
     {
@@ -84,7 +83,9 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
   const titlesTextAlign = getTextAlignKnob('title text-align', 'left');
-  const valuesTextAlign = getTextAlignKnob('values text-align', 'right');
+  const valueTextAlign = getTextAlignKnob('value text-align', 'right');
+  const extraTextAlign = getTextAlignKnob('extra text-align', 'right');
+  const valuePosition = select('value position', { Bottom: 'bottom', Top: 'top' }, 'bottom');
   const iconAlign = select(
     'icon align',
     {
@@ -108,6 +109,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     ...(showValueIcon ? { valueIcon: getIcon(valueIconType) } : {}),
   };
 
+  const target = number('target', 75, { range: true, min: -200, max: 200 });
+
   const numericData: MetricWProgress | MetricWNumber | MetricWTrend = {
     ...data,
     value: Number.parseFloat(value),
@@ -121,6 +124,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
           trendA11yDescription,
         }
       : {}),
+    target,
   };
   const textualData: MetricWText | MetricWTrend = {
     ...data,
@@ -141,6 +145,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const onEventOutAction = action('out');
 
   const configuredData = [[numberTextSwitch ? numericData : textualData]];
+
   return (
     <Chart title={storyTitle} description={description}>
       <Settings
@@ -149,8 +154,10 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
             blendingBackground: useBlendingBackground ? blendingBackground : undefined,
             valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
             titlesTextAlign,
-            valuesTextAlign,
+            valueTextAlign,
+            extraTextAlign,
             iconAlign,
+            valuePosition,
           },
         }}
         baseTheme={useBaseTheme()}

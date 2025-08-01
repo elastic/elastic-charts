@@ -8,8 +8,11 @@
 
 import classNames from 'classnames';
 import { scaleLinear } from 'd3-scale';
+import type { CSSProperties } from 'react';
 import React from 'react';
 
+import type { ProgressBarSize } from './metric';
+import { PROGRESS_BAR_TARGET_SIZE } from './text_measurements';
 import type { Color } from '../../../../common/colors';
 import { Icon } from '../../../../components/icons/icon';
 import { isNil, LayoutDirection, sortNumbers } from '../../../../utils/common';
@@ -17,14 +20,26 @@ import type { ContinuousDomain, GenericDomain } from '../../../../utils/domain';
 import type { BulletMetricWProgress, MetricWProgress } from '../../specs';
 import { isBulletMetric } from '../../specs';
 
-const TARGET_SIZE = 8;
-const BASELINE_SIZE = 2;
+/**
+ * Synced with _progress.scss
+ * @internal
+ */
+const PROGRESS_BAR_BORDER_RADIUS = 8;
+
+/**
+ * Synced with _progress.scss
+ */
+const zeroBaselineSizeMap = {
+  small: 2,
+  medium: 2,
+  large: 4,
+};
 
 interface ProgressBarProps {
   datum: MetricWProgress | BulletMetricWProgress;
   barBackground: Color;
   blendedBarColor: Color;
-  size: 'small';
+  size: ProgressBarSize;
 }
 
 /** @internal */
@@ -49,24 +64,62 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   const [domainMin, domainMax] = sortNumbers(updatedDomain) as ContinuousDomain;
   const scaledValue = scale(value);
   const [min, max] = sortNumbers([scale(0), scaledValue]);
+  const endValue = 100 - max;
+  const safeStartValue = Math.max(0, min);
+  const safeEndValue = Math.max(0, endValue);
   const positionStyle = isVertical
     ? {
-        bottom: `${min}%`,
-        top: `${100 - max}%`,
+        bottom: `${safeStartValue}%`,
+        top: `${safeEndValue}%`,
       }
     : {
-        left: `${min}%`,
-        right: `${100 - max}%`,
+        left: `${safeStartValue}%`,
+        right: `${safeEndValue}%`,
       };
 
-  const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${TARGET_SIZE / 2}px)`;
-  const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${BASELINE_SIZE / 2}px)`;
+  let borderRadius: CSSProperties = {};
+  if (!isVertical && endValue <= 0) {
+    borderRadius = {
+      ...borderRadius,
+      borderTopRightRadius: PROGRESS_BAR_BORDER_RADIUS,
+      borderBottomRightRadius: PROGRESS_BAR_BORDER_RADIUS,
+    };
+  }
+  if (!isVertical && min <= 0) {
+    borderRadius = {
+      ...borderRadius,
+      borderTopLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
+      borderBottomLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
+    };
+  }
+
+  // For vertical progress bar
+  if (isVertical && endValue <= 0) {
+    borderRadius = {
+      ...borderRadius,
+      borderTopLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
+      borderTopRightRadius: PROGRESS_BAR_BORDER_RADIUS,
+    };
+  }
+  if (isVertical && min <= 0) {
+    borderRadius = {
+      ...borderRadius,
+      borderBottomLeftRadius: PROGRESS_BAR_BORDER_RADIUS,
+      borderBottomRightRadius: PROGRESS_BAR_BORDER_RADIUS,
+    };
+  }
+
+  const zeroBaselineSize = zeroBaselineSizeMap[size];
+
+  const targetPlacement = isNil(target) ? null : `calc(${scale(target)}% - ${PROGRESS_BAR_TARGET_SIZE / 2}px)`;
+  const zeroPlacement = domainMin >= 0 || domainMax <= 0 ? null : `calc(${scale(0)}% - ${zeroBaselineSize / 2}px)`;
+
   const labelType = isBullet ? 'Value' : 'Percentage';
 
   return (
     <div
       className={getDirectionalClasses('Progress', isVertical, size)}
-      style={{ backgroundColor: size === 'small' ? barBackground : undefined }}
+      style={{ backgroundColor: barBackground }}
       title={!isBullet ? '' : `${updatedDomain[0]} to ${updatedDomain[1]}`}
     >
       {targetPlacement && (
@@ -80,7 +133,12 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
             target || 0,
           )}`}
         >
-          <Icon height={TARGET_SIZE} width={TARGET_SIZE} type="downArrow" color={blendedBarColor} />
+          <Icon
+            height={PROGRESS_BAR_TARGET_SIZE}
+            width={PROGRESS_BAR_TARGET_SIZE}
+            type="downArrow"
+            color={blendedBarColor}
+          />
         </div>
       )}
       {zeroPlacement && (
@@ -94,7 +152,7 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
       )}
       <div
         className={getDirectionalClasses('ProgressBar', isVertical, size)}
-        style={{ ...positionStyle, backgroundColor: blendedBarColor }}
+        style={{ ...positionStyle, ...borderRadius, backgroundColor: blendedBarColor }}
         role="meter"
         title={isBullet ? `${datum.valueLabels.value}: ${valueFormatter(value)}` : `${scaledValue}%`}
         aria-label={title ? `${labelType} of ${title}` : labelType}
@@ -106,9 +164,9 @@ export const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({
   );
 };
 
-function getDirectionalClasses(element: string, isVertical: boolean, size: ProgressBarProps['size']) {
+function getDirectionalClasses(element: string, isVertical: boolean, progressBarSize: ProgressBarProps['size']) {
   const base = `echSingleMetric${element}`;
-  return classNames(base, `${base}--${size}`, {
+  return classNames(base, `${base}--${progressBarSize}`, {
     [`${base}--vertical`]: isVertical,
     [`${base}--horizontal`]: !isVertical,
   });
