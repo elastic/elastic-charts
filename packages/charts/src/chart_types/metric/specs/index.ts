@@ -24,34 +24,24 @@ import type { BulletValueLabels } from '../../bullet_graph/spec';
  * @alpha
  * */
 export interface SecondaryMetricProps {
-  /**
-   * The main value to display.
-   */
+  /** The main value to display */
   value: string;
-  /**
-   * Optional label to display alongside the value.
-   */
+  /** Optional label to display alongside the value */
   label?: string;
-  /**
-   * Optional background color for the value badge. If not provided, no badge is displayed.
-   */
+  /** Optional background color for the value badge. If not provided, no badge is displayed */
   badgeColor?: Color;
-  /**
-   * Determines whether the value appears before or after the label.
-   */
+  /** Determines whether the value appears before or after the label */
   valuePosition?: 'before' | 'after';
-  /**
-   * Optional CSS properties to apply to the container element.
-   */
+  /**  Optional CSS properties to apply to the container element */
   style?: CSSProperties;
-  /**
-   * Optional aria description
-   */
+  /** Optional aria description */
   ariaDescription?: string;
-  /**
-   * Border color applied to the badge
-   */
+  /**  Border color applied to the badge */
   badgeBorderColor?: Color;
+  /**  Optional icon displayed next to the text */
+  icon?: string;
+  /** 	The side of the badge the icon should sit */
+  iconSide?: 'left' | 'right';
 }
 
 /** @alpha */

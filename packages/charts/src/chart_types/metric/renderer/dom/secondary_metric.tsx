@@ -21,6 +21,8 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
   style,
   ariaDescription,
   badgeBorderColor,
+  icon,
+  iconSide,
 }) => {
   const isValueBeforeLabel = valuePosition === 'before';
   const hasLabel = !!label;
@@ -35,6 +37,8 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
       value={value}
       backgroundColor={badgeColor}
       borderColor={badgeBorderColor}
+      icon={icon}
+      iconSide={iconSide}
     />
   ) : (
     <span

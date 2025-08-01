@@ -75,7 +75,19 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   extra = extra.replace('&lt;b&gt;', '<b>');
   extra = extra.replace('&lt;/b&gt;', '</b>');
 
-  const secondaryMetricValue = text('Secondary metric value', '87.20 ↑', secondaryMetricGroup);
+  const secondaryMetricValue = text('Secondary metric value', '87.20', secondaryMetricGroup);
+  const secondaryMetricIcon = select(
+    'Secondary metric trend icon',
+    { Increase: '↑', Decrease: '↓', Stable: '=', Empty: '' },
+    '↑',
+    secondaryMetricGroup,
+  );
+  const secondaryMetricIconSide = select(
+    'Secondary metric trend icon side',
+    { Right: 'right', Left: 'left' },
+    'right',
+    secondaryMetricGroup,
+  );
   const label = text('Label', 'Last week', secondaryMetricGroup);
   const colorByValue = boolean('Color by value', true, secondaryMetricGroup);
   const badgeColor = color('Secondary metric value color', '#A71627', secondaryMetricGroup);
@@ -93,6 +105,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     badgeColor: colorByValue ? badgeColor : undefined,
     valuePosition: secondaryMetricValuePosition,
     ariaDescription: secondaryMetricAriaDescription,
+    icon: secondaryMetricIcon,
+    iconSide: secondaryMetricIconSide,
   };
 
   const dataExtra = showExtra

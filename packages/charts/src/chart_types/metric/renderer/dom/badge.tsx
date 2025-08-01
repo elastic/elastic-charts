@@ -9,6 +9,7 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import { PADDING } from './text_measurements';
 import type { Color } from '../../../../common/colors';
 import { fillTextColor } from '../../../../common/fill_text_color';
 
@@ -24,17 +25,34 @@ interface BadgeProps {
   backgroundColor: Color;
   /** Optional border color (undefined = no border) */
   borderColor?: Color;
+  /** Optional icon to display with priority over text */
+  icon?: string;
+  /** Icon position: 'before' or 'after' */
+  iconSide?: 'left' | 'right';
 }
 
 /** @internal */
-export const Badge: React.FC<BadgeProps> = ({ className, value, backgroundColor, borderColor }) => {
+export const Badge: React.FC<BadgeProps> = ({
+  className,
+  value,
+  backgroundColor,
+  borderColor,
+  icon,
+  iconSide = 'right',
+}) => {
   const classes = classNames('echBadge__content', className);
   const highContrastColor = fillTextColor(backgroundColor, backgroundColor);
+
+  const iconStyles = {
+    [iconSide === 'left' ? 'marginInlineEnd' : 'marginInlineStart']: icon ? PADDING / 2 : undefined,
+  };
+  const optionalIcon = icon ? <span style={iconStyles}>{icon}</span> : null;
+
   return (
-    <span className={classes} style={{ backgroundColor, borderColor }}>
-      <span className="echBadge__text" style={{ color: highContrastColor.color.keyword }}>
-        {value}
-      </span>
+    <span className={classes} style={{ backgroundColor, borderColor, color: highContrastColor.color.keyword }}>
+      {iconSide === 'left' && optionalIcon}
+      <span className="echBadge__text">{value}</span>
+      {iconSide === 'right' && optionalIcon}
     </span>
   );
 };

@@ -2700,6 +2700,8 @@ export interface SecondaryMetricProps {
     ariaDescription?: string;
     badgeBorderColor?: Color;
     badgeColor?: Color;
+    icon?: string;
+    iconSide?: 'left' | 'right';
     label?: string;
     style?: CSSProperties;
     value: string;
