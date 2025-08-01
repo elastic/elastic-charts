@@ -15,6 +15,11 @@
     display: inline-flex;
     flex: 1 0 auto;
     max-width: calc(100% - $element-spacing);
+
+    &--full {
+      flex: 1 1 auto;
+      max-width: 100%; // override max-width when there is no label
+    }
   }
 
   &__truncate {

@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import classNames from 'classnames';
 import React from 'react';
 
 import { Badge } from './badge';
@@ -21,19 +22,29 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
   ariaDescription,
   badgeBorderColor,
 }) => {
+  const isValueBeforeLabel = valuePosition === 'before';
+  const hasLabel = !!label;
+
+  // TODO: consider icon separated to we give priority when the value is too long
+
   const valueNode = badgeColor ? (
     <Badge
-      className="echSecondaryMetric__value"
+      className={classNames('echSecondaryMetric__value', {
+        'echSecondaryMetric__value--full': !hasLabel,
+      })}
       value={value}
       backgroundColor={badgeColor}
       borderColor={badgeBorderColor}
     />
   ) : (
-    <span className="echSecondaryMetric__value echSecondaryMetric__truncate">{value}</span>
+    <span
+      className={classNames('echSecondaryMetric__value', 'echSecondaryMetric__truncate', {
+        'echSecondaryMetric__value--full': !hasLabel,
+      })}
+    >
+      {value}
+    </span>
   );
-
-  const isValueBeforeLabel = valuePosition === 'before';
-  const labelNode = <span className="echSecondaryMetric__label echSecondaryMetric__truncate">{label}</span>;
 
   return (
     <span
@@ -42,7 +53,7 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
       {...(ariaDescription ? { 'aria-describedby': ariaDescription } : {})}
     >
       {isValueBeforeLabel && valueNode}
-      {label && labelNode}
+      {hasLabel && <span className="echSecondaryMetric__label echSecondaryMetric__truncate">{label}</span>}
       {!isValueBeforeLabel && valueNode}
     </span>
   );
