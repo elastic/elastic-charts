@@ -24,7 +24,7 @@
     "build:css": "yarn build:sass && yarn autoprefix:css && yarn concat:sass",
     "build:clean": "echo 'Cleaning dist...' && rm -rf ./dist",
     "build:compile": "echo 'Compiling...' && tsc -p ./tsconfig.src.json && tsc -p ./tsconfig.nocomments.json",
-    "build:sass": "echo 'Building sass...' && sass src:dist --style compressed --quiet --color",
+    "build:sass": "echo 'Building sass...' && sass 'src/styles:dist' --style compressed --quiet --color --load-path ../../",
     "build:check": "echo 'Type checking dist...' && tsc -p ./tsconfig.check.json",
     "build:watch": "echo 'Watching build...' && yarn build:clean && yarn build:css && tsc -p ./tsconfig.src.json -w",
     "concat:sass": "echo 'Concat SASS...' && node scripts/concat_sass.js",

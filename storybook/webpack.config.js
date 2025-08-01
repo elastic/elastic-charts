@@ -31,6 +31,8 @@ const scssLoaders = [
       sassOptions: {
         // prevent divider deprecation warning messages
         quietDeps: true,
+        // need to include root so `@elastic/eui-theme-borealis` can find `@elastic/eui-theme-common`
+        includePaths: ['../'],
       },
     },
   },
