@@ -21,7 +21,7 @@ import { GOLDEN_RATIO, TAU } from '../../common/constants';
 import { ColorVariant } from '../common';
 
 /**
- * Legacy dark chart theme to be removed at some point
+ * Legacy Dark chart theme to be removed in future release
  *
  * @public
  * @deprecated Use new `DARK_THEME`

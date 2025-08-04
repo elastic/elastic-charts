@@ -24,11 +24,10 @@
 
 html {
   font-size: 14px !important;
-  &.light-theme {
-    @import '~@elastic/charts/src/styles/theme_only_light';
 
-    &:not(.legacy) {
-      @import '~@elastic/charts/src/styles/legacy/theme_only_light';
+  &:not(.legacy) {
+    &.light-theme {
+      @import '~@elastic/charts/src/styles/theme_only_light';
 
       body,
       .echChart {
@@ -36,42 +35,67 @@ html {
       }
 
       .euiText {
-        // required to prevent inheriting from html
+        color: $euiTitleColor;
+      }
+    }
+
+    &.dark-theme {
+      @import '~@elastic/charts/src/styles/theme_only_dark';
+
+      body,
+      .echChart {
+        background: #0b1628 !important;
+      }
+
+      .euiText {
         color: $euiTitleColor;
       }
     }
   }
 
-  &.dark-theme {
-    @import '~@elastic/charts/src/styles/theme_only_dark';
 
-    &:not(.legacy) {
+  &.legacy {
+    &.light-theme {
+      @import '~@elastic/charts/src/styles/legacy/theme_only_light';
+
+      body,
+      .echChart {
+        background: white !important;
+      }
+
+      &.amsterdam {
+        @import '~@elastic/eui/src/themes/amsterdam/colors_light';
+
+        body,
+        .echChart {
+          background: $euiColorEmptyShade !important;
+        }
+
+        .euiText {
+          color: $euiTitleColor;
+        }
+      }
+    }
+
+    &.dark-theme {
       @import '~@elastic/charts/src/styles/legacy/theme_only_dark';
 
       body,
       .echChart {
-        background: #0b1628 !important; // shade145
-      }
-
-      .euiText {
-        // required to prevent inheriting from html
-        color: $euiTitleColor;
-      }
-    }
-  }
-
-  &.legacy {
-    &.dark-theme {
-      body,
-      .echChart {
         background: black !important;
       }
-    }
 
-    &.light-theme {
-      body,
-      .echChart {
-        background: white !important;
+      &.amsterdam {
+        @import '~@elastic/eui/src/themes/amsterdam/colors_dark';
+
+        body,
+        .echChart {
+          background: $euiColorEmptyShade !important;
+        }
+
+        .euiText {
+          color: $euiTitleColor;
+        }
       }
     }
   }
