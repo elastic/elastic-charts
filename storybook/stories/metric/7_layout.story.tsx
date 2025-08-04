@@ -90,7 +90,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   );
   const label = text('Label', 'Last week', secondaryMetricGroup);
   const colorByValue = boolean('Color by value', true, secondaryMetricGroup);
-  const badgeColor = color('Secondary metric value color', '#A71627', secondaryMetricGroup);
+  const badgeColor = color('Secondary metric value color', 'rgb(93, 191, 149)', secondaryMetricGroup);
   const secondaryMetricValuePosition = select(
     'Secondary metric value position',
     { before: 'before', after: 'after' },
@@ -117,7 +117,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
 
   // Colors
 
-  const metricColor = color('Metric color', 'rgba(148, 192, 255, 1)', colorGroup);
+  const metricColor = color('Metric color', 'rgb(246,	217,	143)', colorGroup);
 
   const useValueColor = boolean('Use value color', false, colorGroup);
   const valueColor = select(
@@ -139,7 +139,7 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   );
   const useBlendingBackground = boolean('Use blending background', false, colorGroup);
   const blendingBackground = color('Blending background', 'rgba(255,255,255,1)', colorGroup);
-  const barBackground = color('Bar background', '#CAD3E2', colorGroup);
+  const barBackground = color('Bar background', 'rgb(194,	201,	214)	', colorGroup);
 
   // Metric icon
   const iconType = 'warning';
