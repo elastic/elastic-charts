@@ -9,12 +9,13 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import { PADDING } from './text_measurements';
 import type { Color } from '../../../../common/colors';
 import { fillTextColor } from '../../../../common/fill_text_color';
 
 /** @internal */
 export const BADGE_BORDER = 1;
+
+const ICON_MARGIN = 4;
 
 interface BadgeProps {
   /** Additional CSS class name for the badge container */
@@ -46,7 +47,7 @@ export const Badge: React.FC<BadgeProps> = ({
   const iconStyles =
     value !== ''
       ? {
-          [iconSide === 'left' ? 'marginInlineEnd' : 'marginInlineStart']: icon ? PADDING / 2 : undefined,
+          [iconSide === 'left' ? 'marginInlineEnd' : 'marginInlineStart']: icon ? ICON_MARGIN : undefined,
         }
       : undefined;
   const optionalIcon = icon ? <span style={iconStyles}>{icon}</span> : null;
