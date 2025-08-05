@@ -1,3 +1,10 @@
+## [70.1.3](https://github.com/elastic/elastic-charts/compare/v70.1.2...v70.1.3) (2025-08-04)
+
+
+### Bug Fixes
+
+* update css style exports to use Borealis theme tokens ([#2695](https://github.com/elastic/elastic-charts/issues/2695)) ([5619e08](https://github.com/elastic/elastic-charts/commit/5619e0820360c9e75088bba6df04b461840a84a8))
+
 ## [70.1.2](https://github.com/elastic/elastic-charts/compare/v70.1.1...v70.1.2) (2025-07-23)
 
 

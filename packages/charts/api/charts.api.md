@@ -48,10 +48,10 @@ export const AGGREGATE_KEY = "value";
 // @public (undocumented)
 export function aggregateAccessor(n: ArrayEntry): number;
 
-// @public (undocumented)
+// @public @deprecated
 export const AMSTERDAM_DARK_THEME: Theme;
 
-// @public (undocumented)
+// @public @deprecated
 export const AMSTERDAM_LIGHT_THEME: Theme;
 
 // @public (undocumented)

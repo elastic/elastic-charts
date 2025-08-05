@@ -14,7 +14,6 @@ const compileRouteTemplate = require('./route_template');
 
 function indexTemplate() {
   return `
-import '../../packages/charts/src/theme_light.scss';
 import '../../storybook/style.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';

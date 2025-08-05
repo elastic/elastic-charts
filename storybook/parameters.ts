@@ -8,6 +8,8 @@
 
 import euiDarkVars from '@elastic/eui/dist/eui_theme_dark.json';
 import euiLightVars from '@elastic/eui/dist/eui_theme_light.json';
+import euiBorealisDarkVars from '@elastic/eui-theme-borealis/lib/eui_theme_borealis_dark.json';
+import euiBorealisLightVars from '@elastic/eui-theme-borealis/lib/eui_theme_borealis_light.json';
 import type { Parameters as SBParameters } from '@storybook/addons';
 import type { BackgroundParameter } from 'storybook-addon-background-toggle';
 import type { ThemeParameter } from 'storybook-addon-theme-toggle';
@@ -45,13 +47,27 @@ export const storybookParameters: Parameters = {
         id: 'light',
         title: 'Light',
         class: 'light-theme',
-        color: euiLightVars.euiColorEmptyShade,
+        color: euiBorealisLightVars.euiColorEmptyShade,
         imageUrl: euiLogoUrl,
       },
       {
         id: 'dark',
         title: 'Dark',
         class: 'dark-theme',
+        color: euiBorealisDarkVars.euiColorEmptyShade,
+        imageUrl: euiLogoUrl,
+      },
+      {
+        id: 'legacy-amsterdam-light',
+        title: 'Legacy Amsterdam Light',
+        class: ['light-theme', 'legacy', 'amsterdam'],
+        color: euiLightVars.euiColorEmptyShade,
+        imageUrl: euiLogoUrl,
+      },
+      {
+        id: 'legacy-amsterdam-dark',
+        title: 'Legacy Amsterdam Dark',
+        class: ['dark-theme', 'legacy', 'amsterdam'],
         color: euiDarkVars.euiColorEmptyShade,
         imageUrl: euiLogoUrl,
       },
@@ -73,8 +89,8 @@ export const storybookParameters: Parameters = {
     clearable: true,
     selector: '#none',
     options: [
-      { id: 'emptyShadeDark', title: 'Empty Shade - Dark', color: euiDarkVars.euiColorEmptyShade },
-      { id: 'emptyShadeLight', title: 'Empty Shade - Light', color: euiLightVars.euiColorEmptyShade },
+      { id: 'emptyShadeDark', title: 'Empty Shade - Dark', color: euiBorealisDarkVars.euiColorEmptyShade },
+      { id: 'emptyShadeLight', title: 'Empty Shade - Light', color: euiBorealisLightVars.euiColorEmptyShade },
       { id: 'black', title: 'Black', color: '#000' },
       { id: 'white', title: 'White', color: '#fff' },
       { id: 'red', title: 'Red', color: '#f04d9a' },

@@ -10,7 +10,15 @@ import { createContext, useContext } from 'react';
 import type { $Values } from 'utility-types';
 
 import type { Theme } from '@elastic/charts';
-import { LIGHT_THEME, DARK_THEME, LEGACY_CHART_MARGINS, LEGACY_DARK_THEME, LEGACY_LIGHT_THEME } from '@elastic/charts';
+import {
+  LIGHT_THEME,
+  DARK_THEME,
+  LEGACY_CHART_MARGINS,
+  LEGACY_DARK_THEME,
+  LEGACY_LIGHT_THEME,
+  AMSTERDAM_LIGHT_THEME,
+  AMSTERDAM_DARK_THEME,
+} from '@elastic/charts';
 import { mergePartial } from '@elastic/charts/src/utils/common';
 
 import { storybookParameters } from './parameters';
@@ -23,6 +31,8 @@ export const ThemeId = Object.freeze({
   Light: 'light' as const,
   Dark: 'dark' as const,
   // TODO remove legacy themes
+  LegacyAmsterdamLight: 'legacy-amsterdam-light' as const,
+  LegacyAmsterdamDark: 'legacy-amsterdam-dark' as const,
   LegacyLight: 'legacy-light' as const,
   LegacyDark: 'legacy-dark' as const,
 });
@@ -38,6 +48,8 @@ export const BackgroundIdProvider = BackgroundContext.Provider;
 const themeMap = {
   [ThemeId.Light]: LIGHT_THEME,
   [ThemeId.Dark]: DARK_THEME,
+  [ThemeId.LegacyAmsterdamLight]: AMSTERDAM_LIGHT_THEME,
+  [ThemeId.LegacyAmsterdamDark]: AMSTERDAM_DARK_THEME,
   [ThemeId.LegacyLight]: LEGACY_LIGHT_THEME,
   [ThemeId.LegacyDark]: LEGACY_DARK_THEME,
 };
