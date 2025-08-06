@@ -16,6 +16,7 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { Metric as MetricComponent } from './metric';
+import type { TextContrastOptions } from './metric';
 import type { MetricTextDimensions } from './text_measurements';
 import {
   getFittedFontSizes,
@@ -24,7 +25,6 @@ import {
   getMetricTextPartDimensions,
   getSnappedFontSizes,
 } from './text_measurements';
-import type { TextContrastOptions } from '../../../../common/color_calcs';
 import { combineColors, highContrastColor } from '../../../../common/color_calcs';
 import { colorToRgba, RGBATupleToString } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
@@ -67,6 +67,17 @@ interface DispatchProps {
   onChartRendered: typeof onChartRenderedAction;
 }
 
+function getTextContrastOptions(style: MetricStyle): TextContrastOptions {
+  return {
+    text: { lightColor: colorToRgba(style.textLightColor), darkColor: colorToRgba(style.textDarkColor) },
+    subtitle: {
+      lightColor: colorToRgba(style.textSubtitleLightColor),
+      darkColor: colorToRgba(style.textSubtitleDarkColor),
+    },
+    extra: { lightColor: colorToRgba(style.textExtraLightColor), darkColor: colorToRgba(style.textExtraDarkColor) },
+  };
+}
+
 function Component({
   chartId,
   hasTitles,
@@ -97,14 +108,7 @@ function Component({
 
   const panel = { width: width / maxColumns, height: height / totalRows };
 
-  const textContrastOptions: TextContrastOptions = {
-    text: { lightColor: colorToRgba(style.textLightColor), darkColor: colorToRgba(style.textDarkColor) },
-    subtitle: {
-      lightColor: colorToRgba(style.textSubtitleLightColor),
-      darkColor: colorToRgba(style.textSubtitleDarkColor),
-    },
-    extra: { lightColor: colorToRgba(style.textExtraLightColor), darkColor: colorToRgba(style.textExtraDarkColor) },
-  };
+  const textContrastOptions = getTextContrastOptions(style);
 
   const emptyBackgroundRGBA = combineColors(colorToRgba(style.emptyBackground), colorToRgba(backgroundColor));
   const emptyBackground = RGBATupleToString(emptyBackgroundRGBA);
@@ -229,7 +233,7 @@ function Component({
               columnIndex={config.columnIndex}
               style={style}
               backgroundColor={backgroundColor}
-              textContrastOptions={textContrastOptions}
+              contrastOptions={textContrastOptions}
               onElementClick={onElementClick}
               onElementOut={onElementOut}
               onElementOver={onElementOver}

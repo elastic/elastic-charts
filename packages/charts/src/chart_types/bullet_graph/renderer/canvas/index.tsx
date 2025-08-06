@@ -13,7 +13,7 @@ import type { Dispatch } from 'redux';
 import { bindActionCreators } from 'redux';
 
 import { renderBullet } from './bullet';
-import type { ColorContrastOptions, TextContrastOptions } from '../../../../common/color_calcs';
+import type { ColorContrastOptions } from '../../../../common/color_calcs';
 import { colorToRgba } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
 import { Colors } from '../../../../common/colors';
@@ -144,12 +144,6 @@ class Component extends React.Component<Props> {
       darkColor: colorToRgba(metricStyle.textDarkColor),
     };
 
-    const textContrastOptions: TextContrastOptions = {
-      text: contrastOptions,
-      subtitle: contrastOptions,
-      extra: contrastOptions,
-    };
-
     if (!initialized || size.width === 0 || size.height === 0 || !spec) {
       return null;
     }
@@ -233,7 +227,7 @@ class Component extends React.Component<Props> {
                     rowIndex={stats.rowIndex}
                     style={bulletToMetricStyle}
                     backgroundColor={backgroundColor}
-                    textContrastOptions={textContrastOptions}
+                    contrastOptions={contrastOptions}
                     textDimensions={textDimensions}
                   />
                 );

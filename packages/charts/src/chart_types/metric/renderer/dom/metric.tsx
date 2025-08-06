@@ -15,7 +15,7 @@ import { SparkLine, getSparkLineColor } from './sparkline';
 import type { TextColors } from './text';
 import { MetricText } from './text';
 import type { MetricTextDimensions } from './text_measurements';
-import type { ColorContrastOptions, TextContrastOptions } from '../../../../common/color_calcs';
+import type { ColorContrastOptions } from '../../../../common/color_calcs';
 import { combineColors, getBorderRecommendation } from '../../../../common/color_calcs';
 import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
@@ -32,6 +32,13 @@ import { LayoutDirection, isNil } from '../../../../utils/common';
 import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricWNumber } from '../../specs';
 import { isMetricWProgress, isMetricWTrend, isSecondaryMetricProps } from '../../specs';
+
+/** @internal */
+export interface TextContrastOptions {
+  text: ColorContrastOptions;
+  subtitle: ColorContrastOptions;
+  extra: ColorContrastOptions;
+}
 
 /**
  * Synced with _index.scss
@@ -109,6 +116,10 @@ const getTextColors = ({
 
 const CONTRAST_THRESHOLD = 3.0;
 
+function isColorContrastOptions(options: ColorContrastOptions | TextContrastOptions): options is ColorContrastOptions {
+  return !('text' in options);
+}
+
 /** @internal */
 export const Metric: React.FunctionComponent<{
   chartId: string;
@@ -120,7 +131,7 @@ export const Metric: React.FunctionComponent<{
   datum: MetricDatum;
   style: MetricStyle;
   backgroundColor: Color;
-  textContrastOptions: TextContrastOptions;
+  contrastOptions: ColorContrastOptions | TextContrastOptions;
   textDimensions: MetricTextDimensions;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
@@ -135,7 +146,7 @@ export const Metric: React.FunctionComponent<{
   datum,
   style,
   backgroundColor: chartBackgroundColor,
-  textContrastOptions,
+  contrastOptions,
   textDimensions,
   onElementClick,
   onElementOver,
@@ -186,6 +197,14 @@ export const Metric: React.FunctionComponent<{
     cursor: onElementClick ? 'pointer' : DEFAULT_CSS_CURSOR,
     borderColor: style.border,
   };
+
+  const textContrastOptions = isColorContrastOptions(contrastOptions)
+    ? {
+        text: contrastOptions,
+        subtitle: contrastOptions,
+        extra: contrastOptions,
+      }
+    : contrastOptions;
 
   const textColors = getTextColors({
     metricContext: { backgroundColor, blendedColor, hasProgressBar, hasTrend },
