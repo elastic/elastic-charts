@@ -24,7 +24,7 @@
     "json-schema-to-typescript": "15.0.4",
     "minimatch": "^9.0.4",
     "targz": "^1.0.1",
-    "tmp": "^0.2.1",
+    "tmp": "^0.2.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3",
     "utility-types": "^3.10.0"
