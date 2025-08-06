@@ -16,7 +16,7 @@ import type { TextColors } from './text';
 import { MetricText } from './text';
 import type { MetricTextDimensions } from './text_measurements';
 import type { ColorContrastOptions } from '../../../../common/color_calcs';
-import { combineColors, getBorderRecommendation } from '../../../../common/color_calcs';
+import { combineColors, getContrastRecommendation } from '../../../../common/color_calcs';
 import { RGBATupleToString, changeColorLightness, colorToRgba } from '../../../../common/color_library_wrappers';
 import type { Color } from '../../../../common/colors';
 import { DEFAULT_CSS_CURSOR } from '../../../../common/constants';
@@ -215,13 +215,13 @@ export const Metric: React.FunctionComponent<{
   let badgeBorderColor;
   if (isSecondaryMetricProps(datum.extra) && !!datum.extra.badgeColor && !datum.extra.badgeBorderColor) {
     const metricBackgroundColor = hasProgressBar ? backgroundColor : blendedColor;
-    const borderRecommendation = getBorderRecommendation(metricBackgroundColor, datum.extra.badgeColor, {
+    const borderRecommendation = getContrastRecommendation(metricBackgroundColor, datum.extra.badgeColor, {
       contrastThreshold: CONTRAST_THRESHOLD,
       borderOptions: textContrastOptions.extra,
     });
     badgeBorderColor = borderRecommendation.borderColor;
     if (hasTrend) {
-      const { shade, borderColor, contrastRatio } = getBorderRecommendation(
+      const { shade, borderColor, contrastRatio } = getContrastRecommendation(
         getSparkLineColor(blendedColor),
         datum.extra.badgeColor,
         {

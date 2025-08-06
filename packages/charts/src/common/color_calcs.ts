@@ -132,10 +132,19 @@ export function highContrastColor(
   return HIGH_CONTRAST_FN[mode](background, options);
 }
 
-/** @internal */
-export function getBorderRecommendation(
-  color1: string,
-  color2: string,
+/**
+ * Computes the contrast ratio between two colors and determines if a border is needed for sufficient visual separation.
+ * If the contrast is below the specified threshold, recommends a border color that has high contrast with both input colors.
+ *
+ * @param colorA - The first color to compare (can be background, foreground, or any color).
+ * @param colorB - The second color to compare.
+ * @param options - Optional settings for contrast mode, threshold, and border color preferences.
+ *
+ * @internal
+ */
+export function getContrastRecommendation(
+  colorA: string,
+  colorB: string,
   options: {
     contrastMode?: 'WCAG2' | 'WCAG3';
     contrastThreshold?: number;
@@ -148,11 +157,11 @@ export function getBorderRecommendation(
     borderOptions,
   } = options;
 
-  const rgb1 = colorToRgba(color1).slice(0, 3) as RgbTuple;
-  const rgb2 = colorToRgba(color2).slice(0, 3) as RgbTuple;
+  const rgbA = colorToRgba(colorA).slice(0, 3) as RgbTuple;
+  const rgbB = colorToRgba(colorB).slice(0, 3) as RgbTuple;
 
   const contrastRatio =
-    contrastMode === 'WCAG2' ? getWCAG2ContrastRatio(rgb1, rgb2) : Math.abs(APCAContrast(rgb1, rgb2));
+    contrastMode === 'WCAG2' ? getWCAG2ContrastRatio(rgbA, rgbB) : Math.abs(APCAContrast(rgbA, rgbB));
 
   // If contrast is sufficient, no border is needed
   if (contrastRatio >= contrastThreshold) {
@@ -167,8 +176,8 @@ export function getBorderRecommendation(
   }
 
   // Get the optimal border color (high contrast against both colors)
-  const color1Result = highContrastColor(rgb1, contrastMode, borderOptions);
-  const color2Result = highContrastColor(rgb2, contrastMode, borderOptions);
+  const color1Result = highContrastColor(rgbA, contrastMode, borderOptions);
+  const color2Result = highContrastColor(rgbB, contrastMode, borderOptions);
 
   const selectedShade =
     color1Result.shade === color2Result.shade
