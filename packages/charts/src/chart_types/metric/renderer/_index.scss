@@ -5,10 +5,6 @@
 @import 'dom/secondary_metric';
 @import 'dom/badge';
 
-$progress-bar-target-size: 8px;
-$progress-bar-target-width: $progress-bar-target-size;
-$progress-bar-target-height: $progress-bar-target-size;
-
 .echMetricContainer {
   display: grid;
   width: 100%;
