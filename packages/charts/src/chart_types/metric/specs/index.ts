@@ -30,18 +30,18 @@ export interface SecondaryMetricProps {
   label?: string;
   /** Optional background color for the value badge. If not provided, no badge is displayed */
   badgeColor?: Color;
-  /** Determines whether the value appears before or after the label */
-  valuePosition?: 'before' | 'after';
+  /** Determines whether the label appears before or after the value */
+  labelPosition?: 'before' | 'after';
   /**  Optional CSS properties to apply to the container element */
   style?: CSSProperties;
   /** Optional aria description */
   ariaDescription?: string;
-  /**  Border color applied to the badge */
+  /** Border color applied to the badge */
   badgeBorderColor?: Color;
-  /**  Optional icon displayed next to the text */
+  /** Optional icon displayed next to the text */
   icon?: string;
-  /** 	The side of the badge the icon should sit */
-  iconSide?: 'left' | 'right';
+  /** Determines whether the icon appears before or after the value */
+  iconPosition?: 'before' | 'after';
 }
 
 /** @alpha */

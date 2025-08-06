@@ -12,7 +12,7 @@ import React, { useMemo } from 'react';
 
 import type { HeightBasedSizes, Visibility } from './text_measurements';
 import type { Color } from '../../../../common/colors';
-import type { MetricFontWeight, MetricTextAlign } from '../../../../utils/themes/theme';
+import type { MetricFontWeight, MetricStyle } from '../../../../utils/themes/theme';
 
 function lineClamp(maxLines: number): CSSProperties {
   return {
@@ -31,7 +31,7 @@ interface TitleProps {
   title: string | undefined;
   titleWeight: MetricFontWeight;
   fontSize: number;
-  textAlign: MetricTextAlign;
+  textAlign: MetricStyle['titlesTextAlign'];
   linesLength: number;
   onElementClick?: () => void;
 }
@@ -115,7 +115,7 @@ interface TitlesBlockProps {
   visibility: Visibility;
 
   // Alignment & icon
-  textAlign: MetricTextAlign;
+  textAlign: MetricStyle['titlesTextAlign'];
   titleWeight: MetricFontWeight;
   isIconVisible: boolean;
 

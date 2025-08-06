@@ -302,12 +302,6 @@ export interface HeatmapStyle {
 }
 
 /**
- * Metric text alignment options.
- * @public
- */
-export type MetricTextAlign = Extract<TextAlign, 'left' | 'center' | 'right'>;
-
-/**
  * Metric font weight options for text styling.
  * @public
  */
@@ -329,9 +323,9 @@ export interface MetricStyle {
   minValueFontSize: number;
 
   // Alignments
-  titlesTextAlign: MetricTextAlign;
-  extraTextAlign: MetricTextAlign;
-  valueTextAlign: MetricTextAlign;
+  titlesTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+  extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+  valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
   valuePosition: 'top' | 'bottom';
   iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
 

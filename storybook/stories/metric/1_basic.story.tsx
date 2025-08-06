@@ -11,7 +11,7 @@ import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber, MetricTextAlign } from '@elastic/charts';
+import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber } from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -19,16 +19,12 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-const getTextAlignKnob = (name: string, defaultValue: MetricTextAlign): MetricTextAlign =>
-  select(
-    name,
-    {
-      Left: 'left',
-      Center: 'center',
-      Right: 'right',
-    },
-    defaultValue,
-  );
+const getTextAlignKnob = (
+  name: string,
+  defaultValue: 'left' | 'center' | 'right',
+  groupId?: string,
+): 'left' | 'center' | 'right' =>
+  select(name, { Left: 'left', Center: 'center', Right: 'right' }, defaultValue, groupId);
 
 export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   const title = text('title', '21d7f8b7-92ea-41a0-8c03-0db0ec7e11b9');

@@ -11,14 +11,7 @@ import { action } from '@storybook/addon-actions';
 import { select, boolean, text, color, number } from '@storybook/addon-knobs';
 import React from 'react';
 
-import type {
-  MetricWProgress,
-  MetricWTrend,
-  MetricWText,
-  MetricWNumber,
-  MetricTextAlign,
-  SecondaryMetricProps,
-} from '@elastic/charts';
+import type { MetricWProgress, MetricWTrend, MetricWText, MetricWNumber, SecondaryMetricProps } from '@elastic/charts';
 import { Chart, isMetricElementEvent, Metric, MetricTrendShape, Settings } from '@elastic/charts';
 import { KIBANA_METRICS } from '@elastic/charts/src/utils/data_samples/test_dataset_kibana';
 
@@ -26,7 +19,11 @@ import type { ChartsStory } from '../../types';
 import { useBaseTheme } from '../../use_base_theme';
 import { customKnobs } from '../utils/knobs';
 
-const getTextAlignKnob = (name: string, defaultValue: MetricTextAlign, groupId?: string): MetricTextAlign =>
+const getTextAlignKnob = (
+  name: string,
+  defaultValue: 'left' | 'center' | 'right',
+  groupId?: string,
+): 'left' | 'center' | 'right' =>
   select(name, { Left: 'left', Center: 'center', Right: 'right' }, defaultValue, groupId);
 
 const getIcon =
@@ -82,19 +79,19 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     '↑',
     secondaryMetricGroup,
   );
-  const secondaryMetricIconSide = select(
-    'Secondary metric trend icon side',
-    { Right: 'right', Left: 'left' },
-    'right',
+  const secondaryMetricIconPosition = select(
+    'Secondary metric trend icon position',
+    { Before: 'before', After: 'after' },
+    'after',
     secondaryMetricGroup,
   );
   const label = text('Label', 'Last week', secondaryMetricGroup);
   const colorByValue = boolean('Color by value', true, secondaryMetricGroup);
   const badgeColor = color('Secondary metric value color', 'rgb(93, 191, 149)', secondaryMetricGroup);
-  const secondaryMetricValuePosition = select(
-    'Secondary metric value position',
+  const secondaryMetricLabelPosition = select(
+    'Secondary metric label position',
     { before: 'before', after: 'after' },
-    'after',
+    'before',
     secondaryMetricGroup,
   );
   const secondaryMetricAriaDescription = text('Aria description', 'This is a description', secondaryMetricGroup);
@@ -103,10 +100,10 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     value: secondaryMetricValue,
     label,
     badgeColor: colorByValue ? badgeColor : undefined,
-    valuePosition: secondaryMetricValuePosition,
+    labelPosition: secondaryMetricLabelPosition,
     ariaDescription: secondaryMetricAriaDescription,
     icon: secondaryMetricIcon,
-    iconSide: secondaryMetricIconSide,
+    iconPosition: secondaryMetricIconPosition,
   };
 
   const dataExtra = showExtra

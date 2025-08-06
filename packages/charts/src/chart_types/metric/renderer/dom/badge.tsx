@@ -29,7 +29,7 @@ interface BadgeProps {
   /** Optional icon to display with priority over text */
   icon?: string;
   /** Icon position: 'before' or 'after' */
-  iconSide?: 'left' | 'right';
+  iconPosition?: 'before' | 'after';
 }
 
 /** @internal */
@@ -39,7 +39,7 @@ export const Badge: React.FC<BadgeProps> = ({
   backgroundColor,
   borderColor,
   icon,
-  iconSide = 'right',
+  iconPosition = 'after',
 }) => {
   const classes = classNames('echBadge__content', className);
   const highContrastColor = fillTextColor(backgroundColor, backgroundColor);
@@ -47,16 +47,16 @@ export const Badge: React.FC<BadgeProps> = ({
   const iconStyles =
     value !== ''
       ? {
-          [iconSide === 'left' ? 'marginInlineEnd' : 'marginInlineStart']: icon ? ICON_MARGIN : undefined,
+          [iconPosition === 'before' ? 'marginInlineEnd' : 'marginInlineStart']: icon ? ICON_MARGIN : undefined,
         }
       : undefined;
   const optionalIcon = icon ? <span style={iconStyles}>{icon}</span> : null;
 
   return (
     <span className={classes} style={{ backgroundColor, borderColor, color: highContrastColor.color.keyword }}>
-      {iconSide === 'left' && optionalIcon}
+      {iconPosition === 'before' && optionalIcon}
       <span className="echBadge__text">{value}</span>
-      {iconSide === 'right' && optionalIcon}
+      {iconPosition === 'after' && optionalIcon}
     </span>
   );
 };

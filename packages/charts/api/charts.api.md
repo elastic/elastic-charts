@@ -2114,7 +2114,7 @@ export interface MetricStyle {
     // (undocumented)
     emptyBackground: Color;
     // (undocumented)
-    extraTextAlign: MetricTextAlign;
+    extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
     // (undocumented)
     iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
     // (undocumented)
@@ -2135,8 +2135,10 @@ export interface MetricStyle {
     textSubtitleDarkColor: Color;
     // (undocumented)
     textSubtitleLightColor: Color;
+    // Warning: (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+    //
     // (undocumented)
-    titlesTextAlign: MetricTextAlign;
+    titlesTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
     // (undocumented)
     titleWeight: MetricFontWeight;
     // (undocumented)
@@ -2144,13 +2146,8 @@ export interface MetricStyle {
     // (undocumented)
     valuePosition: 'top' | 'bottom';
     // (undocumented)
-    valueTextAlign: MetricTextAlign;
+    valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
 }
-
-// Warning: (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
-//
-// @public
-export type MetricTextAlign = Extract<TextAlign, 'left' | 'center' | 'right'>;
 
 // @alpha (undocumented)
 export const MetricTrendShape: Readonly<{
@@ -2701,11 +2698,11 @@ export interface SecondaryMetricProps {
     badgeBorderColor?: Color;
     badgeColor?: Color;
     icon?: string;
-    iconSide?: 'left' | 'right';
+    iconPosition?: 'before' | 'after';
     label?: string;
+    labelPosition?: 'before' | 'after';
     style?: CSSProperties;
     value: string;
-    valuePosition?: 'before' | 'after';
 }
 
 // @public (undocumented)

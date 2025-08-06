@@ -17,38 +17,17 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
   value,
   label,
   badgeColor,
-  valuePosition = 'after',
+  labelPosition = 'before',
   style,
   ariaDescription,
   badgeBorderColor,
   icon,
-  iconSide,
+  iconPosition,
 }) => {
-  const isValueBeforeLabel = valuePosition === 'before';
   const hasLabel = !!label;
-
-  // TODO: consider icon separated to we give priority when the value is too long
-
-  const valueNode = badgeColor ? (
-    <Badge
-      className={classNames('echSecondaryMetric__value', {
-        'echSecondaryMetric__value--full': !hasLabel,
-      })}
-      value={value}
-      backgroundColor={badgeColor}
-      borderColor={badgeBorderColor}
-      icon={icon}
-      iconSide={iconSide}
-    />
-  ) : (
-    <span
-      className={classNames('echSecondaryMetric__value', 'echSecondaryMetric__truncate', {
-        'echSecondaryMetric__value--full': !hasLabel,
-      })}
-    >
-      {value}
-    </span>
-  );
+  const labelNode = hasLabel ? (
+    <span className="echSecondaryMetric__label echSecondaryMetric__truncate">{label}</span>
+  ) : undefined;
 
   return (
     <span
@@ -56,9 +35,28 @@ export const SecondaryMetric: React.FC<SecondaryMetricProps> = ({
       {...(style ? { style } : {})}
       {...(ariaDescription ? { 'aria-describedby': ariaDescription } : {})}
     >
-      {isValueBeforeLabel && valueNode}
-      {hasLabel && <span className="echSecondaryMetric__label echSecondaryMetric__truncate">{label}</span>}
-      {!isValueBeforeLabel && valueNode}
+      {labelPosition === 'before' && labelNode}
+      {badgeColor ? (
+        <Badge
+          className={classNames('echSecondaryMetric__value', {
+            'echSecondaryMetric__value--full': !hasLabel,
+          })}
+          value={value}
+          backgroundColor={badgeColor}
+          borderColor={badgeBorderColor}
+          icon={icon}
+          iconPosition={iconPosition}
+        />
+      ) : (
+        <span
+          className={classNames('echSecondaryMetric__value', 'echSecondaryMetric__truncate', {
+            'echSecondaryMetric__value--full': !hasLabel,
+          })}
+        >
+          {value}
+        </span>
+      )}
+      {labelPosition === 'after' && labelNode}
     </span>
   );
 };
