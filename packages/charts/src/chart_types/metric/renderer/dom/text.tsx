@@ -108,7 +108,7 @@ export const MetricText: React.FC<MetricTextprops> = ({
     currentGridColumns = { ...currentGridColumns, titles: '2' }; // Center titles in middle column
   }
 
-  let extraElement = null;
+  let extraElement: React.JSX.Element | null = null;
   if (isSecondaryMetricProps(extra)) {
     const { style: extraStyle = {}, ...secondaryMetricProps } = extra;
 
