@@ -8,6 +8,10 @@
   padding: $padding;
   line-height: 1.2;
 
+  &__gap {
+    overflow: hidden;
+  }
+
   &__titlesBlock {
     display: flex;
     flex-direction: column;
