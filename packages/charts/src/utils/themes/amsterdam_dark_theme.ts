@@ -14,7 +14,12 @@ import { TAU } from '../../common/constants';
 import { DEFAULT_FONT_FAMILY } from '../../common/default_theme_attributes';
 import { ColorVariant } from '../common';
 
-/** @public */
+/**
+ * Legacy Amsterdam Dark chart theme to be removed in future release
+ *
+ * @public
+ * @deprecated Use new `DARK_THEME`
+ */
 export const AMSTERDAM_DARK_THEME: Theme = {
   chartPaddings: DEFAULT_CHART_PADDING,
   chartMargins: DEFAULT_CHART_MARGINS,
