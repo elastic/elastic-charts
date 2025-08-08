@@ -67,33 +67,30 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
     ...(showValueIcon ? { valueIcon: getIcon(valueIconType) } : {}),
   };
 
-  const numericData: MetricWProgress | MetricWNumber | MetricWTrend = {
-    ...data,
-    body: !showBody ? null : (
+  const numberBadges = number('number of badges', 2);
+  const multipleBodyContent = (nBadges: number) => {
+    return (
       <div className={classNames('myCustomMetricSlot', { showBodyArea })} style={{ paddingTop: 8 }}>
         <div>
           <EuiFlexGroup wrap responsive={false} gutterSize="s">
-            <EuiFlexItem grow={false}>
-              <EuiBadge color="success">Healthy</EuiBadge>
-            </EuiFlexItem>
-            <EuiFlexItem grow={false}>
-              <EuiBadge
-                onMouseDown={(e): void => {
-                  e.stopPropagation(); // stops propagation of metric onElementClick
-                }}
-                onClickAriaLabel=""
-                onClick={() => action('badge click')()}
-                color="danger"
-                iconType="warning"
-                iconSide="left"
-              >
-                13
-              </EuiBadge>
-            </EuiFlexItem>
+            {Array.from({ length: nBadges }).map((_value, i) => (
+              <EuiFlexItem grow={false} key={i}>
+                <EuiBadge color={i === 0 ? 'success' : 'danger'} {...(i !== 0 ? { iconType: 'warning' } : null)}>
+                  {i === 0 ? 'Healthy' : 13}
+                </EuiBadge>
+              </EuiFlexItem>
+            ))}
           </EuiFlexGroup>
         </div>
       </div>
-    ),
+    );
+  };
+
+  const body = showBody ? multipleBodyContent(numberBadges) : undefined;
+
+  const numericData: MetricWProgress | MetricWNumber | MetricWTrend = {
+    ...data,
+    body,
     value: Number.parseFloat(value),
     valueFormatter: (d: number) => `${d}${valuePostfix}`,
     ...(progressOrTrend === 'bar' ? { domainMax: progressMax, progressBarDirection } : {}),

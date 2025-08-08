@@ -1,0 +1,18 @@
+// Progress bar thickness by size
+$progress-bar-thickness-small: 4px;
+$progress-bar-thickness-medium: 8px;
+$progress-bar-thickness-large: 16px;
+
+$progress-bar-width-small: $progress-bar-thickness-small;
+$progress-bar-width-medium: $progress-bar-thickness-medium;
+$progress-bar-width-large: $progress-bar-thickness-large;
+
+$progress-bar-height-small: $progress-bar-thickness-small;
+$progress-bar-height-medium: $progress-bar-thickness-medium;
+$progress-bar-height-large: $progress-bar-thickness-large;
+
+$padding: 8px;
+
+$progress-bar-target-size: 8px;
+$progress-bar-target-width: $progress-bar-target-size;
+$progress-bar-target-height: $progress-bar-target-size;

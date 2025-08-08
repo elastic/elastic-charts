@@ -13,7 +13,7 @@ import type { PartitionStyle } from './partition';
 import type { BulletStyle } from '../../chart_types/bullet_graph/theme';
 import type { Color } from '../../common/colors';
 import type { Pixels, Radian, Ratio } from '../../common/geometry';
-import type { Font, FontStyle } from '../../common/text_utils';
+import type { Font, FontStyle, FontWeight, TextAlign } from '../../common/text_utils';
 import type { ColorVariant, HorizontalAlignment, RecursivePartial, VerticalAlignment } from '../common';
 import type { Margins, Padding, SimplePadding } from '../dimensions';
 import type { Point } from '../point';
@@ -193,9 +193,7 @@ export interface GridLineStyle {
   dash: number[];
 }
 
-/**
- * @public
- */
+/** @public */
 export interface GoalStyles {
   progressLine: Pick<StrokeStyle, 'stroke'>;
   targetLine: Pick<StrokeStyle, 'stroke'>;
@@ -244,9 +242,7 @@ export interface GoalStyles {
   capturePad: number;
 }
 
-/**
- * @public
- */
+/** @public */
 export interface HeatmapStyle {
   /**
    * Config of the mask over the area outside of the selected cells
@@ -305,15 +301,36 @@ export interface HeatmapStyle {
   maxLegendHeight?: number;
 }
 
-/** @public */
+/**
+ * Metric font weight options for text styling.
+ * @public
+ */
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
+
+/**
+ * Style options for the Metric chart type.
+ * @public
+ */
 export interface MetricStyle {
   textDarkColor: Color;
   textLightColor: Color;
+  textSubtitleDarkColor: Color;
+  textSubtitleLightColor: Color;
+  textExtraDarkColor: Color;
+  textExtraLightColor: Color;
+
   valueFontSize: 'default' | 'fit' | number;
   minValueFontSize: number;
-  titlesTextAlign: 'left' | 'center' | 'right';
-  valuesTextAlign: 'left' | 'center' | 'right';
-  iconAlign: 'left' | 'right';
+
+  // Alignments
+  titlesTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+  extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+  valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+  valuePosition: 'top' | 'bottom';
+  iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
+
+  titleWeight: MetricFontWeight;
+
   border: Color;
   barBackground: Color;
   emptyBackground: Color;

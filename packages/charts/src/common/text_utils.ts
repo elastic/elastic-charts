@@ -15,8 +15,8 @@ import { integerSnap, monotonicHillClimb } from '../solvers/monotonic_hill_climb
 import type { TextMeasure } from '../utils/bbox/canvas_text_bbox_calculator';
 import type { Datum } from '../utils/common';
 
-const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 500, 600, 700, 800, 900];
-const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'];
+const FONT_WEIGHTS_NUMERIC = [100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
+const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'initial', 'unset'] as const;
 
 /**
  * todo consider doing tighter control for permissible font families, eg. as in Kibana Canvas - expression language
@@ -25,7 +25,7 @@ const FONT_WEIGHTS_ALPHA = ['normal', 'bold', 'lighter', 'bolder', 'inherit', 'i
  */
 export type FontFamily = string;
 /** @public */
-export const FONT_WEIGHTS = Object.freeze([...FONT_WEIGHTS_NUMERIC, ...FONT_WEIGHTS_ALPHA] as const);
+export const FONT_WEIGHTS = Object.freeze([...FONT_WEIGHTS_NUMERIC, ...FONT_WEIGHTS_ALPHA]);
 /** @public */
 export const FONT_VARIANTS = Object.freeze(['normal', 'small-caps'] as const);
 /** @public */

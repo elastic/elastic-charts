@@ -16,3 +16,4 @@ export { Example as bodyContent } from './3_body.story';
 export { Example as trendMultipleData } from './4_trend_bug.story';
 export { Example as arrayOfValues } from './5_array_of_values.story';
 export { Example as extraBadges } from './6_extra_badge.story';
+export { Example as layout } from './7_layout.story';

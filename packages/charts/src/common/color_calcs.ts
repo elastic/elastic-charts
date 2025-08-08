@@ -10,7 +10,7 @@ import type { Required } from 'utility-types';
 
 import { APCAContrast } from './apca_color_contrast';
 import type { RgbaTuple, RgbTuple } from './color_library_wrappers';
-import { RGBATupleToString } from './color_library_wrappers';
+import { colorToRgba, RGBATupleToString } from './color_library_wrappers';
 import type { ColorDefinition } from './colors';
 import { Colors } from './colors';
 import { getWCAG2ContrastRatio } from './wcag2_color_contrast';
@@ -130,4 +130,77 @@ export function highContrastColor(
   options?: ColorContrastOptions,
 ): HighContrastResult {
   return HIGH_CONTRAST_FN[mode](background, options);
+}
+
+/**
+ * Computes the contrast ratio between two colors and determines if a border is needed for sufficient visual separation.
+ * If the contrast is below the specified threshold, recommends a border color that has high contrast with both input colors.
+ *
+ * @param colorA - The first color to compare (can be background, foreground, or any color).
+ * @param colorB - The second color to compare.
+ * @param options - Optional settings for contrast mode, threshold, and border color preferences.
+ *
+ * @internal
+ */
+export function getContrastRecommendation(
+  colorA: string,
+  colorB: string,
+  options: {
+    contrastMode?: 'WCAG2' | 'WCAG3';
+    contrastThreshold?: number;
+    borderOptions?: ColorContrastOptions;
+  } = {},
+) {
+  const {
+    contrastMode = 'WCAG2',
+    contrastThreshold = 4.5, // WCAG AA standard
+    borderOptions,
+  } = options;
+
+  const rgbA = colorToRgba(colorA).slice(0, 3) as RgbTuple;
+  const rgbB = colorToRgba(colorB).slice(0, 3) as RgbTuple;
+
+  const contrastRatio =
+    contrastMode === 'WCAG2' ? getWCAG2ContrastRatio(rgbA, rgbB) : Math.abs(APCAContrast(rgbA, rgbB));
+
+  // If contrast is sufficient, no border is needed
+  if (contrastRatio >= contrastThreshold) {
+    return {
+      needsBorder: false,
+      contrastRatio,
+      borderColor: undefined,
+      shade: undefined,
+      color1Contrast: undefined,
+      color2Contrast: undefined,
+    };
+  }
+
+  // Get the optimal border color (high contrast against both colors)
+  const color1Result = highContrastColor(rgbA, contrastMode, borderOptions);
+  const color2Result = highContrastColor(rgbB, contrastMode, borderOptions);
+
+  const selectedShade =
+    color1Result.shade === color2Result.shade
+      ? color1Result.shade // If both prefer the same shade, use it
+      : color1Result.ratio > color2Result.ratio // Otherwise use the one with better overall contrast
+        ? color1Result.shade
+        : color2Result.shade;
+
+  // Use the color that works best with both backgrounds
+  // This prefers borders that have sufficient contrast with both colors
+  const borderColor =
+    color1Result.shade === color2Result.shade
+      ? color1Result.color.keyword // If both prefer the same shade, use it
+      : color1Result.ratio > color2Result.ratio // Otherwise use the one with better overall contrast
+        ? color1Result.color.keyword
+        : color2Result.color.keyword;
+
+  return {
+    needsBorder: true,
+    contrastRatio,
+    borderColor,
+    shade: selectedShade,
+    color1Contrast: color1Result.ratio,
+    color2Contrast: color2Result.ratio,
+  };
 }

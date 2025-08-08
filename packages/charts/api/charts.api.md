@@ -2067,7 +2067,7 @@ export type MetricBase = {
     extra?: ReactElement | ComponentType<{
         fontSize: number;
         color: string;
-    }>;
+    }> | SecondaryMetricProps;
     icon?: ComponentType<{
         width: number;
         height: number;
@@ -2086,6 +2086,11 @@ export type MetricElementEvent = {
     columnIndex: number;
 };
 
+// Warning: (ae-forgotten-export) The symbol "FontWeight" needs to be exported by the entry point index.d.ts
+//
+// @public
+export type MetricFontWeight = Extract<FontWeight, 'bold' | 'normal'>;
+
 // @alpha (undocumented)
 export interface MetricSpec extends Spec {
     // (undocumented)
@@ -2099,7 +2104,7 @@ export interface MetricSpec extends Spec {
 // @alpha @deprecated (undocumented)
 export type MetricSpecProps = ComponentProps<typeof Metric>;
 
-// @public (undocumented)
+// @public
 export interface MetricStyle {
     // (undocumented)
     barBackground: Color;
@@ -2109,7 +2114,9 @@ export interface MetricStyle {
     // (undocumented)
     emptyBackground: Color;
     // (undocumented)
-    iconAlign: 'left' | 'right';
+    extraTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+    // (undocumented)
+    iconAlign: Extract<HorizontalAlignment, 'left' | 'right'>;
     // (undocumented)
     minHeight: Pixels;
     // (undocumented)
@@ -2119,13 +2126,27 @@ export interface MetricStyle {
     // (undocumented)
     textDarkColor: Color;
     // (undocumented)
+    textExtraDarkColor: Color;
+    // (undocumented)
+    textExtraLightColor: Color;
+    // (undocumented)
     textLightColor: Color;
     // (undocumented)
-    titlesTextAlign: 'left' | 'center' | 'right';
+    textSubtitleDarkColor: Color;
+    // (undocumented)
+    textSubtitleLightColor: Color;
+    // Warning: (ae-forgotten-export) The symbol "TextAlign" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    titlesTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
+    // (undocumented)
+    titleWeight: MetricFontWeight;
     // (undocumented)
     valueFontSize: 'default' | 'fit' | number;
     // (undocumented)
-    valuesTextAlign: 'left' | 'center' | 'right';
+    valuePosition: 'top' | 'bottom';
+    // (undocumented)
+    valueTextAlign: Extract<TextAlign, 'left' | 'center' | 'right'>;
 }
 
 // @alpha (undocumented)
@@ -2670,6 +2691,19 @@ export const ScaleType: Readonly<{
 
 // @public
 export type ScaleType = $Values<typeof ScaleType>;
+
+// @alpha
+export interface SecondaryMetricProps {
+    ariaDescription?: string;
+    badgeBorderColor?: Color;
+    badgeColor?: Color;
+    icon?: string;
+    iconPosition?: 'before' | 'after';
+    label?: string;
+    labelPosition?: 'before' | 'after';
+    style?: CSSProperties;
+    value: string;
+}
 
 // @public (undocumented)
 export interface SectorGeomSpecY {
