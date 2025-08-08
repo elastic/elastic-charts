@@ -64,12 +64,15 @@ echo "Connected to e2e server at ${ENV_URL}"
 # Install dependencies only e2e modules for testing
 yarn install --frozen-lockfile
 
+# This setting is used to "seed" randomized data of the charts,
+# so while it says VRT, we enabled it for A11y tests as well.
+export VRT=true
+
 # Set up environment and run tests based on mode
 if [ "$A11Y_MODE" = true ]; then
   # Run playwright accessibility tests with passed args
   playwright test --config=playwright.a11y.config.ts "$@"
 else
-  export VRT=true
   # Run playwright tests with passed args
   playwright test "$@"
 fi

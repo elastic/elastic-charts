@@ -4,10 +4,9 @@ set -e
 
 ### starts up a playwright docker container to run e2e tests
 
-# Parse command line arguments
+# Parse command line options, if --a11y is passed, set A11Y_MODE to true
 A11Y_MODE=false
 SCRIPT_ARGS=()
-
 while [[ $# -gt 0 ]]; do
   case $1 in
     --a11y)
