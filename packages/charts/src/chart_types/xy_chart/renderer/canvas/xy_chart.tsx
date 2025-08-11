@@ -166,12 +166,7 @@ class XYChartComponent extends React.Component<XYChartProps> {
 
     return (
       <>
-        <figure
-          aria-labelledby={a11ySettings.labelId}
-          aria-describedby={`${a11ySettings.descriptionId}-summary ${a11ySettings.descriptionId}`}
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-          tabIndex={0} // Make chart container keyboard focusable for screen readers
-        >
+        <figure aria-labelledby={a11ySettings.labelId} aria-describedby={a11ySettings.descriptionId}>
           <canvas
             dir={isRTL ? 'rtl' : 'ltr'}
             ref={forwardCanvasRef}
