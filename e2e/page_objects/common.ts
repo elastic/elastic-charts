@@ -621,7 +621,6 @@ export class CommonPage {
     const texts = await Promise.all(Array.from({ length: count }, (_, i) => elements.nth(i).textContent()));
 
     return texts.filter((text): text is string => text !== null).join(' ');
-<<<<<<< HEAD
   };
 
   /**
@@ -638,16 +637,6 @@ export class CommonPage {
 
     const summaryText = await this.getA11ySummaryText(page)();
     expect(summaryText).toBe(expectedSummary);
-=======
->>>>>>> a0fd511cf0 (fix(a11y): move screen reader elements outside canvas and add specific test assertions)
-  };
-
-  /**
-   * Get accessibility description text specifically
-   */
-  getA11yDescription = (page: Page) => async (): Promise<string> => {
-    const descElement = await page.locator('.echScreenReaderOnly p').first().waitFor({ state: 'attached' });
-    return (await descElement.textContent()) || '';
   };
 }
 
