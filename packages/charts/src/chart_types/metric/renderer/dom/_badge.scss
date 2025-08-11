@@ -1,0 +1,37 @@
+$echBadgeBackgroundColor: #e3e8f2;
+$echBadgeTextColor: #07101f;
+
+.echBadge__content {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  overflow: hidden;
+
+  min-block-size: 18px;
+  flex-shrink: 0;
+  flex-grow: 0;
+
+  padding-block: 0px;
+  padding-inline: 8px;
+
+  border: 1px solid transparent;
+  border-radius: 2px;
+
+  font-size: inherit;
+  line-height: inherit;
+  text-align: start;
+  text-decoration: none;
+
+  background-color: $echBadgeBackgroundColor;
+  color: $echBadgeTextColor;
+
+  cursor: inherit;
+}
+
+.echBadge__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  min-width: 0;
+}

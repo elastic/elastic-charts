@@ -6,6 +6,7 @@
  * Side Public License, v 1.
  */
 
+import { BADGE_BORDER } from './badge';
 import type { TextParts } from './text_processing';
 import { getTextParts } from './text_processing';
 import { DEFAULT_FONT_FAMILY } from '../../../../common/default_theme_attributes';
@@ -19,13 +20,15 @@ import type { MetricStyle } from '../../../../utils/themes/theme';
 import type { MetricDatum, MetricWNumber } from '../../specs';
 import { isMetricWProgress } from '../../specs';
 
-interface HeightBasedSizes {
+/** @internal */
+export interface HeightBasedSizes {
   iconSize: number;
   titleFontSize: number;
   subtitleFontSize: number;
   extraFontSize: number;
   valueFontSize: number;
   valuePartFontSize: number;
+  progressBarThickness: number;
 }
 
 type BreakPoint = 'xxxs' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';
@@ -41,11 +44,16 @@ type ElementVisibility = {
 /** @internal */
 export const PADDING = 8;
 
-const PROGRESS_BAR_WIDTH = 10; // synced with scss variables
-const PROGRESS_BAR_TARGET_WIDTH = 4;
+/**
+ * Synced with _index.scss
+ * @internal
+ */
+export const PROGRESS_BAR_TARGET_SIZE = 8;
 const LINE_HEIGHT = 1.2; // aligned with our CSS
 const HEIGHT_BP: [number, number, BreakPoint][] = [
-  [100, 200, 'xs'],
+  [0, 100, 'xxxs'],
+  [100, 150, 'xxs'],
+  [150, 200, 'xs'],
   [200, 300, 's'],
   [300, 400, 'm'],
   [400, 500, 'l'],
@@ -97,6 +105,7 @@ const SUBTITLE_FONT: Font = {
   ...TITLE_FONT,
   fontWeight: 'normal',
 };
+const PROGRESS_BAR_THICKNESS: Record<BreakPoint, number> = { xxxs: 4, xxs: 4, xs: 8, s: 8, m: 8, l: 8, xl: 8, xxl: 16 };
 
 /**
  * Approximate font size to fit given available space
@@ -126,17 +135,29 @@ export function getFitValueFontSize(
 }
 
 /** @internal */
+export interface Visibility extends ElementVisibility {
+  titleLines: string[];
+  subtitleLines: string[];
+  gapHeight: number;
+}
+
+/** @internal */
 export interface MetricTextDimensions {
   heightBasedSizes: HeightBasedSizes;
   hasProgressBar: boolean;
   progressBarDirection: LayoutDirection | undefined;
+  /**
+   * This only applies when there is a progress bar and is vertical.
+   * We have added the padding into the calculation
+   */
   progressBarWidth: number;
-  visibility: ElementVisibility & {
-    titleLines: string[];
-    subtitleLines: string[];
-    gapHeight: number;
-  };
+  visibility: Visibility;
   textParts: TextParts[];
+  /**
+   * This only applies when there is an icon and the value postition is top.
+   * We have added the padding into the calculation
+   */
+  iconGridColumnWidth: number;
 }
 
 /** @internal */
@@ -146,21 +167,42 @@ export function getMetricTextPartDimensions(
   style: MetricStyle,
   locale: string,
 ): MetricTextDimensions {
-  const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, panel.height, style);
+  const heightBasedSizes = getHeightBasedFontSizes(HEIGHT_BP, Math.min(panel.height, panel.width), style);
   const hasProgressBar = isMetricWProgress(datum);
   const hasTarget = !isNil((datum as MetricWNumber)?.target);
   const progressBarDirection = isMetricWProgress(datum) ? datum.progressBarDirection : undefined;
+
+  const hasVerticalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Vertical;
+  const hasHorizontalProgressBar = hasProgressBar && progressBarDirection === LayoutDirection.Horizontal;
+
+  const { progressBarThickness, iconSize } = heightBasedSizes;
+
+  const progressBarTotalSpace = progressBarThickness + (hasTarget ? PROGRESS_BAR_TARGET_SIZE : 0) + PADDING;
+  const progressBarWidth = hasVerticalProgressBar ? progressBarTotalSpace : 0;
+  const progressBarHeight = hasHorizontalProgressBar ? progressBarTotalSpace : 0;
+
+  const isIconVisible = !!datum.icon && style.valuePosition === 'top';
+  // The width of the icon column, including padding
+  const iconColumnWidth = iconSize + PADDING;
+  // If the value is center-aligned and the icon is visible, add an extra column width for visual centering
+  const needsCenterSpacer = isIconVisible && style.valueTextAlign === 'center';
+  const iconGridColumnWidth = isIconVisible ? iconColumnWidth * (needsCenterSpacer ? 2 : 1) : 0;
 
   return {
     heightBasedSizes,
     hasProgressBar,
     progressBarDirection,
-    progressBarWidth:
-      hasProgressBar && progressBarDirection === LayoutDirection.Vertical
-        ? PROGRESS_BAR_WIDTH + (hasTarget ? PROGRESS_BAR_TARGET_WIDTH : 0)
-        : 0,
-    visibility: elementVisibility(datum, panel, heightBasedSizes, locale, style.valueFontSize === 'fit'),
+    progressBarWidth,
+    visibility: elementVisibility(
+      datum,
+      panel,
+      heightBasedSizes,
+      locale,
+      style.valueFontSize === 'fit',
+      progressBarHeight,
+    ),
     textParts: getTextParts(datum, style),
+    iconGridColumnWidth,
   };
 }
 
@@ -182,6 +224,7 @@ function getHeightBasedFontSizes(
     extraFontSize: EXTRA_FONT_SIZE[size],
     valueFontSize,
     valuePartFontSize,
+    progressBarThickness: PROGRESS_BAR_THICKNESS[size],
   };
 }
 
@@ -223,13 +266,23 @@ export function getSnappedFontSizes(
   };
 }
 
-/** @internal */
-export function elementVisibility(
+const getResponsiveBreakpoints = (title: boolean, subtitle: boolean, extra: boolean): Array<ElementVisibility> => [
+  { titleMaxLines: 3, subtitleMaxLines: 2, title, subtitle, extra },
+  { titleMaxLines: 3, subtitleMaxLines: 1, title, subtitle, extra },
+  { titleMaxLines: 2, subtitleMaxLines: 1, title, subtitle, extra },
+  { titleMaxLines: 1, subtitleMaxLines: 1, title, subtitle, extra },
+  { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra },
+  { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra: false },
+  { titleMaxLines: 1, subtitleMaxLines: 0, title, subtitle: false, extra: false },
+];
+
+function elementVisibility(
   datum: MetricDatum,
   panel: Size,
   sizes: HeightBasedSizes,
   locale: string,
   fit: boolean,
+  progressBarHeight: number,
 ): ElementVisibility & {
   titleLines: string[];
   subtitleLines: string[];
@@ -255,18 +308,16 @@ export function elementVisibility(
       : 0;
   };
 
-  const extraHeight = sizes.extraFontSize * LINE_HEIGHT;
+  // If there is a badge, we add the padding to the extra height
+  const hasBadge = !!(datum?.extra && 'badgeColor' in datum?.extra && datum?.extra?.badgeColor);
+  const badgeHeight = hasBadge ? BADGE_BORDER * 2 : 0;
+
+  // We assume that the extra element is taking one line
+  const extraHeight = sizes.extraFontSize * LINE_HEIGHT + badgeHeight;
+
   const valueHeight = sizes.valueFontSize * LINE_HEIGHT;
 
-  const responsiveBreakPoints: Array<ElementVisibility> = [
-    { titleMaxLines: 3, subtitleMaxLines: 2, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 3, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 2, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 1, title: !!datum.title, subtitle: !!datum.subtitle, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: !!datum.extra },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-    { titleMaxLines: 1, subtitleMaxLines: 0, title: !!datum.title, subtitle: false, extra: false },
-  ];
+  const responsiveBreakPoints = getResponsiveBreakpoints(!!datum.title, !!datum.subtitle, !!datum.extra);
 
   const getCombinedHeight = (
     { titleMaxLines, subtitleMaxLines, title, subtitle, extra }: ElementVisibility,
@@ -276,14 +327,25 @@ export function elementVisibility(
     (subtitle && subtitleMaxLines > 0 ? subtitleHeight(subtitleMaxLines, measure) : 0) +
     (extra ? extraHeight : 0) +
     valueHeight +
-    PADDING;
+    PADDING +
+    // For the height calculation, take into account when there is an horizontal progress bar
+    progressBarHeight;
 
+  /**
+   * Determines if the given breakpoint should be considered "visible"
+   * for the provided text measurement.
+   */
   const isVisible = (ev: ElementVisibility, measure: TextMeasure) => getCombinedHeight(ev, measure) < panel.height;
 
   return withTextMeasure((textMeasure) => {
-    const visibilityBreakpoint = fit
-      ? responsiveBreakPoints.at(0)!
-      : responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure)) ?? responsiveBreakPoints.at(-1)!;
+    let visibilityBreakpoint: ElementVisibility;
+
+    if (fit) {
+      visibilityBreakpoint = responsiveBreakPoints.at(0)!;
+    } else {
+      const found = responsiveBreakPoints.find((breakpoint) => isVisible(breakpoint, textMeasure));
+      visibilityBreakpoint = found ?? responsiveBreakPoints.at(-1)!;
+    }
 
     return {
       ...visibilityBreakpoint,
