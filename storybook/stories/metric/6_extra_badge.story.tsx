@@ -80,7 +80,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
   );
   const valueFontSize = number('value font size (px)', 40, { min: 0, step: 10 });
   const titlesTextAlign = 'left';
-  const valuesTextAlign = 'right';
+  const valueTextAlign = 'right';
+  const extraTextAlign = 'right';
   const iconAlign = 'right';
   const getIcon =
     (type: string) =>
@@ -154,7 +155,8 @@ export const Example: ChartsStory = (_, { title: storyTitle, description }) => {
                     blendingBackground: useBlendingBackground ? blendingBackground : undefined,
                     valueFontSize: valueFontSizeMode === 'custom' ? valueFontSize : valueFontSizeMode,
                     titlesTextAlign,
-                    valuesTextAlign,
+                    valueTextAlign,
+                    extraTextAlign,
                     iconAlign,
                   },
                 }}

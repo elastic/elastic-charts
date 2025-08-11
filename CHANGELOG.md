@@ -1,3 +1,15 @@
+# [71.0.0](https://github.com/elastic/elastic-charts/compare/v70.1.3...v71.0.0) (2025-08-11)
+
+
+### Features
+
+* **metric:** add new layout configurations ([#2666](https://github.com/elastic/elastic-charts/issues/2666)) ([c13409a](https://github.com/elastic/elastic-charts/commit/c13409ad116703584e34111e1a94c98777bb44a5))
+
+
+### BREAKING CHANGES
+
+* **metric:** The `valuesTextAlign` property in `MetricStyle` has been removed. Use the new `valueTextAlign` (for main value alignment) and `extraTextAlign` (for extra/secondary alignment) properties instead.
+
 ## [70.1.3](https://github.com/elastic/elastic-charts/compare/v70.1.2...v70.1.3) (2025-08-04)
 
 

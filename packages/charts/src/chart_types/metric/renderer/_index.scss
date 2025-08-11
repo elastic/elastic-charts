@@ -1,7 +1,9 @@
-$progress-bar-width: 10px;
-$progress-bar-height: 10px;
-$progress-bar-target-width: 4px;
-$progress-bar-target-height: 2px;
+@import './variables';
+@import 'dom/text';
+@import 'dom/progress';
+@import 'dom/sparkline';
+@import 'dom/secondary_metric';
+@import 'dom/badge';
 
 .echMetricContainer {
   display: grid;
@@ -49,16 +51,28 @@ $progress-bar-target-height: 2px;
   }
 
   &--vertical {
-    // TODO: find a better way to style based on sizes (i.e. sass functions)
+    // TODO: Find a better way to style based on sizes (i.e. sass functions)
     &.echMetric--withProgressBar {
       &--small {
-        padding-left: $progress-bar-width;
+        padding-left: $progress-bar-width-small + $padding;
+      }
+      &--medium {
+        padding-left: $progress-bar-width-medium + $padding;
+      }
+      &--large {
+        padding-left: $progress-bar-width-large + $padding;
       }
     }
 
     &.echMetric--withTargetProgressBar {
       &--small {
-        padding-left: $progress-bar-width + $progress-bar-target-width;
+        padding-left: $progress-bar-width-small + $padding + $progress-bar-target-width;
+      }
+      &--medium {
+        padding-left: $progress-bar-width-medium + $padding + $progress-bar-target-width;
+      }
+      &--large {
+        padding-left: $progress-bar-width-large + $padding + $progress-bar-target-width;
       }
     }
   }
@@ -66,13 +80,25 @@ $progress-bar-target-height: 2px;
   &--horizontal {
     &.echMetric--withProgressBar {
       &--small {
-        padding-bottom: $progress-bar-height;
+        padding-bottom: $progress-bar-height-small + $padding;
+      }
+      &--medium {
+        padding-bottom: $progress-bar-height-medium + $padding;
+      }
+      &--large {
+        padding-bottom: $progress-bar-height-large + $padding;
       }
     }
 
     &.echMetric--withTargetProgressBar {
       &--small {
-        padding-bottom: $progress-bar-height + $progress-bar-target-height;
+        padding-bottom: $progress-bar-height-small + $padding + $progress-bar-target-height;
+      }
+      &--medium {
+        padding-bottom: $progress-bar-height-medium + $padding + $progress-bar-target-height;
+      }
+      &--large {
+        padding-bottom: $progress-bar-height-large + $padding + $progress-bar-target-height;
       }
     }
   }
@@ -85,7 +111,3 @@ $progress-bar-target-height: 2px;
   width: 20px;
   border-bottom: 1px solid;
 }
-
-@import 'dom/text';
-@import 'dom/progress';
-@import 'dom/sparkline';
