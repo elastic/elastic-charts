@@ -6,6 +6,10 @@
  * Side Public License, v 1.
  */
 
-/* @internal */
-export { ScreenReaderSummary } from './screen_reader_summary';
-export type { ChartLabelData } from './types';
+/**
+ * Capitalizes the first letter of a string.
+ * @internal
+ */
+export function capitalizeFirst(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

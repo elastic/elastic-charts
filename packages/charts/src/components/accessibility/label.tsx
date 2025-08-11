@@ -8,11 +8,11 @@
 
 import React from 'react';
 
-import type { GoalChartLabels } from '../../chart_types/goal_chart/state/selectors/get_goal_chart_data';
+import type { ChartLabelData } from './types';
 import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
 interface ScreenReaderLabelProps {
-  goalChartLabels?: GoalChartLabels;
+  chartLabelData?: ChartLabelData;
 }
 
 /** @internal */
@@ -20,25 +20,25 @@ export function ScreenReaderLabel({
   label,
   labelHeadingLevel,
   labelId,
-  goalChartLabels,
+  chartLabelData,
 }: A11ySettings & ScreenReaderLabelProps) {
   const Heading = labelHeadingLevel;
 
-  if (!label && !goalChartLabels?.majorLabel && !goalChartLabels?.minorLabel) return null;
+  if (!label && !chartLabelData?.primaryLabel && !chartLabelData?.secondaryLabel) return null;
 
   let unifiedLabel = '';
-  if (!label && goalChartLabels?.majorLabel) {
-    unifiedLabel = goalChartLabels?.majorLabel;
-  } else if (label && !goalChartLabels?.majorLabel) {
+  if (!label && chartLabelData?.primaryLabel) {
+    unifiedLabel = chartLabelData.primaryLabel;
+  } else if (label && !chartLabelData?.primaryLabel) {
     unifiedLabel = label;
-  } else if (label && goalChartLabels?.majorLabel && label !== goalChartLabels?.majorLabel) {
-    unifiedLabel = `${label}; Chart visible label: ${goalChartLabels?.majorLabel}`;
+  } else if (label && chartLabelData?.primaryLabel && label !== chartLabelData.primaryLabel) {
+    unifiedLabel = `${label}; Chart visible label: ${chartLabelData.primaryLabel}`;
   }
 
   return (
     <>
       {unifiedLabel && <Heading id={labelId}>{unifiedLabel}</Heading>}
-      {goalChartLabels?.minorLabel && <p>{goalChartLabels?.minorLabel}</p>}
+      {chartLabelData?.secondaryLabel && <p>{chartLabelData.secondaryLabel}</p>}
     </>
   );
 }

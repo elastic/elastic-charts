@@ -17,9 +17,8 @@ test.describe('Bar series stories', () => {
   test.describe('[test] axis positions with histogram bar series', () => {
     eachRotation.test(
       async ({ page, rotation }) => {
-        await common.expectChartAtUrlToMatchScreenshot(page)(
-          `http://localhost:9001/?path=/story/interactions--brush-selection-tool-on-histogram-time-charts&knob-debug=&knob-chartRotation=${rotation}`,
-        );
+        const url = `http://localhost:9001/?path=/story/interactions--brush-selection-tool-on-histogram-time-charts&knob-debug=&knob-chartRotation=${rotation}`;
+        await common.expectChartAtUrlToMatchScreenshot(page)(url);
       },
       (r) => `Should render correct axis - rotation ${r}`,
     );
@@ -27,17 +26,16 @@ test.describe('Bar series stories', () => {
 
   test.describe('[test] switch ordinal/linear x axis', () => {
     test('using ordinal x axis', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/bar-chart--test-switch-ordinal-linear-axis&knob-scaleType=ordinal',
-      );
+      const url =
+        'http://localhost:9001/?path=/story/bar-chart--test-switch-ordinal-linear-axis&knob-scaleType=ordinal';
+      await common.expectChartAtUrlToMatchScreenshot(page)(url);
     });
   });
 
   test.describe('[test] discover', () => {
     test('using no custom minInterval', async ({ page }) => {
-      await common.expectChartAtUrlToMatchScreenshot(page)(
-        'http://localhost:9001/?path=/story/bar-chart--test-discover&knob-use custom minInterval of 30s=',
-      );
+      const url = 'http://localhost:9001/?path=/story/bar-chart--test-discover&knob-use custom minInterval of 30s=';
+      await common.expectChartAtUrlToMatchScreenshot(page)(url);
     });
   });
 
