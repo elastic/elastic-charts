@@ -38,7 +38,9 @@ async function setGroupStatus() {
     return;
   }
 
-  const e2eJobs = await getBuildJobs('playwright__parallel-step');
+  const parallelKey =
+    checkId === 'playwright_a11y' ? 'playwright_a11y__parallel-step' : 'playwright_vrt__parallel-step';
+  const e2eJobs = await getBuildJobs(parallelKey);
   const jobStateMap = new Map<string, number>();
   jobStateMap.set('Success', 0);
   jobStateMap.set('Failed', 0);
@@ -174,9 +176,17 @@ void (async () => {
 
   await setGroupStatus();
 
-  await downloadArtifacts('.buildkite/artifacts/e2e_reports/*');
+  const { checkId } = bkEnv;
+  const isA11y = checkId === 'playwright_a11y';
+  const artifactPath = isA11y ? '.buildkite/artifacts/a11y_reports/*' : '.buildkite/artifacts/vrt_reports/*';
+  const reportDir = isA11y ? '.buildkite/artifacts/a11y_reports' : '.buildkite/artifacts/vrt_reports';
+  const outputDir = isA11y ? 'merged_a11y_html_report' : 'merged_vrt_html_report';
+  const outputArtifact = isA11y
+    ? '.buildkite/artifacts/merged_a11y_html_report.gz'
+    : '.buildkite/artifacts/merged_vrt_html_report.gz';
 
-  const reportDir = '.buildkite/artifacts/e2e_reports';
+  await downloadArtifacts(artifactPath);
+
   const files = fs.readdirSync(reportDir);
   await Promise.all<void>(
     files
@@ -189,18 +199,18 @@ void (async () => {
       ),
   );
 
-  startGroup('Merging e2e reports');
+  startGroup(`Merging ${isA11y ? 'a11y' : 'e2e'} reports`);
 
   await exec('yarn merge:reports', {
     cwd: 'e2e',
     env: {
-      HTML_REPORT_DIR: 'merged_html_report',
+      HTML_REPORT_DIR: outputDir,
     },
   });
 
   await compress({
-    src: 'e2e/merged_html_report',
-    dest: '.buildkite/artifacts/merged_html_report.gz',
+    src: path.join('e2e', outputDir),
+    dest: outputArtifact,
   });
 
   if (bkEnv.steps.playwright.updateScreenshots) {

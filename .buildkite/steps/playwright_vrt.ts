@@ -9,17 +9,17 @@
 import type { CustomGroupStep } from '../utils';
 import { createStep, commandStepDefaults, Plugins } from '../utils';
 
-export const playwrightStep = createStep<CustomGroupStep>(() => {
+export const playwrightVrtStep = createStep<CustomGroupStep>(() => {
   const skip = false;
-  const parallelKey = 'playwright__parallel-step';
+  const parallelKey = 'playwright_vrt__parallel-step';
   return {
-    group: ':playwright: Playwright e2e',
-    key: 'playwright',
+    group: ':playwright: Playwright e2e VRT',
+    key: 'playwright_vrt',
     skip,
     steps: [
       {
         ...commandStepDefaults,
-        label: ':playwright: Playwright e2e',
+        label: ':playwright: Playwright e2e VRT',
         skip,
         parallelism: 10,
         retry: {
@@ -41,23 +41,23 @@ export const playwrightStep = createStep<CustomGroupStep>(() => {
         depends_on: ['build_e2e'],
         plugins: [Plugins.docker.playwright()],
         artifact_paths: [
-          '.buildkite/artifacts/e2e_reports/*',
+          '.buildkite/artifacts/vrt_reports/*',
           '.buildkite/artifacts/screenshots/*',
           '.buildkite/artifacts/screenshot_meta/*',
           'e2e/reports/json/*',
         ],
-        commands: ['npx ts-node .buildkite/scripts/steps/playwright.ts'],
+        commands: ['npx ts-node .buildkite/scripts/steps/playwright_vrt.ts'],
       },
       {
         ...commandStepDefaults,
-        key: 'playwright_merge_and_status',
-        label: ':playwright: Set group status and merge reports',
+        key: 'playwright_vrt_merge_and_status',
+        label: ':playwright: Set vrt group status and merge reports',
         skip,
         allow_dependency_failure: true,
         depends_on: [{ step: parallelKey, allow_failure: true }],
         commands: ['npx ts-node .buildkite/scripts/steps/e2e_reports.ts'],
         env: {
-          ECH_CHECK_ID: 'playwright',
+          ECH_CHECK_ID: 'playwright_vrt',
         },
       },
     ],

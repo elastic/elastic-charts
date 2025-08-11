@@ -48,6 +48,7 @@
     "test:tz-ny": "TZ=America/New_York jest --verbose --config=jest.tz.config.js",
     "test:tz-jp": "TZ=Asia/Tokyo jest --verbose --config=jest.tz.config.js",
     "test:e2e": "cd e2e && yarn test",
+    "test:e2e:a11y": "cd e2e && yarn test:a11y",
     "test:e2e:generate": "yarn test:e2e:generate:examples && yarn test:e2e:generate:page",
     "test:e2e:generate:examples": "./e2e_server/scripts/extract_examples.sh",
     "test:e2e:generate:page": "./e2e_server/scripts/compile_vrt_page.sh",
