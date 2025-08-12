@@ -17,13 +17,11 @@ import { createCustomCachedSelector } from '../create_selector';
 /** @internal */
 export interface ScreenReaderSummaryData {
   a11ySettings: A11ySettings;
-  chartTypeDescription: string;
   chartSpecificData?: ChartSpecificScreenReaderData;
 }
 
 const DEFAULT_SCREEN_READER_SUMMARY: ScreenReaderSummaryData = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
-  chartTypeDescription: '',
   chartSpecificData: undefined,
 };
 
@@ -40,13 +38,10 @@ export const getScreenReaderSummarySelector = createCustomCachedSelector(
       return DEFAULT_SCREEN_READER_SUMMARY;
     }
 
-    const chartTypeDescription = internalChartState.getChartTypeDescription(state);
-
     // Get chart-specific screen reader data
     const chartSpecificData = internalChartState.getScreenReaderData?.(state);
 
     return {
-      chartTypeDescription,
       a11ySettings,
       chartSpecificData,
     };
