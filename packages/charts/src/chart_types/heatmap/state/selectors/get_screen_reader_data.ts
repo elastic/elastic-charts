@@ -9,6 +9,7 @@
 import { getHeatmapSpecSelector } from './get_heatmap_spec';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 
 /** @internal */
 export interface HeatmapScreenReaderData {
@@ -17,13 +18,14 @@ export interface HeatmapScreenReaderData {
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [getHeatmapSpecSelector],
-  (heatmapSpec): ChartSpecificScreenReaderData => {
+  [getHeatmapSpecSelector, getInternalChartStateSelector, (state) => state],
+  (heatmapSpec, internalChartState, state): ChartSpecificScreenReaderData => {
     const summaryParts: string[] = [];
 
-    // Add heatmap-specific accessibility information
-    if (heatmapSpec?.data && heatmapSpec.data.length > 0) {
-      summaryParts.push(`${heatmapSpec.data.length} data ${heatmapSpec.data.length === 1 ? 'point' : 'points'}`);
+    // Add chart type description first
+    const chartTypeDescription = internalChartState?.getChartTypeDescription(state);
+    if (chartTypeDescription) {
+      summaryParts.push(chartTypeDescription);
     }
 
     return {

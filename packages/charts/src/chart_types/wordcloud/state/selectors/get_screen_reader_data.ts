@@ -8,6 +8,7 @@
 
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 
 /** @internal */
 export interface WordcloudScreenReaderData {
@@ -16,14 +17,20 @@ export interface WordcloudScreenReaderData {
 }
 
 /** @internal */
-export const getScreenReaderDataSelector = createCustomCachedSelector([], (): ChartSpecificScreenReaderData => {
-  const summaryParts: string[] = [];
+export const getScreenReaderDataSelector = createCustomCachedSelector(
+  [getInternalChartStateSelector, (state) => state],
+  (internalChartState, state): ChartSpecificScreenReaderData => {
+    const summaryParts: string[] = [];
 
-  // Add wordcloud-specific accessibility information
-  // For now, wordcloud charts rely mainly on the chart type description
+    // Add chart type description first
+    const chartTypeDescription = internalChartState?.getChartTypeDescription(state);
+    if (chartTypeDescription) {
+      summaryParts.push(chartTypeDescription);
+    }
 
-  return {
-    data: {} as WordcloudScreenReaderData,
-    summaryParts,
-  };
-});
+    return {
+      data: {} as WordcloudScreenReaderData,
+      summaryParts,
+    };
+  },
+);

@@ -8,6 +8,7 @@
 
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 
 /** @internal */
 export interface MetricScreenReaderData {
@@ -16,14 +17,23 @@ export interface MetricScreenReaderData {
 }
 
 /** @internal */
-export const getScreenReaderDataSelector = createCustomCachedSelector([], (): ChartSpecificScreenReaderData => {
-  const summaryParts: string[] = [];
+export const getScreenReaderDataSelector = createCustomCachedSelector(
+  [getInternalChartStateSelector, (state) => state],
+  (internalChartState, state): ChartSpecificScreenReaderData => {
+    const summaryParts: string[] = [];
 
-  // Add metric-specific accessibility information
-  // For now, metric charts rely mainly on the chart type description
+    // Add chart type description first
+    const chartTypeDescription = internalChartState?.getChartTypeDescription(state);
+    if (chartTypeDescription) {
+      summaryParts.push(chartTypeDescription);
+    }
 
-  return {
-    data: {} as MetricScreenReaderData,
-    summaryParts,
-  };
-});
+    // Add metric-specific accessibility information
+    // For now, metric charts rely mainly on the chart type description
+
+    return {
+      data: {} as MetricScreenReaderData,
+      summaryParts,
+    };
+  },
+);

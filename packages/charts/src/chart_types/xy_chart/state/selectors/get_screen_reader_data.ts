@@ -7,10 +7,10 @@
  */
 
 import { computeSeriesDomainsSelector } from './compute_series_domains';
-import { getChartTypeDescriptionSelector } from './get_chart_type_description';
 import { getAxisSpecsSelector, getSeriesSpecsSelector } from './get_specs';
 import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 
 /** @internal */
 export interface XYChartScreenReaderData {
@@ -21,11 +21,12 @@ export interface XYChartScreenReaderData {
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [getSeriesSpecsSelector, getAxisSpecsSelector, computeSeriesDomainsSelector, getChartTypeDescriptionSelector],
-  (seriesSpecs, axisSpecs, seriesDomains, chartTypeDescription): ChartSpecificScreenReaderData => {
+  [getSeriesSpecsSelector, getAxisSpecsSelector, computeSeriesDomainsSelector, getInternalChartStateSelector, (state) => state],
+  (seriesSpecs, axisSpecs, seriesDomains, internalChartState, state): ChartSpecificScreenReaderData => {
     const summaryParts: string[] = [];
 
     // Add chart type description first
+    const chartTypeDescription = internalChartState?.getChartTypeDescription(state);
     if (chartTypeDescription) {
       summaryParts.push(chartTypeDescription);
     }
