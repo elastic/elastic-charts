@@ -60,7 +60,17 @@ export const getScreenReaderSummarySelector = createCustomCachedSelector(
       parts.push(chartTypeDescription);
     }
 
-    const generatedDescription = parts.length > 0 ? `${parts.join('. ')}.` : '';
+    let generatedDescription = '';
+
+    if (parts.length === 1) {
+      // This is a fallback to render the chart description in the legacy format using <dl>.
+      // In `accessibility/description.tsx` we'll check for the "Chart type:" prefix and will
+      // render using <dl> instead of <p> with an updated description. We can remove this check
+      // once all charts have migrated to the new format.
+      generatedDescription = `Chart type:${parts[0]}`;
+    } else {
+      generatedDescription = parts.length > 0 ? `${parts.join('. ')}.` : '';
+    }
 
     // Combine generated description with custom description
     const customDescription = a11ySettings.description;

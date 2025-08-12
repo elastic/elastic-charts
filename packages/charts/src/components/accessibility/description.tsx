@@ -13,5 +13,20 @@ import type { A11ySettings } from '../../state/selectors/get_accessibility_confi
 /** @internal */
 export function ScreenReaderDescription(props: A11ySettings) {
   if (!props.description) return null;
+
+  // Fallback to retain the simple legacy format of "Chart type: [description]"
+  if (props.description.startsWith('Chart type:')) {
+    // If the description starts with "Chart type:", retain the legacy format using dl.
+    // We parse the string and strip "Chart type:" again from the actual description.
+    // It's a bit brittle, but we can remove this once we migrated all charts to use the new format.
+    const description = props.description.replace(/^Chart type:/, '').trim();
+    return (
+      <dl id={props.descriptionId}>
+        <dt>Chart type:</dt>
+        <dd>{description}</dd>
+      </dl>
+    );
+  }
+
   return <p id={props.descriptionId}>{props.description}</p>;
 }
