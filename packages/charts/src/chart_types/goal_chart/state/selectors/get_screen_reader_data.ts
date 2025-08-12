@@ -7,34 +7,53 @@
  */
 
 import { getGoalChartDataSelector, getGoalChartLabelsSelector } from './get_goal_chart_data';
-import type { ChartType } from '../../../../chart_types';
-import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
+import type { ChartSpecificScreenReaderData, SummaryPart } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
+import { getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
-import { createGoalChartDescription } from '../../utils/summary_utils';
 
 /** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
   [
     getGoalChartDataSelector,
     getGoalChartLabelsSelector,
-    (state) => state.chartType,
     getInternalChartStateSelector,
+    getA11ySettingsSelector,
     (state) => state,
   ],
-  (goalChartData, goalChartLabels, chartType, internalChartState, state): ChartSpecificScreenReaderData => {
-    const summaryParts: string[] = [];
+  (goalChartData, goalChartLabels, internalChartState, a11ySettings, state): ChartSpecificScreenReaderData => {
+    const summaryParts: SummaryPart[] = [];
 
     // Add chart type description first
     const chartTypeDescription = internalChartState?.getChartTypeDescription(state);
     if (chartTypeDescription) {
-      summaryParts.push(chartTypeDescription);
+      summaryParts.push({
+        label: 'Chart type',
+        id: a11ySettings.defaultSummaryId,
+        value: chartTypeDescription,
+      });
     }
 
-    // Add goal chart specific description
-    const goalDescription = createGoalChartDescription(chartType as ChartType, goalChartData);
-    if (goalDescription) {
-      summaryParts.push(goalDescription);
+    // Add goal chart specific parts
+    if (goalChartData && !isNaN(goalChartData.maximum)) {
+      summaryParts.push(
+        {
+          label: 'Minimum',
+          value: goalChartData.minimum.toString(),
+        },
+        {
+          label: 'Maximum',
+          value: goalChartData.maximum.toString(),
+        },
+        {
+          label: 'Target',
+          value: goalChartData.target?.toString() ?? 'N/A',
+        },
+        {
+          label: 'Value',
+          value: goalChartData.value.toString(),
+        },
+      );
     }
 
     const returnValue = {

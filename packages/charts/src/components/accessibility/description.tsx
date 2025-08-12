@@ -8,25 +8,39 @@
 
 import React from 'react';
 
+import type { SummaryPart } from '../../state/chart_selectors';
 import type { A11ySettings } from '../../state/selectors/get_accessibility_config';
 
-/** @internal */
-export function ScreenReaderDescription(props: A11ySettings) {
-  if (!props.description) return null;
+interface ScreenReaderDescriptionProps extends A11ySettings {
+  summaryParts?: SummaryPart[];
+}
 
-  // Fallback to retain the simple legacy format of "Chart type: [description]"
-  if (props.description.startsWith('Chart type:')) {
-    // If the description starts with "Chart type:", retain the legacy format using dl.
-    // We parse the string and strip "Chart type:" again from the actual description.
-    // It's a bit brittle, but we can remove this once we migrated all charts to use the new format.
-    const description = props.description.replace(/^Chart type:/, '').trim();
-    return (
-      <dl id={props.descriptionId}>
-        <dt>Chart type:</dt>
-        <dd>{description}</dd>
-      </dl>
-    );
+/** @internal */
+export function ScreenReaderDescription(props: ScreenReaderDescriptionProps) {
+  const { summaryParts, description, descriptionId } = props;
+
+  const hasSummaryParts = summaryParts && summaryParts.length > 0;
+  const hasDescription = !!description;
+
+  if (!hasSummaryParts && !hasDescription) {
+    return null;
   }
 
-  return <p id={props.descriptionId}>{props.description}</p>;
+  return (
+    <div id={descriptionId}>
+      {/* Render structured summary parts as a description list */}
+      {hasSummaryParts && (
+        <dl>
+          {summaryParts.map((part) => (
+            <React.Fragment key={part.id || part.label}>
+              <dt>{part.label}:</dt>
+              <dd id={part.id}>{part.value}</dd>
+            </React.Fragment>
+          ))}
+        </dl>
+      )}
+      {/* Append custom description if provided */}
+      {hasDescription && <p>{description}</p>}
+    </div>
+  );
 }

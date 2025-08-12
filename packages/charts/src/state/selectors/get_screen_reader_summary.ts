@@ -49,51 +49,13 @@ export const getScreenReaderSummarySelector = createCustomCachedSelector(
     // Get chart-specific screen reader data
     const chartSpecificData = internalChartState.getScreenReaderData?.(state);
 
-    // Generate consolidated summary
-    const parts: string[] = [];
-
-    // Add chart-specific summary parts (each chart type now includes its own chart type description)
-    if (chartSpecificData?.summaryParts) {
-      parts.push(...chartSpecificData.summaryParts);
-    } else if (chartTypeDescription) {
-      // Fallback for chart types that don't provide summaryParts
-      parts.push(chartTypeDescription);
-    }
-
-    let generatedDescription = '';
-
-    if (parts.length === 1) {
-      // This is a fallback to render the chart description in the legacy format using <dl>.
-      // In `accessibility/description.tsx` we'll check for the "Chart type:" prefix and will
-      // render using <dl> instead of <p> with an updated description. We can remove this check
-      // once all charts have migrated to the new format.
-      generatedDescription = `Chart type:${parts[0]}`;
-    } else {
-      generatedDescription = parts.length > 0 ? `${parts.join('. ')}.` : '';
-    }
-
-    // Combine generated description with custom description
-    const customDescription = a11ySettings.description;
-    const combinedParts: string[] = [];
-
-    if (generatedDescription) {
-      combinedParts.push(generatedDescription);
-    }
-    if (customDescription) {
-      combinedParts.push(customDescription);
-    }
-
-    const combinedDescription = combinedParts.length > 0 ? combinedParts.join(' ') : undefined;
-
-    // Create enhanced a11ySettings with combined description
-    const enhancedA11ySettings: A11ySettings = {
-      ...a11ySettings,
-      description: combinedDescription,
-    };
+    // Keep the custom description from settings as-is
+    // The ScreenReaderDescription component will handle rendering both
+    // the structured summaryParts and the custom description
 
     return {
       chartTypeDescription,
-      a11ySettings: enhancedA11ySettings,
+      a11ySettings,
       chartType,
       chartSpecificData,
     };
