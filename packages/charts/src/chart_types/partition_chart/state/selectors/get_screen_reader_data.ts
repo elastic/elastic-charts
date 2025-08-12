@@ -8,9 +8,7 @@
 
 import { partitionMultiGeometries } from './geometries';
 import { getPartitionSpecs } from './get_partition_specs';
-import type { ChartSpecificScreenReaderData } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
-import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
 import type { ShapeViewModel } from '../../layout/types/viewmodel_types';
 import { STATISTICS_KEY } from '../../layout/utils/group_by_rollup';
 import type { PartitionSpec } from '../../specs';
@@ -75,25 +73,6 @@ export const getPartitionScreenReaderDataSelector = createCustomCachedSelector(
       hasMultipleLayers: (specs[0]?.layers.length ?? NaN) > 1,
       isSmallMultiple: shapeViewModel.length > 1,
       sections: getScreenReaderDataForPartitions(specs, shapeViewModel),
-    };
-  },
-);
-
-/** @internal */
-export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [getPartitionScreenReaderDataSelector, getInternalChartStateSelector, (state) => state],
-  (partitionData, internalChartState, state): ChartSpecificScreenReaderData => {
-    const summaryParts: string[] = [];
-
-    // Add chart type description first
-    const chartTypeDescription = internalChartState?.getChartTypeDescription(state);
-    if (chartTypeDescription) {
-      summaryParts.push(chartTypeDescription);
-    }
-
-    return {
-      data: partitionData,
-      summaryParts,
     };
   },
 );

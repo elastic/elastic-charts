@@ -24,8 +24,6 @@ import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
 export interface ChartSpecificScreenReaderData {
-  /** Chart-specific data for screen reader summary */
-  data?: any;
   /** Custom summary parts to include in the consolidated summary */
   summaryParts?: string[];
   /** Generic label data for accessibility */
@@ -180,7 +178,7 @@ export const createChartSelectorsFactory =
   () => {
     const callbacks = callbacksCreators.map((cb) => cb());
 
-    return {
+    const chartSelectors = {
       isInitialized: () => InitStatus.SpecNotInitialized,
       isBrushAvailable: () => false,
       isBrushing: () => false,
@@ -202,6 +200,12 @@ export const createChartSelectorsFactory =
       getBrushArea: () => null,
       getDebugState: () => ({}),
       getChartTypeDescription: () => '',
+      // The default screen reader data returns just the chart type description.
+      getScreenReaderData: (state: GlobalChartState): ChartSpecificScreenReaderData => {
+        return {
+          summaryParts: [chartSelectors.getChartTypeDescription(state)],
+        };
+      },
       getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
       canDisplayChartTitles: () => true,
       ...overrides,
@@ -209,6 +213,8 @@ export const createChartSelectorsFactory =
         callbacks.forEach((cb) => cb(state));
       },
     };
+
+    return chartSelectors;
   };
 
 /** @internal */

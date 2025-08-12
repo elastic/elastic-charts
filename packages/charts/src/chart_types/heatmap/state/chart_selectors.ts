@@ -13,7 +13,6 @@ import { getPointerCursorSelector } from './selectors/get_cursor_pointer';
 import { getDebugStateSelector } from './selectors/get_debug_state';
 import { getHeatmapTableSelector } from './selectors/get_heatmap_table';
 import { getLegendItemsLabelsSelector } from './selectors/get_legend_items_labels';
-import { getScreenReaderDataSelector } from './selectors/get_screen_reader_data';
 import { getTooltipAnchorSelector } from './selectors/get_tooltip_anchor';
 import { isBrushAvailableSelector } from './selectors/is_brush_available';
 import { isEmptySelector } from './selectors/is_empty';
@@ -49,7 +48,6 @@ export const chartSelectorsFactory = createChartSelectorsFactory(
     getBrushArea: getBrushAreaSelector,
     getDebugState: getDebugStateSelector,
     getChartTypeDescription: () => 'Heatmap chart',
-    getScreenReaderData: getScreenReaderDataSelector,
     getSmallMultiplesDomains: getHeatmapTableSelector,
   },
   // event callbacks

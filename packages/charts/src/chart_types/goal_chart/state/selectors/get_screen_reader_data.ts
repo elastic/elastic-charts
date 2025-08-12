@@ -14,14 +14,14 @@ import { getInternalChartStateSelector } from '../../../../state/selectors/get_i
 import { createGoalChartDescription } from '../../utils/summary_utils';
 
 /** @internal */
-export interface GoalChartScreenReaderData {
-  goalChartData: ReturnType<typeof getGoalChartDataSelector>;
-  goalChartLabels: ReturnType<typeof getGoalChartLabelsSelector>;
-}
-
-/** @internal */
 export const getScreenReaderDataSelector = createCustomCachedSelector(
-  [getGoalChartDataSelector, getGoalChartLabelsSelector, (state) => state.chartType, getInternalChartStateSelector, (state) => state],
+  [
+    getGoalChartDataSelector,
+    getGoalChartLabelsSelector,
+    (state) => state.chartType,
+    getInternalChartStateSelector,
+    (state) => state,
+  ],
   (goalChartData, goalChartLabels, chartType, internalChartState, state): ChartSpecificScreenReaderData => {
     const summaryParts: string[] = [];
 
@@ -31,28 +31,20 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
       summaryParts.push(chartTypeDescription);
     }
 
-    // Add title from labels
-    const title = `${goalChartLabels.majorLabel}${goalChartLabels.minorLabel}`.trim();
-    if (title) {
-      summaryParts.push(title);
-    }
-
     // Add goal chart specific description
     const goalDescription = createGoalChartDescription(chartType as ChartType, goalChartData);
     if (goalDescription) {
       summaryParts.push(goalDescription);
     }
 
-    return {
-      data: {
-        goalChartData,
-        goalChartLabels,
-      } as GoalChartScreenReaderData,
+    const returnValue = {
       summaryParts,
       labelData: {
         primaryLabel: goalChartLabels.majorLabel,
         secondaryLabel: goalChartLabels.minorLabel,
       },
     };
+
+    return returnValue;
   },
 );

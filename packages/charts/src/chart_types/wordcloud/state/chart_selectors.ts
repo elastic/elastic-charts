@@ -6,7 +6,6 @@
  * Side Public License, v 1.
  */
 
-import { getScreenReaderDataSelector } from './selectors/get_screen_reader_data';
 import { getWordcloudSpecSelector } from './selectors/wordcloud_spec';
 import { createChartSelectorsFactory } from '../../../state/chart_selectors';
 import type { GlobalChartState } from '../../../state/chart_state';
@@ -28,5 +27,4 @@ export const chartSelectorsFactory = createChartSelectorsFactory({
     };
   },
   getChartTypeDescription: () => 'Word cloud chart',
-  getScreenReaderData: getScreenReaderDataSelector,
 });

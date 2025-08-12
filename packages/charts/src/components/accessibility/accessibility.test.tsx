@@ -109,10 +109,10 @@ describe('Accessibility', () => {
     );
 
     it('should include the series type if partition chart', () => {
-      expect(sunburstWrapper.find('.echScreenReaderOnly').first().text()).toBe('sunburst chart. 10 data points.');
+      expect(sunburstWrapper.find('.echScreenReaderOnly').first().text()).toBe('Chart type:sunburst chart');
     });
     it('should include series type if treemap type', () => {
-      expect(treemapWrapper.find('.echScreenReaderOnly').first().text()).toBe('treemap chart. 10 data points.');
+      expect(treemapWrapper.find('.echScreenReaderOnly').first().text()).toBe('Chart type:treemap chart');
     });
     it('should test defaults for screen reader data  table', () => {
       expect(sunburstWrapper.find('tr').first().text()).toBe('LabelValuePercentage');
@@ -170,7 +170,7 @@ describe('Accessibility', () => {
     );
     it('should test defaults for goal charts', () => {
       expect(goalChartWrapper.find('.echScreenReaderOnly').first().text()).toBe(
-        'Revenue 2020 YTD  (thousand USD)  goal chart. Revenue 2020 YTD  (thousand USD). Minimum: 0, Maximum: 300, Target: 260, Value: 170.',
+        'Revenue 2020 YTD  (thousand USD)  goal chart. Minimum: 0, Maximum: 300, Target: 260, Value: 170.',
       );
     });
     it('should correctly render ascending semantic values', () => {
