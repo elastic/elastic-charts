@@ -28,7 +28,7 @@ export interface PartitionSectionData {
 export interface PartitionData {
   hasMultipleLayers: boolean;
   isSmallMultiple: boolean;
-  sections: PartitionSectionData[];
+  data: PartitionSectionData[];
 }
 
 /**
@@ -66,13 +66,13 @@ export const getPartitionScreenReaderDataSelector = createCustomCachedSelector(
       return {
         hasMultipleLayers: false,
         isSmallMultiple: false,
-        sections: [],
+        data: [],
       };
     }
     return {
       hasMultipleLayers: (specs[0]?.layers.length ?? NaN) > 1,
       isSmallMultiple: shapeViewModel.length > 1,
-      sections: getScreenReaderDataForPartitions(specs, shapeViewModel),
+      data: getScreenReaderDataForPartitions(specs, shapeViewModel),
     };
   },
 );

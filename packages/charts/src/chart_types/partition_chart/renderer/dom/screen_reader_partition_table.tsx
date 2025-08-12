@@ -46,8 +46,8 @@ const ScreenReaderPartitionTableComponent = ({
     }
   };
 
-  const { isSmallMultiple, sections, hasMultipleLayers } = partitionData;
-  const tableLength = sections.length;
+  const { isSmallMultiple, data, hasMultipleLayers } = partitionData;
+  const tableLength = data.length;
   const showMoreRows = rowLimit < tableLength;
   let countOfCol: number = 3;
   const totalColumns: number =
@@ -81,7 +81,7 @@ const ScreenReaderPartitionTableComponent = ({
         </thead>
 
         <tbody>
-          {partitionData.sections
+          {partitionData.data
             .slice(0, rowLimit)
             .map(({ panelTitle, depth, label, parentName, valueText, percentage }, index) => {
               return (
@@ -117,7 +117,7 @@ const DEFAULT_SCREEN_READER_SUMMARY = {
   partitionData: {
     isSmallMultiple: false,
     hasMultipleLayers: false,
-    sections: [],
+    data: [],
   },
   debug: false,
 };
