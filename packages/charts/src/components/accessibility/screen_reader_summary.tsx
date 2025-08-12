@@ -11,8 +11,14 @@ import { connect } from 'react-redux';
 
 import { ScreenReaderDescription } from './description';
 import { ScreenReaderLabel } from './screen_reader_label';
-import { mapStateToProps } from './screen_reader_summary_connector';
+import type { GlobalChartState } from '../../state/chart_state';
 import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
+import { getScreenReaderSummarySelector } from '../../state/selectors/get_screen_reader_summary';
+
+/** @internal */
+export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryData => {
+  return getScreenReaderSummarySelector(state);
+};
 
 const ScreenReaderSummaryComponent = ({ a11ySettings, chartSpecificData }: ScreenReaderSummaryData) => {
   return (
