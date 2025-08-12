@@ -15,11 +15,6 @@ import type { GlobalChartState } from '../../state/chart_state';
 import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
 import { getScreenReaderSummarySelector } from '../../state/selectors/get_screen_reader_summary';
 
-/** @internal */
-export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryData => {
-  return getScreenReaderSummarySelector(state);
-};
-
 const ScreenReaderSummaryComponent = ({ a11ySettings, chartSpecificData }: ScreenReaderSummaryData) => {
   return (
     <figcaption className="echScreenReaderOnly" id={`${a11ySettings.descriptionId}-summary`}>
@@ -27,6 +22,11 @@ const ScreenReaderSummaryComponent = ({ a11ySettings, chartSpecificData }: Scree
       <ScreenReaderDescription {...a11ySettings} summaryParts={chartSpecificData?.summaryParts} />
     </figcaption>
   );
+};
+
+/** @internal */
+export const mapStateToProps = (state: GlobalChartState): ScreenReaderSummaryData => {
+  return getScreenReaderSummarySelector(state);
 };
 
 /** @internal */
