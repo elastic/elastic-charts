@@ -29,7 +29,7 @@ describe('Accessibility', () => {
           <BarSeries id="test" data={[{ x: 0, y: 2 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
-      expect(wrapper.find('.echScreenReaderOnly').first().text()).toBe('bar chart.');
+      expect(wrapper.find('.echScreenReaderOnly').first().text()).toBe('Chart type:bar chart');
     });
     it('should include the series types if multiple types of series', () => {
       const wrapper = mount(
@@ -39,7 +39,7 @@ describe('Accessibility', () => {
           <LineSeries id="test2" data={[{ x: 3, y: 5 }]} xAccessor="x" yAccessors={['y']} />
         </Chart>,
       );
-      expect(wrapper.find('.echScreenReaderOnly').first().text()).toBe('Mixed chart: bar and line chart.');
+      expect(wrapper.find('.echScreenReaderOnly').first().text()).toBe('Chart type:Mixed chart: bar and line chart');
     });
   });
 
