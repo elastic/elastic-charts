@@ -10,7 +10,7 @@ import React, { memo } from 'react';
 import { connect } from 'react-redux';
 
 import { ScreenReaderDescription } from './description';
-import { ScreenReaderLabel } from './label';
+import { ScreenReaderLabel } from './screen_reader_label';
 import { mapStateToProps } from './screen_reader_summary_connector';
 import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
 
