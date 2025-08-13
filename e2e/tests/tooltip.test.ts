@@ -45,12 +45,35 @@ test.describe('Tooltip', () => {
               await common.clickMouseRelativeToDOMElement(page)({ left: 260, top: 180 }, common.chartSelector, {
                 button: 'right',
               });
+
+              // debug: wait a second
+              await page.waitForTimeout(1000);
+
+              // Wait for tooltip dimensions to stabilize
+              await page.waitForFunction(() => {
+                const tooltip = document.querySelector('.echTooltip');
+                if (!tooltip) return false;
+
+                const style = getComputedStyle(tooltip);
+                return style.minWidth !== '0px' && style.minWidth !== 'auto';
+              });
+
+              // debug: wait a second
+              await page.waitForTimeout(1000);
+
               // table row not visible thus not clickable by playwright
               const items = page.locator('.echTooltip__tableRow .echTooltip__tableCell:first-of-type');
-              await items.nth(5).click();
-              await items.nth(0).click();
-              await items.nth(2).click();
+
+              // Select rows and wait for each selection to be visually applied
+              for (const index of [5, 0, 2]) {
+                await items.nth(index).click();
+                await page.waitForSelector(`.echTooltip__tableRow:nth-child(${index + 1})
+  .echTooltip__colorStrip--icon`);
+                // debug: wait a second
+                await page.waitForTimeout(1000);
+              }
             },
+            delay: 1000, // Extra buffer for complete stability
           },
         );
       });
