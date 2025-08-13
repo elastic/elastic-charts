@@ -37,23 +37,3 @@ echo '--- Updating commit status for jobs'
 npx ts-node scripts/pre_command.ts
 
 cd '../'
-
-echo '--- Docker environment information'
-docker --version
-docker info | grep -E "Server Version:|Registry:"
-
-echo '--- Pre-pulling Playwright Docker image for caching'
-
-# Playwright version from the TypeScript config,
-# must match installed version of @playwright/test
-PLAYWRIGHT_VERSION="1.47.2"
-
-# This pre-pull will cache the image on each Buildkite agent,
-# reducing the chance of network timeouts during the actual job execution.
-if [ -n "$PLAYWRIGHT_VERSION" ]; then
-  if ! docker pull "mcr.microsoft.com/playwright:v${PLAYWRIGHT_VERSION}-focal"; then
-    echo "Error: Failed to pre-pull Playwright image mcr.microsoft.com/playwright:v${PLAYWRIGHT_VERSION}-focal"
-    echo "This is likely a network connectivity issue with Microsoft Container Registry"
-    exit 1
-  fi
-fi
