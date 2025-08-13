@@ -38,7 +38,11 @@ npx ts-node scripts/pre_command.ts
 
 cd '../'
 
-echo '--- Pre-pulling Docker image for caching'
+echo '--- Docker environment information'
+docker --version
+docker info | grep -E "Server Version:|Registry:"
+
+echo '--- Pre-pulling Playwright Docker image for caching'
 
 # Playwright version from the TypeScript config,
 # must match installed version of @playwright/test
