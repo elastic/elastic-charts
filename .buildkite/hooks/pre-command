@@ -46,7 +46,7 @@ echo '--- Pre-pulling Playwright Docker image for caching'
 
 # Playwright version from the TypeScript config,
 # must match installed version of @playwright/test
-PLAYWRIGHT_VERSION="1.21.1"
+PLAYWRIGHT_VERSION="1.47.2"
 
 # This pre-pull will cache the image on each Buildkite agent,
 # reducing the chance of network timeouts during the actual job execution.

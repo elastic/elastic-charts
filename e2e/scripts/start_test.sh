@@ -16,7 +16,7 @@ set -e
 #   exit 1
 # fi
 
-pw_image="mcr.microsoft.com/playwright:v1.21.1-focal"
+pw_image="mcr.microsoft.com/playwright:v1.47.2-focal"
 
 
 # Run e2e playwright tests inside container
