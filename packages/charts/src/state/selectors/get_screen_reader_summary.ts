@@ -17,12 +17,12 @@ import { createCustomCachedSelector } from '../create_selector';
 /** @internal */
 export interface ScreenReaderSummaryData {
   a11ySettings: A11ySettings;
-  chartSpecificData?: ChartSpecificScreenReaderData;
+  screenReaderData?: ChartSpecificScreenReaderData;
 }
 
 const DEFAULT_SCREEN_READER_SUMMARY: ScreenReaderSummaryData = {
   a11ySettings: DEFAULT_A11Y_SETTINGS,
-  chartSpecificData: undefined,
+  screenReaderData: undefined,
 };
 
 /** @internal */
@@ -39,11 +39,11 @@ export const getScreenReaderSummarySelector = createCustomCachedSelector(
     }
 
     // Get chart-specific screen reader data
-    const chartSpecificData = internalChartState.getScreenReaderData?.(state);
+    const screenReaderData = internalChartState.getScreenReaderData?.(state);
 
     return {
       a11ySettings,
-      chartSpecificData,
+      screenReaderData,
     };
   },
 );

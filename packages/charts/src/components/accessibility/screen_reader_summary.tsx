@@ -16,12 +16,12 @@ import type { GlobalChartState } from '../../state/chart_state';
 import type { ScreenReaderSummaryData } from '../../state/selectors/get_screen_reader_summary';
 import { getScreenReaderSummarySelector } from '../../state/selectors/get_screen_reader_summary';
 
-const ScreenReaderSummaryComponent = ({ a11ySettings, chartSpecificData }: ScreenReaderSummaryData) => {
+const ScreenReaderSummaryComponent = ({ a11ySettings, screenReaderData }: ScreenReaderSummaryData) => {
   return (
     <figcaption className="echScreenReaderOnly" id={`${a11ySettings.descriptionId}-summary`}>
-      <ScreenReaderLabel {...a11ySettings} chartLabelData={chartSpecificData?.labelData} />
+      <ScreenReaderLabel {...a11ySettings} chartLabelData={screenReaderData?.labelData} />
       <ScreenReaderDescription {...a11ySettings} />
-      <ScreenReaderTypes {...a11ySettings} screenReaderTypes={chartSpecificData?.screenReaderTypes} />
+      <ScreenReaderTypes {...a11ySettings} screenReaderTypes={screenReaderData?.screenReaderTypes} />
     </figcaption>
   );
 };
