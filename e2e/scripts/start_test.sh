@@ -10,13 +10,13 @@ set -e
 
 # if [[ $result =~ $regex ]]; then
 #   pw_version=${BASH_REMATCH[1]}
-#   pw_image="mcr.microsoft.com/playwright:v${pw_version}-focal"
+#   pw_image="mcr.microsoft.com/playwright:v${pw_version}-noble"
 # else
 #   echo "Unable to find '@playwright/test' version"
 #   exit 1
 # fi
 
-pw_image="mcr.microsoft.com/playwright:v1.21.1-focal"
+pw_image="mcr.microsoft.com/playwright:v1.21.1-noble"
 
 
 # Run e2e playwright tests inside container
