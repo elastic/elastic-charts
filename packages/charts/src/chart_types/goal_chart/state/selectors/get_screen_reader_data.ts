@@ -7,7 +7,7 @@
  */
 
 import { getGoalChartDataSelector, getGoalChartLabelsSelector } from './get_goal_chart_data';
-import type { ChartSpecificScreenReaderData, SummaryPart } from '../../../../state/chart_selectors';
+import type { ChartSpecificScreenReaderData, ScreenReaderType } from '../../../../state/chart_selectors';
 import { createCustomCachedSelector } from '../../../../state/create_selector';
 import { getA11ySettingsSelector } from '../../../../state/selectors/get_accessibility_config';
 import { getInternalChartStateSelector } from '../../../../state/selectors/get_internal_chart_state';
@@ -22,12 +22,12 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     (state) => state,
   ],
   (goalChartData, goalChartLabels, internalChartState, a11ySettings, state): ChartSpecificScreenReaderData => {
-    const summaryParts: SummaryPart[] = [];
+    const screenReaderTypes: ScreenReaderType[] = [];
 
     // Add chart type description first
     const chartTypeDescription = internalChartState?.getChartTypeDescription(state);
     if (chartTypeDescription) {
-      summaryParts.push({
+      screenReaderTypes.push({
         label: 'Chart type',
         id: a11ySettings.defaultSummaryId,
         value: chartTypeDescription,
@@ -36,7 +36,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
 
     // Add goal chart specific parts
     if (goalChartData && !isNaN(goalChartData.maximum)) {
-      summaryParts.push(
+      screenReaderTypes.push(
         {
           label: 'Minimum',
           value: goalChartData.minimum.toString(),
@@ -57,7 +57,7 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     }
 
     const returnValue = {
-      summaryParts,
+      screenReaderTypes,
       labelData: {
         primaryLabel: goalChartLabels.majorLabel,
         secondaryLabel: goalChartLabels.minorLabel,

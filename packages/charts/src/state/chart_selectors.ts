@@ -23,7 +23,7 @@ import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
-export interface SummaryPart {
+export interface ScreenReaderType {
   /** The label for this part of the summary */
   label: string;
   /** Optional ID for referencing this part */
@@ -35,7 +35,7 @@ export interface SummaryPart {
 /** @internal */
 export interface ChartSpecificScreenReaderData {
   /** Custom summary parts to include in the consolidated summary */
-  summaryParts?: SummaryPart[];
+  screenReaderTypes?: ScreenReaderType[];
   /** Generic label data for accessibility */
   labelData?: ChartLabelData;
 }
@@ -214,7 +214,7 @@ export const createChartSelectorsFactory =
       getScreenReaderData: (state: GlobalChartState): ChartSpecificScreenReaderData => {
         const chartTypeDescription = chartSelectors.getChartTypeDescription(state);
         return {
-          summaryParts: chartTypeDescription ? [{ label: 'Chart type', value: chartTypeDescription }] : [],
+          screenReaderTypes: chartTypeDescription ? [{ label: 'Chart type', value: chartTypeDescription }] : [],
         };
       },
       getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),

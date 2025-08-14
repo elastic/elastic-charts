@@ -76,19 +76,18 @@ exports[`Chart should render the legend name test 1`] = `
                       <ScreenReaderSummaryComponent a11ySettings={{...}} chartSpecificData={{...}} dispatch={[Function (anonymous)]}>
                         <figcaption className="echScreenReaderOnly" id="chart1--defaultSummary-summary">
                           <ScreenReaderLabel label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} chartLabelData={[undefined]} />
-                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} summaryParts={{...}}>
-                            <div id="chart1--defaultSummary">
-                              <dl>
-                                <dt>
-                                  Chart type
-                                  :
-                                </dt>
-                                <dd id={[undefined]}>
-                                  bar chart
-                                </dd>
-                              </dl>
-                            </div>
-                          </ScreenReaderDescription>
+                          <ScreenReaderDescription label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} />
+                          <ScreenReaderTypes label={[undefined]} labelId={[undefined]} labelHeadingLevel="p" description={[undefined]} descriptionId="chart1--defaultSummary" defaultSummaryId="chart1--defaultSummary" tableCaption={[undefined]} screenReaderTypes={{...}}>
+                            <dl>
+                              <dt>
+                                Chart type
+                                :
+                              </dt>
+                              <dd id={[undefined]}>
+                                bar chart
+                              </dd>
+                            </dl>
+                          </ScreenReaderTypes>
                         </figcaption>
                       </ScreenReaderSummaryComponent>
                     </Connect(ScreenReaderSummaryComponent)>
