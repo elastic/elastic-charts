@@ -12,7 +12,7 @@
  */
 export interface ChartLabelData {
   /** Primary label for the chart */
-  primaryLabel?: string;
+  majorLabel?: string;
   /** Secondary label for additional context */
-  secondaryLabel?: string;
+  minorLabel?: string;
 }

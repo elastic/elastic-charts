@@ -59,8 +59,8 @@ export const getScreenReaderDataSelector = createCustomCachedSelector(
     const returnValue = {
       screenReaderTypes,
       labelData: {
-        primaryLabel: goalChartLabels.majorLabel,
-        secondaryLabel: goalChartLabels.minorLabel,
+        majorLabel: goalChartLabels.majorLabel,
+        minorLabel: goalChartLabels.minorLabel,
       },
     };
 

@@ -24,21 +24,21 @@ export function ScreenReaderLabel({
 }: A11ySettings & ScreenReaderLabelProps) {
   const Heading = labelHeadingLevel;
 
-  if (!label && !chartLabelData?.primaryLabel && !chartLabelData?.secondaryLabel) return null;
+  if (!label && !chartLabelData?.majorLabel && !chartLabelData?.minorLabel) return null;
 
   let unifiedLabel = '';
-  if (!label && chartLabelData?.primaryLabel) {
-    unifiedLabel = chartLabelData.primaryLabel;
-  } else if (label && !chartLabelData?.primaryLabel) {
+  if (!label && chartLabelData?.majorLabel) {
+    unifiedLabel = chartLabelData.majorLabel;
+  } else if (label && !chartLabelData?.majorLabel) {
     unifiedLabel = label;
-  } else if (label && chartLabelData?.primaryLabel && label !== chartLabelData.primaryLabel) {
-    unifiedLabel = `${label}; Chart visible label: ${chartLabelData.primaryLabel}`;
+  } else if (label && chartLabelData?.majorLabel && label !== chartLabelData.majorLabel) {
+    unifiedLabel = `${label}; Chart visible label: ${chartLabelData.majorLabel}`;
   }
 
   return (
     <>
       {unifiedLabel && <Heading id={labelId}>{unifiedLabel}</Heading>}
-      {chartLabelData?.secondaryLabel && <p>{chartLabelData.secondaryLabel}</p>}
+      {chartLabelData?.minorLabel && <p>{chartLabelData.minorLabel}</p>}
     </>
   );
 }
