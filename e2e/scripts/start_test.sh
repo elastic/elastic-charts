@@ -16,7 +16,7 @@ set -e
 #   exit 1
 # fi
 
-pw_image="mcr.microsoft.com/playwright:v1.21.1-noble"
+pw_image="mcr.microsoft.com/playwright:v1.54.2-noble"
 
 
 # Run e2e playwright tests inside container
