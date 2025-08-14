@@ -20,6 +20,7 @@ import type { SeriesKey } from '../common/series_id';
 import type { ChartLabelData } from '../components/accessibility/types';
 import type { AnchorPosition } from '../components/portal/types';
 import type { TooltipInfo } from '../components/tooltip/types';
+import { getA11ySettingsSelector } from '../state/selectors/get_accessibility_config';
 import type { Dimensions } from '../utils/dimensions';
 
 /** @internal */
@@ -212,9 +213,12 @@ export const createChartSelectorsFactory =
       getChartTypeDescription: () => '',
       // The default screen reader data returns just the chart type description.
       getScreenReaderData: (state: GlobalChartState): ChartSpecificScreenReaderData => {
+        const a11ySettings = getA11ySettingsSelector(state);
         const chartTypeDescription = chartSelectors.getChartTypeDescription(state);
         return {
-          screenReaderTypes: chartTypeDescription ? [{ label: 'Chart type', value: chartTypeDescription }] : [],
+          screenReaderTypes: chartTypeDescription
+            ? [{ label: 'Chart type', id: a11ySettings.defaultSummaryId, value: chartTypeDescription }]
+            : [],
         };
       },
       getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),

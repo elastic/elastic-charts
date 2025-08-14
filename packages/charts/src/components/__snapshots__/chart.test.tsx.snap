@@ -83,7 +83,7 @@ exports[`Chart should render the legend name test 1`] = `
                                 Chart type
                                 :
                               </dt>
-                              <dd id={[undefined]}>
+                              <dd id="chart1--defaultSummary">
                                 bar chart
                               </dd>
                             </dl>
