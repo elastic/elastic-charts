@@ -50,7 +50,7 @@ export class Plugins {
     }),
     playwright: (env: string[] = []) => ({
       [`docker#v${DOCKER_VERSION}`]: {
-        image: `mcr.microsoft.com/playwright:v${PLAYWRIGHT_TEST_VERSION}-focal`,
+        image: `mcr.microsoft.com/playwright:v${PLAYWRIGHT_TEST_VERSION}-noble`,
         workdir: '/app',
         'propagate-environment': true,
         environment: [...environment, ...env],

@@ -26,7 +26,7 @@ result="$(yarn list --pattern "@playwright/test" --depth=0 | grep playwright/tes
 
 if [[ $result =~ $regex ]]; then
   pw_version=${BASH_REMATCH[1]}
-  pw_image="mcr.microsoft.com/playwright:v${pw_version}-focal"
+  pw_image="mcr.microsoft.com/playwright:v${pw_version}-noble"
 else
   echo "Unable to find '@playwright/test' version"
   exit 1

@@ -27,12 +27,12 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@playwright/test@^1.47.2":
-  version "1.47.2"
-  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.47.2.tgz#dbe7051336bfc5cc599954214f9111181dbc7475"
-  integrity sha512-jTXRsoSPONAs8Za9QEQdyjFn+0ZQFjCiIztAIF6bi1HqhBzG9Ma7g1WotyiGqFSBRZjIEqMdT8RUlbk1QVhzCQ==
+"@playwright/test@^1.54.2":
+  version "1.54.2"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.54.2.tgz#ff0d1e5d8e26f3258ae65364e2d4d10176926b07"
+  integrity sha512-A+znathYxPf+72riFd1r1ovOLqsIIB0jKIoPjyK2kqEIe30/6jF6BC7QNluHuwUmsD2tv1XZVugN8GqfTMOxsA==
   dependencies:
-    playwright "1.47.2"
+    playwright "1.54.2"
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.9"
@@ -247,10 +247,10 @@ path-case@^3.0.4:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
-playwright-core@1.47.2:
-  version "1.47.2"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.47.2.tgz#7858da9377fa32a08be46ba47d7523dbd9460a4e"
-  integrity sha512-3JvMfF+9LJfe16l7AbSmU555PaTl2tPyQsVInqm3id16pdDfvZ8TTZ/pyzmkbDrZTQefyzU7AIHlZqQnxpqHVQ==
+playwright-core@1.54.2:
+  version "1.54.2"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.54.2.tgz#73cc5106f19ec6b9371908603d61a7f171ebd8f0"
+  integrity sha512-n5r4HFbMmWsB4twG7tJLDN9gmBUeSPcsBZiWSE4DnYz9mJMAFqr2ID7+eGC9kpEnxExJ1epttwR59LEWCk8mtA==
 
 playwright-merge-html-reports@^0.2.3:
   version "0.2.3"
@@ -260,12 +260,12 @@ playwright-merge-html-reports@^0.2.3:
     jszip "^3.7.1"
     yazl "^2.5.1"
 
-playwright@1.47.2:
-  version "1.47.2"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.47.2.tgz#155688aa06491ee21fb3e7555b748b525f86eb20"
-  integrity sha512-nx1cLMmQWqmA3UsnjaaokyoUpdVaaDhJhMoxX2qj3McpjnsqFHs516QAKYhqHAgOP+oCFTEOCOAaD1RgD/RQfA==
+playwright@1.54.2:
+  version "1.54.2"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.54.2.tgz#e2435abb2db3a96a276f8acc3ada1a85b587dff3"
+  integrity sha512-Hu/BMoA1NAdRUuulyvQC0pEqZ4vQbGfn8f7wPXcnqQmM+zct9UliKxsIkLNmz/ku7LElUNqmaiv1TG/aL5ACsw==
   dependencies:
-    playwright-core "1.47.2"
+    playwright-core "1.54.2"
   optionalDependencies:
     fsevents "2.3.2"
 
