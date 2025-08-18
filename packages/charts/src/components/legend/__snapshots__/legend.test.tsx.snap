@@ -5,7 +5,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splita">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="#0c7b93" seriesName="splita" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="#0c7b93" seriesName="splita" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="#0c7b93" ariaLabel="Change series color, currently #0c7b93">
             <svg width={16} height={16} aria-label="Change series color, currently #0c7b93">
@@ -15,7 +15,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splita" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splita\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splita; Click: to show, Ctrl + Click: to hide">
@@ -27,7 +27,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splitb">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="#0c7b93" seriesName="splitb" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="#0c7b93" seriesName="splitb" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="#0c7b93" ariaLabel="Change series color, currently #0c7b93">
             <svg width={16} height={16} aria-label="Change series color, currently #0c7b93">
@@ -37,7 +37,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splitb" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitb\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitb; Click: to show, Ctrl + Click: to hide">
@@ -49,7 +49,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splitc">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="#0c7b93" seriesName="splitc" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="#0c7b93" seriesName="splitc" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="#0c7b93" ariaLabel="Change series color, currently #0c7b93">
             <svg width={16} height={16} aria-label="Change series color, currently #0c7b93">
@@ -59,7 +59,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splitc" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitc\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitc; Click: to show, Ctrl + Click: to hide">
@@ -71,7 +71,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splitd">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="#0c7b93" seriesName="splitd" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="#0c7b93" seriesName="splitd" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="#0c7b93" ariaLabel="Change series color, currently #0c7b93">
             <svg width={16} height={16} aria-label="Change series color, currently #0c7b93">
@@ -81,7 +81,7 @@ exports[`Legend #legendColorPicker should match snapshot after onChange is calle
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splitd" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitd\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitd; Click: to show, Ctrl + Click: to hide">
@@ -97,7 +97,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splita">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="red" seriesName="splita" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="red" seriesName="splita" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="red" ariaLabel="Change series color, currently red">
             <svg width={16} height={16} aria-label="Change series color, currently red">
@@ -107,7 +107,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splita" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splita\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splita; Click: to show, Ctrl + Click: to hide">
@@ -119,7 +119,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splitb">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="red" seriesName="splitb" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="red" seriesName="splitb" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="red" ariaLabel="Change series color, currently red">
             <svg width={16} height={16} aria-label="Change series color, currently red">
@@ -129,7 +129,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splitb" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitb\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitb; Click: to show, Ctrl + Click: to hide">
@@ -141,7 +141,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splitc">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="red" seriesName="splitc" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="red" seriesName="splitc" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="red" ariaLabel="Change series color, currently red">
             <svg width={16} height={16} aria-label="Change series color, currently red">
@@ -151,7 +151,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splitc" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitc\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitc; Click: to show, Ctrl + Click: to hide">
@@ -163,7 +163,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splitd">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="red" seriesName="splitd" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="red" seriesName="splitd" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="red" ariaLabel="Change series color, currently red">
             <svg width={16} height={16} aria-label="Change series color, currently red">
@@ -173,7 +173,7 @@ exports[`Legend #legendColorPicker should match snapshot after onClose is called
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splitd" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitd\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitd; Click: to show, Ctrl + Click: to hide">
@@ -203,7 +203,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splita">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="red" seriesName="splita" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="red" seriesName="splita" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="red" ariaLabel="Change series color, currently red">
             <svg width={16} height={16} aria-label="Change series color, currently red">
@@ -213,7 +213,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splita" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splita\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splita; Click: to show, Ctrl + Click: to hide">
@@ -238,7 +238,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splitb">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="red" seriesName="splitb" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="red" seriesName="splitb" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="red" ariaLabel="Change series color, currently red">
             <svg width={16} height={16} aria-label="Change series color, currently red">
@@ -248,7 +248,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splitb" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitb\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitb; Click: to show, Ctrl + Click: to hide">
@@ -260,7 +260,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splitc">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="red" seriesName="splitc" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="red" seriesName="splitc" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="red" ariaLabel="Change series color, currently red">
             <svg width={16} height={16} aria-label="Change series color, currently red">
@@ -270,7 +270,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splitc" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitc\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitc; Click: to show, Ctrl + Click: to hide">
@@ -282,7 +282,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
   <li className="echLegendItem echLegendItem--vertical" onMouseEnter={[Function: onMouseEnter]} onMouseLeave={[Function (anonymous)]} style={{...}} dir="ltr" data-ech-series-name="splitd">
     <div className="background" />
     <div className="echLegend__colorWrapper">
-      <ForwardRef color="red" seriesName="splitd" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
+      <Color color="red" seriesName="splitd" isSeriesHidden={false} hasColorPicker={true} onClick={[Function (anonymous)]} pointStyle={[undefined]}>
         <button type="button" onClick={[Function (anonymous)]} className="echLegendItem__color echLegendItem__color--changable" title="change series color">
           <LegendIcon pointStyle={[undefined]} color="red" ariaLabel="Change series color, currently red">
             <svg width={16} height={16} aria-label="Change series color, currently red">
@@ -292,7 +292,7 @@ exports[`Legend #legendColorPicker should render colorPicker when color is click
             </svg>
           </LegendIcon>
         </button>
-      </ForwardRef>
+      </Color>
     </div>
     <Label label="splitd" options={{...}} isToggleable={true} onToggle={[Function (anonymous)]} isSeriesHidden={false} totalSeriesCount={4} hiddenSeriesCount={0}>
       <div role="button" tabIndex={0} dir="ltr" className="echLegendItem__label echLegendItem__label--clickable echLegendItem__label--singleline" title="splitd\\n\\nClick to show\\nCtrl + Click to hide" onClick={[Function (anonymous)]} onKeyDown={[Function (anonymous)]} aria-pressed={false} style={{...}} aria-label="splitd; Click: to show, Ctrl + Click: to hide">

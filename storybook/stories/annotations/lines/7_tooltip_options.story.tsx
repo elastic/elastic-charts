@@ -43,7 +43,7 @@ export const Example: ChartsStory = (_, { title, description }) => {
       )
     : undefined;
   const customTooltipDetails: AnnotationTooltipFormatter | undefined = showCustomDetails
-    ? (details) => (
+    ? ({ details }) => (
         <div>
           <h2>custom Details</h2>
           <p>{details}</p>

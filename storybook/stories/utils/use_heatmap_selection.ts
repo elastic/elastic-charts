@@ -11,6 +11,7 @@ import { boolean, button } from '@storybook/addon-knobs';
 import { useEffect, useCallback, useState } from 'react';
 
 import type {
+  BrushEndListener,
   ElementClickListener,
   HeatmapBrushEvent,
   HeatmapElementEvent,
@@ -34,12 +35,12 @@ export const useHeatmapSelection = (disableActions = false) => {
     [disableActions],
   );
   const onBrushEnd = useCallback(
-    (e) => {
+    (e: HeatmapBrushEvent) => {
       if (!disableActions) action('brushEvent')(e);
-      setSelection(e as HeatmapBrushEvent);
+      setSelection(e);
     },
     [disableActions],
-  );
+  ) as BrushEndListener;
   useEffect(() => {
     document.addEventListener('keyup', ({ key }) => {
       if (key === 'Escape') clearSelection();
