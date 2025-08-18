@@ -8,7 +8,7 @@
 
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
-import React, { PropsWithChildren } from 'react';
+import React, { type PropsWithChildren } from 'react';
 
 import { Chart, Settings, Axis, Position, BarSeries, ScaleType } from '@elastic/charts';
 
