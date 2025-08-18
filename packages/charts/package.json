@@ -46,7 +46,7 @@
     "immer": "^9.0.21",
     "prop-types": "^15.7.2",
     "re-reselect": "^4.0.1",
-    "react-redux": "^7.2.8",
+    "react-redux": "^8.1.3",
     "redux": "^4.2.1",
     "ts-debounce": "^4.0.0",
     "utility-types": "^3.10.0",
