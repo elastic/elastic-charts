@@ -641,6 +641,11 @@
   dependencies:
     "@babel/types" "^7.14.5"
 
+"@babel/helper-globals@^7.28.0":
+  version "7.28.0"
+  resolved "https://registry.yarnpkg.com/@babel/helper-globals/-/helper-globals-7.28.0.tgz#b9430df2aa4e17bc28665eadeae8aa1d985e6674"
+  integrity sha512-+W6cISkXFa1jXsDEdYA8HeevQT/FULhxzR99pxphltZcVaugps53THCeiWA8SguxxpSp3gKPiuYfSWopkLQ4hw==
+
 "@babel/helper-hoist-variables@^7.14.5":
   version "7.14.5"
   resolved "https://registry.yarnpkg.com/@babel/helper-hoist-variables/-/helper-hoist-variables-7.14.5.tgz#e0dd27c33a78e577d7c8884916a3e7ef1f7c7f8d"

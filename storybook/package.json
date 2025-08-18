@@ -23,6 +23,7 @@
     "seedrandom": "^3.0.5"
   },
   "devDependencies": {
+    "@babel/helper-globals": "^7.28.0",
     "@storybook/addon-actions": "^6.3.7",
     "@storybook/addon-docs": "^6.3.7",
     "@storybook/addon-knobs": "^6.3.0",
