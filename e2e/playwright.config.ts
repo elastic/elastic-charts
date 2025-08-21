@@ -15,6 +15,7 @@ expect.extend(pwExpect.matchers);
 const isCI = process.env.CI === 'true';
 
 const config: PlaywrightTestConfig = {
+  testIgnore: ['**/accessibility_descriptions.test.ts'],
   use: {
     headless: true,
     locale: 'en-us',

@@ -17,9 +17,20 @@ import type { LegendItem, LegendItemExtraValues } from '../common/legend';
 import { EMPTY_LEGEND_LIST, EMPTY_LEGEND_ITEM_EXTRA_VALUES } from '../common/legend';
 import type { SmallMultiplesSeriesDomains } from '../common/panel_utils';
 import type { SeriesKey } from '../common/series_id';
+import type { ChartLabelData } from '../components/accessibility/types';
 import type { AnchorPosition } from '../components/portal/types';
 import type { TooltipInfo } from '../components/tooltip/types';
 import type { Dimensions } from '../utils/dimensions';
+
+/** @internal */
+export interface ChartSpecificScreenReaderData {
+  /** Chart-specific data for screen reader summary */
+  data?: any;
+  /** Custom summary parts to include in the consolidated summary */
+  summaryParts?: string[];
+  /** Generic label data for accessibility */
+  labelData?: ChartLabelData;
+}
 
 /** @internal */
 export interface LegendItemLabel {
@@ -136,6 +147,11 @@ export interface ChartSelectors {
    * Get the series types for the screen reader summary component
    */
   getChartTypeDescription(globalState: GlobalChartState): string;
+
+  /**
+   * Get chart-specific data for screen reader accessibility
+   */
+  getScreenReaderData?(globalState: GlobalChartState): ChartSpecificScreenReaderData;
 
   /**
    * Get the domain of the vertical and horizontal small multiple grids
