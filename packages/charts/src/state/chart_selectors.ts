@@ -27,9 +27,6 @@ export interface LegendItemLabel {
   depth: number;
 }
 
-/** @internal */
-export const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
-
 /**
  * A set of chart-type-dependant functions that are required by all chart types
  * @internal
@@ -148,10 +145,19 @@ export interface ChartSelectors {
   canDisplayChartTitles(globalState: GlobalChartState): boolean;
 }
 
-/** @internal */
-export type ChartSelectorsFactory = () => ChartSelectors;
+type ChartSelectorsFactory = () => ChartSelectors;
 
+const EMPTY_LEGEND_ITEM_LIST: LegendItemLabel[] = [];
 const EMPTY_TOOLTIP = Object.freeze({ header: null, values: [] });
+const EMPTY_DIMENSION = Object.freeze({ top: 0, left: 0, width: 0, height: 0 });
+const EMPTY_SM_DOMAINS: SmallMultiplesSeriesDomains = Object.freeze({ smVDomain: [], smHDomain: [] });
+const EMPTY_OBJ = Object.freeze({});
+const EMPTY_TOOLTIP_VISIBILITY: TooltipVisibility = Object.freeze({
+  visible: false,
+  isExternal: false,
+  displayOnly: false,
+  isPinnable: false,
+});
 
 type CallbackCreator = () => (state: GlobalChartState) => void;
 
@@ -173,20 +179,15 @@ export const createChartSelectorsFactory =
       getLegendItemsLabels: () => EMPTY_LEGEND_ITEM_LIST,
       getLegendExtraValues: () => EMPTY_LEGEND_ITEM_EXTRA_VALUES,
       getPointerCursor: () => DEFAULT_CSS_CURSOR,
-      isTooltipVisible: () => ({
-        visible: false,
-        isExternal: false,
-        displayOnly: false,
-        isPinnable: false,
-      }),
+      isTooltipVisible: () => EMPTY_TOOLTIP_VISIBILITY,
       getTooltipInfo: () => EMPTY_TOOLTIP,
       getTooltipAnchor: () => null,
-      getProjectionContainerArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
-      getMainProjectionArea: () => ({ top: 0, left: 0, width: 0, height: 0 }),
+      getProjectionContainerArea: () => EMPTY_DIMENSION,
+      getMainProjectionArea: () => EMPTY_DIMENSION,
       getBrushArea: () => null,
-      getDebugState: () => ({}),
+      getDebugState: () => EMPTY_OBJ,
       getChartTypeDescription: () => '',
-      getSmallMultiplesDomains: () => ({ smVDomain: [], smHDomain: [] }),
+      getSmallMultiplesDomains: () => EMPTY_SM_DOMAINS,
       canDisplayChartTitles: () => true,
       ...overrides,
       eventCallbacks: (state: GlobalChartState) => {
