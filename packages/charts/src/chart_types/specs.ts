@@ -7,21 +7,23 @@
  */
 
 export {
-  AreaSeries,
-  AreaSeriesProps,
   Axis,
-  AxisProps,
+  AreaSeries,
   BarSeries,
-  BarSeriesProps,
   BubbleSeries,
-  BubbleSeriesProps,
   HistogramBarSeries,
-  HistogramBarSeriesProps,
   LineAnnotation,
-  LineAnnotationProps,
   LineSeries,
-  LineSeriesProps,
   RectAnnotation,
+} from './xy_chart/specs';
+export type {
+  AxisProps,
+  AreaSeriesProps,
+  BarSeriesProps,
+  BubbleSeriesProps,
+  HistogramBarSeriesProps,
+  LineAnnotationProps,
+  LineSeriesProps,
   RectAnnotationProps,
 } from './xy_chart/specs';
 
@@ -33,10 +35,11 @@ export * from './goal_chart/specs';
 
 export { Partition } from './partition_chart/specs';
 
-export { Heatmap, HeatmapSpec, RasterTimeScale, TimeScale, LinearScale, OrdinalScale } from './heatmap/specs';
+export { Heatmap } from './heatmap/specs';
+export type { HeatmapSpec, RasterTimeScale, TimeScale, LinearScale, OrdinalScale } from './heatmap/specs';
 
-export {
-  Metric,
+export { Metric } from './metric/specs';
+export type {
   MetricSpecProps,
   MetricSpec,
   MetricBase,
@@ -51,5 +54,6 @@ export {
   SecondaryMetricProps,
 } from './metric/specs';
 
-export { Bullet, BulletProps, BulletSpec, BulletDatum, BulletSubtype, BulletValueLabels } from './bullet_graph/spec';
-export { BulletStyle } from './bullet_graph/theme';
+export { Bullet } from './bullet_graph/spec';
+export type { BulletProps, BulletSpec, BulletDatum, BulletSubtype, BulletValueLabels } from './bullet_graph/spec';
+export type { BulletStyle } from './bullet_graph/theme';

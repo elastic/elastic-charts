@@ -6,10 +6,9 @@
  * Side Public License, v 1.
  */
 
-import React from 'react';
-
-import { Example } from '../storybook/stories/icicle/04_cpu_profile_gl_flame.story';
+import { StoryRenderer } from './story_renderer';
+import story from '../.storybook/stories/9_color_picker.story';
 
 export function Playground() {
-  return <Example />;
+  return StoryRenderer(story);
 }

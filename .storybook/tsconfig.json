@@ -1,0 +1,23 @@
+{
+  "extends": "../tsconfig",
+  "include": ["../packages/charts/src/**/*", "./**/*"],
+  "exclude": ["../**/*.test.*"],
+  "compilerOptions": {
+    "target": "es2023", // Node 20 according to https://github.com/microsoft/TypeScript/wiki/Node-Target-Mapping#node-20
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "module": "preserve",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noImplicitOverride": true,
+    "lib": [
+      "es2023",
+      "dom",
+      "dom.iterable"
+    ],
+    "paths": {
+      "@ech/sb/*": ["./shared/*"],
+      "@ech/sb": ["./shared"]
+    }
+  }
+}

@@ -176,6 +176,9 @@ export const createChartStore = (chartId: string, title?: string, description?: 
         // TODO https://github.com/elastic/elastic-charts/issues/2078
         serializableCheck: false,
       }),
+    devTools: {
+      name: `@elastic/charts - ${chartId}`,
+    },
   });
 };
 
