@@ -38,4 +38,4 @@ export const Wordcloud = specComponentFactory<WordcloudSpec>()(
 /** @public */
 export type WordcloudProps = ComponentProps<typeof Wordcloud>;
 
-export { WordModel, WeightFn, OutOfRoomCallback } from '../layout/types/viewmodel_types';
+export type { WordModel, WeightFn, OutOfRoomCallback } from '../layout/types/viewmodel_types';
