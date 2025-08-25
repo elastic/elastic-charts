@@ -4,10 +4,12 @@
   "author": "Elastic DataVis",
   "license": "SEE LICENSE IN LICENSE.txt",
   "private": "true",
+  "type": "module",
   "repository": "git@github.com:elastic/elastic-charts.git",
   "workspaces": {
     "packages": [
       "packages/*",
+      ".storybook",
       "storybook"
     ]
   },
@@ -37,6 +39,7 @@
     "prettier:check": "prettier --check \"**/*.{json,html,css,scss}\"",
     "prettier:fix": "prettier --w \"**/*.{json,html,css,scss}\"",
     "playground": "export NODE_OPTIONS=--openssl-legacy-provider; cd playground && RNG_SEED='elastic-charts' webpack serve",
+    "playground2": "export NODE_OPTIONS=--openssl-legacy-provider; cd playground && RNG_SEED='elastic-charts' vite",
     "pq": "pretty-quick",
     "semantic-release": "semantic-release --debug",
     "start": "yarn storybook",

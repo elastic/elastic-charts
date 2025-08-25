@@ -1,6 +1,7 @@
 # Force include
 !.*.js
 !.buildkite
+!.storybook
 !packages/charts/.*.js
 
 # Ignore
