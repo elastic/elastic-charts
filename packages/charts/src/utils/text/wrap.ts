@@ -68,12 +68,14 @@ export function wrapText(
   if (lines.length > maxLines) {
     lines.meta.truncated = true;
     const lastLineMaxLineWidth = maxLineWidth - ellipsisWidth;
-    const lastLine = clipTextToWidth(lines[maxLines - 1] ?? '', font, fontSize, lastLineMaxLineWidth, measure);
+    const lineToTruncate = lines[maxLines - 1] ?? '';
+    const lastLine = clipTextToWidth(lineToTruncate, font, fontSize, lastLineMaxLineWidth, measure);
     if (lastLine.length > 0) {
       lines.splice(maxLines - 1, Infinity, `${lastLine}${ELLIPSIS}`);
     } else {
       if (lastLineMaxLineWidth > 0) {
-        lines.splice(maxLines - 1, Infinity, ELLIPSIS);
+        // Not enough space for both a character and ellipsis; if 1 line → first char; if >1 lines → only ellipsis
+        lines.splice(maxLines - 1, Infinity, maxLines > 1 ? ELLIPSIS : lineToTruncate.slice(0, 1));
       } else {
         lines.splice(maxLines, Infinity);
       }
